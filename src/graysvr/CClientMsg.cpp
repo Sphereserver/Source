@@ -2435,9 +2435,6 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 
 					if ( pItem->IsTypeArmorWeapon() )
 					{
-						if ( pItem->GetDefNum("BALANCED", true) )
-							m_TooltipData.Add(new CClientTooltip(1072792)); // balanced
-
 						INT64 DamageIncrease = pItem->GetDefNum("INCREASEDAM", true);
 						if ( DamageIncrease != 0 )
 						{
@@ -2614,13 +2611,6 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 							m_TooltipData.Add(t = new CClientTooltip(1060486)); // swing speed increase ~1_val~%
 							t->FormatArgs("%lld", SwingSpeedIncrease);
 						}
-
-						INT64 IncreasedKarmaLoss = pItem->GetDefNum("INCREASEKARMALOSS", true);
-						if ( IncreasedKarmaLoss != 0 )
-						{
-							m_TooltipData.Add(t = new CClientTooltip(1075210)); // increased karma loss ~1val~%
-							t->FormatArgs("%lld", IncreasedKarmaLoss);
-						}
 					}
 
 					// Some type specific default stuff
@@ -2760,48 +2750,6 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 							if ( pItem->GetDefNum("USEBESTWEAPONSKILL", true) )
 								m_TooltipData.Add(new CClientTooltip(1060400)); // use best weapon skill
 
-							INT64 HitColdArea = pItem->GetDefNum("HITAREACOLD", true);
-							if ( HitColdArea != 0 )
-							{
-								m_TooltipData.Add(t = new CClientTooltip(1060416)); // hit cold area ~1_val~%
-								t->FormatArgs("%lld", HitColdArea);
-							}
-
-							INT64 HitDispel = pItem->GetDefNum("HITDISPEL", true);
-							if ( HitDispel != 0 )
-							{
-								m_TooltipData.Add(t = new CClientTooltip(1060417)); // hit dispel ~1_val~%
-								t->FormatArgs("%lld", HitDispel);
-							}
-
-							INT64 HitEnergyArea = pItem->GetDefNum("HITAREAENERGY", true);
-							if ( HitEnergyArea != 0 )
-							{
-								m_TooltipData.Add(t = new CClientTooltip(1060418)); // hit energy area ~1_val~%
-								t->FormatArgs("%lld", HitEnergyArea);
-							}
-
-							INT64 HitFireArea = pItem->GetDefNum("HITAREAFIRE", true);
-							if ( HitFireArea != 0 )
-							{
-								m_TooltipData.Add(t = new CClientTooltip(1060419)); // hit fire area ~1_val~%
-								t->FormatArgs("%lld", HitFireArea);
-							}
-
-							INT64 HitFireball = pItem->GetDefNum("HITFIREBALL", true);
-							if ( HitFireball != 0 )
-							{
-								m_TooltipData.Add(t = new CClientTooltip(1060420)); // hit fireball ~1_val~%
-								t->FormatArgs("%lld", HitFireball);
-							}
-
-							INT64 HitHarm = pItem->GetDefNum("HITHARM", true);
-							if ( HitHarm != 0 )
-							{
-								m_TooltipData.Add(t = new CClientTooltip(1060421)); // hit harm ~1_val~%
-								t->FormatArgs("%lld", HitHarm);
-							}
-
 							INT64 HitLifeLeech = pItem->GetDefNum("HITLEECHLIFE", true);
 							if ( HitLifeLeech != 0 )
 							{
@@ -2809,53 +2757,11 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 								t->FormatArgs("%lld", HitLifeLeech);
 							}
 
-							INT64 HitLightning = pItem->GetDefNum("HITLIGHTNING", true);
-							if ( HitLightning != 0 )
-							{
-								m_TooltipData.Add(t = new CClientTooltip(1060422)); // hit lightning ~1_val~%
-								t->FormatArgs("%lld", HitLightning);
-							}
-
-							INT64 HitLowerAttack = pItem->GetDefNum("HITLOWERATK", true);
-							if ( HitLowerAttack != 0 )
-							{
-								m_TooltipData.Add(t = new CClientTooltip(1060424)); // hit lower attack ~1_val~%
-								t->FormatArgs("%lld", HitLowerAttack);
-							}
-
-							INT64 HitLowerDefense = pItem->GetDefNum("HITLOWERDEF", true);
-							if ( HitLowerDefense != 0 )
-							{
-								m_TooltipData.Add(t = new CClientTooltip(1060425)); // hit lower defense ~1_val~%
-								t->FormatArgs("%lld", HitLowerDefense);
-							}
-
-							INT64 HitMagicArrow = pItem->GetDefNum("HITMAGICARROW", true);
-							if ( HitMagicArrow != 0 )
-							{
-								m_TooltipData.Add(t = new CClientTooltip(1060426)); // hit magic arrow ~1_val~%
-								t->FormatArgs("%lld", HitMagicArrow);
-							}
-
 							INT64 HitManaLeech = pItem->GetDefNum("HITLEECHMANA", true);
 							if ( HitManaLeech != 0 )
 							{
 								m_TooltipData.Add(t = new CClientTooltip(1060427)); // hit mana leech ~1_val~%
 								t->FormatArgs("%lld", HitManaLeech);
-							}
-
-							INT64 HitPhysicalArea = pItem->GetDefNum("HITAREAPHYSICAL", true);
-							if ( HitPhysicalArea != 0 )
-							{
-								m_TooltipData.Add(t = new CClientTooltip(1060428)); // hit physical area ~1_val~%
-								t->FormatArgs("%lld", HitPhysicalArea);
-							}
-
-							INT64 HitPoisonArea = pItem->GetDefNum("HITAREAPOISON", true);
-							if ( HitPoisonArea != 0 )
-							{
-								m_TooltipData.Add(t = new CClientTooltip(1060429)); // hit poison area ~1_val~%
-								t->FormatArgs("%lld", HitPoisonArea);
 							}
 
 							INT64 HitStaminaLeech = pItem->GetDefNum("HITLEECHSTAM", true);

@@ -2096,16 +2096,7 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_BONUSSKILL3:
 		case IC_BONUSSKILL4:
 		case IC_BONUSSKILL5:
-		case IC_ITEMSETNAME:
-		case IC_MATERIAL:
-		case IC_NPCKILLER:
-		case IC_NPCPROTECTION:
 		case IC_OCOLOR:
-		case IC_OWNEDBY:
-		case IC_BONUSCRAFTING:
-		case IC_BONUSCRAFTINGEXCEP:
-		case IC_REMOVALTYPE:
-		case IC_SUMMONING:
 			{
 				CVarDefCont * pVar = GetDefKey(pszKey, true);
 				sVal = pVar ? pVar->GetValStr() : "";
@@ -2127,33 +2118,14 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_BONUSSKILL3AMT:
 		case IC_BONUSSKILL4AMT:
 		case IC_BONUSSKILL5AMT:
-		case IC_BRITTLE:
-		case IC_CHARGESCUR:
-		case IC_CHARGESMAX:
-		case IC_DURABILITY:
-		case IC_EPHEMERAL:
-		case IC_ITEMSETAMTCUR:
-		case IC_ITEMSETAMTMAX:
-		case IC_ITEMSETCOLOR:
 		case IC_LIFESPAN:
 		case IC_MAGEARMOR:
 		case IC_MAGEWEAPON:
-		case IC_MANAPHASE:
-		case IC_NODROPTRADE:
 		case IC_RARITY:
-		case IC_RECHARGE:
-		case IC_RECHARGEAMT:
-		case IC_RECHARGERATE:
-		case IC_SEARINGWEAPON:
 		case IC_SELFREPAIR:
 		case IC_USESCUR:
 		case IC_USESMAX:
 		case IC_USEBESTWEAPONSKILL:
-		case IC_BONUSCRAFTINGAMT:
-		case IC_BONUSCRAFTINGEXCEPAMT:
-		case IC_NPCKILLERAMT:
-		case IC_NPCPROTECTIONAMT:
-		case IC_QUESTITEM:
 			{
 				CVarDefCont * pVar = GetDefKey(pszKey, true);
 				sVal.FormatLLVal(pVar ? pVar->GetValNum() : 0);
@@ -2354,17 +2326,8 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_BONUSSKILL3:
 		case IC_BONUSSKILL4:
 		case IC_BONUSSKILL5:
-		case IC_ITEMSETNAME:
 		case IC_MAKERSNAME:
-		case IC_MATERIAL:
-		case IC_NPCKILLER:
-		case IC_NPCPROTECTION:
 		case IC_OCOLOR:
-		case IC_OWNEDBY:
-		case IC_SUMMONING:
-		case IC_BONUSCRAFTING:
-		case IC_BONUSCRAFTINGEXCEP:
-		case IC_REMOVALTYPE:
 			{
 				bool fQuoted = false;
 				SetDefStr(s.GetKey(), s.GetArgStr( &fQuoted ), fQuoted);
@@ -2376,23 +2339,10 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_BONUSSKILL3AMT:
 		case IC_BONUSSKILL4AMT:
 		case IC_BONUSSKILL5AMT:
-		case IC_BRITTLE:
-		case IC_CHARGESCUR:
-		case IC_CHARGESMAX:
-		case IC_DURABILITY:
-		case IC_EPHEMERAL:
-		case IC_ITEMSETAMTCUR:
-		case IC_ITEMSETAMTMAX:
-		case IC_ITEMSETCOLOR:
 		case IC_LIFESPAN:
 		case IC_MAGEARMOR:
 		case IC_MAGEWEAPON:
-		case IC_NODROPTRADE:
 		case IC_RARITY:
-		case IC_RECHARGE:
-		case IC_RECHARGEAMT:
-		case IC_RECHARGERATE:
-		case IC_SEARINGWEAPON:
 		case IC_SELFREPAIR:
 		case IC_USESCUR:
 		case IC_USEBESTWEAPONSKILL:
@@ -2405,16 +2355,10 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_BONUSHITSMAX:
 		case IC_BONUSSTAMMAX:
 		case IC_BONUSMANAMAX:
-		case IC_BONUSCRAFTINGAMT:
-		case IC_BONUSCRAFTINGEXCEPAMT:
-		case IC_MANAPHASE:
-		case IC_NPCKILLERAMT:
-		case IC_NPCPROTECTIONAMT:
 		case IC_DOORCLOSESOUND:
 		case IC_DOOROPENSOUND:
 		case IC_PORTCULISSOUND:
 		case IC_DOOROPENID:
-		case IC_QUESTITEM:
 			SetDefNum(s.GetKey(),s.GetArgVal(), false);
 			break;
 
