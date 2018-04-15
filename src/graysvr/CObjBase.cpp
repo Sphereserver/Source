@@ -707,7 +707,6 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case OC_LOWERREAGENTCOST:
 		case OC_LOWERMANACOST:
 		case OC_LOWERREQ:
-		case OC_LUCK:
 		case OC_NIGHTSIGHT:
 		case OC_REFLECTPHYSICALDAM:
 		case OC_REGENFOOD:
@@ -1188,6 +1187,9 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatVal(pItem ? pItem->IsTypeWeapon() : 0);
 			break;
 		}
+		case OC_LUCK:
+			sVal.FormatVal(m_Luck);
+			break;
 		case OC_MAP:
 			sVal.FormatVal(GetTopPoint().m_map);
 			break;
@@ -1470,7 +1472,6 @@ bool CObjBase::r_LoadVal(CScript &s)
 		case OC_INCREASEDEFCHANCE:
 		case OC_INCREASEDEFCHANCEMAX:
 		case OC_INCREASESPELLDAM:
-		case OC_LUCK:
 		case OC_REGENFOOD:
 		case OC_REGENHITS:
 		case OC_REGENSTAM:
@@ -1591,6 +1592,15 @@ bool CObjBase::r_LoadVal(CScript &s)
 		}
 		case OC_EVENTS:
 			return m_OEvents.r_LoadVal(s, RES_EVENTS);
+		case OC_LUCK:
+		{
+			m_Luck = static_cast<int>(s.GetArgVal());
+
+			CChar *pChar = dynamic_cast<CChar *>(GetTopLevelObj());
+			if ( pChar )
+				pChar->UpdateStatsFlag();
+			return true;
+		}
 		case OC_MAP:
 		{
 			// Move to another map
@@ -1810,6 +1820,9 @@ void CObjBase::r_Write(CScript &s)
 		s.WriteKeyVal("RESENERGY", m_ResEnergy);
 	if ( m_ResEnergyMax != pBaseDef->m_ResEnergyMax )
 		s.WriteKeyVal("RESENERGYMAX", m_ResEnergyMax);
+
+	if ( m_Luck != pBaseDef->m_Luck )
+		s.WriteKeyVal("LUCK", m_Luck);
 
 	m_BaseDefs.r_WritePrefix(s);	// new variable storage system
 	m_TagDefs.r_WritePrefix(s, "TAG");

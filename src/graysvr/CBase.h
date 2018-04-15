@@ -58,6 +58,7 @@ public:
 	int m_ResEnergy;
 	int m_ResEnergyMax;
 
+	int m_Luck;
 	DWORD	m_Can;			// Base attribute flags. CAN_C_GHOST
 
 public:
@@ -172,6 +173,7 @@ public:
 		m_ResPoisonMax		= 0;
 		m_ResEnergy			= 0;
 		m_ResEnergyMax		= 0;
+		m_Luck				= 0;
 		m_Height			= 0;
 		m_Can			= CAN_C_INDOORS;	// most things can cover us from the weather.
 		SetDefNum("RANGE",1); //m_range			= 1;

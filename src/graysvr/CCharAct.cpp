@@ -536,9 +536,7 @@ void CChar::OnRemoveOb(CGObListRec *pObRec)	// override this = called when remov
 		if ( iLowerManaCost != 0 )
 			SetDefNum("LOWERMANACOST", GetDefNum("LOWERMANACOST") - iLowerManaCost);
 
-		INT64 iLuck = pItem->GetDefNum("LUCK", true);
-		if ( iLuck != 0 )
-			SetDefNum("LUCK", GetDefNum("LUCK") - iLuck);
+		m_Luck -= pItem->m_Luck;
 
 		if ( pItem->GetDefNum("NIGHTSIGHT", true) )
 		{
@@ -1957,9 +1955,7 @@ bool CChar::ItemEquip(CItem *pItem, CChar *pCharMsg, bool fFromDClick)
 	if ( iLowerManaCost != 0 )
 		SetDefNum("LOWERMANACOST", GetDefNum("LOWERMANACOST") + iLowerManaCost);
 
-	INT64 iLuck = pItem->GetDefNum("LUCK", true);
-	if ( iLuck != 0 )
-		SetDefNum("LUCK", GetDefNum("LUCK") + iLuck);
+	m_Luck += pItem->m_Luck;
 
 	if ( pItem->GetDefNum("NIGHTSIGHT", true) )
 	{

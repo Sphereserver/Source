@@ -255,6 +255,7 @@ CChar::CChar(CREID_TYPE id) : CObjBase(false)
 	m_ResEnergy = pCharDef->m_ResEnergy;
 	m_ResEnergyMax = pCharDef->m_ResEnergyMax;
 
+	m_Luck = pCharDef->m_Luck;
 	m_Can = pCharDef->m_Can;
 	m_wBloodHue = pCharDef->m_wBloodHue;
 
@@ -1336,7 +1337,6 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case CHC_INCREASESPELLDAM:
 		case CHC_LOWERMANACOST:
 		case CHC_LOWERREAGENTCOST:
-		case CHC_LUCK:
 		case CHC_CURFOLLOWER:
 		case CHC_MAXFOLLOWER:
 		case CHC_REGENFOOD:
@@ -2111,7 +2111,6 @@ bool CChar::r_LoadVal(CScript &s)
 		case CHC_INCREASEDEFCHANCE:
 		case CHC_INCREASEDEFCHANCEMAX:
 		case CHC_INCREASESPELLDAM:
-		case CHC_LUCK:
 		case CHC_CURFOLLOWER:
 		case CHC_MAXFOLLOWER:
 		case CHC_REGENFOOD:

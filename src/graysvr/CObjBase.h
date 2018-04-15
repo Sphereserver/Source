@@ -63,6 +63,7 @@ public:
 	int m_ResEnergy;
 	int m_ResEnergyMax;
 
+	int m_Luck;
 	CGrayUID m_uidSpawnItem;	// SpawnItem for this item
 
 	CResourceRefArray m_OEvents;

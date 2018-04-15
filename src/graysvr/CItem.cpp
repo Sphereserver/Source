@@ -1649,6 +1649,8 @@ bool CItem::SetBase( CItemBase * pItemDef )
 	m_ResEnergy = pItemDef->m_ResEnergy;
 	m_ResEnergyMax = pItemDef->m_ResEnergyMax;
 
+	m_Luck = pItemDef->m_Luck;
+
 	if (pParentCont)
 	{
 		ASSERT( IsItemEquipped() || IsItemInContainer());

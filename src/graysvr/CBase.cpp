@@ -57,7 +57,6 @@ bool CBaseBaseDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 		case OBC_LOWERMANACOST:
 		case OBC_LOWERREAGENTCOST:
 		case OBC_LOWERREQ:
-		case OBC_LUCK:
 		case OBC_NIGHTSIGHT:
 		case OBC_REFLECTPHYSICALDAM:
 		case OBC_REGENFOOD:
@@ -144,6 +143,9 @@ bool CBaseBaseDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 			break;
 		case OBC_INSTANCES:
 			sVal.FormatUVal( GetRefInstances());
+			break;
+		case OBC_LUCK:
+			sVal.FormatVal(m_Luck);
 			break;
 		case OBC_NAME:
 			sVal = GetName();
@@ -301,7 +303,6 @@ bool CBaseBaseDef::r_LoadVal( CScript & s )
 		case OBC_LOWERMANACOST:
 		case OBC_LOWERREAGENTCOST:
 		case OBC_LOWERREQ:
-		case OBC_LUCK:
 		case OBC_NIGHTSIGHT:
 		case OBC_REFLECTPHYSICALDAM:
 		case OBC_REGENFOOD:
@@ -382,6 +383,9 @@ bool CBaseBaseDef::r_LoadVal( CScript & s )
 			return( true );
 		case OBC_INSTANCES:
 			return( false );
+		case OBC_LUCK:
+			m_Luck = static_cast<int>(s.GetArgVal());
+			return true;
 		case OBC_NAME:
 			SetTypeName( s.GetArgStr());
 			return( true );
@@ -490,6 +494,7 @@ void CBaseBaseDef::CopyBasic( const CBaseBaseDef * pBase )
 	m_ResPoisonMax = pBase->m_ResPoisonMax;
 	m_ResEnergy = pBase->m_ResEnergy;
 	m_ResEnergyMax = pBase->m_ResEnergyMax;
+	m_Luck = pBase->m_Luck;
 	m_Can = pBase->m_Can;
 }
 

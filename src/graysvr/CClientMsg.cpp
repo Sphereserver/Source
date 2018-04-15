@@ -2519,11 +2519,10 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 							t->FormatArgs("%lld", LowerRequirements);
 						}
 
-						INT64 Luck = pItem->GetDefNum("LUCK", true);
-						if ( Luck != 0 )
+						if ( pItem->m_Luck != 0 )
 						{
 							m_TooltipData.Add(t = new CClientTooltip(1060436)); // luck ~1_val~
-							t->FormatArgs("%lld", Luck);
+							t->FormatArgs("%d", pItem->m_Luck);
 						}
 
 						if ( pItem->GetDefNum("MAGEARMOR", true) )

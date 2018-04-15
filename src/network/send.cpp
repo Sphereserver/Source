@@ -226,7 +226,7 @@ PacketHealthBarInfo::PacketHealthBarInfo(const CClient *target, CObjBase *object
 			writeInt16(static_cast<WORD>(object->m_ResColdMax ? minimum(object->m_ResCold, object->m_ResColdMax) : object->m_ResCold));
 			writeInt16(static_cast<WORD>(object->m_ResPoisonMax ? minimum(object->m_ResPoison, object->m_ResPoisonMax) : object->m_ResPoison));
 			writeInt16(static_cast<WORD>(object->m_ResEnergyMax ? minimum(object->m_ResEnergy, object->m_ResEnergyMax) : object->m_ResEnergy));
-			writeInt16(static_cast<WORD>(object->GetDefNum("LUCK", true)));
+			writeInt16(static_cast<WORD>(object->m_Luck));
 
 			const CItem *weapon = objectChar->m_uidWeapon.ItemFind();
 			writeInt16(static_cast<WORD>(objectChar->Fight_CalcDamage(weapon, true, false)));
