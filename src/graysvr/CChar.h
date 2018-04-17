@@ -1068,8 +1068,8 @@ public:
 
 	bool Skill_CanUse(SKILL_TYPE skill);
 	void Skill_SetBase(SKILL_TYPE skill, WORD wValue);
-	bool Skill_UseQuick(SKILL_TYPE skill, int difficulty, bool bAllowGain = true, bool bUseBellCurve = true);
-	bool Skill_CheckSuccess(SKILL_TYPE skill, int difficulty, bool bUseBellCurve = true) const;
+	bool Skill_UseQuick(SKILL_TYPE skill, int iDifficulty, bool bAllowGain = true, bool bUseBellCurve = true);
+	bool Skill_CheckSuccess(SKILL_TYPE skill, int iDifficulty, bool bUseBellCurve = true) const;
 	bool Skill_Wait(SKILL_TYPE skill);
 	bool Skill_Start(SKILL_TYPE skill);
 	void Skill_Fail(bool fCancel = false);
@@ -1097,7 +1097,7 @@ public:
 private:
 	int Skill_Done();
 	void Skill_Decay();
-	void Skill_Experience(SKILL_TYPE skill, int difficulty);
+	void Skill_Experience(SKILL_TYPE skill, int iDifficulty);
 
 	int Skill_NaturalResource_Setup(CItem *pResBit);
 	CItem *Skill_NaturalResource_Create(CItem *pResBit, SKILL_TYPE skill);
