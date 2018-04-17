@@ -24,8 +24,9 @@ CCharBase::CCharBase( CREID_TYPE id ) :
 	m_Str = 0;
 	m_Dex = 0;
 	m_Int = 0;
-
 	m_iMoveRate = static_cast<short>(g_Cfg.m_iMoveRate);
+	m_FollowerSlots = 1;
+	m_FollowerMax = 0;
 
 	if ( IsValidDispID(id))
 	{

@@ -421,7 +421,7 @@ bool CChar::NPC_OnHearPetCmdTarg(int iCmd, CChar *pSrc, CObjBase *pObj, const CP
 				break;
 			if ( IsSetOF(OF_PetSlots) )
 			{
-				if ( !pCharTarg->FollowersUpdate(this, maximum(1, m_FollowerSlots), true) )
+				if ( !pCharTarg->FollowersUpdate(this, m_FollowerSlots, true) )
 				{
 					pSrc->SysMessageDefault(DEFMSG_PETSLOTS_TRY_TRANSFER);
 					break;
@@ -531,7 +531,7 @@ void CChar::NPC_PetClearOwners(bool bResendTooltip)
 	if ( pOwner )
 	{
 		if ( IsSetOF(OF_PetSlots) )
-			pOwner->FollowersUpdate(this, -maximum(1, m_FollowerSlots));
+			pOwner->FollowersUpdate(this, -m_FollowerSlots);
 		if ( bResendTooltip )
 			ResendTooltip();
 	}
@@ -566,7 +566,7 @@ bool CChar::NPC_PetSetOwner(CChar *pChar, bool bResendTooltip)
 	}
 
 	if ( IsSetOF(OF_PetSlots) )
-		pChar->FollowersUpdate(this, maximum(1, m_FollowerSlots));
+		pChar->FollowersUpdate(this, m_FollowerSlots);
 	if ( bResendTooltip )
 		ResendTooltip();
 

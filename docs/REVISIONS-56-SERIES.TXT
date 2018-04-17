@@ -1057,3 +1057,7 @@ Added: RES*MAX properties functionality, now they are fully working
 
 10-04-2018, Coruja
 Changed: Updated internal SQLite libs v3.23.0 to v3.23.1.
+
+17-04-2018, Coruja
+Fixed: Animal Taming skill not checking follower slots limit when OF_PetSlots is enabled.
+[sphereCrypt.ini]: Added crypt key for classic client 7.0.63 and enhanced client 4.0.63

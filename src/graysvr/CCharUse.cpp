@@ -996,7 +996,7 @@ CChar * CChar::Use_Figurine( CItem * pItem, bool bCheckFollowerSlots )
 
 	if ( bCheckFollowerSlots && IsSetOF(OF_PetSlots) )
 	{
-		if ( !FollowersUpdate(pPet, maximum(1, pPet->m_FollowerSlots), true) )
+		if ( !FollowersUpdate(pPet, pPet->m_FollowerSlots, true) )
 		{
 			SysMessageDefault(DEFMSG_PETSLOTS_TRY_CONTROL);
 			if ( bCreatedNewNpc )

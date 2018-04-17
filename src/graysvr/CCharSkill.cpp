@@ -2401,18 +2401,25 @@ int CChar::Skill_Taming(SKTRIG_TYPE stage)
 	ASSERT(pChar->m_pNPC);
 
 	WORD iTameBase = pChar->Skill_GetBase(SKILL_TAMING);
-	if ( !IsPriv(PRIV_GM) ) // if its a gm doing it, just check that its not
+	if ( !IsPriv(PRIV_GM) )
 	{
-		if ( pChar->IsStatFlag(STATF_Pet) )		// is it tamable ?
+		if ( pChar->IsStatFlag(STATF_Pet) )
 		{
 			SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_TAMING_TAME), pChar->GetName());
 			return -SKTRIG_QTY;
 		}
-
-		if ( !iTameBase || pChar->Skill_GetBase(SKILL_ANIMALLORE) )	// too smart or not an animal
+		if ( !iTameBase )
 		{
 			SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_TAMING_TAMED), pChar->GetName());
 			return -SKTRIG_QTY;
+		}
+		if ( IsSetOF(OF_PetSlots) )
+		{
+			if ( !FollowersUpdate(this, pChar->m_FollowerSlots, true) )
+			{
+				SysMessageDefault(DEFMSG_PETSLOTS_TRY_TAMING);
+				return -SKTRIG_QTY;
+			}
 		}
 	}
 

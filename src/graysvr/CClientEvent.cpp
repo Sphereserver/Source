@@ -918,7 +918,7 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 				if ( IsSetOF(OF_PetSlots) )
 				{
 					CCharBase *pPetDef = CCharBase::FindCharBase(pItem->m_itFigurine.m_ID);
-					iFollowerSlots += items[i].m_amount * (pPetDef ? maximum(1, pPetDef->m_FollowerSlots) : 1);
+					iFollowerSlots += items[i].m_amount * (pPetDef ? pPetDef->m_FollowerSlots : 1);
 				}
 				break;
 			}

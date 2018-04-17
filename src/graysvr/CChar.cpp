@@ -217,9 +217,6 @@ CChar::CChar(CREID_TYPE id) : CObjBase(false)
 	m_StepStealth = 0;
 	m_iVisualRange = UO_MAP_VIEW_SIZE;
 	m_virtualGold = 0;
-	m_FollowerSlots = 0;
-	m_FollowerCur = 0;
-	m_FollowerMax = 0;
 
 	m_exp = 0;
 	m_level = 0;
@@ -261,6 +258,10 @@ CChar::CChar(CREID_TYPE id) : CObjBase(false)
 	m_Luck = pCharDef->m_Luck;
 	m_Can = pCharDef->m_Can;
 	m_wBloodHue = pCharDef->m_wBloodHue;
+
+	m_FollowerSlots = pCharDef->m_FollowerSlots;
+	m_FollowerCur = 0;
+	m_FollowerMax = pCharDef->m_FollowerMax;
 
 	SetName(pCharDef->GetName());	// set the name in case there is a name template
 
@@ -2306,9 +2307,11 @@ bool CChar::r_LoadVal(CScript &s)
 			break;
 		case CHC_CURFOLLOWER:
 			m_FollowerCur = static_cast<short>(s.GetArgVal());
+			UpdateStatsFlag();
 			break;
 		case CHC_MAXFOLLOWER:
 			m_FollowerMax = static_cast<short>(s.GetArgVal());
+			UpdateStatsFlag();
 			break;
 		case CHC_FONT:
 		{
@@ -2391,6 +2394,7 @@ bool CChar::r_LoadVal(CScript &s)
 			}
 			else
 				SetName(s.GetArgStr());
+			UpdateStatsFlag();
 			break;
 		}
 		case CHC_FAME:
