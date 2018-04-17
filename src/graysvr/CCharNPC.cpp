@@ -713,9 +713,6 @@ bool CCharNPC::r_LoadVal( CChar * pChar, CScript &s )
 		if ( !g_Serv.IsLoading() )
 			pChar->ResendTooltip();
 		break;
-	case CNC_FOLLOWERSLOTS:
-		pChar->SetDefNum(s.GetKey(), s.GetArgVal(), false );
-		break;
 	case CNC_ACTPRI:
 		m_Act_Motivation = static_cast<BYTE>(s.GetArgVal());
 		break;
@@ -793,9 +790,6 @@ bool CCharNPC::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 	//On these ones, check BaseDef if not found on dynamic
 	case CNC_BONDED:
 		sVal.FormatVal( m_bonded );
-		break;
-	case CNC_FOLLOWERSLOTS:
-		sVal.FormatLLVal(pChar->GetDefNum(pszKey, true));
 		break;
 	case CNC_ACTPRI:
 		sVal.FormatVal( m_Act_Motivation );

@@ -217,6 +217,9 @@ CChar::CChar(CREID_TYPE id) : CObjBase(false)
 	m_StepStealth = 0;
 	m_iVisualRange = UO_MAP_VIEW_SIZE;
 	m_virtualGold = 0;
+	m_FollowerSlots = 0;
+	m_FollowerCur = 0;
+	m_FollowerMax = 0;
 
 	m_exp = 0;
 	m_level = 0;
@@ -1337,8 +1340,6 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case CHC_INCREASESPELLDAM:
 		case CHC_LOWERMANACOST:
 		case CHC_LOWERREAGENTCOST:
-		case CHC_CURFOLLOWER:
-		case CHC_MAXFOLLOWER:
 		case CHC_REGENFOOD:
 		case CHC_REGENHITS:
 		case CHC_REGENSTAM:
@@ -1545,6 +1546,15 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			delete[] pszFameAt0;
 			return true;
 		}
+		case CHC_FOLLOWERSLOTS:
+			sVal.FormatVal(m_FollowerSlots);
+			break;
+		case CHC_CURFOLLOWER:
+			sVal.FormatVal(m_FollowerCur);
+			break;
+		case CHC_MAXFOLLOWER:
+			sVal.FormatVal(m_FollowerMax);
+			break;
 		case CHC_SKILLCHECK:	// odd way to get skills checking into the triggers
 		{
 			pszKey += 10;
@@ -2111,8 +2121,6 @@ bool CChar::r_LoadVal(CScript &s)
 		case CHC_INCREASEDEFCHANCE:
 		case CHC_INCREASEDEFCHANCEMAX:
 		case CHC_INCREASESPELLDAM:
-		case CHC_CURFOLLOWER:
-		case CHC_MAXFOLLOWER:
 		case CHC_REGENFOOD:
 		case CHC_REGENVALFOOD:
 		case CHC_REGENVALHITS:
@@ -2293,6 +2301,15 @@ bool CChar::r_LoadVal(CScript &s)
 			NotoSave_Update();
 			break;
 		}
+		case CHC_FOLLOWERSLOTS:
+			m_FollowerSlots = static_cast<short>(s.GetArgVal());
+			break;
+		case CHC_CURFOLLOWER:
+			m_FollowerCur = static_cast<short>(s.GetArgVal());
+			break;
+		case CHC_MAXFOLLOWER:
+			m_FollowerMax = static_cast<short>(s.GetArgVal());
+			break;
 		case CHC_FONT:
 		{
 			m_fonttype = static_cast<FONT_TYPE>(s.GetArgVal());
@@ -2601,7 +2618,17 @@ void CChar::r_Write(CScript &s)
 	if ( m_StepStealth )
 		s.WriteKeyVal("STEPSTEALTH", m_StepStealth);
 
-	TCHAR szTmp[100];
+	CCharBase *pCharDef = Char_GetDef();
+	ASSERT(pCharDef);
+
+	if ( m_FollowerSlots != pCharDef->m_FollowerSlots )
+		s.WriteKeyVal("FOLLOWERSLOTS", m_FollowerSlots);
+	if ( m_FollowerCur )
+		s.WriteKeyVal("CURFOLLOWER", m_FollowerCur);
+	if ( m_FollowerMax != pCharDef->m_FollowerMax )
+		s.WriteKeyVal("MAXFOLLOWER", m_FollowerMax);
+
+	TCHAR szTmp[8];
 	for ( size_t i = 0; i < STAT_QTY; i++ )
 	{
 		// Save MOD first (this is VERY important)

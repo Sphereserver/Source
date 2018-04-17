@@ -153,8 +153,6 @@ bool CCharBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			sVal = GetDefStr(pszKey, false);
 			break;
 		//return as decimal number or 0 if not set
-		case CBC_FOLLOWERSLOTS:
-		case CBC_MAXFOLLOWER:
 		case CBC_BONDED:
 		case CBC_TITHING:
 			sVal.FormatLLVal(GetDefNum(pszKey));
@@ -197,6 +195,9 @@ bool CCharBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 		case CBC_ID:
 			sVal.FormatHex( GetDispID() );
 			break;
+		case CBC_FOLLOWERSLOTS:
+			sVal.FormatVal(m_FollowerSlots);
+			break;
 		case CBC_FOODTYPE:
 			{
 				TCHAR *pszTmp = Str_GetTemp();
@@ -215,6 +216,9 @@ bool CCharBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			break;
 		case CBC_JOB:
 			sVal = GetTradeName();
+			break;
+		case CBC_MAXFOLLOWER:
+			sVal.FormatVal(m_FollowerMax);
 			break;
 		case CBC_MAXFOOD:
 			sVal.FormatVal( m_MaxFood );
@@ -279,8 +283,6 @@ bool CCharBase::r_LoadVal( CScript & s )
 			}
 			break;
 		//Set as number only
-		case CBC_FOLLOWERSLOTS:
-		case CBC_MAXFOLLOWER:
 		case CBC_BONDED:
 		case CBC_TITHING:
 			SetDefNum(s.GetKey(), s.GetArgVal(), false);
@@ -312,6 +314,9 @@ bool CCharBase::r_LoadVal( CScript & s )
 			break;
 		case CBC_DISPID:
 			return( false );
+		case CBC_FOLLOWERSLOTS:
+			m_FollowerSlots = static_cast<short>(s.GetArgVal());
+			break;
 		case CBC_FOODTYPE:
 			SetFoodType( s.GetArgStr());
 			break;
@@ -334,6 +339,9 @@ bool CCharBase::r_LoadVal( CScript & s )
 			}
 		case CBC_INT:
 			m_Int = static_cast<int>(s.GetArgVal());
+			break;
+		case CBC_MAXFOLLOWER:
+			m_FollowerMax = static_cast<short>(s.GetArgVal());
 			break;
 		case CBC_MAXFOOD:
 			m_MaxFood = static_cast<int>(s.GetArgVal());

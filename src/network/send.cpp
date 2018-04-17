@@ -206,18 +206,12 @@ PacketHealthBarInfo::PacketHealthBarInfo(const CClient *target, CObjBase *object
 		}
 
 		if (version >= 2) // T2A attributes
-		{
-			int statcap = objectChar->Stat_GetLimit(STAT_QTY);
-			if (statcap < 0)
-				statcap = 0;
-
-			writeInt16(static_cast<WORD>(statcap));
-		}
+			writeInt16(static_cast<WORD>(objectChar->Stat_GetLimit(STAT_QTY)));
 
 		if (version >= 3) // Renaissance attributes
 		{
-			writeByte(static_cast<BYTE>(object->GetDefNum("CURFOLLOWER", true)));
-			writeByte(static_cast<BYTE>(object->GetDefNum("MAXFOLLOWER", true)));
+			writeByte(static_cast<BYTE>(objectChar->m_FollowerCur));
+			writeByte(static_cast<BYTE>(objectChar->m_FollowerMax));
 		}
 
 		if (version >= 4) // AOS attributes

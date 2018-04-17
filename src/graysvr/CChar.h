@@ -405,6 +405,9 @@ public:
 	CGString m_sTitle;			// Special title such as "the guard" (replaces the normal skill title)
 	CPointMap m_ptHome;			// What is our "home" region (towns and bounding of NPC's)
 	UINT64 m_virtualGold;		// Virtual gold used by TOL clients
+	short m_FollowerSlots;
+	short m_FollowerCur;
+	short m_FollowerMax;
 
 	// Speech
 	FONT_TYPE m_fonttype;		// speech font to use (client send this to server, but it's not used)

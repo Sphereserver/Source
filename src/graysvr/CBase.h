@@ -939,6 +939,8 @@ public:
 	int m_Dex;
 	int m_Int;
 	short m_iMoveRate;	// move rate percent
+	short m_FollowerSlots;
+	short m_FollowerMax;
 
 	// NPC info ----------------------------------------------------
 	CResourceQtyArray m_Aversions;	// traps, civilization

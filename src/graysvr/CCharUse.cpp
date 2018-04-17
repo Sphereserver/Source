@@ -996,7 +996,7 @@ CChar * CChar::Use_Figurine( CItem * pItem, bool bCheckFollowerSlots )
 
 	if ( bCheckFollowerSlots && IsSetOF(OF_PetSlots) )
 	{
-		if ( !FollowersUpdate(pPet, static_cast<short>(maximum(1, pPet->GetDefNum("FOLLOWERSLOTS", true))), true) )
+		if ( !FollowersUpdate(pPet, maximum(1, pPet->m_FollowerSlots), true) )
 		{
 			SysMessageDefault(DEFMSG_PETSLOTS_TRY_CONTROL);
 			if ( bCreatedNewNpc )
@@ -1022,7 +1022,6 @@ bool CChar::FollowersUpdate( CChar * pChar, short iFollowerSlots, bool bCheckOnl
 {
 	ADDTOCALLSTACK("CChar::FollowersUpdate");
 	// Attemp to update followers on this character based on pChar
-	// bSustract = true for pet's release, shrink, etc ...
 	// This is supossed to be called only when OF_PetSlots is enabled, so no need to check it here.
 
 	if ( !bCheckOnly && IsTrigUsed(TRIGGER_FOLLOWERSUPDATE) )
@@ -1036,16 +1035,14 @@ bool CChar::FollowersUpdate( CChar * pChar, short iFollowerSlots, bool bCheckOnl
 		iFollowerSlots = static_cast<short>(Args.m_iN2);
 	}
 
-	short iCurFollower = static_cast<short>(GetDefNum("CURFOLLOWER", true));
-	short iMaxFollower = static_cast<short>(GetDefNum("MAXFOLLOWER", true));
-	short iSetFollower = iCurFollower + iFollowerSlots;
-
-	if ( (iSetFollower > iMaxFollower) && !IsPriv(PRIV_GM) )
+	if ( (m_FollowerCur + iFollowerSlots > m_FollowerMax) && !IsPriv(PRIV_GM) )
 		return false;
 
 	if ( !bCheckOnly )
 	{
-		SetDefNum("CURFOLLOWER", maximum(iSetFollower, 0));
+		m_FollowerCur += iFollowerSlots;
+		if ( m_FollowerCur < 0 )
+			m_FollowerCur = 0;
 		UpdateStatsFlag();
 	}
 	return true;

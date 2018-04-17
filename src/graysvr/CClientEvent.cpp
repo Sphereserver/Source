@@ -918,7 +918,7 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 				if ( IsSetOF(OF_PetSlots) )
 				{
 					CCharBase *pPetDef = CCharBase::FindCharBase(pItem->m_itFigurine.m_ID);
-					iFollowerSlots += items[i].m_amount * (pPetDef ? static_cast<short>(maximum(1, pPetDef->GetDefNum("FOLLOWERSLOTS"))) : 1);
+					iFollowerSlots += items[i].m_amount * (pPetDef ? maximum(1, pPetDef->m_FollowerSlots) : 1);
 				}
 				break;
 			}
@@ -951,7 +951,7 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 		Event_VendorBuy_Cheater(0x4);
 		return;
 	}
-	else if ( !m_pChar->FollowersUpdate(pVendor, iFollowerSlots, true) )
+	else if ( iFollowerSlots && !m_pChar->FollowersUpdate(pVendor, iFollowerSlots, true) )
 	{
 		m_pChar->SysMessageDefault(DEFMSG_PETSLOTS_TRY_CONTROL);
 		return;

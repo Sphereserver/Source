@@ -1396,7 +1396,7 @@ bool CClient::OnTarg_Pet_Stable(CChar *pCharPet)
 	}
 
 	if ( IsSetOF(OF_PetSlots) )
-		m_pChar->FollowersUpdate(pCharPet, static_cast<short>(-maximum(1, pCharPet->GetDefNum("FOLLOWERSLOTS", true))));
+		m_pChar->FollowersUpdate(pCharPet, -maximum(1, pCharPet->m_FollowerSlots));
 
 	pCharMaster->GetContainerCreate(LAYER_BANKBOX)->ContentAdd(pPetItem);
 	pCharMaster->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_STABLEMASTER_CLAIM));
