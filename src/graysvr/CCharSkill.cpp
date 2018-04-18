@@ -893,7 +893,7 @@ WORD CChar::Stats_GetRegenVal(STAT_TYPE iStat, bool bGetTicks)
 
 	if ( iStat <= STAT_FOOD )
 	{
-		char sRegen[12];
+		char sRegen[14];
 		if ( bGetTicks )
 		{
 			sprintf(sRegen, "REGEN%s", pszStat);
