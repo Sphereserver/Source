@@ -2235,10 +2235,7 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 		CItem *pItem = pObj->IsItem() ? const_cast<CItem *>(static_cast<const CItem *>(pObj)) : NULL;
 		CChar *pChar = pObj->IsChar() ? const_cast<CChar *>(static_cast<const CChar *>(pObj)) : NULL;
 
-		if ( pItem )
-			pItem->FreePropertyList();
-		else if ( pChar )
-			pChar->FreePropertyList();
+		const_cast<CObjBase *>(pObj)->FreePropertyList();
 
 		CClientTooltip *t = NULL;
 		m_TooltipData.Clean(true);
@@ -2841,7 +2838,7 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 
 							if ( !pItem->GetDefNum("USEBESTWEAPONSKILL", true) )
 							{
-								switch ( pItem->Item_GetDef()->m_iSkill )
+								switch ( pItem->Weapon_GetSkill() )
 								{
 									case SKILL_SWORDSMANSHIP:	m_TooltipData.Add(new CClientTooltip(1061172));	break; // skill required: swordsmanship
 									case SKILL_MACEFIGHTING:	m_TooltipData.Add(new CClientTooltip(1061173));	break; // skill required: mace fighting
@@ -2923,7 +2920,7 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 							LPCTSTR pszName = NULL;
 							if ( pSpawnCharDef )
 							{
-								CCharBase *pCharBase = static_cast<CCharBase *>(pSpawnCharDef);
+								CCharBase *pCharBase = dynamic_cast<CCharBase *>(pSpawnCharDef);
 								pszName = pCharBase ? pCharBase->GetTradeName() : pSpawnCharDef->GetName();
 
 								while ( *pszName == '#' )
@@ -2990,23 +2987,20 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 			}
 		}
 
-#define DOHASH( value ) hash ^= ((value) & 0x3FFFFFF); \
-						hash ^= ((value) >> 26) & 0x3F;
-
 		// Build a hash value from the tooltip entries
 		DWORD hash = 0;
 		DWORD argumentHash = 0;
 		for ( size_t i = 0; i < m_TooltipData.GetCount(); i++ )
 		{
 			CClientTooltip *tipEntry = m_TooltipData.GetAt(i);
-			argumentHash = HashString(tipEntry->m_args, strlen(tipEntry->m_args));
+			hash ^= (tipEntry->m_clilocid & 0x3FFFFFF);
+			hash ^= (tipEntry->m_clilocid >> 26) & 0x3F;
 
-			DOHASH(tipEntry->m_clilocid);
-			DOHASH(argumentHash);
+			argumentHash = HashString(tipEntry->m_args, strlen(tipEntry->m_args));
+			hash ^= (argumentHash & 0x3FFFFFF);
+			hash ^= (argumentHash >> 26) & 0x3F;
 		}
 		hash |= UID_F_ITEM;
-
-#undef DOHASH
 
 		// Clients actually expect to use an incremental revision number and not a
 		// hash to check if a tooltip needs updating - the client will not request
@@ -3014,22 +3008,11 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 		//
 		// We still want to generate a hash though, so we don't have to increment
 		// the revision number if the tooltip hasn't actually been changed
-		DWORD revision = 0;
-		if ( pItem )
-			revision = pItem->UpdatePropertyRevision(hash);
-		else if ( pChar )
-			revision = pChar->UpdatePropertyRevision(hash);
-
-		propertyList = new PacketPropertyList(pObj, revision, &m_TooltipData);
+		propertyList = new PacketPropertyList(pObj, const_cast<CObjBase *>(pObj)->UpdatePropertyRevision(hash), &m_TooltipData);
 
 		// Cache the property list for next time, unless property list is incomplete (name only) or caching is disabled
 		if ( m_TooltipEnabled && (g_Cfg.m_iTooltipCache > 0) )
-		{
-			if ( pItem )
-				pItem->SetPropertyList(propertyList);
-			else if ( pChar )
-				pChar->SetPropertyList(propertyList);
-		}
+			const_cast<CObjBase *>(pObj)->SetPropertyList(propertyList);
 	}
 
 	if ( !propertyList->isEmpty() )

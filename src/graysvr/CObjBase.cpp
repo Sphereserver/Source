@@ -2668,8 +2668,8 @@ void CObjBase::UpdatePropertyFlag(int iMask)
 
 	m_fStatusUpdate |= SU_UPDATE_TOOLTIP;
 
-	// Items equipped or inside containers doesn't receive ticks and need to be added to a list of items to be processed separately
-	if ( !IsTopLevel() && !g_World.m_ObjStatusUpdates.ContainsPtr(this) )
+	// Items equipped, inside containers or with timer expired doesn't receive ticks and need to be added to a list of items to be processed separately
+	if ( (!IsTopLevel() || IsTimerExpired()) && !g_World.m_ObjStatusUpdates.ContainsPtr(this) )
 		g_World.m_ObjStatusUpdates.Add(this);
 }
 

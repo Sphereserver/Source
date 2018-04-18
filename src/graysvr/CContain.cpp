@@ -1073,6 +1073,7 @@ void CItemContainer::ContentAdd(CItem *pItem, CPointMap pt, BYTE gridIndex)
 	}
 
 	pItem->Update();
+	UpdatePropertyFlag(AUTOTOOLTIP_FLAG_WEIGHT);
 }
 
 void CItemContainer::ContentAdd(CItem *pItem)
@@ -1123,6 +1124,7 @@ void CItemContainer::OnRemoveOb(CGObListRec *pObRec)	// override this = called w
 	}
 
 	CContainer::OnRemoveOb(pObRec);
+	UpdatePropertyFlag(AUTOTOOLTIP_FLAG_WEIGHT);
 	if ( IsType(IT_KEYRING) )
 		SetKeyRing();
 }
