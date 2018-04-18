@@ -15,7 +15,7 @@
 //  b = 1-based index of arguments
 // Note: add 1 to index for non-static class methods because 'this' argument is inserted in position 1
 #ifdef __GNUC__
-	#define __printfargs(a,b) __attribute__ (format(printf, a, b))
+	#define __printfargs(a,b) __attribute__ ((format(printf, a, b)))
 #else
 	#define __printfargs(a,b)
 #endif
