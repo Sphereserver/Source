@@ -90,8 +90,6 @@ PacketCombatDamage::PacketCombatDamage(const CClient* target, WORD damage, CGray
 
 	if ( damage <= 0 )
 		return;
-	if ( damage > USHRT_MAX )
-		damage = USHRT_MAX;
 
 	writeInt32(static_cast<DWORD>(uid));
 	writeInt16(damage);
@@ -590,7 +588,7 @@ PacketRemoveObject::PacketRemoveObject(const CClient* target, CGrayUID uid) : Pa
 PacketPlayerUpdate::PacketPlayerUpdate(const CClient* target) : PacketSend(XCMD_PlayerUpdate, 19, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketPlayerUpdate::PacketPlayerUpdate");
-	//PS: This packet remove weather effects on client screen.
+	// NOTE: This packet remove weather effects on client screen.
 
 	const CChar* character = target->GetChar();
 	ASSERT(character);
@@ -2940,9 +2938,7 @@ PacketServerList::PacketServerList(const CClient* target) : PacketSend(XCMD_Serv
 
 	writeServerEntry(&g_Serv, ++count, reverseIp);
 
-	//	too many servers in list can crash the client
-#define	MAX_SERVERS_LIST	32
-	for (size_t i = 0; count < MAX_SERVERS_LIST; i++)
+	for (size_t i = 0; count < 32; i++)		// too many servers in list can crash the client
 	{
 		CServerRef server = g_Cfg.Server_GetDef(i);
 		if (server == NULL)
@@ -2950,7 +2946,6 @@ PacketServerList::PacketServerList(const CClient* target) : PacketSend(XCMD_Serv
 
 		writeServerEntry(server, ++count, reverseIp);
 	}
-#undef MAX_SERVERS_LIST
 
 	size_t endPosition(getPosition());
 	seek(countPosition);
@@ -4005,8 +4000,6 @@ PacketCombatDamageOld::PacketCombatDamageOld(const CClient* target, BYTE damage,
 
 	if ( damage <= 0 )
 		return;
-	if ( damage > UCHAR_MAX )
-		damage = UCHAR_MAX;
 
 	writeByte(0x1);
 	writeInt32(static_cast<DWORD>(uid));
@@ -4289,7 +4282,7 @@ bool PacketPropertyList::onSend(const CClient* client)
 	if (!character)
 		return false;
 
-	if (hasExpired(TICK_PER_SEC * 30))
+	if (hasExpired(g_Cfg.m_iTooltipCache))
 		return false;
 
 	return true;
@@ -4882,7 +4875,7 @@ PacketContainer::PacketContainer(const CClient* target, CObjBase** objects, size
 		CObjBase* object = objects[i];
 		if (object->IsItem())
 		{
-			CItem* item = dynamic_cast<CItem *>(object);
+			CItem *item = static_cast<CItem *>(object);
 			DataSource source = TileData;
 			ITEMID_TYPE id = item->GetDispID();
 			HUE_TYPE hue = item->GetHue();
@@ -4917,7 +4910,7 @@ PacketContainer::PacketContainer(const CClient* target, CObjBase** objects, size
 		}
 		else
 		{
-			CChar* mobile = dynamic_cast<CChar *>(object);
+			CChar *mobile = static_cast<CChar *>(object);
 			DataSource source = Character;
 			CREID_TYPE id = mobile->GetDispID();
 			HUE_TYPE hue = mobile->GetHue();

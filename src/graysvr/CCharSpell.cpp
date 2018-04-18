@@ -249,7 +249,7 @@ bool CChar::Spell_CreateGate(CPointMap ptNew, bool bCheckAntiMagic)
 	return true;
 }
 
-CChar *CChar::Spell_Summon(CREID_TYPE id, CPointMap pntTarg)
+CChar *CChar::Spell_Summon(CREID_TYPE id, CPointMap ptTarg)
 {
 	ADDTOCALLSTACK("CChar::Spell_Summon");
 	// Summon an NPC using summon spells.
@@ -260,7 +260,7 @@ CChar *CChar::Spell_Summon(CREID_TYPE id, CPointMap pntTarg)
 		return NULL;
 
 	if ( !pSpellDef->IsSpellType(SPELLFLAG_TARG_OBJ|SPELLFLAG_TARG_XYZ) )
-		pntTarg = GetTopPoint();
+		ptTarg = GetTopPoint();
 
 	CChar *pChar = CChar::CreateBasic(id);
 	if ( !pChar )
@@ -278,7 +278,7 @@ CChar *CChar::Spell_Summon(CREID_TYPE id, CPointMap pntTarg)
 			if ( dwCan != ULONG_MAX )
 			{
 				DWORD dwBlockFlags = 0;
-				g_World.GetHeightPoint2(pntTarg, dwBlockFlags, true);
+				g_World.GetHeightPoint2(ptTarg, dwBlockFlags, true);
 
 				if ( dwBlockFlags & ~dwCan )
 				{
@@ -309,8 +309,8 @@ CChar *CChar::Spell_Summon(CREID_TYPE id, CPointMap pntTarg)
 
 	pChar->StatFlag_Set(STATF_Conjured);	// conjured creates have no loot
 	pChar->NPC_LoadScript(false);
-	pChar->MoveToChar(pntTarg);
-	pChar->m_ptHome = pntTarg;
+	pChar->MoveToChar(ptTarg);
+	pChar->m_ptHome = ptTarg;
 	pChar->m_pNPC->m_Home_Dist_Wander = 10;
 	pChar->NPC_CreateTrigger();		// removed from NPC_LoadScript() and triggered after char placement
 	pChar->NPC_PetSetOwner(this, false);
@@ -1871,7 +1871,6 @@ bool CChar::Spell_Equip_OnTick(CItem *pItem)
 					g_Cfg.GetDefaultMsg(DEFMSG_SPELL_OSIPOISON_GREATER),
 					g_Cfg.GetDefaultMsg(DEFMSG_SPELL_OSIPOISON_DEADLY),
 					g_Cfg.GetDefaultMsg(DEFMSG_SPELL_OSIPOISON_LETHAL)
-
 				};
 				static LPCTSTR const sm_Poison_Message_Other[] =
 				{
@@ -1880,7 +1879,6 @@ bool CChar::Spell_Equip_OnTick(CItem *pItem)
 					g_Cfg.GetDefaultMsg(DEFMSG_SPELL_OSIPOISON_GREATER1),
 					g_Cfg.GetDefaultMsg(DEFMSG_SPELL_OSIPOISON_DEADLY1),
 					g_Cfg.GetDefaultMsg(DEFMSG_SPELL_OSIPOISON_LETHAL1)
-
 				};
 				Emote2(sm_Poison_Message[iLevel], sm_Poison_Message_Other[iLevel], m_pClient);
 				SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_SPELL_YOUFEEL), sm_Poison_Message[iLevel]);
@@ -2021,7 +2019,7 @@ CItem *CChar::Spell_Effect_Create(SPELL_TYPE spell, LAYER_TYPE layer, int iSkill
 	return pSpell;
 }
 
-void CChar::Spell_Area(CPointMap pntTarg, int iDist, int iSkillLevel)
+void CChar::Spell_Area(CPointMap ptTarg, int iDist, int iSkillLevel)
 {
 	ADDTOCALLSTACK("CChar::Spell_Area");
 	// Effects all creatures in the area. (but not us)
@@ -2033,7 +2031,7 @@ void CChar::Spell_Area(CPointMap pntTarg, int iDist, int iSkillLevel)
 	if ( !pSpellDef )
 		return;
 
-	CWorldSearch AreaChar(pntTarg, iDist);
+	CWorldSearch AreaChar(ptTarg, iDist);
 	for (;;)
 	{
 		CChar *pChar = AreaChar.GetChar();
@@ -2049,7 +2047,7 @@ void CChar::Spell_Area(CPointMap pntTarg, int iDist, int iSkillLevel)
 
 	if ( !pSpellDef->IsSpellType(SPELLFLAG_DAMAGE) )	// prevent damage nearby items on ground
 	{
-		CWorldSearch AreaItem(pntTarg, iDist);
+		CWorldSearch AreaItem(ptTarg, iDist);
 		for (;;)
 		{
 			CItem *pItem = AreaItem.GetItem();
@@ -2060,12 +2058,12 @@ void CChar::Spell_Area(CPointMap pntTarg, int iDist, int iSkillLevel)
 	}
 }
 
-void CChar::Spell_Field(CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, unsigned int fieldWidth, unsigned int fieldGauge, int iSkillLevel, CChar *pCharSrc, ITEMID_TYPE idnewEW, ITEMID_TYPE idnewNS, int iDuration, HUE_TYPE iColor)
+void CChar::Spell_Field(CPointMap ptTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, unsigned int fieldWidth, unsigned int fieldGauge, int iSkillLevel, CChar *pCharSrc, ITEMID_TYPE idNewEW, ITEMID_TYPE idNewNS, int iDuration, HUE_TYPE iColor)
 {
 	ADDTOCALLSTACK("CChar::Spell_Field");
 	// Cast the field spell to here.
 	// ARGS:
-	// pntTarg = target
+	// ptTarg = target
 	// idEW = ID of EW aligned spell object
 	// idNS = ID of NS aligned spell object
 	// fieldWidth = width of the field (looking from char's point of view)
@@ -2080,9 +2078,9 @@ void CChar::Spell_Field(CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, u
 		Noto_Criminal();
 
 	// get the dir of the field.
-	int dx = abs(pntTarg.m_x - GetTopPoint().m_x);
-	int dy = abs(pntTarg.m_y - GetTopPoint().m_y);
-	ITEMID_TYPE id = (dx > dy) ? (idnewNS ? idnewNS : idNS) : (idnewEW ? idnewEW : idEW);
+	int dx = abs(ptTarg.m_x - GetTopPoint().m_x);
+	int dy = abs(ptTarg.m_y - GetTopPoint().m_y);
+	ITEMID_TYPE id = (dx > dy) ? (idNewNS ? idNewNS : idNS) : (idNewEW ? idNewEW : idEW);
 
 	int minX = static_cast<int>((fieldWidth - 1) / 2) - (fieldWidth - 1);
 	int maxX = minX + (fieldWidth - 1);
@@ -2110,20 +2108,20 @@ void CChar::Spell_Field(CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, u
 			// check the whole width of the field for anything that would block this placement
 			for ( int iy = minY; iy <= maxY; iy++ )
 			{
-				CPointMap ptg = pntTarg;
+				CPointMap pt = ptTarg;
 				if ( dx > dy )
 				{
-					ptg.m_y += static_cast<short>(ix);
-					ptg.m_x += static_cast<short>(iy);
+					pt.m_y += static_cast<short>(ix);
+					pt.m_x += static_cast<short>(iy);
 				}
 				else
 				{
-					ptg.m_x += static_cast<short>(ix);
-					ptg.m_y += static_cast<short>(iy);
+					pt.m_x += static_cast<short>(ix);
+					pt.m_y += static_cast<short>(iy);
 				}
 
 				DWORD dwBlockFlags = 0;
-				g_World.GetHeightPoint2(ptg, dwBlockFlags, true);
+				g_World.GetHeightPoint2(pt, dwBlockFlags, true);
 				if ( dwBlockFlags & (CAN_I_BLOCK|CAN_I_DOOR) )
 				{
 					if ( ix < 0 )	// field cannot extend fully to the left
@@ -2145,20 +2143,20 @@ void CChar::Spell_Field(CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, u
 			bool fGoodLoc = true;
 
 			// Where is this ?
-			CPointMap ptg = pntTarg;
+			CPointMap pt = ptTarg;
 			if ( dx > dy )
 			{
-				ptg.m_y += static_cast<short>(ix);
-				ptg.m_x += static_cast<short>(iy);
+				pt.m_y += static_cast<short>(ix);
+				pt.m_x += static_cast<short>(iy);
 			}
 			else
 			{
-				ptg.m_x += static_cast<short>(ix);
-				ptg.m_y += static_cast<short>(iy);
+				pt.m_x += static_cast<short>(ix);
+				pt.m_y += static_cast<short>(iy);
 			}
 
 			// Check for direct cast on a creature.
-			CWorldSearch AreaChar(ptg);
+			CWorldSearch AreaChar(pt);
 			for (;;)
 			{
 				CChar *pChar = AreaChar.GetChar();
@@ -2193,7 +2191,7 @@ void CChar::Spell_Field(CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, u
 				continue;
 
 			// Check for direct cast on an item.
-			CWorldSearch AreaItem(ptg);
+			CWorldSearch AreaItem(pt);
 			for (;;)
 			{
 				CItem *pItem = AreaItem.GetItem();
@@ -2217,7 +2215,7 @@ void CChar::Spell_Field(CPointMap pntTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, u
 			pSpell->SetAttr(ATTR_MAGIC);
 			pSpell->SetHue(iColor);
 			pSpell->GenerateScript(this);
-			pSpell->MoveToDecay(ptg, iDuration, true);
+			pSpell->MoveToDecay(pt, iDuration, true);
 		}
 	}
 }

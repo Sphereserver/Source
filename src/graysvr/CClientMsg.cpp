@@ -524,11 +524,6 @@ void CClient::addLight()
 	if ( iLight == UCHAR_MAX )
 		iLight = m_pChar->GetLightLevel();
 
-	if ( iLight < LIGHT_BRIGHT )
-		iLight = LIGHT_BRIGHT;
-	else if ( iLight > LIGHT_DARK )
-		iLight = LIGHT_DARK;
-
 	if ( m_Env.m_Light == iLight )
 		return;
 

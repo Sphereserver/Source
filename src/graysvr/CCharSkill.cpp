@@ -897,9 +897,9 @@ WORD CChar::Stats_GetRegenVal(STAT_TYPE iStat, bool bGetTicks)
 		if ( bGetTicks )
 		{
 			sprintf(sRegen, "REGEN%s", pszStat);
-			WORD wRate = static_cast<WORD>(GetDefNum(sRegen)) * TICK_PER_SEC;
+			WORD wRate = static_cast<WORD>(maximum(0, GetDefNum(sRegen))) * TICK_PER_SEC;
 			if ( wRate )
-				return maximum(0, wRate);
+				return wRate;
 
 			return static_cast<WORD>(maximum(0, g_Cfg.m_iRegenRate[iStat]));
 		}

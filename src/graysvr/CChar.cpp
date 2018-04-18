@@ -1292,36 +1292,36 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			return true;
 
 		// Stats
-		int i = g_Cfg.FindStatKey(pszKey);
-		if ( i >= 0 )
+		STAT_TYPE stat = g_Cfg.FindStatKey(pszKey);
+		if ( stat >= 0 )
 		{
-			sVal.FormatVal(Stat_GetAdjusted(static_cast<STAT_TYPE>(i)));
+			sVal.FormatVal(Stat_GetAdjusted(stat));
 			return true;
 		}
 		if ( !strnicmp(pszKey, "O", 1) )
 		{
-			i = g_Cfg.FindStatKey(pszKey + 1);
-			if ( i >= 0 )
+			stat = g_Cfg.FindStatKey(pszKey + 1);
+			if ( stat >= 0 )
 			{
-				sVal.FormatVal(Stat_GetBase(static_cast<STAT_TYPE>(i)));
+				sVal.FormatVal(Stat_GetBase(stat));
 				return true;
 			}
 		}
 		if ( !strnicmp(pszKey, "MOD", 3) )
 		{
-			i = g_Cfg.FindStatKey(pszKey + 3);
-			if ( i >= 0 )
+			stat = g_Cfg.FindStatKey(pszKey + 3);
+			if ( stat >= 0 )
 			{
-				sVal.FormatVal(Stat_GetMod(static_cast<STAT_TYPE>(i)));
+				sVal.FormatVal(Stat_GetMod(stat));
 				return true;
 			}
 		}
 
 		// Skills
-		i = g_Cfg.FindSkillKey(pszKey);
-		if ( IsSkillBase(static_cast<SKILL_TYPE>(i)) )
+		SKILL_TYPE skill = g_Cfg.FindSkillKey(pszKey);
+		if ( IsSkillBase(skill) )
 		{
-			WORD wVal = Skill_GetBase(static_cast<SKILL_TYPE>(i));
+			WORD wVal = Skill_GetBase(skill);
 			sVal.Format("%hu.%hu", wVal / 10, wVal % 10);
 			return true;
 		}
@@ -2101,7 +2101,7 @@ bool CChar::r_LoadVal(CScript &s)
 
 		// Skills
 		i = g_Cfg.FindSkillKey(pszKey);
-		if ( i != SKILL_NONE )
+		if ( static_cast<SKILL_TYPE>(i) != SKILL_NONE )
 		{
 			Skill_SetBase(static_cast<SKILL_TYPE>(i), static_cast<WORD>(s.GetArgVal()));
 			return true;
@@ -2530,7 +2530,7 @@ bool CChar::r_LoadVal(CScript &s)
 			m_sTitle = s.GetArgStr();
 			break;
 		case CHC_LIGHT:
-			m_LocalLight = static_cast<BYTE>(s.GetArgVal());
+			m_LocalLight = static_cast<BYTE>(minimum(maximum(s.GetArgVal(), LIGHT_BRIGHT), LIGHT_DARK));
 			break;
 		case CHC_EXP:
 			m_exp = s.GetArgVal();

@@ -235,30 +235,30 @@ CChar *CChar::NPC_PetGetOwner() const
 	return pMemory->m_uidLink.CharFind();
 }
 
-WORD CChar::NPC_GetTrainMax(const CChar *pStudent, SKILL_TYPE Skill) const
+WORD CChar::NPC_GetTrainMax(const CChar *pStudent, SKILL_TYPE skill) const
 {
 	ADDTOCALLSTACK("CChar::NPC_GetTrainMax");
 	// What is the max I can train to ?
-	WORD iMax;
-	WORD iMaxAllowed;
+	WORD wMax;
+	WORD wMaxAllowed;
 
 	CVarDefCont *pValue = GetKey("OVERRIDE.TRAINSKILLMAXPERCENT", true);
 	if ( pValue )
-		iMax = static_cast<WORD>(IMULDIV(pValue->GetValNum(), Skill_GetBase(Skill), 100));
+		wMax = static_cast<WORD>(IMULDIV(pValue->GetValNum(), Skill_GetBase(skill), 100));
 	else
-		iMax = static_cast<WORD>(IMULDIV(g_Cfg.m_iTrainSkillPercent, Skill_GetBase(Skill), 100));
+		wMax = static_cast<WORD>(IMULDIV(g_Cfg.m_iTrainSkillPercent, Skill_GetBase(skill), 100));
 
 	pValue = GetKey("OVERRIDE.TRAINSKILLMAX", true);
 	if ( pValue )
-		iMaxAllowed = static_cast<WORD>(pValue->GetValNum());
+		wMaxAllowed = static_cast<WORD>(pValue->GetValNum());
 	else
-		iMaxAllowed = g_Cfg.m_iTrainSkillMax;
+		wMaxAllowed = g_Cfg.m_iTrainSkillMax;
 
-	if ( iMax > iMaxAllowed )
-		return minimum(iMaxAllowed, pStudent->Skill_GetMax(Skill));
+	if ( wMax > wMaxAllowed )
+		return minimum(wMaxAllowed, pStudent->Skill_GetMax(skill));
 
 	// Is this more that the student can take ?
-	return minimum(iMax, pStudent->Skill_GetMax(Skill));
+	return minimum(wMax, pStudent->Skill_GetMax(skill));
 }
 
 bool CChar::NPC_CheckWalkHere(const CPointBase &pt, const CRegionBase *pArea) const
@@ -325,7 +325,7 @@ CItemVendable *CChar::NPC_FindVendableItem(CItemVendable *pVendItem, CItemContai
 	if ( !pItemTest )
 		return NULL;
 
-	CItemVendable *pItemSell = static_cast<CItemVendable *>(pItemTest);
+	CItemVendable *pItemSell = dynamic_cast<CItemVendable *>(pItemTest);
 	if ( !pItemSell )	// the item is not vendable
 		return NULL;
 	if ( pVendItem->GetType() != pItemSell->GetType() )	// sanity check
@@ -372,7 +372,7 @@ int CChar::NPC_WantThisItem(CItem *pItem) const
 			return 100;
 
 		// Is it something I would buy?
-		CItemVendable *pItemSell = NPC_FindVendableItem(static_cast<CItemVendable *>(pItem), const_cast<CChar *>(this)->GetContainerCreate(LAYER_VENDOR_BUYS));
+		CItemVendable *pItemSell = NPC_FindVendableItem(dynamic_cast<CItemVendable *>(pItem), const_cast<CChar *>(this)->GetContainerCreate(LAYER_VENDOR_BUYS));
 		if ( pItemSell )
 			return pItemSell->GetVendorPrice(0);
 	}
