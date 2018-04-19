@@ -1,116 +1,111 @@
 #include "../graysvr/graysvr.h"
 #include "CFileList.h"
-#include "CResourceBase.h"
 
-//***************************************************
+//*********************************************************
 // CResourceBase
 
 LPCTSTR const CResourceBase::sm_szResourceBlocks[RES_QTY] =	// static
 {
-	"AAAUNUSED",	// unused / unknown.
-    "ACCOUNT",		// Define an account instance.
-	"ADVANCE",		// Define the advance rates for stats.
-	"AREA",			// Complex region. (w/ extra tags)
-	"BLOCKIP",		// (SL) A list of IP's to block.
-	"BOOK",			// A book or a page from a book.
-	"CHARDEF",		// Define a char type.
-	"COMMENT",		// A commented out block type.
-	"DEFNAME",		// (SL) Just add a bunch of new defs and equivs str/values.
-	"DIALOG",			// A scriptable gump dialog", text or handler block.
-	"EVENTS",			// (SL) Preload these Event files.
+	"AAAUNUSED",		// unused / unknown
+	"ACCOUNT",			// Define an account instance
+	"ADVANCE",			// Define the advance rates for stats
+	"AREA",				// Complex region (w/ extra tags)
+	"BLOCKIP",			// (SL) List of IP's to block
+	"BOOK",				// A book or a page from a book
+	"CHARDEF",			// Define a char type
+	"COMMENT",			// A commented out block type
+	"DEFNAME",			// (SL) Just add a bunch of new defs and equivs str/values
+	"DIALOG",			// A scriptable gump dialog, text or handler block
+	"EVENTS",			// (SL) Preload these event files
 	"FAME",
-	"FUNCTION",		// Define a new command verb script that applies to a char.
-	"GMPAGE",			// A GM page. (SAVED in World)
-	"ITEMDEF",		// Define an item type
+	"FUNCTION",			// Define a new command verb script that applies to a char
+	"GMPAGE",			// A GM page (SAVED in World)
+	"ITEMDEF",			// Define an item type
 	"KARMA",
-	"KRDIALOGLIST",	// mapping of dialog<->kr ids
-	"MENU",			// General scriptable menus.
-	"MOONGATES",		// (SL) Define where the moongates are.
-	"NAMES",		// A block of possible names for a NPC type. (read as needed)
-	"NEWBIE",			// Triggers to execute on Player creation (based on skills selected)
-	"NOTOTITLES",		// (SI) Define the noto titles used.
-	"OBSCENE",		// (SL) A list of obscene words.
-	"PLEVEL",			// Define the list of commands that a PLEVEL can access. (or not access)
-	"REGIONRESOURCE",	// Define Ore types.
-	"REGIONTYPE",			// Triggers etc. that can be assinged to a "AREA
+	"KRDIALOGLIST",		// List of KR dialog ID's
+	"MENU",				// General scriptable menus
+	"MOONGATES",		// (SL) Define where the moongates are
+	"NAMES",			// A block of possible names for a NPC type (read as needed)
+	"NEWBIE",			// Triggers to execute on player creation (based on skills selected)
+	"NOTOTITLES",		// (SI) Define the noto titles used
+	"OBSCENE",			// (SL) A list of obscene words
+	"PLEVEL",			// Define the list of commands that a PLEVEL can access (or not access)
+	"REGIONRESOURCE",	// Define ore types
+	"REGIONTYPE",		// Triggers etc. that can be assinged to a RES_AREA
 	"RESOURCELIST",
-	"RESOURCES",		// (SL) list of all the resource files we should index !
-	"ROOM",			// Non-complex region. (no extra tags)
-	"RUNES",			// (SI) Define list of the magic runes.
-	"SCROLL",			// SCROLL_GUEST=message scroll sent to player at guest login. SCROLL_MOTD", SCROLL_NEWBIE
-	"SECTOR",			// Make changes to a sector. (SAVED in World)
-	"SERVERS",		// List a number of servers in 3 line format.
-	"SKILL",			// Define attributes for a skill (how fast it raises etc)
-	"SKILLCLASS",		// Define class specifics for a char with this skill class.
-	"SKILLMENU",		// A menu that is attached to a skill. special arguments over other menus.
-	"SPAWN",			// Define a list of NPC's and how often they may spawn.
-	"SPEECH",			// (SL) Preload these speech files.
-	"SPELL",			// Define a magic spell. (0-64 are reserved)
-	"SPHERE",			// Main Server INI block
-	"SPHERECRYPT", // Encryption keys
-	"STARTS",			// (SI) List of starting locations for newbies.
-	"STAT",			// Stats elements like KARMA,STR,DEX,FOOD,FAME,CRIMINAL etc. Used for resource and desire scripts.
-	"TELEPORTERS",	// (SL) Where are the teleporteres in the world ?
-	"TEMPLATE",		// Define a list of items. (for filling loot etc)
+	"RESOURCES",		// (SL) List of all the resource files to index
+	"ROOM",				// Non-complex region (no extra tags)
+	"RUNES",			// (SI) Define list of the magic runes
+	"SCROLL",			// Message scroll sent to player at login (SCROLL_GUEST, SCROLL_MOTD, SCROLL_NEWBIE)
+	"SECTOR",			// Make changes to a sector (SAVED in World)
+	"SERVERS",			// List a number of servers in 3 line format
+	"SKILL",			// Define attributes for a skill (how fast it raises, etc)
+	"SKILLCLASS",		// Define class specifics for a char with this skill class
+	"SKILLMENU",		// A menu that is attached to a skill. Special arguments over other menus
+	"SPAWN",			// Define a list of NPC's and how often they may spawn
+	"SPEECH",			// (SL) Preload these speech files
+	"SPELL",			// Define a magic spell (0-64 are reserved)
+	"SPHERE",			// Main server INI block
+	"SPHERECRYPT",		// Encryption keys
+	"STARTS",			// (SI) List of starting locations on account character creation
+	"STAT",				// Stats elements like KARMA/STR/DEX/FOOD/FAME/etc. Used for resource and desire scripts
+	"TELEPORTERS",		// (SL) List of teleporters in the world
+	"TEMPLATE",			// Define a list of items (for filling loot, etc)
 	"TIMERF",
-	"TIP",			// Tips that can come up at startup.
-	"TYPEDEF",			// Define a trigger block for a "WORLDITEM m_type.
+	"TIP",				// Tips that can come up at startup
+	"TYPEDEF",			// Define a trigger block for a RES_WORLDITEM m_type
 	"TYPEDEFS",
 	"WC",				// =WORLDCHAR
-	"WEBPAGE",		// Define a web page template.
+	"WEBPAGE",			// Define a web page template
 	"WI",				// =WORLDITEM
-	"WORLDCHAR",		// Define instance of char in the world. (SAVED in World)
-	"WORLDITEM",		// Define instance of item in the world. (SAVED in World)
-	"WORLDLISTS",		// Define instance of list in the world. (SAVED in World)
-	"WORLDSCRIPT",		// Define instance of resource in the world. (SAVED in World)
-	"WORLDVARS",		// block of global variables
-	"WS",				// =WORLDSCRIPT
+	"WORLDCHAR",		// Define instance of char in the world (SAVED in World)
+	"WORLDITEM",		// Define instance of item in the world (SAVED in World)
+	"WORLDLISTS",		// Define instance of list in the world (SAVED in World)
+	"WORLDSCRIPT",		// Define instance of resource in the world (SAVED in World)
+	"WORLDVARS",		// Block of global variables
+	"WS"				// =WORLDSCRIPT
 };
 
+// Resource files 
 
-//*********************************************************
-// Resource Files 
-
-CResourceScript * CResourceBase::FindResourceFile( LPCTSTR pszPath )
+CResourceScript *CResourceBase::FindResourceFile(LPCTSTR pszPath)
 {
 	ADDTOCALLSTACK("CResourceBase::FindResourceFile");
-	// Just match the titles ( not the whole path)
+	// Just match the titles (not the whole path)
 
-	LPCTSTR pszTitle = CScript::GetFilesTitle( pszPath );
-
+	LPCTSTR pszTitle = CScript::GetFilesTitle(pszPath);
 	for ( size_t i = 0; ; i++ )
 	{
-		CResourceScript * pResFile = GetResourceFile(i);
-		if ( pResFile == NULL )
+		CResourceScript *pResFile = GetResourceFile(i);
+		if ( !pResFile )
 			break;
 		LPCTSTR pszTitle2 = pResFile->GetFileTitle();
-		if ( ! strcmpi( pszTitle2, pszTitle ))
-			return( pResFile );
+		if ( !strcmpi(pszTitle2, pszTitle) )
+			return pResFile;
 	}
-	return( NULL );
+	return NULL;
 }
 
-CResourceScript * CResourceBase::AddResourceFile( LPCTSTR pszName )
+CResourceScript *CResourceBase::AddResourceFile(LPCTSTR pszName)
 {
 	ADDTOCALLSTACK("CResourceBase::AddResourceFile");
+	// Is this really just a dir name?
 	ASSERT(pszName != NULL);
-	// Is this really just a dir name ?
 
 	TCHAR szName[_MAX_PATH];
 	ASSERT(strlen(pszName) < COUNTOF(szName));
 	strcpy(szName, pszName);
 
 	TCHAR szTitle[_MAX_PATH];
-	strcpy(szTitle, CScript::GetFilesTitle( szName ));
+	strcpy(szTitle, CScript::GetFilesTitle(szName));
 
 	if ( szTitle[0] == '\0' )
 	{
-		AddResourceDir( pszName );
+		AddResourceDir(pszName);
 		return NULL;
 	}
 
-	LPCTSTR pszExt = CScript::GetFilesExt( szTitle );
-	if ( pszExt == NULL )
+	if ( CScript::GetFilesExt(szTitle) == NULL )
 	{
 		// No file extension provided, so append .scp to the filename
 		strcat(szName, SPHERE_SCRIPT);
@@ -118,29 +113,24 @@ CResourceScript * CResourceBase::AddResourceFile( LPCTSTR pszName )
 	}
 
 	if ( !strnicmp(szTitle, SPHERE_FILE "tables", strlen(SPHERE_FILE "tables")) )
-	{
-		// Don't dupe this.
-		return NULL;
-	}
+		return NULL;	// don't dupe this
 
 	// Try to prevent dupes
-	CResourceScript * pNewRes = FindResourceFile(szTitle);
+	CResourceScript *pNewRes = FindResourceFile(szTitle);
 	if ( pNewRes )
-		return( pNewRes );
+		return pNewRes;
 
 	// Find correct path
 	CScript s;
-	if ( ! OpenResourceFind( s, szName ))
-	{
-		return( NULL );
-	}
+	if ( !OpenResourceFind(s, szName) )
+		return NULL;
 
-	pNewRes = new CResourceScript( s.GetFilePath() );
+	pNewRes = new CResourceScript(s.GetFilePath());
 	m_ResourceFiles.Add(pNewRes);
-	return( pNewRes );
+	return pNewRes;
 }
 
-void CResourceBase::AddResourceDir( LPCTSTR pszDirName )
+void CResourceBase::AddResourceDir(LPCTSTR pszDirName)
 {
 	ADDTOCALLSTACK("CResourceBase::AddResourceDir");
 	if ( pszDirName[0] == '\0' )
@@ -149,279 +139,236 @@ void CResourceBase::AddResourceDir( LPCTSTR pszDirName )
 	CGString sFilePath = CGFile::GetMergedFileName(pszDirName, "*" SPHERE_SCRIPT);
 
 	CFileList filelist;
-	int iRet = filelist.ReadDir( sFilePath, false );
+	int iRet = filelist.ReadDir(sFilePath, false);
 	if ( iRet < 0 )
 	{
-		// also check script file path
+		// Also check script file path
 		sFilePath = CGFile::GetMergedFileName(m_sSCPBaseDir, sFilePath.GetPtr());
 
-		iRet = filelist.ReadDir( sFilePath, true );
+		iRet = filelist.ReadDir(sFilePath, true);
 		if ( iRet < 0 )
 		{
 			DEBUG_ERR(("DirList=%d for '%s'\n", iRet, pszDirName));
 			return;
 		}
 	}
-
-	if ( iRet <= 0 )	// no files here.
-	{
+	if ( iRet <= 0 )	// no files here
 		return;
-	}
 
-	CGStringListRec * psFile = filelist.GetHead();
-	for ( ; psFile; psFile = psFile->GetNext())
+	CGStringListRec *psFile = filelist.GetHead();
+	for ( ; psFile; psFile = psFile->GetNext() )
 	{
-		sFilePath = CGFile::GetMergedFileName( pszDirName, *psFile );
-		AddResourceFile( sFilePath );
+		sFilePath = CGFile::GetMergedFileName(pszDirName, *psFile);
+		AddResourceFile(sFilePath);
 	}
 }
 
-void CResourceBase::LoadResourcesOpen( CScript * pScript )
+void CResourceBase::LoadResourcesOpen(CScript *pScript)
 {
 	ADDTOCALLSTACK("CResourceBase::LoadResourcesOpen");
-	// Load an already open resource file.
-
+	// Load an already open resource file
 	ASSERT(pScript);
-	ASSERT( pScript->IsFileOpen());
+	ASSERT(pScript->IsFileOpen());
 
-	int iSections = 0;
-	while ( pScript->FindNextSection())
+	size_t iSections = 0;
+	while ( pScript->FindNextSection() )
 	{
-		LoadResourceSection( pScript );
-		iSections ++;
+		LoadResourceSection(pScript);
+		iSections++;
 	}
 
-	if ( ! iSections )
-	{
-		DEBUG_WARN(( "No resource sections in '%s'\n", (LPCTSTR)pScript->GetFilePath()));
-	}
+	if ( !iSections )
+		DEBUG_WARN(("No resource sections in '%s'\n", static_cast<LPCTSTR>(pScript->GetFilePath())));
 }
 
-bool CResourceBase::LoadResources( CResourceScript * pScript )
+bool CResourceBase::LoadResources(CResourceScript *pScript)
 {
 	ADDTOCALLSTACK("CResourceBase::LoadResources");
-	// Open the file then load it.
-	if ( pScript == NULL )
-		return( false );
-
-	if ( ! pScript->Open())
+	// Open the file then load it
+	if ( !pScript )
+		return false;
+	if ( !pScript->Open() )
 	{
 		g_Log.Event(LOGL_CRIT|LOGM_INIT, "[RESOURCES] '%s' not found...\n", static_cast<LPCTSTR>(pScript->GetFilePath()));
-		return( false );
+		return false;
 	}
 
 	g_Log.Event(LOGM_INIT, "Loading %s\n", static_cast<LPCTSTR>(pScript->GetFilePath()));
-
-	LoadResourcesOpen( pScript );
+	LoadResourcesOpen(pScript);
 	pScript->Close();
 	pScript->CloseForce();
-	return( true );
+	return true;
 }
 
-CResourceScript * CResourceBase::LoadResourcesAdd( LPCTSTR pszNewFileName )
+CResourceScript *CResourceBase::LoadResourcesAdd(LPCTSTR pszNewFileName)
 {
 	ADDTOCALLSTACK("CResourceBase::LoadResourcesAdd");
 	// Make sure this is added to my list of resource files
 	// And load it now.
 
-	CResourceScript * pScript = AddResourceFile( pszNewFileName );
-	if ( ! LoadResources(pScript))
-		return( NULL );
-	return( pScript );
+	CResourceScript *pScript = AddResourceFile(pszNewFileName);
+	if ( LoadResources(pScript) )
+		return pScript;
+	return NULL;
 }
 
-bool CResourceBase::OpenResourceFind( CScript &s, LPCTSTR pszFilename, bool bCritical )
+bool CResourceBase::OpenResourceFind(CScript &s, LPCTSTR pszFilename, bool bCritical)
 {
 	ADDTOCALLSTACK("CResourceBase::OpenResourceFind");
-	// Open a single resource script file.
-	// Look in the specified path.
+	// Open a single resource script file
 
 	if ( pszFilename == NULL )
-	{
 		pszFilename = s.GetFilePath();
-	}
 
-	// search the local dir or full path first.
-	if ( s.Open(pszFilename, OF_READ | OF_NONCRIT ))
-		return( true );
-	if ( !bCritical ) return false;
+	// Search the local dir or full path first
+	if ( s.Open(pszFilename, OF_READ|OF_NONCRIT) )
+		return true;
+	if ( !bCritical )
+		return false;
 
-	// next, check the script file path
-	CGString sPathName = CGFile::GetMergedFileName( m_sSCPBaseDir, pszFilename );
-	if ( s.Open(sPathName, OF_READ | OF_NONCRIT ))
-		return( true );
+	// Check the script file path
+	CGString sPathName = CGFile::GetMergedFileName(m_sSCPBaseDir, pszFilename);
+	if ( s.Open(sPathName, OF_READ|OF_NONCRIT) )
+		return true;
 
-	// finally, strip the directory and re-check script file path
-	LPCTSTR pszTitle = CGFile::GetFilesTitle(pszFilename);
-	sPathName = CGFile::GetMergedFileName( m_sSCPBaseDir, pszTitle );
-	return( s.Open( sPathName, OF_READ ));
+	// Strip the directory and re-check script file path
+	sPathName = CGFile::GetMergedFileName(m_sSCPBaseDir, CGFile::GetFilesTitle(pszFilename));
+	return s.Open(sPathName, OF_READ);
 }
 
-bool CResourceBase::LoadResourceSection( CScript * pScript )
+bool CResourceBase::LoadResourceSection(CScript *pScript)
 {
 	ADDTOCALLSTACK("CResourceBase::LoadResourceSection");
 	UNREFERENCED_PARAMETER(pScript);
-	// Just stub this out for others for now.
-	return( false );
+	// Just stub this out for others for now
+	return false;
+}
+
+// Resource block definitions
+
+LPCTSTR CResourceBase::ResourceGetName(RESOURCE_ID_BASE rid) const
+{
+	ADDTOCALLSTACK("CResourceBase::ResourceGetName");
+	// Get a portable name for the resource id type
+
+	CResourceDef *pResourceDef = ResourceGetDef(rid);
+	if ( pResourceDef )
+		return pResourceDef->GetResourceName();
+
+	TCHAR *pszTmp = Str_GetTemp();
+	ASSERT(pszTmp);
+	if ( rid.IsValidUID() )
+		sprintf(pszTmp, "0%x", rid.GetResIndex());
+	else
+		sprintf(pszTmp, "%lu", rid.GetPrivateUID());
+	return pszTmp;
+}
+
+RESOURCE_ID CResourceBase::ResourceGetID(RES_TYPE restype, LPCTSTR &pszName)
+{
+	ADDTOCALLSTACK("CResourceBase::ResourceGetID");
+	// Find the Resource ID given this name
+	// We are NOT creating a new resource, just searching an existing one
+	// NOTE: Do not enforce the restype, just fill it if we are not sure what the type is
+	// NOTE: Some restype's have private name spaces (ie. RES_AREA)
+	// RETURN:
+	//  pszName is now set to be after the expression
+
+	RESOURCE_ID rid;
+	rid.SetPrivateUID(Exp_GetVal(pszName));		// may be some complex expression {}
+
+	if ( (restype != RES_UNKNOWN) && (rid.GetResType() == RES_UNKNOWN) )
+		return RESOURCE_ID(restype, rid.GetResIndex());		// label it with the type we want
+
+	return rid;
+}
+
+int CResourceBase::ResourceGetIndexType(RES_TYPE restype, LPCTSTR pszName)
+{
+	ADDTOCALLSTACK("CResourceBase::ResourceGetIndexType");
+	// Get a resource of just this index type
+
+	RESOURCE_ID rid = ResourceGetID(restype, pszName);
+	if ( rid.GetResType() == restype )
+		return rid.GetResIndex();
+
+	return -1;
+}
+
+CResourceDef *CResourceBase::ResourceGetDef(RESOURCE_ID_BASE rid) const
+{
+	ADDTOCALLSTACK("CResourceBase::ResourceGetDef");
+	if ( !rid.IsValidUID() )
+		return NULL;
+
+	size_t index = m_ResHash.FindKey(rid);
+	if ( index == m_ResHash.BadIndex() )
+		return NULL;
+
+	return m_ResHash.GetAt(rid, index);
+}
+
+// Open resource blocks
+
+bool CResourceBase::ResourceLock(CResourceLock &s, RESOURCE_ID_BASE rid)
+{
+	ADDTOCALLSTACK("CResourceBase::ResourceLock");
+	// Lock a referenced resource object
+	if ( !rid.IsValidUID() )
+		return false;
+
+	CResourceLink *pResourceLink = dynamic_cast<CResourceLink *>(ResourceGetDef(rid));
+	if ( pResourceLink )
+		return pResourceLink->ResourceLock(s);
+
+	return false;
 }
 
 //*********************************************************
-// Resource Block Definitions
+// CResourceDef
 
-LPCTSTR CResourceBase::ResourceGetName( RESOURCE_ID_BASE rid ) const
-{
-	ADDTOCALLSTACK("CResourceBase::ResourceGetName");
-	// Get a portable name for the resource id type.
-
-	CResourceDef * pResourceDef = dynamic_cast <CResourceDef *>( ResourceGetDef( rid ));
-	if ( pResourceDef )
-		return( pResourceDef->GetResourceName());
-
-	TCHAR * pszTmp = Str_GetTemp();
-	ASSERT(pszTmp);
-	if ( ! rid.IsValidUID())
-	{
-		sprintf( pszTmp, "%ld", static_cast<long>(rid.GetPrivateUID()) );
-	}
-	else
-	{
-		sprintf( pszTmp, "0%x", rid.GetResIndex() );
-	}
-	return( pszTmp );
-}
-
-RESOURCE_ID CResourceBase::ResourceGetID( RES_TYPE restype, LPCTSTR & pszName )
-{
-	ADDTOCALLSTACK("CResourceBase::ResourceGetID");
-	// Find the Resource ID given this name.
-	// We are NOT creating a new resource. just looking up an existing one
-	// NOTE: Do not enforce the restype.
-	//		Just fill it in if we are not sure what the type is.
-	// NOTE: 
-	//  Some restype's have private name spaces. (ie. RES_AREA)
-	// RETURN:
-	//  pszName is now set to be after the expression.
-
-	// We are NOT creating.
-	RESOURCE_ID rid;
-
-	// Try to handle private name spaces.
-	switch ( restype )
-	{
-		case RES_ACCOUNT:
-		case RES_AREA:
-		case RES_GMPAGE:
-		case RES_ROOM:
-		case RES_SECTOR:
-			break;
-
-		default:
-			break;
-	}
-
-	rid.SetPrivateUID( Exp_GetVal(pszName));	// May be some complex expression {}
-
-	if ( restype != RES_UNKNOWN && rid.GetResType() == RES_UNKNOWN )
-	{
-		// Label it with the type we want.
-		return RESOURCE_ID( restype, rid.GetResIndex());
-	}
-
-	return( rid );
-}
-
-int CResourceBase::ResourceGetIndexType( RES_TYPE restype, LPCTSTR pszName )
-{
-	ADDTOCALLSTACK("CResourceBase::ResourceGetIndexType");
-	// Get a resource of just this index type.
-	RESOURCE_ID rid = ResourceGetID( restype, pszName );
-	if ( rid.GetResType() != restype )
-		return( -1 );
-	return( rid.GetResIndex());
-}
-
-CResourceDef * CResourceBase::ResourceGetDef( RESOURCE_ID_BASE rid ) const
-{
-	ADDTOCALLSTACK("CResourceBase::ResourceGetDef");
-	if ( ! rid.IsValidUID())
-		return( NULL );
-	size_t index = m_ResHash.FindKey( rid );
-	if ( index == m_ResHash.BadIndex() )
-		return( NULL );
-	return( m_ResHash.GetAt( rid, index ));
-}
-
-//*******************************************************
-// Open resource blocks.
-
-bool CResourceBase::ResourceLock( CResourceLock & s, RESOURCE_ID_BASE rid )
-{
-	ADDTOCALLSTACK("CResourceBase::ResourceLock");
-	// Lock a referenced resource object.
-	if ( ! rid.IsValidUID())
-		return( false );
-	CResourceLink * pResourceLink = dynamic_cast <CResourceLink *>( ResourceGetDef( rid ));
-	if ( pResourceLink )
-	{
-		return( pResourceLink->ResourceLock(s));
-	}
-	return( false );
-}
-
-/////////////////////////////////////////////////
-// -CResourceDef
-
-bool CResourceDef::SetResourceName( LPCTSTR pszName )
+bool CResourceDef::SetResourceName(LPCTSTR pszName)
 {
 	ADDTOCALLSTACK("CResourceDef::SetResourceName");
+	// This is the global def for this item
 	ASSERT(pszName);
 
-	// This is the global def for this item.
 	for ( size_t i = 0; pszName[i]; i++ )
 	{
 		if ( i >= EXPRESSION_MAX_KEY_LEN )
 		{
-			DEBUG_ERR(( "Too long DEFNAME=%s\n", pszName ));
-			return( false );
+			DEBUG_ERR(("Too long DEFNAME=%s\n", pszName));
+			return false;
 		}
-		if ( ! _ISCSYM(pszName[i]))
+		if ( !_ISCSYM(pszName[i]) )
 		{
-			DEBUG_ERR(( "Bad chars in DEFNAME=%s\n", pszName ));
-			return( false );
+			DEBUG_ERR(("Bad chars in DEFNAME=%s\n", pszName));
+			return false;
 		}
 	}
 
 	int iVarNum;
-
-	CVarDefCont * pVarKey = g_Exp.m_VarDefs.GetKey( pszName );
+	CVarDefCont *pVarKey = g_Exp.m_VarDefs.GetKey(pszName);
 	if ( pVarKey )
 	{
-		if ( (DWORD)pVarKey->GetValNum() == GetResourceID().GetPrivateUID() )
-		{
-			return( true );
-		}
+		if ( static_cast<DWORD>(pVarKey->GetValNum()) == GetResourceID().GetPrivateUID() )
+			return true;
 
-		if ( RES_GET_INDEX(pVarKey->GetValNum()) == GetResourceID().GetResIndex())
-		{
-			DEBUG_WARN(( "The DEFNAME=%s has a strange type mismatch? 0%llx!=0%lx\n", pszName, pVarKey->GetValNum(), GetResourceID().GetPrivateUID() ));
-		}
+		if ( RES_GET_INDEX(pVarKey->GetValNum()) == GetResourceID().GetResIndex() )
+			DEBUG_WARN(("The DEFNAME=%s has a strange type mismatch? 0%llx!=0%lx\n", pszName, pVarKey->GetValNum(), GetResourceID().GetPrivateUID()));
 		else
-		{
-			DEBUG_WARN(( "The DEFNAME=%s already exists! 0%llx!=0%x\n", pszName, RES_GET_INDEX(pVarKey->GetValNum()), GetResourceID().GetResIndex() ));
-		}
+			DEBUG_WARN(("The DEFNAME=%s already exists! 0%llx!=0%x\n", pszName, RES_GET_INDEX(pVarKey->GetValNum()), GetResourceID().GetResIndex()));
 
-		iVarNum = g_Exp.m_VarDefs.SetNum( pszName, GetResourceID().GetPrivateUID() );
+		iVarNum = g_Exp.m_VarDefs.SetNum(pszName, GetResourceID().GetPrivateUID());
 	}
 	else
-	{
-		iVarNum = g_Exp.m_VarDefs.SetNumNew( pszName, GetResourceID().GetPrivateUID() );
-	}
+		iVarNum = g_Exp.m_VarDefs.SetNumNew(pszName, GetResourceID().GetPrivateUID());
 
 	if ( iVarNum < 0 )
-		return( false );
+		return false;
 
-	SetResourceVar( dynamic_cast <const CVarDefContNum*>( g_Exp.m_VarDefs.GetAt( iVarNum )));
-	return( true );
+	SetResourceVar(dynamic_cast<const CVarDefContNum *>(g_Exp.m_VarDefs.GetAt(iVarNum)));
+	return true;
 }
 
 LPCTSTR CResourceDef::GetResourceName() const
@@ -435,70 +382,58 @@ LPCTSTR CResourceDef::GetResourceName() const
 	return pszTmp;
 }
 
-
-bool	CResourceDef::HasResourceName()
-{
-	ADDTOCALLSTACK("CResourceDef::HasResourceName");
-	if ( m_pDefName )
-		return true;
-	return false;
-}
-
-
-bool	CResourceDef::MakeResourceName()
+bool CResourceDef::MakeResourceName()
 {
 	ADDTOCALLSTACK("CResourceDef::MakeResourceName");
 	if ( m_pDefName )
 		return true;
+
 	LPCTSTR pszName = GetName();
+	GETNONWHITESPACE(pszName);
 
-	GETNONWHITESPACE( pszName );
-	TCHAR * pbuf = Str_GetTemp();
+	TCHAR *pszTemp = Str_GetTemp();
+	strcpy(pszTemp, "a_");
+
+	TCHAR *pszDef = pszTemp + 2;
 	TCHAR ch;
-	TCHAR * pszDef;
-
-	strcpy(pbuf, "a_");
-
-	LPCTSTR pszKey = NULL;	// auxiliary, the key of a similar CVarDef, if any found
-	pszDef = pbuf + 2;
-
 	for ( ; *pszName; pszName++ )
 	{
-		ch	= *pszName;
-		if ( ch == ' ' || ch == '\t' || ch == '-' )
-			ch	= '_';
-		else if ( !isalnum( ch ) )
+		ch = *pszName;
+		if ( (ch == ' ') || (ch == '\t') || (ch == '-') )
+			ch = '_';
+		else if ( !isalnum(ch) )
 			continue;
-		// collapse multiple spaces together
-		if ( ch == '_' && *(pszDef-1) == '_' )
+
+		// Collapse multiple spaces together
+		if ( (ch == '_') && (*(pszDef - 1) == '_') )
 			continue;
-		*pszDef	= ch;
+		*pszDef = ch;
 		pszDef++;
 	}
-	*pszDef	= '_';
-	*(++pszDef)	= '\0';
+	*pszDef = '_';
+	*(++pszDef) = '\0';
 
-	
+	LPCTSTR pszKey = NULL;		// auxiliary, the key of a similar CVarDef, if any found
 	size_t iMax = g_Exp.m_VarDefs.GetCount();
+	size_t iLen = strlen(pszTemp);
 	int iVar = 1;
-	size_t iLen = strlen( pbuf );
 
 	for ( size_t i = 0; i < iMax; i++ )
 	{
 		// Is this a similar key?
-		pszKey	= g_Exp.m_VarDefs.GetAt(i)->GetKey();
-		if ( strnicmp( pbuf, pszKey, iLen ) != 0 )
+		pszKey = g_Exp.m_VarDefs.GetAt(i)->GetKey();
+		if ( strnicmp(pszTemp, pszKey, iLen) != 0 )
 			continue;
 
-		// skip underscores
+		// Skip underscores
 		pszKey = pszKey + iLen;
-		while ( *pszKey	== '_' )
+		while ( *pszKey == '_' )
 			pszKey++;
 
 		// Is this is subsequent key with a number? Get the highest (plus one)
-		if ( IsStrNumericDec( pszKey ) )
+		if ( IsStrNumericDec(pszKey) )
 		{
-			int iVarThis = ATOI( pszKey );
+			int iVarThis = ATOI(pszKey);
 			if ( iVarThis >= iVar )
 				iVar = iVarThis + 1;
 		}
@@ -506,87 +441,92 @@ bool	CResourceDef::MakeResourceName()
 			iVar++;
 	}
 
-	// add an extra _, hopefully won't conflict with named areas
-	sprintf( pszDef, "_%i", iVar );
-	SetResourceName( pbuf );
+	// Add an extra _, hopefully won't conflict with named areas
+	sprintf(pszDef, "_%i", iVar);
+	SetResourceName(pszTemp);
 	// Assign name
 	return true;
 }
 
-
-
-bool	CRegionBase::MakeRegionName()
+bool CRegionBase::MakeRegionName()
 {
 	ADDTOCALLSTACK("CRegionBase::MakeRegionName");
 	if ( m_pDefName )
 		return true;
 
-	TCHAR ch;
-	LPCTSTR pszKey = NULL;	// auxiliary, the key of a similar CVarDef, if any found
-	TCHAR * pbuf = Str_GetTemp();
-	TCHAR * pszDef = pbuf + 2;
-	strcpy(pbuf, "a_");
-
 	LPCTSTR pszName = GetName();
-	GETNONWHITESPACE( pszName );
+	GETNONWHITESPACE(pszName);
 
-	if ( !strnicmp( "the ", pszName, 4 ) )
-		pszName	+= 4;
-	else if ( !strnicmp( "a ", pszName, 2 ) )
-		pszName	+= 2;
-	else if ( !strnicmp( "an ", pszName, 3 ) )
-		pszName	+= 3;
-	else if ( !strnicmp( "ye ", pszName, 3 ) )
-		pszName	+= 3;
+	if ( !strnicmp("the ", pszName, 4) )
+		pszName += 4;
+	else if ( !strnicmp("a ", pszName, 2) )
+		pszName += 2;
+	else if ( !strnicmp("an ", pszName, 3) )
+		pszName += 3;
+	else if ( !strnicmp("ye ", pszName, 3) )
+		pszName += 3;
 
+	TCHAR *pszTemp = Str_GetTemp();
+	TCHAR *pszDef = pszTemp + 2;
+	strcpy(pszTemp, "a_");
+
+	TCHAR ch;
 	for ( ; *pszName; pszName++ )
 	{
-		if ( !strnicmp( " of ", pszName, 4 ) || !strnicmp( " in ", pszName, 4 ) )
-		{	pszName	+= 4;	continue;	}
-		if ( !strnicmp( " the ", pszName, 5 )  )
-		{	pszName	+= 5;	continue;	}
-
-		ch	= *pszName;
-		if ( ch == ' ' || ch == '\t' || ch == '-' )
-			ch	= '_';
-		else if ( !isalnum( ch ) )
+		if ( !strnicmp(" of ", pszName, 4) || !strnicmp(" in ", pszName, 4) )
+		{
+			pszName += 4;
 			continue;
-		// collapse multiple spaces together
-		if ( ch == '_' && *(pszDef-1) == '_' )
+		}
+		if ( !strnicmp(" the ", pszName, 5) )
+		{
+			pszName += 5;
+			continue;
+		}
+
+		ch = *pszName;
+		if ( (ch == ' ') || (ch == '\t') || (ch == '-') )
+			ch = '_';
+		else if ( !isalnum(ch) )
+			continue;
+
+		// Collapse multiple spaces together
+		if ( (ch == '_') && (*(pszDef - 1) == '_') )
 			continue;
 		*pszDef = static_cast<TCHAR>(tolower(ch));
 		pszDef++;
 	}
-	*pszDef	= '_';
-	*(++pszDef)	= '\0';
+	*pszDef = '_';
+	*(++pszDef) = '\0';
 
-	
+	LPCTSTR pszKey = NULL;		// auxiliary, the key of a similar CVarDef, if any found
 	size_t iMax = g_Cfg.m_RegionDefs.GetCount();
+	size_t iLen = strlen(pszTemp);
 	int iVar = 1;
-	size_t iLen = strlen( pbuf );
 
 	for ( size_t i = 0; i < iMax; i++ )
 	{
-		CRegionBase * pRegion = dynamic_cast <CRegionBase*> (g_Cfg.m_RegionDefs.GetAt(i));
+		CRegionBase *pRegion = g_Cfg.m_RegionDefs.GetAt(i);
 		if ( !pRegion )
 			continue;
+
 		pszKey = pRegion->GetResourceName();
 		if ( !pszKey )
 			continue;
 
 		// Is this a similar key?
-		if ( strnicmp( pbuf, pszKey, iLen ) != 0 )
+		if ( strnicmp(pszTemp, pszKey, iLen) != 0 )
 			continue;
 
-		// skip underscores
+		// Skip underscores
 		pszKey = pszKey + iLen;
-		while ( *pszKey	== '_' )
+		while ( *pszKey == '_' )
 			pszKey++;
 
 		// Is this is subsequent key with a number? Get the highest (plus one)
-		if ( IsStrNumericDec( pszKey ) )
+		if ( IsStrNumericDec(pszKey) )
 		{
-			int iVarThis = ATOI( pszKey );
+			int iVarThis = ATOI(pszKey);
 			if ( iVarThis >= iVar )
 				iVar = iVarThis + 1;
 		}
@@ -595,82 +535,73 @@ bool	CRegionBase::MakeRegionName()
 	}
 
 	// Only one, no need for the extra "_"
-	sprintf( pszDef, "%i", iVar );
-	SetResourceName( pbuf );
+	sprintf(pszDef, "%i", iVar);
+	SetResourceName(pszTemp);
 	// Assign name
 	return true;
 }
 
-//***************************************************************************
-// -CResourceScript
+//*********************************************************
+// CResourceScript
 
 bool CResourceScript::CheckForChange()
 {
 	ADDTOCALLSTACK("CResourceScript::CheckForChange");
-	// Get Size/Date info on the file to see if it has changed.
+	// Check if an script file got changed
+
 	time_t dateChange;
 	DWORD dwSize;
-
-	if ( ! CFileList::ReadFileInfo( GetFilePath(), dateChange, dwSize ))
+	if ( !CFileList::ReadFileInfo(GetFilePath(), dateChange, dwSize) )
 	{
-		DEBUG_ERR(( "Can't get stats info for file '%s'\n", static_cast<LPCTSTR>(GetFilePath()) ));
+		DEBUG_ERR(("Can't get stats info for file '%s'\n", static_cast<LPCTSTR>(GetFilePath())));
 		return false;
 	}
 
 	bool fChange = false;
-
-	// See If the script has changed
-	if ( ! IsFirstCheck())
+	if ( !IsFirstCheck() )
 	{
-		if ( m_dwSize != dwSize || m_dateChange != dateChange )
+		if ( (m_dwSize != dwSize) || (m_dateChange != dateChange) )
 		{
 			g_Log.Event(LOGL_WARN, "Resource '%s' changed, resync.\n", static_cast<LPCTSTR>(GetFilePath()));
 			fChange = true;
 		}
 	}
 
-	m_dwSize = dwSize;			// Compare to see if this has changed.
-
-	m_dateChange = dateChange;	// real world time/date of last change.
-	return( fChange );
+	m_dateChange = dateChange;	// real world time/date of last change
+	m_dwSize = dwSize;			// compare to see if this has changed
+	return fChange;
 }
 
 void CResourceScript::ReSync()
 {
 	ADDTOCALLSTACK("CResourceScript::ReSync");
-	if ( ! IsFirstCheck())
+	if ( !IsFirstCheck() )
 	{
-		if ( ! CheckForChange())
+		if ( !CheckForChange() )
 			return;
 	}
-	if ( ! Open())
+	if ( !Open() )
 		return;
-	g_Cfg.LoadResourcesOpen( this );
+	g_Cfg.LoadResourcesOpen(this);
 	Close();
 }
 
-bool CResourceScript::Open( LPCTSTR pszFilename, UINT wFlags )
+bool CResourceScript::Open(LPCTSTR pszFilename, UINT uiFlags)
 {
 	ADDTOCALLSTACK("CResourceScript::Open");
-	// Open the file if it is not already open for use.
+	// Open the file if it's not already open
 
 	if ( !IsFileOpen() )
 	{
-		UINT	mode = 0;
-		mode |= OF_SHARE_DENY_WRITE;
-
-		if ( ! CScript::Open( pszFilename, wFlags|mode))	// OF_READ
-			return( false );
-		if ( ! ( wFlags & OF_READWRITE ) && CheckForChange())
-		{
-			//  what should we do about it ? reload it of course !
-			g_Cfg.LoadResourcesOpen( this );
-		}
+		if ( !CScript::Open(pszFilename, uiFlags|OF_SHARE_DENY_WRITE) )	// OF_READ
+			return false;
+		if ( !(uiFlags & OF_READWRITE) && CheckForChange() )
+			g_Cfg.LoadResourcesOpen(this);
 	}
 
 	m_iOpenCount++;
-	ASSERT( IsFileOpen());
-	return( true );
+	ASSERT(IsFileOpen());
+	return true;
 }
 
 void CResourceScript::CloseForce()
@@ -683,13 +614,13 @@ void CResourceScript::CloseForce()
 void CResourceScript::Close()
 {
 	ADDTOCALLSTACK("CResourceScript::Close");
-	// Don't close the file yet.
-	// Close it later when we know it has not been used for a bit.
-	if ( ! IsFileOpen())
+	// Don't close the file yet
+	// Close it later when we know it has not been used for a bit
+	if ( !IsFileOpen() )
 		return;
-	m_iOpenCount--;
 
-	if ( ! m_iOpenCount )
+	m_iOpenCount--;
+	if ( !m_iOpenCount )
 	{
 		m_timeLastAccess = CServTime::GetCurrentTime();
 		// Just leave it open for caching purposes
@@ -697,30 +628,29 @@ void CResourceScript::Close()
 	}
 }
 
-//***************************************************************************
-//	CResourceLock
-//
+//*********************************************************
+// CResourceLock
 
-bool CResourceLock::OpenBase( void * pExtra )
+bool CResourceLock::OpenBase(void *pExtra)
 {
 	ADDTOCALLSTACK("CResourceLock::OpenBase");
 	UNREFERENCED_PARAMETER(pExtra);
 	ASSERT(m_pLock);
 
-	if ( m_pLock->IsFileOpen())
+	if ( m_pLock->IsFileOpen() )
 		m_PrvLockContext = m_pLock->GetContext();
 
-	if ( ! m_pLock->Open())	// make sure the original is open.
-		return( false );
+	if ( !m_pLock->Open() )		// make sure the original is open
+		return false;
 
-	// Open a seperate copy of an already opend file.
+	// Open a seperate copy of an already opened file
 	m_pStream = m_pLock->m_pStream;
 	m_hFile = m_pLock->m_hFile;
 	CacheableScriptFile::dupeFrom(m_pLock);
 
-	// Assume this is the new error context !
-	m_PrvScriptContext.OpenScript( this );
-	return( true );
+	// Assume this is the new error context
+	m_PrvScriptContext.OpenScript(this);
+	return true;
 }
 
 void CResourceLock::CloseBase()
@@ -729,92 +659,78 @@ void CResourceLock::CloseBase()
 	ASSERT(m_pLock);
 	m_pStream = NULL;
 
-	// Assume this is not the context anymore.
+	// Assume this is not the context anymore
 	m_PrvScriptContext.Close();
 
-	if ( m_PrvLockContext.IsValid())
-	{
-		m_pLock->SeekContext(m_PrvLockContext);	// no need to set the line number as it should not have changed.
-	}
+	if ( m_PrvLockContext.IsValid() )
+		m_pLock->SeekContext(m_PrvLockContext);		// no need to set the line number as it should not have changed
 
-	// Restore old position in the file (if there was one)
-	m_pLock->Close();	// decrement open count on the orig.
+	// Restore old position in the file (if there's one)
+	m_pLock->Close();	// decrement open count on the original
 
-	if( IsWriteMode() || ( GetFullMode() & OF_DEFAULTMODE )) {
+	if ( IsWriteMode() || (GetFullMode() & OF_DEFAULTMODE) )
 		Init();
-	}
 }
 
-bool CResourceLock::ReadTextLine( bool fRemoveBlanks ) // Read a line from the opened script file
+bool CResourceLock::ReadTextLine(bool fRemoveBlanks)
 {
 	ADDTOCALLSTACK("CResourceLock::ReadTextLine");
 	// ARGS:
-	// fRemoveBlanks = Don't report any blank lines, (just keep reading)
-	//
-
+	//  fRemoveBlanks = Don't report any blank lines (just keep reading)
 	ASSERT(m_pLock);
-	ASSERT( ! IsBinaryMode());
+	ASSERT(!IsBinaryMode());
 
 	while ( CacheableScriptFile::ReadString(GetKeyBufferRaw(SCRIPT_MAX_LINE_LEN), SCRIPT_MAX_LINE_LEN) )
 	{
-		m_pLock->m_iLineNum = ++m_iLineNum;	// share this with original open.
+		m_pLock->m_iLineNum = ++m_iLineNum;		// share this with original open
 		if ( fRemoveBlanks )
 		{
 			if ( ParseKeyEnd() <= 0 )
 				continue;
 		}
-		return( true );
+		return true;
 	}
 
 	m_pszKey[0] = '\0';
-	return( false );
+	return false;
 }
 
-int CResourceLock::OpenLock( CResourceScript * pLock, CScriptLineContext context )
+int CResourceLock::OpenLock(CResourceScript *pLock, CScriptLineContext context)
 {
 	ADDTOCALLSTACK("CResourceLock::OpenLock");
-	// ONLY called from CResourceLink
+	// Only called from CResourceLink
 	ASSERT(pLock);
 
 	Close();
 	m_pLock = pLock;
 
-	if ( ! Open( m_pLock->GetFilePath(), m_pLock->GetMode() ))	// open my copy.
-		return( -2 );
-
-	if ( ! SeekContext( context ))
-	{
-		return( -3 );
-	}
-
-	return( 0 );
+	if ( !Open(m_pLock->GetFilePath(), m_pLock->GetMode()) )
+		return -2;
+	if ( !SeekContext(context) )
+		return -3;
+	return 0;
 }
 
-/////////////////////////////////////////////////
-//	-CResourceLink
+//*********************************************************
+// CResourceLink
 
-CResourceLink::CResourceLink( RESOURCE_ID rid, const CVarDefContNum * pDef ) :
-	CResourceDef( rid, pDef )
+CResourceLink::CResourceLink(RESOURCE_ID rid, const CVarDefContNum *pDef) : CResourceDef(rid, pDef)
 {
 	m_pScript = NULL;
-	m_Context.Init(); // not yet tested.
-	m_lRefInstances = 0;
+	m_Context.Init();	// not tested yet
+	m_dwRefInstances = 0;
 	ClearTriggers();
 }
 
-CResourceLink::~CResourceLink()
-{
-}
-
-void CResourceLink::ScanSection( RES_TYPE restype )
+void CResourceLink::ScanSection(RES_TYPE restype)
 {
 	ADDTOCALLSTACK("CResourceLink::ScanSection");
-	// Scan the section we are linking to for useful stuff.
+	// Scan the section we are linking
 	ASSERT(m_pScript);
-	LPCTSTR const * ppTable = NULL;
+	LPCTSTR const *ppTable = NULL;
 	int iQty = 0;
 
-	switch (restype)
+	switch ( restype )
 	{
 		case RES_TYPEDEF:
 		case RES_ITEMDEF:
@@ -854,37 +770,34 @@ void CResourceLink::ScanSection( RES_TYPE restype )
 	}
 	ClearTriggers();
 
-	while ( m_pScript->ReadKey(false))
+	while ( m_pScript->ReadKey(false) )
 	{
-		if ( m_pScript->IsKeyHead( "DEFNAME", 7 ))
+		if ( m_pScript->IsKeyHead("DEFNAME", 7) )
 		{
 			m_pScript->ParseKeyLate();
-			SetResourceName( m_pScript->GetArgRaw());
+			SetResourceName(m_pScript->GetArgRaw());
 		}
-		if ( m_pScript->IsKeyHead( "ON", 2 ))
+		if ( m_pScript->IsKeyHead("ON", 2) )
 		{
-			int iTrigger;
+			int iTrigger = XTRIG_UNKNOWN;
 			if ( iQty )
 			{
 				m_pScript->ParseKeyLate();
-				iTrigger = FindTableSorted( m_pScript->GetArgRaw(), ppTable, iQty );
-	
-				if ( iTrigger < 0 )	// unknown triggers ?
+				iTrigger = FindTableSorted(m_pScript->GetArgRaw(), ppTable, iQty);
+
+				if ( iTrigger < XTRIG_UNKNOWN )
 					iTrigger = XTRIG_UNKNOWN;
-				else 
+				else
 				{
 					TriglistAdd(m_pScript->GetArgRaw());
-					if ( HasTrigger(iTrigger))
+					if ( HasTrigger(iTrigger) )
 					{
-						DEBUG_ERR(( "Duplicate trigger '%s' in '%s'\n", ppTable[iTrigger], GetResourceName()));
+						DEBUG_ERR(("Duplicate trigger '%s' in '%s'\n", ppTable[iTrigger], GetResourceName()));
 						continue;
 					}
 				}
 			}
-			else
-				iTrigger = XTRIG_UNKNOWN;
-
-			SetTrigger(iTrigger); 
+			SetTrigger(iTrigger);
 		}
 	}
 }
@@ -892,9 +805,9 @@ void CResourceLink::ScanSection( RES_TYPE restype )
 bool CResourceLink::IsLinked() const
 {
 	ADDTOCALLSTACK("CResourceLink::IsLinked");
-	if ( !m_pScript )
-		return false;
-	return m_Context.IsValid();
+	if ( m_pScript )
+		return m_Context.IsValid();
+	return false;
 }
 
 CResourceScript *CResourceLink::GetLinkFile() const
@@ -920,12 +833,12 @@ void CResourceLink::CopyTransfer(CResourceLink *pLink)
 {
 	ADDTOCALLSTACK("CResourceLink::CopyTransfer");
 	ASSERT(pLink);
-	CResourceDef::CopyDef( pLink );
+	CResourceDef::CopyDef(pLink);
 	m_pScript = pLink->m_pScript;
 	m_Context = pLink->m_Context;
 	memcpy(m_dwOnTriggers, pLink->m_dwOnTriggers, sizeof(m_dwOnTriggers));
-	m_lRefInstances = pLink->m_lRefInstances;
-	pLink->m_lRefInstances = 0;	// instance has been transfered.
+	m_dwRefInstances = pLink->m_dwRefInstances;
+	pLink->m_dwRefInstances = 0;	// instance has been transfered
 }
 
 void CResourceLink::ClearTriggers()
@@ -943,8 +856,8 @@ void CResourceLink::SetTrigger(int i)
 		{
 			if ( i < 32 )
 			{
-				DWORD flag = 1 << i;
-				m_dwOnTriggers[j] |= flag;
+				DWORD dwFlag = 1 << i;
+				m_dwOnTriggers[j] |= dwFlag;
 				return;
 			}
 			i -= 32;
@@ -955,7 +868,7 @@ void CResourceLink::SetTrigger(int i)
 bool CResourceLink::HasTrigger(int i) const
 {
 	ADDTOCALLSTACK("CResourceLink::HasTrigger");
-	// Specific to the RES_TYPE; CTRIG_QTY, ITRIG_QTY or RTRIG_QTY
+	// Specific to the RES_TYPE, CTRIG_QTY, ITRIG_QTY or RTRIG_QTY
 	if ( i < XTRIG_UNKNOWN )
 		i = XTRIG_UNKNOWN;
 
@@ -963,48 +876,46 @@ bool CResourceLink::HasTrigger(int i) const
 	{
 		if ( i < 32 )
 		{
-			DWORD flag = 1 << i;
-			return ((m_dwOnTriggers[j] & flag) != 0);
+			DWORD dwFlag = 1 << i;
+			return (m_dwOnTriggers[j] & dwFlag);
 		}
 		i -= 32;
 	}
 	return false;
 }
 
-bool CResourceLink::ResourceLock( CResourceLock &s )
+bool CResourceLink::ResourceLock(CResourceLock &s)
 {
 	ADDTOCALLSTACK("CResourceLink::ResourceLock");
-	// Find the definition of this item in the scripts.
+	// Find the definition of this item in the scripts
 	// Open a locked copy of this script
-	// NOTE: How can we tell the file has changed since last open ?
-	// RETURN: true = found it.
-	if ( !IsLinked() )	// has already failed previously.
+	// NOTE: How can we tell the file has changed since last open?
+	// RETURN: true = found it
+	if ( !IsLinked() )	// has already failed previously
 		return false;
 
+	// Give several tries to lock the script while multithreading
 	ASSERT(m_pScript);
+	int iRet = s.OpenLock(m_pScript, m_Context);
+	if ( !iRet )
+		return true;
 
-	//	Give several tryes to lock the script while multithreading
-	int iRet = s.OpenLock( m_pScript, m_Context );
-	if ( ! iRet ) return true;
-
-	s.AttachObj( this );
+	s.AttachObj(this);
 
 	// ret = -2 or -3
-	LPCTSTR pszName = GetResourceName();
-	DEBUG_ERR(("ResourceLock '%s':%ld id=%s FAILED\n", static_cast<LPCTSTR>(s.GetFilePath()), m_Context.m_lOffset, pszName));
-
+	DEBUG_ERR(("ResourceLock '%s':%ld id=%s FAILED\n", static_cast<LPCTSTR>(s.GetFilePath()), m_Context.m_lOffset, GetResourceName()));
 	return false;
 }
 
-//***************************************************************************
-//	CScriptFileContext
+//*********************************************************
+// CScriptFileContext
 
-void CScriptFileContext::OpenScript( const CScript * pScriptContext )
+void CScriptFileContext::OpenScript(const CScript *pScriptContext)
 {
 	ADDTOCALLSTACK("CScriptFileContext::OpenScript");
 	Close();
 	m_fOpenScript = true;
-	m_pPrvScriptContext = g_Log.SetScriptContext( pScriptContext );
+	m_pPrvScriptContext = g_Log.SetScriptContext(pScriptContext);
 }
 
 void CScriptFileContext::Close()
@@ -1013,19 +924,19 @@ void CScriptFileContext::Close()
 	if ( m_fOpenScript )
 	{
 		m_fOpenScript = false;
-		g_Log.SetScriptContext( m_pPrvScriptContext );
+		g_Log.SetScriptContext(m_pPrvScriptContext);
 	}
 }
 
-//***************************************************************************
-//	CScriptObjectContext
+//*********************************************************
+// CScriptObjectContext
 
-void CScriptObjectContext::OpenObject( const CScriptObj * pObjectContext )
+void CScriptObjectContext::OpenObject(const CScriptObj *pObjectContext)
 {
 	ADDTOCALLSTACK("CScriptObjectContext::OpenObject");
 	Close();
 	m_fOpenObject = true;
-	m_pPrvObjectContext = g_Log.SetObjectContext( pObjectContext );
+	m_pPrvObjectContext = g_Log.SetObjectContext(pObjectContext);
 }
 
 void CScriptObjectContext::Close()
@@ -1034,74 +945,68 @@ void CScriptObjectContext::Close()
 	if ( m_fOpenObject )
 	{
 		m_fOpenObject = false;
-		g_Log.SetObjectContext( m_pPrvObjectContext );
+		g_Log.SetObjectContext(m_pPrvObjectContext);
 	}
 }
 
-/////////////////////////////////////////////////
-// -CResourceRefArray
+//*********************************************************
+// CResourceRefArray
 
-bool CResourceRefArray::r_LoadVal( CScript & s, RES_TYPE restype )
+bool CResourceRefArray::r_LoadVal(CScript &s, RES_TYPE restype)
 {
 	ADDTOCALLSTACK("CResourceRefArray::r_LoadVal");
+	// A bunch of CResourceLink (CResourceDef) pointers
+	// Add or remove from the list
 	EXC_TRY("LoadVal");
+
+	TCHAR *pszCmd = s.GetArgStr();
+	TCHAR *pszBlocks[128];	// max is arbitrary
+	size_t iArgCount = Str_ParseCmds(pszCmd, pszBlocks, COUNTOF(pszBlocks));
 	bool fRet = false;
-	// A bunch of CResourceLink (CResourceDef) pointers.
-	// Add or remove from the list.
-	// RETURN: false = it failed.
-
-	// ? "TOWN" and "REGION" are special !
-
-	TCHAR * pszCmd = s.GetArgStr();
-
-	TCHAR * ppBlocks[128];	// max is arbitrary
-	size_t iArgCount = Str_ParseCmds( pszCmd, ppBlocks, COUNTOF(ppBlocks));
 
 	for ( size_t i = 0; i < iArgCount; i++ )
 	{
-		pszCmd = ppBlocks[i];
-
+		pszCmd = pszBlocks[i];
 		if ( pszCmd[0] == '-' )
 		{
-			// remove a frag or all frags.
-			pszCmd ++;
-			if ( pszCmd[0] == '0' || pszCmd[0] == '*' )
+			// Remove a frag or all frags
+			pszCmd++;
+			if ( (pszCmd[0] == '0') || (pszCmd[0] == '*') )
 			{
 				RemoveAll();
 				fRet = true;
 				continue;
 			}
 
-			CResourceLink * pResourceLink = dynamic_cast<CResourceLink *>( g_Cfg.ResourceGetDefByName( restype, pszCmd ));
-			if ( pResourceLink == NULL )
+			CResourceLink *pResourceLink = dynamic_cast<CResourceLink *>(g_Cfg.ResourceGetDefByName(restype, pszCmd));
+			if ( !pResourceLink )
 			{
 				fRet = false;
 				continue;
 			}
 
 			int iIndex = RemovePtr(pResourceLink);
-			fRet = ( iIndex >= 0 );
+			fRet = (iIndex >= 0);
 		}
 		else
 		{
-			// Add a single knowledge fragment or appropriate group item.
+			// Add a single knowledge fragment or appropriate group item
+			if ( pszCmd[0] == '+' )
+				pszCmd++;
 
-			if ( pszCmd[0] == '+' ) pszCmd ++;
-
-			CResourceLink * pResourceLink = dynamic_cast<CResourceLink *>( g_Cfg.ResourceGetDefByName( restype, pszCmd ));
-			if ( pResourceLink == NULL )
+			CResourceLink *pResourceLink = dynamic_cast<CResourceLink *>(g_Cfg.ResourceGetDefByName(restype, pszCmd));
+			if ( !pResourceLink )
 			{
 				fRet = false;
-				DEBUG_ERR(( "Unknown '%s' Resource '%s'\n", CResourceBase::GetResourceBlockName(restype), pszCmd ));
+				DEBUG_ERR(("Unknown '%s' resource '%s'\n", CResourceBase::GetResourceBlockName(restype), pszCmd));
 				continue;
 			}
 
-			// Is it already in the list ?
+			// Check if it's already in the list
 			fRet = true;
 			if ( ContainsPtr(pResourceLink) )
-			{
 				continue;
-			}
+
 			if ( g_Cfg.m_pEventsPetLink.ContainsPtr(pResourceLink) )
 			{
 				DEBUG_ERR(("'%s' already defined in " SPHERE_FILE ".ini - skipping\n", pResourceLink->GetName()));
@@ -1123,7 +1028,7 @@ bool CResourceRefArray::r_LoadVal( CScript & s, RES_TYPE restype )
 				continue;
 			}
 
-			Add( pResourceLink );
+			Add(pResourceLink);
 		}
 	}
 	return fRet;
@@ -1135,43 +1040,41 @@ bool CResourceRefArray::r_LoadVal( CScript & s, RES_TYPE restype )
 	return false;
 }
 
-void CResourceRefArray::WriteResourceRefList( CGString & sVal ) const
+void CResourceRefArray::WriteResourceRefList(CGString &sVal) const
 {
 	ADDTOCALLSTACK("CResourceRefArray::WriteResourceRefList");
 	TemporaryString tsVal;
-	TCHAR * pszVal = static_cast<TCHAR *>(tsVal);
+	TCHAR *pszVal = static_cast<TCHAR *>(tsVal);
 	size_t len = 0;
-	for ( size_t j = 0; j < GetCount(); j++ )
+	for ( size_t i = 0; i < GetCount(); i++ )
 	{
-		if ( j > 0 )
+		if ( i > 0 )
 			pszVal[len++] = ',';
 
-		len += strcpylen( pszVal + len, GetResourceName( j ));
-		if ( len >= SCRIPT_MAX_LINE_LEN-1 )
+		len += strcpylen(pszVal + len, GetResourceName(i));
+		if ( len >= SCRIPT_MAX_LINE_LEN - 1 )
 			break;
 	}
 	pszVal[len] = '\0';
 	sVal = pszVal;
 }
 
-size_t CResourceRefArray::FindResourceType( RES_TYPE restype ) const
+size_t CResourceRefArray::FindResourceType(RES_TYPE restype) const
 {
 	ADDTOCALLSTACK("CResourceRefArray::FindResourceType");
-	// Is this resource already in the list ?
 	size_t iQty = GetCount();
 	for ( size_t i = 0; i < iQty; ++i )
 	{
 		RESOURCE_ID ridtest = GetAt(i).GetRef()->GetResourceID();
 		if ( ridtest.GetResType() == restype )
-			return( i );
+			return i;
 	}
 	return BadIndex();
 }
 
-size_t CResourceRefArray::FindResourceID( RESOURCE_ID_BASE rid ) const
+size_t CResourceRefArray::FindResourceID(RESOURCE_ID_BASE rid) const
 {
 	ADDTOCALLSTACK("CResourceRefArray::FindResourceID");
-	// Is this resource already in the list ?
 	size_t iQty = GetCount();
 	for ( size_t i = 0; i < iQty; i++ )
 	{
@@ -1182,69 +1085,63 @@ size_t CResourceRefArray::FindResourceID( RESOURCE_ID_BASE rid ) const
 	return BadIndex();
 }
 
-size_t CResourceRefArray::FindResourceName( RES_TYPE restype, LPCTSTR pszKey ) const
+size_t CResourceRefArray::FindResourceName(RES_TYPE restype, LPCTSTR pszKey) const
 {
 	ADDTOCALLSTACK("CResourceRefArray::FindResourceName");
-	// Is this resource already in the list ?
-	CResourceLink * pResourceLink = dynamic_cast <CResourceLink *>( g_Cfg.ResourceGetDefByName( restype, pszKey ));
-	if ( pResourceLink == NULL )
-		return BadIndex();
-	return FindPtr(pResourceLink);
+	CResourceLink *pResourceLink = dynamic_cast<CResourceLink *>(g_Cfg.ResourceGetDefByName(restype, pszKey));
+	if ( pResourceLink )
+		return FindPtr(pResourceLink);
+	return BadIndex();
 }
 
-void CResourceRefArray::r_Write( CScript & s, LPCTSTR pszKey ) const
+void CResourceRefArray::r_Write(CScript &s, LPCTSTR pszKey) const
 {
 	ADDTOCALLSTACK_INTENSIVE("CResourceRefArray::r_Write");
-	for ( size_t j = 0; j < GetCount(); j++ )
-	{
-		s.WriteKey( pszKey, GetResourceName( j ));
-	}
+	for ( size_t i = 0; i < GetCount(); i++ )
+		s.WriteKey(pszKey, GetResourceName(i));
 }
 
-//**********************************************
-// -CResourceQty
+//*********************************************************
+// CResourceQty
 
-size_t CResourceQty::WriteKey( TCHAR * pszArgs, bool fQtyOnly, bool fKeyOnly ) const
+size_t CResourceQty::WriteKey(TCHAR *pszArgs, bool fQtyOnly, bool fKeyOnly) const
 {
 	ADDTOCALLSTACK("CResourceQty::WriteKey");
 	size_t i = 0;
 	if ( (GetResQty() || fQtyOnly) && !fKeyOnly )
-	{
-		i = sprintf( pszArgs, "%lld ", GetResQty());
-	}
+		i = sprintf(pszArgs, "%lld ", GetResQty());
 	if ( !fQtyOnly )
-		i += strcpylen( pszArgs+i, g_Cfg.ResourceGetName( m_rid ));
-	return( i );
+		i += strcpylen(pszArgs + i, g_Cfg.ResourceGetName(m_rid));
+	return i;
 }
 
-size_t CResourceQty::WriteNameSingle( TCHAR * pszArgs, int iQty ) const
+size_t CResourceQty::WriteNameSingle(TCHAR *pszArgs, int iQty) const
 {
 	ADDTOCALLSTACK("CResourceQty::WriteNameSingle");
 	if ( GetResType() == RES_ITEMDEF )
 	{
-		const CItemBase * pItemBase = CItemBase::FindItemBase(static_cast<ITEMID_TYPE>(m_rid.GetResIndex()));
-		//DEBUG_ERR(("pItemBase 0x%x  m_rid 0%x  m_rid.GetResIndex() 0%x\n",pItemBase,m_rid,m_rid.GetResIndex()));
+		const CItemBase *pItemBase = CItemBase::FindItemBase(static_cast<ITEMID_TYPE>(m_rid.GetResIndex()));
 		if ( pItemBase )
-			return( strcpylen( pszArgs, pItemBase->GetNamePluralize(pItemBase->GetTypeName(),(( iQty > 1 ) ? true : false))) );
+			return strcpylen(pszArgs, pItemBase->GetNamePluralize(pItemBase->GetTypeName(), (iQty > 1)));
 	}
-	const CScriptObj * pResourceDef = g_Cfg.ResourceGetDef( m_rid );
-	if ( pResourceDef != NULL )
-		return( strcpylen( pszArgs, pResourceDef->GetName()) );
-	else
-		return( strcpylen( pszArgs, g_Cfg.ResourceGetName( m_rid )) );
+
+	const CScriptObj *pResourceDef = g_Cfg.ResourceGetDef(m_rid);
+	if ( pResourceDef )
+		return strcpylen(pszArgs, pResourceDef->GetName());
+
+	return strcpylen(pszArgs, g_Cfg.ResourceGetName(m_rid));
 }
 
 bool CResourceQty::Load(LPCTSTR &pszCmds)
 {
 	ADDTOCALLSTACK("CResourceQty::Load");
-	// Can be either order.:
-	// "Name Qty" or "Qty Name"
+	// Can be either order: "Name Qty" or "Qty Name"
 
 	const char *orig = pszCmds;
-	GETNONWHITESPACE(pszCmds);	// Skip leading spaces.
+	GETNONWHITESPACE(pszCmds);
 
 	m_iQty = LLONG_MIN;
-	if ( !IsAlpha(*pszCmds) ) // might be { or .
+	if ( !IsAlpha(*pszCmds) )	// might be { or .
 	{
 		m_iQty = Exp_GetVal(pszCmds);
 		GETNONWHITESPACE(pszCmds);
@@ -1266,7 +1163,7 @@ bool CResourceQty::Load(LPCTSTR &pszCmds)
 	GETNONWHITESPACE(pszCmds);
 	if ( m_iQty == LLONG_MIN )	// trailing qty?
 	{
-		if ( *pszCmds == '\0' || *pszCmds == ',' )
+		if ( (*pszCmds == '\0') || (*pszCmds == ',') )
 			m_iQty = 1;
 		else
 		{
@@ -1274,12 +1171,11 @@ bool CResourceQty::Load(LPCTSTR &pszCmds)
 			GETNONWHITESPACE(pszCmds);
 		}
 	}
-
 	return true;
 }
 
-//**********************************************
-// -CResourceQtyArray
+//*********************************************************
+// CResourceQtyArray
 
 CResourceQtyArray::CResourceQtyArray()
 {
@@ -1291,10 +1187,10 @@ CResourceQtyArray::CResourceQtyArray(LPCTSTR pszCmds)
 	m_mergeOnLoad = true;
 	Load(pszCmds);
 }
-	
-CResourceQtyArray& CResourceQtyArray::operator=(const CResourceQtyArray& other)
+
+CResourceQtyArray &CResourceQtyArray::operator=(const CResourceQtyArray &other)
 {
-	if (this != &other)
+	if ( this != &other )
 	{
 		m_mergeOnLoad = other.m_mergeOnLoad;
 		Copy(&other);
@@ -1308,86 +1204,75 @@ void CResourceQtyArray::setNoMergeOnLoad()
 	m_mergeOnLoad = false;
 }
 
-size_t CResourceQtyArray::FindResourceType( RES_TYPE type ) const
+size_t CResourceQtyArray::FindResourceType(RES_TYPE restype) const
 {
 	ADDTOCALLSTACK("CResourceQtyArray::FindResourceType");
-	// is this RES_TYPE in the array ?
-	// BadIndex = fail
 	for ( size_t i = 0; i < GetCount(); i++ )
 	{
 		RESOURCE_ID ridtest = GetAt(i).GetResourceID();
-		if ( type == ridtest.GetResType() )
+		if ( ridtest.GetResType() == restype )
 			return i;
 	}
 	return BadIndex();
 }
 
-size_t CResourceQtyArray::FindResourceID( RESOURCE_ID_BASE rid ) const
+size_t CResourceQtyArray::FindResourceID(RESOURCE_ID_BASE rid) const
 {
 	ADDTOCALLSTACK("CResourceQtyArray::FindResourceID");
-	// is this RESOURCE_ID in the array ?
-	// BadIndex = fail
 	for ( size_t i = 0; i < GetCount(); i++ )
 	{
 		RESOURCE_ID ridtest = GetAt(i).GetResourceID();
-		if ( rid == ridtest )
+		if ( ridtest == rid )
 			return i;
 	}
 	return BadIndex();
 }
 
-size_t CResourceQtyArray::FindResourceMatch( CObjBase * pObj ) const
+size_t CResourceQtyArray::FindResourceMatch(CObjBase *pObj) const
 {
 	ADDTOCALLSTACK("CResourceQtyArray::FindResourceMatch");
-	// Is there a more vague match in the array ?
-	// Use to find intersection with this pOBj raw material and BaseResource creation elements.
+	// Is there a more vague match in the array?
+	// Use to find intersection with this pObj raw material and BaseResource creation elements
+
 	for ( size_t i = 0; i < GetCount(); i++ )
 	{
 		RESOURCE_ID ridtest = GetAt(i).GetResourceID();
-		if ( pObj->IsResourceMatch( ridtest, 0 ))
+		if ( pObj->IsResourceMatch(ridtest, 0) )
 			return i;
 	}
 	return BadIndex();
 }
 
-bool CResourceQtyArray::IsResourceMatchAll( CChar * pChar ) const
+bool CResourceQtyArray::IsResourceMatchAll(CChar *pChar) const
 {
 	ADDTOCALLSTACK("CResourceQtyArray::IsResourceMatchAll");
-	// Check all required skills and non-consumable items.
-	// RETURN:
-	//  false = failed.
-	ASSERT(pChar != NULL);
+	// Check all required skills and non-consumable items
+	ASSERT(pChar);
 
 	for ( size_t i = 0; i < GetCount(); i++ )
 	{
-		RESOURCE_ID ridtest = GetAt(i).GetResourceID();
-
-		if ( ! pChar->IsResourceMatch( ridtest, static_cast<unsigned long>(GetAt(i).GetResQty()) ))
-			return( false );
+		if ( !pChar->IsResourceMatch(GetAt(i).GetResourceID(), static_cast<DWORD>(GetAt(i).GetResQty())) )
+			return false;
 	}
-
-	return( true );
+	return true;
 }
 
 size_t CResourceQtyArray::Load(LPCTSTR pszCmds)
 {
 	ADDTOCALLSTACK("CResourceQtyArray::Load");
-	//	clear-before-load in order not to mess with the previous data
+	// Clear-before-load in order not to mess with the previous data
 	if ( !m_mergeOnLoad )
-	{
 		RemoveAll();
-	}
 
-	// 0 = clear the list.
+	// 0 = clear the list
 	size_t iValid = 0;
 	ASSERT(pszCmds);
 	while ( *pszCmds )
 	{
-		if ( *pszCmds == '0' && 
-			( pszCmds[1] == '\0' || pszCmds[1] == ',' ))
+		if ( (*pszCmds == '0') && ((pszCmds[1] == '\0') || (pszCmds[1] == ',')) )
 		{
-			RemoveAll();	// clear any previous stuff.
-			pszCmds ++;
+			RemoveAll();	// clear any previous stuff
+			pszCmds++;
 		}
 		else
 		{
@@ -1395,101 +1280,84 @@ size_t CResourceQtyArray::Load(LPCTSTR pszCmds)
 			if ( !res.Load(pszCmds) )
 				break;
 
-			if ( res.GetResourceID().IsValidUID())
+			if ( res.GetResourceID().IsValidUID() )
 			{
-				// Replace any previous refs to this same entry ?
-				size_t i = FindResourceID( res.GetResourceID() );
+				// Replace any previous refs to this same entry?
+				size_t i = FindResourceID(res.GetResourceID());
 				if ( i != BadIndex() )
-				{
-					SetAt(i, res); 
-				}
+					SetAt(i, res);
 				else
-				{
 					Add(res);
-				}
 				iValid++;
 			}
 		}
-
 		if ( *pszCmds != ',' )
-		{
 			break;
-		}
 
 		pszCmds++;
 	}
-
-	return( iValid );
+	return iValid;
 }
 
-void CResourceQtyArray::WriteKeys( TCHAR * pszArgs, size_t index, bool fQtyOnly, bool fKeyOnly ) const
+void CResourceQtyArray::WriteKeys(TCHAR *pszArgs, size_t index, bool fQtyOnly, bool fKeyOnly) const
 {
 	ADDTOCALLSTACK("CResourceQtyArray::WriteKeys");
 	size_t max = GetCount();
-	if ( index > 0 && index < max )
+	if ( (index > 0) && (index < max) )
 		max = index;
 
 	for ( size_t i = (index > 0 ? index - 1 : 0); i < max; i++ )
 	{
-		if ( i > 0 && index == 0 )
-		{
-			pszArgs += sprintf( pszArgs, "," );
-		}
-		pszArgs += GetAt(i).WriteKey( pszArgs, fQtyOnly, fKeyOnly );
+		if ( (i > 0) && (index == 0) )
+			pszArgs += sprintf(pszArgs, ",");
+		pszArgs += GetAt(i).WriteKey(pszArgs, fQtyOnly, fKeyOnly);
 	}
 	*pszArgs = '\0';
 }
 
-
-void CResourceQtyArray::WriteNames( TCHAR * pszArgs, size_t index ) const
+void CResourceQtyArray::WriteNames(TCHAR *pszArgs, size_t index) const
 {
 	ADDTOCALLSTACK("CResourceQtyArray::WriteNames");
 	size_t max = GetCount();
-	if ( index > 0 && index < max )
+	if ( (index > 0) && (index < max) )
 		max = index;
 
-	for ( size_t i = (index > 0 ? index - 1 : 0); i < max; i++ )
+	for ( size_t i = (index > 0) ? index - 1 : 0; i < max; i++ )
 	{
-		if ( i > 0 && index == 0 )
-		{
-			pszArgs += sprintf( pszArgs, ", " );
-		}
+		if ( (i > 0) && (index == 0) )
+			pszArgs += sprintf(pszArgs, ", ");
 
 		INT64 iQty = GetAt(i).GetResQty();
 		if ( iQty )
 		{
 			if ( GetAt(i).GetResType() == RES_SKILL )
-			{
-				pszArgs += sprintf( pszArgs, "%lld.%lld ",
-						iQty / 10, iQty % 10 );
-			}
+				pszArgs += sprintf(pszArgs, "%lld.%lld ", iQty / 10, iQty % 10);
 			else
-				pszArgs += sprintf( pszArgs, "%lld ", iQty);
+				pszArgs += sprintf(pszArgs, "%lld ", iQty);
 		}
-
-		pszArgs += GetAt(i).WriteNameSingle( pszArgs, static_cast<int>(iQty) );
+		pszArgs += GetAt(i).WriteNameSingle(pszArgs, static_cast<int>(iQty));
 	}
 	*pszArgs = '\0';
 }
 
-bool CResourceQtyArray::operator == ( const CResourceQtyArray & array ) const
+bool CResourceQtyArray::operator==(const CResourceQtyArray &array) const
 {
-	ADDTOCALLSTACK("CResourceQtyArray::operator == ");
-	if ( GetCount() != array.GetCount())
-		return( false );
+	ADDTOCALLSTACK("CResourceQtyArray::operator==");
+	if ( GetCount() != array.GetCount() )
+		return false;
 
 	for ( size_t i = 0; i < GetCount(); i++ )
 	{
 		for ( size_t j = 0; ; j++ )
 		{
-			if ( j >= array.GetCount())
-				return( false );
-			if ( ! ( GetAt(i).GetResourceID() == array[j].GetResourceID() ))
+			if ( j >= array.GetCount() )
+				return false;
+			if ( !(GetAt(i).GetResourceID() == array[j].GetResourceID()) )
 				continue;
 			if ( GetAt(i).GetResQty() != array[j].GetResQty() )
 				continue;
 			break;
 		}
 	}
-	return( true );
+	return true;
 }
