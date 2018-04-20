@@ -10,10 +10,10 @@ CCharsActiveList::CCharsActiveList()
 	m_iClients = 0;
 }
 
-void CCharsActiveList::OnRemoveOb( CGObListRec * pObRec )
+void CCharsActiveList::OnRemoveOb(CGObListRec *pObRec)
 {
 	ADDTOCALLSTACK("CCharsActiveList::OnRemoveOb");
-	// Override this = called when removed from group.
+	// Override this = called when removed from group
 	CChar *pChar = static_cast<CChar *>(pObRec);
 	ASSERT(pChar);
 	if ( pChar->m_pClient )
@@ -25,11 +25,10 @@ void CCharsActiveList::OnRemoveOb( CGObListRec * pObRec )
 	pChar->SetContainerFlags(UID_O_DISCONNECT);
 }
 
-void CCharsActiveList::AddCharToSector( CChar * pChar )
+void CCharsActiveList::AddCharToSector(CChar *pChar)
 {
 	ADDTOCALLSTACK("CCharsActiveList::AddCharToSector");
-	ASSERT( pChar );
-	// ASSERT( pChar->m_pt.IsValid());
+	ASSERT(pChar);
 	if ( pChar->m_pClient )
 		ClientAttach();
 	CGObList::InsertHead(pChar);
@@ -52,10 +51,10 @@ void CCharsActiveList::ClientDetach()
 
 bool CItemsList::sm_fNotAMove = false;
 
-void CItemsList::OnRemoveOb( CGObListRec * pObRec )
+void CItemsList::OnRemoveOb(CGObListRec *pObRec)
 {
 	ADDTOCALLSTACK("CItemsList::OnRemoveOb");
-	// Item is picked up off the ground. (may be put right back down though)
+	// Item is picked up off the ground (may be put right back down though)
 	CItem *pItem = static_cast<CItem *>(pObRec);
 	ASSERT(pItem);
 
@@ -63,16 +62,16 @@ void CItemsList::OnRemoveOb( CGObListRec * pObRec )
 		pItem->OnMoveFrom();	// IT_MULTI, IT_SHIP and IT_COMM_CRYSTAL
 
 	CGObList::OnRemoveOb(pObRec);
-	pItem->SetContainerFlags(UID_O_DISCONNECT);	// It is no place for the moment.
+	pItem->SetContainerFlags(UID_O_DISCONNECT);		// it is no place for the moment
 }
 
-void CItemsList::AddItemToSector( CItem * pItem )
+void CItemsList::AddItemToSector(CItem *pItem)
 {
 	ADDTOCALLSTACK("CItemsList::AddItemToSector");
-	// Add to top level.
-	// Either MoveTo() or SetTimeout is being called.
-	ASSERT( pItem );
-	CGObList::InsertHead( pItem );
+	// Add to top level
+	// Either MoveTo() or SetTimeout is being called
+	ASSERT(pItem);
+	CGObList::InsertHead(pItem);
 }
 
 //////////////////////////////////////////////////////////////////
@@ -93,11 +92,11 @@ CSectorBase::~CSectorBase()
 void CSectorBase::Init(int index, int newmap)
 {
 	ADDTOCALLSTACK("CSectorBase::Init");
-	if (( newmap < 0 ) || ( newmap >= 256 ) || !g_MapList.m_maps[newmap] )
+	if ( (newmap < 0) || (newmap >= 256) || !g_MapList.m_maps[newmap] )
 	{
 		g_Log.EventError("Trying to initalize a sector %d in unsupported map #%d. Defaulting to 0,0.\n", index, newmap);
 	}
-	else if (( index < 0 ) || ( index >= g_MapList.GetSectorQty(newmap) ))
+	else if ( (index < 0) || (index >= g_MapList.GetSectorQty(newmap)) )
 	{
 		m_map = newmap;
 		g_Log.EventError("Trying to initalize a sector by sector number %d out-of-range for map #%d. Defaulting to 0,%d.\n", index, newmap, newmap);
@@ -109,17 +108,17 @@ void CSectorBase::Init(int index, int newmap)
 	}
 }
 
-bool CSectorBase::CheckMapBlockTime( const MapBlockCache::value_type& Elem ) //static
+bool CSectorBase::CheckMapBlockTime(const MapBlockCache::value_type &elem) //static
 {
 	ADDTOCALLSTACK("CSectorBase::CheckMapBlockTime");
-	return (Elem.second->m_CacheTime.GetCacheAge() > m_iMapBlockCacheTime);
+	return (elem.second->m_CacheTime.GetCacheAge() > m_iMapBlockCacheTime);
 }
 
 void CSectorBase::ClearMapBlockCache()
 {
 	ADDTOCALLSTACK("CSectorBase::ClearMapBlockCache");
 
-	for (MapBlockCache::iterator it = m_MapBlockCache.begin(); it != m_MapBlockCache.end(); ++it)
+	for ( MapBlockCache::iterator it = m_MapBlockCache.begin(); it != m_MapBlockCache.end(); ++it )
 		delete it->second;
 
 	m_MapBlockCache.clear();
@@ -128,46 +127,43 @@ void CSectorBase::ClearMapBlockCache()
 void CSectorBase::CheckMapBlockCache()
 {
 	ADDTOCALLSTACK("CSectorBase::CheckMapBlockCache");
-	// Clean out the sectors map cache if it has not been used recently.
-	// iTime == 0 = delete all.
+	// Clean out the sectors map cache if it has not been used recently
+	// iTime == 0 = delete all
 	if ( m_MapBlockCache.empty() )
 		return;
-	//DEBUG_ERR(("CacheHit\n"));
+
 	MapBlockCache::iterator it;
 	for (;;)
 	{
 		EXC_TRY("CheckMapBlockCache_new");
-		it = find_if( m_MapBlockCache.begin(), m_MapBlockCache.end(), CheckMapBlockTime );
+		it = find_if(m_MapBlockCache.begin(), m_MapBlockCache.end(), CheckMapBlockTime);
 		if ( it == m_MapBlockCache.end() )
 			break;
-		else
+
+		if ( (m_iMapBlockCacheTime <= 0) || (it->second->m_CacheTime.GetCacheAge() >= m_iMapBlockCacheTime) )
 		{
-			if ( m_iMapBlockCacheTime <= 0 || it->second->m_CacheTime.GetCacheAge() >= m_iMapBlockCacheTime )
-			{
-				//DEBUG_ERR(("removing...\n"));
-				EXC_SET("CacheTime up - Deleting");
-				delete it->second;
-				m_MapBlockCache.erase(it);
-			}
+			EXC_SET("CacheTime up - Deleting");
+			delete it->second;
+			m_MapBlockCache.erase(it);
 		}
+
 		EXC_CATCH;
 		EXC_DEBUG_START;
 		CPointMap pt = GetBasePoint();
-		g_Log.EventDebug("m_MapBlockCache.erase(%ld)\n", it->first); 
+		g_Log.EventDebug("m_MapBlockCache.erase(%ld)\n", it->first);
 		g_Log.EventDebug("check time %d, index %ld/%" FMTSIZE_T "\n", m_iMapBlockCacheTime, it->first, m_MapBlockCache.size());
-		g_Log.EventDebug("sector #%d [%d,%d,%d,%d]\n", GetIndex(), pt.m_x, pt.m_y, pt.m_z, pt.m_map);
+		g_Log.EventDebug("sector #%d [%hd,%hd,%hhd,%hhu]\n", GetIndex(), pt.m_x, pt.m_y, pt.m_z, pt.m_map);
 		EXC_DEBUG_END;
 	}
 }
 
-
-const CGrayMapBlock * CSectorBase::GetMapBlock( const CPointMap & pt )
+const CGrayMapBlock *CSectorBase::GetMapBlock(const CPointMap &pt)
 {
 	ADDTOCALLSTACK("CSectorBase::GetMapBlock");
-	// Get a map block from the cache. load it if not.
-	ASSERT( pt.IsValidXY());
-	CPointMap pntBlock( UO_BLOCK_ALIGN(pt.m_x), UO_BLOCK_ALIGN(pt.m_y), 0, pt.m_map);
-	ASSERT( m_MapBlockCache.size() <= (UO_BLOCK_SIZE * UO_BLOCK_SIZE));
+	// Get a map block from cache
+	ASSERT(pt.IsValidXY());
+	CPointMap ptBlock(UO_BLOCK_ALIGN(pt.m_x), UO_BLOCK_ALIGN(pt.m_y), 0, pt.m_map);
+	ASSERT(m_MapBlockCache.size() <= (UO_BLOCK_SIZE * UO_BLOCK_SIZE));
 
 	ProfileTask mapTask(PROFILE_MAP);
 
@@ -177,10 +173,10 @@ const CGrayMapBlock * CSectorBase::GetMapBlock( const CPointMap & pt )
 		return NULL;
 	}
 
-	CGrayMapBlock * pMapBlock;
+	CGrayMapBlock *pMapBlock;
 
-	// Find it in cache.
-	long lBlock = pntBlock.GetPointSortIndex();
+	// Find it in cache
+	long lBlock = ptBlock.GetPointSortIndex();
 	MapBlockCache::iterator it = m_MapBlockCache.find(lBlock);
 	if ( it != m_MapBlockCache.end() )
 	{
@@ -188,132 +184,133 @@ const CGrayMapBlock * CSectorBase::GetMapBlock( const CPointMap & pt )
 		return it->second;
 	}
 
-	// else load it.
+	// Else load it
 	try
 	{
-		pMapBlock = new CGrayMapBlock(pntBlock);
-		ASSERT(pMapBlock != NULL);
+		pMapBlock = new CGrayMapBlock(ptBlock);
+		ASSERT(pMapBlock);
 	}
-	catch ( const CGrayError& e )
+	catch ( const CGrayError &e )
 	{
-		g_Log.EventError("Exception creating new memory block at %s. (%s)\n", pntBlock.WriteUsed(), e.m_pszDescription);
+		g_Log.EventError("Exception creating new memory block at %s. (%s)\n", ptBlock.WriteUsed(), e.m_pszDescription);
 		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 		return NULL;
 	}
-	catch (...)
+	catch ( ... )
 	{
-		g_Log.EventError("Exception creating new memory block at %s.\n", pntBlock.WriteUsed());
+		g_Log.EventError("Exception creating new memory block at %s.\n", ptBlock.WriteUsed());
 		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 		return NULL;
 	}
 
-	// Add it to the cache.
+	// Add it on cache
 	m_MapBlockCache[lBlock] = pMapBlock;
-	return( pMapBlock );
+	return pMapBlock;
 }
 
 bool CSectorBase::IsInDungeon() const
 {
 	ADDTOCALLSTACK("CSectorBase::IsInDungeon");
-	// What part of the maps are filled with dungeons.
-	// Used for light / weather calcs.
+	// What part of the maps are filled with dungeons
+	// Used for light/weather calcs.
 	CPointMap pt = GetBasePoint();
 	CRegionBase *pRegion = GetRegion(pt, REGION_TYPE_AREA);
 
-	return ( pRegion && pRegion->IsFlag(REGION_FLAG_UNDERGROUND) );
+	return (pRegion && pRegion->IsFlag(REGION_FLAG_UNDERGROUND));
 }
 
-CRegionBase * CSectorBase::GetRegion( const CPointBase & pt, DWORD dwType ) const
+CRegionBase *CSectorBase::GetRegion(const CPointBase &pt, DWORD dwType) const
 {
 	ADDTOCALLSTACK("CSectorBase::GetRegion");
-	// Does it match the mask of types we care about ?
-	// Assume sorted so that the smallest are first.
+	// Does it match the mask of types we care about?
+	// Assume sorted so that the smallest are first
 	//
-	// REGION_TYPE_AREA => RES_AREA = World region area only = CRegionWorld
-	// REGION_TYPE_ROOM => RES_ROOM = NPC House areas only = CRegionBase.
-	// REGION_TYPE_MULTI => RES_WORLDITEM = UID linked types in general = CRegionWorld
+	// REGION_TYPE_AREA => RES_AREA = World region area only (CRegionWorld)
+	// REGION_TYPE_ROOM => RES_ROOM = NPC House areas only (CRegionBase)
+	// REGION_TYPE_MULTI => RES_WORLDITEM = UID linked types in general (CRegionWorld)
 
 	size_t iQty = m_RegionLinks.GetCount();
 	for ( size_t i = 0; i < iQty; i++ )
 	{
-		CRegionBase * pRegion = m_RegionLinks[i];
+		CRegionBase *pRegion = m_RegionLinks[i];
 		ASSERT(pRegion);
 
-		ASSERT( pRegion->GetResourceID().IsValidUID());
-		if ( pRegion->GetResourceID().IsItem())
+		ASSERT(pRegion->GetResourceID().IsValidUID());
+		if ( pRegion->GetResourceID().IsItem() )
 		{
-			CItemShip * pShipItem = dynamic_cast <CItemShip *>(pRegion->GetResourceID().ItemFind());
-			if (pShipItem)
+			CItemShip *pShipItem = dynamic_cast<CItemShip *>(pRegion->GetResourceID().ItemFind());
+			if ( pShipItem )
 			{
-				if (!(dwType & REGION_TYPE_SHIP))
+				if ( !(dwType & REGION_TYPE_SHIP) )
 					continue;
 			}
-			else if (!(dwType & REGION_TYPE_HOUSE))
+			else if ( !(dwType & REGION_TYPE_HOUSE) )
 				continue;
 		}
 		else if ( pRegion->GetResourceID().GetResType() == RES_AREA )
 		{
-			if ( ! ( dwType & REGION_TYPE_AREA ))
+			if ( !(dwType & REGION_TYPE_AREA) )
 				continue;
 		}
 		else
 		{
-			if ( ! ( dwType & REGION_TYPE_ROOM ))
+			if ( !(dwType & REGION_TYPE_ROOM) )
 				continue;
 		}
 
 		if ( pRegion->m_pt.m_map != pt.m_map )
 			continue;
-		if ( ! pRegion->IsInside2d( pt ))
+		if ( !pRegion->IsInside2d(pt) )
 			continue;
-		return( pRegion );
+		return pRegion;
 	}
-	return( NULL );
+	return NULL;
 }
 
-// Balkon: get regions list (to cicle through intercepted house regions)
-size_t CSectorBase::GetRegions( const CPointBase & pt, DWORD dwType, CRegionLinks & rlist ) const
+size_t CSectorBase::GetRegions(const CPointBase &pt, DWORD dwType, CRegionLinks &rList) const
 {
 	ADDTOCALLSTACK("CSectorBase::GetRegions");
+	// Get regions list (to cicle through intercepted house regions)
+
 	size_t iQty = m_RegionLinks.GetCount();
 	for ( size_t i = 0; i < iQty; i++ )
 	{
-		CRegionBase * pRegion = m_RegionLinks[i];
+		CRegionBase *pRegion = m_RegionLinks[i];
 		ASSERT(pRegion);
 
-		ASSERT( pRegion->GetResourceID().IsValidUID());
-		if ( pRegion->GetResourceID().IsItem())
+		ASSERT(pRegion->GetResourceID().IsValidUID());
+		if ( pRegion->GetResourceID().IsItem() )
 		{
-			CItemShip * pShipItem = dynamic_cast <CItemShip *>(pRegion->GetResourceID().ItemFind());
-			if (pShipItem)
+			CItemShip *pShipItem = dynamic_cast<CItemShip *>(pRegion->GetResourceID().ItemFind());
+			if ( pShipItem )
 			{
-				if (!(dwType & REGION_TYPE_SHIP))
+				if ( !(dwType & REGION_TYPE_SHIP) )
 					continue;
 			}
-			else if (!(dwType & REGION_TYPE_HOUSE))
+			else if ( !(dwType & REGION_TYPE_HOUSE) )
 				continue;
 		}
 		else if ( pRegion->GetResourceID().GetResType() == RES_AREA )
 		{
-			if ( ! ( dwType & REGION_TYPE_AREA ))
+			if ( !(dwType & REGION_TYPE_AREA) )
 				continue;
 		}
 		else
 		{
-			if ( ! ( dwType & REGION_TYPE_ROOM ))
+			if ( !(dwType & REGION_TYPE_ROOM) )
 				continue;
 		}
 
 		if ( pRegion->m_pt.m_map != pt.m_map )
 			continue;
-		if ( ! pRegion->IsInside2d( pt ))
+		if ( !pRegion->IsInside2d(pt) )
 			continue;
-		rlist.Add( pRegion );
+		rList.Add(pRegion);
 	}
-	return( rlist.GetCount() );
+	return rList.GetCount();
 }
 
-bool CSectorBase::UnLinkRegion( CRegionBase * pRegionOld )
+bool CSectorBase::UnLinkRegion(CRegionBase *pRegionOld)
 {
 	ADDTOCALLSTACK("CSectorBase::UnLinkRegion");
 	if ( !pRegionOld )
@@ -321,58 +318,57 @@ bool CSectorBase::UnLinkRegion( CRegionBase * pRegionOld )
 	return m_RegionLinks.RemovePtr(pRegionOld);
 }
 
-bool CSectorBase::LinkRegion( CRegionBase * pRegionNew )
+bool CSectorBase::LinkRegion(CRegionBase *pRegionNew)
 {
 	ADDTOCALLSTACK("CSectorBase::LinkRegion");
-	// link in a region. may have just moved !
-	// Make sure the smaller regions are first in the array !
-	// Later added regions from the MAP file should be the smaller ones, 
-	//  according to the old rules.
+	// Link in a region. May have just moved
+	// Make sure the smaller regions are first in the array
+	// Later added regions from the MAP file should be the smaller ones, according to the old rules
 	ASSERT(pRegionNew);
-	ASSERT( pRegionNew->IsOverlapped( GetRect()));
-	size_t iQty = m_RegionLinks.GetCount();
+	ASSERT(pRegionNew->IsOverlapped(GetRect()));
 
+	size_t iQty = m_RegionLinks.GetCount();
 	for ( size_t i = 0; i < iQty; i++ )
 	{
-		CRegionBase * pRegion = m_RegionLinks[i];
+		CRegionBase *pRegion = m_RegionLinks[i];
 		ASSERT(pRegion);
 		if ( pRegionNew == pRegion )
 		{
-			DEBUG_ERR(( "region already linked!\n" ));
+			DEBUG_ERR(("region already linked!\n"));
 			return false;
 		}
 
-		if ( pRegion->IsOverlapped(pRegionNew))
+		if ( pRegion->IsOverlapped(pRegionNew) )
 		{
 			// NOTE : We should use IsInside() but my version isn't completely accurate for it's FALSE return
-			if ( pRegion->IsEqualRegion( pRegionNew ))
+			if ( pRegion->IsEqualRegion(pRegionNew) )
 			{
-				DEBUG_ERR(( "Conflicting region!\n" ));
-				return( false );
+				DEBUG_ERR(("Conflicting region!\n"));
+				return false;
 			}
 
-			// it is accurate in the TRUE case.
-			if ( pRegionNew->IsInside(pRegion))
+			// It is accurate in the TRUE case
+			if ( pRegionNew->IsInside(pRegion) )
 				continue;
 
-			// keep item (multi) regions on top
+			// Keep item (multi) regions on top
 			if ( pRegion->GetResourceID().IsItem() && !pRegionNew->GetResourceID().IsItem() )
 				continue;
 
-			// must insert before this.
-			m_RegionLinks.InsertAt( i, pRegionNew );
-			return( true );
+			// Must insert before this
+			m_RegionLinks.InsertAt(i, pRegionNew);
+			return true;
 		}
 	}
 
-	m_RegionLinks.Add( pRegionNew );
-	return( true );
+	m_RegionLinks.Add(pRegionNew);
+	return true;
 }
 
-CTeleport * CSectorBase::GetTeleport( const CPointMap & pt ) const
+CTeleport *CSectorBase::GetTeleport(const CPointMap &pt) const
 {
 	ADDTOCALLSTACK("CSectorBase::GetTeleport");
-	// Any teleports here at this point ?
+	// Check if there's any teleport on this point
 
 	size_t i = m_Teleports.FindKey(pt.GetPointSortIndex());
 	if ( i == m_Teleports.BadIndex() )
@@ -387,44 +383,40 @@ CTeleport * CSectorBase::GetTeleport( const CPointMap & pt ) const
 	return pTeleport;
 }
 
-bool CSectorBase::AddTeleport( CTeleport * pTeleport )
+bool CSectorBase::AddTeleport(CTeleport *pTeleport)
 {
 	ADDTOCALLSTACK("CSectorBase::AddTeleport");
-	// NOTE: can't be 2 teleports from the same place !
-	// ASSERT( Teleport is actually in this sector !
+	// NOTE: can't be 2 teleports on the same place
 
-	size_t i = m_Teleports.FindKey( pTeleport->GetPointSortIndex());
+	size_t i = m_Teleports.FindKey(pTeleport->GetPointSortIndex());
 	if ( i != m_Teleports.BadIndex() )
 	{
-		DEBUG_ERR(( "Conflicting teleport %s!\n", pTeleport->WriteUsed() ));
-		return( false );
+		DEBUG_ERR(("Conflicting teleport %s!\n", pTeleport->WriteUsed()));
+		return false;
 	}
-	m_Teleports.AddSortKey( pTeleport, pTeleport->GetPointSortIndex());
-	return( true );
+	m_Teleports.AddSortKey(pTeleport, pTeleport->GetPointSortIndex());
+	return true;
 }
 
 CPointMap CSectorBase::GetBasePoint() const
 {
 	ADDTOCALLSTACK("CSectorBase::GetBasePoint");
-	// What is the coord base of this sector. upper left point.
-	ASSERT( m_index >= 0 && m_index < g_MapList.GetSectorQty(m_map) );
-	CPointMap pt(( static_cast<WORD>((m_index % g_MapList.GetSectorCols(m_map)) * g_MapList.GetSectorSize(m_map))),
-		static_cast<WORD>((m_index / g_MapList.GetSectorCols(m_map)) * g_MapList.GetSectorSize(m_map)),
-		0,
-		static_cast<unsigned char>(m_map));
-	return( pt );
+	// What is the coord base of this sector. upper left point
+	ASSERT((m_index >= 0) && (m_index < g_MapList.GetSectorQty(m_map)));
+	CPointMap pt((static_cast<WORD>((m_index % g_MapList.GetSectorCols(m_map)) * g_MapList.GetSectorSize(m_map))), static_cast<WORD>((m_index / g_MapList.GetSectorCols(m_map)) * g_MapList.GetSectorSize(m_map)), 0, static_cast<unsigned char>(m_map));
+	return pt;
 }
 
 CRectMap CSectorBase::GetRect() const
 {
 	ADDTOCALLSTACK("CSectorBase::GetRect");
-	// Get a rectangle for the sector.
+	// Get a rectangle for the sector
 	CPointMap pt = GetBasePoint();
 	CRectMap rect;
 	rect.m_left = pt.m_x;
 	rect.m_top = pt.m_y;
-	rect.m_right = pt.m_x + g_MapList.GetSectorSize(pt.m_map);	// East
-	rect.m_bottom = pt.m_y + g_MapList.GetSectorSize(pt.m_map);	// South
+	rect.m_right = pt.m_x + g_MapList.GetSectorSize(pt.m_map);	// east
+	rect.m_bottom = pt.m_y + g_MapList.GetSectorSize(pt.m_map);	// south
 	rect.m_map = pt.m_map;
-	return( rect );
+	return rect;
 }

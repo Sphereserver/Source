@@ -10,141 +10,140 @@ class CCharsDisconnectList : public CGObList
 public:
 	static const char *m_sClassName;
 
-public:
 	CCharsDisconnectList() { };
 
 private:
-	CCharsDisconnectList(const CCharsDisconnectList& copy);
-	CCharsDisconnectList& operator=(const CCharsDisconnectList& other);
+	CCharsDisconnectList(const CCharsDisconnectList &copy);
+	CCharsDisconnectList &operator=(const CCharsDisconnectList &other);
 };
 
 class CCharsActiveList : public CGObList
 {
-private:
-	size_t m_iClients; // How many clients in this sector now?
 public:
 	static const char *m_sClassName;
-	CServTime m_timeLastClient;	// age the sector based on last client here.
 
-protected:
-	void OnRemoveOb( CGObListRec* pObRec );	// Override this = called when removed from list.
-
-public:
-	size_t HasClients() const { return( m_iClients ); }
-	void ClientAttach();
-	void ClientDetach();
-	void AddCharToSector( CChar * pChar );
-
-public:
 	CCharsActiveList();
 
 private:
-	CCharsActiveList(const CCharsActiveList& copy);
-	CCharsActiveList& operator=(const CCharsActiveList& other);
+	size_t m_iClients;	// how many clients in this sector
+
+protected:
+	void OnRemoveOb(CGObListRec *pObRec);	// override this = called when removed from list
+
+public:
+	CServTime m_timeLastClient;		// age the sector based on last client here
+
+	size_t HasClients() const { return m_iClients; }
+	void AddCharToSector(CChar *pChar);
+	void ClientAttach();
+	void ClientDetach();
+
+private:
+	CCharsActiveList(const CCharsActiveList &copy);
+	CCharsActiveList &operator=(const CCharsActiveList &other);
 };
 
 class CItemsList : public CGObList
 {
-	// Top level list of items.
-public:
-	static bool sm_fNotAMove;	// hack flag to prevent items from bouncing around too much.
-
-protected:
-	void OnRemoveOb( CGObListRec* pObRec );	// Override this = called when removed from list.
-
+	// Top level list of items
 public:
 	static const char *m_sClassName;
-	void AddItemToSector( CItem * pItem );
 
-public:
 	CItemsList() { };
 
+protected:
+	void OnRemoveOb(CGObListRec *pObRec);	// override this = called when removed from list
+
+public:
+	static bool sm_fNotAMove;	// hack flag to prevent items from bouncing around too much
+
+	void AddItemToSector(CItem *pItem);
+
 private:
-	CItemsList(const CItemsList& copy);
-	CItemsList& operator=(const CItemsList& other);
+	CItemsList(const CItemsList &copy);
+	CItemsList &operator=(const CItemsList &other);
 };
 
-class CObPointSortArray : public CGObSortArray< CPointSort*, long >
+class CObPointSortArray : public CGObSortArray<CPointSort *, long>
 {
 public:
 	static const char *m_sClassName;
 
-	// Find a point fast.
-	int CompareKey( long id, CPointSort* pBase, bool fNoSpaces ) const
-	{
-		UNREFERENCED_PARAMETER(fNoSpaces);
-		ASSERT( pBase );
-		return( id - pBase->GetPointSortIndex());
-	}
-
-public:
 	CObPointSortArray() { };
 
+public:
+	int CompareKey(long id, CPointSort *pBase, bool fNoSpaces) const
+	{
+		UNREFERENCED_PARAMETER(fNoSpaces);
+		ASSERT(pBase);
+		return id - pBase->GetPointSortIndex();
+	}
+
 private:
-	CObPointSortArray(const CObPointSortArray& copy);
-	CObPointSortArray& operator=(const CObPointSortArray& other);
+	CObPointSortArray(const CObPointSortArray &copy);
+	CObPointSortArray &operator=(const CObPointSortArray &other);
 };
 
 class CSectorBase		// world sector
 {
-protected:
-	int	m_index;		// sector index
-	int m_map;			// sector map
-private:
-	typedef std::map<long, CGrayMapBlock*>	MapBlockCache;
-	MapBlockCache							m_MapBlockCache;
 public:
 	static const char *m_sClassName;
-	CObPointSortArray	m_Teleports;		//	CTeleport array
-	CRegionLinks		m_RegionLinks;		//	CRegionBase(s) in this CSector
-	DWORD			m_dwFlags;
-public:
-	CCharsActiveList		m_Chars_Active;		// CChar(s) activte in this CSector.
-	CCharsDisconnectList	m_Chars_Disconnect;	// dead NPCs, etc
-	CItemsList m_Items_Timer;				// CItem(s) in this CSector that need timers.
-	CItemsList m_Items_Inert;				// CItem(s) in this CSector. (no timer required)
-public:
+
 	CSectorBase();
 	virtual ~CSectorBase();
 
+protected:
+	int m_index;
+	int m_map;
+
 private:
-	CSectorBase(const CSectorBase& copy);
-	CSectorBase& operator=(const CSectorBase& other);
+	typedef std::map<long, CGrayMapBlock *> MapBlockCache;
+	MapBlockCache m_MapBlockCache;
+
+public:
+	CCharsActiveList m_Chars_Active;			// CChar(s) active in this CSector
+	CCharsDisconnectList m_Chars_Disconnect;	// Dead NPCs, etc
+	CItemsList m_Items_Timer;					// CItem(s) in this CSector (timed)
+	CItemsList m_Items_Inert;					// CItem(s) in this CSector (not timed)
+	CRegionLinks m_RegionLinks;					// CRegionBase(s) in this CSector
+	CObPointSortArray m_Teleports;				// CTeleport array
+	static int m_iMapBlockCacheTime;
+	DWORD m_dwFlags;
 
 public:
 	void Init(int index, int newmap);
 
-	// Location map units.
-	int GetIndex() const { return m_index; }
-	int GetMap() const { return m_map; }
-	CPointMap GetBasePoint() const;
-	CRectMap GetRect() const;
-	bool IsInDungeon() const;
-
-	bool static CheckMapBlockTime( const MapBlockCache::value_type& Elem );
+	bool static CheckMapBlockTime(const MapBlockCache::value_type &elem);
 	void ClearMapBlockCache();
 	void CheckMapBlockCache();
-	static int m_iMapBlockCacheTime;
-	const CGrayMapBlock * GetMapBlock( const CPointMap & pt );
 
-	// CRegionBase
-	CRegionBase * GetRegion( const CPointBase & pt, DWORD dwType ) const;
-	size_t GetRegions( const CPointBase & pt, DWORD dwType, CRegionLinks & rlist ) const;
+	const CGrayMapBlock *GetMapBlock(const CPointMap &pt);
+	bool IsInDungeon() const;
+	CRegionBase *GetRegion(const CPointBase &pt, DWORD dwType) const;
+	size_t GetRegions(const CPointBase &pt, DWORD dwType, CRegionLinks &rList) const;
+	bool UnLinkRegion(CRegionBase *pRegionOld);
+	bool LinkRegion(CRegionBase *pRegionNew);
 
-	bool UnLinkRegion( CRegionBase * pRegionOld );
-	bool LinkRegion( CRegionBase * pRegionNew );
+	CTeleport *GetTeleport(const CPointMap &pt) const;
+	bool AddTeleport(CTeleport *pTeleport);
 
-	// CTeleport(s) in the region.
-	CTeleport * GetTeleport( const CPointMap & pt ) const;
-	bool AddTeleport( CTeleport * pTeleport );
+	CPointMap GetBasePoint() const;
+	CRectMap GetRect() const;
 
-	bool IsFlagSet( DWORD dwFlag ) const
+	int GetIndex() const { return m_index; }
+	int GetMap() const { return m_map; }
+
+#define SECF_NoSleep	0x1
+#define SECF_InstaSleep	0x2
+
+	bool IsFlagSet(DWORD dwFlag) const
 	{
-		return(( m_dwFlags & dwFlag) ? true : false );
+		return (m_dwFlags & dwFlag);
 	}
 
-#define SECF_NoSleep	0x00000001
-#define SECF_InstaSleep	0x00000002
+private:
+	CSectorBase(const CSectorBase &copy);
+	CSectorBase &operator=(const CSectorBase &other);
 };
 
 #endif // _INC_CSECTOR_H
