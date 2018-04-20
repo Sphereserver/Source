@@ -1492,11 +1492,11 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			sVal.FormatVal( m_iBankWMax / WEIGHT_UNITS );
 			break;
 		case RC_BUILD:
-			#ifdef SPHERE_VER_BUILD
-			 sVal.FormatVal(SPHERE_VER_BUILD);
-			#else
-			 sVal = __DATE__;
-			#endif
+#ifdef __GITREVISION__
+			sVal.FormatVal(__GITREVISION__);
+#else
+			sVal = g_szServerBuildDate;
+#endif
 			break;
 		case RC_CHATFLAGS:
 			sVal.FormatHex(m_iChatFlags);

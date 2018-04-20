@@ -1842,9 +1842,9 @@ nowinsock:		g_Log.Event(LOGL_FATAL|LOGM_INIT, "WinSock 1.1 not found!\n");
 	g_Log.WriteString("\n");
 
 #if defined(__GITREVISION__) && defined(__GITHASH__)
-	g_Log.Event(LOGM_INIT, "%s\nCompiled: %s (%s) [build %d / GIT hash %s]\n\n", g_szServerDescription, __DATE__, __TIME__, __GITREVISION__, __GITHASH__);
+	g_Log.Event(LOGM_INIT, "%s\nCompiled: %s (%s) [build %d / GIT hash %s]\n\n", g_szServerDescription, g_szServerBuildDate, g_szServerBuildTime, __GITREVISION__, __GITHASH__);
 #else
-	g_Log.Event(LOGM_INIT, "%s\nCompiled: %s (%s)\n\n", g_szServerDescription, __DATE__, __TIME__);
+	g_Log.Event(LOGM_INIT, "%s\nCompiled: %s (%s)\n\n", g_szServerDescription, g_szServerBuildDate, g_szServerBuildTime);
 #endif
 
 #ifdef _WIN32
@@ -1870,7 +1870,7 @@ nowinsock:		g_Log.Event(LOGL_FATAL|LOGM_INIT, "WinSock 1.1 not found!\n");
 	g_Log.EventWarn("\n"
 					"This is a CUSTOM build of SphereServer. Custom builds are non-official builds, which\n"
 					"have custom changes on source code not verified by official Sphere development team.\n"
-					"Use it as your own risk.\n"
+					"Use it at your own risk.\n"
 					"------------------------------------------------------------------------------------\n\n");
 #endif
 

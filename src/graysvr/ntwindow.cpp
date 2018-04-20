@@ -140,12 +140,12 @@ bool CNTWindow::CAboutDlg::OnInitDialog()
 {
 	char *z = Str_GetTemp();
 	sprintf(z, "%s %s", SPHERE_TITLE, SPHERE_VERSION);
-	#if defined(__GITREVISION__) && defined(__GITHASH__)
-	 sprintf(z, "%s (build %d / GIT hash %s)", z, __GITREVISION__, __GITHASH__);
-	#endif
+#if defined(__GITREVISION__) && defined(__GITHASH__)
+	sprintf(z, "%s (build %d / GIT hash %s)", z, __GITREVISION__, __GITHASH__);
+#endif
 	SetDlgItemText(IDC_ABOUT_VERSION, z);
 
-	sprintf(z, "Compiled at %s (%s)", __DATE__, __TIME__);
+	sprintf(z, "Compiled at %s (%s)", g_szServerBuildDate, g_szServerBuildTime);
 	SetDlgItemText(IDC_ABOUT_COMPILER, z);
 	return false;
 }
