@@ -569,7 +569,7 @@ public:
 			return true;
 		return IsID_WaterFish(id);
 	}
-	
+
 private:
 	CItemBase(const CItemBase &copy);
 	CItemBase &operator=(const CItemBase &other);
@@ -581,7 +581,7 @@ class CItemBaseDupe : public CResourceDef
 public:
 	static const char *m_sClassName;
 
-	CItemBaseDupe(ITEMID_TYPE id, CItemBase *pMasterItem) : CResourceDef(RESOURCE_ID(RES_ITEMDEF, id)), m_MasterItem(pMasterItem), m_dwFlags(0), m_Height(0), m_Can(0)
+	CItemBaseDupe(ITEMID_TYPE id, CItemBase *pMasterItem) : CResourceDef(RESOURCE_ID(RES_ITEMDEF, id)), m_MasterItem(pMasterItem), m_Can(0), m_dwFlags(0), m_Height(0)
 	{
 		ASSERT(pMasterItem);
 		ASSERT(pMasterItem->GetResourceID().GetResIndex() != id);

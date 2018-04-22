@@ -253,10 +253,9 @@ bool CItemBase::IsTypeArmor(IT_TYPE type)  // static
 		case IT_ARMOR:
 		case IT_ARMOR_LEATHER:
 		case IT_SHIELD:
-			return(true);
-
+			return true;
 		default:
-			return(false);
+			return false;
 	}
 }
 bool CItemBase::IsTypeWeapon(IT_TYPE type)  // static
@@ -276,10 +275,9 @@ bool CItemBase::IsTypeWeapon(IT_TYPE type)  // static
 		case IT_WEAPON_FENCE:
 		case IT_WEAPON_BOW:
 		case IT_WAND:
-			return(true);
-
+			return true;
 		default:
-			return(false);
+			return false;
 	}
 }
 
@@ -297,9 +295,9 @@ bool CItemBase::IsTypeSpellbook(IT_TYPE type)  // static
 		case IT_SPELLBOOK_ARCANIST:
 		case IT_SPELLBOOK_MYSTIC:
 		case IT_SPELLBOOK_MASTERY:
-			return(true);
+			return true;
 		default:
-			return(false);
+			return false;
 	}
 }
 
@@ -311,10 +309,9 @@ bool CItemBase::IsTypeMulti(IT_TYPE type)	// static
 		case IT_MULTI:
 		case IT_MULTI_CUSTOM:
 		case IT_SHIP:
-			return(true);
-
+			return true;
 		default:
-			return(false);
+			return false;
 	}
 }
 
@@ -364,6 +361,7 @@ int CItemBase::IsID_Door(ITEMID_TYPE id)	// static
 {
 	ADDTOCALLSTACK("CItemBase::IsID_Door");
 	// IT_DOOR
+	// IT_DOOR_LOCKED
 	static const ITEMID_TYPE sm_Item_DoorBase[] =
 	{
 		ITEMID_DOOR_SECRET_1,
@@ -615,19 +613,20 @@ IT_TYPE CItemBase::GetTypeBase(ITEMID_TYPE id, const CUOItemTypeRec2 &tiledata)	
 GUMP_TYPE CItemBase::GetContainerGumpID() const
 {
 	ADDTOCALLSTACK("CItemBase::GetContainerGumpID");
-	// IT_CONTAINER
 	switch ( m_type )
 	{
 		case IT_CONTAINER:
+		case IT_CONTAINER_LOCKED:
 		case IT_SIGN_GUMP:
-		case IT_SHIP_HOLD:
+		case IT_GAME_BOARD:
+		case IT_TRASH_CAN:
 		case IT_BBOARD:
 		case IT_CORPSE:
-		case IT_TRASH_CAN:
-		case IT_GAME_BOARD:
-		case IT_EQ_BANK_BOX:
 		case IT_EQ_VENDOR_BOX:
+		case IT_EQ_BANK_BOX:
 		case IT_KEYRING:
+		case IT_SHIP_HOLD:
+		case IT_SHIP_HOLD_LOCK:
 			return m_ttContainer.m_gumpid;
 		default:
 			return GUMP_NONE;
@@ -731,6 +730,7 @@ int CItemBase::CalculateMakeValue(int iSkillLevel) const
 
 BYTE CItemBase::GetSpeed() const
 {
+	ADDTOCALLSTACK("CItemBase::GetSpeed");
 	BYTE iSpeed = static_cast<BYTE>(m_TagDefs.GetKeyNum("OVERRIDE.SPEED"));
 	return iSpeed ? iSpeed : m_speed;
 }
@@ -1005,12 +1005,12 @@ bool CItemBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			pszKey += 9;
 			if ( *pszKey == '.' )
 			{
-				bool fQtyOnly = false;
-				bool fKeyOnly = false;
 				SKIP_SEPARATORS(pszKey);
-				int		index = Exp_GetVal(pszKey);
+				int index = Exp_GetVal(pszKey);
 				SKIP_SEPARATORS(pszKey);
 
+				bool fQtyOnly = false;
+				bool fKeyOnly = false;
 				if ( !strnicmp(pszKey, "KEY", 3) )
 					fKeyOnly = true;
 				else if ( !strnicmp(pszKey, "VAL", 3) )
@@ -1071,7 +1071,7 @@ bool CItemBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			break;
 		case IBC_TYPE:
 		{
-			RESOURCE_ID	rid(RES_TYPEDEF, m_type);
+			RESOURCE_ID rid(RES_TYPEDEF, m_type);
 			CResourceDef *pRes = g_Cfg.ResourceGetDef(rid);
 			if ( !pRes )
 				sVal.FormatVal(m_type);
@@ -1104,7 +1104,7 @@ bool CItemBase::r_LoadVal(CScript &s)
 {
 	ADDTOCALLSTACK("CItemBase::r_LoadVal");
 	EXC_TRY("LoadVal");
-	LPCTSTR	pszKey = s.GetKey();
+	LPCTSTR pszKey = s.GetKey();
 	switch ( FindTableSorted(s.GetKey(), sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1) )
 	{
 		// Set as string
@@ -1174,6 +1174,8 @@ bool CItemBase::r_LoadVal(CScript &s)
 			if ( *pszKey == '.' )
 			{
 				pszKey++;
+				if ( !IsType(IT_SHIP) )
+					return false;
 				CItemBaseMulti *pItemMulti = dynamic_cast<CItemBaseMulti *>(this);
 				if ( !pItemMulti )
 					return false;
@@ -1229,100 +1231,122 @@ bool CItemBase::r_LoadVal(CScript &s)
 			if ( !s.HasArgs() )
 				m_Can |= CAN_I_DYE;
 			else
+			{
 				if ( s.GetArgVal() )
 					m_Can |= CAN_I_DYE;
 				else
 					m_Can &= ~CAN_I_DYE;
+			}
 			break;
 		case IBC_FLIP:
 			if ( !s.HasArgs() )
 				m_Can |= CAN_I_FLIP;
 			else
+			{
 				if ( s.GetArgVal() )
 					m_Can |= CAN_I_FLIP;
 				else
 					m_Can &= ~CAN_I_FLIP;
+			}
 			break;
 		case IBC_ENCHANT:
 			if ( !s.HasArgs() )
 				m_Can |= CAN_I_ENCHANT;
 			else
+			{
 				if ( s.GetArgVal() )
 					m_Can |= CAN_I_ENCHANT;
 				else
 					m_Can &= ~CAN_I_ENCHANT;
+			}
 			break;
 		case IBC_EXCEPTIONAL:
 			if ( !s.HasArgs() )
 				m_Can |= CAN_I_EXCEPTIONAL;
 			else
+			{
 				if ( s.GetArgVal() )
 					m_Can |= CAN_I_EXCEPTIONAL;
 				else
 					m_Can &= ~CAN_I_EXCEPTIONAL;
+			}
 			break;
 		case IBC_IMBUE:
 			if ( !s.HasArgs() )
 				m_Can |= CAN_I_IMBUE;
 			else
+			{
 				if ( s.GetArgVal() )
 					m_Can |= CAN_I_IMBUE;
 				else
 					m_Can &= ~CAN_I_IMBUE;
+			}
 			break;
 		case IBC_REFORGE:
 			if ( !s.HasArgs() )
 				m_Can |= CAN_I_REFORGE;
 			else
+			{
 				if ( s.GetArgVal() )
 					m_Can |= CAN_I_REFORGE;
 				else
 					m_Can &= ~CAN_I_REFORGE;
+			}
 			break;
 		case IBC_RETAINCOLOR:
 			if ( !s.HasArgs() )
 				m_Can |= CAN_I_RETAINCOLOR;
 			else
+			{
 				if ( s.GetArgVal() )
 					m_Can |= CAN_I_RETAINCOLOR;
 				else
 					m_Can &= ~CAN_I_RETAINCOLOR;
+			}
 			break;
 		case IBC_MAKERSMARK:
 			if ( !s.HasArgs() )
 				m_Can |= CAN_I_MAKERSMARK;
 			else
+			{
 				if ( s.GetArgVal() )
 					m_Can |= CAN_I_MAKERSMARK;
 				else
 					m_Can &= ~CAN_I_MAKERSMARK;
+			}
 			break;
 		case IBC_RECYCLE:
 			if ( !s.HasArgs() )
 				m_Can |= CAN_I_RECYCLE;
 			else
+			{
 				if ( s.GetArgVal() )
 					m_Can |= CAN_I_RECYCLE;
 				else
 					m_Can &= ~CAN_I_RECYCLE;
+			}
 			break;
 		case IBC_REPAIR:
 			if ( !s.HasArgs() )
 				m_Can |= CAN_I_REPAIR;
 			else
+			{
 				if ( s.GetArgVal() )
 					m_Can |= CAN_I_REPAIR;
 				else
 					m_Can &= ~CAN_I_REPAIR;
+			}
 			break;
 		case IBC_REPLICATE:
 			if ( !s.HasArgs() )
 				m_Can |= CAN_I_REPLICATE;
 			else
+			{
 				if ( s.GetArgVal() )
 					m_Can |= CAN_I_REPLICATE;
 				else
 					m_Can &= ~CAN_I_REPLICATE;
+			}
 			break;
 		case IBC_ID:
 		{
@@ -1398,9 +1422,8 @@ bool CItemBase::r_LoadVal(CScript &s)
 			break;
 		case IBC_WEIGHT:
 		{
-			bool fDecimal = (strchr(s.GetArgStr(), '.') != NULL);
 			m_weight = static_cast<WORD>(s.GetArgVal());
-			if ( !fDecimal )
+			if ( !strchr(s.GetArgStr(), '.') )
 				m_weight *= WEIGHT_UNITS;
 			break;
 		}
