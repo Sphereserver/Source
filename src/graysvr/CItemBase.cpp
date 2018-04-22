@@ -69,7 +69,7 @@ CItemBase::CItemBase(ITEMID_TYPE id) : CBaseBaseDef(RESOURCE_ID(RES_ITEMDEF, id)
 CItemBase *CItemBase::FindItemBase(ITEMID_TYPE id)	// static
 {
 	ADDTOCALLSTACK("CItemBase::FindItemBase");
-	if ( id <= CREID_INVALID )
+	if ( id <= ITEMID_NOTHING )
 		return NULL;
 
 	RESOURCE_ID rid = RESOURCE_ID(RES_ITEMDEF, id);
@@ -1496,7 +1496,7 @@ CItemBase *CItemBase::MakeDupeReplacement(CItemBase *pBase, ITEMID_TYPE iddupe)	
 CItemBaseDupe *CItemBaseDupe::GetDupeRef(ITEMID_TYPE id)	// static
 {
 	ADDTOCALLSTACK("CItemBaseDupe::GetDupeRef");
-	if ( id <= CREID_INVALID )
+	if ( id <= ITEMID_NOTHING )
 		return NULL;
 
 	RESOURCE_ID rid = RESOURCE_ID(RES_ITEMDEF, id);
