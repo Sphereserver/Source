@@ -33,6 +33,7 @@ graysvr/CContain.cpp
 graysvr/CGMPage.cpp
 graysvr/CGMPage.h
 graysvr/CItemBase.cpp
+graysvr/CItemBase.h
 graysvr/CItem.cpp
 graysvr/CItem.h
 graysvr/CItemMulti.cpp

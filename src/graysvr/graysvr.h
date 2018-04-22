@@ -152,6 +152,7 @@ enum RESDISPLAY_VERSION
 #include "CAccount.h"
 #include "CBase.h"
 #include "CCharBase.h"
+#include "CItemBase.h"
 #include "CChat.h"
 #include "CClient.h"
 #include "CGMPage.h"

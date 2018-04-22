@@ -297,6 +297,7 @@ if defined GitRev (
     <ClInclude Include="src\graysvr\CClient.h" />
     <ClInclude Include="src\graysvr\CGMPage.h" />
     <ClInclude Include="src\graysvr\CItem.h" />
+    <ClInclude Include="src\graysvr\CItemBase.h" />
     <ClInclude Include="src\graysvr\CObjBase.h" />
     <ClInclude Include="src\graysvr\CPathFinder.h" />
     <ClInclude Include="src\graysvr\CResource.h" />
