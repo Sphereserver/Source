@@ -2,6 +2,7 @@
 #define _INC_CACHEABLE_SCRIPT_FILE_H
 #pragma once
 
+#include <string>
 #include "CFile.h"
 
 class CacheableScriptFile : public CFileText

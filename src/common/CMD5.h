@@ -7,6 +7,8 @@
 #define _INC_CMD5_H
 #pragma once
 
+#include <string.h>
+
 class CMD5
 {
 private:

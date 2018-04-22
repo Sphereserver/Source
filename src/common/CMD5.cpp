@@ -1,8 +1,5 @@
-
 #include <algorithm>
 #include <stdio.h>
-#include <string.h>
-
 #include "CMD5.h"
 
 CMD5::CMD5()
