@@ -1,5 +1,6 @@
-#ifndef OS_WINDOWS_H
-#define OS_WINDOWS_H
+#ifndef _INC_OS_WINDOWS_H
+#define _INC_OS_WINDOWS_H
+#pragma once
 
 #define _WIN32_DCOM
 
@@ -57,13 +58,13 @@ extern void NTWindow_SetWindowTitle( LPCTSTR pText = NULL );
 	*/
 	#ifdef UNREFERENCED_PARAMETER
 		#undef UNREFERENCED_PARAMETER
-	#endif  // UNREFERENCED_PARAMETER
+	#endif
 	#define UNREFERENCED_PARAMETER(P)	(void)(P)
 	// Not defined for mingw.
 	#define LSTATUS int
 	typedef void (__cdecl *_invalid_parameter_handler)(const wchar_t *,const wchar_t *,const wchar_t *,unsigned int,uintptr_t);
 	// Stuctured exception handling windows api not implemented on mingw.
 	#define __except(P)		catch(int)
-	#endif  // __MINGW32__
+#endif	// __MINGW32__
 
-#endif
+#endif	// _INC_OS_WINDOWS_H

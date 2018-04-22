@@ -1,5 +1,5 @@
-#ifndef OS_UNIX_H
-#define OS_UNIX_H
+#ifndef _INC_OS_UNIX_H
+#define _INC_OS_UNIX_H
 #pragma once
 
 #include <pthread.h>
@@ -117,4 +117,4 @@ inline void _strlwr( TCHAR * pszStr )
 	}
 }
 
-#endif
+#endif	// _INC_OS_UNIX_H

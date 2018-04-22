@@ -1,8 +1,8 @@
-#ifndef CACHEABLE_SCRIPT_FILE_H
-#define CACHEABLE_SCRIPT_FILE_H
+#ifndef _INC_CACHEABLE_SCRIPT_FILE_H
+#define _INC_CACHEABLE_SCRIPT_FILE_H
+#pragma once
 
 #include "CFile.h"
-#include <string>
 
 class CacheableScriptFile : public CFileText
 {
@@ -37,4 +37,4 @@ private:
 	bool useDefaultFile() const;
 };
 
-#endif
+#endif	// _INC_CACHEABLE_SCRIPT_FILE_H

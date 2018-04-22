@@ -1,14 +1,11 @@
-
 /*
 	This code has been built from scratch using rfc1321 and Colin Plumb's
 	public domain code.
- */
+*/
 
-#if !defined( __CMD5_H__ )
-#define __CMD5_H__
-
-#include <string.h>
-// #include "../graysvr/graysvr.h"
+#ifndef _INC_CMD5_H
+#define _INC_CMD5_H
+#pragma once
 
 class CMD5
 {
@@ -46,4 +43,4 @@ public:
 	}
 };
 
-#endif
+#endif	// _INC_CMD5_H

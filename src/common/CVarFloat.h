@@ -1,3 +1,7 @@
+#ifndef _INC_CVARFLOAT_H
+#define _INC_CVARFLOAT_H
+#pragma once
+
 #include <map>
 
 struct LexNoCaseLess {
@@ -77,3 +81,5 @@ public:
 private:
 	ObjMap m_ObjMap;
 };
+
+#endif	// _INC_CVARFLOAT_H
