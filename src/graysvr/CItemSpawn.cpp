@@ -92,15 +92,15 @@ int CItemSpawn::GetName(TCHAR *pszOut) const
 
 	LPCTSTR pszName = NULL;
 	CResourceDef *pDef = g_Cfg.ResourceGetDef(rid);
-	if ( pDef != NULL )
+	if ( pDef )
 		pszName = pDef->GetName();
-	if ( pDef == NULL || pszName == NULL || pszName[0] == '\0' )
+	if ( !pDef || !pszName || (pszName[0] == '\0') )
 		pszName = g_Cfg.ResourceGetName(rid);
 
 	return sprintf(pszOut, " (%s)", pszName);
 }
 
-CItemSpawn::CItemSpawn(ITEMID_TYPE id, CItemBase *pDef) : CItem(ITEMID_WorldGem, pDef)
+CItemSpawn::CItemSpawn(ITEMID_TYPE id, CItemBase *pItemDef) : CItem(ITEMID_WorldGem, pItemDef)
 {
 	ADDTOCALLSTACK("CItemSpawn::CItemSpawn");
 	UNREFERENCED_PARAMETER(id);		//forced in CItem(ITEMID_WorldGem, ...)
@@ -133,13 +133,13 @@ void CItemSpawn::GenerateItem(CResourceDef *pDef)
 	if ( !pItem )
 		return;
 
-	WORD iAmountPile = static_cast<WORD>(minimum(USHRT_MAX, m_itSpawnItem.m_pile));
-	if ( iAmountPile > 1 )
+	WORD wAmountPile = static_cast<WORD>(minimum(USHRT_MAX, m_itSpawnItem.m_pile));
+	if ( wAmountPile > 1 )
 	{
 		CItemBase *pItemDef = pItem->Item_GetDef();
 		ASSERT(pItemDef);
 		if ( pItemDef->IsStackableType() )
-			pItem->SetAmount(static_cast<WORD>(Calc_GetRandVal(iAmountPile)) + 1);
+			pItem->SetAmount(static_cast<WORD>(Calc_GetRandVal(wAmountPile)) + 1);
 	}
 
 	pItem->SetAttr(m_Attr & (ATTR_OWNED|ATTR_MOVE_ALWAYS));
@@ -250,7 +250,7 @@ void CItemSpawn::AddObj(CGrayUID uid)
 		else if ( !uid.ItemFind() )		// IT_SPAWN_ITEM can only spawn items
 			return;
 
-		CItemSpawn *pPrevSpawn = static_cast<CItemSpawn*>(uid.ObjFind()->m_uidSpawnItem.ItemFind());
+		CItemSpawn *pPrevSpawn = static_cast<CItemSpawn *>(uid.ObjFind()->m_uidSpawnItem.ItemFind());
 		if ( pPrevSpawn )
 		{
 			if ( pPrevSpawn == this )		// obj already linked to this spawn
@@ -260,7 +260,7 @@ void CItemSpawn::AddObj(CGrayUID uid)
 	}
 
 	BYTE iMax = maximum(GetAmount(), 1);
-	for (BYTE i = 0; i < iMax; i++ )
+	for ( BYTE i = 0; i < iMax; i++ )
 	{
 		if ( !m_obj[i].IsValidUID() )
 		{
@@ -292,7 +292,6 @@ void CItemSpawn::OnTick(bool fExec)
 	ADDTOCALLSTACK("CitemSpawn:OnTick");
 
 	INT64 iMinutes;
-
 	if ( m_itSpawnChar.m_TimeHiMin <= 0 )
 		iMinutes = Calc_GetRandLLVal(30) + 1;
 	else
@@ -304,7 +303,7 @@ void CItemSpawn::OnTick(bool fExec)
 	if ( !fExec || IsTimerExpired() )
 		SetTimeout(iMinutes * 60 * TICK_PER_SEC);	// set time to check again.
 
-	if ( !fExec || m_currentSpawned >= GetAmount() )
+	if ( !fExec || (m_currentSpawned >= GetAmount()) )
 		return;
 	if ( !IsTopLevel() )
 		return;
@@ -326,10 +325,10 @@ void CItemSpawn::OnTick(bool fExec)
 void CItemSpawn::KillChildren()
 {
 	ADDTOCALLSTACK("CitemSpawn:KillChildren");
-	if (m_currentSpawned <= 0 )
+	if ( m_currentSpawned <= 0 )
 		return;
 
-	for (BYTE i = 0; i < m_currentSpawned; i++ )
+	for ( BYTE i = 0; i < m_currentSpawned; i++ )
 	{
 		CObjBase *pObj = m_obj[i].ObjFind();
 		if ( !pObj )
@@ -392,11 +391,11 @@ LPCTSTR const CItemSpawn::sm_szLoadKeys[ISPW_QTY + 1] =
 	NULL
 };
 
-bool CItemSpawn::r_WriteVal(LPCTSTR pszKey, CGString & sVal, CTextConsole *pSrc)
+bool CItemSpawn::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 {
 	ADDTOCALLSTACK("CitemSpawn:r_WriteVal");
 	EXC_TRY("WriteVal");
-	if (!strnicmp(pszKey, "amount", 6))
+	if ( !strnicmp(pszKey, "amount", 6) )
 	{
 		sVal.FormatVal(GetAmount());
 		return true;
@@ -420,7 +419,7 @@ bool CItemSpawn::r_WriteVal(LPCTSTR pszKey, CGString & sVal, CTextConsole *pSrc)
 	return CItem::r_WriteVal(pszKey, sVal, pSrc);
 }
 
-bool CItemSpawn::r_LoadVal(CScript & s)
+bool CItemSpawn::r_LoadVal(CScript &s)
 {
 	ADDTOCALLSTACK("CitemSpawn:r_LoadVal");
 	EXC_TRY("LoadVal");
@@ -463,7 +462,7 @@ bool CItemSpawn::r_LoadVal(CScript & s)
 	return false;
 }
 
-void CItemSpawn::r_Write(CScript & s)
+void CItemSpawn::r_Write(CScript &s)
 {
 	ADDTOCALLSTACK("CitemSpawn:r_Write");
 	EXC_TRY("Write");
@@ -472,15 +471,15 @@ void CItemSpawn::r_Write(CScript & s)
 	if ( GetAmount() != 1 )
 		s.WriteKeyVal("AMOUNT", GetAmount());
 
-	WORD iTotal = GetCount();
-	if ( iTotal <= 0 )
+	WORD wTotal = GetCount();
+	if ( wTotal <= 0 )
 		return;
 
-	for ( BYTE i = 0; i < iTotal; i++ )
+	for ( WORD w = 0; w < wTotal; w++ )
 	{
-		if ( !m_obj[i].IsValidUID() )
+		if ( !m_obj[w].IsValidUID() )
 			continue;
-		CObjBase *pObj = m_obj[i].ObjFind();
+		CObjBase *pObj = m_obj[w].ObjFind();
 		if ( pObj )
 			s.WriteKeyHex("ADDOBJ", pObj->GetUID());
 	}
@@ -500,7 +499,7 @@ void CItem::Plant_SetTimer()
 // use the
 //  IT_CROPS = transforms into a "ripe" variety then is used up on reaping.
 //  IT_FOLIAGE = is not consumed on reap (unless eaten then will regrow invis)
-//
+
 bool CItem::Plant_Use(CChar *pChar)
 {
 	ADDTOCALLSTACK("CItem::Plant_Use");
@@ -650,15 +649,15 @@ bool CItemMap::IsSameType(const CObjBase *pObj) const
 	return CItemVendable::IsSameType(pObj);
 }
 
-bool CItemMap::r_LoadVal(CScript & s)	// load an item script
+bool CItemMap::r_LoadVal(CScript &s)	// load an item script
 {
 	ADDTOCALLSTACK("CItemMap::r_LoadVal");
 	EXC_TRY("LoadVal");
 	if ( s.IsKeyHead("PIN", 3) )
 	{
-		CPointMap pntTemp;
-		pntTemp.Read(s.GetArgStr());
-		CMapPinRec pin(pntTemp.m_x, pntTemp.m_y);
+		CPointMap ptTemp;
+		ptTemp.Read(s.GetArgStr());
+		CMapPinRec pin(ptTemp.m_x, ptTemp.m_y);
 		m_Pins.Add(pin);
 		return true;
 	}
@@ -699,7 +698,7 @@ bool CItemMap::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 	return false;
 }
 
-void CItemMap::r_Write(CScript & s)
+void CItemMap::r_Write(CScript &s)
 {
 	ADDTOCALLSTACK_INTENSIVE("CItemMap::r_Write");
 	CItemVendable::r_Write(s);
@@ -713,15 +712,15 @@ void CItemMap::DupeCopy(const CItem *pItem)
 	CItemVendable::DupeCopy(pItem);
 
 	const CItemMap *pMapItem = dynamic_cast<const CItemMap *>(pItem);
-	if ( pMapItem == NULL )
+	if ( !pMapItem )
 		return;
-	m_Pins.Copy(&(pMapItem->m_Pins));
+	m_Pins.Copy(&pMapItem->m_Pins);
 }
 
 /////////////////////////////////////////////////////////////////////////////
 // -CItemMessage
 
-void CItemMessage::r_Write(CScript & s)
+void CItemMessage::r_Write(CScript &s)
 {
 	ADDTOCALLSTACK_INTENSIVE("CItemMessage::r_Write");
 	CItemVendable::r_Write(s);
@@ -729,15 +728,15 @@ void CItemMessage::r_Write(CScript & s)
 
 	// Store the message body lines. MAX_BOOK_PAGES
 	TemporaryString pszTemp;
-	for ( WORD i = 0; i < GetPageCount(); ++i )
+	for ( WORD w = 0; w < GetPageCount(); ++w )
 	{
-		sprintf(pszTemp, "BODY.%hu", i);
-		LPCTSTR pszText = GetPageText(i);
-		s.WriteKey(pszTemp, pszText != NULL ? pszText : "");
+		sprintf(pszTemp, "BODY.%hu", w);
+		LPCTSTR pszText = GetPageText(w);
+		s.WriteKey(pszTemp, pszText ? pszText : "");
 	}
 }
 
-LPCTSTR const CItemMessage::sm_szLoadKeys[CIC_QTY+1] =	// static
+LPCTSTR const CItemMessage::sm_szLoadKeys[CIC_QTY + 1] =	// static
 {
 	"AUTHOR",
 	"BODY",
@@ -789,7 +788,7 @@ bool CItemMessage::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc
 	{
 		pszKey += 4;
 		size_t iPage = Exp_GetVal(pszKey);
-		if ( m_sBodyLines.IsValidIndex(iPage) == false )
+		if ( !m_sBodyLines.IsValidIndex(iPage) )
 			return false;
 		sVal = *m_sBodyLines[iPage];
 		return true;
@@ -825,7 +824,7 @@ LPCTSTR const CItemMessage::sm_szVerbKeys[] =
 	NULL,
 };
 
-bool CItemMessage::r_Verb(CScript & s, CTextConsole *pSrc)
+bool CItemMessage::r_Verb(CScript &s, CTextConsole *pSrc)
 {
 	ADDTOCALLSTACK("CItemMessage::r_Verb");
 	EXC_TRY("Verb");
@@ -833,25 +832,25 @@ bool CItemMessage::r_Verb(CScript & s, CTextConsole *pSrc)
 	if ( s.IsKey(sm_szVerbKeys[0]) )
 	{
 		// 1 based pages
-		WORD iPage = (s.GetArgStr()[0] && (toupper(s.GetArgStr()[0]) != 'A')) ? static_cast<WORD>(s.GetArgVal()) : 0;
-		if ( iPage <= 0 )
+		WORD wPage = (s.GetArgStr()[0] && (toupper(s.GetArgStr()[0]) != 'A')) ? static_cast<WORD>(s.GetArgVal()) : 0;
+		if ( wPage <= 0 )
 		{
 			m_sBodyLines.RemoveAll();
 			return true;
 		}
-		else if ( iPage <= GetPageCount() )
+		else if ( wPage <= GetPageCount() )
 		{
-			m_sBodyLines.RemoveAt(iPage - 1);
+			m_sBodyLines.RemoveAt(wPage - 1);
 			return true;
 		}
 	}
 	if ( s.IsKeyHead("PAGE", 4) )
 	{
-		WORD iPage = static_cast<WORD>(ATOI(s.GetKey() + 4));
-		if ( iPage <= 0 )
+		WORD wPage = static_cast<WORD>(ATOI(s.GetKey() + 4));
+		if ( wPage <= 0 )
 			return false;
 
-		SetPageText(iPage - 1, s.GetArgStr());
+		SetPageText(wPage - 1, s.GetArgStr());
 		return true;
 	}
 	return CItemVendable::r_Verb(s, pSrc);
@@ -873,8 +872,8 @@ void CItemMessage::DupeCopy(const CItem *pItem)
 		return;
 
 	m_sAuthor = pMsgItem->m_sAuthor;
-	for ( WORD i = 0; i < pMsgItem->GetPageCount(); i++ )
-		SetPageText(i, pMsgItem->GetPageText(i));
+	for ( WORD w = 0; w < pMsgItem->GetPageCount(); w++ )
+		SetPageText(w, pMsgItem->GetPageText(w));
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -885,7 +884,7 @@ CItemStone *CItemMemory::Guild_GetLink()
 	ADDTOCALLSTACK("CItemMemory::Guild_GetLink");
 	if ( !IsMemoryTypes(MEMORY_TOWN|MEMORY_GUILD) )
 		return NULL;
-	return dynamic_cast<CItemStone*>(m_uidLink.ItemFind());
+	return dynamic_cast<CItemStone *>(m_uidLink.ItemFind());
 }
 
 bool CItemMemory::Guild_IsAbbrevOn() const
@@ -956,7 +955,7 @@ int CItemMemory::FixWeirdness()
 	if ( IsMemoryTypes(MEMORY_GUILD|MEMORY_TOWN) )
 	{
 		const CItemStone *pStone = pChar->Guild_Find(static_cast<MEMORY_TYPE>(GetMemoryTypes()));
-		if ( !pStone || pStone->GetUID() != m_uidLink )
+		if ( !pStone || (pStone->GetUID() != m_uidLink) )
 			return 0x4224;	// get rid of it.
 		if ( !pStone->GetMember(pChar) )
 			return 0x4225;	// get rid of it.
@@ -1013,7 +1012,7 @@ void CItemCommCrystal::OnHear(LPCTSTR pszCmd, CChar *pSrc)
 		if ( !pLink->ResourceLock(s) )
 			continue;
 		TRIGRET_TYPE iRet = OnHearTrigger(s, pszCmd, pSrc, mode);
-		if ( iRet == TRIGRET_ENDIF || iRet == TRIGRET_RET_FALSE )
+		if ( (iRet == TRIGRET_ENDIF) || (iRet == TRIGRET_RET_FALSE) )
 			continue;
 		break;
 	}
@@ -1034,14 +1033,14 @@ void CItemCommCrystal::OnHear(LPCTSTR pszCmd, CChar *pSrc)
 		Speak(pszCmd);
 }
 
-void CItemCommCrystal::r_Write(CScript & s)
+void CItemCommCrystal::r_Write(CScript &s)
 {
 	ADDTOCALLSTACK_INTENSIVE("CItemCommCrystal::r_Write");
 	CItemVendable::r_Write(s);
 	m_Speech.r_Write(s, "SPEECH");
 }
 
-bool CItemCommCrystal::r_WriteVal(LPCTSTR pszKey, CGString & sVal, CTextConsole *pSrc)
+bool CItemCommCrystal::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 {
 	ADDTOCALLSTACK("CItemCommCrystal::r_WriteVal");
 	switch ( FindTableSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1) )
@@ -1055,7 +1054,7 @@ bool CItemCommCrystal::r_WriteVal(LPCTSTR pszKey, CGString & sVal, CTextConsole 
 	return true;
 }
 
-bool CItemCommCrystal::r_LoadVal(CScript & s)
+bool CItemCommCrystal::r_LoadVal(CScript &s)
 {
 	ADDTOCALLSTACK("CItemCommCrystal::r_LoadVal");
 	switch ( FindTableSorted(s.GetKey(), sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1) )
@@ -1092,25 +1091,25 @@ LPCTSTR const CItemScript::sm_szVerbKeys[] =
 	NULL,
 };
 
-void CItemScript::r_Write(CScript & s)
+void CItemScript::r_Write(CScript &s)
 {
 	ADDTOCALLSTACK_INTENSIVE("CItemScript::r_Write");
 	CItemVendable::r_Write(s);
 }
 
-bool CItemScript::r_WriteVal(LPCTSTR pszKey, CGString & sVal, CTextConsole *pSrc)
+bool CItemScript::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 {
 	ADDTOCALLSTACK("CItemScript::r_WriteVal");
 	return CItemVendable::r_WriteVal(pszKey, sVal, pSrc);
 }
 
-bool CItemScript::r_LoadVal(CScript & s)
+bool CItemScript::r_LoadVal(CScript &s)
 {
 	ADDTOCALLSTACK("CItemScript::r_LoadVal");
 	return CItemVendable::r_LoadVal(s);
 }
 
-bool CItemScript::r_Verb(CScript & s, CTextConsole *pSrc)
+bool CItemScript::r_Verb(CScript &s, CTextConsole *pSrc)
 {
 	ADDTOCALLSTACK("CItemScript::r_Verb");
 	return CItemVendable::r_Verb(s, pSrc);

@@ -3221,9 +3221,9 @@ int CChar::Skill_Act_Breath(SKTRIG_TYPE stage)
 	if ( !CanSeeLOS(pChar) )
 		return -SKTRIG_QTY;
 
-	CPointMap pntMe = GetTopPoint();
-	if ( pntMe.GetDist(m_Act_p) > UO_MAP_VIEW_SIGHT )
-		m_Act_p.StepLinePath(pntMe, UO_MAP_VIEW_SIGHT);
+	CPointMap pt = GetTopPoint();
+	if ( pt.GetDist(m_Act_p) > UO_MAP_VIEW_SIGHT )
+		m_Act_p.StepLinePath(pt, UO_MAP_VIEW_SIGHT);
 
 	int iDamage = static_cast<int>(GetDefNum("BREATH.DAM"));
 	if ( !iDamage )
@@ -3277,9 +3277,9 @@ int CChar::Skill_Act_Throwing(SKTRIG_TYPE stage)
 	if ( stage != SKTRIG_SUCCESS )
 		return -SKTRIG_QTY;
 
-	CPointMap ptMe = GetTopPoint();
-	if ( ptMe.GetDist(m_Act_p) > UO_MAP_VIEW_SIGHT )
-		m_Act_p.StepLinePath(ptMe, UO_MAP_VIEW_SIGHT);
+	CPointMap pt = GetTopPoint();
+	if ( pt.GetDist(m_Act_p) > UO_MAP_VIEW_SIGHT )
+		m_Act_p.StepLinePath(pt, UO_MAP_VIEW_SIGHT);
 
 	SoundChar(CRESND_GETHIT);
 

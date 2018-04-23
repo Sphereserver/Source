@@ -655,28 +655,28 @@ void CClient::addBarkParse(LPCTSTR pszText, const CObjBaseTemplate *pSrc, HUE_TY
 		{
 			defaultHue = static_cast<HUE_TYPE>(g_Exp.m_VarDefs.GetKeyNum("SMSG_DEF_COLOR"));
 			defaultFont = static_cast<FONT_TYPE>(g_Exp.m_VarDefs.GetKeyNum("SMSG_DEF_FONT"));
-			defaultUnicode = (g_Exp.m_VarDefs.GetKeyNum("SMSG_DEF_UNICODE") > 0) ? true : false;
+			defaultUnicode = (g_Exp.m_VarDefs.GetKeyNum("SMSG_DEF_UNICODE") > 0);
 			break;
 		}
 		case TALKMODE_EMOTE:
 		{
 			defaultHue = static_cast<HUE_TYPE>(g_Exp.m_VarDefs.GetKeyNum("EMOTE_DEF_COLOR"));
 			defaultFont = static_cast<FONT_TYPE>(g_Exp.m_VarDefs.GetKeyNum("EMOTE_DEF_FONT"));
-			defaultUnicode = (g_Exp.m_VarDefs.GetKeyNum("EMOTE_DEF_UNICODE") > 0) ? true : false;
+			defaultUnicode = (g_Exp.m_VarDefs.GetKeyNum("EMOTE_DEF_UNICODE") > 0);
 			break;
 		}
 		case TALKMODE_SAY:
 		{
 			defaultHue = static_cast<HUE_TYPE>(g_Exp.m_VarDefs.GetKeyNum("SAY_DEF_COLOR"));
 			defaultFont = static_cast<FONT_TYPE>(g_Exp.m_VarDefs.GetKeyNum("SAY_DEF_FONT"));
-			defaultUnicode = (g_Exp.m_VarDefs.GetKeyNum("SAY_DEF_UNICODE") > 0) ? true : false;
+			defaultUnicode = (g_Exp.m_VarDefs.GetKeyNum("SAY_DEF_UNICODE") > 0);
 			break;
 		}
 		case TALKMODE_OBJ:
 		{
 			defaultHue = static_cast<HUE_TYPE>(g_Exp.m_VarDefs.GetKeyNum("MSG_DEF_COLOR"));
 			defaultFont = static_cast<FONT_TYPE>(g_Exp.m_VarDefs.GetKeyNum("MSG_DEF_FONT"));
-			defaultUnicode = (g_Exp.m_VarDefs.GetKeyNum("MSG_DEF_UNICODE") > 0) ? true : false;
+			defaultUnicode = (g_Exp.m_VarDefs.GetKeyNum("MSG_DEF_UNICODE") > 0);
 			break;
 		}
 		case TALKMODE_ITEM:
@@ -684,13 +684,13 @@ void CClient::addBarkParse(LPCTSTR pszText, const CObjBaseTemplate *pSrc, HUE_TY
 			if ( pSrc->IsChar() )
 			{
 				defaultFont = static_cast<FONT_TYPE>(g_Exp.m_VarDefs.GetKeyNum("CMSG_DEF_FONT"));
-				defaultUnicode = (g_Exp.m_VarDefs.GetKeyNum("CMSG_DEF_UNICODE") > 0) ? true : false;
+				defaultUnicode = (g_Exp.m_VarDefs.GetKeyNum("CMSG_DEF_UNICODE") > 0);
 			}
 			else
 			{
 				defaultHue = static_cast<HUE_TYPE>(g_Exp.m_VarDefs.GetKeyNum("IMSG_DEF_COLOR"));
 				defaultFont = static_cast<FONT_TYPE>(g_Exp.m_VarDefs.GetKeyNum("IMSG_DEF_FONT"));
-				defaultUnicode = (g_Exp.m_VarDefs.GetKeyNum("IMSG_DEF_UNICODE") > 0) ? true : false;
+				defaultUnicode = (g_Exp.m_VarDefs.GetKeyNum("IMSG_DEF_UNICODE") > 0);
 			}
 			break;
 		}
@@ -756,7 +756,7 @@ void CClient::addBarkParse(LPCTSTR pszText, const CObjBaseTemplate *pSrc, HUE_TY
 			{
 				if ( CArgs.GetLength() )
 					CArgs += "\t";
-				CArgs += (!strcmp(ppArgs[i], "NULL") ? " " : ppArgs[i]);
+				CArgs += !strcmp(ppArgs[i], "NULL") ? " " : ppArgs[i];
 			}
 
 			addBarkLocalizedEx(iClilocId, pSrc, static_cast<HUE_TYPE>(Args[0]), mode, static_cast<FONT_TYPE>(Args[1]), static_cast<AFFIX_TYPE>(iAffixType), ppArgs[2], CArgs.GetPtr());
@@ -773,7 +773,7 @@ void CClient::addBarkParse(LPCTSTR pszText, const CObjBaseTemplate *pSrc, HUE_TY
 			{
 				if ( CArgs.GetLength() )
 					CArgs += "\t";
-				CArgs += (!strcmp(ppArgs[i], "NULL") ? " " : ppArgs[i]);
+				CArgs += !strcmp(ppArgs[i], "NULL") ? " " : ppArgs[i];
 			}
 
 			addBarkLocalized(iClilocId, pSrc, static_cast<HUE_TYPE>(Args[0]), mode, static_cast<FONT_TYPE>(Args[1]), CArgs.GetPtr());
@@ -1171,7 +1171,7 @@ void CClient::addCharName(const CChar *pChar)
 			if ( pChar->IsStatFlag(STATF_Conjured) )
 				strcat(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_SUMMONED));
 			else if ( pChar->IsStatFlag(STATF_Pet) )
-				strcat(pszTemp, (pChar->m_pNPC->m_bonded) ? g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_BONDED) : g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_TAME));
+				strcat(pszTemp, pChar->m_pNPC->m_bonded ? g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_BONDED) : g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_TAME));
 		}
 		if ( pChar->IsStatFlag(STATF_INVUL) && !pChar->IsStatFlag(STATF_Incognito) && !pChar->IsPriv(PRIV_PRIV_NOSHOW) )
 			strcat(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_INVUL));
@@ -2350,7 +2350,7 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 							if ( (id == CREID_LLAMA_PACK) || (id == CREID_HORSE_PACK) || (id == CREID_GIANT_BEETLE) )
 							{
 								int iWeight = pChar->GetWeight() / WEIGHT_UNITS;
-								m_TooltipData.Add(t = new CClientTooltip(iWeight == 1 ? 1072788 : 1072789)); // Weight: ~1_WEIGHT~ stone / Weight: ~1_WEIGHT~ stones
+								m_TooltipData.Add(t = new CClientTooltip((iWeight == 1) ? 1072788 : 1072789)); // Weight: ~1_WEIGHT~ stone / Weight: ~1_WEIGHT~ stones
 								t->FormatArgs("%d", iWeight);
 							}
 
@@ -2393,7 +2393,7 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 						if ( pItem->IsMovable() )
 						{
 							int iWeight = pItem->GetWeight() / WEIGHT_UNITS;
-							m_TooltipData.Add(t = new CClientTooltip(iWeight == 1 ? 1072788 : 1072789)); // Weight: ~1_WEIGHT~ stone / Weight: ~1_WEIGHT~ stones
+							m_TooltipData.Add(t = new CClientTooltip((iWeight == 1) ? 1072788 : 1072789)); // Weight: ~1_WEIGHT~ stone / Weight: ~1_WEIGHT~ stones
 							t->FormatArgs("%d", iWeight);
 						}
 					}
@@ -2872,21 +2872,21 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 							if ( !pt.IsValidPoint() )
 								break;
 
-							bool regionMulti = (pt.GetRegion(REGION_TYPE_MULTI) != NULL);
+							bool fRegionMulti = (pt.GetRegion(REGION_TYPE_MULTI) != NULL);
 							LPCTSTR pszRegionName = g_Cfg.GetDefaultMsg(DEFMSG_RUNE_LOCATION_UNK);
 							if ( pt.GetRegion(REGION_TYPE_AREA) )
 								pszRegionName = pt.GetRegion(REGION_TYPE_AREA)->GetName();
 
 							if ( pt.m_map == 0 )
-								m_TooltipData.Add(t = new CClientTooltip(regionMulti ? 1062452 : 1060805)); // ~1_val~ (Felucca)[(House)]
+								m_TooltipData.Add(t = new CClientTooltip(fRegionMulti ? 1062452 : 1060805)); // ~1_val~ (Felucca)[(House)]
 							else if ( pt.m_map == 1 )
-								m_TooltipData.Add(t = new CClientTooltip(regionMulti ? 1062453 : 1060806)); // ~1_val~ (Trammel)[(House)]
+								m_TooltipData.Add(t = new CClientTooltip(fRegionMulti ? 1062453 : 1060806)); // ~1_val~ (Trammel)[(House)]
 							else if ( pt.m_map == 3 )
-								m_TooltipData.Add(t = new CClientTooltip(regionMulti ? 1062454 : 1060804)); // ~1_val~ (Malas)[(House)]
+								m_TooltipData.Add(t = new CClientTooltip(fRegionMulti ? 1062454 : 1060804)); // ~1_val~ (Malas)[(House)]
 							else if ( pt.m_map == 4 )
-								m_TooltipData.Add(t = new CClientTooltip(regionMulti ? 1063260 : 1063259)); // ~1_val~ (Tokuno Islands)[(House)]
+								m_TooltipData.Add(t = new CClientTooltip(fRegionMulti ? 1063260 : 1063259)); // ~1_val~ (Tokuno Islands)[(House)]
 							else if ( pt.m_map == 5 )
-								m_TooltipData.Add(t = new CClientTooltip(regionMulti ? 1113206 : 1113205)); // ~1_val~ (Ter Mur)[(House)]
+								m_TooltipData.Add(t = new CClientTooltip(fRegionMulti ? 1113206 : 1113205)); // ~1_val~ (Ter Mur)[(House)]
 							else
 								// There's no proper clilocs for Ilshenar (map2) and custom facets (map > 5), so let's use a generic cliloc
 								m_TooltipData.Add(t = new CClientTooltip(1042971)); // ~1_NOTHING~
@@ -3516,7 +3516,7 @@ BYTE CClient::Setup_Start(CChar *pChar)
 			}
 			iDist = iDistNew;
 		}
-		addSysMessage(g_Cfg.GetDefaultMsg(i < 100 ? DEFMSG_MSG_REGION_WATER_1 : DEFMSG_MSG_REGION_WATER_2));
+		addSysMessage(g_Cfg.GetDefaultMsg((i < 100) ? DEFMSG_MSG_REGION_WATER_1 : DEFMSG_MSG_REGION_WATER_2));
 	}
 
 	DEBUG_MSG(("%lx:Setup_Start done\n", GetSocketID()));
