@@ -171,7 +171,6 @@ bool CCharBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal = GetDefStr(pszKey, false);
 			break;
 		// Return as decimal number (0 if not set)
-		case CBC_BONDED:
 		case CBC_TITHING:
 			sVal.FormatLLVal(GetDefNum(pszKey));
 			break;
@@ -302,7 +301,6 @@ bool CCharBase::r_LoadVal(CScript &s)
 			break;
 		}
 		// Set as numeric
-		case CBC_BONDED:
 		case CBC_TITHING:
 			SetDefNum(s.GetKey(), s.GetArgVal(), false);
 			break;

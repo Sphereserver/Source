@@ -493,7 +493,7 @@ void CChar::NPC_PetClearOwners(bool bResendTooltip)
 	Memory_ClearTypes(MEMORY_IPET|MEMORY_FRIEND);
 
 	if ( m_pNPC )
-		m_pNPC->m_bonded = 0;	// pets without owner cannot be bonded
+		m_pNPC->m_bonded = false;	// pets without owner cannot be bonded
 
 	if ( NPC_IsVendor() )
 	{
@@ -593,15 +593,13 @@ bool CChar::NPC_CheckHirelingStatus()
 	if ( !pCharDef->m_iHireDayWage || !iFoodConsumeRate )
 		return true;
 
-	DWORD iPeriodWage = IMULDIV(pCharDef->m_iHireDayWage, iFoodConsumeRate, 24 * 60 * g_Cfg.m_iGameMinuteLength);
-	if ( iPeriodWage <= 0 )
-		iPeriodWage = 1;
+	DWORD dwPeriodWage = IMULDIV(pCharDef->m_iHireDayWage, iFoodConsumeRate, 24 * 60 * g_Cfg.m_iGameMinuteLength);
+	if ( dwPeriodWage < 1 )
+		dwPeriodWage = 1;
 
 	CItemContainer *pBank = GetContainerCreate(LAYER_BANKBOX);
-	if ( pBank->m_itEqBankBox.m_Check_Amount > iPeriodWage )
-	{
-		pBank->m_itEqBankBox.m_Check_Amount -= iPeriodWage;
-	}
+	if ( pBank->m_itEqBankBox.m_Check_Amount > dwPeriodWage )
+		pBank->m_itEqBankBox.m_Check_Amount -= dwPeriodWage;
 	else
 	{
 		TCHAR *pszMsg = Str_GetTemp();
