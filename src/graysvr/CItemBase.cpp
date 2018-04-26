@@ -32,7 +32,7 @@ CItemBase::CItemBase(ITEMID_TYPE id) : CBaseBaseDef(RESOURCE_ID(RES_ITEMDEF, id)
 	if ( id < ITEMID_MULTI )
 		GetItemData(id, &tiledata);
 	else
-		tiledata.m_weight = 0xFF;
+		tiledata.m_weight = UCHAR_MAX;
 
 	m_dwFlags = tiledata.m_flags;
 	m_type = GetTypeBase(id, tiledata);
@@ -51,7 +51,7 @@ CItemBase::CItemBase(ITEMID_TYPE id) : CBaseBaseDef(RESOURCE_ID(RES_ITEMDEF, id)
 	SetHeight(GetItemHeightFlags(tiledata, m_Can));
 	GetItemSpecificFlags(tiledata, m_Can, m_type, id);
 
-	if ( (tiledata.m_weight == 0xFF) || (tiledata.m_flags & UFLAG1_WATER) )	// not movable
+	if ( (tiledata.m_weight == UCHAR_MAX) || (tiledata.m_flags & UFLAG1_WATER) )	// not movable
 		m_weight = USHRT_MAX;
 	else
 		m_weight = tiledata.m_weight * WEIGHT_UNITS;
@@ -1421,12 +1421,10 @@ bool CItemBase::r_LoadVal(CScript &s)
 			m_values.Load(s.GetArgRaw());
 			break;
 		case IBC_WEIGHT:
-		{
 			m_weight = static_cast<WORD>(s.GetArgVal());
-			if ( !strchr(s.GetArgStr(), '.') )
+			if ( strchr(s.GetArgStr(), '.') )
 				m_weight *= WEIGHT_UNITS;
 			break;
-		}
 		default:
 			return CBaseBaseDef::r_LoadVal(s);
 	}
