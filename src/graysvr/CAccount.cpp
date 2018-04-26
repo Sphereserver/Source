@@ -747,11 +747,6 @@ bool CAccount::Kick( CTextConsole * pSrc, bool fBlock )
 
 bool CAccount::CheckPasswordTries(CSocketAddress csaPeerName)
 {
-	if ( csaPeerName.IsLocalAddr() || (csaPeerName.GetAddrIP() == 0x7F000001) )
-	{
-		return true;
-	}
-
 	int iAccountMaxTries = g_Cfg.m_iClientLoginMaxTries;
 	bool bReturn = true;
 	DWORD dwCurrentIP = csaPeerName.GetAddrIP();

@@ -235,7 +235,7 @@ CResource::CResource()
 	m_iTooltipMode = TOOLTIPMODE_SENDVERSION;
 	m_iAutoTooltipResend = (AUTOTOOLTIP_FLAG_NAME|AUTOTOOLTIP_FLAG_AMOUNT|AUTOTOOLTIP_FLAG_WEIGHT|AUTOTOOLTIP_FLAG_DURABILITY|AUTOTOOLTIP_FLAG_POISON|AUTOTOOLTIP_FLAG_WANDCHARGES|AUTOTOOLTIP_FLAG_SPELLBOOK);
 
-	m_iClientLoginMaxTries = 0;		// maximum bad password tries before a temp ip ban
+	m_iClientLoginMaxTries = 10;
 	m_iClientLoginTempBan = 3*60*TICK_PER_SEC;
 	m_iMaxShipPlankTeleport = UO_MAP_VIEW_SIZE;
 	m_sChatStaticChannels = "General, Help, Trade, Looking For Group";
