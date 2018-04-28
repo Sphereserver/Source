@@ -35,7 +35,6 @@ void CSQLite::Close()
 
 bool CSQLite::IsOpen()
 {
-	if (this==0) return false;
 	return m_sqlite3!=0;
 }
 
@@ -414,7 +413,6 @@ LPCTSTR Table::GetColName( int iCol )
 
 bool Table::GoFirst()
 { 
-	if (this==0) return false;
 	if (m_lstRows.size()) 
 	{
 		m_iPos=0; 
@@ -455,7 +453,6 @@ bool Table::GoPrev()
 
 bool Table::GoRow(unsigned int iRow)
 {
-	if (this==0) return false;
 	if (iRow<m_lstRows.size())
 	{
 		m_iPos=iRow;

@@ -43,6 +43,7 @@ bool CChat::CreateChannel(LPCTSTR pszName, LPCTSTR pszPassword, CChatMember *pMe
 void CChat::DeleteChannel(CChatChannel *pChannel)
 {
 	ADDTOCALLSTACK("CChat::DeleteChannel");
+	ASSERT(pChannel);
 	if ( pChannel->m_bStatic )
 		return;
 	BroadcastRemoveChannel(pChannel);
@@ -573,13 +574,10 @@ void CChatChannel::KickMember(CChatMember *pByMember, CChatMember *pMember)
 		pMember->SendChatMsg(CHATMSG_RemovedListModerators, pszByName);
 	}
 
-	RemoveMember(pMember);
-	if ( !this )	// the channel got removed because there's no members left
-		return;
-
 	pMember->SendChatMsg(CHATMSG_ModeratorHasKicked, pszByName);
 	pMember->SendChatMsg(CHATCMD_ClearMembers);
 	Broadcast(CHATMSG_PlayerKicked, pszName);
+	RemoveMember(pMember);
 }
 
 CChatMember *CChatChannel::FindMember(LPCTSTR pszName) const

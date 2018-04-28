@@ -320,7 +320,7 @@ bool CScriptTriggerArgs::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsol
 				// add empty arguments if they are provided
 				if ( (*s == ',') && (!fQuotes))
 				{
-					m_v.Add( '\0' );
+					m_v.Add(NULL);
 					++s;
 					continue;
 				}

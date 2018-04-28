@@ -3256,8 +3256,6 @@ DWORD CItem::ConsumeAmount( DWORD dwQty, bool fTest )
 	ADDTOCALLSTACK("CItem::ConsumeAmount");
 	// Eat or drink specific item. delete it when gone.
 	// return: the amount we used.
-	if ( this == NULL )	// can use none if there is nothing? or can we use all?
-		return dwQty;
 
 	DWORD dwQtyMax = GetAmount();
 	if ( dwQty < dwQtyMax )

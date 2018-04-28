@@ -589,9 +589,7 @@ void CAccount::SetPrivLevel( PLEVEL_TYPE plevel )
 CClient * CAccount::FindClient( const CClient * pExclude ) const
 {
 	ADDTOCALLSTACK("CAccount::FindClient");
-	if ( this == NULL )
-		return( NULL );	// this might be possible.
-	
+
 	CClient* pClient = NULL;
 	ClientIterator it;
 	for (pClient = it.next(); pClient != NULL; pClient = it.next())

@@ -83,13 +83,13 @@ public:
 	virtual ~Table() {};
 		
 	// Gets the number of columns
-	int GetColCount(){ if (this==0) return 0; return m_iCols; };
+	int GetColCount(){ return m_iCols; };
 
 	// Gets the number of rows
-	int GetRowCount(){ if (this==0) return 0; return m_iRows; };
+	int GetRowCount(){ return m_iRows; };
 
 	// Gets the current selected row. -1 when no rows exists.
-	int GetCurRow(){ if (this==0) return -1; return m_iPos; };
+	int GetCurRow(){ return m_iPos; };
 
 	// Gets the column name at m_iCol index.
 	// Returns null if the index is out of bounds.
