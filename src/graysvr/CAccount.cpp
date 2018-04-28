@@ -1286,7 +1286,7 @@ void CAccount::r_Write(CScript &s)
 	if ( GetPrivLevel() >= PLEVEL_QTY )
 		return;
 
-	s.WriteSection("%s", m_sName);
+	s.WriteSection("%s", static_cast<LPCTSTR>(m_sName));
 
 	if ( GetPrivLevel() != PLEVEL_Player )
 		s.WriteKey("PLEVEL", sm_szPrivLevels[GetPrivLevel()]);
@@ -1323,7 +1323,7 @@ void CAccount::r_Write(CScript &s)
 	if ( m_Last_IP.IsValidAddr() )
 		s.WriteKey("LASTIP", m_Last_IP.GetAddrStr());
 	if ( !m_sChatName.IsEmpty() )
-		s.WriteKey("CHATNAME", m_sChatName);
+		s.WriteKey("CHATNAME", static_cast<LPCTSTR>(m_sChatName));
 	if ( m_lang.IsDef() )
 		s.WriteKey("LANG", m_lang.GetStr());
 
