@@ -1068,3 +1068,6 @@ Changed: Small improvements on tooltip engine.
 26-04-2018, Coruja
 Changed: Connections from 'localserver' won't bypass 'ClientLoginMaxTries' .ini setting anymore.
 [sphere.ini]: Changed 'ClientLoginMaxTries' default value [0 -> 10] to increase security against brute-force password attacks
+
+28-04-2018, Coruja
+Fixed: Random 'CChar::OnTick' console exception when clients connect.

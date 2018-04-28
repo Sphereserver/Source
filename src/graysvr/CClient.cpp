@@ -25,7 +25,6 @@ CClient::CClient(NetState* state)
 
 	m_Crypt.SetClientVer(g_Serv.m_ClientVersion);
 	m_pAccount = NULL;
-
 	m_pChar = NULL;
 	m_pGMPage = NULL;
 
@@ -34,6 +33,9 @@ CClient::CClient(NetState* state)
 	m_timeLastEventItemPickup = CServTime::GetCurrentTime();
 	m_timeLastEventWalk = CServTime::GetCurrentTime();
 	m_timeNextEventWalk = 0;
+
+	m_timeLastSkillThrowing.Init();
+	m_pSkillThrowingTarg = NULL;
 
 	m_iWalkStepCount = 0;
 	m_iWalkTimeAvg = 100;
