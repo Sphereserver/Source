@@ -640,7 +640,7 @@ void CChar::Skill_Decay()
 		if ( skillDeduct == SKILL_NONE )
 			SysMessage("No suitable skill to reduce.\n");
 		else
-			SysMessagef("Reducing %s=%d.%d\n", g_Cfg.GetSkillKey(skillDeduct), iSkillLevel / 10, iSkillLevel % 10);
+			SysMessagef("Reducing %s=%d.%d\n", g_Cfg.GetSkillKey(skillDeduct), wSkillLevel / 10, wSkillLevel % 10);
 	}
 #endif
 
@@ -735,7 +735,7 @@ void CChar::Skill_Experience(SKILL_TYPE skill, int iDifficulty)
 		{
 #ifdef _DEBUG
 			if ( IsPriv(PRIV_DETAIL) && (GetPrivLevel() >= PLEVEL_GM) && (g_Cfg.m_wDebugFlags & DEBUGF_ADVANCE_STATS) )
-				SysMessagef("%s=%d.%d Difficult=%d Gain Chance=%lld.%lld%% Roll=%d%%", pSkillDef->GetKey(), iSkillLevel / 10, iSkillLevel % 10, iDifficulty / 10, iChance / 10, iChance % 10, iRoll / 10);
+				SysMessagef("%s=%d.%d Difficult=%d Gain Chance=%lld.%lld%% Roll=%d%%", pSkillDef->GetKey(), wSkillLevel / 10, wSkillLevel % 10, iDifficulty / 10, iChance / 10, iChance % 10, iRoll / 10);
 #endif
 			if ( iRoll <= iChance )
 			{
@@ -758,7 +758,7 @@ void CChar::Skill_Experience(SKILL_TYPE skill, int iDifficulty)
 		if ( IsStatFlag(STATF_Polymorph) && (i != STAT_INT) )
 			continue;
 
-		if ( !Stat_GetLock(i) == SKILLLOCK_UP )
+		if ( Stat_GetLock(i) != SKILLLOCK_UP )
 			continue;
 
 		int iStatVal = Stat_GetBase(i);

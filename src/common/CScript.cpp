@@ -128,7 +128,7 @@ bool CScriptKeyAlloc::ParseKey(LPCTSTR pszKey, LPCTSTR pszVal)
 	if ( !iLenKey )
 		return ParseKey(pszVal);
 
-	ASSERT(lenkey < SCRIPT_MAX_LINE_LEN - 2);
+	ASSERT(iLenKey < SCRIPT_MAX_LINE_LEN - 2);
 
 	size_t iLenVal = 0;
 	if ( pszVal )

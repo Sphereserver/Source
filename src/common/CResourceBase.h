@@ -132,12 +132,12 @@ struct RESOURCE_ID : public RESOURCE_ID_BASE
 	}
 	RESOURCE_ID(RES_TYPE restype, int index)
 	{
-		ASSERT(iIndex < RES_INDEX_MASK);
+		ASSERT(index < RES_INDEX_MASK);
 		m_dwInternalVal = UID_F_RESOURCE|((restype) << RES_TYPE_SHIFT)|(index);
 	}
 	RESOURCE_ID(RES_TYPE restype, int index, int iPage)
 	{
-		ASSERT(iIndex < RES_INDEX_MASK);
+		ASSERT(index < RES_INDEX_MASK);
 		ASSERT(iPage < RES_PAGE_MASK);
 		m_dwInternalVal = UID_F_RESOURCE|((restype) << RES_TYPE_SHIFT)|((iPage) << RES_PAGE_SHIFT)|(index);
 	}

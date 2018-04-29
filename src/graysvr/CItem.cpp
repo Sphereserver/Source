@@ -942,7 +942,7 @@ CItem * CItem::UnStackSplit( WORD wAmount, CChar * pCharSrc )
 	if ( wAmount >= GetAmount() )
 		return( NULL );
 
-	ASSERT( amount <= GetAmount());
+	ASSERT(wAmount <= GetAmount());
 	CItem * pItemNew = CreateDupeItem( this );
 	pItemNew->SetAmount( GetAmount() - wAmount );
 	SetAmountUpdate( wAmount );
@@ -3405,7 +3405,7 @@ int CItem::AddSpellbookScroll( CItem * pItem )
 	// 1 = already here.
 	// 2 = not a scroll i know about.
 
-	ASSERT(pScroll);
+	ASSERT(pItem);
 	int iRet = AddSpellbookSpell( pItem->GetScrollSpell(), true );
 	if ( iRet )
 		return( iRet );
