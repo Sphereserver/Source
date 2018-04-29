@@ -3272,7 +3272,7 @@ bool CChar::OnTriggerSpeech(bool bIsPet, LPCTSTR pszText, CChar *pSrc, TALKMODE_
 {
 	ADDTOCALLSTACK("CChar::OnTriggerSpeech");
 
-	LPCTSTR pszName;
+	LPCTSTR pszName = NULL;
 	if ( bIsPet && !g_Cfg.m_sSpeechPet.IsEmpty() )
 		pszName = g_Cfg.m_sSpeechPet;
 	else if ( !bIsPet && !g_Cfg.m_sSpeechSelf.IsEmpty() )

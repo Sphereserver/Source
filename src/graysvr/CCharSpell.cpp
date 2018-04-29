@@ -1665,8 +1665,8 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 				wStatEffect = (400 + pCaster->Skill_GetBase(SKILL_EVALINT) - Skill_GetBase(SKILL_MAGICRESISTANCE)) / 10;
 				if ( wStatEffect < 0 )
 					wStatEffect = 0;
-				else if ( static_cast<int>(wStatEffect) > Stat_GetVal(STAT_INT) )
-					wStatEffect = Stat_GetVal(STAT_INT);
+				else if ( wStatEffect > static_cast<WORD>(Stat_GetVal(STAT_INT)) )
+					wStatEffect = static_cast<WORD>(Stat_GetVal(STAT_INT));
 
 				pSpell->m_itSpell.m_spelllevel = wStatEffect;
 			}
@@ -2240,8 +2240,8 @@ bool CChar::Spell_CanCast(SPELL_TYPE &spell, bool fTest, CObjBase *pSrc, bool fF
 	if ( !Skill_CanUse(static_cast<SKILL_TYPE>(iSkill)) )
 		return false;
 
-	int iManaUse = pSpellDef->m_wManaUse * (100 - minimum(GetDefNum("LowerManaCost", true), 40)) / 100;
-	int iTithingUse = pSpellDef->m_wTithingUse * (100 - minimum(GetDefNum("LowerReagentCost", true), 40)) / 100;
+	int iManaUse = pSpellDef->m_wManaUse * (100 - minimum(static_cast<int>(GetDefNum("LowerManaCost", true)), 40)) / 100;
+	int iTithingUse = pSpellDef->m_wTithingUse * (100 - minimum(static_cast<int>(GetDefNum("LowerReagentCost", true)), 40)) / 100;
 
 	if ( pSrc != this )
 	{

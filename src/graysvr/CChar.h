@@ -1058,7 +1058,7 @@ public:
 		return m_Skill[skill];
 	}
 	WORD Skill_GetMax(SKILL_TYPE skill, bool ignoreLock = false) const;
-	DWORD Skill_GetSumMax() const;
+	WORD Skill_GetSumMax() const;
 	SKILLLOCK_TYPE Skill_GetLock(SKILL_TYPE skill) const
 	{
 		return m_pPlayer ? m_pPlayer->Skill_GetLock(skill) : SKILLLOCK_UP;
@@ -1141,7 +1141,7 @@ private:
 	int Skill_Act_Training(SKTRIG_TYPE stage);
 
 	void Spell_Dispel(int iLevel);
-	CChar *Spell_Summon(CREID_TYPE id, CPointMap pt);
+	CChar *Spell_Summon(CREID_TYPE id, CPointMap ptTarg);
 	bool Spell_Recall(CItem *pTarg, bool bGate);
 	CItem *Spell_Effect_Create(SPELL_TYPE spell, LAYER_TYPE layer, int iSkillLevel, int iDuration, CObjBase *pSrc = NULL, bool bEquip = true);
 	bool Spell_Equip_OnTick(CItem *pItem);

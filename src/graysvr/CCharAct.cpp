@@ -180,7 +180,7 @@ void CChar::AddGoldToPack(DWORD dwAmount, CItemContainer *pPack, bool bSound)
 	WORD wGoldStack = 0;
 	while ( dwAmount > 0 )
 	{
-		wGoldStack = minimum(dwAmount, g_Cfg.m_iItemsMaxAmount);
+		wGoldStack = minimum(static_cast<WORD>(dwAmount), g_Cfg.m_iItemsMaxAmount);
 		pGold = CItem::CreateScript(ITEMID_GOLD_C1, this);
 		pGold->SetAmount(wGoldStack);
 		pPack->ContentAdd(pGold);
@@ -3846,7 +3846,7 @@ bool CChar::OnTick()
 		if ( m_pClient->m_timeLastSkillThrowing.IsTimeValid() && (-g_World.GetTimeDiff(m_pClient->m_timeLastSkillThrowing) > 2) )
 		{
 			m_pClient->m_timeLastSkillThrowing.Init();
-			if ( m_pClient->m_pSkillThrowingTarg->IsValidUID() )
+			if ( m_pClient->m_pSkillThrowingTarg && m_pClient->m_pSkillThrowingTarg->IsValidUID() )
 				Effect(EFFECT_BOLT, m_pClient->m_SkillThrowingAnimID, m_pClient->m_pSkillThrowingTarg, 18, 1, false, m_pClient->m_SkillThrowingAnimHue, m_pClient->m_SkillThrowingAnimRender);
 		}
 	}

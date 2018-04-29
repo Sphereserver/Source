@@ -564,7 +564,7 @@ public:
 	CGString m_sName;	// The name of this skill class.
 
 	WORD m_StatSumMax;
-	DWORD m_SkillSumMax;
+	WORD m_SkillSumMax;
 
 	WORD m_StatMax[STAT_BASE_QTY];	// STAT_BASE_QTY
 	WORD m_SkillLevelMax[ SKILL_QTY ];
@@ -1191,7 +1191,7 @@ public:
 	int Calc_FameKill( CChar * pKill );
 	int Calc_KarmaKill( CChar * pKill, NOTO_TYPE NotoThem );
 	int Calc_KarmaScale( int iKarma, int iKarmaChange );
-	LPCTSTR Calc_MaptoSextant( CPointMap pntCoords );
+	LPCTSTR Calc_MaptoSextant(CPointMap pt);
 	
 #define SysMessageDefault( msg )	SysMessage( g_Cfg.GetDefaultMsg( msg ) )
 	LPCTSTR GetDefaultMsg(LPCTSTR pszKey);

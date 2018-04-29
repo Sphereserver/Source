@@ -476,13 +476,13 @@ WORD CChar::NPC_OnTrainCheck( CChar * pCharSrc, SKILL_TYPE Skill )
 		return 0;
 	}
 
-	WORD iSkillSrcVal = pCharSrc->Skill_GetBase(Skill);
-	WORD iSkillVal = Skill_GetBase(Skill);
-	WORD iTrainVal = maximum(0, NPC_GetTrainMax(pCharSrc, Skill) - iSkillSrcVal);
+	WORD wSkillSrcVal = pCharSrc->Skill_GetBase(Skill);
+	WORD wSkillVal = Skill_GetBase(Skill);
+	WORD wTrainVal = maximum(0, NPC_GetTrainMax(pCharSrc, Skill) - wSkillSrcVal);
 
 	// Train npc skill cap
-	WORD iMaxDecrease = 0;
-	if ( (pCharSrc->GetSkillTotal() + iTrainVal) > pCharSrc->Skill_GetSumMax() )
+	WORD wMaxDecrease = 0;
+	if ( pCharSrc->GetSkillTotal() + wTrainVal > pCharSrc->Skill_GetSumMax() )
 	{	
 		for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 		{
@@ -490,32 +490,22 @@ WORD CChar::NPC_OnTrainCheck( CChar * pCharSrc, SKILL_TYPE Skill )
 				continue;
 
 			if ( pCharSrc->Skill_GetLock(static_cast<SKILL_TYPE>(i)) == SKILLLOCK_DOWN )
-				iMaxDecrease += pCharSrc->Skill_GetBase(static_cast<SKILL_TYPE>(i));
+				wMaxDecrease += pCharSrc->Skill_GetBase(static_cast<SKILL_TYPE>(i));
 		}
-		iMaxDecrease = minimum(iTrainVal, iMaxDecrease);
+		wMaxDecrease = minimum(wTrainVal, wMaxDecrease);
 	}
 	else
-	{
-		iMaxDecrease = iTrainVal;
-	}
+		wMaxDecrease = wTrainVal;
 
 	LPCTSTR pszMsg;
-	if ( iSkillVal <= 0 )
-	{
-		pszMsg = g_Cfg.GetDefaultMsg( DEFMSG_NPC_TRAINER_DUNNO_2 );
-	}
-	else if ( iSkillSrcVal > iSkillVal )
-	{
-		pszMsg = g_Cfg.GetDefaultMsg( DEFMSG_NPC_TRAINER_DUNNO_3 );
-	}
-	else if ( iMaxDecrease <= 0 )
-	{
-		pszMsg = g_Cfg.GetDefaultMsg( DEFMSG_NPC_TRAINER_DUNNO_4 );
-	}
+	if ( wSkillVal <= 0 )
+		pszMsg = g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_DUNNO_2);
+	else if ( wSkillSrcVal > wSkillVal )
+		pszMsg = g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_DUNNO_3);
+	else if ( wMaxDecrease <= 0 )
+		pszMsg = g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_DUNNO_4);
 	else
-	{
-		return iMaxDecrease;
-	}
+		return wMaxDecrease;
 
 	char *z = Str_GetTemp();
 	sprintf(z, pszMsg, g_Cfg.GetSkillKey(Skill));
@@ -533,22 +523,22 @@ bool CChar::NPC_OnTrainPay(CChar *pCharSrc, CItemMemory *pMemory, CItem * pGold)
 		return false;
 	}
 
-	DWORD iTrainCost = static_cast<DWORD>(GetKeyNum("OVERRIDE.TRAINSKILLCOST"));
-	if ( !iTrainCost )
-		iTrainCost = g_Cfg.m_iTrainSkillCost;
+	WORD wTrainCost = static_cast<WORD>(GetKeyNum("OVERRIDE.TRAINSKILLCOST"));
+	if ( !wTrainCost )
+		wTrainCost = g_Cfg.m_iTrainSkillCost;
 
-	iTrainCost *= NPC_OnTrainCheck(pCharSrc, skill);
-	if ( (iTrainCost <= 0) || !pGold )
+	wTrainCost *= NPC_OnTrainCheck(pCharSrc, skill);
+	if ( (wTrainCost <= 0) || !pGold )
 		return false;
 
 	Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_TRAINER_SUCCESS ) );
 
 	// Consume as much money as we can train for.
-	if ( pGold->GetAmount() < iTrainCost )
+	if ( pGold->GetAmount() < wTrainCost )
 	{
-		iTrainCost = pGold->GetAmount();
+		wTrainCost = pGold->GetAmount();
 	}
-	else if ( pGold->GetAmount() == iTrainCost )
+	else if ( pGold->GetAmount() == wTrainCost )
 	{
 		Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_TRAINER_THATSALL_1 ) );
 		pMemory->m_itEqMemory.m_Action = NPC_MEM_ACT_NONE;
@@ -559,42 +549,42 @@ bool CChar::NPC_OnTrainPay(CChar *pCharSrc, CItemMemory *pMemory, CItem * pGold)
 		pMemory->m_itEqMemory.m_Action = NPC_MEM_ACT_NONE;
 
 		// Give change back.
-		pGold->UnStackSplit( iTrainCost, pCharSrc );
+		pGold->UnStackSplit(wTrainCost, pCharSrc);
 	}
-	GetContainerCreate(LAYER_BANKBOX)->m_itEqBankBox.m_Check_Amount += iTrainCost;
+	GetContainerCreate(LAYER_BANKBOX)->m_itEqBankBox.m_Check_Amount += wTrainCost;
 
 	// Give credit for training.
-	NPC_TrainSkill( pCharSrc, skill, iTrainCost );
+	NPC_TrainSkill(pCharSrc, skill, wTrainCost);
 	return( true );
 }
 
-bool CChar::NPC_TrainSkill( CChar * pCharSrc, SKILL_TYPE skill, WORD toTrain )
+bool CChar::NPC_TrainSkill( CChar * pCharSrc, SKILL_TYPE skill, WORD wVal )
 {
 	ADDTOCALLSTACK("CChar::NPC_TrainSkill");
-	WORD iTrain = toTrain;
-	if ( (pCharSrc->GetSkillTotal() + toTrain) > pCharSrc->Skill_GetSumMax() )
+	WORD wTrain = wVal;
+	if ( pCharSrc->GetSkillTotal() + wVal > pCharSrc->Skill_GetSumMax() )
 	{	
 		for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 		{
 			if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(static_cast<SKILL_TYPE>(i)) )
 				continue;
 
-			if ( toTrain < 1 )
+			if ( wVal < 1 )
 			{
-				pCharSrc->Skill_SetBase(skill, iTrain + pCharSrc->Skill_GetBase(skill));
+				pCharSrc->Skill_SetBase(skill, wTrain + pCharSrc->Skill_GetBase(skill));
 				break;
 			}
 
 			if ( pCharSrc->Skill_GetLock(static_cast<SKILL_TYPE>(i)) == SKILLLOCK_DOWN )
 			{
-				if ( pCharSrc->Skill_GetBase(static_cast<SKILL_TYPE>(i)) > toTrain )
+				if ( pCharSrc->Skill_GetBase(static_cast<SKILL_TYPE>(i)) > wVal )
 				{
-					pCharSrc->Skill_SetBase(static_cast<SKILL_TYPE>(i), pCharSrc->Skill_GetBase(static_cast<SKILL_TYPE>(i)) - toTrain);
-					toTrain = 0;
+					pCharSrc->Skill_SetBase(static_cast<SKILL_TYPE>(i), pCharSrc->Skill_GetBase(static_cast<SKILL_TYPE>(i)) - wVal);
+					wVal = 0;
 				}
 				else
 				{
-					toTrain -= pCharSrc->Skill_GetBase(static_cast<SKILL_TYPE>(i));
+					wVal -= pCharSrc->Skill_GetBase(static_cast<SKILL_TYPE>(i));
 					pCharSrc->Skill_SetBase(static_cast<SKILL_TYPE>(i), 0);
 				}
 			}
@@ -602,7 +592,7 @@ bool CChar::NPC_TrainSkill( CChar * pCharSrc, SKILL_TYPE skill, WORD toTrain )
 	}
 	else
 	{
-		pCharSrc->Skill_SetBase(skill, iTrain + pCharSrc->Skill_GetBase(skill));
+		pCharSrc->Skill_SetBase(skill, wTrain + pCharSrc->Skill_GetBase(skill));
 	}
 
 	return true;
@@ -628,9 +618,9 @@ bool CChar::NPC_OnTrainHear( CChar * pCharSrc, LPCTSTR pszCmd )
 	// Did they mention a skill name i recognize ?
 	TemporaryString pszMsg;
 
-	DWORD iTrainCost = static_cast<DWORD>(GetKeyNum("OVERRIDE.TRAINSKILLCOST"));
-	if ( !iTrainCost )
-		iTrainCost = g_Cfg.m_iTrainSkillCost;
+	DWORD dwTrainCost = static_cast<DWORD>(GetKeyNum("OVERRIDE.TRAINSKILLCOST"));
+	if ( !dwTrainCost )
+		dwTrainCost = g_Cfg.m_iTrainSkillCost;
 
 	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 	{
@@ -641,11 +631,11 @@ bool CChar::NPC_OnTrainHear( CChar * pCharSrc, LPCTSTR pszCmd )
 		if ( FindStrWord(pszCmd, pszSkillKey) <= 0 )
 			continue;
 
-		iTrainCost *= NPC_OnTrainCheck(pCharSrc, static_cast<SKILL_TYPE>(i));
-		if ( iTrainCost <= 0 )
+		dwTrainCost *= NPC_OnTrainCheck(pCharSrc, static_cast<SKILL_TYPE>(i));
+		if ( dwTrainCost <= 0 )
 			return true;
 
-		sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_PRICE), static_cast<int>(iTrainCost), pszSkillKey);
+		sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_PRICE), static_cast<int>(dwTrainCost), pszSkillKey);
 		Speak(pszMsg);
 		CItemMemory * pMemory = Memory_AddObjTypes( pCharSrc, MEMORY_SPEAK );
 		if ( pMemory )
@@ -668,8 +658,8 @@ bool CChar::NPC_OnTrainHear( CChar * pCharSrc, LPCTSTR pszCmd )
 		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(static_cast<SKILL_TYPE>(i)) )
 			continue;
 
-		WORD iDiff = maximum(0, NPC_GetTrainMax(pCharSrc, static_cast<SKILL_TYPE>(i)) - pCharSrc->Skill_GetBase(static_cast<SKILL_TYPE>(i)));
-		if ( iDiff <= 0 )
+		WORD wDiff = maximum(0, NPC_GetTrainMax(pCharSrc, static_cast<SKILL_TYPE>(i)) - pCharSrc->Skill_GetBase(static_cast<SKILL_TYPE>(i)));
+		if ( wDiff <= 0 )
 			continue;
 
 		if ( iCount > 6 )
@@ -751,9 +741,8 @@ int CChar::NPC_WalkToPoint( bool fRun )
 
 	int			iDex = Stat_GetAdjusted(STAT_DEX);
 	int			iInt = Stat_GetAdjusted(STAT_INT);
-	CPointMap	pMe = GetTopPoint();
-	CPointMap	pTarg = m_Act_p;
-	DIR_TYPE	Dir = pMe.GetDir(pTarg);
+	CPointMap	ptMe = GetTopPoint();
+	DIR_TYPE	Dir = ptMe.GetDir(m_Act_p);
 	bool		bUsePathfinding = false;
 	CCharBase	*pCharDef = Char_GetDef();		
 
@@ -771,7 +760,7 @@ int CChar::NPC_WalkToPoint( bool fRun )
 		CPointMap local;
 		local.m_x = m_pNPC->m_nextX[0];
 		local.m_y = m_pNPC->m_nextY[0];
-		local.m_map = pMe.m_map;
+		local.m_map = ptMe.m_map;
 			// no steps available yet, or pathfinding not usable in this situation
 			// so, use default movements
 
@@ -780,7 +769,7 @@ int CChar::NPC_WalkToPoint( bool fRun )
 
 			bUsePathfinding = true;
 
-			if ( pMe.GetDist(local) != 1 )
+			if ( ptMe.GetDist(local) != 1 )
 			{
 				// The next step is too far away, pathfinding route has become invalid
 				m_pNPC->m_nextPt.InitPoint();
@@ -790,7 +779,7 @@ int CChar::NPC_WalkToPoint( bool fRun )
 			else
 			{
 				// Update our heading to the way we need to go
-				Dir = pMe.GetDir(local);
+				Dir = ptMe.GetDir(local);
 				ASSERT(Dir > DIR_INVALID && Dir < DIR_QTY);
 
 				EXC_TRYSUB("Array Shift");
@@ -808,10 +797,10 @@ int CChar::NPC_WalkToPoint( bool fRun )
 	}
 
 	EXC_SET("Non-Advanced pathfinding");
-	pMe.Move( Dir );
-	if ( ! CanMoveWalkTo(pMe, true, false, Dir ) )
+	ptMe.Move( Dir );
+	if ( ! CanMoveWalkTo(ptMe, true, false, Dir ) )
 	{
-		CPointMap	ptFirstTry = pMe;
+		CPointMap	ptFirstTry = ptMe;
 
 		// try to step around it ?
 		int iDiff = 0;
@@ -832,10 +821,10 @@ int CChar::NPC_WalkToPoint( bool fRun )
 		else if ( iRand < 65 ) iDiff = 2;
 		else iDiff = 1;
 		if ( iRand & 1 ) iDiff = -iDiff;
-		pMe = GetTopPoint();
+		ptMe = GetTopPoint();
 		Dir = GetDirTurn( Dir, iDiff );
-		pMe.Move( Dir );
-		if ( ! CanMoveWalkTo(pMe, true, false, Dir ))
+		ptMe.Move( Dir );
+		if ( ! CanMoveWalkTo(ptMe, true, false, Dir ))
 		{
 			bool	bClearedWay = false;
 			// Some object in my way that i could move ? Try to move it.
@@ -846,7 +835,7 @@ int CChar::NPC_WalkToPoint( bool fRun )
 				CPointMap	point;
 				for ( i = 0; i < 2; i++ )
 				{
-					if ( !i ) point = pMe;
+					if ( !i ) point = ptMe;
 					else point = ptFirstTry;
 
 					//	Scan point for items that could be moved by me and move them to my position
@@ -855,7 +844,7 @@ int CChar::NPC_WalkToPoint( bool fRun )
 					{
 						CItem	*pItem = AreaItems.GetItem();
 						if ( !pItem ) break;
-						else if ( abs(pItem->GetTopZ() - pMe.m_z) > 3 ) continue;		// item is too high
+						else if ( abs(pItem->GetTopZ() - ptMe.m_z) > 3 ) continue;		// item is too high
 						else if ( !pItem->Item_GetDef()->Can(CAN_I_BLOCK) ) continue;	// this item not blocking me
 						else if ( !CanMove(pItem) || !CanCarry(pItem) ) bClearedWay = false;
 						else
@@ -917,7 +906,7 @@ int CChar::NPC_WalkToPoint( bool fRun )
 	CheckRevealOnMove();
 
 	EXC_SET("MoveToChar");
-	MoveToChar(pMe);
+	MoveToChar(ptMe);
 
 	EXC_SET("Check Location");
 	if ( CheckLocation(false) == TRIGRET_RET_FALSE )	// check if I stepped on any item/teleport
@@ -930,17 +919,11 @@ int CChar::NPC_WalkToPoint( bool fRun )
 	UpdateMove(ptOld);
 
 	EXC_SET("Speed counting");
-	// How fast can they move.
+	// How fast can they move
+	CVarDefCont *pValue = GetKey("OVERRIDE.MOVERATE", true);
+	INT64 iTick = pValue ? pValue->GetValNum() : pCharDef->m_iMoveRate;
 	INT64 iTickNext;
 
-	// TAG.OVERRIDE.MOVERATE
-	INT64 tTick;
-	CVarDefCont * pValue = GetKey("OVERRIDE.MOVERATE", true);
-	if (pValue)
-		tTick = pValue->GetValNum();	//Taking value from tag.override.moverate
-	else
-		tTick = pCharDef->m_iMoveRate;	//no tag.override.moverate, we get default moverate (created from ini's one).
-	// END TAG.OVERRIDE.MOVERATE
 	if (fRun)
 	{
 		if (IsStatFlag(STATF_Pet))	// pets run a little faster.
@@ -948,10 +931,10 @@ int CChar::NPC_WalkToPoint( bool fRun )
 			if (iDex < 75)
 				iDex = 75;
 		}
-		iTickNext = TICK_PER_SEC / 4 + Calc_GetRandLLVal((100 - (iDex*tTick) / 100) / 5) * TICK_PER_SEC / 10;
+		iTickNext = TICK_PER_SEC / 4 + Calc_GetRandLLVal((100 - (iDex * iTick) / 100) / 5);
 	}
 	else
-		iTickNext = TICK_PER_SEC + Calc_GetRandLLVal((100 - (iDex*tTick) / 100) / 3) * TICK_PER_SEC / 10;
+		iTickNext = TICK_PER_SEC + Calc_GetRandLLVal((100 - (iDex * iTick) / 100) / 3);
 
 	if (iTickNext < 1)
 		iTickNext = 1;
@@ -1684,16 +1667,11 @@ bool CCharNPC::Spells_Add(SPELL_TYPE spell)
 int CCharNPC::Spells_FindSpell(SPELL_TYPE spellID)
 {
 	ADDTOCALLSTACK("CCharNPC::Spells_FindSpell");
-	if (m_spells.empty())
-		return -1;
-
-	size_t count = 0;
-	while (count < m_spells.size())
+	for ( size_t i = 0; i < m_spells.size(); i++ )
 	{
-		Spells spell = m_spells.at(count);
-		if (spell.id == spellID)
-			return count;
-		count++;
+		Spells refSpell = m_spells.at(i);
+		if ( refSpell.id == spellID )
+			return i;
 	}
 	return -1;
 }

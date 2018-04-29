@@ -1850,10 +1850,9 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 {
 	ADDTOCALLSTACK("CObjBase::r_Verb");
 	EXC_TRY("Verb");
-	LPCTSTR	pszKey = s.GetKey();
 	ASSERT(pSrc);
-	int	index;
 
+	LPCTSTR	pszKey = s.GetKey();
 	if ( !strnicmp(pszKey, "CLEARTAGS", 9) )
 	{
 		pszKey = s.GetArgStr();
@@ -1867,17 +1866,20 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 	if ( r_Call(pszKey, pSrc, &Args, &sVal) )
 		return true;
 
+	int index;
 	if ( !strnicmp(pszKey, "TARGET", 6) )
 		index = OV_TARGET;
 	else
+	{
 		index = FindTableSorted(pszKey, sm_szVerbKeys, COUNTOF(sm_szVerbKeys) - 1);
-	if ( index < 0 )
-		return CScriptObj::r_Verb(s, pSrc);
+		if ( index < 0 )
+			return CScriptObj::r_Verb(s, pSrc);
+	}
 
 	CChar *pCharSrc = pSrc->GetChar();
 	CClient *pClientSrc = (pCharSrc && pCharSrc->m_pClient) ? pCharSrc->m_pClient : NULL;
 
-	switch ( index )
+	switch ( static_cast<OV_TYPE>(index) )
 	{
 		case OV_DAMAGE:	//	"Dmg, SourceFlags, SourceCharUid, DmgPhysical(%), DmgFire(%), DmgCold(%), DmgPoison(%), DmgEnergy(%)" = do me some damage.
 		{
@@ -2205,7 +2207,7 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 			m_TagDefs.DumpKeys(pSrc, "TAG.");
 			break;
 		}
-		case OC_PROPSLIST:
+		case OV_PROPSLIST:
 		{
 			EXC_SET("PROPSLIST");
 			if ( !strcmpi(s.GetArgStr(), "log") )

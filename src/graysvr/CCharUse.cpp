@@ -1233,16 +1233,16 @@ bool CChar::Use_Seed(CItem *pItem, CPointMap *pPoint)
 	CWorldSearch AreaItems(pt);
 	for (;;)
 	{
-		CItem *pItem = AreaItems.GetItem();
-		if ( !pItem )
+		CItem *pItemSearch = AreaItems.GetItem();
+		if ( !pItemSearch )
 			break;
-		if ( pItem->IsType(IT_TREE) || pItem->IsType(IT_FOLIAGE) )		// there's already a tree here
+		if ( pItemSearch->IsType(IT_TREE) || pItemSearch->IsType(IT_FOLIAGE) )	// there's already a tree here
 		{
 			SysMessageDefault(DEFMSG_MSG_SEED_ATREE);
 			return false;
 		}
-		if ( pItem->IsType(IT_CROPS) )		// there's already a plant here
-			pItem->Delete();
+		if ( pItemSearch->IsType(IT_CROPS) )	// there's already a plant here
+			pItemSearch->Delete();
 	}
 
 	// plant it and consume the seed.

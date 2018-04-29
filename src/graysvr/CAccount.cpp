@@ -202,13 +202,13 @@ bool CAccounts::Account_OnCmd(TCHAR *pszArgs, CTextConsole *pSrc)
 	TCHAR *ppCmd[5];
 	size_t iQty = Str_ParseCmds(pszArgs, ppCmd, COUNTOF(ppCmd));
 
-	int i;
+	int index;
 	if ( (iQty <= 0) || (ppCmd[0] == NULL) || (ppCmd[0][0] == '\0') )
-		i = VACS_HELP;
+		index = VACS_HELP;
 	else
-		i = FindTableSorted(ppCmd[0], sm_szVerbKeys, COUNTOF(sm_szVerbKeys) - 1);
+		index = FindTableSorted(ppCmd[0], sm_szVerbKeys, COUNTOF(sm_szVerbKeys) - 1);
 
-	switch ( static_cast<VACS_TYPE>(i) )
+	switch ( static_cast<VACS_TYPE>(index) )
 	{
 		case VACS_ADD:
 			return Cmd_AddNew(pSrc, ppCmd[1], ppCmd[2]);
@@ -943,11 +943,11 @@ bool CAccount::r_LoadVal(CScript &s)
 	ADDTOCALLSTACK("CAccount::r_LoadVal");
 	EXC_TRY("LoadVal");
 
-	int i = FindTableHeadSorted(s.GetKey(), sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1);
-	if ( i < 0 )
+	int index = FindTableHeadSorted(s.GetKey(), sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1);
+	if ( index < 0 )
 		return false;
 
-	switch ( static_cast<AC_TYPE>(i) )
+	switch ( static_cast<AC_TYPE>(index) )
 	{
 		case AC_BLOCK:
 			if ( !s.HasArgs() || s.GetArgVal() )
@@ -1199,8 +1199,8 @@ bool CAccount::r_Verb(CScript &s, CTextConsole *pSrc)
 		return true;
 	}
 
-	int i = FindTableSorted(s.GetKey(), sm_szVerbKeys, COUNTOF(sm_szVerbKeys) - 1);
-	if ( i < 0 )
+	int index = FindTableSorted(s.GetKey(), sm_szVerbKeys, COUNTOF(sm_szVerbKeys) - 1);
+	if ( index < 0 )
 	{
 		bool fLoad = CScriptObj::r_Verb(s, pSrc);
 		if ( !fLoad )	// try calling custom functions
@@ -1212,7 +1212,7 @@ bool CAccount::r_Verb(CScript &s, CTextConsole *pSrc)
 		return fLoad;
 	}
 
-	switch ( static_cast<AV_TYPE>(i) )
+	switch ( static_cast<AV_TYPE>(index) )
 	{
 		case AV_DELETE:
 		{
@@ -1245,9 +1245,9 @@ bool CAccount::r_Verb(CScript &s, CTextConsole *pSrc)
 		{
 			CClient *pClient = FindClient();
 			if ( pClient )
-				pClient->addKick(pSrc, (i == AV_BLOCK));
+				pClient->addKick(pSrc, (index == AV_BLOCK));
 			else
-				Kick(pSrc, (i == AV_BLOCK));
+				Kick(pSrc, (index == AV_BLOCK));
 			return true;
 		}
 		case AV_TAGLIST:

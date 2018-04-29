@@ -594,12 +594,12 @@ WORD CChar::Skill_GetMax(SKILL_TYPE skill, bool ignoreLock) const
 	}
 }
 
-DWORD CChar::Skill_GetSumMax() const
+WORD CChar::Skill_GetSumMax() const
 {
 	ADDTOCALLSTACK("CChar::Skill_GetSumMax");
 	const CVarDefCont *pTagStorage = GetKey("OVERRIDE.SKILLSUM", true);
 	if ( pTagStorage )
-		return static_cast<DWORD>(pTagStorage->GetValNum());
+		return static_cast<WORD>(pTagStorage->GetValNum());
 
 	const CSkillClassDef *pSkillClass = m_pPlayer->GetSkillClass();
 	if ( pSkillClass )
@@ -872,7 +872,7 @@ WORD CChar::Stats_GetRegenVal(STAT_TYPE iStat, bool bGetTicks)
 	// bGetTicks = true returns the regen ticks
 	// bGetTicks = false returns the values of regeneration.
 
-	LPCTSTR pszStat;
+	LPCTSTR pszStat = NULL;
 	switch ( iStat )
 	{
 		case STAT_STR:
@@ -2012,8 +2012,8 @@ int CChar::Skill_DetectHidden(SKTRIG_TYPE stage)
 			continue;
 
 		// Check chance to reveal the target
-		WORD wSkillSrc = wSkillLevel + Calc_GetRandVal(210) - 100;
-		WORD wSkillTarg = pChar->Skill_GetAdjusted(SKILL_HIDING) + Calc_GetRandVal(210) - 100;
+		WORD wSkillSrc = wSkillLevel + static_cast<WORD>(Calc_GetRandVal(210)) - 100;
+		WORD wSkillTarg = pChar->Skill_GetAdjusted(SKILL_HIDING) + static_cast<WORD>(Calc_GetRandVal(210)) - 100;
 		if ( wSkillSrc < wSkillTarg )
 			continue;
 
