@@ -22,15 +22,13 @@ bool CChar::Use_MultiLockDown(CItem *pItem)
 		SysMessageDefault(DEFMSG_MULTI_LOCKUP);
 		return true;
 	}
-
 	return false;
 }
 
 bool CChar::Use_CarveCorpse(CItemCorpse *pCorpse)
 {
 	ADDTOCALLSTACK("CChar::Use_CarveCorpse");
-	CREID_TYPE CorpseID = pCorpse->m_itCorpse.m_BaseID;
-	CCharBase *pCorpseDef = CCharBase::FindCharBase(CorpseID);
+	CCharBase *pCorpseDef = CCharBase::FindCharBase(pCorpse->m_itCorpse.m_BaseID);
 	if ( !pCorpseDef || pCorpse->m_itCorpse.m_carved )
 	{
 		SysMessageDefault(DEFMSG_CARVE_CORPSE_NOTHING);
@@ -40,19 +38,10 @@ bool CChar::Use_CarveCorpse(CItemCorpse *pCorpse)
 	CChar *pChar = pCorpse->m_uidLink.CharFind();
 	CPointMap pt = pCorpse->GetTopLevelObj()->GetTopPoint();
 
-	UpdateAnimate(ANIM_BOW);
-	if ( pCorpse->m_TagDefs.GetKeyNum("BLOOD") )
-	{
-		CItem *pBlood = CItem::CreateBase(ITEMID_BLOOD4);
-		ASSERT(pBlood);
-		pBlood->SetHue(pCorpseDef->m_wBloodHue);
-		pBlood->MoveToDecay(pt, 5 * TICK_PER_SEC);
-	}
-
 	size_t iItems = 0;
-	for ( size_t i = 0; i < pCorpseDef->m_BaseResources.GetCount(); i++ )
+	size_t iCount = pCorpseDef->m_BaseResources.GetCount();
+	for ( size_t i = 0; i < iCount; i++ )
 	{
-		long long iQty = pCorpseDef->m_BaseResources[i].GetResQty();
 		RESOURCE_ID rid = pCorpseDef->m_BaseResources[i].GetResourceID();
 		if ( rid.GetResType() != RES_ITEMDEF )
 			continue;
@@ -62,6 +51,8 @@ bool CChar::Use_CarveCorpse(CItemCorpse *pCorpse)
 			break;
 
 		iItems++;
+		WORD wQty = static_cast<WORD>(pCorpseDef->m_BaseResources[i].GetResQty());
+
 		CItem *pPart = CItem::CreateTemplate(id, NULL, this);
 		ASSERT(pPart);
 		switch ( pPart->GetType() )
@@ -71,26 +62,26 @@ bool CChar::Use_CarveCorpse(CItemCorpse *pCorpse)
 			case IT_MEAT_RAW:
 				SysMessageDefault(DEFMSG_CARVE_CORPSE_MEAT);
 				break;
-			case IT_HIDE:
-				SysMessageDefault(DEFMSG_CARVE_CORPSE_HIDES);
-				if ( (g_Cfg.m_iRacialFlags & RACIALF_HUMAN_WORKHORSE) && IsHuman() )	// humans always find 10% bonus when gathering hides, ores and logs (Workhorse racial trait)
-					iQty = iQty * 110 / 100;
-				break;
 			case IT_FEATHER:
 				SysMessageDefault(DEFMSG_CARVE_CORPSE_FEATHERS);
 				break;
 			case IT_WOOL:
 				SysMessageDefault(DEFMSG_CARVE_CORPSE_WOOL);
 				break;
-				/*case IT_DRAGON_SCALE:			// TO-DO (typedef IT_DRAGON_SCALE doesn't exist yet)
-					SysMessageDefault(DEFMSG_CARVE_CORPSE_SCALES);
-					break;*/
+			case IT_HIDE:
+				SysMessageDefault(DEFMSG_CARVE_CORPSE_HIDES);
+				if ( (g_Cfg.m_iRacialFlags & RACIALF_HUMAN_WORKHORSE) && IsHuman() )	// humans always get 10% bonus when gathering hides, ores and logs (Workhorse racial trait)
+					wQty = wQty * 110 / 100;
+				break;
+			/*case IT_DRAGON_SCALE:			// TO-DO (typedef IT_DRAGON_SCALE doesn't exist yet)
+				SysMessageDefault(DEFMSG_CARVE_CORPSE_SCALES);
+				break;*/
 			default:
 				break;
 		}
 
-		if ( iQty > 1 )
-			pPart->SetAmount(static_cast<WORD>(iQty));
+		if ( wQty > 1 )
+			pPart->SetAmount(wQty);
 
 		if ( pChar && pChar->m_pPlayer )
 		{
@@ -107,12 +98,13 @@ bool CChar::Use_CarveCorpse(CItemCorpse *pCorpse)
 	if ( iItems < 1 )
 		SysMessageDefault(DEFMSG_CARVE_CORPSE_NOTHING);
 
+	UpdateAnimate(ANIM_BOW);
 	CheckCorpseCrime(pCorpse, false, false);
 	pCorpse->m_itCorpse.m_carved = 1;			// mark as been carved
 	pCorpse->m_itCorpse.m_uidKiller = GetUID();	// by you
 
 	if ( pChar && pChar->m_pPlayer )
-		pCorpse->SetTimeout(0);		// reset corpse timer to make it turn bones
+		pCorpse->SetTimeout(0);		// expire corpse timer to turn it into bones
 	return true;
 }
 
@@ -165,9 +157,7 @@ bool CChar::Use_MoonGate(CItem *pItem)
 		}
 	}
 
-	bool bCheckAntiMagic = pItem->IsAttr(ATTR_DECAY);
-	bool bDisplayEffect = !pItem->m_itTelepad.m_fQuiet;
-	return Spell_Teleport(pt, true, bCheckAntiMagic, bDisplayEffect);
+	return Spell_Teleport(pt, true, pItem->IsAttr(ATTR_DECAY), !pItem->m_itTelepad.m_fQuiet);
 }
 
 bool CChar::Use_Kindling(CItem *pItem)
@@ -532,11 +522,6 @@ bool CChar::Use_Item_Web(CItem *pItem)
 	if ( (GetDispID() == CREID_GIANT_SPIDER) || !pItem || !pItem->IsTopLevel() || IsStatFlag(STATF_DEAD|STATF_Insubstantial) || IsPriv(PRIV_GM) )
 		return false;	// just walk through it
 
-	// Try to break it.
-	int iStr = pItem->m_itWeb.m_Hits_Cur;
-	if ( iStr == 0 )
-		iStr = pItem->m_itWeb.m_Hits_Cur = 60 + Calc_GetRandVal(250);
-
 	// Since broken webs become spider silk, we should get out of here now if we aren't in a web.
 	CItem *pFlag = LayerFind(LAYER_FLAG_Stuck);
 	if ( CanMove(pItem, false) )
@@ -601,7 +586,7 @@ int CChar::Use_PlayMusic(CItem *pItem, int iDifficultyToPlay)
 	ADDTOCALLSTACK("CChar::Use_PlayMusic");
 	// SKILL_ENTICEMENT, SKILL_MUSICIANSHIP,
 	// ARGS:
-	//	iDifficultyToPlay = 0-100
+	//  iDifficultyToPlay = 0-100
 	// RETURN:
 	//  >=0 = success
 	//  -1 = too hard for u.
@@ -642,7 +627,6 @@ bool CChar::Use_Repair(CItem *pItem)
 		SysMessageDefault(DEFMSG_REPAIR_NOT);
 		return false;
 	}
-
 	if ( pItem->IsItemEquipped() )
 	{
 		SysMessageDefault(DEFMSG_REPAIR_WORN);
@@ -681,9 +665,9 @@ bool CChar::Use_Repair(CItem *pItem)
 	ASSERT(pItemDef);
 
 	// Use up some raw materials to repair.
-	int iTotalHits = pItem->m_itArmor.m_Hits_Max;
-	int iDamageHits = pItem->m_itArmor.m_Hits_Max - pItem->m_itArmor.m_Hits_Cur;
-	int iDamagePercent = IMULDIV(100, iDamageHits, iTotalHits);
+	WORD wTotalHits = pItem->m_itArmor.m_Hits_Max;
+	WORD wDamageHits = pItem->m_itArmor.m_Hits_Max - pItem->m_itArmor.m_Hits_Cur;
+	int iDamagePercent = IMULDIV(100, wDamageHits, wTotalHits);
 
 	size_t iMissing = ResourceConsumePart(&pItemDef->m_BaseResources, 1, iDamagePercent / 2, true);
 	if ( iMissing != pItemDef->m_BaseResources.BadIndex() )
@@ -717,7 +701,7 @@ bool CChar::Use_Repair(CItem *pItem)
 	bool fSuccess = Skill_UseQuick(static_cast<SKILL_TYPE>(RetMainSkill.GetResIndex()), iDifficulty);
 	if ( fSuccess )
 	{
-		pItem->m_itArmor.m_Hits_Cur = static_cast<WORD>(iTotalHits);
+		pItem->m_itArmor.m_Hits_Cur = wTotalHits;
 		pszText = g_Cfg.GetDefaultMsg(DEFMSG_REPAIR_1);
 	}
 	else
@@ -744,18 +728,18 @@ bool CChar::Use_Repair(CItem *pItem)
 	}
 
 	ResourceConsumePart(&pItemDef->m_BaseResources, 1, iDamagePercent / 2, false);
-	if ( pItem->m_itArmor.m_Hits_Cur <= 0 )
-		pszText = g_Cfg.GetDefaultMsg(DEFMSG_REPAIR_5);
 
 	TCHAR *pszMsg = Str_GetTemp();
 	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_REPAIR_MSG), pszText, pItem->GetName());
 	Emote(pszMsg);
 
-	if ( pItem->m_itArmor.m_Hits_Cur <= 0 )
-		pItem->Delete();
-	else
+	if ( pItem->m_itArmor.m_Hits_Cur > 0 )
 		pItem->UpdatePropertyFlag(AUTOTOOLTIP_FLAG_DURABILITY);
-
+	else
+	{
+		pszText = g_Cfg.GetDefaultMsg(DEFMSG_REPAIR_5);
+		pItem->Delete();
+	}
 	return fSuccess;
 }
 
@@ -841,31 +825,29 @@ bool CChar::Use_Eat(CItem *pItem, WORD wQty)
 
 	Use_EatQty(pItem, wQty);
 
-	LPCTSTR pszMsg;
 	int index = IMULDIV(Stat_GetVal(STAT_FOOD), 5, Stat_GetMax(STAT_FOOD));
 	switch ( index )
 	{
 		case 0:
-			pszMsg = g_Cfg.GetDefaultMsg(DEFMSG_FOOD_FULL_1);
+			SysMessageDefault(DEFMSG_FOOD_FULL_1);
 			break;
 		case 1:
-			pszMsg = g_Cfg.GetDefaultMsg(DEFMSG_FOOD_FULL_2);
+			SysMessageDefault(DEFMSG_FOOD_FULL_2);
 			break;
 		case 2:
-			pszMsg = g_Cfg.GetDefaultMsg(DEFMSG_FOOD_FULL_3);
+			SysMessageDefault(DEFMSG_FOOD_FULL_3);
 			break;
 		case 3:
-			pszMsg = g_Cfg.GetDefaultMsg(DEFMSG_FOOD_FULL_4);
+			SysMessageDefault(DEFMSG_FOOD_FULL_4);
 			break;
 		case 4:
-			pszMsg = g_Cfg.GetDefaultMsg(DEFMSG_FOOD_FULL_5);
+			SysMessageDefault(DEFMSG_FOOD_FULL_5);
 			break;
 		case 5:
 		default:
-			pszMsg = g_Cfg.GetDefaultMsg(DEFMSG_FOOD_FULL_6);
+			SysMessageDefault(DEFMSG_FOOD_FULL_6);
 			break;
 	}
-	SysMessage(pszMsg);
 	return true;
 }
 
@@ -884,19 +866,14 @@ bool CChar::Use_Drink(CItem *pItem)
 		return false;
 	}
 
-	const CItemBase *pItemDef = pItem->Item_GetDef();
-	ITEMID_TYPE idbottle = static_cast<ITEMID_TYPE>(RES_GET_INDEX(pItemDef->m_ttDrink.m_idEmpty));
-
 	if ( pItem->IsType(IT_BOOZE) )
 	{
 		// Beer wine and liquor. vary strength of effect.
-		int iAlcohol = Calc_GetRandVal(4);
-
 		CItem *pDrunkLayer = LayerFind(LAYER_FLAG_Drunk);
 		if ( !pDrunkLayer )
 			pDrunkLayer = Spell_Effect_Create(SPELL_Liquor, LAYER_FLAG_Drunk, 0, 5 * TICK_PER_SEC, this);
 
-		pDrunkLayer->m_itSpell.m_spellcharges += iAlcohol;
+		pDrunkLayer->m_itSpell.m_spellcharges += Calc_GetRandVal(4);
 		if ( pDrunkLayer->m_itSpell.m_spellcharges > 60 )
 			pDrunkLayer->m_itSpell.m_spellcharges = 60;
 	}
@@ -911,9 +888,10 @@ bool CChar::Use_Drink(CItem *pItem)
 
 		// Convey the effect of the potion.
 		int iSkillQuality = pItem->m_itPotion.m_skillquality;
-		int iEnhance = static_cast<int>(GetDefNum("EnhancePotions"));
-		if ( iEnhance )
-			iSkillQuality += IMULDIV(iSkillQuality, iEnhance, 100);
+
+		CVarDefCont *pVar = GetDefKey("EnhancePotions", true);
+		if ( pVar )
+			iSkillQuality += IMULDIV(iSkillQuality, pVar->GetValNum(), 100);
 
 		OnSpellEffect(static_cast<SPELL_TYPE>(RES_GET_INDEX(pItem->m_itPotion.m_Type)), this, iSkillQuality, pItem);
 
@@ -942,13 +920,14 @@ bool CChar::Use_Drink(CItem *pItem)
 			SetPoison(pItem->m_itFood.m_poison_skill * 10, 1 + (pItem->m_itFood.m_poison_skill / 50), this);
 	}
 
+	ITEMID_TYPE idBottle = static_cast<ITEMID_TYPE>(RES_GET_INDEX(pItem->Item_GetDef()->m_ttDrink.m_idEmpty));
 	//Sound(sm_DrinkSounds[Calc_GetRandVal(COUNTOF(sm_DrinkSounds))]);
 	UpdateAnimate(ANIM_EAT);
 	pItem->ConsumeAmount();
 
-	// Create the empty bottle ?
-	if ( idbottle != ITEMID_NOTHING )
-		ItemBounce(CItem::CreateScript(idbottle, this), false);
+	// Create the empty bottle
+	if ( idBottle != ITEMID_NOTHING )
+		ItemBounce(CItem::CreateScript(idBottle, this), false);
 	return true;
 }
 
@@ -956,17 +935,17 @@ CChar *CChar::Use_Figurine(CItem *pItem, bool bCheckFollowerSlots)
 {
 	ADDTOCALLSTACK("CChar::Use_Figurine");
 	// NOTE: The figurine is NOT destroyed.
-	bool bCreatedNewNpc = false;
 	if ( !pItem )
 		return NULL;
 
-	if ( pItem->m_uidLink.IsValidUID() && pItem->m_uidLink.IsChar() && pItem->m_uidLink != GetUID() && !IsPriv(PRIV_GM) )
+	if ( pItem->m_uidLink.IsValidUID() && pItem->m_uidLink.IsChar() && (pItem->m_uidLink != GetUID()) && !IsPriv(PRIV_GM) )
 	{
 		SysMessageDefault(DEFMSG_MSG_FIGURINE_NOTYOURS);
 		return NULL;
 	}
 
 	// Create a new NPC if there's no one linked to this figurine 
+	bool bCreatedNewNpc = false;
 	CChar *pPet = pItem->m_itFigurine.m_UID.CharFind();
 	if ( !pPet )
 	{
@@ -1064,7 +1043,6 @@ bool CChar::Use_Key(CItem *pItem, CItem *pItemTarg)
 			SysMessageDefault(DEFMSG_MSG_KEY_TARG_REACH);
 			return false;
 		}
-
 		if ( !pItem->m_itKey.m_lockUID && !pItemTarg->m_itKey.m_lockUID )
 		{
 			SysMessageDefault(DEFMSG_MSG_KEY_BLANKS);
@@ -1075,13 +1053,12 @@ bool CChar::Use_Key(CItem *pItem, CItem *pItemTarg)
 			SysMessageDefault(DEFMSG_MSG_KEY_NOTBLANKS);
 			return false;
 		}
-
-		// Need tinkering tools ???
 		if ( !Skill_UseQuick(SKILL_TINKERING, 30 + Calc_GetRandVal(40)) )
 		{
 			SysMessageDefault(DEFMSG_MSG_KEY_FAILC);
 			return false;
 		}
+
 		if ( pItemTarg->m_itKey.m_lockUID )
 			pItem->m_itKey.m_lockUID = pItemTarg->m_itKey.m_lockUID;
 		else
@@ -1100,19 +1077,16 @@ bool CChar::Use_Key(CItem *pItem, CItem *pItemTarg)
 			m_pClient->addPromptConsole(CLIMODE_PROMPT_NAME_KEY, g_Cfg.GetDefaultMsg(DEFMSG_MSG_KEY_SETNAME), pItem->GetUID());
 		return false;
 	}
-
 	if ( !CanUse(pItemTarg, false) )
 	{
 		SysMessageDefault(DEFMSG_MSG_KEY_CANTREACH);
 		return false;
 	}
-
 	if ( m_pArea->GetResourceID() == pItem->m_itKey.m_lockUID )
 	{
 		if ( Use_MultiLockDown(pItemTarg) )
 			return true;
 	}
-
 	if ( !pItemTarg->m_itContainer.m_lockUID )	// or m_itContainer.m_lockUID
 	{
 		SysMessageDefault(DEFMSG_MSG_KEY_NOLOCK);
@@ -1142,29 +1116,29 @@ bool CChar::Use_KeyChange(CItem *pItem)
 			pItem->SetType(IT_CONTAINER_LOCKED);
 			pItem->ResendTooltip();
 			SysMessageDefault(DEFMSG_MSG_KEY_TARG_CONT_LOCK);
-			break;
+			return true;
 		case IT_CONTAINER_LOCKED:
 			pItem->SetType(IT_CONTAINER);
 			pItem->ResendTooltip();
 			SysMessageDefault(DEFMSG_MSG_KEY_TARG_CONT_ULOCK);
-			break;
+			return true;
 		case IT_SHIP_HOLD:
 			pItem->SetType(IT_SHIP_HOLD_LOCK);
 			SysMessageDefault(DEFMSG_MSG_KEY_TARG_HOLD_LOCK);
-			break;
+			return true;
 		case IT_SHIP_HOLD_LOCK:
 			pItem->SetType(IT_SHIP_HOLD);
 			SysMessageDefault(DEFMSG_MSG_KEY_TARG_HOLD_ULOCK);
-			break;
+			return true;
 		case IT_DOOR:
 		case IT_DOOR_OPEN:
 			pItem->SetType(IT_DOOR_LOCKED);
 			SysMessageDefault(DEFMSG_MSG_KEY_TARG_DOOR_LOCK);
-			break;
+			return true;
 		case IT_DOOR_LOCKED:
 			pItem->SetType(IT_DOOR);
 			SysMessageDefault(DEFMSG_MSG_KEY_TARG_DOOR_ULOCK);
-			break;
+			return true;
 		case IT_SHIP_TILLER:
 			if ( m_pClient )
 				m_pClient->addPromptConsole(CLIMODE_PROMPT_NAME_SHIP, g_Cfg.GetDefaultMsg(DEFMSG_MSG_SHIPNAME_PROMT), pItem->GetUID());
@@ -1175,22 +1149,21 @@ bool CChar::Use_KeyChange(CItem *pItem)
 			{
 				pItem->SetType(IT_SHIP_SIDE);
 				SysMessageDefault(DEFMSG_MSG_KEY_TARG_SHIP_ULOCK);
-				break;
+				return true;
 			}
 			// Then fall thru and lock it.
 		case IT_SHIP_SIDE:
 			pItem->SetType(IT_SHIP_SIDE_LOCKED);
 			SysMessageDefault(DEFMSG_MSG_KEY_TARG_SHIP_LOCK);
-			break;
+			return true;
 		case IT_SHIP_SIDE_LOCKED:
 			pItem->SetType(IT_SHIP_SIDE);
 			SysMessageDefault(DEFMSG_MSG_KEY_TARG_SHIP_ULOCK);
-			break;
+			return true;
 		default:
 			SysMessageDefault(DEFMSG_MSG_KEY_TARG_NOLOCK);
 			return false;
 	}
-	return true;
 }
 
 bool CChar::Use_Seed(CItem *pItem, CPointMap *pPoint)
@@ -1218,12 +1191,11 @@ bool CChar::Use_Seed(CItem *pItem, CPointMap *pPoint)
 	if ( !IsPriv(PRIV_GM) && !g_World.IsItemTypeNear(pt, IT_DIRT, 0, false, true) )
 	{
 		SysMessageDefault(DEFMSG_MSG_SEED_TARGSOIL);
-		return(false);
+		return false;
 	}
 
-	const CItemBase *pItemDef = pItem->Item_GetDef();
-	ITEMID_TYPE idReset = static_cast<ITEMID_TYPE>(RES_GET_INDEX(pItemDef->m_ttFruit.m_idReset));
-	if ( idReset == 0 )
+	ITEMID_TYPE idReset = static_cast<ITEMID_TYPE>(RES_GET_INDEX(pItem->Item_GetDef()->m_ttFruit.m_idReset));
+	if ( idReset == ITEMID_NOTHING )
 	{
 		SysMessageDefault(DEFMSG_MSG_SEED_NOGOOD);
 		return false;
@@ -1257,9 +1229,7 @@ bool CChar::Use_Seed(CItem *pItem, CPointMap *pPoint)
 		pPlant->Plant_CropReset();
 	}
 	else
-	{
 		pPlant->SetDecayTime(10 * g_Cfg.m_iDecay_Item);
-	}
 
 	pItem->ConsumeAmount();
 	return true;
@@ -1482,8 +1452,7 @@ int CChar::Do_Use_Item(CItem *pItem, bool fLink)
 					return false;
 				if ( pItem->IsAttr(ATTR_MAGIC) )	// show it's magic face
 				{
-					ITEMID_TYPE id = (GetDispID() & DOOR_NORTHSOUTH) ? ITEMID_DOOR_MAGIC_SI_NS : ITEMID_DOOR_MAGIC_SI_EW;
-					CItem *pFace = CItem::CreateBase(id);
+					CItem *pFace = CItem::CreateBase((GetDispID() & DOOR_NORTHSOUTH) ? ITEMID_DOOR_MAGIC_SI_NS : ITEMID_DOOR_MAGIC_SI_EW);
 					ASSERT(pFace);
 					pFace->MoveToDecay(pItem->GetTopPoint(), 4 * TICK_PER_SEC);
 				}
@@ -1496,8 +1465,8 @@ int CChar::Do_Use_Item(CItem *pItem, bool fLink)
 			bool fOpen = pItem->Use_DoorNew(fLink);
 			if ( fLink || !fOpen )	// don't link if we are just closing the door
 				return true;
+			break;
 		}
-		break;
 
 		case IT_SHIP_PLANK:
 		{
@@ -1659,7 +1628,7 @@ bool CChar::Use_Item(CItem *pItem, bool fLink)
 			result |= Do_Use_Item(pLinkItem, true);
 		}
 	}
-	return (result & ~MASK_RETURN_FOLLOW_LINKS) ? true : false;
+	return (result & ~MASK_RETURN_FOLLOW_LINKS);
 }
 
 bool CChar::Use_Obj(CObjBase *pObj, bool fTestTouch, bool fScript)
