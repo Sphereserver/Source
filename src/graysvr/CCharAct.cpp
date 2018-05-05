@@ -504,39 +504,21 @@ void CChar::OnRemoveOb(CGObListRec *pObRec)	// override this = called when remov
 		if ( iManaIncrease != 0 )
 			Stat_SetMax(STAT_INT, Stat_GetMax(STAT_INT) - iManaIncrease);
 
-		INT64 iDamageIncrease = pItem->GetDefNum("INCREASEDAM", true);
-		if ( iDamageIncrease != 0 )
-			SetDefNum("INCREASEDAM", GetDefNum("INCREASEDAM") - iDamageIncrease);
-
-		INT64 iDefenseChanceIncrease = pItem->GetDefNum("INCREASEDEFCHANCE", true);
-		if ( iDefenseChanceIncrease != 0 )
-			SetDefNum("INCREASEDEFCHANCE", GetDefNum("INCREASEDEFCHANCE") - iDefenseChanceIncrease);
-
-		INT64 iFasterCasting = pItem->GetDefNum("FASTERCASTING", true);
-		if ( iFasterCasting != 0 )
-			SetDefNum("FASTERCASTING", GetDefNum("FASTERCASTING") - iFasterCasting);
-
-		INT64 iHitChanceIncrease = pItem->GetDefNum("INCREASEHITCHANCE", true);
-		if ( iHitChanceIncrease != 0 )
-			SetDefNum("INCREASEHITCHANCE", GetDefNum("INCREASEHITCHANCE") - iHitChanceIncrease);
-
-		INT64 iSpellDamageIncrease = pItem->GetDefNum("INCREASESPELLDAM", true);
-		if ( iSpellDamageIncrease != 0 )
-			SetDefNum("INCREASESPELLDAM", GetDefNum("INCREASESPELLDAM") - iSpellDamageIncrease);
-
-		INT64 iSwingSpeedIncrease = pItem->GetDefNum("INCREASESWINGSPEED", true);
-		if ( iSwingSpeedIncrease != 0 )
-			SetDefNum("INCREASESWINGSPEED", GetDefNum("INCREASESWINGSPEED") - iSwingSpeedIncrease);
-
 		INT64 iEnhancePotions = pItem->GetDefNum("ENHANCEPOTIONS", true);
 		if ( iEnhancePotions != 0 )
 			SetDefNum("ENHANCEPOTIONS", GetDefNum("ENHANCEPOTIONS") - iEnhancePotions);
 
-		INT64 iLowerManaCost = pItem->GetDefNum("LOWERMANACOST", true);
-		if ( iLowerManaCost != 0 )
-			SetDefNum("LOWERMANACOST", GetDefNum("LOWERMANACOST") - iLowerManaCost);
-
 		m_Luck -= pItem->m_Luck;
+		m_DamIncrease -= pItem->m_DamIncrease;
+		m_SpellDamIncrease -= pItem->m_SpellDamIncrease;
+		m_HitChanceIncrease -= pItem->m_HitChanceIncrease;
+		m_DefChanceIncrease -= pItem->m_DefChanceIncrease;
+		m_DefChanceIncreaseMax -= pItem->m_DefChanceIncreaseMax;
+		m_SwingSpeedIncrease -= pItem->m_SwingSpeedIncrease;
+		m_FasterCasting -= pItem->m_FasterCasting;
+		m_FasterCastRecovery -= pItem->m_FasterCastRecovery;
+		m_LowerManaCost -= pItem->m_LowerManaCost;
+		m_LowerReagentCost -= pItem->m_LowerReagentCost;
 
 		if ( pItem->GetDefNum("NIGHTSIGHT", true) )
 		{
@@ -1923,39 +1905,21 @@ bool CChar::ItemEquip(CItem *pItem, CChar *pCharMsg, bool fFromDClick)
 	if ( iManaIncrease != 0 )
 		Stat_SetMax(STAT_INT, Stat_GetMax(STAT_INT) + iManaIncrease);
 
-	INT64 iDamageIncrease = pItem->GetDefNum("INCREASEDAM", true);
-	if ( iDamageIncrease != 0 )
-		SetDefNum("INCREASEDAM", GetDefNum("INCREASEDAM") + iDamageIncrease);
-
-	INT64 iDefenseChanceIncrease = pItem->GetDefNum("INCREASEDEFCHANCE", true);
-	if ( iDefenseChanceIncrease != 0 )
-		SetDefNum("INCREASEDEFCHANCE", GetDefNum("INCREASEDEFCHANCE") + iDefenseChanceIncrease);
-
-	INT64 iFasterCasting = pItem->GetDefNum("FASTERCASTING", true);
-	if ( iFasterCasting != 0 )
-		SetDefNum("FASTERCASTING", GetDefNum("FASTERCASTING") + iFasterCasting);
-
-	INT64 iHitChanceIncrease = pItem->GetDefNum("INCREASEHITCHANCE", true);
-	if ( iHitChanceIncrease != 0 )
-		SetDefNum("INCREASEHITCHANCE", GetDefNum("INCREASEHITCHANCE") + iHitChanceIncrease);
-
-	INT64 iSpellDamageIncrease = pItem->GetDefNum("INCREASESPELLDAM", true);
-	if ( iSpellDamageIncrease != 0 )
-		SetDefNum("INCREASESPELLDAM", GetDefNum("INCREASESPELLDAM") + iSpellDamageIncrease);
-
-	INT64 iSwingSpeedIncrease = pItem->GetDefNum("INCREASESWINGSPEED", true);
-	if ( iSwingSpeedIncrease != 0 )
-		SetDefNum("INCREASESWINGSPEED", GetDefNum("INCREASESWINGSPEED") + iSwingSpeedIncrease);
-
 	INT64 iEnhancePotions = pItem->GetDefNum("ENHANCEPOTIONS", true);
 	if ( iEnhancePotions != 0 )
 		SetDefNum("ENHANCEPOTIONS", GetDefNum("ENHANCEPOTIONS") + iEnhancePotions);
 
-	INT64 iLowerManaCost = pItem->GetDefNum("LOWERMANACOST", true);
-	if ( iLowerManaCost != 0 )
-		SetDefNum("LOWERMANACOST", GetDefNum("LOWERMANACOST") + iLowerManaCost);
-
 	m_Luck += pItem->m_Luck;
+	m_DamIncrease += pItem->m_DamIncrease;
+	m_SpellDamIncrease += pItem->m_SpellDamIncrease;
+	m_HitChanceIncrease += pItem->m_HitChanceIncrease;
+	m_DefChanceIncrease += pItem->m_DefChanceIncrease;
+	m_DefChanceIncreaseMax += pItem->m_DefChanceIncreaseMax;
+	m_SwingSpeedIncrease += pItem->m_SwingSpeedIncrease;
+	m_FasterCasting += pItem->m_FasterCasting;
+	m_FasterCastRecovery += pItem->m_FasterCastRecovery;
+	m_LowerManaCost += pItem->m_LowerManaCost;
+	m_LowerReagentCost += pItem->m_LowerReagentCost;
 
 	if ( pItem->GetDefNum("NIGHTSIGHT", true) )
 	{

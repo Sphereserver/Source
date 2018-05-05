@@ -37,7 +37,6 @@ int CResource::Calc_CombatAttackSpeed( CChar * pChar, CItem * pWeapon )
 	if ( pChar->m_pNPC && pChar->m_pNPC->m_Brain == NPCBRAIN_GUARD && m_fGuardsInstantKill )
 		return 1;
 
-	int iSwingSpeedIncrease = static_cast<int>(pChar->GetDefNum("INCREASESWINGSPEED"));
 	int iBaseSpeed = 50;	// Base Wrestling speed (on ML formula it's 2.50)
 	if ( pWeapon )			// If we have a weapon, base speed should match weapon's value.
 		iBaseSpeed = pWeapon->GetSpeed();
@@ -89,7 +88,7 @@ int CResource::Calc_CombatAttackSpeed( CChar * pChar, CItem * pWeapon )
 		{
 			// AOS formula		(default m_iSpeedScaleFactor = 40000)
 			int iSwingSpeed = (pChar->Stat_GetVal(STAT_DEX) + 100) * iBaseSpeed;
-			iSwingSpeed = maximum(1, iSwingSpeed * (100 + iSwingSpeedIncrease) / 100);
+			iSwingSpeed = maximum(1, iSwingSpeed * (100 + pChar->m_SwingSpeedIncrease) / 100);
 			iSwingSpeed = ((g_Cfg.m_iSpeedScaleFactor * TICK_PER_SEC) / iSwingSpeed) / 2;
 			if ( iSwingSpeed < 12 )		//1.25
 				iSwingSpeed = 12;
@@ -99,7 +98,7 @@ int CResource::Calc_CombatAttackSpeed( CChar * pChar, CItem * pWeapon )
 		case 3:
 		{
 			// SE formula		(default m_iSpeedScaleFactor = 80000)
-			int iSwingSpeed = maximum(1, iBaseSpeed * (100 + iSwingSpeedIncrease) / 100);
+			int iSwingSpeed = maximum(1, iBaseSpeed * (100 + pChar->m_SwingSpeedIncrease) / 100);
 			iSwingSpeed = (g_Cfg.m_iSpeedScaleFactor / ((pChar->Stat_GetVal(STAT_DEX) + 100) * iSwingSpeed)) - 2;	// get speed in ticks of 0.25s each
 			if ( iSwingSpeed < 5 )
 				iSwingSpeed = 5;
@@ -110,7 +109,7 @@ int CResource::Calc_CombatAttackSpeed( CChar * pChar, CItem * pWeapon )
 		case 4:
 		{
 			// ML formula		(doesn't use m_iSpeedScaleFactor and it's only compatible with ML speed format eg. 0.25 ~ 5.00 instead 0 ~ 50)
-			int iSwingSpeed = ((iBaseSpeed * 4) - (pChar->Stat_GetVal(STAT_DEX) / 30)) * (100 / (100 + iSwingSpeedIncrease));	// get speed in ticks of 0.25s each
+			int iSwingSpeed = ((iBaseSpeed * 4) - (pChar->Stat_GetVal(STAT_DEX) / 30)) * (100 / (100 + pChar->m_SwingSpeedIncrease));	// get speed in ticks of 0.25s each
 			if ( iSwingSpeed < 5 )
 				iSwingSpeed = 5;
 			iSwingSpeed = (iSwingSpeed * TICK_PER_SEC) / 4;		// convert 0.25s ticks into ms
@@ -190,7 +189,7 @@ int CResource::Calc_CombatChanceToHit( CChar * pChar, CChar * pCharTarg )
 		{
 			// AOS formula
 			int iAttackerSkill = pChar->Skill_GetBase(skillAttacker);
-			int iAttackerHitChance = static_cast<int>(pChar->GetDefNum("INCREASEHITCHANCE"));
+			int iAttackerHitChance = pChar->m_HitChanceIncrease;
 			if ( (g_Cfg.m_iRacialFlags & RACIALF_GARG_DEADLYAIM) && pChar->IsGargoyle() )
 			{
 				// Racial traits: Deadly Aim. Gargoyles always have +5 Hit Chance Increase and a minimum of 20.0 Throwing skill (not shown in skills gump)
@@ -199,7 +198,7 @@ int CResource::Calc_CombatChanceToHit( CChar * pChar, CChar * pCharTarg )
 				iAttackerHitChance += 5;
 			}
 			iAttackerSkill = ((iAttackerSkill / 10) + 20) * (100 + minimum(iAttackerHitChance, 45));
-			int iTargetSkill = ((pCharTarg->Skill_GetBase(skillTarget) / 10) + 20) * (100 + minimum(static_cast<int>(pCharTarg->GetDefNum("INCREASEDEFCHANCE")), 45));
+			int iTargetSkill = ((pCharTarg->Skill_GetBase(skillTarget) / 10) + 20) * (100 + minimum(pCharTarg->m_DefChanceIncrease, pCharTarg->m_DefChanceIncreaseMax));
 
 			int iChance = iAttackerSkill * 100 / (iTargetSkill * 2);
 			if ( iChance < 2 )

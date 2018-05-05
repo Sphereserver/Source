@@ -2427,18 +2427,16 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 
 					if ( pItem->IsTypeArmorWeapon() )
 					{
-						INT64 DamageIncrease = pItem->GetDefNum("INCREASEDAM", true);
-						if ( DamageIncrease != 0 )
+						if ( pItem->m_DamIncrease != 0 )
 						{
 							m_TooltipData.Add(t = new CClientTooltip(1060401)); // damage increase ~1_val~%
-							t->FormatArgs("%lld", DamageIncrease);
+							t->FormatArgs("%d", pItem->m_DamIncrease);
 						}
 
-						INT64 DefenceChanceIncrease = pItem->GetDefNum("INCREASEDEFCHANCE", true);
-						if ( DefenceChanceIncrease != 0 )
+						if ( pItem->m_DefChanceIncrease != 0 )
 						{
 							m_TooltipData.Add(t = new CClientTooltip(1060408)); // defense chance increase ~1_val~%
-							t->FormatArgs("%lld", DefenceChanceIncrease);
+							t->FormatArgs("%d", pItem->m_DefChanceIncrease);
 						}
 
 						INT64 DexterityBonus = pItem->GetDefNum("BONUSDEX", true);
@@ -2455,25 +2453,22 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 							t->FormatArgs("%lld", EnhancePotions);
 						}
 
-						INT64 FasterCastRecovery = pItem->GetDefNum("FASTERCASTRECOVERY", true);
-						if ( FasterCastRecovery != 0 )
+						if ( pItem->m_FasterCastRecovery != 0 )
 						{
 							m_TooltipData.Add(t = new CClientTooltip(1060412)); // faster cast recovery ~1_val~
-							t->FormatArgs("%lld", FasterCastRecovery);
+							t->FormatArgs("%d", pItem->m_FasterCastRecovery);
 						}
 
-						INT64 FasterCasting = pItem->GetDefNum("FASTERCASTING", true);
-						if ( FasterCasting != 0 )
+						if ( pItem->m_FasterCasting != 0 )
 						{
 							m_TooltipData.Add(t = new CClientTooltip(1060413)); // faster casting ~1_val~
-							t->FormatArgs("%lld", FasterCasting);
+							t->FormatArgs("%d", pItem->m_FasterCasting);
 						}
 
-						INT64 HitChanceIncrease = pItem->GetDefNum("INCREASEHITCHANCE", true);
-						if ( HitChanceIncrease != 0 )
+						if ( pItem->m_HitChanceIncrease != 0 )
 						{
 							m_TooltipData.Add(t = new CClientTooltip(1060415)); // hit chance increase ~1_val~%
-							t->FormatArgs("%lld", HitChanceIncrease);
+							t->FormatArgs("%d", pItem->m_HitChanceIncrease);
 						}
 
 						INT64 HitPointIncrease = pItem->GetDefNum("BONUSHITS", true);
@@ -2490,18 +2485,16 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 							t->FormatArgs("%lld", IntelligenceBonus);
 						}
 
-						INT64 LowerManaCost = pItem->GetDefNum("LOWERMANACOST", true);
-						if ( LowerManaCost != 0 )
+						if ( pItem->m_LowerManaCost != 0 )
 						{
 							m_TooltipData.Add(t = new CClientTooltip(1060433)); // lower mana cost ~1_val~%
-							t->FormatArgs("%lld", LowerManaCost);
+							t->FormatArgs("%d", pItem->m_LowerManaCost);
 						}
 
-						INT64 LowerReagentCost = pItem->GetDefNum("LOWERREAGENTCOST", true);
-						if ( LowerReagentCost != 0 )
+						if ( pItem->m_LowerReagentCost != 0 )
 						{
 							m_TooltipData.Add(t = new CClientTooltip(1060434)); // lower reagent cost ~1_val~%
-							t->FormatArgs("%lld", LowerReagentCost);
+							t->FormatArgs("%d", pItem->m_LowerReagentCost);
 						}
 
 						INT64 LowerRequirements = pItem->GetDefNum("LOWERREQ", true);
@@ -2575,11 +2568,10 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 						if ( pItem->GetDefNum("SPELLCHANNELING", true) )
 							m_TooltipData.Add(new CClientTooltip(1060482)); // spell channeling
 
-						INT64 SpellDamageIncrease = pItem->GetDefNum("INCREASESPELLDAM", true);
-						if ( SpellDamageIncrease != 0 )
+						if ( pItem->m_SpellDamIncrease != 0 )
 						{
 							m_TooltipData.Add(t = new CClientTooltip(1060483)); // spell damage increase ~1_val~%
-							t->FormatArgs("%lld", SpellDamageIncrease);
+							t->FormatArgs("%d", pItem->m_SpellDamIncrease);
 						}
 
 						INT64 StaminaIncrease = pItem->GetDefNum("BONUSSTAM", true);
@@ -2596,11 +2588,10 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 							t->FormatArgs("%lld", StrengthBonus);
 						}
 
-						INT64 SwingSpeedIncrease = pItem->GetDefNum("INCREASESWINGSPEED", true);
-						if ( SwingSpeedIncrease != 0 )
+						if ( pItem->m_SwingSpeedIncrease != 0 )
 						{
 							m_TooltipData.Add(t = new CClientTooltip(1060486)); // swing speed increase ~1_val~%
-							t->FormatArgs("%lld", SwingSpeedIncrease);
+							t->FormatArgs("%d", pItem->m_SwingSpeedIncrease);
 						}
 					}
 

@@ -26,6 +26,16 @@ CBaseBaseDef::CBaseBaseDef(RESOURCE_ID id) : CResourceLink(id)
 	m_ResEnergy = 0;
 	m_ResEnergyMax = 0;
 	m_Luck = 0;
+	m_DamIncrease = 0;
+	m_SpellDamIncrease = 0;
+	m_HitChanceIncrease = 0;
+	m_DefChanceIncrease = 0;
+	m_DefChanceIncreaseMax = 45;
+	m_SwingSpeedIncrease = 0;
+	m_FasterCasting = 0;
+	m_FasterCastRecovery = 0;
+	m_LowerManaCost = 0;
+	m_LowerReagentCost = 0;
 	m_Height = 0;
 	m_Can = CAN_C_INDOORS;
 	SetDefNum("RANGE", 1);	//m_range = 1;
@@ -64,6 +74,16 @@ void CBaseBaseDef::CopyBasic(const CBaseBaseDef *pBaseDef)
 	m_ResEnergy = pBaseDef->m_ResEnergy;
 	m_ResEnergyMax = pBaseDef->m_ResEnergyMax;
 	m_Luck = pBaseDef->m_Luck;
+	m_DamIncrease = pBaseDef->m_DamIncrease;
+	m_SpellDamIncrease = pBaseDef->m_SpellDamIncrease;
+	m_HitChanceIncrease = pBaseDef->m_HitChanceIncrease;
+	m_DefChanceIncrease = pBaseDef->m_DefChanceIncrease;
+	m_DefChanceIncreaseMax = pBaseDef->m_DefChanceIncreaseMax;
+	m_SwingSpeedIncrease = pBaseDef->m_SwingSpeedIncrease;
+	m_FasterCasting = pBaseDef->m_FasterCasting;
+	m_FasterCastRecovery = pBaseDef->m_FasterCastRecovery;
+	m_LowerManaCost = pBaseDef->m_LowerManaCost;
+	m_LowerReagentCost = pBaseDef->m_LowerReagentCost;
 	m_Height = pBaseDef->m_Height;
 	m_Can = pBaseDef->m_Can;
 	SetDefNum("RANGE", pBaseDef->GetDefNum("RANGE"));	//m_range = pBaseDef->m_range
@@ -122,20 +142,10 @@ bool CBaseBaseDef::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc
 		case OBC_DECREASEHITCHANCE:
 		case OBC_ENHANCEPOTIONS:
 		case OBC_EXPANSION:
-		case OBC_FASTERCASTING:
-		case OBC_FASTERCASTRECOVERY:
 		case OBC_HITLEECHLIFE:
 		case OBC_HITLEECHMANA:
 		case OBC_HITLEECHSTAM:
 		case OBC_HITMANADRAIN:
-		case OBC_INCREASEDAM:
-		case OBC_INCREASEDEFCHANCE:
-		case OBC_INCREASEDEFCHANCEMAX:
-		case OBC_INCREASEHITCHANCE:
-		case OBC_INCREASESPELLDAM:
-		case OBC_INCREASESWINGSPEED:
-		case OBC_LOWERMANACOST:
-		case OBC_LOWERREAGENTCOST:
 		case OBC_LOWERREQ:
 		case OBC_NAMELOC:
 		case OBC_NIGHTSIGHT:
@@ -206,11 +216,41 @@ bool CBaseBaseDef::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc
 		case OBC_DEFNAME:
 			sVal = GetResourceName();
 			break;
+		case OBC_FASTERCASTING:
+			sVal.FormatVal(m_FasterCasting);
+			break;
+		case OBC_FASTERCASTRECOVERY:
+			sVal.FormatVal(m_FasterCastRecovery);
+			break;
 		case OBC_HEIGHT:
 			sVal.FormatVal(GetHeight());
 			break;
+		case OBC_INCREASEDAM:
+			sVal.FormatVal(m_DamIncrease);
+			break;
+		case OBC_INCREASEDEFCHANCE:
+			sVal.FormatVal(m_DefChanceIncrease);
+			break;
+		case OBC_INCREASEDEFCHANCEMAX:
+			sVal.FormatVal(m_DefChanceIncreaseMax);
+			break;
+		case OBC_INCREASEHITCHANCE:
+			sVal.FormatVal(m_HitChanceIncrease);
+			break;
+		case OBC_INCREASESPELLDAM:
+			sVal.FormatVal(m_SpellDamIncrease);
+			break;
+		case OBC_INCREASESWINGSPEED:
+			sVal.FormatVal(m_SwingSpeedIncrease);
+			break;
 		case OBC_INSTANCES:
 			sVal.FormatUVal(GetRefInstances());
+			break;
+		case OBC_LOWERMANACOST:
+			sVal.FormatVal(m_LowerManaCost);
+			break;
+		case OBC_LOWERREAGENTCOST:
+			sVal.FormatVal(m_LowerReagentCost);
 			break;
 		case OBC_LUCK:
 			sVal.FormatVal(m_Luck);
@@ -352,20 +392,10 @@ bool CBaseBaseDef::r_LoadVal(CScript &s)
 		case OBC_DECREASEHITCHANCE:
 		case OBC_ENHANCEPOTIONS:
 		case OBC_EXPANSION:
-		case OBC_FASTERCASTING:
-		case OBC_FASTERCASTRECOVERY:
 		case OBC_HITLEECHLIFE:
 		case OBC_HITLEECHMANA:
 		case OBC_HITLEECHSTAM:
 		case OBC_HITMANADRAIN:
-		case OBC_INCREASEDAM:
-		case OBC_INCREASEDEFCHANCE:
-		case OBC_INCREASEDEFCHANCEMAX:
-		case OBC_INCREASEHITCHANCE:
-		case OBC_INCREASESPELLDAM:
-		case OBC_INCREASESWINGSPEED:
-		case OBC_LOWERMANACOST:
-		case OBC_LOWERREAGENTCOST:
 		case OBC_LOWERREQ:
 		case OBC_NAMELOC:
 		case OBC_NIGHTSIGHT:
@@ -439,11 +469,41 @@ bool CBaseBaseDef::r_LoadVal(CScript &s)
 		case OBC_DEFNAME:
 		case OBC_DEFNAME2:
 			return SetResourceName(s.GetArgStr());
+		case OBC_FASTERCASTING:
+			m_FasterCasting = static_cast<int>(s.GetArgVal());
+			return true;
+		case OBC_FASTERCASTRECOVERY:
+			m_FasterCastRecovery = static_cast<int>(s.GetArgVal());
+			return true;
 		case OBC_HEIGHT:
 			m_Height = static_cast<height_t>(s.GetArgVal());
 			return true;
+		case OBC_INCREASEDAM:
+			m_DamIncrease = static_cast<int>(s.GetArgVal());
+			return true;
+		case OBC_INCREASEDEFCHANCE:
+			m_DefChanceIncrease = static_cast<int>(s.GetArgVal());
+			return true;
+		case OBC_INCREASEDEFCHANCEMAX:
+			m_DefChanceIncreaseMax = static_cast<int>(s.GetArgVal());
+			return true;
+		case OBC_INCREASEHITCHANCE:
+			m_HitChanceIncrease = static_cast<int>(s.GetArgVal());
+			return true;
+		case OBC_INCREASESPELLDAM:
+			m_SpellDamIncrease = static_cast<int>(s.GetArgVal());
+			return true;
+		case OBC_INCREASESWINGSPEED:
+			m_SwingSpeedIncrease = static_cast<int>(s.GetArgVal());
+			return true;
 		case OBC_INSTANCES:
 			return false;
+		case OBC_LOWERMANACOST:
+			m_LowerManaCost = static_cast<int>(s.GetArgVal());
+			return true;
+		case OBC_LOWERREAGENTCOST:
+			m_LowerReagentCost = static_cast<int>(s.GetArgVal());
+			return true;
 		case OBC_LUCK:
 			m_Luck = static_cast<int>(s.GetArgVal());
 			return true;

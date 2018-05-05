@@ -39,6 +39,7 @@ public:
 	short m_iMoveRate;
 	short m_FollowerSlots;
 	short m_FollowerMax;
+	int m_Tithing;
 
 	// NPC info
 	CResourceQtyArray m_Aversions;	// traps, civilization

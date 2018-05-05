@@ -692,20 +692,10 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case OC_DECREASEHITCHANCE:
 		case OC_ENHANCEPOTIONS:
 		case OC_EXPANSION:
-		case OC_FASTERCASTING:
-		case OC_FASTERCASTRECOVERY:
 		case OC_HITLEECHLIFE:
 		case OC_HITLEECHMANA:
 		case OC_HITLEECHSTAM:
 		case OC_HITMANADRAIN:
-		case OC_INCREASEDAM:
-		case OC_INCREASEDEFCHANCE:
-		case OC_INCREASEDEFCHANCEMAX:
-		case OC_INCREASEHITCHANCE:
-		case OC_INCREASESPELLDAM:
-		case OC_INCREASESWINGSPEED:
-		case OC_LOWERREAGENTCOST:
-		case OC_LOWERMANACOST:
 		case OC_LOWERREQ:
 		case OC_NIGHTSIGHT:
 		case OC_REFLECTPHYSICALDAM:
@@ -778,6 +768,36 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			break;
 		case OC_DAMPOISON:
 			sVal.FormatVal(m_DamPoison);
+			break;
+		case OC_INCREASEDAM:
+			sVal.FormatVal(m_DamIncrease);
+			break;
+		case OC_INCREASEDEFCHANCE:
+			sVal.FormatVal(m_DefChanceIncrease);
+			break;
+		case OC_INCREASEDEFCHANCEMAX:
+			sVal.FormatVal(m_DefChanceIncreaseMax);
+			break;
+		case OC_INCREASEHITCHANCE:
+			sVal.FormatVal(m_HitChanceIncrease);
+			break;
+		case OC_INCREASESPELLDAM:
+			sVal.FormatVal(m_SpellDamIncrease);
+			break;
+		case OC_INCREASESWINGSPEED:
+			sVal.FormatVal(m_SwingSpeedIncrease);
+			break;
+		case OC_FASTERCASTING:
+			sVal.FormatVal(m_FasterCasting);
+			break;
+		case OC_FASTERCASTRECOVERY:
+			sVal.FormatVal(m_FasterCastRecovery);
+			break;
+		case OC_LOWERMANACOST:
+			sVal.FormatVal(m_LowerManaCost);
+			break;
+		case OC_LOWERREAGENTCOST:
+			sVal.FormatVal(m_LowerReagentCost);
 			break;
 		case OC_RANGE:
 		{
@@ -1442,10 +1462,11 @@ bool CObjBase::r_LoadVal(CScript &s)
 	if ( index < 0 )
 		return CScriptObj::r_LoadVal(s);
 
+	bool bUpdateClientStats = false;
+
 	switch ( index )
 	{
 		//Set as number only
-		case OC_INCREASEHITCHANCE:
 		case OC_DAMCHAOS:
 		case OC_DAMDIRECT:
 		case OC_DECREASEHITCHANCE:
@@ -1463,15 +1484,6 @@ bool CObjBase::r_LoadVal(CScript &s)
 			SetDefNum(s.GetKey(), s.GetArgVal(), false);
 			break;
 
-		case OC_INCREASESWINGSPEED:
-		case OC_INCREASEDAM:
-		case OC_LOWERREAGENTCOST:
-		case OC_LOWERMANACOST:
-		case OC_FASTERCASTRECOVERY:
-		case OC_FASTERCASTING:
-		case OC_INCREASEDEFCHANCE:
-		case OC_INCREASEDEFCHANCEMAX:
-		case OC_INCREASESPELLDAM:
 		case OC_REGENFOOD:
 		case OC_REGENHITS:
 		case OC_REGENSTAM:
@@ -1482,19 +1494,10 @@ bool CObjBase::r_LoadVal(CScript &s)
 		case OC_REGENVALMANA:
 		case OC_COMBATBONUSSTAT:
 		case OC_COMBATBONUSPERCENT:
-		{
 			SetDefNum(s.GetKey(), s.GetArgVal());
-
-			// This should be used in case items with these properties updates the character in the moment without any script to make status reflect the update.
-			// Maybe too a cliver check to not send update if not needed.
-			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
-			{
-				CChar *pChar = dynamic_cast<CChar *>(GetTopLevelObj());
-				if ( pChar )
-					pChar->UpdateStatsFlag();
-			}
+			bUpdateClientStats = true;
 			break;
-		}
+
 		case OC_ARMOR:
 		{
 			if ( IsChar() )
@@ -1504,10 +1507,7 @@ bool CObjBase::r_LoadVal(CScript &s)
 			size_t iQty = Str_ParseCmds(s.GetArgStr(), piVal, COUNTOF(piVal));
 			m_defenseBase = static_cast<WORD>(piVal[0]);
 			m_defenseRange = (iQty > 1) ? static_cast<WORD>(piVal[1]) - m_defenseBase : 0;
-
-			CChar *pChar = dynamic_cast<CChar *>(GetTopLevelObj());
-			if ( pChar )
-				pChar->UpdateStatsFlag();
+			bUpdateClientStats = true;
 			break;
 		}
 		case OC_DAM:
@@ -1516,10 +1516,7 @@ bool CObjBase::r_LoadVal(CScript &s)
 			size_t iQty = Str_ParseCmds(s.GetArgStr(), piVal, COUNTOF(piVal));
 			m_attackBase = static_cast<WORD>(piVal[0]);
 			m_attackRange = (iQty > 1) ? static_cast<WORD>(piVal[1]) - m_attackBase : 0;
-
-			CChar *pChar = dynamic_cast<CChar *>(GetTopLevelObj());
-			if ( pChar )
-				pChar->UpdateStatsFlag();
+			bUpdateClientStats = true;
 			break;
 		}
 		case OC_DAMCOLD:
@@ -1537,6 +1534,46 @@ bool CObjBase::r_LoadVal(CScript &s)
 		case OC_DAMPOISON:
 			m_DamPoison = static_cast<int>(s.GetArgVal());
 			break;
+		case OC_INCREASEDAM:
+			m_DamIncrease = static_cast<int>(s.GetArgVal());
+			bUpdateClientStats = true;
+			break;
+		case OC_INCREASEDEFCHANCE:
+			m_DefChanceIncrease = static_cast<int>(s.GetArgVal());
+			bUpdateClientStats = true;
+			break;
+		case OC_INCREASEDEFCHANCEMAX:
+			m_DefChanceIncreaseMax = static_cast<int>(s.GetArgVal());
+			bUpdateClientStats = true;
+			break;
+		case OC_INCREASEHITCHANCE:
+			m_HitChanceIncrease = static_cast<int>(s.GetArgVal());
+			bUpdateClientStats = true;
+			break;
+		case OC_INCREASESPELLDAM:
+			m_SpellDamIncrease = static_cast<int>(s.GetArgVal());
+			bUpdateClientStats = true;
+			break;
+		case OC_INCREASESWINGSPEED:
+			m_SwingSpeedIncrease = static_cast<int>(s.GetArgVal());
+			bUpdateClientStats = true;
+			break;
+		case OC_FASTERCASTING:
+			m_FasterCasting = static_cast<int>(s.GetArgVal());
+			bUpdateClientStats = true;
+			break;
+		case OC_FASTERCASTRECOVERY:
+			m_FasterCastRecovery = static_cast<int>(s.GetArgVal());
+			bUpdateClientStats = true;
+			break;
+		case OC_LOWERMANACOST:
+			m_LowerManaCost = static_cast<int>(s.GetArgVal());
+			bUpdateClientStats = true;
+			break;
+		case OC_LOWERREAGENTCOST:
+			m_LowerReagentCost = static_cast<int>(s.GetArgVal());
+			bUpdateClientStats = true;
+			break;
 		case OC_WEIGHTREDUCTION:
 		{
 			int oldweight = GetWeight();
@@ -1547,7 +1584,7 @@ bool CObjBase::r_LoadVal(CScript &s)
 				ASSERT(IsItemEquipped() || IsItemInContainer());
 				pCont->OnWeightChange(GetWeight() - oldweight);
 			}
-			return true;
+			break;
 		}
 		case OC_RANGE:
 		{
@@ -1568,6 +1605,7 @@ bool CObjBase::r_LoadVal(CScript &s)
 			break;
 		case OC_MODMAXWEIGHT:
 			m_ModMaxWeight = static_cast<int>(s.GetArgVal());
+			bUpdateClientStats = true;
 			break;
 		case OC_COLOR:
 		{
@@ -1593,14 +1631,9 @@ bool CObjBase::r_LoadVal(CScript &s)
 		case OC_EVENTS:
 			return m_OEvents.r_LoadVal(s, RES_EVENTS);
 		case OC_LUCK:
-		{
 			m_Luck = static_cast<int>(s.GetArgVal());
-
-			CChar *pChar = dynamic_cast<CChar *>(GetTopLevelObj());
-			if ( pChar )
-				pChar->UpdateStatsFlag();
-			return true;
-		}
+			bUpdateClientStats = true;
+			break;
 		case OC_MAP:
 		{
 			// Move to another map
@@ -1621,119 +1654,61 @@ bool CObjBase::r_LoadVal(CScript &s)
 		}
 		case OC_MODAR:
 		case OC_MODAC:
-		{
 			m_ModAr = s.GetArgVal();
-			CChar *pChar = dynamic_cast<CChar *>(GetTopLevelObj());
-			if ( pChar )
-			{
-				pChar->m_defense = pChar->CalcArmorDefense();
-				pChar->UpdateStatsFlag();
-			}
+			bUpdateClientStats = true;
 			break;
-		}
 		case OC_NAME:
 			SetName(static_cast<LPCTSTR>(s.GetArgStr()));
 			break;
 		case OC_P:
 			return false;	// must set the point via the CItem or CChar methods
 		case OC_RESCOLD:
-		{
 			m_ResCold = static_cast<int>(s.GetArgVal());
-
-			CChar *pChar = dynamic_cast<CChar *>(GetTopLevelObj());
-			if ( pChar )
-				pChar->UpdateStatsFlag();
-			return true;
-		}
+			bUpdateClientStats = true;
+			break;
 		case OC_RESCOLDMAX:
-		{
 			m_ResColdMax = static_cast<int>(s.GetArgVal());
-
-			CChar *pChar = dynamic_cast<CChar *>(GetTopLevelObj());
-			if ( pChar )
-				pChar->UpdateStatsFlag();
-			return true;
-		}
+			bUpdateClientStats = true;
+			break;
 		case OC_RESENERGY:
-		{
 			m_ResEnergy = static_cast<int>(s.GetArgVal());
-
-			CChar *pChar = dynamic_cast<CChar *>(GetTopLevelObj());
-			if ( pChar )
-				pChar->UpdateStatsFlag();
-			return true;
-		}
+			bUpdateClientStats = true;
+			break;
 		case OC_RESENERGYMAX:
-		{
 			m_ResEnergyMax = static_cast<int>(s.GetArgVal());
-
-			CChar *pChar = dynamic_cast<CChar *>(GetTopLevelObj());
-			if ( pChar )
-				pChar->UpdateStatsFlag();
-			return true;
-		}
+			bUpdateClientStats = true;
+			break;
 		case OC_RESFIRE:
-		{
 			m_ResFire = static_cast<int>(s.GetArgVal());
-
-			CChar *pChar = dynamic_cast<CChar *>(GetTopLevelObj());
-			if ( pChar )
-				pChar->UpdateStatsFlag();
-			return true;
-		}
+			bUpdateClientStats = true;
+			break;
 		case OC_RESFIREMAX:
-		{
 			m_ResFireMax = static_cast<int>(s.GetArgVal());
-
-			CChar *pChar = dynamic_cast<CChar *>(GetTopLevelObj());
-			if ( pChar )
-				pChar->UpdateStatsFlag();
-			return true;
-		}
+			bUpdateClientStats = true;
+			break;
 		case OC_RESPHYSICAL:
-		{
 			m_ResPhysical = static_cast<int>(s.GetArgVal());
-
-			CChar *pChar = dynamic_cast<CChar *>(GetTopLevelObj());
-			if ( pChar )
-				pChar->UpdateStatsFlag();
-			return true;
-		}
+			bUpdateClientStats = true;
+			break;
 		case OC_RESPHYSICALMAX:
-		{
 			m_ResPhysicalMax = static_cast<int>(s.GetArgVal());
-
-			CChar *pChar = dynamic_cast<CChar *>(GetTopLevelObj());
-			if ( pChar )
-				pChar->UpdateStatsFlag();
-			return true;
-		}
+			bUpdateClientStats = true;
+			break;
 		case OC_RESPOISON:
-		{
 			m_ResPoison = static_cast<int>(s.GetArgVal());
-
-			CChar *pChar = dynamic_cast<CChar *>(GetTopLevelObj());
-			if ( pChar )
-				pChar->UpdateStatsFlag();
-			return true;
-		}
+			bUpdateClientStats = true;
+			break;
 		case OC_RESPOISONMAX:
-		{
 			m_ResPoisonMax = static_cast<int>(s.GetArgVal());
-
-			CChar *pChar = dynamic_cast<CChar *>(GetTopLevelObj());
-			if ( pChar )
-				pChar->UpdateStatsFlag();
-			return true;
-		}
+			bUpdateClientStats = true;
+			break;
 		case OC_SPEED:
 		{
 			if ( !IsItem() )
 				return false;
 			CItem *pItem = static_cast<CItem *>(this);
 			pItem->m_speed = static_cast<BYTE>(s.GetArgVal());
-			pItem->ResendTooltip();
-			return true;
+			break;
 		}
 		case OC_TIMER:
 			SetTimeout(s.GetArgLLVal() * TICK_PER_SEC);
@@ -1757,7 +1732,18 @@ bool CObjBase::r_LoadVal(CScript &s)
 		default:
 			return false;
 	}
-	ResendTooltip();
+
+	if ( !g_Serv.IsLoading() )
+	{
+		if ( IsItem() )
+			ResendTooltip();
+		else if ( bUpdateClientStats )
+		{
+			CChar *pChar = static_cast<CChar *>(this);
+			if ( pChar )
+				pChar->UpdateStatsFlag();
+		}
+	}
 	return true;
 	EXC_CATCH;
 
@@ -1823,6 +1809,26 @@ void CObjBase::r_Write(CScript &s)
 
 	if ( m_Luck != pBaseDef->m_Luck )
 		s.WriteKeyVal("LUCK", m_Luck);
+	if ( m_DamIncrease != pBaseDef->m_DamIncrease )
+		s.WriteKeyVal("INCREASEDAM", m_DamIncrease);
+	if ( m_SpellDamIncrease != pBaseDef->m_SpellDamIncrease )
+		s.WriteKeyVal("INCREASESPELLDAM", m_SpellDamIncrease);
+	if ( m_HitChanceIncrease != pBaseDef->m_HitChanceIncrease )
+		s.WriteKeyVal("INCREASEHITCHANCE", m_HitChanceIncrease);
+	if ( m_DefChanceIncrease != pBaseDef->m_DefChanceIncrease )
+		s.WriteKeyVal("INCREASEDEFCHANCE", m_DefChanceIncrease);
+	if ( m_DefChanceIncreaseMax != pBaseDef->m_DefChanceIncreaseMax )
+		s.WriteKeyVal("INCREASEDEFCHANCEMAX", m_DefChanceIncreaseMax);
+	if ( m_SwingSpeedIncrease != pBaseDef->m_SwingSpeedIncrease )
+		s.WriteKeyVal("INCREASESWINGSPEED", m_SwingSpeedIncrease);
+	if ( m_FasterCasting != pBaseDef->m_FasterCasting )
+		s.WriteKeyVal("FASTERCASTING", m_FasterCasting);
+	if ( m_FasterCastRecovery != pBaseDef->m_FasterCastRecovery )
+		s.WriteKeyVal("FASTERCASTRECOVERY", m_FasterCastRecovery);
+	if ( m_LowerManaCost != pBaseDef->m_LowerManaCost )
+		s.WriteKeyVal("LOWERMANACOST", m_LowerManaCost);
+	if ( m_LowerReagentCost != pBaseDef->m_LowerReagentCost )
+		s.WriteKeyVal("LOWERREAGENTCOST", m_LowerReagentCost);
 
 	m_BaseDefs.r_WritePrefix(s);	// new variable storage system
 	m_TagDefs.r_WritePrefix(s, "TAG");
@@ -2719,6 +2725,19 @@ void CObjBase::DeletePrepare()
 	RemoveSelf();	// Must remove early or else virtuals will fail.
 }
 
+void CObjBase::Delete(bool bForce)
+{
+	ADDTOCALLSTACK("CObjBase::Delete");
+	UNREFERENCED_PARAMETER(bForce);		// CObjBase doesnt use it, but CItem and CChar does use it, do not remove
+
+	if ( m_uidSpawnItem.ItemFind() )
+		static_cast<CItemSpawn *>(m_uidSpawnItem.ItemFind())->DelObj(GetUID());
+
+	DeletePrepare();
+	g_World.m_TimedFunctions.Erase(GetUID());
+	g_World.m_ObjDelete.InsertHead(this);
+}
+
 bool CObjBase::IsTriggerActive(LPCTSTR trig)
 {
 	return (m_RunningTrigger == trig);
@@ -2738,19 +2757,6 @@ void CObjBase::SetTriggerActive(LPCTSTR trig)
 		ADDTOCALLSTACK(text);
 	}
 	m_RunningTrigger = trig ? trig : NULL;
-}
-
-void CObjBase::Delete(bool bForce)
-{
-	ADDTOCALLSTACK("CObjBase::Delete");
-	UNREFERENCED_PARAMETER(bForce);		// CObjBase doesnt use it, but CItem and CChar does use it, do not remove
-
-	if ( m_uidSpawnItem.ItemFind() )
-		static_cast<CItemSpawn *>(m_uidSpawnItem.ItemFind())->DelObj(GetUID());
-
-	DeletePrepare();
-	g_World.m_TimedFunctions.Erase(GetUID());
-	g_World.m_ObjDelete.InsertHead(this);
 }
 
 TRIGRET_TYPE CObjBase::Spell_OnTrigger(SPELL_TYPE spell, SPTRIG_TYPE stage, CChar *pSrc, CScriptTriggerArgs *pArgs)

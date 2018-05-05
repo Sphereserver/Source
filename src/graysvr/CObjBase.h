@@ -11,12 +11,12 @@ class PacketPropertyList;
 class CObjBase : public CObjBaseTemplate, public CScriptObj
 {
 	// All instances of CItem or CChar have these base attributes
+public:
+	static const char *m_sClassName;
 	static LPCTSTR const sm_szLoadKeys[];
 	static LPCTSTR const sm_szVerbKeys[];
 	static LPCTSTR const sm_szRefKeys[];
 
-public:
-	static const char *m_sClassName;
 	explicit CObjBase(bool fItem);
 	virtual ~CObjBase();
 
@@ -64,15 +64,21 @@ public:
 	int m_ResEnergyMax;
 
 	int m_Luck;
+	int m_DamIncrease;
+	int m_SpellDamIncrease;
+	int m_HitChanceIncrease;
+	int m_DefChanceIncrease;
+	int m_DefChanceIncreaseMax;
+	int m_SwingSpeedIncrease;
+	int m_FasterCasting;
+	int m_FasterCastRecovery;
+	int m_LowerManaCost;
+	int m_LowerReagentCost;
+
 	CGrayUID m_uidSpawnItem;	// SpawnItem for this item
 
 	CResourceRefArray m_OEvents;
 	static size_t sm_iCount;	// how many total objects in the world?
-
-	virtual void DeletePrepare();
-	bool IsTriggerActive(LPCTSTR pszTrig);
-	LPCTSTR GetTriggerActive();
-	void SetTriggerActive(LPCTSTR pszTrig = NULL);
 
 public:
 	BYTE RangeL() const
@@ -204,13 +210,19 @@ protected:
 	}
 
 public:
+	virtual void DeletePrepare();
+	virtual void Delete(bool bForce = false);
+
+	bool IsTriggerActive(LPCTSTR pszTrig);
+	LPCTSTR GetTriggerActive();
+	void SetTriggerActive(LPCTSTR pszTrig = NULL);
+
 	virtual bool OnTick() = 0;
 	virtual int FixWeirdness() = 0;
 	virtual int GetWeight(WORD wAmount = 0) const = 0;
 	virtual bool IsResourceMatch(RESOURCE_ID_BASE rid, DWORD dwArg) = 0;
 
 	virtual int IsWeird() const;
-	virtual void Delete(bool bForce = false);
 
 	// Accessors
 	virtual WORD GetBaseID() const = 0;

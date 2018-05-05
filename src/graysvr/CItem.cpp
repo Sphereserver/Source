@@ -1650,6 +1650,16 @@ bool CItem::SetBase( CItemBase * pItemDef )
 	m_ResEnergyMax = pItemDef->m_ResEnergyMax;
 
 	m_Luck = pItemDef->m_Luck;
+	m_DamIncrease = pItemDef->m_DamIncrease;
+	m_SpellDamIncrease = pItemDef->m_SpellDamIncrease;
+	m_HitChanceIncrease = pItemDef->m_HitChanceIncrease;
+	m_DefChanceIncrease = pItemDef->m_DefChanceIncrease;
+	m_DefChanceIncreaseMax = pItemDef->m_DefChanceIncreaseMax;
+	m_SwingSpeedIncrease = pItemDef->m_SwingSpeedIncrease;
+	m_FasterCasting = pItemDef->m_FasterCasting;
+	m_FasterCastRecovery = pItemDef->m_FasterCastRecovery;
+	m_LowerManaCost = pItemDef->m_LowerManaCost;
+	m_LowerReagentCost = pItemDef->m_LowerReagentCost;
 
 	if (pParentCont)
 	{

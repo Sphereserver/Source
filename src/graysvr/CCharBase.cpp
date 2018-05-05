@@ -25,6 +25,7 @@ CCharBase::CCharBase(CREID_TYPE id) : CBaseBaseDef(RESOURCE_ID(RES_CHARDEF, id))
 	m_iMoveRate = static_cast<short>(g_Cfg.m_iMoveRate);
 	m_FollowerSlots = 1;
 	m_FollowerMax = 0;
+	m_Tithing = 0;
 	m_iHireDayWage = 0;
 
 	if ( IsValidDispID(id) )
@@ -170,10 +171,6 @@ bool CCharBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case CBC_THROWRANGE:
 			sVal = GetDefStr(pszKey, false);
 			break;
-		// Return as decimal number (0 if not set)
-		case CBC_TITHING:
-			sVal.FormatLLVal(GetDefNum(pszKey));
-			break;
 		case CBC_ANIM:
 			sVal.FormatHex(m_Anims);
 			break;
@@ -267,6 +264,9 @@ bool CCharBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case CBC_STR:
 			sVal.FormatVal(m_Str);
 			break;
+		case CBC_TITHING:
+			sVal.FormatVal(m_Tithing);
+			break;
 		case CBC_TSPEECH:
 			m_Speech.WriteResourceRefList(sVal);
 			break;
@@ -300,10 +300,6 @@ bool CCharBase::r_LoadVal(CScript &s)
 			SetDefStr(s.GetKey(), s.GetArgStr(&fQuoted), fQuoted);
 			break;
 		}
-		// Set as numeric
-		case CBC_TITHING:
-			SetDefNum(s.GetKey(), s.GetArgVal(), false);
-			break;
 		case CBC_ANIM:
 			m_Anims = static_cast<DWORD>(s.GetArgVal());
 			break;
@@ -384,6 +380,9 @@ bool CCharBase::r_LoadVal(CScript &s)
 			break;
 		case CBC_STR:
 			m_Str = static_cast<int>(s.GetArgVal());
+			break;
+		case CBC_TITHING:
+			m_Tithing = static_cast<int>(s.GetArgVal());
 			break;
 		case CBC_TSPEECH:
 			return m_Speech.r_LoadVal(s, RES_SPEECH);

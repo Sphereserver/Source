@@ -256,12 +256,24 @@ CChar::CChar(CREID_TYPE id) : CObjBase(false)
 	m_ResEnergyMax = pCharDef->m_ResEnergyMax;
 
 	m_Luck = pCharDef->m_Luck;
+	m_DamIncrease = pCharDef->m_DamIncrease;
+	m_SpellDamIncrease = pCharDef->m_SpellDamIncrease;
+	m_HitChanceIncrease = pCharDef->m_HitChanceIncrease;
+	m_DefChanceIncrease = pCharDef->m_DefChanceIncrease;
+	m_DefChanceIncreaseMax = pCharDef->m_DefChanceIncreaseMax;
+	m_SwingSpeedIncrease = pCharDef->m_SwingSpeedIncrease;
+	m_FasterCasting = pCharDef->m_FasterCasting;
+	m_FasterCastRecovery = pCharDef->m_FasterCastRecovery;
+	m_LowerManaCost = pCharDef->m_LowerManaCost;
+	m_LowerReagentCost = pCharDef->m_LowerReagentCost;
+
 	m_Can = pCharDef->m_Can;
 	m_wBloodHue = pCharDef->m_wBloodHue;
 
 	m_FollowerSlots = pCharDef->m_FollowerSlots;
 	m_FollowerCur = 0;
 	m_FollowerMax = pCharDef->m_FollowerMax;
+	m_Tithing = 0;
 
 	SetName(pCharDef->GetName());	// set the name in case there is a name template
 
@@ -1331,16 +1343,6 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 
 	switch ( iKeyNum )
 	{
-		case CHC_FASTERCASTRECOVERY:
-		case CHC_FASTERCASTING:
-		case CHC_INCREASEHITCHANCE:
-		case CHC_INCREASESWINGSPEED:
-		case CHC_INCREASEDAM:
-		case CHC_INCREASEDEFCHANCE:
-		case CHC_INCREASEDEFCHANCEMAX:
-		case CHC_INCREASESPELLDAM:
-		case CHC_LOWERMANACOST:
-		case CHC_LOWERREAGENTCOST:
 		case CHC_REGENFOOD:
 		case CHC_REGENHITS:
 		case CHC_REGENSTAM:
@@ -1350,7 +1352,6 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case CHC_REGENVALSTAM:
 		case CHC_REGENVALMANA:
 		case CHC_SPELLTIMEOUT:
-		case CHC_TITHING:
 			sVal.FormatLLVal(GetDefNum(pszKey));
 			break;
 		case CHC_ATTACKER:
@@ -1556,6 +1557,9 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case CHC_MAXFOLLOWER:
 			sVal.FormatVal(m_FollowerMax);
 			break;
+		case CHC_TITHING:
+			sVal.FormatVal(m_Tithing);
+			break;
 		case CHC_SKILLCHECK:	// odd way to get skills checking into the triggers
 		{
 			pszKey += 10;
@@ -1677,6 +1681,36 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatVal(Skill_MakeItem(id, UID_CLEAR, SKTRIG_SELECT, true));
 			return true;
 		}
+		case CHC_INCREASEDAM:
+			sVal.FormatVal(m_DamIncrease);
+			return true;
+		case CHC_INCREASEDEFCHANCE:
+			sVal.FormatVal(m_DefChanceIncrease);
+			return true;
+		case CHC_INCREASEDEFCHANCEMAX:
+			sVal.FormatVal(m_DefChanceIncreaseMax);
+			return true;
+		case CHC_INCREASEHITCHANCE:
+			sVal.FormatVal(m_HitChanceIncrease);
+			return true;
+		case CHC_INCREASESPELLDAM:
+			sVal.FormatVal(m_SpellDamIncrease);
+			return true;
+		case CHC_INCREASESWINGSPEED:
+			sVal.FormatVal(m_SwingSpeedIncrease);
+			return true;
+		case CHC_FASTERCASTING:
+			sVal.FormatVal(m_FasterCasting);
+			return true;
+		case CHC_FASTERCASTRECOVERY:
+			sVal.FormatVal(m_FasterCastRecovery);
+			return true;
+		case CHC_LOWERMANACOST:
+			sVal.FormatVal(m_LowerManaCost);
+			return true;
+		case CHC_LOWERREAGENTCOST:
+			sVal.FormatVal(m_LowerReagentCost);
+			return true;
 		case CHC_SKILLUSEQUICK:
 		{
 			pszKey += 13;
@@ -2112,22 +2146,11 @@ bool CChar::r_LoadVal(CScript &s)
 
 	switch ( iKeyNum )
 	{
-		case CHC_INCREASEHITCHANCE:
-		case CHC_INCREASESWINGSPEED:
-		case CHC_INCREASEDAM:
-		case CHC_LOWERREAGENTCOST:
-		case CHC_LOWERMANACOST:
-		case CHC_FASTERCASTRECOVERY:
-		case CHC_FASTERCASTING:
-		case CHC_INCREASEDEFCHANCE:
-		case CHC_INCREASEDEFCHANCEMAX:
-		case CHC_INCREASESPELLDAM:
 		case CHC_REGENFOOD:
 		case CHC_REGENVALFOOD:
 		case CHC_REGENVALHITS:
 		case CHC_REGENVALSTAM:
 		case CHC_REGENVALMANA:
-		case CHC_TITHING:
 			SetDefNum(s.GetKey(), s.GetArgVal(), false);
 			UpdateStatsFlag();
 			break;
@@ -2313,6 +2336,10 @@ bool CChar::r_LoadVal(CScript &s)
 			m_FollowerMax = static_cast<short>(s.GetArgVal());
 			UpdateStatsFlag();
 			break;
+		case CHC_TITHING:
+			m_Tithing = static_cast<int>(s.GetArgVal());
+			UpdateStatsFlag();
+			break;
 		case CHC_FONT:
 		{
 			m_fonttype = static_cast<FONT_TYPE>(s.GetArgVal());
@@ -2320,6 +2347,46 @@ bool CChar::r_LoadVal(CScript &s)
 				m_fonttype = FONT_NORMAL;
 			break;
 		}
+		case CHC_INCREASEDAM:
+			m_DamIncrease = static_cast<int>(s.GetArgVal());
+			UpdateStatsFlag();
+			break;
+		case CHC_INCREASEDEFCHANCE:
+			m_DefChanceIncrease = static_cast<int>(s.GetArgVal());
+			UpdateStatsFlag();
+			break;
+		case CHC_INCREASEDEFCHANCEMAX:
+			m_DefChanceIncreaseMax = static_cast<int>(s.GetArgVal());
+			UpdateStatsFlag();
+			break;
+		case CHC_INCREASEHITCHANCE:
+			m_HitChanceIncrease = static_cast<int>(s.GetArgVal());
+			UpdateStatsFlag();
+			break;
+		case CHC_INCREASESPELLDAM:
+			m_SpellDamIncrease = static_cast<int>(s.GetArgVal());
+			UpdateStatsFlag();
+			break;
+		case CHC_INCREASESWINGSPEED:
+			m_SwingSpeedIncrease = static_cast<int>(s.GetArgVal());
+			UpdateStatsFlag();
+			break;
+		case CHC_FASTERCASTING:
+			m_FasterCasting = static_cast<int>(s.GetArgVal());
+			UpdateStatsFlag();
+			break;
+		case CHC_FASTERCASTRECOVERY:
+			m_FasterCastRecovery = static_cast<int>(s.GetArgVal());
+			UpdateStatsFlag();
+			break;
+		case CHC_LOWERMANACOST:
+			m_LowerManaCost = static_cast<int>(s.GetArgVal());
+			UpdateStatsFlag();
+			break;
+		case CHC_LOWERREAGENTCOST:
+			m_LowerReagentCost = static_cast<int>(s.GetArgVal());
+			UpdateStatsFlag();
+			break;
 		case CHC_SPEECHCOLOR:
 		{
 			if ( m_pPlayer )	// read-only on players
@@ -2621,6 +2688,8 @@ void CChar::r_Write(CScript &s)
 		s.WriteKey("HOME", m_ptHome.WriteUsed());
 	if ( m_StepStealth )
 		s.WriteKeyVal("STEPSTEALTH", m_StepStealth);
+	if ( m_Tithing )
+		s.WriteKeyVal("TITHING", m_Tithing);
 
 	CCharBase *pCharDef = Char_GetDef();
 	ASSERT(pCharDef);

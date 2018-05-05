@@ -534,7 +534,7 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 				case SPELL_Horrific_Beast:
 					iBuffIcon = BI_HORRIFICBEAST;
 					SetDefNum("RegenHits", GetDefNum("RegenHits") - pSpell->m_itSpell.m_PolyStr);
-					SetDefNum("IncreaseDam", GetDefNum("IncreaseDam") - pSpell->m_itSpell.m_PolyDex);
+					m_DamIncrease -= pSpell->m_itSpell.m_PolyDex;
 					m_attackBase -= static_cast<WORD>(pSpell->m_itSpell.m_spellcharges);
 					m_attackRange -= pSpell->m_itSpell.m_spelllevel;
 					break;
@@ -562,8 +562,8 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 					break;
 				case SPELL_Reaper_Form:
 					iBuffIcon = BI_REAPERFORM;
-					SetDefNum("IncreaseSwingSpeed", GetDefNum("IncreaseSwingSpeed") - pSpell->m_itSpell.m_PolyStr);
-					SetDefNum("IncreaseSpellDam", GetDefNum("IncreaseSpellDam") - pSpell->m_itSpell.m_PolyStr);
+					m_SwingSpeedIncrease -= pSpell->m_itSpell.m_PolyStr;
+					m_SpellDamIncrease -= pSpell->m_itSpell.m_PolyStr;
 					m_ResPhysical -= pSpell->m_itSpell.m_PolyDex;
 					m_ResCold -= pSpell->m_itSpell.m_PolyDex;
 					m_ResPoison -= pSpell->m_itSpell.m_PolyDex;
@@ -572,8 +572,8 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 					break;
 				case SPELL_Stone_Form:
 					iBuffIcon = BI_STONEFORM;
-					SetDefNum("IncreaseSwingSpeed", GetDefNum("IncreaseSwingSpeed") + pSpell->m_itSpell.m_PolyStr);
-					SetDefNum("FasterCasting", GetDefNum("FasterCasting") + pSpell->m_itSpell.m_PolyDex);
+					m_SwingSpeedIncrease += pSpell->m_itSpell.m_PolyStr;
+					m_FasterCasting += pSpell->m_itSpell.m_PolyDex;
 					m_ResPhysical -= pSpell->m_itSpell.m_spellcharges;
 					m_ResPhysicalMax -= pSpell->m_itSpell.m_spelllevel;
 					m_ResFire -= pSpell->m_itSpell.m_spellcharges;
@@ -584,7 +584,7 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 					m_ResPoisonMax -= pSpell->m_itSpell.m_spelllevel;
 					m_ResEnergy -= pSpell->m_itSpell.m_spellcharges;
 					m_ResEnergyMax -= pSpell->m_itSpell.m_spelllevel;
-					SetDefNum("IncreaseDam", GetDefNum("IncreaseDam") - pSpell->m_itSpell.m_PolyStr);
+					m_DamIncrease -= pSpell->m_itSpell.m_PolyStr;
 					break;
 				default:
 					break;
@@ -871,7 +871,7 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 			{
 				m_ResPhysical += pSpell->m_itSpell.m_PolyStr;
-				SetDefNum("FasterCasting", GetDefNum("FasterCasting") + 2);
+				m_FasterCasting += 2;
 				Skill_SetBase(SKILL_MAGICRESISTANCE, minimum(Skill_GetMax(SKILL_MAGICRESISTANCE, true), Skill_GetBase(SKILL_MAGICRESISTANCE) + static_cast<WORD>(pSpell->m_itSpell.m_PolyDex)));
 			}
 			else
@@ -898,7 +898,7 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 		//	return;
 		case SPELL_Mind_Rot:
 		{
-			SetDefNum("LowerManaCost", GetDefNum("LowerManaCost") + pSpell->m_itSpell.m_spelllevel, true);
+			m_LowerManaCost += pSpell->m_itSpell.m_spelllevel;
 			if ( m_pClient )
 				m_pClient->removeBuff(BI_MINDROT);
 			return;
@@ -990,7 +990,7 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 					pSpell->m_itSpell.m_spellcharges = 5 - m_attackBase;	// Char min base damage
 					pSpell->m_itSpell.m_spelllevel = 10 - m_attackRange;	// Char max base damage
 					SetDefNum("RegenHits", GetDefNum("RegenHits") + pSpell->m_itSpell.m_PolyStr);
-					SetDefNum("IncreaseDam", GetDefNum("IncreaseDam") + pSpell->m_itSpell.m_PolyDex);
+					m_DamIncrease += pSpell->m_itSpell.m_PolyDex;
 					m_attackBase += static_cast<WORD>(pSpell->m_itSpell.m_spellcharges);
 					m_attackRange += pSpell->m_itSpell.m_spelllevel;
 
@@ -1090,8 +1090,8 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 					pSpell->m_itSpell.m_PolyStr = 10;		// Swing Speed Increase, Spell Damage Increase
 					pSpell->m_itSpell.m_PolyDex = 5;		// Physical/Cold/Poison/Energy Resist
 					pSpell->m_itSpell.m_spellcharges = 25;	// Fire Resist
-					SetDefNum("IncreaseSwingSpeed", GetDefNum("IncreaseSwingSpeed") + pSpell->m_itSpell.m_PolyStr);
-					SetDefNum("IncreaseSpellDam", GetDefNum("IncreaseSpellDam") + pSpell->m_itSpell.m_PolyStr);
+					m_SwingSpeedIncrease += pSpell->m_itSpell.m_PolyStr;
+					m_SpellDamIncrease += pSpell->m_itSpell.m_PolyStr;
 					m_ResPhysical += pSpell->m_itSpell.m_PolyDex;
 					m_ResCold += pSpell->m_itSpell.m_PolyDex;
 					m_ResPoison += pSpell->m_itSpell.m_PolyDex;
@@ -1119,8 +1119,8 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 					pSpell->m_itSpell.m_PolyDex = 2;		// Faster Casting
 					pSpell->m_itSpell.m_spellcharges = (pCaster->Skill_GetBase(SKILL_MYSTICISM) + pCaster->Skill_GetBase(SKILL_FOCUS)) / 240;		// All Resists
 					pSpell->m_itSpell.m_spelllevel = maximum(2, (pCaster->Skill_GetBase(SKILL_MYSTICISM) + pCaster->Skill_GetBase(SKILL_IMBUING)) / 480);		// All Resists Max
-					SetDefNum("IncreaseSwingSpeed", GetDefNum("IncreaseSwingSpeed") - pSpell->m_itSpell.m_PolyStr);
-					SetDefNum("FasterCasting", GetDefNum("FasterCasting") - pSpell->m_itSpell.m_PolyDex);
+					m_SwingSpeedIncrease -= pSpell->m_itSpell.m_PolyStr;
+					m_FasterCasting -= pSpell->m_itSpell.m_PolyDex;
 					m_ResPhysical += pSpell->m_itSpell.m_spellcharges;
 					m_ResPhysicalMax += pSpell->m_itSpell.m_spelllevel;
 					m_ResFire += pSpell->m_itSpell.m_spellcharges;
@@ -1131,7 +1131,7 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 					m_ResPoisonMax += pSpell->m_itSpell.m_spelllevel;
 					m_ResEnergy += pSpell->m_itSpell.m_spellcharges;
 					m_ResEnergyMax += pSpell->m_itSpell.m_spelllevel;
-					SetDefNum("IncreaseDam", GetDefNum("IncreaseDam") + pSpell->m_itSpell.m_PolyStr);
+					m_DamIncrease += pSpell->m_itSpell.m_PolyStr;
 
 					if ( m_pClient && IsSetOF(OF_Buffs) )
 					{
@@ -1422,7 +1422,7 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 		{
 			wStatEffect = 10;	// Lower Mana Cost
 			pSpell->m_itSpell.m_spelllevel = wStatEffect;
-			SetDefNum("LowerManaCost", GetDefNum("LowerManaCost") - wStatEffect, true);
+			m_LowerManaCost -= wStatEffect;
 			return;
 		}
 		case LAYER_SPELL_Curse_Weapon:
@@ -1723,7 +1723,7 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 				pSpell->m_itSpell.m_PolyDex = static_cast<int>(wMagicResist);
 
 				m_ResPhysical -= wPhysicalResist;
-				SetDefNum("FasterCasting", GetDefNum("FasterCasting") - 2);
+				m_FasterCasting -= 2;
 				Skill_SetBase(SKILL_MAGICRESISTANCE, Skill_GetBase(SKILL_MAGICRESISTANCE) - wMagicResist);
 			}
 			else
@@ -2240,8 +2240,10 @@ bool CChar::Spell_CanCast(SPELL_TYPE &spell, bool fTest, CObjBase *pSrc, bool fF
 	if ( !Skill_CanUse(static_cast<SKILL_TYPE>(iSkill)) )
 		return false;
 
-	int iManaUse = pSpellDef->m_wManaUse * (100 - minimum(static_cast<int>(GetDefNum("LowerManaCost", true)), 40)) / 100;
-	int iTithingUse = pSpellDef->m_wTithingUse * (100 - minimum(static_cast<int>(GetDefNum("LowerReagentCost", true)), 40)) / 100;
+	int iManaUse = pSpellDef->m_wManaUse * (100 - minimum(m_LowerManaCost, 40)) / 100;
+	int iTithingUse = 0;
+	if ( m_LowerReagentCost <= Calc_GetRandVal(100) )
+		iTithingUse = pSpellDef->m_wTithingUse;
 
 	if ( pSrc != this )
 	{
@@ -2295,9 +2297,6 @@ bool CChar::Spell_CanCast(SPELL_TYPE &spell, bool fTest, CObjBase *pSrc, bool fF
 			return false;
 		spell = static_cast<SPELL_TYPE>(Args.m_iN1);
 	}
-
-	iManaUse = static_cast<int>(Args.m_iN2);
-	iTithingUse = static_cast<int>(Args.m_VarsLocal.GetKeyNum("TithingUse"));
 
 	if ( pSrc != this )
 	{
@@ -2372,7 +2371,7 @@ bool CChar::Spell_CanCast(SPELL_TYPE &spell, bool fTest, CObjBase *pSrc, bool fF
 			// check for reagents
 			if ( g_Cfg.m_fReagentsRequired && !m_pNPC && (pSrc == this) )
 			{
-				if ( GetDefNum("LowerReagentCost", true) <= Calc_GetRandVal(100) )
+				if ( m_LowerReagentCost <= Calc_GetRandVal(100) )
 				{
 					const CResourceQtyArray *pRegs = &pSpellDef->m_Reags;
 					CItemContainer *pPack = GetContainer(LAYER_PACK);
@@ -2403,33 +2402,33 @@ bool CChar::Spell_CanCast(SPELL_TYPE &spell, bool fTest, CObjBase *pSrc, bool fF
 	}
 
 	// Check required mana
+	iManaUse = static_cast<int>(Args.m_iN2);
 	if ( Stat_GetVal(STAT_INT) < iManaUse )
 	{
 		if ( fFailMsg )
 			SysMessageDefault(DEFMSG_SPELL_TRY_NOMANA);
 		return false;
 	}
-	if ( !fTest && iManaUse )
+	if ( iManaUse && !fTest )
 	{
 		if ( m_Act_Difficulty < 0 )	// use diff amount of mana if we fail.
 			iManaUse = iManaUse / 2 + Calc_GetRandVal(iManaUse / 2 + iManaUse / 4);
 		UpdateStatVal(STAT_INT, -iManaUse);
 	}
 
-	// Check Tithing
-	int iTithing = static_cast<int>(GetDefNum("Tithing"));
-	if ( iTithing < iTithingUse )
+	// Check required tithing points
+	iTithingUse = static_cast<int>(Args.m_VarsLocal.GetKeyNum("TithingUse"));
+	if ( m_Tithing < iTithingUse )
 	{
 		if ( fFailMsg )
 			SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_SPELL_TRY_NOTITHING), iTithingUse);
 		return false;
 	}
-	if ( !fTest && iTithingUse )
+	if ( iTithingUse && !fTest )
 	{
-		// Consume points
 		if ( m_Act_Difficulty < 0 )	// use diff amount of points if we fail.
 			iTithingUse = iTithingUse / 2 + Calc_GetRandVal(iTithingUse / 2 + iTithingUse / 4);
-		SetDefNum("Tithing", iTithing - iTithingUse);
+		m_Tithing -= iTithingUse;
 	}
 	return true;
 }
@@ -2440,7 +2439,7 @@ bool CChar::Spell_TargCheck_Face()
 	if ( !IsSetMagicFlags(MAGICF_NODIRCHANGE) )
 		UpdateDir(m_Act_p);
 
-	// Check if target in on anti-magic region
+	// Check if target is on anti-magic region
 	CRegionBase *pArea = m_Act_p.GetRegion(REGION_TYPE_MULTI|REGION_TYPE_AREA);
 	if ( !IsPriv(PRIV_GM) && pArea && pArea->CheckAntiMagic(m_atMagery.m_Spell) )
 	{
@@ -3064,7 +3063,7 @@ int CChar::Spell_CastStart()
 	}
 
 	INT64 iWaitTime = pSpellDef->m_CastTime.GetLinear(Skill_GetBase(static_cast<SKILL_TYPE>(iSkill)));
-	iWaitTime -= GetDefNum("FasterCasting", true) * 2;	//correct value is 0.25, but sphere can handle only 0.2.
+	iWaitTime -= m_FasterCasting * 2;	// correct value is 0.25, but sphere can handle only 0.2
 	if ( (iWaitTime < 1) || IsPriv(PRIV_GM) )
 		iWaitTime = 1;
 
@@ -3211,7 +3210,7 @@ bool CChar::OnSpellEffect(SPELL_TYPE spell, CChar *pCharSrc, int iSkillLevel, CI
 				iEffect *= ((pCharSrc->Skill_GetBase(SKILL_EVALINT) * 3) / 1000) + 1;
 
 				// Spell Damage Increase bonus
-				int iDamageBonus = static_cast<int>(pCharSrc->GetDefNum("IncreaseSpellDam"));
+				int iDamageBonus = pCharSrc->m_SpellDamIncrease;
 				if ( (iDamageBonus > 15) && m_pPlayer && pCharSrc->m_pPlayer )		// Spell Damage Increase is capped at 15% on PvP
 					iDamageBonus = 15;
 

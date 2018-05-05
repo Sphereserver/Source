@@ -224,7 +224,7 @@ PacketHealthBarInfo::PacketHealthBarInfo(const CClient *target, CObjBase *object
 			writeInt16(static_cast<WORD>(objectChar->Fight_CalcDamage(weapon, true, false)));
 			writeInt16(static_cast<WORD>(objectChar->Fight_CalcDamage(weapon, true, true)));
 
-			writeInt32(static_cast<DWORD>(object->GetDefNum("TITHING", true)));
+			writeInt32(static_cast<DWORD>(objectChar->m_Tithing));
 		}
 
 		if (version >= 6)	// SA attributes
@@ -234,35 +234,36 @@ PacketHealthBarInfo::PacketHealthBarInfo(const CClient *target, CObjBase *object
 			writeInt16(static_cast<WORD>(object->m_ResColdMax));
 			writeInt16(static_cast<WORD>(object->m_ResPoisonMax));
 			writeInt16(static_cast<WORD>(object->m_ResEnergyMax));
-			writeInt16(static_cast<WORD>(object->GetDefNum("INCREASEDEFCHANCE", true)));
-			writeInt16(static_cast<WORD>(object->GetDefNum("INCREASEDEFCHANCEMAX", true)));
-			writeInt16(static_cast<WORD>(object->GetDefNum("INCREASEHITCHANCE", true)));
-			writeInt16(static_cast<WORD>(object->GetDefNum("INCREASESWINGSPEED", true)));
-			writeInt16(static_cast<WORD>(object->GetDefNum("INCREASEDAM", true)));
-			writeInt16(static_cast<WORD>(object->GetDefNum("LOWERREAGENTCOST", true)));
-			writeInt16(static_cast<WORD>(object->GetDefNum("INCREASESPELLDAM", true)));
-			writeInt16(static_cast<WORD>(object->GetDefNum("FASTERCASTRECOVERY", true)));
-			writeInt16(static_cast<WORD>(object->GetDefNum("FASTERCASTING", true)));
-			writeInt16(static_cast<WORD>(object->GetDefNum("LOWERMANACOST", true)));
+			writeInt16(static_cast<WORD>(object->m_DefChanceIncrease));
+			writeInt16(static_cast<WORD>(object->m_DefChanceIncreaseMax));
+			writeInt16(static_cast<WORD>(object->m_HitChanceIncrease));
+			writeInt16(static_cast<WORD>(object->m_SwingSpeedIncrease));
+			writeInt16(static_cast<WORD>(object->m_DamIncrease));
+			writeInt16(static_cast<WORD>(object->m_LowerReagentCost));
+			writeInt16(static_cast<WORD>(object->m_SpellDamIncrease));
+			writeInt16(static_cast<WORD>(object->m_FasterCastRecovery));
+			writeInt16(static_cast<WORD>(object->m_FasterCasting));
+			writeInt16(static_cast<WORD>(object->m_LowerManaCost));
 		}
-/* We really don't know what is going on here. RUOSI Packet Guide was way off... -Khaos
-   Possible KR client status info... -Ben*/
+
+		// We really don't know what is going on here. RUOSI Packet Guide was way off... -Khaos
+		// Possible KR client status info... -Ben
 		if (target->m_NetState->isClientKR())
 		{
-			writeInt16(static_cast<WORD>(object->GetDefNum("INCREASEHITCHANCE", true)));
-			writeInt16(static_cast<WORD>(object->GetDefNum("INCREASESWINGSPEED", true)));
-			writeInt16(static_cast<WORD>(object->GetDefNum("INCREASEDAM", true)));
-			writeInt16(static_cast<WORD>(object->GetDefNum("LOWERREAGENTCOST", true)));
+			writeInt16(static_cast<WORD>(object->m_HitChanceIncrease));
+			writeInt16(static_cast<WORD>(object->m_SwingSpeedIncrease));
+			writeInt16(static_cast<WORD>(object->m_DamIncrease));
+			writeInt16(static_cast<WORD>(object->m_LowerReagentCost));
 			writeInt16(static_cast<WORD>(object->GetDefNum("REGENHITS", true)));
 			writeInt16(static_cast<WORD>(object->GetDefNum("REGENSTAM", true)));
 			writeInt16(static_cast<WORD>(object->GetDefNum("REGENMANA", true)));
 			writeInt16(static_cast<WORD>(object->GetDefNum("REFLECTPHYSICALDAM", true)));
 			writeInt16(static_cast<WORD>(object->GetDefNum("ENHANCEPOTIONS", true)));
-			writeInt16(static_cast<WORD>(object->GetDefNum("INCREASEDEFCHANCE", true)));
-			writeInt16(static_cast<WORD>(object->GetDefNum("INCREASESPELLDAM", true)));
-			writeInt16(static_cast<WORD>(object->GetDefNum("FASTERCASTRECOVERY", true)));
-			writeInt16(static_cast<WORD>(object->GetDefNum("FASTERCASTING", true)));
-			writeInt16(static_cast<WORD>(object->GetDefNum("LOWERMANACOST", true)));
+			writeInt16(static_cast<WORD>(object->m_DefChanceIncrease));
+			writeInt16(static_cast<WORD>(object->m_SpellDamIncrease));
+			writeInt16(static_cast<WORD>(object->m_FasterCastRecovery));
+			writeInt16(static_cast<WORD>(object->m_FasterCasting));
+			writeInt16(static_cast<WORD>(object->m_LowerManaCost));
 			writeInt16(static_cast<WORD>(object->GetDefNum("BONUSSTR", true)));
 			writeInt16(static_cast<WORD>(object->GetDefNum("BONUSDEX", true)));
 			writeInt16(static_cast<WORD>(object->GetDefNum("BONUSINT", true)));

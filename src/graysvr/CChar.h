@@ -408,6 +408,7 @@ public:
 	short m_FollowerSlots;
 	short m_FollowerCur;
 	short m_FollowerMax;
+	int m_Tithing;
 
 	// Speech
 	FONT_TYPE m_fonttype;		// speech font to use (client send this to server, but it's not used)

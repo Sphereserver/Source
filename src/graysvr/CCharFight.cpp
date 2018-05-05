@@ -2120,7 +2120,7 @@ int CChar::Fight_CalcDamage( const CItem * pWeapon, bool bNoRandom, bool bGetMax
 
 	if ( m_pPlayer )	// only players can have damage bonus
 	{
-		int iDmgBonus = minimum(static_cast<int>(GetDefNum("INCREASEDAM", true)), 100);		// Damage Increase is capped at 100%
+		int iDmgBonus = minimum(m_DamIncrease, 100);		// Damage Increase is capped at 100%
 
 		// Racial Bonus (Berserk), gargoyles gains +15% Damage Increase per each 20 HP lost
 		if ((g_Cfg.m_iRacialFlags & RACIALF_GARG_BERSERK) && IsGargoyle())

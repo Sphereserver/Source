@@ -79,13 +79,6 @@ protected:
 	DWORD m_dwDispIndex;	// base artwork id (may be the same as GetResourceID() in base set, but can also be "flipped")
 	CGString m_sName;		// default type name ("human" vs specific "Dennis")
 
-private:
-	height_t m_Height;
-
-	BYTE m_ResLevel;
-	WORD m_ResDispDnId;
-	HUE_TYPE m_ResDispDnHue;
-
 public:
 	CVarDefMap m_TagDefs;
 	CVarDefMap m_BaseDefs;				// new variable storage system
@@ -117,7 +110,25 @@ public:
 	int m_ResEnergyMax;
 
 	int m_Luck;
+	int m_DamIncrease;
+	int m_SpellDamIncrease;
+	int m_HitChanceIncrease;
+	int m_DefChanceIncrease;
+	int m_DefChanceIncreaseMax;
+	int m_SwingSpeedIncrease;
+	int m_FasterCasting;
+	int m_FasterCastRecovery;
+	int m_LowerManaCost;
+	int m_LowerReagentCost;
+
 	DWORD m_Can;
+
+private:
+	height_t m_Height;
+
+	BYTE m_ResLevel;
+	WORD m_ResDispDnId;
+	HUE_TYPE m_ResDispDnHue;
 
 public:
 	void CopyBasic(const CBaseBaseDef *pBaseDef);
