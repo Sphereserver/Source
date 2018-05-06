@@ -64,7 +64,7 @@ bool CAccounts::Account_SaveAll()
 
 	s.Printf("// " SPHERE_TITLE " accounts file.\n"
 			 "// NOTE: This file cannot be edited while the server is running.\n"
-			 "// Any file changes must be made on " SPHERE_FILE "acct" SPHERE_SCRIPT " to be applied on next worldsave.\n");
+			 "// Changes must be made on " SPHERE_FILE "acct" SPHERE_SCRIPT " to be applied on next worldsave.\n");
 
 	for ( size_t i = 0; i < m_Accounts.GetCount(); i++ )
 	{
@@ -72,6 +72,8 @@ bool CAccounts::Account_SaveAll()
 		if ( pAccount )
 			pAccount->r_Write(s);
 	}
+
+	s.WriteSection("EOF");
 
 	Account_LoadAll(true, true);	// clear the changes file
 	return true;
@@ -141,8 +143,8 @@ bool CAccounts::Account_LoadAll(bool fChanges, bool fClearChanges)
 			if ( Account_SaveAll() )	// auto-create account files
 				return true;
 			g_Log.Event(LOGL_FATAL|LOGM_INIT, "Can't open account file '%s'\n", static_cast<LPCTSTR>(s.GetFilePath()));
+			return false;
 		}
-		return false;
 	}
 
 	if ( fClearChanges )
@@ -151,9 +153,9 @@ bool CAccounts::Account_LoadAll(bool fChanges, bool fClearChanges)
 		ASSERT(fChanges);
 		s.Close();
 		s.Open(NULL, OF_WRITE|OF_TEXT|OF_DEFAULTMODE);
-		s.WriteString("// Accounts are periodically moved to " SPHERE_FILE "accu" SPHERE_SCRIPT " file.\n"
-					  "// All account changes should be made here.\n"
-					  "// Use the /ACCOUNT UPDATE command to force accounts to update.\n");
+		s.WriteString("// " SPHERE_TITLE " accounts update file.\n"
+					  "// Account changes should be made here and will be applied on next worldsave.\n"
+					  "// Use 'ACCOUNT UPDATE' command to force the update immediately.\n\n");
 		return true;
 	}
 
@@ -217,23 +219,20 @@ bool CAccounts::Account_OnCmd(TCHAR *pszArgs, CTextConsole *pSrc)
 		case VACS_BLOCKED:
 			return Cmd_ListUnused(pSrc, ppCmd[1], ppCmd[2], ppCmd[3], PRIV_BLOCKED);
 		case VACS_HELP:
-		{
-			static LPCTSTR const sm_szCmds[] =
-			{
-				"/ACCOUNT UPDATE\n",
-				"/ACCOUNT UNUSED days [command]\n",
-				"/ACCOUNT ADD name password",
-				"/ACCOUNT ADDMD5 name password_hash",
-				"/ACCOUNT name BLOCK 0/1\n",
-				"/ACCOUNT name JAIL 0/1\n",
-				"/ACCOUNT name DELETE\n",
-				"/ACCOUNT name PLEVEL 0-7\n",
-				"/ACCOUNT name EXPORT filename\n"
-			};
-			for ( size_t i = 0; i < COUNTOF(sm_szCmds); i++ )
-				pSrc->SysMessage(sm_szCmds[i]);
+			pSrc->SysMessagef(
+				"Available commands:\n"
+				"ACCOUNT ADD [login] [password]\n"
+				"ACCOUNT ADDMD5 [login] [password_hash]\n"
+				"ACCOUNT UNUSED [days] [command]\n"
+				"ACCOUNT UPDATE\n"
+				"ACCOUNT [login] BLOCK [0/1]\n"
+				"ACCOUNT [login] DELETE\n"
+				"ACCOUNT [login] JAIL [0/1]\n"
+				"ACCOUNT [login] MD5PASSWORD [password_hash]\n"
+				"ACCOUNT [login] PASSWORD [password]\n"
+				"ACCOUNT [login] PLEVEL [0-7]\n"
+			);
 			return true;
-		}
 		case VACS_JAILED:
 			return Cmd_ListUnused(pSrc, ppCmd[1], ppCmd[2], ppCmd[3], PRIV_JAILED);
 		case VACS_UNUSED:

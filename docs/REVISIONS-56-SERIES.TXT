@@ -1071,3 +1071,7 @@ Changed: Connections from 'localserver' won't bypass 'ClientLoginMaxTries' .ini 
 
 28-04-2018, Coruja
 Fixed: Random 'CChar::OnTick' console exception when clients connect.
+
+06-05-2018, Coruja
+Fixed: Worldsave not writing [EOF] at the end of sphereaccu.scp file.
+Fixed: Worldsave not creating sphereacct.scp file when it doesn't exist.
