@@ -349,8 +349,7 @@ LPCTSTR CServer::GetStatusString( BYTE iIndex ) const
 		case 0x22:	// '"'
 		{
 			// Shown in the INFO page in game
-			UINT64 iAgeHours = (CServTime::GetCurrentTime().GetTimeRaw() / (60 * 60 * TICK_PER_SEC)) / 24;
-			sprintf(pTemp, SPHERE_TITLE ", Name=%s, Age=%llu, Clients=%lu, Items=%lu, Chars=%lu, Mem=%luK\n", GetName(), iAgeHours, StatGet(SERV_STAT_CLIENTS), StatGet(SERV_STAT_ITEMS), StatGet(SERV_STAT_CHARS), StatGet(SERV_STAT_MEM));
+			sprintf(pTemp, SPHERE_TITLE ", Name=%s, Age=%lld, Clients=%lu, Items=%lu, Chars=%lu, Mem=%luK\n", GetName(), GetAgeHours() / 24, StatGet(SERV_STAT_CLIENTS), StatGet(SERV_STAT_ITEMS), StatGet(SERV_STAT_CHARS), StatGet(SERV_STAT_MEM));
 			break;
 		}
 		case 0x24:	// '$'
@@ -607,8 +606,11 @@ bool CServer::OnConsoleCmd( CGString & sText, CTextConsole * pSrc )
 			} break;
 		case 'l': // Turn the log file on or off.
 			{
-				CScript script( "LOG" );
-				fRet = r_Verb( script, pSrc );
+				if ( g_Log.IsFileOpen() )
+					g_Log.Close();
+				else
+					g_Log.OpenLog();
+				pSrc->SysMessagef("Log file %s.\n", g_Log.IsFileOpen() ? "enabled" : "disabled");
 			} break;
 		case 'p':	// Display profile information.
 			{

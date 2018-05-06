@@ -1075,3 +1075,5 @@ Fixed: Random 'CChar::OnTick' console exception when clients connect.
 06-05-2018, Coruja
 Fixed: Worldsave not writing [EOF] at the end of sphereaccu.scp file.
 Fixed: Worldsave not creating sphereacct.scp file when it doesn't exist.
+Fixed: Console command 'I' (view server info) showing wrong server AGE value.
+Fixed: Console command 'L' (toggle log file) not working correctly.
