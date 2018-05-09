@@ -125,8 +125,6 @@ void Assert_CheckFail(LPCTSTR pszExp, LPCTSTR pszFile, long lLine)
 		signal(SIGFPE,	bSet ? &Signal_Illegal_Instruction : SIG_DFL);
 		signal(SIGPIPE,	bSet ? SIG_IGN : SIG_DFL);
 		signal(SIGCHLD,	bSet ? &Signal_Children : SIG_DFL);
-
-		g_Log.Event(LOGM_INIT|(IsLoading() ? 0 : LOGL_EVENT), "Signal handlers %s\n", bSet ? "installed" : "uninstalled");
 	}
 
 #endif
