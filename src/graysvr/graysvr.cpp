@@ -553,7 +553,9 @@ Main::Main()
 void Main::onStart()
 {
 	AbstractSphereThread::onStart();
+#if defined(_WIN32) && !defined(_DEBUG) && !defined(__MINGW32__)
 	SetExceptionTranslator();
+#endif
 }
 
 void Main::tick()
@@ -598,9 +600,11 @@ int Sphere_InitServer( int argc, char *argv[] )
 	if ( !QueryPerformanceFrequency(reinterpret_cast<LARGE_INTEGER *>(&llTimeProfileFrequency)) )
 		llTimeProfileFrequency = 1000;
 
-	EXC_SET("setting exception catcher");
-	SetExceptionTranslator();
-#endif // _WIN32
+	#if !defined(_DEBUG) && !defined(__MINGW32__)
+		EXC_SET("setting exception catcher");
+		SetExceptionTranslator();
+	#endif
+#endif
 
 	EXC_SET("loading");
 	if ( !g_Serv.Load() )

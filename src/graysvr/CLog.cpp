@@ -214,9 +214,9 @@ void _cdecl CLog::CatchEvent( const CGrayError *pErr, LPCTSTR pszCatchContext, .
 			eSeverity = pErr->m_eSeverity;
 			const CGrayAssert *pAssertErr = dynamic_cast<const CGrayAssert *>(pErr);
 			if ( pAssertErr )
-				pAssertErr->GetErrorMessage(szMsg, sizeof(szMsg), 0);
+				pAssertErr->GetErrorMessage(szMsg);
 			else
-				pErr->GetErrorMessage(szMsg, sizeof(szMsg));
+				pErr->GetErrorMessage(szMsg);
 			iLen = strlen(szMsg);
 		}
 		else

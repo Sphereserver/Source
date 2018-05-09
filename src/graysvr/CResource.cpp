@@ -1097,8 +1097,10 @@ bool CResource::r_LoadVal( CScript &s )
 
 		case RC_SECURE:
 			m_fSecure = (s.GetArgVal() != 0);
+#ifndef _WIN32
 			if ( !g_Serv.IsLoading() )
-				g_Serv.SetSignals();
+				SetSignals(g_Cfg.m_fSecure);
+#endif
 			break;
 
 		case RC_PACKETDEATHANIMATION:
