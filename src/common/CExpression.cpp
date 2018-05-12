@@ -255,8 +255,8 @@ bool IsValidGameObjDef(LPCTSTR pszTest)
 	return true;
 }
 
-/////////////////////////////////////////////////////////////////////////
-// -Calculus
+///////////////////////////////////////////////////////////
+// Numeric formulas
 
 int Calc_GetLog2(UINT iVal)
 {
@@ -372,6 +372,9 @@ int Calc_GetSCurve(int iValDiff, int iVariance)
 	return iChance;
 }
 
+///////////////////////////////////////////////////////////
+// CExpression
+
 CExpression::CExpression()
 {
 }
@@ -484,22 +487,83 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 #pragma region intrinsics
 	{
 		// Symbol or intrinsinc function ?
-		INTRINSIC_TYPE iIntrinsic = static_cast<INTRINSIC_TYPE>(FindTableHeadSorted(pszArgs, sm_IntrinsicFunctions, COUNTOF(sm_IntrinsicFunctions) - 1));
-		if ( iIntrinsic >= 0 )
+		int index = FindTableHeadSorted(pszArgs, sm_IntrinsicFunctions, COUNTOF(sm_IntrinsicFunctions) - 1);
+		if ( index >= 0 )
 		{
-			size_t iLen = strlen(sm_IntrinsicFunctions[iIntrinsic]);
+			size_t iLen = strlen(sm_IntrinsicFunctions[index]);
 			if ( pszArgs[iLen] == '(' )
 			{
 				pszArgs += (iLen + 1);
 				TCHAR *pszArgsNext;
 				Str_Parse(const_cast<TCHAR *>(pszArgs), &pszArgsNext, ")");
 
-				TCHAR *ppCmd[5];
+				size_t iCount;
 				INT64 iResult;
-				size_t iCount = 0;
 
-				switch ( iIntrinsic )
+				switch ( static_cast<INTRINSIC_TYPE>(index) )
 				{
+					case INTRINSIC_ABS:
+					{
+						iCount = 1;
+						iResult = llabs(GetVal(pszArgs));
+						break;
+					}
+					case INTRINSIC_ARCCOS:
+					{
+						if ( pszArgs && *pszArgs )
+						{
+							iCount = 1;
+							iResult = static_cast<INT64>(acos(static_cast<double>(GetVal(pszArgs))));
+						}
+						else
+						{
+							iCount = 0;
+							iResult = 0;
+						}
+						break;
+					}
+					case INTRINSIC_ARCSIN:
+					{
+						if ( pszArgs && *pszArgs )
+						{
+							iCount = 1;
+							iResult = static_cast<INT64>(asin(static_cast<double>(GetVal(pszArgs))));
+						}
+						else
+						{
+							iCount = 0;
+							iResult = 0;
+						}
+						break;
+					}
+					case INTRINSIC_ARCTAN:
+					{
+						if ( pszArgs && *pszArgs )
+						{
+							iCount = 1;
+							iResult = static_cast<INT64>(atan(static_cast<double>(GetVal(pszArgs))));
+						}
+						else
+						{
+							iCount = 0;
+							iResult = 0;
+						}
+						break;
+					}
+					case INTRINSIC_COS:
+					{
+						if ( pszArgs && *pszArgs )
+						{
+							iCount = 1;
+							iResult = static_cast<INT64>(cos(static_cast<double>(GetVal(pszArgs))));
+						}
+						else
+						{
+							iCount = 0;
+							iResult = 0;
+						}
+						break;
+					}
 					case INTRINSIC_ID:
 					{
 						if ( pszArgs && *pszArgs )
@@ -512,6 +576,21 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 							iCount = 0;
 							iResult = 0;
 						}
+						break;
+					}
+					case INTRINSIC_ISNUMBER:
+					{
+						char z[64];
+						LTOA(atol(pszArgs), z, 10);
+
+						iCount = 1;
+						iResult = strcmp(pszArgs, z) ? 0 : 1;
+						break;
+					}
+					case INTRINSIC_ISOBSCENE:
+					{
+						iCount = 1;
+						iResult = g_Cfg.IsObscene(pszArgs);
 						break;
 					}
 					case INTRINSIC_LOGARITHM:
@@ -567,6 +646,61 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 						}
 						break;
 					}
+					case INTRINSIC_QVAL:
+					{
+						TCHAR *ppCmd[5];
+						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppCmd, COUNTOF(ppCmd), ",");
+						if ( iCount < 3 )
+							iResult = 0;
+						else
+						{
+							INT64 a1 = GetSingle(ppCmd[0]);
+							INT64 a2 = GetSingle(ppCmd[1]);
+							if ( a1 < a2 )
+								iResult = GetSingle(ppCmd[2]);
+							else if ( a1 == a2 )
+								iResult = (iCount >= 4) ? GetSingle(ppCmd[3]) : 0;
+							else
+								iResult = (iCount >= 5) ? GetSingle(ppCmd[4]) : 0;
+						}
+						break;
+					}
+					case INTRINSIC_RAND:
+					{
+						TCHAR *ppCmd[2];
+						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppCmd, COUNTOF(ppCmd), ",");
+						if ( iCount <= 0 )
+							iResult = 0;
+						else if ( iCount < 2 )
+							iResult = Calc_GetRandLLVal(GetVal(ppCmd[0]));
+						else
+							iResult = Calc_GetRandLLVal2(GetVal(ppCmd[0]), GetVal(ppCmd[1]));
+						break;
+					}
+					case INTRINSIC_RANDBELL:
+					{
+						TCHAR *ppCmd[2];
+						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppCmd, COUNTOF(ppCmd), ",");
+						if ( iCount < 2 )
+							iResult = 0;
+						else
+							iResult = Calc_GetBellCurve(static_cast<int>(GetVal(ppCmd[0])), static_cast<int>(GetVal(ppCmd[1])));
+						break;
+					}
+					case INTRINSIC_SIN:
+					{
+						if ( pszArgs && *pszArgs )
+						{
+							iCount = 1;
+							iResult = static_cast<INT64>(sin(static_cast<double>(GetVal(pszArgs))));
+						}
+						else
+						{
+							iCount = 0;
+							iResult = 0;
+						}
+						break;
+					}
 					case INTRINSIC_SQRT:
 					{
 						iCount = 0;
@@ -585,12 +719,12 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 						}
 						break;
 					}
-					case INTRINSIC_SIN:
+					case INTRINSIC_STRASCII:
 					{
 						if ( pszArgs && *pszArgs )
 						{
 							iCount = 1;
-							iResult = static_cast<INT64>(sin(static_cast<double>(GetVal(pszArgs))));
+							iResult = pszArgs[0];
 						}
 						else
 						{
@@ -599,45 +733,64 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 						}
 						break;
 					}
-					case INTRINSIC_ARCSIN:
+					case INTRINSIC_STRCMP:
 					{
-						if ( pszArgs && *pszArgs )
-						{
-							iCount = 1;
-							iResult = static_cast<INT64>(asin(static_cast<double>(GetVal(pszArgs))));
-						}
+						TCHAR *ppCmd[2];
+						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppCmd, COUNTOF(ppCmd), ",");
+						if ( iCount < 2 )
+							iResult = 1;
 						else
-						{
-							iCount = 0;
-							iResult = 0;
-						}
+							iResult = strcmp(ppCmd[0], ppCmd[1]);
 						break;
 					}
-					case INTRINSIC_COS:
+					case INTRINSIC_STRCMPI:
 					{
-						if ( pszArgs && *pszArgs )
-						{
-							iCount = 1;
-							iResult = static_cast<INT64>(cos(static_cast<double>(GetVal(pszArgs))));
-						}
+						TCHAR *ppCmd[2];
+						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppCmd, COUNTOF(ppCmd), ",");
+						if ( iCount < 2 )
+							iResult = 1;
 						else
-						{
-							iCount = 0;
-							iResult = 0;
-						}
+							iResult = strcmpi(ppCmd[0], ppCmd[1]);
 						break;
 					}
-					case INTRINSIC_ARCCOS:
+					case INTRINSIC_STRINDEXOF:
 					{
-						if ( pszArgs && *pszArgs )
-						{
-							iCount = 1;
-							iResult = static_cast<INT64>(acos(static_cast<double>(GetVal(pszArgs))));
-						}
+						TCHAR *ppCmd[3];
+						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppCmd, COUNTOF(ppCmd), ",");
+						if ( iCount < 2 )
+							iResult = -1;
+						else
+							iResult = Str_IndexOf(ppCmd[0], ppCmd[1], (iCount >= 3) ? static_cast<int>(GetVal(ppCmd[2])) : 0);
+						break;
+					}
+					case INTRINSIC_STRLEN:
+					{
+						iCount = 1;
+						iResult = strlen(pszArgs);
+						break;
+					}
+					case INTRINSIC_STRMATCH:
+					{
+						TCHAR *ppCmd[2];
+						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppCmd, COUNTOF(ppCmd), ",");
+						if ( iCount < 2 )
+							iResult = 0;
+						else
+							iResult = (Str_Match(ppCmd[0], ppCmd[1]) == MATCH_VALID) ? 1 : 0;
+						break;
+					}
+					case INTRINSIC_STRREGEX:
+					{
+						TCHAR *ppCmd[2];
+						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppCmd, COUNTOF(ppCmd), ",");
+						if ( iCount < 2 )
+							iResult = 0;
 						else
 						{
-							iCount = 0;
-							iResult = 0;
+							TCHAR *pszLastError = Str_GetTemp();
+							iResult = Str_RegExMatch(ppCmd[0], ppCmd[1], pszLastError);
+							if ( iResult == -1 )
+								DEBUG_ERR(("STRREGEX: Bad function usage. Error: %s\n", pszLastError));
 						}
 						break;
 					}
@@ -653,149 +806,6 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 							iCount = 0;
 							iResult = 0;
 						}
-						break;
-					}
-					case INTRINSIC_ARCTAN:
-					{
-						if ( pszArgs && *pszArgs )
-						{
-							iCount = 1;
-							iResult = static_cast<INT64>(atan(static_cast<double>(GetVal(pszArgs))));
-						}
-						else
-						{
-							iCount = 0;
-							iResult = 0;
-						}
-						break;
-					}
-					case INTRINSIC_StrIndexOf:
-					{
-						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppCmd, 3, ",");
-						if ( iCount < 2 )
-							iResult = -1;
-						else
-							iResult = Str_IndexOf(ppCmd[0], ppCmd[1], (iCount == 3) ? static_cast<int>(GetVal(ppCmd[2])) : 0);
-						break;
-					}
-					case INTRINSIC_STRMATCH:
-					{
-						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppCmd, 2, ",");
-						if ( iCount < 2 )
-							iResult = 0;
-						else
-							iResult = (Str_Match(ppCmd[0], ppCmd[1]) == MATCH_VALID) ? 1 : 0;
-						break;
-					}
-					case INTRINSIC_STRREGEX:
-					{
-						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppCmd, 2, ",");
-						if ( iCount < 2 )
-							iResult = 0;
-						else
-						{
-							TCHAR *tLastError = Str_GetTemp();
-							iResult = Str_RegExMatch(ppCmd[0], ppCmd[1], tLastError);
-							if ( iResult == -1 )
-								DEBUG_ERR(("STRREGEX bad function usage. Error: %s\n", tLastError));
-						}
-						break;
-					}
-					case INTRINSIC_RANDBELL:
-					{
-						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppCmd, 2, ",");
-						if ( iCount < 2 )
-							iResult = 0;
-						else
-							iResult = Calc_GetBellCurve(static_cast<int>(GetVal(ppCmd[0])), static_cast<int>(GetVal(ppCmd[1])));
-						break;
-					}
-					case INTRINSIC_STRASCII:
-					{
-						if ( pszArgs && *pszArgs )
-						{
-							iCount = 1;
-							iResult = pszArgs[0];
-						}
-						else
-						{
-							iCount = 0;
-							iResult = 0;
-						}
-						break;
-					}
-					case INTRINSIC_RAND:
-					{
-						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppCmd, 2, ",");
-						if ( iCount <= 0 )
-							iResult = 0;
-						else if ( iCount < 2 )
-							iResult = Calc_GetRandLLVal(GetVal(ppCmd[0]));
-						else
-							iResult = Calc_GetRandLLVal2(GetVal(ppCmd[0]), GetVal(ppCmd[1]));
-						break;
-					}
-					case INTRINSIC_STRCMP:
-					{
-						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppCmd, 2, ",");
-						if ( iCount < 2 )
-							iResult = 1;
-						else
-							iResult = strcmp(ppCmd[0], ppCmd[1]);
-						break;
-					}
-					case INTRINSIC_STRCMPI:
-					{
-						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppCmd, 2, ",");
-						if ( iCount < 2 )
-							iResult = 1;
-						else
-							iResult = strcmpi(ppCmd[0], ppCmd[1]);
-						break;
-					}
-					case INTRINSIC_STRLEN:
-					{
-						iCount = 1;
-						iResult = strlen(pszArgs);
-						break;
-					}
-					case INTRINSIC_ISOBSCENE:
-					{
-						iCount = 1;
-						iResult = g_Cfg.IsObscene(pszArgs);
-						break;
-					}
-					case INTRINSIC_ISNUMBER:
-					{
-						char z[64];
-						LTOA(atol(pszArgs), z, 10);
-
-						iCount = 1;
-						iResult = strcmp(pszArgs, z) ? 0 : 1;
-						break;
-					}
-					case INTRINSIC_QVAL:
-					{
-						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppCmd, 5, ",");
-						if ( iCount < 3 )
-							iResult = 0;
-						else
-						{
-							INT64 a1 = GetSingle(ppCmd[0]);
-							INT64 a2 = GetSingle(ppCmd[1]);
-							if ( a1 < a2 )
-								iResult = GetSingle(ppCmd[2]);
-							else if ( a1 == a2 )
-								iResult = (iCount < 4) ? 0 : GetSingle(ppCmd[3]);
-							else
-								iResult = (iCount < 5) ? 0 : GetSingle(ppCmd[4]);
-						}
-						break;
-					}
-					case INTRINSIC_ABS:
-					{
-						iCount = 1;
-						iResult = llabs(GetVal(pszArgs));
 						break;
 					}
 					default:
