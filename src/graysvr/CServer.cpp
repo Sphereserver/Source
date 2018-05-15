@@ -13,124 +13,6 @@
 	#endif
 #endif
 
-///////////////////////////////////////////////////////////
-// CTextConsole
-
-CChar *CTextConsole::GetChar() const
-{
-	ADDTOCALLSTACK("CTextConsole::GetChar");
-	return const_cast<CChar *>(dynamic_cast<const CChar *>(this));
-}
-
-int CTextConsole::OnConsoleKey(CGString &sText, TCHAR szChar, bool fEcho)
-{
-	ADDTOCALLSTACK("CTextConsole::OnConsoleKey");
-	// Eventaully we should call OnConsoleCmd
-	// RETURN:
-	//  0 = dump this connection
-	//  1 = keep processing
-	//  2 = process this
-
-	if ( sText.GetLength() >= SCRIPT_MAX_LINE_LEN )
-	{
-	commandtoolong:
-		SysMessage("Command too long\n");
-		sText.Empty();
-		return 0;
-	}
-
-	if ( (szChar == '\r') || (szChar == '\n') )
-	{
-		// Ignore the character if we have no text stored
-		if ( !sText.GetLength() )
-			return 1;
-		if ( fEcho )
-			SysMessage("\n");
-		return 2;
-	}
-	else if ( szChar == 9 )			// TAB (auto-completion)
-	{
-		// Extract up to start of the word
-		LPCTSTR pszArgs = sText.GetPtr() + sText.GetLength();
-		while ( (pszArgs >= sText.GetPtr()) && (*pszArgs != '.') && (*pszArgs != ' ') && (*pszArgs != '/') && (*pszArgs != '=') )
-			pszArgs--;
-		pszArgs++;
-		size_t inputLen = strlen(pszArgs);
-
-		// Search in the auto-complete list for starting on P, and save coords of first/last match
-		CGStringListRec *psFirstMatch = NULL;
-		CGStringListRec *psLastMatch = NULL;
-		CGStringListRec *psCurMatch = NULL;		// the one that should be set
-		for ( psCurMatch = g_AutoComplete.GetHead(); psCurMatch != NULL; psCurMatch = psCurMatch->GetNext() )
-		{
-			if ( !strnicmp(psCurMatch->GetPtr(), pszArgs, inputLen) )	// matched
-			{
-				if ( !psFirstMatch )
-					psFirstMatch = psLastMatch = psCurMatch;
-				else
-					psLastMatch = psCurMatch;
-			}
-			else if ( psLastMatch )
-				break;		// if no longer matches - save time by instant quit
-		}
-
-		LPCTSTR pszTemp = NULL;
-		bool fMatch = false;
-		if ( psFirstMatch && (psFirstMatch == psLastMatch) )	// there IS a match and the ONLY
-		{
-			pszTemp = psFirstMatch->GetPtr() + inputLen;
-			fMatch = true;
-		}
-		else if ( psFirstMatch )		// also make SE (if SERV/SERVER in dic) to become SERV
-		{
-			pszArgs = pszTemp = psFirstMatch->GetPtr();
-			pszTemp += inputLen;
-			inputLen = strlen(pszArgs);
-			fMatch = true;
-			for ( psCurMatch = psFirstMatch->GetNext(); psCurMatch != psLastMatch->GetNext(); psCurMatch = psCurMatch->GetNext() )
-			{
-				if ( strnicmp(psCurMatch->GetPtr(), pszArgs, inputLen) != 0 )	// mismatched
-				{
-					fMatch = false;
-					break;
-				}
-			}
-		}
-
-		if ( fMatch )
-		{
-			if ( fEcho )
-				SysMessage(pszTemp);
-
-			sText += pszTemp;
-			if ( sText.GetLength() > SCRIPT_MAX_LINE_LEN )
-				goto commandtoolong;
-		}
-		return 1;
-	}
-
-	if ( fEcho )
-	{
-		TCHAR szTmp[2];
-		szTmp[0] = szChar;
-		szTmp[1] = '\0';
-		SysMessage(szTmp);
-	}
-
-	if ( szChar == 8 )
-	{
-		if ( sText.GetLength() )	// back key
-			sText.SetLength(sText.GetLength() - 1);
-		return 1;
-	}
-
-	sText += szChar;
-	return 1;
-}
-
-///////////////////////////////////////////////////////////
-// CServer
-
 CServer::CServer() : CServerDef(SPHERE_TITLE, CSocketAddressIP(SOCKET_LOCAL_ADDRESS))
 {
 	SetServerMode(SERVMODE_Loading);
@@ -1153,6 +1035,10 @@ bool CServer::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		TCHAR *pszTempStart = pszTemp;
 		strcpy(pszTemp, pszKey);
 
+		TCHAR *pszSplit = strchr(pszTemp, '.');
+		if ( pszSplit )
+			*pszSplit = '\0';
+
 		// Adjust pszKey to point to end of account name/index
 		pszKey += strlen(pszTemp);
 
@@ -1173,7 +1059,7 @@ bool CServer::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 
 		if ( !*pszKey )		// check if the account exists
 		{
-			sVal.FormatVal((pAccount ? 1 : 0));
+			sVal.FormatVal(pAccount != NULL);
 			return true;
 		}
 		else if ( pAccount )	// get an account property
@@ -1299,12 +1185,15 @@ bool CServer::r_Verb(CScript &s, CTextConsole *pSrc)
 			index = SV_ACCOUNT;
 			CAccountRef pAccount = NULL;
 
-			char *pszAccount = Str_GetTemp();
-			strcpy(pszAccount, pszKey);
-			if ( strchr(pszAccount, '.') )
+			char *pszTemp = Str_GetTemp();
+			strcpy(pszTemp, pszKey);
+
+			char *pszSplit = strchr(pszTemp, '.');
+			if ( pszSplit )
 			{
-				pAccount = g_Accounts.Account_Find(pszAccount);
-				pszKey += strlen(pszAccount);
+				*pszSplit = '\0';
+				pAccount = g_Accounts.Account_Find(pszTemp);
+				pszKey += strlen(pszTemp);
 			}
 
 			SKIP_SEPARATORS(pszKey);
