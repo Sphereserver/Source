@@ -1,14 +1,8 @@
-//
-// Ctime.cpp
-//
-// Replace the MFC CTime function. Must be usable with file system.
-//
-
 #include "graycom.h"
 #include "CTime.h"
 
 #ifndef _WIN32
-#include <sys/time.h>
+#include <time.h>
 
 ULONGLONG GetTickCount64()
 {
@@ -18,163 +12,120 @@ ULONGLONG GetTickCount64()
 }
 #endif
 
-
-//**************************************************************
-// -CGTime - absolute time
-
-CGTime::CGTime(int nYear, int nMonth, int nDay, int nHour, int nMin, int nSec,
-			   int nDST)
+CGTime::CGTime(int iYear, int iMonth, int iDay, int iHour, int iMin, int iSec, int iDST)
 {
 	struct tm atm;
-	atm.tm_sec = nSec;
-	atm.tm_min = nMin;
-	atm.tm_hour = nHour;
-	atm.tm_mday = nDay;
-	atm.tm_mon = nMonth - 1;        // tm_mon is 0 based
-	atm.tm_year = nYear - 1900;     // tm_year is 1900 based
-	atm.tm_isdst = nDST;
-	m_time = mktime(&atm);
-}
-
-CGTime::CGTime( struct tm atm )
-{
+	atm.tm_sec = iSec;
+	atm.tm_min = iMin;
+	atm.tm_hour = iHour;
+	atm.tm_mday = iDay;
+	atm.tm_mon = iMonth - 1;        // tm_mon is 0 based
+	atm.tm_year = iYear - 1900;     // tm_year is 1900 based
+	atm.tm_isdst = iDST;
 	m_time = mktime(&atm);
 }
 
 CGTime CGTime::GetCurrentTime()	// static
 {
-	// return the current system time
-	return CGTime(::time(NULL));
+	// Return current system time
+	return CGTime(time(NULL));
 }
 
-struct tm* CGTime::GetLocalTm(struct tm* ptm) const
+struct tm *CGTime::GetLocalTm() const
 {
-	if (ptm != NULL)
-	{
-		struct tm* ptmTemp = localtime(&m_time);
-		if (ptmTemp == NULL)
-			return NULL;    // indicates the m_time was not initialized!
-
-		*ptm = *ptmTemp;
-		return ptm;
-	}
-	else
-		return localtime(&m_time);
+	return localtime(&m_time);
 }
-
-////////////////////////////////////////////////////////////////////////////
-// String formatting
-
-#ifndef maxTimeBufferSize
-	#define maxTimeBufferSize 128
-#endif
 
 #ifdef _WIN32
-void __cdecl invalidParameterHandler(const wchar_t* expression, const wchar_t* function, const wchar_t* file, unsigned int line, uintptr_t pReserved)
+void __cdecl invalidParameterHandler(const wchar_t *expression, const wchar_t *function, const wchar_t *file, unsigned int line, uintptr_t pReserved)
 {
-	// bad format has been specified
+	// Bad format has specified
 	UNREFERENCED_PARAMETER(expression);
 	UNREFERENCED_PARAMETER(function);
 	UNREFERENCED_PARAMETER(file);
 	UNREFERENCED_PARAMETER(line);
 	UNREFERENCED_PARAMETER(pReserved);
-	DEBUG_ERR(("Invalid time format specified.\n"));
+	DEBUG_ERR(("Invalid time format specified\n"));
 }
 #endif
 
-void FormatDateTime(TCHAR * pszTemp, LPCTSTR pszFormat, const struct tm * ptmTemp)
+void FormatDateTime(TCHAR *pszTemp, LPCTSTR pszFormat, const struct tm *ptmTemp)
 {
-	ASSERT(pszTemp != NULL);
-	ASSERT(pszFormat != NULL);
-	ASSERT(ptmTemp != NULL);
+	ASSERT(pszTemp);
+	ASSERT(pszFormat);
+	ASSERT(ptmTemp);
 
 #ifdef _WIN32
-	// on windows we need to set the invalid parameter handler, or else the program will terminate when a bad format is encountered
-	_invalid_parameter_handler oldHandler, newHandler;
-	newHandler = static_cast<_invalid_parameter_handler>(invalidParameterHandler);
+	// On Windows we need to set the invalid parameter handler, or the program will terminate when a bad format is encountered
 #ifndef __MINGW32__
-	oldHandler = _set_invalid_parameter_handler(newHandler);
-#endif  // __MINGW32__
+	_invalid_parameter_handler newHandler = static_cast<_invalid_parameter_handler>(invalidParameterHandler);
+	_invalid_parameter_handler oldHandler = _set_invalid_parameter_handler(newHandler);
+#endif
 	try
 	{
 #endif
-
-	if (strftime( pszTemp, maxTimeBufferSize, pszFormat, ptmTemp) == 0)
-		pszTemp[0] = '\0';
-
+		if ( strftime(pszTemp, 128, pszFormat, ptmTemp) == 0 )
+			pszTemp[0] = '\0';
 #ifdef _WIN32
 	}
 	catch (...)
 	{
-		// since VS2010, it seems an exception gets thrown for invalid format strings too
+		// Since VS2010, it seems an exception gets thrown for invalid format strings too
 		pszTemp[0] = '\0';
 	}
 
-	// restore previous parameter handler
-
 #ifndef __MINGW32__
+	// Restore previous parameter handler
 	_set_invalid_parameter_handler(oldHandler);
-#endif  // __MINGW32__
+#endif
 #endif
 }
 
 LPCTSTR CGTime::Format(LPCTSTR pszFormat) const
 {
-	TCHAR * pszTemp = Str_GetTemp();
+	ADDTOCALLSTACK("CGTime::Format");
+	struct tm *ptmTemp = localtime(&m_time);
+	if ( !ptmTemp )
+		return '\0';
 
-	if ( pszFormat == NULL )
-	{
+	if ( !pszFormat )
 		pszFormat = "%Y/%m/%d %H:%M:%S";
-	}
 
-	struct tm* ptmTemp = localtime(&m_time);
-	if (ptmTemp == NULL )
-	{
-		pszTemp[0] = '\0';
-		return( pszTemp );
-	}
-
+	TCHAR *pszTemp = Str_GetTemp();
 	FormatDateTime(pszTemp, pszFormat, ptmTemp);
 	return pszTemp;
 }
 
 LPCTSTR CGTime::FormatGmt(LPCTSTR pszFormat) const
 {
-	TCHAR * pszTemp = Str_GetTemp();
-	if ( pszFormat == NULL )
-	{
+	ADDTOCALLSTACK("CGTime::FormatGmt");
+	struct tm *ptmTemp = gmtime(&m_time);
+	if ( !ptmTemp )
+		return '\0';
+
+	if ( !pszFormat )
 		pszFormat = "%a, %d %b %Y %H:%M:%S GMT";
-	}
 
-	struct tm* ptmTemp = gmtime(&m_time);
-	if (ptmTemp == NULL )
-	{
-		pszTemp[0] = '\0';
-		return( pszTemp );
-	}
-
+	TCHAR *pszTemp = Str_GetTemp();
 	FormatDateTime(pszTemp, pszFormat, ptmTemp);
 	return pszTemp;
 }
 
-//**************************************************************
-
 bool CGTime::Read(TCHAR *pszVal)
 {
 	ADDTOCALLSTACK("CGTime::Read");
-	// Read the full date format.
+	// Read the full date format (args must be given in format YYYY/MM/DD HH:MM:SS)
 
-	TCHAR *ppCmds[10];
-	size_t iQty = Str_ParseCmds( pszVal, ppCmds, COUNTOF(ppCmds), "/,: \t");
+	TCHAR *ppCmds[6];
+	size_t iQty = Str_ParseCmds(pszVal, ppCmds, COUNTOF(ppCmds), "/,: \t");
 	if ( iQty < 6 )
 		return false;
 
 	struct tm atm;
-	atm.tm_wday = 0;    // days since Sunday - [0,6] 
-	atm.tm_yday = 0;    // days since January 1 - [0,365] 
-	atm.tm_isdst = 0;   // daylight savings time flag 
+	atm.tm_wday = 0;    // days since Sunday - [0, 6]
+	atm.tm_yday = 0;    // days since January 1 - [0, 365]
+	atm.tm_isdst = 0;   // daylight savings time flag
 
-	// Saves: "1999/8/1 14:30:18"
 	atm.tm_year = ATOI(ppCmds[0]) - 1900;
 	atm.tm_mon = ATOI(ppCmds[1]) - 1;
 	atm.tm_mday = ATOI(ppCmds[2]);
@@ -182,6 +133,5 @@ bool CGTime::Read(TCHAR *pszVal)
 	atm.tm_min = ATOI(ppCmds[4]);
 	atm.tm_sec = ATOI(ppCmds[5]);
 	m_time = mktime(&atm);
-
 	return true;
 }
