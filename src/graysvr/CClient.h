@@ -352,7 +352,6 @@ public:
 	static LPCTSTR const sm_szRefKeys[];
 	static LPCTSTR const sm_szLoadKeys[];
 	static LPCTSTR const sm_szVerbKeys[];
-	NetState *m_NetState;
 
 private:
 	CChar *m_pChar;
@@ -381,7 +380,8 @@ private:
 
 public:
 	CONNECT_TYPE m_iConnectType;	// connection type
-	CAccount *m_pAccount;			// account name
+	NetState *m_NetState;
+	CAccount *m_pAccount;
 	DWORD m_FeatureFlags;			// features enabled on this client
 	DWORD m_CharacterListFlags;		// character list features enabled on this client
 	bool m_TooltipEnabled;			// is tooltip feature enabled on this client?
@@ -588,7 +588,7 @@ public:
 	TRIGRET_TYPE Menu_OnSelect(RESOURCE_ID_BASE rid, int iSelect, CObjBase *pObj);
 	TRIGRET_TYPE Dialog_OnButton(RESOURCE_ID_BASE rid, DWORD dwButtonID, CObjBase *pObj, CDialogResponseArgs *pArgs);
 
-	bool Login_Relay(WORD iServer);		// relay player to a certain IP
+	bool Login_Relay(WORD wRelay);		// relay player to a certain IP
 	BYTE Login_ServerList(const char *pszAccount, const char *pszPassword);		// initial login (Login on "loginserver", new format)
 
 	BYTE Setup_FillCharList(Packet *pPacket);	// write character list to packet
@@ -644,7 +644,7 @@ public:
 	virtual bool r_LoadVal(CScript &s);
 
 	// Low level message traffic
-	static size_t xCompress(BYTE *pOutput, const BYTE *pInput, size_t inplen);
+	static size_t xCompress(BYTE *pOutput, const BYTE *pInput, size_t iInputLen);
 
 	bool xProcessClientSetup(CEvent *pEvent, size_t iLen);
 	bool xPacketFilter(const BYTE *pData, size_t iLen = 0);
@@ -653,7 +653,7 @@ public:
 
 	// Low level push world data to the client
 	bool addRelay(const CServerDef *pServ);
-	bool addLoginErr(BYTE code);
+	bool addLoginErr(BYTE bCode);
 
 	#define SF_UPDATE_HITS		0x1
 	#define SF_UPDATE_MANA		0x2
@@ -737,7 +737,7 @@ public:
 	void addObjMessage(LPCTSTR pszMsg, const CObjBaseTemplate *pSrc, HUE_TYPE wHue = HUE_TEXT_DEF, TALKMODE_TYPE mode = TALKMODE_OBJ);
 
 	void addDyeOption(const CObjBase *pObj);
-	void addWebLaunch(LPCTSTR pszMsg);
+	void addWebLaunch(LPCTSTR pszURL);
 
 	void addPromptConsole(CLIMODE_TYPE mode, LPCTSTR pszPrompt, CGrayUID context1 = UID_CLEAR, CGrayUID context2 = UID_CLEAR, bool bUnicode = false);
 	void addTarget(CLIMODE_TYPE mode, LPCTSTR pszPrompt, bool bAllowGround = false, bool bCheckCrime = false, int iTimeout = 0);
@@ -903,7 +903,6 @@ public:
 	bool Cmd_Use_Item(CItem *pItem, bool fTestTouch, bool fScript = false);
 	void Cmd_EditItem(CObjBase *pObj, int iSelect);
 
-	bool IsConnecting() const;
 	bool IsConnectTypePacket() const
 	{
 		// This is a game or login server

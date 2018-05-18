@@ -19,8 +19,8 @@ CGTime::CGTime(int iYear, int iMonth, int iDay, int iHour, int iMin, int iSec, i
 	atm.tm_min = iMin;
 	atm.tm_hour = iHour;
 	atm.tm_mday = iDay;
-	atm.tm_mon = iMonth - 1;        // tm_mon is 0 based
-	atm.tm_year = iYear - 1900;     // tm_year is 1900 based
+	atm.tm_mon = iMonth - 1;		// tm_mon is 0 based
+	atm.tm_year = iYear - 1900;		// tm_year is 1900 based
 	atm.tm_isdst = iDST;
 	m_time = mktime(&atm);
 }
@@ -122,9 +122,9 @@ bool CGTime::Read(TCHAR *pszVal)
 		return false;
 
 	struct tm atm;
-	atm.tm_wday = 0;    // days since Sunday - [0, 6]
-	atm.tm_yday = 0;    // days since January 1 - [0, 365]
-	atm.tm_isdst = 0;   // daylight savings time flag
+	atm.tm_wday = 0;	// days since Sunday - [0, 6]
+	atm.tm_yday = 0;	// days since January 1 - [0, 365]
+	atm.tm_isdst = 0;	// daylight savings time flag
 
 	atm.tm_year = ATOI(ppCmds[0]) - 1900;
 	atm.tm_mon = ATOI(ppCmds[1]) - 1;
