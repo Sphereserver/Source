@@ -14,7 +14,7 @@ notifications:
   email: false
 script:
   - make NIGHTLY=1 -f makefile
-after_success:
-  - mkdir accounts logs save scripts
-  - tar -czvf SphereSvr-Linux32.tar.gz accounts/ logs/ save/ scripts/ spheresvr -C src/ sphere.ini sphereCrypt.ini
-  - curl -T SphereSvr-Linux32.tar.gz -u $FTP_USER:$FTP_PASSWORD $FTP_SERVER
+#after_success:
+#  - mkdir accounts logs save scripts
+#  - tar -czvf SphereSvr-Linux32.tar.gz accounts/ logs/ save/ scripts/ spheresvr -C src/ sphere.ini sphereCrypt.ini
+#  - curl -T SphereSvr-Linux32.tar.gz -u $FTP_USER:$FTP_PASSWORD $FTP_SERVER
