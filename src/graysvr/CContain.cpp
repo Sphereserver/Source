@@ -582,7 +582,7 @@ bool CItemContainer::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pS
 	return CItemVendable::r_WriteVal(pszKey, sVal, pSrc);
 }
 
-bool CItemContainer::IsItemInTrade()
+bool CItemContainer::IsItemInTrade() const
 {
 	ADDTOCALLSTACK("CItemContainer::IsItemInTrade");
 	// Recursively get the item on "top" level
@@ -783,26 +783,6 @@ void CItemContainer::Trade_Delete()
 	m_uidLink.InitUID();	// unlink
 	pPartner->m_uidLink.InitUID();
 	pPartner->Delete();
-}
-
-void CItemContainer::OnWeightChange(int iChange)
-{
-	ADDTOCALLSTACK("CItemContainer::OnWeightChange");
-	CContainer::OnWeightChange(iChange);
-	UpdatePropertyFlag(AUTOTOOLTIP_FLAG_WEIGHT);
-
-	if ( iChange == 0 )
-		return;		// no change
-
-	// Some containers do not add weight to you
-	if ( !IsWeighed() )
-		return;
-
-	// Propagate the weight change up the stack if there is one
-	CContainer *pCont = dynamic_cast<CContainer *>(GetParent());
-	if ( !pCont )
-		return;		// on ground
-	pCont->OnWeightChange(iChange);
 }
 
 CPointMap CItemContainer::GetRandContainerLoc() const

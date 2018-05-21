@@ -1103,13 +1103,9 @@ bool CChar::Skill_Snoop_Check( const CItemContainer * pItem )
 	if ( pItem == NULL )
 		return( true );
 
-	ASSERT( pItem->IsItem());
-	if ( pItem->IsContainer() )
-	{
-		CItemContainer *pItemCont = dynamic_cast<CItemContainer *>(pItem->GetParentObj());
-		if ( !g_Cfg.m_iTradeWindowSnooping && pItemCont->IsItemInTrade() )
-			return false;
-	}
+	ASSERT(pItem->IsItem());
+	if ( !g_Cfg.m_iTradeWindowSnooping && pItem->IsContainer() && pItem->IsItemInTrade() )
+		return false;
 
 	if ( ! IsPriv(PRIV_GM))
 	switch ( pItem->GetType())

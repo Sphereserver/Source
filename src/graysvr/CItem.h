@@ -125,9 +125,6 @@ public:
 	#define ATTR_OPENED			0x4000000	// Is Door Opened
 	DWORD m_Attr;
 
-	bool IsTriggerActive(LPCTSTR pszTrig) { return static_cast<CObjBase *>(const_cast<CItem *>(this))->IsTriggerActive(pszTrig); }
-	void SetTriggerActive(LPCTSTR pszTrig = NULL) { static_cast<CObjBase *>(const_cast<CItem *>(this))->SetTriggerActive(pszTrig); }
-
 	// Type specific info (IT_TYPE)
 	union	// 4(more1) + 4(more2) + 6(morep: (2 morex) (2 morey) (1 morez) (1morem)) = 14 bytes
 	{
@@ -543,6 +540,9 @@ protected:
 	virtual int FixWeirdness();
 
 public:
+	bool IsTriggerActive(LPCTSTR pszTrig) { return static_cast<CObjBase *>(const_cast<CItem *>(this))->IsTriggerActive(pszTrig); }
+	void SetTriggerActive(LPCTSTR pszTrig = NULL) { static_cast<CObjBase *>(const_cast<CItem *>(this))->SetTriggerActive(pszTrig); }
+
 	virtual bool OnTick();
 	virtual void OnHear(LPCTSTR pszCmd, CChar *pSrc)
 	{
@@ -1143,7 +1143,6 @@ public:
 		// True weight = container weight + contents weight
 		return CItem::GetWeight(wAmount) + CContainer::GetTotalWeight();
 	}
-	void OnWeightChange(int iChange);
 
 	void ContentAdd(CItem *pItem);
 	void ContentAdd(CItem *pItem, CPointMap pt, BYTE gridIndex = 0);
@@ -1152,7 +1151,7 @@ protected:
 	void OnRemoveOb(CGObListRec *pObRec);	// override this = called when removed from list
 
 public:
-	bool IsItemInTrade();
+	bool IsItemInTrade() const;
 	void Trade_Status(bool bCheck);
 	void Trade_UpdateGold(DWORD dwPlatinum, DWORD dwGold);
 	void Trade_Delete();
