@@ -697,7 +697,7 @@ bool CClient::xProcessClientSetup(CEvent *pEvent, size_t iLen)
 
 	// Try all client versions on the message
 	CEvent evInputBuffer;
-	ASSERT(iLen <= sizeof(bincopy));
+	ASSERT(iLen <= sizeof(evInputBuffer));
 	memcpy(evInputBuffer.m_Raw, pEvent->m_Raw, iLen);
 
 	if ( !m_Crypt.Init(m_NetState->m_seed, evInputBuffer.m_Raw, iLen, m_NetState->isClientKR()) )
@@ -804,7 +804,7 @@ bool CClient::xProcessClientSetup(CEvent *pEvent, size_t iLen)
 			{
 				if ( pAccount )
 				{
-					DEBUG_MSG(("%lx:xProcessClientSetup for %s, with AuthId %lu and CliVersion %lu / CliVersionReported %lu\n", GetSocketID(), pAcc->GetName(), dwCustomerID, m_Crypt.GetClientVer(), m_NetState->getReportedVersion()));
+					DEBUG_MSG(("%lx:xProcessClientSetup for %s, with AuthId %lu and CliVersion %lu / CliVersionReported %lu\n", GetSocketID(), pAccount->GetName(), dwCustomerID, m_Crypt.GetClientVer(), m_NetState->getReportedVersion()));
 
 					if ( (dwCustomerID != 0) && (dwCustomerID == pEvent->CharListReq.m_Account) )
 					{

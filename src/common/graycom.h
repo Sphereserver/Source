@@ -4,19 +4,10 @@
 
 //---------------------------SYSTEM DEFINITIONS---------------------------
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <time.h>
-#include <stdarg.h>
-#include <ctype.h>
-#include <assert.h>
-#include <limits.h>
-#include <limits>
-#include <sys/timeb.h>
 
 #ifdef _WIN32
-// NOTE: If we want a max number of sockets we must compile for it !
+	// NOTE: If we want a max number of sockets we must compile for it !
 	#undef FD_SETSIZE
 	#define FD_SETSIZE 1024 // for max of n users ! default = 64
 
@@ -24,11 +15,7 @@
 		#define STRICT			// strict conversion of handles and pointers.
 	#endif	// STRICT
 
-	#include <io.h>
-	#include <winsock2.h>
-	#include <windows.h>
-	#include <dos.h>
-	#include <conio.h>
+	#include <WinSock2.h>
 
 	#define strcmpi		_strcmpi	// Non ANSI equiv functions ?
 	#define strnicmp	_strnicmp
@@ -37,17 +24,15 @@
 
 #else	// _WIN32 else assume LINUX
 
-	#include <sys/types.h>
+	#include <stdio.h>
+	#include <limits.h>
+	#include <limits>
+	#include <string.h>
 
 	#define HANDLE			DWORD
 	#define _cdecl
 	#define __cdecl
-	#ifndef LONG
-		#define LONG			DWORD
-	#endif
-	#ifndef LONGLONG
-		#define LONGLONG		DWORD	// This should be 64 bit ???
-	#endif
+
 	#define WCHAR			unsigned short
 	#define FAR
 	#define E_FAIL			0x80004005
@@ -59,13 +44,6 @@
 	#else
 		#define _timezone		timezone
 	#endif
-
-	#define PUINT			unsigned int *
-
-	#define IsBadReadPtr( p, len )		((p) == NULL)
-	#define IsBadStringPtr( p, len )	((p) == NULL)
-	#define Sleep(mSec)					usleep(mSec*1000)	// arg is microseconds = 1/1000000
-	#define SleepEx(mSec, unused)		usleep(mSec*1000)	// arg is microseconds = 1/1000000
 
 	#define strcmpi		strcasecmp
 	#define strnicmp	strncasecmp
@@ -80,7 +58,7 @@
 
 #ifdef _DEBUG
 	#ifndef ASSERT
-		extern void Assert_CheckFail( const char * pExp, const char *pFile, long lLine );
+		extern void Assert_CheckFail(LPCTSTR pszExp, LPCTSTR pszFile, long lLine);
 		#define ASSERT(exp)			(void)( (exp) || (Assert_CheckFail(#exp, __FILE__, __LINE__), 0) )
 	#endif	// ASSERT
 
@@ -90,7 +68,7 @@
 		/*#ifndef _WIN32
 			// In linux, if we get an access violation, an exception isn't thrown.  Instead, we get
 			// a SIG_SEGV, and the process cores. The following code takes care of this for us.
-			extern void Assert_CheckFail( const char * pExp, const char *pFile, long lLine );
+			extern void Assert_CheckFail(LPCTSTR pszExp, LPCTSTR pszFile, long lLine);
 			//matex3: is this still necessary? We have a SIG_SEGV handler nowaways.
 			#define ASSERT(exp)			(void)( (exp) || (Assert_CheckFail(#exp, __FILE__, __LINE__), 0) )
 		#else*/
@@ -143,16 +121,12 @@
 #define FEATURE_EXTRA_SHADOWGUARD	0x10	// 0x200000 feature (unlock TOL shadowguard items on house design)
 #define FEATURE_EXTRA_ROLEPLAYFACES	0x20	// 0x2000 feature (unlock extra roleplay face styles on character creation) - enhanced clients only
 
-#include "common.h"
 #include "CException.h"
 
 #include "CSocket.h"
 #include "CEncrypt.h"
 
 #include "CArray.h"
-#include "CString.h"
-#include "CFile.h"
-#include "CScript.h"
 
 class CTextConsole; // swapped these two includes, so need to declare this here
 #include "CVarDefMap.h"
@@ -164,7 +138,6 @@ class CTextConsole; // swapped these two includes, so need to declare this here
 class CObjBase;
 class CChar;
 class CItem;
-class CResourceDef;
 
 struct CGrayUIDBase		// A unique system serial id. 4 bytes long
 {
@@ -292,9 +265,9 @@ struct CGrayUID : public CGrayUIDBase
 	{
 		InitUID();
 	}
-	CGrayUID( DWORD dw )
+	CGrayUID( DWORD dwVal )
 	{
-		SetPrivateUID( dw );
+		SetPrivateUID( dwVal );
 	}
 };
 
