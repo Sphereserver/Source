@@ -2439,18 +2439,16 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 							t->FormatArgs("%d", pItem->m_DefChanceIncrease);
 						}
 
-						INT64 DexterityBonus = pItem->GetDefNum("BONUSDEX", true);
-						if ( DexterityBonus != 0 )
+						if ( pItem->m_DexterityBonus != 0 )
 						{
 							m_TooltipData.Add(t = new CClientTooltip(1060409)); // dexterity bonus ~1_val~
-							t->FormatArgs("%lld", DexterityBonus);
+							t->FormatArgs("%d", pItem->m_DexterityBonus);
 						}
 
-						INT64 EnhancePotions = pItem->GetDefNum("ENHANCEPOTIONS", true);
-						if ( EnhancePotions != 0 )
+						if ( pItem->m_EnhancePotions != 0 )
 						{
 							m_TooltipData.Add(t = new CClientTooltip(1060411)); // enhance potions ~1_val~%
-							t->FormatArgs("%lld", EnhancePotions);
+							t->FormatArgs("%d", pItem->m_EnhancePotions);
 						}
 
 						if ( pItem->m_FasterCastRecovery != 0 )
@@ -2471,18 +2469,16 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 							t->FormatArgs("%d", pItem->m_HitChanceIncrease);
 						}
 
-						INT64 HitPointIncrease = pItem->GetDefNum("BONUSHITS", true);
-						if ( HitPointIncrease != 0 )
+						if ( pItem->m_HitpointIncrease != 0 )
 						{
 							m_TooltipData.Add(t = new CClientTooltip(1060431)); // hit point increase ~1_val~%
-							t->FormatArgs("%lld", HitPointIncrease);
+							t->FormatArgs("%d", pItem->m_HitpointIncrease);
 						}
 
-						INT64 IntelligenceBonus = pItem->GetDefNum("BONUSINT", true);
-						if ( IntelligenceBonus != 0 )
+						if ( pItem->m_IntelligenceBonus != 0 )
 						{
 							m_TooltipData.Add(t = new CClientTooltip(1060432)); // intelligence bonus ~1_val~
-							t->FormatArgs("%lld", IntelligenceBonus);
+							t->FormatArgs("%d", pItem->m_IntelligenceBonus);
 						}
 
 						if ( pItem->m_LowerManaCost != 0 )
@@ -2497,11 +2493,10 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 							t->FormatArgs("%d", pItem->m_LowerReagentCost);
 						}
 
-						INT64 LowerRequirements = pItem->GetDefNum("LOWERREQ", true);
-						if ( LowerRequirements != 0 )
+						if ( pItem->m_LowerRequirements != 0 )
 						{
 							m_TooltipData.Add(t = new CClientTooltip(1060435)); // lower requirements ~1_val~%
-							t->FormatArgs("%lld", LowerRequirements);
+							t->FormatArgs("%d", pItem->m_LowerRequirements);
 						}
 
 						if ( pItem->m_Luck != 0 )
@@ -2520,11 +2515,10 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 							t->FormatArgs("%lld", MageWeapon);
 						}
 
-						INT64 ManaIncrease = pItem->GetDefNum("BONUSMANA", true);
-						if ( ManaIncrease != 0 )
+						if ( pItem->m_ManaIncrease != 0 )
 						{
 							m_TooltipData.Add(t = new CClientTooltip(1060439)); // mana increase ~1_val~
-							t->FormatArgs("%lld", ManaIncrease);
+							t->FormatArgs("%d", pItem->m_ManaIncrease);
 						}
 
 						INT64 ManaRegeneration = pItem->GetDefNum("REGENMANA", true);
@@ -2534,7 +2528,7 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 							t->FormatArgs("%lld", ManaRegeneration);
 						}
 
-						if ( pItem->GetDefNum("NIGHTSIGHT", true) )
+						if ( pItem->m_NightSight )
 							m_TooltipData.Add(new CClientTooltip(1060441)); // night sight
 
 						INT64 ReflectPhysicalDamage = pItem->GetDefNum("REFLECTPHYSICALDAM", true);
@@ -2565,7 +2559,7 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 							t->FormatArgs("%lld", SelfRepair);
 						}
 
-						if ( pItem->GetDefNum("SPELLCHANNELING", true) )
+						if ( pItem->m_SpellChanneling )
 							m_TooltipData.Add(new CClientTooltip(1060482)); // spell channeling
 
 						if ( pItem->m_SpellDamIncrease != 0 )
@@ -2574,18 +2568,16 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 							t->FormatArgs("%d", pItem->m_SpellDamIncrease);
 						}
 
-						INT64 StaminaIncrease = pItem->GetDefNum("BONUSSTAM", true);
-						if ( StaminaIncrease != 0 )
+						if ( pItem->m_StaminaIncrease != 0 )
 						{
 							m_TooltipData.Add(t = new CClientTooltip(1060484)); // stamina increase ~1_val~
-							t->FormatArgs("%lld", StaminaIncrease);
+							t->FormatArgs("%d", pItem->m_StaminaIncrease);
 						}
 
-						INT64 StrengthBonus = pItem->GetDefNum("BONUSSTR", true);
-						if ( StrengthBonus != 0 )
+						if ( pItem->m_StrengthBonus != 0 )
 						{
 							m_TooltipData.Add(t = new CClientTooltip(1060485)); // strength bonus ~1_val~
-							t->FormatArgs("%lld", StrengthBonus);
+							t->FormatArgs("%d", pItem->m_StrengthBonus);
 						}
 
 						if ( pItem->m_SwingSpeedIncrease != 0 )
@@ -2702,11 +2694,11 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 								}
 							}
 
-							INT64 StrengthRequirement = pItem->Item_GetDef()->m_ttEquippable.m_StrReq - pItem->GetDefNum("LOWERREQ", true);
+							int StrengthRequirement = pItem->Item_GetDef()->m_ttEquippable.m_StrReq * (100 - pItem->m_LowerRequirements) / 100;
 							if ( StrengthRequirement > 0 )
 							{
 								m_TooltipData.Add(t = new CClientTooltip(1061170)); // strength requirement ~1_val~
-								t->FormatArgs("%lld", StrengthRequirement);
+								t->FormatArgs("%d", StrengthRequirement);
 							}
 
 							m_TooltipData.Add(t = new CClientTooltip(1060639)); // durability ~1_val~ / ~2_val~
@@ -2729,7 +2721,7 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 							if ( pItem->m_itWeapon.m_poison_skill )
 								m_TooltipData.Add(new CClientTooltip(1017383)); // poisoned
 
-							if ( pItem->GetDefNum("USEBESTWEAPONSKILL", true) )
+							if ( pItem->m_UseBestWeaponSkill )
 								m_TooltipData.Add(new CClientTooltip(1060400)); // use best weapon skill
 
 							INT64 HitLifeLeech = pItem->GetDefNum("HITLEECHLIFE", true);
@@ -2810,11 +2802,11 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 								t->FormatArgs("%hhu", Range);
 							}
 
-							INT64 StrengthRequirement = pItem->Item_GetDef()->m_ttEquippable.m_StrReq - pItem->GetDefNum("LOWERREQ", true);
+							int StrengthRequirement = pItem->Item_GetDef()->m_ttEquippable.m_StrReq * (100 - pItem->m_LowerRequirements) / 100;
 							if ( StrengthRequirement > 0 )
 							{
 								m_TooltipData.Add(t = new CClientTooltip(1061170)); // strength requirement ~1_val~
-								t->FormatArgs("%lld", StrengthRequirement);
+								t->FormatArgs("%d", StrengthRequirement);
 							}
 
 							if ( pItem->Item_GetDef()->GetEquipLayer() == LAYER_HAND2 )
@@ -2822,7 +2814,7 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 							else
 								m_TooltipData.Add(new CClientTooltip(1061824)); // one-handed weapon
 
-							if ( !pItem->GetDefNum("USEBESTWEAPONSKILL", true) )
+							if ( !pItem->m_UseBestWeaponSkill )
 							{
 								switch ( pItem->Weapon_GetSkill() )
 								{

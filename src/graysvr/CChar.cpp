@@ -266,6 +266,8 @@ CChar::CChar(CREID_TYPE id) : CObjBase(false)
 	m_FasterCastRecovery = pCharDef->m_FasterCastRecovery;
 	m_LowerManaCost = pCharDef->m_LowerManaCost;
 	m_LowerReagentCost = pCharDef->m_LowerReagentCost;
+	m_EnhancePotions = pCharDef->m_EnhancePotions;
+	m_NightSight = pCharDef->m_NightSight;
 
 	m_Can = pCharDef->m_Can;
 	m_wBloodHue = pCharDef->m_wBloodHue;

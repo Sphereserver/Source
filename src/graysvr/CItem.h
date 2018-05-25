@@ -125,6 +125,16 @@ public:
 	#define ATTR_OPENED			0x4000000	// Is Door Opened
 	DWORD m_Attr;
 
+	int m_StrengthBonus;
+	int m_DexterityBonus;
+	int m_IntelligenceBonus;
+	int m_HitpointIncrease;
+	int m_StaminaIncrease;
+	int m_ManaIncrease;
+	int m_SpellChanneling;
+	int m_LowerRequirements;
+	int m_UseBestWeaponSkill;
+
 	// Type specific info (IT_TYPE)
 	union	// 4(more1) + 4(more2) + 6(morep: (2 morex) (2 morey) (1 morez) (1morem)) = 14 bytes
 	{
@@ -752,12 +762,10 @@ public:
 	{
 		switch ( m_type )
 		{
-			case IT_SPELL:
-			case IT_FIRE:
 			case IT_LIGHT_LIT:
+			case IT_FIRE:
 			case IT_CAMPFIRE:
 			case IT_LAVA:
-			case IT_WINDOW:
 				return true;
 			default:
 				return false;

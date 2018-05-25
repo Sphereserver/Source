@@ -1660,6 +1660,18 @@ bool CItem::SetBase( CItemBase * pItemDef )
 	m_FasterCastRecovery = pItemDef->m_FasterCastRecovery;
 	m_LowerManaCost = pItemDef->m_LowerManaCost;
 	m_LowerReagentCost = pItemDef->m_LowerReagentCost;
+	m_EnhancePotions = pItemDef->m_EnhancePotions;
+	m_NightSight = pItemDef->m_NightSight;
+
+	m_StrengthBonus = pItemDef->m_StrengthBonus;
+	m_DexterityBonus = pItemDef->m_DexterityBonus;
+	m_IntelligenceBonus = pItemDef->m_IntelligenceBonus;
+	m_HitpointIncrease = pItemDef->m_HitpointIncrease;
+	m_StaminaIncrease = pItemDef->m_StaminaIncrease;
+	m_ManaIncrease = pItemDef->m_ManaIncrease;
+	m_SpellChanneling = pItemDef->m_SpellChanneling;
+	m_LowerRequirements = pItemDef->m_LowerRequirements;
+	m_UseBestWeaponSkill = pItemDef->m_UseBestWeaponSkill;
 
 	if (pParentCont)
 	{
@@ -1953,6 +1965,25 @@ void CItem::r_Write( CScript & s )
 	}
 	else
 		s.WriteKey("P", GetTopPoint().WriteUsed());
+
+	if ( m_StrengthBonus != pItemDef->m_StrengthBonus )
+		s.WriteKeyVal("BONUSSTR", m_StrengthBonus);
+	if ( m_DexterityBonus != pItemDef->m_DexterityBonus )
+		s.WriteKeyVal("BONUSDEX", m_DexterityBonus);
+	if ( m_IntelligenceBonus != pItemDef->m_IntelligenceBonus )
+		s.WriteKeyVal("BONUSINT", m_IntelligenceBonus);
+	if ( m_HitpointIncrease != pItemDef->m_HitpointIncrease )
+		s.WriteKeyVal("BONUSHITS", m_HitpointIncrease);
+	if ( m_StaminaIncrease != pItemDef->m_StaminaIncrease )
+		s.WriteKeyVal("BONUSSTAM", m_StaminaIncrease);
+	if ( m_ManaIncrease != pItemDef->m_ManaIncrease )
+		s.WriteKeyVal("BONUSMANA", m_ManaIncrease);
+	if ( m_SpellChanneling != pItemDef->m_SpellChanneling )
+		s.WriteKeyVal("SPELLCHANNELING", m_SpellChanneling);
+	if ( m_LowerRequirements != pItemDef->m_LowerRequirements )
+		s.WriteKeyVal("LOWERREQ", m_LowerRequirements);
+	if ( m_UseBestWeaponSkill != pItemDef->m_UseBestWeaponSkill )
+		s.WriteKeyVal("USEBESTWEAPONSKILL", m_UseBestWeaponSkill);
 }
 
 bool CItem::LoadSetContainer( CGrayUID uid, LAYER_TYPE layer )
@@ -2116,12 +2147,6 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 			break;
 		//return as decimal number or 0 if not set
 		//On these ones, check BaseDef if not found on dynamic
-		case IC_BONUSSTR:
-		case IC_BONUSDEX:
-		case IC_BONUSINT:
-		case IC_BONUSHITS:
-		case IC_BONUSSTAM:
-		case IC_BONUSMANA:
 		case IC_BONUSHITSMAX:
 		case IC_BONUSSTAMMAX:
 		case IC_BONUSMANAMAX:
@@ -2137,7 +2162,6 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_SELFREPAIR:
 		case IC_USESCUR:
 		case IC_USESMAX:
-		case IC_USEBESTWEAPONSKILL:
 			{
 				CVarDefCont * pVar = GetDefKey(pszKey, true);
 				sVal.FormatLLVal(pVar ? pVar->GetValNum() : 0);
@@ -2165,6 +2189,33 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 			break;
 		case IC_BASEWEIGHT:
 			sVal.FormatVal(m_weight);
+			break;
+		case IC_BONUSSTR:
+			sVal.FormatVal(m_StrengthBonus);
+			break;
+		case IC_BONUSDEX:
+			sVal.FormatVal(m_DexterityBonus);
+			break;
+		case IC_BONUSINT:
+			sVal.FormatVal(m_IntelligenceBonus);
+			break;
+		case IC_BONUSHITS:
+			sVal.FormatVal(m_HitpointIncrease);
+			break;
+		case IC_BONUSSTAM:
+			sVal.FormatVal(m_StaminaIncrease);
+			break;
+		case IC_BONUSMANA:
+			sVal.FormatVal(m_ManaIncrease);
+			break;
+		case IC_SPELLCHANNELING:
+			sVal.FormatVal(m_SpellChanneling);
+			break;
+		case IC_LOWERREQ:
+			sVal.FormatVal(m_LowerRequirements);
+			break;
+		case IC_USEBESTWEAPONSKILL:
+			sVal.FormatVal(m_UseBestWeaponSkill);
 			break;
 		case IC_CAN:
 			sVal.FormatHex( m_Can ) ;
@@ -2357,13 +2408,6 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_RARITY:
 		case IC_SELFREPAIR:
 		case IC_USESCUR:
-		case IC_USEBESTWEAPONSKILL:
-		case IC_BONUSSTR:
-		case IC_BONUSDEX:
-		case IC_BONUSINT:
-		case IC_BONUSHITS:
-		case IC_BONUSSTAM:
-		case IC_BONUSMANA:
 		case IC_BONUSHITSMAX:
 		case IC_BONUSSTAMMAX:
 		case IC_BONUSMANAMAX:
@@ -2426,6 +2470,33 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_BASEWEIGHT:
 			m_weight = static_cast<WORD>(s.GetArgVal());
 			return true;
+		case IC_BONUSSTR:
+			m_StrengthBonus = static_cast<int>(s.GetArgVal());
+			break;
+		case IC_BONUSDEX:
+			m_DexterityBonus = static_cast<int>(s.GetArgVal());
+			break;
+		case IC_BONUSINT:
+			m_IntelligenceBonus = static_cast<int>(s.GetArgVal());
+			break;
+		case IC_BONUSHITS:
+			m_HitpointIncrease = static_cast<int>(s.GetArgVal());
+			break;
+		case IC_BONUSSTAM:
+			m_StaminaIncrease = static_cast<int>(s.GetArgVal());
+			break;
+		case IC_BONUSMANA:
+			m_ManaIncrease = static_cast<int>(s.GetArgVal());
+			break;
+		case IC_SPELLCHANNELING:
+			m_SpellChanneling = static_cast<int>(s.GetArgVal());
+			break;
+		case IC_LOWERREQ:
+			m_LowerRequirements = static_cast<int>(s.GetArgVal());
+			break;
+		case IC_USEBESTWEAPONSKILL:
+			m_UseBestWeaponSkill = static_cast<int>(s.GetArgVal());
+			break;
 		case IC_CAN:
 			m_Can = static_cast<DWORD>(s.GetArgVal());
 			return true;

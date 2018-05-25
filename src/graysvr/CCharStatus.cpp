@@ -192,9 +192,9 @@ bool CChar::CanCarry( const CItem *pItem ) const
 	if ( IsPriv(PRIV_GM) )
 		return true;
 
-	int iItemWeight = pItem->GetWeight();
-	if ( pItem->GetEquipLayer() == LAYER_DRAGGING )		// if we're dragging the item, its weight is already added on char so don't count it again
-		iItemWeight = 0;
+	int iItemWeight = 0;
+	if ( pItem->GetEquipLayer() != LAYER_DRAGGING )		// if we're dragging the item, its weight is already added on char so don't count it again
+		iItemWeight = pItem->GetWeight();
 
 	if ( GetTotalWeight() + iItemWeight > g_Cfg.Calc_MaxCarryWeight(this) )
 		return false;
@@ -209,11 +209,10 @@ bool CChar::CanEquipStr( CItem *pItem ) const
 		return true;
 
 	CItemBase *pItemDef = pItem->Item_GetDef();
-	LAYER_TYPE layer = pItemDef->GetEquipLayer();
-	if ( !pItemDef->IsTypeEquippable() || !CItemBase::IsVisibleLayer(layer) )
+	if ( !pItemDef->IsTypeEquippable() || !CItemBase::IsVisibleLayer(pItemDef->GetEquipLayer()) )
 		return true;
 
-	if ( Stat_GetAdjusted(STAT_STR) >= pItemDef->m_ttEquippable.m_StrReq * (100 - pItem->GetDefNum("LOWERREQ", true)) / 100 )
+	if ( Stat_GetAdjusted(STAT_STR) >= pItemDef->m_ttEquippable.m_StrReq * (100 - pItem->m_LowerRequirements) / 100 )
 		return true;
 
 	return false;
@@ -1964,6 +1963,7 @@ bool CChar::CanMove( CItem *pItem, bool fMsg ) const
 				case LAYER_DRAGGING:
 					return true;
 				case LAYER_HAIR:
+				case LAYER_FACE:
 				case LAYER_BEARD:
 				case LAYER_PACK:
 					if ( !IsPriv(PRIV_GM) )

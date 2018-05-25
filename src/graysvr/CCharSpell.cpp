@@ -2529,7 +2529,7 @@ bool CChar::Spell_Unequip(LAYER_TYPE layer)
 		}
 		else if ( !CanMove(pItem) )
 			return false;
-		else if ( !pItem->IsTypeSpellbook() && !pItem->IsType(IT_WAND) && !pItem->GetDefNum("SpellChanneling", true) )
+		else if ( !pItem->IsTypeSpellbook() && !pItem->IsType(IT_WAND) && !pItem->m_SpellChanneling )
 			ItemBounce(pItem);
 	}
 	return true;

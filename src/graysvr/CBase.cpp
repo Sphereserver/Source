@@ -6,6 +6,8 @@
 CBaseBaseDef::CBaseBaseDef(RESOURCE_ID id) : CResourceLink(id)
 {
 	m_dwDispIndex = 0;
+	m_BaseResources.setNoMergeOnLoad();
+	SetDefNum("RANGE", 1);	//m_range = 1;
 	m_attackBase = 0;
 	m_attackRange = 0;
 	m_defenseBase = 0;
@@ -36,13 +38,13 @@ CBaseBaseDef::CBaseBaseDef(RESOURCE_ID id) : CResourceLink(id)
 	m_FasterCastRecovery = 0;
 	m_LowerManaCost = 0;
 	m_LowerReagentCost = 0;
-	m_Height = 0;
+	m_EnhancePotions = 0;
+	m_NightSight = 0;
 	m_Can = CAN_C_INDOORS;
-	SetDefNum("RANGE", 1);	//m_range = 1;
+	m_Height = 0;
 	m_ResLevel = RDS_NONE;
-	m_ResDispDnHue = HUE_DEFAULT;
 	m_ResDispDnId = 0;
-	m_BaseResources.setNoMergeOnLoad();
+	m_ResDispDnHue = HUE_DEFAULT;
 }
 
 void CBaseBaseDef::CopyBasic(const CBaseBaseDef *pBaseDef)
@@ -54,6 +56,8 @@ void CBaseBaseDef::CopyBasic(const CBaseBaseDef *pBaseDef)
 		m_sName = pBaseDef->m_sName;
 
 	m_dwDispIndex = pBaseDef->m_dwDispIndex;
+	//m_BaseResources = pBaseDef->m_BaseResources;		// items might not want this
+	SetDefNum("RANGE", pBaseDef->GetDefNum("RANGE"));	//m_range = pBaseDef->m_range
 	m_attackBase = pBaseDef->m_attackBase;
 	m_attackRange = pBaseDef->m_attackRange;
 	m_defenseBase = pBaseDef->m_defenseBase;
@@ -84,13 +88,13 @@ void CBaseBaseDef::CopyBasic(const CBaseBaseDef *pBaseDef)
 	m_FasterCastRecovery = pBaseDef->m_FasterCastRecovery;
 	m_LowerManaCost = pBaseDef->m_LowerManaCost;
 	m_LowerReagentCost = pBaseDef->m_LowerReagentCost;
-	m_Height = pBaseDef->m_Height;
+	m_EnhancePotions = pBaseDef->m_EnhancePotions;
+	m_NightSight = pBaseDef->m_NightSight;
 	m_Can = pBaseDef->m_Can;
-	SetDefNum("RANGE", pBaseDef->GetDefNum("RANGE"));	//m_range = pBaseDef->m_range
+	m_Height = pBaseDef->m_Height;
 	m_ResLevel = pBaseDef->m_ResLevel;
-	m_ResDispDnHue = pBaseDef->m_ResDispDnHue;
 	m_ResDispDnId = pBaseDef->m_ResDispDnId;
-	//m_BaseResources = pBaseDef->m_BaseResources;	// items might not want this
+	m_ResDispDnHue = pBaseDef->m_ResDispDnHue;
 }
 
 void CBaseBaseDef::CopyTransfer(CBaseBaseDef *pBaseDef)
@@ -140,7 +144,6 @@ bool CBaseBaseDef::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc
 		case OBC_DAMCHAOS:
 		case OBC_DAMDIRECT:
 		case OBC_DECREASEHITCHANCE:
-		case OBC_ENHANCEPOTIONS:
 		case OBC_EXPANSION:
 		case OBC_HITLEECHLIFE:
 		case OBC_HITLEECHMANA:
@@ -148,7 +151,6 @@ bool CBaseBaseDef::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc
 		case OBC_HITMANADRAIN:
 		case OBC_LOWERREQ:
 		case OBC_NAMELOC:
-		case OBC_NIGHTSIGHT:
 		case OBC_REFLECTPHYSICALDAM:
 		case OBC_REGENFOOD:
 		case OBC_REGENHITS:
@@ -216,6 +218,9 @@ bool CBaseBaseDef::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc
 		case OBC_DEFNAME:
 			sVal = GetResourceName();
 			break;
+		case OBC_ENHANCEPOTIONS:
+			sVal.FormatVal(m_EnhancePotions);
+			break;
 		case OBC_FASTERCASTING:
 			sVal.FormatVal(m_FasterCasting);
 			break;
@@ -257,6 +262,9 @@ bool CBaseBaseDef::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc
 			break;
 		case OBC_NAME:
 			sVal = GetName();
+			break;
+		case OBC_NIGHTSIGHT:
+			sVal.FormatVal(m_NightSight);
 			break;
 		case OBC_RANGE:
 			if ( GetRangeH() == 0 )
@@ -390,7 +398,6 @@ bool CBaseBaseDef::r_LoadVal(CScript &s)
 		case OBC_DAMCHAOS:
 		case OBC_DAMDIRECT:
 		case OBC_DECREASEHITCHANCE:
-		case OBC_ENHANCEPOTIONS:
 		case OBC_EXPANSION:
 		case OBC_HITLEECHLIFE:
 		case OBC_HITLEECHMANA:
@@ -398,7 +405,6 @@ bool CBaseBaseDef::r_LoadVal(CScript &s)
 		case OBC_HITMANADRAIN:
 		case OBC_LOWERREQ:
 		case OBC_NAMELOC:
-		case OBC_NIGHTSIGHT:
 		case OBC_REFLECTPHYSICALDAM:
 		case OBC_REGENFOOD:
 		case OBC_REGENHITS:
@@ -469,6 +475,9 @@ bool CBaseBaseDef::r_LoadVal(CScript &s)
 		case OBC_DEFNAME:
 		case OBC_DEFNAME2:
 			return SetResourceName(s.GetArgStr());
+		case OBC_ENHANCEPOTIONS:
+			m_EnhancePotions = static_cast<int>(s.GetArgVal());
+			return true;
 		case OBC_FASTERCASTING:
 			m_FasterCasting = static_cast<int>(s.GetArgVal());
 			return true;
@@ -509,6 +518,9 @@ bool CBaseBaseDef::r_LoadVal(CScript &s)
 			return true;
 		case OBC_NAME:
 			SetTypeName(s.GetArgStr());
+			return true;
+		case OBC_NIGHTSIGHT:
+			m_NightSight = static_cast<int>(s.GetArgVal());
 			return true;
 		case OBC_RANGE:
 		{

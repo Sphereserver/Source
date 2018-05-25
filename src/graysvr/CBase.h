@@ -120,6 +120,8 @@ public:
 	int m_FasterCastRecovery;
 	int m_LowerManaCost;
 	int m_LowerReagentCost;
+	int m_EnhancePotions;
+	int m_NightSight;
 
 	DWORD m_Can;
 

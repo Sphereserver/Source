@@ -13,6 +13,16 @@ CItemBase::CItemBase(ITEMID_TYPE id) : CBaseBaseDef(RESOURCE_ID(RES_ITEMDEF, id)
 	m_layer = LAYER_NONE;
 	m_CanUse = CAN_U_ALL;
 
+	m_StrengthBonus = 0;
+	m_DexterityBonus = 0;
+	m_IntelligenceBonus = 0;
+	m_HitpointIncrease = 0;
+	m_StaminaIncrease = 0;
+	m_ManaIncrease = 0;
+	m_SpellChanneling = 0;
+	m_LowerRequirements = 0;
+	m_UseBestWeaponSkill = 0;
+
 	m_ttNormal.m_tData1 = 0;
 	m_ttNormal.m_tData2 = 0;
 	m_ttNormal.m_tData3 = 0;
@@ -826,7 +836,6 @@ bool CItemBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal = GetDefStr(pszKey);
 			break;
 		// Return as decimal number (0 if not set)
-		case IBC_USEBESTWEAPONSKILL:
 		case IBC_BONUSSKILL1AMT:
 		case IBC_BONUSSKILL2AMT:
 		case IBC_BONUSSKILL3AMT:
@@ -839,12 +848,6 @@ bool CItemBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case IBC_SELFREPAIR:
 		case IBC_USESCUR:
 		case IBC_USESMAX:
-		case IBC_BONUSSTR:
-		case IBC_BONUSDEX:
-		case IBC_BONUSINT:
-		case IBC_BONUSHITS:
-		case IBC_BONUSSTAM:
-		case IBC_BONUSMANA:
 		case IBC_BONUSHITSMAX:
 		case IBC_BONUSSTAMMAX:
 		case IBC_BONUSMANAMAX:
@@ -910,6 +913,33 @@ bool CItemBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal = pszTemp;
 			break;
 		}
+		case IBC_BONUSSTR:
+			sVal.FormatVal(m_StrengthBonus);
+			break;
+		case IBC_BONUSDEX:
+			sVal.FormatVal(m_DexterityBonus);
+			break;
+		case IBC_BONUSINT:
+			sVal.FormatVal(m_IntelligenceBonus);
+			break;
+		case IBC_BONUSHITS:
+			sVal.FormatVal(m_HitpointIncrease);
+			break;
+		case IBC_BONUSSTAM:
+			sVal.FormatVal(m_StaminaIncrease);
+			break;
+		case IBC_BONUSMANA:
+			sVal.FormatVal(m_ManaIncrease);
+			break;
+		case IBC_SPELLCHANNELING:
+			sVal.FormatVal(m_SpellChanneling);
+			break;
+		case IBC_LOWERREQ:
+			sVal.FormatVal(m_LowerRequirements);
+			break;
+		case IBC_USEBESTWEAPONSKILL:
+			sVal.FormatVal(m_UseBestWeaponSkill);
+			break;
 		case IBC_CANUSE:
 			sVal.FormatHex(m_CanUse);
 			break;
@@ -1129,7 +1159,6 @@ bool CItemBase::r_LoadVal(CScript &s)
 			break;
 		}
 		// Set as numeric
-		case IBC_USEBESTWEAPONSKILL:
 		case IBC_BONUSSKILL1AMT:
 		case IBC_BONUSSKILL2AMT:
 		case IBC_BONUSSKILL3AMT:
@@ -1142,12 +1171,6 @@ bool CItemBase::r_LoadVal(CScript &s)
 		case IBC_SELFREPAIR:
 		case IBC_USESCUR:
 		case IBC_USESMAX:
-		case IBC_BONUSSTR:
-		case IBC_BONUSDEX:
-		case IBC_BONUSINT:
-		case IBC_BONUSHITS:
-		case IBC_BONUSSTAM:
-		case IBC_BONUSMANA:
 		case IBC_BONUSHITSMAX:
 		case IBC_BONUSSTAMMAX:
 		case IBC_BONUSMANAMAX:
@@ -1202,6 +1225,33 @@ bool CItemBase::r_LoadVal(CScript &s)
 			}
 			break;
 		}
+		case IBC_BONUSSTR:
+			m_StrengthBonus = static_cast<int>(s.GetArgVal());
+			break;
+		case IBC_BONUSDEX:
+			m_DexterityBonus = static_cast<int>(s.GetArgVal());
+			break;
+		case IBC_BONUSINT:
+			m_IntelligenceBonus = static_cast<int>(s.GetArgVal());
+			break;
+		case IBC_BONUSHITS:
+			m_HitpointIncrease = static_cast<int>(s.GetArgVal());
+			break;
+		case IBC_BONUSSTAM:
+			m_StaminaIncrease = static_cast<int>(s.GetArgVal());
+			break;
+		case IBC_BONUSMANA:
+			m_ManaIncrease = static_cast<int>(s.GetArgVal());
+			break;
+		case IBC_SPELLCHANNELING:
+			m_SpellChanneling = static_cast<int>(s.GetArgVal());
+			break;
+		case IBC_LOWERREQ:
+			m_LowerRequirements = static_cast<int>(s.GetArgVal());
+			break;
+		case IBC_USEBESTWEAPONSKILL:
+			m_UseBestWeaponSkill = static_cast<int>(s.GetArgVal());
+			break;
 		case IBC_CANUSE:
 			m_CanUse = s.GetArgVal();
 			break;

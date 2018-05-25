@@ -690,14 +690,12 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case OC_DAMCHAOS:
 		case OC_DAMDIRECT:
 		case OC_DECREASEHITCHANCE:
-		case OC_ENHANCEPOTIONS:
 		case OC_EXPANSION:
 		case OC_HITLEECHLIFE:
 		case OC_HITLEECHMANA:
 		case OC_HITLEECHSTAM:
 		case OC_HITMANADRAIN:
 		case OC_LOWERREQ:
-		case OC_NIGHTSIGHT:
 		case OC_REFLECTPHYSICALDAM:
 		case OC_REGENFOOD:
 		case OC_REGENHITS:
@@ -798,6 +796,12 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			break;
 		case OC_LOWERREAGENTCOST:
 			sVal.FormatVal(m_LowerReagentCost);
+			break;
+		case OC_ENHANCEPOTIONS:
+			sVal.FormatVal(m_EnhancePotions);
+			break;
+		case OC_NIGHTSIGHT:
+			sVal.FormatVal(m_NightSight);
 			break;
 		case OC_RANGE:
 		{
@@ -1470,14 +1474,12 @@ bool CObjBase::r_LoadVal(CScript &s)
 		case OC_DAMCHAOS:
 		case OC_DAMDIRECT:
 		case OC_DECREASEHITCHANCE:
-		case OC_ENHANCEPOTIONS:
 		case OC_EXPANSION:
 		case OC_HITLEECHLIFE:
 		case OC_HITLEECHMANA:
 		case OC_HITLEECHSTAM:
 		case OC_HITMANADRAIN:
 		case OC_LOWERREQ:
-		case OC_NIGHTSIGHT:
 		case OC_REFLECTPHYSICALDAM:
 		case OC_SPELLCHANNELING:
 		case OC_NAMELOC:
@@ -1573,6 +1575,12 @@ bool CObjBase::r_LoadVal(CScript &s)
 		case OC_LOWERREAGENTCOST:
 			m_LowerReagentCost = static_cast<int>(s.GetArgVal());
 			bUpdateClientStats = true;
+			break;
+		case OC_ENHANCEPOTIONS:
+			m_EnhancePotions = static_cast<int>(s.GetArgVal());
+			break;
+		case OC_NIGHTSIGHT:
+			m_NightSight = static_cast<int>(s.GetArgVal());
 			break;
 		case OC_WEIGHTREDUCTION:
 		{
@@ -1829,6 +1837,10 @@ void CObjBase::r_Write(CScript &s)
 		s.WriteKeyVal("LOWERMANACOST", m_LowerManaCost);
 	if ( m_LowerReagentCost != pBaseDef->m_LowerReagentCost )
 		s.WriteKeyVal("LOWERREAGENTCOST", m_LowerReagentCost);
+	if ( m_EnhancePotions != pBaseDef->m_EnhancePotions )
+		s.WriteKeyVal("ENHANCEPOTIONS", m_EnhancePotions);
+	if ( m_NightSight != pBaseDef->m_NightSight )
+		s.WriteKeyVal("NIGHTSIGHT", m_NightSight);
 
 	m_BaseDefs.r_WritePrefix(s);	// new variable storage system
 	m_TagDefs.r_WritePrefix(s, "TAG");

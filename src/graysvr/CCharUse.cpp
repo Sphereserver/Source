@@ -887,12 +887,7 @@ bool CChar::Use_Drink(CItem *pItem)
 		}
 
 		// Convey the effect of the potion.
-		int iSkillQuality = pItem->m_itPotion.m_skillquality;
-
-		CVarDefCont *pVar = GetDefKey("EnhancePotions", true);
-		if ( pVar )
-			iSkillQuality += IMULDIV(iSkillQuality, pVar->GetValNum(), 100);
-
+		int iSkillQuality = pItem->m_itPotion.m_skillquality * (100 + m_EnhancePotions) / 100;
 		OnSpellEffect(static_cast<SPELL_TYPE>(RES_GET_INDEX(pItem->m_itPotion.m_Type)), this, iSkillQuality, pItem);
 
 		// Give me the marker that i've used a potion.

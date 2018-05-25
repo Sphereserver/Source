@@ -480,33 +480,19 @@ void CChar::OnRemoveOb(CGObListRec *pObRec)	// override this = called when remov
 				pItem->SetDefNum("HitLeechLife", pItem->GetDefNum("HitLeechLife") - pCursedMemory->m_itSpell.m_spelllevel, true);
 		}
 
-		int iStrengthBonus = static_cast<int>(pItem->GetDefNum("BONUSSTR", true));
-		if ( iStrengthBonus != 0 )
-			Stat_SetMod(STAT_STR, Stat_GetMod(STAT_STR) - iStrengthBonus);
+		if ( pItem->m_StrengthBonus != 0 )
+			Stat_SetMod(STAT_STR, Stat_GetMod(STAT_STR) - pItem->m_StrengthBonus);
+		if ( pItem->m_DexterityBonus != 0 )
+			Stat_SetMod(STAT_DEX, Stat_GetMod(STAT_DEX) - pItem->m_DexterityBonus);
+		if ( pItem->m_IntelligenceBonus != 0 )
+			Stat_SetMod(STAT_INT, Stat_GetMod(STAT_INT) - pItem->m_IntelligenceBonus);
 
-		int iDexterityBonus = static_cast<int>(pItem->GetDefNum("BONUSDEX", true));
-		if ( iDexterityBonus != 0 )
-			Stat_SetMod(STAT_DEX, Stat_GetMod(STAT_DEX) - iDexterityBonus);
-
-		int iIntelligenceBonus = static_cast<int>(pItem->GetDefNum("BONUSINT", true));
-		if ( iIntelligenceBonus != 0 )
-			Stat_SetMod(STAT_INT, Stat_GetMod(STAT_INT) - iIntelligenceBonus);
-
-		int iHitpointIncrease = static_cast<int>(pItem->GetDefNum("BONUSHITS", true));
-		if ( iHitpointIncrease != 0 )
-			Stat_SetMax(STAT_STR, Stat_GetMax(STAT_STR) - iHitpointIncrease);
-
-		int iStaminaIncrease = static_cast<int>(pItem->GetDefNum("BONUSSTAM", true));
-		if ( iStaminaIncrease != 0 )
-			Stat_SetMax(STAT_DEX, Stat_GetMax(STAT_DEX) - iStaminaIncrease);
-
-		int iManaIncrease = static_cast<int>(pItem->GetDefNum("BONUSMANA", true));
-		if ( iManaIncrease != 0 )
-			Stat_SetMax(STAT_INT, Stat_GetMax(STAT_INT) - iManaIncrease);
-
-		INT64 iEnhancePotions = pItem->GetDefNum("ENHANCEPOTIONS", true);
-		if ( iEnhancePotions != 0 )
-			SetDefNum("ENHANCEPOTIONS", GetDefNum("ENHANCEPOTIONS") - iEnhancePotions);
+		if ( pItem->m_HitpointIncrease != 0 )
+			Stat_SetMax(STAT_STR, Stat_GetMax(STAT_STR) - pItem->m_HitpointIncrease);
+		if ( pItem->m_StaminaIncrease != 0 )
+			Stat_SetMax(STAT_DEX, Stat_GetMax(STAT_DEX) - pItem->m_StaminaIncrease);
+		if ( pItem->m_ManaIncrease != 0 )
+			Stat_SetMax(STAT_INT, Stat_GetMax(STAT_INT) - pItem->m_ManaIncrease);
 
 		m_Luck -= pItem->m_Luck;
 		m_DamIncrease -= pItem->m_DamIncrease;
@@ -519,14 +505,19 @@ void CChar::OnRemoveOb(CGObListRec *pObRec)	// override this = called when remov
 		m_FasterCastRecovery -= pItem->m_FasterCastRecovery;
 		m_LowerManaCost -= pItem->m_LowerManaCost;
 		m_LowerReagentCost -= pItem->m_LowerReagentCost;
+		m_EnhancePotions -= pItem->m_EnhancePotions;
 
-		if ( pItem->GetDefNum("NIGHTSIGHT", true) )
+		if ( pItem->m_NightSight )
 		{
-			StatFlag_Mod(STATF_NightSight, 0);
-			if ( m_pClient )
+			m_NightSight -= pItem->m_NightSight;
+			if ( !m_NightSight )
 			{
-				m_pClient->addLight();
-				m_pClient->removeBuff(BI_NIGHTSIGHT);
+				StatFlag_Mod(STATF_NightSight, 0);
+				if ( m_pClient )
+				{
+					m_pClient->addLight();
+					m_pClient->removeBuff(BI_NIGHTSIGHT);
+				}
 			}
 		}
 
@@ -1881,33 +1872,19 @@ bool CChar::ItemEquip(CItem *pItem, CChar *pCharMsg, bool fFromDClick)
 			pItem->SetDefNum("HitLeechLife", pItem->GetDefNum("HitLeechLife") + pCursedMemory->m_itSpell.m_spelllevel, true);
 	}
 
-	int iStrengthBonus = static_cast<int>(pItem->GetDefNum("BONUSSTR", true));
-	if ( iStrengthBonus != 0 )
-		Stat_SetMod(STAT_STR, Stat_GetMod(STAT_STR) + iStrengthBonus);
+	if ( pItem->m_StrengthBonus != 0 )
+		Stat_SetMod(STAT_STR, Stat_GetMod(STAT_STR) + pItem->m_StrengthBonus);
+	if ( pItem->m_DexterityBonus != 0 )
+		Stat_SetMod(STAT_DEX, Stat_GetMod(STAT_DEX) + pItem->m_DexterityBonus);
+	if ( pItem->m_IntelligenceBonus != 0 )
+		Stat_SetMod(STAT_INT, Stat_GetMod(STAT_INT) + pItem->m_IntelligenceBonus);
 
-	int iDexterityBonus = static_cast<int>(pItem->GetDefNum("BONUSDEX", true));
-	if ( iDexterityBonus != 0 )
-		Stat_SetMod(STAT_DEX, Stat_GetMod(STAT_DEX) + iDexterityBonus);
-
-	int iIntelligenceBonus = static_cast<int>(pItem->GetDefNum("BONUSINT", true));
-	if ( iIntelligenceBonus != 0 )
-		Stat_SetMod(STAT_INT, Stat_GetMod(STAT_INT) + iIntelligenceBonus);
-
-	int iHitpointIncrease = static_cast<int>(pItem->GetDefNum("BONUSHITS", true));
-	if ( iHitpointIncrease != 0 )
-		Stat_SetMax(STAT_STR, Stat_GetMax(STAT_STR) + iHitpointIncrease);
-
-	int iStaminaIncrease = static_cast<int>(pItem->GetDefNum("BONUSSTAM", true));
-	if ( iStaminaIncrease != 0 )
-		Stat_SetMax(STAT_DEX, Stat_GetMax(STAT_DEX) + iStaminaIncrease);
-
-	int iManaIncrease = static_cast<int>(pItem->GetDefNum("BONUSMANA", true));
-	if ( iManaIncrease != 0 )
-		Stat_SetMax(STAT_INT, Stat_GetMax(STAT_INT) + iManaIncrease);
-
-	INT64 iEnhancePotions = pItem->GetDefNum("ENHANCEPOTIONS", true);
-	if ( iEnhancePotions != 0 )
-		SetDefNum("ENHANCEPOTIONS", GetDefNum("ENHANCEPOTIONS") + iEnhancePotions);
+	if ( pItem->m_HitpointIncrease != 0 )
+		Stat_SetMax(STAT_STR, Stat_GetMax(STAT_STR) + pItem->m_HitpointIncrease);
+	if ( pItem->m_StaminaIncrease != 0 )
+		Stat_SetMax(STAT_DEX, Stat_GetMax(STAT_DEX) + pItem->m_StaminaIncrease);
+	if ( pItem->m_ManaIncrease != 0 )
+		Stat_SetMax(STAT_INT, Stat_GetMax(STAT_INT) + pItem->m_ManaIncrease);
 
 	m_Luck += pItem->m_Luck;
 	m_DamIncrease += pItem->m_DamIncrease;
@@ -1920,15 +1897,20 @@ bool CChar::ItemEquip(CItem *pItem, CChar *pCharMsg, bool fFromDClick)
 	m_FasterCastRecovery += pItem->m_FasterCastRecovery;
 	m_LowerManaCost += pItem->m_LowerManaCost;
 	m_LowerReagentCost += pItem->m_LowerReagentCost;
+	m_EnhancePotions += pItem->m_EnhancePotions;
 
-	if ( pItem->GetDefNum("NIGHTSIGHT", true) )
+	if ( pItem->m_NightSight )
 	{
-		StatFlag_Mod(STATF_NightSight, 1);
-		if ( m_pClient )
+		if ( !m_NightSight )
 		{
-			m_pClient->addLight();
-			m_pClient->addBuff(BI_NIGHTSIGHT, 1075643, 1075644);
+			StatFlag_Mod(STATF_NightSight, 1);
+			if ( m_pClient )
+			{
+				m_pClient->addLight();
+				m_pClient->addBuff(BI_NIGHTSIGHT, 1075643, 1075644);
+			}
 		}
+		m_NightSight += pItem->m_NightSight;
 	}
 
 	return true;

@@ -241,6 +241,16 @@ public:
 	CResourceQtyArray m_SkillMake;
 	DWORD m_CanUse;
 
+	int m_StrengthBonus;
+	int m_DexterityBonus;
+	int m_IntelligenceBonus;
+	int m_HitpointIncrease;
+	int m_StaminaIncrease;
+	int m_ManaIncrease;
+	int m_SpellChanneling;
+	int m_LowerRequirements;
+	int m_UseBestWeaponSkill;
+
 	union
 	{
 		// IT_NORMAL
