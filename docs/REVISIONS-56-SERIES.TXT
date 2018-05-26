@@ -1084,3 +1084,6 @@ Fixed: Console error when TradeWindowSnooping=0 is set on sphere.ini.
 [items/sphere_item_building_floors.scp]: Updated some floors DEFNAMEs
 [items/sphere_item_deco_virtues.scp]: Removed duplicated DEFNAMEs
 [sphere_backward_compatibility.scp]: Updated doors/floors ITEMDEFs on backward compatibility list
+
+25-05-2018, Coruja
+Fixed: Lumberjacking skill not working correctly.

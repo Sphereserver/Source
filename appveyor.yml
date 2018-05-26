@@ -35,7 +35,7 @@ for:
     after_build:
       - sh: mkdir accounts logs save scripts
       - sh: tar -czvf SphereSvr-Linux32.tar.gz accounts/ logs/ save/ scripts/ spheresvr -C src/ sphere.ini sphereCrypt.ini
-      - echo "set ssl:verify-certificate no" >> ~/.lftprc
+      - sh: echo "set ssl:verify-certificate no" >> ~/.lftprc
     artifacts:
       - path: SphereSvr-Linux32.tar.gz
         name: SphereSvr

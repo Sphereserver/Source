@@ -1766,7 +1766,7 @@ bool CClient::OnTarg_Use_Item(CObjBase *pObjTarg, CPointMap &pt, ITEMID_TYPE id)
 				}
 				break;
 			}
-			else if ( pItemTarg )
+			else
 			{
 				switch ( m_pChar->CanTouchStatic(pt, id, pItemTarg) )
 				{
