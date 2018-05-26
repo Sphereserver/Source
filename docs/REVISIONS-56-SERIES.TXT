@@ -1087,3 +1087,6 @@ Fixed: Console error when TradeWindowSnooping=0 is set on sphere.ini.
 
 25-05-2018, Coruja
 Fixed: Lumberjacking skill not working correctly.
+
+26-05-2018, Coruja
+Fixed: Sphere crash when call GOLD/NEWGOLD function with args > 65535.
