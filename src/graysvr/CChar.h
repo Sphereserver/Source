@@ -714,8 +714,8 @@ public:
 	bool CanSeeInContainer(const CItemContainer *pContItem) const;
 	bool CanSee(const CObjBaseTemplate *pObj) const;
 	inline bool CanSeeLOS_New_Failed(CPointMap *pptBlock, CPointMap &ptNow) const;
-	bool CanSeeLOS_New(const CPointMap &ptDst, CPointMap *pptBlock = NULL, int iMaxDist = UO_MAP_VIEW_SIGHT, WORD wFlags = 0) const;
-	bool CanSeeLOS(const CPointMap &pd, CPointMap *pptBlock = NULL, int iMaxDist = UO_MAP_VIEW_SIGHT, WORD wFlags = 0) const;
+	bool CanSeeLOS_Adv(const CPointMap &ptDst, CPointMap *pptBlock = NULL, int iMaxDist = UO_MAP_VIEW_SIGHT, WORD wFlags = 0) const;
+	bool CanSeeLOS(const CPointMap &ptDst, CPointMap *pptBlock = NULL, int iMaxDist = UO_MAP_VIEW_SIGHT, WORD wFlags = 0) const;
 	bool CanSeeLOS(const CObjBaseTemplate *pObj, WORD wFlags = 0) const;
 
 	#define LOS_NB_LOCAL_TERRAIN	0x0001	// Terrain inside a region I am standing in does not block LOS
@@ -801,11 +801,11 @@ private:
 	bool TeleportToCli(int iType, int iArgs);
 	bool TeleportToObj(int iType, TCHAR *pszArgs);
 
-	CRegionBase *CheckValidMove(CPointBase &ptDest, DWORD *pdwBlockFlags, DIR_TYPE dir, height_t *pClimbHeight, bool fPathFinding = false) const;
+	CRegionBase *CheckValidMove(CPointBase &ptDst, DWORD *pdwBlockFlags, DIR_TYPE dir, height_t *pClimbHeight, bool fPathFinding = false) const;
 	void FixClimbHeight();
 	bool MoveToRegion(CRegionWorld *pNewArea, bool fAllowReject);
 	bool MoveToRoom(CRegionBase *pNewRoom, bool fAllowReject);
-	bool IsVerticalSpace(CPointMap ptDest, bool fForceMount = false);
+	bool IsVerticalSpace(CPointMap ptDst, bool fForceMount = false);
 
 public:
 	CChar *GetNext() const
@@ -861,7 +861,7 @@ public:
 	bool SetPlayerAccount(CAccount *pAccount);
 	bool SetPlayerAccount(LPCTSTR pszAccName);
 	bool SetNPCBrain(NPCBRAIN_TYPE NPCBrain);
-	NPCBRAIN_TYPE GetNPCBrain(bool bGroupTypes = true) const;
+	NPCBRAIN_TYPE GetNPCBrain(bool fGroupTypes = true) const;
 	void ClearNPC();
 	void ClearPlayer();
 
@@ -1287,7 +1287,7 @@ public:
 	bool SetPoison(int iSkill, int iTicks, CChar *pCharSrc);
 	bool SetPoisonCure(int iSkill, bool fExtra);
 	bool CheckCorpseCrime(const CItemCorpse *pCorpse, bool fLooting, bool fTest);
-	CItemCorpse *FindMyCorpse(bool ignoreLOS = false, int iRadius = 2) const;
+	CItemCorpse *FindMyCorpse(bool fIgnoreLOS = false, int iRadius = 2) const;
 	CItemCorpse *MakeCorpse(bool fFrontFall);
 	bool RaiseCorpse(CItemCorpse *pCorpse);
 	bool Death();
