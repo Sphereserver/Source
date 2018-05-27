@@ -523,9 +523,8 @@ bool CChar::NPC_OnTrainPay(CChar *pCharSrc, CItemMemory *pMemory, CItem * pGold)
 		return false;
 	}
 
-	WORD wTrainCost = static_cast<WORD>(GetKeyNum("OVERRIDE.TRAINSKILLCOST"));
-	if ( !wTrainCost )
-		wTrainCost = g_Cfg.m_iTrainSkillCost;
+	CVarDefCont *pVar = GetKey("OVERRIDE.TRAINSKILLCOST", false);
+	WORD wTrainCost = pVar ? pVar->GetValNum() : g_Cfg.m_iTrainSkillCost;
 
 	wTrainCost *= NPC_OnTrainCheck(pCharSrc, skill);
 	if ( (wTrainCost <= 0) || !pGold )
@@ -618,9 +617,8 @@ bool CChar::NPC_OnTrainHear( CChar * pCharSrc, LPCTSTR pszCmd )
 	// Did they mention a skill name i recognize ?
 	TemporaryString pszMsg;
 
-	DWORD dwTrainCost = static_cast<DWORD>(GetKeyNum("OVERRIDE.TRAINSKILLCOST"));
-	if ( !dwTrainCost )
-		dwTrainCost = g_Cfg.m_iTrainSkillCost;
+	CVarDefCont *pVar = GetKey("OVERRIDE.TRAINSKILLCOST", false);
+	WORD wTrainCost = pVar ? pVar->GetValNum() : g_Cfg.m_iTrainSkillCost;
 
 	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 	{
@@ -631,11 +629,11 @@ bool CChar::NPC_OnTrainHear( CChar * pCharSrc, LPCTSTR pszCmd )
 		if ( FindStrWord(pszCmd, pszSkillKey) <= 0 )
 			continue;
 
-		dwTrainCost *= NPC_OnTrainCheck(pCharSrc, static_cast<SKILL_TYPE>(i));
-		if ( dwTrainCost <= 0 )
+		wTrainCost *= NPC_OnTrainCheck(pCharSrc, static_cast<SKILL_TYPE>(i));
+		if ( wTrainCost <= 0 )
 			return true;
 
-		sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_PRICE), static_cast<int>(dwTrainCost), pszSkillKey);
+		sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_PRICE), static_cast<int>(wTrainCost), pszSkillKey);
 		Speak(pszMsg);
 		CItemMemory * pMemory = Memory_AddObjTypes( pCharSrc, MEMORY_SPEAK );
 		if ( pMemory )

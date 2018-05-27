@@ -4,8 +4,8 @@
 #include "graysvr.h"	// predef header.
 #include "../network/send.h"
 
-//***************************************************************************
-// -CContainer
+///////////////////////////////////////////////////////////
+// CContainer
 
 void CContainer::OnWeightChange(int iChange)
 {
@@ -68,7 +68,7 @@ void CContainer::OnRemoveOb(CGObListRec *pObRec)	// override this = called when 
 	ASSERT(pItem);
 
 	CGObList::OnRemoveOb(pItem);
-	ASSERT(pItem->GetParent() == NULL);
+	ASSERT(!pItem->GetParent());
 
 	pItem->SetContainerFlags(UID_O_DISCONNECT);		// it is no place for the moment
 	OnWeightChange(-pItem->GetWeight());
@@ -223,7 +223,7 @@ bool CContainer::ContentFindKeyFor(CItem *pLocked) const
 {
 	ADDTOCALLSTACK("CContainer::ContentFindKeyFor");
 	// Look for the key that fits this in my possesion.
-	return (pLocked->m_itContainer.m_lockUID && (ContentFind(RESOURCE_ID(RES_TYPEDEF, IT_KEY), pLocked->m_itContainer.m_lockUID) != NULL));
+	return (pLocked->m_itContainer.m_lockUID && ContentFind(RESOURCE_ID(RES_TYPEDEF, IT_KEY), pLocked->m_itContainer.m_lockUID));
 }
 
 DWORD CContainer::ContentConsume(RESOURCE_ID_BASE rid, DWORD dwQty, bool fTest, DWORD dwArg)
@@ -541,8 +541,8 @@ bool CContainer::r_WriteValContainer(LPCTSTR pszKey, CGString &sVal, CTextConsol
 	return false;
 }
 
-//----------------------------------------------------
-// -CItemContainer
+///////////////////////////////////////////////////////////
+// CItemContainer
 
 bool CItemContainer::NotifyDelete()
 {
@@ -592,7 +592,7 @@ bool CItemContainer::IsItemInTrade() const
 	return IsType(IT_EQ_TRADE_WINDOW);
 }
 
-void CItemContainer::Trade_Status(bool bCheck)
+void CItemContainer::Trade_Status(bool fCheck)
 {
 	ADDTOCALLSTACK("CItemContainer::Trade_Status");
 	// Update trade status check boxes to both sides
@@ -607,8 +607,8 @@ void CItemContainer::Trade_Status(bool bCheck)
 	if ( !pChar2 || !pChar2->m_pClient )
 		return;
 
-	m_itEqTradeWindow.m_bCheck = bCheck ? 1 : 0;
-	if ( !bCheck )
+	m_itEqTradeWindow.m_bCheck = fCheck ? 1 : 0;
+	if ( !fCheck )
 		pPartner->m_itEqTradeWindow.m_bCheck = 0;
 
 	PacketTradeAction cmd(SECURE_TRADE_CHANGE);
@@ -625,7 +625,7 @@ void CItemContainer::Trade_Status(bool bCheck)
 	if ( IsTrigUsed(TRIGGER_TRADEACCEPTED) || IsTrigUsed(TRIGGER_CHARTRADEACCEPTED) )
 	{
 		CScriptTriggerArgs Args1(pChar1);
-		unsigned short i = 1;
+		WORD i = 1;
 		for ( CItem *pItem = pPartner->GetContentHead(); pItem != NULL; pItem = pItem->GetNext(), i++ )
 			Args1.m_VarObjs.Insert(i, pItem, true);
 		Args1.m_iN1 = --i;
@@ -717,8 +717,8 @@ void CItemContainer::Trade_UpdateGold(DWORD dwPlatinum, DWORD dwGold)
 	if ( !pChar2 || !pChar2->m_pClient )
 		return;
 
-	bool bUpdateChar1 = false;
-	bool bUpdateChar2 = pChar2->m_pClient->m_NetState->isClientVersion(MINCLIVER_TOL);
+	bool fUpdateChar1 = false;
+	bool fUpdateChar2 = pChar2->m_pClient->m_NetState->isClientVersion(MINCLIVER_TOL);
 
 	// To prevent cheating, check if the char really have these gold/platinum values
 	UINT64 iMaxValue = pChar1->m_virtualGold;
@@ -726,7 +726,7 @@ void CItemContainer::Trade_UpdateGold(DWORD dwPlatinum, DWORD dwGold)
 	{
 		dwGold = static_cast<DWORD>(iMaxValue % 1000000000);
 		dwPlatinum = static_cast<DWORD>(iMaxValue / 1000000000);
-		bUpdateChar1 = true;
+		fUpdateChar1 = true;
 	}
 
 	m_itEqTradeWindow.m_iGold = dwGold;
@@ -734,9 +734,9 @@ void CItemContainer::Trade_UpdateGold(DWORD dwPlatinum, DWORD dwGold)
 
 	PacketTradeAction cmd(SECURE_TRADE_UPDATEGOLD);
 	cmd.prepareUpdateGold(this, dwGold, dwPlatinum);
-	if ( bUpdateChar1 )
+	if ( fUpdateChar1 )
 		cmd.send(pChar1->m_pClient);
-	if ( bUpdateChar2 )
+	if ( fUpdateChar2 )
 		cmd.send(pChar2->m_pClient);
 }
 
@@ -795,23 +795,22 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 	// Check for custom values in TDATA3/TDATA4
 	if ( pItemDef->m_ttContainer.m_dwMaxXY )
 	{
-		int tmp_MinX = (pItemDef->m_ttContainer.m_dwMinXY & 0xFFFF0000) >> 16;
-		int tmp_MinY = (pItemDef->m_ttContainer.m_dwMinXY & 0xFFFF);
-		int tmp_MaxX = (pItemDef->m_ttContainer.m_dwMaxXY & 0xFFFF0000) >> 16;
-		int tmp_MaxY = (pItemDef->m_ttContainer.m_dwMaxXY & 0xFFFF);
+		int iMinX = (pItemDef->m_ttContainer.m_dwMinXY & 0xFFFF0000) >> 16;
+		int iMinY = (pItemDef->m_ttContainer.m_dwMinXY & 0xFFFF);
+		int iMaxX = (pItemDef->m_ttContainer.m_dwMaxXY & 0xFFFF0000) >> 16;
+		int iMaxY = (pItemDef->m_ttContainer.m_dwMaxXY & 0xFFFF);
 		DEBUG_WARN(("Custom container gump id %d for item 0%x\n", gump, GetDispID()));
-		return CPointMap(static_cast<WORD>(Calc_GetRandVal2(tmp_MinX, tmp_MaxX)), static_cast<WORD>(Calc_GetRandVal2(tmp_MinY, tmp_MaxY)));
+		return CPointMap(static_cast<WORD>(Calc_GetRandVal2(iMinX, iMaxX)), static_cast<WORD>(Calc_GetRandVal2(iMinY, iMaxY)));
 	}
 
 	static const struct		// we can probably get this from MUL file some place
 	{
 		GUMP_TYPE m_gump;
-		WORD m_minx;
-		WORD m_miny;
-		WORD m_maxx;
-		WORD m_maxy;
+		WORD m_minX;
+		WORD m_minY;
+		WORD m_maxX;
+		WORD m_maxY;
 	}
-
 	sm_ContainerRect[] =
 	{
 		{ GUMP_SCROLL, 30, 30, 270, 170 },
@@ -884,7 +883,7 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 	{
 		if ( gump != sm_ContainerRect[i].m_gump )
 			continue;
-		return CPointMap(static_cast<WORD>(Calc_GetRandVal2(sm_ContainerRect[i].m_minx, sm_ContainerRect[i].m_maxx)), static_cast<WORD>(Calc_GetRandVal2(sm_ContainerRect[i].m_miny, sm_ContainerRect[i].m_maxy)));
+		return CPointMap(static_cast<WORD>(Calc_GetRandVal2(sm_ContainerRect[i].m_minX, sm_ContainerRect[i].m_maxX)), static_cast<WORD>(Calc_GetRandVal2(sm_ContainerRect[i].m_minY, sm_ContainerRect[i].m_maxY)));
 	}
 
 	DEBUG_WARN(("Unknown container gump id %d for item 0%x\n", gump, GetDispID()));
@@ -966,32 +965,32 @@ void CItemContainer::ContentAdd(CItem *pItem, CPointMap pt, BYTE gridIndex)
 	}
 
 	// Check if the grid index is already in use
-	bool bValidGrid = true;
+	bool fValidGrid = true;
 	for ( CItem *pTry = GetContentHead(); pTry != NULL; pTry = pTry->GetNext() )
 	{
 		if ( pTry->GetContainedGridIndex() == gridIndex )
 		{
-			bValidGrid = false;
+			fValidGrid = false;
 			break;
 		}
 	}
 
-	if ( !bValidGrid )
+	if ( !fValidGrid )
 	{
 		// The grid index we've been given is already in use, so find the first unused grid index
-		for ( gridIndex = 0; (gridIndex < UCHAR_MAX) && !bValidGrid; gridIndex++ )
+		for ( gridIndex = 0; (gridIndex < UCHAR_MAX) && !fValidGrid; gridIndex++ )
 		{
-			bValidGrid = true;
+			fValidGrid = true;
 			for ( CItem *pTry = GetContentHead(); pTry != NULL; pTry = pTry->GetNext() )
 			{
 				if ( pTry->GetContainedGridIndex() == gridIndex )
 				{
-					bValidGrid = false;
+					fValidGrid = false;
 					break;
 				}
 			}
 
-			if ( bValidGrid )
+			if ( fValidGrid )
 				break;
 		}
 	}
@@ -1177,8 +1176,8 @@ bool CItemContainer::CanContainerHold(const CItem *pItem, const CChar *pCharMsg)
 		return false;
 	}
 
-	size_t pTagTmp = static_cast<size_t>(GetKeyNum("OVERRIDE.MAXITEMS"));
-	size_t tMaxItemsCont = pTagTmp ? pTagTmp : MAX_ITEMS_CONT;
+	CVarDefCont *pVar = GetKey("OVERRIDE.MAXITEMS", false);
+	size_t tMaxItemsCont = pVar ? pVar->GetValNum() : MAX_ITEMS_CONT;
 	if ( GetCount() >= tMaxItemsCont )
 	{
 		pCharMsg->SysMessageDefault(DEFMSG_CONT_FULL);
@@ -1206,15 +1205,9 @@ bool CItemContainer::CanContainerHold(const CItem *pItem, const CChar *pCharMsg)
 		case IT_EQ_BANK_BOX:
 		{
 			// Check if the bankbox will allow this item to be dropped into it
-			DWORD dwBankIMax = g_Cfg.m_iBankIMax;
-			CVarDefCont *pTagTemp = GetKey("OVERRIDE.MAXITEMS", false);
-			if ( pTagTemp )
-				dwBankIMax = static_cast<DWORD>(pTagTemp->GetValNum());
-
-			DWORD dwItemsInContainer = 0;
 			const CItemContainer *pContItem = dynamic_cast<const CItemContainer *>(pItem);
-			if ( pContItem )
-				dwItemsInContainer = pContItem->ContentCountAll();
+			DWORD dwItemsInContainer = pContItem ? pContItem->ContentCountAll() : 0;
+			DWORD dwBankIMax = pVar ? pVar->GetValNum() : g_Cfg.m_iBankIMax;
 
 			if ( ContentCountAll() + dwItemsInContainer > dwBankIMax )
 			{
@@ -1526,7 +1519,7 @@ void CItemContainer::Game_Create()
 		for ( size_t i = 0; i < 24; i++ )
 		{
 			// Add all it's pieces (if not already added)
-			CItem *pPiece = CItem::CreateBase(((i >= (3 * 4)) ? ITEMID_GAME1_CHECKER : ITEMID_GAME2_CHECKER));
+			CItem *pPiece = CItem::CreateBase((i >= 12) ? ITEMID_GAME1_CHECKER : ITEMID_GAME2_CHECKER);
 			if ( !pPiece )
 				break;
 			pPiece->SetType(IT_GAME_PIECE);
@@ -1550,7 +1543,7 @@ void CItemContainer::Game_Create()
 		for ( size_t i = 0; i < 30; i++ )
 		{
 			// Add all it's pieces (if not already added)
-			CItem *pPiece = CItem::CreateBase(((i >= 15) ? ITEMID_GAME1_CHECKER : ITEMID_GAME2_CHECKER));
+			CItem *pPiece = CItem::CreateBase((i >= 15) ? ITEMID_GAME1_CHECKER : ITEMID_GAME2_CHECKER);
 			if ( !pPiece )
 				break;
 			pPiece->SetType(IT_GAME_PIECE);
@@ -1694,7 +1687,7 @@ bool CItemContainer::OnTick()
 	return CItemVendable::OnTick();
 }
 
-////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 // CItemCorpse
 
 CChar *CItemCorpse::IsCorpseSleeping() const
