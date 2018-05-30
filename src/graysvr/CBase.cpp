@@ -149,7 +149,6 @@ bool CBaseBaseDef::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc
 		case OBC_HITLEECHMANA:
 		case OBC_HITLEECHSTAM:
 		case OBC_HITMANADRAIN:
-		case OBC_LOWERREQ:
 		case OBC_NAMELOC:
 		case OBC_REFLECTPHYSICALDAM:
 		case OBC_REGENFOOD:
@@ -160,8 +159,6 @@ bool CBaseBaseDef::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc
 		case OBC_REGENVALHITS:
 		case OBC_REGENVALMANA:
 		case OBC_REGENVALSTAM:
-		case OBC_SPELLCHANNELING:
-		case OBC_WEIGHTREDUCTION:
 			sVal.FormatLLVal(GetDefNum(pszKey));
 			break;
 		case OBC_ARMOR:
@@ -403,7 +400,6 @@ bool CBaseBaseDef::r_LoadVal(CScript &s)
 		case OBC_HITLEECHMANA:
 		case OBC_HITLEECHSTAM:
 		case OBC_HITMANADRAIN:
-		case OBC_LOWERREQ:
 		case OBC_NAMELOC:
 		case OBC_REFLECTPHYSICALDAM:
 		case OBC_REGENFOOD:
@@ -414,8 +410,6 @@ bool CBaseBaseDef::r_LoadVal(CScript &s)
 		case OBC_REGENVALHITS:
 		case OBC_REGENVALMANA:
 		case OBC_REGENVALSTAM:
-		case OBC_SPELLCHANNELING:
-		case OBC_WEIGHTREDUCTION:
 		{
 			SetDefNum(s.GetKey(), s.GetArgVal());
 			return true;

@@ -22,6 +22,7 @@ CItemBase::CItemBase(ITEMID_TYPE id) : CBaseBaseDef(RESOURCE_ID(RES_ITEMDEF, id)
 	m_SpellChanneling = 0;
 	m_LowerRequirements = 0;
 	m_UseBestWeaponSkill = 0;
+	m_WeightReduction = 0;
 
 	m_ttNormal.m_tData1 = 0;
 	m_ttNormal.m_tData2 = 0;
@@ -940,6 +941,9 @@ bool CItemBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case IBC_USEBESTWEAPONSKILL:
 			sVal.FormatVal(m_UseBestWeaponSkill);
 			break;
+		case IBC_WEIGHTREDUCTION:
+			sVal.FormatVal(m_WeightReduction);
+			break;
 		case IBC_CANUSE:
 			sVal.FormatHex(m_CanUse);
 			break;
@@ -1251,6 +1255,9 @@ bool CItemBase::r_LoadVal(CScript &s)
 			break;
 		case IBC_USEBESTWEAPONSKILL:
 			m_UseBestWeaponSkill = static_cast<int>(s.GetArgVal());
+			break;
+		case IBC_WEIGHTREDUCTION:
+			m_WeightReduction = static_cast<int>(s.GetArgVal());
 			break;
 		case IBC_CANUSE:
 			m_CanUse = s.GetArgVal();

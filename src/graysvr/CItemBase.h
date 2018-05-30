@@ -250,6 +250,7 @@ public:
 	int m_SpellChanneling;
 	int m_LowerRequirements;
 	int m_UseBestWeaponSkill;
+	int m_WeightReduction;
 
 	union
 	{

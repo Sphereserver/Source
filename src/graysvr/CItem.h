@@ -134,6 +134,7 @@ public:
 	int m_SpellChanneling;
 	int m_LowerRequirements;
 	int m_UseBestWeaponSkill;
+	int m_WeightReduction;
 
 	// Type specific info (IT_TYPE)
 	union	// 4(more1) + 4(more2) + 6(morep: (2 morex) (2 morey) (1 morez) (1morem)) = 14 bytes
@@ -655,11 +656,7 @@ public:
 
 	virtual int GetWeight(WORD wAmount = 0) const
 	{
-		WORD wWeight = m_weight * (wAmount ? wAmount : GetAmount());
-		CVarDefCont *pReduction = GetDefKey("WEIGHTREDUCTION", true);
-		if ( pReduction )
-			wWeight -= static_cast<WORD>(IMULDIV(wWeight, maximum(pReduction->GetValNum(), 0), 100));
-		return wWeight;
+		return m_weight * (wAmount ? wAmount : GetAmount());
 	}
 
 	void SetTimeout(INT64 iDelay);
@@ -1071,7 +1068,8 @@ public:
 
 	int	GetTotalWeight() const
 	{
-		return m_totalweight;
+		const CItem *pItem = dynamic_cast<const CItem *>(this);
+		return m_totalweight * (100 - (pItem ? pItem->m_WeightReduction : 0)) / 100;
 	}
 	int FixWeight();
 
@@ -1160,7 +1158,7 @@ protected:
 
 public:
 	bool IsItemInTrade() const;
-	void Trade_Status(bool bCheck);
+	void Trade_Status(bool fCheck);
 	void Trade_UpdateGold(DWORD dwPlatinum, DWORD dwGold);
 	void Trade_Delete();
 

@@ -2615,8 +2615,14 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 								}
 								else
 								{
-									m_TooltipData.Add(t = new CClientTooltip(1050044));
-									t->FormatArgs("%" FMTSIZE_T "\t%d", pContainer->GetCount(), pContainer->GetTotalWeight() / WEIGHT_UNITS); // ~1_COUNT~ items, ~2_WEIGHT~ stones
+									m_TooltipData.Add(t = new CClientTooltip(1050044)); // ~1_COUNT~ items, ~2_WEIGHT~ stones
+									t->FormatArgs("%" FMTSIZE_T "\t%d", pContainer->GetCount(), pContainer->GetTotalWeight() / WEIGHT_UNITS);
+								}
+
+								if ( pItem->m_WeightReduction != 0 )
+								{
+									m_TooltipData.Add(t = new CClientTooltip(1072210)); // Weight reduction: ~1_PERCENTAGE~%
+									t->FormatArgs("%d", pItem->m_WeightReduction);
 								}
 							}
 							break;

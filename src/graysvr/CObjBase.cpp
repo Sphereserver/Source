@@ -695,7 +695,6 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case OC_HITLEECHMANA:
 		case OC_HITLEECHSTAM:
 		case OC_HITMANADRAIN:
-		case OC_LOWERREQ:
 		case OC_REFLECTPHYSICALDAM:
 		case OC_REGENFOOD:
 		case OC_REGENHITS:
@@ -707,8 +706,6 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case OC_REGENVALSTAM:
 		case OC_COMBATBONUSSTAT:
 		case OC_COMBATBONUSPERCENT:
-		case OC_SPELLCHANNELING:
-		case OC_WEIGHTREDUCTION:
 		{
 			CVarDefCont *pVar = GetDefKey(pszKey, true);
 			sVal.FormatLLVal(pVar ? pVar->GetValNum() : 0);
@@ -1479,9 +1476,7 @@ bool CObjBase::r_LoadVal(CScript &s)
 		case OC_HITLEECHMANA:
 		case OC_HITLEECHSTAM:
 		case OC_HITMANADRAIN:
-		case OC_LOWERREQ:
 		case OC_REFLECTPHYSICALDAM:
-		case OC_SPELLCHANNELING:
 		case OC_NAMELOC:
 			SetDefNum(s.GetKey(), s.GetArgVal(), false);
 			break;
@@ -1582,18 +1577,6 @@ bool CObjBase::r_LoadVal(CScript &s)
 		case OC_NIGHTSIGHT:
 			m_NightSight = static_cast<int>(s.GetArgVal());
 			break;
-		case OC_WEIGHTREDUCTION:
-		{
-			int oldweight = GetWeight();
-			SetDefNum(s.GetKey(), s.GetArgVal(), false);
-			CContainer *pCont = dynamic_cast<CContainer *>(GetParent());
-			if ( pCont )
-			{
-				ASSERT(IsItemEquipped() || IsItemInContainer());
-				pCont->OnWeightChange(GetWeight() - oldweight);
-			}
-			break;
-		}
 		case OC_RANGE:
 		{
 			INT64 piVal[2];

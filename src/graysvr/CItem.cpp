@@ -1672,6 +1672,7 @@ bool CItem::SetBase( CItemBase * pItemDef )
 	m_SpellChanneling = pItemDef->m_SpellChanneling;
 	m_LowerRequirements = pItemDef->m_LowerRequirements;
 	m_UseBestWeaponSkill = pItemDef->m_UseBestWeaponSkill;
+	m_WeightReduction = pItemDef->m_WeightReduction;
 
 	if (pParentCont)
 	{
@@ -1984,6 +1985,8 @@ void CItem::r_Write( CScript & s )
 		s.WriteKeyVal("LOWERREQ", m_LowerRequirements);
 	if ( m_UseBestWeaponSkill != pItemDef->m_UseBestWeaponSkill )
 		s.WriteKeyVal("USEBESTWEAPONSKILL", m_UseBestWeaponSkill);
+	if ( m_WeightReduction != pItemDef->m_WeightReduction )
+		s.WriteKeyVal("WEIGHTREDUCTION", m_WeightReduction);
 }
 
 bool CItem::LoadSetContainer( CGrayUID uid, LAYER_TYPE layer )
@@ -2353,6 +2356,9 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_TYPE:
 			sVal = g_Cfg.ResourceGetName( RESOURCE_ID( RES_TYPEDEF, m_type ));
 			break;
+		case IC_WEIGHTREDUCTION:
+			sVal.FormatVal(m_WeightReduction);
+			break;
 		default:
 			fDoDefault = true;
 	}
@@ -2694,6 +2700,9 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 			return true;
 		case IC_TYPE:
 			SetType(static_cast<IT_TYPE>(g_Cfg.ResourceGetIndexType( RES_TYPEDEF, s.GetArgStr())));
+			break;
+		case IC_WEIGHTREDUCTION:
+			m_WeightReduction = static_cast<int>(s.GetArgVal());
 			break;
 		default:
 			return( CObjBase::r_LoadVal( s ));
