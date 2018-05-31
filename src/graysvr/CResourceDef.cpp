@@ -452,10 +452,10 @@ bool CSkillClassDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole *
 		sVal = m_sName;
 		break;
 	case SCC_SKILLSUM:
-		sVal.FormatVal( m_SkillSumMax );
+		sVal.FormatUVal(m_SkillSumMax);
 		break;
 	case SCC_STATSUM:
-		sVal.FormatVal( m_StatSumMax );
+		sVal.FormatUVal(m_StatSumMax);
 		break;
 	default:
 		{
@@ -498,7 +498,7 @@ bool CSkillClassDef::r_LoadVal( CScript &s )
 		m_sName = s.GetArgStr();
 		break;
 	case SCC_SKILLSUM:
-		m_SkillSumMax = static_cast<WORD>(s.GetArgVal());
+		m_SkillSumMax = static_cast<DWORD>(s.GetArgVal());
 		break;
 	case SCC_STATSUM:
 		m_StatSumMax = static_cast<WORD>(s.GetArgVal());

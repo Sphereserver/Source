@@ -1901,7 +1901,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				fComp = false;
 			}
 
-			sVal.FormatVal(GetSkillTotal(iVal, fComp));
+			sVal.FormatUVal(GetSkillTotal(iVal, fComp));
 			return true;
 		}
 		case CHC_SWING:
@@ -3563,23 +3563,23 @@ void CChar::ChangeExperience(int iDelta, CChar *pCharDead)
 	}
 }
 
-WORD CChar::GetSkillTotal(int iWhat, bool iHow)
+DWORD CChar::GetSkillTotal(int iWhat, bool fHow)
 {
 	ADDTOCALLSTACK("CChar::GetSkillTotal");
-	WORD iTotal = 0;
-	WORD iBase = 0;
+	DWORD dwTotal = 0;
+	WORD wBase = 0;
 
-	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
+	for ( unsigned int i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 	{
-		iBase = Skill_GetBase(static_cast<SKILL_TYPE>(i));
-		if ( iHow )
+		wBase = Skill_GetBase(static_cast<SKILL_TYPE>(i));
+		if ( fHow )
 		{
 			if ( iWhat < 0 )
 			{
-				if ( iBase >= -iWhat )
+				if ( wBase >= -iWhat )
 					continue;
 			}
-			else if ( iBase < iWhat )
+			else if ( wBase < iWhat )
 				continue;
 		}
 		else
@@ -3590,7 +3590,7 @@ WORD CChar::GetSkillTotal(int iWhat, bool iHow)
 			if ( !(pSkill->m_dwGroup & iWhat) )
 				continue;
 		}
-		iTotal += iBase;
+		dwTotal += wBase;
 	}
-	return iTotal;
+	return dwTotal;
 }

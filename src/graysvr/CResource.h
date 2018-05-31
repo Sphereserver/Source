@@ -564,7 +564,7 @@ public:
 	CGString m_sName;	// The name of this skill class.
 
 	WORD m_StatSumMax;
-	WORD m_SkillSumMax;
+	DWORD m_SkillSumMax;
 
 	WORD m_StatMax[STAT_BASE_QTY];	// STAT_BASE_QTY
 	WORD m_SkillLevelMax[ SKILL_QTY ];

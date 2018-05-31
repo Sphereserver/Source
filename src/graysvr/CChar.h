@@ -781,7 +781,7 @@ public:
 
 	bool Stat_Decrease(STAT_TYPE stat, SKILL_TYPE skill);
 	bool Stats_Regen(INT64 iTimeDiff);
-	WORD Stats_GetRegenVal(STAT_TYPE iStat, bool bGetTicks);
+	WORD Stats_GetRegenVal(STAT_TYPE iStat, bool fGetTicks);
 
 	SKILLLOCK_TYPE Stat_GetLock(STAT_TYPE stat)
 	{
@@ -1034,7 +1034,7 @@ public:
 	bool IsTakeCrime(const CItem *pItem, CChar **ppCharMark = NULL) const;
 
 	void ChangeExperience(int iDelta = 0, CChar *pCharDead = NULL);
-	WORD GetSkillTotal(int iWhat = 0, bool iHow = true);
+	DWORD GetSkillTotal(int iWhat = 0, bool fHow = true);
 
 	// Skills
 	static bool IsSkillBase(SKILL_TYPE skill)
@@ -1047,7 +1047,7 @@ public:
 		return ((skill >= NPCACT_FOLLOW_TARG) && (skill < NPCACT_QTY));
 	}
 
-	SKILL_TYPE Skill_GetBest(unsigned int iRank = 0) const;
+	SKILL_TYPE Skill_GetBest(unsigned int uRank = 0) const;
 	SKILL_TYPE Skill_GetActive() const
 	{
 		return m_Act_SkillCurrent;
@@ -1058,8 +1058,8 @@ public:
 		ASSERT(IsSkillBase(skill));
 		return m_Skill[skill];
 	}
-	WORD Skill_GetMax(SKILL_TYPE skill, bool ignoreLock = false) const;
-	WORD Skill_GetSumMax() const;
+	WORD Skill_GetMax(SKILL_TYPE skill, bool fIgnoreLock = false) const;
+	DWORD Skill_GetSumMax() const;
 	SKILLLOCK_TYPE Skill_GetLock(SKILL_TYPE skill) const
 	{
 		return m_pPlayer ? m_pPlayer->Skill_GetLock(skill) : SKILLLOCK_UP;
@@ -1069,8 +1069,8 @@ public:
 
 	bool Skill_CanUse(SKILL_TYPE skill);
 	void Skill_SetBase(SKILL_TYPE skill, WORD wValue);
-	bool Skill_UseQuick(SKILL_TYPE skill, int iDifficulty, bool bAllowGain = true, bool bUseBellCurve = true);
-	bool Skill_CheckSuccess(SKILL_TYPE skill, int iDifficulty, bool bUseBellCurve = true) const;
+	bool Skill_UseQuick(SKILL_TYPE skill, int iDifficulty, bool fAllowGain = true, bool fUseBellCurve = true);
+	bool Skill_CheckSuccess(SKILL_TYPE skill, int iDifficulty, bool fUseBellCurve = true) const;
 	bool Skill_Wait(SKILL_TYPE skill);
 	bool Skill_Start(SKILL_TYPE skill);
 	void Skill_Fail(bool fCancel = false);

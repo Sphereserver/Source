@@ -1165,7 +1165,7 @@ PacketItemContents::PacketItemContents(const CClient* target, const CItem* spell
 	skip(2);
 
 	WORD count = 0;
-	for (int i = SPELL_Clumsy; i <= SPELL_MAGERY_QTY; i++)
+	for (WORD i = SPELL_Clumsy; i <= SPELL_MAGERY_QTY; i++)
 	{
 		if (!spellbook->IsSpellInBook(static_cast<SPELL_TYPE>(i)))
 			continue;
@@ -1173,7 +1173,7 @@ PacketItemContents::PacketItemContents(const CClient* target, const CItem* spell
 		writeInt32(UID_F_ITEM + UID_O_INDEX_FREE + i);
 		writeInt16(0x1F2E);
 		writeByte(0);
-		writeInt16(static_cast<WORD>(i));
+		writeInt16(i);
 		writeInt16(0);
 		writeInt16(0);
 		if (target->m_ContainerGridEnabled)
@@ -2218,7 +2218,7 @@ PacketDisplayMenu::PacketDisplayMenu(const CClient* target, CLIMODE_TYPE mode, c
 	writeInt32(object->GetUID());
 	writeInt16(static_cast<WORD>(mode));
 
-	int len = items[0].m_sText.GetLength();
+	size_t len = items[0].m_sText.GetLength();
 	if (len > UCHAR_MAX)
 		len = UCHAR_MAX;
 	writeByte(static_cast<BYTE>(len));
@@ -3100,7 +3100,7 @@ PacketGumpValueInput::PacketGumpValueInput(const CClient* target, bool cancel, I
 	writeInt32(object->GetUID());
 	writeInt16(CLIMODE_INPVAL);
 
-	int len = strlen(text) + 1;
+	size_t len = strlen(text) + 1;
 	if (len > USHRT_MAX)
 		len = USHRT_MAX;
 
@@ -3241,30 +3241,29 @@ void PacketGumpDialog::writeCompressedControls(const CGString* controls, size_t 
 
 	{
 		// compress and write controls
-		int controlLength = 1;
+		z_uLong controlLength = 1;
 		for (size_t i = 0; i < controlCount; i++)
 			controlLength += controls[i].GetLength() + 2;
 
 		char* toCompress = new char[controlLength];
 
-		int controlLengthActual = 0;
+		z_uLong controlLengthActual = 0;
 		for (size_t i = 0; i < controlCount; i++)
 			controlLengthActual += sprintf(&toCompress[controlLengthActual], "{%s}", static_cast<LPCTSTR>(controls[i]));
 		controlLengthActual++;
 
 		ASSERT(controlLengthActual == controlLength);
 
-		z_uLong compressLength = z_compressBound(controlLengthActual);
-		BYTE* compressBuffer = new BYTE[compressLength];
+		z_uLongf compressLength = z_compressBound(controlLengthActual);
+		z_Bytef *compressBuffer = new z_Bytef[compressLength];
 
-		int error = z_compress2(compressBuffer, &compressLength, (BYTE*)toCompress, controlLengthActual, Z_DEFAULT_COMPRESSION);
+		int error = z_compress2(compressBuffer, &compressLength, reinterpret_cast<const z_Bytef *>(toCompress), controlLengthActual, Z_DEFAULT_COMPRESSION);
 		delete[] toCompress;
 
 		if ((error != Z_OK) || (compressLength <= 0))
 		{
 			delete[] compressBuffer;
 			g_Log.EventError("Compress failed with error %d when generating gump. Using old packet.\n", error);
-
 			writeStandardControls(controls, controlCount, texts, textCount);
 			return;
 		}
@@ -3286,18 +3285,16 @@ void PacketGumpDialog::writeCompressedControls(const CGString* controls, size_t 
 			writeStringFixedNUNICODE(static_cast<LPCTSTR>(texts[i]), texts[i].GetLength());
 		}
 
-		size_t textsLength = getPosition() - textsPosition;
+		z_uLong textsLength = getPosition() - textsPosition;
 		
-		z_uLong compressLength = z_compressBound(textsLength);
-		BYTE* compressBuffer = new BYTE[compressLength];
+		z_uLongf compressLength = z_compressBound(textsLength);
+		z_Bytef *compressBuffer = new z_Bytef[compressLength];
 
 		int error = z_compress2(compressBuffer, &compressLength, &m_buffer[textsPosition], textsLength, Z_DEFAULT_COMPRESSION);
 		if ((error != Z_OK) || (compressLength <= 0))
 		{
 			delete[] compressBuffer;
-
 			g_Log.EventError("Compress failed with error %d when generating gump. Using old packet.\n", error);
-
 			writeStandardControls(controls, controlCount, texts, textCount);
 			return;
 		}
@@ -4358,8 +4355,8 @@ bool PacketHouseDesign::writePlaneData(BYTE plane, WORD itemCount, BYTE *data, D
 	ADDTOCALLSTACK("PacketHouseDesign::writePlaneData");
 
 	// compress data
-	z_uLong compressLength = z_compressBound(dataSize);
-	BYTE *compressBuffer = new BYTE[compressLength];
+	z_uLongf compressLength = z_compressBound(dataSize);
+	z_Bytef *compressBuffer = new z_Bytef[compressLength];
 
 	int error = z_compress2(compressBuffer, &compressLength, data, dataSize, Z_DEFAULT_COMPRESSION);
 	if ( error != Z_OK )
@@ -4418,10 +4415,10 @@ void PacketHouseDesign::flushStairData(void)
 	m_stairCount = 0;
 
 	// compress data
-	z_uLong compressLength = z_compressBound(stairSize);
-	BYTE *compressBuffer = new BYTE[compressLength];
+	z_uLongf compressLength = z_compressBound(stairSize);
+	z_Bytef *compressBuffer = new z_Bytef[compressLength];
 
-	int error = z_compress2(compressBuffer, &compressLength, (BYTE*)m_stairBuffer, stairSize, Z_DEFAULT_COMPRESSION);
+	int error = z_compress2(compressBuffer, &compressLength, reinterpret_cast<const z_Bytef *>(m_stairBuffer), stairSize, Z_DEFAULT_COMPRESSION);
 	if ( error != Z_OK )
 	{
 		// an error occured with this block, but we should be able to continue to the next without problems
