@@ -1,5 +1,5 @@
-#ifndef _INC_CACHEABLE_SCRIPT_FILE_H
-#define _INC_CACHEABLE_SCRIPT_FILE_H
+#ifndef _INC_CACHEABLESCRIPTFILE_H
+#define _INC_CACHEABLESCRIPTFILE_H
 #pragma once
 
 #include <string>
@@ -7,24 +7,9 @@
 
 class CacheableScriptFile : public CFileText
 {
-protected:
-	virtual bool OpenBase(void *pExtra);
-	virtual void CloseBase();
-	void dupeFrom(CacheableScriptFile *other);
-
 public:
 	CacheableScriptFile();
 	~CacheableScriptFile();
-private:
-	CacheableScriptFile(const CacheableScriptFile& copy);
-	CacheableScriptFile& operator=(const CacheableScriptFile& other);
-
-public:
-	virtual bool IsFileOpen() const;
-	virtual bool IsEOF() const;
-	virtual TCHAR *ReadString(TCHAR *pBuffer, size_t sizemax);
-	virtual DWORD Seek(LONG offset = 0, UINT origin = SEEK_SET);
-	virtual DWORD GetPosition() const;
 
 private:
 	bool m_closed;
@@ -32,10 +17,26 @@ private:
 	size_t m_currentLine;
 
 protected:
-	std::vector<std::string> * m_fileContent;
+	std::vector<std::string> *m_fileContent;
+
+protected:
+	virtual bool OpenBase(void *pExtra);
+	virtual void CloseBase();
+	void DupeFrom(CacheableScriptFile *other);
+
+public:
+	virtual bool IsFileOpen() const;
+	virtual bool IsEOF() const;
+	virtual TCHAR *ReadString(TCHAR *pBuffer, size_t iSizeMax);
+	virtual DWORD Seek(long lOffset = 0, UINT uOrigin = SEEK_SET);
+	virtual DWORD GetPosition() const;
 
 private:
-	bool useDefaultFile() const;
+	bool UseDefaultFile() const;
+
+private:
+	CacheableScriptFile(const CacheableScriptFile &copy);
+	CacheableScriptFile &operator=(const CacheableScriptFile &other);
 };
 
-#endif	// _INC_CACHEABLE_SCRIPT_FILE_H
+#endif	// _INC_CACHEABLESCRIPTFILE_H

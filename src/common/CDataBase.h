@@ -1,5 +1,5 @@
 #ifndef _INC_CDATABASE_H
-#define	_INC_CDATABASE_H
+#define _INC_CDATABASE_H
 #pragma once
 
 #include "graycom.h"

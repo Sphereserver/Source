@@ -1,5 +1,5 @@
-#include "../graysvr/graysvr.h"
 #include "CacheableScriptFile.h"
+#include "../graysvr/graysvr.h"
 
 CacheableScriptFile::CacheableScriptFile()
 {
@@ -9,50 +9,43 @@ CacheableScriptFile::CacheableScriptFile()
 	m_fileContent = NULL;
 }
 
-CacheableScriptFile::~CacheableScriptFile() 
+CacheableScriptFile::~CacheableScriptFile()
 {
 	Close();
 }
 
-bool CacheableScriptFile::OpenBase(void *pExtra) 
+bool CacheableScriptFile::OpenBase(void *pExtra)
 {
-	if( useDefaultFile() ) 
-	{
+	if ( UseDefaultFile() )
 		return CFileText::OpenBase(pExtra);
-	}
 
 	ADDTOCALLSTACK("CacheableScriptFile::OpenBase");
-
 	m_pStream = fopen(GetFilePath(), GetModeStr());
-	if( m_pStream == NULL ) 
-	{
+	if ( !m_pStream )
 		return false;
-	}
 
+	m_hFile = reinterpret_cast<OSFILE_TYPE>(STDFUNC_FILENO(m_pStream));
 	m_fileContent = new std::vector<std::string>();
-	m_hFile = (OSFILE_TYPE)STDFUNC_FILENO(m_pStream);
 	m_closed = false;
-	TemporaryString buf;
-	size_t nStrLen;
-	bool bUTF = false, bFirstLine = true;
-	
-	while ( !feof(m_pStream) ) 
+
+	TemporaryString pszBuffer;
+	size_t iLen;
+	bool fFirstLine = true, fUTF = false;
+
+	while ( !feof(m_pStream) )
 	{
-		buf.setAt(0, '\0');
-		fgets(buf, SCRIPT_MAX_LINE_LEN, m_pStream);
-		nStrLen = strlen(buf);
+		pszBuffer.setAt(0, '\0');
+		fgets(pszBuffer, SCRIPT_MAX_LINE_LEN, m_pStream);
+		iLen = strlen(pszBuffer);
 
-		// first line may contain utf marker
-		if ( bFirstLine && nStrLen >= 3 &&
-			static_cast<unsigned char>(buf[0]) == 0xEF &&
-			static_cast<unsigned char>(buf[1]) == 0xBB &&
-			static_cast<unsigned char>(buf[2]) == 0xBF )
-			bUTF = true;
+		// First line may contain UTF marker
+		if ( fFirstLine && (iLen >= 3) && (pszBuffer[0] == 0xEF) && (pszBuffer[1] == 0xBB) && (pszBuffer[2] == 0xBF) )
+			fUTF = true;
 
-		std::string strLine((bUTF ? &buf[3]:buf), nStrLen - (bUTF ? 3:0));
+		std::string strLine((fUTF ? &pszBuffer[3] : pszBuffer), iLen - (fUTF ? 3 : 0));
 		m_fileContent->push_back(strLine);
-		bFirstLine = false;
-		bUTF = false;
+		fFirstLine = false;
+		fUTF = false;
 	}
 
 	fclose(m_pStream);
@@ -64,130 +57,96 @@ bool CacheableScriptFile::OpenBase(void *pExtra)
 	return true;
 }
 
-void CacheableScriptFile::CloseBase() 
+void CacheableScriptFile::CloseBase()
 {
-	if( useDefaultFile() ) 
-	{
-		CFileText::CloseBase();
-	}
-	else 
-	{
-		ADDTOCALLSTACK("CacheableScriptFile::CloseBase");
+	if ( UseDefaultFile() )
+		return CFileText::CloseBase();
 
-		//	clear all data
-		if( m_realFile ) 
-		{
-			if ( m_fileContent != NULL )
-			{
-				m_fileContent->clear();
-				delete m_fileContent;
-			}
-		}
-
-		m_fileContent = NULL;
-		m_currentLine = 0;
-		m_closed = true;
+	ADDTOCALLSTACK("CacheableScriptFile::CloseBase");
+	if ( m_realFile && m_fileContent )
+	{
+		m_fileContent->clear();
+		delete m_fileContent;
 	}
+
+	m_fileContent = NULL;
+	m_currentLine = 0;
+	m_closed = true;
 }
 
-bool CacheableScriptFile::IsFileOpen() const 
+void CacheableScriptFile::DupeFrom(CacheableScriptFile *other)
 {
-	if( useDefaultFile() ) 
-	{
-		return CFileText::IsFileOpen();
-	}
-
-	ADDTOCALLSTACK("CacheableScriptFile::IsFileOpen");
-	return !m_closed;
-}
-
-bool CacheableScriptFile::IsEOF() const 
-{
-	if( useDefaultFile() ) 
-	{
-		return CFileText::IsEOF();
-	}
-
-	ADDTOCALLSTACK("CacheableScriptFile::IsEOF");
-	return ( m_fileContent == NULL || m_currentLine == m_fileContent->size() );
-}
-
-TCHAR * CacheableScriptFile::ReadString(TCHAR *pBuffer, size_t sizemax) 
-{
-	if( useDefaultFile() ) 
-	{
-		return CFileText::ReadString(pBuffer, sizemax);
-	}
-
-	ADDTOCALLSTACK("CacheableScriptFile::ReadString");
-	*pBuffer = '\0';
-
-	if ( m_fileContent != NULL && m_currentLine < m_fileContent->size() )
-	{
-		strcpy(pBuffer, (m_fileContent->at(m_currentLine)).c_str() );
-		m_currentLine++;
-	}
-	else 
-	{
-		return NULL;
-	}
-
-	return pBuffer;
-}
-
-DWORD CacheableScriptFile::Seek(LONG offset, UINT origin) 
-{
-	if( useDefaultFile() ) 
-	{
-		return CFileText::Seek(offset, origin);
-	}
-
-	ADDTOCALLSTACK("CacheableScriptFile::Seek");
-	size_t linenum = offset;
-
-	if( origin != SEEK_SET ) 
-	{
-		linenum = 0;	//	do not support not SEEK_SET rotation
-	}
-	
-	if ( linenum <= m_fileContent->size() )
-	{
-		m_currentLine = linenum;
-		return static_cast<DWORD>(linenum);
-	}
-
-	return 0;
-}
-
-DWORD CacheableScriptFile::GetPosition() const 
-{
-	if( useDefaultFile() ) 
-	{
-		return CFileText::GetPosition();
-	}
-
-	ADDTOCALLSTACK("CacheableScriptFile::GetPosition");
-	return static_cast<DWORD>(m_currentLine);
-}
-
-void CacheableScriptFile::dupeFrom(CacheableScriptFile *other) 
-{
-	if( useDefaultFile() ) 
-	{
+	if ( UseDefaultFile() )
 		return;
-	}
 
 	m_closed = other->m_closed;
 	m_realFile = false;
 	m_fileContent = other->m_fileContent;
 }
 
-bool CacheableScriptFile::useDefaultFile() const 
+bool CacheableScriptFile::IsFileOpen() const
 {
-	if( IsWriteMode() || ( GetFullMode() & OF_DEFAULTMODE )) 
-	{
-		return true;
-	}
+	if ( UseDefaultFile() )
+		return CFileText::IsFileOpen();
 
-	return false;
+	ADDTOCALLSTACK("CacheableScriptFile::IsFileOpen");
+	return !m_closed;
+}
+
+bool CacheableScriptFile::IsEOF() const
+{
+	if ( UseDefaultFile() )
+		return CFileText::IsEOF();
+
+	ADDTOCALLSTACK("CacheableScriptFile::IsEOF");
+	return (!m_fileContent || (m_currentLine == m_fileContent->size()));
+}
+
+TCHAR *CacheableScriptFile::ReadString(TCHAR *pBuffer, size_t iSizeMax)
+{
+	if ( UseDefaultFile() )
+		return CFileText::ReadString(pBuffer, iSizeMax);
+
+	ADDTOCALLSTACK("CacheableScriptFile::ReadString");
+	if ( m_fileContent && (m_currentLine < m_fileContent->size()) )
+	{
+		*pBuffer = '\0';
+		strcpy(pBuffer, m_fileContent->at(m_currentLine).c_str());
+		m_currentLine++;
+		return pBuffer;
+	}
+	return NULL;
+}
+
+DWORD CacheableScriptFile::Seek(long lOffset, UINT uOrigin)
+{
+	if ( UseDefaultFile() )
+		return CFileText::Seek(lOffset, uOrigin);
+
+	ADDTOCALLSTACK("CacheableScriptFile::Seek");
+	size_t iLine = lOffset;
+
+	if ( uOrigin != SEEK_SET )
+		iLine = 0;	// do not support non-SEEK_SET rotation
+
+	if ( iLine <= m_fileContent->size() )
+	{
+		m_currentLine = iLine;
+		return iLine;
+	}
+	return 0;
+}
+
+DWORD CacheableScriptFile::GetPosition() const
+{
+	if ( UseDefaultFile() )
+		return CFileText::GetPosition();
+
+	ADDTOCALLSTACK("CacheableScriptFile::GetPosition");
+	return m_currentLine;
+}
+
+bool CacheableScriptFile::UseDefaultFile() const
+{
+	return (IsWriteMode() || (GetFullMode() & OF_DEFAULTMODE));
 }

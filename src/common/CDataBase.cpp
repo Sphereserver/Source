@@ -149,14 +149,14 @@ bool CDataBase::Query(LPCTSTR pszQuery, CVarDefMap &mapQueryResult)
 bool __cdecl CDataBase::Queryf(CVarDefMap &mapQueryResult, char *fmt, ...)
 {
 	ADDTOCALLSTACK("CDataBase::Queryf");
-	TemporaryString buf;
-	va_list	marker;
+	TemporaryString pszBuffer;
+	va_list marker;
 
 	va_start(marker, fmt);
-	_vsnprintf(buf, buf.realLength(), fmt, marker);
+	_vsnprintf(pszBuffer, pszBuffer.realLength(), fmt, marker);
 	va_end(marker);
 
-	return Query(buf, mapQueryResult);
+	return Query(pszBuffer, mapQueryResult);
 }
 
 bool CDataBase::Exec(LPCTSTR pszQuery)
@@ -192,14 +192,14 @@ bool CDataBase::Exec(LPCTSTR pszQuery)
 bool __cdecl CDataBase::Execf(char *fmt, ...)
 {
 	ADDTOCALLSTACK("CDataBase::Execf");
-	TemporaryString buf;
-	va_list	marker;
+	TemporaryString pszBuffer;
+	va_list marker;
 
 	va_start(marker, fmt);
-	_vsnprintf(buf, buf.realLength(), fmt, marker);
+	_vsnprintf(pszBuffer, pszBuffer.realLength(), fmt, marker);
 	va_end(marker);
 
-	return Exec(buf);
+	return Exec(pszBuffer);
 }
 
 bool CDataBase::AsyncQueue(bool fQuery, LPCTSTR pszFunction, LPCTSTR pszQuery)
