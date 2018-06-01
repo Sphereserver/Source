@@ -1,5 +1,5 @@
-#ifndef _INC_PINGSERVER_H
-#define _INC_PINGSERVER_H
+#ifndef _INC_CPINGSERVER_H
+#define _INC_CPINGSERVER_H
 #pragma once
 
 #include "../sphere/threads.h"
@@ -7,11 +7,11 @@
 #define PINGSERVER_PORT		12000	// listen on this port for client pings (clients normally uses 12000)
 #define PINGSERVER_BUFFER	64		// number of bytes to receive from clients (client normally sends 40)
 
-class PingServer : public AbstractSphereThread
+class CPingServer : public AbstractSphereThread
 {
 public:
-	PingServer();
-	virtual ~PingServer();
+	CPingServer();
+	virtual ~CPingServer();
 
 private:
 	CGSocket m_socket;
@@ -23,4 +23,4 @@ public:
 	virtual void waitForClose();
 };
 
-#endif
+#endif	// _INC_CPINGSERVER_H

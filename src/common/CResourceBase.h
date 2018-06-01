@@ -364,7 +364,7 @@ public:
 	}
 
 	void ReSync();
-	bool Open(LPCTSTR pszFilename = NULL, UINT uiFlags = OF_READ);
+	bool Open(LPCTSTR pszFileName = NULL, UINT uFlags = OF_READ);
 	virtual void CloseForce();
 	virtual void Close();
 
@@ -849,7 +849,7 @@ public:
 	void LoadResourcesOpen(CScript *pScript);
 	bool LoadResources(CResourceScript *pScript);
 	CResourceScript *LoadResourcesAdd(LPCTSTR pszNewFileName);
-	virtual bool OpenResourceFind(CScript &s, LPCTSTR pszFilename, bool bCritical = true);
+	virtual bool OpenResourceFind(CScript &s, LPCTSTR pszFileName, bool bCritical = true);
 	virtual bool LoadResourceSection(CScript *pScript) = 0;
 
 	CResourceScript *GetResourceFile(size_t i)

@@ -241,7 +241,7 @@ bool CScript::Open(LPCTSTR pszFilename, UINT uiFlags)
 		uiFlags |= OF_TEXT;
 	}
 
-	if ( !CacheableScriptFile::Open(GetFilePath(), uiFlags) )
+	if ( !CCacheableScriptFile::Open(GetFilePath(), uiFlags) )
 	{
 		if ( !(uiFlags & OF_NONCRIT) )
 			g_Log.Event(LOGL_WARN, "'%s' not found\n", static_cast<LPCTSTR>(GetFilePath()));
@@ -256,7 +256,7 @@ bool CScript::ReadTextLine(bool fRemoveBlanks)
 	ADDTOCALLSTACK("CScript::ReadTextLine");
 	// ARGS: fRemoveBlanks = Don't report any blank lines (just keep reading)
 
-	while ( CacheableScriptFile::ReadString(GetKeyBufferRaw(SCRIPT_MAX_LINE_LEN), SCRIPT_MAX_LINE_LEN) )
+	while ( CCacheableScriptFile::ReadString(GetKeyBufferRaw(SCRIPT_MAX_LINE_LEN), SCRIPT_MAX_LINE_LEN) )
 	{
 		m_iLineNum++;
 		if ( fRemoveBlanks )
@@ -303,7 +303,7 @@ DWORD CScript::Seek(long lOffset, UINT uiOrigin)
 
 	m_fSectionHead = false;		// unknown, so start at the beginning
 	m_lSectionData = lOffset;
-	return CacheableScriptFile::Seek(lOffset, uiOrigin);
+	return CCacheableScriptFile::Seek(lOffset, uiOrigin);
 }
 
 bool CScript::FindNextSection()
@@ -434,7 +434,7 @@ bool CScript::ReadKeyParse()
 void CScript::Close()
 {
 	ADDTOCALLSTACK("CScript::Close");
-	CacheableScriptFile::Close();
+	CCacheableScriptFile::Close();
 }
 
 bool _cdecl CScript::WriteSection(LPCTSTR pszSection, ...)

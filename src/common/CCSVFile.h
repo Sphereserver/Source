@@ -1,20 +1,20 @@
-#ifndef _CSV_FILE_H
-#define _CSV_FILE_H
+#ifndef _INC_CCSVFILE_H
+#define _INC_CCSVFILE_H
 #pragma once
 
 #define FILE_MAX_COLUMNS	64	// maximum number of columns in a file
 
 typedef std::map<std::string, std::string> CSVRowData;
 
-class CSVFile : public CacheableScriptFile
+class CCSVFile : public CCacheableScriptFile
 {
 public:
-	CSVFile();
-	~CSVFile();
+	CCSVFile();
+	~CCSVFile();
 
 private:
-	CSVFile(const CSVFile &copy);
-	CSVFile &operator=(const CSVFile &other);
+	CCSVFile(const CCSVFile &copy);
+	CCSVFile &operator=(const CCSVFile &other);
 
 private:
 	TCHAR *m_pszColumnTypes[FILE_MAX_COLUMNS];
@@ -35,4 +35,4 @@ public:
 	bool ReadNextRowContent(CSVRowData &target);
 };
 
-#endif
+#endif	// _INC_CCSVFILE_H

@@ -1,10 +1,6 @@
-//
-// NTService.h
-//
-
 #ifdef _WIN32
-#ifndef _INC_NTSERVICE_H
-#define _INC_NTSERVICE_H
+#ifndef _INC_CNTSERVICE_H
+#define _INC_CNTSERVICE_H
 
 #ifdef __MINGW32__
 #include <excpt.h>
@@ -54,5 +50,5 @@ public:
 	}
 } g_Service;
 
-#endif // _INC_NTSERVICE_H
+#endif // _INC_CNTSERVICE_H
 #endif // _WIN32

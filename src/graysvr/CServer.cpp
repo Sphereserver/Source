@@ -1,13 +1,13 @@
 #include "graysvr.h"	// predef header
 #include "../common/grayver.h"
 #include "../network/network.h"
-#include "../graysvr/PingServer.h"
+#include "../graysvr/CPingServer.h"
 
 #ifdef _WIN32
-	#include "ntservice.h"
+	#include "CNTService.h"
 	#include "../common/crashdump/crashdump.h"
 #else
-	#include "UnixTerminal.h"
+	#include "CUnixTerminal.h"
 	#ifdef _LIBEV
 		extern LinuxEv g_NetworkEvent;
 	#endif

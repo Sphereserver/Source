@@ -1,6 +1,6 @@
 #include "graysvr.h"	// predef header.
 #ifndef _WIN32
-	#include "UnixTerminal.h"
+	#include "CUnixTerminal.h"
 #endif
 
 ///////////////////////////////////////////////////////////////

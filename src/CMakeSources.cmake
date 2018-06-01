@@ -70,12 +70,14 @@ SOURCE_GROUP (Game FILES ${game_SRCS})
 
 # Files containing 'background work'
 SET (common_SRCS
-common/CacheableScriptFile.cpp
-common/CacheableScriptFile.h
 common/CArray.cpp
 common/CArray.h
 common/CAssoc.cpp
 common/CAssoc.h
+common/CCacheableScriptFile.cpp
+common/CCacheableScriptFile.h
+common/CCSVFile.cpp
+common/CCSVFile.h
 common/CDataBase.cpp
 common/CDataBase.h
 common/CEncrypt.cpp
@@ -93,6 +95,8 @@ common/CGrayInst.cpp
 common/CGrayInst.h
 common/CGrayMap.cpp
 common/CGrayMap.h
+common/CListDefMap.cpp
+common/CListDefMap.h
 common/CMD5.cpp
 common/CMD5.h
 common/CMemBlock.h
@@ -115,8 +119,6 @@ common/CSocket.cpp
 common/CSocket.h
 common/CString.cpp
 common/CString.h
-common/CsvFile.cpp
-common/CsvFile.h
 common/CTime.cpp
 common/CTime.h
 common/CVarDefMap.cpp
@@ -130,8 +132,6 @@ common/graycom.h
 common/graymul.h
 common/grayproto.h
 common/grayver.h
-common/ListDefContMap.cpp
-common/ListDefContMap.h
 common/os_unix.h
 common/os_windows.h
 common/twofish/twofish2.cpp
@@ -150,8 +150,8 @@ network/receive.cpp
 network/receive.h
 network/send.cpp
 network/send.h
-graysvr/PingServer.cpp
-graysvr/PingServer.h
+graysvr/CPingServer.cpp
+graysvr/CPingServer.h
 )
 SOURCE_GROUP (Network FILES ${network_SRCS})
 
@@ -170,11 +170,11 @@ sphere/strings.cpp
 sphere/strings.h
 sphere/threads.cpp
 sphere/threads.h
-graysvr/ntservice.cpp
-graysvr/ntservice.h
-graysvr/ntwindow.cpp
-graysvr/UnixTerminal.cpp
-graysvr/UnixTerminal.h
+graysvr/CNTService.cpp
+graysvr/CNTService.h
+graysvr/CNTWindow.cpp
+graysvr/CUnixTerminal.cpp
+graysvr/CUnixTerminal.h
 graysvr/SphereSvr.rc
 )
 SOURCE_GROUP (Sphere FILES ${sphere_SRCS})

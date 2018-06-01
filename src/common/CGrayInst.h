@@ -5,7 +5,7 @@
 #include "../common/graymul.h"
 #include "../common/CFile.h"
 #include "../common/CArray.h"
-#include "../common/CsvFile.h"
+#include "../common/CCSVFile.h"
 
 ////////////////////////////////////////////////////////
 
@@ -42,7 +42,7 @@ public:
 	bool m_IsMapUopFormat[256]; // true for maps that are uop format
 	MapAddress m_UopMapAddress[256][256]; //For uop parsing. Note: might need to be ajusted later if format changes.
 
-	CSVFile m_CsvFiles[8];		// doors.txt, stairs.txt (x2), roof.txt, misc.txt, teleprts.txt, floors.txt, walls.txt
+	CCSVFile m_CsvFiles[8];		// doors.txt, stairs.txt (x2), roof.txt, misc.txt, teleprts.txt, floors.txt, walls.txt
 
 public:
 	CGString GetFullExePath( LPCTSTR pszName = NULL ) const

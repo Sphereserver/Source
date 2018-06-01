@@ -212,27 +212,27 @@ CResourceScript *CResourceBase::LoadResourcesAdd(LPCTSTR pszNewFileName)
 	return NULL;
 }
 
-bool CResourceBase::OpenResourceFind(CScript &s, LPCTSTR pszFilename, bool bCritical)
+bool CResourceBase::OpenResourceFind(CScript &s, LPCTSTR pszFileName, bool bCritical)
 {
 	ADDTOCALLSTACK("CResourceBase::OpenResourceFind");
 	// Open a single resource script file
 
-	if ( pszFilename == NULL )
-		pszFilename = s.GetFilePath();
+	if ( pszFileName == NULL )
+		pszFileName = s.GetFilePath();
 
 	// Search the local dir or full path first
-	if ( s.Open(pszFilename, OF_READ|OF_NONCRIT) )
+	if ( s.Open(pszFileName, OF_READ|OF_NONCRIT) )
 		return true;
 	if ( !bCritical )
 		return false;
 
 	// Check the script file path
-	CGString sPathName = CGFile::GetMergedFileName(m_sSCPBaseDir, pszFilename);
+	CGString sPathName = CGFile::GetMergedFileName(m_sSCPBaseDir, pszFileName);
 	if ( s.Open(sPathName, OF_READ|OF_NONCRIT) )
 		return true;
 
 	// Strip the directory and re-check script file path
-	sPathName = CGFile::GetMergedFileName(m_sSCPBaseDir, CGFile::GetFilesTitle(pszFilename));
+	sPathName = CGFile::GetMergedFileName(m_sSCPBaseDir, CGFile::GetFilesTitle(pszFileName));
 	return s.Open(sPathName, OF_READ);
 }
 
@@ -586,16 +586,16 @@ void CResourceScript::ReSync()
 	Close();
 }
 
-bool CResourceScript::Open(LPCTSTR pszFilename, UINT uiFlags)
+bool CResourceScript::Open(LPCTSTR pszFileName, UINT uFlags)
 {
 	ADDTOCALLSTACK("CResourceScript::Open");
 	// Open the file if it's not already open
 
 	if ( !IsFileOpen() )
 	{
-		if ( !CScript::Open(pszFilename, uiFlags|OF_SHARE_DENY_WRITE) )	// OF_READ
+		if ( !CScript::Open(pszFileName, uFlags|OF_SHARE_DENY_WRITE) )	// OF_READ
 			return false;
-		if ( !(uiFlags & OF_READWRITE) && CheckForChange() )
+		if ( !(uFlags & OF_READWRITE) && CheckForChange() )
 			g_Cfg.LoadResourcesOpen(this);
 	}
 
@@ -646,7 +646,7 @@ bool CResourceLock::OpenBase(void *pExtra)
 	// Open a seperate copy of an already opened file
 	m_pStream = m_pLock->m_pStream;
 	m_hFile = m_pLock->m_hFile;
-	CacheableScriptFile::dupeFrom(m_pLock);
+	CCacheableScriptFile::DupeFrom(m_pLock);
 
 	// Assume this is the new error context
 	m_PrvScriptContext.OpenScript(this);
@@ -680,7 +680,7 @@ bool CResourceLock::ReadTextLine(bool fRemoveBlanks)
 	ASSERT(m_pLock);
 	ASSERT(!IsBinaryMode());
 
-	while ( CacheableScriptFile::ReadString(GetKeyBufferRaw(SCRIPT_MAX_LINE_LEN), SCRIPT_MAX_LINE_LEN) )
+	while ( CCacheableScriptFile::ReadString(GetKeyBufferRaw(SCRIPT_MAX_LINE_LEN), SCRIPT_MAX_LINE_LEN) )
 	{
 		m_pLock->m_iLineNum = ++m_iLineNum;		// share this with original open
 		if ( fRemoveBlanks )

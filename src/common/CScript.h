@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CMemBlock.h"
-#include "CacheableScriptFile.h"
+#include "CCacheableScriptFile.h"
 
 struct CScriptLineContext
 {
@@ -117,7 +117,7 @@ public:
 	void ParseKeyLate();
 };
 
-class CScript : public CacheableScriptFile, public CScriptKeyAlloc
+class CScript : public CCacheableScriptFile, public CScriptKeyAlloc
 {
 public:
 	CScript();

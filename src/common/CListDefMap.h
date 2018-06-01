@@ -4,8 +4,6 @@
 
 #include <list>
 #include <set>
-//#include "../common/cstring.h"
-//#include "../common/cscript.h"
 
 class CListDefContElem
 {
@@ -193,4 +191,4 @@ public:
 	void r_WriteSave( CScript& s );
 };
 
-#endif
+#endif	// _INC_CLISTDEFMAP_H

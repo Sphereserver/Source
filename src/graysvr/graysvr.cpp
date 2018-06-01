@@ -1,11 +1,11 @@
 #include "graysvr.h"	// predef header.
 #include "../common/grayver.h"	// sphere version
-#include "PingServer.h"	// ping server
+#include "CPingServer.h"	// ping server
 #include "../network/network.h" // network thread
 #include "../sphere/asyncdb.h"
 #if !defined(_WIN32) || defined(_LIBEV)
 	#include "../sphere/linuxev.h"
-	#include "UnixTerminal.h"
+	#include "CUnixTerminal.h"
 #endif
 
 #if !defined(pid_t)
@@ -13,7 +13,7 @@
 #endif
 
 #ifdef _WIN32
-	#include "ntservice.h"	// g_Service
+	#include "CNTService.h"	// g_Service
 #endif
 
 //Trigger function start
@@ -328,21 +328,22 @@ bool WritePidFile(int iMode = 0)
 	}
 }
 
-int CEventLog::VEvent( DWORD wMask, LPCTSTR pszFormat, va_list args )
+int CEventLog::VEvent(DWORD dwMask, LPCTSTR pszFormat, va_list args)
 {
-	if ( pszFormat == NULL || pszFormat[0] == '\0' )
+	if ( (pszFormat == NULL) || (pszFormat[0] == '\0') )
 		return 0;
 
 	TemporaryString pszTemp;
 	size_t len = _vsnprintf(pszTemp, (SCRIPT_MAX_LINE_LEN - 1), pszFormat, args);
-	if ( ! len ) strncpy(pszTemp, pszFormat, (SCRIPT_MAX_LINE_LEN - 1));
+	if ( !len )
+		strncpy(pszTemp, pszFormat, (SCRIPT_MAX_LINE_LEN - 1));
 
-	// This get rids of exploits done sending 0x0C to the log subsytem.
-	// TCHAR *	 pFix;
-	// if ( ( pFix = strchr( pszText, 0x0C ) ) )
+	// This get rids of exploits done sending 0xC to the log subsytem
+	//TCHAR *pFix;
+	//if ( (pFix = strchr(pszText, 0xC)) )
 	//	*pFix = ' ';
 
-	return EventStr(wMask, pszTemp);
+	return EventStr(dwMask, pszTemp);
 }
 
 LPCTSTR const g_Stat_Name[STAT_QTY] =	// not sorted obviously.
@@ -571,7 +572,7 @@ bool Main::shouldExit()
 }
 
 Main g_Main;
-extern PingServer g_PingServer;
+extern CPingServer g_PingServer;
 extern CDataBaseAsyncHelper g_asyncHdb;
 #if !defined(_WIN32) || defined(_LIBEV)
 	extern LinuxEv g_NetworkEvent;
@@ -793,22 +794,22 @@ void CServer::ShipTimers_Tick()
 	}
 }
 
-void CServer::ShipTimers_Add(CItemShip * ship)
+void CServer::ShipTimers_Add(CItemShip *pShip)
 {
 	ADDTOCALLSTACK("CServer::ShipTimers_Add");
-	if (!ship)
+	if ( !pShip )
 		return;
-	m_ShipTimers.push_back(ship);
+	m_ShipTimers.push_back(pShip);
 }
 
-void CServer::ShipTimers_Delete(CItemShip * ship)
+void CServer::ShipTimers_Delete(CItemShip *pShip)
 {
 	ADDTOCALLSTACK("CServer::ShipTimers_Delete");
 	std::vector<CItemShip *>::iterator it;
 	for ( it = m_ShipTimers.begin(); it != m_ShipTimers.end(); ) 
 	{
-		CItemShip * pShip = *it;
-		if (pShip == ship)
+		CItemShip *pShipSearch = *it;
+		if ( pShipSearch == pShip )
 		{	
 			if ( m_ShipTimers.size() == 1 )
 			{
