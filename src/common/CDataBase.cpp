@@ -5,13 +5,12 @@ extern CDataBaseAsyncHelper g_asyncHdb;
 
 CDataBase::CDataBase()
 {
-	m_connected = false;
 	m_socket = NULL;
 }
 
 CDataBase::~CDataBase()
 {
-	if ( m_connected )
+	if ( m_socket )
 		Close();
 }
 
@@ -19,7 +18,7 @@ void CDataBase::Connect()
 {
 	ADDTOCALLSTACK("CDataBase::Connect");
 	SimpleThreadLock lock(m_connectionMutex);
-	if ( m_connected )
+	if ( m_socket )
 		return;
 
 	if ( mysql_get_client_version() < LIBMYSQL_VERSION_ID )
@@ -57,7 +56,6 @@ void CDataBase::Connect()
 
 	if ( mysql_real_connect(m_socket, host, user, password, db, port, NULL, CLIENT_MULTI_STATEMENTS) )
 	{
-		m_connected = true;
 		if ( mysql_get_server_version(m_socket) < MYSQL_VERSION_ID )
 			g_Log.EventWarn("Your MySQL server %s is outdated. For better compatibility, update your MySQL server to version %s\n", mysql_get_server_info(m_socket), MYSQL_SERVER_VERSION);
 	}
@@ -74,23 +72,22 @@ void CDataBase::Close()
 	ADDTOCALLSTACK("CDataBase::Close");
 	SimpleThreadLock lock(m_connectionMutex);
 	mysql_close(m_socket);
-	m_connected = false;
 	m_socket = NULL;
 }
 
-bool CDataBase::Query(const char *query, CVarDefMap &mapQueryResult)
+bool CDataBase::Query(LPCTSTR pszQuery, CVarDefMap &mapQueryResult)
 {
 	ADDTOCALLSTACK("CDataBase::Query");
 	mapQueryResult.Empty();
 	mapQueryResult.SetNumNew("NUMROWS", 0);
 
-	if ( !m_connected )
+	if ( !m_socket )
 		return false;
 
 	// Connection can only handle one query at a time, so lock the thread until the query finishes
 	SimpleThreadLock lock(m_connectionMutex);
 
-	int resultCode = mysql_query(m_socket, query);
+	int resultCode = mysql_query(m_socket, pszQuery);
 	if ( resultCode == 0 )
 	{
 		MYSQL_RES *result = mysql_store_result(m_socket);
@@ -104,7 +101,7 @@ bool CDataBase::Query(const char *query, CVarDefMap &mapQueryResult)
 			// This check is not really needed, MySQL client should be able to handle the same columns amount of MySQL server (4096).
 			// But since this value is too big and create an 4096 char array at -every- query call is not performance-friendly, maybe
 			// it's better just use an smaller array to prioritize performance.
-			g_Log.EventError("MySQL query returned too many columns [Max: %" FMTSIZE_T " / Cmd: \"%s\"]\n", COUNTOF(key), query);
+			g_Log.EventError("MySQL query returned too many columns [Max: %" FMTSIZE_T " / Cmd: \"%s\"]\n", COUNTOF(key), pszQuery);
 			mysql_free_result(result);
 			return false;
 		}
@@ -141,7 +138,7 @@ bool CDataBase::Query(const char *query, CVarDefMap &mapQueryResult)
 	}
 	else
 	{
-		g_Log.EventError("MySQL error #%u: %s [Cmd: \"%s\"]\n", mysql_errno(m_socket), mysql_error(m_socket), query);
+		g_Log.EventError("MySQL error #%u: %s [Cmd: \"%s\"]\n", mysql_errno(m_socket), mysql_error(m_socket), pszQuery);
 		if ( (resultCode == CR_SERVER_GONE_ERROR) || (resultCode == CR_SERVER_LOST) )
 			Close();
 
@@ -162,16 +159,16 @@ bool __cdecl CDataBase::Queryf(CVarDefMap &mapQueryResult, char *fmt, ...)
 	return Query(buf, mapQueryResult);
 }
 
-bool CDataBase::Exec(const char *query)
+bool CDataBase::Exec(LPCTSTR pszQuery)
 {
 	ADDTOCALLSTACK("CDataBase::Exec");
-	if ( !m_connected )
+	if ( !m_socket )
 		return false;
 
 	// Connection can only handle one query at a time, so lock the thread until the query finishes
 	SimpleThreadLock lock(m_connectionMutex);
 
-	int resultCode = mysql_query(m_socket, query);
+	int resultCode = mysql_query(m_socket, pszQuery);
 	if ( resultCode == 0 )
 	{
 		// Result must be retrieved from server even when no data is expected, otherwise the server will think the client has lost connection
@@ -184,7 +181,7 @@ bool CDataBase::Exec(const char *query)
 	}
 	else
 	{
-		g_Log.EventError("MySQL error #%u: %s [Cmd: \"%s\"]\n", mysql_errno(m_socket), mysql_error(m_socket), query);
+		g_Log.EventError("MySQL error #%u: %s [Cmd: \"%s\"]\n", mysql_errno(m_socket), mysql_error(m_socket), pszQuery);
 		if ( (resultCode == CR_SERVER_GONE_ERROR) || (resultCode == CR_SERVER_LOST) )
 			Close();
 
@@ -205,28 +202,28 @@ bool __cdecl CDataBase::Execf(char *fmt, ...)
 	return Exec(buf);
 }
 
-bool CDataBase::AsyncQueue(bool isQuery, LPCTSTR function, LPCTSTR query)
+bool CDataBase::AsyncQueue(bool fQuery, LPCTSTR pszFunction, LPCTSTR pszQuery)
 {
 	ADDTOCALLSTACK("CDataBase::AsyncQueue");
-	if ( !g_Cfg.m_Functions.ContainsKey(function) )
+	if ( !g_Cfg.m_Functions.ContainsKey(pszFunction) )
 	{
-		g_Log.EventError("Invalid %s callback function '%s'\n", isQuery ? "AQUERY" : "AEXECUTE", function);
+		g_Log.EventError("Invalid %s callback function '%s'\n", fQuery ? "AQUERY" : "AEXECUTE", pszFunction);
 		return false;
 	}
 
 	if ( !g_asyncHdb.isActive() )
 		g_asyncHdb.start();
 
-	g_asyncHdb.addQuery(isQuery, function, query);
+	g_asyncHdb.addQuery(fQuery, pszFunction, pszQuery);
 	return true;
 }
 
-void CDataBase::AsyncQueueCallback(CGString &function, CScriptTriggerArgs *result)
+void CDataBase::AsyncQueueCallback(CGString &sFunction, CScriptTriggerArgs *Args)
 {
 	ADDTOCALLSTACK("CDataBase::AsyncQueueCallback");
 	SimpleThreadLock lock(m_resultMutex);
 
-	m_QueryArgs.push(FunctionArgsPair_t(function, result));
+	m_QueryArgs.push(FunctionArgsPair_t(sFunction, Args));
 }
 
 bool CDataBase::OnTick()
@@ -242,7 +239,7 @@ bool CDataBase::OnTick()
 	if ( ++tickcnt >= 1000 )
 	{
 		tickcnt = 0;
-		if ( m_connected )
+		if ( m_socket )
 		{
 			SimpleThreadLock lock(m_connectionMutex);
 			if ( mysql_ping(m_socket) != 0 )
@@ -358,7 +355,7 @@ bool CDataBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		}
 		case DBO_CONNECTED:
 		{
-			sVal.FormatVal(m_connected);
+			sVal.FormatVal(m_socket != NULL);
 			break;
 		}
 		case DBO_ESCAPEDATA:
@@ -371,7 +368,7 @@ bool CDataBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			{
 				TCHAR *escapedString = Str_GetTemp();
 				SimpleThreadLock lock(m_connectionMutex);
-				if ( m_connected && mysql_real_escape_string(m_socket, escapedString, pszKey, static_cast<unsigned long>(strlen(pszKey))) )
+				if ( m_socket && mysql_real_escape_string(m_socket, escapedString, pszKey, static_cast<unsigned long>(strlen(pszKey))) )
 					sVal = escapedString;
 			}
 			break;
@@ -408,12 +405,12 @@ bool CDataBase::r_Verb(CScript &s, CTextConsole *pSrc)
 	switch ( index )
 	{
 		case DBOV_CLOSE:
-			if ( m_connected )
+			if ( m_socket )
 				Close();
 			break;
 
 		case DBOV_CONNECT:
-			if ( !m_connected )
+			if ( !m_socket )
 				Connect();
 			break;
 

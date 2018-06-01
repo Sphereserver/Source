@@ -1,9 +1,6 @@
-//
-//	CDataBase
-//		MySQL wrapper for easier data operations witheen in-game server
-//
-#ifndef CDATABASE_H
-#define	CDATABASE_H
+#ifndef _INC_CDATABASE_H
+#define	_INC_CDATABASE_H
+#pragma once
 
 #include "graycom.h"
 #include "CScriptObj.h"
@@ -21,25 +18,39 @@ class CDataBase : public CScriptObj
 {
 public:
 	static const char *m_sClassName;
+	static LPCTSTR const sm_szLoadKeys[];
+	static LPCTSTR const sm_szVerbKeys[];
+
 	CDataBase();
 	~CDataBase();
 
 private:
-	CDataBase(const CDataBase &copy);
-	CDataBase &operator=(const CDataBase &other);
+	typedef std::pair<CGString, CScriptTriggerArgs *> FunctionArgsPair_t;
+	typedef std::queue<FunctionArgsPair_t> QueueFunction_t;
+
+protected:
+	MYSQL *m_socket;
+	QueueFunction_t m_QueryArgs;
+
+public:
+	CVarDefMap m_QueryResult;
+
+private:
+	SimpleMutex m_connectionMutex;
+	SimpleMutex m_resultMutex;
 
 public:
 	void Connect();
 	void Close();
 
-	bool Query(const char *query, CVarDefMap &mapQueryResult);			// SQL commands that need query result (SELECT)
+	bool Query(LPCTSTR pszQuery, CVarDefMap &mapQueryResult);		// SQL commands that need query result (SELECT)
 	bool __cdecl Queryf(CVarDefMap &mapQueryResult, char *fmt, ...) __printfargs(3, 4);
 
-	bool Exec(const char *query);			// SQL commands that doesn't need query result (SET, INSERT, DELETE, ...)
+	bool Exec(LPCTSTR pszQuery);		// SQL commands that doesn't need query result (SET, INSERT, DELETE, ...)
 	bool __cdecl Execf(char *fmt, ...) __printfargs(2, 3);
 
-	bool AsyncQueue(bool isQuery, LPCTSTR function, LPCTSTR query);
-	void AsyncQueueCallback(CGString &function, CScriptTriggerArgs *result);
+	bool AsyncQueue(bool fQuery, LPCTSTR pszFunction, LPCTSTR pszQuery);
+	void AsyncQueueCallback(CGString &sFunction, CScriptTriggerArgs *Args);
 
 	bool OnTick();
 
@@ -53,23 +64,9 @@ public:
 		return "SQL_OBJ";
 	}
 
-public:
-	CVarDefMap m_QueryResult;
-	static LPCTSTR const sm_szLoadKeys[];
-	static LPCTSTR const sm_szVerbKeys[];
-
 private:
-	typedef std::pair<CGString, CScriptTriggerArgs *> FunctionArgsPair_t;
-	typedef std::queue<FunctionArgsPair_t> QueueFunction_t;
-
-protected:
-	bool m_connected;
-	MYSQL *m_socket;
-	QueueFunction_t m_QueryArgs;
-
-private:
-	SimpleMutex m_connectionMutex;
-	SimpleMutex m_resultMutex;
+	CDataBase(const CDataBase &copy);
+	CDataBase &operator=(const CDataBase &other);
 };
 
-#endif
+#endif	// _INC_CDATABASE_H
