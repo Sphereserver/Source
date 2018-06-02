@@ -78,6 +78,12 @@
     <ClCompile Include="src\common\CAssoc.cpp">
       <Filter>common</Filter>
     </ClCompile>
+    <ClCompile Include="src\common\CCacheableScriptFile.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\CCSVFile.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
     <ClCompile Include="src\common\CDataBase.cpp">
       <Filter>common</Filter>
     </ClCompile>
@@ -100,6 +106,9 @@
       <Filter>common</Filter>
     </ClCompile>
     <ClCompile Include="src\common\CGrayMap.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\CListDefMap.cpp">
       <Filter>common</Filter>
     </ClCompile>
     <ClCompile Include="src\common\CMD5.cpp">
@@ -138,9 +147,6 @@
     <ClCompile Include="src\common\CVarDefMap.cpp">
       <Filter>common</Filter>
     </ClCompile>
-    <ClCompile Include="src\common\ListDefContMap.cpp">
-      <Filter>common</Filter>
-    </ClCompile>
     <ClCompile Include="src\common\CWindow.cpp">
       <Filter>common</Filter>
     </ClCompile>
@@ -165,9 +171,6 @@
     <ClCompile Include="src\sphere\threads.cpp">
       <Filter>sphere</Filter>
     </ClCompile>
-    <ClCompile Include="src\common\CacheableScriptFile.cpp">
-      <Filter>common</Filter>
-    </ClCompile>
     <ClCompile Include="src\graysvr\CItemMultiCustom.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
@@ -176,9 +179,6 @@
     </ClCompile>
     <ClCompile Include="src\common\crashdump\crashdump.cpp">
       <Filter>common\crashdump</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\CsvFile.cpp">
-      <Filter>common</Filter>
     </ClCompile>
     <ClCompile Include="src\common\CVarFloat.cpp">
       <Filter>common</Filter>
@@ -194,9 +194,6 @@
     </ClCompile>
     <ClCompile Include="src\network\send.cpp">
       <Filter>network</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graysvr\PingServer.cpp">
-      <Filter>graysvr</Filter>
     </ClCompile>
     <ClCompile Include="src\common\sqlite\SQLite.cpp">
       <Filter>common\sqlite</Filter>
@@ -312,6 +309,12 @@
     <ClCompile Include="src\graysvr\CLog.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
+    <ClCompile Include="src\graysvr\CNTService.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graysvr\CNTWindow.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
     <ClCompile Include="src\graysvr\CObjBase.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
@@ -319,6 +322,9 @@
       <Filter>graysvr</Filter>
     </ClCompile>
     <ClCompile Include="src\graysvr\CPathFinder.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graysvr\CPingServer.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
     <ClCompile Include="src\graysvr\CResource.cpp">
@@ -339,6 +345,9 @@
     <ClCompile Include="src\graysvr\CServRef.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
+    <ClCompile Include="src\graysvr\CUnixTerminal.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
     <ClCompile Include="src\graysvr\CWebPage.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
@@ -352,15 +361,6 @@
       <Filter>graysvr</Filter>
     </ClCompile>
     <ClCompile Include="src\graysvr\graysvr.cpp">
-      <Filter>graysvr</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graysvr\ntservice.cpp">
-      <Filter>graysvr</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graysvr\ntwindow.cpp">
-      <Filter>graysvr</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graysvr\UnixTerminal.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
     <ClCompile Include="src\common\CEncrypt.cpp">
@@ -419,6 +419,12 @@
     <ClInclude Include="src\common\CAssoc.h">
       <Filter>common</Filter>
     </ClInclude>
+    <ClInclude Include="src\common\CCacheableScriptFile.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="src\common\CCSVFile.h">
+      <Filter>common</Filter>
+    </ClInclude>
     <ClInclude Include="src\common\CDataBase.h">
       <Filter>common</Filter>
     </ClInclude>
@@ -438,6 +444,9 @@
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="src\common\CGrayMap.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="src\common\CListDefMap.h">
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="src\common\CMemBlock.h">
@@ -479,9 +488,6 @@
     <ClInclude Include="src\common\CVarDefMap.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="src\common\ListDefContMap.h">
-      <Filter>common</Filter>
-    </ClInclude>
     <ClInclude Include="src\common\graycom.h">
       <Filter>common</Filter>
     </ClInclude>
@@ -521,14 +527,8 @@
     <ClInclude Include="src\sphere\threads.h">
       <Filter>sphere</Filter>
     </ClInclude>
-    <ClInclude Include="src\common\CacheableScriptFile.h">
-      <Filter>common</Filter>
-    </ClInclude>
     <ClInclude Include="src\common\crashdump\crashdump.h">
       <Filter>common\crashdump</Filter>
-    </ClInclude>
-    <ClInclude Include="src\common\CsvFile.h">
-      <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="src\common\CVarFloat.h">
       <Filter>common</Filter>
@@ -545,9 +545,6 @@
     <ClInclude Include="src\network\send.h">
       <Filter>network</Filter>
     </ClInclude>
-    <ClInclude Include="src\graysvr\PingServer.h">
-      <Filter>graysvr</Filter>
-    </ClInclude>
     <ClInclude Include="src\common\mtrand\mtrand.h">
       <Filter>common\mtrand</Filter>
     </ClInclude>
@@ -559,9 +556,6 @@
     </ClInclude>
     <ClInclude Include="src\common\zlib\gzguts.h">
       <Filter>common\zlib</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graysvr\UnixTerminal.h">
-      <Filter>graysvr</Filter>
     </ClInclude>
     <ClInclude Include="src\common\CMD5.h">
       <Filter>common</Filter>
@@ -593,10 +587,16 @@
     <ClInclude Include="src\graysvr\CItemBase.h">
       <Filter>graysvr</Filter>
     </ClInclude>
+    <ClInclude Include="src\graysvr\CNTService.h">
+      <Filter>graysvr</Filter>
+    </ClInclude>
     <ClInclude Include="src\graysvr\CObjBase.h">
       <Filter>graysvr</Filter>
     </ClInclude>
     <ClInclude Include="src\graysvr\CPathFinder.h">
+      <Filter>graysvr</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graysvr\CPingServer.h">
       <Filter>graysvr</Filter>
     </ClInclude>
     <ClInclude Include="src\graysvr\CResource.h">
@@ -606,6 +606,9 @@
       <Filter>graysvr</Filter>
     </ClInclude>
     <ClInclude Include="src\graysvr\CServRef.h">
+      <Filter>graysvr</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graysvr\CUnixTerminal.h">
       <Filter>graysvr</Filter>
     </ClInclude>
     <ClInclude Include="src\graysvr\CWorld.h">
@@ -622,9 +625,6 @@
     </ClInclude>
     <ClInclude Include="src\common\CEncrypt.h">
       <Filter>common</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graysvr\ntservice.h">
-      <Filter>graysvr</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

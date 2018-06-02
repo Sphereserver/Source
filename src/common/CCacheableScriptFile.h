@@ -1,15 +1,15 @@
-#ifndef _INC_CACHEABLESCRIPTFILE_H
-#define _INC_CACHEABLESCRIPTFILE_H
+#ifndef _INC_CCACHEABLESCRIPTFILE_H
+#define _INC_CCACHEABLESCRIPTFILE_H
 #pragma once
 
 #include <string>
 #include "CFile.h"
 
-class CacheableScriptFile : public CFileText
+class CCacheableScriptFile : public CFileText
 {
 public:
-	CacheableScriptFile();
-	~CacheableScriptFile();
+	CCacheableScriptFile();
+	~CCacheableScriptFile();
 
 private:
 	bool m_closed;
@@ -22,7 +22,7 @@ protected:
 protected:
 	virtual bool OpenBase(void *pExtra);
 	virtual void CloseBase();
-	void DupeFrom(CacheableScriptFile *other);
+	void DupeFrom(CCacheableScriptFile *other);
 
 public:
 	virtual bool IsFileOpen() const;
@@ -35,8 +35,8 @@ private:
 	bool UseDefaultFile() const;
 
 private:
-	CacheableScriptFile(const CacheableScriptFile &copy);
-	CacheableScriptFile &operator=(const CacheableScriptFile &other);
+	CCacheableScriptFile(const CCacheableScriptFile &copy);
+	CCacheableScriptFile &operator=(const CCacheableScriptFile &other);
 };
 
-#endif	// _INC_CACHEABLESCRIPTFILE_H
+#endif	// _INC_CCACHEABLESCRIPTFILE_H

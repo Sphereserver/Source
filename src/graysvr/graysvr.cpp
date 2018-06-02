@@ -1,11 +1,11 @@
 #include "graysvr.h"	// predef header.
 #include "../common/grayver.h"	// sphere version
-#include "PingServer.h"	// ping server
+#include "CPingServer.h"	// ping server
 #include "../network/network.h" // network thread
 #include "../sphere/asyncdb.h"
 #if !defined(_WIN32) || defined(_LIBEV)
 	#include "../sphere/linuxev.h"
-	#include "UnixTerminal.h"
+	#include "CUnixTerminal.h"
 #endif
 
 #if !defined(pid_t)
@@ -13,7 +13,7 @@
 #endif
 
 #ifdef _WIN32
-	#include "ntservice.h"	// g_Service
+	#include "CNTService.h"	// g_Service
 #endif
 
 //Trigger function start
@@ -572,7 +572,7 @@ bool Main::shouldExit()
 }
 
 Main g_Main;
-extern PingServer g_PingServer;
+extern CPingServer g_PingServer;
 extern CDataBaseAsyncHelper g_asyncHdb;
 #if !defined(_WIN32) || defined(_LIBEV)
 	extern LinuxEv g_NetworkEvent;

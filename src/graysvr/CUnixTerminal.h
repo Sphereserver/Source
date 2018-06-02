@@ -1,5 +1,5 @@
-#ifndef _INC_UNIXTERMINAL_H
-#define _INC_UNIXTERMINAL_H
+#ifndef _INC_CUNIXTERMINAL_H
+#define _INC_CUNIXTERMINAL_H
 #ifndef _WIN32
 
 #ifdef _USECURSES
@@ -9,7 +9,7 @@
 #include <termios.h>
 #endif
 
-class UnixTerminal
+class CUnixTerminal
 {
 private:
 #ifdef _USECURSES
@@ -36,12 +36,12 @@ public:
 	};
 
 public:
-	UnixTerminal();
-	~UnixTerminal();
+	CUnixTerminal();
+	~CUnixTerminal();
 
 protected:
-	UnixTerminal(const UnixTerminal & copy);
-	UnixTerminal & operator=(const UnixTerminal & other);
+	CUnixTerminal(const CUnixTerminal & copy);
+	CUnixTerminal & operator=(const CUnixTerminal & other);
 
 public:
 	bool isReady();
@@ -62,7 +62,7 @@ public:
 	}
 };
 
-extern UnixTerminal g_UnixTerminal;
+extern CUnixTerminal g_UnixTerminal;
 
 #endif	// _WIN32
-#endif	// _INC_UNIXTERMINAL_H
+#endif	// _INC_CUNIXTERMINAL_H

@@ -1,6 +1,6 @@
 #include "../graysvr/graysvr.h"
 
-CSVFile::CSVFile()
+CCSVFile::CCSVFile()
 {
 	m_iColumnCount = 0;
 	m_iCurrentRow = 0;
@@ -8,7 +8,7 @@ CSVFile::CSVFile()
 	m_pszColumnNames[0] = NULL;
 }
 
-CSVFile::~CSVFile()
+CCSVFile::~CCSVFile()
 {
 	for ( size_t i = 0; m_pszColumnTypes[i] != NULL; i++ )
 		delete[] m_pszColumnTypes[i];
@@ -17,10 +17,10 @@ CSVFile::~CSVFile()
 		delete[] m_pszColumnNames[i];
 }
 
-bool CSVFile::OpenBase(void *pExtra)
+bool CCSVFile::OpenBase(void *pExtra)
 {
-	ADDTOCALLSTACK("CSVFile::OpenBase");
-	if ( !CacheableScriptFile::OpenBase(pExtra) )
+	ADDTOCALLSTACK("CCSVFile::OpenBase");
+	if ( !CCacheableScriptFile::OpenBase(pExtra) )
 		return false;
 
 	m_iCurrentRow = 0;
@@ -72,9 +72,9 @@ bool CSVFile::OpenBase(void *pExtra)
 	return true;
 }
 
-size_t CSVFile::ReadRowContent(TCHAR **ppOutput, size_t rowIndex, size_t columns)
+size_t CCSVFile::ReadRowContent(TCHAR **ppOutput, size_t rowIndex, size_t columns)
 {
-	ADDTOCALLSTACK("CSVFile::ReadRowContent");
+	ADDTOCALLSTACK("CCSVFile::ReadRowContent");
 	ASSERT((columns > 0) && (columns <= FILE_MAX_COLUMNS));
 	if ( GetPosition() != rowIndex )
 		Seek(static_cast<long>(rowIndex), SEEK_SET);
@@ -86,9 +86,9 @@ size_t CSVFile::ReadRowContent(TCHAR **ppOutput, size_t rowIndex, size_t columns
 	return Str_ParseCmds(pszLine, ppOutput, columns, "\t");
 }
 
-bool CSVFile::ReadRowContent(size_t rowIndex, CSVRowData &target)
+bool CCSVFile::ReadRowContent(size_t rowIndex, CSVRowData &target)
 {
-	ADDTOCALLSTACK("CSVFile::ReadRowContent");
+	ADDTOCALLSTACK("CCSVFile::ReadRowContent");
 	// Get row data
 	TCHAR *ppRowContent[FILE_MAX_COLUMNS];
 	size_t columns = ReadRowContent(ppRowContent, rowIndex);
@@ -103,16 +103,16 @@ bool CSVFile::ReadRowContent(size_t rowIndex, CSVRowData &target)
 	return !target.empty();
 }
 
-size_t CSVFile::ReadNextRowContent(TCHAR **ppOutput)
+size_t CCSVFile::ReadNextRowContent(TCHAR **ppOutput)
 {
-	ADDTOCALLSTACK("CSVFile::ReadNextRowContent");
+	ADDTOCALLSTACK("CCSVFile::ReadNextRowContent");
 	++m_iCurrentRow;
 	return ReadRowContent(ppOutput, m_iCurrentRow);
 }
 
-bool CSVFile::ReadNextRowContent(CSVRowData &target)
+bool CCSVFile::ReadNextRowContent(CSVRowData &target)
 {
-	ADDTOCALLSTACK("CSVFile::ReadNextRowContent");
+	ADDTOCALLSTACK("CCSVFile::ReadNextRowContent");
 	++m_iCurrentRow;
 	return ReadRowContent(m_iCurrentRow, target);
 }
