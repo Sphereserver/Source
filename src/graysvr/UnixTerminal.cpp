@@ -1,15 +1,15 @@
 #ifndef _WIN32
 #include "graysvr.h"	// predef header
-#include "CUnixTerminal.h"
+#include "UnixTerminal.h"
 #ifndef _USECURSES
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/time.h>
 #endif
 
-CUnixTerminal g_UnixTerminal;
+UnixTerminal g_UnixTerminal;
 
-CUnixTerminal::CUnixTerminal() :
+UnixTerminal::UnixTerminal() :
 #ifdef _USECURSES
  m_window(NULL),
 #endif
@@ -17,14 +17,14 @@ CUnixTerminal::CUnixTerminal() :
 {
 }
 
-CUnixTerminal::~CUnixTerminal()
+UnixTerminal::~UnixTerminal()
 {
 	restore();
 }
 
-bool CUnixTerminal::isReady()
+bool UnixTerminal::isReady()
 {
-	ADDTOCALLSTACK("CUnixTerminal::isReady");
+	ADDTOCALLSTACK("UnixTerminal::isReady");
 	if (m_nextChar != '\0')
 		return true;
 
@@ -90,15 +90,15 @@ bool CUnixTerminal::isReady()
 	return false;
 }
 
-TCHAR CUnixTerminal::read()
+TCHAR UnixTerminal::read()
 {
-	ADDTOCALLSTACK("CUnixTerminal::read");
+	ADDTOCALLSTACK("UnixTerminal::read");
 	TCHAR c = m_nextChar;
 	m_nextChar = '\0';
 	return c;
 }
 
-void CUnixTerminal::setColor(COLOR_TYPE color)
+void UnixTerminal::setColor(COLOR_TYPE color)
 {
 	if (m_isColorEnabled == false)
 		return;
@@ -116,9 +116,9 @@ void CUnixTerminal::setColor(COLOR_TYPE color)
 #endif
 }
 
-void CUnixTerminal::print(LPCTSTR message)
+void UnixTerminal::print(LPCTSTR message)
 {
-	ADDTOCALLSTACK("CUnixTerminal::print");
+	ADDTOCALLSTACK("UnixTerminal::print");
 	ASSERT(message != NULL);
 #ifdef _USECURSES
 	waddstr(m_window, message);
@@ -128,9 +128,9 @@ void CUnixTerminal::print(LPCTSTR message)
 #endif
 }
 
-void CUnixTerminal::prepare()
+void UnixTerminal::prepare()
 {
-	ADDTOCALLSTACK("CUnixTerminal::prepare");
+	ADDTOCALLSTACK("UnixTerminal::prepare");
 	ASSERT(m_prepared == false);
 
 #ifdef _USECURSES
@@ -169,9 +169,9 @@ void CUnixTerminal::prepare()
 	m_prepared = true;
 }
 
-void CUnixTerminal::prepareColor()
+void UnixTerminal::prepareColor()
 {
-	ADDTOCALLSTACK("CUnixTerminal::prepareColor");
+	ADDTOCALLSTACK("UnixTerminal::prepareColor");
 
 #ifdef _USECURSES
 	m_isColorEnabled = has_colors();
@@ -218,9 +218,9 @@ void CUnixTerminal::prepareColor()
 #endif
 }
 
-void CUnixTerminal::restore()
+void UnixTerminal::restore()
 {
-	ADDTOCALLSTACK("CUnixTerminal::restore");
+	ADDTOCALLSTACK("UnixTerminal::restore");
 	ASSERT(m_prepared);
 
 #ifdef _USECURSES
@@ -236,7 +236,7 @@ void CUnixTerminal::restore()
 	m_prepared = false;
 }
 
-void CUnixTerminal::setColorEnabled(bool enable)
+void UnixTerminal::setColorEnabled(bool enable)
 {
 	m_isColorEnabled = enable;
 }

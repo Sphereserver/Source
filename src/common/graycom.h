@@ -130,7 +130,7 @@
 
 class CTextConsole; // swapped these two includes, so need to declare this here
 #include "CVarDefMap.h"
-#include "CListDefMap.h"
+#include "ListDefContMap.h"
 #include "CExpression.h"
 #include "CVarFloat.h"
 #include "CScriptObj.h"

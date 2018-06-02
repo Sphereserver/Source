@@ -1,7 +1,7 @@
-#include "CCacheableScriptFile.h"
+#include "CacheableScriptFile.h"
 #include "../graysvr/graysvr.h"
 
-CCacheableScriptFile::CCacheableScriptFile()
+CacheableScriptFile::CacheableScriptFile()
 {
 	m_closed = true;
 	m_realFile = false;
@@ -9,17 +9,17 @@ CCacheableScriptFile::CCacheableScriptFile()
 	m_fileContent = NULL;
 }
 
-CCacheableScriptFile::~CCacheableScriptFile()
+CacheableScriptFile::~CacheableScriptFile()
 {
 	Close();
 }
 
-bool CCacheableScriptFile::OpenBase(void *pExtra)
+bool CacheableScriptFile::OpenBase(void *pExtra)
 {
 	if ( UseDefaultFile() )
 		return CFileText::OpenBase(pExtra);
 
-	ADDTOCALLSTACK("CCacheableScriptFile::OpenBase");
+	ADDTOCALLSTACK("CacheableScriptFile::OpenBase");
 	m_pStream = fopen(GetFilePath(), GetModeStr());
 	if ( !m_pStream )
 		return false;
@@ -57,12 +57,12 @@ bool CCacheableScriptFile::OpenBase(void *pExtra)
 	return true;
 }
 
-void CCacheableScriptFile::CloseBase()
+void CacheableScriptFile::CloseBase()
 {
 	if ( UseDefaultFile() )
 		return CFileText::CloseBase();
 
-	ADDTOCALLSTACK("CCacheableScriptFile::CloseBase");
+	ADDTOCALLSTACK("CacheableScriptFile::CloseBase");
 	if ( m_realFile && m_fileContent )
 	{
 		m_fileContent->clear();
@@ -74,7 +74,7 @@ void CCacheableScriptFile::CloseBase()
 	m_closed = true;
 }
 
-void CCacheableScriptFile::DupeFrom(CCacheableScriptFile *other)
+void CacheableScriptFile::DupeFrom(CacheableScriptFile *other)
 {
 	if ( UseDefaultFile() )
 		return;
@@ -84,30 +84,30 @@ void CCacheableScriptFile::DupeFrom(CCacheableScriptFile *other)
 	m_fileContent = other->m_fileContent;
 }
 
-bool CCacheableScriptFile::IsFileOpen() const
+bool CacheableScriptFile::IsFileOpen() const
 {
 	if ( UseDefaultFile() )
 		return CFileText::IsFileOpen();
 
-	ADDTOCALLSTACK("CCacheableScriptFile::IsFileOpen");
+	ADDTOCALLSTACK("CacheableScriptFile::IsFileOpen");
 	return !m_closed;
 }
 
-bool CCacheableScriptFile::IsEOF() const
+bool CacheableScriptFile::IsEOF() const
 {
 	if ( UseDefaultFile() )
 		return CFileText::IsEOF();
 
-	ADDTOCALLSTACK("CCacheableScriptFile::IsEOF");
+	ADDTOCALLSTACK("CacheableScriptFile::IsEOF");
 	return (!m_fileContent || (m_currentLine == m_fileContent->size()));
 }
 
-TCHAR *CCacheableScriptFile::ReadString(TCHAR *pBuffer, size_t iSizeMax)
+TCHAR *CacheableScriptFile::ReadString(TCHAR *pBuffer, size_t iSizeMax)
 {
 	if ( UseDefaultFile() )
 		return CFileText::ReadString(pBuffer, iSizeMax);
 
-	ADDTOCALLSTACK("CCacheableScriptFile::ReadString");
+	ADDTOCALLSTACK("CacheableScriptFile::ReadString");
 	if ( m_fileContent && (m_currentLine < m_fileContent->size()) )
 	{
 		*pBuffer = '\0';
@@ -118,12 +118,12 @@ TCHAR *CCacheableScriptFile::ReadString(TCHAR *pBuffer, size_t iSizeMax)
 	return NULL;
 }
 
-DWORD CCacheableScriptFile::Seek(long lOffset, UINT uOrigin)
+DWORD CacheableScriptFile::Seek(long lOffset, UINT uOrigin)
 {
 	if ( UseDefaultFile() )
 		return CFileText::Seek(lOffset, uOrigin);
 
-	ADDTOCALLSTACK("CCacheableScriptFile::Seek");
+	ADDTOCALLSTACK("CacheableScriptFile::Seek");
 	size_t iLine = lOffset;
 
 	if ( uOrigin != SEEK_SET )
@@ -137,16 +137,16 @@ DWORD CCacheableScriptFile::Seek(long lOffset, UINT uOrigin)
 	return 0;
 }
 
-DWORD CCacheableScriptFile::GetPosition() const
+DWORD CacheableScriptFile::GetPosition() const
 {
 	if ( UseDefaultFile() )
 		return CFileText::GetPosition();
 
-	ADDTOCALLSTACK("CCacheableScriptFile::GetPosition");
+	ADDTOCALLSTACK("CacheableScriptFile::GetPosition");
 	return m_currentLine;
 }
 
-bool CCacheableScriptFile::UseDefaultFile() const
+bool CacheableScriptFile::UseDefaultFile() const
 {
 	return (IsWriteMode() || (GetFullMode() & OF_DEFAULTMODE));
 }

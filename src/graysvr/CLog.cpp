@@ -1,6 +1,6 @@
 #include "graysvr.h"	// predef header.
 #ifndef _WIN32
-	#include "CUnixTerminal.h"
+	#include "UnixTerminal.h"
 #endif
 
 ///////////////////////////////////////////////////////////////
@@ -65,19 +65,19 @@ void CLog::SetColor( Color color )
 			NTWindow_PostMsgColor(0);
 #else
 		case WHITE:
-			g_UnixTerminal.setColor(CUnixTerminal::COL_WHITE);
+			g_UnixTerminal.setColor(UnixTerminal::COL_WHITE);
 			break;
 		case YELLOW:
-			g_UnixTerminal.setColor(CUnixTerminal::COL_YELLOW);
+			g_UnixTerminal.setColor(UnixTerminal::COL_YELLOW);
 			break;
 		case RED:
-			g_UnixTerminal.setColor(CUnixTerminal::COL_RED);
+			g_UnixTerminal.setColor(UnixTerminal::COL_RED);
 			break;
 		case CYAN:
-			g_UnixTerminal.setColor(CUnixTerminal::COL_CYAN);
+			g_UnixTerminal.setColor(UnixTerminal::COL_CYAN);
 			break;
 		default:
-			g_UnixTerminal.setColor(CUnixTerminal::COL_DEFAULT);
+			g_UnixTerminal.setColor(UnixTerminal::COL_DEFAULT);
 #endif
 	}
 }

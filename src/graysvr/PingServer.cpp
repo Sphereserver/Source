@@ -1,9 +1,9 @@
-#include "CPingServer.h"
+#include "PingServer.h"
 
-CPingServer g_PingServer;
+PingServer g_PingServer;
 
 // run the thread in RealTime as we need pings to be responded to ASAP
-CPingServer::CPingServer() : AbstractSphereThread("PingServer", IThread::RealTime)
+PingServer::PingServer() : AbstractSphereThread("PingServer", IThread::RealTime)
 {
 	m_profile.EnableProfile(PROFILE_NETWORK_RX);
 	m_profile.EnableProfile(PROFILE_NETWORK_TX);
@@ -13,11 +13,11 @@ CPingServer::CPingServer() : AbstractSphereThread("PingServer", IThread::RealTim
 	m_socket.Close();
 }
 
-CPingServer::~CPingServer()
+PingServer::~PingServer()
 {
 }
 
-void CPingServer::onStart()
+void PingServer::onStart()
 {
 	AbstractSphereThread::onStart();
 	if ( m_socket.IsOpen() )
@@ -43,7 +43,7 @@ void CPingServer::onStart()
 	}
 }
 
-void CPingServer::tick()
+void PingServer::tick()
 {
 	// prepare to receive data from somewhere
 	char buffer[PINGSERVER_BUFFER];
@@ -68,14 +68,14 @@ void CPingServer::tick()
 	CurrentProfileData.Count(PROFILE_DATA_TX, sent);
 }
 
-bool CPingServer::shouldExit()
+bool PingServer::shouldExit()
 {
 	if (m_socket.IsOpen() == false)
 		return true;
 	return AbstractSphereThread::shouldExit();
 }
 
-void CPingServer::waitForClose()
+void PingServer::waitForClose()
 {
 	m_socket.Close();
 	AbstractSphereThread::waitForClose();

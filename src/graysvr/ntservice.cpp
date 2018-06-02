@@ -2,7 +2,7 @@
 
 #ifdef _WIN32
 #include "graysvr.h"
-#include "CNTService.h"
+#include "ntservice.h"
 #include "../common/grayver.h"
 
 CNTService g_Service;

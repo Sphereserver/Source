@@ -75,19 +75,19 @@ SRC	:= 	./src/graysvr/CAccount.cpp \
 		./src/graysvr/CObjBase.cpp \
 		./src/graysvr/CParty.cpp \
 		./src/graysvr/CPathFinder.cpp \
-		./src/graysvr/CPingServer.cpp \
 		./src/graysvr/CResource.cpp \
 		./src/graysvr/CResourceCalc.cpp \
 		./src/graysvr/CResourceDef.cpp \
 		./src/graysvr/CSector.cpp \
 		./src/graysvr/CServer.cpp \
 		./src/graysvr/CServRef.cpp \
-		./src/graysvr/CUnixTerminal.cpp \
 		./src/graysvr/CWebPage.cpp \
 		./src/graysvr/CWorld.cpp \
 		./src/graysvr/CWorldImport.cpp \
 		./src/graysvr/CWorldMap.cpp \
 		./src/graysvr/graysvr.cpp \
+		./src/graysvr/PingServer.cpp \
+		./src/graysvr/UnixTerminal.cpp \
 		./src/common/twofish/twofish2.cpp \
 		./src/common/libev/wrapper_ev.c \
 		./src/common/zlib/adler32.c \
@@ -107,18 +107,16 @@ SRC	:= 	./src/graysvr/CAccount.cpp \
 		./src/common/zlib/zutil.c \
 		./src/common/CArray.cpp \
 		./src/common/CAssoc.cpp \
-		./src/common/CCacheableScriptFile.cpp \
-		./src/common/CCSVFile.cpp \
 		./src/common/CDataBase.cpp \
 		./src/common/CEncrypt.cpp \
 		./src/common/CExpression.cpp \
 		./src/common/CException.cpp \
+		./src/common/CacheableScriptFile.cpp \
 		./src/common/CFile.cpp \
 		./src/common/CFileList.cpp \
 		./src/common/CGrayData.cpp \
 		./src/common/CGrayInst.cpp \
 		./src/common/CGrayMap.cpp \
-		./src/common/CListDefMap.cpp \
 		./src/common/CMD5.cpp \
 		./src/common/CQueue.cpp \
 		./src/common/CRect.cpp \
@@ -128,10 +126,12 @@ SRC	:= 	./src/graysvr/CAccount.cpp \
 		./src/common/CScriptObj.cpp \
 		./src/common/CSectorTemplate.cpp \
 		./src/common/CSocket.cpp \
+		./src/common/CsvFile.cpp \
 		./src/common/CTime.cpp \
 		./src/common/CString.cpp \
 		./src/common/CVarDefMap.cpp \
 		./src/common/CVarFloat.cpp \
+		./src/common/ListDefContMap.cpp \
 		./src/common/graycom.cpp \
 		./src/common/sqlite/SQLite.cpp \
 		./src/common/sqlite/sqlite3.c \

@@ -646,7 +646,7 @@ bool CResourceLock::OpenBase(void *pExtra)
 	// Open a seperate copy of an already opened file
 	m_pStream = m_pLock->m_pStream;
 	m_hFile = m_pLock->m_hFile;
-	CCacheableScriptFile::DupeFrom(m_pLock);
+	CacheableScriptFile::DupeFrom(m_pLock);
 
 	// Assume this is the new error context
 	m_PrvScriptContext.OpenScript(this);
@@ -680,7 +680,7 @@ bool CResourceLock::ReadTextLine(bool fRemoveBlanks)
 	ASSERT(m_pLock);
 	ASSERT(!IsBinaryMode());
 
-	while ( CCacheableScriptFile::ReadString(GetKeyBufferRaw(SCRIPT_MAX_LINE_LEN), SCRIPT_MAX_LINE_LEN) )
+	while ( CacheableScriptFile::ReadString(GetKeyBufferRaw(SCRIPT_MAX_LINE_LEN), SCRIPT_MAX_LINE_LEN) )
 	{
 		m_pLock->m_iLineNum = ++m_iLineNum;		// share this with original open
 		if ( fRemoveBlanks )

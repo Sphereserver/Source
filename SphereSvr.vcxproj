@@ -157,10 +157,10 @@ if defined GitRev (
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\common\CCacheableScriptFile.cpp" />
-    <ClCompile Include="src\common\CCSVFile.cpp" />
+    <ClCompile Include="src\common\CacheableScriptFile.cpp" />
     <ClCompile Include="src\common\CEncrypt.cpp" />
     <ClCompile Include="src\common\crashdump\crashdump.cpp" />
+    <ClCompile Include="src\common\CsvFile.cpp" />
     <ClCompile Include="src\common\CVarFloat.cpp" />
     <ClCompile Include="src\common\sqlite\SQLite.cpp" />
     <ClCompile Include="src\common\sqlite\sqlite3.c" />
@@ -230,7 +230,6 @@ if defined GitRev (
     <ClCompile Include="src\common\CGrayData.cpp" />
     <ClCompile Include="src\common\CGrayInst.cpp" />
     <ClCompile Include="src\common\CGrayMap.cpp" />
-    <ClCompile Include="src\common\CListDefMap.cpp" />
     <ClCompile Include="src\common\CMD5.cpp" />
     <ClCompile Include="src\common\CQueue.cpp" />
     <ClCompile Include="src\common\CRect.cpp" />
@@ -243,35 +242,36 @@ if defined GitRev (
     <ClCompile Include="src\common\CString.cpp" />
     <ClCompile Include="src\common\CTime.cpp" />
     <ClCompile Include="src\common\CVarDefMap.cpp" />
+    <ClCompile Include="src\common\ListDefContMap.cpp" />
     <ClCompile Include="src\common\CWindow.cpp" />
     <ClCompile Include="src\common\graycom.cpp" />
     <ClCompile Include="src\graysvr\CItemSpawn.cpp" />
     <ClCompile Include="src\graysvr\CItemStone.cpp" />
     <ClCompile Include="src\graysvr\CItemVend.cpp" />
     <ClCompile Include="src\graysvr\CLog.cpp" />
-    <ClCompile Include="src\graysvr\CNTService.cpp" />
-    <ClCompile Include="src\graysvr\CNTWindow.cpp" />
     <ClCompile Include="src\graysvr\CObjBase.cpp" />
     <ClCompile Include="src\graysvr\CParty.cpp" />
     <ClCompile Include="src\graysvr\CPathFinder.cpp" />
-    <ClCompile Include="src\graysvr\CPingServer.cpp" />
     <ClCompile Include="src\graysvr\CResource.cpp" />
     <ClCompile Include="src\graysvr\CResourceCalc.cpp" />
     <ClCompile Include="src\graysvr\CResourceDef.cpp" />
     <ClCompile Include="src\graysvr\CSector.cpp" />
     <ClCompile Include="src\graysvr\CServer.cpp" />
     <ClCompile Include="src\graysvr\CServRef.cpp" />
-    <ClCompile Include="src\graysvr\CUnixTerminal.cpp" />
     <ClCompile Include="src\graysvr\CWebPage.cpp" />
     <ClCompile Include="src\graysvr\CWorld.cpp" />
     <ClCompile Include="src\graysvr\CWorldImport.cpp" />
     <ClCompile Include="src\graysvr\CWorldMap.cpp" />
     <ClCompile Include="src\graysvr\graysvr.cpp" />
-    <ClInclude Include="src\common\CCacheableScriptFile.h" />
-    <ClInclude Include="src\common\CCSVFile.h" />
+    <ClCompile Include="src\graysvr\ntservice.cpp" />
+    <ClCompile Include="src\graysvr\ntwindow.cpp" />
+    <ClCompile Include="src\graysvr\PingServer.cpp" />
+    <ClCompile Include="src\graysvr\UnixTerminal.cpp" />
+    <ClInclude Include="src\common\CacheableScriptFile.h" />
     <ClInclude Include="src\common\CEncrypt.h" />
     <ClInclude Include="src\common\CMD5.h" />
     <ClInclude Include="src\common\crashdump\crashdump.h" />
+    <ClInclude Include="src\common\CsvFile.h" />
     <ClInclude Include="src\common\CVarFloat.h" />
     <ClInclude Include="src\common\CWindow.h" />
     <ClInclude Include="src\common\mtrand\mtrand.h" />
@@ -298,16 +298,15 @@ if defined GitRev (
     <ClInclude Include="src\graysvr\CGMPage.h" />
     <ClInclude Include="src\graysvr\CItem.h" />
     <ClInclude Include="src\graysvr\CItemBase.h" />
-    <ClInclude Include="src\graysvr\CNTService.h" />
     <ClInclude Include="src\graysvr\CObjBase.h" />
     <ClInclude Include="src\graysvr\CPathFinder.h" />
-    <ClInclude Include="src\graysvr\CPingServer.h" />
     <ClInclude Include="src\graysvr\CResource.h" />
     <ClInclude Include="src\graysvr\CServer.h" />
     <ClInclude Include="src\graysvr\CServRef.h" />
-    <ClInclude Include="src\graysvr\CUnixTerminal.h" />
     <ClInclude Include="src\graysvr\CWorld.h" />
     <ClInclude Include="src\graysvr\graysvr.h" />
+    <ClInclude Include="src\graysvr\ntservice.h" />
+    <ClInclude Include="src\graysvr\PingServer.h" />
     <ClInclude Include="src\common\zlib\crc32.h" />
     <ClInclude Include="src\common\zlib\deflate.h" />
     <ClInclude Include="src\common\zlib\inffast.h" />
@@ -332,7 +331,6 @@ if defined GitRev (
     <ClInclude Include="src\common\CFileList.h" />
     <ClInclude Include="src\common\CGrayInst.h" />
     <ClInclude Include="src\common\CGrayMap.h" />
-    <ClInclude Include="src\common\CListDefMap.h" />
     <ClInclude Include="src\common\CMemBlock.h" />
     <ClInclude Include="src\common\common.h" />
     <ClInclude Include="src\common\CQueue.h" />
@@ -346,6 +344,7 @@ if defined GitRev (
     <ClInclude Include="src\common\CString.h" />
     <ClInclude Include="src\common\CTime.h" />
     <ClInclude Include="src\common\CVarDefMap.h" />
+    <ClInclude Include="src\common\ListDefContMap.h" />
     <ClInclude Include="src\common\graycom.h" />
     <ClInclude Include="src\common\graymul.h" />
     <ClInclude Include="src\common\grayproto.h" />
@@ -353,6 +352,7 @@ if defined GitRev (
     <ClInclude Include="src\common\os_unix.h" />
     <ClInclude Include="src\common\os_windows.h" />
     <ClInclude Include="src\graysvr\resource.h" />
+    <ClInclude Include="src\graysvr\UnixTerminal.h" />
     <None Include="src\tables\CBaseBaseDef_props.tbl" />
     <None Include="src\tables\CCharBase_props.tbl" />
     <None Include="src\tables\CCharNpc_props.tbl" />
