@@ -804,11 +804,11 @@ LRESULT CNTWindow::OnNotify( int idCtrl, NMHDR * pnmh )
 								}
 
 								// failure occurred
-								int errorCode = CGFile::GetLastError();
-								if (CGrayError::GetSystemErrorMessage(errorCode, z, THREAD_STRING_LENGTH) > 0)
-									g_Log.Event(LOGL_WARN, "Failed to open '%s' code=%d (%s).\n", filePath, errorCode, z);
+								DWORD dwErrorCode = CGFile::GetLastError();
+								if (CGrayError::GetSystemErrorMessage(dwErrorCode, z, THREAD_STRING_LENGTH) > 0)
+									g_Log.Event(LOGL_WARN, "Failed to open '%s' code=%hu (%s)\n", filePath, dwErrorCode, z);
 								else
-									g_Log.Event(LOGL_WARN, "Failed to open '%s' code=%d.\n", filePath, errorCode);
+									g_Log.Event(LOGL_WARN, "Failed to open '%s' code=%hu\n", filePath, dwErrorCode);
 							}
 						}
 					}
