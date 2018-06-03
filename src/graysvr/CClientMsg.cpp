@@ -2392,9 +2392,9 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 					{
 						if ( pItem->IsMovable() )
 						{
-							int iWeight = pItem->GetWeight() / WEIGHT_UNITS;
-							m_TooltipData.Add(t = new CClientTooltip((iWeight == 1) ? 1072788 : 1072789)); // Weight: ~1_WEIGHT~ stone / Weight: ~1_WEIGHT~ stones
-							t->FormatArgs("%d", iWeight);
+							WORD wWeight = pItem->Item_GetDef()->GetWeight() / WEIGHT_UNITS;
+							m_TooltipData.Add(t = new CClientTooltip((wWeight == 1) ? 1072788 : 1072789)); // Weight: ~1_WEIGHT~ stone / Weight: ~1_WEIGHT~ stones
+							t->FormatArgs("%hu", wWeight);
 						}
 					}
 

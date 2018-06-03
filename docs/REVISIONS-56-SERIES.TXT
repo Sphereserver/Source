@@ -938,7 +938,7 @@ Fixed: SPELLCHANNELING item property not working correctly.
 
 02-01-2018, Coruja
 Changed: Improved how ranged weapons handle ammo.
-Fixed: ENHANCEPOTIONS item property only working when FEATURE_AOS_UPDATE_B .ini feature is enabled.
+Fixed: ENHANCEPOTIONS item property only working when FEATURE_AOS_UPDATE_B feature is enabled on sphere.ini.
 
 03-01-2018, Nolok
 Fixed: when playing a sound from a character from Samurai Empire and later expansions, it was chosen the wrong sound ID for the given action.
@@ -1096,3 +1096,7 @@ Changed: Updated SQLite engine
 	-All functions got optimized
 	-Added more info on error messages
 	-Fixed some console exceptions
+
+03-06-2018, Coruja
+Fixed: <SERV.BUILD> function returning build date instead build number.
+Fixed: Containers showing wrong weight on item tooltip when FEATURE_ML_UPDATE feature is enabled on sphere.ini.

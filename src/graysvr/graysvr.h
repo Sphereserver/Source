@@ -133,6 +133,7 @@ enum RESDISPLAY_VERSION
 
 #include "../common/graymul.h"
 #include "../common/grayproto.h"
+#include "../common/grayver.h"
 #include "../common/CGrayInst.h"
 #include "../common/CResourceBase.h"
 #include "../common/CRegion.h"
