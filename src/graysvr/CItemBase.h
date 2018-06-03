@@ -415,7 +415,7 @@ public:
 	};
 
 private:
-	int CalculateMakeValue(int iSkillLevel) const;
+	DWORD CalculateMakeValue(int iQualityLevel) const;
 	static CItemBase *MakeDupeReplacement(CItemBase *pBase, ITEMID_TYPE iddupe);
 
 protected:
@@ -458,7 +458,7 @@ public:
 	WORD GetMaxAmount();
 	bool SetMaxAmount(WORD wAmount);
 
-	int GetMakeValue(int iSkillLevel);
+	DWORD GetMakeValue(int iQualityLevel);
 	void ResetMakeValue();
 
 	bool r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc = NULL);

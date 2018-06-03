@@ -722,9 +722,9 @@ int CClient::OnSkill_ItemID(CGrayUID uid, int iSkillLevel, bool fTest)
 	if ( fTest )
 		return Calc_GetRandVal(pItem->IsAttr(ATTR_IDENTIFIED) ? 20 : 60);
 
-	CItemVendable *pItemVend = static_cast<CItemVendable *>(pItem);
+	CItemVendable *pItemVend = dynamic_cast<CItemVendable *>(pItem);
 	if ( pItemVend )
-		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_ITEMID_GOLD), (pItemVend->GetVendorPrice(0) * pItem->GetAmount()), pItemVend->GetNameFull(true));
+		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_ITEMID_GOLD), static_cast<int>(pItemVend->GetVendorPrice(0) * pItem->GetAmount()), pItemVend->GetNameFull(true));
 	else
 		SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_ITEMID_NOVAL));
 
@@ -987,7 +987,7 @@ int CClient::OnSkill_Forensics(CGrayUID uid, int iSkillLevel, bool fTest)
 	ADDTOCALLSTACK("CClient::OnSkill_Forensics");
 	// SKILL_FORENSICS
 
-	CItemCorpse *pCorpse = static_cast<CItemCorpse *>(uid.ItemFind());
+	CItemCorpse *pCorpse = dynamic_cast<CItemCorpse *>(uid.ItemFind());
 	if ( !pCorpse )
 	{
 		SysMessageDefault(DEFMSG_FORENSICS_CORPSE);
@@ -1003,11 +1003,11 @@ int CClient::OnSkill_Forensics(CGrayUID uid, int iSkillLevel, bool fTest)
 		return (pCorpse->m_uidLink == m_pChar->GetUID()) ? 2 : Calc_GetRandVal(60);
 
 	CChar *pCharKiller = pCorpse->m_itCorpse.m_uidKiller.CharFind();
-	LPCTSTR pName = pCharKiller ? pCharKiller->GetName() : NULL;
+	LPCTSTR pszName = pCharKiller ? pCharKiller->GetName() : NULL;
 
 	if ( pCorpse->IsCorpseSleeping() )
 	{
-		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_FORENSICS_ALIVE), pName ? pName : "It");
+		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_FORENSICS_ALIVE), pszName ? pszName : "It");
 		return 1;
 	}
 
@@ -1015,16 +1015,16 @@ int CClient::OnSkill_Forensics(CGrayUID uid, int iSkillLevel, bool fTest)
 	if ( pCorpse->m_itCorpse.m_carved )
 	{
 		size_t len = sprintf(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_FORENSICS_CARVE_1), pCorpse->GetName());
-		if ( pName )
-			sprintf(pszTemp + len, g_Cfg.GetDefaultMsg(DEFMSG_FORENSICS_CARVE_2), pName);
+		if ( pszName )
+			sprintf(pszTemp + len, g_Cfg.GetDefaultMsg(DEFMSG_FORENSICS_CARVE_2), pszName);
 		else
 			strcpy(pszTemp + len, g_Cfg.GetDefaultMsg(DEFMSG_FORENSICS_FAILNAME));
 	}
 	else if ( pCorpse->GetTimeStamp().IsTimeValid() )
 	{
 		size_t len = sprintf(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_FORENSICS_TIMER), pCorpse->GetName(), -g_World.GetTimeDiff(pCorpse->GetTimeStamp()) / TICK_PER_SEC);
-		if ( pName )
-			sprintf(pszTemp + len, g_Cfg.GetDefaultMsg(DEFMSG_FORENSICS_NAME), pName);
+		if ( pszName )
+			sprintf(pszTemp + len, g_Cfg.GetDefaultMsg(DEFMSG_FORENSICS_NAME), pszName);
 		else
 			strcpy(pszTemp + len, g_Cfg.GetDefaultMsg(DEFMSG_FORENSICS_FAILNAME));
 	}
@@ -1054,13 +1054,13 @@ int CClient::OnSkill_TasteID(CGrayUID uid, int iSkillLevel, bool fTest)
 		return -SKTRIG_QTY;
 	}
 
-	DWORD iPoisonLevel = 0;
+	DWORD dwPoisonLevel = 0;
 	switch ( pItem->GetType() )
 	{
 		case IT_POTION:
 		{
 			if ( RES_GET_INDEX(pItem->m_itPotion.m_Type) == SPELL_Poison )
-				iPoisonLevel = pItem->m_itPotion.m_skillquality;
+				dwPoisonLevel = pItem->m_itPotion.m_skillquality;
 			break;
 		}
 		case IT_FRUIT:
@@ -1068,7 +1068,7 @@ int CClient::OnSkill_TasteID(CGrayUID uid, int iSkillLevel, bool fTest)
 		case IT_FOOD_RAW:
 		case IT_MEAT_RAW:
 		{
-			iPoisonLevel = pItem->m_itFood.m_poison_skill * 10;
+			dwPoisonLevel = pItem->m_itFood.m_poison_skill * 10;
 			break;
 		}
 		case IT_WEAPON_MACE_SHARP:
@@ -1077,7 +1077,7 @@ int CClient::OnSkill_TasteID(CGrayUID uid, int iSkillLevel, bool fTest)
 		case IT_WEAPON_AXE:
 		{
 			//pItem->m_itWeapon.m_poison_skill = pPoison->m_itPotion.m_skillquality / 10;
-			iPoisonLevel = pItem->m_itWeapon.m_poison_skill * 10;
+			dwPoisonLevel = pItem->m_itWeapon.m_poison_skill * 10;
 			break;
 		}
 		default:
@@ -1091,9 +1091,9 @@ int CClient::OnSkill_TasteID(CGrayUID uid, int iSkillLevel, bool fTest)
 	if ( fTest )
 		return Calc_GetRandVal(60);
 
-	if ( iPoisonLevel )
+	if ( dwPoisonLevel )
 	{
-		size_t iLevel = IMULDIV(iPoisonLevel, COUNTOF(sm_szPoisonMessages), 1000);
+		size_t iLevel = IMULDIV(dwPoisonLevel, COUNTOF(sm_szPoisonMessages), 1000);
 		if ( iLevel >= COUNTOF(sm_szPoisonMessages) )
 			iLevel = COUNTOF(sm_szPoisonMessages) - 1;
 		SysMessage(sm_szPoisonMessages[iLevel]);
@@ -1431,7 +1431,7 @@ CItem *CClient::OnTarg_Use_Multi(const CItemBase *pItemDef, CPointMap &pt, DWORD
 	if ( !pItemDef || !pt.GetRegion(REGION_TYPE_AREA) )
 		return NULL;
 
-	const CItemBaseMulti *pMultiDef = static_cast<const CItemBaseMulti *>(pItemDef);
+	const CItemBaseMulti *pMultiDef = dynamic_cast<const CItemBaseMulti *>(pItemDef);
 	if ( pMultiDef && !(dwAttr & ATTR_MAGIC) )
 	{
 		if ( CItemBase::IsID_Multi(pItemDef->GetID()) )
@@ -1466,11 +1466,11 @@ CItem *CClient::OnTarg_Use_Multi(const CItemBase *pItemDef, CPointMap &pt, DWORD
 						return NULL;
 				}
 
-				bool bShip = pItemDef->IsType(IT_SHIP);
-				DWORD dwBlockFlags = bShip ? CAN_C_SWIM : CAN_C_WALK;
+				bool fShip = pItemDef->IsType(IT_SHIP);
+				DWORD dwBlockFlags = fShip ? CAN_C_SWIM : CAN_C_WALK;
 				ptn.m_z = g_World.GetHeightPoint2(ptn, dwBlockFlags, true);	//should really use the 2nd function? it does fixed #2373
 
-				if ( bShip )
+				if ( fShip )
 				{
 					if ( !(dwBlockFlags & CAN_I_WATER) )
 					{
@@ -1530,15 +1530,16 @@ CItem *CClient::OnTarg_Use_Multi(const CItemBase *pItemDef, CPointMap &pt, DWORD
 	pItemNew->SetHue(wHue);
 	pItemNew->MoveToUpdate(pt);
 
-	CItemMulti *pMulti = static_cast<CItemMulti *>(pItemNew);
+	CItemMulti *pMulti = dynamic_cast<CItemMulti *>(pItemNew);
 	if ( pMulti )
 		pMulti->Multi_Create(m_pChar, UID_CLEAR);
 
 	if ( pItemDef->IsType(IT_STONE_GUILD) )
 	{
 		// Set guild master and ask for an guild name
-		CItemStone *pStone = static_cast<CItemStone *>(pItemNew);
-		pStone->AddRecruit(m_pChar, STONEPRIV_MASTER);
+		CItemStone *pStone = dynamic_cast<CItemStone *>(pItemNew);
+		if ( pStone )
+			pStone->AddRecruit(m_pChar, STONEPRIV_MASTER);
 		addPromptConsole(CLIMODE_PROMPT_STONE_NAME, g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_GUILDSTONE_NEW), pItemNew->GetUID());
 	}
 
@@ -1833,7 +1834,7 @@ bool CClient::OnTarg_Use_Item(CObjBase *pObjTarg, CPointMap &pt, ITEMID_TYPE id)
 					{
 						if ( !m_pChar->CanUse(pItemTarg, false) )
 							return false;
-						m_pChar->Use_CarveCorpse(static_cast<CItemCorpse *>(pItemTarg));
+						m_pChar->Use_CarveCorpse(dynamic_cast<CItemCorpse *>(pItemTarg));
 						return true;
 					}
 					case IT_FRUIT:
@@ -1938,7 +1939,7 @@ bool CClient::OnTarg_Use_Item(CObjBase *pObjTarg, CPointMap &pt, ITEMID_TYPE id)
 			if ( !pItemTarg )
 				return false;
 
-			CItemContainer *pKeyRing = static_cast<CItemContainer *>(pItemUse);
+			CItemContainer *pKeyRing = dynamic_cast<CItemContainer *>(pItemUse);
 			if ( !pKeyRing )
 				return false;
 
@@ -1985,8 +1986,8 @@ bool CClient::OnTarg_Use_Item(CObjBase *pObjTarg, CPointMap &pt, ITEMID_TYPE id)
 				if ( !m_pChar->CanUse(pItemTarg, true) )
 					return false;
 
-				WORD iOutQty = 0;
 				ITEMID_TYPE iOutID = ITEMID_BANDAGES1;
+				WORD wOutQty = 0;
 
 				switch ( pItemTarg->GetType() )
 				{
@@ -1998,12 +1999,12 @@ bool CClient::OnTarg_Use_Item(CObjBase *pObjTarg, CPointMap &pt, ITEMID_TYPE id)
 					}
 					case IT_CLOTH:
 					{
-						iOutQty = pItemTarg->GetAmount();
+						wOutQty = pItemTarg->GetAmount();
 						break;
 					}
 					case IT_CLOTHING:
 					{
-						iOutQty = static_cast<WORD>(pItemTarg->GetWeight()) / WEIGHT_UNITS;
+						wOutQty = static_cast<WORD>(pItemTarg->GetWeight()) / WEIGHT_UNITS;
 						break;
 					}
 					case IT_HIDE:
@@ -2011,18 +2012,18 @@ bool CClient::OnTarg_Use_Item(CObjBase *pObjTarg, CPointMap &pt, ITEMID_TYPE id)
 						iOutID = static_cast<ITEMID_TYPE>(RES_GET_INDEX(pItemTarg->Item_GetDef()->m_ttNormal.m_tData1));
 						if ( !iOutID )
 							iOutID = ITEMID_LEATHER_1;
-						iOutQty = pItemTarg->GetAmount();
+						wOutQty = pItemTarg->GetAmount();
 						break;
 					}
 					default:
 						break;
 				}
-				if ( iOutQty )
+				if ( wOutQty )
 				{
 					CItem *pItemNew = CItem::CreateBase(iOutID);
 					ASSERT(pItemNew);
 					pItemNew->SetHue(pItemTarg->GetHue());
-					pItemNew->SetAmount(iOutQty);
+					pItemNew->SetAmount(wOutQty);
 					pItemTarg->Delete();
 					m_pChar->ItemBounce(pItemNew);
 					m_pChar->Sound(SOUND_SNIP);
@@ -2069,18 +2070,18 @@ bool CClient::OnTarg_Use_Item(CObjBase *pObjTarg, CPointMap &pt, ITEMID_TYPE id)
 				g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_BOLT_5)
 			};
 
-			WORD iUsed = 0;
-			WORD iNeed = COUNTOF(sm_Txt_LoomUse) - 1;
-			WORD iHave = pItemTarg->m_itLoom.m_ClothQty;
-			if ( iHave < iNeed )
+			WORD wUsed = 0;
+			WORD wNeed = COUNTOF(sm_Txt_LoomUse) - 1;
+			WORD wHave = pItemTarg->m_itLoom.m_ClothQty;
+			if ( wHave < wNeed )
 			{
-				iNeed -= iHave;
-				iUsed = static_cast<WORD>(pItemUse->ConsumeAmount(iNeed));
+				wNeed -= wHave;
+				wUsed = static_cast<WORD>(pItemUse->ConsumeAmount(wNeed));
 			}
 
-			if ( iHave + iUsed < COUNTOF(sm_Txt_LoomUse) - 1 )
+			if ( wHave + wUsed < COUNTOF(sm_Txt_LoomUse) - 1 )
 			{
-				pItemTarg->m_itLoom.m_ClothQty += iUsed;
+				pItemTarg->m_itLoom.m_ClothQty += wUsed;
 				SysMessage(sm_Txt_LoomUse[pItemTarg->m_itLoom.m_ClothQty]);
 			}
 			else
@@ -2261,15 +2262,15 @@ bool CClient::OnTarg_Use_Item(CObjBase *pObjTarg, CPointMap &pt, ITEMID_TYPE id)
 	return false;
 }
 
-bool CClient::OnTarg_Stone_Recruit(CChar *pChar, bool bFull)
+bool CClient::OnTarg_Stone_Recruit(CChar *pChar, bool fFull)
 {
 	ADDTOCALLSTACK("CClient::OnTarg_Stone_Recruit");
 	// CLIMODE_TARG_STONE_RECRUIT / CLIMODE_TARG_STONE_RECRUITFULL
 
-	CItemStone *pStone = static_cast<CItemStone *>(m_Targ_UID.ItemFind());
+	CItemStone *pStone = dynamic_cast<CItemStone *>(m_Targ_UID.ItemFind());
 	if ( !pStone )
 		return false;
-	return (pStone->AddRecruit(pChar, STONEPRIV_CANDIDATE, bFull) != NULL);
+	return (pStone->AddRecruit(pChar, STONEPRIV_CANDIDATE, fFull) != NULL);
 }
 
 bool CClient::OnTarg_Party_Add(CChar *pChar)

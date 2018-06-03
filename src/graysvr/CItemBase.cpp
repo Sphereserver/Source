@@ -685,7 +685,7 @@ void CItemBase::Restock()
 		m_values.Init();
 }
 
-int CItemBase::CalculateMakeValue(int iSkillLevel) const
+DWORD CItemBase::CalculateMakeValue(int iQualityLevel) const
 {
 	ADDTOCALLSTACK("CItemBase::CalculateMakeValue");
 	// Calculate the value in gold for this item based on its components
@@ -696,7 +696,7 @@ int CItemBase::CalculateMakeValue(int iSkillLevel) const
 	static int sm_iReentrantCount = 0;
 	if ( sm_iReentrantCount > 32 )
 	{
-		DEBUG_ERR(("Too many RESOURCES at item '%s' to calculate a value with (circular resource list?).\n", GetResourceName()));
+		DEBUG_ERR(("Too many RESOURCES at item '%s' to calculate a value with (circular resource list?)\n", GetResourceName()));
 		return 0;
 	}
 
@@ -714,7 +714,7 @@ int CItemBase::CalculateMakeValue(int iSkillLevel) const
 		if ( !pItemDef )
 			continue;
 
-		iValue += pItemDef->GetMakeValue(iSkillLevel) * static_cast<int>(m_BaseResources[i].GetResQty());
+		iValue += pItemDef->GetMakeValue(iQualityLevel) * static_cast<int>(m_BaseResources[i].GetResQty());
 	}
 
 	// Add some value based on the skill required to craft it
@@ -729,10 +729,10 @@ int CItemBase::CalculateMakeValue(int iSkillLevel) const
 
 		// This is the normal skill required. If iQuality is much less than iSkillNeed then something is wrong
 		int iSkillNeed = static_cast<int>(m_SkillMake[i].GetResQty());
-		if ( iSkillLevel < iSkillNeed )
-			iSkillLevel = iSkillNeed;
+		if ( iQualityLevel < iSkillNeed )
+			iQualityLevel = iSkillNeed;
 
-		iValue += pSkillDef->m_Values.GetLinear(iSkillLevel);
+		iValue += pSkillDef->m_Values.GetLinear(iQualityLevel);
 	}
 
 	sm_iReentrantCount--;
@@ -766,7 +766,7 @@ bool CItemBase::SetMaxAmount(WORD wAmount)
 	return true;
 }
 
-int CItemBase::GetMakeValue(int iSkillLevel)
+DWORD CItemBase::GetMakeValue(int iQualityLevel)
 {
 	ADDTOCALLSTACK("CItemBase::GetMakeValue");
 	// Set the items value based on the resources and skill used to craft it
@@ -786,7 +786,7 @@ int CItemBase::GetMakeValue(int iSkillLevel)
 		values.m_iLo = llabs(values.m_iLo);
 		values.m_iHi = llabs(values.m_iHi);
 	}
-	return values.GetLinear(iSkillLevel * 10);
+	return static_cast<DWORD>(values.GetLinear(iQualityLevel * 10));
 }
 
 void CItemBase::ResetMakeValue()
