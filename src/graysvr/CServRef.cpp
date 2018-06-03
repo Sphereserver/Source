@@ -1,5 +1,4 @@
-#include "graysvr.h"	// predef header.
-#include "../common/grayver.h"
+#include "graysvr.h"	// predef header
 
 //	Memory profiling
 #ifdef _WIN32	// (Win32)

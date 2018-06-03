@@ -1,10 +1,9 @@
 // Put up a window for data (other than the console)
 #ifdef _WIN32
 
-#include "graysvr.h"	// predef header.
+#include "graysvr.h"	// predef header
 #include "resource.h"
-#include "../common/cwindow.h"
-#include "../common/grayver.h"	// sphere version
+#include "../common/CWindow.h"
 
 #define WM_USER_POST_MSG		(WM_USER+10)
 #define WM_USER_TRAY_NOTIFY		(WM_USER+12)

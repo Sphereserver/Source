@@ -1,5 +1,4 @@
-#include "graysvr.h"	// predef header.
-#include "../common/grayver.h"
+#include "graysvr.h"	// predef header
 #include "../network/send.h"
 
 bool CObjBaseTemplate::IsDeleted() const

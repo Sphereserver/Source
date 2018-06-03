@@ -1,5 +1,4 @@
-#include "graysvr.h"	// predef header.
-#include "../common/grayver.h"	// sphere version
+#include "graysvr.h"	// predef header
 #include "../common/CFileList.h"
 #include "../network/send.h"
 
@@ -578,7 +577,7 @@ int CWebPageDef::ServPageRequest( CClient * pClient, LPCTSTR pszURLArgs, CGTime 
 
 	const char *sDate = datetime.FormatGmt(NULL);	// current date.
 
-	if ( !fGenerate && !pdateIfModifiedSince && (pdateIfModifiedSince->IsTimeValid() && pdateIfModifiedSince->GetTime() > dateChange) )
+	if ( !fGenerate && !pdateIfModifiedSince && pdateIfModifiedSince->IsTimeValid() && (pdateIfModifiedSince->GetTime() > dateChange) )
 	{
 		TCHAR *pszTemp = Str_GetTemp();
 		sprintf(pszTemp, "HTTP/1.1 304 Not Modified\r\nDate: %s\r\nServer: " SPHERE_TITLE " V " SPHERE_VERSION "\r\nContent-Length: 0\r\n\r\n", sDate);

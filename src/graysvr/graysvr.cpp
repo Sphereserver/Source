@@ -1,19 +1,15 @@
-#include "graysvr.h"	// predef header.
-#include "../common/grayver.h"	// sphere version
-#include "CPingServer.h"	// ping server
-#include "../network/network.h" // network thread
+#include "graysvr.h"	// predef header
+#include "CPingServer.h"
+#include "../network/network.h"
 #include "../sphere/asyncdb.h"
-#if !defined(_WIN32) || defined(_LIBEV)
-	#include "../sphere/linuxev.h"
+#ifdef _WIN32
+	#include "CNTService.h"
+#else
 	#include "CUnixTerminal.h"
 #endif
 
 #if !defined(pid_t)
 	#define pid_t int
-#endif
-
-#ifdef _WIN32
-	#include "CNTService.h"	// g_Service
 #endif
 
 //Trigger function start

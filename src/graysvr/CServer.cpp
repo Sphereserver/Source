@@ -1,5 +1,4 @@
 #include "graysvr.h"	// predef header
-#include "../common/grayver.h"
 #include "../network/network.h"
 #include "../graysvr/CPingServer.h"
 
