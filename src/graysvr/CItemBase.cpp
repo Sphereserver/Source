@@ -701,7 +701,7 @@ DWORD CItemBase::CalculateMakeValue(int iQualityLevel) const
 	}
 
 	sm_iReentrantCount++;
-	int iValue = 0;
+	DWORD dwValue = 0;
 
 	// Add value based on base resources
 	for ( size_t i = 0; i < m_BaseResources.GetCount(); i++ )
@@ -714,7 +714,7 @@ DWORD CItemBase::CalculateMakeValue(int iQualityLevel) const
 		if ( !pItemDef )
 			continue;
 
-		iValue += pItemDef->GetMakeValue(iQualityLevel) * static_cast<int>(m_BaseResources[i].GetResQty());
+		dwValue += pItemDef->GetMakeValue(iQualityLevel) * m_BaseResources[i].GetResQty();
 	}
 
 	// Add some value based on the skill required to craft it
@@ -732,11 +732,11 @@ DWORD CItemBase::CalculateMakeValue(int iQualityLevel) const
 		if ( iQualityLevel < iSkillNeed )
 			iQualityLevel = iSkillNeed;
 
-		iValue += pSkillDef->m_Values.GetLinear(iQualityLevel);
+		dwValue += pSkillDef->m_Values.GetLinear(iQualityLevel);
 	}
 
 	sm_iReentrantCount--;
-	return iValue;
+	return dwValue;
 }
 
 BYTE CItemBase::GetSpeed() const
@@ -1115,9 +1115,9 @@ bool CItemBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		}
 		case IBC_VALUE:
 			if ( m_values.GetRange() )
-				sVal.Format("%d,%d", GetMakeValue(0), GetMakeValue(100));
+				sVal.Format("%lu,%lu", GetMakeValue(0), GetMakeValue(100));
 			else
-				sVal.Format("%d", GetMakeValue(0));
+				sVal.Format("%lu", GetMakeValue(0));
 			break;
 		case IBC_WEIGHT:
 			sVal.FormatVal(m_weight / WEIGHT_UNITS);

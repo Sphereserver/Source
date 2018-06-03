@@ -1,29 +1,114 @@
 #include "graysvr.h"
 
-CItemVendable::CItemVendable( ITEMID_TYPE id, CItemBase * pDef ) : CItem( id, pDef )
+CItemVendable::CItemVendable(ITEMID_TYPE id, CItemBase *pItemDef) : CItem(id, pItemDef)
 {
-	// Constructor
 	m_price = 0;
 	m_quality = 0;
 }
 
 CItemVendable::~CItemVendable()
 {
-	// Nothing really to do...no dynamic memory has been allocated.
-	DeletePrepare();	// Must remove early because virtuals will fail in child destructor.
+	// Nothing really to do, no dynamic memory has been allocated
+	DeletePrepare();	// must remove early because virtuals will fail in child destructor
 }
 
-void CItemVendable::DupeCopy( const CItem * pItem )
+void CItemVendable::DupeCopy(const CItem *pItem)
 {
 	ADDTOCALLSTACK("CItemVendable::DupeCopy");
-	CItem::DupeCopy( pItem );
+	CItem::DupeCopy(pItem);
 
-	const CItemVendable * pVendItem = dynamic_cast <const CItemVendable *>(pItem);
-	if ( pVendItem == NULL )
+	const CItemVendable *pItemVend = dynamic_cast<const CItemVendable *>(pItem);
+	if ( !pItemVend )
 		return;
 
-	m_price = pVendItem->m_price;
-	m_quality = pVendItem->m_quality;
+	m_price = pItemVend->m_price;
+	m_quality = pItemVend->m_quality;
+}
+
+DWORD CItemVendable::GetVendorPrice(int iConvertFactor)
+{
+	ADDTOCALLSTACK("CItemVendable::GetVendorPrice");
+	// Player is buying/selling from a vendor
+	// Assume this item is on the vendor!
+	// ARGS:
+	//  iConvertFactor = percent to apply over base price (-100% to +100%)
+
+	DWORD dwPrice = m_price;
+	if ( dwPrice <= 0 )
+	{
+		CItemBase *pItemDef;
+		if ( IsType(IT_DEED) )
+		{
+			// Deeds just represent the item they are deeding
+			pItemDef = CItemBase::FindItemBase(static_cast<ITEMID_TYPE>(RES_GET_INDEX(m_itDeed.m_Type)));
+			if ( !pItemDef )
+				return 1;
+		}
+		else
+		{
+			pItemDef = Item_GetDef();
+		}
+		dwPrice = pItemDef->GetMakeValue(m_quality);
+	}
+	return dwPrice + IMULDIV(dwPrice, maximum(iConvertFactor, -100), 100);
+}
+
+void CItemVendable::Restock(bool fSellToPlayers)
+{
+	ADDTOCALLSTACK("CItemVendable::Restock");
+	// Assume this is on a non-pet vendor
+
+	ASSERT(IsItemInContainer());
+	if ( fSellToPlayers )
+	{
+		// Restock to full amount
+		WORD wAmountRestock = GetContainedLayer();
+		if ( !wAmountRestock )
+		{
+			SetContainedLayer(1);
+			wAmountRestock = 1;
+		}
+		if ( GetAmount() < wAmountRestock )
+			SetAmount(wAmountRestock);
+	}
+	else
+	{
+		// Clear the amount I have bought from players
+		SetContainedLayer(0);
+	}
+}
+
+bool CItemVendable::IsValidSaleItem(bool fBuyFromVendor) const
+{
+	ADDTOCALLSTACK("CItemVendable::IsValidSaleItem");
+	if ( !IsMovableType() )
+	{
+		if ( fBuyFromVendor )
+			DEBUG_ERR(("Vendor uid=0%lx selling unmovable item '%s'\n", static_cast<DWORD>(GetTopLevelObj()->GetUID()), GetResourceName()));
+		return false;
+	}
+	if ( !fBuyFromVendor && IsAttr(ATTR_NEWBIE|ATTR_MOVE_NEVER) )
+		return false;
+	if ( IsType(IT_COIN) )
+		return false;
+
+	return true;
+}
+
+bool CItemVendable::IsValidNPCSaleItem() const
+{
+	ADDTOCALLSTACK("CItemVendable::IsValidNPCSaleItem");
+	if ( (m_price <= 0) && (Item_GetDef()->GetMakeValue(0) <= 0) )
+	{
+		DEBUG_ERR(("Vendor uid=0%lx selling unpriced item '%s'\n", static_cast<DWORD>(GetTopLevelObj()->GetUID()), GetResourceName()));
+		return false;
+	}
+	if ( !IsValidSaleItem(true) )
+	{
+		DEBUG_ERR(("Vendor uid=0%lx selling bad item '%s'\n", static_cast<DWORD>(GetTopLevelObj()->GetUID()), GetResourceName()));
+		return false;
+	}
+	return true;
 }
 
 enum IVC_TYPE
@@ -33,27 +118,37 @@ enum IVC_TYPE
 	IVC_QTY
 };
 
-LPCTSTR const CItemVendable::sm_szLoadKeys[IVC_QTY+1] =
+LPCTSTR const CItemVendable::sm_szLoadKeys[IVC_QTY + 1] =
 {
 	"PRICE",
 	"QUALITY",
 	NULL
 };
 
+void CItemVendable::r_Write(CScript &s)
+{
+	ADDTOCALLSTACK_INTENSIVE("CItemVendable::r_Write");
+	CItem::r_Write(s);
+	if ( m_price > 0 )
+		s.WriteKeyVal("PRICE", m_price);
+	if ( m_quality > 0 )
+		s.WriteKeyVal("QUALITY", m_quality);
+}
+
 bool CItemVendable::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 {
 	ADDTOCALLSTACK("CItemVendable::r_WriteVal");
 	EXC_TRY("WriteVal");
-	switch ( FindTableSorted( pszKey, sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
+	switch ( FindTableSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1) )
 	{
-	case IVC_PRICE:	// PRICE
-		sVal.FormatVal( m_price );
-		return true;
-	case IVC_QUALITY:	// QUALITY
-		sVal.FormatVal( GetQuality());
-		return true;
-	default:
-		return CItem::r_WriteVal( pszKey, sVal, pSrc );
+		case IVC_PRICE:
+			sVal.FormatUVal(m_price);
+			return true;
+		case IVC_QUALITY:
+			sVal.FormatUVal(m_quality);
+			return true;
+		default:
+			return CItem::r_WriteVal(pszKey, sVal, pSrc);
 	}
 	EXC_CATCH;
 
@@ -67,14 +162,14 @@ bool CItemVendable::r_LoadVal(CScript &s)
 {
 	ADDTOCALLSTACK("CItemVendable::r_LoadVal");
 	EXC_TRY("LoadVal");
-	switch ( FindTableSorted( s.GetKey(), sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
+	switch ( FindTableSorted(s.GetKey(), sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1) )
 	{
-	case IVC_PRICE:	// PRICE
-		m_price = s.GetArgVal();
-		return true;
-	case IVC_QUALITY:	// QUALITY
-		SetQuality( static_cast<WORD>(s.GetArgVal()));
-		return true;
+		case IVC_PRICE:
+			m_price = static_cast<DWORD>(s.GetArgVal());
+			return true;
+		case IVC_QUALITY:
+			m_quality = static_cast<WORD>(s.GetArgVal());
+			return true;
 	}
 	return CItem::r_LoadVal(s);
 	EXC_CATCH;
@@ -83,153 +178,4 @@ bool CItemVendable::r_LoadVal(CScript &s)
 	EXC_ADD_SCRIPT;
 	EXC_DEBUG_END;
 	return false;
-}
-
-void CItemVendable::r_Write(CScript &s)
-{
-	ADDTOCALLSTACK_INTENSIVE("CItemVendable::r_Write");
-	CItem::r_Write(s);
-	if ( GetQuality() != 0 )
-	{
-		s.WriteKeyVal( "QUALITY", GetQuality());
-	}
-
-	// am i on a vendor right now ?
-	if ( m_price > 0 )
-	{
-		s.WriteKeyVal( "PRICE", m_price );
-	}
-	return;
-}
-
-void CItemVendable::Restock( bool fSellToPlayers )
-{
-	ADDTOCALLSTACK("CItemVendable::Restock");
-	// This is on a non-pet vendor.
-	// allow prices to fluctuate randomly (per vendor) but hold the values for a bit.
-
-	ASSERT( IsItemInContainer());
-	if ( m_price < 0 )
-		m_price = 0;	// signal to recalc this later.
-
-	if ( fSellToPlayers )
-	{
-		// restock to my full amount.
-
-		WORD iAmountRestock = static_cast<WORD>(GetContainedLayer());
-		if ( !iAmountRestock )
-		{
-			SetContainedLayer(1);
-			iAmountRestock = 1;
-		}
-		if ( GetAmount() < iAmountRestock )
-			SetAmount(iAmountRestock);	// restock amount
-	}
-	else
-	{
-		// Clear the amount i have bought from players.
-		// GetAmount() is the max that i will buy in the next period.
-		SetContainedLayer(0);
-	}
-}
-
-void CItemVendable::SetPlayerVendorPrice( DWORD lPrice )
-{
-	ADDTOCALLSTACK("CItemVendable::SetPlayerVendorPrice");
-	// This can only be inside a vendor container.
-	m_price = maximum(lPrice, 0);
-}
-
-DWORD CItemVendable::GetBasePrice() const
-{
-	ADDTOCALLSTACK("CItemVendable::GetBasePrice");
-	// Get the price that the player set on his vendor
-	return m_price;
-}
-
-DWORD CItemVendable::GetVendorPrice( int iConvertFactor )
-{
-	ADDTOCALLSTACK("CItemVendable::GetVendorPrice");
-	// Player is buying/selling from a vendor.
-	// ASSUME this item is on the vendor !
-	// Consider: (if not on a player vendor)
-	//  Quality of the item.
-	//  rareity of the item.
-	// ARGS:
-	// iConvertFactor will consider:
-	//  Vendors Karma.
-	//  Players Karma
-	// -100 = reduce price by 100%   (player selling to vendor?)
-	//    0 = base price
-	// +100 = increase price by 100% (vendor selling to player?)
-
-	DWORD lPrice = m_price;
-	if ( lPrice <= 0 )	// set on player vendor.
-	{
-		CItemBase *pItemDef;
-		if ( IsType(IT_DEED) )
-		{
-			// Deeds just represent the item they are deeding.
-			pItemDef = CItemBase::FindItemBase(static_cast<ITEMID_TYPE>(RES_GET_INDEX(m_itDeed.m_Type)));
-			if ( !pItemDef )
-				return 1;
-		}
-		else
-		{
-			pItemDef = Item_GetDef();
-		}
-		lPrice = pItemDef->GetMakeValue(GetQuality());
-	}
-
-	lPrice += IMULDIV(lPrice, maximum(iConvertFactor, -100), 100);
-	if ( lPrice > ULONG_MAX )
-		return ULONG_MAX;
-	
-	return lPrice;
-}
-
-bool CItemVendable::IsValidSaleItem( bool fBuyFromVendor ) const
-{
-	ADDTOCALLSTACK("CItemVendable::IsValidSaleItem");
-	// Can this individual item be sold or bought ?
-	if ( ! IsMovableType())
-	{
-		if ( fBuyFromVendor )
-		{
-			DEBUG_ERR(( "Vendor uid=0%lx selling unmovable item %s='%s'\n", static_cast<DWORD>(GetTopLevelObj()->GetUID()), GetResourceName(), GetName()));
-		}
-		return( false );
-	}
-	if ( ! fBuyFromVendor )
-	{
-		// cannot sell these to a vendor.
-		if ( IsAttr(ATTR_NEWBIE|ATTR_MOVE_NEVER))
-			return( false );	// spellbooks !
-	}
-	if ( IsType(IT_COIN))
-		return( false );
-	return( true );
-}
-
-bool CItemVendable::IsValidNPCSaleItem() const
-{
-	ADDTOCALLSTACK("CItemVendable::IsValidNPCSaleItem");
-	// This item is in an NPC's vendor box.
-	// Is it a valid item that NPC's should be selling ?
-
-	CItemBase * pItemDef = Item_GetDef();
-
-	if ( m_price <= 0 && pItemDef->GetMakeValue(0) <= 0 )
-	{
-		DEBUG_ERR(( "Vendor uid=0%lx selling unpriced item %s='%s'\n", static_cast<DWORD>(GetTopLevelObj()->GetUID()), GetResourceName(), GetName()));
-		return( false );
-	}
-
-	if ( ! IsValidSaleItem( true ))
-	{
-		DEBUG_ERR(( "Vendor uid=0%lx selling bad item %s='%s'\n", static_cast<DWORD>(GetTopLevelObj()->GetUID()), GetResourceName(), GetName()));
-		return( false );
-	}
-
-	return( true );
 }

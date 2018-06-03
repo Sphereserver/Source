@@ -771,7 +771,7 @@ bool CChar::NPC_SetVendorPrice(CItem *pItem, int iPrice)
 	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_SETPRICE_1), pVendItem->GetName(), iPrice);
 	Speak(pszMsg);
 
-	pVendItem->SetPlayerVendorPrice(iPrice);
+	pVendItem->SetBasePrice(iPrice);
 	return true;
 }
 

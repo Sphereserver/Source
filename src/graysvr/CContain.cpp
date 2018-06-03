@@ -1024,7 +1024,7 @@ void CItemContainer::ContentAdd(CItem *pItem, CPointMap pt, BYTE gridIndex)
 				pItem->Delete();
 				break;
 			}
-			pItemVend->SetPlayerVendorPrice(0);		// unpriced yet
+			pItemVend->SetBasePrice(0);		// unpriced yet
 			pItemVend->SetContainedLayer(static_cast<BYTE>(pItem->GetAmount()));
 			break;
 		}
@@ -1099,7 +1099,7 @@ void CItemContainer::OnRemoveOb(CGObListRec *pObRec)	// override this = called w
 	{
 		CItemVendable *pItemVend = dynamic_cast<CItemVendable *>(pItem);
 		if ( pItemVend )
-			pItemVend->SetPlayerVendorPrice(0);
+			pItemVend->SetBasePrice(0);
 	}
 
 	CContainer::OnRemoveOb(pObRec);

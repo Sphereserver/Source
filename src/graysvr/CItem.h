@@ -985,19 +985,25 @@ class CItemVendable : public CItem
 	// Any item that can be sold and has value
 public:
 	static const char *m_sClassName;
+	static LPCTSTR const sm_szLoadKeys[];
+
 	CItemVendable(ITEMID_TYPE id, CItemBase *pItemDef);
 	virtual ~CItemVendable();
 
 private:
-	CItemVendable(const CItemVendable &copy);
-	CItemVendable &operator=(const CItemVendable &other);
-
-private:
-	static LPCTSTR const sm_szLoadKeys[];
+	DWORD m_price;
 	WORD m_quality;		// 0-100 quality
-	DWORD m_price;		// The price of this item if on a vendor (allow random (but remembered) pluctuations)
 
 public:
+	DWORD GetBasePrice() const
+	{
+		return m_price;
+	}
+	void SetBasePrice(DWORD dwVal = 0)
+	{
+		m_price = dwVal;
+	}
+
 	WORD GetQuality() const
 	{
 		return m_quality;
@@ -1007,20 +1013,19 @@ public:
 		m_quality = wQuality;
 	}
 
-	void SetPlayerVendorPrice(DWORD dwVal);
-	DWORD GetBasePrice() const;
 	DWORD GetVendorPrice(int iConvertFactor);
-
+	void Restock(bool fSellToPlayers);
 	bool IsValidSaleItem(bool fBuyFromVendor) const;
 	bool IsValidNPCSaleItem() const;
 
 	virtual void DupeCopy(const CItem *pItem);
-
-	void Restock(bool fSellToPlayers);
-
 	virtual void r_Write(CScript &s);
 	virtual bool r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc);
 	virtual bool r_LoadVal(CScript &s);
+
+private:
+	CItemVendable(const CItemVendable &copy);
+	CItemVendable &operator=(const CItemVendable &other);
 };
 
 class CContainer : public CGObList		// this class contains a list of items but may or may not be an item itself
