@@ -785,6 +785,21 @@ void CItemContainer::Trade_Delete()
 	pPartner->Delete();
 }
 
+void CItemContainer::OnWeightChange(int iChange)
+{
+	ADDTOCALLSTACK("CItemContainer::OnWeightChange");
+	if ( !iChange || !IsWeighed() )
+		return;
+
+	CContainer::OnWeightChange(iChange);
+	UpdatePropertyFlag(AUTOTOOLTIP_FLAG_WEIGHT);
+
+	// Propagate the weight change to parent container
+	CContainer *pCont = dynamic_cast<CContainer *>(GetParent());
+	if ( pCont )
+		pCont->OnWeightChange(iChange);
+}
+
 CPointMap CItemContainer::GetRandContainerLoc() const
 {
 	ADDTOCALLSTACK("CItemContainer::GetRandContainerLoc");

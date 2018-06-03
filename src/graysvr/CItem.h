@@ -1154,6 +1154,7 @@ public:
 		// True weight = container weight + contents weight
 		return CItem::GetWeight(wAmount) + CContainer::GetTotalWeight();
 	}
+	void OnWeightChange(int iChange);
 
 	void ContentAdd(CItem *pItem);
 	void ContentAdd(CItem *pItem, CPointMap pt, BYTE gridIndex = 0);
