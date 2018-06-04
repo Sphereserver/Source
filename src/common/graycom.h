@@ -24,19 +24,12 @@
 
 #else	// _WIN32 else assume LINUX
 
-	#include <stdio.h>
-	#include <limits.h>
-	#include <limits>
-	#include <string.h>
-
 	#define HANDLE			DWORD
 	#define _cdecl
 	#define __cdecl
 
-	#define WCHAR			unsigned short
 	#define FAR
 	#define E_FAIL			0x80004005
-	#define BOOL			unsigned short
 
 	#ifdef _BSD
 		int getTimezone();
@@ -49,12 +42,6 @@
 	#define strnicmp	strncasecmp
 	#define _vsnprintf	vsnprintf
 #endif // !_WIN32
-
-#define INT32		int
-#define UINT32		unsigned int
-
-#define INT64		long long
-#define UINT64		unsigned long long
 
 #ifdef _DEBUG
 	#ifndef ASSERT

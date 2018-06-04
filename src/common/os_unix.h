@@ -2,6 +2,10 @@
 #define _INC_OS_UNIX_H
 #pragma once
 
+#include <stdio.h>
+#include <string.h>
+#include <limits.h>
+#include <limits>
 #include <pthread.h>
 #include <unistd.h>
 #include <sys/wait.h>
@@ -41,22 +45,23 @@
 	#define HKEY_LOCAL_MACHINE	(( HKEY ) 0x80000002 )
 #endif
 
-#ifndef BYTE	// might be a typedef ?
-	#ifdef LONGLONG
-		#undef LONGLONG
-	#endif
-	#ifdef LONG
-		#undef LONG
-	#endif
+// Typedefs to match Windows data types
+typedef unsigned char		BYTE;				// 8 bits
+typedef unsigned short		WORD;				// 16 bits
+typedef unsigned long		DWORD;				// 32 bits
 
-	#define BYTE 		unsigned char	// 8 bits
-	#define WORD 		unsigned short	// 16 bits
-	#define DWORD		unsigned long	// 32 bits
-	#define UINT		unsigned int
-	#define LONGLONG	long long 	// this must be 64bit
-	#define ULONGLONG	unsigned long long
-	#define LONG		long		// this stays 32bit!
-#endif	// BYTE
+typedef int					INT32;				// 32 bits
+typedef unsigned int		UINT32, UINT;		// 32 bits
+typedef long				LONG;				// 32 bits
+typedef long long			LONGLONG, INT64;	// 64 bits
+typedef unsigned long long	ULONGLONG, UINT64;	// 64 bits
+
+typedef wchar_t				WCHAR;
+typedef char				TCHAR;
+typedef char				*LPSTR, *LPTSTR;
+typedef const char			*LPCSTR, *LPCTSTR;
+
+typedef int					BOOL;
 
 #define MAKEWORD(low,high) ((WORD)(((BYTE)(low))|(((WORD)((BYTE)(high)))<<8)))
 #define MAKELONG(low,high) ((LONG)(((WORD)(low))|(((DWORD)((WORD)(high)))<<16)))
@@ -78,11 +83,6 @@
 #define _cdecl
 #define true 1
 #define false 0
-#define TCHAR char
-#define LPCSTR const char *
-#define LPCTSTR const char *
-#define LPSTR char *
-#define LPTSTR char *
 #define MulDiv	IMULDIV
 
 // unix flushing works perfectly, so we do not need disabling bufer
