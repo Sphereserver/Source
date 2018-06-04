@@ -1,7 +1,8 @@
-#ifndef MUTEX_H
-#define MUTEX_H
+#ifndef _INC_MUTEX_H
+#define _INC_MUTEX_H
+#pragma once
 
-#include "../common/common.h"
+#include "../common/os_common.h"
 
 #ifdef _BSD
 	#define PTHREAD_MUTEX_RECURSIVE_NP PTHREAD_MUTEX_RECURSIVE
@@ -140,4 +141,4 @@ private:
 #endif
 };
 
-#endif
+#endif	// _INC_MUTEX_H

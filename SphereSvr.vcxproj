@@ -334,7 +334,6 @@ if defined GitRev (
     <ClInclude Include="src\common\CGrayMap.h" />
     <ClInclude Include="src\common\CListDefMap.h" />
     <ClInclude Include="src\common\CMemBlock.h" />
-    <ClInclude Include="src\common\common.h" />
     <ClInclude Include="src\common\CQueue.h" />
     <ClInclude Include="src\common\CRect.h" />
     <ClInclude Include="src\common\CRegion.h" />
@@ -350,6 +349,7 @@ if defined GitRev (
     <ClInclude Include="src\common\graymul.h" />
     <ClInclude Include="src\common\grayproto.h" />
     <ClInclude Include="src\common\grayver.h" />
+    <ClInclude Include="src\common\os_common.h" />
     <ClInclude Include="src\common\os_unix.h" />
     <ClInclude Include="src\common\os_windows.h" />
     <ClInclude Include="src\graysvr\resource.h" />

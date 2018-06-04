@@ -100,7 +100,6 @@ common/CListDefMap.h
 common/CMD5.cpp
 common/CMD5.h
 common/CMemBlock.h
-common/common.h
 common/CQueue.cpp
 common/CQueue.h
 common/CRect.cpp
@@ -132,6 +131,7 @@ common/graycom.h
 common/graymul.h
 common/grayproto.h
 common/grayver.h
+common/os_common.h
 common/os_unix.h
 common/os_windows.h
 common/twofish/twofish2.cpp

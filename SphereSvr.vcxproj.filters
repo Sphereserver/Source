@@ -452,9 +452,6 @@
     <ClInclude Include="src\common\CMemBlock.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="src\common\common.h">
-      <Filter>common</Filter>
-    </ClInclude>
     <ClInclude Include="src\common\CQueue.h">
       <Filter>common</Filter>
     </ClInclude>
@@ -498,6 +495,9 @@
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="src\common\grayver.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="src\common\os_common.h">
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="src\common\os_unix.h">

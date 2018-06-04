@@ -1,5 +1,5 @@
-#ifndef _INC_COMMON_H
-#define _INC_COMMON_H
+#ifndef _INC_OS_COMMON_H
+#define _INC_OS_COMMON_H
 #pragma once
 
 #include <queue>
@@ -204,4 +204,4 @@ public:
 	}
 };
 
-#endif	// _INC_COMMON_H
+#endif	// _INC_OS_COMMON_H

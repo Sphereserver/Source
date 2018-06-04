@@ -1,10 +1,10 @@
-#ifndef __NETWORK_H__
-#define __NETWORK_H__
+#ifndef _INC_NETWORK_H
+#define _INC_NETWORK_H
 #pragma once
 
 #include <deque>
 #include "packet.h"
-#include "../common/common.h"
+#include "../common/os_common.h"
 #include "../sphere/containers.h"
 
 #define NETWORK_PACKETCOUNT 0x100	// number of unique packets
@@ -749,4 +749,4 @@ extern NetworkManager g_NetworkManager;
 
 #endif
 
-#endif
+#endif	// _INC_NETWORK_H

@@ -25,7 +25,7 @@ for:
       only:
         - image: Ubuntu
     install:
-      - sh: sudo apt-get update > /dev/null
+      - sh: sudo apt-get -qq update
       - sh: sudo apt-get -qq install gcc-multilib g++-multilib libmysql++-dev:i386 > /dev/null
     before_build:
       - sh: lsb_release -d

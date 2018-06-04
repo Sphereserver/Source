@@ -1,10 +1,8 @@
-// CSocket.h
-
 #ifndef _INC_CSOCKET_H
 #define _INC_CSOCKET_H
 #pragma once
 
-#include "common.h"
+#include "os_common.h"
 
 #ifdef _WIN32
 	#undef FD_SETSIZE
@@ -154,4 +152,4 @@ public:
 	static short GetProtocolIdByName( LPCTSTR pszName );
 };
 
-#endif // _INC_CSOCKET_H
+#endif	// _INC_CSOCKET_H

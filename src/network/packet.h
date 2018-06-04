@@ -1,8 +1,8 @@
-#ifndef __PACKET_H__
-#define __PACKET_H__
+#ifndef _INC_PACKET_H
+#define _INC_PACKET_H
 #pragma once
 
-#include "../common/common.h"
+#include "../common/os_common.h"
 #include "../graysvr/graysvr.h"
 
 class NetState;
@@ -290,5 +290,4 @@ private:
 	OpenPacketTransaction& operator=(const OpenPacketTransaction& other);
 };
 
-
-#endif
+#endif	// _INC_PACKET_H

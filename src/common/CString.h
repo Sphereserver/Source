@@ -3,11 +3,11 @@
 * @brief Custom String implementation.
 */
 
-#pragma once
 #ifndef _INC_CSTRING_H
 #define _INC_CSTRING_H
+#pragma once
 
-#include "common.h"
+#include "os_common.h"
 
 /**
 * @brief Custom String implementation.
@@ -535,4 +535,4 @@ void CharToMultiByteNonNull(BYTE*, const char* , size_t);
 // extern TCHAR * Str_GetTemporary(int amount = 1);
 #define Str_GetTemp static_cast<AbstractSphereThread *>(ThreadHolder::current())->allocateBuffer
 
-#endif // _INC_CSTRING_H
+#endif	// _INC_CSTRING_H
