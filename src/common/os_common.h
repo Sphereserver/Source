@@ -7,63 +7,88 @@
 	#include "os_windows.h"
 #else
 	#include "os_unix.h"
-	#include <stdarg.h>
 #endif
-
-// Use to indicate that a function uses printf-style arguments, allowing GCC to validate the format string and arguments:
-//  a = 1-based index of format string
-//  b = 1-based index of arguments
-// Note: add 1 to index for non-static class methods because 'this' argument is inserted in position 1
-#ifdef __GNUC__
-	#define __printfargs(a,b) __attribute__ ((format(printf, a, b)))
-#else
-	#define __printfargs(a,b)
-#endif
-
-#define IsDigit(c)	isdigit((unsigned char)c)
-#define IsSpace(c)	isspace((unsigned char)c)
-#define IsAlpha(c)	isalpha((unsigned char)c)
-#define IsNegative(c)	((c < 0) ? 1 : 0)
-
-typedef THREAD_ENTRY_RET(_cdecl *PTHREAD_ENTRY_PROC)(void *);
 
 #define SPHERE_DEF_PORT		2593
 #define SPHERE_TITLE		"Sphere"
 #define SPHERE_FILE			"sphere"	// file name prefix
 #define SPHERE_SCRIPT		".scp"		// file name extension
 
-#define SCRIPT_MAX_LINE_LEN 4096	// default size
-
-#define IMULDIVDOWN(a,b,c)	(((a) * (b)) / (c))
-#define IMULDIV(a,b,c)		(((((LONGLONG)(a) * (LONGLONG)(b)) + ((c) / 2)) / (c)) - IsNegative((LONGLONG)(a) * (LONGLONG)(b)) )
+#define SCRIPT_MAX_LINE_LEN	4096
 
 #ifndef MAKEDWORD
-	#define MAKEDWORD(low, high)	((DWORD)(((WORD)(low)) | (((DWORD)((WORD)(high))) << 16)))
+	#define MAKEDWORD(l, h)		((DWORD)(((WORD)(l))|(((DWORD)((WORD)(h))) << 16)))
 #endif
 
 #ifndef COUNTOF
 	#define COUNTOF(a)	(sizeof(a) / sizeof(a[0]))
 #endif
 
-typedef unsigned int	ERROR_CODE;
+#define IsDigit(c)		isdigit((unsigned char)(c))
+#define IsSpace(c)		isspace((unsigned char)(c))
+#define IsAlpha(c)		isalpha((unsigned char)(c))
+#define IsNegative(c)	(((c) < 0) ? 1 : 0)
 
-#define ISWHITESPACE(c)				(IsSpace(c) || ((unsigned char)c == 0xA0))	// IsSpace
-#define GETNONWHITESPACE( pStr )	while ( ISWHITESPACE(pStr[0]) ) { pStr++; }
-#define _IS_SWITCH(c)				((c == '-') || (c == '/'))	// command line switch
+#define ISWHITESPACE(c)				(IsSpace(c) || ((unsigned char)(c) == 0xA0))
+#define GETNONWHITESPACE(pszStr)	while (ISWHITESPACE(pszStr[0])) { pszStr++; }
+#define _IS_SWITCH(c)				(((c) == '-') || ((c) == '/'))	// command line switch
+
+#define IMULDIVDOWN(a, b, c)	(((a) * (b)) / (c))
+#define IMULDIV(a, b, c)		(((((LONGLONG)(a) * (LONGLONG)(b)) + ((c) / 2)) / (c)) - IsNegative((LONGLONG)(a) * (LONGLONG)(b)) )
 
 #define REMOVE_QUOTES(x)	\
 {							\
 	GETNONWHITESPACE(x);	\
-	if ( *x == '"' ) ++x;	\
-	TCHAR *psX = const_cast<TCHAR *>(strchr(x, '"'));	\
-	if ( psX )				\
-		*psX = '\0';		\
+	if (*x == '"')			\
+		++x;				\
+	TCHAR *pszX = const_cast<TCHAR *>(strchr(x, '"'));	\
+	if (pszX)				\
+		*pszX = '\0';		\
 }
 
-// -----------------------------
-//	Time measurement macros
-// -----------------------------
+#ifdef _WIN32
+	typedef void		THREAD_ENTRY_RET;
+	#define FMTSIZE_T	"Iu"	// Windows uses '%Iu' to format 'size_t'
 
+	#define strcmpi		_strcmpi
+	#define strnicmp	_strnicmp
+
+	#ifndef STDFUNC_FILENO
+		#define STDFUNC_FILENO	_fileno
+	#endif
+
+	#ifndef STDFUNC_GETPID
+		#define STDFUNC_GETPID	_getpid
+	#endif
+
+	#ifndef STDFUNC_UNLINK
+		#define STDFUNC_UNLINK	_unlink
+	#endif
+#else
+	typedef void		*THREAD_ENTRY_RET;
+	#define FMTSIZE_T	"zu"	// Linux uses '%zu' to format 'size_t'
+
+	#define strcmpi		strcasecmp
+	#define strnicmp	strncasecmp
+
+	#ifndef STDFUNC_FILENO
+		#define STDFUNC_FILENO	fileno
+	#endif
+
+	#ifndef STDFUNC_GETPID
+		#define STDFUNC_GETPID	getpid
+	#endif
+
+	#ifndef STDFUNC_UNLINK
+		#define STDFUNC_UNLINK	unlink
+	#endif
+#endif
+
+typedef THREAD_ENTRY_RET(_cdecl *PTHREAD_ENTRY_PROC)(void *);
+typedef unsigned int	ERROR_CODE;
+
+// Time measurement macros
+#include "CTime.h"
 extern ULONGLONG llTimeProfileFrequency;
 
 #ifdef _WIN32
@@ -80,23 +105,32 @@ extern ULONGLONG llTimeProfileFrequency;
 	#define	TIME_PROFILE_GET_LO		(((llTicksEnd - llTicksStart) * 10) % 10000)
 #endif
 
-// -----------------------------
-//	CEventLog
-// -----------------------------
+// Use to indicate that a function uses printf-style arguments, allowing GCC to validate the format string and arguments:
+//  a = 1-based index of format string
+//  b = 1-based index of arguments
+// Note: add 1 to index for non-static class methods because 'this' argument is inserted in position 1
+#ifdef __GNUC__
+	#define __printfargs(a, b)	__attribute__ ((format(printf, a, b)))
+#else
+	#define __printfargs(a, b)
+#endif
+
+///////////////////////////////////////////////////////////
+// CEventLog
 
 enum LOGL_TYPE
 {
 	// Critical level
 	LOGL_FATAL = 1,				// fatal error (can't continue)
-	LOGL_CRIT,					// critical (might not continue)
-	LOGL_ERROR,					// non-fatal error (can continue)
-	LOGL_WARN,					// strange
+	LOGL_CRIT,					// critical error (might not continue)
+	LOGL_ERROR,					// non-critical error (can continue)
+	LOGL_WARN,					// just a text warning
 	LOGL_EVENT,					// misc major events
 
 	// Subject matter (severity level is first 4 bits, LOGL_EVENT)
 	LOGM_INIT		= 0x00100,	// start up messages
 	LOGM_NOCONTEXT	= 0x20000,	// do not include context information
-	LOGM_DEBUG		= 0x40000	// debug kind of message with DEBUG: prefix
+	LOGM_DEBUG		= 0x40000	// debug kind of message with 'DEBUG:' prefix
 };
 
 extern class CEventLog
@@ -163,7 +197,7 @@ public:
 		va_start(vargs, pszFormat);
 		int iRet = VEvent(LOGL_EVENT, pszFormat, vargs);
 		va_end(vargs);
-		return(iRet);
+		return iRet;
 	}
 #endif
 
@@ -180,9 +214,8 @@ public:
 #endif
 } *g_pLog;
 
-// -----------------------------
-//	CValStr
-// -----------------------------
+///////////////////////////////////////////////////////////
+// CValStr
 
 struct CValStr
 {
