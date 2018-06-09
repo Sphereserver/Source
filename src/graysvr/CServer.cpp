@@ -89,20 +89,20 @@ bool CServer::SocketsInit(CGSocket &socket)
 	// Initialize socket
 	if ( !socket.Create() )
 	{
-		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to create socket!\n");
+		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to create listen socket\n");
 		return false;
 	}
 
 	linger lVal;
 	lVal.l_onoff = 0;
 	lVal.l_linger = 10;
-	socket.SetSockOpt(SO_LINGER, reinterpret_cast<const char *>(&lVal), sizeof(lVal));
+	socket.SetSockOpt(SO_LINGER, reinterpret_cast<const void *>(&lVal), sizeof(lVal));
 	socket.SetNonBlocking();
 
 #ifndef _WIN32
-	int onNotOff = 1;
-	if ( socket.SetSockOpt(SO_REUSEADDR, (char *)&onNotOff, sizeof(onNotOff)) == -1 )
-		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to set SO_REUSEADDR!\n");
+	int iOnNotOff = 1;
+	if ( socket.SetSockOpt(SO_REUSEADDR, reinterpret_cast<const void *>(&iOnNotOff), sizeof(iOnNotOff)) == -1 )
+		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to set listen socket option SO_REUSEADDR\n");
 #endif
 
 	// Bind to just one specific port if they say so
@@ -250,7 +250,7 @@ bool CServer::Load()
 	g_Log.WriteString("\n");
 
 #if defined(__GITREVISION__) && defined(__GITHASH__)
-	g_Log.Event(LOGM_INIT, "%s\nCompiled: %s (%s) [build %d / GIT hash %s]\n\n", g_szServerDescription, g_szServerBuildDate, g_szServerBuildTime, __GITREVISION__, __GITHASH__);
+	g_Log.Event(LOGM_INIT, "%s\nCompiled: %s (%s) [build %d / Git hash %s]\n\n", g_szServerDescription, g_szServerBuildDate, g_szServerBuildTime, __GITREVISION__, __GITHASH__);
 #else
 	g_Log.Event(LOGM_INIT, "%s\nCompiled: %s (%s)\n\n", g_szServerDescription, g_szServerBuildDate, g_szServerBuildTime);
 #endif
