@@ -407,7 +407,7 @@ Fixed: Function SHRINK not working correctly.
 
 13-02-2017, Coruja
 Changed: Spellbooks now store spell offset / max spells using TDATA3/TDATA4 instead MOREZ/MOREX. This will optimize worldsave files, because TDATA* can be used directly from itemdef script and doesn't need to be saved on worldfiles.
-	-IMPORTANT: It's HIGHLY recommended update these scripts above, otherwise spellbooks will stop working.
+	-IMPORTANT: It's HIGHLY recommended update these scripts below, otherwise spellbooks will stop working.
 [items/sphere_item_magic_magery.scp]: Updated i_spellbook
 [items/sphere_item_magic_necromancer_aos.scp]: Updated i_spellbook_necromancy
 [items/sphere_item_magic_chivalry.scp]: Updated i_spellbook_chivalry
@@ -581,7 +581,7 @@ Changed: Updated internal MySQL libs v6.1.9 to v6.1.10.
 
 24-05-2017, Coruja
 [items/sphere_item_char_icons.scp]: Added new icon 'i_pet_kotl_automaton'
-[items/sphere_item_deco_wall_hangings.scp]: Removed items 'i_tapestry_elven_3' and 'i_tapestry_map_eodon' (these items got moved to the script above using correct defname)
+[items/sphere_item_deco_wall_hangings.scp]: Removed items 'i_tapestry_elven_3' and 'i_tapestry_map_eodon' (these items got moved to the script below using correct defname)
 [items/sphere_item_profession_cartographer.scp]: Added items 'i_tattered_wall_map', 'i_wall_map_eodon', renamed 'i_map' to 'i_map_blank', and removed all custom map items
 [npcs/sphere_monsters.scp]: Updated some chardefs (Gallusaurus, Kotl Automaton, Lasher, Palomino, Windrunner) and added new publish 97 monsters (Triceratops, Saber-Toothed Tiger, Platinum Drake, Crimson Drake, Stygian Drake, Blood Fox, Frost Mite, Ossein Ram, Lion)
 [sphere_defs.scp]: Added new sound defs 'snd_monster_blade' and 'snd_animal_lion'
@@ -1100,3 +1100,10 @@ Changed: Updated SQLite engine
 03-06-2018, Coruja
 Fixed: <SERV.BUILD> function returning build date instead build number.
 Fixed: Containers showing wrong weight on item tooltip when FEATURE_ML_UPDATE feature is enabled on sphere.ini.
+
+10-06-2018, Coruja
+Fixed: DUPE function not duping some char properties.
+[items/sphere_item_char_icons.scp]: Added char icon 'i_pet_eowmu'
+[items/sphere_item_memories.scp]: Added mount memory 'i_mt_eowmu'
+[npcs/sphere_monsters.scp]: Added new TOL mount chardef 'c_eowmu'
+[sphere_defs.scp]: Added mount defs for Eowmu and some new bufficon/buffcliloc defs

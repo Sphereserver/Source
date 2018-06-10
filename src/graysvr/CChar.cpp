@@ -739,14 +739,60 @@ void CChar::CreateNewCharCheck()
 
 bool CChar::DupeFrom(CChar *pChar, bool fNewbieItems)
 {
-	// Copy CChar
+	ADDTOCALLSTACK("CChar::DupeFrom");
 	if ( !pChar )
 		return false;
 
+	// Copy CObjBase
+	m_Can = pChar->m_Can;
+	m_ModMaxWeight = pChar->m_ModMaxWeight;
+
+	m_attackBase = pChar->m_attackBase;
+	m_attackRange = pChar->m_attackRange;
+
+	m_defenseBase = pChar->m_defenseBase;
+	m_defenseRange = pChar->m_defenseRange;
+
+	m_DamPhysical = pChar->m_DamPhysical;
+	m_DamFire = pChar->m_DamFire;
+	m_DamCold = pChar->m_DamCold;
+	m_DamPoison = pChar->m_DamPoison;
+	m_DamEnergy = pChar->m_DamEnergy;
+
+	m_ResPhysical = pChar->m_ResPhysical;
+	m_ResPhysicalMax = pChar->m_ResPhysicalMax;
+	m_ResFire = pChar->m_ResFire;
+	m_ResFireMax = pChar->m_ResFireMax;
+	m_ResCold = pChar->m_ResCold;
+	m_ResColdMax = pChar->m_ResColdMax;
+	m_ResPoison = pChar->m_ResPoison;
+	m_ResPoisonMax = pChar->m_ResPoisonMax;
+	m_ResEnergy = pChar->m_ResEnergy;
+	m_ResEnergyMax = pChar->m_ResEnergyMax;
+
+	m_Luck = pChar->m_Luck;
+	m_DamIncrease = pChar->m_DamIncrease;
+	m_SpellDamIncrease = pChar->m_SpellDamIncrease;
+	m_HitChanceIncrease = pChar->m_HitChanceIncrease;
+	m_DefChanceIncrease = pChar->m_DefChanceIncrease;
+	m_DefChanceIncreaseMax = pChar->m_DefChanceIncreaseMax;
+	m_SwingSpeedIncrease = pChar->m_SwingSpeedIncrease;
+	m_FasterCasting = pChar->m_FasterCasting;
+	m_FasterCastRecovery = pChar->m_FasterCastRecovery;
+	m_LowerManaCost = pChar->m_LowerManaCost;
+	m_LowerReagentCost = pChar->m_LowerReagentCost;
+	m_EnhancePotions = pChar->m_EnhancePotions;
+	m_NightSight = pChar->m_NightSight;
+
+	m_TagDefs.Copy(&pChar->m_TagDefs);
+	m_BaseDefs.Copy(&pChar->m_BaseDefs);
+	m_OEvents.Copy(&pChar->m_OEvents);
+
+	// Copy CChar
 	m_pArea = pChar->m_pArea;
 	m_pRoom = pChar->m_pRoom;
-	m_StatFlag = pChar->m_StatFlag;
 
+	m_StatFlag = pChar->m_StatFlag;
 	if ( g_World.m_fSaveParity )
 		StatFlag_Set(STATF_SaveParity);		// it will get saved next time
 
@@ -755,11 +801,14 @@ bool CChar::DupeFrom(CChar *pChar, bool fNewbieItems)
 	m_SpeechHue = pChar->m_SpeechHue;
 
 	m_height = pChar->m_height;
-	m_ModMaxWeight = pChar->m_ModMaxWeight;
 
 	m_StepStealth = pChar->m_StepStealth;
 	m_iVisualRange = pChar->m_iVisualRange;
 	m_virtualGold = pChar->m_virtualGold;
+	m_FollowerSlots = pChar->m_FollowerSlots;
+	m_FollowerCur = pChar->m_FollowerCur;
+	m_FollowerMax = pChar->m_FollowerMax;
+	m_Tithing = pChar->m_Tithing;
 
 	m_exp = pChar->m_exp;
 	m_level = pChar->m_level;
@@ -768,31 +817,20 @@ bool CChar::DupeFrom(CChar *pChar, bool fNewbieItems)
 	m_atUnk.m_Arg2 = pChar->m_atUnk.m_Arg2;
 	m_atUnk.m_Arg3 = pChar->m_atUnk.m_Arg3;
 
-	m_timeLastRegen = pChar->m_timeLastRegen;
-	m_timeCreate = pChar->m_timeCreate;
-
-	m_timeLastHitsUpdate = pChar->m_timeLastHitsUpdate;
-
 	m_prev_Hue = pChar->m_prev_Hue;
 	m_prev_id = pChar->m_prev_id;
 	SetHue(pChar->GetHue());
 	SetID(pChar->GetID());
-	m_Can = pChar->m_Can;
-	m_wBloodHue = pChar->m_wBloodHue;
-	//m_totalweight = 0;
 
+	m_wBloodHue = pChar->m_wBloodHue;
+
+	SetName(pChar->GetName());
 	Skill_Cleanup();
 
 	g_World.m_uidLastNewChar = GetUID();	// for script access
 
 	for ( size_t i = 0; i < STAT_QTY; i++ )
-	{
-		Stat_SetBase(static_cast<STAT_TYPE>(i), pChar->Stat_GetBase(static_cast<STAT_TYPE>(i)));
-		Stat_SetMod(static_cast<STAT_TYPE>(i), pChar->Stat_GetMod(static_cast<STAT_TYPE>(i)));
-		Stat_SetVal(static_cast<STAT_TYPE>(i), pChar->Stat_GetVal(static_cast<STAT_TYPE>(i)));
-		Stat_SetMax(static_cast<STAT_TYPE>(i), pChar->Stat_GetMax(static_cast<STAT_TYPE>(i)));
-		m_Stat[i].m_regen = 0;
-	}
+		m_Stat[i] = pChar->m_Stat[i];
 
 	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 		m_Skill[i] = pChar->m_Skill[i];
@@ -800,12 +838,19 @@ bool CChar::DupeFrom(CChar *pChar, bool fNewbieItems)
 	m_LocalLight = pChar->m_LocalLight;
 	m_fClimbUpdated = pChar->m_fClimbUpdated;
 
-	FixWeirdness();
-	SetName(pChar->GetName());	// must be called after FixWeirdness(), otherwise it will be replaced again
+	m_sTitle = pChar->m_sTitle;
+	m_ptHome = pChar->m_ptHome;
+	m_timeCreate = pChar->m_timeCreate;
 
-	m_TagDefs.Copy(&(pChar->m_TagDefs));
-	m_BaseDefs.Copy(&(pChar->m_BaseDefs));
-	m_OEvents.Copy(&(pChar->m_OEvents));
+	// Copy CCharNPC
+	if ( m_pNPC && pChar->m_pNPC )
+	{
+		m_pNPC->m_Brain = pChar->m_pNPC->m_Brain;
+		m_pNPC->m_Home_Dist_Wander = pChar->m_pNPC->m_Home_Dist_Wander;
+		m_pNPC->m_Act_Motivation = pChar->m_pNPC->m_Act_Motivation;
+		m_pNPC->m_bonded = pChar->m_pNPC->m_bonded;
+		m_pNPC->m_spells = pChar->m_pNPC->m_spells;
+	}
 
 	// Copy items
 	for ( int i = 0; i < LAYER_QTY; i++ )
@@ -877,11 +922,10 @@ bool CChar::DupeFrom(CChar *pChar, bool fNewbieItems)
 		CChar *pTest3 = pItem->m_uidLink.CharFind();
 		if ( pTest3 && (pTest3 == pChar) )
 			pItem->m_uidLink = GetUID();
-
 	}
 
+	FixWeirdness();
 	FixWeight();
-	Update();
 	return true;
 }
 
