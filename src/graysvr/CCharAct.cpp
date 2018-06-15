@@ -256,30 +256,7 @@ void CChar::LayerAdd(CItem *pItem, LAYER_TYPE layer)
 				}
 			}
 			else if ( pItem->IsTypeArmor() )
-			{
-				m_defense = CalcArmorDefense();
 				StatFlag_Set(STATF_HasShield);
-				UpdateStatsFlag();
-			}
-			break;
-		}
-		case LAYER_SHOES:
-		case LAYER_PANTS:
-		case LAYER_SHIRT:
-		case LAYER_HELM:
-		case LAYER_GLOVES:
-		case LAYER_COLLAR:
-		case LAYER_HALF_APRON:
-		case LAYER_CHEST:
-		case LAYER_TUNIC:
-		case LAYER_ARMS:
-		case LAYER_CAPE:
-		case LAYER_ROBE:
-		case LAYER_SKIRT:
-		case LAYER_LEGS:
-		{
-			m_defense = CalcArmorDefense();
-			UpdateStatsFlag();
 			break;
 		}
 		case LAYER_FLAG_Criminal:
@@ -373,31 +350,10 @@ void CChar::OnRemoveOb(CGObListRec *pObRec)	// override this = called when remov
 				}
 			}
 			else if ( pItem->IsTypeArmor() )
-			{
-				m_defense = CalcArmorDefense();
 				StatFlag_Clear(STATF_HasShield);
-				UpdateStatsFlag();
-			}
+
 			if ( (m_Act_SkillCurrent == SKILL_MINING) || (m_Act_SkillCurrent == SKILL_FISHING) || (m_Act_SkillCurrent == SKILL_LUMBERJACKING) )
 				Skill_Cleanup();
-			break;
-		}
-		case LAYER_SHOES:
-		case LAYER_PANTS:
-		case LAYER_SHIRT:
-		case LAYER_HELM:
-		case LAYER_GLOVES:
-		case LAYER_COLLAR:
-		case LAYER_CHEST:
-		case LAYER_TUNIC:
-		case LAYER_ARMS:
-		case LAYER_CAPE:
-		case LAYER_ROBE:
-		case LAYER_SKIRT:
-		case LAYER_LEGS:
-		{
-			m_defense = CalcArmorDefense();
-			UpdateStatsFlag();
 			break;
 		}
 		case LAYER_FLAG_Criminal:
@@ -453,13 +409,10 @@ void CChar::OnRemoveOb(CGObListRec *pObRec)	// override this = called when remov
 				break;
 		}
 
-		if ( pItem->IsTypeArmorWeapon() )
+		if ( pItem->IsTypeArmor() )
 		{
-			m_DamPhysical -= pItem->m_DamPhysical;
-			m_DamFire -= pItem->m_DamFire;
-			m_DamCold -= pItem->m_DamCold;
-			m_DamPoison -= pItem->m_DamPoison;
-			m_DamEnergy -= pItem->m_DamEnergy;
+			if ( !IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
+				m_defense = CalcArmorDefense();
 
 			m_ResPhysical -= pItem->m_ResPhysical;
 			m_ResPhysicalMax -= pItem->m_ResPhysicalMax;
@@ -472,9 +425,14 @@ void CChar::OnRemoveOb(CGObListRec *pObRec)	// override this = called when remov
 			m_ResEnergy -= pItem->m_ResEnergy;
 			m_ResEnergyMax -= pItem->m_ResEnergyMax;
 		}
-
-		if ( pItem->IsTypeWeapon() )
+		else if ( pItem->IsTypeWeapon() )
 		{
+			m_DamPhysical -= pItem->m_DamPhysical;
+			m_DamFire -= pItem->m_DamFire;
+			m_DamCold -= pItem->m_DamCold;
+			m_DamPoison -= pItem->m_DamPoison;
+			m_DamEnergy -= pItem->m_DamEnergy;
+
 			CItem *pCursedMemory = LayerFind(LAYER_SPELL_Curse_Weapon);
 			if ( pCursedMemory )
 				pItem->SetDefNum("HitLeechLife", pItem->GetDefNum("HitLeechLife") - pCursedMemory->m_itSpell.m_spelllevel, true);
@@ -509,8 +467,7 @@ void CChar::OnRemoveOb(CGObListRec *pObRec)	// override this = called when remov
 
 		if ( pItem->m_NightSight )
 		{
-			m_NightSight -= pItem->m_NightSight;
-			if ( !m_NightSight )
+			if ( m_NightSight )
 			{
 				StatFlag_Mod(STATF_NightSight, 0);
 				if ( m_pClient )
@@ -519,6 +476,7 @@ void CChar::OnRemoveOb(CGObListRec *pObRec)	// override this = called when remov
 					m_pClient->removeBuff(BI_NIGHTSIGHT);
 				}
 			}
+			m_NightSight -= pItem->m_NightSight;
 		}
 
 		// If items are magical then remove effect here
@@ -1461,7 +1419,7 @@ void CChar::SoundChar(CRESND_TYPE type)
 // Char is picking up an item
 // The item now will be "up in the air" (LAYER_DRAGGING)
 // RETURN:
-//	Amount we can pick up (-1 = can't pick this up)
+//  Amount we can pick up (-1 = can't pick this up)
 int CChar::ItemPickup(CItem *pItem, WORD wAmount)
 {
 	ADDTOCALLSTACK("CChar::ItemPickup");
@@ -1630,7 +1588,6 @@ int CChar::ItemPickup(CItem *pItem, WORD wAmount)
 		}
 	}
 
-
 	if ( pItem->Item_GetDef()->IsStackableType() && wAmount )
 	{
 		// Did we only pick up part of it?
@@ -1654,7 +1611,7 @@ int CChar::ItemPickup(CItem *pItem, WORD wAmount)
 	if ( (trigger == ITRIG_PICKUP_GROUND) && IsSetEF(EF_ItemStackDrop) )
 	{
 		signed char iItemHeight = maximum(pItem->GetHeight(), 1);
-		signed char	iStackMaxZ = GetTopZ() + 16;
+		signed char iStackMaxZ = GetTopZ() + 16;
 		CItem *pStack = NULL;
 		CPointMap ptNewPlace = pItem->GetTopPoint();
 		CWorldSearch AreaItems(ptNewPlace);
@@ -1845,13 +1802,10 @@ bool CChar::ItemEquip(CItem *pItem, CChar *pCharMsg, bool fFromDClick)
 	if ( fFromDClick )
 		pItem->ResendOnEquip();
 
-	if ( pItem->IsTypeArmorWeapon() )
+	if ( pItem->IsTypeArmor() )
 	{
-		m_DamPhysical += pItem->m_DamPhysical;
-		m_DamFire += pItem->m_DamFire;
-		m_DamCold += pItem->m_DamCold;
-		m_DamPoison += pItem->m_DamPoison;
-		m_DamEnergy += pItem->m_DamEnergy;
+		if ( !IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
+			m_defense = CalcArmorDefense();
 
 		m_ResPhysical += pItem->m_ResPhysical;
 		m_ResPhysicalMax += pItem->m_ResPhysicalMax;
@@ -1864,9 +1818,14 @@ bool CChar::ItemEquip(CItem *pItem, CChar *pCharMsg, bool fFromDClick)
 		m_ResEnergy += pItem->m_ResEnergy;
 		m_ResEnergyMax += pItem->m_ResEnergyMax;
 	}
-
-	if ( pItem->IsTypeWeapon() )
+	else if ( pItem->IsTypeWeapon() )
 	{
+		m_DamPhysical += pItem->m_DamPhysical;
+		m_DamFire += pItem->m_DamFire;
+		m_DamCold += pItem->m_DamCold;
+		m_DamPoison += pItem->m_DamPoison;
+		m_DamEnergy += pItem->m_DamEnergy;
+
 		CItem *pCursedMemory = LayerFind(LAYER_SPELL_Curse_Weapon);	// Mark the weapon as cursed if SPELL_Curse_Weapon is active.
 		if ( pCursedMemory )
 			pItem->SetDefNum("HitLeechLife", pItem->GetDefNum("HitLeechLife") + pCursedMemory->m_itSpell.m_spelllevel, true);
@@ -3427,7 +3386,7 @@ bool CChar::MoveToChar(CPointMap pt, bool bForceFix)
 	{
 		if ( IsTrigUsed(TRIGGER_ENVIRONCHANGE) )
 		{
-			CScriptTriggerArgs	Args(ptOld.m_x, ptOld.m_y, ptOld.m_z << 16 | ptOld.m_map);
+			CScriptTriggerArgs Args(ptOld.m_x, ptOld.m_y, ptOld.m_z << 16 | ptOld.m_map);
 			OnTrigger(CTRIG_EnvironChange, this, &Args);
 		}
 	}
