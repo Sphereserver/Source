@@ -20,6 +20,11 @@ void CSQLite::Connect(LPCTSTR pszFileName)
 		return;
 
 	m_resultCode = sqlite3_open(UTF8MBSTR(pszFileName), &m_socket);
+	if ( m_resultCode != SQLITE_OK )
+	{
+		g_Log.EventError("SQLite error #%d: %s\n", m_resultCode, sqlite3_errmsg(m_socket));
+		sqlite3_close(m_socket);
+	}
 }
 
 void CSQLite::Close()
@@ -38,9 +43,10 @@ TablePtr CSQLite::QueryPtr(LPCTSTR pszQuery)
 
 	m_resultCode = sqlite3_get_table(m_socket, UTF8MBSTR(pszQuery), &retStrings, &iRows, &iCols, &errmsg);
 	if ( m_resultCode != SQLITE_OK )
+	{
 		g_Log.EventError("SQLite error #%d: %s [Cmd: \"%s\"]\n", m_resultCode, errmsg, pszQuery);
-
-	sqlite3_free(errmsg);
+		sqlite3_free(errmsg);
+	}
 
 	Table *pTable = new Table();
 	pTable->m_iCols = iCols;
@@ -121,9 +127,10 @@ void CSQLite::Exec(LPCTSTR pszQuery)
 
 	m_resultCode = sqlite3_exec(m_socket, UTF8MBSTR(pszQuery), 0, 0, &errmsg);
 	if ( m_resultCode != SQLITE_OK )
+	{
 		g_Log.EventError("SQLite error #%d: %s [Cmd: \"%s\"]\n", m_resultCode, errmsg, pszQuery);
-
-	sqlite3_free(errmsg);
+		sqlite3_free(errmsg);
+	}
 }
 
 void CSQLite::ConvertUTF8ToString(LPTSTR pszIn, stdvstring &pszOut)

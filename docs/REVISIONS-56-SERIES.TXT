@@ -1107,3 +1107,7 @@ Fixed: DUPE function not duping some char properties.
 [items/sphere_item_memories.scp]: Added mount memory 'i_mt_eowmu'
 [npcs/sphere_monsters.scp]: Added new TOL mount chardef 'c_eowmu'
 [sphere_defs.scp]: Added mount defs for Eowmu and some new bufficon/buffcliloc defs
+
+14-06-2018, Coruja
+Fixed: Possible memory leak when SQLite functions return an error.
+[sphereCrypt.ini]: Added crypt key for classic client 7.0.64 and enhanced client 4.0.64
