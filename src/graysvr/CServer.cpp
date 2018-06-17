@@ -96,7 +96,9 @@ bool CServer::SocketsInit(CGSocket &socket)
 	linger lVal;
 	lVal.l_onoff = 0;
 	lVal.l_linger = 10;
-	socket.SetSockOpt(SO_LINGER, reinterpret_cast<const void *>(&lVal), sizeof(lVal));
+	if ( socket.SetSockOpt(SO_LINGER, reinterpret_cast<const void *>(&lVal), sizeof(lVal)) == -1 )
+		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to set listen socket option SO_LINGER\n");
+
 	socket.SetNonBlocking();
 
 #ifndef _WIN32
@@ -110,7 +112,7 @@ bool CServer::SocketsInit(CGSocket &socket)
 	int iRet = socket.Bind(SockAddr);
 	if ( iRet < 0 )
 	{
-		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to bind listen socket %s port %hu (error code: %d)\n", SockAddr.GetAddrStr(), SockAddr.GetPort(), iRet);
+		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to bind listen socket %s port %hu (code %d)\n", SockAddr.GetAddrStr(), SockAddr.GetPort(), iRet);
 		return false;
 	}
 	socket.Listen();

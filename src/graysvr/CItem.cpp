@@ -777,7 +777,7 @@ int CItem::FixWeirdness()
 		case IT_EQ_MEMORY_OBJ:
 		{
 			// Should not exist except equipped.
-			CItemMemory *pItemTemp = static_cast<CItemMemory *>(this);
+			CItemMemory *pItemTemp = dynamic_cast<CItemMemory *>(this);
 			if ( !pItemTemp )
 				return 0x2222;	// get rid of it.
 			break;
@@ -1787,8 +1787,6 @@ bool CItem::SetMaxAmount(WORD wAmount)
 	if (!IsStackableType())
 		return false;
 
-	if (wAmount > USHRT_MAX)
-		wAmount = USHRT_MAX;
 	SetDefNum("MaxAmount", wAmount);
 	return true;
 }

@@ -1301,7 +1301,7 @@ bool CClient::addBookOpen(CItem *pBook)
 	if ( !pBook->IsBookSystem() )
 	{
 		// User written book
-		CItemMessage *pMsgItem = static_cast<CItemMessage *>(pBook);
+		CItemMessage *pMsgItem = dynamic_cast<CItemMessage *>(pBook);
 		if ( !pMsgItem )
 			return false;
 

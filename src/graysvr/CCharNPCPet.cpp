@@ -550,7 +550,7 @@ bool CChar::NPC_PetSetOwner(CChar *pChar, bool bResendTooltip)
 
 	NPC_PetClearOwners(false);	// clear previous owner before set the new owner
 	m_ptHome.InitPoint();	// no longer homed
-	CItemSpawn *pSpawn = static_cast<CItemSpawn *>(m_uidSpawnItem.ItemFind());
+	CItemSpawn *pSpawn = dynamic_cast<CItemSpawn *>(m_uidSpawnItem.ItemFind());
 	if ( pSpawn )
 		pSpawn->DelObj(GetUID());
 
@@ -757,7 +757,7 @@ bool CChar::NPC_SetVendorPrice(CItem *pItem, int iPrice)
 		return false;
 	}
 
-	CItemVendable *pVendItem = static_cast<CItemVendable *>(pItem);
+	CItemVendable *pVendItem = dynamic_cast<CItemVendable *>(pItem);
 	if ( !pVendItem )
 	{
 		Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_CANTSELL));

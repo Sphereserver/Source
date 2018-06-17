@@ -170,7 +170,7 @@ bool CClient::Cmd_Use_Item(CItem *pItem, bool fTestTouch, bool fScript)
 		case IT_CONTAINER:
 		case IT_TRASH_CAN:
 		{
-			CItemContainer *pPack = static_cast<CItemContainer *>(pItem);
+			const CItemContainer *pPack = dynamic_cast<const CItemContainer *>(pItem);
 			if ( !pPack )
 				return false;
 
@@ -180,7 +180,7 @@ bool CClient::Cmd_Use_Item(CItem *pItem, bool fTestTouch, bool fScript)
 					return false;
 			}
 
-			const CItemCorpse *pCorpseItem = static_cast<const CItemCorpse *>(pPack);
+			const CItemCorpse *pCorpseItem = dynamic_cast<const CItemCorpse *>(pPack);
 			if ( m_pChar->CheckCorpseCrime(pCorpseItem, true, true) )
 				SysMessageDefault(DEFMSG_LOOT_CRIMINAL_ACT);
 			return true;
@@ -193,8 +193,9 @@ bool CClient::Cmd_Use_Item(CItem *pItem, bool fTestTouch, bool fScript)
 				SysMessageDefault(DEFMSG_ITEMUSE_GAMEBOARD_FAIL);
 				return false;
 			}
-			CItemContainer *pBoard = static_cast<CItemContainer *>(pItem);
-			ASSERT(pBoard);
+			CItemContainer *pBoard = dynamic_cast<CItemContainer *>(pItem);
+			if ( !pBoard )
+				return false;
 			pBoard->Game_Create();
 			addContainerSetup(pBoard);
 			return true;
@@ -268,7 +269,7 @@ bool CClient::Cmd_Use_Item(CItem *pItem, bool fTestTouch, bool fScript)
 		case IT_SPAWN_ITEM:
 		case IT_SPAWN_CHAR:
 		{
-			pSpawn = static_cast<CItemSpawn *>(pItem);
+			pSpawn = dynamic_cast<CItemSpawn *>(pItem);
 			if ( !pSpawn )
 				return false;
 
@@ -386,8 +387,8 @@ bool CClient::Cmd_Use_Item(CItem *pItem, bool fTestTouch, bool fScript)
 				TCHAR *pszTemp = Str_GetTemp();
 				sprintf(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_MACEPICK_TARG), pItem->GetName());
 				addTarget(CLIMODE_TARG_USE_ITEM, pszTemp, true, true);
-				return true;
 			}
+			return true;
 
 		case IT_WEAPON_SWORD:
 		case IT_WEAPON_FENCE:
@@ -395,11 +396,9 @@ bool CClient::Cmd_Use_Item(CItem *pItem, bool fTestTouch, bool fScript)
 		case IT_WEAPON_MACE_SHARP:
 		case IT_WEAPON_MACE_STAFF:
 		case IT_WEAPON_MACE_SMITH:
-		{
 			if ( bIsEquipped || !IsSetOF(OF_NoDClickTarget) )
 				addTarget(CLIMODE_TARG_USE_ITEM, g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_WEAPON_PROMT), false, true);
 			return true;
-		}
 
 		case IT_WEAPON_MACE_CROOK:
 			if ( bIsEquipped || !IsSetOF(OF_NoDClickTarget) )

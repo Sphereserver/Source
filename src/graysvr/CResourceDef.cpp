@@ -467,7 +467,7 @@ bool CSkillClassDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole *
 				break;
 			}
 			i = g_Cfg.FindStatKey( pszKey);
-			if ( i >= 0 )
+			if ( i != STAT_NONE )
 			{
 				ASSERT( static_cast<size_t>(i) < COUNTOF(m_StatMax));
 				sVal.FormatVal( m_StatMax[i] );
@@ -513,7 +513,7 @@ bool CSkillClassDef::r_LoadVal( CScript &s )
 				break;
 			}
 			i = g_Cfg.FindStatKey( s.GetKey());
-			if ( i >= 0 )
+			if ( i != STAT_NONE )
 			{
 				ASSERT( static_cast<size_t>(i) < COUNTOF(m_StatMax));
 				m_StatMax[i] = static_cast<WORD>(s.GetArgVal());

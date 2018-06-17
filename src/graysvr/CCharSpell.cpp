@@ -536,7 +536,7 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 					SetDefNum("RegenHits", GetDefNum("RegenHits") - pSpell->m_itSpell.m_PolyStr);
 					m_DamIncrease -= pSpell->m_itSpell.m_PolyDex;
 					m_attackBase -= static_cast<WORD>(pSpell->m_itSpell.m_spellcharges);
-					m_attackRange -= pSpell->m_itSpell.m_spelllevel;
+					m_attackRange -= wStatEffect;
 					break;
 				case SPELL_Lich_Form:
 					iBuffIcon = BI_LICHFORM;
@@ -551,7 +551,7 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 					SetDefNum("HitLeechLife", GetDefNum("HitLeechLife") - pSpell->m_itSpell.m_PolyStr);
 					SetDefNum("RegenStam", GetDefNum("RegenStam") - pSpell->m_itSpell.m_PolyDex);
 					SetDefNum("RegenMana", GetDefNum("RegenMana") - pSpell->m_itSpell.m_spellcharges);
-					m_ResFire += pSpell->m_itSpell.m_spelllevel;
+					m_ResFire += wStatEffect;
 					break;
 				case SPELL_Wraith_Form:
 					iBuffIcon = BI_WRAITHFORM;
@@ -575,15 +575,15 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 					m_SwingSpeedIncrease += pSpell->m_itSpell.m_PolyStr;
 					m_FasterCasting += pSpell->m_itSpell.m_PolyDex;
 					m_ResPhysical -= pSpell->m_itSpell.m_spellcharges;
-					m_ResPhysicalMax -= pSpell->m_itSpell.m_spelllevel;
+					m_ResPhysicalMax -= wStatEffect;
 					m_ResFire -= pSpell->m_itSpell.m_spellcharges;
-					m_ResFireMax -= pSpell->m_itSpell.m_spelllevel;
+					m_ResFireMax -= wStatEffect;
 					m_ResCold -= pSpell->m_itSpell.m_spellcharges;
-					m_ResColdMax -= pSpell->m_itSpell.m_spelllevel;
+					m_ResColdMax -= wStatEffect;
 					m_ResPoison -= pSpell->m_itSpell.m_spellcharges;
-					m_ResPoisonMax -= pSpell->m_itSpell.m_spelllevel;
+					m_ResPoisonMax -= wStatEffect;
 					m_ResEnergy -= pSpell->m_itSpell.m_spellcharges;
-					m_ResEnergyMax -= pSpell->m_itSpell.m_spelllevel;
+					m_ResEnergyMax -= wStatEffect;
 					m_DamIncrease -= pSpell->m_itSpell.m_PolyStr;
 					break;
 				default:
@@ -832,7 +832,7 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 		{
 			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 			{
-				m_ResPhysical -= pSpell->m_itSpell.m_spelllevel;
+				m_ResPhysical -= wStatEffect;
 				m_ResFire += 5;
 				m_ResCold += 5;
 				m_ResPoison += 5;
@@ -851,7 +851,7 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 			StatFlag_Clear(STATF_Reflection);
 			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 			{
-				m_ResPhysical += pSpell->m_itSpell.m_spelllevel;
+				m_ResPhysical += wStatEffect;
 				m_ResFire -= 10;
 				m_ResCold -= 10;
 				m_ResPoison -= 10;
@@ -898,7 +898,7 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 		//	return;
 		case SPELL_Mind_Rot:
 		{
-			m_LowerManaCost += pSpell->m_itSpell.m_spelllevel;
+			m_LowerManaCost += wStatEffect;
 			if ( m_pClient )
 				m_pClient->removeBuff(BI_MINDROT);
 			return;
@@ -907,7 +907,7 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 		{
 			CItem *pWeapon = m_uidWeapon.ItemFind();
 			if ( pWeapon )
-				pWeapon->SetDefNum("HitLeechLife", pWeapon->GetDefNum("HitLeechLife") - pSpell->m_itSpell.m_spelllevel, true);	// Adding 50% HitLeechLife to the weapon, since damaging with it should return 50% of the damage dealt.
+				pWeapon->SetDefNum("HitLeechLife", pWeapon->GetDefNum("HitLeechLife") - wStatEffect, true);	// Adding 50% HitLeechLife to the weapon, since damaging with it should return 50% of the damage dealt.
 			return;
 		}
 		default:
@@ -2759,7 +2759,7 @@ bool CChar::Spell_CastDone()
 			case SPELL_Create_Food:
 			{
 				RESOURCE_ID food = g_Cfg.ResourceGetIDType(RES_ITEMDEF, "DEFFOOD");
-				CItem *pItem = CItem::CreateScript((iT1 ? iT1 : static_cast<ITEMID_TYPE>(food.GetResIndex())), this);
+				CItem *pItem = CItem::CreateScript(((iT1 != ITEMID_NOTHING) ? iT1 : static_cast<ITEMID_TYPE>(food.GetResIndex())), this);
 				ASSERT(pItem);
 				if ( pSpellDef->IsSpellType(SPELLFLAG_TARG_OBJ|SPELLFLAG_TARG_XYZ) )
 					pItem->MoveToCheck(m_Act_p, this);
@@ -2815,7 +2815,8 @@ bool CChar::Spell_CastDone()
 				if ( pObj->IsChar() )
 				{
 					CChar *pChar = dynamic_cast<CChar *>(pObj);
-					ASSERT(pChar);
+					if ( !pChar )
+						return false;
 					int iDiff = (Stat_GetAdjusted(STAT_INT) - pChar->Stat_GetAdjusted(STAT_INT)) / 2;
 					if ( iDiff < 0 )
 					{
@@ -3669,8 +3670,8 @@ int CChar::GetSpellDuration(SPELL_TYPE spell, int iSkillLevel, CChar *pCharSrc)
 					iDuration = 15;
 				else if ( iDuration > 240 )
 					iDuration = 240;
+				break;
 			}
-			break;
 
 			case SPELL_Wall_of_Stone:
 				iDuration = 10;

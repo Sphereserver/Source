@@ -154,13 +154,11 @@ CCharPlayer::~CCharPlayer()
 bool CCharPlayer::SetSkillClass( CChar * pChar, RESOURCE_ID rid )
 {
 	ADDTOCALLSTACK("CCharPlayer::SetSkillClass");
-	CResourceDef * pDef = g_Cfg.ResourceGetDef(rid);
+	CResourceDef *pDef = g_Cfg.ResourceGetDef(rid);
 	if ( !pDef )
 		return false;
 
 	CSkillClassDef *pLink = static_cast<CSkillClassDef *>(pDef);
-	if ( !pLink )
-		return false;
 	if ( pLink == GetSkillClass() )
 		return true;
 

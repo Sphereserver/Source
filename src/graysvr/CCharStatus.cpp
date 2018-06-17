@@ -853,7 +853,7 @@ bool CChar::CanSee(const CObjBaseTemplate *pObj) const
 	if ( pObj->IsItem() )
 	{
 		const CItem *pItem = static_cast<const CItem *>(pObj);
-		if ( !pItem || !CanSeeItem(pItem) )
+		if ( !CanSeeItem(pItem) )
 			return false;
 
 		int iDist = pItem->IsTypeMulti() ? UO_MAP_VIEW_RADAR : GetSight();
@@ -882,8 +882,6 @@ bool CChar::CanSee(const CObjBaseTemplate *pObj) const
 	else
 	{
 		const CChar *pChar = static_cast<const CChar *>(pObj);
-		if ( !pChar )
-			return false;
 		if ( pChar == this )
 			return true;
 		if ( GetTopPoint().GetDistSight(pChar->GetTopPoint()) > GetSight() )
@@ -1628,7 +1626,7 @@ bool CChar::CanTouch(const CObjBase *pObj) const
 		CObjBase *pObjCont = NULL;
 		for (;;)
 		{
-			pItem = static_cast<const CItem *>(pObjTest);
+			pItem = dynamic_cast<const CItem *>(pObjTest);
 			if ( !pItem )
 				break;
 

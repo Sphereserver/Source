@@ -109,7 +109,7 @@ PacketHealthBarInfo::PacketHealthBarInfo(const CClient *target, CObjBase *object
 	ADDTOCALLSTACK("PacketHealthBarInfo::PacketHealthBarInfo");
 
 	const CChar *character = target->GetChar();
-	const CChar *objectChar = static_cast<const CChar *>(object);
+	const CChar *objectChar = dynamic_cast<const CChar *>(object);
 	bool canRename = false;
 	BYTE version = 0;
 
@@ -285,8 +285,7 @@ PacketHealthBarInfo::PacketHealthBarInfo(const CClient *target, CObjBase *object
 		else
 		{
 			const CItem *objectItem = static_cast<const CItem *>(object);
-			if ( objectItem )
-				writeInt16(static_cast<WORD>((objectItem->m_itArmor.m_Hits_Cur * 100) / maximum(objectItem->m_itArmor.m_Hits_Max, 1)));
+			writeInt16(static_cast<WORD>((objectItem->m_itArmor.m_Hits_Cur * 100) / maximum(objectItem->m_itArmor.m_Hits_Max, 1)));
 		}
 
 		writeInt16(100);
@@ -404,14 +403,14 @@ PacketItemWorld::PacketItemWorld(const CClient* target, CItem *item) : PacketSen
 void PacketItemWorld::adjustItemData(const CClient* target, CItem* item, ITEMID_TYPE &id, HUE_TYPE &hue, WORD &amount, BYTE &layer, BYTE &flags)
 {
 	ADDTOCALLSTACK("PacketItemWorld::adjustItemData");
-	// Layer value can return both 'light' (on light sources) or 'direction' (on corpses)
-	const CChar* character = target->GetChar();
+	// Modify item values for compatibility with this specific client
+	// NOTE: layer value can return both 'light' (on light sources) or 'direction' (on corpses)
+	const CItemBase *itemDefintion = item->Item_GetDef();
+	const CChar *character = target->GetChar();
 	ASSERT(character);
 
-	// modify the values for the specific client/item.
 	if (id != ITEMID_CORPSE)
 	{
-		const CItemBase* itemDefintion = item->Item_GetDef();
 		if (itemDefintion && (target->GetResDisp() < itemDefintion->GetResLevel()))
 		{
 			id = static_cast<ITEMID_TYPE>(itemDefintion->GetResDispDnId());
@@ -461,7 +460,7 @@ void PacketItemWorld::adjustItemData(const CClient* target, CItem* item, ITEMID_
 		if (!character->CanSee(item))
 			flags |= ITEMF_INVIS;
 
-		if (item->Item_GetDef()->Can(CAN_I_LIGHT))
+		if (itemDefintion->Can(CAN_I_LIGHT))
 		{
 			if (item->IsTypeLit())
 				layer = item->m_itLight.m_pattern;
@@ -1262,10 +1261,10 @@ PacketQueryClient::PacketQueryClient(CClient* target, BYTE bCmd) : PacketSend(XC
 	initLength();
 	switch (bCmd)
 	{
-		case 0x01:
+		case 0x1:
 		{
-			//Update Map Definitions Command
-			int length = 2 * 9; //map count * 9
+			// Update map definitions
+			int length = 2 * 9;		// map count * 9
 			int count = length / 7;
 			int padding = 0;
 			if (length - (count * 7) > 0)
@@ -1277,7 +1276,7 @@ PacketQueryClient::PacketQueryClient(CClient* target, BYTE bCmd) : PacketSend(XC
 			writeInt32(0);
 			writeInt32(4);
 			writeInt16(0);
-			writeByte(0x01);
+			writeByte(0x1);
 			writeByte(0);
 
 			for (int i = 0; i < 2; i++)
@@ -1291,37 +1290,40 @@ PacketQueryClient::PacketQueryClient(CClient* target, BYTE bCmd) : PacketSend(XC
 
 			for (int i = 0; i < padding; i++)
 				writeByte(0);
+			break;
 		}
-		case 0x02:
+		case 0x2:
 		{
-			//Login Complete Command
+			// Login complete
 			writeInt32(1);
 			writeInt32(4);
 			writeInt16(0);
-			writeByte(0x02);
+			writeByte(0x2);
 			writeByte(0);
 			writeStringFixedASCII(g_Serv.GetName(),28);
+			break;
 		}
-		case 0x03:
+		case 0x3:
 		{
-			//Refresh Client View Command
+			// Refresh client view
 			writeInt32(0);
 			writeInt32(0);
 			writeInt16(0);
-			writeByte(0x03);
+			writeByte(0x3);
 			writeByte(0);
+			break;
 		}
 		case 0xFF:
 		{
-			//Query Client Command
-			BYTE bMap = target->GetChar()->GetTopMap();
+			// Query client
 			CPointMap pt = target->GetChar()->GetTopPoint();
-			DWORD dwBlockId = (pt.m_x * (g_MapList.GetY( bMap ) / UO_BLOCK_SIZE)) + pt.m_y;
+			DWORD dwBlockId = (pt.m_x * (g_MapList.GetY(target->GetChar()->GetTopMap()) / UO_BLOCK_SIZE)) + pt.m_y;
 			writeInt32(dwBlockId);
 			writeInt32(0);
 			writeInt16(0);
 			writeByte(0xFF);
 			writeByte(target->GetChar()->GetTopMap());
+			break;
 		}
 	}
 
@@ -2964,12 +2966,12 @@ void PacketServerList::writeServerEntry(const CServerRef &server, WORD index, bo
 	DWORD ip = server->m_ip.GetAddrIP();
 
 	if (server == &g_Serv)
-		percentFull = maximum(0, minimum(static_cast<BYTE>((server->StatGet(SERV_STAT_CLIENTS) * 100) / maximum(1, g_Cfg.m_iClientsMax)), 100));
+		percentFull = static_cast<BYTE>(minimum((server->StatGet(SERV_STAT_CLIENTS) * 100) / maximum(1, g_Cfg.m_iClientsMax), 100));
 	else
-		percentFull = minimum(static_cast<BYTE>(server->StatGet(SERV_STAT_CLIENTS)), 100);
+		percentFull = static_cast<BYTE>(minimum(server->StatGet(SERV_STAT_CLIENTS), 100));
 
 	writeInt16(index);
-	writeStringFixedASCII(server->GetName(), 32);
+	writeStringFixedASCII(server->GetName(), MAX_NAME_SIZE + 2);
 	writeByte(percentFull);
 	writeByte(server->m_TimeZone);
 

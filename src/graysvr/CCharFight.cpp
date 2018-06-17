@@ -487,9 +487,7 @@ void CChar::Noto_Fame( int iFameChange )
 	if ( IsTrigUsed(TRIGGER_FAMECHANGE) )
 	{
 		CScriptTriggerArgs Args(iFameChange);	// ARGN1 - Fame change modifier
-		TRIGRET_TYPE retType = OnTrigger(CTRIG_FameChange, this, &Args);
-
-		if ( retType == TRIGRET_RET_TRUE )
+		if ( OnTrigger(CTRIG_FameChange, this, &Args) == TRIGRET_RET_TRUE )
 			return;
 		iFameChange = static_cast<int>(Args.m_iN1);
 	}
@@ -525,9 +523,7 @@ void CChar::Noto_Karma( int iKarmaChange, int iBottom, bool bMessage )
 	if ( IsTrigUsed(TRIGGER_KARMACHANGE) )
 	{
 		CScriptTriggerArgs Args(iKarmaChange);	// ARGN1 - Karma change modifier
-		TRIGRET_TYPE retType = OnTrigger(CTRIG_KarmaChange, this, &Args);
-
-		if ( retType == TRIGRET_RET_TRUE )
+		if ( OnTrigger(CTRIG_KarmaChange, this, &Args) == TRIGRET_RET_TRUE )
 			return;
 		iKarmaChange = static_cast<int>(Args.m_iN1);
 	}
@@ -960,7 +956,7 @@ bool CChar::Memory_OnTick( CItemMemory * pMemory )
 void CChar::OnNoticeCrime( CChar * pCriminal, const CChar * pCharMark )
 {
 	ADDTOCALLSTACK("CChar::OnNoticeCrime");
-	if ( !pCriminal || (pCriminal == this) || (pCriminal == pCharMark) || pCriminal->IsPriv(PRIV_GM) || (pCriminal->GetNPCBrain(false) == NPCBRAIN_GUARD) )
+	if ( !pCriminal || !pCharMark || (pCriminal == this) || (pCriminal == pCharMark) || pCriminal->IsPriv(PRIV_GM) || (pCriminal->GetNPCBrain(false) == NPCBRAIN_GUARD) )
 		return;
 	NOTO_TYPE iNoto = pCharMark->Noto_GetFlag(pCriminal);
 	if ( iNoto == NOTO_CRIMINAL || iNoto == NOTO_EVIL )
@@ -1068,7 +1064,7 @@ bool CChar::CheckCrimeSeen( SKILL_TYPE SkillToSee, CChar * pCharMark, const CObj
 			if (IsTrigUsed(TRIGGER_SEESNOOP))
 			{
 				CScriptTriggerArgs Args(pAction);
-				Args.m_iN1 = SkillToSee ? SkillToSee : pCharMark->Skill_GetActive();
+				Args.m_iN1 = SkillToSee;
 				Args.m_iN2 = pItem ? (DWORD)pItem->GetUID() : 0;
 				Args.m_pO1 = pCharMark;
 				TRIGRET_TYPE iRet = pChar->OnTrigger(CTRIG_SeeSnoop, this, &Args);
@@ -1458,10 +1454,8 @@ void CChar::OnHarmedBy( CChar * pCharSrc )
 {
 	ADDTOCALLSTACK("CChar::OnHarmedBy");
 
-	bool fFightActive = Fight_IsActive();
 	Memory_AddObjTypes(pCharSrc, MEMORY_HARMEDBY);
-
-	if (fFightActive && m_Fight_Targ.CharFind())
+	if ( Fight_IsActive() && m_Fight_Targ.CharFind() )
 	{
 		// In war mode already
 		if ( m_pPlayer )

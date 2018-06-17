@@ -198,11 +198,9 @@ public:
 	{
 		return m_ResDisp;
 	}
-	bool SetResDisp(BYTE ResDisp)
+	bool SetResDisp(BYTE bResDisp)
 	{
-		if ( (ResDisp < RDS_NONE) || (ResDisp >= RDS_QTY) )
-			return false;
-		m_ResDisp = ResDisp;
+		m_ResDisp = bResDisp;
 		return true;
 	}
 	bool SetAutoResDisp(CClient *pClient);

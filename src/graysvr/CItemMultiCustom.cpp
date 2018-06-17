@@ -361,14 +361,7 @@ void CItemMultiCustom::AddItem(CClient * pClientSrc, ITEMID_TYPE id, signed shor
 {
 	ADDTOCALLSTACK("CItemMultiCustom::AddItem");
 	// add an item to the building design at the given location
-	const CChar *pCharSrc = NULL;
-	if ( pClientSrc )
-	{
-		pCharSrc = pClientSrc->GetChar();
-		if ( !pCharSrc )
-			return;
-	}
-
+	const CChar *pCharSrc = pClientSrc ? pClientSrc->GetChar() : NULL;
 	CItemBase *pItemBase = CItemBase::FindItemBase(id);
 	if ( !pItemBase )
 	{
@@ -451,14 +444,7 @@ void CItemMultiCustom::AddStairs(CClient * pClientSrc, ITEMID_TYPE id, signed sh
 	ADDTOCALLSTACK("CItemMultiCustom::AddStairs");
 	// add a staircase to the building, the given ID must
 	// be the ID of a multi to extract the items from
-	const CChar *pCharSrc = NULL;
-	if ( pClientSrc )
-	{
-		pCharSrc = pClientSrc->GetChar();
-		if ( !pCharSrc )
-			return;
-	}
-
+	const CChar *pCharSrc = pClientSrc ? pClientSrc->GetChar() : NULL;
 	const CGrayMulti *pMulti = g_Cfg.GetMultiItemDefs(id);
 	if ( !pMulti )
 	{
@@ -498,14 +484,7 @@ void CItemMultiCustom::AddRoof(CClient * pClientSrc, ITEMID_TYPE id, signed shor
 {
 	ADDTOCALLSTACK("CItemMultiCustom::AddRoof");
 	// add a roof piece to the building
-	const CChar *pCharSrc = NULL;
-	if ( pClientSrc )
-	{
-		pCharSrc = pClientSrc->GetChar();
-		if ( !pCharSrc )
-			return;
-	}
-
+	const CChar *pCharSrc = pClientSrc ? pClientSrc->GetChar() : NULL;
 	CItemBase *pItemBase = CItemBase::FindItemBase(id);
 	if ( !pItemBase )
 	{

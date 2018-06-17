@@ -1252,7 +1252,7 @@ bool CItemShip::r_LoadVal( CScript & s  )
 		} break;
 		case IMCS_PILOT:
 		{
-			CChar * pChar = static_cast<CChar*>(static_cast<CGrayUID>(s.GetArgVal()).CharFind());
+			CChar *pChar = dynamic_cast<CChar *>(static_cast<CGrayUID>(s.GetArgVal()).CharFind());
 			if (pChar)
 				m_itShip.m_Pilot = pChar->GetUID() ;
 			else
@@ -1301,7 +1301,7 @@ CItemContainer * CItemShip::GetShipHold()
 		m_uidHold = pItem->GetUID();
 	}
 
-	CItemContainer *pItemHold = static_cast<CItemContainer *>(pItem);
+	CItemContainer *pItemHold = dynamic_cast<CItemContainer *>(pItem);
 	if ( !pItemHold )
 		return NULL;
 

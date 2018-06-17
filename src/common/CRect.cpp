@@ -678,7 +678,6 @@ bool CPointBase::r_LoadVal( LPCTSTR pszKey, LPCTSTR pszArgs )
 	int iVal = Exp_GetVal(pszArgs);
 	switch (index)
 	{
-		case 0: m_map = static_cast<unsigned char>(iVal); break;
 		case 1: m_x = static_cast<signed short>(iVal); break;
 		case 2: m_y = static_cast<signed short>(iVal); break;
 		case 3: m_z = static_cast<signed char>(iVal); break;

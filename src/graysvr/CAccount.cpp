@@ -1032,7 +1032,7 @@ bool CAccount::r_LoadVal(CScript &s)
 			}
 			break;
 		case AC_RESDISP:
-			SetResDisp(static_cast<BYTE>(s.GetArgVal()));
+			SetResDisp(static_cast<BYTE>(minimum(maximum(s.GetArgVal(), RDS_NONE), RDS_QTY - 1)));
 			break;
 		case AC_TAG0:
 		{

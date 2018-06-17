@@ -2249,7 +2249,7 @@ bool CChar::OnTickEquip(CItem *pItem)
 					break;
 				case IT_EQ_MEMORY_OBJ:
 				{
-					CItemMemory *pMemory = static_cast<CItemMemory *>(pItem);
+					CItemMemory *pMemory = dynamic_cast<CItemMemory *>(pItem);
 					if ( pMemory )
 						return Memory_OnTick(pMemory);
 					return false;

@@ -223,12 +223,9 @@ public:
 	{
 		return m_ResLevel;
 	}
-	bool SetResLevel(BYTE ResLevel)
+	bool SetResLevel(BYTE bResLevel)
 	{
-		if ( (ResLevel < RDS_NONE) || (ResLevel >= RDS_QTY) )
-			return false;
-
-		m_ResLevel = ResLevel;
+		m_ResLevel = bResLevel;
 		return true;
 	}
 
