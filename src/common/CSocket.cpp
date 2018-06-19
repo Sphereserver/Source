@@ -208,9 +208,10 @@ struct sockaddr_in CSocketAddress::GetAddrPort() const
 {
 	struct sockaddr_in SockAddrIn;
 	SockAddrIn.sin_family = AF_INET;
-	SockAddrIn.sin_addr.s_addr = s_addr;
 	SockAddrIn.sin_port = htons(m_port);
-	return( SockAddrIn );
+	SockAddrIn.sin_addr.s_addr = s_addr;
+	memset(&SockAddrIn.sin_zero, 0, sizeof(SockAddrIn.sin_zero));
+	return SockAddrIn;
 }
 void CSocketAddress::SetAddrPort( const struct sockaddr_in & SockAddrIn )
 {

@@ -920,23 +920,24 @@ void defragSphere(char *path)
 	char	c,c1,c2;
 	DWORD	d;
 
-	//	NOTE: Sure I could use CVarDefArray, but it is extremely slow with memory allocation, takes hours
-	//		to read and save the data. Moreover, it takes less memory in this case and does less convertations.
-#define	MAX_UID	5000000L	// limit to 5mln of objects, takes 5mln*4 = 20mb
-	DWORD	*uids;
+	// NOTE: Sure I could use CVarDefArray, but it is extremely slow with memory allocation, takes hours
+	// to read and save the data. Moreover, it takes less memory in this case and does less convertations.
 
 	g_Log.Event(LOGM_INIT, "Defragmentation (UID alteration) of " SPHERE_TITLE " saves.\n"
-		"Use it on your risk and if you know what you are doing since it can possibly harm your server.\n"
+		"Use it at your own risk and if you know what you are doing, since it can possibly harm your server.\n"
 		"The process can take up to several hours depending on the CPU you have.\n"
-		"After finished, you will have your '" SPHERE_FILE "*.scp' files converted and saved as '" SPHERE_FILE "*.scp.new'.\n");
+		"After finished, you will have your '" SPHERE_FILE "*.scp' save files converted to '" SPHERE_FILE "*.scp.new'.\n");
 
-	uids = (DWORD*)calloc(MAX_UID, sizeof(DWORD));
+	DWORD *uids = (DWORD*)calloc(ULONG_MAX, sizeof(DWORD));
 	for ( i = 0; i < 3; i++ )
 	{
 		strcpy(z, path);
-		if ( i == 0 ) strcat(z, SPHERE_FILE "statics" SPHERE_SCRIPT);
-		else if ( i == 1 ) strcat(z, SPHERE_FILE "world" SPHERE_SCRIPT);
-		else strcat(z, SPHERE_FILE "chars" SPHERE_SCRIPT);
+		if ( i == 0 )
+			strcat(z, SPHERE_FILE "statics" SPHERE_SCRIPT);
+		else if ( i == 1 )
+			strcat(z, SPHERE_FILE "world" SPHERE_SCRIPT);
+		else
+			strcat(z, SPHERE_FILE "chars" SPHERE_SCRIPT);
 
 		g_Log.Event(LOGM_INIT, "Reading current UIDs: %s\n", z);
 		if ( !inf.Open(z, OF_READ|OF_TEXT|OF_DEFAULTMODE) )

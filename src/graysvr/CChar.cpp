@@ -1571,23 +1571,23 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			TCHAR *pszFameAt0 = new TCHAR[pFameAt0->GetLength() + 1];
 			strcpylen(pszFameAt0, pFameAt0->GetPtr());
 
-			int iFame = Stat_GetAdjusted(STAT_FAME);
-			size_t i = Str_ParseCmds(pszFameAt0, ppLevel_sep, COUNTOF(ppLevel_sep), ",") - 1;	// range
-			for (;;)
+			size_t index = Str_ParseCmds(pszFameAt0, ppLevel_sep, COUNTOF(ppLevel_sep), ",");
+			if ( index > 0 )
 			{
-				if ( !IsStrNumeric(ppLevel_sep[i]) )
+				int iFame = Stat_GetAdjusted(STAT_FAME);
+				for ( size_t i = index - 1; i > 0; i-- )
 				{
-					DEBUG_ERR(("'%s' is not a valid fame value.\n", ppLevel_sep[i]));
+					if ( !IsStrNumeric(ppLevel_sep[i]) )
+					{
+						DEBUG_ERR(("'%s' is not a valid fame value.\n", ppLevel_sep[i]));
+					}
+					else if ( iFame >= ATOI(ppLevel_sep[i]) )
+					{
+						sVal.FormatVal(!g_Cfg.m_Fame.GetAt(i + 1)->CompareNoCase(pszKey + 5));
+						delete[] pszFameAt0;
+						return true;
+					}
 				}
-				else if ( iFame >= ATOI(ppLevel_sep[i]) )
-				{
-					sVal.FormatVal(!g_Cfg.m_Fame.GetAt(i + 1)->CompareNoCase(pszKey + 5));
-					delete[] pszFameAt0;
-					return true;
-				}
-				if ( i == 0 )
-					break;
-				i--;
 			}
 
 			sVal.FormatVal(0);
@@ -1661,23 +1661,23 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			TCHAR *pszKarmaAt0 = new TCHAR[pKarmaAt0->GetLength() + 1];
 			strcpylen(pszKarmaAt0, pKarmaAt0->GetPtr());
 
-			int iKarma = Stat_GetAdjusted(STAT_KARMA);
-			size_t i = Str_ParseCmds(pszKarmaAt0, ppLevel_sep, COUNTOF(ppLevel_sep), ",") - 1;	// range
-			for (;;)
+			size_t index = Str_ParseCmds(pszKarmaAt0, ppLevel_sep, COUNTOF(ppLevel_sep), ",");
+			if ( index > 0 )
 			{
-				if ( (ppLevel_sep[i][0] != '-') && !IsStrNumeric(ppLevel_sep[i]) )
+				int iKarma = Stat_GetAdjusted(STAT_KARMA);
+				for ( size_t i = index - 1; i > 0; i-- )
 				{
-					DEBUG_ERR(("'%s' is not a valid karma value.\n", ppLevel_sep[i]));
+					if ( (ppLevel_sep[i][0] != '-') && !IsStrNumeric(ppLevel_sep[i]) )
+					{
+						DEBUG_ERR(("'%s' is not a valid karma value.\n", ppLevel_sep[i]));
+					}
+					else if ( iKarma >= ATOI(ppLevel_sep[i]) )
+					{
+						sVal.FormatVal(!g_Cfg.m_Karma.GetAt(i + 1)->CompareNoCase(pszKey + 6));
+						delete[] pszKarmaAt0;
+						return true;
+					}
 				}
-				else if ( iKarma >= ATOI(ppLevel_sep[i]) )
-				{
-					sVal.FormatVal(!g_Cfg.m_Karma.GetAt(i + 1)->CompareNoCase(pszKey + 6));
-					delete[] pszKarmaAt0;
-					return true;
-				}
-				if ( i == 0 )
-					break;
-				i--;
 			}
 
 			sVal.FormatVal(0);

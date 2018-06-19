@@ -407,7 +407,8 @@ void PacketItemWorld::adjustItemData(const CClient* target, CItem* item, ITEMID_
 	// NOTE: layer value can return both 'light' (on light sources) or 'direction' (on corpses)
 	const CItemBase *itemDefintion = item->Item_GetDef();
 	const CChar *character = target->GetChar();
-	ASSERT(character);
+	if (!itemDefintion || !character)
+		return;
 
 	if (id != ITEMID_CORPSE)
 	{

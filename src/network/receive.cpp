@@ -849,7 +849,7 @@ bool PacketItemEquipReq::onReceive(NetState* net)
 	client->ClearTargMode(); // done dragging.
 
 	CChar* target = targetSerial.CharFind();
-	bool bCanCarry = target->CanCarry(item);
+	bool bCanCarry = (target && target->CanCarry(item));
 	if ( !target || (itemLayer >= LAYER_HORSE) || !target->NPC_IsOwnedBy(source) || !bCanCarry || !target->ItemEquip(item, source) )
 	{
 		client->Event_Item_Drop_Fail(item);		//cannot equip
@@ -4676,7 +4676,7 @@ bool PacketCreateHS::onReceive(NetState* net)
 /***************************************************************************
 *
 *
-*	Packet 0xFA : PacketUltimaStoreButton			ultima store button pressed (SA)
+*	Packet 0xFA : PacketUltimaStoreButton			ultima store button pressed
 *
 *
 ***************************************************************************/

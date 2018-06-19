@@ -1378,6 +1378,8 @@ void CClient::SetTargMode(CLIMODE_TYPE targmode, LPCTSTR pszPrompt, int iTimeout
 	// ??? Get rid of menu stuff if previous targ mode
 	// Can i close a menu?
 	// Cancel a cursor input
+	if ( !m_pChar )
+		return;
 
 	bool bSuppressCancelMessage = false;
 
@@ -1483,7 +1485,7 @@ void CClient::SetTargMode(CLIMODE_TYPE targmode, LPCTSTR pszPrompt, int iTimeout
 
 	if ( (GetTargMode() != CLIMODE_NORMAL) && (targmode != CLIMODE_NORMAL) )
 	{
-		//If there's any item in LAYER_DRAGGING, remove it from view (to avoid seeing it in the cursor) and then bounce it
+		// If there's any item in LAYER_DRAGGING, remove it from view (to avoid seeing it in the cursor) and then bounce it
 		CItem *pItem = m_pChar->LayerFind(LAYER_DRAGGING);
 		if ( pItem )
 		{
@@ -2177,7 +2179,7 @@ void CClient::addItemMenu(CLIMODE_TYPE mode, const CMenuItem *item, size_t count
 	// Will result in PacketMenuChoice::onReceive()
 	// cmd.ItemMenu
 
-	if ( count <= 0 )
+	if ( (count <= 0) || (count >= COUNTOF(item)) )
 		return;
 	if ( !pObj )
 		pObj = m_pChar;

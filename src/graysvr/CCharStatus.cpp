@@ -1576,9 +1576,6 @@ bool CChar::CanTouch(const CObjBase *pObj) const
 	if ( pObj->IsItem() )	// some objects can be used anytime. (even by the dead.)
 	{
 		pItem = static_cast<const CItem *>(pObj);
-		if ( !pItem )
-			return false;
-
 		bool fDeathImmune = IsPriv(PRIV_GM);
 		switch ( pItem->GetType() )
 		{
@@ -1611,9 +1608,7 @@ bool CChar::CanTouch(const CObjBase *pObj) const
 	{
 		if ( pObjTop->IsChar() )
 		{
-			pChar = dynamic_cast<const CChar *>(pObjTop);
-			if ( !pChar )
-				return false;
+			pChar = static_cast<const CChar *>(pObjTop);
 			if ( pChar == this )
 				return true;
 			if ( IsPriv(PRIV_GM) )

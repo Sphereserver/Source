@@ -911,8 +911,8 @@ CPointBase CGRect::GetRectCorner( DIR_TYPE dir ) const
 	ADDTOCALLSTACK("CGRect::GetRectCorner");
 	// Get the point if a directional corner of the CRectMap.
 	CPointBase pt;
-	pt.m_z = 0;	// NOTE: remember this is a nonsense value.
-	pt.m_map = static_cast<unsigned char>(m_map);
+	pt.m_z = 0;
+	pt.m_map = static_cast<BYTE>(m_map);
 	switch ( dir )
 	{
 		case DIR_N:
@@ -947,10 +947,8 @@ CPointBase CGRect::GetRectCorner( DIR_TYPE dir ) const
 			pt.m_x = static_cast<signed short>(m_left);
 			pt.m_y = static_cast<signed short>(m_top);
 			break;
-		case DIR_QTY:
-			pt = GetCenter();
-			break;
 		default:
+			pt = GetCenter();
 			break;
 	}
 	return( pt );

@@ -810,8 +810,8 @@ bool CResource::r_LoadVal( CScript &s )
 	ADDTOCALLSTACK("CResource::r_LoadVal");
 	EXC_TRY("LoadVal");
 
-	int i = FindTableHeadSorted( s.GetKey(), reinterpret_cast<LPCTSTR const *>(sm_szLoadKeys), COUNTOF( sm_szLoadKeys )-1, sizeof(sm_szLoadKeys[0]));
-	if ( i < 0 )
+	int index = FindTableHeadSorted(s.GetKey(), reinterpret_cast<LPCTSTR const *>(sm_szLoadKeys), COUNTOF(sm_szLoadKeys) - 1, sizeof(sm_szLoadKeys[0]));
+	if ( index < 0 )
 	{
 		if ( s.IsKeyHead( "REGEN", 5 ))			//	REGENx=<stat regeneration rate>
 		{
@@ -935,7 +935,7 @@ bool CResource::r_LoadVal( CScript &s )
 		return(false);
 	}
 
-	switch (i)
+	switch ( index )
 	{
 		case RC_ACCTFILES:	// Put acct files here.
 			m_sAcctBaseDir = CGFile::GetMergedFileName( s.GetArgStr(), "" );
@@ -1189,7 +1189,7 @@ bool CResource::r_LoadVal( CScript &s )
 
 
 		default:
-			return( sm_szLoadKeys[i].m_elem.SetValStr( this, s.GetArgRaw()));
+			return sm_szLoadKeys[index].m_elem.SetValStr(this, s.GetArgRaw());
 	}
 	return true;
 	EXC_CATCH;
@@ -1229,7 +1229,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 		if ( !strnicmp( pszKey, "REGEN", 5 ))
 		{
 			index = ATOI(pszKey+5);
-			if (( index < 0 ) || ( index >= STAT_QTY ))
+			if ( (static_cast<STAT_TYPE>(index) < STAT_STR) || (static_cast<STAT_TYPE>(index) >= STAT_QTY) )
 				return false;
 			sVal.FormatVal(g_Cfg.m_iRegenRate[index] / TICK_PER_SEC);
 			return true;
@@ -2329,10 +2329,10 @@ bool CResource::LoadResourceSection( CScript * pScript )
 		// Stat advance rates.
 		while ( pScript->ReadKeyParse())
 		{
-			int i = FindStatKey( pScript->GetKey());
-			if ( i >= STAT_BASE_QTY )
+			STAT_TYPE index = FindStatKey( pScript->GetKey());
+			if ( (index < STAT_STR) || (index >= STAT_BASE_QTY) )
 				continue;
-			m_StatAdv[i].Load( pScript->GetArgStr());
+			m_StatAdv[index].Load( pScript->GetArgStr());
 		}
 		return( true );
 
@@ -3134,12 +3134,13 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 			pszName = pArg1;
 			TCHAR * pArg2;
 			Str_Parse( pArg1, &pArg2 );
-			if ( pArg2[0] == '\0' || ! strcmpi( pArg2, "HUMAN" ))
-				iPage = RACETYPE_HUMAN;
-			else if ( ! strcmpi( pArg2, "ELF" ))
-				iPage = RACETYPE_ELF;
-			else if ( ! strcmpi( pArg2, "GARGOYLE" ))
+
+			if ( !strcmpi(pArg2, "GARG") )
 				iPage = RACETYPE_GARGOYLE;
+			else if ( !strcmpi(pArg2, "ELF") )
+				iPage = RACETYPE_ELF;
+			else
+				iPage = RACETYPE_HUMAN;
 
 			if ( ! strcmpi( pszName, "MALE_DEFAULT" ))
 				return ( RESOURCE_ID( RES_NEWBIE, RES_NEWBIE_MALE_DEFAULT, iPage ));

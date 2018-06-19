@@ -2354,8 +2354,8 @@ void CWorld::SpeakUNICODE( const CObjBaseTemplate * pSrc, const NCHAR * pwText, 
 						{
 							wTextName[iLen] = pwText[i];
 						}
+						wTextName[iLen] = '\0';
 					}
-					wTextName[iLen] = '\0';
 				}
 				pwSpeak = wTextName;
 			}

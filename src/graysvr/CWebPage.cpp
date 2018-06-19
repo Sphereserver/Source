@@ -577,10 +577,10 @@ int CWebPageDef::ServPageRequest( CClient * pClient, LPCTSTR pszURLArgs, CGTime 
 
 	const char *sDate = datetime.FormatGmt(NULL);	// current date.
 
-	if ( !fGenerate && !pdateIfModifiedSince && pdateIfModifiedSince->IsTimeValid() && (pdateIfModifiedSince->GetTime() > dateChange) )
+	if ( !fGenerate && (!pdateIfModifiedSince || (pdateIfModifiedSince->IsTimeValid() && (pdateIfModifiedSince->GetTime() > dateChange))) )
 	{
 		TCHAR *pszTemp = Str_GetTemp();
-		sprintf(pszTemp, "HTTP/1.1 304 Not Modified\r\nDate: %s\r\nServer: " SPHERE_TITLE " V " SPHERE_VERSION "\r\nContent-Length: 0\r\n\r\n", sDate);
+		sprintf(pszTemp, "HTTP/1.1 304 Not Modified\r\nDate: %s\r\nServer: " SPHERE_TITLE " V" SPHERE_VERSION "\r\nContent-Length: 0\r\n\r\n", sDate);
 		new PacketWeb(pClient, (BYTE*)pszTemp, strlen(pszTemp));
 		return 0;
 	}
@@ -595,7 +595,7 @@ int CWebPageDef::ServPageRequest( CClient * pClient, LPCTSTR pszURLArgs, CGTime 
 	size_t iLen = sprintf(szTmp,
 		"HTTP/1.1 200 OK\r\n" // 100 Continue
 		"Date: %s\r\n"
-		"Server: " SPHERE_TITLE " V " SPHERE_VERSION "\r\n"
+		"Server: " SPHERE_TITLE " V" SPHERE_VERSION "\r\n"
 		"Accept-Ranges: bytes\r\n"
 		"Content-Type: %s\r\n",
 		static_cast<LPCTSTR>(sDate),
@@ -841,7 +841,7 @@ bool CWebPageDef::ServPage( CClient * pClient, TCHAR * pszPage, CGTime * pdateIf
 	sMsgHead.Format(
 		"HTTP/1.1 %d %s\r\n"
 		"Date: %s\r\n"
-		"Server: " SPHERE_TITLE " V " SPHERE_VERSION "\r\n"
+		"Server: " SPHERE_TITLE " V" SPHERE_VERSION "\r\n"
 		"Content-Type: text/html\r\n"
 		"Content-Length: %" FMTSIZE_T "\r\n"
 		"Connection: close\r\n"
