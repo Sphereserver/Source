@@ -1224,7 +1224,7 @@ size_t CScriptObj::ParseText(TCHAR *pszResponse, CTextConsole *pSrc, int iFlags,
 				sVal = "&nbsp";
 
 			EXC_SET("mem shifting");
-			int iLen = sVal.GetLength();
+			size_t iLen = sVal.GetLength();
 			memmove(pszResponse + iBegin + iLen, pszResponse + i + 1, strlen(pszResponse + i + 1) + 1);
 			memcpy(pszResponse + iBegin, static_cast<LPCTSTR>(sVal), iLen);
 			i = iBegin + iLen - 1;

@@ -15,9 +15,9 @@
 class CGString
 {
 private:
-	TCHAR	*m_pchData; ///< Data pointer.
-	int		m_iLength; ///< Length of string.
-	int		m_iMaxLength; ///< Size of memory allocated pointed by m_pchData.
+	TCHAR *m_pchData;		// Data pointer
+	size_t m_iLength;		// Length of string
+	size_t m_iMaxLength;	// Size of memory allocated pointed by m_pchData
 
 public:
 	static const char *m_sClassName;
@@ -73,12 +73,12 @@ public:
 	* @param iLen new length of the string.
 	* @return the new length of the CGString.
 	*/
-	int SetLength(int iLen);
+	size_t SetLength(size_t iLen);
 	/**
 	* @brief Get the length of the CGString.
 	* @return the length of the CGString.
 	*/
-	int GetLength() const;
+	size_t GetLength() const;
 	/**
 	* @brief Check the length of the CGString.
 	* @return true if length is 0, false otherwise.
@@ -104,13 +104,13 @@ public:
 	* @param nIndex position of the character.
 	* @return reference to character in position nIndex.
 	*/
-	TCHAR & ReferenceAt(int nIndex);
+	TCHAR & ReferenceAt(size_t nIndex);
 	/**
 	* @brief Gets the caracter in a specified position (0 based).
 	* @param nIndex position of the character.
 	* @return character in position nIndex.
 	*/
-	TCHAR GetAt(int nIndex) const;
+	TCHAR GetAt(size_t nIndex) const;
 	/**
 	* @brief Puts a character in a specified position (0 based).
 	*
@@ -118,7 +118,7 @@ public:
 	* @param nIndex position to put the character.
 	* @param ch character to put.
 	*/
-	void SetAt(int nIndex, TCHAR ch);
+	void SetAt(size_t nIndex, TCHAR ch);
 	/**
 	* @brief Gets the internal pointer.
 	* @return Pointer to internal data.
@@ -432,7 +432,7 @@ TCHAR * Str_MakeFiltered(TCHAR * pStr);
 /**
 * @brief replace special characters by string representation.
 *
-* Speciual characters replaced:
+* Special characters replaced:
 * - \b
 * - \n
 * - \r
@@ -442,7 +442,7 @@ TCHAR * Str_MakeFiltered(TCHAR * pStr);
 * @param pStrIn input string.
 * @param iSizeMax length of the input string.
 */
-void Str_MakeUnFiltered(TCHAR * pStrOut, LPCTSTR pStrIn, int iSizeMax);
+void Str_MakeUnFiltered(TCHAR * pStrOut, LPCTSTR pStrIn, size_t iSizeMax);
 /**
 * @brief remove trailing white spaces from a string.
 * @param pStr string where remove trailing spaces.
@@ -502,7 +502,7 @@ size_t Str_ParseCmds(TCHAR * pCmdLine, INT64 * piCmd, size_t iMax, LPCTSTR pSep 
 * @param iElemSize size of elements of the table.
 * @return the index of string if success, -1 otherwise.
 */
-int FindTable(LPCTSTR pFind, LPCTSTR const * ppTable, int iCount, int iElemSize = sizeof(LPCTSTR));
+int FindTable(LPCTSTR pFind, LPCTSTR const * ppTable, size_t iCount, size_t iElemSize = sizeof(LPCTSTR));
 /**
 * @brief Look for a string in a table (binary search).
 * @param pFind string we are looking for.
@@ -511,7 +511,7 @@ int FindTable(LPCTSTR pFind, LPCTSTR const * ppTable, int iCount, int iElemSize 
 * @param iElemSize size of elements of the table.
 * @return the index of string if success, -1 otherwise.
 */
-int FindTableSorted(LPCTSTR pFind, LPCTSTR const * ppTable, int iCount, int iElemSize = sizeof(LPCTSTR));/**
+int FindTableSorted(LPCTSTR pFind, LPCTSTR const * ppTable, size_t iCount, size_t iElemSize = sizeof(LPCTSTR));/**
 * @brief Look for a string header in a table (uses Str_CmpHeadI to compare instead of strcmpi).
 * @param pFind string we are looking for.
 * @param ppTable table where we are looking for the string.
@@ -519,7 +519,7 @@ int FindTableSorted(LPCTSTR pFind, LPCTSTR const * ppTable, int iCount, int iEle
 * @param iElemSize size of elements of the table.
 * @return the index of string if success, -1 otherwise.
 */
-int FindTableHead(LPCTSTR pFind, LPCTSTR const * ppTable, int iCount, int iElemSize = sizeof(LPCTSTR));
+int FindTableHead(LPCTSTR pFind, LPCTSTR const * ppTable, size_t iCount, size_t iElemSize = sizeof(LPCTSTR));
 /**
 * @brief Look for a string header in a table (binary search, uses Str_CmpHeadI to compare instead of strcmpi).
 * @param pFind string we are looking for.
@@ -528,11 +528,10 @@ int FindTableHead(LPCTSTR pFind, LPCTSTR const * ppTable, int iCount, int iElemS
 * @param iElemSize size of elements of the table.
 * @return the index of string if success, -1 otherwise.
 */
-int FindTableHeadSorted(LPCTSTR pFind, LPCTSTR const * ppTable, int iCount, int iElemSize = sizeof(LPCTSTR));
+int FindTableHeadSorted(LPCTSTR pFind, LPCTSTR const * ppTable, size_t iCount, size_t iElemSize = sizeof(LPCTSTR));
 
 void CharToMultiByteNonNull(BYTE*, const char* , size_t);
 
-// extern TCHAR * Str_GetTemporary(int amount = 1);
 #define Str_GetTemp static_cast<AbstractSphereThread *>(ThreadHolder::current())->allocateBuffer
 
 #endif	// _INC_CSTRING_H

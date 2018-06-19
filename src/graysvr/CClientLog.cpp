@@ -295,7 +295,7 @@ bool CClient::OnRxConsole(const BYTE *pData, size_t iLen)
 			{
 				if ( !m_zLogin[0] )
 				{
-					if ( m_Targ_Text.GetLength() > static_cast<int>(COUNTOF(m_zLogin) - 1) )
+					if ( m_Targ_Text.GetLength() > COUNTOF(m_zLogin) - 1 )
 						SysMessage("Login:\n");
 					else
 					{
@@ -358,7 +358,7 @@ bool CClient::OnRxAxis(const BYTE *pData, size_t iLen)
 			{
 				if ( !m_zLogin[0] )
 				{
-					if ( m_Targ_Text.GetLength() <= static_cast<int>(COUNTOF(m_zLogin) - 1) )
+					if ( m_Targ_Text.GetLength() <= COUNTOF(m_zLogin) - 1 )
 						strcpy(m_zLogin, m_Targ_Text);
 					m_Targ_Text.Empty();
 				}

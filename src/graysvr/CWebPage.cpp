@@ -843,7 +843,7 @@ bool CWebPageDef::ServPage( CClient * pClient, TCHAR * pszPage, CGTime * pdateIf
 		"Date: %s\r\n"
 		"Server: " SPHERE_TITLE " V " SPHERE_VERSION "\r\n"
 		"Content-Type: text/html\r\n"
-		"Content-Length: %d\r\n"
+		"Content-Length: %" FMTSIZE_T "\r\n"
 		"Connection: close\r\n"
 		"\r\n%s",
 		iError, static_cast<LPCTSTR>(pszErrText),

@@ -495,7 +495,7 @@ bool CServer::OnConsoleCmd(CGString &sText, CTextConsole *pSrc)
 	// RETURN:
 	//  false = unsuccessful command
 
-	int len = sText.GetLength();
+	size_t len = sText.GetLength();
 	if ( len <= 0 )
 		return true;
 

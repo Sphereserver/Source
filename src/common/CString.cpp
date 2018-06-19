@@ -96,7 +96,7 @@ void CGString::Empty(bool bTotal)
 	else m_iLength = 0;
 }
 
-int CGString::SetLength(int iNewLength)
+size_t CGString::SetLength(size_t iNewLength)
 {
 	if (iNewLength >= m_iMaxLength)
 	{
@@ -111,7 +111,7 @@ int CGString::SetLength(int iNewLength)
 		TCHAR	*pNewData = new TCHAR[m_iMaxLength + 1];
 		ASSERT(pNewData);
 
-		int iMinLength = minimum(iNewLength, m_iLength);
+		size_t iMinLength = minimum(iNewLength, m_iLength);
 		strncpy(pNewData, m_pchData, iMinLength);
 		pNewData[m_iLength] = 0;
 
@@ -141,14 +141,14 @@ void CGString::FormatV(LPCTSTR pszFormat, va_list args)
 
 void CGString::Add(TCHAR ch)
 {
-	int iLen = m_iLength;
+	size_t iLen = m_iLength;
 	SetLength(iLen + 1);
 	SetAt(iLen, ch);
 }
 
 void CGString::Add(LPCTSTR pszStr)
 {
-	int iLenCat = strlen(pszStr);
+	size_t iLenCat = strlen(pszStr);
 	if (iLenCat)
 	{
 		SetLength(iLenCat + m_iLength);
@@ -198,7 +198,7 @@ bool CGString::IsValid() const
 	return(m_pchData[m_iLength] == '\0');
 }
 
-int CGString::GetLength() const
+size_t CGString::GetLength() const
 {
 	return (m_iLength);
 }
@@ -206,17 +206,17 @@ bool CGString::IsEmpty() const
 {
 	return(!m_iLength);
 }
-TCHAR & CGString::ReferenceAt(int nIndex)       // 0 based
+TCHAR & CGString::ReferenceAt(size_t nIndex)       // 0 based
 {
 	ASSERT(nIndex < m_iLength);
 	return m_pchData[nIndex];
 }
-TCHAR CGString::GetAt(int nIndex) const      // 0 based
+TCHAR CGString::GetAt(size_t nIndex) const      // 0 based
 {
 	ASSERT(nIndex <= m_iLength);	// allow to get the null char
 	return(m_pchData[nIndex]);
 }
-void CGString::SetAt(int nIndex, TCHAR ch)
+void CGString::SetAt(size_t nIndex, TCHAR ch)
 {
 	ASSERT(nIndex < m_iLength);
 	m_pchData[nIndex] = ch;
@@ -257,7 +257,7 @@ void CGString::FormatULLVal(unsigned long long iVal)
 void CGString::FormatHex(DWORD dwVal)
 {
 	// In principle, all values in sphere logic are signed.. 
-	// If iVal is negative we MUST hexformat it as 64 bit int or reinterpreting it in a script might completely mess up
+	// If dwVal is negative we MUST hexformat it as 64 bit int or reinterpreting it in a script might completely mess up
 	if (dwVal > static_cast<DWORD>(INT_MIN))	// if negative (remember two's complement)
 		return FormatLLHex(dwVal);
 	Format("0%lx", dwVal);
@@ -388,6 +388,7 @@ int CGString::lastIndexOf(CGString str, int from)
 	int len = strlen(m_pchData);
 	if (from >= len)
 		return -1;
+
 	int slen = str.GetLength();
 	if (slen > len)
 		return -1;
@@ -395,6 +396,7 @@ int CGString::lastIndexOf(CGString str, int from)
 	TCHAR * str_value = new TCHAR[slen + 1];
 	strcpy(str_value, str.GetPtr());
 	TCHAR firstChar = str_value[0];
+
 	for (int i = (len - 1); i >= from; i--)
 	{
 		TCHAR c = m_pchData[i];
@@ -607,7 +609,7 @@ static int Str_CmpHeadI(LPCTSTR pszFind, LPCTSTR pszTable)
 	}
 }
 
-int FindTableHeadSorted(LPCTSTR pszFind, LPCTSTR const * ppszTable, int iCount, int iElemSize)
+int FindTableHeadSorted(LPCTSTR pszFind, LPCTSTR const * ppszTable, size_t iCount, size_t iElemSize)
 {
 	// Do a binary search (un-cased) on a sorted table.
 	// RETURN: -1 = not found
@@ -636,9 +638,9 @@ int FindTableHeadSorted(LPCTSTR pszFind, LPCTSTR const * ppszTable, int iCount, 
 	return(-1);
 }
 
-int FindTableHead(LPCTSTR pszFind, LPCTSTR const * ppszTable, int iCount, int iElemSize)
+int FindTableHead(LPCTSTR pszFind, LPCTSTR const * ppszTable, size_t iCount, size_t iElemSize)
 {
-	for (int i = 0; i<iCount; i++)
+	for (size_t i = 0; i < iCount; i++)
 	{
 		int iCompare = Str_CmpHeadI(pszFind, *ppszTable);
 		if (!iCompare)
@@ -648,7 +650,7 @@ int FindTableHead(LPCTSTR pszFind, LPCTSTR const * ppszTable, int iCount, int iE
 	return(-1);
 }
 
-int FindTableSorted(LPCTSTR pszFind, LPCTSTR const * ppszTable, int iCount, int iElemSize)
+int FindTableSorted(LPCTSTR pszFind, LPCTSTR const * ppszTable, size_t iCount, size_t iElemSize)
 {
 	// Do a binary search (un-cased) on a sorted table.
 	// RETURN: -1 = not found
@@ -677,10 +679,10 @@ int FindTableSorted(LPCTSTR pszFind, LPCTSTR const * ppszTable, int iCount, int 
 	return(-1);
 }
 
-int FindTable(LPCTSTR pszFind, LPCTSTR const * ppszTable, int iCount, int iElemSize)
+int FindTable(LPCTSTR pszFind, LPCTSTR const * ppszTable, size_t iCount, size_t iElemSize)
 {
 	// A non-sorted table.
-	for (int i = 0; i<iCount; i++)
+	for (size_t i = 0; i < iCount; i++)
 	{
 		if (!strcmpi(*ppszTable, pszFind))
 			return(i);
@@ -803,8 +805,8 @@ bool Str_CheckName(LPCTSTR pszIn)
 
 TCHAR * Str_MakeFiltered(TCHAR * pStr)
 {
-	int len = strlen(pStr);
-	for (int i = 0; len; i++, len--)
+	size_t len = strlen(pStr);
+	for (size_t i = 0; len; i++, len--)
 	{
 		if (pStr[i] == '\\')
 		{
@@ -823,11 +825,11 @@ TCHAR * Str_MakeFiltered(TCHAR * pStr)
 	return(pStr);
 }
 
-void Str_MakeUnFiltered(TCHAR * pStrOut, LPCTSTR pStrIn, int iSizeMax)
+void Str_MakeUnFiltered(TCHAR * pStrOut, LPCTSTR pStrIn, size_t iSizeMax)
 {
-	int len = strlen(pStrIn);
-	int iIn = 0;
-	int iOut = 0;
+	size_t len = strlen(pStrIn);
+	size_t iIn = 0;
+	size_t iOut = 0;
 	for (; iOut < iSizeMax && iIn <= len; iIn++, iOut++)
 	{
 		TCHAR ch = pStrIn[iIn];
