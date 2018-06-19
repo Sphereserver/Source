@@ -19,6 +19,10 @@ CItemBase::CItemBase(ITEMID_TYPE id) : CBaseBaseDef(RESOURCE_ID(RES_ITEMDEF, id)
 	m_HitpointIncrease = 0;
 	m_StaminaIncrease = 0;
 	m_ManaIncrease = 0;
+	m_MageArmor = 0;
+	m_MageWeapon = 0;
+	m_ArtifactRarity = 0;
+	m_SelfRepair = 0;
 	m_SpellChanneling = 0;
 	m_LowerRequirements = 0;
 	m_UseBestWeaponSkill = 0;
@@ -111,7 +115,7 @@ CItemBase *CItemBase::FindItemBase(ITEMID_TYPE id)	// static
 	CResourceLock s;
 	if ( !pBase->ResourceLock(s) )
 	{
-		g_Log.Event(LOGL_ERROR, "UN-scripted item 0%x NOT allowed.\n", id);
+		g_Log.Event(LOGL_ERROR, "Un-scripted item 0%x not allowed\n", id);
 		return NULL;
 	}
 
@@ -842,11 +846,7 @@ bool CItemBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case IBC_BONUSSKILL3AMT:
 		case IBC_BONUSSKILL4AMT:
 		case IBC_BONUSSKILL5AMT:
-		case IBC_RARITY:
 		case IBC_LIFESPAN:
-		case IBC_MAGEARMOR:
-		case IBC_MAGEWEAPON:
-		case IBC_SELFREPAIR:
 		case IBC_USESCUR:
 		case IBC_USESMAX:
 		case IBC_BONUSHITSMAX:
@@ -931,6 +931,18 @@ bool CItemBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			break;
 		case IBC_BONUSMANA:
 			sVal.FormatVal(m_ManaIncrease);
+			break;
+		case IBC_MAGEARMOR:
+			sVal.FormatVal(m_MageArmor);
+			break;
+		case IBC_MAGEWEAPON:
+			sVal.FormatVal(m_MageWeapon);
+			break;
+		case IBC_RARITY:
+			sVal.FormatVal(m_ArtifactRarity);
+			break;
+		case IBC_SELFREPAIR:
+			sVal.FormatVal(m_SelfRepair);
 			break;
 		case IBC_SPELLCHANNELING:
 			sVal.FormatVal(m_SpellChanneling);
@@ -1168,11 +1180,7 @@ bool CItemBase::r_LoadVal(CScript &s)
 		case IBC_BONUSSKILL3AMT:
 		case IBC_BONUSSKILL4AMT:
 		case IBC_BONUSSKILL5AMT:
-		case IBC_RARITY:
 		case IBC_LIFESPAN:
-		case IBC_MAGEARMOR:
-		case IBC_MAGEWEAPON:
-		case IBC_SELFREPAIR:
 		case IBC_USESCUR:
 		case IBC_USESMAX:
 		case IBC_BONUSHITSMAX:
@@ -1246,6 +1254,18 @@ bool CItemBase::r_LoadVal(CScript &s)
 			break;
 		case IBC_BONUSMANA:
 			m_ManaIncrease = static_cast<int>(s.GetArgVal());
+			break;
+		case IBC_MAGEARMOR:
+			m_MageArmor = static_cast<int>(s.GetArgVal());
+			break;
+		case IBC_MAGEWEAPON:
+			m_MageWeapon = static_cast<int>(s.GetArgVal());
+			break;
+		case IBC_RARITY:
+			m_ArtifactRarity = static_cast<int>(s.GetArgVal());
+			break;
+		case IBC_SELFREPAIR:
+			m_SelfRepair = static_cast<int>(s.GetArgVal());
 			break;
 		case IBC_SPELLCHANNELING:
 			m_SpellChanneling = static_cast<int>(s.GetArgVal());

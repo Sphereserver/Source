@@ -452,6 +452,16 @@ void CChar::OnRemoveOb(CGObListRec *pObRec)	// override this = called when remov
 		if ( pItem->m_ManaIncrease != 0 )
 			Stat_SetMax(STAT_INT, Stat_GetMax(STAT_INT) - pItem->m_ManaIncrease);
 
+		if ( pItem->m_MageWeapon != 0 )
+		{
+			WORD wSkillVal = Skill_GetBase(SKILL_MAGERY) + static_cast<WORD>(pItem->m_MageWeapon * 10);
+			Skill_SetBase(SKILL_MAGERY, wSkillVal);
+			m_TagDefs.DeleteKey("OVERRIDE.SKILLCAP_25");
+		}
+
+		if ( pItem->m_SpellChanneling )
+			m_FasterCasting += 1;
+
 		m_Luck -= pItem->m_Luck;
 		m_DamIncrease -= pItem->m_DamIncrease;
 		m_SpellDamIncrease -= pItem->m_SpellDamIncrease;
@@ -1844,6 +1854,17 @@ bool CChar::ItemEquip(CItem *pItem, CChar *pCharMsg, bool fFromDClick)
 		Stat_SetMax(STAT_DEX, Stat_GetMax(STAT_DEX) + pItem->m_StaminaIncrease);
 	if ( pItem->m_ManaIncrease != 0 )
 		Stat_SetMax(STAT_INT, Stat_GetMax(STAT_INT) + pItem->m_ManaIncrease);
+
+	if ( pItem->m_MageWeapon != 0 )
+	{
+		WORD wSkillVal = Skill_GetBase(SKILL_MAGERY) - static_cast<WORD>(pItem->m_MageWeapon * 10);
+		WORD wSkillCap = Skill_GetMax(SKILL_MAGERY) - static_cast<WORD>(pItem->m_MageWeapon * 10);
+		Skill_SetBase(SKILL_MAGERY, wSkillVal);
+		m_TagDefs.SetNum("OVERRIDE.SKILLCAP_25", wSkillCap, true);
+	}
+
+	if ( pItem->m_SpellChanneling )
+		m_FasterCasting -= 1;
 
 	m_Luck += pItem->m_Luck;
 	m_DamIncrease += pItem->m_DamIncrease;

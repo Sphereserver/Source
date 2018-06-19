@@ -2413,11 +2413,10 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 					if ( pItem->IsAttr(ATTR_EXCEPTIONAL) )
 						m_TooltipData.Add(new CClientTooltip(1060636)); // exceptional
 
-					INT64 ArtifactRarity = pItem->GetDefNum("RARITY", true);
-					if ( ArtifactRarity > 0 )
+					if ( pItem->m_ArtifactRarity > 0 )
 					{
 						m_TooltipData.Add(t = new CClientTooltip(1061078)); // artifact rarity ~1_val~
-						t->FormatArgs("%lld", ArtifactRarity);
+						t->FormatArgs("%d", pItem->m_ArtifactRarity);
 					}
 
 					INT64 UsesRemaining = pItem->GetDefNum("USESCUR", true);
@@ -2507,14 +2506,13 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 							t->FormatArgs("%d", pItem->m_Luck);
 						}
 
-						if ( pItem->GetDefNum("MAGEARMOR", true) )
+						if ( pItem->m_MageArmor )
 							m_TooltipData.Add(new CClientTooltip(1060437)); // mage armor
 
-						INT64 MageWeapon = pItem->GetDefNum("MAGEWEAPON", true);
-						if ( MageWeapon != 0 )
+						if ( pItem->m_MageWeapon != 0 )
 						{
 							m_TooltipData.Add(t = new CClientTooltip(1060438)); // mage weapon -~1_val~ skill
-							t->FormatArgs("%lld", MageWeapon);
+							t->FormatArgs("%d", pItem->m_MageWeapon);
 						}
 
 						if ( pItem->m_ManaIncrease != 0 )
@@ -2554,11 +2552,10 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 							t->FormatArgs("%lld", HitPointRegeneration);
 						}
 
-						INT64 SelfRepair = pItem->GetDefNum("SELFREPAIR", true);
-						if ( SelfRepair != 0 )
+						if ( pItem->m_SelfRepair != 0 )
 						{
 							m_TooltipData.Add(t = new CClientTooltip(1060450)); // self repair ~1_val~
-							t->FormatArgs("%lld", SelfRepair);
+							t->FormatArgs("%d", pItem->m_SelfRepair);
 						}
 
 						if ( pItem->m_SpellChanneling )

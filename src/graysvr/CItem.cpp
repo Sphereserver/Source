@@ -1604,29 +1604,27 @@ height_t CItem::GetHeight() const
 bool CItem::SetBase( CItemBase * pItemDef )
 {
 	ADDTOCALLSTACK("CItem::SetBase");
-	// Total change of type. (possibly dangerous)
+	// Set item base properties when it got created or ID get changed
 
-	CItemBase * pItemOldDef = Item_GetDef();
-
-	if ( pItemDef == NULL || pItemDef == pItemOldDef )
+	const CItemBase *pItemDefOld = Item_GetDef();
+	if ( !pItemDef || (pItemDef == pItemDefOld) )
 		return false;
 
-	// This could be a weight change for my parent !!!
-	CContainer * pParentCont = dynamic_cast <CContainer*> (GetParent());
-	int iWeightOld = 0;
-
-	if ( pItemOldDef)
-	{
-		if ( pParentCont )
-		{
-			iWeightOld = GetWeight();
-		}
-	}
-
 	m_BaseRef.SetRef(pItemDef);
-	m_weight = pItemDef->GetWeight();
-	
-	// matex (moved here from constructor so armor/dam is copied too when baseid changes!)
+	m_type = pItemDef->GetType();
+	m_Can = pItemDef->m_Can;
+
+	CContainer *pParentCont = dynamic_cast<CContainer *>(GetParent());
+	if ( pParentCont )
+	{
+		// Update parent container weight
+		int iWeightOld = pItemDefOld ? GetWeight() : 0;
+		m_weight = pItemDef->GetWeight();
+		pParentCont->OnWeightChange(GetWeight() - iWeightOld);
+	}
+	else
+		m_weight = pItemDef->GetWeight();
+
 	m_attackBase = pItemDef->m_attackBase;
 	m_attackRange = pItemDef->m_attackRange;
 	m_defenseBase = pItemDef->m_defenseBase;
@@ -1669,20 +1667,16 @@ bool CItem::SetBase( CItemBase * pItemDef )
 	m_HitpointIncrease = pItemDef->m_HitpointIncrease;
 	m_StaminaIncrease = pItemDef->m_StaminaIncrease;
 	m_ManaIncrease = pItemDef->m_ManaIncrease;
+	m_MageArmor = pItemDef->m_MageArmor;
+	m_MageWeapon = pItemDef->m_MageWeapon;
+	m_ArtifactRarity = pItemDef->m_ArtifactRarity;
+	m_SelfRepair = pItemDef->m_SelfRepair;
 	m_SpellChanneling = pItemDef->m_SpellChanneling;
 	m_LowerRequirements = pItemDef->m_LowerRequirements;
 	m_UseBestWeaponSkill = pItemDef->m_UseBestWeaponSkill;
 	m_WeightReduction = pItemDef->m_WeightReduction;
 
-	if (pParentCont)
-	{
-		ASSERT( IsItemEquipped() || IsItemInContainer());
-		pParentCont->OnWeightChange( GetWeight() - iWeightOld );
-	}
-
-	m_type = pItemDef->GetType();	// might change the type.
-	m_Can = pItemDef->m_Can;
-	return( true );
+	return true;
 }
 
 bool CItem::SetBaseID( ITEMID_TYPE id )
@@ -1977,6 +1971,14 @@ void CItem::r_Write( CScript & s )
 		s.WriteKeyVal("BONUSSTAM", m_StaminaIncrease);
 	if ( m_ManaIncrease != pItemDef->m_ManaIncrease )
 		s.WriteKeyVal("BONUSMANA", m_ManaIncrease);
+	if ( m_MageArmor != pItemDef->m_MageArmor )
+		s.WriteKeyVal("MAGEARMOR", m_MageArmor);
+	if ( m_MageWeapon != pItemDef->m_MageWeapon )
+		s.WriteKeyVal("MAGEWEAPON", m_MageWeapon);
+	if ( m_ArtifactRarity != pItemDef->m_ArtifactRarity )
+		s.WriteKeyVal("RARITY", m_ArtifactRarity);
+	if ( m_SelfRepair != pItemDef->m_SelfRepair )
+		s.WriteKeyVal("SELFREPAIR", m_SelfRepair);
 	if ( m_SpellChanneling != pItemDef->m_SpellChanneling )
 		s.WriteKeyVal("SPELLCHANNELING", m_SpellChanneling);
 	if ( m_LowerRequirements != pItemDef->m_LowerRequirements )
@@ -2157,10 +2159,6 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_BONUSSKILL4AMT:
 		case IC_BONUSSKILL5AMT:
 		case IC_LIFESPAN:
-		case IC_MAGEARMOR:
-		case IC_MAGEWEAPON:
-		case IC_RARITY:
-		case IC_SELFREPAIR:
 		case IC_USESCUR:
 		case IC_USESMAX:
 			{
@@ -2208,6 +2206,18 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 			break;
 		case IC_BONUSMANA:
 			sVal.FormatVal(m_ManaIncrease);
+			break;
+		case IC_MAGEARMOR:
+			sVal.FormatVal(m_MageArmor);
+			break;
+		case IC_MAGEWEAPON:
+			sVal.FormatVal(m_MageWeapon);
+			break;
+		case IC_RARITY:
+			sVal.FormatVal(m_ArtifactRarity);
+			break;
+		case IC_SELFREPAIR:
+			sVal.FormatVal(m_SelfRepair);
 			break;
 		case IC_SPELLCHANNELING:
 			sVal.FormatVal(m_SpellChanneling);
@@ -2407,10 +2417,6 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_BONUSSKILL4AMT:
 		case IC_BONUSSKILL5AMT:
 		case IC_LIFESPAN:
-		case IC_MAGEARMOR:
-		case IC_MAGEWEAPON:
-		case IC_RARITY:
-		case IC_SELFREPAIR:
 		case IC_USESCUR:
 		case IC_BONUSHITSMAX:
 		case IC_BONUSSTAMMAX:
@@ -2491,6 +2497,18 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 			break;
 		case IC_BONUSMANA:
 			m_ManaIncrease = static_cast<int>(s.GetArgVal());
+			break;
+		case IC_MAGEARMOR:
+			m_MageArmor = static_cast<int>(s.GetArgVal());
+			break;
+		case IC_MAGEWEAPON:
+			m_MageWeapon = static_cast<int>(s.GetArgVal());
+			break;
+		case IC_RARITY:
+			m_ArtifactRarity = static_cast<int>(s.GetArgVal());
+			break;
+		case IC_SELFREPAIR:
+			m_SelfRepair = static_cast<int>(s.GetArgVal());
 			break;
 		case IC_SPELLCHANNELING:
 			m_SpellChanneling = static_cast<int>(s.GetArgVal());
@@ -3903,7 +3921,10 @@ int CItem::Weapon_GetAttack(bool bGetRange) const
 SKILL_TYPE CItem::Weapon_GetSkill() const
 {
 	ADDTOCALLSTACK("CItem::Weapon_GetSkill");
-	// assuming this is a weapon. What skill does it apply to.
+	// Get weapon required skill
+
+	if ( m_MageWeapon != 0 )
+		return SKILL_MAGERY;
 
 	CVarDefCont *pVar = m_TagDefs.GetKey("OVERRIDE.SKILL");
 	if ( pVar )
@@ -4695,8 +4716,7 @@ int CItem::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 	if ( iDmg <= 0 )
 		return( 0 );
 
-	INT64 iSelfRepair = GetDefNum("SELFREPAIR", true);
-	if ( iSelfRepair > Calc_GetRandVal(10) )
+	if ( m_SelfRepair > Calc_GetRandVal(10) )
 	{
 		m_itArmor.m_Hits_Cur += 2;
 		if ( m_itArmor.m_Hits_Cur > m_itArmor.m_Hits_Max )

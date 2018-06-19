@@ -131,6 +131,10 @@ public:
 	int m_HitpointIncrease;
 	int m_StaminaIncrease;
 	int m_ManaIncrease;
+	int m_MageArmor;
+	int m_MageWeapon;
+	int m_ArtifactRarity;
+	int m_SelfRepair;
 	int m_SpellChanneling;
 	int m_LowerRequirements;
 	int m_UseBestWeaponSkill;
