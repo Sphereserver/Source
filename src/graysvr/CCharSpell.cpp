@@ -2374,7 +2374,7 @@ bool CChar::Spell_CanCast(SPELL_TYPE &spell, bool fTest, CObjBase *pSrc, bool fF
 				if ( m_LowerReagentCost <= Calc_GetRandVal(100) )
 				{
 					const CResourceQtyArray *pRegs = &pSpellDef->m_Reags;
-					CItemContainer *pPack = GetContainer(LAYER_PACK);
+					CItemContainer *pPack = GetContainerCreate(LAYER_PACK);
 					size_t iMissing = pPack->ResourceConsumePart(pRegs, 1, 100, fTest);
 					if ( iMissing != pRegs->BadIndex() )
 					{
@@ -2759,7 +2759,7 @@ bool CChar::Spell_CastDone()
 			case SPELL_Create_Food:
 			{
 				RESOURCE_ID food = g_Cfg.ResourceGetIDType(RES_ITEMDEF, "DEFFOOD");
-				CItem *pItem = CItem::CreateScript(((iT1 != ITEMID_NOTHING) ? iT1 : static_cast<ITEMID_TYPE>(food.GetResIndex())), this);
+				CItem *pItem = CItem::CreateScript(iT1 ? iT1 : static_cast<ITEMID_TYPE>(food.GetResIndex()), this);
 				ASSERT(pItem);
 				if ( pSpellDef->IsSpellType(SPELLFLAG_TARG_OBJ|SPELLFLAG_TARG_XYZ) )
 					pItem->MoveToCheck(m_Act_p, this);

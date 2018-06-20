@@ -1224,7 +1224,7 @@ bool CChar::Use_Seed(CItem *pItem, CPointMap *pPoint)
 		pPlant->Plant_CropReset();
 	}
 	else
-		pPlant->SetDecayTime(10 * g_Cfg.m_iDecay_Item);
+		pPlant->SetDecayTime(static_cast<INT64>(g_Cfg.m_iDecay_Item * 10));
 
 	pItem->ConsumeAmount();
 	return true;

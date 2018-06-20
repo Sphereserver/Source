@@ -183,7 +183,7 @@ void CItemSpawn::GenerateChar(CResourceDef *pDef)
 		// If this fails, try placing the char over the spawn
 		if ( !pChar->MoveTo(pt) )
 		{
-			DEBUG_ERR(("Spawn UID:0%lx is unable to place a character inside the world.\n", static_cast<DWORD>(GetUID())));
+			DEBUG_ERR(("Spawn UID:0%lx is unable to move the created character to world\n", static_cast<DWORD>(GetUID())));
 			pChar->Delete();
 			return;
 		}
@@ -578,7 +578,7 @@ bool CItem::Plant_OnTick()
 			{
 				CItem *pItemFruit = CItem::CreateScript(iFruitID);
 				ASSERT(pItemFruit);
-				pItemFruit->MoveToDecay(GetTopPoint(), 10 * g_Cfg.m_iDecay_Item);
+				pItemFruit->MoveToDecay(GetTopPoint(), static_cast<INT64>(g_Cfg.m_iDecay_Item * 10));
 				break;
 			}
 			if ( pItem->IsType(IT_FRUIT) || pItem->IsType(IT_REAGENT_RAW) )

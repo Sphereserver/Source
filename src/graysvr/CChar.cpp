@@ -1191,14 +1191,14 @@ void CChar::SetID(CREID_TYPE id)
 	CCharBase *pCharDef = CCharBase::FindCharBase(id);
 	if ( !pCharDef )
 	{
-		if ( (id != -1) && (id != CREID_INVALID) )
-			DEBUG_ERR(("Creating invalid chardef 0%x\n", id));
-
+		DEBUG_ERR(("Creating invalid chardef 0%x\n", id));
 		id = static_cast<CREID_TYPE>(g_Cfg.ResourceGetIndexType(RES_CHARDEF, "DEFAULTCHAR"));
 		if ( id <= CREID_INVALID )
 			id = CREID_MAN;
 
 		pCharDef = CCharBase::FindCharBase(id);
+		if ( !pCharDef )
+			return;
 	}
 
 	if ( pCharDef == Char_GetDef() )

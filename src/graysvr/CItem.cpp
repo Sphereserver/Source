@@ -137,29 +137,28 @@ CItem * CItem::CreateBase( ITEMID_TYPE id )	// static
 	// NOTE: This is a free floating item.
 	//  If not put on ground or in container after this = Memory leak !
 
-	ITEMID_TYPE idErrorMsg = ITEMID_NOTHING;
-	CItemBase * pItemDef = CItemBase::FindItemBase( id );
-	if ( pItemDef == NULL )
+	CItemBase *pItemDef = CItemBase::FindItemBase(id);
+	if ( !pItemDef )
 	{
-		idErrorMsg = id;
-		id = static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetIndexType( RES_ITEMDEF, "DEFAULTITEM" ));
-		if ( id <= 0 )
-		{
+		DEBUG_ERR(("Creating invalid itemdef 0%x\n", id));
+		id = static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetIndexType(RES_ITEMDEF, "DEFAULTITEM"));
+		if ( id <= ITEMID_NOTHING )
 			id = ITEMID_GOLD_C1;
-		}
-		pItemDef = CItemBase::FindItemBase( id );
-		ASSERT(pItemDef);
+
+		pItemDef = CItemBase::FindItemBase(id);
+		if ( !pItemDef )
+			return NULL;
 	}
 
-	CItem * pItem;
+	CItem *pItem;
 	switch ( pItemDef->GetType() )
 	{
 		case IT_MAP:
 		case IT_MAP_BLANK:
-			pItem = new CItemMap( id, pItemDef );
+			pItem = new CItemMap(id, pItemDef);
 			break;
 		case IT_COMM_CRYSTAL:
-			pItem = new CItemCommCrystal( id, pItemDef );
+			pItem = new CItemCommCrystal(id, pItemDef);
 			break;
 		case IT_GAME_BOARD:
 		case IT_BBOARD:
@@ -172,54 +171,49 @@ CItem * CItem::CreateBase( ITEMID_TYPE id )	// static
 		case IT_KEYRING:
 		case IT_SHIP_HOLD_LOCK:
 		case IT_SHIP_HOLD:
-			pItem = new CItemContainer( id, pItemDef );
+			pItem = new CItemContainer(id, pItemDef);
 			break;
 		case IT_CORPSE:
-			pItem = new CItemCorpse( id, pItemDef );
+			pItem = new CItemCorpse(id, pItemDef);
 			break;
 		case IT_MESSAGE:
 		case IT_BOOK:
-			// A message for a bboard or book text.
-			pItem = new CItemMessage( id, pItemDef );
+			pItem = new CItemMessage(id, pItemDef);
 			break;
 		case IT_STONE_GUILD:
 		case IT_STONE_TOWN:
-			pItem = new CItemStone( id, pItemDef );
+			pItem = new CItemStone(id, pItemDef);
 			break;
 		case IT_MULTI:
-			pItem = new CItemMulti( id, pItemDef );
+			pItem = new CItemMulti(id, pItemDef);
 			break;
 		case IT_MULTI_CUSTOM:
-			pItem = new CItemMultiCustom( id, pItemDef );
+			pItem = new CItemMultiCustom(id, pItemDef);
 			break;
 		case IT_SHIP:
-			pItem = new CItemShip( id, pItemDef );
+			pItem = new CItemShip(id, pItemDef);
 			break;
 		case IT_EQ_MEMORY_OBJ:
-			pItem = new CItemMemory( id, pItemDef );
+			pItem = new CItemMemory(id, pItemDef);
 			break;
-		case IT_EQ_SCRIPT:	// pure script.with TAG(s) support
+		case IT_EQ_SCRIPT:
 		case IT_SCRIPT:
-			pItem = new CItemScript( id, pItemDef );
+			pItem = new CItemScript(id, pItemDef);
 			break;
 		case IT_SPAWN_CHAR:
 		case IT_SPAWN_ITEM:
-			pItem = new CItemSpawn(id ,pItemDef);
+			pItem = new CItemSpawn(id, pItemDef);
 			break;
 		default:
-			if ( pItemDef->GetMakeValue(0))
-				pItem = new CItemVendable( id, pItemDef );
+			if ( pItemDef->GetMakeValue(0) )
+				pItem = new CItemVendable(id, pItemDef);
 			else
-				pItem = new CItem( id, pItemDef );
+				pItem = new CItem(id, pItemDef);
 			break;
 	}
 
-	ASSERT( pItem );
-	if ( idErrorMsg && idErrorMsg != -1 )
-	{
-		DEBUG_ERR(( "CreateBase invalid item 0%x\n", idErrorMsg ));
-	}
-	return( pItem );
+	ASSERT(pItem);
+	return pItem;
 }
 
 CItem * CItem::CreateDupeItem( const CItem * pItem, CChar * pSrc, bool fSetNew )	// static

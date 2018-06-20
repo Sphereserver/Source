@@ -67,7 +67,7 @@ CItemContainer *CChar::GetContainerCreate(LAYER_TYPE layer)
 	ADDTOCALLSTACK("CChar::GetContainerCreate");
 	// Get container on the given layer, or create if it doesn't exist yet
 
-	CItemContainer *pCont = static_cast<CItemContainer *>(LayerFind(layer));
+	CItemContainer *pCont = dynamic_cast<CItemContainer *>(LayerFind(layer));
 	if ( pCont || g_Serv.IsLoading() )
 		return pCont;
 
@@ -92,7 +92,7 @@ CItemContainer *CChar::GetContainerCreate(LAYER_TYPE layer)
 			break;
 	}
 
-	pCont = static_cast<CItemContainer *>(CItem::CreateScript(id, this));
+	pCont = dynamic_cast<CItemContainer *>(CItem::CreateScript(id, this));
 	ASSERT(pCont);
 	if ( (layer == LAYER_PACK) || ((layer >= LAYER_VENDOR_STOCK) && (layer <= LAYER_BANKBOX)) )
 		pCont->SetAttr(ATTR_NEWBIE|ATTR_MOVE_NEVER);
@@ -389,7 +389,7 @@ CItemCorpse *CChar::FindMyCorpse(bool fIgnoreLOS, int iRadius) const
 		if ( !pItem->IsType(IT_CORPSE) )
 			continue;
 
-		CItemCorpse *pCorpse = static_cast<CItemCorpse *>(pItem);
+		CItemCorpse *pCorpse = dynamic_cast<CItemCorpse *>(pItem);
 		if ( !pCorpse || (pCorpse->m_uidLink != GetUID()) )
 			continue;
 		if ( pCorpse->m_itCorpse.m_BaseID != m_prev_id )	// not morphed type
@@ -812,7 +812,7 @@ bool CChar::CanSeeInContainer(const CItemContainer *pContItem) const
 	// Not normally searchable
 	// Make some special cases for searchable
 
-	CChar *pChar = static_cast<CChar *>(pContItem->GetTopLevelObj());
+	CChar *pChar = dynamic_cast<CChar *>(pContItem->GetTopLevelObj());
 	if ( !pChar )
 		return false;
 
@@ -824,7 +824,7 @@ bool CChar::CanSeeInContainer(const CItemContainer *pContItem) const
 		CItem *pItemTrade = pContItem->m_uidLink.ItemFind();
 		if ( pItemTrade )
 		{
-			CChar *pCharTrade = static_cast<CChar *>(pItemTrade->GetTopLevelObj());
+			CChar *pCharTrade = dynamic_cast<CChar *>(pItemTrade->GetTopLevelObj());
 			if ( pCharTrade == this )
 				return true;
 		}
@@ -1631,7 +1631,7 @@ bool CChar::CanTouch(const CObjBase *pObj) const
 				break;
 
 			pObjTest = pObjCont;
-			if ( !CanSeeInContainer(static_cast<const CItemContainer *>(pObjTest)) )
+			if ( !CanSeeInContainer(dynamic_cast<const CItemContainer *>(pObjTest)) )
 				return false;
 		}
 	}
@@ -1747,7 +1747,7 @@ bool CChar::CanHear(const CObjBaseTemplate *pSrc, TALKMODE_TYPE mode) const
 	CRegionWorld *pSrcRegion;
 	if ( pSrc->IsChar() )
 	{
-		const CChar *pCharSrc = dynamic_cast<const CChar *>(pSrc);
+		const CChar *pCharSrc = static_cast<const CChar *>(pSrc);
 		ASSERT(pCharSrc);
 		pSrcRegion = pCharSrc->GetRegion();
 		if ( pCharSrc->IsPriv(PRIV_GM) )
@@ -1812,7 +1812,7 @@ bool CChar::CanMove(CItem *pItem, bool fMsg) const
 		// Can't move items from the trade window (client limitation)
 		if ( pItem->GetParentObj()->IsContainer() )
 		{
-			CItemContainer *pItemCont = dynamic_cast<CItemContainer *>(pItem);
+			const CItemContainer *pItemCont = dynamic_cast<const CItemContainer *>(pItem);
 			if ( pItemCont && pItemCont->IsItemInTrade() )
 			{
 				SysMessageDefault(DEFMSG_MSG_TRADE_CANTMOVE);
@@ -1887,19 +1887,19 @@ bool CChar::IsTakeCrime(const CItem *pItem, CChar **ppCharMark) const
 		return false;
 
 	CObjBaseTemplate *pObjTop = pItem->GetTopLevelObj();
+	if ( pObjTop == this )
+		return false;	// this is yours
+
 	CChar *pCharMark = dynamic_cast<CChar *>(pObjTop);
 	if ( ppCharMark )
 		*ppCharMark = pCharMark;
-
-	if ( static_cast<const CChar *>(pObjTop) == this )
-		return false;	// this is yours
 
 	if ( !pCharMark )	// in some (or is) container
 	{
 		if ( pItem->IsAttr(ATTR_OWNED) && (pItem->m_uidLink != GetUID()) )
 			return true;
 
-		CItemContainer *pCont = dynamic_cast<CItemContainer *>(pObjTop);
+		const CItemContainer *pCont = dynamic_cast<const CItemContainer *>(pObjTop);
 		if ( pCont && pCont->IsAttr(ATTR_OWNED) )
 			return true;
 

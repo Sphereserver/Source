@@ -223,9 +223,7 @@ void CItemMultiCustom::SwitchToLevel( CClient * pClientSrc, BYTE iLevel )
 		return;
 
 	BYTE iMaxLevel = GetLevelCount();
-	if ( iLevel < 0 )
-		iLevel = 0;
-	else if ( iLevel > iMaxLevel )
+	if ( iLevel > iMaxLevel )
 		iLevel = iMaxLevel;
 
 	CPointMap pt = GetTopPoint();
@@ -1102,13 +1100,11 @@ bool CItemMultiCustom::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute com
 	// Speaking in this multis region.
 	// return: true = command for the multi.
 
-	int iCmd = FindTableSorted( s.GetKey(), sm_szVerbKeys, COUNTOF( sm_szVerbKeys )-1 );
-	if ( iCmd < 0 )
+	int index = FindTableSorted(s.GetKey(), sm_szVerbKeys, COUNTOF(sm_szVerbKeys) - 1);
+	if ( index < 0 )
 		return CItemMulti::r_Verb(s, pSrc);
 
-	CChar *pChar = pSrc ? pSrc->GetChar() : NULL;
-
-	switch ( iCmd )
+	switch ( index )
 	{
 		case IMCV_ADDITEM:
 		{
@@ -1158,9 +1154,7 @@ bool CItemMultiCustom::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute com
 
 		case IMCV_CUSTOMIZE:
 		{
-			if ( s.HasArgs() )
-				pChar = CGrayUID(s.GetArgVal()).CharFind();
-
+			const CChar *pChar = s.HasArgs() ? CGrayUID(s.GetArgVal()).CharFind() : NULL;
 			if ( !pChar || !pChar->m_pClient )
 				return false;
 
@@ -1193,9 +1187,7 @@ bool CItemMultiCustom::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute com
 
 		case IMCV_RESYNC:
 		{
-			if ( s.HasArgs() )
-				pChar = CGrayUID(s.GetArgVal()).CharFind();
-
+			const CChar *pChar = s.HasArgs() ? CGrayUID(s.GetArgVal()).CharFind() : NULL;
 			if ( !pChar || !pChar->m_pClient )
 				return false;
 
@@ -1266,11 +1258,8 @@ bool CItemMultiCustom::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole
 	EXC_TRY("WriteVal");
 
 	int index = FindTableSorted( pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys)-1 );
-	if ( index == -1 )
-	{
-		if ( !strnicmp(pszKey, "DESIGN.", 5) )
-			index = IMCC_DESIGN;
-	}
+	if ( (index < 0) && !strnicmp(pszKey, "DESIGN.", 5) )
+		index = IMCC_DESIGN;
 
 	switch ( index )
 	{

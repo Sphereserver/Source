@@ -1351,12 +1351,12 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 						return( g_World.GetSector(iMapNumber, iSecNumber-1)->r_WriteVal(pszKey, sVal, pSrc) );
 					else
 					{
-						g_Log.EventError("Invalid Sector #%d for Map %d\n", iSecNumber, iMapNumber);
+						g_Log.EventError("Invalid sector #%d for Map %d\n", iSecNumber, iMapNumber);
 						return false;
 					}
 				}
 			}
-			g_Log.EventError("Unsupported Map %d\n", iMapNumber);
+			g_Log.EventError("Unsupported map %d\n", iMapNumber);
 			return false;
 		} 
 
@@ -1379,7 +1379,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			SKIP_SEPARATORS(pszCmd);
 			sVal.FormatVal(0);
 
-			if (iNumber < 0 || iNumber >= m_Functions.GetCount()) //invalid index can potentially crash the server, this check is strongly needed
+			if ( iNumber >= m_Functions.GetCount() )	// invalid index can potentially crash the server, this check is strongly needed
 			{
 				g_Log.EventError("Invalid command index %" FMTSIZE_T "\n", iNumber);
 				return false;

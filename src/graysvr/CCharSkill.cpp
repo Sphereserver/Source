@@ -1245,15 +1245,15 @@ bool CChar::Skill_MakeItem_Success()
 		if ( pItem->IsType(IT_SCROLL) )
 			pItem->m_itSpell.m_spelllevel = wSkillLevel;
 
-		CItemBase *ptItemDef = CItemBase::FindItemBase(m_atCreate.m_ItemID);
-		if ( ptItemDef->Can(CAN_I_PILE) )
+		CItemBase *pItemDef = CItemBase::FindItemBase(m_atCreate.m_ItemID);
+		if ( pItemDef && pItemDef->Can(CAN_I_PILE) )
 			pItem->SetAmount(m_atCreate.m_Amount);
 		else
 		{
-			for ( int i = 1; i < m_atCreate.m_Amount; ++i )
+			for ( WORD i = 1; i < m_atCreate.m_Amount; ++i )
 			{
-				CItem *ptItem = CItem::CreateTemplate(m_atCreate.m_ItemID, NULL, this);
-				ItemBounce(ptItem);
+				CItem *pItem = CItem::CreateTemplate(m_atCreate.m_ItemID, NULL, this);
+				ItemBounce(pItem);
 			}
 		}
 	}

@@ -1969,7 +1969,6 @@ bool CChar::NPC_FightCast(CObjBase * &pTarg, CObjBase * pSrc, SPELL_TYPE &spell,
 			}
 			if (pSpellDef->IsSpellType(SPELLFLAG_HEAL)) //Good spells that cannot be targeted
 			{
-				bool bSpellSuits = true;
 				switch (spell)
 				{
 					//No spells added ATM until they are created, good example spell to here = SPELL_Healing_Stone
@@ -1989,8 +1988,6 @@ bool CChar::NPC_FightCast(CObjBase * &pTarg, CObjBase * pSrc, SPELL_TYPE &spell,
 						break;
 				}
 
-				if (!bSpellSuits) 
-					return false;
 				pTarg = this;
 				m_atMagery.m_Spell = spell;
 				return true;

@@ -5,76 +5,73 @@
 // Get my guild stone for my guild. even if i'm just a STONEPRIV_CANDIDATE ?
 // ARGS:
 //  MemType == MEMORY_GUILD or MEMORY_TOWN
-CItemStone * CChar::Guild_Find( MEMORY_TYPE MemType ) const
+CItemStone *CChar::Guild_Find(MEMORY_TYPE MemType) const
 {
 	ADDTOCALLSTACK("CChar::Guild_Find");
-	if ( ! m_pPlayer )
-		return( NULL );
-	CItemMemory * pMyGMem = Memory_FindTypes(static_cast<WORD>(MemType));
-	if ( ! pMyGMem )
-		return( NULL );
-	CItemStone * pMyStone = static_cast<CItemStone *>(pMyGMem->m_uidLink.ItemFind());
-	if ( pMyStone == NULL )
+	if ( !m_pPlayer )
+		return NULL;
+	CItemMemory *pMemory = Memory_FindTypes(static_cast<WORD>(MemType));
+	if ( !pMemory )
+		return NULL;
+	CItemStone *pStone = dynamic_cast<CItemStone *>(pMemory->m_uidLink.ItemFind());
+	if ( !pStone )
 	{
-		// Some sort of mislink ! fix it.
-		const_cast <CChar*>(this)->Memory_ClearTypes(static_cast<WORD>(MemType)); 	// Make them forget they were ever in this guild....again!
-		return( NULL );
+		// Memory not linked to a valid stone, just clear it
+		const_cast<CChar *>(this)->Memory_ClearTypes(static_cast<WORD>(MemType));
+		return NULL;
 	}
-	return( pMyStone );
+	return pStone;
 }
 
 // Get my member record for my guild.
-CStoneMember * CChar::Guild_FindMember( MEMORY_TYPE MemType ) const
+CStoneMember *CChar::Guild_FindMember(MEMORY_TYPE MemType) const
 {
 	ADDTOCALLSTACK("CChar::Guild_FindMember");
-	CItemStone * pMyStone = Guild_Find(MemType);
-	if ( pMyStone == NULL )
-		return( NULL );
-	CStoneMember * pMember = pMyStone->GetMember( this );
-	if ( pMember == NULL )
+	CItemStone *pStone = Guild_Find(MemType);
+	if ( !pStone )
+		return NULL;
+	CStoneMember *pMember = pStone->GetMember(this);
+	if ( !pMember )
 	{
-		// Some sort of mislink ! fix it.
-		const_cast <CChar*>(this)->Memory_ClearTypes(static_cast<WORD>(MemType)); 	// Make them forget they were ever in this guild....again!
-		return( NULL );
+		// Memory not linked to a valid stone, just clear it
+		const_cast<CChar *>(this)->Memory_ClearTypes(static_cast<WORD>(MemType));
+		return NULL;
 	}
-	return( pMember );
+	return pMember;
 }
 
 // Resign me from my guild
-void CChar::Guild_Resign( MEMORY_TYPE MemType )
+void CChar::Guild_Resign(MEMORY_TYPE MemType)
 {
 	ADDTOCALLSTACK("CChar::Guild_Resign");
-	CStoneMember * pMember = Guild_FindMember(MemType);
+	CStoneMember *pMember = Guild_FindMember(MemType);
 	if ( pMember )
 		delete pMember;
 }
 
 // Get my guild abbrev if i have chosen to turn it on.
-LPCTSTR CChar::Guild_Abbrev( MEMORY_TYPE MemType ) const
+LPCTSTR CChar::Guild_Abbrev(MEMORY_TYPE MemType) const
 {
 	ADDTOCALLSTACK("CChar::Guild_Abbrev");
-	CStoneMember * pMember = Guild_FindMember(MemType);
-	if ( pMember == NULL )
-		return( NULL );
-	if ( ! pMember->IsAbbrevOn())
-		return( NULL );
-	CItemStone * pMyStone = pMember->GetParentStone();
-	if ( pMyStone == NULL ||
-		! pMyStone->GetAbbrev()[0] )
-		return( NULL );
-	return( pMyStone->GetAbbrev());
+	CStoneMember *pMember = Guild_FindMember(MemType);
+	if ( !pMember || !pMember->IsAbbrevOn() )
+		return NULL;
+	CItemStone *pStone = pMember->GetParentStone();
+	if ( !pStone || !pStone->GetAbbrev()[0] )
+		return NULL;
+	return pStone->GetAbbrev();
 }
 
 // Get my [guild abbrev] if i have chosen to turn it on.
-LPCTSTR CChar::Guild_AbbrevBracket( MEMORY_TYPE MemType ) const
+LPCTSTR CChar::Guild_AbbrevBracket(MEMORY_TYPE MemType) const
 {
 	ADDTOCALLSTACK("CChar::Guild_AbbrevBracket");
 	LPCTSTR pszAbbrev = Guild_Abbrev(MemType);
-	if ( pszAbbrev == NULL )
-		return( NULL );
-	TCHAR * pszTemp = Str_GetTemp();
-	sprintf( pszTemp, " [%s]", pszAbbrev );
-	return( pszTemp );
+	if ( !pszAbbrev )
+		return NULL;
+	TCHAR *pszTemp = Str_GetTemp();
+	sprintf(pszTemp, " [%s]", pszAbbrev);
+	return pszTemp;
 }
 
 //*****************************************************************
@@ -758,33 +755,31 @@ bool CChar::Memory_UpdateFlags( CItemMemory * pMemory )
 
 // Just clear these flags but do not delete the memory.
 // RETURN: true = still useful memory.
-bool CChar::Memory_UpdateClearTypes( CItemMemory * pMemory, WORD MemTypes )
+bool CChar::Memory_UpdateClearTypes(CItemMemory *pMemory, WORD wMemTypes)
 {
 	ADDTOCALLSTACK("CChar::Memory_UpdateClearTypes");
 	ASSERT(pMemory);
 
 	WORD wPrvMemTypes = pMemory->GetMemoryTypes();
-	bool fMore = ( pMemory->SetMemoryTypes( wPrvMemTypes &~ MemTypes ) != 0);
+	bool fMore = (pMemory->SetMemoryTypes(wPrvMemTypes & ~wMemTypes) != 0);
 
-	MemTypes &= wPrvMemTypes;	// Which actually got turned off ?
-
-	if ( MemTypes & MEMORY_IPET )
+	wMemTypes &= wPrvMemTypes;	// which actually got turned off?
+	if ( wMemTypes & MEMORY_IPET )
 	{
-		// Am i still a pet of some sort ?
-		if ( Memory_FindTypes( MEMORY_IPET ) == NULL )
-			StatFlag_Clear( STATF_Pet );
+		if ( !Memory_FindTypes(MEMORY_IPET) )
+			StatFlag_Clear(STATF_Pet);
 	}
 
-	return fMore && Memory_UpdateFlags( pMemory );
+	return (fMore && Memory_UpdateFlags(pMemory));
 }
 
 // Adding a new flag to the given pMemory
-void CChar::Memory_AddTypes( CItemMemory * pMemory, WORD MemTypes )
+void CChar::Memory_AddTypes(CItemMemory *pMemory, WORD wMemTypes)
 {
 	ADDTOCALLSTACK("CChar::Memory_AddTypes");
 	if ( pMemory )
 	{
-		pMemory->SetMemoryTypes( pMemory->GetMemoryTypes() | MemTypes );
+		pMemory->SetMemoryTypes(pMemory->GetMemoryTypes()|wMemTypes);
 		pMemory->m_itEqMemory.m_pt = GetTopPoint();	// Where did the fight start ?
 		pMemory->SetTimeStamp(CServTime::GetCurrentTime().GetTimeRaw());
 		Memory_UpdateFlags( pMemory );
@@ -792,12 +787,12 @@ void CChar::Memory_AddTypes( CItemMemory * pMemory, WORD MemTypes )
 }
 
 // Clear the memory object of this type.
-bool CChar::Memory_ClearTypes( CItemMemory * pMemory, WORD MemTypes )
+bool CChar::Memory_ClearTypes(CItemMemory *pMemory, WORD wMemTypes)
 {
 	ADDTOCALLSTACK("CChar::Memory_ClearTypes");
 	if ( pMemory )
 	{
-		if ( Memory_UpdateClearTypes( pMemory, MemTypes ))
+		if ( Memory_UpdateClearTypes(pMemory, wMemTypes) )
 			return true;
 		pMemory->Delete();
 	}
@@ -807,37 +802,37 @@ bool CChar::Memory_ClearTypes( CItemMemory * pMemory, WORD MemTypes )
 // Create a memory about this object.
 // NOTE: Does not check if object already has a memory.!!!
 //  Assume it does not !
-CItemMemory * CChar::Memory_CreateObj( CGrayUID uid, WORD MemTypes )
+CItemMemory *CChar::Memory_CreateObj(CGrayUID uid, WORD wMemTypes)
 {
 	ADDTOCALLSTACK("CChar::Memory_CreateObj");
 
-	CItemMemory * pMemory = static_cast<CItemMemory *>(CItem::CreateBase( ITEMID_MEMORY ));
-	if ( pMemory == NULL )
+	CItemMemory *pMemory = dynamic_cast<CItemMemory *>(CItem::CreateBase(ITEMID_MEMORY));
+	if ( !pMemory )
 		return NULL;
 
 	pMemory->SetType(IT_EQ_MEMORY_OBJ);
 	pMemory->SetAttr(ATTR_NEWBIE);
 	pMemory->m_uidLink = uid;
 
-	Memory_AddTypes( pMemory, MemTypes );
-	LayerAdd( pMemory, LAYER_SPECIAL );
+	Memory_AddTypes(pMemory, wMemTypes);
+	LayerAdd(pMemory, LAYER_SPECIAL);
 	return pMemory;
 }
 
 // Remove all the memories of this type.
-void CChar::Memory_ClearTypes( WORD MemTypes )
+void CChar::Memory_ClearTypes(WORD wMemTypes)
 {
 	ADDTOCALLSTACK("CChar::Memory_ClearTypes");
 	CItem *pItemNext = NULL;
 	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItemNext )
 	{
 		pItemNext = pItem->GetNext();
-		if ( !pItem->IsMemoryTypes(MemTypes) )
+		if ( !pItem->IsMemoryTypes(wMemTypes) )
 			continue;
-		CItemMemory * pMemory = static_cast<CItemMemory *>(pItem);
+		CItemMemory *pMemory = dynamic_cast<CItemMemory *>(pItem);
 		if ( !pMemory )
 			continue;
-		Memory_ClearTypes(pMemory, MemTypes);
+		Memory_ClearTypes(pMemory, wMemTypes);
 	}
 }
 
@@ -858,15 +853,15 @@ CItemMemory * CChar::Memory_FindObj( CGrayUID uid ) const
 
 // Do we have a certain type of memory.
 // Just find the first one.
-CItemMemory * CChar::Memory_FindTypes( WORD MemTypes ) const
+CItemMemory *CChar::Memory_FindTypes(WORD wMemTypes) const
 {
 	ADDTOCALLSTACK("CChar::Memory_FindTypes");
-	if ( !MemTypes )
+	if ( !wMemTypes )
 		return NULL;
 
 	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
-		if ( !pItem->IsMemoryTypes(MemTypes) )
+		if ( !pItem->IsMemoryTypes(wMemTypes) )
 			continue;
 		return static_cast<CItemMemory *>(pItem);
 	}
@@ -914,17 +909,16 @@ TRIGRET_TYPE CChar::OnCharTrigForMemTypeLoop( CScript &s, CTextConsole * pSrc, C
 }
 
 // Adding a new value for this memory, updating notoriety
-CItemMemory * CChar::Memory_AddObjTypes( CGrayUID uid, WORD MemTypes )
+CItemMemory *CChar::Memory_AddObjTypes(CGrayUID uid, WORD wMemTypes)
 {
 	ADDTOCALLSTACK("CChar::Memory_AddObjTypes");
-	CItemMemory * pMemory = Memory_FindObj( uid );
-	if ( pMemory == NULL )
-	{
-		return Memory_CreateObj( uid, MemTypes );
-	}
-	Memory_AddTypes( pMemory, MemTypes );
-	NotoSave_Delete( uid.CharFind() );
-	return( pMemory );
+	CItemMemory *pMemory = Memory_FindObj(uid);
+	if ( !pMemory )
+		return Memory_CreateObj(uid, wMemTypes);
+
+	Memory_AddTypes(pMemory, wMemTypes);
+	NotoSave_Delete(uid.CharFind());
+	return pMemory;
 }
 
 // NOTE: Do not return true unless u update the timer !
@@ -1147,7 +1141,7 @@ int CChar::Skill_Snooping( SKTRIG_TYPE stage )
 		return( 0 );
 
 	// Assume the container is not locked.
-	CItemContainer * pCont = static_cast<CItemContainer *>(m_Act_Targ.ItemFind());
+	CItemContainer *pCont = dynamic_cast<CItemContainer *>(m_Act_Targ.ItemFind());
 	if ( pCont == NULL )
 		return( -SKTRIG_QTY );
 
@@ -1846,26 +1840,25 @@ effect_bounce:
 	if ( m_pPlayer && (pSrc != this) && !(uType & DAMAGE_NODISTURB) && g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_MAGIC) )
 	{
 		// Check if my spell can be interrupted
-		int iDisturbChance = 0;
 		int iSpellSkill;
 		const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
 		if ( pSpellDef && pSpellDef->GetPrimarySkill(&iSpellSkill) )
-			iDisturbChance = pSpellDef->m_Interrupt.GetLinear(Skill_GetBase(static_cast<SKILL_TYPE>(iSpellSkill)));
-
-		if ( iDisturbChance && IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 		{
-			// Protection spell can cancel the disturb
-			CItem *pProtectionSpell = LayerFind(LAYER_SPELL_Protection);
-			if ( pProtectionSpell )
+			int iDisturbChance = pSpellDef->m_Interrupt.GetLinear(Skill_GetBase(static_cast<SKILL_TYPE>(iSpellSkill)));
+			if ( iDisturbChance )
 			{
-				int iChance = pProtectionSpell->m_itSpell.m_spelllevel;
-				if ( iChance > Calc_GetRandVal(1000) )
-					iDisturbChance = 0;
+				if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
+				{
+					// Protection spell can cancel the disturb
+					CItem *pProtectionSpell = LayerFind(LAYER_SPELL_Protection);
+					if ( pProtectionSpell && (pProtectionSpell->m_itSpell.m_spelllevel > static_cast<WORD>(Calc_GetRandVal(1000))) )
+						iDisturbChance = 0;
+				}
+
+				if ( iDisturbChance > Calc_GetRandVal(1000) )
+					Skill_Fail();
 			}
 		}
-
-		if ( iDisturbChance > Calc_GetRandVal(1000) )
-			Skill_Fail();
 	}
 
 	if ( pSrc && (pSrc != this) )
