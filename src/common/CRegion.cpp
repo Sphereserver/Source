@@ -5,24 +5,25 @@
 //************************************************************************
 // -CTeleport
 
-CTeleport::CTeleport( TCHAR * pszArgs )
+CTeleport::CTeleport(TCHAR *pszArgs)
 {
 	// RES_TELEPORT
-	// Assume valid iArgs >= 5
+	TCHAR *ppArgs[4];
+	size_t iArgQty = Str_ParseCmds(pszArgs, ppArgs, COUNTOF(ppArgs), "=");
+	if ( iArgQty < 2 )
+		DEBUG_ERR(("Bad teleport def\n"));
 
-	TCHAR * ppCmds[4];
-	size_t iArgs = Str_ParseCmds( pszArgs, ppCmds, COUNTOF( ppCmds ), "=" );
-	if ( iArgs < 2 )
-	{
-		DEBUG_ERR(( "Bad CTeleport Def\n" ));
-		return;
-	}
-	Read( ppCmds[0] );
-	m_ptDst.Read( ppCmds[1] );
-	if ( ppCmds[3] )
-		bNpc = (ATOI(ppCmds[3]) != 0);
+	if ( iArgQty >= 1 )
+		Read(ppArgs[0]);
 	else
-		bNpc = false;
+		InitPoint();
+
+	if ( iArgQty >= 2 )
+		m_ptDst.Read(ppArgs[1]);
+	else
+		m_ptDst.InitPoint();
+
+	m_fNPC = (iArgQty >= 4) ? (ATOI(ppArgs[3]) != 0) : false;
 }
 
 bool CTeleport::RealizeTeleport()
@@ -30,7 +31,7 @@ bool CTeleport::RealizeTeleport()
 	ADDTOCALLSTACK("CTeleport::RealizeTeleport");
 	if ( !IsValidPoint() || !m_ptDst.IsValidPoint() )
 	{
-		DEBUG_ERR(("CTeleport bad coords %s\n", WriteUsed()));
+		DEBUG_ERR(("Bad teleport coords %s\n", WriteUsed()));
 		return false;
 	}
 	CSector *pSector = GetSector();
@@ -435,14 +436,12 @@ bool CRegionBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pS
 {
 	ADDTOCALLSTACK("CRegionBase::r_WriteVal");
 	EXC_TRY("WriteVal");
-	bool	fZero	= false;
-	RC_TYPE index = (RC_TYPE) FindTableHeadSorted( pszKey, sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 );
+	bool fZero = false;
+	int index = FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1);
 	if ( index < 0 )
-	{
-		return( CScriptObj::r_WriteVal( pszKey, sVal, pSrc ));
-	}
+		return CScriptObj::r_WriteVal(pszKey, sVal, pSrc);
 
-	switch ( index )
+	switch ( static_cast<RC_TYPE>(index) )
 	{
 		case RC_ANNOUNCE:
 			sVal.FormatVal( IsFlag(REGION_FLAG_ANNOUNCE));
@@ -649,11 +648,11 @@ bool CRegionBase::r_LoadVal( CScript & s )
 		return( true );
 	}
 
-	RC_TYPE index = (RC_TYPE) FindTableSorted( s.GetKey(), sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 );
+	int index = FindTableSorted(s.GetKey(), sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1);
 	if ( index < 0 )
-		return( false );
+		return false;
 
-	switch ( index )
+	switch ( static_cast<RC_TYPE>(index) )
 	{
 		case RC_ANNOUNCE:
 			TogRegionFlags( REGION_FLAG_ANNOUNCE, ( ! s.HasArgs()) || s.GetArgVal());
@@ -916,8 +915,15 @@ bool CRegionBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command 
 		return true;
 	}	
 
-	int index = FindTableSorted( pszKey, sm_szVerbKeys, COUNTOF( sm_szVerbKeys )-1 );
-	switch (index)
+	int index = FindTableSorted(pszKey, sm_szVerbKeys, COUNTOF(sm_szVerbKeys) - 1);
+	if ( index < 0 )
+	{
+		index = FindTableSorted(s.GetKey(), CSector::sm_szVerbKeys, SEV_QTY);
+		if ( index >= 0 )
+			return SendSectorsVerb(s.GetKey(), s.GetArgRaw(), pSrc);
+	}
+
+	switch ( static_cast<RV_TYPE>(index) )
 	{
 		case RV_ALLCLIENTS:
 		{
@@ -941,13 +947,6 @@ bool CRegionBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command 
 
 		default:
 			break;
-	}
-
-	if ( index < 0 )
-	{
-		index = FindTableSorted(s.GetKey(), CSector::sm_szVerbKeys, SEV_QTY);
-		if ( index >= 0 )
-			return SendSectorsVerb(s.GetKey(), s.GetArgRaw(), pSrc);
 	}
 
 	return CScriptObj::r_Verb(s, pSrc);
@@ -1180,7 +1179,7 @@ bool CRegionWorld::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command
 {
 	ADDTOCALLSTACK("CRegionWorld::r_Verb");
 	EXC_TRY("Verb");
-/*	LPCTSTR pszKey = s.GetKey();
+	/*LPCTSTR pszKey = s.GetKey();
 
 	if ( !strnicmp(pszKey, "CLEARTAGS", 9) )
 	{
@@ -1188,17 +1187,21 @@ bool CRegionWorld::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command
 		SKIP_SEPARATORS(pszKey);
 		m_TagDefs.ClearKeys(pszKey);
 		return true;
-	}	
+	}
 	
-	int index = FindTableSorted( pszKey, sm_szVerbKeys, COUNTOF( sm_szVerbKeys )-1 );
-	switch(index)
+	int index = FindTableSorted(pszKey, sm_szVerbKeys, COUNTOF(sm_szVerbKeys) - 1);
+	if ( index < 0 )*/
+		return CRegionBase::r_Verb(s, pSrc);
+
+	/*switch( static_cast<RWV_TYPE>(index) )
 	{
 		case RWV_TAGLIST:
-			m_TagDefs.DumpKeys( pSrc, "TAG." );
+			m_TagDefs.DumpKeys(pSrc, "TAG.");
 			return true;
-	}*/
-	
-	return( CRegionBase::r_Verb( s, pSrc ));
+		default:
+			return false;
+	}
+	return true;*/
 	EXC_CATCH;
 
 	EXC_DEBUG_START;

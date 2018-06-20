@@ -332,16 +332,13 @@ size_t CGrayMulti::Load( MULTI_TYPE id )
 	ADDTOCALLSTACK("CGrayMulti::Load");
 	// Just load the whole thing.
 
+	CUOIndexRec Index;
+	if ( (id >= MULTI_QTY) || !g_Install.ReadMulIndex(VERFILE_MULTIIDX, VERFILE_MULTI, id, Index) )
+		return 0;
+
 	Release();
 	InitCacheTime();		// This is invalid !
-
-	if ( id < 0 || id >= MULTI_QTY )
-		return( 0 );
 	m_id = id;
-
-	CUOIndexRec Index;
-	if ( ! g_Install.ReadMulIndex( VERFILE_MULTIIDX, VERFILE_MULTI, id, Index ))
-		return 0;
 
 	switch ( g_Install.GetMulFormat( VERFILE_MULTIIDX ) )
 	{

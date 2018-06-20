@@ -675,14 +675,11 @@ bool CAccount::CheckPasswordTries(CSocketAddress csaPeerName)
 void CAccount::ClearPasswordTries()
 {
 	UINT64 timeCurrent = CServTime::GetCurrentTime().GetTimeRaw();
-	for ( BlockLocalTime_t::iterator itData = m_BlockIP.begin(); itData != m_BlockIP.end(); ++itData )
+	for ( BlockLocalTime_t::iterator itData = m_BlockIP.end(); itData != m_BlockIP.begin(); --itData )
 	{
 		BlockLocalTimePair_t itResult = (*itData).second;
 		if ( timeCurrent - itResult.first.m_Last > static_cast<UINT64>(g_Cfg.m_iClientLoginTempBan) )
 			m_BlockIP.erase(itData);
-
-		if ( itData != m_BlockIP.begin() )
-			--itData;
 	}
 }
 

@@ -98,8 +98,8 @@ bool CServer::SocketsInit(CGSocket &socket)
 	lVal.l_linger = 10;
 	if ( socket.SetSockOpt(SO_LINGER, reinterpret_cast<const void *>(&lVal), sizeof(lVal)) == -1 )
 		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to set listen socket option SO_LINGER\n");
-
-	socket.SetNonBlocking();
+	if ( socket.SetNonBlocking() == -1 )
+		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to set listen socket nonblocking mode\n");
 
 #ifndef _WIN32
 	int iOnNotOff = 1;

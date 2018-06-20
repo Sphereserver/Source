@@ -653,10 +653,8 @@ int CChar::FixWeirdness()
 		{
 			for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
 			{
-				WORD wSkillMax = Skill_GetMax(static_cast<SKILL_TYPE>(i));
 				WORD wSkillVal = Skill_GetBase(static_cast<SKILL_TYPE>(i));
-				if ( wSkillVal < 0 )
-					Skill_SetBase(static_cast<SKILL_TYPE>(i), 0);
+				WORD wSkillMax = Skill_GetMax(static_cast<SKILL_TYPE>(i));
 				if ( wSkillVal > wSkillMax * g_Cfg.m_iOverSkillMultiply )
 					Skill_SetBase(static_cast<SKILL_TYPE>(i), wSkillMax);
 			}

@@ -3189,7 +3189,7 @@ TRIGRET_TYPE CChar::CheckLocation(bool fStanding)
 
 	if ( m_pNPC )
 	{
-		if ( !pTeleport->bNpc )
+		if ( !pTeleport->m_fNPC )
 			return TRIGRET_RET_FALSE;
 
 		if ( m_pNPC->m_Brain == NPCBRAIN_GUARD )

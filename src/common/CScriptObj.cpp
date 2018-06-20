@@ -732,127 +732,100 @@ TRIGRET_TYPE CScriptObj::OnTriggerRun(CScript &s, TRIGRUN_TYPE trigger, CTextCon
 			case SK_FORCHARMEMORYTYPE:
 			{
 				EXC_SET("forchar[layer/memorytype]");
-				CChar *pChar = dynamic_cast<CChar *>(this);
-				if ( pChar )
+				if ( !s.HasArgs() )
 				{
-					if ( s.HasArgs() )
-					{
-						ParseText(s.GetArgRaw(), pSrc, 0, pArgs);
-						if ( index == SK_FORCHARLAYER )
-							iRet = pChar->OnCharTrigForLayerLoop(s, pSrc, pArgs, psResult, static_cast<LAYER_TYPE>(s.GetArgVal()));
-						else
-							iRet = pChar->OnCharTrigForMemTypeLoop(s, pSrc, pArgs, psResult, static_cast<WORD>(s.GetArgVal()));
-					}
-					else
-					{
-						DEBUG_ERR(("FORCHAR[layer/memorytype] called on char 0%lx (%s) without arguments\n", static_cast<DWORD>(pChar->GetUID()), pChar->GetName()));
-						iRet = OnTriggerRun(s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, psResult);
-					}
+					DEBUG_ERR(("FORCHAR[layer/memorytype] called without arguments\n"));
+					iRet = OnTriggerRun(s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, psResult);
+					break;
 				}
-				else
+
+				CChar *pChar = dynamic_cast<CChar *>(this);
+				if ( !pChar )
 				{
 					DEBUG_ERR(("FORCHAR[layer/memorytype] called on non-char object '%s'\n", GetName()));
 					iRet = OnTriggerRun(s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, psResult);
+					break;
 				}
+
+				ParseText(s.GetArgRaw(), pSrc, 0, pArgs);
+				if ( index == SK_FORCHARLAYER )
+					iRet = pChar->OnCharTrigForLayerLoop(s, pSrc, pArgs, psResult, static_cast<LAYER_TYPE>(s.GetArgVal()));
+				else
+					iRet = pChar->OnCharTrigForMemTypeLoop(s, pSrc, pArgs, psResult, static_cast<WORD>(s.GetArgVal()));
 				break;
 			}
 			case SK_FORCONT:
 			{
 				EXC_SET("forcont");
-				if ( s.HasArgs() )
-				{
-					TCHAR *ppArgs[2];
-					size_t iQty = Str_ParseCmds(const_cast<TCHAR *>(s.GetArgRaw()), ppArgs, COUNTOF(ppArgs), " \t,");
-					if ( iQty >= 1 )
-					{
-						TemporaryString pszOrigValue;
-						strcpy(pszOrigValue, ppArgs[0]);
-						TCHAR *pszTempPoint = pszOrigValue;
-						ParseText(pszTempPoint, pSrc, 0, pArgs);
-
-						CGrayUID uid = static_cast<CGrayUID>(Exp_GetLLVal(pszTempPoint));
-						if ( uid.IsValidUID() )
-						{
-							CObjBase *pObj = uid.ObjFind();
-							if ( pObj && pObj->IsContainer() )
-							{
-								CContainer *pContThis = dynamic_cast<CContainer *>(pObj);
-								CScriptLineContext StartContext = s.GetContext();
-								CScriptLineContext EndContext = StartContext;
-								iRet = pContThis->OnGenericContTriggerForLoop(s, pSrc, pArgs, psResult, StartContext, EndContext, ppArgs[1] ? Exp_GetVal(ppArgs[1]) : 255);
-							}
-							else
-							{
-								DEBUG_ERR(("FORCONT called on invalid uid/invalid container (UID: 0%lx)\n", uid.GetObjUID()));
-								iRet = OnTriggerRun(s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, psResult);
-							}
-						}
-						else
-						{
-							DEBUG_ERR(("FORCONT called with invalid arguments (UID: 0%lx, LEVEL: %d)\n", uid.GetObjUID(), ppArgs[1] ? Exp_GetVal(ppArgs[1]) : 255));
-							iRet = OnTriggerRun(s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, psResult);
-						}
-					}
-					else
-					{
-						DEBUG_ERR(("FORCONT called without arguments\n"));
-						iRet = OnTriggerRun(s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, psResult);
-					}
-				}
-				else
+				if ( !s.HasArgs() )
 				{
 					DEBUG_ERR(("FORCONT called without arguments\n"));
 					iRet = OnTriggerRun(s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, psResult);
+					break;
 				}
+
+				TCHAR *ppArgs[2];
+				size_t iArgsQty = Str_ParseCmds(const_cast<TCHAR *>(s.GetArgRaw()), ppArgs, COUNTOF(ppArgs), " \t,");
+
+				TemporaryString pszTemp;
+				strcpy(pszTemp, ppArgs[0]);
+				TCHAR *pszTempPoint = pszTemp;
+				ParseText(pszTempPoint, pSrc, 0, pArgs);
+
+				CGrayUID uid = static_cast<CGrayUID>(Exp_GetLLVal(pszTempPoint));
+				if ( !uid.IsValidUID() )
+				{
+					DEBUG_ERR(("FORCONT called on invalid uid '0%lx'\n", uid.GetObjUID()));
+					iRet = OnTriggerRun(s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, psResult);
+					break;
+				}
+
+				CContainer *pCont = dynamic_cast<CContainer *>(uid.ObjFind());
+				if ( !pCont )
+				{
+					DEBUG_ERR(("FORCONT called on non-container uid '0%lx'\n", uid.GetObjUID()));
+					iRet = OnTriggerRun(s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, psResult);
+					break;
+				}
+
+				CScriptLineContext StartContext = s.GetContext();
+				CScriptLineContext EndContext = StartContext;
+				iRet = pCont->OnGenericContTriggerForLoop(s, pSrc, pArgs, psResult, StartContext, EndContext, (iArgsQty >= 2) ? Exp_GetVal(ppArgs[1]) : 255);
 				break;
 			}
 			case SK_FORCONTID:
 			case SK_FORCONTTYPE:
 			{
 				EXC_SET("forcont[id/type]");
-				CObjBase *pObjCont = dynamic_cast<CObjBase *>(this);
-				CContainer *pCont = dynamic_cast<CContainer *>(this);
-				if ( pObjCont && pCont )
+				if ( !s.HasArgs() )
 				{
-					if ( s.HasArgs() )
-					{
-						LPCTSTR pszKey = s.GetArgRaw();
-						SKIP_SEPARATORS(pszKey);
-
-						TCHAR *ppArgs[2];
-						if ( Str_ParseCmds(const_cast<TCHAR *>(pszKey), ppArgs, COUNTOF(ppArgs), " \t,") >= 1 )
-						{
-							TemporaryString pszParsed;
-							strcpy(pszParsed, ppArgs[0]);
-							if ( ParseText(pszParsed, pSrc, 0, pArgs) > 0 )
-							{
-								CScriptLineContext StartContext = s.GetContext();
-								CScriptLineContext EndContext = StartContext;
-								iRet = pCont->OnContTriggerForLoop(s, pSrc, pArgs, psResult, StartContext, EndContext, g_Cfg.ResourceGetID((index == SK_FORCONTID) ? RES_ITEMDEF : RES_TYPEDEF, static_cast<LPCTSTR &>(pszParsed)), 0, ppArgs[1] ? Exp_GetVal(ppArgs[1]) : 255);
-							}
-							else
-							{
-								DEBUG_ERR(("FORCONT[id/type] called on container 0%lx with incorrect arguments\n", static_cast<DWORD>(pObjCont->GetUID())));
-								iRet = OnTriggerRun(s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, psResult);
-							}
-						}
-						else
-						{
-							DEBUG_ERR(("FORCONT[id/type] called on container 0%lx with incorrect arguments\n", static_cast<DWORD>(pObjCont->GetUID())));
-							iRet = OnTriggerRun(s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, psResult);
-						}
-					}
-					else
-					{
-						DEBUG_ERR(("FORCONT[id/type] called on container 0%lx without arguments\n", static_cast<DWORD>(pObjCont->GetUID())));
-						iRet = OnTriggerRun(s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, psResult);
-					}
+					DEBUG_ERR(("FORCONT[id/type] called without arguments\n"));
+					iRet = OnTriggerRun(s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, psResult);
+					break;
 				}
-				else
+
+				CObjBase *pObj = dynamic_cast<CObjBase *>(this);
+				CContainer *pCont = dynamic_cast<CContainer *>(this);
+				if ( !pObj || !pCont )
 				{
 					DEBUG_ERR(("FORCONT[id/type] called on non-container object '%s'\n", GetName()));
 					iRet = OnTriggerRun(s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, psResult);
+					break;
 				}
+
+				LPCTSTR pszKey = s.GetArgRaw();
+				SKIP_SEPARATORS(pszKey);
+
+				TCHAR *ppArgs[2];
+				size_t iArgsQty = Str_ParseCmds(const_cast<TCHAR *>(pszKey), ppArgs, COUNTOF(ppArgs), " \t,");
+
+				TemporaryString pszTemp;
+				strcpy(pszTemp, ppArgs[0]);
+				ParseText(pszTemp, pSrc, 0, pArgs);
+
+				CScriptLineContext StartContext = s.GetContext();
+				CScriptLineContext EndContext = StartContext;
+				iRet = pCont->OnContTriggerForLoop(s, pSrc, pArgs, psResult, StartContext, EndContext, g_Cfg.ResourceGetID((index == SK_FORCONTID) ? RES_ITEMDEF : RES_TYPEDEF, static_cast<LPCTSTR &>(pszTemp)), 0, (iArgsQty >= 2) ? Exp_GetVal(ppArgs[1]) : 255);
 				break;
 			}
 			default:

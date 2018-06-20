@@ -445,16 +445,18 @@ int CGSocket::GetSockOpt( int nOptionName, void * optval, int * poptlen, int nLe
 	}
 #endif
 
-void CGSocket::SetNonBlocking(bool bEnable)
+int CGSocket::SetNonBlocking(bool bEnable)
 {
 #ifdef _WIN32
-	DWORD lVal = bEnable? 1 : 0;	// 0 =  block
-	ioctlsocket(m_hSocket, FIONBIO, &lVal);
+	u_long uFlags = bEnable ? 1 : 0;		// 0 =  block
+	return (ioctlsocket(m_hSocket, FIONBIO, &uFlags) == WSAEINVAL) ? -1 : 0;	// convert Windows result to Linux format
 #else
-	if (bEnable)
-		fcntl(m_hSocket, F_SETFL, GetIOCtlSocketFlags()|O_NONBLOCK);
+	int iFlags = GetIOCtlSocketFlags();
+	if ( bEnable )
+		iFlags |= O_NONBLOCK;
 	else
-		fcntl(m_hSocket, F_SETFL, GetIOCtlSocketFlags()&~O_NONBLOCK);
+		iFlags &= ~O_NONBLOCK;
+	return fcntl(m_hSocket, F_SETFL, iFlags);
 #endif
 }
 

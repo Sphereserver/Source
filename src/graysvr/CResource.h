@@ -1108,48 +1108,48 @@ public:
 
 	CServerRef Server_GetDef( size_t index );
 
-	const CSpellDef * GetSpellDef( SPELL_TYPE index ) const
+	const CSpellDef *GetSpellDef(SPELL_TYPE index) const
 	{
 		// future: underlying type for SPELL_TYPE to avoid casts
-		if (index == SPELL_NONE || m_SpellDefs.IsValidIndex(static_cast<size_t>(index)) == false)
+		if ( (index == SPELL_NONE) || !m_SpellDefs.IsValidIndex(static_cast<size_t>(index)) )
 			return NULL;
 		return m_SpellDefs[static_cast<size_t>(index)];
 	}
 
-	CSpellDef * GetSpellDef( SPELL_TYPE index ) 
+	CSpellDef *GetSpellDef(SPELL_TYPE index)
 	{
 		// future: underlying type for SPELL_TYPE to avoid casts
-		if (index == SPELL_NONE || m_SpellDefs.IsValidIndex(static_cast<size_t>(index)) == false)
+		if ( (index == SPELL_NONE) || !m_SpellDefs.IsValidIndex(static_cast<size_t>(index)) )
 			return NULL;
 		return m_SpellDefs[static_cast<size_t>(index)];
 	}
 
-	LPCTSTR GetSkillKey( SKILL_TYPE index ) const
+	LPCTSTR GetSkillKey(SKILL_TYPE index) const
 	{
 		// future: underlying type for SPELL_TYPE to avoid casts
-		if (m_SkillIndexDefs.IsValidIndex(static_cast<size_t>(index)) == false)
+		if ( (index == SKILL_NONE) || !m_SkillIndexDefs.IsValidIndex(static_cast<size_t>(index)) )
 			return NULL;
-		return( m_SkillIndexDefs[static_cast<size_t>(index)]->GetKey());
+		return m_SkillIndexDefs[static_cast<size_t>(index)]->GetKey();
 	}
 
-	bool IsSkillFlag( SKILL_TYPE index, SKF_TYPE skf ) const
+	bool IsSkillFlag(SKILL_TYPE index, SKF_TYPE skf) const
 	{
-		const CSkillDef * pSkillDef = GetSkillDef( index );
-		return ( pSkillDef != NULL && (pSkillDef->m_dwFlags & skf) );
+		const CSkillDef *pSkillDef = GetSkillDef(index);
+		return (pSkillDef && (pSkillDef->m_dwFlags & skf));
 	}
 
-	const CSkillDef* GetSkillDef( SKILL_TYPE index ) const
+	const CSkillDef *GetSkillDef(SKILL_TYPE index) const
 	{
-		if (m_SkillIndexDefs.IsValidIndex(static_cast<size_t>(index)) == false)
+		if ( (index == SKILL_NONE) || !m_SkillIndexDefs.IsValidIndex(static_cast<size_t>(index)) )
 			return NULL;
-		return( m_SkillIndexDefs[static_cast<size_t>(index)] );
+		return m_SkillIndexDefs[static_cast<size_t>(index)];
 	}
 	
-	CSkillDef* GetSkillDef( SKILL_TYPE index )
+	CSkillDef *GetSkillDef(SKILL_TYPE index)
 	{
-		if (m_SkillIndexDefs.IsValidIndex(static_cast<size_t>(index)) == false )
+		if ( (index == SKILL_NONE) || !m_SkillIndexDefs.IsValidIndex(static_cast<size_t>(index)) )
 			return NULL;
-		return( m_SkillIndexDefs[static_cast<size_t>(index)] );
+		return m_SkillIndexDefs[static_cast<size_t>(index)];
 	}
 
 	const CSkillDef* FindSkillDef( LPCTSTR pszKey ) const

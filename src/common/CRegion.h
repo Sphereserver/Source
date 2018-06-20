@@ -686,15 +686,15 @@ class CTeleport : public CPointSort	// The static world teleporters. GRAYMAP.SCP
 	// Put a built in trigger here ? can be Array sorted by CPointMap.
 public:
 	static const char *m_sClassName;
-	bool bNpc;
 	CPointMap m_ptDst;
+	bool m_fNPC;
 
 public:
 	explicit CTeleport( const CPointMap & pt ) : CPointSort(pt)
 	{
 		ASSERT( pt.IsValidPoint());
 		m_ptDst = pt;
-		bNpc = false;
+		m_fNPC = false;
 	}
 
 	explicit CTeleport( TCHAR * pszArgs );
