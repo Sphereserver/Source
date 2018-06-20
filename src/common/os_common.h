@@ -33,6 +33,9 @@
 #define GETNONWHITESPACE(pszStr)	while (ISWHITESPACE(pszStr[0])) { pszStr++; }
 #define _IS_SWITCH(c)				(((c) == '-') || ((c) == '/'))	// command line switch
 
+#define minimum(a, b)			(((a) < (b)) ? (a) : (b))
+#define maximum(a, b)			(((a) > (b)) ? (a) : (b))
+
 #define IMULDIVDOWN(a, b, c)	(((a) * (b)) / (c))
 #define IMULDIV(a, b, c)		(((((LONGLONG)(a) * (LONGLONG)(b)) + ((c) / 2)) / (c)) - IsNegative((LONGLONG)(a) * (LONGLONG)(b)) )
 
