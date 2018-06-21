@@ -1089,7 +1089,7 @@ Fixed: Console error when TradeWindowSnooping=0 is set on sphere.ini.
 Fixed: Lumberjacking skill not working correctly.
 
 26-05-2018, Coruja
-Fixed: Sphere crash when call GOLD/NEWGOLD function with args > 65535.
+Fixed: Server crash when call GOLD/NEWGOLD function with args > 65535.
 
 01-06-2018, Coruja
 Changed: Updated SQLite engine
@@ -1111,3 +1111,6 @@ Fixed: DUPE function not duping some char properties.
 14-06-2018, Coruja
 Fixed: Possible memory leak when SQLite functions return an error.
 [sphereCrypt.ini]: Added crypt key for classic client 7.0.64 and enhanced client 4.0.64
+
+21-06-2018, Coruja
+Fixed: FEATURE_AOS_DAMAGE feature on sphere.ini not showing pet received damages to its owner.

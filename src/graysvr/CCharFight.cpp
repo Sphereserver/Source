@@ -1907,16 +1907,20 @@ effect_bounce:
 	{
 		if ( m_pClient )
 			m_pClient->addShowDamage(GetUID(), iDmg);
+		else if ( m_pNPC )
+		{
+			const CChar *pOwner = NPC_PetGetOwner();
+			if ( pOwner && pOwner->m_pClient )
+				pOwner->m_pClient->addShowDamage(GetUID(), iDmg);
+		}
+
 		if ( pSrc->m_pClient && (pSrc != this) )
 			pSrc->m_pClient->addShowDamage(GetUID(), iDmg);
-		else
+		else if ( pSrc->m_pNPC )
 		{
-			CChar * pSrcOwner = pSrc->NPC_PetGetOwner();
-			if ( pSrcOwner != NULL )
-			{
-				if ( pSrcOwner->m_pClient )
-					pSrcOwner->m_pClient->addShowDamage(GetUID(), iDmg);
-			}
+			const CChar *pSrcOwner = pSrc->NPC_PetGetOwner();
+			if ( pSrcOwner && pSrcOwner->m_pClient )
+				pSrcOwner->m_pClient->addShowDamage(GetUID(), iDmg);
 		}
 	}
 
