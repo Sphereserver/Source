@@ -204,10 +204,8 @@ bool CAccounts::Account_OnCmd(TCHAR *pszArgs, CTextConsole *pSrc)
 	TCHAR *ppCmd[5];
 	size_t iQty = Str_ParseCmds(pszArgs, ppCmd, COUNTOF(ppCmd));
 
-	int index;
-	if ( (iQty <= 0) || (ppCmd[0] == NULL) || (ppCmd[0][0] == '\0') )
-		index = VACS_HELP;
-	else
+	int index = VACS_HELP;
+	if ( iQty >= 1 )
 		index = FindTableSorted(ppCmd[0], sm_szVerbKeys, COUNTOF(sm_szVerbKeys) - 1);
 
 	switch ( static_cast<VACS_TYPE>(index) )
@@ -337,9 +335,9 @@ CAccountRef CAccounts::Account_FindChat(LPCTSTR pszName)
 bool CAccounts::Cmd_AddNew(CTextConsole *pSrc, LPCTSTR pszName, LPCTSTR pszPassword, bool fMD5)
 {
 	ADDTOCALLSTACK("CAccounts::Cmd_AddNew");
-	if ( (pszName == NULL) || (pszName[0] == '\0') )
+	if ( !pszName )
 	{
-		g_Log.Event(LOGL_ERROR|LOGM_INIT, "Username is required to add an account.\n");
+		g_Log.Event(LOGL_ERROR|LOGM_INIT, "Username is required to add an account\n");
 		return false;
 	}
 
@@ -367,6 +365,12 @@ bool CAccounts::Cmd_AddNew(CTextConsole *pSrc, LPCTSTR pszName, LPCTSTR pszPassw
 bool CAccounts::Cmd_ListUnused(CTextConsole *pSrc, LPCTSTR pszDays, LPCTSTR pszVerb, LPCTSTR pszArgs, WORD wPrivFlags)
 {
 	ADDTOCALLSTACK("CAccounts::Cmd_ListUnused");
+	if ( !pszVerb )
+	{
+		pszVerb = "SHOW";
+		pszArgs = "LASTCONNECTDATE";
+	}
+
 	int iDaysTest = Exp_GetVal(pszDays);
 	bool fDelete = !strcmpi(pszVerb, "DELETE");
 
@@ -391,25 +395,17 @@ bool CAccounts::Cmd_ListUnused(CTextConsole *pSrc, LPCTSTR pszDays, LPCTSTR pszV
 		int iDaysAcc = pAccount->m_dateLastConnect.GetDaysTotal();
 		if ( !iDaysAcc )
 			iDaysAcc = pAccount->m_dateFirstConnect.GetDaysTotal();		// use creation date if the account was never used
-
-		if ( (iDaysCur - iDaysAcc) < iDaysTest )
+		if ( iDaysCur - iDaysAcc < iDaysTest )
 			continue;
-		if ( !pAccount->IsPriv(wPrivFlags) )
+
+		if ( wPrivFlags && !pAccount->IsPriv(wPrivFlags) )
 			continue;
 
 		iCount++;
-		if ( (pszVerb == NULL) || (pszVerb[0] == '\0') )
-		{
-			// Just list stuff about the account
-			CScript script("SHOW LASTCONNECTDATE");
-			pAccount->r_Verb(script, pSrc);
-			continue;
-		}
-
 		if ( fDelete && (pAccount->GetPrivLevel() > PLEVEL_Player) )
 		{
 			iCount--;
-			pSrc->SysMessagef("Can't delete PrivLevel %d account '%s' this way.\n", pAccount->GetPrivLevel(), pAccount->GetName());
+			pSrc->SysMessagef("Can't delete PrivLevel %d account '%s' this way\n", pAccount->GetPrivLevel(), pAccount->GetName());
 		}
 		else
 		{
@@ -426,9 +422,9 @@ bool CAccounts::Cmd_ListUnused(CTextConsole *pSrc, LPCTSTR pszDays, LPCTSTR pszV
 		if ( iDeleted < iCount )
 			pSrc->SysMessagef("%" FMTSIZE_T " deleted, %" FMTSIZE_T " cleared of characters (must try to delete again)\n", iDeleted, iCount - iDeleted);
 		else if ( iDeleted > 0 )
-			pSrc->SysMessagef("All %" FMTSIZE_T " unused accounts deleted.\n", iDeleted);
+			pSrc->SysMessagef("All %" FMTSIZE_T " unused accounts deleted\n", iDeleted);
 		else
-			pSrc->SysMessagef("No accounts deleted.\n");
+			pSrc->SysMessagef("No accounts deleted\n");
 	}
 
 	return true;
@@ -1024,7 +1020,7 @@ bool CAccount::r_LoadVal(CScript &s)
 			m_PrivFlags = static_cast<WORD>(s.GetArgVal());
 			if ( m_PrivFlags & PRIV_UNUSED )
 			{
-				g_Log.EventError("Fixing PRIV field (0%hx) for account %s have not supported flags set (caught by mask 0%hx).\n", m_PrivFlags, GetName(), static_cast<WORD>(PRIV_UNUSED));
+				g_Log.EventError("Fixing PRIV field (0%hx) for account %s have not supported flags set (caught by mask 0%hx)\n", m_PrivFlags, GetName(), static_cast<WORD>(PRIV_UNUSED));
 				m_PrivFlags &= ~PRIV_UNUSED;
 			}
 			break;
