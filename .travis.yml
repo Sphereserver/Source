@@ -16,7 +16,7 @@ addons:
     - g++-multilib
   coverity_scan:
     project:
-      name: "SphereServer/Source"
+      name: "Sphere Server"
       description: "Game server for Ultima Online"
     notification_email: " "
     build_command: $BUILD_CMD
