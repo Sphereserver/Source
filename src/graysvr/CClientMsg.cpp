@@ -2179,13 +2179,12 @@ void CClient::addItemMenu(CLIMODE_TYPE mode, const CMenuItem *item, size_t count
 	// Will result in PacketMenuChoice::onReceive()
 	// cmd.ItemMenu
 
-	if ( (count <= 0) || (count >= COUNTOF(item)) )
+	if ( count <= 0 )
 		return;
 	if ( !pObj )
 		pObj = m_pChar;
 
 	new PacketDisplayMenu(this, mode, item, count, pObj);
-
 	m_tmMenu.m_UID = pObj->GetUID();
 	SetTargMode(mode);
 }
