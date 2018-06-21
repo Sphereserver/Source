@@ -1114,3 +1114,4 @@ Fixed: Possible memory leak when SQLite functions return an error.
 
 21-06-2018, Coruja
 Fixed: FEATURE_AOS_DAMAGE feature on sphere.ini not showing pet received damages to its owner.
+Changed: Status gump on AOS+ clients now will only show RES* properties if COMBAT_ELEMENTAL_ENGINE feature is enabled on sphere.ini.

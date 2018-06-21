@@ -214,10 +214,21 @@ PacketHealthBarInfo::PacketHealthBarInfo(const CClient *target, CObjBase *object
 
 		if (version >= 4) // AOS attributes
 		{
-			writeInt16(static_cast<WORD>(object->m_ResFireMax ? minimum(object->m_ResFire, object->m_ResFireMax) : object->m_ResFire));
-			writeInt16(static_cast<WORD>(object->m_ResColdMax ? minimum(object->m_ResCold, object->m_ResColdMax) : object->m_ResCold));
-			writeInt16(static_cast<WORD>(object->m_ResPoisonMax ? minimum(object->m_ResPoison, object->m_ResPoisonMax) : object->m_ResPoison));
-			writeInt16(static_cast<WORD>(object->m_ResEnergyMax ? minimum(object->m_ResEnergy, object->m_ResEnergyMax) : object->m_ResEnergy));
+			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
+			{
+				writeInt16(static_cast<WORD>(object->m_ResFireMax ? minimum(object->m_ResFire, object->m_ResFireMax) : object->m_ResFire));
+				writeInt16(static_cast<WORD>(object->m_ResColdMax ? minimum(object->m_ResCold, object->m_ResColdMax) : object->m_ResCold));
+				writeInt16(static_cast<WORD>(object->m_ResPoisonMax ? minimum(object->m_ResPoison, object->m_ResPoisonMax) : object->m_ResPoison));
+				writeInt16(static_cast<WORD>(object->m_ResEnergyMax ? minimum(object->m_ResEnergy, object->m_ResEnergyMax) : object->m_ResEnergy));
+			}
+			else
+			{
+				writeInt16(0);
+				writeInt16(0);
+				writeInt16(0);
+				writeInt16(0);
+			}
+
 			writeInt16(static_cast<WORD>(object->m_Luck));
 
 			const CItem *weapon = objectChar->m_uidWeapon.ItemFind();
