@@ -1,9 +1,9 @@
 # SphereServer
 Game server for Ultima Online
 
-[![Windows build status](https://ci.appveyor.com/api/projects/status/befpuqebq01caopi?svg=true)](https://ci.appveyor.com/project/coruja747/source)
-[![Linux build status](https://travis-ci.org/Sphereserver/Source.svg?branch=master)](https://travis-ci.org/Sphereserver/Source)
-[![Join the chat at https://gitter.im/Sphereserver/Source](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Sphereserver/Source)
+[![Build status](https://ci.appveyor.com/api/projects/status/befpuqebq01caopi?svg=true)](https://ci.appveyor.com/project/coruja747/source)
+[![Coverity Scan Build Status](https://scan.coverity.com/projects/16062/badge.svg)](https://scan.coverity.com/projects/sphere-server)
+[![Join the chat at https://gitter.im/SphereServer/Source](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/SphereServer/Source)
 
 ## Downloads
 

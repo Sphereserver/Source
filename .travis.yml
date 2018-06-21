@@ -1,5 +1,11 @@
 language: cpp
 compiler: gcc
+env:
+  - BUILD_CMD="make NIGHTLY=1 -f makefile"
+git:
+  depth: false
+notifications:
+  email: false
 addons:
   apt:
     sources:
@@ -8,13 +14,12 @@ addons:
     - libmysql++-dev:i386
     - gcc-multilib
     - g++-multilib
-git:
-  depth: false
-notifications:
-  email: false
+  coverity_scan:
+    project:
+      name: "SphereServer/Source"
+      description: "Game server for Ultima Online"
+    notification_email: " "
+    build_command: $BUILD_CMD
+    branch_pattern: master
 script:
-  - make NIGHTLY=1 -f makefile
-#after_success:
-#  - mkdir accounts logs save scripts
-#  - tar -czvf SphereSvr-Linux32.tar.gz accounts/ logs/ save/ scripts/ spheresvr -C src/ sphere.ini sphereCrypt.ini
-#  - curl -T SphereSvr-Linux32.tar.gz -u $FTP_USER:$FTP_PASSWORD $FTP_SERVER
+  - if [ $COVERITY_SCAN_BRANCH != 1 ]; then $BUILD_CMD; fi
