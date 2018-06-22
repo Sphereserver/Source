@@ -347,14 +347,17 @@ struct VendorItem;
 class CClient : public CGObListRec, public CScriptObj, public CChatMember, public CTextConsole
 {
 	// TCP/IP connection to the player or console
-private:
-	static LPCTSTR const sm_szCmd_Redirect[];		// default to redirect these
-
 public:
+	explicit CClient(NetState *state);
+	~CClient();
+
 	static const char *m_sClassName;
 	static LPCTSTR const sm_szRefKeys[];
 	static LPCTSTR const sm_szLoadKeys[];
 	static LPCTSTR const sm_szVerbKeys[];
+
+private:
+	static LPCTSTR const sm_szCmd_Redirect[];		// default to redirect these
 
 private:
 	CChar *m_pChar;
@@ -427,14 +430,6 @@ public:
 	// Context of the targetting setup (depends on m_Targ_Mode)
 	union
 	{
-		// CLIMODE_SETUP_CONNECTING
-		struct
-		{
-			DWORD m_dwIP;
-			int m_iConnect;		// used for debug only
-			bool m_bNewSeed;
-		} m_tmSetup;
-
 		// CLIMODE_SETUP_CHARLIST
 		CGrayUIDBase m_tmSetupCharList[MAX_CHARS_PER_ACCT];
 
@@ -506,7 +501,7 @@ private:
 	bool OnRxPing(const BYTE *pData, size_t iLen);
 	bool OnRxWebPageRequest(BYTE *pRequest, size_t iLen);
 
-	BYTE LogIn(LPCTSTR pszAccName, LPCTSTR pszPassword, CGString &sMsg);
+	BYTE LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg);
 	BYTE LogIn(CAccountRef pAccount, CGString &sMsg);
 
 	bool CanInstantLogOut() const;
@@ -520,7 +515,7 @@ private:
 	bool OnTarg_Obj_Function(CObjBase *pObj, const CPointMap &pt, ITEMID_TYPE id);
 
 	bool OnTarg_UnExtract(CObjBase *pObj, const CPointMap &pt);
-	bool OnTarg_Stone_Recruit(CChar *pChar, bool bFull = false);
+	bool OnTarg_Stone_Recruit(CChar *pChar, bool fFull = false);
 	bool OnTarg_Char_Add(CObjBase *pObj, const CPointMap &pt);
 	bool OnTarg_Item_Add(CObjBase *pObj, CPointMap &pt);
 	bool OnTarg_Item_Link(CObjBase *pObj);
@@ -595,9 +590,9 @@ public:
 	BYTE Login_ServerList(const char *pszAccount, const char *pszPassword);		// initial login (Login on "loginserver", new format)
 
 	BYTE Setup_FillCharList(Packet *pPacket);	// write character list to packet
-	BYTE Setup_ListReq(const char *pszAccount, const char *pszPassword, bool bTest);	// gameserver login and character listing
-	BYTE Setup_Delete(DWORD iSlot);		// delete character
-	BYTE Setup_Play(DWORD iSlot);		// after hitting "Play Character" button
+	BYTE Setup_ListReq(const char *pszAccount, const char *pszPassword, bool fTest);	// gameserver login and character listing
+	BYTE Setup_Delete(DWORD dwSlot);	// delete character
+	BYTE Setup_Play(DWORD dwSlot);		// after hitting "Play Character" button
 	BYTE Setup_Start(CChar *pChar);		// send character startup stuff to player
 
 
@@ -622,17 +617,9 @@ public:
 	bool Cmd_Control(CChar *pChar);
 
 public:
-	CSocketAddress &GetPeer();			// get peer address
-	LPCTSTR GetPeerStr() const;			// get string representation of the peer address
 	long GetSocketID() const;			// get socket id
-
-public:
-	explicit CClient(NetState *state);
-	~CClient();
-
-private:
-	CClient(const CClient &copy);
-	CClient &operator=(const CClient &other);
+	CSocketAddress &GetPeer() const;	// get peer address
+	LPCTSTR GetPeerStr() const;			// get string representation of the peer address
 
 public:
 	void CharDisconnect();
@@ -683,12 +670,12 @@ public:
 	void UpdateStats();
 	void UpdateFeatureFlags();
 	void UpdateCharacterListFlags();
-	bool addDeleteErr(BYTE code, DWORD iSlot);
+	bool addDeleteErr(BYTE bCode, DWORD dwSlot);
 	void addSeason(SEASON_TYPE season);
-	void addTime(bool bCurrent = false);
+	void addTime(bool fCurrent = false);
 	void addObjectRemoveCantSee(CGrayUID uid, LPCTSTR pszName = NULL);
 	void closeContainer(const CObjBase *pObj);
-	void closeUIWindow(const CChar *character, DWORD command);
+	void closeUIWindow(const CChar *pChar, DWORD dwCmd);
 	void addObjectRemove(CGrayUID uid);
 	void addObjectRemove(const CObjBase *pObj);
 	void addRemoveAll(bool fItems, bool fChars);
@@ -698,8 +685,8 @@ public:
 	void addItem_InContainer(const CItem *pItem);
 	void addItem(CItem *pItem);
 
-	void addBuff(const BUFF_ICONS IconId, const DWORD ClilocOne, const DWORD ClilocTwo, const WORD Time = 0, LPCTSTR *pszArgs = 0, size_t iArgCount = 0);
-	void removeBuff(const BUFF_ICONS IconId);
+	void addBuff(const BUFF_ICONS IconID, const DWORD dwClilocOne, const DWORD dwClilocTwo, const WORD wTime = 0, LPCTSTR *pszArgs = 0, size_t iArgCount = 0);
+	void removeBuff(const BUFF_ICONS IconID);
 	void resendBuffs();
 
 	void addOpenGump(const CObjBase *pContainer, GUMP_TYPE gump);
@@ -708,11 +695,11 @@ public:
 
 	void addPlayerStart(CChar *pChar);
 	void addPlayerSee(const CPointMap &pt);
-	void addPlayerView(const CPointMap &pt, bool bFull = true);
+	void addPlayerView(const CPointMap &pt, bool fFull = true);
 	void addPlayerWarMode();
 
 	void addCharMove(const CChar *pChar);
-	void addCharMove(const CChar *pChar, BYTE bCharDir);
+	void addCharMove(const CChar *pChar, BYTE bDir);
 	void addChar(const CChar *pChar);
 	void addCharName(const CChar *pChar);
 	void addItemName(const CItem *pItem);
@@ -722,8 +709,8 @@ public:
 	void addLight();
 	void addMusic(MIDI_TYPE id);
 	void addArrowQuest(WORD x, WORD y, DWORD id);
-	void addEffect(EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate *pDst, const CObjBaseTemplate *pSrc, BYTE speed = 5, BYTE loop = 1, bool explode = false, DWORD color = 0, DWORD render = 0, WORD effectid = 0, WORD explodeid = 0, WORD explodesound = 0, DWORD effectuid = 0, BYTE type = 0);
-	void addSound(SOUND_TYPE id, const CObjBaseTemplate *pBase = NULL, BYTE iRepeat = 1);
+	void addEffect(EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate *pDst, const CObjBaseTemplate *pSrc, BYTE bSpeedSeconds = 5, BYTE bLoop = 1, bool fExplode = false, DWORD dwColor = 0, DWORD dwRender = 0, WORD wEffectID = 0, WORD wExplodeID = 0, WORD wExplodeSound = 0, DWORD dwEffectUID = 0, BYTE bType = 0);
+	void addSound(SOUND_TYPE id, const CObjBaseTemplate *pBase = NULL, BYTE bRepeat = 1);
 	void addReSync();
 	void addMap();
 	void addMapDiff();
@@ -733,28 +720,28 @@ public:
 
 	void addBark(LPCTSTR pszText, const CObjBaseTemplate *pSrc, HUE_TYPE wHue = HUE_DEFAULT, TALKMODE_TYPE mode = TALKMODE_SAY, FONT_TYPE font = FONT_BOLD);
 	void addBarkUNICODE(const NCHAR *pwText, const CObjBaseTemplate *pSrc, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, CLanguageID lang = 0);
-	void addBarkLocalized(DWORD iClilocId, const CObjBaseTemplate *pSrc, HUE_TYPE wHue = HUE_DEFAULT, TALKMODE_TYPE mode = TALKMODE_SAY, FONT_TYPE font = FONT_BOLD, LPCTSTR pszArgs = NULL);
-	void addBarkLocalizedEx(DWORD iClilocId, const CObjBaseTemplate *pSrc, HUE_TYPE wHue = HUE_DEFAULT, TALKMODE_TYPE mode = TALKMODE_SAY, FONT_TYPE font = FONT_BOLD, AFFIX_TYPE affix = AFFIX_APPEND, LPCTSTR pszAffix = NULL, LPCTSTR pszArgs = NULL);
-	void addBarkParse(LPCTSTR pszText, const CObjBaseTemplate *pSrc, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font = FONT_NORMAL, bool bUnicode = false, LPCTSTR pszName = "");
-	void addSysMessage(LPCTSTR pszMsg);	
+	void addBarkLocalized(DWORD dwClilocID, const CObjBaseTemplate *pSrc, HUE_TYPE wHue = HUE_DEFAULT, TALKMODE_TYPE mode = TALKMODE_SAY, FONT_TYPE font = FONT_BOLD, LPCTSTR pszArgs = NULL);
+	void addBarkLocalizedEx(DWORD dwClilocID, const CObjBaseTemplate *pSrc, HUE_TYPE wHue = HUE_DEFAULT, TALKMODE_TYPE mode = TALKMODE_SAY, FONT_TYPE font = FONT_BOLD, AFFIX_TYPE affix = AFFIX_APPEND, LPCTSTR pszAffix = NULL, LPCTSTR pszArgs = NULL);
+	void addBarkParse(LPCTSTR pszText, const CObjBaseTemplate *pSrc, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font = FONT_NORMAL, bool fUnicode = false, LPCTSTR pszName = "");
+	void addSysMessage(LPCTSTR pszMsg);
 	void addObjMessage(LPCTSTR pszMsg, const CObjBaseTemplate *pSrc, HUE_TYPE wHue = HUE_TEXT_DEF, TALKMODE_TYPE mode = TALKMODE_OBJ);
 
 	void addDyeOption(const CObjBase *pObj);
 	void addWebLaunch(LPCTSTR pszURL);
 
-	void addPromptConsole(CLIMODE_TYPE mode, LPCTSTR pszPrompt, CGrayUID context1 = UID_CLEAR, CGrayUID context2 = UID_CLEAR, bool bUnicode = false);
-	void addTarget(CLIMODE_TYPE mode, LPCTSTR pszPrompt, bool bAllowGround = false, bool bCheckCrime = false, int iTimeout = 0);
+	void addPromptConsole(CLIMODE_TYPE mode, LPCTSTR pszPrompt, CGrayUID context1 = UID_CLEAR, CGrayUID context2 = UID_CLEAR, bool fUnicode = false);
+	void addTarget(CLIMODE_TYPE mode, LPCTSTR pszPrompt, bool fAllowGround = false, bool fCheckCrime = false, int iTimeout = 0);
 	void addTargetDeed(const CItem *pDeed);
-	bool addTargetItems(CLIMODE_TYPE mode, ITEMID_TYPE id, HUE_TYPE color = HUE_DEFAULT, bool bAllowGround = true);
-	bool addTargetChars(CLIMODE_TYPE mode, CREID_TYPE id, bool bCheckCrime, int iTimeout = 0);
-	void addTargetVerb(LPCTSTR pszCmd, LPCTSTR pszArg);
-	void addTargetFunctionMulti(LPCTSTR pszFunction, ITEMID_TYPE itemid, HUE_TYPE color = HUE_DEFAULT, bool bAllowGround = true);
-	void addTargetFunction(LPCTSTR pszFunction, bool bAllowGround, bool bCheckCrime);
+	bool addTargetItems(CLIMODE_TYPE mode, ITEMID_TYPE id, HUE_TYPE wHue = HUE_DEFAULT, bool fAllowGround = true);
+	bool addTargetChars(CLIMODE_TYPE mode, CREID_TYPE id, bool fCheckCrime, int iTimeout = 0);
+	void addTargetVerb(LPCTSTR pszCmd, LPCTSTR pszArgs);
+	void addTargetFunctionMulti(LPCTSTR pszFunction, ITEMID_TYPE itemid, HUE_TYPE wHue = HUE_DEFAULT, bool fAllowGround = true);
+	void addTargetFunction(LPCTSTR pszFunction, bool fAllowGround, bool fCheckCrime);
 	void addTargetCancel();
-	void addPromptConsoleFunction(LPCTSTR pszFunction, LPCTSTR pszSysmessage, bool bUnicode = false);
+	void addPromptConsoleFunction(LPCTSTR pszFunction, LPCTSTR pszArgs, bool fUnicode = false);
 
-	void addScrollScript(CResourceLock &s, SCROLL_TYPE type, DWORD context = 0, LPCTSTR pszHeader = NULL);
-	void addScrollResource(LPCTSTR pszSec, SCROLL_TYPE type, DWORD scrollID = 0);
+	void addScrollScript(CResourceLock &s, SCROLL_TYPE type, DWORD dwContext = 0, LPCTSTR pszHeader = NULL);
+	void addScrollResource(LPCTSTR pszName, SCROLL_TYPE type, DWORD dwScrollID = 0);
 
 	void addVendorClose(const CChar *pVendor);
 	bool addShopMenuBuy(CChar *pVendor);
@@ -764,14 +751,14 @@ public:
 	void addSpellbookOpen(CItem *pBook);
 	void addCustomSpellbookOpen(CItem *pBook, GUMP_TYPE gumpID);
 	bool addBookOpen(CItem *pBook);
-	void addBookPage(const CItem *pBook, WORD iPage, WORD iCount);
+	void addBookPage(const CItem *pBook, WORD wPage, WORD wCount);
 	void addHealthBarInfo(CObjBase *pObj, bool fRequested = false);
 	void addHitsUpdate(CChar *pChar);
 	void addManaUpdate(CChar *pChar);
 	void addStamUpdate(CChar *pChar);
 	void addHealthBarUpdate(const CChar *pChar);
-	void addBondedStatus(const CChar *pChar, bool bIsDead);
-	void addSkillWindow(SKILL_TYPE skill, bool bFromInfo = false);
+	void addBondedStatus(const CChar *pChar, bool fGhost);
+	void addSkillWindow(SKILL_TYPE skill, bool fFromInfo = false);
 	void addBulletinBoard(const CItemContainer *pBoard);
 	bool addBBoardMessage(const CItemContainer *pBoard, BBOARDF_TYPE flag, CGrayUID uidMsg);
 
@@ -788,11 +775,11 @@ public:
 	bool addGumpDialogProps(CGrayUID uid);
 
 	void addLoginComplete();
-	void addChatSystemMessage(CHATMSG_TYPE iType, LPCTSTR pszName1 = NULL, LPCTSTR pszName2 = NULL, CLanguageID lang = 0);
+	void addChatSystemMessage(CHATMSG_TYPE type, LPCTSTR pszName1 = NULL, LPCTSTR pszName2 = NULL, CLanguageID lang = 0);
 
-	void addCharPaperdoll(CChar *pChar);
+	void addCharPaperdoll(const CChar *pChar);
 
-	void addAOSTooltip(const CObjBase *pObj, bool bRequested = false, bool bShop = false);
+	void addAOSTooltip(const CObjBase *pObj, bool fRequested = false, bool fShop = false);
 
 private:
 	#define POPUPFLAG_DISABLED		0x01
@@ -831,19 +818,19 @@ public:
 	void Event_AOSPopupMenuRequest(CGrayUID uid);
 
 
-	void addShowDamage(CGrayUID uid, int damage);
-	void addSpeedMode(BYTE speedMode = 0);
-	void addVisualRange(BYTE visualRange);
-	void addIdleWarning(BYTE message);
-	void addKRToolbar(bool bEnable);
+	void addShowDamage(CGrayUID uid, int iDamage);
+	void addSpeedMode(BYTE bMode = 0);
+	void addVisualRange(BYTE bRange);
+	void addIdleWarning(BYTE bCode);
+	void addKRToolbar(bool fEnable);
 
 	void SendPacket(TCHAR *pszKey);
 	void LogOpenedContainer(const CItemContainer *pContainer);
 
-	bool IsPriv(WORD flag) const
+	bool IsPriv(WORD wPrivFlag) const
 	{
 		if ( m_pAccount )
-			return m_pAccount->IsPriv(flag);
+			return m_pAccount->IsPriv(wPrivFlag);
 		return false;
 	}
 	void SetPrivFlags(WORD wPrivFlags)
@@ -863,10 +850,10 @@ public:
 			return m_pAccount->GetResDisp();
 		return UCHAR_MAX;
 	}
-	bool SetResDisp(BYTE res)
+	bool SetResDisp(BYTE bResDisp)
 	{
 		if ( m_pAccount )
-			return m_pAccount->SetResDisp(res);
+			return m_pAccount->SetResDisp(bResDisp);
 		return false;
 	}
 
@@ -917,7 +904,6 @@ public:
 	{
 		return m_iConnectType;
 	}
-
 	void SetConnectType(CONNECT_TYPE iType);
 
 	CLIMODE_TYPE GetTargMode() const
@@ -952,20 +938,18 @@ public:
 	{
 		return m_BaseDefs.GetKeyStr(pszKey, fZero);
 	}
+	void SetDefStr(LPCTSTR pszKey, LPCTSTR pszVal, bool fQuoted = false, bool fZero = true)
+	{
+		m_BaseDefs.SetStr(pszKey, fQuoted, pszVal, fZero);
+	}
 
 	INT64 GetDefNum(LPCTSTR pszKey) const
 	{
 		return m_BaseDefs.GetKeyNum(pszKey);
 	}
-
 	void SetDefNum(LPCTSTR pszKey, INT64 iVal, bool fZero = true)
 	{
 		m_BaseDefs.SetNum(pszKey, iVal, fZero);
-	}
-
-	void SetDefStr(LPCTSTR pszKey, LPCTSTR pszVal, bool fQuoted = false, bool fZero = true)
-	{
-		m_BaseDefs.SetStr(pszKey, fQuoted, pszVal, fZero);
 	}
 
 	void DeleteDef(LPCTSTR pszKey)
@@ -981,32 +965,33 @@ public:
 	friend class NetworkOutput;
 #endif
 	friend class PacketServerRelay;
+
+private:
+	CClient(const CClient &copy);
+	CClient &operator=(const CClient &other);
 };
 
 class CClientTooltip
 {
 	// Storage for Tooltip data while in trigger on an item
 public:
-	static const char *m_sClassName;
-	DWORD m_clilocid;
-	TCHAR m_args[SCRIPT_MAX_LINE_LEN];
-
-public:
-	explicit CClientTooltip(DWORD iClilocId, LPCTSTR pszArgs = NULL)
+	explicit CClientTooltip(DWORD dwClilocID, LPCTSTR pszArgs = NULL)
 	{
-		m_clilocid = iClilocId;
+		m_clilocid = dwClilocID;
 		if ( pszArgs )
 			strcpylen(m_args, pszArgs, SCRIPT_MAX_LINE_LEN);
 		else
 			m_args[0] = '\0';
 	}
 
-private:
-	CClientTooltip(const CClientTooltip &copy);
-	CClientTooltip &operator=(const CClientTooltip &other);
+	static const char *m_sClassName;
 
 public:
-	void __cdecl FormatArgs(LPCTSTR pszFormat, ...) __printfargs(2,3)
+	DWORD m_clilocid;
+	TCHAR m_args[SCRIPT_MAX_LINE_LEN];
+
+public:
+	void __cdecl FormatArgs(LPCTSTR pszFormat, ...) __printfargs(2, 3)
 	{
 		va_list vargs;
 		va_start(vargs, pszFormat);
@@ -1016,12 +1001,18 @@ public:
 
 		va_end(vargs);
 	}
+
+private:
+	CClientTooltip(const CClientTooltip &copy);
+	CClientTooltip &operator=(const CClientTooltip &other);
 };
 
 class CPartyDef : public CGObListRec, public CScriptObj
 {
 	// List of characters in party
 public:
+	CPartyDef(CChar *pCharInvite, CChar *pCharAccept);
+
 	static const char *m_sClassName;
 	static LPCTSTR const sm_szVerbKeys[];
 	static LPCTSTR const sm_szLoadKeys[];
@@ -1039,20 +1030,18 @@ public:
 	{
 		return m_BaseDefs.GetKeyStr(pszKey, fZero);
 	}
+	void SetDefStr(LPCTSTR pszKey, LPCTSTR pszVal, bool fQuoted = false, bool fZero = true)
+	{
+		m_BaseDefs.SetStr(pszKey, fQuoted, pszVal, fZero);
+	}
 
 	INT64 GetDefNum(LPCTSTR pszKey) const
 	{
 		return m_BaseDefs.GetKeyNum(pszKey);
 	}
-
 	void SetDefNum(LPCTSTR pszKey, INT64 iVal, bool fZero = true)
 	{
 		m_BaseDefs.SetNum(pszKey, iVal, fZero);
-	}
-
-	void SetDefStr(LPCTSTR pszKey, LPCTSTR pszVal, bool fQuoted = false, bool fZero = true)
-	{
-		m_BaseDefs.SetStr(pszKey, fQuoted, pszVal, fZero);
 	}
 
 	void DeleteDef(LPCTSTR pszKey)
@@ -1067,13 +1056,6 @@ private:
 	// List manipulation
 	size_t AttachChar(CChar *pChar);
 	size_t DetachChar(CChar *pChar);
-
-public:
-	CPartyDef(CChar *pCharInvite, CChar *pCharAccept);
-
-private:
-	CPartyDef(const CPartyDef &copy);
-	CPartyDef &operator=(const CPartyDef &other);
 
 public:
 	static bool AcceptEvent(CChar *pCharAccept, CGrayUID uidInviter, bool bForced = false);
@@ -1092,7 +1074,11 @@ public:
 		return (m_Chars.FindChar(pChar) == 0);
 	}
 
-	CGrayUID GetMaster()
+	LPCTSTR GetName() const
+	{
+		return static_cast<LPCTSTR>(m_sName);
+	}
+	CGrayUID GetMaster() const
 	{
 		return m_Chars.GetChar(0);
 	}
@@ -1119,12 +1105,15 @@ public:
 
 	// -------------------------------
 
-	LPCTSTR GetName() const { return static_cast<LPCTSTR>(m_sName); }
 	bool r_GetRef(LPCTSTR &pszKey, CScriptObj *&pRef);
 	bool r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc);
 	bool r_Verb(CScript &s, CTextConsole *pSrc); // Execute command from script
 	bool r_LoadVal(CScript &s);
 	bool r_Load(CScript &s);
+
+private:
+	CPartyDef(const CPartyDef &copy);
+	CPartyDef &operator=(const CPartyDef &other);
 };
 
 #endif	// _INC_CCLIENT_H

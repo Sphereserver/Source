@@ -1,9 +1,7 @@
-// Game server messages. (No login stuff)
-#include "graysvr.h"	// predef header.
+#include "graysvr.h"	// predef header
 #include "../network/send.h"
 
-// Simple string hashing algorithm function
-// Founded by D. J. Bernstein
+// Simple string hashing algorithm function (by D. J. Bernstein)
 // Original code found at: http://www.cse.yorku.ca/~oz/hash.html
 unsigned long HashString(LPCTSTR str, size_t length)
 {
@@ -14,8 +12,8 @@ unsigned long HashString(LPCTSTR str, size_t length)
 	return hash;
 }
 
-/////////////////////////////////////////////////////////////////
-// -CClient stuff.
+///////////////////////////////////////////////////////////
+// CClient
 
 void CClient::resendBuffs()
 {
@@ -39,97 +37,97 @@ void CClient::resendBuffs()
 		addBuff(BI_PARALYZE, 1075827, 1075828, static_cast<WORD>(pStuck->GetTimerAdjusted()));
 	}
 
-	TCHAR NumBuff[7][8];
-	LPCTSTR pNumBuff[7] = { NumBuff[0], NumBuff[1], NumBuff[2], NumBuff[3], NumBuff[4], NumBuff[5], NumBuff[6] };
+	TCHAR szNumBuff[7][8];
+	LPCTSTR pszNumBuff[7] = { szNumBuff[0], szNumBuff[1], szNumBuff[2], szNumBuff[3], szNumBuff[4], szNumBuff[5], szNumBuff[6] };
 
-	WORD iStatEffect = 0;
-	WORD iTimerEffect = 0;
+	WORD wStatEffect = 0;
+	WORD wTimerEffect = 0;
 
 	for ( CItem *pItem = m_pChar->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
 		if ( !pItem->IsType(IT_SPELL) )
 			continue;
 
-		iStatEffect = pItem->m_itSpell.m_spelllevel;
-		iTimerEffect = static_cast<WORD>(maximum(pItem->GetTimerAdjusted(), 0));
+		wStatEffect = pItem->m_itSpell.m_spelllevel;
+		wTimerEffect = static_cast<WORD>(maximum(pItem->GetTimerAdjusted(), 0));
 
 		switch ( pItem->m_itSpell.m_spell )
 		{
 			case SPELL_Night_Sight:
 			{
 				removeBuff(BI_NIGHTSIGHT);
-				addBuff(BI_NIGHTSIGHT, 1075643, 1075644, iTimerEffect);
+				addBuff(BI_NIGHTSIGHT, 1075643, 1075644, wTimerEffect);
 				break;
 			}
 			case SPELL_Clumsy:
 			{
-				ITOA(iStatEffect, NumBuff[0], 10);
+				ITOA(wStatEffect, szNumBuff[0], 10);
 				removeBuff(BI_CLUMSY);
-				addBuff(BI_CLUMSY, 1075831, 1075832, iTimerEffect, pNumBuff, 1);
+				addBuff(BI_CLUMSY, 1075831, 1075832, wTimerEffect, pszNumBuff, 1);
 				break;
 			}
 			case SPELL_Weaken:
 			{
-				ITOA(iStatEffect, NumBuff[0], 10);
+				ITOA(wStatEffect, szNumBuff[0], 10);
 				removeBuff(BI_WEAKEN);
-				addBuff(BI_WEAKEN, 1075837, 1075838, iTimerEffect, pNumBuff, 1);
+				addBuff(BI_WEAKEN, 1075837, 1075838, wTimerEffect, pszNumBuff, 1);
 				break;
 			}
 			case SPELL_Feeblemind:
 			{
-				ITOA(iStatEffect, NumBuff[0], 10);
+				ITOA(wStatEffect, szNumBuff[0], 10);
 				removeBuff(BI_FEEBLEMIND);
-				addBuff(BI_FEEBLEMIND, 1075833, 1075834, iTimerEffect, pNumBuff, 1);
+				addBuff(BI_FEEBLEMIND, 1075833, 1075834, wTimerEffect, pszNumBuff, 1);
 				break;
 			}
 			case SPELL_Curse:
 			{
-				for ( int idx = STAT_STR; idx < STAT_BASE_QTY; ++idx )
-					ITOA(iStatEffect, NumBuff[idx], 10);
-				for ( int idx = 3; idx < 7; ++idx )
-					ITOA(10, NumBuff[idx], 10);
+				for ( int i = STAT_STR; i < STAT_BASE_QTY; ++i )
+					ITOA(wStatEffect, szNumBuff[i], 10);
+				for ( int i = 3; i < 7; ++i )
+					ITOA(10, szNumBuff[i], 10);
 
 				removeBuff(BI_CURSE);
-				addBuff(BI_CURSE, 1075835, 1075836, iTimerEffect, pNumBuff, 7);
+				addBuff(BI_CURSE, 1075835, 1075836, wTimerEffect, pszNumBuff, 7);
 				break;
 			}
 			case SPELL_Mass_Curse:
 			{
-				for ( int idx = STAT_STR; idx < STAT_BASE_QTY; ++idx )
-					ITOA(iStatEffect, NumBuff[idx], 10);
+				for ( int i = STAT_STR; i < STAT_BASE_QTY; ++i )
+					ITOA(wStatEffect, szNumBuff[i], 10);
 
 				removeBuff(BI_MASSCURSE);
-				addBuff(BI_MASSCURSE, 1075839, 1075840, iTimerEffect, pNumBuff, 3);
+				addBuff(BI_MASSCURSE, 1075839, 1075840, wTimerEffect, pszNumBuff, 3);
 				break;
 			}
 			case SPELL_Strength:
 			{
-				ITOA(iStatEffect, NumBuff[0], 10);
+				ITOA(wStatEffect, szNumBuff[0], 10);
 				removeBuff(BI_STRENGTH);
-				addBuff(BI_STRENGTH, 1075845, 1075846, iTimerEffect, pNumBuff, 1);
+				addBuff(BI_STRENGTH, 1075845, 1075846, wTimerEffect, pszNumBuff, 1);
 				break;
 			}
 			case SPELL_Agility:
 			{
-				ITOA(iStatEffect, NumBuff[0], 10);
+				ITOA(wStatEffect, szNumBuff[0], 10);
 				removeBuff(BI_AGILITY);
-				addBuff(BI_AGILITY, 1075841, 1075842, iTimerEffect, pNumBuff, 1);
+				addBuff(BI_AGILITY, 1075841, 1075842, wTimerEffect, pszNumBuff, 1);
 				break;
 			}
 			case SPELL_Cunning:
 			{
-				ITOA(iStatEffect, NumBuff[0], 10);
+				ITOA(wStatEffect, szNumBuff[0], 10);
 				removeBuff(BI_CUNNING);
-				addBuff(BI_CUNNING, 1075843, 1075844, iTimerEffect, pNumBuff, 1);
+				addBuff(BI_CUNNING, 1075843, 1075844, wTimerEffect, pszNumBuff, 1);
 				break;
 			}
 			case SPELL_Bless:
 			{
-				for ( int idx = STAT_STR; idx < STAT_BASE_QTY; ++idx )
-					ITOA(iStatEffect, NumBuff[idx], 10);
+				for ( int i = STAT_STR; i < STAT_BASE_QTY; ++i )
+					ITOA(wStatEffect, szNumBuff[i], 10);
 
 				removeBuff(BI_BLESS);
-				addBuff(BI_BLESS, 1075847, 1075848, iTimerEffect, pNumBuff, STAT_BASE_QTY);
+				addBuff(BI_BLESS, 1075847, 1075848, wTimerEffect, pszNumBuff, STAT_BASE_QTY);
 				break;
 			}
 			case SPELL_Reactive_Armor:
@@ -137,14 +135,14 @@ void CClient::resendBuffs()
 				removeBuff(BI_REACTIVEARMOR);
 				if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 				{
-					ITOA(iStatEffect, NumBuff[0], 10);
-					for ( int idx = 1; idx < 5; ++idx )
-						ITOA(5, NumBuff[idx], 10);
+					ITOA(wStatEffect, szNumBuff[0], 10);
+					for ( int i = 1; i < 5; ++i )
+						ITOA(5, szNumBuff[i], 10);
 
-					addBuff(BI_REACTIVEARMOR, 1075812, 1075813, iTimerEffect, pNumBuff, 5);
+					addBuff(BI_REACTIVEARMOR, 1075812, 1075813, wTimerEffect, pszNumBuff, 5);
 				}
 				else
-					addBuff(BI_REACTIVEARMOR, 1075812, 1070722, iTimerEffect);
+					addBuff(BI_REACTIVEARMOR, 1075812, 1070722, wTimerEffect);
 				break;
 			}
 			case SPELL_Protection:
@@ -161,30 +159,30 @@ void CClient::resendBuffs()
 				removeBuff(BuffIcon);
 				if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 				{
-					ITOA(-pItem->m_itSpell.m_PolyStr, NumBuff[0], 10);
-					ITOA(-pItem->m_itSpell.m_PolyDex / 10, NumBuff[1], 10);
-					addBuff(BuffIcon, BuffCliloc, 1075815, iTimerEffect, pNumBuff, 2);
+					ITOA(-pItem->m_itSpell.m_PolyStr, szNumBuff[0], 10);
+					ITOA(-pItem->m_itSpell.m_PolyDex / 10, szNumBuff[1], 10);
+					addBuff(BuffIcon, BuffCliloc, 1075815, wTimerEffect, pszNumBuff, 2);
 				}
 				else
-					addBuff(BuffIcon, BuffCliloc, 1070722, iTimerEffect);
+					addBuff(BuffIcon, BuffCliloc, 1070722, wTimerEffect);
 				break;
 			}
 			case SPELL_Poison:
 			{
 				removeBuff(BI_POISON);
-				addBuff(BI_POISON, 1017383, 1070722, iTimerEffect);
+				addBuff(BI_POISON, 1017383, 1070722, wTimerEffect);
 				break;
 			}
 			case SPELL_Incognito:
 			{
 				removeBuff(BI_INCOGNITO);
-				addBuff(BI_INCOGNITO, 1075819, 1075820, iTimerEffect);
+				addBuff(BI_INCOGNITO, 1075819, 1075820, wTimerEffect);
 				break;
 			}
 			case SPELL_Paralyze:
 			{
 				removeBuff(BI_PARALYZE);
-				addBuff(BI_PARALYZE, 1075827, 1075828, iTimerEffect);
+				addBuff(BI_PARALYZE, 1075827, 1075828, wTimerEffect);
 				break;
 			}
 			case SPELL_Magic_Reflect:
@@ -192,20 +190,20 @@ void CClient::resendBuffs()
 				removeBuff(BI_MAGICREFLECTION);
 				if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 				{
-					ITOA(-iStatEffect, NumBuff[0], 10);
-					for ( int idx = 1; idx < 5; ++idx )
-						ITOA(10, NumBuff[idx], 10);
+					ITOA(-wStatEffect, szNumBuff[0], 10);
+					for ( int i = 1; i < 5; ++i )
+						ITOA(10, szNumBuff[i], 10);
 
-					addBuff(BI_MAGICREFLECTION, 1075817, 1075818, iTimerEffect, pNumBuff, 5);
+					addBuff(BI_MAGICREFLECTION, 1075817, 1075818, wTimerEffect, pszNumBuff, 5);
 				}
 				else
-					addBuff(BI_MAGICREFLECTION, 1075817, 1070722, iTimerEffect);
+					addBuff(BI_MAGICREFLECTION, 1075817, 1070722, wTimerEffect);
 				break;
 			}
 			case SPELL_Invis:
 			{
 				removeBuff(BI_INVISIBILITY);
-				addBuff(BI_INVISIBILITY, 1075825, 1075826, iTimerEffect);
+				addBuff(BI_INVISIBILITY, 1075825, 1075826, wTimerEffect);
 				break;
 			}
 			default:
@@ -215,46 +213,45 @@ void CClient::resendBuffs()
 	}
 }
 
-void CClient::addBuff(const BUFF_ICONS IconId, const DWORD ClilocOne, const DWORD ClilocTwo, const WORD Time, LPCTSTR *pszArgs, size_t iArgCount)
+void CClient::addBuff(const BUFF_ICONS IconID, const DWORD dwClilocOne, const DWORD dwClilocTwo, const WORD wTime, LPCTSTR *pszArgs, size_t iArgCount)
 {
 	ADDTOCALLSTACK("CClient::addBuff");
 	if ( !IsSetOF(OF_Buffs) || !PacketBuff::CanSendTo(m_NetState) )
 		return;
 
-	new PacketBuff(this, IconId, ClilocOne, ClilocTwo, Time, pszArgs, iArgCount);
+	new PacketBuff(this, IconID, dwClilocOne, dwClilocTwo, wTime, pszArgs, iArgCount);
 }
 
-void CClient::removeBuff(const BUFF_ICONS IconId)
+void CClient::removeBuff(const BUFF_ICONS IconID)
 {
 	ADDTOCALLSTACK("CClient::removeBuff");
 	if ( !IsSetOF(OF_Buffs) || !PacketBuff::CanSendTo(m_NetState) )
 		return;
 
-	new PacketBuff(this, IconId);
+	new PacketBuff(this, IconID);
 }
 
-
-bool CClient::addDeleteErr(BYTE code, DWORD iSlot)
+bool CClient::addDeleteErr(BYTE bCode, DWORD dwSlot)
 {
 	ADDTOCALLSTACK("CClient::addDeleteErr");
-	if ( code == PacketDeleteError::Success )
+	if ( bCode == PacketDeleteError::Success )
 		return true;
 
-	CChar *pChar = m_tmSetupCharList[iSlot].CharFind();
-	g_Log.EventWarn("%lx:Account '%s' got bad character delete attempt (char='%s', code='%d')\n", GetSocketID(), m_pAccount->GetName(), pChar ? pChar->GetName() : "<NA>", code);
-	new PacketDeleteError(this, static_cast<PacketDeleteError::Reason>(code));
+	CChar *pChar = m_tmSetupCharList[dwSlot].CharFind();
+	g_Log.EventWarn("%lx:Account '%s' got bad character delete attempt (char='%s', code='%d')\n", GetSocketID(), m_pAccount->GetName(), pChar ? pChar->GetName() : "<NA>", bCode);
+	new PacketDeleteError(this, static_cast<PacketDeleteError::Reason>(bCode));
 	return false;
 }
 
-void CClient::addTime(bool bCurrent)
+void CClient::addTime(bool fCurrent)
 {
 	ADDTOCALLSTACK("CClient::addTime");
 	// Send time. (real or game time ??? why ?)
 
-	if ( bCurrent )
+	if ( fCurrent )
 	{
-		UINT64 lCurrentTime = CServTime::GetCurrentTime().GetTimeRaw();
-		new PacketGameTime(this, static_cast<BYTE>((lCurrentTime / (60 * 60 * TICK_PER_SEC)) % 24), static_cast<BYTE>((lCurrentTime / (60 * TICK_PER_SEC)) % 60), static_cast<BYTE>((lCurrentTime / TICK_PER_SEC) % 60));
+		UINT64 ulCurrentTime = CServTime::GetCurrentTime().GetTimeRaw();
+		new PacketGameTime(this, static_cast<BYTE>((ulCurrentTime / (60 * 60 * TICK_PER_SEC)) % 24), static_cast<BYTE>((ulCurrentTime / (60 * TICK_PER_SEC)) % 60), static_cast<BYTE>((ulCurrentTime / TICK_PER_SEC) % 60));
 	}
 	else
 		new PacketGameTime(this);
@@ -276,10 +273,10 @@ void CClient::closeContainer(const CObjBase *pObj)
 	new PacketCloseContainer(this, pObj);
 }
 
-void CClient::closeUIWindow(const CChar *character, DWORD command)
+void CClient::closeUIWindow(const CChar *pChar, DWORD dwCmd)
 {
 	ADDTOCALLSTACK("CClient::closeUIWindow");
-	new PacketCloseUIWindow(this, character, command);
+	new PacketCloseUIWindow(this, pChar, dwCmd);
 }
 
 void CClient::addObjectRemove(CGrayUID uid)
@@ -424,8 +421,6 @@ void CClient::addContents(const CItemContainer *pContainer, bool fCorpseEquip, b
 		new PacketItemContents(this, pContainer, fShop, fCorpseFilter);
 }
 
-
-
 void CClient::addOpenGump(const CObjBase *pContainer, GUMP_TYPE gump)
 {
 	ADDTOCALLSTACK("CClient::addOpenGump");
@@ -517,18 +512,18 @@ void CClient::addLight()
 	// NOTE: This could just be a flash of light.
 
 	ASSERT(m_pChar);
-	BYTE iLight = UCHAR_MAX;
+	BYTE bLight = UCHAR_MAX;
 
 	if ( m_pChar->m_LocalLight )
-		iLight = m_pChar->m_LocalLight;
-	if ( iLight == UCHAR_MAX )
-		iLight = m_pChar->GetLightLevel();
+		bLight = m_pChar->m_LocalLight;
+	if ( bLight == UCHAR_MAX )
+		bLight = m_pChar->GetLightLevel();
 
-	if ( m_Env.m_Light == iLight )
+	if ( m_Env.m_Light == bLight )
 		return;
 
-	m_Env.m_Light = iLight;
-	new PacketGlobalLight(this, iLight);
+	m_Env.m_Light = bLight;
+	new PacketGlobalLight(this, bLight);
 }
 
 void CClient::addArrowQuest(WORD x, WORD y, DWORD id)
@@ -566,7 +561,7 @@ bool CClient::addKick(CTextConsole *pSrc, bool fBlock)
 	return true;
 }
 
-void CClient::addSound(SOUND_TYPE id, const CObjBaseTemplate *pBase, BYTE iRepeat)
+void CClient::addSound(SOUND_TYPE id, const CObjBaseTemplate *pBase, BYTE bRepeat)
 {
 	ADDTOCALLSTACK("CClient::addSound");
 	if ( !g_Cfg.m_fGenericSounds )
@@ -581,10 +576,10 @@ void CClient::addSound(SOUND_TYPE id, const CObjBaseTemplate *pBase, BYTE iRepea
 	else
 		pt = m_pChar->GetTopPoint();
 
-	if ( (id > 0) && !iRepeat && !pBase )
+	if ( (id > 0) && !bRepeat && !pBase )
 		return;
 
-	new PacketPlaySound(this, id, iRepeat, 0, pt);
+	new PacketPlaySound(this, id, bRepeat, 0, pt);
 }
 
 void CClient::addBarkUNICODE(const NCHAR *pwText, const CObjBaseTemplate *pSrc, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, CLanguageID lang)
@@ -609,10 +604,10 @@ void CClient::addBarkUNICODE(const NCHAR *pwText, const CObjBaseTemplate *pSrc, 
 	new PacketMessageUNICODE(this, pwText, pSrc, wHue, mode, font, lang);
 }
 
-void CClient::addBarkLocalized(DWORD iClilocId, const CObjBaseTemplate *pSrc, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, LPCTSTR pszArgs)
+void CClient::addBarkLocalized(DWORD dwClilocID, const CObjBaseTemplate *pSrc, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, LPCTSTR pszArgs)
 {
 	ADDTOCALLSTACK("CClient::addBarkLocalized");
-	if ( !IsConnectTypePacket() || (iClilocId <= 0) )
+	if ( !IsConnectTypePacket() || (dwClilocID <= 0) )
 		return;
 
 	if ( mode == TALKMODE_BROADCAST )
@@ -621,13 +616,13 @@ void CClient::addBarkLocalized(DWORD iClilocId, const CObjBaseTemplate *pSrc, HU
 		pSrc = NULL;
 	}
 
-	new PacketMessageLocalised(this, iClilocId, pSrc, wHue, mode, font, pszArgs);
+	new PacketMessageLocalised(this, dwClilocID, pSrc, wHue, mode, font, pszArgs);
 }
 
-void CClient::addBarkLocalizedEx(DWORD iClilocId, const CObjBaseTemplate *pSrc, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, AFFIX_TYPE affix, LPCTSTR pszAffix, LPCTSTR pszArgs)
+void CClient::addBarkLocalizedEx(DWORD dwClilocID, const CObjBaseTemplate *pSrc, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, AFFIX_TYPE affix, LPCTSTR pszAffix, LPCTSTR pszArgs)
 {
 	ADDTOCALLSTACK("CClient::addBarkLocalizedEx");
-	if ( !IsConnectTypePacket() || (iClilocId <= 0) )
+	if ( !IsConnectTypePacket() || (dwClilocID <= 0) )
 		return;
 
 	if ( mode == TALKMODE_BROADCAST )
@@ -636,10 +631,10 @@ void CClient::addBarkLocalizedEx(DWORD iClilocId, const CObjBaseTemplate *pSrc, 
 		pSrc = NULL;
 	}
 
-	new PacketMessageLocalisedEx(this, iClilocId, pSrc, wHue, mode, font, affix, pszAffix, pszArgs);
+	new PacketMessageLocalisedEx(this, dwClilocID, pSrc, wHue, mode, font, affix, pszAffix, pszArgs);
 }
 
-void CClient::addBarkParse(LPCTSTR pszText, const CObjBaseTemplate *pSrc, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, bool bUnicode, LPCTSTR pszName)
+void CClient::addBarkParse(LPCTSTR pszText, const CObjBaseTemplate *pSrc, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, bool fUnicode, LPCTSTR pszName)
 {
 	ADDTOCALLSTACK("CClient::addBarkParse");
 	if ( !pszText )
@@ -698,11 +693,11 @@ void CClient::addBarkParse(LPCTSTR pszText, const CObjBaseTemplate *pSrc, HUE_TY
 			break;
 	}
 
-	WORD Args[] = { static_cast<WORD>(wHue), static_cast<WORD>(font), static_cast<WORD>(bUnicode) };
+	WORD wArgs[] = { static_cast<WORD>(wHue), static_cast<WORD>(font), static_cast<WORD>(fUnicode) };
 
 	if ( *pszText == '@' )
 	{
-		pszText++;
+		++pszText;
 		if ( *pszText == '@' )	// @@ = just a @ symbol
 			goto bark_default;
 
@@ -716,67 +711,66 @@ void CClient::addBarkParse(LPCTSTR pszText, const CObjBaseTemplate *pSrc, HUE_TY
 		{
 			if ( *s == ',' )	// default value, skip it
 			{
-				i++;
-				s++;
+				++i;
+				++s;
 				continue;
 			}
-			Args[i] = static_cast<WORD>(Exp_GetVal(s));
-			i++;
+			wArgs[i] = static_cast<WORD>(Exp_GetLLVal(s));
+			++i;
 
 			if ( *s == ',' )
-				s++;
+				++s;
 			else
 				break;	// no more args here!
 		}
-		pszText++;
-		if ( Args[1] > FONT_QTY )
-			Args[1] = static_cast<WORD>(FONT_NORMAL);
+		++pszText;
+		if ( wArgs[1] > FONT_QTY )
+			wArgs[1] = static_cast<WORD>(FONT_NORMAL);
 	}
 
-	if ( Args[0] == HUE_TEXT_DEF )
-		Args[0] = static_cast<WORD>(defaultHue);
-	if ( Args[1] == FONT_NORMAL )
-		Args[1] = static_cast<WORD>(defaultFont);
-	if ( Args[2] == 0 )
-		Args[2] = static_cast<WORD>(defaultUnicode);
+	if ( wArgs[0] == HUE_TEXT_DEF )
+		wArgs[0] = static_cast<WORD>(defaultHue);
+	if ( wArgs[1] == FONT_NORMAL )
+		wArgs[1] = static_cast<WORD>(defaultFont);
+	if ( wArgs[2] == 0 )
+		wArgs[2] = static_cast<WORD>(defaultUnicode);
 
 	if ( m_BarkBuffer.IsEmpty() )
 		m_BarkBuffer.Format("%s%s", pszName, pszText);
 
-	switch ( Args[2] )
+	switch ( wArgs[2] )
 	{
 		case 3:		// extended localized message (with affixed ASCII text)
 		{
 			TCHAR *ppArgs[256];
-			size_t iQty = Str_ParseCmds(const_cast<TCHAR *>(m_BarkBuffer.GetPtr()), ppArgs, COUNTOF(ppArgs), ",");
-			DWORD iClilocId = Exp_GetVal(ppArgs[0]);
-			int iAffixType = Exp_GetVal(ppArgs[1]);
-			CGString CArgs;
-			for ( size_t i = 3; i < iQty; i++ )
+			size_t iArgQty = Str_ParseCmds(const_cast<TCHAR *>(m_BarkBuffer.GetPtr()), ppArgs, COUNTOF(ppArgs), ",");
+
+			CGString sVal;
+			for ( size_t i = 3; i < iArgQty; ++i )
 			{
-				if ( CArgs.GetLength() )
-					CArgs += "\t";
-				CArgs += !strcmp(ppArgs[i], "NULL") ? " " : ppArgs[i];
+				if ( sVal.GetLength() )
+					sVal += "\t";
+				sVal += !strcmp(ppArgs[i], "NULL") ? " " : ppArgs[i];
 			}
 
-			addBarkLocalizedEx(iClilocId, pSrc, static_cast<HUE_TYPE>(Args[0]), mode, static_cast<FONT_TYPE>(Args[1]), static_cast<AFFIX_TYPE>(iAffixType), ppArgs[2], CArgs.GetPtr());
+			addBarkLocalizedEx(static_cast<DWORD>(Exp_GetLLVal(ppArgs[0])), pSrc, static_cast<HUE_TYPE>(wArgs[0]), mode, static_cast<FONT_TYPE>(Exp_GetLLVal(ppArgs[1])), static_cast<AFFIX_TYPE>(Exp_GetLLVal(ppArgs[1])), ppArgs[2], sVal.GetPtr());
 			break;
 		}
 
 		case 2:		// localized
 		{
 			TCHAR *ppArgs[256];
-			size_t iQty = Str_ParseCmds(const_cast<TCHAR *>(m_BarkBuffer.GetPtr()), ppArgs, COUNTOF(ppArgs), ",");
-			DWORD iClilocId = Exp_GetVal(ppArgs[0]);
-			CGString CArgs;
-			for ( size_t i = 1; i < iQty; i++ )
+			size_t iArgQty = Str_ParseCmds(const_cast<TCHAR *>(m_BarkBuffer.GetPtr()), ppArgs, COUNTOF(ppArgs), ",");
+
+			CGString sVal;
+			for ( size_t i = 1; i < iArgQty; ++i )
 			{
-				if ( CArgs.GetLength() )
-					CArgs += "\t";
-				CArgs += !strcmp(ppArgs[i], "NULL") ? " " : ppArgs[i];
+				if ( sVal.GetLength() )
+					sVal += "\t";
+				sVal += !strcmp(ppArgs[i], "NULL") ? " " : ppArgs[i];
 			}
 
-			addBarkLocalized(iClilocId, pSrc, static_cast<HUE_TYPE>(Args[0]), mode, static_cast<FONT_TYPE>(Args[1]), CArgs.GetPtr());
+			addBarkLocalized(static_cast<DWORD>(Exp_GetLLVal(ppArgs[0])), pSrc, static_cast<HUE_TYPE>(wArgs[0]), mode, static_cast<FONT_TYPE>(wArgs[1]), sVal.GetPtr());
 			break;
 		}
 
@@ -784,7 +778,7 @@ void CClient::addBarkParse(LPCTSTR pszText, const CObjBaseTemplate *pSrc, HUE_TY
 		{
 			NCHAR szBuffer[MAX_TALK_BUFFER];
 			CvtSystemToNUNICODE(szBuffer, COUNTOF(szBuffer), m_BarkBuffer.GetPtr(), -1);
-			addBarkUNICODE(szBuffer, pSrc, static_cast<HUE_TYPE>(Args[0]), mode, static_cast<FONT_TYPE>(Args[1]), 0);
+			addBarkUNICODE(szBuffer, pSrc, static_cast<HUE_TYPE>(wArgs[0]), mode, static_cast<FONT_TYPE>(wArgs[1]), 0);
 			break;
 		}
 
@@ -795,7 +789,7 @@ void CClient::addBarkParse(LPCTSTR pszText, const CObjBaseTemplate *pSrc, HUE_TY
 			if ( m_BarkBuffer.IsEmpty() )
 				m_BarkBuffer.Format("%s%s", pszName, pszText);
 
-			addBark(m_BarkBuffer.GetPtr(), pSrc, static_cast<HUE_TYPE>(Args[0]), mode, static_cast<FONT_TYPE>(Args[1]));
+			addBark(m_BarkBuffer.GetPtr(), pSrc, static_cast<HUE_TYPE>(wArgs[0]), mode, static_cast<FONT_TYPE>(wArgs[1]));
 			break;
 		}
 	}
@@ -803,8 +797,6 @@ void CClient::addBarkParse(LPCTSTR pszText, const CObjBaseTemplate *pSrc, HUE_TY
 	// Empty the buffer
 	m_BarkBuffer.Empty();
 }
-
-
 
 void CClient::addBark(LPCTSTR pszText, const CObjBaseTemplate *pSrc, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font)
 {
@@ -845,7 +837,7 @@ void CClient::addObjMessage(LPCTSTR pszMsg, const CObjBaseTemplate *pSrc, HUE_TY
 	addBarkParse(pszMsg, pSrc, wHue, mode);
 }
 
-void CClient::addEffect(EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate *pDst, const CObjBaseTemplate *pSrc, BYTE bSpeedSeconds, BYTE bLoop, bool fExplode, DWORD color, DWORD render, WORD effectid, WORD explodeid, WORD explodesound, DWORD effectuid, BYTE type)
+void CClient::addEffect(EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate *pDst, const CObjBaseTemplate *pSrc, BYTE bSpeedSeconds, BYTE bLoop, bool fExplode, DWORD dwColor, DWORD dwRender, WORD wEffectID, WORD wExplodeID, WORD wExplodeSound, DWORD dwEffectUID, BYTE bType)
 {
 	ADDTOCALLSTACK("CClient::addEffect");
 	// bSpeedSeconds = seconds (0=very fast, 7=slow)
@@ -856,14 +848,13 @@ void CClient::addEffect(EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTempla
 	if ( !pSrc && (motion == EFFECT_BOLT) )		// bolt effect requires an source
 		return;
 
-	if ( effectid || explodeid )
-		new PacketEffect(this, motion, id, pDst, pSrc, bSpeedSeconds, bLoop, fExplode, color, render, effectid, explodeid, explodesound, effectuid, type);
-	else if ( color || render )
-		new PacketEffect(this, motion, id, pDst, pSrc, bSpeedSeconds, bLoop, fExplode, color, render);
+	if ( wEffectID || wExplodeID )
+		new PacketEffect(this, motion, id, pDst, pSrc, bSpeedSeconds, bLoop, fExplode, dwColor, dwRender, wEffectID, wExplodeID, wExplodeSound, dwEffectUID, bType);
+	else if ( dwColor || dwRender )
+		new PacketEffect(this, motion, id, pDst, pSrc, bSpeedSeconds, bLoop, fExplode, dwColor, dwRender);
 	else
 		new PacketEffect(this, motion, id, pDst, pSrc, bSpeedSeconds, bLoop, fExplode);
 }
-
 
 void CClient::GetAdjustedItemID(const CChar *pChar, const CItem *pItem, ITEMID_TYPE &id, HUE_TYPE &wHue) const
 {
@@ -887,9 +878,9 @@ void CClient::GetAdjustedItemID(const CChar *pChar, const CItem *pItem, ITEMID_T
 			// Display the mount item associated with the RESDISPDNID of the mount's chardef
 			if ( idHorse != pItem->m_itFigurine.m_ID )
 			{
-				TCHAR *sMountDefname = Str_GetTemp();
-				sprintf(sMountDefname, "mount_0x%x", idHorse);
-				ITEMID_TYPE idMountItem = static_cast<ITEMID_TYPE>(g_Exp.m_VarDefs.GetKeyNum(sMountDefname));
+				TCHAR *pszMountDefname = Str_GetTemp();
+				sprintf(pszMountDefname, "mount_0x%x", idHorse);
+				ITEMID_TYPE idMountItem = static_cast<ITEMID_TYPE>(g_Exp.m_VarDefs.GetKeyNum(pszMountDefname));
 				if ( idMountItem > ITEMID_NOTHING )
 				{
 					id = idMountItem;
@@ -991,12 +982,12 @@ void CClient::addCharMove(const CChar *pChar)
 	addCharMove(pChar, pChar->GetDirFlag());
 }
 
-void CClient::addCharMove(const CChar *pChar, BYTE bCharDir)
+void CClient::addCharMove(const CChar *pChar, BYTE bDir)
 {
 	ADDTOCALLSTACK("CClient::addCharMove");
 	// This char has just moved on screen, or changed in a subtle way like "hidden"
 	// NOTE: If i have been turned this will NOT update myself
-	new PacketCharacterMove(this, pChar, bCharDir);
+	new PacketCharacterMove(this, pChar, bDir);
 }
 
 void CClient::addChar(const CChar *pChar)
@@ -1111,8 +1102,7 @@ void CClient::addItemName(const CItem *pItem)
 		Args.m_VarsLocal.SetStrNew("ClickMsgText", &szName[0]);
 		Args.m_VarsLocal.SetNumNew("ClickMsgHue", static_cast<INT64>(wHue));
 
-		TRIGRET_TYPE ret = dynamic_cast<CObjBase *>(const_cast<CItem *>(pItem))->OnTrigger("@AfterClick", m_pChar, &Args);
-		if ( ret == TRIGRET_RET_TRUE )
+		if ( dynamic_cast<CObjBase *>(const_cast<CItem *>(pItem))->OnTrigger("@AfterClick", m_pChar, &Args) == TRIGRET_RET_TRUE )
 			return;
 
 		LPCTSTR pszNewStr = Args.m_VarsLocal.GetKeyStr("ClickMsgText");
@@ -1133,30 +1123,30 @@ void CClient::addCharName(const CChar *pChar)
 
 	HUE_TYPE wHue = pChar->Noto_GetHue(m_pChar);
 
-	TCHAR *pszTemp = Str_GetTemp();
+	TCHAR *pszName = Str_GetTemp();
 	LPCTSTR pszPrefix = pChar->GetKeyStr("NAME.PREFIX");
 	if ( !*pszPrefix )
 		pszPrefix = pChar->Noto_GetFameTitle();
 
-	strcpy(pszTemp, pszPrefix);
-	strcat(pszTemp, pChar->GetName());
-	strcat(pszTemp, pChar->GetKeyStr("NAME.SUFFIX"));
+	strcpy(pszName, pszPrefix);
+	strcat(pszName, pChar->GetName());
+	strcat(pszName, pChar->GetKeyStr("NAME.SUFFIX"));
 
 	LPCTSTR pszAbbrev = pChar->Guild_AbbrevBracket(MEMORY_TOWN);
 	if ( pszAbbrev )
-		strcat(pszTemp, pszAbbrev);
+		strcat(pszName, pszAbbrev);
 
 	pszAbbrev = pChar->Guild_AbbrevBracket(MEMORY_GUILD);
 	if ( pszAbbrev )
-		strcat(pszTemp, pszAbbrev);
+		strcat(pszName, pszAbbrev);
 
 	if ( pChar->m_pNPC && g_Cfg.m_fVendorTradeTitle && (pChar->GetNPCBrain() == NPCBRAIN_HUMAN) )
 	{
 		LPCTSTR pszTitle = pChar->GetTradeTitle();
 		if ( *pszTitle )
 		{
-			strcat(pszTemp, " ");
-			strcat(pszTemp, pszTitle);
+			strcat(pszName, " ");
+			strcat(pszName, pszTitle);
 		}
 	}
 
@@ -1167,68 +1157,67 @@ void CClient::addCharName(const CChar *pChar)
 		if ( pChar->m_pNPC )
 		{
 			if ( pChar->IsPlayableCharacter() )
-				strcat(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_NPC));
+				strcat(pszName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_NPC));
 			if ( pChar->IsStatFlag(STATF_Conjured) )
-				strcat(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_SUMMONED));
+				strcat(pszName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_SUMMONED));
 			else if ( pChar->IsStatFlag(STATF_Pet) )
-				strcat(pszTemp, pChar->m_pNPC->m_bonded ? g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_BONDED) : g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_TAME));
+				strcat(pszName, pChar->m_pNPC->m_bonded ? g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_BONDED) : g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_TAME));
 		}
 		if ( pChar->IsStatFlag(STATF_INVUL) && !pChar->IsStatFlag(STATF_Incognito) && !pChar->IsPriv(PRIV_PRIV_NOSHOW) )
-			strcat(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_INVUL));
+			strcat(pszName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_INVUL));
 		if ( pChar->IsStatFlag(STATF_Stone) )
-			strcat(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_STONE));
+			strcat(pszName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_STONE));
 		if ( pChar->IsStatFlag(STATF_Freeze) )
-			strcat(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_FROZEN));
+			strcat(pszName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_FROZEN));
 		if ( pChar->IsStatFlag(STATF_Insubstantial|STATF_Invisible|STATF_Hidden) )
-			strcat(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_HIDDEN));
+			strcat(pszName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_HIDDEN));
 		if ( pChar->IsStatFlag(STATF_Sleeping) )
-			strcat(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_SLEEPING));
+			strcat(pszName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_SLEEPING));
 		if ( pChar->IsStatFlag(STATF_Hallucinating) )
-			strcat(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_HALLU));
+			strcat(pszName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_HALLU));
 
 		if ( fAllShow )
 		{
 			if ( pChar->IsStatFlag(STATF_Spawned) )
-				strcat(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_SPAWN));
+				strcat(pszName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_SPAWN));
 			if ( IsPriv(PRIV_DEBUG) )
-				sprintf(pszTemp + strlen(pszTemp), " [0%lx]", static_cast<DWORD>(pChar->GetUID()));
+				sprintf(pszName + strlen(pszName), " [0%lx]", static_cast<DWORD>(pChar->GetUID()));
 		}
 	}
 	if ( !fAllShow && (pChar->Skill_GetActive() == NPCACT_Napping) )
-		strcat(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_AFK));
+		strcat(pszName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_AFK));
 	if ( pChar->GetPrivLevel() <= PLEVEL_Guest )
-		strcat(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_GUEST));
+		strcat(pszName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_GUEST));
 	if ( pChar->IsPriv(PRIV_JAILED) )
-		strcat(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_JAILED));
+		strcat(pszName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_JAILED));
 	if ( pChar->IsDisconnected() )
-		strcat(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_LOGOUT));
+		strcat(pszName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_LOGOUT));
 	if ( (fAllShow || (pChar == m_pChar)) && pChar->IsStatFlag(STATF_Criminal) )
-		strcat(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_CRIMINAL));
+		strcat(pszName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_CRIMINAL));
 	if ( fAllShow || (IsPriv(PRIV_GM) && (g_Cfg.m_wDebugFlags & DEBUGF_NPC_EMOTE)) )
 	{
-		strcat(pszTemp, " [");
-		strcat(pszTemp, pChar->Skill_GetName());
-		strcat(pszTemp, "]");
+		strcat(pszName, " [");
+		strcat(pszName, pChar->Skill_GetName());
+		strcat(pszName, "]");
 	}
 
 	if ( IsTrigUsed(TRIGGER_AFTERCLICK) )
 	{
 		CScriptTriggerArgs Args(this);
-		Args.m_VarsLocal.SetStrNew("ClickMsgText", pszTemp);
+		Args.m_VarsLocal.SetStrNew("ClickMsgText", pszName);
 		Args.m_VarsLocal.SetNumNew("ClickMsgHue", static_cast<INT64>(wHue));
 
-		TRIGRET_TYPE ret = dynamic_cast<CObjBase *>(const_cast<CChar *>(pChar))->OnTrigger("@AfterClick", m_pChar, &Args);
-		if ( ret == TRIGRET_RET_TRUE )
+		if ( dynamic_cast<CObjBase *>(const_cast<CChar *>(pChar))->OnTrigger("@AfterClick", m_pChar, &Args) == TRIGRET_RET_TRUE )
 			return;
 
 		LPCTSTR pszNewStr = Args.m_VarsLocal.GetKeyStr("ClickMsgText");
 		if ( pszNewStr )
-			strcpy(pszTemp, pszNewStr);
+			strcpy(pszName, pszNewStr);
 
 		wHue = static_cast<HUE_TYPE>(Args.m_VarsLocal.GetKeyNum("ClickMsgHue"));
 	}
 
-	addObjMessage(pszTemp, pChar, wHue, TALKMODE_ITEM);
+	addObjMessage(pszName, pChar, wHue, TALKMODE_ITEM);
 }
 
 void CClient::addPlayerStart(CChar *pChar)
@@ -1296,7 +1285,7 @@ bool CClient::addBookOpen(CItem *pBook)
 	if ( !pBook )
 		return false;
 
-	WORD iPages = 0;
+	WORD wPages = 0;
 
 	if ( !pBook->IsBookSystem() )
 	{
@@ -1306,7 +1295,7 @@ bool CClient::addBookOpen(CItem *pBook)
 			return false;
 
 		if ( pMsgItem->IsBookWritable() )
-			iPages = pMsgItem->GetPageCount();
+			wPages = pMsgItem->GetPageCount();
 	}
 
 	if ( PacketDisplayBookNew::CanSendTo(m_NetState) )
@@ -1314,23 +1303,23 @@ bool CClient::addBookOpen(CItem *pBook)
 	else
 		new PacketDisplayBook(this, pBook);
 
-	if ( iPages > 0 )
-		addBookPage(pBook, 1, iPages);
+	if ( wPages > 0 )
+		addBookPage(pBook, 1, wPages);
 
 	return true;
 }
 
-void CClient::addBookPage(const CItem *pBook, WORD iPage, WORD iCount)
+void CClient::addBookPage(const CItem *pBook, WORD wPage, WORD wCount)
 {
 	ADDTOCALLSTACK("CClient::addBookPage");
 	// ARGS:
-	//  iPage = 1 based page.
-	if ( iPage <= 0 )
+	//  wPage = 1 based page
+	if ( wPage <= 0 )
 		return;
-	if ( iCount < 1 )
-		iCount = 1;
+	if ( wCount < 1 )
+		wCount = 1;
 
-	new PacketBookPageContent(this, pBook, iPage, iCount);
+	new PacketBookPageContent(this, pBook, wPage, wCount);
 }
 
 BYTE CClient::Setup_FillCharList(Packet *pPacket)
@@ -1345,7 +1334,7 @@ BYTE CClient::Setup_FillCharList(Packet *pPacket)
 	if ( iQty > iMax )
 		iQty = iMax;
 
-	for ( size_t i = 0; i < iQty; i++ )
+	for ( size_t i = 0; i < iQty; ++i )
 	{
 		CGrayUID uid = m_pAccount->m_Chars.GetChar(i);
 		CChar *pChar = uid.CharFind();
@@ -1357,14 +1346,14 @@ BYTE CClient::Setup_FillCharList(Packet *pPacket)
 		m_tmSetupCharList[iCount] = uid;
 		pPacket->writeStringFixedASCII(pChar->GetName(), MAX_NAME_SIZE);
 		pPacket->writeStringFixedASCII("", MAX_NAME_SIZE);
-		iCount++;
+		++iCount;
 	}
 
 	size_t iClientMin = 5;
 	if ( m_NetState->isClientVersion(MINCLIVER_PADCHARLIST) || !m_NetState->getCryptVersion() )
 		iClientMin = maximum(iQty, 5);
 
-	for ( ; iCount < iClientMin; iCount++ )
+	for ( ; iCount < iClientMin; ++iCount )
 	{
 		pPacket->writeStringFixedASCII("", MAX_NAME_SIZE);
 		pPacket->writeStringFixedASCII("", MAX_NAME_SIZE);
@@ -1381,7 +1370,7 @@ void CClient::SetTargMode(CLIMODE_TYPE targmode, LPCTSTR pszPrompt, int iTimeout
 	if ( !m_pChar )
 		return;
 
-	bool bSuppressCancelMessage = false;
+	bool fSuppressCancelMessage = false;
 
 	switch ( GetTargMode() )
 	{
@@ -1392,7 +1381,7 @@ void CClient::SetTargMode(CLIMODE_TYPE targmode, LPCTSTR pszPrompt, int iTimeout
 				CScriptTriggerArgs Args;
 				Args.m_s1 = m_Targ_Text;
 				if ( m_pChar->OnTrigger(CTRIG_Targon_Cancel, m_pChar, &Args) == TRIGRET_RET_TRUE )
-					bSuppressCancelMessage = true;
+					fSuppressCancelMessage = true;
 			}
 			break;
 		}
@@ -1402,7 +1391,7 @@ void CClient::SetTargMode(CLIMODE_TYPE targmode, LPCTSTR pszPrompt, int iTimeout
 			if ( pItemUse && (IsTrigUsed(TRIGGER_TARGON_CANCEL) || IsTrigUsed(TRIGGER_ITEMTARGON_CANCEL)) )
 			{
 				if ( pItemUse->OnTrigger(ITRIG_TARGON_CANCEL, m_pChar) == TRIGRET_RET_TRUE )
-					bSuppressCancelMessage = true;
+					fSuppressCancelMessage = true;
 			}
 			break;
 		}
@@ -1417,7 +1406,7 @@ void CClient::SetTargMode(CLIMODE_TYPE targmode, LPCTSTR pszPrompt, int iTimeout
 				{
 					if ( m_pChar->OnTrigger(CTRIG_SpellTargetCancel, this, &Args) == TRIGRET_RET_TRUE )
 					{
-						bSuppressCancelMessage = true;
+						fSuppressCancelMessage = true;
 						break;
 					}
 				}
@@ -1425,7 +1414,7 @@ void CClient::SetTargMode(CLIMODE_TYPE targmode, LPCTSTR pszPrompt, int iTimeout
 				if ( IsTrigUsed(TRIGGER_TARGETCANCEL) )
 				{
 					if ( m_pChar->Spell_OnTrigger(m_tmSkillMagery.m_Spell, SPTRIG_TARGETCANCEL, m_pChar, &Args) == TRIGRET_RET_TRUE )
-						bSuppressCancelMessage = true;
+						fSuppressCancelMessage = true;
 				}
 			}
 			break;
@@ -1459,14 +1448,14 @@ void CClient::SetTargMode(CLIMODE_TYPE targmode, LPCTSTR pszPrompt, int iTimeout
 				{
 					if ( m_pChar->Skill_OnCharTrigger(action, CTRIG_SkillTargetCancel) == TRIGRET_RET_TRUE )
 					{
-						bSuppressCancelMessage = true;
+						fSuppressCancelMessage = true;
 						break;
 					}
 				}
 				if ( IsTrigUsed(TRIGGER_TARGETCANCEL) )
 				{
 					if ( m_pChar->Skill_OnTrigger(action, SKTRIG_TARGETCANCEL) == TRIGRET_RET_TRUE )
-						bSuppressCancelMessage = true;
+						fSuppressCancelMessage = true;
 				}
 			}
 			break;
@@ -1491,19 +1480,19 @@ void CClient::SetTargMode(CLIMODE_TYPE targmode, LPCTSTR pszPrompt, int iTimeout
 		{
 			pItem->RemoveFromView();
 			m_pChar->ItemBounce(pItem);
-			if ( !bSuppressCancelMessage )
+			if ( !fSuppressCancelMessage )
 				addSysMessage(g_Cfg.GetDefaultMsg(DEFMSG_TARGET_CANCEL_2));
 		}
 	}
 
 	m_Targ_Mode = targmode;
-	if ( (targmode == CLIMODE_NORMAL) && !bSuppressCancelMessage )
+	if ( (targmode == CLIMODE_NORMAL) && !fSuppressCancelMessage )
 		addSysMessage(g_Cfg.GetDefaultMsg(DEFMSG_TARGET_CANCEL_1));
 	else if ( pszPrompt && *pszPrompt )
 		addSysMessage(pszPrompt);
 }
 
-void CClient::addPromptConsole(CLIMODE_TYPE mode, LPCTSTR pszPrompt, CGrayUID context1, CGrayUID context2, bool bUnicode)
+void CClient::addPromptConsole(CLIMODE_TYPE mode, LPCTSTR pszPrompt, CGrayUID context1, CGrayUID context2, bool fUnicode)
 {
 	ADDTOCALLSTACK("CClient::addPromptConsole");
 
@@ -1513,10 +1502,10 @@ void CClient::addPromptConsole(CLIMODE_TYPE mode, LPCTSTR pszPrompt, CGrayUID co
 	if ( pszPrompt && *pszPrompt )
 		addSysMessage(pszPrompt);
 
-	new PacketAddPrompt(this, context1, context2, bUnicode);
+	new PacketAddPrompt(this, context1, context2, fUnicode);
 }
 
-void CClient::addTarget(CLIMODE_TYPE mode, LPCTSTR pszPrompt, bool bAllowGround, bool bCheckCrime, int iTimeout)
+void CClient::addTarget(CLIMODE_TYPE mode, LPCTSTR pszPrompt, bool fAllowGround, bool fCheckCrime, int iTimeout)
 {
 	ADDTOCALLSTACK("CClient::addTarget");
 	// Send targetting cursor to client
@@ -1524,7 +1513,7 @@ void CClient::addTarget(CLIMODE_TYPE mode, LPCTSTR pszPrompt, bool bAllowGround,
 	// ??? will this be selective for us? objects only or chars only? not on the ground (statics)?
 
 	SetTargMode(mode, pszPrompt, iTimeout);
-	new PacketAddTarget(this, bAllowGround ? PacketAddTarget::Ground : PacketAddTarget::Object, mode, bCheckCrime ? PacketAddTarget::Harmful : PacketAddTarget::None);
+	new PacketAddTarget(this, fAllowGround ? PacketAddTarget::Ground : PacketAddTarget::Object, mode, fCheckCrime ? PacketAddTarget::Harmful : PacketAddTarget::None);
 }
 
 void CClient::addTargetDeed(const CItem *pDeed)
@@ -1537,7 +1526,7 @@ void CClient::addTargetDeed(const CItem *pDeed)
 	addTargetItems(CLIMODE_TARG_USE_ITEM, static_cast<ITEMID_TYPE>(RES_GET_INDEX(pDeed->m_itDeed.m_Type)), pDeed->GetHue());
 }
 
-bool CClient::addTargetChars(CLIMODE_TYPE mode, CREID_TYPE baseID, bool bCheckCrime, int iTimeout)
+bool CClient::addTargetChars(CLIMODE_TYPE mode, CREID_TYPE baseID, bool fCheckCrime, int iTimeout)
 {
 	ADDTOCALLSTACK("CClient::addTargetChars");
 	CCharBase *pBase = CCharBase::FindCharBase(baseID);
@@ -1545,13 +1534,13 @@ bool CClient::addTargetChars(CLIMODE_TYPE mode, CREID_TYPE baseID, bool bCheckCr
 		return false;
 
 	TCHAR *pszTemp = Str_GetTemp();
-	sprintf(pszTemp, "%s '%s'?", g_Cfg.GetDefaultMsg(DEFMSG_WHERE_TO_SUMMON), pBase->GetTradeName());
+	sprintf(pszTemp, "%s %s?", g_Cfg.GetDefaultMsg(DEFMSG_WHERE_TO_SUMMON), pBase->GetTradeName());
 
-	addTarget(mode, pszTemp, true, bCheckCrime, iTimeout);
+	addTarget(mode, pszTemp, true, fCheckCrime, iTimeout);
 	return true;
 }
 
-bool CClient::addTargetItems(CLIMODE_TYPE mode, ITEMID_TYPE id, HUE_TYPE color, bool bAllowGround)
+bool CClient::addTargetItems(CLIMODE_TYPE mode, ITEMID_TYPE id, HUE_TYPE wHue, bool fAllowGround)
 {
 	ADDTOCALLSTACK("CClient::addTargetItems");
 	// Add a list of items to place at target. Preview all the stuff
@@ -1590,7 +1579,7 @@ bool CClient::addTargetItems(CLIMODE_TYPE mode, ITEMID_TYPE id, HUE_TYPE color, 
 	if ( CItemBase::IsID_Multi(id) )	// a multi we get from multi.mul
 	{
 		SetTargMode(mode, pszTemp);
-		new PacketAddTarget(this, bAllowGround ? PacketAddTarget::Ground : PacketAddTarget::Object, mode, PacketAddTarget::None, id, color);
+		new PacketAddTarget(this, fAllowGround ? PacketAddTarget::Ground : PacketAddTarget::Object, mode, PacketAddTarget::None, id, wHue);
 		return true;
 	}
 
@@ -1621,7 +1610,7 @@ void CClient::addDyeOption(const CObjBase *pObj)
 	new PacketShowDyeWindow(this, pObj);
 }
 
-void CClient::addSkillWindow(SKILL_TYPE skill, bool bFromInfo) // Opens the skills list
+void CClient::addSkillWindow(SKILL_TYPE skill, bool fFromInfo)
 {
 	ADDTOCALLSTACK("CClient::addSkillWindow");
 	// Whos skills do we want to look at?
@@ -1629,18 +1618,18 @@ void CClient::addSkillWindow(SKILL_TYPE skill, bool bFromInfo) // Opens the skil
 	if ( !pChar )
 		pChar = m_pChar;
 
-	bool bAllSkills = (skill >= static_cast<SKILL_TYPE>(g_Cfg.m_iMaxSkill));
-	if ( !bAllSkills && !g_Cfg.m_SkillIndexDefs.IsValidIndex(skill) )
+	bool fAllSkills = (skill >= static_cast<SKILL_TYPE>(g_Cfg.m_iMaxSkill));
+	if ( !fAllSkills && !g_Cfg.m_SkillIndexDefs.IsValidIndex(skill) )
 		return;
 
 	if ( IsTrigUsed(TRIGGER_USERSKILLS) )
 	{
-		CScriptTriggerArgs Args(bAllSkills ? -1 : skill, bFromInfo);
+		CScriptTriggerArgs Args(fAllSkills ? -1 : skill, fFromInfo);
 		if ( m_pChar->OnTrigger(CTRIG_UserSkills, pChar, &Args) == TRIGRET_RET_TRUE )
 			return;
 	}
 
-	if ( !bAllSkills && (skill >= SKILL_QTY) )
+	if ( !fAllSkills && (skill >= SKILL_QTY) )
 		return;
 
 	new PacketSkills(this, pChar, skill);
@@ -1651,12 +1640,12 @@ void CClient::addPlayerSee(const CPointMap &ptOld)
 	ADDTOCALLSTACK("CClient::addPlayerSee");
 	// Adjust to my new location. What do I see here?
 	int iViewDist = m_pChar->GetSight();
-	bool bOSIMultiSight = IsSetOF(OF_OSIMultiSight);
+	bool fOSIMultiSight = IsSetOF(OF_OSIMultiSight);
 	CRegionBase *pCurrentCharRegion = m_pChar->GetTopPoint().GetRegion(REGION_TYPE_HOUSE);
 
 	// Nearby items on ground
 	CItem *pItem = NULL;
-	int ptOldDist = 0;
+	int iOldDist = 0;
 	unsigned int iSeeCurrent = 0;
 	unsigned int iSeeMax = g_Cfg.m_iMaxItemComplexity * 30;
 
@@ -1668,8 +1657,8 @@ void CClient::addPlayerSee(const CPointMap &ptOld)
 		if ( !pItem )
 			break;
 
-		ptOldDist = ptOld.GetDistSight(pItem->GetTopPoint());
-		if ( (ptOldDist > UO_MAP_VIEW_RADAR) && pItem->IsTypeMulti() )		// incoming multi on radar view
+		iOldDist = ptOld.GetDistSight(pItem->GetTopPoint());
+		if ( (iOldDist > UO_MAP_VIEW_RADAR) && pItem->IsTypeMulti() )		// incoming multi on radar view
 		{
 			addItem_OnGround(pItem);
 			continue;
@@ -1678,7 +1667,7 @@ void CClient::addPlayerSee(const CPointMap &ptOld)
 		if ( (iSeeCurrent > iSeeMax) || !m_pChar->CanSee(pItem) )
 			continue;
 
-		if ( bOSIMultiSight )
+		if ( fOSIMultiSight )
 		{
 			if ( (((ptOld.GetRegion(REGION_TYPE_HOUSE) != pCurrentCharRegion) || (ptOld.GetDistSight(pItem->GetTopPoint()) > iViewDist)) && (pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_HOUSE) == pCurrentCharRegion))		// item is in same house as me
 				|| (((ptOld.GetDistSight(pItem->GetTopPoint()) > iViewDist) && (m_pChar->GetTopPoint().GetDistSight(pItem->GetTopPoint()) <= iViewDist))	// item just came into view
@@ -1693,7 +1682,7 @@ void CClient::addPlayerSee(const CPointMap &ptOld)
 		}
 		else
 		{
-			if ( (ptOldDist > iViewDist) && (m_pChar->GetTopPoint().GetDistSight(pItem->GetTopPoint()) <= iViewDist) )		// item just came into view
+			if ( (iOldDist > iViewDist) && (m_pChar->GetTopPoint().GetDistSight(pItem->GetTopPoint()) <= iViewDist) )		// item just came into view
 			{
 				++iSeeCurrent;
 				addItem_OnGround(pItem);
@@ -1725,7 +1714,7 @@ void CClient::addPlayerSee(const CPointMap &ptOld)
 	}
 }
 
-void CClient::addPlayerView(const CPointMap &pt, bool bFull)
+void CClient::addPlayerView(const CPointMap &pt, bool fFull)
 {
 	ADDTOCALLSTACK("CClient::addPlayerView");
 	// I moved = Change my point of view. Teleport etc..
@@ -1737,7 +1726,7 @@ void CClient::addPlayerView(const CPointMap &pt, bool bFull)
 
 	m_Env.SetInvalid();		// must resend environ stuff
 
-	if ( bFull )
+	if ( fFull )
 		addPlayerSee(pt);
 }
 
@@ -1916,13 +1905,13 @@ void CClient::addHealthBarUpdate(const CChar *pChar)
 		new PacketHealthBarUpdate(this, pChar);
 }
 
-void CClient::addBondedStatus(const CChar *pChar, bool bIsDead)
+void CClient::addBondedStatus(const CChar *pChar, bool fGhost)
 {
 	ADDTOCALLSTACK("CClient::addBondedStatus");
 	if ( !pChar )
 		return;
 
-	new PacketBondedStatus(this, pChar, bIsDead);
+	new PacketBondedStatus(this, pChar, fGhost);
 }
 
 void CClient::addSpellbookOpen(CItem *pBook)
@@ -1957,7 +1946,6 @@ void CClient::addSpellbookOpen(CItem *pBook)
 		new PacketItemContents(this, pBook);
 }
 
-
 void CClient::addCustomSpellbookOpen(CItem *pBook, GUMP_TYPE gumpID)
 {
 	ADDTOCALLSTACK("CClient::addCustomSpellbookOpen");
@@ -1965,35 +1953,35 @@ void CClient::addCustomSpellbookOpen(CItem *pBook, GUMP_TYPE gumpID)
 	if ( !pContainer )
 		return;
 
-	int count = 0;
+	size_t iCount = 0;
 	for ( CItem *pItem = pContainer->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
 		if ( !pItem->IsType(IT_SCROLL) )
 			continue;
-		count++;
+		++iCount;
 	}
 
 	OpenPacketTransaction transaction(this, PacketSend::PRI_NORMAL);
 	addOpenGump(pBook, gumpID);
-	if ( count > 0 )
+	if ( iCount > 0 )
 		new PacketItemContents(this, pContainer);
 }
 
-void CClient::addScrollScript(CResourceLock &s, SCROLL_TYPE type, DWORD context, LPCTSTR pszHeader)
+void CClient::addScrollScript(CResourceLock &s, SCROLL_TYPE type, DWORD dwContext, LPCTSTR pszHeader)
 {
 	ADDTOCALLSTACK("CClient::addScrollScript");
 
-	new PacketOpenScroll(this, s, type, context, pszHeader);
+	new PacketOpenScroll(this, s, type, dwContext, pszHeader);
 }
 
-void CClient::addScrollResource(LPCTSTR pszSec, SCROLL_TYPE type, DWORD scrollID)
+void CClient::addScrollResource(LPCTSTR pszName, SCROLL_TYPE type, DWORD dwScrollID)
 {
 	ADDTOCALLSTACK("CClient::addScrollResource");
 
 	CResourceLock s;
-	if ( !g_Cfg.ResourceLock(s, RES_SCROLL, pszSec) )
+	if ( !g_Cfg.ResourceLock(s, RES_SCROLL, pszName) )
 		return;
-	addScrollScript(s, type, scrollID);
+	addScrollScript(s, type, dwScrollID);
 }
 
 void CClient::addVendorClose(const CChar *pVendor)
@@ -2105,7 +2093,7 @@ void CClient::addDrawMap(CItemMap *pMap)
 	// Draw pins
 	addMapMode(pMap, MAPCMD_ClearPins, false);
 	PacketMapPlot plot(pMap, MAPCMD_AddPin, false);
-	for ( size_t i = 0; i < pMap->m_Pins.GetCount(); i++ )
+	for ( size_t i = 0; i < pMap->m_Pins.GetCount(); ++i )
 	{
 		plot.setPin(pMap->m_Pins[i].m_x, pMap->m_Pins[i].m_y);
 		plot.send(this);
@@ -2160,10 +2148,10 @@ void CClient::addLoginComplete()
 	new PacketLoginComplete(this);
 }
 
-void CClient::addChatSystemMessage(CHATMSG_TYPE iType, LPCTSTR pszName1, LPCTSTR pszName2, CLanguageID lang)
+void CClient::addChatSystemMessage(CHATMSG_TYPE type, LPCTSTR pszName1, LPCTSTR pszName2, CLanguageID lang)
 {
 	ADDTOCALLSTACK("CClient::addChatSystemMessage");
-	new PacketChatMessage(this, iType, pszName1, pszName2, lang);
+	new PacketChatMessage(this, type, pszName1, pszName2, lang);
 }
 
 void CClient::addGumpTextDisp(const CObjBase *pObj, GUMP_TYPE gump, LPCTSTR pszName, LPCTSTR pszText)
@@ -2172,24 +2160,24 @@ void CClient::addGumpTextDisp(const CObjBase *pObj, GUMP_TYPE gump, LPCTSTR pszN
 	new PacketSignGump(this, pObj, gump, pszName, pszText);
 }
 
-void CClient::addItemMenu(CLIMODE_TYPE mode, const CMenuItem *item, size_t count, CObjBase *pObj)
+void CClient::addItemMenu(CLIMODE_TYPE mode, const CMenuItem *pMenuItem, size_t iCount, CObjBase *pObj)
 {
 	ADDTOCALLSTACK("CClient::addItemMenu");
 	// We must set GetTargMode() to show what mode we are in for menu select
 	// Will result in PacketMenuChoice::onReceive()
 	// cmd.ItemMenu
 
-	if ( count <= 0 )
+	if ( iCount <= 0 )
 		return;
 	if ( !pObj )
 		pObj = m_pChar;
 
-	new PacketDisplayMenu(this, mode, item, count, pObj);
+	new PacketDisplayMenu(this, mode, pMenuItem, iCount, pObj);
 	m_tmMenu.m_UID = pObj->GetUID();
 	SetTargMode(mode);
 }
 
-void CClient::addCharPaperdoll(CChar *pChar)
+void CClient::addCharPaperdoll(const CChar *pChar)
 {
 	ADDTOCALLSTACK("CClient::addCharPaperdoll");
 	if ( !pChar )
@@ -2198,14 +2186,14 @@ void CClient::addCharPaperdoll(CChar *pChar)
 	new PacketPaperdoll(this, pChar);
 }
 
-void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
+void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 {
 	ADDTOCALLSTACK("CClient::addAOSTooltip");
 	if ( !pObj || !PacketPropertyList::CanSendTo(m_NetState) )
 		return;
 
 	// Check if we must send the full tooltip or just the obj name
-	if ( !m_TooltipEnabled && !bShop )
+	if ( !m_TooltipEnabled && !fShop )
 		return;
 
 	// Don't send tooltips for items out of LOS
@@ -2225,11 +2213,11 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 		}
 	}
 
-	PacketPropertyList *propertyList = pObj->GetPropertyList();
-	if ( !propertyList || propertyList->hasExpired(g_Cfg.m_iTooltipCache) )
+	PacketPropertyList *pPropertyList = pObj->GetPropertyList();
+	if ( !pPropertyList || pPropertyList->hasExpired(g_Cfg.m_iTooltipCache) )
 	{
-		CItem *pItem = pObj->IsItem() ? const_cast<CItem *>(static_cast<const CItem *>(pObj)) : NULL;
-		CChar *pChar = pObj->IsChar() ? const_cast<CChar *>(static_cast<const CChar *>(pObj)) : NULL;
+		CItem *pItem = const_cast<CItem *>(dynamic_cast<const CItem *>(pObj));
+		CChar *pChar = const_cast<CChar *>(dynamic_cast<const CChar *>(pObj));
 
 		const_cast<CObjBase *>(pObj)->FreePropertyList();
 
@@ -2238,9 +2226,9 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 
 		if ( !m_TooltipEnabled ) // if we only want to display the name
 		{
-			DWORD iClilocName = static_cast<DWORD>(pObj->GetDefNum("NAMELOC", true));
-			if ( iClilocName )
-				m_TooltipData.InsertAt(0, new CClientTooltip(iClilocName));
+			DWORD dwClilocName = static_cast<DWORD>(pObj->GetDefNum("NAMELOC", true));
+			if ( dwClilocName )
+				m_TooltipData.InsertAt(0, new CClientTooltip(dwClilocName));
 			else
 			{
 				m_TooltipData.InsertAt(0, t = new CClientTooltip(1042971)); // ~1_NOTHING~
@@ -2249,22 +2237,22 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 		}
 		else
 		{
-			TRIGRET_TYPE iRet = TRIGRET_RET_FALSE;
+			TRIGRET_TYPE tr = TRIGRET_RET_FALSE;
 			if ( IsTrigUsed(TRIGGER_CLIENTTOOLTIP) || (pItem && IsTrigUsed(TRIGGER_ITEMCLIENTTOOLTIP)) || (pChar && IsTrigUsed(TRIGGER_CHARCLIENTTOOLTIP)) )
 			{
-				CScriptTriggerArgs args(const_cast<CObjBase *>(pObj));
-				args.m_iN1 = bRequested;
-				iRet = const_cast<CObjBase *>(pObj)->OnTrigger("@ClientTooltip", m_pChar, &args); //ITRIG_CLIENTTOOLTIP , CTRIG_ClientTooltip
+				CScriptTriggerArgs Args(const_cast<CObjBase *>(pObj));
+				Args.m_iN1 = fRequested;
+				tr = const_cast<CObjBase *>(pObj)->OnTrigger("@ClientTooltip", m_pChar, &Args); //ITRIG_CLIENTTOOLTIP , CTRIG_ClientTooltip
 			}
 
-			if ( iRet != TRIGRET_RET_TRUE )
+			if ( tr != TRIGRET_RET_TRUE )
 			{
-				DWORD iClilocName = static_cast<DWORD>(pObj->GetDefNum("NAMELOC", true));
+				DWORD dwClilocName = static_cast<DWORD>(pObj->GetDefNum("NAMELOC", true));
 				if ( pItem )
 				{
-					if ( iClilocName )
+					if ( dwClilocName )
 					{
-						m_TooltipData.InsertAt(0, new CClientTooltip(iClilocName));
+						m_TooltipData.InsertAt(0, new CClientTooltip(dwClilocName));
 					}
 					else if ( (pItem->GetAmount() > 1) && (pItem->GetType() != IT_CORPSE) )
 					{
@@ -2316,8 +2304,8 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 
 					// The name
 					m_TooltipData.InsertAt(0, t = new CClientTooltip(1050045)); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
-					if ( iClilocName )
-						t->FormatArgs("%s\t%lu\t%s", pszPrefix, iClilocName, pszSuffix);
+					if ( dwClilocName )
+						t->FormatArgs("%s\t%lu\t%s", pszPrefix, dwClilocName, pszSuffix);
 					else
 						t->FormatArgs("%s\t%s\t%s", pszPrefix, pObj->GetName(), pszSuffix);
 
@@ -2351,7 +2339,7 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 							if ( (id == CREID_LLAMA_PACK) || (id == CREID_HORSE_PACK) || (id == CREID_GIANT_BEETLE) )
 							{
 								int iWeight = pChar->GetWeight() / WEIGHT_UNITS;
-								m_TooltipData.Add(t = new CClientTooltip((iWeight == 1) ? 1072788 : 1072789)); // Weight: ~1_WEIGHT~ stone / Weight: ~1_WEIGHT~ stones
+								m_TooltipData.Add(t = new CClientTooltip((iWeight > 1) ? 1072789 : 1072788)); // Weight: ~1_WEIGHT~ stones / Weight: ~1_WEIGHT~ stone
 								t->FormatArgs("%d", iWeight);
 							}
 
@@ -2394,13 +2382,12 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 						if ( pItem->IsMovable() )
 						{
 							WORD wWeight = pItem->Item_GetDef()->GetWeight() / WEIGHT_UNITS;
-							m_TooltipData.Add(t = new CClientTooltip((wWeight == 1) ? 1072788 : 1072789)); // Weight: ~1_WEIGHT~ stone / Weight: ~1_WEIGHT~ stones
+							m_TooltipData.Add(t = new CClientTooltip((wWeight > 1) ? 1072789 : 1072788)); // Weight: ~1_WEIGHT~ stones / Weight: ~1_WEIGHT~ stone
 							t->FormatArgs("%hu", wWeight);
 						}
 					}
 
-					CGrayUID uid = static_cast<CGrayUID>(pItem->GetDefNum("CRAFTEDBY"));
-					CChar *pCraftsman = uid.CharFind();
+					CChar *pCraftsman = static_cast<CGrayUID>(pItem->GetDefNum("CRAFTEDBY")).CharFind();
 					if ( pCraftsman )
 					{
 						m_TooltipData.Add(t = new CClientTooltip(1050043)); // crafted by ~1_NAME~
@@ -2690,19 +2677,19 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 							}
 							else
 							{
-								int ArmorRating = pItem->Armor_GetDefense();
-								if ( ArmorRating != 0 )
+								int iArmorRating = pItem->Armor_GetDefense();
+								if ( iArmorRating != 0 )
 								{
 									m_TooltipData.Add(t = new CClientTooltip(1060448)); // physical resist ~1_val~%
-									t->FormatArgs("%d", ArmorRating);
+									t->FormatArgs("%d", iArmorRating);
 								}
 							}
 
-							int StrengthRequirement = pItem->Item_GetDef()->m_ttEquippable.m_StrReq * (100 - pItem->m_LowerRequirements) / 100;
-							if ( StrengthRequirement > 0 )
+							int iStrengthRequirement = pItem->Item_GetDef()->m_ttEquippable.m_StrReq * (100 - pItem->m_LowerRequirements) / 100;
+							if ( iStrengthRequirement > 0 )
 							{
 								m_TooltipData.Add(t = new CClientTooltip(1061170)); // strength requirement ~1_val~
-								t->FormatArgs("%d", StrengthRequirement);
+								t->FormatArgs("%d", iStrengthRequirement);
 							}
 
 							m_TooltipData.Add(t = new CClientTooltip(1060639)); // durability ~1_val~ / ~2_val~
@@ -2799,18 +2786,18 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 							m_TooltipData.Add(t = new CClientTooltip(1061167)); // weapon speed ~1_val~
 							t->FormatArgs("%hhu", pItem->GetSpeed());
 
-							BYTE Range = pItem->RangeL();
-							if ( Range > 1 )
+							BYTE bRange = pItem->RangeL();
+							if ( bRange > 1 )
 							{
 								m_TooltipData.Add(t = new CClientTooltip(1061169)); // range ~1_val~
-								t->FormatArgs("%hhu", Range);
+								t->FormatArgs("%hhu", bRange);
 							}
 
-							int StrengthRequirement = pItem->Item_GetDef()->m_ttEquippable.m_StrReq * (100 - pItem->m_LowerRequirements) / 100;
-							if ( StrengthRequirement > 0 )
+							int iStrengthRequirement = pItem->Item_GetDef()->m_ttEquippable.m_StrReq * (100 - pItem->m_LowerRequirements) / 100;
+							if ( iStrengthRequirement > 0 )
 							{
 								m_TooltipData.Add(t = new CClientTooltip(1061170)); // strength requirement ~1_val~
-								t->FormatArgs("%d", StrengthRequirement);
+								t->FormatArgs("%d", iStrengthRequirement);
 							}
 
 							if ( pItem->Item_GetDef()->GetEquipLayer() == LAYER_HAND2 )
@@ -2906,7 +2893,7 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 								pszName = pCharBase ? pCharBase->GetTradeName() : pSpawnCharDef->GetName();
 
 								while ( *pszName == '#' )
-									pszName++;
+									++pszName;
 							}
 
 							m_TooltipData.Add(t = new CClientTooltip(1060658)); // ~1_val~: ~2_val~
@@ -2970,19 +2957,19 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 		}
 
 		// Build a hash value from the tooltip entries
-		DWORD hash = 0;
-		DWORD argumentHash = 0;
-		for ( size_t i = 0; i < m_TooltipData.GetCount(); i++ )
+		DWORD dwHash = 0;
+		DWORD dwArgumentHash = 0;
+		for ( size_t i = 0; i < m_TooltipData.GetCount(); ++i )
 		{
 			CClientTooltip *tipEntry = m_TooltipData.GetAt(i);
-			hash ^= (tipEntry->m_clilocid & 0x3FFFFFF);
-			hash ^= (tipEntry->m_clilocid >> 26) & 0x3F;
+			dwHash ^= (tipEntry->m_clilocid & 0x3FFFFFF);
+			dwHash ^= (tipEntry->m_clilocid >> 26) & 0x3F;
 
-			argumentHash = HashString(tipEntry->m_args, strlen(tipEntry->m_args));
-			hash ^= (argumentHash & 0x3FFFFFF);
-			hash ^= (argumentHash >> 26) & 0x3F;
+			dwArgumentHash = HashString(tipEntry->m_args, strlen(tipEntry->m_args));
+			dwHash ^= (dwArgumentHash & 0x3FFFFFF);
+			dwHash ^= (dwArgumentHash >> 26) & 0x3F;
 		}
-		hash |= UID_F_ITEM;
+		dwHash |= UID_F_ITEM;
 
 		// Clients actually expect to use an incremental revision number and not a
 		// hash to check if a tooltip needs updating - the client will not request
@@ -2990,80 +2977,80 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool bRequested, bool bShop)
 		//
 		// We still want to generate a hash though, so we don't have to increment
 		// the revision number if the tooltip hasn't actually been changed
-		propertyList = new PacketPropertyList(pObj, const_cast<CObjBase *>(pObj)->UpdatePropertyRevision(hash), &m_TooltipData);
+		pPropertyList = new PacketPropertyList(pObj, const_cast<CObjBase *>(pObj)->UpdatePropertyRevision(dwHash), &m_TooltipData);
 
 		// Cache the property list for next time, unless property list is incomplete (name only) or caching is disabled
 		if ( m_TooltipEnabled && (g_Cfg.m_iTooltipCache > 0) )
-			const_cast<CObjBase *>(pObj)->SetPropertyList(propertyList);
+			const_cast<CObjBase *>(pObj)->SetPropertyList(pPropertyList);
 	}
 
-	if ( !propertyList->isEmpty() )
+	if ( !pPropertyList->isEmpty() )
 	{
 		switch ( g_Cfg.m_iTooltipMode )
 		{
 			case TOOLTIPMODE_SENDVERSION:	// send property list version (client will send a request the full tooltip if needed)
-				if ( !bRequested && !bShop )
+				if ( !fRequested && !fShop )
 				{
 					if ( PacketPropertyListVersion::CanSendTo(m_NetState) )
-						new PacketPropertyListVersion(this, pObj, propertyList->getVersion());
+						new PacketPropertyListVersion(this, pObj, pPropertyList->getVersion());
 					else
-						new PacketPropertyListVersionOld(this, pObj, propertyList->getVersion());
+						new PacketPropertyListVersionOld(this, pObj, pPropertyList->getVersion());
 					break;
 				}
 
 			case TOOLTIPMODE_SENDFULL:		// send full property list
 			default:
-				new PacketPropertyList(this, propertyList);
+				new PacketPropertyList(this, pPropertyList);
 				break;
 		}
 	}
 
 	// Delete the original packet, as long as it doesn't belong to the object (i.e. wasn't cached)
-	if ( propertyList != pObj->GetPropertyList() )
-		delete propertyList;
+	if ( pPropertyList != pObj->GetPropertyList() )
+		delete pPropertyList;
 }
 
-void CClient::addShowDamage(CGrayUID uid, int damage)
+void CClient::addShowDamage(CGrayUID uid, int iDamage)
 {
 	ADDTOCALLSTACK("CClient::addShowDamage");
-	if ( damage < 0 )
-		damage = 0;
+	if ( iDamage <= 0 )
+		return;
 
 	if ( PacketCombatDamage::CanSendTo(m_NetState) )
-		new PacketCombatDamage(this, static_cast<WORD>(damage), uid);
+		new PacketCombatDamage(this, static_cast<WORD>(iDamage), uid);
 	else if ( PacketCombatDamageOld::CanSendTo(m_NetState) )
-		new PacketCombatDamageOld(this, static_cast<BYTE>(damage), uid);
+		new PacketCombatDamageOld(this, static_cast<BYTE>(iDamage), uid);
 }
 
-void CClient::addSpeedMode(BYTE speedMode)
+void CClient::addSpeedMode(BYTE bMode)
 {
 	ADDTOCALLSTACK("CClient::addSpeedMode");
-	new PacketSpeedMode(this, speedMode);
+	new PacketSpeedMode(this, bMode);
 }
 
-void CClient::addVisualRange(BYTE visualRange)
+void CClient::addVisualRange(BYTE bRange)
 {
 	ADDTOCALLSTACK("CClient::addVisualRange");
-	new PacketVisualRange(this, visualRange);
+	new PacketVisualRange(this, bRange);
 }
 
-void CClient::addIdleWarning(BYTE message)
+void CClient::addIdleWarning(BYTE bCode)
 {
 	ADDTOCALLSTACK("CClient::addIdleWarning");
-	new PacketWarningMessage(this, static_cast<PacketWarningMessage::Message>(message));
+	new PacketWarningMessage(this, static_cast<PacketWarningMessage::Message>(bCode));
 }
 
-void CClient::addKRToolbar(bool bEnable)
+void CClient::addKRToolbar(bool fEnable)
 {
 	ADDTOCALLSTACK("CClient::addKRToolbar");
 	if ( !PacketToggleHotbar::CanSendTo(m_NetState) || (m_pAccount->GetResDisp() < RDS_KR) || (GetConnectType() != CONNECT_GAME) )
 		return;
 
-	new PacketToggleHotbar(this, bEnable);
+	new PacketToggleHotbar(this, fEnable);
 }
 
+///////////////////////////////////////////////////////////
 
-// --------------------------------------------------------------------
 void CClient::SendPacket(TCHAR *pszKey)
 {
 	ADDTOCALLSTACK("CClient::SendPacket");
@@ -3084,19 +3071,19 @@ void CClient::SendPacket(TCHAR *pszKey)
 
 		if ( toupper(*pszKey) == 'D' )
 		{
-			pszKey++;
-			packet->writeInt32(static_cast<DWORD>(Exp_GetVal(pszKey)));
+			++pszKey;
+			packet->writeInt32(static_cast<DWORD>(Exp_GetLLVal(pszKey)));
 		}
 		else if ( toupper(*pszKey) == 'W' )
 		{
-			pszKey++;
-			packet->writeInt16(static_cast<WORD>(Exp_GetVal(pszKey)));
+			++pszKey;
+			packet->writeInt16(static_cast<WORD>(Exp_GetLLVal(pszKey)));
 		}
 		else
 		{
 			if ( toupper(*pszKey) == 'B' )
-				pszKey++;
-			packet->writeByte(static_cast<BYTE>(Exp_GetVal(pszKey)));
+				++pszKey;
+			packet->writeByte(static_cast<BYTE>(Exp_GetLLVal(pszKey)));
 		}
 	}
 
@@ -3104,10 +3091,10 @@ void CClient::SendPacket(TCHAR *pszKey)
 	packet->push(this);
 }
 
-// ---------------------------------------------------------------------
+///////////////////////////////////////////////////////////
 // Login type stuff
 
-BYTE CClient::LogIn(LPCTSTR pszAccName, LPCTSTR pszPassword, CGString &sMsg)
+BYTE CClient::LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg)
 {
 	ADDTOCALLSTACK("CClient::LogIn");
 	// Try to validate this account
@@ -3117,10 +3104,10 @@ BYTE CClient::LogIn(LPCTSTR pszAccName, LPCTSTR pszPassword, CGString &sMsg)
 	if ( m_pAccount )	// already logged in
 		return PacketLoginError::Success;
 
-	TCHAR szTmp[MAX_NAME_SIZE];
-	size_t iLen1 = strlen(pszAccName);
+	TCHAR szTemp[MAX_NAME_SIZE];
+	size_t iLen1 = strlen(pszAccount);
 	size_t iLen2 = strlen(pszPassword);
-	size_t iLen3 = Str_GetBare(szTmp, pszAccName, MAX_NAME_SIZE);
+	size_t iLen3 = Str_GetBare(szTemp, pszAccount, MAX_NAME_SIZE);
 	if ( (iLen1 == 0) || (iLen1 != iLen3) || (iLen1 > MAX_NAME_SIZE) )	// corrupt message
 	{
 		TCHAR szVersion[128];
@@ -3128,7 +3115,7 @@ BYTE CClient::LogIn(LPCTSTR pszAccName, LPCTSTR pszPassword, CGString &sMsg)
 		return PacketLoginError::BadAccount;
 	}
 
-	iLen3 = Str_GetBare(szTmp, pszPassword, MAX_NAME_SIZE);
+	iLen3 = Str_GetBare(szTemp, pszPassword, MAX_NAME_SIZE);
 	if ( iLen2 != iLen3 )	// corrupt message
 	{
 		TCHAR szVersion[128];
@@ -3137,18 +3124,18 @@ BYTE CClient::LogIn(LPCTSTR pszAccName, LPCTSTR pszPassword, CGString &sMsg)
 	}
 
 	TCHAR szName[MAX_ACCOUNT_NAME_SIZE];
-	if ( !CAccount::NameStrip(szName, pszAccName) || Str_Check(pszAccName) )
+	if ( !CAccount::NameStrip(szName, pszAccount) || Str_Check(pszAccount) )
 		return PacketLoginError::BadAccount;
 	if ( Str_Check(pszPassword) )
 		return PacketLoginError::BadPassword;
 
-	bool bGuestAccount = !strnicmp(pszAccName, "GUEST", 5);
-	if ( bGuestAccount )
+	bool fGuestAccount = !strnicmp(pszAccount, "GUEST", 5);
+	if ( fGuestAccount )
 	{
 		// Trying to log in as some sort of guest.
 		// Find or create a new guest account.
 		TCHAR *pszTemp = Str_GetTemp();
-		for ( int i = 0; ; i++ )
+		for ( int i = 0; ; ++i )
 		{
 			if ( i >= g_Cfg.m_iGuestsMax )
 			{
@@ -3161,7 +3148,7 @@ BYTE CClient::LogIn(LPCTSTR pszAccName, LPCTSTR pszPassword, CGString &sMsg)
 			ASSERT(pAccount);
 			if ( !pAccount->FindClient() )
 			{
-				pszAccName = pAccount->GetName();
+				pszAccount = pAccount->GetName();
 				break;
 			}
 		}
@@ -3175,12 +3162,12 @@ BYTE CClient::LogIn(LPCTSTR pszAccName, LPCTSTR pszPassword, CGString &sMsg)
 		}
 	}
 
-	bool bAutoCreate = ((g_Serv.m_eAccApp == ACCAPP_Free) || (g_Serv.m_eAccApp == ACCAPP_GuestAuto) || (g_Serv.m_eAccApp == ACCAPP_GuestTrial));
-	CAccountRef pAccount = g_Accounts.Account_FindCreate(pszAccName, bAutoCreate);
+	bool fAutoCreate = ((g_Serv.m_eAccApp == ACCAPP_Free) || (g_Serv.m_eAccApp == ACCAPP_GuestAuto) || (g_Serv.m_eAccApp == ACCAPP_GuestTrial));
+	CAccountRef pAccount = g_Accounts.Account_FindCreate(pszAccount, fAutoCreate);
 	if ( !pAccount )
 	{
-		g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' does not exist\n", GetSocketID(), pszAccName);
-		sMsg.Format(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_UNK), pszAccName);
+		g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' does not exist\n", GetSocketID(), pszAccount);
+		sMsg.Format(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_UNK), pszAccount);
 		return PacketLoginError::Invalid;
 	}
 
@@ -3191,7 +3178,7 @@ BYTE CClient::LogIn(LPCTSTR pszAccName, LPCTSTR pszPassword, CGString &sMsg)
 		return PacketLoginError::MaxPassTries;
 	}
 
-	if ( !bGuestAccount && !pAccount->IsPriv(PRIV_BLOCKED) )
+	if ( !fGuestAccount && !pAccount->IsPriv(PRIV_BLOCKED) )
 	{
 		if ( !pAccount->CheckPassword(pszPassword) )
 		{
@@ -3223,11 +3210,11 @@ BYTE CClient::LogIn(CAccountRef pAccount, CGString &sMsg)
 	{
 		// Only if it's from a diff IP?
 		ASSERT(pClientPrev != this);
-		bool bInUse = false;
+		bool fInUse = false;
 
 		// Different IP - no reconnect
 		if ( !GetPeer().IsSameIP(pClientPrev->GetPeer()) )
-			bInUse = true;
+			fInUse = true;
 		else
 		{
 			// Same IP - allow reconnect if the old char is lingering out
@@ -3236,9 +3223,9 @@ BYTE CClient::LogIn(CAccountRef pAccount, CGString &sMsg)
 			{
 				CItem *pItem = pCharOld->LayerFind(LAYER_FLAG_ClientLinger);
 				if ( !pItem )
-					bInUse = true;
+					fInUse = true;
 			}
-			if ( !bInUse )
+			if ( !fInUse )
 			{
 				if ( IsConnectTypePacket() && pClientPrev->IsConnectTypePacket() )
 				{
@@ -3246,10 +3233,10 @@ BYTE CClient::LogIn(CAccountRef pAccount, CGString &sMsg)
 					pClientPrev->m_NetState->markReadClosed();
 				}
 				else if ( GetConnectType() == pClientPrev->GetConnectType() )
-					bInUse = true;
+					fInUse = true;
 			}
 		}
-		if ( bInUse )
+		if ( fInUse )
 		{
 			g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' already in use\n", GetSocketID(), pAccount->GetName());
 			sMsg = "Account already in use.";
@@ -3291,7 +3278,7 @@ BYTE CClient::LogIn(CAccountRef pAccount, CGString &sMsg)
 	Args.Init(pAccount->GetName());
 	Args.m_iN1 = GetConnectType();
 	Args.m_pO1 = this;
-	enum TRIGRET_TYPE tr;
+	TRIGRET_TYPE tr;
 	g_Serv.r_Call("f_onaccount_login", &g_Serv, &Args, NULL, &tr);
 	if ( tr == TRIGRET_RET_TRUE )
 	{
@@ -3304,7 +3291,7 @@ BYTE CClient::LogIn(CAccountRef pAccount, CGString &sMsg)
 	return PacketLoginError::Success;
 }
 
-BYTE CClient::Setup_ListReq(const char *pszAccName, const char *pszPassword, bool bTest)
+BYTE CClient::Setup_ListReq(const char *pszAccount, const char *pszPassword, bool fTest)
 {
 	ADDTOCALLSTACK("CClient::Setup_ListReq");
 	// XCMD_CharListReq
@@ -3317,15 +3304,15 @@ BYTE CClient::Setup_ListReq(const char *pszAccName, const char *pszPassword, boo
 		ClearTargMode();
 
 	CGString sMsg;
-	BYTE lErr = LogIn(pszAccName, pszPassword, sMsg);
-	if ( lErr != PacketLoginError::Success )
+	BYTE bResult = LogIn(pszAccount, pszPassword, sMsg);
+	if ( bResult != PacketLoginError::Success )
 	{
-		if ( bTest && (lErr != PacketLoginError::Other) )
+		if ( fTest && (bResult != PacketLoginError::Other) )
 		{
 			if ( !sMsg.IsEmpty() )
 				SysMessage(sMsg);
 		}
-		return lErr;
+		return bResult;
 	}
 
 	ASSERT(m_pAccount);
@@ -3352,15 +3339,15 @@ BYTE CClient::Setup_ListReq(const char *pszAccName, const char *pszPassword, boo
 	return PacketLoginError::Success;
 }
 
-BYTE CClient::Setup_Delete(DWORD iSlot)
+BYTE CClient::Setup_Delete(DWORD dwSlot)
 {
 	ADDTOCALLSTACK("CClient::Setup_Delete");
 	ASSERT(m_pAccount);
-	DEBUG_MSG(("%lx:Setup_Delete slot=%lu\n", GetSocketID(), iSlot));
-	if ( iSlot >= COUNTOF(m_tmSetupCharList) )
+	DEBUG_MSG(("%lx:Setup_Delete slot=%lu\n", GetSocketID(), dwSlot));
+	if ( dwSlot >= COUNTOF(m_tmSetupCharList) )
 		return PacketDeleteError::InvalidRequest;
 
-	CChar *pChar = m_tmSetupCharList[iSlot].CharFind();
+	CChar *pChar = m_tmSetupCharList[dwSlot].CharFind();
 	if ( !m_pAccount->IsMyAccountChar(pChar) )
 		return PacketDeleteError::BadPass;
 	if ( !pChar->IsDisconnected() )
@@ -3373,31 +3360,31 @@ BYTE CClient::Setup_Delete(DWORD iSlot)
 			return PacketDeleteError::NotOldEnough;
 	}
 
-	CGrayUID CharUID = pChar->GetUID();
-	LPCTSTR CharName = pChar->GetName();
+	CGrayUID uid = pChar->GetUID();
+	LPCTSTR pszName = pChar->GetName();
 
 	pChar->Delete(false, this);
 	if ( !pChar->IsDeleted() )
 		return PacketDeleteError::InvalidRequest;
 
-	g_Log.Event(LOGM_ACCOUNTS|LOGL_EVENT, "%lx:Account '%s' deleted char '%s' [0%lx] on client character selection menu\n", GetSocketID(), m_pAccount->GetName(), CharName, static_cast<DWORD>(CharUID));
+	g_Log.Event(LOGM_ACCOUNTS|LOGL_EVENT, "%lx:Account '%s' deleted char '%s' [0%lx] on client character selection menu\n", GetSocketID(), m_pAccount->GetName(), pszName, static_cast<DWORD>(uid));
 	return PacketDeleteError::Success;
 }
 
-BYTE CClient::Setup_Play(DWORD iSlot)
+BYTE CClient::Setup_Play(DWORD dwSlot)
 {
 	ADDTOCALLSTACK("CClient::Setup_Play");
 	// Behavior after hit "Play Character" button
 	// Mode == CLIMODE_SETUP_CHARLIST
 
-	DEBUG_MSG(("%lx:Setup_Play slot %lu\n", GetSocketID(), iSlot));
+	DEBUG_MSG(("%lx:Setup_Play slot %lu\n", GetSocketID(), dwSlot));
 
 	if ( !m_pAccount )
 		return PacketLoginError::Invalid;
-	if ( iSlot >= COUNTOF(m_tmSetupCharList) )
+	if ( dwSlot >= COUNTOF(m_tmSetupCharList) )
 		return PacketLoginError::BadCharacter;
 
-	CChar *pChar = m_tmSetupCharList[iSlot].CharFind();
+	CChar *pChar = m_tmSetupCharList[dwSlot].CharFind();
 	if ( !m_pAccount->IsMyAccountChar(pChar) )
 		return PacketLoginError::BadCharacter;
 
@@ -3435,32 +3422,32 @@ BYTE CClient::Setup_Start(CChar *pChar)
 	addPlayerStart(pChar);
 	ASSERT(m_pChar);
 
-	bool bNoMessages = false;
-	bool bQuickLogIn = !pChar->IsDisconnected();
+	bool fNoMessages = false;
+	bool fQuickLogIn = !pChar->IsDisconnected();
 	if ( IsTrigUsed(TRIGGER_LOGIN) )
 	{
-		CScriptTriggerArgs Args(bNoMessages, bQuickLogIn);
+		CScriptTriggerArgs Args(fNoMessages, fQuickLogIn);
 		if ( pChar->OnTrigger(CTRIG_LogIn, pChar, &Args) == TRIGRET_RET_TRUE )
 		{
 			m_pChar->ClientDetach();
 			pChar->SetDisconnected();
 			return PacketLoginError::Blocked;
 		}
-		bNoMessages = (Args.m_iN1 != 0);
-		bQuickLogIn = (Args.m_iN2 != 0);
+		fNoMessages = (Args.m_iN1 != 0);
+		fQuickLogIn = (Args.m_iN2 != 0);
 	}
 
-	TCHAR *z = Str_GetTemp();
-	if ( !bQuickLogIn )
+	TCHAR *pszTemp = Str_GetTemp();
+	if ( !fQuickLogIn )
 	{
-		if ( !bNoMessages )
+		if ( !fNoMessages )
 		{
 			addBark(g_szServerDescription, NULL, HUE_YELLOW, TALKMODE_SYSTEM, FONT_NORMAL);
-			sprintf(z, (g_Serv.StatGet(SERV_STAT_CLIENTS) == 2) ? g_Cfg.GetDefaultMsg(DEFMSG_LOGIN_PLAYER) : g_Cfg.GetDefaultMsg(DEFMSG_LOGIN_PLAYERS), g_Serv.StatGet(SERV_STAT_CLIENTS) - 1);
-			addSysMessage(z);
+			sprintf(pszTemp, (g_Serv.StatGet(SERV_STAT_CLIENTS) == 2) ? g_Cfg.GetDefaultMsg(DEFMSG_LOGIN_PLAYER) : g_Cfg.GetDefaultMsg(DEFMSG_LOGIN_PLAYERS), g_Serv.StatGet(SERV_STAT_CLIENTS) - 1);
+			addSysMessage(pszTemp);
 
-			sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_LOGIN_LASTLOGGED), m_pAccount->m_TagDefs.GetKeyStr("LastLogged"));
-			addSysMessage(z);
+			sprintf(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_LOGIN_LASTLOGGED), m_pAccount->m_TagDefs.GetKeyStr("LastLogged"));
+			addSysMessage(pszTemp);
 		}
 		if ( m_pChar->m_pArea && m_pChar->m_pArea->IsGuarded() && !m_pChar->m_pArea->IsFlag(REGION_FLAG_ANNOUNCE) )
 		{
@@ -3473,8 +3460,8 @@ BYTE CClient::Setup_Start(CChar *pChar)
 
 	if ( IsPriv(PRIV_GM_PAGE) && (g_World.m_GMPages.GetCount() > 0) )
 	{
-		sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_MSG_GMPAGES), static_cast<int>(g_World.m_GMPages.GetCount()), g_Cfg.m_cCommandPrefix);
-		addSysMessage(z);
+		sprintf(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_MSG_GMPAGES), static_cast<int>(g_World.m_GMPages.GetCount()), g_Cfg.m_cCommandPrefix);
+		addSysMessage(pszTemp);
 	}
 	if ( IsPriv(PRIV_JAILED) )
 		m_pChar->Jail(&g_Serv, true, static_cast<int>(m_pAccount->m_TagDefs.GetKeyNum("JailCell")));
@@ -3490,10 +3477,10 @@ BYTE CClient::Setup_Start(CChar *pChar)
 		int i = 0;
 		int iDist = 1;
 		int iDistNew = 0;
-		for ( ; i < 20; i++ )
+		for ( ; i < 20; ++i )
 		{
 			iDistNew = iDist + 20;
-			for ( int iDir = DIR_N; iDir < DIR_QTY; iDir++ )	// try in all directions
+			for ( int iDir = DIR_N; iDir < DIR_QTY; ++iDir )	// try in all directions
 			{
 				if ( m_pChar->MoveToValidSpot(static_cast<DIR_TYPE>(iDir), iDistNew, iDist) )
 				{

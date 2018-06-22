@@ -1,24 +1,24 @@
-﻿#include "graysvr.h"	// predef header.
+﻿#include "graysvr.h"	// predef header
 #include "../network/send.h"
 
 #if !defined(_WIN32) || defined(_LIBEV)
 	extern LinuxEv g_NetworkEvent;
 #endif
 
-/////////////////////////////////////////////////////////////////
-// -CClient stuff.
+///////////////////////////////////////////////////////////
+// CClient
 
-CClient::CClient(NetState* state)
+CClient::CClient(NetState *state)
 {
-	// This may be a web connection or Telnet ?
+	// This may be a web connection or Telnet?
 	m_NetState = state;
-	SetConnectType(CONNECT_UNK);	// don't know what sort of connect this is yet.
+	SetConnectType(CONNECT_UNK);	// don't know what sort of connect this is yet
 
-	// update ip history
-#ifndef _MTNETWORK
-	HistoryIP &history = g_NetworkIn.getIPHistoryManager().getHistoryForIP(GetPeer());
-#else
+	// Update IP history
+#ifdef _MTNETWORK
 	HistoryIP &history = g_NetworkManager.getIPHistoryManager().getHistoryForIP(GetPeer());
+#else
+	HistoryIP &history = g_NetworkIn.getIPHistoryManager().getHistoryForIP(GetPeer());
 #endif
 	history.m_connecting++;
 	history.m_connected++;
@@ -45,10 +45,6 @@ CClient::CClient(NetState* state)
 	m_Targ_Mode = CLIMODE_SETUP_CONNECTING;
 	m_Prompt_Mode = CLIMODE_NORMAL;
 
-	m_tmSetup.m_dwIP = 0;
-	m_tmSetup.m_iConnect = 0;
-	m_tmSetup.m_bNewSeed = false;
-
 	m_Env.SetInvalid();
 
 	g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Client connected [Total:%lu] ('%s' %ld/%ld)\n", GetSocketID(), g_Serv.StatGet(SERV_STAT_CLIENTS), GetPeerStr(), history.m_connecting, history.m_connected);
@@ -56,26 +52,25 @@ CClient::CClient(NetState* state)
 	m_zLastMessage[0] = 0;
 	m_zLastObjMessage[0] = 0;
 
-	m_ScreenSize.x = m_ScreenSize.y = 0x0;
+	m_ScreenSize.x = m_ScreenSize.y = 0;
 	m_pPopupPacket = NULL;
 	m_pHouseDesign = NULL;
 	m_fUpdateStats = 0;
 }
 
-
 CClient::~CClient()
 {
-	// update ip history
-#ifndef _MTNETWORK
-	HistoryIP &history = g_NetworkIn.getIPHistoryManager().getHistoryForIP(GetPeer());
-#else
+	// Update IP history
+#ifdef _MTNETWORK
 	HistoryIP &history = g_NetworkManager.getIPHistoryManager().getHistoryForIP(GetPeer());
+#else
+	HistoryIP &history = g_NetworkIn.getIPHistoryManager().getHistoryForIP(GetPeer());
 #endif
 	if ( GetConnectType() != CONNECT_GAME )
-		history.m_connecting--;
-	history.m_connected--;
+		--history.m_connecting;
+	--history.m_connected;
 
-	bool bWasChar = (m_pChar != NULL);
+	bool fWasChar = (m_pChar != NULL);
 	CharDisconnect();	// am i a char in game ?
 	Cmd_GM_PageClear();
 
@@ -85,7 +80,7 @@ CClient::~CClient()
 
 	if ( m_pAccount )
 	{
-		m_pAccount->OnLogout(this, bWasChar);
+		m_pAccount->OnLogout(this, fWasChar);
 		m_pAccount = NULL;
 	}
 
@@ -102,7 +97,7 @@ CClient::~CClient()
 bool CClient::CanInstantLogOut() const
 {
 	ADDTOCALLSTACK("CClient::CanInstantLogOut");
-	if ( g_Serv.IsLoading() )	// or exiting.
+	if ( g_Serv.IsLoading() )
 		return true;
 	if ( !g_Cfg.m_iClientLingerTime || IsPriv(PRIV_GM) )
 		return true;
@@ -129,10 +124,10 @@ void CClient::CharDisconnect()
 		return;
 
 	Announce(false);
-	bool bCanInstaLogOut = CanInstantLogOut();
-	int	iLingerTime = g_Cfg.m_iClientLingerTime;
+	bool fCanInstaLogOut = CanInstantLogOut();
+	int iLingerTime = g_Cfg.m_iClientLingerTime;
 
-	//	we are not a client anymore
+	// We are not a client anymore
 	if ( m_bChatActive )
 		g_Serv.m_Chats.QuitChat(this);
 
@@ -141,16 +136,16 @@ void CClient::CharDisconnect()
 
 	if ( IsTrigUsed(TRIGGER_LOGOUT) )
 	{
-		CScriptTriggerArgs Args(iLingerTime, bCanInstaLogOut);
+		CScriptTriggerArgs Args(iLingerTime, fCanInstaLogOut);
 		m_pChar->OnTrigger(CTRIG_LogOut, m_pChar, &Args);
 		iLingerTime = static_cast<int>(Args.m_iN1);
-		bCanInstaLogOut = (Args.m_iN2 != 0);
+		fCanInstaLogOut = (Args.m_iN2 != 0);
 	}
 
 	m_pChar->ClientDetach();	// we are not a client any more.
 
 	if ( iLingerTime <= 0 )
-		bCanInstaLogOut = true;
+		fCanInstaLogOut = true;
 
 	// Gump memory cleanup, we don't want them on logged out players
 	m_mapOpenedGumps.clear();
@@ -161,7 +156,7 @@ void CClient::CharDisconnect()
 		m_pChar->ItemBounce(pItemDragging);
 
 	// log out immediately ? (test before ClientDetach())
-	if ( !bCanInstaLogOut )
+	if ( !fCanInstaLogOut )
 	{
 		// become an NPC for a little while
 		CItem *pItemChange = CItem::CreateBase(ITEMID_RHAND_POINT_W);
@@ -180,7 +175,7 @@ void CClient::CharDisconnect()
 	m_pChar = NULL;
 }
 
-void CClient::SysMessage( LPCTSTR pszMsg ) const	// system message (in lower left corner)
+void CClient::SysMessage(LPCTSTR pszMsg) const	// system message (in lower left corner)
 {
 	ADDTOCALLSTACK("CClient::SysMessage");
 	// Diff sorts of clients.
@@ -189,6 +184,18 @@ void CClient::SysMessage( LPCTSTR pszMsg ) const	// system message (in lower lef
 
 	switch ( GetConnectType() )
 	{
+		case CONNECT_CRYPT:
+		case CONNECT_LOGIN:
+		case CONNECT_GAME:
+		{
+			const_cast<CClient *>(this)->addSysMessage(pszMsg);
+			return;
+		}
+		case CONNECT_HTTP:
+		{
+			const_cast<CClient *>(this)->m_Targ_Text = pszMsg;
+			return;
+		}
 		case CONNECT_TELNET:
 		case CONNECT_AXIS:
 		{
@@ -204,20 +211,10 @@ void CClient::SysMessage( LPCTSTR pszMsg ) const	// system message (in lower lef
 			new PacketTelnet(this, pszMsg, true);
 			return;
 		}
-		case CONNECT_CRYPT:
-		case CONNECT_LOGIN:
-		case CONNECT_GAME:
-			const_cast<CClient *>(this)->addSysMessage(pszMsg);
-			return;
-		case CONNECT_HTTP:
-			const_cast<CClient *>(this)->m_Targ_Text = pszMsg;
-			return;
-		default:
-			return;
 	}
 }
 
-void CClient::Announce( bool fArrive ) const
+void CClient::Announce(bool fArrive) const
 {
 	ADDTOCALLSTACK("CClient::Announce");
 	if ( !m_pAccount || !m_pChar || !m_pChar->m_pPlayer )
@@ -228,8 +225,8 @@ void CClient::Announce( bool fArrive ) const
 	TCHAR *pszMsg = Str_GetTemp();
 	if ( (g_Cfg.m_iArriveDepartMsg == 2) && (GetPrivLevel() > PLEVEL_Player) )		// notify of GMs
 	{
-		LPCTSTR zTitle = m_pChar->Noto_GetFameTitle();
-		sprintf(pszMsg, "@231 STAFF: %s%s logged %s.", zTitle, m_pChar->GetName(), fArrive ? "in" : "out");
+		LPCTSTR pszTitle = m_pChar->Noto_GetFameTitle();
+		sprintf(pszMsg, "@231 STAFF: %s%s logged %s.", pszTitle, m_pChar->GetName(), fArrive ? "in" : "out");
 	}
 	else if ( g_Cfg.m_iArriveDepartMsg == 1 )		// notify of players
 	{
@@ -270,9 +267,9 @@ void CClient::Announce( bool fArrive ) const
 	}
 }
 
-////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
-bool CClient::CanSee( const CObjBaseTemplate * pObj ) const
+bool CClient::CanSee(const CObjBaseTemplate *pObj) const
 {
 	ADDTOCALLSTACK("CClient::CanSee");
 	// Can player see item b
@@ -288,7 +285,7 @@ bool CClient::CanSee( const CObjBaseTemplate * pObj ) const
 	return m_pChar->CanSee(pObj);
 }
 
-bool CClient::CanHear( const CObjBaseTemplate * pSrc, TALKMODE_TYPE mode ) const
+bool CClient::CanHear(const CObjBaseTemplate *pSrc, TALKMODE_TYPE mode) const
 {
 	ADDTOCALLSTACK("CClient::CanHear");
 	// can we hear this text or sound.
@@ -314,26 +311,25 @@ bool CClient::CanHear( const CObjBaseTemplate * pSrc, TALKMODE_TYPE mode ) const
 	return m_pChar->CanHear(pSrc, mode);
 }
 
-////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
-
-void CClient::addTargetVerb( LPCTSTR pszCmd, LPCTSTR pszArg )
+void CClient::addTargetVerb(LPCTSTR pszCmd, LPCTSTR pszArgs)
 {
 	ADDTOCALLSTACK("CClient::addTargetVerb");
-	// Target a verb at some object .
+	// Target a verb at some object
 
 	ASSERT(pszCmd);
 	GETNONWHITESPACE(pszCmd);
 	SKIP_SEPARATORS(pszCmd);
 
 	if ( !strlen(pszCmd) )
-		pszCmd = pszArg;
+		pszCmd = pszArgs;
 
-	if ( pszCmd == pszArg )
+	if ( pszCmd == pszArgs )
 	{
 		GETNONWHITESPACE(pszCmd);
 		SKIP_SEPARATORS(pszCmd);
-		pszArg = "";
+		pszArgs = "";
 	}
 
 	// priv here
@@ -341,16 +337,16 @@ void CClient::addTargetVerb( LPCTSTR pszCmd, LPCTSTR pszArg )
 	if ( ilevel > GetPrivLevel() )
 		return;
 
-	m_Targ_Text.Format("%s%s%s", pszCmd, (pszArg[0] && pszCmd[0]) ? " " : "", pszArg);
+	m_Targ_Text.Format("%s%s%s", pszCmd, (pszArgs[0] && pszCmd[0]) ? " " : "", pszArgs);
 	TCHAR *pszMsg = Str_GetTemp();
 	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_TARGET_COMMAND), static_cast<LPCTSTR>(m_Targ_Text));
 	addTarget(CLIMODE_TARG_OBJ_SET, pszMsg);
 }
 
-void CClient::addTargetFunctionMulti( LPCTSTR pszFunction, ITEMID_TYPE itemid, HUE_TYPE color, bool bAllowGround )
+void CClient::addTargetFunctionMulti(LPCTSTR pszFunction, ITEMID_TYPE itemid, HUE_TYPE wHue, bool fAllowGround)
 {
 	ADDTOCALLSTACK("CClient::addTargetFunctionMulti");
-	// Target a verb at some object .
+	// Target a verb at some object
 	ASSERT(pszFunction);
 	GETNONWHITESPACE(pszFunction);
 	SKIP_SEPARATORS(pszFunction);
@@ -359,33 +355,33 @@ void CClient::addTargetFunctionMulti( LPCTSTR pszFunction, ITEMID_TYPE itemid, H
 	if ( CItemBase::IsID_Multi(itemid) )	// a multi we get from multi.mul
 	{
 		SetTargMode(CLIMODE_TARG_OBJ_FUNC);
-		new PacketAddTarget(this, bAllowGround ? PacketAddTarget::Ground : PacketAddTarget::Object, CLIMODE_TARG_OBJ_FUNC, PacketAddTarget::None, itemid, color);
+		new PacketAddTarget(this, fAllowGround ? PacketAddTarget::Ground : PacketAddTarget::Object, CLIMODE_TARG_OBJ_FUNC, PacketAddTarget::None, itemid, wHue);
 	}
-	addTargetFunction(pszFunction, bAllowGround, false);
+	addTargetFunction(pszFunction, fAllowGround, false);
 }
 
-void CClient::addTargetFunction( LPCTSTR pszFunction, bool bAllowGround, bool bCheckCrime )
+void CClient::addTargetFunction(LPCTSTR pszFunction, bool fAllowGround, bool fCheckCrime)
 {
 	ADDTOCALLSTACK("CClient::addTargetFunction");
-	// Target a verb at some object .
+	// Target a verb at some object
 	ASSERT(pszFunction);
 	GETNONWHITESPACE(pszFunction);
 	SKIP_SEPARATORS(pszFunction);
 
 	m_Targ_Text = pszFunction;
-	addTarget(CLIMODE_TARG_OBJ_FUNC, NULL, bAllowGround, bCheckCrime);
+	addTarget(CLIMODE_TARG_OBJ_FUNC, NULL, fAllowGround, fCheckCrime);
 }
 
-void CClient::addPromptConsoleFunction( LPCTSTR pszFunction, LPCTSTR pszSysmessage, bool bUnicode )
+void CClient::addPromptConsoleFunction(LPCTSTR pszFunction, LPCTSTR pszArgs, bool fUnicode)
 {
 	ADDTOCALLSTACK("CClient::addPromptConsoleFunction");
-	// Target a verb at some object .
+	// Target a verb at some object
 	ASSERT(pszFunction);
 	m_Prompt_Text = pszFunction;
-	addPromptConsole(CLIMODE_PROMPT_SCRIPT_VERB, pszSysmessage, 0, 0, bUnicode);
+	addPromptConsole(CLIMODE_PROMPT_SCRIPT_VERB, pszArgs, 0, 0, fUnicode);
 }
 
-////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 void CClient::UpdateFeatureFlags()
 {
@@ -420,12 +416,13 @@ void CClient::UpdateFeatureFlags()
 	if ( !m_pAccount )
 		return;
 
-	RESDISPLAY_VERSION iResdisp = static_cast<RESDISPLAY_VERSION>(m_pAccount->GetResDisp());
-	BYTE iMaxChars = static_cast<BYTE>(maximum(m_pAccount->GetMaxChars(), m_pAccount->m_Chars.GetCharCount()));
+	RESDISPLAY_VERSION iResDisp = static_cast<RESDISPLAY_VERSION>(m_pAccount->GetResDisp());
+	BYTE bMaxChars = static_cast<BYTE>(maximum(m_pAccount->GetMaxChars(), m_pAccount->m_Chars.GetCharCount()));
 	m_FeatureFlags = 0;
 
 	// Expansion features
-	if ( iResdisp >= RDS_T2A )
+	m_FeatureFlags = 0;
+	if ( iResDisp >= RDS_T2A )
 	{
 		if ( g_Cfg.m_iFeatureT2A & FEATURE_T2A_UPDATE )
 			m_FeatureFlags |= 0x4;
@@ -433,7 +430,7 @@ void CClient::UpdateFeatureFlags()
 			m_FeatureFlags |= 0x1;
 	}
 
-	if ( iResdisp >= RDS_LBR )
+	if ( iResDisp >= RDS_LBR )
 	{
 		if ( g_Cfg.m_iFeatureLBR & FEATURE_LBR_UPDATE )
 			m_FeatureFlags |= 0x8;
@@ -441,40 +438,40 @@ void CClient::UpdateFeatureFlags()
 			m_FeatureFlags |= 0x2;
 	}
 
-	if ( iResdisp >= RDS_AOS )
+	if ( iResDisp >= RDS_AOS )
 	{
 		if ( g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_A )
 			m_FeatureFlags |= (0x10|0x8000);
 	}
 
-	if ( iResdisp >= RDS_SE )
+	if ( iResDisp >= RDS_SE )
 	{
 		if ( g_Cfg.m_iFeatureSE & FEATURE_SE_UPDATE )
 			m_FeatureFlags |= 0x40;
 	}
 
-	if ( iResdisp >= RDS_ML )
+	if ( iResDisp >= RDS_ML )
 	{
 		if ( g_Cfg.m_iFeatureML & FEATURE_ML_UPDATE )
 			m_FeatureFlags |= 0x80;
 	}
 
-	if ( iResdisp >= RDS_SA )
+	if ( iResDisp >= RDS_SA )
 	{
 		if ( g_Cfg.m_iFeatureSA & FEATURE_SA_UPDATE )
 			m_FeatureFlags |= 0x10000;
 	}
 
-	if ( iResdisp >= RDS_TOL )
+	if ( iResDisp >= RDS_TOL )
 	{
 		if ( g_Cfg.m_iFeatureTOL & FEATURE_TOL_UPDATE )
 			m_FeatureFlags |= 0x400000;
 	}
 
 	// Max character slots
-	if ( iMaxChars > 6 )
+	if ( bMaxChars > 6 )
 		m_FeatureFlags |= 0x1000;
-	if ( iMaxChars == 6 )
+	if ( bMaxChars == 6 )
 		m_FeatureFlags |= 0x20;
 
 	// Extra housing features (enable expansion items on house customization engine)
@@ -523,12 +520,12 @@ void CClient::UpdateCharacterListFlags()
 	if ( !m_pAccount )
 		return;
 
-	RESDISPLAY_VERSION iResdisp = static_cast<RESDISPLAY_VERSION>(m_pAccount->GetResDisp());
-	BYTE iMaxChars = static_cast<BYTE>(maximum(m_pAccount->GetMaxChars(), m_pAccount->m_Chars.GetCharCount()));
+	RESDISPLAY_VERSION iResDisp = static_cast<RESDISPLAY_VERSION>(m_pAccount->GetResDisp());
+	BYTE bMaxChars = static_cast<BYTE>(maximum(m_pAccount->GetMaxChars(), m_pAccount->m_Chars.GetCharCount()));
 	m_CharacterListFlags = 0;
 
 	// Expansion features
-	if ( iResdisp >= RDS_AOS )
+	if ( iResDisp >= RDS_AOS )
 	{
 		if ( g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_B )
 			m_CharacterListFlags |= 0x20;
@@ -536,47 +533,47 @@ void CClient::UpdateCharacterListFlags()
 			m_CharacterListFlags |= 0x8;
 	}
 
-	if ( iResdisp >= RDS_SE )
+	if ( iResDisp >= RDS_SE )
 	{
 		if ( g_Cfg.m_iFeatureSE & FEATURE_SE_NINJASAM )
 			m_CharacterListFlags |= 0x80;
 	}
 
-	if ( iResdisp >= RDS_ML )
+	if ( iResDisp >= RDS_ML )
 	{
 		if ( g_Cfg.m_iFeatureML & FEATURE_ML_UPDATE )
 			m_CharacterListFlags |= 0x100;
 	}
 
-	if ( iResdisp >= RDS_KR )
+	if ( iResDisp >= RDS_KR )
 	{
 		if ( g_Cfg.m_iFeatureKR & FEATURE_KR_UPDATE )
 			m_CharacterListFlags |= 0x200;
 	}
 
-	if ( iResdisp >= RDS_SA )
+	if ( iResDisp >= RDS_SA )
 	{
 		if ( g_Cfg.m_iFeatureSA & FEATURE_SA_MOVEMENT )
 			m_CharacterListFlags |= 0x4000;
 	}
 
 	// Max character slots
-	if ( iMaxChars > 6 )
+	if ( bMaxChars > 6 )
 		m_CharacterListFlags |= 0x1000;
-	else if ( iMaxChars == 6 )
+	else if ( bMaxChars == 6 )
 		m_CharacterListFlags |= 0x40;
-	else if ( iMaxChars == 1 )
+	else if ( bMaxChars == 1 )
 		m_CharacterListFlags |= (0x10|0x4);
 
 	// Misc
 	if ( m_NetState->isClientKR() || m_NetState->isClientEnhanced() )		// tooltips must be always enabled on enhanced clients
 		m_CharacterListFlags |= (0x400|0x200|0x20);
-	m_TooltipEnabled = (m_CharacterListFlags & 0x20) ? true : false;
+	m_TooltipEnabled = (m_CharacterListFlags & 0x20);
 	m_ContainerGridEnabled = (m_NetState->isClientVersion(MINCLIVER_CONTAINERGRID) || m_NetState->isClientKR() || m_NetState->isClientEnhanced());
-	m_UseNewChatSystem = (m_NetState->isClientVersion(MINCLIVER_NEWCHATSYSTEM) || m_NetState->isClientVersion(MASK_CLIENTTYPE_EC + MINCLIVER_NEWCHATSYSTEM_EC));
+	m_UseNewChatSystem = m_NetState->isClientVersion(MINCLIVER_NEWCHATSYSTEM);
 }
 
-////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////
 
 enum CLIR_TYPE
 {
@@ -590,7 +587,7 @@ enum CLIR_TYPE
 	CLIR_QTY
 };
 
-LPCTSTR const CClient::sm_szRefKeys[CLIR_QTY+1] =
+LPCTSTR const CClient::sm_szRefKeys[CLIR_QTY + 1] =
 {
 	"ACCOUNT",
 	"GMPAGEP",
@@ -602,15 +599,15 @@ LPCTSTR const CClient::sm_szRefKeys[CLIR_QTY+1] =
 	NULL
 };
 
-bool CClient::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
+bool CClient::r_GetRef(LPCTSTR &pszKey, CScriptObj *&pRef)
 {
 	ADDTOCALLSTACK("CClient::r_GetRef");
-	int i = FindTableHeadSorted(pszKey, sm_szRefKeys, COUNTOF(sm_szRefKeys) - 1);
-	if ( i >= 0 )
+	int index = FindTableHeadSorted(pszKey, sm_szRefKeys, COUNTOF(sm_szRefKeys) - 1);
+	if ( index >= 0 )
 	{
-		pszKey += strlen(sm_szRefKeys[i]);
+		pszKey += strlen(sm_szRefKeys[index]);
 		SKIP_SEPARATORS(pszKey);
-		switch ( i )
+		switch ( index )
 		{
 			case CLIR_ACCOUNT:
 				if ( pszKey[-1] != '.' )	// only used as a ref !
@@ -626,20 +623,18 @@ bool CClient::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 			case CLIR_PARTY:
 				if ( !m_pChar->m_pParty )
 				{
-					LPCTSTR oldKey = pszKey;
+					LPCTSTR pszKeyOld = pszKey;
 					if ( !strnicmp(pszKey, "CREATE", 7) )
 						pszKey += 7;
 
 					SKIP_SEPARATORS(pszKey);
-					CChar *pChar = static_cast<CChar *>(static_cast<CGrayUID>(Exp_GetSingle(pszKey)).CharFind());
-					if ( !pChar )
-						return false;
-					if ( !pChar->m_pClient )
+					CChar *pChar = dynamic_cast<CChar *>(static_cast<CGrayUID>(Exp_GetSingle(pszKey)).CharFind());
+					if ( !pChar || !pChar->m_pClient )
 						return false;
 					CPartyDef::AcceptEvent(pChar, m_pChar->GetUID(), true);
 					if ( !m_pChar->m_pParty )
 						return false;
-					pszKey = oldKey;	// restoring back to real pszKey, so we don't get errors for giving an uid instead of PDV_CREATE
+					pszKey = pszKeyOld;	// restoring back to real pszKey, so we don't get errors for giving an uid instead of PDV_CREATE
 				}
 				pRef = m_pChar->m_pParty;
 				return true;
@@ -657,7 +652,7 @@ bool CClient::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 	return CScriptObj::r_GetRef(pszKey, pRef);
 }
 
-LPCTSTR const CClient::sm_szLoadKeys[CC_QTY+1] =	// static
+LPCTSTR const CClient::sm_szLoadKeys[CC_QTY + 1] =	// static
 {
 	#define ADD(a,b) b,
 	#include "../tables/CClient_props.tbl"
@@ -665,7 +660,7 @@ LPCTSTR const CClient::sm_szLoadKeys[CC_QTY+1] =	// static
 	NULL,
 };
 
-LPCTSTR const CClient::sm_szVerbKeys[CV_QTY+1] =	// static
+LPCTSTR const CClient::sm_szVerbKeys[CV_QTY + 1] =	// static
 {
 	#define ADD(a,b) b,
 	#include "../tables/CClient_functions.tbl"
@@ -673,28 +668,28 @@ LPCTSTR const CClient::sm_szVerbKeys[CV_QTY+1] =	// static
 	NULL,
 };
 
-bool CClient::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
+bool CClient::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 {
 	ADDTOCALLSTACK("CClient::r_WriteVal");
 	EXC_TRY("WriteVal");
 
-	if ( !strnicmp("CTAG.", pszKey, 5) )	// CTAG.xxx - client tag
+	if ( !strnicmp("CTAG.", pszKey, 5) )
 	{
 		if ( pszKey[4] != '.' )
 			return false;
 		pszKey += 5;
-		CVarDefCont *vardef = m_TagDefs.GetKey(pszKey);
-		sVal = vardef ? vardef->GetValStr() : "";
+		CVarDefCont *pVar = m_TagDefs.GetKey(pszKey);
+		sVal = pVar ? pVar->GetValStr() : "";
 		return true;
 	}
 
-	if ( !strnicmp("CTAG0.", pszKey, 6) )	// CTAG0.xxx - client tag
+	if ( !strnicmp("CTAG0.", pszKey, 6) )
 	{
 		if ( pszKey[5] != '.' )
 			return false;
 		pszKey += 6;
-		CVarDefCont *vardef = m_TagDefs.GetKey(pszKey);
-		sVal = vardef ? vardef->GetValStr() : "0";
+		CVarDefCont *pVar = m_TagDefs.GetKey(pszKey);
+		sVal = pVar ? pVar->GetValStr() : "0";
 		return true;
 	}
 
@@ -737,7 +732,7 @@ bool CClient::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case CC_DETAIL:
 			sVal.FormatVal(IsPriv(PRIV_DETAIL));
 			break;
-		case CC_GM:			// toggle GM status on/off
+		case CC_GM:
 			sVal.FormatVal(IsPriv(PRIV_GM));
 			break;
 		case CC_HEARALL:
@@ -746,7 +741,7 @@ bool CClient::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case CC_LASTEVENT:
 			sVal.FormatLLVal(m_timeLastEvent.GetTimeRaw());
 			break;
-		case CC_PRIVSHOW:	// show priv title
+		case CC_PRIVSHOW:
 			sVal.FormatVal(!IsPriv(PRIV_PRIV_NOSHOW));
 			break;
 		case CC_REPORTEDCLIVER:
@@ -754,17 +749,17 @@ bool CClient::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 			pszKey += strlen(sm_szLoadKeys[index]);
 			GETNONWHITESPACE(pszKey);
 
-			DWORD iCliVer = m_NetState->getReportedVersion();
+			DWORD dwCliVer = m_NetState->getReportedVersion();
 			if ( pszKey[0] == '\0' )
 			{
 				// Return full version string (eg: 5.0.2d)
 				TCHAR szVersion[128];
-				sVal = CCrypt::WriteClientVerString(iCliVer, szVersion);
+				sVal = CCrypt::WriteClientVerString(dwCliVer, szVersion);
 			}
 			else
 			{
 				// Return raw version number (eg: 5.0.2d = 5000204)
-				sVal.FormatUVal(iCliVer);
+				sVal.FormatUVal(dwCliVer);
 			}
 			break;
 		}
@@ -817,7 +812,7 @@ bool CClient::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 	return false;
 }
 
-bool CClient::r_LoadVal( CScript & s )
+bool CClient::r_LoadVal(CScript &s)
 {
 	ADDTOCALLSTACK("CClient::r_LoadVal");
 	EXC_TRY("LoadVal");
@@ -934,7 +929,7 @@ bool CClient::r_LoadVal( CScript & s )
 	return false;
 }
 
-bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from script
+bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from script
 {
 	ADDTOCALLSTACK("CClient::r_Verb");
 	EXC_TRY("Verb");
@@ -974,10 +969,11 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 	switch ( index )
 	{
 		case CV_ADD:
+		{
 			if ( s.HasArgs() )
 			{
 				TCHAR *ppArgs[2];
-				size_t iQty = Str_ParseCmds(s.GetArgStr(), ppArgs, COUNTOF(ppArgs));
+				size_t iArgQty = Str_ParseCmds(s.GetArgStr(), ppArgs, COUNTOF(ppArgs));
 
 				if ( !IsValidGameObjDef(static_cast<LPCTSTR>(ppArgs[0])) )
 				{
@@ -988,7 +984,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 
 				RESOURCE_ID rid = g_Cfg.ResourceGetID(RES_QTY, const_cast<LPCTSTR &>(ppArgs[0]));
 				m_tmAdd.m_id = rid.GetResIndex();
-				m_tmAdd.m_amount = (iQty > 1) ? static_cast<WORD>(maximum(ATOI(ppArgs[1]), 1)) : 1;
+				m_tmAdd.m_amount = (iArgQty > 1) ? static_cast<WORD>(maximum(ATOI(ppArgs[1]), 1)) : 1;
 
 				if ( (rid.GetResType() == RES_CHARDEF) || (rid.GetResType() == RES_SPAWN) )
 				{
@@ -996,32 +992,30 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 					return addTargetChars(CLIMODE_TARG_ADDCHAR, static_cast<CREID_TYPE>(m_tmAdd.m_id), false);
 				}
 				else
-				{
 					return addTargetItems(CLIMODE_TARG_ADDITEM, static_cast<ITEMID_TYPE>(m_tmAdd.m_id));
-				}
+				break;
 			}
+
+			if ( IsValidDef("d_add") )
+				Dialog_Setup(CLIMODE_DIALOG, g_Cfg.ResourceGetIDType(RES_DIALOG, "d_add"), 0, m_pChar);
 			else
-			{
-				if ( IsValidDef("d_add") )
-					Dialog_Setup(CLIMODE_DIALOG, g_Cfg.ResourceGetIDType(RES_DIALOG, "d_add"), 0, m_pChar);
-				else
-					Menu_Setup(g_Cfg.ResourceGetIDType(RES_MENU, "MENU_ADDITEM"));
-			}
+				Menu_Setup(g_Cfg.ResourceGetIDType(RES_MENU, "MENU_ADDITEM"));
 			break;
+		}
 		case CV_ADDBUFF:
 		{
 			TCHAR *ppArgs[11];
 			Str_ParseCmds(s.GetArgStr(), ppArgs, COUNTOF(ppArgs));
 
 			int iArgs[4];
-			for ( int idx = 0; idx < 4; ++idx )
+			for ( int i = 0; i < 4; ++i )
 			{
-				if ( !IsStrNumeric(ppArgs[idx]) )
+				if ( !IsStrNumeric(ppArgs[i]) )
 				{
-					DEBUG_ERR(("Invalid AddBuff argument number %u\n", idx + 1));
+					DEBUG_ERR(("Invalid AddBuff argument number %u\n", i + 1));
 					return true;
 				}
-				iArgs[idx] = Exp_GetVal(ppArgs[idx]);
+				iArgs[i] = Exp_GetVal(ppArgs[i]);
 			}
 			if ( (iArgs[0] < 0) || (iArgs[0] > USHRT_MAX) )
 			{
@@ -1029,16 +1023,16 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 				break;
 			}
 
-			LPCTSTR Args[7];
-			size_t ArgsCount = 0;
+			LPCTSTR pszArgs[7];
+			size_t iArgQty = 0;
 			for ( int i = 0; i < 7; ++i )
 			{
-				Args[i] = ppArgs[i + 4];
-				if ( Args[i] != NULL )
-					ArgsCount++;
+				pszArgs[i] = ppArgs[i + 4];
+				if ( pszArgs[i] != NULL )
+					++iArgQty;
 			}
 
-			addBuff(static_cast<BUFF_ICONS>(iArgs[0]), iArgs[1], iArgs[2], static_cast<WORD>(iArgs[3]), Args, ArgsCount);
+			addBuff(static_cast<BUFF_ICONS>(iArgs[0]), static_cast<DWORD>(iArgs[1]), static_cast<DWORD>(iArgs[2]), static_cast<WORD>(iArgs[3]), pszArgs, iArgQty);
 			break;
 		}
 		case CV_REMOVEBUFF:
@@ -1052,29 +1046,30 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			removeBuff(IconId);
 			break;
 		}
-		case CV_ADDCLILOC:		// add cliloc in @ClientTooltip trigger
+		case CV_ADDCLILOC:
 		{
-			TCHAR *ppLocArgs[256];
-			size_t qty = Str_ParseCmds(s.GetArgRaw(), ppLocArgs, COUNTOF(ppLocArgs), ",");
-			DWORD clilocid = Exp_GetVal(ppLocArgs[0]);
+			// Add cliloc in @ClientTooltip trigger
+			TCHAR *ppArgs[256];
+			size_t iArgQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), ",");
+			DWORD dwClilocId = static_cast<DWORD>(Exp_GetLLVal(ppArgs[0]));
 
-			CGString LocArgs;
-			for ( size_t y = 1; y < qty; y++ )
+			CGString sVal;
+			for ( size_t i = 1; i < iArgQty; ++i )
 			{
-				if ( LocArgs.GetLength() )
-					LocArgs += "\t";
-				LocArgs += (!strcmp(ppLocArgs[y], "NULL") ? " " : ppLocArgs[y]);
+				if ( sVal.GetLength() )
+					sVal += "\t";
+				sVal += !strcmp(ppArgs[i], "NULL") ? " " : ppArgs[i];
 			}
 
 			if ( g_Cfg.m_wDebugFlags & DEBUGF_SCRIPTS )
-				g_Log.EventDebug("SCRIPT: addcliloc(%lu,'%s')\n", clilocid, static_cast<LPCTSTR>(LocArgs));
-			m_TooltipData.Add(new CClientTooltip(clilocid, LocArgs));
+				g_Log.EventDebug("SCRIPT: addcliloc(%lu,'%s')\n", dwClilocId, static_cast<LPCTSTR>(sVal));
+			m_TooltipData.Add(new CClientTooltip(dwClilocId, sVal));
 			break;
 		}
 		case CV_ADDCONTEXTENTRY:
 		{
-			TCHAR *ppLocArgs[20];
-			if ( Str_ParseCmds(s.GetArgRaw(), ppLocArgs, COUNTOF(ppLocArgs), ",") > 4 )
+			TCHAR *ppArgs[20];
+			if ( Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), ",") > 4 )
 			{
 				DEBUG_ERR(("Bad AddContextEntry usage: Function takes maximum of 4 arguments!\n"));
 				return true;
@@ -1085,25 +1080,25 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 				return true;
 			}
 
-			for ( int i = 0; i < 4; i++ )
+			for ( int i = 0; i < 4; ++i )
 			{
-				if ( (i > 1) && IsStrEmpty(ppLocArgs[i]) )
+				if ( (i > 1) && IsStrEmpty(ppArgs[i]) )
 					continue;
 
-				if ( !IsStrNumeric(ppLocArgs[i]) )
+				if ( !IsStrNumeric(ppArgs[i]) )
 				{
 					DEBUG_ERR(("Bad AddContextEntry usage: Argument %d must be a number!\n", i + 1));
 					return true;
 				}
 			}
 
-			int entrytag = Exp_GetVal(ppLocArgs[0]);
-			if ( entrytag < 100 )
+			int iTextEntry = Exp_GetVal(ppArgs[0]);
+			if ( iTextEntry < 100 )
 			{
 				DEBUG_ERR(("Bad AddContextEntry usage: TextEntry < 100 is reserved for server usage!\n"));
 				return true;
 			}
-			m_pPopupPacket->addOption(static_cast<WORD>(entrytag), static_cast<DWORD>(Exp_GetVal(ppLocArgs[1])), static_cast<WORD>(Exp_GetVal(ppLocArgs[2])), static_cast<WORD>(Exp_GetVal(ppLocArgs[3])));
+			m_pPopupPacket->addOption(static_cast<WORD>(iTextEntry), static_cast<DWORD>(Exp_GetLLVal(ppArgs[1])), static_cast<WORD>(Exp_GetLLVal(ppArgs[2])), static_cast<WORD>(Exp_GetLLVal(ppArgs[3])));
 			break;
 		}
 		case CV_ARROWQUEST:
@@ -1111,44 +1106,31 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			INT64 piVal[3];
 			Str_ParseCmds(s.GetArgRaw(), piVal, COUNTOF(piVal));
 			addArrowQuest(static_cast<WORD>(piVal[0]), static_cast<WORD>(piVal[1]), static_cast<DWORD>(piVal[2]));
-#ifdef _ALPHASPHERE
-			// todo: should use a proper container for these, since the arrows are lost
-			// when the client logs out, and also newer clients support multiple arrows
-			if ( piVal[0] && piVal[1] && m_pChar )
-			{
-				m_pChar->SetKeyNum("ARROWQUEST_X", piVal[0]);
-				m_pChar->SetKeyNum("ARROWQUEST_Y", piVal[1]);
-			}
-			else {
-				m_pChar->DeleteKey("ARROWQUEST_X");
-				m_pChar->DeleteKey("ARROWQUEST_Y");
-			}
-#endif
 			break;
 		}
 		case CV_BADSPAWN:
 		{
 			// Loop the world searching for bad spawns
-			bool bFound = false;
+			bool fFound = false;
 			CItem *pItem = NULL;
 			CSector *pSector = NULL;
 			CResourceDef *pSpawnDef = NULL;
-			for ( int m = 0; (m < 256) && !bFound; m++ )
+			for ( int m = 0; (m < 256) && !fFound; ++m )
 			{
 				if ( !g_MapList.m_maps[m] )
 					continue;
 
-				for ( int d = 0; (d < g_MapList.GetSectorQty(m)) && !bFound; d++ )
+				for ( int s = 0; (s < g_MapList.GetSectorQty(m)) && !fFound; ++s )
 				{
-					pSector = g_World.GetSector(m, d);
+					pSector = g_World.GetSector(m, s);
 					if ( !pSector )
 						continue;
 
-					for ( pItem = static_cast<CItem *>(pSector->m_Items_Timer.GetHead()); (pItem != NULL) && !bFound; pItem = pItem->GetNext() )
+					for ( pItem = static_cast<CItem *>(pSector->m_Items_Timer.GetHead()); (pItem != NULL) && !fFound; pItem = pItem->GetNext() )
 					{
 						if ( pItem->IsType(IT_SPAWN_ITEM) || pItem->IsType(IT_SPAWN_CHAR) )
 						{
-							pSpawnDef = static_cast<CItemSpawn *>(pItem)->FixDef();
+							pSpawnDef = dynamic_cast<CItemSpawn *>(pItem)->FixDef();
 							if ( !pSpawnDef )
 							{
 								RESOURCE_ID_BASE rid = pItem->IsType(IT_SPAWN_ITEM) ? pItem->m_itSpawnItem.m_ItemID : pItem->m_itSpawnChar.m_CharID;
@@ -1156,13 +1138,13 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 								m_pChar->Spell_Teleport(pt, true, false);
 								m_pChar->m_Act_Targ = pItem->GetUID();
 								SysMessagef("Bad spawn (0%lx, id=%s). Set as ACT", static_cast<DWORD>(pItem->GetUID()), g_Cfg.ResourceGetName(rid));
-								bFound = true;
+								fFound = true;
 							}
 						}
 					}
 				}
 			}
-			if ( !bFound )
+			if ( !fFound )
 				SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_NO_BAD_SPAWNS));
 			break;
 		}
@@ -1181,8 +1163,8 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			CObjBase *pObjSrc = dynamic_cast<CObjBase *>(pSrc);
 			if ( IsSetMagicFlags(MAGICF_PRECAST) && !pSpellDef->IsSpellType(SPELLFLAG_NOPRECAST) )
 			{
-				int skill;
-				if ( !pSpellDef->GetPrimarySkill(&skill, NULL) )
+				int iSkill;
+				if ( !pSpellDef->GetPrimarySkill(&iSkill, NULL) )
 					return true;
 
 				m_tmSkillMagery.m_Spell = spell;	// m_atMagery.m_Spell
@@ -1197,7 +1179,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 					m_Targ_UID.ClearUID();
 					m_Targ_PrvUID.ClearUID();
 				}
-				m_pChar->Skill_Start(static_cast<SKILL_TYPE>(skill));
+				m_pChar->Skill_Start(static_cast<SKILL_TYPE>(iSkill));
 				break;
 			}
 			else
@@ -1239,49 +1221,30 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 		}
 		case CV_CLOSEPAPERDOLL:
 		{
-			CChar *pChar = m_pChar;
-			if ( s.HasArgs() )
-			{
-				CGrayUID uid = static_cast<CGrayUID>(s.GetArgVal());
-				pChar = uid.CharFind();
-			}
+			const CChar *pChar = s.HasArgs() ? static_cast<CGrayUID>(s.GetArgVal()).CharFind() : m_pChar;
 			if ( pChar )
 				closeUIWindow(pChar, 0x1);
 			break;
 		}
 		case CV_CLOSEPROFILE:
 		{
-			CChar *pChar = m_pChar;
-			if ( s.HasArgs() )
-			{
-				CGrayUID uid = static_cast<CGrayUID>(s.GetArgVal());
-				pChar = uid.CharFind();
-			}
+			const CChar *pChar = s.HasArgs() ? static_cast<CGrayUID>(s.GetArgVal()).CharFind() : m_pChar;
 			if ( pChar )
 				closeUIWindow(pChar, 0x8);
 			break;
 		}
 		case CV_CLOSESTATUS:
 		{
-			CChar *pChar = m_pChar;
-			if ( s.HasArgs() )
-			{
-				CGrayUID uid = static_cast<CGrayUID>(s.GetArgVal());
-				pChar = uid.CharFind();
-			}
+			const CChar *pChar = s.HasArgs() ? static_cast<CGrayUID>(s.GetArgVal()).CharFind() : m_pChar;
 			if ( pChar )
 				closeUIWindow(pChar, 0x2);
 			break;
 		}
 		case CV_DYE:
 		{
-			if ( s.HasArgs() )
-			{
-				CGrayUID uid = static_cast<CGrayUID>(s.GetArgVal());
-				CObjBase *pObj = uid.ObjFind();
-				if ( pObj )
-					addDyeOption(pObj);
-			}
+			const CObjBase *pObj = s.HasArgs() ? static_cast<CGrayUID>(s.GetArgVal()).ObjFind() : NULL;
+			if ( pObj )
+				addDyeOption(pObj);
 			break;
 		}
 		case CV_EVERBTARG:
@@ -1294,42 +1257,38 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 		{
 			// sort of like EXPORT but for statics.
 			// Opposite of the "UNEXTRACT" command
-			if ( !s.HasArgs() )
+			TCHAR *ppArgs[2];
+			size_t iArgQty = Str_ParseCmds(s.GetArgStr(), ppArgs, COUNTOF(ppArgs));
+			if ( iArgQty < 2 )
 			{
 				SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_EXTRACT_USAGE));
+				break;
 			}
-			else
-			{
-				TCHAR *ppArgs[2];
-				Str_ParseCmds(s.GetArgStr(), ppArgs, COUNTOF(ppArgs));
 
-				m_Targ_Text = ppArgs[0];				// point at the options (if any)
-				m_tmTile.m_ptFirst.InitPoint();			// clear this first
-				m_tmTile.m_Code = CV_EXTRACT;			// set extract code
-				m_tmTile.m_id = Exp_GetVal(ppArgs[1]);	// extract id
-				addTarget(CLIMODE_TARG_TILE, g_Cfg.GetDefaultMsg(DEFMSG_SELECT_EXTRACT_AREA), true);
-			}
+			m_Targ_Text = ppArgs[0];				// point at the options (if any)
+			m_tmTile.m_ptFirst.InitPoint();			// clear this first
+			m_tmTile.m_Code = CV_EXTRACT;			// set extract code
+			m_tmTile.m_id = Exp_GetVal(ppArgs[1]);	// extract id
+			addTarget(CLIMODE_TARG_TILE, g_Cfg.GetDefaultMsg(DEFMSG_SELECT_EXTRACT_AREA), true);
 			break;
 		}
 		case CV_UNEXTRACT:
 		{
 			// Create item from script.
 			// Opposite of the "EXTRACT" command
-			if ( !s.HasArgs() )
+			TCHAR *ppArgs[2];
+			size_t iArgQty = Str_ParseCmds(s.GetArgStr(), ppArgs, COUNTOF(ppArgs));
+			if ( iArgQty < 2 )
 			{
 				SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_UNEXTRACT_USAGE));
+				break;
 			}
-			else
-			{
-				TCHAR *ppArgs[2];
-				Str_ParseCmds(s.GetArgStr(), ppArgs, COUNTOF(ppArgs));
 
-				m_Targ_Text = ppArgs[0];				// point at the options (if any)
-				m_tmTile.m_ptFirst.InitPoint();			// clear this first
-				m_tmTile.m_Code = CV_UNEXTRACT;			// set extract code
-				m_tmTile.m_id = Exp_GetVal(ppArgs[1]);	// extract id
-				addTarget(CLIMODE_TARG_UNEXTRACT, g_Cfg.GetDefaultMsg(DEFMSG_SELECT_MULTI_POS), true);
-			}
+			m_Targ_Text = ppArgs[0];				// point at the options (if any)
+			m_tmTile.m_ptFirst.InitPoint();			// clear this first
+			m_tmTile.m_Code = CV_UNEXTRACT;			// set extract code
+			m_tmTile.m_id = Exp_GetVal(ppArgs[1]);	// extract id
+			addTarget(CLIMODE_TARG_UNEXTRACT, g_Cfg.GetDefaultMsg(DEFMSG_SELECT_MULTI_POS), true);
 			break;
 		}
 		case CV_GMPAGE:
@@ -1391,8 +1350,12 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 		case CV_MAPWAYPOINT:
 		{
 			INT64 piVal[2];
-			Str_ParseCmds(s.GetArgRaw(), piVal, COUNTOF(piVal));
-
+			size_t iArgQty = Str_ParseCmds(s.GetArgRaw(), piVal, COUNTOF(piVal));
+			if ( iArgQty < 2 )
+			{
+				SysMessage("Usage: MAPWAYPOINT uid type");
+				break;
+			}
 			CObjBase *pObj = static_cast<CGrayUID>(piVal[0]).ObjFind();
 			addMapWaypoint(pObj, static_cast<MAPWAYPOINT_TYPE>(piVal[1]));
 			break;
@@ -1405,9 +1368,9 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 		case CV_MIDILIST:
 		{
 			INT64 piMidi[64];
-			size_t iQty = Str_ParseCmds(s.GetArgStr(), piMidi, COUNTOF(piMidi));
-			if ( iQty > 0 )
-				addMusic(static_cast<MIDI_TYPE>(piMidi[Calc_GetRandVal(iQty)]));
+			size_t iArgQty = Str_ParseCmds(s.GetArgStr(), piMidi, COUNTOF(piMidi));
+			if ( iArgQty > 0 )
+				addMusic(static_cast<MIDI_TYPE>(piMidi[Calc_GetRandVal(iArgQty)]));
 			break;
 		}
 		case CV_NUDGE:
@@ -1415,14 +1378,12 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			if ( !s.HasArgs() )
 			{
 				SysMessage("Usage: NUDGE dx dy dz");
+				break;
 			}
-			else
-			{
-				m_Targ_Text = s.GetArgRaw();
-				m_tmTile.m_ptFirst.InitPoint();		// clear this first
-				m_tmTile.m_Code = CV_NUDGE;
-				addTarget(CLIMODE_TARG_TILE, g_Cfg.GetDefaultMsg(DEFMSG_SELECT_NUDGE_AREA), true);
-			}
+			m_Targ_Text = s.GetArgRaw();
+			m_tmTile.m_ptFirst.InitPoint();		// clear this first
+			m_tmTile.m_Code = CV_NUDGE;
+			addTarget(CLIMODE_TARG_TILE, g_Cfg.GetDefaultMsg(DEFMSG_SELECT_NUDGE_AREA), true);
 			break;
 		}
 		case CV_NUKE:
@@ -1443,12 +1404,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 		}
 		case CV_OPENPAPERDOLL:
 		{
-			CChar *pChar = m_pChar;
-			if ( s.HasArgs() )
-			{
-				CGrayUID uid = static_cast<CGrayUID>(s.GetArgVal());
-				pChar = uid.CharFind();
-			}
+			const CChar *pChar = s.HasArgs() ? static_cast<CGrayUID>(s.GetArgVal()).CharFind() : m_pChar;
 			if ( pChar )
 				addCharPaperdoll(pChar);
 			break;
@@ -1458,20 +1414,12 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			TCHAR *ppArgs[2];
 			Str_ParseCmds(s.GetArgStr(), ppArgs, COUNTOF(ppArgs));
 
-			CChar *pChar = NULL;
-			CItem *pItem = NULL;
-			if ( ppArgs[0] )
-			{
-				CGrayUID uidChar = static_cast<CGrayUID>(Exp_GetVal(ppArgs[0]));
-				pChar = uidChar.CharFind();
-			}
-			if ( ppArgs[1] )
-			{
-				CGrayUID uidItem = static_cast<CGrayUID>(Exp_GetVal(ppArgs[1]));
-				pItem = uidItem.ItemFind();
-			}
+			CChar *pChar = ppArgs[0] ? static_cast<CGrayUID>(Exp_GetLLVal(ppArgs[0])).CharFind() : NULL;
 			if ( pChar )
+			{
+				CItem *pItem = ppArgs[1] ? static_cast<CGrayUID>(Exp_GetLLVal(ppArgs[1])).ItemFind() : NULL;
 				Cmd_SecureTrade(pChar, pItem);
+			}
 			break;
 		}
 		case CV_PAGE:
@@ -1528,20 +1476,20 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			m_pChar->m_Act_Targ = m_pChar->GetUID();
 			m_pChar->m_Act_TargPrv = m_pChar->GetUID();
 
-			if ( pSpellDef->IsSpellType(SPELLFLAG_TARG_OBJ | SPELLFLAG_TARG_XYZ) )
+			if ( pSpellDef->IsSpellType(SPELLFLAG_TARG_OBJ|SPELLFLAG_TARG_XYZ) )
 			{
 				m_tmSkillMagery.m_Spell = SPELL_Summon;
 				m_tmSkillMagery.m_SummonID = static_cast<CREID_TYPE>(g_Cfg.ResourceGetIndexType(RES_CHARDEF, s.GetArgStr()));
 
-				LPCTSTR pPrompt = g_Cfg.GetDefaultMsg(DEFMSG_SELECT_MAGIC_TARGET);
+				LPCTSTR pszPrompt = g_Cfg.GetDefaultMsg(DEFMSG_SELECT_MAGIC_TARGET);
 				if ( !pSpellDef->m_sTargetPrompt.IsEmpty() )
-					pPrompt = pSpellDef->m_sTargetPrompt;
+					pszPrompt = pSpellDef->m_sTargetPrompt;
 
-				int SpellTimeout = static_cast<int>(GetDefNum("SPELLTIMEOUT"));
-				if ( !SpellTimeout )
-					SpellTimeout = g_Cfg.m_iSpellTimeout * TICK_PER_SEC;
+				int iSpellTimeout = static_cast<int>(GetDefNum("SPELLTIMEOUT"));
+				if ( !iSpellTimeout )
+					iSpellTimeout = g_Cfg.m_iSpellTimeout * TICK_PER_SEC;
 
-				addTarget(CLIMODE_TARG_SKILL_MAGERY, pPrompt, pSpellDef->IsSpellType(SPELLFLAG_TARG_XYZ), pSpellDef->IsSpellType(SPELLFLAG_HARM), SpellTimeout);
+				addTarget(CLIMODE_TARG_SKILL_MAGERY, pszPrompt, pSpellDef->IsSpellType(SPELLFLAG_TARG_XYZ), pSpellDef->IsSpellType(SPELLFLAG_HARM), iSpellTimeout);
 				break;
 			}
 			else
@@ -1556,11 +1504,11 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 				}
 				else
 				{
-					int skill;
-					if ( !pSpellDef->GetPrimarySkill(&skill, NULL) )
+					int iSkill;
+					if ( !pSpellDef->GetPrimarySkill(&iSkill, NULL) )
 						return false;
 
-					m_pChar->Skill_Start(static_cast<SKILL_TYPE>(skill));
+					m_pChar->Skill_Start(static_cast<SKILL_TYPE>(iSkill));
 				}
 			}
 			break;
@@ -1571,8 +1519,8 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			break;
 		case CV_SYSMESSAGEF:	// there is still an issue with numbers not resolving properly when %i,%d,or other numeric format code is in use
 		{
-			TCHAR *pszArgs[4];
-			size_t iArgQty = Str_ParseCmds(s.GetArgRaw(), pszArgs, COUNTOF(pszArgs));
+			TCHAR *ppArgs[4];
+			size_t iArgQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs));
 			if ( iArgQty < 2 )
 			{
 				g_Log.EventError("SysMessagef with less than 1 args for the given text\n");
@@ -1583,32 +1531,31 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 				g_Log.EventError("Too many arguments given to SysMessagef (max = text + 3\n");
 				return false;
 			}
-			//strip quotes if any
-			if ( *pszArgs[0] == '"' )
-				pszArgs[0]++;
-			for ( TCHAR *pEnd = pszArgs[0] + strlen(pszArgs[0]) - 1; pEnd >= pszArgs[0]; pEnd-- )
+			if ( *ppArgs[0] == '"' )	// skip quotes
+				++ppArgs[0];
+			for ( TCHAR *pEnd = ppArgs[0] + strlen(ppArgs[0]) - 1; pEnd >= ppArgs[0]; --pEnd )
 			{
-				if ( *pEnd == '"' )
+				if ( *pEnd == '"' )		// skip quotes
 				{
 					*pEnd = '\0';
 					break;
 				}
 			}
-			SysMessagef(pszArgs[0], pszArgs[1], pszArgs[2] ? pszArgs[2] : 0, pszArgs[3] ? pszArgs[3] : 0);
+			SysMessagef(ppArgs[0], ppArgs[1], ppArgs[2] ? ppArgs[2] : 0, ppArgs[3] ? ppArgs[3] : 0);
 			break;
 		}
 		case CV_SMSGU:
 		case CV_SYSMESSAGEUA:
 		{
-			TCHAR *pszArgs[5];
-			size_t iArgQty = Str_ParseCmds(s.GetArgRaw(), pszArgs, COUNTOF(pszArgs));
+			TCHAR *ppArgs[5];
+			size_t iArgQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs));
 			if ( iArgQty > 4 )
 			{
 				// Font and mode are actually ignored here, but they never made a difference anyway.. I'd like to keep the syntax similar to SAYUA
 				NCHAR szBuffer[MAX_TALK_BUFFER];
-				CvtSystemToNUNICODE(szBuffer, COUNTOF(szBuffer), pszArgs[4], -1);
+				CvtSystemToNUNICODE(szBuffer, COUNTOF(szBuffer), ppArgs[4], -1);
 
-				addBarkUNICODE(szBuffer, NULL, static_cast<HUE_TYPE>(Exp_GetVal(pszArgs[0])), TALKMODE_SYSTEM, FONT_NORMAL, pszArgs[3]);
+				addBarkUNICODE(szBuffer, NULL, static_cast<HUE_TYPE>(Exp_GetLLVal(ppArgs[0])), TALKMODE_SYSTEM, FONT_NORMAL, ppArgs[3]);
 			}
 			break;
 		}
@@ -1621,19 +1568,19 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			{
 				HUE_TYPE hue = HUE_TEXT_DEF;
 				if ( ATOI(ppArgs[0]) > 0 )
-					hue = static_cast<HUE_TYPE>(Exp_GetVal(ppArgs[0]));
+					hue = static_cast<HUE_TYPE>(Exp_GetLLVal(ppArgs[0]));
 
-				DWORD iClilocId = Exp_GetVal(ppArgs[1]);
+				DWORD dwClilocId = static_cast<DWORD>(Exp_GetLLVal(ppArgs[1]));
 
-				CGString CArgs;
-				for ( size_t i = 2; i < iArgQty; i++ )
+				CGString sVal;
+				for ( size_t i = 2; i < iArgQty; ++i )
 				{
-					if ( CArgs.GetLength() )
-						CArgs += "\t";
-					CArgs += (!strcmp(ppArgs[i], "NULL") ? " " : ppArgs[i]);
+					if ( sVal.GetLength() )
+						sVal += "\t";
+					sVal += !strcmp(ppArgs[i], "NULL") ? " " : ppArgs[i];
 				}
 
-				addBarkLocalized(iClilocId, NULL, hue, TALKMODE_SYSTEM, FONT_NORMAL, CArgs.GetPtr());
+				addBarkLocalized(dwClilocId, NULL, hue, TALKMODE_SYSTEM, FONT_NORMAL, sVal.GetPtr());
 			}
 			break;
 		}
@@ -1645,24 +1592,24 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			if ( iArgQty > 2 )
 			{
 				HUE_TYPE hue = HUE_TEXT_DEF;
-				int affix = 0;
+				AFFIX_TYPE affix = AFFIX_APPEND;
 				if ( ATOI(ppArgs[0]) > 0 )
-					hue = static_cast<HUE_TYPE>(Exp_GetVal(ppArgs[0]));
+					hue = static_cast<HUE_TYPE>(Exp_GetLLVal(ppArgs[0]));
 
-				DWORD iClilocId = Exp_GetVal(ppArgs[1]);
+				DWORD dwClilocId = static_cast<DWORD>(Exp_GetLLVal(ppArgs[1]));
 
 				if ( ppArgs[2] )
-					affix = Exp_GetVal(ppArgs[2]);
+					affix = static_cast<AFFIX_TYPE>(Exp_GetLLVal(ppArgs[2]));
 
-				CGString CArgs;
-				for ( size_t i = 4; i < iArgQty; i++ )
+				CGString sVal;
+				for ( size_t i = 4; i < iArgQty; ++i )
 				{
-					if ( CArgs.GetLength() )
-						CArgs += "\t";
-					CArgs += (!strcmp(ppArgs[i], "NULL") ? " " : ppArgs[i]);
+					if ( sVal.GetLength() )
+						sVal += "\t";
+					sVal += !strcmp(ppArgs[i], "NULL") ? " " : ppArgs[i];
 				}
 
-				addBarkLocalizedEx(iClilocId, NULL, hue, TALKMODE_SYSTEM, FONT_NORMAL, static_cast<AFFIX_TYPE>(affix), ppArgs[3], CArgs.GetPtr());
+				addBarkLocalizedEx(dwClilocId, NULL, hue, TALKMODE_SYSTEM, FONT_NORMAL, affix, ppArgs[3], sVal.GetPtr());
 			}
 			break;
 		}
@@ -1673,16 +1620,14 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			if ( !s.HasArgs() )
 			{
 				SysMessage("Usage: TILE z-height item1 item2 itemX");
+				break;
 			}
-			else
-			{
-				m_Targ_Text = s.GetArgStr();	// point at the options
-				m_tmTile.m_ptFirst.InitPoint();	// clear this first
-				m_tmTile.m_Code = CV_TILE;
-				addTarget(CLIMODE_TARG_TILE, "Pick 1st corner:", true);
-			}
+			m_Targ_Text = s.GetArgStr();	// point at the options
+			m_tmTile.m_ptFirst.InitPoint();	// clear this first
+			m_tmTile.m_Code = CV_TILE;
+			addTarget(CLIMODE_TARG_TILE, "Pick 1st corner:", true);
 			break;
-		case CV_VERSION:	// "SHOW VERSION"
+		case CV_VERSION:
 			SysMessage(g_szServerDescription);
 			break;
 		case CV_WEBLINK:
@@ -1693,11 +1638,7 @@ bool CClient::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from
 			{
 				CGString sVal;
 				if ( r_WriteVal(s.GetKey(), sVal, pSrc) )
-				{
-					//if ( !s.IsKeyHead("CTAG.", 5) && !s.IsKeyHead("CTAG0.", 6) )	// We don't want output related to CTAG
-					//	SysMessagef("%s = %s", s.GetKey(), static_cast<LPCTSTR>(sVal));	// feedback on what we just did.
 					return true;
-				}
 			}
 			return CScriptObj::r_Verb(s, pSrc);		// used in the case of web pages to access server level things
 	}
@@ -1715,7 +1656,7 @@ long CClient::GetSocketID() const
 	return m_NetState->id();
 }
 
-CSocketAddress &CClient::GetPeer()
+CSocketAddress &CClient::GetPeer() const
 {
 	return m_NetState->m_peerAddress;
 }
