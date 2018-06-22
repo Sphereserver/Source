@@ -690,10 +690,6 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case OC_DAMDIRECT:
 		case OC_DECREASEHITCHANCE:
 		case OC_EXPANSION:
-		case OC_HITLEECHLIFE:
-		case OC_HITLEECHMANA:
-		case OC_HITLEECHSTAM:
-		case OC_HITMANADRAIN:
 		case OC_REFLECTPHYSICALDAM:
 		case OC_REGENFOOD:
 		case OC_REGENHITS:
@@ -786,6 +782,18 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			break;
 		case OC_FASTERCASTRECOVERY:
 			sVal.FormatVal(m_FasterCastRecovery);
+			break;
+		case OC_HITLEECHLIFE:
+			sVal.FormatVal(m_HitLifeLeech);
+			break;
+		case OC_HITLEECHMANA:
+			sVal.FormatVal(m_HitManaLeech);
+			break;
+		case OC_HITLEECHSTAM:
+			sVal.FormatVal(m_HitStaminaLeech);
+			break;
+		case OC_HITMANADRAIN:
+			sVal.FormatVal(m_HitManaDrain);
 			break;
 		case OC_LOWERMANACOST:
 			sVal.FormatVal(m_LowerManaCost);
@@ -1471,10 +1479,6 @@ bool CObjBase::r_LoadVal(CScript &s)
 		case OC_DAMDIRECT:
 		case OC_DECREASEHITCHANCE:
 		case OC_EXPANSION:
-		case OC_HITLEECHLIFE:
-		case OC_HITLEECHMANA:
-		case OC_HITLEECHSTAM:
-		case OC_HITMANADRAIN:
 		case OC_REFLECTPHYSICALDAM:
 		case OC_NAMELOC:
 			SetDefNum(s.GetKey(), s.GetArgVal(), false);
@@ -1561,6 +1565,18 @@ bool CObjBase::r_LoadVal(CScript &s)
 		case OC_FASTERCASTRECOVERY:
 			m_FasterCastRecovery = static_cast<int>(s.GetArgVal());
 			bUpdateClientStats = true;
+			break;
+		case OC_HITLEECHLIFE:
+			m_HitLifeLeech = static_cast<int>(s.GetArgVal());
+			break;
+		case OC_HITLEECHMANA:
+			m_HitManaLeech = static_cast<int>(s.GetArgVal());
+			break;
+		case OC_HITLEECHSTAM:
+			m_HitStaminaLeech = static_cast<int>(s.GetArgVal());
+			break;
+		case OC_HITMANADRAIN:
+			m_HitManaDrain = static_cast<int>(s.GetArgVal());
 			break;
 		case OC_LOWERMANACOST:
 			m_LowerManaCost = static_cast<int>(s.GetArgVal());
@@ -1803,6 +1819,14 @@ void CObjBase::r_Write(CScript &s)
 		s.WriteKeyVal("INCREASEDAM", m_DamIncrease);
 	if ( m_SpellDamIncrease != pBaseDef->m_SpellDamIncrease )
 		s.WriteKeyVal("INCREASESPELLDAM", m_SpellDamIncrease);
+	if ( m_HitLifeLeech != pBaseDef->m_HitLifeLeech )
+		s.WriteKeyVal("HITLEECHLIFE", m_HitLifeLeech);
+	if ( m_HitManaLeech != pBaseDef->m_HitManaLeech )
+		s.WriteKeyVal("HITLEECHMANA", m_HitManaLeech);
+	if ( m_HitStaminaLeech != pBaseDef->m_HitStaminaLeech )
+		s.WriteKeyVal("HITLEECHSTAM", m_HitStaminaLeech);
+	if ( m_HitManaDrain != pBaseDef->m_HitManaDrain )
+		s.WriteKeyVal("HITMANADRAIN", m_HitManaDrain);
 	if ( m_HitChanceIncrease != pBaseDef->m_HitChanceIncrease )
 		s.WriteKeyVal("INCREASEHITCHANCE", m_HitChanceIncrease);
 	if ( m_DefChanceIncrease != pBaseDef->m_DefChanceIncrease )

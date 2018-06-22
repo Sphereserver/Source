@@ -258,6 +258,10 @@ CChar::CChar(CREID_TYPE id) : CObjBase(false)
 	m_Luck = pCharDef->m_Luck;
 	m_DamIncrease = pCharDef->m_DamIncrease;
 	m_SpellDamIncrease = pCharDef->m_SpellDamIncrease;
+	m_HitLifeLeech = pCharDef->m_HitLifeLeech;
+	m_HitManaDrain = pCharDef->m_HitManaDrain;
+	m_HitManaLeech = pCharDef->m_HitManaLeech;
+	m_HitStaminaLeech = pCharDef->m_HitStaminaLeech;
 	m_HitChanceIncrease = pCharDef->m_HitChanceIncrease;
 	m_DefChanceIncrease = pCharDef->m_DefChanceIncrease;
 	m_DefChanceIncreaseMax = pCharDef->m_DefChanceIncreaseMax;
@@ -771,6 +775,10 @@ bool CChar::DupeFrom(CChar *pChar, bool fNewbieItems)
 	m_Luck = pChar->m_Luck;
 	m_DamIncrease = pChar->m_DamIncrease;
 	m_SpellDamIncrease = pChar->m_SpellDamIncrease;
+	m_HitLifeLeech = pChar->m_HitLifeLeech;
+	m_HitManaDrain = pChar->m_HitManaDrain;
+	m_HitManaLeech = pChar->m_HitManaLeech;
+	m_HitStaminaLeech = pChar->m_HitStaminaLeech;
 	m_HitChanceIncrease = pChar->m_HitChanceIncrease;
 	m_DefChanceIncrease = pChar->m_DefChanceIncrease;
 	m_DefChanceIncreaseMax = pChar->m_DefChanceIncreaseMax;
@@ -1749,6 +1757,18 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case CHC_FASTERCASTRECOVERY:
 			sVal.FormatVal(m_FasterCastRecovery);
 			return true;
+		case CHC_HITLEECHLIFE:
+			sVal.FormatVal(m_HitLifeLeech);
+			return true;
+		case CHC_HITLEECHMANA:
+			sVal.FormatVal(m_HitManaLeech);
+			return true;
+		case CHC_HITLEECHSTAM:
+			sVal.FormatVal(m_HitStaminaLeech);
+			return true;
+		case CHC_HITMANADRAIN:
+			sVal.FormatVal(m_HitManaDrain);
+			return true;
 		case CHC_LOWERMANACOST:
 			sVal.FormatVal(m_LowerManaCost);
 			return true;
@@ -2422,6 +2442,18 @@ bool CChar::r_LoadVal(CScript &s)
 		case CHC_FASTERCASTRECOVERY:
 			m_FasterCastRecovery = static_cast<int>(s.GetArgVal());
 			UpdateStatsFlag();
+			break;
+		case CHC_HITLEECHLIFE:
+			m_HitLifeLeech = static_cast<int>(s.GetArgVal());
+			break;
+		case CHC_HITLEECHMANA:
+			m_HitManaLeech = static_cast<int>(s.GetArgVal());
+			break;
+		case CHC_HITLEECHSTAM:
+			m_HitStaminaLeech = static_cast<int>(s.GetArgVal());
+			break;
+		case CHC_HITMANADRAIN:
+			m_HitManaDrain = static_cast<int>(s.GetArgVal());
 			break;
 		case CHC_LOWERMANACOST:
 			m_LowerManaCost = static_cast<int>(s.GetArgVal());

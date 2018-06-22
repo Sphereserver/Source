@@ -2715,25 +2715,28 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 							if ( pItem->m_UseBestWeaponSkill )
 								m_TooltipData.Add(new CClientTooltip(1060400)); // use best weapon skill
 
-							INT64 HitLifeLeech = pItem->GetDefNum("HITLEECHLIFE", true);
-							if ( HitLifeLeech != 0 )
+							if ( pItem->m_HitLifeLeech != 0 )
 							{
 								m_TooltipData.Add(t = new CClientTooltip(1060422)); // hit life leech ~1_val~%
-								t->FormatArgs("%lld", HitLifeLeech);
+								t->FormatArgs("%d", pItem->m_HitLifeLeech);
 							}
 
-							INT64 HitManaLeech = pItem->GetDefNum("HITLEECHMANA", true);
-							if ( HitManaLeech != 0 )
+							if ( pItem->m_HitManaDrain != 0 )
+							{
+								m_TooltipData.Add(t = new CClientTooltip(1113699)); // hit mana drain ~1_val~%
+								t->FormatArgs("%d", pItem->m_HitManaDrain);
+							}
+
+							if ( pItem->m_HitManaLeech != 0 )
 							{
 								m_TooltipData.Add(t = new CClientTooltip(1060427)); // hit mana leech ~1_val~%
-								t->FormatArgs("%lld", HitManaLeech);
+								t->FormatArgs("%d", pItem->m_HitManaLeech);
 							}
 
-							INT64 HitStaminaLeech = pItem->GetDefNum("HITLEECHSTAM", true);
-							if ( HitStaminaLeech != 0 )
+							if ( pItem->m_HitStaminaLeech != 0 )
 							{
 								m_TooltipData.Add(t = new CClientTooltip(1060430)); // hit stamina leech ~1_val~%
-								t->FormatArgs("%lld", HitStaminaLeech);
+								t->FormatArgs("%d", pItem->m_HitStaminaLeech);
 							}
 
 							if ( pItem->m_DamPhysical != 0 )

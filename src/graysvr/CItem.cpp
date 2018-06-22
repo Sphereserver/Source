@@ -1644,6 +1644,10 @@ bool CItem::SetBase( CItemBase * pItemDef )
 	m_Luck = pItemDef->m_Luck;
 	m_DamIncrease = pItemDef->m_DamIncrease;
 	m_SpellDamIncrease = pItemDef->m_SpellDamIncrease;
+	m_HitLifeLeech = pItemDef->m_HitLifeLeech;
+	m_HitManaDrain = pItemDef->m_HitManaDrain;
+	m_HitManaLeech = pItemDef->m_HitManaLeech;
+	m_HitStaminaLeech = pItemDef->m_HitStaminaLeech;
 	m_HitChanceIncrease = pItemDef->m_HitChanceIncrease;
 	m_DefChanceIncrease = pItemDef->m_DefChanceIncrease;
 	m_DefChanceIncreaseMax = pItemDef->m_DefChanceIncreaseMax;

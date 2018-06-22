@@ -548,7 +548,7 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 					break;
 				case SPELL_Vampiric_Embrace:
 					iBuffIcon = BI_VAMPIRICEMBRACE;
-					SetDefNum("HitLeechLife", GetDefNum("HitLeechLife") - pSpell->m_itSpell.m_PolyStr);
+					m_HitLifeLeech -= pSpell->m_itSpell.m_PolyStr;
 					SetDefNum("RegenStam", GetDefNum("RegenStam") - pSpell->m_itSpell.m_PolyDex);
 					SetDefNum("RegenMana", GetDefNum("RegenMana") - pSpell->m_itSpell.m_spellcharges);
 					m_ResFire += wStatEffect;
@@ -558,7 +558,7 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 					m_ResPhysical -= pSpell->m_itSpell.m_PolyStr;
 					m_ResEnergy += pSpell->m_itSpell.m_PolyDex;
 					m_ResFire += pSpell->m_itSpell.m_PolyDex;
-					SetDefNum("HitLeechMana", GetDefNum("HitLeechMana") - pSpell->m_itSpell.m_spellcharges);
+					m_HitManaLeech -= pSpell->m_itSpell.m_spellcharges;
 					break;
 				case SPELL_Reaper_Form:
 					iBuffIcon = BI_REAPERFORM;
@@ -907,7 +907,7 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 		{
 			CItem *pWeapon = m_uidWeapon.ItemFind();
 			if ( pWeapon )
-				pWeapon->SetDefNum("HitLeechLife", pWeapon->GetDefNum("HitLeechLife") - wStatEffect, true);	// Adding 50% HitLeechLife to the weapon, since damaging with it should return 50% of the damage dealt.
+				pWeapon->m_HitLifeLeech -= wStatEffect;		// add 50% hit life leech to the weapon, since damaging with it should return 50% of the damage dealt
 			return;
 		}
 		default:
@@ -1039,7 +1039,7 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 					pSpell->m_itSpell.m_PolyDex = 15;		// Stamina Regeneration
 					pSpell->m_itSpell.m_spellcharges = 3;	// Mana Regeneration
 					pSpell->m_itSpell.m_spelllevel = 25;	// Fire Resist
-					SetDefNum("HitLeechLife", GetDefNum("HitLeechLife") + pSpell->m_itSpell.m_PolyStr);
+					m_HitLifeLeech += pSpell->m_itSpell.m_PolyStr;
 					SetDefNum("RegenStam", GetDefNum("RegenStam") + pSpell->m_itSpell.m_PolyDex);
 					SetDefNum("RegenMana", GetDefNum("RegenMana") + pSpell->m_itSpell.m_spellcharges);
 					m_ResFire -= pSpell->m_itSpell.m_spelllevel;
@@ -1071,7 +1071,7 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 					m_ResPhysical += pSpell->m_itSpell.m_PolyStr;
 					m_ResEnergy -= pSpell->m_itSpell.m_PolyDex;
 					m_ResFire -= pSpell->m_itSpell.m_PolyDex;
-					SetDefNum("HitLeechMana", GetDefNum("HitLeechMana") + pSpell->m_itSpell.m_spellcharges);
+					m_HitManaLeech += pSpell->m_itSpell.m_spellcharges;
 
 					if ( m_pClient && IsSetOF(OF_Buffs) )
 					{
@@ -1435,7 +1435,7 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 			}
 			wStatEffect = 50;	// Hit Life Leech
 			pSpell->m_itSpell.m_spelllevel = wStatEffect;
-			pWeapon->SetDefNum("HitLeechLife", pWeapon->GetDefNum("HitLeechLife") + pSpell->m_itSpell.m_spelllevel, true);	// Adding 50% HitLeechLife to the weapon, since damaging with it should return 50% of the damage dealt.
+			pWeapon->m_HitLifeLeech += wStatEffect;		// add 50% hit life leech to the weapon, since damaging with it should return 50% of the damage dealt
 			return;
 		}
 		default:

@@ -30,9 +30,13 @@ CBaseBaseDef::CBaseBaseDef(RESOURCE_ID id) : CResourceLink(id)
 	m_Luck = 0;
 	m_DamIncrease = 0;
 	m_SpellDamIncrease = 0;
+	m_HitLifeLeech = 0;
+	m_HitManaDrain = 0;
+	m_HitManaLeech = 0;
+	m_HitStaminaLeech = 0;
 	m_HitChanceIncrease = 0;
 	m_DefChanceIncrease = 0;
-	m_DefChanceIncreaseMax = 45;
+	m_DefChanceIncreaseMax = 0;
 	m_SwingSpeedIncrease = 0;
 	m_FasterCasting = 0;
 	m_FasterCastRecovery = 0;
@@ -80,6 +84,10 @@ void CBaseBaseDef::CopyBasic(const CBaseBaseDef *pBaseDef)
 	m_Luck = pBaseDef->m_Luck;
 	m_DamIncrease = pBaseDef->m_DamIncrease;
 	m_SpellDamIncrease = pBaseDef->m_SpellDamIncrease;
+	m_HitLifeLeech = pBaseDef->m_HitLifeLeech;
+	m_HitManaDrain = pBaseDef->m_HitManaDrain;
+	m_HitManaLeech = pBaseDef->m_HitManaLeech;
+	m_HitStaminaLeech = pBaseDef->m_HitStaminaLeech;
 	m_HitChanceIncrease = pBaseDef->m_HitChanceIncrease;
 	m_DefChanceIncrease = pBaseDef->m_DefChanceIncrease;
 	m_DefChanceIncreaseMax = pBaseDef->m_DefChanceIncreaseMax;
@@ -145,10 +153,6 @@ bool CBaseBaseDef::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc
 		case OBC_DAMDIRECT:
 		case OBC_DECREASEHITCHANCE:
 		case OBC_EXPANSION:
-		case OBC_HITLEECHLIFE:
-		case OBC_HITLEECHMANA:
-		case OBC_HITLEECHSTAM:
-		case OBC_HITMANADRAIN:
 		case OBC_NAMELOC:
 		case OBC_REFLECTPHYSICALDAM:
 		case OBC_REGENFOOD:
@@ -226,6 +230,18 @@ bool CBaseBaseDef::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc
 			break;
 		case OBC_HEIGHT:
 			sVal.FormatVal(GetHeight());
+			break;
+		case OBC_HITLEECHLIFE:
+			sVal.FormatVal(m_HitLifeLeech);
+			break;
+		case OBC_HITLEECHMANA:
+			sVal.FormatVal(m_HitManaLeech);
+			break;
+		case OBC_HITLEECHSTAM:
+			sVal.FormatVal(m_HitStaminaLeech);
+			break;
+		case OBC_HITMANADRAIN:
+			sVal.FormatVal(m_HitManaDrain);
 			break;
 		case OBC_INCREASEDAM:
 			sVal.FormatVal(m_DamIncrease);
@@ -396,10 +412,6 @@ bool CBaseBaseDef::r_LoadVal(CScript &s)
 		case OBC_DAMDIRECT:
 		case OBC_DECREASEHITCHANCE:
 		case OBC_EXPANSION:
-		case OBC_HITLEECHLIFE:
-		case OBC_HITLEECHMANA:
-		case OBC_HITLEECHSTAM:
-		case OBC_HITMANADRAIN:
 		case OBC_NAMELOC:
 		case OBC_REFLECTPHYSICALDAM:
 		case OBC_REGENFOOD:
@@ -481,6 +493,18 @@ bool CBaseBaseDef::r_LoadVal(CScript &s)
 		case OBC_HEIGHT:
 			m_Height = static_cast<height_t>(s.GetArgVal());
 			return true;
+		case OBC_HITLEECHLIFE:
+			m_HitLifeLeech = static_cast<int>(s.GetArgVal());
+			break;
+		case OBC_HITLEECHMANA:
+			m_HitManaLeech = static_cast<int>(s.GetArgVal());
+			break;
+		case OBC_HITLEECHSTAM:
+			m_HitStaminaLeech = static_cast<int>(s.GetArgVal());
+			break;
+		case OBC_HITMANADRAIN:
+			m_HitManaDrain = static_cast<int>(s.GetArgVal());
+			break;
 		case OBC_INCREASEDAM:
 			m_DamIncrease = static_cast<int>(s.GetArgVal());
 			return true;

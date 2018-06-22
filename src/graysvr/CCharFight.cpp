@@ -2972,41 +2972,41 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 
 	if ( iDmg > 0 )
 	{
-		CItem *pCurseWeapon = LayerFind(LAYER_SPELL_Curse_Weapon);
-		int iHitLifeLeech = static_cast<int>(GetDefNum("HitLeechLife"));
-		if ( pWeapon && pCurseWeapon )
-			iHitLifeLeech += pCurseWeapon->m_itSpell.m_spelllevel;
+		bool fLeechSound = false;
 
-		bool bMakeLeechSound = false;
-		if ( iHitLifeLeech )
+		int iHitLifeLeech = m_HitLifeLeech;
+		if ( pWeapon )
 		{
-			iHitLifeLeech = Calc_GetRandVal2(0, (iDmg * iHitLifeLeech * 30) / 10000);	// leech 0% ~ 30% of damage value
-			UpdateStatVal(STAT_STR, iHitLifeLeech, Stat_GetMax(STAT_STR));
-			bMakeLeechSound = true;
+			const CItem *pCurseWeapon = LayerFind(LAYER_SPELL_Curse_Weapon);
+			if ( pCurseWeapon )
+				iHitLifeLeech += pCurseWeapon->m_itSpell.m_spelllevel;
+		}
+		if ( iHitLifeLeech > 0 )
+		{
+			UpdateStatVal(STAT_STR, Calc_GetRandVal2(0, (iDmg * iHitLifeLeech * 30) / 10000), Stat_GetMax(STAT_STR));	// leech 0% ~ 30% of damage value
+			fLeechSound = true;
 		}
 
-		int iHitManaLeech = static_cast<int>(GetDefNum("HitLeechMana"));
-		if ( iHitManaLeech )
+		if ( m_HitManaLeech > 0 )
 		{
-			iHitManaLeech = Calc_GetRandVal2(0, (iDmg * iHitManaLeech * 40) / 10000);	// leech 0% ~ 40% of damage value
-			UpdateStatVal(STAT_INT, iHitManaLeech, Stat_GetMax(STAT_INT));
-			bMakeLeechSound = true;
+			UpdateStatVal(STAT_INT, Calc_GetRandVal2(0, (iDmg * m_HitManaLeech * 40) / 10000), Stat_GetMax(STAT_INT));	// leech 0% ~ 40% of damage value
+			fLeechSound = true;
 		}
 
-		if ( GetDefNum("HitLeechStam") > Calc_GetRandLLVal(100) )
+		if ( m_HitStaminaLeech > Calc_GetRandVal(100) )
 		{
 			UpdateStatVal(STAT_DEX, iDmg, Stat_GetMax(STAT_DEX));	// leech 100% of damage value
-			bMakeLeechSound = true;
+			fLeechSound = true;
 		}
 
 		int iManaDrain = 0;
 		if ( g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_B )
 		{
-			CItem *pPoly = LayerFind(LAYER_SPELL_Polymorph);
+			const CItem *pPoly = LayerFind(LAYER_SPELL_Polymorph);
 			if ( pPoly && pPoly->m_itSpell.m_spell == SPELL_Wraith_Form )
 				iManaDrain += 5 + (15 * Skill_GetBase(SKILL_SPIRITSPEAK) / 1000);
 		}
-		if ( GetDefNum("HitManaDrain") > Calc_GetRandLLVal(100) )
+		if ( m_HitManaDrain > Calc_GetRandVal(100) )
 			iManaDrain += IMULDIV(iDmg, 20, 100);	// leech 20% of damage value
 
 		int iTargMana = pCharTarg->Stat_GetVal(STAT_INT);
@@ -3017,11 +3017,11 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 		{
 			pCharTarg->UpdateStatVal(STAT_INT, iTargMana - iManaDrain);
 			UpdateStatVal(STAT_INT, iManaDrain, Stat_GetMax(STAT_INT));
-			bMakeLeechSound = true;
+			fLeechSound = true;
 		}
 
-		if ( bMakeLeechSound )
-			Sound(0x44d);
+		if ( fLeechSound )
+			Sound(0x44D);
 
 		// Make blood effects
 		if ( pCharTarg->m_wBloodHue != static_cast<HUE_TYPE>(-1) )

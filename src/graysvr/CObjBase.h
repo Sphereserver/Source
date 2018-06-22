@@ -66,6 +66,10 @@ public:
 	int m_Luck;
 	int m_DamIncrease;
 	int m_SpellDamIncrease;
+	int m_HitLifeLeech;
+	int m_HitManaDrain;
+	int m_HitManaLeech;
+	int m_HitStaminaLeech;
 	int m_HitChanceIncrease;
 	int m_DefChanceIncrease;
 	int m_DefChanceIncreaseMax;

@@ -433,9 +433,9 @@ void CChar::OnRemoveOb(CGObListRec *pObRec)	// override this = called when remov
 			m_DamPoison -= pItem->m_DamPoison;
 			m_DamEnergy -= pItem->m_DamEnergy;
 
-			CItem *pCursedMemory = LayerFind(LAYER_SPELL_Curse_Weapon);
+			const CItem *pCursedMemory = LayerFind(LAYER_SPELL_Curse_Weapon);
 			if ( pCursedMemory )
-				pItem->SetDefNum("HitLeechLife", pItem->GetDefNum("HitLeechLife") - pCursedMemory->m_itSpell.m_spelllevel, true);
+				pItem->m_HitLifeLeech -= pCursedMemory->m_itSpell.m_spelllevel;
 		}
 
 		if ( pItem->m_StrengthBonus != 0 )
@@ -465,6 +465,10 @@ void CChar::OnRemoveOb(CGObListRec *pObRec)	// override this = called when remov
 		m_Luck -= pItem->m_Luck;
 		m_DamIncrease -= pItem->m_DamIncrease;
 		m_SpellDamIncrease -= pItem->m_SpellDamIncrease;
+		m_HitLifeLeech -= pItem->m_HitLifeLeech;
+		m_HitManaDrain -= pItem->m_HitManaDrain;
+		m_HitManaLeech -= pItem->m_HitManaLeech;
+		m_HitStaminaLeech -= pItem->m_HitStaminaLeech;
 		m_HitChanceIncrease -= pItem->m_HitChanceIncrease;
 		m_DefChanceIncrease -= pItem->m_DefChanceIncrease;
 		m_DefChanceIncreaseMax -= pItem->m_DefChanceIncreaseMax;
@@ -1836,9 +1840,9 @@ bool CChar::ItemEquip(CItem *pItem, CChar *pCharMsg, bool fFromDClick)
 		m_DamPoison += pItem->m_DamPoison;
 		m_DamEnergy += pItem->m_DamEnergy;
 
-		CItem *pCursedMemory = LayerFind(LAYER_SPELL_Curse_Weapon);	// Mark the weapon as cursed if SPELL_Curse_Weapon is active.
+		const CItem *pCursedMemory = LayerFind(LAYER_SPELL_Curse_Weapon);
 		if ( pCursedMemory )
-			pItem->SetDefNum("HitLeechLife", pItem->GetDefNum("HitLeechLife") + pCursedMemory->m_itSpell.m_spelllevel, true);
+			pItem->m_HitLifeLeech += pCursedMemory->m_itSpell.m_spelllevel;
 	}
 
 	if ( pItem->m_StrengthBonus != 0 )
@@ -1869,6 +1873,10 @@ bool CChar::ItemEquip(CItem *pItem, CChar *pCharMsg, bool fFromDClick)
 	m_Luck += pItem->m_Luck;
 	m_DamIncrease += pItem->m_DamIncrease;
 	m_SpellDamIncrease += pItem->m_SpellDamIncrease;
+	m_HitLifeLeech += pItem->m_HitLifeLeech;
+	m_HitManaDrain += pItem->m_HitManaDrain;
+	m_HitManaLeech += pItem->m_HitManaLeech;
+	m_HitStaminaLeech += pItem->m_HitStaminaLeech;
 	m_HitChanceIncrease += pItem->m_HitChanceIncrease;
 	m_DefChanceIncrease += pItem->m_DefChanceIncrease;
 	m_DefChanceIncreaseMax += pItem->m_DefChanceIncreaseMax;
