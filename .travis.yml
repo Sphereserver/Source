@@ -18,7 +18,7 @@ addons:
     project:
       name: "Sphereserver/Source"
       description: "Game server for Ultima Online"
-    notification_email: " "
+    notification_email: false
     build_command: $BUILD_CMD
     branch_pattern: master
 script:
