@@ -478,7 +478,6 @@ void CChar::OnRemoveOb(CGObListRec *pObRec)	// override this = called when remov
 		m_LowerManaCost -= pItem->m_LowerManaCost;
 		m_LowerReagentCost -= pItem->m_LowerReagentCost;
 		m_EnhancePotions -= pItem->m_EnhancePotions;
-
 		if ( pItem->m_NightSight )
 		{
 			if ( m_NightSight )
@@ -492,6 +491,7 @@ void CChar::OnRemoveOb(CGObListRec *pObRec)	// override this = called when remov
 			}
 			m_NightSight -= pItem->m_NightSight;
 		}
+		m_ReflectPhysicalDamage -= pItem->m_ReflectPhysicalDamage;
 
 		// If items are magical then remove effect here
 		Spell_Effect_Remove(pItem);
@@ -1886,7 +1886,6 @@ bool CChar::ItemEquip(CItem *pItem, CChar *pCharMsg, bool fFromDClick)
 	m_LowerManaCost += pItem->m_LowerManaCost;
 	m_LowerReagentCost += pItem->m_LowerReagentCost;
 	m_EnhancePotions += pItem->m_EnhancePotions;
-
 	if ( pItem->m_NightSight )
 	{
 		if ( !m_NightSight )
@@ -1900,6 +1899,7 @@ bool CChar::ItemEquip(CItem *pItem, CChar *pCharMsg, bool fFromDClick)
 		}
 		m_NightSight += pItem->m_NightSight;
 	}
+	m_ReflectPhysicalDamage += pItem->m_ReflectPhysicalDamage;
 
 	return true;
 }

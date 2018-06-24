@@ -2517,11 +2517,10 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 						if ( pItem->m_NightSight )
 							m_TooltipData.Add(new CClientTooltip(1060441)); // night sight
 
-						INT64 ReflectPhysicalDamage = pItem->GetDefNum("REFLECTPHYSICALDAM", true);
-						if ( ReflectPhysicalDamage != 0 )
+						if ( pItem->m_ReflectPhysicalDamage != 0 )
 						{
 							m_TooltipData.Add(t = new CClientTooltip(1060442)); // reflect physical damage ~1_val~%
-							t->FormatArgs("%lld", ReflectPhysicalDamage);
+							t->FormatArgs("%d", pItem->m_ReflectPhysicalDamage);
 						}
 
 						INT64 StaminaRegeneration = pItem->GetDefNum("REGENSTAM", true);

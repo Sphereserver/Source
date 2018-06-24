@@ -688,9 +688,7 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		//On these ones, check BaseDef if not found on dynamic
 		case OC_DAMCHAOS:
 		case OC_DAMDIRECT:
-		case OC_DECREASEHITCHANCE:
 		case OC_EXPANSION:
-		case OC_REFLECTPHYSICALDAM:
 		case OC_REGENFOOD:
 		case OC_REGENHITS:
 		case OC_REGENMANA:
@@ -806,6 +804,9 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			break;
 		case OC_NIGHTSIGHT:
 			sVal.FormatVal(m_NightSight);
+			break;
+		case OC_REFLECTPHYSICALDAM:
+			sVal.FormatVal(m_ReflectPhysicalDamage);
 			break;
 		case OC_RANGE:
 		{
@@ -1474,12 +1475,10 @@ bool CObjBase::r_LoadVal(CScript &s)
 
 	switch ( index )
 	{
-		//Set as number only
+		// Set as numeric
 		case OC_DAMCHAOS:
 		case OC_DAMDIRECT:
-		case OC_DECREASEHITCHANCE:
 		case OC_EXPANSION:
-		case OC_REFLECTPHYSICALDAM:
 		case OC_NAMELOC:
 			SetDefNum(s.GetKey(), s.GetArgVal(), false);
 			break;
@@ -1591,6 +1590,9 @@ bool CObjBase::r_LoadVal(CScript &s)
 			break;
 		case OC_NIGHTSIGHT:
 			m_NightSight = static_cast<int>(s.GetArgVal());
+			break;
+		case OC_REFLECTPHYSICALDAM:
+			m_ReflectPhysicalDamage = static_cast<int>(s.GetArgVal());
 			break;
 		case OC_RANGE:
 		{
@@ -1847,6 +1849,8 @@ void CObjBase::r_Write(CScript &s)
 		s.WriteKeyVal("ENHANCEPOTIONS", m_EnhancePotions);
 	if ( m_NightSight != pBaseDef->m_NightSight )
 		s.WriteKeyVal("NIGHTSIGHT", m_NightSight);
+	if ( m_ReflectPhysicalDamage != pBaseDef->m_ReflectPhysicalDamage )
+		s.WriteKeyVal("REFLECTPHYSICALDAM", m_ReflectPhysicalDamage);
 
 	m_BaseDefs.r_WritePrefix(s);	// new variable storage system
 	m_TagDefs.r_WritePrefix(s, "TAG");

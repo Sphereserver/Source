@@ -44,6 +44,7 @@ CBaseBaseDef::CBaseBaseDef(RESOURCE_ID id) : CResourceLink(id)
 	m_LowerReagentCost = 0;
 	m_EnhancePotions = 0;
 	m_NightSight = 0;
+	m_ReflectPhysicalDamage = 0;
 	m_Can = CAN_C_INDOORS;
 	m_Height = 0;
 	m_ResLevel = RDS_NONE;
@@ -98,6 +99,7 @@ void CBaseBaseDef::CopyBasic(const CBaseBaseDef *pBaseDef)
 	m_LowerReagentCost = pBaseDef->m_LowerReagentCost;
 	m_EnhancePotions = pBaseDef->m_EnhancePotions;
 	m_NightSight = pBaseDef->m_NightSight;
+	m_ReflectPhysicalDamage = pBaseDef->m_ReflectPhysicalDamage;
 	m_Can = pBaseDef->m_Can;
 	m_Height = pBaseDef->m_Height;
 	m_ResLevel = pBaseDef->m_ResLevel;
@@ -151,10 +153,8 @@ bool CBaseBaseDef::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc
 		case OBC_COMBATBONUSSTAT:
 		case OBC_DAMCHAOS:
 		case OBC_DAMDIRECT:
-		case OBC_DECREASEHITCHANCE:
 		case OBC_EXPANSION:
 		case OBC_NAMELOC:
-		case OBC_REFLECTPHYSICALDAM:
 		case OBC_REGENFOOD:
 		case OBC_REGENHITS:
 		case OBC_REGENMANA:
@@ -278,6 +278,9 @@ bool CBaseBaseDef::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc
 			break;
 		case OBC_NIGHTSIGHT:
 			sVal.FormatVal(m_NightSight);
+			break;
+		case OBC_REFLECTPHYSICALDAM:
+			sVal.FormatVal(m_ReflectPhysicalDamage);
 			break;
 		case OBC_RANGE:
 			if ( GetRangeH() == 0 )
@@ -410,10 +413,8 @@ bool CBaseBaseDef::r_LoadVal(CScript &s)
 		case OBC_COMBATBONUSSTAT:
 		case OBC_DAMCHAOS:
 		case OBC_DAMDIRECT:
-		case OBC_DECREASEHITCHANCE:
 		case OBC_EXPANSION:
 		case OBC_NAMELOC:
-		case OBC_REFLECTPHYSICALDAM:
 		case OBC_REGENFOOD:
 		case OBC_REGENHITS:
 		case OBC_REGENMANA:
@@ -539,6 +540,9 @@ bool CBaseBaseDef::r_LoadVal(CScript &s)
 			return true;
 		case OBC_NIGHTSIGHT:
 			m_NightSight = static_cast<int>(s.GetArgVal());
+			return true;
+		case OBC_REFLECTPHYSICALDAM:
+			m_ReflectPhysicalDamage = static_cast<int>(s.GetArgVal());
 			return true;
 		case OBC_RANGE:
 		{

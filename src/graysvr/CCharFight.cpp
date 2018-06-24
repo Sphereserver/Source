@@ -2996,7 +2996,6 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	if ( iDmg > 0 )
 	{
 		bool fLeechSound = false;
-
 		int iHitLifeLeech = m_HitLifeLeech;
 		if ( pWeapon )
 		{
@@ -3009,19 +3008,16 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			UpdateStatVal(STAT_STR, Calc_GetRandVal2(0, (iDmg * iHitLifeLeech * 30) / 10000), Stat_GetMax(STAT_STR));	// leech 0% ~ 30% of damage value
 			fLeechSound = true;
 		}
-
 		if ( m_HitManaLeech > 0 )
 		{
 			UpdateStatVal(STAT_INT, Calc_GetRandVal2(0, (iDmg * m_HitManaLeech * 40) / 10000), Stat_GetMax(STAT_INT));	// leech 0% ~ 40% of damage value
 			fLeechSound = true;
 		}
-
 		if ( m_HitStaminaLeech > Calc_GetRandVal(100) )
 		{
 			UpdateStatVal(STAT_DEX, iDmg, Stat_GetMax(STAT_DEX));	// leech 100% of damage value
 			fLeechSound = true;
 		}
-
 		if ( fLeechSound )
 			Sound(0x44D);
 
@@ -3046,6 +3042,9 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			pCharTarg->Sound(0x1F8);
 		}
 
+		if ( pCharTarg->m_ReflectPhysicalDamage )
+			OnTakeDamage(iDmg * pCharTarg->m_ReflectPhysicalDamage / 100, this, iTyp, m_DamPhysical, m_DamFire, m_DamCold, m_DamPoison, m_DamEnergy);
+
 		if ( pWeapon )
 		{
 			if ( pWeapon->m_HitPhysicalArea > Calc_GetRandVal(100) )
@@ -3058,7 +3057,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 				pCharTarg->OnTakeDamageArea(iDmg / 2, this, DAMAGE_GENERAL, 0, 0, 100, 0, 0, static_cast<HUE_TYPE>(0x834), static_cast<SOUND_TYPE>(0xFC));
 
 			if ( pWeapon->m_HitPoisonArea > Calc_GetRandVal(100) )
-				pCharTarg->OnTakeDamageArea(iDmg / 2, this, DAMAGE_GENERAL, 0, 0, 0, 100, 0, static_cast<HUE_TYPE>(0x48e), static_cast<SOUND_TYPE>(0x205));
+				pCharTarg->OnTakeDamageArea(iDmg / 2, this, DAMAGE_GENERAL, 0, 0, 0, 100, 0, static_cast<HUE_TYPE>(0x48E), static_cast<SOUND_TYPE>(0x205));
 
 			if ( pWeapon->m_HitEnergyArea > Calc_GetRandVal(100) )
 				pCharTarg->OnTakeDamageArea(iDmg / 2, this, DAMAGE_GENERAL, 0, 0, 0, 0, 100, static_cast<HUE_TYPE>(0x78), static_cast<SOUND_TYPE>(0x1F1));

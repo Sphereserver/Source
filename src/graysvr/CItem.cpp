@@ -1658,6 +1658,7 @@ bool CItem::SetBase( CItemBase * pItemDef )
 	m_LowerReagentCost = pItemDef->m_LowerReagentCost;
 	m_EnhancePotions = pItemDef->m_EnhancePotions;
 	m_NightSight = pItemDef->m_NightSight;
+	m_ReflectPhysicalDamage = pItemDef->m_ReflectPhysicalDamage;
 
 	m_StrengthBonus = pItemDef->m_StrengthBonus;
 	m_DexterityBonus = pItemDef->m_DexterityBonus;

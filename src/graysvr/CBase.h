@@ -126,6 +126,7 @@ public:
 	int m_LowerReagentCost;
 	int m_EnhancePotions;
 	int m_NightSight;
+	int m_ReflectPhysicalDamage;
 
 	DWORD m_Can;
 

@@ -272,6 +272,7 @@ CChar::CChar(CREID_TYPE id) : CObjBase(false)
 	m_LowerReagentCost = pCharDef->m_LowerReagentCost;
 	m_EnhancePotions = pCharDef->m_EnhancePotions;
 	m_NightSight = pCharDef->m_NightSight;
+	m_ReflectPhysicalDamage = pCharDef->m_ReflectPhysicalDamage;
 
 	m_Can = pCharDef->m_Can;
 	m_wBloodHue = pCharDef->m_wBloodHue;
@@ -789,6 +790,7 @@ bool CChar::DupeFrom(CChar *pChar, bool fNewbieItems)
 	m_LowerReagentCost = pChar->m_LowerReagentCost;
 	m_EnhancePotions = pChar->m_EnhancePotions;
 	m_NightSight = pChar->m_NightSight;
+	m_ReflectPhysicalDamage = pChar->m_ReflectPhysicalDamage;
 
 	m_TagDefs.Copy(&pChar->m_TagDefs);
 	m_BaseDefs.Copy(&pChar->m_BaseDefs);

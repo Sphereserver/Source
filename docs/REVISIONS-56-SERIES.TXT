@@ -1125,4 +1125,5 @@ Changed: Status gump on AOS+ clients now will only show RES* properties if COMBA
 	-NOTE: Now both ARMOR and RES* properties are set on these items and Sphere will select them automatically based on COMBATF_ELEMENTAL_ENGINE combat flag on sphere.ini
 
 24-06-2018, Coruja
-Added: Missing item property functionality of HITAREAPHYSICAL, HITAREAFIRE, HITAREACOLD, HITAREAPOISON, HITAREAENERGY, HITDISPEL, HITFIREBALL, HITHARM, HITLIGHTNING, HITMAGICARROW
+Added: Missing item property functionality of HITAREAPHYSICAL, HITAREAFIRE, HITAREACOLD, HITAREAPOISON, HITAREAENERGY, HITDISPEL, HITFIREBALL, HITHARM, HITLIGHTNING, HITMAGICARROW, REFLECTPHYSICALDAM
+Removed: Redundant DECREASEHITCHANCE property (to decrease hit chance, use negative INCREASEHITCHANCE instead)
