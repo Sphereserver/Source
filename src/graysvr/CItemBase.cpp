@@ -26,6 +26,16 @@ CItemBase::CItemBase(ITEMID_TYPE id) : CBaseBaseDef(RESOURCE_ID(RES_ITEMDEF, id)
 	m_SpellChanneling = 0;
 	m_LowerRequirements = 0;
 	m_UseBestWeaponSkill = 0;
+	m_HitPhysicalArea = 0;
+	m_HitFireArea = 0;
+	m_HitColdArea = 0;
+	m_HitPoisonArea = 0;
+	m_HitEnergyArea = 0;
+	m_HitDispel = 0;
+	m_HitFireball = 0;
+	m_HitHarm = 0;
+	m_HitLightning = 0;
+	m_HitMagicArrow = 0;
 	m_WeightReduction = 0;
 
 	m_ttNormal.m_tData1 = 0;
@@ -953,6 +963,36 @@ bool CItemBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case IBC_USEBESTWEAPONSKILL:
 			sVal.FormatVal(m_UseBestWeaponSkill);
 			break;
+		case IBC_HITAREAPHYSICAL:
+			sVal.FormatVal(m_HitPhysicalArea);
+			break;
+		case IBC_HITAREAFIRE:
+			sVal.FormatVal(m_HitFireArea);
+			break;
+		case IBC_HITAREACOLD:
+			sVal.FormatVal(m_HitColdArea);
+			break;
+		case IBC_HITAREAPOISON:
+			sVal.FormatVal(m_HitPoisonArea);
+			break;
+		case IBC_HITAREAENERGY:
+			sVal.FormatVal(m_HitEnergyArea);
+			break;
+		case IBC_HITDISPEL:
+			sVal.FormatVal(m_HitDispel);
+			break;
+		case IBC_HITFIREBALL:
+			sVal.FormatVal(m_HitFireball);
+			break;
+		case IBC_HITHARM:
+			sVal.FormatVal(m_HitHarm);
+			break;
+		case IBC_HITLIGHTNING:
+			sVal.FormatVal(m_HitLightning);
+			break;
+		case IBC_HITMAGICARROW:
+			sVal.FormatVal(m_HitMagicArrow);
+			break;
 		case IBC_WEIGHTREDUCTION:
 			sVal.FormatVal(m_WeightReduction);
 			break;
@@ -1275,6 +1315,36 @@ bool CItemBase::r_LoadVal(CScript &s)
 			break;
 		case IBC_USEBESTWEAPONSKILL:
 			m_UseBestWeaponSkill = static_cast<int>(s.GetArgVal());
+			break;
+		case IBC_HITAREAPHYSICAL:
+			m_HitPhysicalArea = static_cast<int>(s.GetArgVal());
+			break;
+		case IBC_HITAREAFIRE:
+			m_HitFireArea = static_cast<int>(s.GetArgVal());
+			break;
+		case IBC_HITAREACOLD:
+			m_HitColdArea = static_cast<int>(s.GetArgVal());
+			break;
+		case IBC_HITAREAPOISON:
+			m_HitPoisonArea = static_cast<int>(s.GetArgVal());
+			break;
+		case IBC_HITAREAENERGY:
+			m_HitEnergyArea = static_cast<int>(s.GetArgVal());
+			break;
+		case IBC_HITDISPEL:
+			m_HitDispel = static_cast<int>(s.GetArgVal());
+			break;
+		case IBC_HITFIREBALL:
+			m_HitFireball = static_cast<int>(s.GetArgVal());
+			break;
+		case IBC_HITHARM:
+			m_HitHarm = static_cast<int>(s.GetArgVal());
+			break;
+		case IBC_HITLIGHTNING:
+			m_HitLightning = static_cast<int>(s.GetArgVal());
+			break;
+		case IBC_HITMAGICARROW:
+			m_HitMagicArrow = static_cast<int>(s.GetArgVal());
 			break;
 		case IBC_WEIGHTREDUCTION:
 			m_WeightReduction = static_cast<int>(s.GetArgVal());

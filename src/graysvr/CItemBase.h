@@ -254,6 +254,16 @@ public:
 	int m_SpellChanneling;
 	int m_LowerRequirements;
 	int m_UseBestWeaponSkill;
+	int m_HitPhysicalArea;
+	int m_HitFireArea;
+	int m_HitColdArea;
+	int m_HitPoisonArea;
+	int m_HitEnergyArea;
+	int m_HitDispel;
+	int m_HitFireball;
+	int m_HitHarm;
+	int m_HitLightning;
+	int m_HitMagicArrow;
 	int m_WeightReduction;
 
 	union

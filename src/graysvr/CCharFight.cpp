@@ -1937,6 +1937,28 @@ effect_bounce:
 	return( iDmg );
 }
 
+void CChar::OnTakeDamageArea(int iDmg, CChar *pSrc, DAMAGE_TYPE uType, int iDmgPhysical, int iDmgFire, int iDmgCold, int iDmgPoison, int iDmgEnergy, HUE_TYPE effectHue, SOUND_TYPE effectSound)
+{
+	ADDTOCALLSTACK("CChar::OnTakeDamageArea");
+
+	bool fMakeSound = false;
+	CWorldSearch AreaChars(GetTopPoint(), UO_MAP_VIEW_SIGHT);
+	for (;;)
+	{
+		CChar *pChar = AreaChars.GetChar();
+		if ( !pChar )
+			break;
+		if ( (pChar == this) || (pChar == pSrc) )
+			continue;
+
+		pChar->OnTakeDamage(iDmg, pSrc, uType, iDmgPhysical, iDmgFire, iDmgCold, iDmgPoison, iDmgEnergy);
+		pChar->Effect(EFFECT_OBJ, ITEMID_FX_SPARKLE_2, this, 1, 15, false, effectHue);
+		fMakeSound = true;
+	}
+	if ( fMakeSound && (effectSound != SOUND_NONE) )
+		Sound(effectSound);
+}
+
 //*******************************************************************************
 // Fight specific memories.
 
@@ -2970,6 +2992,7 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 	// Took my swing. Do Damage !
 	iDmg = pCharTarg->OnTakeDamage(iDmg, this, iTyp, m_DamPhysical, m_DamFire, m_DamCold, m_DamPoison, m_DamEnergy);
 
+	// Post-damage behavior
 	if ( iDmg > 0 )
 	{
 		bool fLeechSound = false;
@@ -2999,29 +3022,62 @@ WAR_SWING_TYPE CChar::Fight_Hit( CChar * pCharTarg )
 			fLeechSound = true;
 		}
 
+		if ( fLeechSound )
+			Sound(0x44D);
+
 		int iManaDrain = 0;
+		if ( m_HitManaDrain > Calc_GetRandVal(100) )
+			iManaDrain += iDmg * 20 / 100;	// leech 20% of damage value
 		if ( g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_B )
 		{
 			const CItem *pPoly = LayerFind(LAYER_SPELL_Polymorph);
 			if ( pPoly && pPoly->m_itSpell.m_spell == SPELL_Wraith_Form )
 				iManaDrain += 5 + (15 * Skill_GetBase(SKILL_SPIRITSPEAK) / 1000);
 		}
-		if ( m_HitManaDrain > Calc_GetRandVal(100) )
-			iManaDrain += IMULDIV(iDmg, 20, 100);	// leech 20% of damage value
-
-		int iTargMana = pCharTarg->Stat_GetVal(STAT_INT);
-		if ( iManaDrain > iTargMana )
-			iManaDrain = iTargMana;
-
 		if ( iManaDrain > 0 )
 		{
-			pCharTarg->UpdateStatVal(STAT_INT, iTargMana - iManaDrain);
+			int iTargMana = pCharTarg->Stat_GetVal(STAT_INT);
+			if ( iManaDrain > iTargMana )
+				iManaDrain = iTargMana;
+
 			UpdateStatVal(STAT_INT, iManaDrain, Stat_GetMax(STAT_INT));
-			fLeechSound = true;
+			pCharTarg->UpdateStatVal(STAT_INT, -iManaDrain);
+			pCharTarg->Effect(EFFECT_OBJ, ITEMID_FX_VORTEX, this, 10, 25);
+			pCharTarg->Sound(0x1F8);
 		}
 
-		if ( fLeechSound )
-			Sound(0x44D);
+		if ( pWeapon )
+		{
+			if ( pWeapon->m_HitPhysicalArea > Calc_GetRandVal(100) )
+				pCharTarg->OnTakeDamageArea(iDmg / 2, this, DAMAGE_GENERAL, 100, 0, 0, 0, 0, static_cast<HUE_TYPE>(0x32), static_cast<SOUND_TYPE>(0x10E));
+
+			if ( pWeapon->m_HitFireArea > Calc_GetRandVal(100) )
+				pCharTarg->OnTakeDamageArea(iDmg / 2, this, DAMAGE_GENERAL, 0, 100, 0, 0, 0, static_cast<HUE_TYPE>(0x488), static_cast<SOUND_TYPE>(0x11D));
+
+			if ( pWeapon->m_HitColdArea > Calc_GetRandVal(100) )
+				pCharTarg->OnTakeDamageArea(iDmg / 2, this, DAMAGE_GENERAL, 0, 0, 100, 0, 0, static_cast<HUE_TYPE>(0x834), static_cast<SOUND_TYPE>(0xFC));
+
+			if ( pWeapon->m_HitPoisonArea > Calc_GetRandVal(100) )
+				pCharTarg->OnTakeDamageArea(iDmg / 2, this, DAMAGE_GENERAL, 0, 0, 0, 100, 0, static_cast<HUE_TYPE>(0x48e), static_cast<SOUND_TYPE>(0x205));
+
+			if ( pWeapon->m_HitEnergyArea > Calc_GetRandVal(100) )
+				pCharTarg->OnTakeDamageArea(iDmg / 2, this, DAMAGE_GENERAL, 0, 0, 0, 0, 100, static_cast<HUE_TYPE>(0x78), static_cast<SOUND_TYPE>(0x1F1));
+
+			if ( pWeapon->m_HitDispel > Calc_GetRandVal(100) )
+				pCharTarg->OnSpellEffect(SPELL_Dispel, this, Skill_GetAdjusted(SKILL_MAGERY), pWeapon);
+
+			if ( pWeapon->m_HitFireball > Calc_GetRandVal(100) )
+				pCharTarg->OnSpellEffect(SPELL_Fireball, this, Skill_GetAdjusted(SKILL_MAGERY), pWeapon);
+
+			if ( pWeapon->m_HitHarm > Calc_GetRandVal(100) )
+				pCharTarg->OnSpellEffect(SPELL_Harm, this, Skill_GetAdjusted(SKILL_MAGERY), pWeapon);
+
+			if ( pWeapon->m_HitLightning > Calc_GetRandVal(100) )
+				pCharTarg->OnSpellEffect(SPELL_Lightning, this, Skill_GetAdjusted(SKILL_MAGERY), pWeapon);
+
+			if ( pWeapon->m_HitMagicArrow > Calc_GetRandVal(100) )
+				pCharTarg->OnSpellEffect(SPELL_Magic_Arrow, this, Skill_GetAdjusted(SKILL_MAGERY), pWeapon);
+		}
 
 		// Make blood effects
 		if ( pCharTarg->m_wBloodHue != static_cast<HUE_TYPE>(-1) )

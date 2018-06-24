@@ -2715,10 +2715,58 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 							if ( pItem->m_UseBestWeaponSkill )
 								m_TooltipData.Add(new CClientTooltip(1060400)); // use best weapon skill
 
+							if ( pItem->m_HitColdArea != 0 )
+							{
+								m_TooltipData.Add(t = new CClientTooltip(1060416)); // hit cold area ~1_val~%
+								t->FormatArgs("%d", pItem->m_HitColdArea);
+							}
+
+							if ( pItem->m_HitDispel != 0 )
+							{
+								m_TooltipData.Add(t = new CClientTooltip(1060417)); // hit dispel ~1_val~%
+								t->FormatArgs("%d", pItem->m_HitDispel);
+							}
+
+							if ( pItem->m_HitEnergyArea != 0 )
+							{
+								m_TooltipData.Add(t = new CClientTooltip(1060418)); // hit energy area ~1_val~%
+								t->FormatArgs("%d", pItem->m_HitEnergyArea);
+							}
+
+							if ( pItem->m_HitFireArea != 0 )
+							{
+								m_TooltipData.Add(t = new CClientTooltip(1060419)); // hit fire area ~1_val~%
+								t->FormatArgs("%d", pItem->m_HitFireArea);
+							}
+
+							if ( pItem->m_HitFireball != 0 )
+							{
+								m_TooltipData.Add(t = new CClientTooltip(1060420)); // hit fireball ~1_val~%
+								t->FormatArgs("%d", pItem->m_HitFireball);
+							}
+
+							if ( pItem->m_HitHarm != 0 )
+							{
+								m_TooltipData.Add(t = new CClientTooltip(1060421)); // hit harm ~1_val~%
+								t->FormatArgs("%d", pItem->m_HitHarm);
+							}
+
 							if ( pItem->m_HitLifeLeech != 0 )
 							{
 								m_TooltipData.Add(t = new CClientTooltip(1060422)); // hit life leech ~1_val~%
 								t->FormatArgs("%d", pItem->m_HitLifeLeech);
+							}
+
+							if ( pItem->m_HitLightning != 0 )
+							{
+								m_TooltipData.Add(t = new CClientTooltip(1060423)); // hit lightning ~1_val~%
+								t->FormatArgs("%d", pItem->m_HitLightning);
+							}
+
+							if ( pItem->m_HitMagicArrow != 0 )
+							{
+								m_TooltipData.Add(t = new CClientTooltip(1060426)); // hit magic arrow ~1_val~%
+								t->FormatArgs("%d", pItem->m_HitMagicArrow);
 							}
 
 							if ( pItem->m_HitManaDrain != 0 )
@@ -2731,6 +2779,18 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 							{
 								m_TooltipData.Add(t = new CClientTooltip(1060427)); // hit mana leech ~1_val~%
 								t->FormatArgs("%d", pItem->m_HitManaLeech);
+							}
+
+							if ( pItem->m_HitPhysicalArea != 0 )
+							{
+								m_TooltipData.Add(t = new CClientTooltip(1060428)); // hit physical area ~1_val~%
+								t->FormatArgs("%d", pItem->m_HitPhysicalArea);
+							}
+
+							if ( pItem->m_HitPoisonArea != 0 )
+							{
+								m_TooltipData.Add(t = new CClientTooltip(1060429)); // hit poison area ~1_val~%
+								t->FormatArgs("%d", pItem->m_HitPoisonArea);
 							}
 
 							if ( pItem->m_HitStaminaLeech != 0 )

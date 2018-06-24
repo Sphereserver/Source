@@ -1672,6 +1672,16 @@ bool CItem::SetBase( CItemBase * pItemDef )
 	m_SpellChanneling = pItemDef->m_SpellChanneling;
 	m_LowerRequirements = pItemDef->m_LowerRequirements;
 	m_UseBestWeaponSkill = pItemDef->m_UseBestWeaponSkill;
+	m_HitPhysicalArea = pItemDef->m_HitPhysicalArea;
+	m_HitFireArea = pItemDef->m_HitFireArea;
+	m_HitColdArea = pItemDef->m_HitColdArea;
+	m_HitPoisonArea = pItemDef->m_HitPoisonArea;
+	m_HitEnergyArea = pItemDef->m_HitEnergyArea;
+	m_HitDispel = pItemDef->m_HitDispel;
+	m_HitFireball = pItemDef->m_HitFireball;
+	m_HitHarm = pItemDef->m_HitHarm;
+	m_HitLightning = pItemDef->m_HitLightning;
+	m_HitMagicArrow = pItemDef->m_HitMagicArrow;
 	m_WeightReduction = pItemDef->m_WeightReduction;
 
 	return true;
@@ -1969,6 +1979,28 @@ void CItem::r_Write( CScript & s )
 		s.WriteKeyVal("BONUSSTAM", m_StaminaIncrease);
 	if ( m_ManaIncrease != pItemDef->m_ManaIncrease )
 		s.WriteKeyVal("BONUSMANA", m_ManaIncrease);
+	if ( m_HitPhysicalArea != pItemDef->m_HitPhysicalArea )
+		s.WriteKeyVal("HITAREAPHYSICAL", m_HitPhysicalArea);
+	if ( m_HitFireArea != pItemDef->m_HitFireArea )
+		s.WriteKeyVal("HITAREAFIRE", m_HitFireArea);
+	if ( m_HitColdArea != pItemDef->m_HitColdArea )
+		s.WriteKeyVal("HITAREACOLD", m_HitColdArea);
+	if ( m_HitPoisonArea != pItemDef->m_HitPoisonArea )
+		s.WriteKeyVal("HITAREAPOISON", m_HitPoisonArea);
+	if ( m_HitEnergyArea != pItemDef->m_HitEnergyArea )
+		s.WriteKeyVal("HITAREAENERGY", m_HitEnergyArea);
+	if ( m_HitDispel != pItemDef->m_HitDispel )
+		s.WriteKeyVal("HITDISPEL", m_HitDispel);
+	if ( m_HitFireball != pItemDef->m_HitFireball )
+		s.WriteKeyVal("HITFIREBALL", m_HitFireball);
+	if ( m_HitHarm != pItemDef->m_HitHarm )
+		s.WriteKeyVal("HITHARM", m_HitHarm);
+	if ( m_HitLightning != pItemDef->m_HitLightning )
+		s.WriteKeyVal("HITLIGHTNING", m_HitLightning);
+	if ( m_HitMagicArrow != pItemDef->m_HitMagicArrow )
+		s.WriteKeyVal("HITMAGICARROW", m_HitMagicArrow);
+	if ( m_LowerRequirements != pItemDef->m_LowerRequirements )
+		s.WriteKeyVal("LOWERREQ", m_LowerRequirements);
 	if ( m_MageArmor != pItemDef->m_MageArmor )
 		s.WriteKeyVal("MAGEARMOR", m_MageArmor);
 	if ( m_MageWeapon != pItemDef->m_MageWeapon )
@@ -1979,8 +2011,6 @@ void CItem::r_Write( CScript & s )
 		s.WriteKeyVal("SELFREPAIR", m_SelfRepair);
 	if ( m_SpellChanneling != pItemDef->m_SpellChanneling )
 		s.WriteKeyVal("SPELLCHANNELING", m_SpellChanneling);
-	if ( m_LowerRequirements != pItemDef->m_LowerRequirements )
-		s.WriteKeyVal("LOWERREQ", m_LowerRequirements);
 	if ( m_UseBestWeaponSkill != pItemDef->m_UseBestWeaponSkill )
 		s.WriteKeyVal("USEBESTWEAPONSKILL", m_UseBestWeaponSkill);
 	if ( m_WeightReduction != pItemDef->m_WeightReduction )
@@ -2225,6 +2255,36 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 			break;
 		case IC_USEBESTWEAPONSKILL:
 			sVal.FormatVal(m_UseBestWeaponSkill);
+			break;
+		case IC_HITAREAPHYSICAL:
+			sVal.FormatVal(m_HitPhysicalArea);
+			break;
+		case IC_HITAREAFIRE:
+			sVal.FormatVal(m_HitFireArea);
+			break;
+		case IC_HITAREACOLD:
+			sVal.FormatVal(m_HitColdArea);
+			break;
+		case IC_HITAREAPOISON:
+			sVal.FormatVal(m_HitPoisonArea);
+			break;
+		case IC_HITAREAENERGY:
+			sVal.FormatVal(m_HitEnergyArea);
+			break;
+		case IC_HITDISPEL:
+			sVal.FormatVal(m_HitDispel);
+			break;
+		case IC_HITFIREBALL:
+			sVal.FormatVal(m_HitFireball);
+			break;
+		case IC_HITHARM:
+			sVal.FormatVal(m_HitHarm);
+			break;
+		case IC_HITLIGHTNING:
+			sVal.FormatVal(m_HitLightning);
+			break;
+		case IC_HITMAGICARROW:
+			sVal.FormatVal(m_HitMagicArrow);
 			break;
 		case IC_CAN:
 			sVal.FormatHex( m_Can ) ;
@@ -2516,6 +2576,36 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 			break;
 		case IC_USEBESTWEAPONSKILL:
 			m_UseBestWeaponSkill = static_cast<int>(s.GetArgVal());
+			break;
+		case IC_HITAREAPHYSICAL:
+			m_HitPhysicalArea = static_cast<int>(s.GetArgVal());
+			break;
+		case IC_HITAREAFIRE:
+			m_HitFireArea = static_cast<int>(s.GetArgVal());
+			break;
+		case IC_HITAREACOLD:
+			m_HitColdArea = static_cast<int>(s.GetArgVal());
+			break;
+		case IC_HITAREAPOISON:
+			m_HitPoisonArea = static_cast<int>(s.GetArgVal());
+			break;
+		case IC_HITAREAENERGY:
+			m_HitEnergyArea = static_cast<int>(s.GetArgVal());
+			break;
+		case IC_HITDISPEL:
+			m_HitDispel = static_cast<int>(s.GetArgVal());
+			break;
+		case IC_HITFIREBALL:
+			m_HitFireball = static_cast<int>(s.GetArgVal());
+			break;
+		case IC_HITHARM:
+			m_HitHarm = static_cast<int>(s.GetArgVal());
+			break;
+		case IC_HITLIGHTNING:
+			m_HitLightning = static_cast<int>(s.GetArgVal());
+			break;
+		case IC_HITMAGICARROW:
+			m_HitMagicArrow = static_cast<int>(s.GetArgVal());
 			break;
 		case IC_CAN:
 			m_Can = static_cast<DWORD>(s.GetArgVal());
