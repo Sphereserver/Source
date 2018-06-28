@@ -288,8 +288,7 @@ CChar::CChar(CREID_TYPE id) : CObjBase(false)
 
 	g_World.m_uidLastNewChar = GetUID();	// for script access
 
-	size_t i = 0;
-	for ( ; i < STAT_QTY; i++ )
+	for ( size_t i = 0; i < STAT_QTY; ++i )
 	{
 		Stat_SetBase(static_cast<STAT_TYPE>(i), 0);
 		Stat_SetMod(static_cast<STAT_TYPE>(i), 0);
@@ -299,7 +298,7 @@ CChar::CChar(CREID_TYPE id) : CObjBase(false)
 	}
 	Stat_SetVal(STAT_FOOD, Stat_GetMax(STAT_FOOD));
 
-	for ( i = 0; i < g_Cfg.m_iMaxSkill; i++ )
+	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; ++i )
 		m_Skill[i] = 0;
 
 	m_LocalLight = 0;
@@ -443,11 +442,11 @@ bool CChar::NotifyDelete(CClient *pClient)
 	return true;
 }
 
-void CChar::Delete(bool bForce, CClient *pClient)
+void CChar::Delete(bool fForce, CClient *pClient)
 {
 	ADDTOCALLSTACK("CChar::Delete");
 
-	if ( !NotifyDelete(pClient) && !bForce )
+	if ( !NotifyDelete(pClient) && !fForce )
 		return;
 
 	// Character has been deleted
@@ -656,7 +655,7 @@ int CChar::FixWeirdness()
 		// Make sure players don't get ridiculous skills/stats
 		if ( (GetPrivLevel() <= PLEVEL_Player) && (g_Cfg.m_iOverSkillMultiply > 0) )
 		{
-			for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
+			for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; ++i )
 			{
 				WORD wSkillVal = Skill_GetBase(static_cast<SKILL_TYPE>(i));
 				WORD wSkillMax = Skill_GetMax(static_cast<SKILL_TYPE>(i));
@@ -666,7 +665,7 @@ int CChar::FixWeirdness()
 
 			if ( IsPlayableCharacter() && !IsStatFlag(STATF_Polymorph) )
 			{
-				for ( int i = STAT_STR; i < STAT_BASE_QTY; i++ )
+				for ( int i = STAT_STR; i < STAT_BASE_QTY; ++i )
 				{
 					int iStatMax = Stat_GetLimit(static_cast<STAT_TYPE>(i));
 					if ( Stat_GetAdjusted(static_cast<STAT_TYPE>(i)) > iStatMax * g_Cfg.m_iOverSkillMultiply )
@@ -681,7 +680,7 @@ int CChar::FixWeirdness()
 			return 0x1205;
 
 		// Don't keep track of unused skills
-		for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
+		for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; ++i )
 		{
 			if ( (m_Skill[i] > 0) && (m_Skill[i] < g_Cfg.m_iSaveNPCSkills) )
 				Skill_SetBase(static_cast<SKILL_TYPE>(i), 0);
@@ -837,10 +836,10 @@ bool CChar::DupeFrom(CChar *pChar, bool fNewbieItems)
 
 	g_World.m_uidLastNewChar = GetUID();	// for script access
 
-	for ( size_t i = 0; i < STAT_QTY; i++ )
+	for ( size_t i = 0; i < STAT_QTY; ++i )
 		m_Stat[i] = pChar->m_Stat[i];
 
-	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
+	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; ++i )
 		m_Skill[i] = pChar->m_Skill[i];
 
 	m_LocalLight = pChar->m_LocalLight;
@@ -861,7 +860,7 @@ bool CChar::DupeFrom(CChar *pChar, bool fNewbieItems)
 	}
 
 	// Copy items
-	for ( int i = 0; i < LAYER_QTY; i++ )
+	for ( int i = 0; i < LAYER_QTY; ++i )
 	{
 		LAYER_TYPE layer = static_cast<LAYER_TYPE>(i);
 		CItem *pLayer = LayerFind(layer);
@@ -938,7 +937,7 @@ bool CChar::DupeFrom(CChar *pChar, bool fNewbieItems)
 }
 
 // Reading triggers from CHARDEF
-bool CChar::ReadScriptTrig(CCharBase *pCharDef, CTRIG_TYPE trig, bool bVendor)
+bool CChar::ReadScriptTrig(CCharBase *pCharDef, CTRIG_TYPE trig, bool fVendor)
 {
 	ADDTOCALLSTACK("CChar::ReadScriptTrig");
 	if ( !pCharDef || !pCharDef->HasTrigger(trig) )
@@ -946,13 +945,13 @@ bool CChar::ReadScriptTrig(CCharBase *pCharDef, CTRIG_TYPE trig, bool bVendor)
 	CResourceLock s;
 	if ( !pCharDef->ResourceLock(s) || !OnTriggerFind(s, sm_szTrigName[trig]) )
 		return false;
-	return ReadScript(s, bVendor);
+	return ReadScript(s, fVendor);
 }
 
 // If this is a regen they will have a pack already
 // RETURN:
 //	true = default return (mostly ignored)
-bool CChar::ReadScript(CResourceLock &s, bool bVendor)
+bool CChar::ReadScript(CResourceLock &s, bool fVendor)
 {
 	ADDTOCALLSTACK("CChar::ReadScript");
 	bool fFullInterp = false;
@@ -965,7 +964,7 @@ bool CChar::ReadScript(CResourceLock &s, bool bVendor)
 
 		int iCmd = FindTableSorted(s.GetKey(), CItem::sm_szTemplateTable, COUNTOF(CItem::sm_szTemplateTable) - 1);
 
-		if ( bVendor )
+		if ( fVendor )
 		{
 			if ( iCmd != -1 )
 			{
@@ -1063,7 +1062,7 @@ bool CChar::ReadScript(CResourceLock &s, bool bVendor)
 		{
 			TRIGRET_TYPE tRet = OnTriggerRun(s, TRIGRUN_SINGLE_EXEC, &g_Serv, NULL, NULL);
 			if ( (tRet == TRIGRET_RET_FALSE) && fFullInterp )
-				;
+				continue;
 			else if ( tRet != TRIGRET_RET_DEFAULT )
 			{
 				m_UIDLastNewItem.InitUID();
@@ -1270,12 +1269,12 @@ LPCTSTR const CChar::sm_szRefKeys[CHR_QTY + 1] =
 bool CChar::r_GetRef(LPCTSTR &pszKey, CScriptObj *&pRef)
 {
 	ADDTOCALLSTACK("CChar::r_GetRef");
-	int i = FindTableHeadSorted(pszKey, sm_szRefKeys, COUNTOF(sm_szRefKeys) - 1);
-	if ( i >= 0 )
+	int index = FindTableHeadSorted(pszKey, sm_szRefKeys, COUNTOF(sm_szRefKeys) - 1);
+	if ( index >= 0 )
 	{
-		pszKey += strlen(sm_szRefKeys[i]);
+		pszKey += strlen(sm_szRefKeys[index]);
 		SKIP_SEPARATORS(pszKey);
-		switch ( i )
+		switch ( index )
 		{
 			case CHR_ACCOUNT:
 				if ( pszKey[-1] != '.' )	// only used as a ref
@@ -1346,8 +1345,8 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 	ASSERT(pCharDef);
 	CChar *pCharSrc = pSrc->GetChar();
 
-	CHC_TYPE iKeyNum = static_cast<CHC_TYPE>(FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1));
-	if ( iKeyNum < 0 )
+	int index = FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1);
+	if ( index < 0 )
 	{
 	do_default:
 		if ( m_pPlayer && m_pPlayer->r_WriteVal(this, pszKey, sVal) )
@@ -1395,7 +1394,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		return CObjBase::r_WriteVal(pszKey, sVal, pSrc);
 	}
 
-	switch ( iKeyNum )
+	switch ( index )
 	{
 		case CHC_REGENFOOD:
 		case CHC_REGENHITS:
@@ -1421,7 +1420,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 
 			if ( *pszKey == '.' )
 			{
-				pszKey++;
+				++pszKey;
 				if ( !strnicmp(pszKey, "ID", 2) )
 				{
 					pszKey += 2;
@@ -1514,7 +1513,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 
 			if ( *pszKey == '.' )
 			{
-				pszKey++;
+				++pszKey;
 				if ( !strnicmp(pszKey, "ID", 2) )
 				{
 					pszKey += 2;
@@ -1631,13 +1630,13 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case CHC_SKILLBEST:
 		{
 			pszKey += 9;
-			unsigned int iRank = 0;
+			unsigned int uRank = 0;
 			if ( *pszKey == '.' )
 			{
 				SKIP_SEPARATORS(pszKey);
-				iRank = Exp_GetSingle(pszKey);
+				uRank = static_cast<unsigned int>(Exp_GetLLSingle(pszKey));
 			}
-			sVal.FormatVal(Skill_GetBest(iRank));
+			sVal.FormatVal(Skill_GetBest(uRank));
 			return true;
 		}
 		case CHC_SEX:
@@ -1930,7 +1929,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			pszKey += 6;
 			if ( *pszKey == '.' )
 			{
-				pszKey++;
+				++pszKey;
 				pMemory = Memory_FindObj(static_cast<CGrayUID>(Exp_GetLLVal(pszKey)));
 			}
 			else
@@ -1953,18 +1952,18 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 
 			int iVal = 0;
 			bool fComp = true;
-			if ( *pszKey == '\0' )
-				;
-			else if ( *pszKey == '+' )
-				iVal = Exp_GetVal(++pszKey);
-			else if ( *pszKey == '-' )
-				iVal = -Exp_GetVal(++pszKey);
-			else
+			if ( *pszKey != '\0' )
 			{
-				iVal = Exp_GetVal(pszKey);
-				fComp = false;
+				if ( *pszKey == '+' )
+					iVal = Exp_GetVal(++pszKey);
+				else if ( *pszKey == '-' )
+					iVal = -Exp_GetVal(++pszKey);
+				else
+				{
+					iVal = Exp_GetVal(pszKey);
+					fComp = false;
+				}
 			}
-
 			sVal.FormatUVal(GetSkillTotal(iVal, fComp));
 			return true;
 		}
@@ -2111,8 +2110,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				pChar = pCharSrc;
 
 			SKIP_ARGSEP(pszKey);
-			bool bAllowInvul = (Exp_GetVal(pszKey) >= 1);
-			sVal.FormatVal(Noto_GetFlag(pChar, bAllowInvul));
+			sVal.FormatVal(Noto_GetFlag(pChar, (Exp_GetVal(pszKey) >= 1)));
 			break;
 		}
 		case CHC_NPC:
@@ -2164,8 +2162,8 @@ bool CChar::r_LoadVal(CScript &s)
 	EXC_TRY("LoadVal");
 
 	LPCTSTR	pszKey = s.GetKey();
-	CHC_TYPE iKeyNum = static_cast<CHC_TYPE>(FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1));
-	if ( iKeyNum < 0 )
+	int index = FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1);
+	if ( index < 0 )
 	{
 	do_default:
 		if ( m_pPlayer && m_pPlayer->r_LoadVal(this, s) )
@@ -2174,43 +2172,43 @@ bool CChar::r_LoadVal(CScript &s)
 			return true;
 
 		// Stats
-		int i = g_Cfg.FindStatKey(pszKey);
-		if ( i != STAT_NONE )
+		STAT_TYPE stat = g_Cfg.FindStatKey(pszKey);
+		if ( stat != STAT_NONE )
 		{
-			Stat_SetBase(static_cast<STAT_TYPE>(i), static_cast<int>(s.GetArgVal()));
+			Stat_SetBase(stat, static_cast<int>(s.GetArgVal()));
 			return true;
 		}
 		if ( !strnicmp(pszKey, "O", 1) )
 		{
-			i = g_Cfg.FindStatKey(pszKey + 1);
-			if ( i != STAT_NONE )
+			stat = g_Cfg.FindStatKey(pszKey + 1);
+			if ( stat != STAT_NONE )
 			{
-				Stat_SetBase(static_cast<STAT_TYPE>(i), static_cast<int>(s.GetArgVal()));
+				Stat_SetBase(stat, static_cast<int>(s.GetArgVal()));
 				return true;
 			}
 		}
 		if ( !strnicmp(pszKey, "MOD", 3) )
 		{
-			i = g_Cfg.FindStatKey(pszKey + 3);
-			if ( i != STAT_NONE )
+			stat = g_Cfg.FindStatKey(pszKey + 3);
+			if ( stat != STAT_NONE )
 			{
-				Stat_SetMod(static_cast<STAT_TYPE>(i), static_cast<int>(s.GetArgVal()));
+				Stat_SetMod(stat, static_cast<int>(s.GetArgVal()));
 				return true;
 			}
 		}
 
 		// Skills
-		i = g_Cfg.FindSkillKey(pszKey);
-		if ( static_cast<SKILL_TYPE>(i) != SKILL_NONE )
+		SKILL_TYPE skill = g_Cfg.FindSkillKey(pszKey);
+		if ( skill != SKILL_NONE )
 		{
-			Skill_SetBase(static_cast<SKILL_TYPE>(i), static_cast<WORD>(s.GetArgVal()));
+			Skill_SetBase(skill, static_cast<WORD>(s.GetArgVal()));
 			return true;
 		}
 
 		return CObjBase::r_LoadVal(s);
 	}
 
-	switch ( iKeyNum )
+	switch ( index )
 	{
 		case CHC_REGENFOOD:
 		case CHC_REGENVALFOOD:
@@ -2220,7 +2218,7 @@ bool CChar::r_LoadVal(CScript &s)
 			SetDefNum(s.GetKey(), s.GetArgVal(), false);
 			UpdateStatsFlag();
 			break;
-		//Set as numbers only
+		// Set as numeric
 		case CHC_SPELLTIMEOUT:
 			SetDefNum(s.GetKey(), s.GetArgVal(), false);
 			break;
@@ -2277,7 +2275,7 @@ bool CChar::r_LoadVal(CScript &s)
 				int attackerIndex = m_lastAttackers.size();
 				if ( *pszKey == '.' )
 				{
-					pszKey++;
+					++pszKey;
 					if ( !strnicmp(pszKey, "ADD", 3) )
 					{
 						CChar *pChar = static_cast<CGrayUID>(s.GetArgVal()).CharFind();
@@ -2780,7 +2778,7 @@ void CChar::r_Write(CScript &s)
 		s.WriteKeyVal("MAXFOLLOWER", m_FollowerMax);
 
 	TCHAR szTmp[8];
-	for ( size_t i = 0; i < STAT_QTY; i++ )
+	for ( size_t i = 0; i < STAT_QTY; ++i )
 	{
 		// Save MOD first (this is VERY important)
 		if ( Stat_GetMod(static_cast<STAT_TYPE>(i)) )
@@ -2807,7 +2805,7 @@ void CChar::r_Write(CScript &s)
 	s.WriteKeyVal("MANA", Stat_GetVal(STAT_INT));
 	s.WriteKeyVal("FOOD", Stat_GetVal(STAT_FOOD));
 
-	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
+	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; ++i )
 	{
 		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(i) || (m_Skill[i] == 0) )
 			continue;
@@ -2918,7 +2916,7 @@ bool CChar::r_Verb(CScript &s, CTextConsole *pSrc)	// execute command from scrip
 		case CHV_ALLSKILLS:
 		{
 			WORD wVal = static_cast<WORD>(s.GetArgVal());
-			for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
+			for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; ++i )
 			{
 				if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(i) )
 					continue;
@@ -3415,14 +3413,14 @@ bool CChar::r_Verb(CScript &s, CTextConsole *pSrc)	// execute command from scrip
 	return false;
 }
 
-bool CChar::OnTriggerSpeech(bool bIsPet, LPCTSTR pszText, CChar *pSrc, TALKMODE_TYPE &mode, HUE_TYPE wHue)
+bool CChar::OnTriggerSpeech(bool fPet, LPCTSTR pszText, CChar *pSrc, TALKMODE_TYPE &mode, HUE_TYPE wHue)
 {
 	ADDTOCALLSTACK("CChar::OnTriggerSpeech");
 
 	LPCTSTR pszName = NULL;
-	if ( bIsPet && !g_Cfg.m_sSpeechPet.IsEmpty() )
+	if ( fPet && !g_Cfg.m_sSpeechPet.IsEmpty() )
 		pszName = g_Cfg.m_sSpeechPet;
-	else if ( !bIsPet && !g_Cfg.m_sSpeechSelf.IsEmpty() )
+	else if ( !fPet && !g_Cfg.m_sSpeechSelf.IsEmpty() )
 		pszName = g_Cfg.m_sSpeechSelf;
 
 	if ( pszName )
@@ -3452,12 +3450,12 @@ bool CChar::OnTriggerSpeech(bool bIsPet, LPCTSTR pszText, CChar *pSrc, TALKMODE_
 			DEBUG_ERR(("Couldn't find speech resource %s\n", pszName));
 	}
 
-	if ( bIsPet || !m_pPlayer )
+	if ( fPet || !m_pPlayer )
 		return false;
 
 	if ( m_pPlayer->m_Speech.GetCount() > 0 )
 	{
-		for ( size_t i = 0; i < m_pPlayer->m_Speech.GetCount(); i++ )
+		for ( size_t i = 0; i < m_pPlayer->m_Speech.GetCount(); ++i )
 		{
 			CResourceLink *pLinkDSpeech = m_pPlayer->m_Speech[i];
 			if ( !pLinkDSpeech )
@@ -3491,7 +3489,7 @@ unsigned int Calc_ExpGet_Exp(unsigned int level)
 		case LEVEL_MODE_DOUBLE:
 		default:
 		{
-			for ( unsigned int i = 1; i <= level; i++ )
+			for ( unsigned int i = 1; i <= level; ++i )
 				exp += g_Cfg.m_iLevelNextAt * (i + 1);
 			break;
 		}
@@ -3512,7 +3510,7 @@ unsigned int Calc_ExpGet_Level(unsigned int exp)
 	{
 		// Reduce exp and raise level
 		exp -= req;
-		level++;
+		++level;
 
 		// Calculate requirement for next level
 		switch ( g_Cfg.m_iLevelMode )
@@ -3552,16 +3550,16 @@ void CChar::ChangeExperience(int iDelta, CChar *pCharDead)
 		if ( g_Cfg.m_wDebugFlags & DEBUGF_EXP )
 			DEBUG_ERR(("%s %s experience change (was %u, delta %d, now %u)\n", m_pNPC ? "NPC" : "Player", GetName(), m_exp, iDelta, m_exp + iDelta));
 
-		bool bShowMsg = (m_pClient != NULL);
+		bool fShowMsg = (m_pClient != NULL);
 
 		if ( IsTrigUsed(TRIGGER_EXPCHANGE) )
 		{
-			CScriptTriggerArgs args(iDelta, bShowMsg);
+			CScriptTriggerArgs args(iDelta, fShowMsg);
 			args.m_pO1 = pCharDead;
 			if ( OnTrigger(CTRIG_ExpChange, this, &args) == TRIGRET_RET_TRUE )
 				return;
 			iDelta = static_cast<int>(args.m_iN1);
-			bShowMsg = (args.m_iN2 != 0);
+			fShowMsg = (args.m_iN2 != 0);
 		}
 
 		// Do not allow an underflow due to negative exp change
@@ -3570,7 +3568,7 @@ void CChar::ChangeExperience(int iDelta, CChar *pCharDead)
 		else
 			m_exp += iDelta;
 
-		if ( m_pClient && bShowMsg && iDelta )
+		if ( m_pClient && fShowMsg && iDelta )
 		{
 			static UINT const keyWords[] =
 			{
@@ -3612,7 +3610,7 @@ void CChar::ChangeExperience(int iDelta, CChar *pCharDead)
 		if ( level != m_level )
 		{
 			iDelta = level - m_level;
-			bool bShowMsg = (m_pClient != NULL);
+			bool fShowMsg = (m_pClient != NULL);
 
 			if ( IsTrigUsed(TRIGGER_EXPLEVELCHANGE) )
 			{
@@ -3620,7 +3618,7 @@ void CChar::ChangeExperience(int iDelta, CChar *pCharDead)
 				if ( OnTrigger(CTRIG_ExpLevelChange, this, &args) == TRIGRET_RET_TRUE )
 					return;
 				iDelta = static_cast<int>(args.m_iN1);
-				bShowMsg = (args.m_iN2 != 0);
+				fShowMsg = (args.m_iN2 != 0);
 			}
 
 			// Prevent integer underflow due to negative level change
@@ -3633,7 +3631,7 @@ void CChar::ChangeExperience(int iDelta, CChar *pCharDead)
 
 			m_level = level;
 
-			if ( m_pClient && bShowMsg )
+			if ( m_pClient && fShowMsg )
 				m_pClient->SysMessagef((abs(iDelta) == 1) ? g_Cfg.GetDefaultMsg(DEFMSG_MSG_EXP_LVLCHANGE_0) : g_Cfg.GetDefaultMsg(DEFMSG_MSG_EXP_LVLCHANGE_1), (iDelta > 0) ? g_Cfg.GetDefaultMsg(DEFMSG_MSG_EXP_LVLCHANGE_GAIN) : g_Cfg.GetDefaultMsg(DEFMSG_MSG_EXP_LVLCHANGE_LOST));
 		}
 	}
@@ -3645,7 +3643,7 @@ DWORD CChar::GetSkillTotal(int iWhat, bool fHow)
 	DWORD dwTotal = 0;
 	WORD wBase = 0;
 
-	for ( unsigned int i = 0; i < g_Cfg.m_iMaxSkill; i++ )
+	for ( unsigned int i = 0; i < g_Cfg.m_iMaxSkill; ++i )
 	{
 		wBase = Skill_GetBase(static_cast<SKILL_TYPE>(i));
 		if ( fHow )

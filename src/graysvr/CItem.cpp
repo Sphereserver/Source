@@ -351,9 +351,8 @@ CItem * CItem::CreateHeader( TCHAR * pszArg, CObjBase * pCont, bool fDupeCheck, 
 	{
 		// Check if they already have the item ? In the case of a regen.
 		// This is just to keep NEWBIE items from being duped.
-		const CContainer * pContBase = dynamic_cast <CContainer *> ( pCont );
-		ASSERT(pContBase);
-		if ( pContBase->ContentFind( rid ))
+		const CContainer *pContBase = dynamic_cast<CContainer *>(pCont);
+		if ( pContBase && pContBase->ContentFind( rid ))
 		{
 			// We already have this.
 			return( NULL );
@@ -416,9 +415,9 @@ CItem * CItem::CreateTemplate( ITEMID_TYPE id, CObjBase * pCont, CChar * pSrc )	
 		CItem * pItem = CreateScript( id, pSrc );
 		if ( pCont )
 		{
-			CContainer * pContBase = dynamic_cast <CContainer *> ( pCont );
-			ASSERT(pContBase);
-			pContBase->ContentAdd(pItem);
+			CContainer *pContBase = dynamic_cast<CContainer *>(pCont);
+			if ( pContBase )
+				pContBase->ContentAdd(pItem);
 		}
 		return( pItem );
 	}
@@ -989,7 +988,7 @@ bool CItem::IsIdentical( const CObjBase * pObj )
 	ADDTOCALLSTACK("CItem::IsIdentical");
 	const CItem * pItem = dynamic_cast <const CItem*> ( pObj );
 
-	if ( !IsSameType(pItem) )
+	if ( !pItem || !IsSameType(pItem) )
 		return ( false );
 
 	// Do not compare with dupelist here, the item should be really identical.
@@ -2033,10 +2032,10 @@ bool CItem::LoadSetContainer( CGrayUID uid, LAYER_TYPE layer )
 		return( false );	// not valid object.
 	}
 
-
-	if ( IsTypeSpellbook() && pObjCont->GetTopLevelObj()->IsChar())	// Intercepting the spell's addition here for NPCs, they store the spells on vector <Spells>m_spells for better access from their AI.
+	CObjBaseTemplate *pObjTop = pObjCont->GetTopLevelObj();
+	if ( IsTypeSpellbook() && pObjTop->IsChar() )	// intercepting the spell's addition here for NPCs, they store the spells on vector <Spells>m_spells for better access from their AI.
 	{
-		CChar *pChar = dynamic_cast<CObjBase *>(pObjCont->GetTopLevelObj())->GetUID().CharFind();
+		CChar *pChar = pObjTop->GetUID().CharFind();
 		if (pChar->m_pNPC)
 			pChar->NPC_AddSpellsFromBook(this);
 	}
@@ -2446,7 +2445,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 	EXC_TRY("LoadVal");
 	switch ( FindTableSorted( s.GetKey(), sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
 	{
-		//Set as Strings
+		// Set as string
 		case IC_CRAFTEDBY:
 		case IC_AMMOANIM:
 		case IC_AMMOANIMHUE:
@@ -2469,7 +2468,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 				SetDefStr(s.GetKey(), s.GetArgStr( &fQuoted ), fQuoted);
 			}
 			break;
-		//Set as number only
+		// Set as numeric
 		case IC_BONUSSKILL1AMT:
 		case IC_BONUSSKILL2AMT:
 		case IC_BONUSSKILL3AMT:
@@ -2658,7 +2657,8 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 				if ( IsItem() && IsItemInContainer() && pContainer->IsValidUID() && pContainer->IsContainer() && pContainer->IsItem() )
 				{
 					CItemContainer *pCont = dynamic_cast<CItemContainer *>(pContainer);
-					pCont->ContentAdd( this, pt );
+					if ( pCont )
+						pCont->ContentAdd(this, pt);
 				}
 				else
 				{
@@ -3338,9 +3338,8 @@ void CItem::Update(const CClient * pClientExclude)
 		}
 		else if ( IsItemInContainer())
 		{
-			CItemContainer* pCont = dynamic_cast <CItemContainer*> (GetParent());
-			ASSERT(pCont);
-			if ( pCont->IsAttr(ATTR_INVIS))
+			CItemContainer *pCont = dynamic_cast<CItemContainer *>(GetParent());
+			if ( pCont && pCont->IsAttr(ATTR_INVIS) )
 			{
 				// used to temporary build corpses.
 				pClient->addObjectRemove( this );
@@ -3568,7 +3567,7 @@ int CItem::AddSpellbookSpell( SPELL_TYPE spell, bool fUpdate )
 	if ( GetTopLevelObj()->IsChar() )
 	{
 		// Intercepting the spell's addition here for NPCs, they store the spells on vector <Spells>m_spells for better access from their AI
-		CCharNPC *pNPC = dynamic_cast<CObjBase *>(GetTopLevelObj())->GetUID().CharFind()->m_pNPC;
+		CCharNPC *pNPC = static_cast<CObjBase *>(GetTopLevelObj())->GetUID().CharFind()->m_pNPC;
 		if ( pNPC )
 			pNPC->Spells_Add(spell);
 	}
