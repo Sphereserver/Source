@@ -178,8 +178,8 @@ int CvtSystemToNUNICODE(NCHAR *pszOut, int iSizeOutChars, LPCTSTR pszInp, int iS
 	// RETURN:
 	//  Number of wide chars (not including null)
 
-	ASSERT(pOut);
-	ASSERT(pInp);
+	ASSERT(pszOut);
+	ASSERT(pszInp);
 	if ( iSizeOutChars <= 0 )
 		return -1;
 
@@ -225,8 +225,7 @@ int CvtSystemToNUNICODE(NCHAR *pszOut, int iSizeOutChars, LPCTSTR pszInp, int iS
 	else
 #endif
 	{
-		int iInp = 0;
-		for ( ; iInp < iSizeInBytes; )
+		for ( int iInp = 0; iInp < iSizeInBytes; )
 		{
 			BYTE ch = pszInp[iInp];
 			if ( ch == 0 )

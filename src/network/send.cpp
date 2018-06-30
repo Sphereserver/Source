@@ -88,9 +88,6 @@ PacketCombatDamage::PacketCombatDamage(const CClient* target, WORD damage, CGray
 {
 	ADDTOCALLSTACK("PacketCombatDamage::PacketCombatDamage");
 
-	if ( damage <= 0 )
-		return;
-
 	writeInt32(static_cast<DWORD>(uid));
 	writeInt16(damage);
 	push(target);
@@ -553,7 +550,8 @@ PacketMessageASCII::PacketMessageASCII(const CClient* target, LPCTSTR pszText, c
 	else
 	{
 		const CChar* sourceCharacter = dynamic_cast<const CChar *>(source);
-		ASSERT(sourceCharacter);
+		if ( !sourceCharacter )
+			return;
 		writeInt16(static_cast<WORD>(sourceCharacter->GetDispID()));
 	}
 	
@@ -788,8 +786,10 @@ PacketItemContainer::PacketItemContainer(const CClient* target, const CItem* ite
 	ADDTOCALLSTACK("PacketItemContainer::PacketItemContainer");
 
 	const CItemContainer* container = dynamic_cast<CItemContainer *>(item->GetParent());
-	const CPointBase& pt = item->GetContainedPoint();
+	if ( !container )
+		return;
 
+	const CPointBase &pt = item->GetContainedPoint();
 	const CItemBase* itemDefinition = item->Item_GetDef();
 	ITEMID_TYPE id = item->GetDispID();
 	HUE_TYPE hue = item->GetHue() & HUE_MASK_HI;
@@ -945,7 +945,8 @@ PacketItemEquipped::PacketItemEquipped(const CClient* target, const CItem* item)
 	ADDTOCALLSTACK("PacketItemEquipped::PacketItemEquipped");
 
 	const CChar* parent = dynamic_cast<CChar *>(item->GetParent());
-	ASSERT(parent);
+	if ( !parent )
+		return;
 
 	LAYER_TYPE layer = item->GetEquipLayer();
 	ITEMID_TYPE id;
@@ -2631,14 +2632,14 @@ PacketShowDyeWindow::PacketShowDyeWindow(const CClient* target, const CObjBase* 
 	ITEMID_TYPE id;
 	if (object->IsItem())
 	{
-		const CItem* item = dynamic_cast<const CItem *>(object);
+		const CItem *item = static_cast<const CItem *>(object);
 		ASSERT(item);
 		id = item->GetDispID();
 	}
 	else
 	{
 		// get the item equiv for the creature
-		const CChar* character = dynamic_cast<const CChar *>(object);
+		const CChar *character = static_cast<const CChar *>(object);
 		ASSERT(character);
 		id = character->Char_GetDef()->m_trackID;
 	}
@@ -3176,7 +3177,8 @@ PacketMessageUNICODE::PacketMessageUNICODE(const CClient* target, const NWORD* p
 	else
 	{
 		const CChar* sourceCharacter = dynamic_cast<const CChar *>(source);
-		ASSERT(sourceCharacter);
+		if ( !sourceCharacter )
+			return;
 		writeInt16(static_cast<WORD>(sourceCharacter->GetDispID()));
 	}
 	
@@ -4010,9 +4012,6 @@ PacketCombatDamageOld::PacketCombatDamageOld(const CClient* target, BYTE damage,
 {
 	ADDTOCALLSTACK("PacketCombatDamageOld::PacketCombatDamageOld");
 
-	if ( damage <= 0 )
-		return;
-
 	writeByte(0x1);
 	writeInt32(static_cast<DWORD>(uid));
 	writeByte(damage);
@@ -4061,7 +4060,8 @@ PacketMessageLocalised::PacketMessageLocalised(const CClient* target, DWORD clil
 	else
 	{
 		const CChar* sourceCharacter = dynamic_cast<const CChar *>(source);
-		ASSERT(sourceCharacter);
+		if ( !sourceCharacter )
+			return;
 		writeInt16(static_cast<WORD>(sourceCharacter->GetDispID()));
 	}
 
@@ -4120,7 +4120,8 @@ PacketMessageLocalisedEx::PacketMessageLocalisedEx(const CClient* target, DWORD 
 	else
 	{
 		const CChar* sourceCharacter = dynamic_cast<const CChar *>(source);
-		ASSERT(sourceCharacter);
+		if ( !sourceCharacter )
+			return;
 		writeInt16(static_cast<WORD>(sourceCharacter->GetDispID()));
 	}
 
