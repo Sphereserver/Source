@@ -1,4 +1,5 @@
-# Generic makefile
+MAKEFLAGS = -j $(shell nproc)
+PIPE	= -pipe
 MARCH	= -march=i686 -m32
 
 OPT 	= -Os -fno-strict-aliasing -fno-omit-frame-pointer -ffast-math $(MARCH)
@@ -35,8 +36,6 @@ CC_FLAGS	= $(COPT) $(INCLUDE) $(DEFINES)
 
 GITREVISION	= $(shell expr $(shell git rev-list --count HEAD) - 2406)
 GITHASH		= $(shell git rev-parse --short HEAD)
-
-PIPE	= -pipe
 
 SRC	:= 	./src/graysvr/CAccount.cpp \
 		./src/graysvr/CBase.cpp \
