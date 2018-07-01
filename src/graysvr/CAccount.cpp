@@ -611,54 +611,44 @@ bool CAccount::CheckPassword(LPCTSTR pszPassword)
 
 bool CAccount::CheckPasswordTries(CSocketAddress csaPeerName)
 {
+	ADDTOCALLSTACK("CAccount::CheckPasswordTries");
 	bool fReturn = true;
 	DWORD dwCurrentIP = csaPeerName.GetAddrIP();
-	CServTime timeCurrent = CServTime::GetCurrentTime();
+	UINT64 uTimeCurrent = CServTime::GetCurrentTime().GetTimeRaw();
 
 	BlockLocalTime_t::iterator itData = m_BlockIP.find(dwCurrentIP);
 	if ( itData != m_BlockIP.end() )
 	{
 		BlockLocalTimePair_t itResult = (*itData).second;
 		TimeTriesStruct_t &ttsData = itResult.first;
-		ttsData.m_Last = timeCurrent.GetTimeRaw();
 
-		if ( ttsData.m_Delay > timeCurrent.GetTimeRaw() )
-			fReturn = false;
+		if ( ttsData.m_BlockDelay > uTimeCurrent )
+			return false;
+
+		if ( uTimeCurrent - ttsData.m_LastTry > 60 * TICK_PER_SEC )
+		{
+			// Reset counter after wait 60s from last try
+			ttsData.m_BlockDelay = 0;
+			itResult.second = 0;
+		}
 		else
 		{
-			int iAccountMaxTries = g_Cfg.m_iClientLoginMaxTries;
-			if ( ((ttsData.m_Last - ttsData.m_First) > 15 * TICK_PER_SEC) && (itResult.second < iAccountMaxTries) )
+			itResult.second++;
+			if ( itResult.second >= g_Cfg.m_iClientLoginMaxTries )
 			{
-				ttsData.m_First = timeCurrent.GetTimeRaw();
-				ttsData.m_Delay = 0;
-				itResult.second = 0;
-			}
-			else
-			{
-				itResult.second++;
-				if ( itResult.second > iAccountMaxTries )
-				{
-					ttsData.m_First = ttsData.m_Delay;
-					ttsData.m_Delay = 0;
-					itResult.second = 0;
-				}
-				else if ( itResult.second == iAccountMaxTries )
-				{
-					ttsData.m_Delay = ttsData.m_Last + static_cast<UINT64>(g_Cfg.m_iClientLoginTempBan);
-					fReturn = false;
-				}
+				// Max tries reached, apply temporary ban
+				ttsData.m_BlockDelay = uTimeCurrent + static_cast<UINT64>(g_Cfg.m_iClientLoginTempBan);
+				fReturn = false;
 			}
 		}
-
+		ttsData.m_LastTry = uTimeCurrent;
 		m_BlockIP[dwCurrentIP] = itResult;
 	}
 	else
 	{
 		TimeTriesStruct_t ttsData;
-		ttsData.m_First = timeCurrent.GetTimeRaw();
-		ttsData.m_Last = timeCurrent.GetTimeRaw();
-		ttsData.m_Delay = 0;
-
+		ttsData.m_LastTry = uTimeCurrent;
+		ttsData.m_BlockDelay = 0;
 		m_BlockIP[dwCurrentIP] = std::make_pair(ttsData, 0);
 	}
 
@@ -670,12 +660,15 @@ bool CAccount::CheckPasswordTries(CSocketAddress csaPeerName)
 
 void CAccount::ClearPasswordTries()
 {
-	UINT64 timeCurrent = CServTime::GetCurrentTime().GetTimeRaw();
-	for ( BlockLocalTime_t::iterator itData = m_BlockIP.end(); itData != m_BlockIP.begin(); --itData )
+	ADDTOCALLSTACK("CAccount::ClearPasswordTries");
+	UINT64 uTimeCurrent = CServTime::GetCurrentTime().GetTimeRaw();
+	for ( BlockLocalTime_t::iterator itData = m_BlockIP.begin(); itData != m_BlockIP.end(); )
 	{
 		BlockLocalTimePair_t itResult = (*itData).second;
-		if ( timeCurrent - itResult.first.m_Last > static_cast<UINT64>(g_Cfg.m_iClientLoginTempBan) )
-			m_BlockIP.erase(itData);
+		if ( uTimeCurrent - itResult.first.m_LastTry > 60 * TICK_PER_SEC )
+			itData = m_BlockIP.erase(itData);
+		else
+			++itData;
 	}
 }
 

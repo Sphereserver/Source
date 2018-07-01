@@ -1509,6 +1509,9 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 		case RC_CLIENTLINGER:
 			sVal.FormatVal( m_iClientLingerTime / TICK_PER_SEC );
 			break;
+		case RC_CLIENTLOGINTEMPBAN:
+			sVal.FormatVal(m_iClientLoginTempBan / (60 * TICK_PER_SEC));
+			break;
 		case RC_COLORHIDDEN:
 			sVal.FormatHex( m_iColorHidden );
 			break;
