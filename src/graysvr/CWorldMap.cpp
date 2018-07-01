@@ -81,6 +81,8 @@ CItem * CWorld::CheckNaturalResource( const CPointMap & pt, IT_TYPE Type, bool f
 	{
 		CPointMap ptZero(0,0,0,pt.m_map);
 		pRegion = dynamic_cast<CRegionWorld*>(ptZero.GetRegion(REGION_TYPE_AREA));
+		if ( !pRegion )
+			return NULL;
 	}
 
 	// Find RES_REGIONTYPE
@@ -327,7 +329,7 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 	const CGrayMapBlock * pMapBlock = GetMapBlock( pt );
 	ASSERT( pMapBlock );
 
-	size_t iStaticQty = pMapBlock->m_Statics.GetStaticQty();
+	size_t iStaticQty = pMapBlock ? pMapBlock->m_Statics.GetStaticQty() : 0;
 	if ( iStaticQty > 0 )  // no static items here.
 	{
 		const CUOStaticItemRec * pStatic = NULL;

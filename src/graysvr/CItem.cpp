@@ -373,13 +373,12 @@ CItem * CItem::CreateHeader( TCHAR * pszArg, CObjBase * pCont, bool fDupeCheck, 
 		if ( wAmount != 1 )
 			pItem->SetAmount(wAmount);
 
-		// Items should have their container set after their amount to
-		// avoid stacking issues.
-		if ( pCont && rid.GetResType() == RES_ITEMDEF )
+		// Items should have their container set after their amount to avoid stacking issues
+		if ( pCont && (rid.GetResType() == RES_ITEMDEF) )
 		{
-			CContainer * pContBase = dynamic_cast <CContainer *> ( pCont );
-			ASSERT(pContBase);
-			pContBase->ContentAdd(pItem);
+			CContainer *pContBase = dynamic_cast<CContainer *>(pCont);
+			if ( pContBase )
+				pContBase->ContentAdd(pItem);
 		}
 	}
 	return( pItem );

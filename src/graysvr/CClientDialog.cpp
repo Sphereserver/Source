@@ -586,9 +586,9 @@ bool CClient::Dialog_Setup( CLIMODE_TYPE mode, RESOURCE_ID_BASE rid, int iPage, 
 
 	CResourceDef *pRes = g_Cfg.ResourceGetDef(rid);
 	CDialogDef *pDlg = dynamic_cast<CDialogDef *>(pRes);
-	if ( !pRes )
+	if ( !pDlg )
 	{
-		DEBUG_ERR(("Invalid RES_DIALOG.\n"));
+		DEBUG_ERR(("Invalid RES_DIALOG\n"));
 		return false;
 	}
 
@@ -604,7 +604,7 @@ bool CClient::Dialog_Setup( CLIMODE_TYPE mode, RESOURCE_ID_BASE rid, int iPage, 
 		// SA+ enhanced clients doesn't need this translation anymore because OSI had added back support for server dynamic dialogs again.
 		context = g_Cfg.GetKRDialog(context);
 		if ( context == 0 )
-			g_Log.Event(LOGL_WARN, "A Kingdom Reborn equivalent of dialog '%s' has not been defined.\n", pDlg->GetResourceName());
+			g_Log.Event(LOGL_WARN, "A Kingdom Reborn equivalent of dialog '%s' has not been defined\n", pDlg->GetResourceName());
 	}
 
 	addGumpDialog(mode, pDlg->m_sControls, pDlg->m_iControls, pDlg->m_sText, pDlg->m_iTexts, pDlg->m_x, pDlg->m_y, pObj, context);

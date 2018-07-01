@@ -1662,12 +1662,13 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 		{
 			if ( pCaster )
 			{
-				wStatEffect = (400 + pCaster->Skill_GetBase(SKILL_EVALINT) - Skill_GetBase(SKILL_MAGICRESISTANCE)) / 10;
-				if ( wStatEffect < 0 )
-					wStatEffect = 0;
-				else if ( wStatEffect > static_cast<WORD>(Stat_GetVal(STAT_INT)) )
-					wStatEffect = static_cast<WORD>(Stat_GetVal(STAT_INT));
+				int iChange = (400 + pCaster->Skill_GetBase(SKILL_EVALINT) - Skill_GetBase(SKILL_MAGICRESISTANCE)) / 10;
+				if ( iChange < 0 )
+					iChange = 0;
+				else if ( iChange > Stat_GetVal(STAT_INT) )
+					iChange = Stat_GetVal(STAT_INT);
 
+				wStatEffect = static_cast<WORD>(iChange);
 				pSpell->m_itSpell.m_spelllevel = wStatEffect;
 			}
 			UpdateStatVal(STAT_INT, -wStatEffect);
@@ -2759,7 +2760,7 @@ bool CChar::Spell_CastDone()
 			case SPELL_Create_Food:
 			{
 				RESOURCE_ID food = g_Cfg.ResourceGetIDType(RES_ITEMDEF, "DEFFOOD");
-				CItem *pItem = CItem::CreateScript(iT1 ? iT1 : static_cast<ITEMID_TYPE>(food.GetResIndex()), this);
+				CItem *pItem = CItem::CreateScript((iT1 != ITEMID_NOTHING) ? iT1 : static_cast<ITEMID_TYPE>(food.GetResIndex()), this);
 				ASSERT(pItem);
 				if ( pSpellDef->IsSpellType(SPELLFLAG_TARG_OBJ|SPELLFLAG_TARG_XYZ) )
 					pItem->MoveToCheck(m_Act_p, this);
@@ -2835,7 +2836,7 @@ bool CChar::Spell_CastDone()
 					pObj->OnSpellEffect(spell, this, iSkillLevel, dynamic_cast<CItem *>(pObjSrc));
 				else
 				{
-					CItem *pItem = CItem::CreateBase(iT1 ? iT1 : ITEMID_FX_FLAMESTRIKE);
+					CItem *pItem = CItem::CreateBase((iT1 != ITEMID_NOTHING) ? iT1 : ITEMID_FX_FLAMESTRIKE);
 					ASSERT(pItem);
 					pItem->SetType(IT_SPELL);
 					pItem->m_itSpell.m_spell = SPELL_Flame_Strike;
@@ -2944,7 +2945,7 @@ bool CChar::Spell_CastDone()
 
 	if ( g_Cfg.m_fHelpingCriminalsIsACrime && pSpellDef->IsSpellType(SPELLFLAG_GOOD) && pObj && pObj->IsChar() && (pObj != this) )
 	{
-		CChar *pChar = dynamic_cast<CChar *>(pObj);
+		CChar *pChar = static_cast<CChar *>(pObj);
 		ASSERT(pChar);
 		switch ( pChar->Noto_GetFlag(this) )
 		{
@@ -2993,7 +2994,7 @@ void CChar::Spell_CastFail()
 	DWORD dwRender = static_cast<DWORD>(maximum(0, Args.m_VarsLocal.GetKeyNum("EffectRender")));
 
 	iT1 = static_cast<ITEMID_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject1")));
-	if ( iT1 )
+	if ( iT1 != ITEMID_NOTHING )
 		Effect(EFFECT_OBJ, iT1, this, 1, 30, false, iColor, dwRender);
 	Sound(SOUND_SPELL_FIZZLE);
 

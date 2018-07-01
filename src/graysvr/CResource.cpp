@@ -3254,7 +3254,7 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 							return( ResourceGetNewID(restype, pVarStr->GetValStr(), ppVarNum, fNewStyleDef) );
 					}
 					default:
-						DEBUG_ERR(("Re-Using name '%s' to define block\n", pszName));
+						DEBUG_ERR(("Re-using defname '%s' to define block\n", pszName));
 						return( ridinvalid );
 				}
 			}
@@ -3272,7 +3272,7 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 						// These are not truly defining a new DEFNAME
 						break;
 					default:
-						DEBUG_ERR(("Redefined name '%s' from %s to %s\n", pszName, GetResourceBlockName(rid.GetResType()), GetResourceBlockName(restype)));
+						DEBUG_ERR(("Redefined defname '%s' from %s to %s\n", pszName, GetResourceBlockName(rid.GetResType()), GetResourceBlockName(restype)));
 						return ridinvalid;
 				}
 			}
@@ -3286,10 +3286,8 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 				// Why do this unless it's a Resync ?
 				if ( g_Serv.m_iModeCode != SERVMODE_ResyncLoad )
 				{
-					if ( g_Cfg.m_wDebugFlags & DEBUGF_SCRIPTS )
-						g_pLog->EventWarn("Redef resource '%s'\n", pszName);
-					else
-						DEBUG_WARN(("Redef resource '%s'\n", pszName));
+					if ( restype != RES_TYPEDEF )
+						g_pLog->EventWarn("Redefined defname '%s'\n", pszName);
 				}
 			}
 			rid = RESOURCE_ID( restype, rid.GetResIndex(), iPage );

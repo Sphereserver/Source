@@ -93,7 +93,9 @@ CItemContainer *CChar::GetContainerCreate(LAYER_TYPE layer)
 	}
 
 	pCont = dynamic_cast<CItemContainer *>(CItem::CreateScript(id, this));
-	ASSERT(pCont);
+	if ( !pCont )
+		return NULL;
+
 	if ( (layer == LAYER_PACK) || ((layer >= LAYER_VENDOR_STOCK) && (layer <= LAYER_BANKBOX)) )
 		pCont->SetAttr(ATTR_NEWBIE|ATTR_MOVE_NEVER);
 	LayerAdd(pCont, layer);
@@ -1604,7 +1606,7 @@ bool CChar::CanTouch(const CObjBase *pObj) const
 
 	// Search up to top level object
 	const CChar *pChar = NULL;
-	if ( pObjTop && (pObjTop != this) )
+	if ( pObjTop != this )
 	{
 		if ( pObjTop->IsChar() )
 		{

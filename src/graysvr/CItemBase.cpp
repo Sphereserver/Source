@@ -5,13 +5,14 @@
 
 CItemBase::CItemBase(ITEMID_TYPE id) : CBaseBaseDef(RESOURCE_ID(RES_ITEMDEF, id))
 {
+	m_type = IT_NORMAL;
 	m_weight = 0;
+	m_layer = LAYER_NONE;
+	m_dwFlags = 0;
 	m_speed = 0;
 	m_iSkill = SKILL_NONE;
-	SetDefNum("RANGE", 1);	//m_range = 1;
-	m_type = IT_NORMAL;
-	m_layer = LAYER_NONE;
 	m_CanUse = CAN_U_ALL;
+	SetDefNum("RANGE", 1);	//m_range = 1;
 
 	m_StrengthBonus = 0;
 	m_DexterityBonus = 0;
@@ -113,7 +114,7 @@ CItemBase *CItemBase::FindItemBase(ITEMID_TYPE id)	// static
 	if ( pBaseDupe )
 		return pBaseDupe->GetItemDef();		// this is just a DupeItem
 
-	CResourceLink *pBaseLink = dynamic_cast<CResourceLink *>(pBaseStub);
+	CResourceLink *pBaseLink = static_cast<CResourceLink *>(pBaseStub);
 	ASSERT(pBaseLink);
 
 	pBase = new CItemBase(id);

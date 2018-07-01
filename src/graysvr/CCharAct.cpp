@@ -60,8 +60,8 @@ bool CChar::TeleportToObj(int iType, TCHAR *pszArgs)
 			{
 				if ( !pObj->IsChar() )
 					continue;
-				CChar *pChar = dynamic_cast<CChar *>(pObj);
-				if ( pChar->GetID() != iArg )
+				CChar *pChar = static_cast<CChar *>(pObj);
+				if ( pChar->GetID() != static_cast<CREID_TYPE>(iArg) )
 					continue;
 				break;
 			}
@@ -69,8 +69,8 @@ bool CChar::TeleportToObj(int iType, TCHAR *pszArgs)
 			{
 				if ( !pObj->IsItem() )
 					continue;
-				CItem *pItem = dynamic_cast<CItem *>(pObj);
-				if ( pItem->GetID() != iArg )
+				CItem *pItem = static_cast<CItem *>(pObj);
+				if ( pItem->GetID() != static_cast<ITEMID_TYPE>(iArg) )
 					continue;
 				break;
 			}
@@ -81,7 +81,7 @@ bool CChar::TeleportToObj(int iType, TCHAR *pszArgs)
 			continue;
 		if ( pObjTop->IsChar() )
 		{
-			if ( !CanDisturb(dynamic_cast<CChar *>(pObjTop)) )
+			if ( !CanDisturb(static_cast<CChar *>(pObjTop)) )
 				continue;
 		}
 
@@ -1437,8 +1437,7 @@ void CChar::SoundChar(CRESND_TYPE type)
 int CChar::ItemPickup(CItem *pItem, WORD wAmount)
 {
 	ADDTOCALLSTACK("CChar::ItemPickup");
-
-	if ( (wAmount < 0) || !pItem )
+	if ( !pItem )
 		return -1;
 
 	if ( pItem->GetParent() == this )

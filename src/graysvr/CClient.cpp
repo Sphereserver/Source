@@ -278,7 +278,7 @@ bool CClient::CanSee(const CObjBaseTemplate *pObj) const
 
 	if ( !IsPriv(PRIV_ALLSHOW) && pObj->IsChar() )
 	{
-		const CChar *pChar = dynamic_cast<const CChar *>(pObj);
+		const CChar *pChar = static_cast<const CChar *>(pObj);
 		if ( pChar->IsDisconnected() )
 			return false;
 	}
@@ -1130,7 +1130,7 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 					{
 						if ( pItem->IsType(IT_SPAWN_ITEM) || pItem->IsType(IT_SPAWN_CHAR) )
 						{
-							pSpawnDef = dynamic_cast<CItemSpawn *>(pItem)->FixDef();
+							pSpawnDef = static_cast<CItemSpawn *>(pItem)->FixDef();
 							if ( !pSpawnDef )
 							{
 								RESOURCE_ID_BASE rid = pItem->IsType(IT_SPAWN_ITEM) ? pItem->m_itSpawnItem.m_ItemID : pItem->m_itSpawnChar.m_CharID;

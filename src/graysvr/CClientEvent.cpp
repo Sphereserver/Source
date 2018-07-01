@@ -250,49 +250,50 @@ void CClient::Event_Item_Drop(CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, BY
 		if ( !m_pChar->CanTouch(pObjOn) )
 			return Event_Item_Drop_Fail(pItem);
 
-		CChar *pChar = dynamic_cast<CChar *>(pObjOn->GetTopLevelObj());
 		if ( pObjOn->IsChar() )
 		{
 			// Dropped directly over an char
-			if ( pChar != m_pChar )
+			CChar *pCharOn = static_cast<CChar *>(pObjOn);
+			if ( pCharOn != m_pChar )
 			{
-				if ( Cmd_SecureTrade(pChar, pItem) )
+				if ( Cmd_SecureTrade(pCharOn, pItem) )
 					return;
 				if ( !IsPriv(PRIV_GM) )
 					return Event_Item_Drop_Fail(pItem);
 			}
-			pObjOn = pChar->GetContainerCreate(LAYER_PACK);
+			pObjOn = pCharOn->GetContainerCreate(LAYER_PACK);
 		}
 
 		pContOn = dynamic_cast<CItemContainer *>(pObjOn);
 		if ( !pContOn )
 			pContOn = dynamic_cast<CItemContainer *>(pObjOn->GetParent());
 
-		if ( pChar && pContOn )
+		CChar *pCharTop = dynamic_cast<CChar *>(pObjOn->GetTopLevelObj());
+		if ( pCharTop && pContOn )
 		{
 			// Dropped on container inside an char
-			if ( !pChar->NPC_IsOwnedBy(m_pChar) )
+			if ( !pCharTop->NPC_IsOwnedBy(m_pChar) )
 				return Event_Item_Drop_Fail(pItem);
 
-			if ( pChar->m_pNPC )
+			if ( pCharTop->m_pNPC )
 			{
 				pItem->ClrAttr(ATTR_OWNED);
 				if ( !g_Cfg.m_bAllowNewbTransfer )
 					pItem->ClrAttr(ATTR_NEWBIE);
 			}
 
-			CItemContainer *pBankBox = pChar->GetContainerCreate(LAYER_BANKBOX);
+			CItemContainer *pBankBox = pCharTop->GetContainerCreate(LAYER_BANKBOX);
 			if ( pBankBox->IsItemInside(pContOn) )
 			{
 				// Dropped on bank box
 				// Only accept items if the client already had opened the bank box
-				if ( pBankBox->m_itEqBankBox.m_ptOpen != pChar->GetTopPoint() )
+				if ( pBankBox->m_itEqBankBox.m_ptOpen != pCharTop->GetTopPoint() )
 					return Event_Item_Drop_Fail(pItem);
 
 				// Convert physical gold into virtual gold
 				if ( pItem->IsType(IT_GOLD) && (g_Cfg.m_iFeatureTOL & FEATURE_TOL_VIRTUALGOLD) )
 				{
-					pChar->m_virtualGold += pItem->GetAmount();
+					pCharTop->m_virtualGold += pItem->GetAmount();
 					SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_BVBOX_DEPOSITED), pItem->GetAmount());
 					addSound(pItem->GetDropSound(pObjOn));
 					pItem->Delete();
@@ -303,7 +304,7 @@ void CClient::Event_Item_Drop(CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, BY
 				if ( !pBankBox->CanContainerHold(pItem, m_pChar) )
 					return Event_Item_Drop_Fail(pItem);
 			}
-			else if ( !pChar->CanCarry(pItem) )
+			else if ( !pCharTop->CanCarry(pItem) )
 			{
 				SysMessageDefault(DEFMSG_MSG_HEAVY);
 				return Event_Item_Drop_Fail(pItem);
@@ -431,18 +432,9 @@ void CClient::Event_Skill_Use(SKILL_TYPE skill)
 	ADDTOCALLSTACK("CClient::Event_Skill_Use");
 	// All the push button skills come through here.
 	// Any "Last skill" macro comes here as well. (push button only)
-	if ( !m_pChar )
+	if ( !m_pChar || (skill == SKILL_NONE) || !g_Cfg.m_SkillIndexDefs.IsValidIndex(skill) )
 		return;
-
-	if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(skill) )
-	{
-		SysMessage("There is no such skill. Please tell support you saw this message.");
-		return;
-	}
-
-	if ( !m_pChar->Skill_CanUse(skill) )
-		return;
-	if ( m_pChar->Skill_Wait(skill) )
+	if ( !m_pChar->Skill_CanUse(skill) || m_pChar->Skill_Wait(skill) )
 		return;
 
 	if ( IsTrigUsed(TRIGGER_SKILLSELECT) )
@@ -1863,7 +1855,7 @@ bool CClient::Event_DoubleClick(CGrayUID uid, bool fMacro, bool fTestTouch, bool
 	if ( pObj->IsItem() )
 		return Cmd_Use_Item(dynamic_cast<CItem *>(pObj), fTestTouch, fScript);
 
-	CChar *pChar = dynamic_cast<CChar *>(pObj);
+	CChar *pChar = static_cast<CChar *>(pObj);
 	if ( IsTrigUsed(TRIGGER_DCLICK) || IsTrigUsed(TRIGGER_CHARDCLICK) )
 	{
 		if ( pChar->OnTrigger(CTRIG_DClick, m_pChar) == TRIGRET_RET_TRUE )
@@ -1939,13 +1931,13 @@ void CClient::Event_SingleClick(CGrayUID uid)
 
 	if ( pObj->IsItem() )
 	{
-		addItemName(dynamic_cast<const CItem *>(pObj));
+		addItemName(static_cast<const CItem *>(pObj));
 		return;
 	}
 
 	if ( pObj->IsChar() )
 	{
-		addCharName(dynamic_cast<const CChar *>(pObj));
+		addCharName(static_cast<const CChar *>(pObj));
 		return;
 	}
 
@@ -2236,18 +2228,15 @@ void CClient::Event_AOSPopupMenuSelect(CGrayUID uid, WORD EntryTag)	//do somethi
 		switch ( EntryTag )
 		{
 			case POPUP_BANKBOX:
-				if ( pChar->m_pNPC->m_Brain == NPCBRAIN_BANKER )
-					pChar->NPC_OnHear("bank", m_pChar);
+				pChar->NPC_OnHear("bank", m_pChar);
 				break;
 
 			case POPUP_VENDORBUY:
-				if ( pChar->NPC_IsVendor() )
-					pChar->NPC_OnHear("buy", m_pChar);
+				pChar->NPC_OnHear("buy", m_pChar);
 				break;
 
 			case POPUP_VENDORSELL:
-				if ( pChar->NPC_IsVendor() )
-					pChar->NPC_OnHear("sell", m_pChar);
+				pChar->NPC_OnHear("sell", m_pChar);
 				break;
 
 			case POPUP_PETGUARD:
@@ -2291,13 +2280,11 @@ void CClient::Event_AOSPopupMenuSelect(CGrayUID uid, WORD EntryTag)	//do somethi
 				break;
 
 			case POPUP_STABLESTABLE:
-				if ( pChar->m_pNPC->m_Brain == NPCBRAIN_STABLE )
-					pChar->NPC_OnHear("stable", m_pChar);
+				pChar->NPC_OnHear("stable", m_pChar);
 				break;
 
 			case POPUP_STABLERETRIEVE:
-				if ( pChar->m_pNPC->m_Brain == NPCBRAIN_STABLE )
-					pChar->NPC_OnHear("retrieve", m_pChar);
+				pChar->NPC_OnHear("retrieve", m_pChar);
 				break;
 		}
 	}

@@ -891,10 +891,10 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case OC_CTAGCOUNT:
 		{
 			CChar *pChar = dynamic_cast<CChar *>(this);
-			if ( !pChar )
-				sVal.FormatVal(0);
-			else
+			if ( pChar )
 				sVal.FormatVal(pChar->m_pClient ? pChar->m_pClient->m_TagDefs.GetCount() : 0);
+			else
+				sVal.FormatVal(0);
 			break;
 		}
 		case OC_TEXTF:
@@ -975,12 +975,8 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			SKIP_SEPARATORS(pszKey);
 			GETNONWHITESPACE(pszKey);
 
+			CObjBase *pThis = IsTopLevel() ? this : static_cast<CObjBase *>(GetTopLevelObj());
 			CObjBase *pObj = pSrc->GetChar();
-			CObjBase *pThis = this;
-			if ( !IsTopLevel() )
-				pThis = dynamic_cast<CObjBase *>(GetTopLevelObj());
-			if ( !pThis )
-				return false;
 
 			if ( *pszKey )
 			{
@@ -1017,12 +1013,8 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			SKIP_SEPARATORS(pszKey);
 			GETNONWHITESPACE(pszKey);
 
+			CObjBase *pThis = IsTopLevel() ? this : static_cast<CObjBase *>(GetTopLevelObj());
 			CObjBase *pObj = pSrc->GetChar();
-			CObjBase *pThis = this;
-			if ( !IsTopLevel() )
-				pThis = dynamic_cast<CObjBase *>(GetTopLevelObj());
-			if ( !pThis )
-				return false;
 
 			if ( *pszKey )
 			{
@@ -1045,7 +1037,7 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			if ( !pObj )
 				return false;
 			if ( !pObj->IsTopLevel() )
-				pObj = dynamic_cast<CObjBase *>(pObj->GetTopLevelObj());
+				pObj = static_cast<CObjBase *>(pObj->GetTopLevelObj());
 
 			sVal.FormatVal(pThis->GetDir(pObj));
 			break;
@@ -1748,8 +1740,7 @@ bool CObjBase::r_LoadVal(CScript &s)
 		else if ( bUpdateClientStats )
 		{
 			CChar *pChar = static_cast<CChar *>(this);
-			if ( pChar )
-				pChar->UpdateStatsFlag();
+			pChar->UpdateStatsFlag();
 		}
 	}
 	return true;
@@ -2512,7 +2503,7 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 				CGrayUID uid = static_cast<CGrayUID>(s.GetArgVal());
 				if ( !uid.ObjFind() || !IsChar() )
 					return false;
-				CChar *pChar = dynamic_cast<CChar *>(this);
+				CChar *pChar = static_cast<CChar *>(this);
 				return pChar->Use_Obj(uid.ObjFind(), true, true);
 			}
 			else
@@ -2529,7 +2520,7 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 				if ( !uid.ObjFind() || !IsChar() )
 					return false;
 
-				CChar *pChar = dynamic_cast<CChar *>(this);
+				CChar *pChar = static_cast<CChar *>(this);
 				return pChar->Use_Obj(uid.ObjFind(), false, true);
 			}
 			else

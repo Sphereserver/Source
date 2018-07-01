@@ -691,10 +691,10 @@ void CItemContainer::Trade_Status(bool fCheck)
 			pChar1->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_TRADE_RECEIVED_GOLD), pPartner->m_itEqTradeWindow.m_iGold, pChar2->GetName());
 		}
 
-		INT64 iGold1 = m_itEqTradeWindow.m_iGold + (m_itEqTradeWindow.m_iPlatinum * 1000000000);
-		INT64 iGold2 = pPartner->m_itEqTradeWindow.m_iGold + (pPartner->m_itEqTradeWindow.m_iPlatinum * 1000000000);
-		pChar1->m_virtualGold += iGold2 - iGold1;
-		pChar2->m_virtualGold += iGold1 - iGold2;
+		UINT64 uGold1 = static_cast<UINT64>(m_itEqTradeWindow.m_iGold + (m_itEqTradeWindow.m_iPlatinum * 1000000000));
+		UINT64 uGold2 = static_cast<UINT64>(pPartner->m_itEqTradeWindow.m_iGold + (pPartner->m_itEqTradeWindow.m_iPlatinum * 1000000000));
+		pChar1->m_virtualGold += uGold2 - uGold1;
+		pChar2->m_virtualGold += uGold1 - uGold2;
 		pChar1->UpdateStatsFlag();
 		pChar2->UpdateStatsFlag();
 	}
@@ -721,11 +721,11 @@ void CItemContainer::Trade_UpdateGold(DWORD dwPlatinum, DWORD dwGold)
 	bool fUpdateChar2 = pChar2->m_pClient->m_NetState->isClientVersion(MINCLIVER_TOL);
 
 	// To prevent cheating, check if the char really have these gold/platinum values
-	UINT64 iMaxValue = pChar1->m_virtualGold;
-	if ( dwGold + (dwPlatinum * 1000000000) > iMaxValue )
+	UINT64 uMax = pChar1->m_virtualGold;
+	if ( static_cast<UINT64>(dwGold + (dwPlatinum * 1000000000)) > uMax )
 	{
-		dwGold = static_cast<DWORD>(iMaxValue % 1000000000);
-		dwPlatinum = static_cast<DWORD>(iMaxValue / 1000000000);
+		dwGold = static_cast<DWORD>(uMax % 1000000000);
+		dwPlatinum = static_cast<DWORD>(uMax / 1000000000);
 		fUpdateChar1 = true;
 	}
 
@@ -950,8 +950,8 @@ void CItemContainer::ContentAdd(CItem *pItem, CPointMap pt, BYTE gridIndex)
 			{
 				// Can't be put into any sort of a container, delete all it's pieces
 				CItemContainer *pCont = dynamic_cast<CItemContainer *>(pItem);
-				ASSERT(pCont);
-				pCont->DeleteAll();
+				if ( pCont )
+					pCont->DeleteAll();
 				break;
 			}
 			default:
