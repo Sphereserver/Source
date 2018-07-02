@@ -666,7 +666,15 @@ void CAccount::ClearPasswordTries()
 	{
 		BlockLocalTimePair_t itResult = (*itData).second;
 		if ( uTimeCurrent - itResult.first.m_LastTry > 60 * TICK_PER_SEC )
+		{
+#ifdef _WIN32
 			itData = m_BlockIP.erase(itData);
+#else
+			BlockLocalTime_t::iterator itDelete = itData;
+			++itData;
+			m_BlockIP.erase(itDelete);
+#endif
+		}
 		else
 			++itData;
 	}
