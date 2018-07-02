@@ -213,7 +213,7 @@ void CCrypt::LoginCryptStart(DWORD dwIP, BYTE *pbEvent, size_t iLen)
 			// Sometimes client keys (like 4.0.0) can incorrectly intercept a login packet, making
 			// it decrypt wrong info (strange chars after regular account name/password).
 			// This prevents that fact, choosing the right keys to decrypt it correctly :)
-			for ( int j = 21; j <= 30; ++j )
+			for ( size_t j = 21; j <= 30; ++j )
 			{
 				// No official client allows the account name/password to exceed 20 chars (2D=16, KR=20)
 				// so chars 21-30 must be always 0x0 (some unofficial clients may allow the user exceed
@@ -231,7 +231,7 @@ void CCrypt::LoginCryptStart(DWORD dwIP, BYTE *pbEvent, size_t iLen)
 				if ( pszAccountNameRaw )
 				{
 					// (matex) TODO: What for? We do not really need pszAccountNameCheck here do we?!
-					int iAccountNameLen = Str_GetBare(pszAccountNameCheck, pszAccountNameRaw, MAX_ACCOUNT_NAME_SIZE, ACCOUNT_NAME_VALID_CHAR);
+					size_t iAccountNameLen = Str_GetBare(pszAccountNameCheck, pszAccountNameRaw, MAX_ACCOUNT_NAME_SIZE, ACCOUNT_NAME_VALID_CHAR);
 					if ( iAccountNameLen > 0 )
 						pszAccountNameCheck[iAccountNameLen - 1] = '\0';
 
@@ -336,7 +336,7 @@ void CCrypt::RelayGameCryptStart(BYTE *pbOutput, const BYTE *pbInput, size_t iLe
 	bool fFoundEncrypt = false;
 	if ( iLen == 65 )
 	{
-		for ( int i = ENC_NONE; i < ENC_QTY; ++i )
+		for ( size_t i = ENC_NONE; i < ENC_QTY; ++i )
 		{
 			SetEncryptionType(static_cast<ENCRYPTION_TYPE>(i));
 			InitBlowfish();
@@ -463,7 +463,7 @@ TCHAR *CCrypt::WriteClientVerString(DWORD dwVer, TCHAR *pszOutput)
 	else
 	{
 		int iVer = sprintf(pszOutput, "%lu.%lu.%lu", dwVer / 1000000, (dwVer / 10000) % 100, (dwVer % 10000) / 100);
-		int iPatch = dwVer % 100;
+		int iPatch = static_cast<int>(dwVer % 100);
 		if ( iPatch )
 		{
 			pszOutput[++iVer] = static_cast<TCHAR>(iPatch + 'a' - 1);
@@ -729,7 +729,7 @@ void CCrypt::PrepareKey(CCrypt::CCryptKey &key, size_t iTable)	// static
 	const DWORD *pdwCodes = sm_dwCodingData[iTable];
 
 	key.dwKey[1] ^= pdwCodes[0];
-	for ( int i = 0; i < 8; ++i )
+	for ( size_t i = 0; i < 8; ++i )
 	{
 		key.dwKey[0] ^= pdwCodes[i * 2 + 1] ^ (((pdwCodes[18 + key.bKey[7]] + pdwCodes[18 + key.bKey[6] + 0x100]) ^ pdwCodes[18 + key.bKey[5] + 0x200]) + pdwCodes[18 + key.bKey[4] + 0x300]);
 		key.dwKey[1] ^= pdwCodes[i * 2 + 2] ^ (((pdwCodes[18 + key.bKey[3]] + pdwCodes[18 + key.bKey[2] + 0x100]) ^ pdwCodes[18 + key.bKey[1] + 0x200]) + pdwCodes[18 + key.bKey[0] + 0x300]);
@@ -896,7 +896,7 @@ void CCrypt::DecryptTwofish(BYTE *pbOutput, const BYTE *pbInput, size_t iLen)
 
 	for ( size_t i = 0; i < iLen; ++i )
 	{
-		if ( tf_position >= TFISH_RESET )
+		if ( tf_position >= TFISH_RESET - 1 )
 		{
 			blockEncrypt(&tf_cipher, &tf_key, &tf_cipherTable[0], 0x800, &bTempBuff[0]);
 			memcpy(&tf_cipherTable, &bTempBuff, TFISH_RESET);
@@ -977,7 +977,7 @@ size_t CHuffman::Compress(BYTE *pbOutput, const BYTE *pbInput, size_t iLen)	// s
 	ADDTOCALLSTACK("CHuffman::Compress");
 	BYTE bOutVal = 0;		// don't bother to init this, it will just roll off all junk anyhow
 	size_t iOutLen = 0;
-	int iBitIndex = 0;		// offset in output byte (bOutVal)
+	WORD wBitIndex = 0;		// offset in output byte (bOutVal)
 
 	for ( size_t i = 0; i <= iLen; i++ )
 	{
@@ -988,14 +988,14 @@ size_t CHuffman::Compress(BYTE *pbOutput, const BYTE *pbInput, size_t iLen)	// s
 		{
 			bOutVal <<= 1;
 			bOutVal |= (wValue >> iBits) & 0x1;
-			if ( ++iBitIndex == 8 )
+			if ( ++wBitIndex == 8 )
 			{
-				iBitIndex = 0;
+				wBitIndex = 0;
 				pbOutput[iOutLen++] = bOutVal;
 			}
 		}
 	}
-	if ( iBitIndex )	// flush odd bits
-		pbOutput[iOutLen++] = bOutVal << (8 - iBitIndex);
+	if ( wBitIndex )	// flush odd bits
+		pbOutput[iOutLen++] = bOutVal << (8 - wBitIndex);
 	return iOutLen;
 }
