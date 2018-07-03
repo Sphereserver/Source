@@ -135,12 +135,12 @@ bool CServer::SocketsInit()
 
 	int iRet = gethostname(szName, sizeof(szName));
 	if ( iRet )
-		strcpy(szName, m_ip.GetAddrStr());
+		strncpy(szName, m_ip.GetAddrStr(), sizeof(szName));
 	else
 	{
 		pHost = gethostbyname(szName);
 		if ( pHost && pHost->h_addr && pHost->h_name && pHost->h_name[0] )
-			strcpy(szName, pHost->h_name);
+			strncpy(szName, pHost->h_name, sizeof(szName));
 	}
 
 	g_Log.Event(LOGM_INIT, "\nServer started on hostname '%s'\n", szName);
@@ -808,14 +808,14 @@ longcommand:
 			char *y = Str_GetTemp();
 			char *z = Str_GetTemp();
 
-			strcpy(z, g_Cfg.m_sStripPath);
+			strncpy(z, g_Cfg.m_sStripPath, THREAD_STRING_LENGTH);
 			strcat(z, "sphere_strip" SPHERE_SCRIPT);
 			pSrc->SysMessagef("StripPath is %s\n", z);
 
 			fileStrip = fopen(z, "w");
 			if ( !fileStrip )
 			{
-				pSrc->SysMessagef("Cannot open file %s for writing\n", z);
+				pSrc->SysMessagef("Can't open file '%s' for writing\n", z);
 				return false;
 			}
 
@@ -823,11 +823,11 @@ longcommand:
 			CResourceScript *script;
 			while ( (script = g_Cfg.GetResourceFile(i++)) != NULL )
 			{
-				strcpy(z, script->GetFilePath());
+				strncpy(z, script->GetFilePath(), THREAD_STRING_LENGTH);
 				fileScript = fopen(z, "r");
 				if ( !fileScript )
 				{
-					pSrc->SysMessagef("Cannot open file %s for reading\n", z);
+					pSrc->SysMessagef("Can't open file '%s' for reading\n", z);
 					continue;
 				}
 
@@ -839,7 +839,7 @@ longcommand:
 
 					x = y;
 					GETNONWHITESPACE(x);
-					strcpy(z, x);
+					strncpy(z, x, THREAD_STRING_LENGTH);
 
 					if ( ((z[0] == '[') && (strnicmp(z, "[EOF]", 5) != 0)) || !strnicmp(z, "DEFNAME", 7) || !strnicmp(z, "NAME", 4) ||
 						!strnicmp(z, "ID", 2) || !strnicmp(z, "TYPE", 4) || !strnicmp(z, "WEIGHT", 6) || !strnicmp(z, "VALUE", 5) ||
@@ -1033,8 +1033,7 @@ bool CServer::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 
 		// Extract account name/index to a temporary buffer
 		TCHAR *pszTemp = Str_GetTemp();
-		TCHAR *pszTempStart = pszTemp;
-		strcpy(pszTemp, pszKey);
+		strncpy(pszTemp, pszKey, MAX_ACCOUNT_NAME_SIZE);
 
 		TCHAR *pszSplit = strchr(pszTemp, '.');
 		if ( pszSplit )
@@ -1053,10 +1052,7 @@ bool CServer::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 
 		// Indexes failed, try to fetch using names
 		if ( !pAccount )
-		{
-			pszTemp = pszTempStart;
 			pAccount = g_Accounts.Account_Find(pszTemp);
-		}
 
 		if ( !*pszKey )		// check if the account exists
 		{
@@ -1183,23 +1179,34 @@ bool CServer::r_Verb(CScript &s, CTextConsole *pSrc)
 		if ( !strnicmp(pszKey, "ACCOUNT.", 8) )
 		{
 			pszKey += 8;
-			index = SV_ACCOUNT;
 			CAccountRef pAccount = NULL;
 
-			char *pszTemp = Str_GetTemp();
-			strcpy(pszTemp, pszKey);
+			// Extract account name/index to a temporary buffer
+			TCHAR *pszTemp = Str_GetTemp();
+			strncpy(pszTemp, pszKey, MAX_ACCOUNT_NAME_SIZE);
 
-			char *pszSplit = strchr(pszTemp, '.');
+			TCHAR *pszSplit = strchr(pszTemp, '.');
 			if ( pszSplit )
-			{
 				*pszSplit = '\0';
-				pAccount = g_Accounts.Account_Find(pszTemp);
-				pszKey += strlen(pszTemp);
+
+			// Adjust pszKey to point to end of account name/index
+			pszKey += strlen(pszTemp);
+
+			// Try to fetch using indexes
+			if ( (*pszTemp >= '0') && (*pszTemp <= '9') )
+			{
+				size_t num = Exp_GetVal(pszTemp);
+				if ( (*pszTemp == '\0') && (num < g_Accounts.Account_GetCount()) )
+					pAccount = g_Accounts.Account_Get(num);
 			}
 
-			SKIP_SEPARATORS(pszKey);
-			if ( pAccount && *pszKey )
+			// Indexes failed, try to fetch using names
+			if ( !pAccount )
+				pAccount = g_Accounts.Account_Find(pszTemp);
+
+			if ( pAccount && *pszKey )	// execute function
 			{
+				SKIP_SEPARATORS(pszKey);
 				CScript script(pszKey, s.GetArgStr());
 				return pAccount->r_LoadVal(script);
 			}
