@@ -135,12 +135,12 @@ bool CServer::SocketsInit()
 
 	int iRet = gethostname(szName, sizeof(szName));
 	if ( iRet )
-		strncpy(szName, m_ip.GetAddrStr(), sizeof(szName));
+		strncpy(szName, m_ip.GetAddrStr(), sizeof(szName) - 1);
 	else
 	{
 		pHost = gethostbyname(szName);
 		if ( pHost && pHost->h_addr && pHost->h_name && pHost->h_name[0] )
-			strncpy(szName, pHost->h_name, sizeof(szName));
+			strncpy(szName, pHost->h_name, sizeof(szName) - 1);
 	}
 
 	g_Log.Event(LOGM_INIT, "\nServer started on hostname '%s'\n", szName);
@@ -808,7 +808,7 @@ longcommand:
 			char *y = Str_GetTemp();
 			char *z = Str_GetTemp();
 
-			strncpy(z, g_Cfg.m_sStripPath, THREAD_STRING_LENGTH);
+			strncpy(z, g_Cfg.m_sStripPath, THREAD_STRING_LENGTH - 1);
 			strcat(z, "sphere_strip" SPHERE_SCRIPT);
 			pSrc->SysMessagef("StripPath is %s\n", z);
 
@@ -823,7 +823,7 @@ longcommand:
 			CResourceScript *script;
 			while ( (script = g_Cfg.GetResourceFile(i++)) != NULL )
 			{
-				strncpy(z, script->GetFilePath(), THREAD_STRING_LENGTH);
+				strncpy(z, script->GetFilePath(), THREAD_STRING_LENGTH - 1);
 				fileScript = fopen(z, "r");
 				if ( !fileScript )
 				{
@@ -839,7 +839,7 @@ longcommand:
 
 					x = y;
 					GETNONWHITESPACE(x);
-					strncpy(z, x, THREAD_STRING_LENGTH);
+					strncpy(z, x, THREAD_STRING_LENGTH - 1);
 
 					if ( ((z[0] == '[') && (strnicmp(z, "[EOF]", 5) != 0)) || !strnicmp(z, "DEFNAME", 7) || !strnicmp(z, "NAME", 4) ||
 						!strnicmp(z, "ID", 2) || !strnicmp(z, "TYPE", 4) || !strnicmp(z, "WEIGHT", 6) || !strnicmp(z, "VALUE", 5) ||
@@ -1033,7 +1033,7 @@ bool CServer::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 
 		// Extract account name/index to a temporary buffer
 		TCHAR *pszTemp = Str_GetTemp();
-		strncpy(pszTemp, pszKey, MAX_ACCOUNT_NAME_SIZE);
+		strncpy(pszTemp, pszKey, MAX_ACCOUNT_NAME_SIZE - 1);
 
 		TCHAR *pszSplit = strchr(pszTemp, '.');
 		if ( pszSplit )
@@ -1183,7 +1183,7 @@ bool CServer::r_Verb(CScript &s, CTextConsole *pSrc)
 
 			// Extract account name/index to a temporary buffer
 			TCHAR *pszTemp = Str_GetTemp();
-			strncpy(pszTemp, pszKey, MAX_ACCOUNT_NAME_SIZE);
+			strncpy(pszTemp, pszKey, MAX_ACCOUNT_NAME_SIZE - 1);
 
 			TCHAR *pszSplit = strchr(pszTemp, '.');
 			if ( pszSplit )
