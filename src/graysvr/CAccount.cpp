@@ -127,8 +127,8 @@ bool CAccounts::Account_LoadAll(bool fChanges, bool fClearChanges)
 	LPCTSTR pszBaseName = fChanges ? SPHERE_FILE "acct" : SPHERE_FILE "accu";
 
 	char *z = Str_GetTemp();
-	strcpy(z, pszBaseDir);
-	strcat(z, pszBaseName);
+	strncpy(z, pszBaseDir, _MAX_PATH);
+	strncat(z, pszBaseName, _MAX_PATH);
 
 	if ( !fChanges )
 		g_Log.Event(LOGM_INIT, "Loading %s%s\n", z, SPHERE_SCRIPT);
@@ -152,10 +152,12 @@ bool CAccounts::Account_LoadAll(bool fChanges, bool fClearChanges)
 		// Empty the changes file
 		ASSERT(fChanges);
 		s.Close();
-		s.Open(NULL, OF_WRITE|OF_TEXT|OF_DEFAULTMODE);
-		s.WriteString("// " SPHERE_TITLE " accounts update file.\n"
-					  "// Account changes should be made here and will be applied on next worldsave.\n"
-					  "// Use 'ACCOUNT UPDATE' command to force the update immediately.\n\n");
+		if ( !s.Open(NULL, OF_WRITE|OF_TEXT|OF_DEFAULTMODE) )
+			g_Log.Event(LOGL_FATAL|LOGM_INIT, "Can't open account file '%s'\n", static_cast<LPCTSTR>(s.GetFilePath()));
+		else
+			s.WriteString("// " SPHERE_TITLE " accounts update file.\n"
+						  "// Account changes should be made here and will be applied on next worldsave.\n"
+						  "// Use 'ACCOUNT UPDATE' command to force the update immediately.\n\n");
 		return true;
 	}
 
@@ -463,7 +465,9 @@ bool CAccount::NameStrip(TCHAR *pszNameOut, LPCTSTR pszNameIn)
 
 	if ( Str_GetBare(pszNameOut, pszNameIn, MAX_ACCOUNT_NAME_SIZE, ACCOUNT_NAME_VALID_CHAR) <= 0 )		// check length
 		return false;
-	if ( strchr(pszNameOut, 0x0A) || strchr(pszNameOut, 0x0C) || strchr(pszNameOut, 0x0D) )		// check newline characters
+	if ( IsStrNumeric(pszNameOut) )		// check numeric characters
+		return false;
+	if ( strchr(pszNameOut, 0xA) || strchr(pszNameOut, 0xC) || strchr(pszNameOut, 0xD) )		// check newline characters
 		return false;
 	if ( !strcmpi(pszNameOut, "EOF") || !strcmpi(pszNameOut, "ACCOUNT") )	// check invalid names
 		return false;
@@ -591,7 +595,7 @@ bool CAccount::CheckPassword(LPCTSTR pszPassword)
 	{
 		char digest[33];
 		CMD5::fastDigest(digest, pszPassword);
-		pszPassword = digest;
+		pszPassword = static_cast<LPCTSTR>(digest);
 	}
 
 	// Check password

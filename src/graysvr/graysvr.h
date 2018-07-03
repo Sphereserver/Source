@@ -39,9 +39,6 @@ public:
 public:
 	UINT64 GetTimeRaw() const
 	{
-		if ( m_lPrivateTime < 0 )
-			return 0;
-
 		return m_lPrivateTime;
 	}
 	INT64 GetTimeDiff( const CServTime & time ) const
@@ -54,32 +51,23 @@ public:
 	}
 	void InitTime( UINT64 lTimeBase )
 	{
-		if ( lTimeBase < 0 )
-			lTimeBase = 0;
-
 		m_lPrivateTime = lTimeBase;
 	}
 	bool IsTimeValid() const
 	{
-		return( m_lPrivateTime > 0 ? true : false );
+		return (m_lPrivateTime > 0);
 	}
 	CServTime operator+( INT64 iTimeDiff ) const
 	{
 		CServTime time;
 		time.m_lPrivateTime = m_lPrivateTime + iTimeDiff;
-		if ( time.m_lPrivateTime < 0 )
-			time.m_lPrivateTime = 0;
-
-		return( time );
+		return time;
 	}
 	CServTime operator-( INT64 iTimeDiff ) const
 	{
 		CServTime time;
 		time.m_lPrivateTime = m_lPrivateTime - iTimeDiff;
-		if ( time.m_lPrivateTime < 0 )
-			time.m_lPrivateTime = 0;
-
-		return( time );
+		return time;
 	}
 	INT64 operator-( CServTime time ) const
 	{

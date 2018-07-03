@@ -24,14 +24,14 @@ std::vector<T_TRIGGERS> g_triggers;
 
 bool IsTrigUsed(E_TRIGGERS id)
 {
-	if ( g_Serv.IsLoading() == true)
+	if ( g_Serv.IsLoading() )
 		return false;
-	return (( static_cast<unsigned>(id) < g_triggers.size() ) && g_triggers[id].m_used );
+	return ((static_cast<size_t>(id) < g_triggers.size()) && g_triggers[id].m_used);
 }
 
 bool IsTrigUsed(const char *name)
 {
-	if ( g_Serv.IsLoading() == true)
+	if ( g_Serv.IsLoading() )
 		return false;
 	std::vector<T_TRIGGERS>::iterator it;
 	for ( it = g_triggers.begin(); it != g_triggers.end(); ++it )
@@ -931,7 +931,7 @@ void defragSphere(char *path)
 	DWORD *uids = (DWORD*)calloc(ULONG_MAX, sizeof(DWORD));
 	for ( i = 0; i < 3; i++ )
 	{
-		strcpy(z, path);
+		strncpy(z, path, sizeof(z));
 		if ( i == 0 )
 			strcat(z, SPHERE_FILE "statics" SPHERE_SCRIPT);
 		else if ( i == 1 )
@@ -942,7 +942,7 @@ void defragSphere(char *path)
 		g_Log.Event(LOGM_INIT, "Reading current UIDs: %s\n", z);
 		if ( !inf.Open(z, OF_READ|OF_TEXT|OF_DEFAULTMODE) )
 		{
-			g_Log.Event(LOGM_INIT, "Cannot open file for reading. Skipped!\n");
+			g_Log.Event(LOGM_INIT, "Can't open file '%s' for reading. Skipped!\n", z);
 			continue;
 		}
 		dBytesRead = dTotalMb = 0;
@@ -974,29 +974,35 @@ void defragSphere(char *path)
 		inf.Close();
 	}
 	dTotalUIDs = uid;
-	g_Log.Event(LOGM_INIT, "Totally having %lu unique objects (UIDs), latest: 0%lx\n", uid, uids[uid-1]);
+	g_Log.Event(LOGM_INIT, "Totally having %lu unique objects (UIDs), latest: 0%lx\n", uid, uids[uid - 2]);
 
 	g_Log.Event(LOGM_INIT, "Quick-Sorting the UIDs array...\n");
-	dword_q_sort(uids, 0, dTotalUIDs-1);
+	dword_q_sort(uids, 0, dTotalUIDs - 2);
 
 	for ( i = 0; i < 5; i++ )
 	{
-		strcpy(z, path);
-		if ( !i ) strcat(z, SPHERE_FILE "accu.scp");
-		else if ( i == 1 ) strcat(z, SPHERE_FILE "chars" SPHERE_SCRIPT);
-		else if ( i == 2 ) strcat(z, SPHERE_FILE "data" SPHERE_SCRIPT);
-		else if ( i == 3 ) strcat(z, SPHERE_FILE "world" SPHERE_SCRIPT);
-		else if ( i == 4 ) strcat(z, SPHERE_FILE "statics" SPHERE_SCRIPT);
-		g_Log.Event(LOGM_INIT, "Updating UID-s in %s to %s.new\n", z, z);
+		strncpy(z, path, sizeof(z));
+		if ( i == 0 )
+			strcat(z, SPHERE_FILE "accu.scp");
+		else if ( i == 1 )
+			strcat(z, SPHERE_FILE "chars" SPHERE_SCRIPT);
+		else if ( i == 2 )
+			strcat(z, SPHERE_FILE "data" SPHERE_SCRIPT);
+		else if ( i == 3 )
+			strcat(z, SPHERE_FILE "world" SPHERE_SCRIPT);
+		else if ( i == 4 )
+			strcat(z, SPHERE_FILE "statics" SPHERE_SCRIPT);
+
+		g_Log.Event(LOGM_INIT, "Updating UIDs in '%s' to '%s.new'\n", z, z);
 		if ( !inf.Open(z, OF_READ|OF_TEXT|OF_DEFAULTMODE) )
 		{
-			g_Log.Event(LOGM_INIT, "Cannot open file for reading. Skipped!\n");
+			g_Log.Event(LOGM_INIT, "Can't open file '%s' for reading. Skipped!\n", z);
 			continue;
 		}
 		strcat(z, ".new");
 		if ( !ouf.Open(z, OF_WRITE|OF_CREATE|OF_DEFAULTMODE) )
 		{
-			g_Log.Event(LOGM_INIT, "Cannot open file for writing. Skipped!\n");
+			g_Log.Event(LOGM_INIT, "Can't open file '%s' for writing. Skipped!\n", z);
 			continue;
 		}
 		dBytesRead = dTotalMb = 0;
@@ -1114,7 +1120,7 @@ void defragSphere(char *path)
 
 						if ( dStep == 1 )
 						{
-							uid = 0xFFFFFFFFL;
+							uid = ULONG_MAX;
 							break; // did not find the UID
 						}
 					}
@@ -1125,7 +1131,7 @@ void defragSphere(char *path)
 				{
 					if ( !uids[d] )	// end of array
 					{
-						uid = 0xFFFFFFFFL;
+						uid = ULONG_MAX;
 						break;
 					}
 					else if ( uids[d] == uid )
@@ -1137,10 +1143,10 @@ void defragSphere(char *path)
 
 				//	replace UID by the new one since it has been found
 				*p1 = c;
-				if ( uid != 0xFFFFFFFFL )
+				if ( uid != ULONG_MAX )
 				{
 					*p = 0;
-					strcpy(z, p1);
+					strncpy(z, p1, sizeof(z));
 					sprintf(z1, "0%lx", uid);
 					strcat(buf, z1);
 					strcat(buf, z);

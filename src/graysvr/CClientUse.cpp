@@ -631,17 +631,21 @@ bool CClient::Cmd_Skill_Menu(RESOURCE_ID_BASE rid, int iSelect)
 	if ( iSelect == 0 )		// menu cancelled
 		return (Cmd_Skill_Menu_Build(rid, iSelect, NULL, 0, fShowMenu, fLimitReached) > 0);
 
-	CMenuItem item[minimum(COUNTOF(m_tmMenu.m_Item), MAX_MENU_ITEMS)];
-	size_t iShowCount = Cmd_Skill_Menu_Build(rid, iSelect, item, COUNTOF(item), fShowMenu, fLimitReached);
+	CMenuItem pMenuItem[minimum(COUNTOF(m_tmMenu.m_Item), MAX_MENU_ITEMS)];
+	size_t iMenuItemCount = COUNTOF(pMenuItem);
+	size_t iShowCount = Cmd_Skill_Menu_Build(rid, iSelect, pMenuItem, iMenuItemCount, fShowMenu, fLimitReached);
 
 	if ( iSelect < -1 )		// just a test
-		return iShowCount ? true : false;
+		return (iShowCount > 0);
 
 	if ( iSelect > 0 )		// seems our resources disappeared.
 	{
 		if ( iShowCount <= 0 )
+		{
 			SysMessageDefault(DEFMSG_CANT_MAKE);
-		return iShowCount > 0 ? true : false;
+			return false;
+		}
+		return true;
 	}
 
 	if ( iShowCount <= 0 )
@@ -668,8 +672,10 @@ bool CClient::Cmd_Skill_Menu(RESOURCE_ID_BASE rid, int iSelect)
 			g_Log.EventDebug("SCRIPT: Too many empty skill menus to continue seeking through menu '%s'\n", g_Cfg.ResourceGetDef(rid)->GetResourceName());
 	}
 
-	ASSERT(iShowCount < COUNTOF(item));
-	addItemMenu(CLIMODE_MENU_SKILL, item, iShowCount);
+	if ( iShowCount >= iMenuItemCount )		// this should never happen
+		iShowCount = iMenuItemCount - 1;
+
+	addItemMenu(CLIMODE_MENU_SKILL, pMenuItem, iShowCount);
 	return true;
 }
 
@@ -831,7 +837,8 @@ size_t CClient::Cmd_Skill_Menu_Build(RESOURCE_ID_BASE rid, int iSelect, CMenuIte
 				{
 					// Test if there is anything in this skillmenu we can do.
 					++sm_iReentrant;
-					if ( !Cmd_Skill_Menu_Build(g_Cfg.ResourceGetIDType(RES_SKILLMENU, s.GetArgStr()), -2, *&item, iMaxSize, fShowMenu, fLimitReached) )
+					CMenuItem pReentrantMenuItem;
+					if ( !Cmd_Skill_Menu_Build(g_Cfg.ResourceGetIDType(RES_SKILLMENU, s.GetArgStr()), -2, &pReentrantMenuItem, iMaxSize, fShowMenu, fLimitReached) )
 					{
 						iShowCount--;
 						fSkip = true;
