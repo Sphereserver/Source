@@ -1,8 +1,8 @@
 #include "packet.h"
 #include "network.h"
 
-extern int CvtSystemToNUNICODE( NCHAR * pOut, int iSizeOutChars, LPCTSTR pInp, int iSizeInBytes );
-extern int CvtNUNICODEToSystem( TCHAR * pOut, int iSizeOutBytes, const NCHAR * pInp, int iSizeInChars );
+extern int CvtSystemToNUNICODE(NCHAR *pszOut, int iSizeOutChars, LPCTSTR pszInp, int iSizeInBytes);
+extern int CvtNUNICODEToSystem(TCHAR *pszOut, int iSizeOutBytes, const NCHAR *pszInp, int iSizeInChars);
 
 // on windows we can use the win32 api for converting between unicode<->ascii,
 // otherwise we need to convert with our own functions (gcc uses utf32 instead
@@ -1013,15 +1013,15 @@ void Packet::dump(AbstractString& output) const
 			BYTE c = m_buffer[idx++];
 			PROTECT_BYTE(c);
 
-			sprintf(z, "%02x", static_cast<int>(c));
-			strcat(bytes, z);
+			sprintf(z, "%02hhx", c);
+			strncat(bytes, z, sizeof(bytes) - 1);
 			strcat(bytes, (j == 7) ? "  " : " ");
 
 			if ((c >= 0x20) && (c <= 0x80))
 			{
 				z[0] = c;
 				z[1] = '\0';
-				strcat(chars, z);
+				strncat(chars, z, sizeof(chars) - 1);
 			}
 			else
 				strcat(chars, ".");
@@ -1047,15 +1047,15 @@ void Packet::dump(AbstractString& output) const
 				BYTE c = m_buffer[idx++];
 				PROTECT_BYTE(c);
 
-				sprintf(z, "%02x", static_cast<int>(c));
-				strcat(bytes, z);
+				sprintf(z, "%02hhx", c);
+				strncat(bytes, z, sizeof(bytes) - 1);
 				strcat(bytes, (j == 7) ? "  " : " ");
 
 				if ((c >= 0x20) && (c <= 0x80))
 				{
 					z[0] = c;
 					z[1] = 0;
-					strcat(chars, z);
+					strncat(chars, z, sizeof(chars) - 1);
 				}
 				else
 					strcat(chars, ".");

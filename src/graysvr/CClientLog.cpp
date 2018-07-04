@@ -295,11 +295,11 @@ bool CClient::OnRxConsole(const BYTE *pData, size_t iLen)
 			{
 				if ( !m_zLogin[0] )
 				{
-					if ( m_Targ_Text.GetLength() > COUNTOF(m_zLogin) - 1 )
+					if ( m_Targ_Text.GetLength() > sizeof(m_zLogin) - 1 )
 						SysMessage("Login:\n");
 					else
 					{
-						strcpy(m_zLogin, m_Targ_Text);
+						strncpy(m_zLogin, m_Targ_Text, sizeof(m_zLogin) - 1);
 						SysMessage("Password:\n");
 					}
 					m_Targ_Text.Empty();
@@ -358,8 +358,7 @@ bool CClient::OnRxAxis(const BYTE *pData, size_t iLen)
 			{
 				if ( !m_zLogin[0] )
 				{
-					if ( m_Targ_Text.GetLength() <= COUNTOF(m_zLogin) - 1 )
-						strcpy(m_zLogin, m_Targ_Text);
+					strncpy(m_zLogin, m_Targ_Text, sizeof(m_zLogin) - 1);
 					m_Targ_Text.Empty();
 				}
 				else
@@ -626,13 +625,16 @@ bool CClient::OnRxWebPageRequest(BYTE *pRequest, size_t iLen)
 		// Must switch to a blocking socket when the connection is not being kept
 		// alive, or else pending data will be lost when the socket shuts down
 		if ( !fKeepAlive )
-			m_NetState->m_socket.SetNonBlocking(false);
+		{
+			if ( m_NetState->m_socket.SetNonBlocking(false) == -1 )
+				g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to unset listen socket nonblocking mode\n");
+		}
 	}
 
 	linger llinger;
 	llinger.l_onoff = 1;
 	llinger.l_linger = 500;		// in mSec
-	m_NetState->m_socket.SetSockOpt(SO_LINGER, reinterpret_cast<char *>(&llinger), sizeof(linger));
+	m_NetState->m_socket.SetSockOpt(SO_LINGER, reinterpret_cast<const void *>(&llinger), sizeof(linger));
 
 	BOOL iBool = true;
 	m_NetState->m_socket.SetSockOpt(SO_KEEPALIVE, &iBool, sizeof(BOOL));

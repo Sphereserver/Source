@@ -1002,24 +1002,17 @@ bool PacketSkillLockChange::onReceive(NetState* net)
 	if (!character || !character->m_pPlayer)
 		return false;
 
-	int len = readInt16();
-	len -= 3;
-	if ((len <= 0) || ((len % 3) != 0))
+	skip(2); // length
+
+	SKILL_TYPE skill = static_cast<SKILL_TYPE>(readInt16());
+	if ( !character->IsSkillBase(skill) )
 		return false;
 
-	while (len > 0)
-	{
-		// set next lock
-		SKILL_TYPE index = static_cast<SKILL_TYPE>(readInt16());
-		SKILLLOCK_TYPE state = static_cast<SKILLLOCK_TYPE>(readByte());
-		len -= 3;
-		
-		if ((index <= SKILL_NONE) || (index >= SKILL_QTY) || (state < SKILLLOCK_UP) || (state > SKILLLOCK_LOCK))
-			continue;
+	SKILLLOCK_TYPE state = static_cast<SKILLLOCK_TYPE>(readByte());
+	if ( (state < SKILLLOCK_UP) || (state > SKILLLOCK_LOCK) )
+		return false;
 
-		character->m_pPlayer->Skill_SetLock(index, state);
-	}
-
+	character->m_pPlayer->Skill_SetLock(skill, state);
 	return true;
 }
 
@@ -1313,7 +1306,7 @@ bool PacketBookPageEdit::onReceive(NetState* net)
 
 	// trying to write to the book
 	CItemMessage* text = dynamic_cast<CItemMessage*>( book );
-	if (!text || !book->IsBookWritable())
+	if (!text || (pageCount > text->GetPageCount()) || !book->IsBookWritable())
 		return true;
 
 	skip(-4);
@@ -1325,9 +1318,12 @@ bool PacketBookPageEdit::onReceive(NetState* net)
 	{
 		// read next page to change with line count
 		page = readInt16();
+		if ((page <= 0) || (page > MAX_BOOK_PAGES))
+			return true;
+
 		lineCount = readInt16();
-		if ((page < 1) || (page > MAX_BOOK_PAGES) || (lineCount <= 0))
-			continue;
+		if ((lineCount <= 0) || (lineCount > MAX_BOOK_LINES))
+			return true;
 
 		page--;
 		len = 0;
@@ -2408,7 +2404,8 @@ bool PacketSpeakReqUNICODE::onReceive(NetState* net)
 	else
 	{
 		NCHAR text[MAX_TALK_BUFFER];
-		readStringUNICODE(reinterpret_cast<WCHAR *>(text), packetLength, false);
+		readStringUNICODE(reinterpret_cast<WCHAR *>(text), packetLength - 1, false);
+
 		client->Event_TalkUNICODE(text, static_cast<int>(packetLength), hue, mode, font, language);
 	}
 
@@ -2518,16 +2515,19 @@ bool PacketGumpDialogRet::onReceive(NetState* net)
 	CDialogResponseArgs resp;
 
 	// store the returned checked boxes' ids for possible later use
-	for (size_t i = 0; i < checkCount; i++)
+	for (DWORD i = 0; i < checkCount; i++)
 		resp.m_CheckArray.Add(readInt32());
 
 
 	DWORD textCount = readInt32();
 	TCHAR* text = Str_GetTemp();
-	for (size_t i = 0; i < textCount; i++)
+	for (DWORD i = 0; i < textCount; i++)
 	{
 		WORD id = readInt16();
 		WORD length = readInt16();
+		if ( length > MAX_TALK_BUFFER )
+			return false;
+
 		readStringNUNICODE(text, THREAD_STRING_LENGTH, length, false);
 
 		TCHAR* fix;
@@ -2583,7 +2583,7 @@ bool PacketChatCommand::onReceive(NetState* net)
 		textLength = MAX_TALK_BUFFER - 1;
 
 	NCHAR text[MAX_TALK_BUFFER];
-	readStringUNICODE(reinterpret_cast<WCHAR *>(text), textLength, false);
+	readStringUNICODE(reinterpret_cast<WCHAR *>(text), textLength - 1, false);
 
 	client->Event_ChatText(text, static_cast<int>(textLength), CLanguageID(language));
 	return true;
@@ -2622,7 +2622,8 @@ bool PacketChatButton::onReceive(NetState* net)
 		// On old chat system, client will always send this packet when click on chat button
 		skip(1);	// 0x0
 		NCHAR chatname[MAX_NAME_SIZE * 2 + 2];
-		readStringUNICODE(reinterpret_cast<WCHAR *>(chatname), COUNTOF(chatname));
+		readStringUNICODE(reinterpret_cast<WCHAR *>(chatname), COUNTOF(chatname) - 1);
+
 		client->Event_ChatButton(chatname);
 	}
 	return true;
@@ -2797,6 +2798,9 @@ bool PacketExtendedCommand::onReceive(NetState* net)
 		return false;
 
 	WORD packetLength = readInt16();
+	if (packetLength > MAX_TALK_BUFFER)
+		return false;
+
 	EXTDATA_TYPE type = static_cast<EXTDATA_TYPE>(readInt16());
 	seek();
 
@@ -2809,7 +2813,7 @@ bool PacketExtendedCommand::onReceive(NetState* net)
 		return false;
 
 	handler->seek();
-	for (int i = 0; i < packetLength; i++)
+	for (WORD i = 0; i < packetLength; i++)
 	{
 		BYTE next = readByte();
 		handler->writeByte(next);
@@ -3735,13 +3739,15 @@ bool PacketEncodedCommand::onReceive(NetState* net)
 		return false;
 
 	WORD packetLength = readInt16();
+	if (packetLength > 16)
+		return false;
+
 	CGrayUID serial(readInt32());
 	if (character->GetUID() != serial)
 		return false;
 
 	EXTAOS_TYPE type = static_cast<EXTAOS_TYPE>(readInt16());
 	seek();
-	
 
 #ifndef _MTNETWORK
 	Packet* handler = g_NetworkIn.getPacketManager().getEncodedHandler(type);
@@ -3752,7 +3758,7 @@ bool PacketEncodedCommand::onReceive(NetState* net)
 		return false;
 
 	handler->seek();
-	for (int i = 0; i < packetLength; i++)
+	for (WORD i = 0; i < packetLength; i++)
 	{
 		BYTE next = readByte();
 		handler->writeByte(next);

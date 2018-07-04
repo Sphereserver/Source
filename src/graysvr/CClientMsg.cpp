@@ -237,7 +237,10 @@ bool CClient::addDeleteErr(BYTE bCode, DWORD dwSlot)
 	if ( bCode == PacketDeleteError::Success )
 		return true;
 
-	CChar *pChar = m_tmSetupCharList[dwSlot].CharFind();
+	CChar *pChar = NULL;
+	if ( dwSlot < COUNTOF(m_tmSetupCharList) )
+		pChar = m_tmSetupCharList[dwSlot].CharFind();
+
 	g_Log.EventWarn("%lx:Account '%s' got bad character delete attempt (char='%s', code='%d')\n", GetSocketID(), m_pAccount->GetName(), pChar ? pChar->GetName() : "<NA>", bCode);
 	new PacketDeleteError(this, static_cast<PacketDeleteError::Reason>(bCode));
 	return false;
@@ -1128,17 +1131,17 @@ void CClient::addCharName(const CChar *pChar)
 	if ( !*pszPrefix )
 		pszPrefix = pChar->Noto_GetFameTitle();
 
-	strcpy(pszName, pszPrefix);
-	strcat(pszName, pChar->GetName());
-	strcat(pszName, pChar->GetKeyStr("NAME.SUFFIX"));
+	strncpy(pszName, pszPrefix, MAX_NAME_SIZE - 1);
+	strncat(pszName, pChar->GetName(), MAX_NAME_SIZE - 1);
+	strncat(pszName, pChar->GetKeyStr("NAME.SUFFIX"), MAX_NAME_SIZE - 1);
 
 	LPCTSTR pszAbbrev = pChar->Guild_AbbrevBracket(MEMORY_TOWN);
 	if ( pszAbbrev )
-		strcat(pszName, pszAbbrev);
+		strncat(pszName, pszAbbrev, MAX_NAME_SIZE - 1);
 
 	pszAbbrev = pChar->Guild_AbbrevBracket(MEMORY_GUILD);
 	if ( pszAbbrev )
-		strcat(pszName, pszAbbrev);
+		strncat(pszName, pszAbbrev, MAX_NAME_SIZE - 1);
 
 	if ( pChar->m_pNPC && g_Cfg.m_fVendorTradeTitle && (pChar->GetNPCBrain() == NPCBRAIN_HUMAN) )
 	{
@@ -1146,7 +1149,7 @@ void CClient::addCharName(const CChar *pChar)
 		if ( *pszTitle )
 		{
 			strcat(pszName, " ");
-			strcat(pszName, pszTitle);
+			strncat(pszName, pszTitle, MAX_NAME_SIZE - 1);
 		}
 	}
 
@@ -1197,7 +1200,7 @@ void CClient::addCharName(const CChar *pChar)
 	if ( fAllShow || (IsPriv(PRIV_GM) && (g_Cfg.m_wDebugFlags & DEBUGF_NPC_EMOTE)) )
 	{
 		strcat(pszName, " [");
-		strcat(pszName, pChar->Skill_GetName());
+		strncat(pszName, pChar->Skill_GetName(), MAX_NAME_SIZE - 1);
 		strcat(pszName, "]");
 	}
 
@@ -1212,7 +1215,7 @@ void CClient::addCharName(const CChar *pChar)
 
 		LPCTSTR pszNewStr = Args.m_VarsLocal.GetKeyStr("ClickMsgText");
 		if ( pszNewStr )
-			strcpy(pszName, pszNewStr);
+			strncpy(pszName, pszNewStr, MAX_NAME_SIZE - 1);
 
 		wHue = static_cast<HUE_TYPE>(Args.m_VarsLocal.GetKeyNum("ClickMsgHue"));
 	}

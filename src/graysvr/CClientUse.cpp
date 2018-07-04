@@ -1009,7 +1009,9 @@ bool CClient::Cmd_Skill_Tracking(WORD wTrackType, bool bExec)
 
 	if ( wTrackType > 0 ) // Not Cancelled
 	{
-		ASSERT(wTrackType < COUNTOF(m_tmMenu.m_Item));
+		if ( wTrackType >= COUNTOF(m_tmMenu.m_Item) )
+			return false;
+
 		if ( bExec )
 		{
 			// Tracking menu got us here. Start tracking the selected creature.
@@ -1029,7 +1031,7 @@ bool CClient::Cmd_Skill_Tracking(WORD wTrackType, bool bExec)
 		};
 
 		if ( wTrackType >= COUNTOF(sm_Track_Brain) )
-			wTrackType = COUNTOF(sm_Track_Brain) - 1;
+			return false;
 
 		NPCBRAIN_TYPE track_type = sm_Track_Brain[wTrackType];
 		CMenuItem item[minimum(MAX_MENU_ITEMS, COUNTOF(m_tmMenu.m_Item))];

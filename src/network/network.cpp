@@ -233,12 +233,14 @@ void NetState::init(SOCKET socket, CSocketAddress addr)
 	DEBUGNETWORK(("%lx:Initialising client\n", id()));
 	m_peerAddress = addr;
 	m_socket.SetSocket(socket);
-	m_socket.SetNonBlocking();
+	if ( m_socket.SetNonBlocking() == -1 )
+		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to set listen socket nonblocking mode\n");
 
 	// disable NAGLE algorythm for data compression/coalescing.
 	// Send as fast as we can. we handle packing ourselves.
 	BOOL nbool = true;
-	m_socket.SetSockOpt(TCP_NODELAY, &nbool, sizeof(BOOL), IPPROTO_TCP);
+	if ( m_socket.SetSockOpt(TCP_NODELAY, &nbool, sizeof(BOOL), IPPROTO_TCP) == -1)
+		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to set listen socket option TCP_NODELAY\n");
 
 	g_Serv.StatInc(SERV_STAT_CLIENTS);
 	CClient* client = new CClient(this);
@@ -438,12 +440,12 @@ void HistoryIP::setBlocked(bool isBlocked, int timeout)
 		CScriptTriggerArgs args(m_ip.GetAddrStr());
 		args.m_iN1 = timeout;
 		g_Serv.r_Call("f_onserver_blockip", &g_Serv, &args);
-		timeout = static_cast<long>(args.m_iN1);
+		timeout = static_cast<int>(args.m_iN1);
 	}
 
 	m_blocked = isBlocked;
 
-	if (isBlocked && timeout >= 0)
+	if (isBlocked && (timeout >= 0))
 		m_blockExpire = CServTime::GetCurrentTime() + (timeout * TICK_PER_SEC);
 	else
 		m_blockExpire.Init();
@@ -481,7 +483,7 @@ void IPHistoryManager::tick(void)
 		if (it->m_blocked)
 		{
 			// blocked ips don't decay, but check if the ban has expired
-			if (it->m_blockExpire.IsTimeValid() && CServTime::GetCurrentTime() > it->m_blockExpire)
+			if (it->m_blockExpire.IsTimeValid() && (CServTime::GetCurrentTime() > it->m_blockExpire))
 				it->setBlocked(false);
 		}
 		else if (decayTTL)
@@ -2498,8 +2500,8 @@ NetworkThread* NetworkManager::selectBestThread(void)
 		}
 	}
 
-	ASSERT(bestThread != NULL);
-	DEBUGNETWORK(("Selected thread #%" FMTSIZE_T ".\n", bestThread->id()));
+	if ( bestThread )
+		DEBUGNETWORK(("Selected thread #%" FMTSIZE_T ".\n", bestThread->id()));
 	return bestThread;
 }
 

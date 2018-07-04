@@ -931,7 +931,7 @@ void defragSphere(char *path)
 	DWORD *uids = (DWORD*)calloc(ULONG_MAX, sizeof(DWORD));
 	for ( i = 0; i < 3; i++ )
 	{
-		strncpy(z, path, sizeof(z));
+		strncpy(z, path, sizeof(z) - 1);
 		if ( i == 0 )
 			strcat(z, SPHERE_FILE "statics" SPHERE_SCRIPT);
 		else if ( i == 1 )
@@ -939,7 +939,7 @@ void defragSphere(char *path)
 		else
 			strcat(z, SPHERE_FILE "chars" SPHERE_SCRIPT);
 
-		g_Log.Event(LOGM_INIT, "Reading current UIDs: %s\n", z);
+		g_Log.Event(LOGM_INIT, "Reading %s\n", z);
 		if ( !inf.Open(z, OF_READ|OF_TEXT|OF_DEFAULTMODE) )
 		{
 			g_Log.Event(LOGM_INIT, "Can't open file '%s' for reading. Skipped!\n", z);
@@ -973,15 +973,21 @@ void defragSphere(char *path)
 		}
 		inf.Close();
 	}
-	dTotalUIDs = uid;
-	g_Log.Event(LOGM_INIT, "Totally having %lu unique objects (UIDs), latest: 0%lx\n", uid, uids[uid - 2]);
 
-	g_Log.Event(LOGM_INIT, "Quick-Sorting the UIDs array...\n");
-	dword_q_sort(uids, 0, dTotalUIDs - 2);
+	dTotalUIDs = uid;
+	if ( dTotalUIDs <= 0 )
+	{
+		g_Log.Event(LOGM_INIT, "Save files are empty, defragmentation is not needed\n");
+		return;
+	}
+
+	g_Log.Event(LOGM_INIT, "Found %lu UIDs (latest: 0%lx)\n", uid, uids[dTotalUIDs - 1]);
+	g_Log.Event(LOGM_INIT, "Quick-sorting UIDs array...\n");
+	dword_q_sort(uids, 0, dTotalUIDs - 1);
 
 	for ( i = 0; i < 5; i++ )
 	{
-		strncpy(z, path, sizeof(z));
+		strncpy(z, path, sizeof(z) - 1);
 		if ( i == 0 )
 			strcat(z, SPHERE_FILE "accu.scp");
 		else if ( i == 1 )
@@ -1146,7 +1152,7 @@ void defragSphere(char *path)
 				if ( uid != ULONG_MAX )
 				{
 					*p = 0;
-					strncpy(z, p1, sizeof(z));
+					strncpy(z, p1, sizeof(z) - 1);
 					sprintf(z1, "0%lx", uid);
 					strcat(buf, z1);
 					strcat(buf, z);
