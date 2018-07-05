@@ -951,7 +951,7 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 	}
 
 	// Buffs related variables
-	TCHAR szNumBuff[7][8];
+	TCHAR szNumBuff[7][MAX_NAME_SIZE];
 	LPCTSTR pszNumBuff[7] = { szNumBuff[0], szNumBuff[1], szNumBuff[2], szNumBuff[3], szNumBuff[4], szNumBuff[5], szNumBuff[6] };
 
 	switch ( pSpellDef->m_idLayer )
@@ -978,7 +978,7 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 						}
 
 						strcpy(szNumBuff[0], Str_GetArticleAndSpace(pszName));
-						strncpy(szNumBuff[1], pszName, MAX_NAME_SIZE - 1);
+						strncpy(szNumBuff[1], pszName, sizeof(szNumBuff[1]) - 1);
 						szNumBuff[0][strlen(szNumBuff[0]) - 1] = '\0';		// trim whitespace from "a " / "an " strings
 						m_pClient->removeBuff(BI_POLYMORPH);
 						m_pClient->addBuff(BI_POLYMORPH, 1075824, 1075823, wTimerEffect, pszNumBuff, 2);
@@ -1391,15 +1391,15 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 			{
 				if ( m_pClient )
 				{
-					strncpy(szNumBuff[0], pCaster->GetName(), MAX_NAME_SIZE - 1);
-					strncpy(szNumBuff[1], pCaster->GetName(), MAX_NAME_SIZE - 1);
+					strncpy(szNumBuff[0], pCaster->GetName(), sizeof(szNumBuff[0]) - 1);
+					strncpy(szNumBuff[1], pCaster->GetName(), sizeof(szNumBuff[1]) - 1);
 					m_pClient->removeBuff(BI_BLOODOATHCURSE);
 					m_pClient->addBuff(BI_BLOODOATHCURSE, 1075659, 1075660, wTimerEffect, pszNumBuff, 2);
 				}
 				CClient *pClientCaster = pCaster->m_pClient;
 				if ( pClientCaster )
 				{
-					strncpy(szNumBuff[0], GetName(), MAX_NAME_SIZE - 1);
+					strncpy(szNumBuff[0], GetName(), sizeof(szNumBuff[0]) - 1);
 					pClientCaster->removeBuff(BI_BLOODOATHCASTER);
 					pClientCaster->addBuff(BI_BLOODOATHCASTER, 1075661, 1075662, wTimerEffect, pszNumBuff, 1);
 				}

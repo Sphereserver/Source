@@ -37,7 +37,7 @@ void CClient::resendBuffs()
 		addBuff(BI_PARALYZE, 1075827, 1075828, static_cast<WORD>(pStuck->GetTimerAdjusted()));
 	}
 
-	TCHAR szNumBuff[7][8];
+	TCHAR szNumBuff[7][MAX_NAME_SIZE];
 	LPCTSTR pszNumBuff[7] = { szNumBuff[0], szNumBuff[1], szNumBuff[2], szNumBuff[3], szNumBuff[4], szNumBuff[5], szNumBuff[6] };
 
 	WORD wStatEffect = 0;
@@ -833,8 +833,7 @@ void CClient::addObjMessage(LPCTSTR pszMsg, const CObjBaseTemplate *pSrc, HUE_TY
 		if ( !strcmpi(pszMsg, m_zLastObjMessage) )
 			return;
 
-		if ( strlen(pszMsg) < SCRIPT_MAX_LINE_LEN )
-			strcpy(m_zLastObjMessage, pszMsg);
+		strncpy(m_zLastObjMessage, pszMsg, sizeof(m_zLastObjMessage) - 1);
 	}
 
 	addBarkParse(pszMsg, pSrc, wHue, mode);
@@ -1032,8 +1031,8 @@ void CClient::addItemName(const CItem *pItem)
 	bool fIdentified = (IsPriv(PRIV_GM) || pItem->IsAttr(ATTR_IDENTIFIED));
 	LPCTSTR pszNameFull = pItem->GetNameFull(fIdentified);
 
-	TCHAR szName[MAX_ITEM_NAME_SIZE + 256];
-	size_t len = strcpylen(szName, pszNameFull, COUNTOF(szName));
+	TCHAR szName[MAX_ITEM_NAME_SIZE * 2];
+	size_t len = strcpylen(szName, pszNameFull, sizeof(szName));
 
 	const CContainer *pCont = dynamic_cast<const CContainer *>(pItem);
 	if ( pCont )
@@ -1110,7 +1109,7 @@ void CClient::addItemName(const CItem *pItem)
 
 		LPCTSTR pszNewStr = Args.m_VarsLocal.GetKeyStr("ClickMsgText");
 		if ( pszNewStr )
-			strcpylen(szName, pszNewStr, COUNTOF(szName));
+			strcpylen(szName, pszNewStr, sizeof(szName));
 
 		wHue = static_cast<HUE_TYPE>(Args.m_VarsLocal.GetKeyNum("ClickMsgHue"));
 	}
@@ -1622,7 +1621,7 @@ void CClient::addSkillWindow(SKILL_TYPE skill, bool fFromInfo)
 		pChar = m_pChar;
 
 	bool fAllSkills = (skill >= static_cast<SKILL_TYPE>(g_Cfg.m_iMaxSkill));
-	if ( !fAllSkills && !g_Cfg.m_SkillIndexDefs.IsValidIndex(skill) )
+	if ( !fAllSkills && ((skill <= SKILL_NONE) || !g_Cfg.m_SkillIndexDefs.IsValidIndex(skill)) )
 		return;
 
 	if ( IsTrigUsed(TRIGGER_USERSKILLS) )

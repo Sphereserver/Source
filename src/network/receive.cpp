@@ -1991,7 +1991,7 @@ bool PacketBookHeaderEdit::onReceive(NetState* net)
 	skip(1); // unknown
 	skip(2); // pages
 
-	TCHAR title[2 * MAX_NAME_SIZE];
+	TCHAR title[MAX_NAME_SIZE * 2];
 	readStringASCII(title, COUNTOF(title));
 
 	TCHAR author[MAX_NAME_SIZE];
@@ -2375,7 +2375,7 @@ bool PacketSpeakReqUNICODE::onReceive(NetState* net)
 	if (packetLength <= getPosition())
 		return false;
 
-	packetLength = (packetLength - getPosition()) / 2;
+	packetLength -= getPosition();
 	if (packetLength >= MAX_TALK_BUFFER)
 		packetLength = MAX_TALK_BUFFER - 1;
 
@@ -2393,7 +2393,7 @@ bool PacketSpeakReqUNICODE::onReceive(NetState* net)
 		if ((count % 8) > 0)
 			toskip++;
 
-		if (toskip > (packetLength * 2))
+		if (toskip > packetLength)
 			return true;
 
 		skip(static_cast<long>(toskip));
@@ -2404,7 +2404,7 @@ bool PacketSpeakReqUNICODE::onReceive(NetState* net)
 	else
 	{
 		NCHAR text[MAX_TALK_BUFFER];
-		readStringUNICODE(reinterpret_cast<WCHAR *>(text), packetLength - 1, false);
+		readStringUNICODE(reinterpret_cast<WCHAR *>(text), (packetLength / sizeof(WCHAR)) - 1, false);
 
 		client->Event_TalkUNICODE(text, static_cast<int>(packetLength), hue, mode, font, language);
 	}
@@ -2583,14 +2583,14 @@ bool PacketChatCommand::onReceive(NetState* net)
 	if (packetLength <= getPosition())
 		return false;
 
-	size_t textLength = (packetLength - getPosition()) / 2;
-	if (textLength >= MAX_TALK_BUFFER)
-		textLength = MAX_TALK_BUFFER - 1;
+	packetLength -= getPosition();
+	if (packetLength >= MAX_TALK_BUFFER)
+		packetLength = MAX_TALK_BUFFER - 1;
 
 	NCHAR text[MAX_TALK_BUFFER];
-	readStringUNICODE(reinterpret_cast<WCHAR *>(text), textLength - 1, false);
+	readStringUNICODE(reinterpret_cast<WCHAR *>(text), (packetLength / sizeof(WCHAR)) - 1, false);
 
-	client->Event_ChatText(text, static_cast<int>(textLength), CLanguageID(language));
+	client->Event_ChatText(text, static_cast<int>(packetLength), CLanguageID(language));
 	return true;
 }
 
@@ -2626,8 +2626,8 @@ bool PacketChatButton::onReceive(NetState* net)
 	{
 		// On old chat system, client will always send this packet when click on chat button
 		skip(1);	// 0x0
-		NCHAR chatname[MAX_NAME_SIZE * 2 + 2];
-		readStringUNICODE(reinterpret_cast<WCHAR *>(chatname), COUNTOF(chatname) - 2);
+		NCHAR chatname[(MAX_NAME_SIZE + 1) * sizeof(WCHAR)];
+		readStringUNICODE(reinterpret_cast<WCHAR *>(chatname), (COUNTOF(chatname) / sizeof(WCHAR)) - 1);
 
 		client->Event_ChatButton(chatname);
 	}
@@ -2913,7 +2913,7 @@ bool PacketPartyMessage::onReceive(NetState* net)
 				return false;
 
 			CGrayUID serial(readInt32());
-			NWORD * text = reinterpret_cast<NWORD *>(Str_GetTemp());
+			NCHAR text[MAX_TALK_BUFFER];
 			int length = readStringNullUNICODE(reinterpret_cast<WCHAR *>(text), MAX_TALK_BUFFER);
 			character->m_pParty->MessageEvent(serial, character->GetUID(), text, length);
 			break;
@@ -2924,9 +2924,9 @@ bool PacketPartyMessage::onReceive(NetState* net)
 			if (!character->m_pParty)
 				return false;
 
-			NWORD * text = reinterpret_cast<NWORD *>(Str_GetTemp());
+			NCHAR text[MAX_TALK_BUFFER];
 			int length = readStringNullUNICODE(reinterpret_cast<WCHAR *>(text), MAX_TALK_BUFFER);
-			character->m_pParty->MessageEvent(CGrayUID(0), character->GetUID(), text, length);
+			character->m_pParty->MessageEvent(static_cast<CGrayUID>(UID_CLEAR), character->GetUID(), text, length);
 			break;
 		}
 		case PARTYMSG_Option:
@@ -3591,15 +3591,16 @@ bool PacketPromptResponseUnicode::onReceive(NetState* net)
 	DWORD context1 = readInt32();
 	DWORD context2 = readInt32();
 	DWORD type = readInt32();
+
 	TCHAR language[4];
 	readStringASCII(language, COUNTOF(language));
 	
 	if (length < getPosition())
 		return false;
 
-	length = (length - getPosition()) / 2;
-	TCHAR* text = Str_GetTemp();
-	readStringUNICODE(text, THREAD_STRING_LENGTH, length+1);
+	length -= getPosition();
+	TCHAR *text = Str_GetTemp();
+	readStringUNICODE(text, THREAD_STRING_LENGTH, (length / sizeof(WCHAR)) - 1);
 
 	net->m_client->Event_PromptResp(text, length, context1, context2, type);
 	return true;
@@ -3672,7 +3673,7 @@ bool PacketBookHeaderEditNew::onReceive(NetState* net)
 	skip(1); // writable
 	skip(2); // pages
 
-	TCHAR title[2 * MAX_NAME_SIZE];
+	TCHAR title[MAX_NAME_SIZE * 2];
 	TCHAR author[MAX_NAME_SIZE];
 
 	size_t titleLength = readInt16();
