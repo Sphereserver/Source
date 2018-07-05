@@ -408,7 +408,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop(CScript &s, int iType, CTextConsole *p
 		if ( Str_ParseCmds(s.GetArgStr(), ppArgs, COUNTOF(ppArgs), " \t,") >= 1 )
 		{
 			char chFunctionName[1024];
-			strcpy(chFunctionName, ppArgs[0]);
+			strncpy(chFunctionName, ppArgs[0], sizeof(chFunctionName) - 1);
 
 			TRIGRET_TYPE iRet = g_World.m_TimedFunctions.Loop(chFunctionName, iLoopsMade, StartContext, EndContext, s, pSrc, pArgs, psResult);
 			if ( (iRet != TRIGRET_ENDIF) && (iRet != TRIGRET_CONTINUE) )
@@ -452,7 +452,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerScript(CScript &s, LPCTSTR pszTrigName, CTextC
 	{
 		// Lowercase for speed
 		TCHAR *pszName = Str_GetTemp();
-		strcpy(pszName, pszTrigName);
+		strncpy(pszName, pszTrigName, sizeof(pTrigger->name) - 1);
 		_strlwr(pszName);
 
 		if ( g_profiler.initstate != 0xF1 )		// profiler is not initialized
@@ -471,7 +471,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerScript(CScript &s, LPCTSTR pszTrigName, CTextC
 			// First time that the trigger is called, so create its record
 			pTrigger = new TScriptProfiler::TScriptProfilerTrigger;
 			memset(pTrigger, 0, sizeof(TScriptProfiler::TScriptProfilerTrigger));
-			strcpy(pTrigger->name, pszName);
+			strncpy(pTrigger->name, pszName, sizeof(pTrigger->name) - 1);
 			if ( g_profiler.TriggersTail )
 				g_profiler.TriggersTail->next = pTrigger;
 			else
@@ -1803,14 +1803,15 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatLLHex(*pszKey);
 
 			TCHAR *pszBuffer = Str_GetTemp();
-			strcpy(pszBuffer, sVal);
+			strncpy(pszBuffer, sVal, SCRIPT_MAX_LINE_LEN - 1);
+
 			while ( *(++pszKey) )
 			{
 				if ( *pszKey == '"' )
 					break;
 				sVal.FormatLLHex(*pszKey);
 				strcat(pszBuffer, " ");
-				strcat(pszBuffer, sVal);
+				strncat(pszBuffer, sVal, SCRIPT_MAX_LINE_LEN - 1);
 			}
 			sVal = pszBuffer;
 			return true;
@@ -1826,10 +1827,12 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			if ( iPad < 0 )
 				return false;
 
-			TCHAR *pszBuffer = Str_GetTemp();
 			REMOVE_QUOTES(ppArgs[1]);
 			sVal.FormatLLHex(*ppArgs[1]);
-			strcpy(pszBuffer, sVal);
+
+			TCHAR *pszBuffer = Str_GetTemp();
+			strncpy(pszBuffer, sVal, SCRIPT_MAX_LINE_LEN - 1);
+
 			while ( --iPad )
 			{
 				if ( *ppArgs[1] == '"' )
@@ -1843,7 +1846,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 					sVal.FormatLLHex('\0');
 
 				strcat(pszBuffer, " ");
-				strcat(pszBuffer, sVal);
+				strncat(pszBuffer, sVal, SCRIPT_MAX_LINE_LEN - 1);
 			}
 			sVal = pszBuffer;
 			return true;
@@ -1921,7 +1924,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			{
 				TCHAR *ppCmd[255];
 				TCHAR *z = Str_GetTemp();
-				strcpy(z, p);
+				strncpy(z, p, SCRIPT_MAX_LINE_LEN - 1);
 				size_t iCount = Str_ParseCmds(z, ppCmd, COUNTOF(ppCmd), chSeparators);
 				if ( iCount > 0 )
 				{
@@ -2199,7 +2202,7 @@ bool CScriptObj::r_Call(LPCTSTR pszFunction, CTextConsole *pSrc, CScriptTriggerA
 			// Lowercase for speed, and strip arguments
 			char *pchName = Str_GetTemp();
 			char *pchSpace;
-			strcpy(pchName, pszFunction);
+			strncpy(pchName, pszFunction, sizeof(pFun->name) - 1);
 			if ( (pchSpace = strchr(pchName, ' ')) != NULL )
 				*pchSpace = 0;
 			_strlwr(pchName);
@@ -2220,7 +2223,7 @@ bool CScriptObj::r_Call(LPCTSTR pszFunction, CTextConsole *pSrc, CScriptTriggerA
 				// First time that the function is called, so create its record
 				pFun = new TScriptProfiler::TScriptProfilerFunction;
 				memset(pFun, 0, sizeof(TScriptProfiler::TScriptProfilerFunction));
-				strcpy(pFun->name, pchName);
+				strncpy(pFun->name, pchName, sizeof(pFun->name) - 1);
 				if ( g_profiler.FunctionsTail )
 					g_profiler.FunctionsTail->next = pFun;
 				else
@@ -2481,7 +2484,7 @@ bool CScriptTriggerArgs::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole
 			return true;
 		}
 
-		size_t iNum = static_cast<size_t>(Exp_GetLLSingle(pszKey));
+		size_t iNum = static_cast<size_t>(maximum(0, Exp_GetLLSingle(pszKey)));
 		SKIP_SEPARATORS(pszKey);
 		if ( !m_v.IsValidIndex(iNum) )
 		{

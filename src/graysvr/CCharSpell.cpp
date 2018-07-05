@@ -969,13 +969,16 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 				{
 					if ( m_pClient && IsSetOF(OF_Buffs) )
 					{
-						CResourceDef *pCharDefNew = g_Cfg.ResourceGetDef(RESOURCE_ID(RES_CHARDEF, m_atMagery.m_SummonID));
-						LPCTSTR pszName = pCharDefNew->GetName();
-						_strlwr(const_cast<TCHAR *>(pszName));
-						if ( pszName[0] == '#' )
-							pszName = "creature";
+						LPCTSTR pszName = "creature";
+						CCharBase *pPolyCharDef = CCharBase::FindCharBase(m_atMagery.m_SummonID);
+						if ( pPolyCharDef && (pPolyCharDef->GetName()[0] != '#') )
+						{
+							pszName = pPolyCharDef->GetName();
+							_strlwr(const_cast<TCHAR *>(pszName));
+						}
+
 						strcpy(szNumBuff[0], Str_GetArticleAndSpace(pszName));
-						strcpy(szNumBuff[1], pszName);
+						strncpy(szNumBuff[1], pszName, MAX_NAME_SIZE - 1);
 						szNumBuff[0][strlen(szNumBuff[0]) - 1] = '\0';		// trim whitespace from "a " / "an " strings
 						m_pClient->removeBuff(BI_POLYMORPH);
 						m_pClient->addBuff(BI_POLYMORPH, 1075824, 1075823, wTimerEffect, pszNumBuff, 2);
@@ -1388,15 +1391,15 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 			{
 				if ( m_pClient )
 				{
-					strcpy(szNumBuff[0], pCaster->GetName());
-					strcpy(szNumBuff[1], pCaster->GetName());
+					strncpy(szNumBuff[0], pCaster->GetName(), MAX_NAME_SIZE - 1);
+					strncpy(szNumBuff[1], pCaster->GetName(), MAX_NAME_SIZE - 1);
 					m_pClient->removeBuff(BI_BLOODOATHCURSE);
 					m_pClient->addBuff(BI_BLOODOATHCURSE, 1075659, 1075660, wTimerEffect, pszNumBuff, 2);
 				}
 				CClient *pClientCaster = pCaster->m_pClient;
 				if ( pClientCaster )
 				{
-					strcpy(szNumBuff[0], GetName());
+					strncpy(szNumBuff[0], GetName(), MAX_NAME_SIZE - 1);
 					pClientCaster->removeBuff(BI_BLOODOATHCASTER);
 					pClientCaster->addBuff(BI_BLOODOATHCASTER, 1075661, 1075662, wTimerEffect, pszNumBuff, 1);
 				}

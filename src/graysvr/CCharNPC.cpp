@@ -213,13 +213,17 @@ SKILL_TYPE CCharPlayer::Skill_GetLockType( LPCTSTR pszKey ) const
 
 SKILLLOCK_TYPE CCharPlayer::Skill_GetLock( SKILL_TYPE skill ) const
 {
-	ASSERT( skill >= 0 && static_cast<size_t>(skill) < COUNTOF(m_SkillLock));
+	if ( (skill <= SKILL_NONE) || (static_cast<size_t>(skill) >= COUNTOF(m_SkillLock)) )
+		return SKILLLOCK_LOCK;
+
 	return static_cast<SKILLLOCK_TYPE>(m_SkillLock[skill]);
 }
 
 void CCharPlayer::Skill_SetLock( SKILL_TYPE skill, SKILLLOCK_TYPE state )
 {
-	ASSERT( skill >= 0 && static_cast<size_t>(skill) < COUNTOF(m_SkillLock));
+	if ( (skill <= SKILL_NONE) || (static_cast<size_t>(skill) >= COUNTOF(m_SkillLock)) )
+		return;
+
 	m_SkillLock[skill] = static_cast<BYTE>(state);
 }
 
@@ -251,13 +255,17 @@ STAT_TYPE CCharPlayer::Stat_GetLockType( LPCTSTR pszKey ) const
 
 SKILLLOCK_TYPE CCharPlayer::Stat_GetLock( STAT_TYPE stat ) const
 {
-	ASSERT( stat >= 0 && static_cast<size_t>(stat) < COUNTOF(m_StatLock));
+	if ( (stat <= STAT_NONE) || (static_cast<size_t>(stat) >= COUNTOF(m_StatLock)) )
+		return SKILLLOCK_LOCK;
+
 	return static_cast<SKILLLOCK_TYPE>(m_StatLock[stat]);
 }
 
 void CCharPlayer::Stat_SetLock( STAT_TYPE stat, SKILLLOCK_TYPE state )
 {
-	ASSERT( stat >= 0 && static_cast<size_t>(stat) < COUNTOF(m_StatLock));
+	if ( (stat <= STAT_NONE) || (static_cast<size_t>(stat) >= COUNTOF(m_StatLock)) )
+		return;
+
 	m_StatLock[stat] = static_cast<BYTE>(state);
 }
 
@@ -336,8 +344,6 @@ bool CCharPlayer::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 			{
 				// "SkillLock[alchemy]"
 				SKILL_TYPE skill = Skill_GetLockType( pszKey );
-				if ( skill <= SKILL_NONE )
-					return( false );
 				sVal.FormatVal( Skill_GetLock( skill ));
 			} return( true );
 		case CPC_SPEEDMODE:
@@ -347,8 +353,6 @@ bool CCharPlayer::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 			{
 				// "StatLock[str]"
 				STAT_TYPE stat = Stat_GetLockType( pszKey );
-				if (( stat <= STAT_NONE ) || ( stat >= STAT_BASE_QTY ))
-					return( false );
 				sVal.FormatVal( Stat_GetLock( stat ));
 			} return( true );
 		default:
@@ -467,10 +471,8 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 		case CPC_SKILLLOCK:
 			{
 				SKILL_TYPE skill = Skill_GetLockType(s.GetKey());
-				if ( skill <= SKILL_NONE )
-					return false;
 				long flag = s.GetArgVal();
-				if ( flag < SKILLLOCK_UP || flag > SKILLLOCK_LOCK )
+				if ( (flag < SKILLLOCK_UP) || (flag > SKILLLOCK_LOCK) )
 					return false;
 				Skill_SetLock(skill, static_cast<SKILLLOCK_TYPE>(flag));
 				if ( pChar->m_pClient )
@@ -484,10 +486,8 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 		case CPC_STATLOCK:
 			{
 				STAT_TYPE stat = Stat_GetLockType(s.GetKey());
-				if ( (stat <= STAT_NONE) || (stat >= STAT_BASE_QTY) )
-					return false;
 				long flag = s.GetArgVal();
-				if ( flag < SKILLLOCK_UP || flag > SKILLLOCK_LOCK )
+				if ( (flag < SKILLLOCK_UP) || (flag > SKILLLOCK_LOCK) )
 					return false;
 				Stat_SetLock(stat, static_cast<SKILLLOCK_TYPE>(flag));
 				if ( pChar->m_pClient )

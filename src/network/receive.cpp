@@ -613,7 +613,7 @@ bool PacketSpeakReq::onReceive(NetState* net)
 	HUE_TYPE hue = static_cast<HUE_TYPE>(readInt16());
 	skip(2); // font
 
-	if (packetLength < getPosition())
+	if (packetLength <= getPosition())
 		return false;
 
 	packetLength -= getPosition();
@@ -2081,7 +2081,7 @@ bool PacketPromptResponse::onReceive(NetState* net)
 	DWORD context2 = readInt32();
 	DWORD type = readInt32();
 
-	if (packetLength < getPosition())
+	if (packetLength <= getPosition())
 		return false;
 
 	packetLength -= getPosition();
@@ -2372,7 +2372,7 @@ bool PacketSpeakReqUNICODE::onReceive(NetState* net)
 	TCHAR language[4];
 	readStringASCII(language, COUNTOF(language));
 
-	if (packetLength < getPosition())
+	if (packetLength <= getPosition())
 		return false;
 
 	packetLength = (packetLength - getPosition()) / 2;
@@ -2439,6 +2439,8 @@ bool PacketGumpDialogRet::onReceive(NetState* net)
 	DWORD context = readInt32();
 	DWORD button = readInt32();
 	DWORD checkCount = readInt32();
+	if ( checkCount > MAX_TALK_BUFFER )
+		return false;
 
 	// relying on the context given by the gump might be a security problem, much like
 	// relying on the uid returned.
@@ -2520,6 +2522,9 @@ bool PacketGumpDialogRet::onReceive(NetState* net)
 
 
 	DWORD textCount = readInt32();
+	if ( textCount > MAX_TALK_BUFFER )
+		return false;
+
 	TCHAR* text = Str_GetTemp();
 	for (DWORD i = 0; i < textCount; i++)
 	{
@@ -2575,7 +2580,7 @@ bool PacketChatCommand::onReceive(NetState* net)
 	TCHAR language[4];
 	readStringASCII(language, COUNTOF(language));
 
-	if (packetLength < getPosition())
+	if (packetLength <= getPosition())
 		return false;
 
 	size_t textLength = (packetLength - getPosition()) / 2;
@@ -2622,7 +2627,7 @@ bool PacketChatButton::onReceive(NetState* net)
 		// On old chat system, client will always send this packet when click on chat button
 		skip(1);	// 0x0
 		NCHAR chatname[MAX_NAME_SIZE * 2 + 2];
-		readStringUNICODE(reinterpret_cast<WCHAR *>(chatname), COUNTOF(chatname) - 1);
+		readStringUNICODE(reinterpret_cast<WCHAR *>(chatname), COUNTOF(chatname) - 2);
 
 		client->Event_ChatButton(chatname);
 	}
