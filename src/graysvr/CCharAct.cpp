@@ -249,6 +249,7 @@ void CChar::LayerAdd(CItem *pItem, LAYER_TYPE layer)
 			if ( pItem->IsTypeWeapon() )
 			{
 				m_uidWeapon = pItem->GetUID();
+				m_uidWeaponLast = pItem->GetUID();
 				if ( Fight_IsActive() )
 				{
 					m_atFight.m_Swing_NextAction = CServTime::GetCurrentTime() + g_Cfg.Calc_CombatAttackSpeed(this, pItem);

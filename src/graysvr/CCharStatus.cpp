@@ -1652,7 +1652,7 @@ bool CChar::CanTouch(const CObjBase *pObj) const
 		else
 			return false;
 	}
-	if ( iDist > 3 )
+	if ( iDist > 2 )
 	{
 		if ( Char_GetDef()->Can(CAN_C_DCIGNOREDIST) )
 			return true;

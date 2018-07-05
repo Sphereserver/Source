@@ -4213,8 +4213,21 @@ PacketEquipLastWeapon::PacketEquipLastWeapon() : Packet(0)
 bool PacketEquipLastWeapon::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketEquipLastWeapon::onReceive");
-	UNREFERENCED_PARAMETER(net);
 
+	CClient *client = net->m_client;
+	ASSERT(client);
+	CChar *character = client->GetChar();
+	if ( !character )
+		return false;
+
+	if ( character->m_uidWeaponLast == character->m_uidWeapon )
+		return true;
+
+	CItem *pWeapon = character->m_uidWeaponLast.ItemFind();
+	if ( character->ItemPickup(pWeapon, 1) == -1 )
+		return true;
+
+	character->ItemEquip(pWeapon);
 	return true;
 }
 

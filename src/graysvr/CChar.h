@@ -387,6 +387,7 @@ public:
 
 	// Combat stuff (not saved)
 	CGrayUID m_uidWeapon;		// current equipped weapon
+	CGrayUID m_uidWeaponLast;	// last equipped weapon (only used by 'EquipLastWeapon' client macro)
 	WORD m_defense;				// calculated armor worn (NOT intrinsic armor)
 
 	height_t m_height;			// Height set in-game or under some trigger (height=) - for both items and chars

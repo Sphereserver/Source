@@ -1127,3 +1127,7 @@ Changed: Status gump on AOS+ clients now will only show RES* properties if COMBA
 24-06-2018, Coruja
 Added: Missing item property functionality of HITAREAPHYSICAL, HITAREAFIRE, HITAREACOLD, HITAREAPOISON, HITAREAENERGY, HITDISPEL, HITFIREBALL, HITHARM, HITLIGHTNING, HITMAGICARROW, REFLECTPHYSICALDAM
 Removed: Redundant DECREASEHITCHANCE property (to decrease hit chance, use negative INCREASEHITCHANCE instead)
+
+04-07-2018, Coruja
+Added: Support for 'EquipLastWeapon' client macro.
+Changed: Reduced DClick/PickUp_Ground reachable distance [3 tiles -> 2 tiles] to match client internal DropOn_Ground distance.
