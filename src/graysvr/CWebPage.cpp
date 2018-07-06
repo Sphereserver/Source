@@ -207,7 +207,7 @@ bool CWebPageDef::r_Verb( CScript & s, CTextConsole * pSrc )	// some command on 
 				LPCTSTR pszArgs = s.GetArgStr();
 				if ( pszArgs[0] == '\0' )
 					pszArgs = "<tr><td>%NAME%</td><td>%REGION.NAME%</td></tr>\n";
-				strcpy(pszTmp2, pszArgs);
+				strncpy(pszTmp2, pszArgs, MAX_TALK_BUFFER - 1);
 				pChar->ParseText(Str_MakeFiltered(pszTmp2), &g_Serv, 1);
 				pSrc->SysMessage(pszTmp2);
 			}
@@ -230,7 +230,7 @@ bool CWebPageDef::r_Verb( CScript & s, CTextConsole * pSrc )	// some command on 
 
 				sm_iListIndex++;
 
-				strcpy(pszTmp2, s.GetArgStr());
+				strncpy(pszTmp2, s.GetArgStr(), MAX_ITEM_NAME_SIZE - 1);
 				pStone->ParseText(Str_MakeFiltered(pszTmp2), &g_Serv, 1);
 				pSrc->SysMessage(pszTmp2);
 			}
@@ -245,7 +245,7 @@ bool CWebPageDef::r_Verb( CScript & s, CTextConsole * pSrc )	// some command on 
 			for ( ; pPage != NULL; pPage = pPage->GetNext() )
 			{
 				sm_iListIndex++;
-				strcpy(pszTmp2, s.GetArgStr());
+				strncpy(pszTmp2, s.GetArgStr(), MAX_TALK_BUFFER - 1);
 				pPage->ParseText(Str_MakeFiltered(pszTmp2), &g_Serv, 1);
 				pSrc->SysMessage(pszTmp2);
 			}
@@ -384,7 +384,7 @@ void CWebPageDef::WebPageLog()
 	LPCTSTR pszExt = FileRead.GetFileExt();
 
 	TCHAR szName[ _MAX_PATH ];
-	strcpy( szName, m_sDstFilePath );
+	strncpy(szName, m_sDstFilePath, sizeof(szName) - 1);
 	szName[ m_sDstFilePath.GetLength() - strlen(pszExt) ] = '\0';
 
 	CGTime datetime = CGTime::GetCurrentTime();

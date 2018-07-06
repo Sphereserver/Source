@@ -360,7 +360,7 @@ void CTimedFunctionHandler::Stop( CGrayUID uid, LPCTSTR funcname )
 	}
 }
 
-TRIGRET_TYPE CTimedFunctionHandler::Loop(LPCTSTR funcname, int LoopsMade, CScriptLineContext StartContext, CScriptLineContext EndContext, CScript &s, CTextConsole * pSrc, CScriptTriggerArgs * pArgs, CGString * pResult)
+TRIGRET_TYPE CTimedFunctionHandler::Loop(LPCTSTR funcname, int LoopsMade, CScriptLineContext StartContext, CScript &s, CTextConsole * pSrc, CScriptTriggerArgs * pArgs, CGString * pResult)
 {
 	ADDTOCALLSTACK("CTimedFunctionHandler::Loop");
 	bool endLooping = false;
@@ -383,16 +383,11 @@ TRIGRET_TYPE CTimedFunctionHandler::Loop(LPCTSTR funcname, int LoopsMade, CScrip
 				TRIGRET_TYPE iRet = pObj->OnTriggerRun(s, TRIGRUN_SECTION_TRUE, pSrc, pArgs, pResult);
 				if (iRet == TRIGRET_BREAK)
 				{
-					EndContext = StartContext;
 					endLooping = true;
 					break;
 				}
 				if ((iRet != TRIGRET_ENDIF) && (iRet != TRIGRET_CONTINUE))
 					return(iRet);
-				if (iRet == TRIGRET_CONTINUE)
-					EndContext = StartContext;
-				else
-					EndContext = s.GetContext();
 				s.SeekContext(StartContext);
 			}
 			++it;
@@ -420,7 +415,7 @@ void CTimedFunctionHandler::Add( CGrayUID uid, int numSeconds, LPCTSTR funcname 
 	}
 	tf->uid = uid;
 	tf->elapsed = numSeconds;
-	strcpy( tf->funcname, funcname );
+	strncpy(tf->funcname, funcname, sizeof(tf->funcname) - 1);
 	if ( m_isBeingProcessed )
 	{
 		m_tFqueuedToBeAdded.push_back( tf );
@@ -457,7 +452,7 @@ int CTimedFunctionHandler::Load( const char *pszName, bool fQuoted, const char *
 	else if ( strcmpi( pszName, "TimerFNumbers" ) == 0 )
 	{
 		TCHAR * ppVal[4];
-		strcpy( tempBuffer, pszVal );	//because pszVal is constant and Str_ParseCmds wants a non-constant string
+		strncpy(tempBuffer, pszVal, sizeof(tempBuffer) - 1);	// because pszVal is constant and Str_ParseCmds wants a non-constant string
 		size_t iArgs = Str_ParseCmds( tempBuffer, ppVal, COUNTOF( ppVal ), " ,\t" );
 		if ( iArgs == 3 )
 		{
@@ -499,7 +494,7 @@ int CTimedFunctionHandler::Load( const char *pszName, bool fQuoted, const char *
 			tf = new TimedFunction;
 			isNew = 1;
 		}
-		strcpy( tf->funcname, pszVal );
+		strncpy(tf->funcname, pszVal, sizeof(tf->funcname) - 1);
 		if ( !isNew )
 		{
 			g_Log.Event(LOGM_INIT|LOGL_ERROR, "Invalid Timerf in %sdata.scp. Each TimerFCall and TimerFNumbers pair must be in that order\n", SPHERE_FILE);
@@ -1038,7 +1033,7 @@ UINT64 CWorldClock::GetSystemClock()
 #else
 	struct timespec ts;
 	clock_gettime(CLOCK_REALTIME, &ts);
-	return ((ts.tv_sec * 10000) + (ts.tv_nsec / 100000)) / 10;
+	return (static_cast<UINT64>(ts.tv_sec * 10000) + (ts.tv_nsec / 100000)) / 10;
 #endif
 }
 

@@ -781,7 +781,7 @@ size_t CPointBase::Read( TCHAR * pszVal )
 				m_map = static_cast<unsigned char>(ATOI(ppVal[3]));
 				if ( !g_MapList.m_maps[m_map] )
 				{
-					g_Log.EventError("Unsupported map #%d specified. Auto-fixing that to 0\n", m_map);
+					g_Log.EventError("Unsupported map #%hhu specified. Auto-fixing that to 0\n", m_map);
 					m_map = 0;
 				}
 			}
@@ -803,10 +803,14 @@ size_t CPointBase::Read( TCHAR * pszVal )
 CSector * CPointBase::GetSector() const
 {
 	ADDTOCALLSTACK("CPointBase::GetSector");
-	if ( !IsValidXY() )
+	if ( !g_MapList.IsMapSupported(m_map) )
 	{
-		g_Log.Event(LOGL_ERROR, "Point(%d,%d): trying to get a sector for point on map #%d out of bounds for this map(%d,%d). Defaulting to sector 0 of the map\n",
-			m_x, m_y, m_map, g_MapList.GetX(m_map), g_MapList.GetY(m_map));
+		g_Log.Event(LOGL_ERROR, "Point(%hd,%hd): trying to get a sector for point on unsupported map #%hhu\n", m_x, m_y, m_map);
+		return NULL;
+	}
+	else if ( !IsValidXY() )
+	{
+		g_Log.Event(LOGL_ERROR, "Point(%hd,%hd): trying to get a sector for point on map #%hhu out of bounds for this map(%d,%d). Defaulting to sector 0 of the map\n", m_x, m_y, m_map, g_MapList.GetX(m_map), g_MapList.GetY(m_map));
 		return g_World.GetSector(m_map, 0);
 	}
 	// Get the world Sector we are in.
@@ -850,10 +854,12 @@ size_t CGRect::Read( LPCTSTR pszVal )
 	ADDTOCALLSTACK("CGRect::Read");
 	// parse reading the rectangle
 	TCHAR *pszTemp = Str_GetTemp();
-	strcpy( pszTemp, pszVal );
-	TCHAR * ppVal[5];
-	size_t i = Str_ParseCmds( pszTemp, ppVal, COUNTOF( ppVal ), " ,\t");
-	switch (i)
+	strncpy(pszTemp, pszVal, 30);
+
+	TCHAR *ppVal[5];
+	size_t iArgQty = Str_ParseCmds(pszTemp, ppVal, COUNTOF(ppVal), " ,\t");
+
+	switch ( iArgQty )
 	{
 		case 5:
 			m_map = ATOI(ppVal[4]);
@@ -897,7 +903,7 @@ size_t CGRect::Read( LPCTSTR pszVal )
 			break;
 	}
 	NormalizeRect();
-	return( i );
+	return iArgQty;
 }
 
 LPCTSTR CGRect::Write() const
@@ -959,6 +965,9 @@ CSector * CGRect::GetSector( int i ) const	// ge all the sectors that make up th
 	ADDTOCALLSTACK("CGRect::GetSector");
 	// get all the CSector(s) that overlap this rect.
 	// RETURN: NULL = no more
+
+	if ( !g_MapList.IsMapSupported(m_map) )
+		return NULL;
 
 	// Align new rect.
 	CRectMap rect;

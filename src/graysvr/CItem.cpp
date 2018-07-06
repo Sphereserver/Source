@@ -2628,7 +2628,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 			{
 				CPointMap pt;	// invalid point
 				TCHAR *pszTemp = Str_GetTemp();
-				strcpy( pszTemp, s.GetArgStr() );
+				strncpy(pszTemp, s.GetArgStr(), 16);
 				GETNONWHITESPACE( pszTemp );
 
 				if ( IsDigit( pszTemp[0] ) || pszTemp[0] == '-' )
@@ -2747,7 +2747,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 			{
 				CPointMap pt;	// invalid point
 				TCHAR *pszTemp = Str_GetTemp();
-				strcpy( pszTemp, s.GetArgStr() );
+				strncpy(pszTemp, s.GetArgStr(), 30);
 				GETNONWHITESPACE( pszTemp );
 				size_t iArgs = 0;
 				if ( IsDigit( pszTemp[0] ) || (pszTemp[0] == '-') )
@@ -4220,7 +4220,7 @@ LPCTSTR CItem::Use_SpyGlass( CChar * pUser ) const
 				sSearch = g_Cfg.GetDefaultMsg(DEFMSG_USE_SPYGLASS_WEATHER);
 			else
 				sSearch = g_Cfg.GetDefaultMsg(DEFMSG_USE_SPYGLASS_NO_LAND);
-			strcpy( pResult, sSearch );
+			strncpy(pResult, sSearch, MAX_TALK_BUFFER - 1);
 			break;
 		}
 
@@ -4283,7 +4283,7 @@ LPCTSTR CItem::Use_SpyGlass( CChar * pUser ) const
 			sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_SHIP_SINGLE), pBoatSighted->GetName(), CPointBase::sm_szDirs[dir]);
 		else
 			sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_SHIP_MANY), CPointBase::sm_szDirs[dir]);
-		strcat( pResult, sSearch);
+		strncat(pResult, sSearch, MAX_TALK_BUFFER - 1);
 	}
 
 	if (iItemSighted) // Report item sightings, also boats beyond the boat visibility range in the radar screen
@@ -4304,7 +4304,7 @@ LPCTSTR CItem::Use_SpyGlass( CChar * pUser ) const
 			else
 				sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_SPECIAL_DIR), pItemSighted->GetNameFull(false), CPointBase::sm_szDirs[dir]);
 		}
-		strcat( pResult, sSearch);
+		strncat(pResult, sSearch, MAX_TALK_BUFFER - 1);
 	}
 
 	// Check for creatures
@@ -4338,7 +4338,7 @@ LPCTSTR CItem::Use_SpyGlass( CChar * pUser ) const
 			sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_CREAT_SINGLE), CPointBase::sm_szDirs[dir] );
 		else
 			sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_CREAT_MANY), CPointBase::sm_szDirs[dir] );
-		strcat( pResult, sSearch);
+		strncat(pResult, sSearch, MAX_TALK_BUFFER - 1);
 	}
 	return pResult;
 }

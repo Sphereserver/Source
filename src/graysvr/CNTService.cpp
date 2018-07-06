@@ -262,7 +262,7 @@ void CNTService::CmdInstallService()
 	}
 
 	// Try to create the service
-	char szInternalName[MAX_PATH];
+	char szInternalName[_MAX_PATH];
 	sprintf(szInternalName, SPHERE_TITLE " - %s", g_Serv.GetName());
 
 	SC_HANDLE schService = CreateService(
@@ -285,7 +285,7 @@ bailout1:
 	}
 
 	// Configure service - Service description
-	char szDescription[MAX_PATH];
+	char szDescription[_MAX_PATH];
 	sprintf(szDescription, "SphereServer Service for %s", g_Serv.GetName());
 
 	SERVICE_DESCRIPTION sdDescription;
@@ -318,7 +318,7 @@ bailout1:
 	}
 
 	HKEY	hKey;
-	char	szKey[MAX_PATH];
+	char	szKey[_MAX_PATH];
 
 	// Register the application for event logging
 	DWORD dwData;
@@ -376,7 +376,7 @@ void CNTService::CmdRemoveService()
 	}
 
 	// Try to obtain the handle of this service
-	char szInternalName[MAX_PATH];
+	char szInternalName[_MAX_PATH];
 	sprintf(szInternalName, SPHERE_TITLE " - %s", g_Serv.GetName());
 
 	SC_HANDLE schService = OpenService(schSCManager, szInternalName, SERVICE_ALL_ACCESS);

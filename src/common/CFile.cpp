@@ -123,7 +123,7 @@ DWORD CFile::Read(void *pData, DWORD dwLength) const
 	}
 	return dwRead;
 #else
-	return read(m_hFile, pData, (long)dwLength);
+	return maximum(0, read(m_hFile, pData, static_cast<size_t>(dwLength)));
 #endif
 }
 
@@ -173,7 +173,7 @@ CGString CGFile::GetMergedFileName(LPCTSTR pszPath, LPCTSTR pszFileName) // stat
 	TCHAR szFullPath[_MAX_PATH];
 	if ( pszPath && pszPath[0] )
 	{
-		strcpy(szFullPath, pszPath);
+		strncpy(szFullPath, pszPath, sizeof(szFullPath) - 1);
 		size_t iLen = strlen(szFullPath);
 		if ( iLen && (szFullPath[iLen - 1] != '\\') && (szFullPath[iLen - 1] != '/') )
 		{
@@ -188,7 +188,7 @@ CGString CGFile::GetMergedFileName(LPCTSTR pszPath, LPCTSTR pszFileName) // stat
 		szFullPath[0] = '\0';
 
 	if ( pszFileName )
-		strcat(szFullPath, pszFileName);
+		strncat(szFullPath, pszFileName, sizeof(szFullPath) - 1);
 
 	return static_cast<CGString>(szFullPath);
 }
