@@ -337,18 +337,22 @@ LPCTSTR CResource::Calc_MaptoSextant(CPointMap pt)
 {
 	ADDTOCALLSTACK("CResource::Calc_MaptoSextant");
 	// Conversion from map square to degrees, minutes
-	char *z = Str_GetTemp();
-	CPointMap zeroPoint;
-	zeroPoint.Read(strcpy(z, g_Cfg.m_sZeroPoint));
+	TCHAR *pszArgs = Str_GetTemp();
+	CPointMap ptCenter;
+	ptCenter.Read(strncpy(pszArgs, g_Cfg.m_sZeroPoint, 16));
 
-	int iLat = (pt.m_y - zeroPoint.m_y) * 360 * 60 / g_MapList.GetY(zeroPoint.m_map);
-	int iLong;
-	if ( pt.m_map <= 1 )
-		iLong = (pt.m_x - zeroPoint.m_x) * 360 * 60 / UO_SIZE_X_REAL;
-	else
-		iLong = (pt.m_x - zeroPoint.m_x) * 360 * 60 / g_MapList.GetX(pt.m_map);
+	int iLat = 0;
+	int iLong = 0;
+	if ( g_MapList.IsMapSupported(ptCenter.m_map) )
+	{
+		iLat = (pt.m_y - ptCenter.m_y) * 360 * 60 / g_MapList.GetY(ptCenter.m_map);
+		if ( pt.m_map <= 1 )
+			iLong = (pt.m_x - ptCenter.m_x) * 360 * 60 / UO_SIZE_X_REAL;
+		else
+			iLong = (pt.m_x - ptCenter.m_x) * 360 * 60 / g_MapList.GetX(pt.m_map);
+	}
 
-	TCHAR *pszTemp = Str_GetTemp();
-	sprintf(pszTemp, "%do %d'%s, %do %d'%s", abs(iLat / 60), abs(iLat % 60), (iLat <= 0) ? "N" : "S", abs(iLong / 60), abs(iLong % 60), (iLong >= 0) ? "E" : "W");
-	return pszTemp;
+	TCHAR *pszCoords = Str_GetTemp();
+	sprintf(pszCoords, "%do %d'%s, %do %d'%s", abs(iLat / 60), abs(iLat % 60), (iLat <= 0) ? "N" : "S", abs(iLong / 60), abs(iLong % 60), (iLong >= 0) ? "E" : "W");
+	return pszCoords;
 }

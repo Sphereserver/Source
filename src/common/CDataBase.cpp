@@ -47,11 +47,11 @@ void CDataBase::Connect()
 	const char *pszArgs = strchr(host, ':');
 	if ( pszArgs != NULL )
 	{
-		char *pszTemp = Str_GetTemp();
-		strcpy(pszTemp, host);
-		*(strchr(pszTemp, ':')) = 0;
+		char *pszHost = Str_GetTemp();
+		strncpy(pszHost, host, HOSTNAME_LENGTH);
+		*(strchr(pszHost, ':')) = 0;
 		port = ATOI(pszArgs + 1);
-		host = pszTemp;
+		host = pszHost;
 	}
 
 	if ( mysql_real_connect(m_socket, host, user, password, db, port, NULL, CLIENT_MULTI_STATEMENTS) )

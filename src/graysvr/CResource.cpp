@@ -2100,7 +2100,7 @@ CPointMap CResource::GetRegionPoint( LPCTSTR pCmd ) const // Decode a teleport l
 	if ( IsDigit( pCmd[0] ) || pCmd[0] == '-' )
 	{
 		TCHAR *pszTemp = Str_GetTemp();
-		strcpy( pszTemp, pCmd );
+		strncpy(pszTemp, pCmd, 32);
 		size_t iCount = pt.Read( pszTemp );
 		if ( iCount >= 2 )
 		{
@@ -2344,7 +2344,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 			TCHAR* ipBuffer = Str_GetTemp();
 			while ( pScript->ReadKeyParse())
 			{
-				strcpy(ipBuffer, pScript->GetKey());
+				strncpy(ipBuffer, pScript->GetKey(), 16);
 #ifndef _MTNETWORK
 				HistoryIP& history = g_NetworkIn.getIPHistoryManager().getHistoryForIP(ipBuffer);
 #else
@@ -3112,7 +3112,7 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 			if ( pszName[0] == '\0' )
 				return( ridinvalid );
 			TCHAR * pArg1 = Str_GetTemp();
-			strcpy( pArg1, pszName );
+			strncpy(pArg1, pszName, MAX_NAME_SIZE);
 			pszName = pArg1;
 			TCHAR * pArg2;
 			Str_Parse( pArg1, &pArg2 );
@@ -3133,7 +3133,7 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 			if ( pszName[0] == '\0' )
 				return( ridinvalid );
 			TCHAR * pArg1 = Str_GetTemp();
-			strcpy( pArg1, pszName );
+			strncpy(pArg1, pszName, MAX_NAME_SIZE);
 			pszName = pArg1;
 			TCHAR * pArg2;
 			Str_Parse( pArg1, &pArg2 );

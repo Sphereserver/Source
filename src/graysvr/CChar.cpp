@@ -3141,7 +3141,7 @@ bool CChar::r_Verb(CScript &s, CTextConsole *pSrc)	// execute command from scrip
 		case CHV_MAKEITEM:
 		{
 			TCHAR *pszTmp = Str_GetTemp();
-			strcpy(pszTmp, s.GetArgRaw());
+			strncpy(pszTmp, s.GetArgRaw(), MAX_ITEM_NAME_SIZE);
 			GETNONWHITESPACE(pszTmp);
 
 			WORD wReplicationQty = 1;

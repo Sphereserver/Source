@@ -94,10 +94,10 @@ CResourceScript *CResourceBase::AddResourceFile(LPCTSTR pszName)
 
 	TCHAR szName[_MAX_PATH];
 	ASSERT(strlen(pszName) < COUNTOF(szName));
-	strcpy(szName, pszName);
+	strncpy(szName, pszName, sizeof(szName) - 1);
 
 	TCHAR szTitle[_MAX_PATH];
-	strcpy(szTitle, CScript::GetFilesTitle(szName));
+	strncpy(szTitle, CScript::GetFilesTitle(szName), sizeof(szTitle) - 1);
 
 	if ( szTitle[0] == '\0' )
 	{
