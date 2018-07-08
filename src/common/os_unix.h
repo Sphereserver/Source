@@ -31,8 +31,6 @@ typedef char				*LPSTR, *LPTSTR;
 typedef const char			*LPCSTR, *LPCTSTR;
 
 typedef int					BOOL;
-typedef pthread_mutex_t		CRITICAL_SECTION;
-typedef DWORD				HANDLE;
 
 #define MAKEWORD(l, h)		((WORD)(((BYTE)(l))|(((WORD)((BYTE)(h))) << 8)))
 #define MAKELONG(l, h)		((LONG)(((WORD)(l))|(((DWORD)((WORD)(h))) << 16)))

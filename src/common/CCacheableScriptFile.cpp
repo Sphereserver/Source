@@ -24,7 +24,7 @@ bool CCacheableScriptFile::OpenBase(void *pExtra)
 	if ( !m_pStream )
 		return false;
 
-	m_hFile = reinterpret_cast<OSFILE_TYPE>(STDFUNC_FILENO(m_pStream));
+	m_hFile = reinterpret_cast<HANDLE>(STDFUNC_FILENO(m_pStream));
 	m_fileContent = new std::vector<std::string>();
 	m_closed = false;
 

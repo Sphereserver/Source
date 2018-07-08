@@ -74,7 +74,7 @@ DWORD CServerDef::StatGet(SERV_STAT_TYPE i) const
 				EXC_SET("open process");
 				HANDLE hProcess = GetCurrentProcess();
 				if ( hProcess ) {
-					ASSERT( hProcess == (HANDLE)-1 );
+					ASSERT(hProcess == NOFILE_HANDLE);
 					EXC_SET("get memory info");
 					if ( m_GetProcessMemoryInfo(hProcess, &pcnt, sizeof(pcnt)) ) {
 						EXC_SET("read memory info");
