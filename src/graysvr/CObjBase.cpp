@@ -185,74 +185,43 @@ void CObjBase::SetUID(DWORD dwIndex, bool fItem)
 	CObjBaseTemplate::SetUID(dwIndex);
 }
 
-void inline CObjBase::SetNamePool_Fail(TCHAR *pszTitles)
-{
-	ADDTOCALLSTACK("CObjBase::SetNamePool_Fail");
-	DEBUG_ERR(("Name pool '%s' could not be found\n", pszTitles));
-	CObjBase::SetName(pszTitles);
-}
-
 bool CObjBase::SetNamePool(LPCTSTR pszName)
 {
 	ADDTOCALLSTACK("CObjBase::SetNamePool");
 	ASSERT(pszName);
+	TCHAR *pszTemp = Str_GetTemp();
 
-	// Parse out the name from the name pool ?
 	if ( pszName[0] == '#' )
 	{
+		// Pick random name from the given #NAMES list
 		++pszName;
-		TCHAR *pszTmp = Str_GetTemp();
-		strcpy(pszTmp, pszName);
-
 		TCHAR *ppTitles[2];
-		Str_ParseCmds(pszTmp, ppTitles, COUNTOF(ppTitles));
+		Str_ParseCmds(const_cast<TCHAR *>(pszName), ppTitles, COUNTOF(ppTitles));
 
 		CResourceLock s;
-		if ( !g_Cfg.ResourceLock(s, RES_NAMES, ppTitles[0]) )
-		{
-			SetNamePool_Fail(ppTitles[0]);
+		if ( !g_Cfg.ResourceLock(s, RES_NAMES, ppTitles[0]) || !s.ReadKey() )
 			return false;
-		}
 
-		// Pick a random name
-		if ( !s.ReadKey() )
-		{
-			SetNamePool_Fail(ppTitles[0]);
-			return false;
-		}
 		int iCount = Calc_GetRandVal(ATOI(s.GetKey())) + 1;
 		while ( iCount-- )
 		{
 			if ( !s.ReadKey() )
 			{
-				SetNamePool_Fail(ppTitles[0]);
+				DEBUG_ERR(("Name list '#%s' have invalid entries\n", ppTitles[0]));
 				return false;
 			}
 		}
 
-		if ( !CObjBaseTemplate::SetName(s.GetKey()) )
-			return false;
+		strncpy(pszTemp, s.GetKey(), MAX_ITEM_NAME_SIZE);
 	}
 	else
 	{
-		LPCTSTR pszTmp = pszName;
-
-		// NOTE: Name must be <= MAX_NAME_SIZE
-		TCHAR szTmp[MAX_ITEM_NAME_SIZE + 1];
-		if ( strlen(pszName) >= MAX_ITEM_NAME_SIZE )
-		{
-			strcpylen(szTmp, pszName, MAX_ITEM_NAME_SIZE);
-			pszTmp = szTmp;
-		}
-
-		// Can't be a dupe name with type ?
-		LPCTSTR pszTypeName = Base_GetDef()->GetTypeName();
-		if ( !strcmpi(pszTypeName, pszTmp) )
-			pszTmp = "";
-
-		if ( !CObjBaseTemplate::SetName(pszTmp) )
-			return false;
+		// Directly set the given name
+		strncpy(pszTemp, pszName, MAX_ITEM_NAME_SIZE);
 	}
+
+	if ( !CObjBaseTemplate::SetName(pszTemp) )
+		return false;
 
 	UpdatePropertyFlag(AUTOTOOLTIP_FLAG_NAME);
 	return true;

@@ -1767,7 +1767,7 @@ bool CClient::OnTarg_Use_Item(CObjBase *pObjTarg, CPointMap &pt, ITEMID_TYPE id)
 				}
 				break;
 			}
-			else
+			else if ( pItemTarg )
 			{
 				switch ( m_pChar->CanTouchStatic(pt, id, pItemTarg) )
 				{
@@ -1855,8 +1855,7 @@ bool CClient::OnTarg_Use_Item(CObjBase *pObjTarg, CPointMap &pt, ITEMID_TYPE id)
 					//case IT_FOLIAGE:
 					case IT_CROPS:
 					{
-						if ( pItemTarg )
-							pItemTarg->Plant_CropReset();
+						pItemTarg->Plant_CropReset();
 						return true;
 					}
 					default:
@@ -1872,8 +1871,7 @@ bool CClient::OnTarg_Use_Item(CObjBase *pObjTarg, CPointMap &pt, ITEMID_TYPE id)
 							SysMessageDefault(DEFMSG_ITEMUSE_STEAL);
 							return false;
 						}
-						if ( pItemTarg )
-							pItemTarg->OnTakeDamage(1, m_pChar, DAMAGE_HIT_BLUNT);
+						pItemTarg->OnTakeDamage(1, m_pChar, DAMAGE_HIT_BLUNT);
 						return true;
 					}
 				}
@@ -1901,9 +1899,7 @@ bool CClient::OnTarg_Use_Item(CObjBase *pObjTarg, CPointMap &pt, ITEMID_TYPE id)
 		case IT_COTTON:
 		{
 			// Use on a spinning wheel
-			if ( !pItemTarg )
-				break;
-			if ( !pItemTarg->IsType(IT_SPINWHEEL) )
+			if ( !pItemTarg || !pItemTarg->IsType(IT_SPINWHEEL) )
 				break;
 			if ( !m_pChar->CanUse(pItemTarg, false) )
 				return false;
@@ -2036,9 +2032,7 @@ bool CClient::OnTarg_Use_Item(CObjBase *pObjTarg, CPointMap &pt, ITEMID_TYPE id)
 		case IT_YARN:
 		case IT_THREAD:
 		{
-			if ( !pItemTarg )
-				break;
-			if ( !pItemTarg->IsType(IT_LOOM) )
+			if ( !pItemTarg || !pItemTarg->IsType(IT_LOOM) )
 				break;
 			if ( !m_pChar->CanUse(pItemTarg, false) )
 				return false;

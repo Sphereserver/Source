@@ -314,7 +314,6 @@ public:
 	virtual bool MoveNear(CPointMap pt, WORD wSteps = 0);
 	virtual bool MoveNearObj(const CObjBaseTemplate *pObj, WORD wSteps = 0);
 
-	void inline SetNamePool_Fail(TCHAR *pszTitles);
 	bool SetNamePool(LPCTSTR pszName);
 
 	void Sound(SOUND_TYPE id, BYTE iRepeat = 1) const;

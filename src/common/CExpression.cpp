@@ -990,9 +990,9 @@ INT64 CExpression::GetValMath(INT64 lVal, LPCTSTR &pszArgs)
 		{
 			pszArgs++;
 			INT64 iVal = GetVal(pszArgs);
-			if ( (lVal == 0) && (iVal < 0) )
+			if ( (lVal <= 0) && (iVal < 0) )
 			{
-				DEBUG_ERR(("Exp_GetVal: Power of zero with negative exponent is undefined\n"));
+				DEBUG_ERR(("Exp_GetVal: Power of zero with negative base/exponent is undefined\n"));
 				break;
 			}
 			lVal = static_cast<INT64>(pow(static_cast<double>(lVal), static_cast<double>(iVal)));

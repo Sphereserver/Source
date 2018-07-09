@@ -1885,7 +1885,7 @@ bool CChar::IsTakeCrime(const CItem *pItem, CChar **ppCharMark) const
 {
 	ADDTOCALLSTACK("CChar::IsTakeCrime");
 
-	if ( IsPriv(PRIV_GM|PRIV_ALLMOVE) )
+	if ( !pItem || IsPriv(PRIV_GM|PRIV_ALLMOVE) )
 		return false;
 
 	CObjBaseTemplate *pObjTop = pItem->GetTopLevelObj();

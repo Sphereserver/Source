@@ -49,7 +49,7 @@ void CChar::Action_StartSpecial(CREID_TYPE id)
 void CChar::Stat_AddMod(STAT_TYPE i, int iVal)
 {
 	ADDTOCALLSTACK("CChar::Stat_AddMod");
-	ASSERT((i >= 0) && (i < STAT_QTY));
+	ASSERT((i >= STAT_STR) && (i < STAT_QTY));
 	m_Stat[i].m_mod += iVal;
 
 	int iMaxValue = Stat_GetMax(i);		// make sure the current value is not higher than new max value
@@ -62,7 +62,7 @@ void CChar::Stat_AddMod(STAT_TYPE i, int iVal)
 void CChar::Stat_SetMod(STAT_TYPE i, int iVal)
 {
 	ADDTOCALLSTACK("CChar::Stat_SetMod");
-	ASSERT((i >= 0) && (i < STAT_QTY));
+	ASSERT((i >= STAT_STR) && (i < STAT_QTY));
 	if ( iVal > USHRT_MAX )
 		iVal = USHRT_MAX;
 	else if ( iVal < -USHRT_MAX )
@@ -111,7 +111,7 @@ void CChar::Stat_SetMod(STAT_TYPE i, int iVal)
 int CChar::Stat_GetMod(STAT_TYPE i) const
 {
 	ADDTOCALLSTACK("CChar::Stat_GetMod");
-	ASSERT((i >= 0) && (i < STAT_QTY));
+	ASSERT((i >= STAT_STR) && (i < STAT_QTY));
 	return m_Stat[i].m_mod;
 }
 
@@ -128,7 +128,7 @@ void CChar::Stat_SetVal(STAT_TYPE i, int iVal)
 		Stat_SetBase(i, iVal);
 		return;
 	}
-	ASSERT((i >= 0) && (i < STAT_QTY));
+	ASSERT((i >= STAT_STR) && (i < STAT_QTY));
 	m_Stat[i].m_val = iVal;
 }
 
@@ -137,14 +137,14 @@ int CChar::Stat_GetVal(STAT_TYPE i) const
 	ADDTOCALLSTACK("CChar::Stat_GetVal");
 	if ( (i > STAT_BASE_QTY) || (i == STAT_FOOD) )	// food must trigger Statchange. Redirect to Base value
 		return Stat_GetBase(i);
-	ASSERT((i >= 0) && (i < STAT_QTY));
+	ASSERT((i >= STAT_STR) && (i < STAT_QTY));
 	return m_Stat[i].m_val;
 }
 
 void CChar::Stat_SetMax(STAT_TYPE i, int iVal)
 {
 	ADDTOCALLSTACK("CChar::Stat_SetMax");
-	ASSERT((i >= 0) && (i < STAT_QTY));
+	ASSERT((i >= STAT_STR) && (i < STAT_QTY));
 	if ( iVal > USHRT_MAX )
 		iVal = USHRT_MAX;
 	else if ( iVal < -USHRT_MAX )
@@ -186,7 +186,7 @@ void CChar::Stat_SetMax(STAT_TYPE i, int iVal)
 int CChar::Stat_GetMax(STAT_TYPE i) const
 {
 	ADDTOCALLSTACK("CChar::Stat_GetMax");
-	ASSERT((i >= 0) && (i < STAT_QTY));
+	ASSERT((i >= STAT_STR) && (i < STAT_QTY));
 	int iVal;
 	if ( m_Stat[i].m_max < 1 )
 	{
@@ -244,7 +244,7 @@ int CChar::Stat_GetAdjusted(STAT_TYPE i) const
 int CChar::Stat_GetBase(STAT_TYPE i) const
 {
 	ADDTOCALLSTACK("CChar::Stat_GetBase");
-	ASSERT((i >= 0) && (i < STAT_QTY));
+	ASSERT((i >= STAT_STR) && (i < STAT_QTY));
 
 	if ( (i == STAT_FAME) && (m_Stat[i].m_base < 0) )
 		return 0;
@@ -254,7 +254,7 @@ int CChar::Stat_GetBase(STAT_TYPE i) const
 void CChar::Stat_SetBase(STAT_TYPE i, int iVal)
 {
 	ADDTOCALLSTACK("CChar::Stat_SetBase");
-	ASSERT((i >= 0) && (i < STAT_QTY));
+	ASSERT((i >= STAT_STR) && (i < STAT_QTY));
 	if ( iVal > USHRT_MAX )
 		iVal = USHRT_MAX;
 	else if ( iVal < -USHRT_MAX )
@@ -365,7 +365,7 @@ int CChar::Stat_GetLimit(STAT_TYPE i) const
 
 			return pSkillClass->m_StatSumMax;
 		}
-		ASSERT((i >= 0) && (i < STAT_BASE_QTY));
+		ASSERT((i >= STAT_STR) && (i < STAT_BASE_QTY));
 
 		sprintf(sStatName, "OVERRIDE.STATCAP_%d", static_cast<int>(i));
 		int iStatMax;
@@ -527,8 +527,6 @@ void CChar::Skill_SetBase(SKILL_TYPE skill, WORD wValue)
 {
 	ADDTOCALLSTACK("CChar::Skill_SetBase");
 	ASSERT(IsSkillBase(skill));
-	if ( wValue < 0 )
-		wValue = 0;
 
 	if ( IsTrigUsed(TRIGGER_SKILLCHANGE) )
 	{
@@ -812,15 +810,11 @@ bool CChar::Stats_Regen(INT64 iTimeDiff)
 		if ( g_Cfg.m_iRegenRate[i] < 0 )
 			continue;
 
-		WORD wRate = Stats_GetRegenVal(i, true);
-		if ( wRate < 0 )
-			wRate = 0;
-
+		int iMod = Stats_GetRegenVal(i, true);
 		m_Stat[i].m_regen += static_cast<WORD>(iTimeDiff);
-		if ( m_Stat[i].m_regen < wRate )
+		if ( m_Stat[i].m_regen < static_cast<WORD>(iMod) )
 			continue;
 
-		int iMod = Stats_GetRegenVal(i, false);
 		if ( (i == STAT_STR) && (g_Cfg.m_iRacialFlags & RACIALF_HUMAN_TOUGH) && IsHuman() )
 			iMod += 2;		// Humans always have +2 hitpoint regeneration (Tough racial trait)
 
@@ -846,6 +840,7 @@ bool CChar::Stats_Regen(INT64 iTimeDiff)
 				i = STAT_STR;
 			else if ( i > STAT_FOOD )
 				i = STAT_FOOD;
+
 			iMod = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Value"));
 			iStatLimit = static_cast<int>(Args.m_VarsLocal.GetKeyNum("StatLimit"));
 			if ( i == STAT_FOOD )

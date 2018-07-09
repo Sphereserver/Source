@@ -8,7 +8,7 @@ ULONGLONG GetTickCount64()
 {
 	struct timespec ts;
 	clock_gettime(CLOCK_MONOTONIC, &ts);
-	return ((ts.tv_sec * 10000) + (ts.tv_nsec / 100000)) / 10;
+	return (static_cast<ULONGLONG>(ts.tv_sec * 10000) + (ts.tv_nsec / 100000)) / 10;
 }
 #endif
 
