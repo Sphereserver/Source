@@ -26,7 +26,7 @@ const int CPointBase::sm_Moves[DIR_QTY+1][2] =
 	{ -1,  1 }, // DIR_SW
 	{ -1,  0 }, // DIR_W
 	{ -1, -1 }, // DIR_NW
-	{  0,  0 },	// DIR_QTY = here.
+	{  0,  0 }, // DIR_QTY
 };
 
 
@@ -221,7 +221,7 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 	ADDTOCALLSTACK("CPointBase::r_WriteVal");
 	if ( !strnicmp( pszKey, "STATICS", 7 ) )
 	{
-		pszKey	+= 7;
+		pszKey += 7;
 		const CGrayMapBlock * pBlock = g_World.GetMapBlock( *(this) );
 		if ( !pBlock ) return false;
 
@@ -302,8 +302,8 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 		}
 
 		SKIP_SEPARATORS( pszKey );
-		if ( !*pszKey )
-			pszKey	= "ID";
+		if ( !pszKey )
+			pszKey = "ID";
 
 		ITEMID_TYPE idTile = pStatic->GetDispID();
 
@@ -388,7 +388,7 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 		int iComponent = 0;
 		int type = 0;
 		
-		if ( strnicmp( pszKey, "FINDID", 6 ) == 0 )
+		if ( !strnicmp(pszKey, "FINDID", 6) )
 		{
 			pszKey += 6;
 			SKIP_SEPARATORS( pszKey );
@@ -496,17 +496,17 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 		}
 
 		SKIP_SEPARATORS( pszKey );
-		if ( !*pszKey )
-			pszKey	= "ID";
+		if ( !pszKey )
+			pszKey = "ID";
 
 		ITEMID_TYPE idTile = pMultiItem->GetDispID();
 
-		if ( strnicmp( pszKey, "ID", 2 ) == 0 )
+		if ( !strnicmp(pszKey, "ID", 2) )
 		{
 			sVal.FormatHex( idTile );
 			return true;
 		}
-		else if ( strnicmp( pszKey, "MULTI", 5 ) == 0 )
+		else if ( !strnicmp(pszKey, "MULTI", 5) )
 		{
 			pszKey += 5;
 			if (*pszKey != '\0')
@@ -518,7 +518,7 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 			sVal.FormatHex( pItem->GetUID() );
 			return true;
 		}
-		else if ( strnicmp( pszKey, "Z", 1 ) == 0 )
+		else if ( !strnicmp(pszKey, "Z", 1) )
 		{
 			sVal.FormatVal( pItem->GetTopZ() + pMultiItem->m_dz );
 			return true;
@@ -638,7 +638,7 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 								sVal = pTypeDef->GetResourceName();
 							else
 								sVal = "";
-						} return true;	
+						} return true;
 					case PT_TERRAIN:
 						{
 							pszKey += strlen(sm_szLoadKeys[index]);
@@ -870,28 +870,28 @@ size_t CGRect::Read( LPCTSTR pszVal )
 			}
 			m_bottom = ATOI(ppVal[3]);
 			m_right = ATOI(ppVal[2]);
-			m_top =	ATOI(ppVal[1]);
+			m_top = ATOI(ppVal[1]);
 			m_left = ATOI(ppVal[0]);
 			break;
 		case 4:
 			m_map = 0;
 			m_bottom = ATOI(ppVal[3]);
 			m_right = ATOI(ppVal[2]);
-			m_top =	ATOI(ppVal[1]);
+			m_top = ATOI(ppVal[1]);
 			m_left = ATOI(ppVal[0]);
 			break;
 		case 3:
 			m_map = 0;
 			m_bottom = 0;
 			m_right = ATOI(ppVal[2]);
-			m_top =	ATOI(ppVal[1]);
+			m_top = ATOI(ppVal[1]);
 			m_left = ATOI(ppVal[0]);
 			break;
 		case 2:
 			m_map = 0;
 			m_bottom = 0;
 			m_right = 0;
-			m_top =	ATOI(ppVal[1]);
+			m_top = ATOI(ppVal[1]);
 			m_left = ATOI(ppVal[0]);
 			break;
 		case 1:

@@ -292,6 +292,9 @@ void ManualResetEvent::reset()
 #ifdef _WIN32
 	ResetEvent(m_handle);
 #else
+	pthread_mutex_lock(&m_criticalSection);
 	m_value = false;
+	pthread_cond_signal(&m_condition);
+	pthread_mutex_unlock(&m_criticalSection);
 #endif
 }

@@ -591,9 +591,9 @@ bool CAccount::CheckPassword(LPCTSTR pszPassword)
 	if ( tr == TRIGRET_RET_HALFBAKED )
 		return true;
 
+	char digest[33];
 	if ( g_Cfg.m_fMd5Passwords )
 	{
-		char digest[33];
 		CMD5::fastDigest(digest, pszPassword);
 		pszPassword = static_cast<LPCTSTR>(digest);
 	}

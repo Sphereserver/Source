@@ -572,7 +572,8 @@ void CGTypedArray<TYPE,ARG_TYPE>::Empty()
 template<class TYPE, class ARG_TYPE>
 void CGTypedArray<TYPE,ARG_TYPE>::SetAt( size_t nIndex, ARG_TYPE newElement )
 {
-	ASSERT(IsValidIndex(nIndex));
+	if ( !IsValidIndex(nIndex) )
+		return;
 
 	DestructElements(&m_pData[nIndex], 1);
 	m_pData[nIndex] = newElement;
@@ -620,7 +621,9 @@ void CGTypedArray<TYPE,ARG_TYPE>::RemoveAt( size_t nIndex )
 template<class TYPE, class ARG_TYPE>
 TYPE CGTypedArray<TYPE,ARG_TYPE>::GetAt( size_t nIndex) const
 {
-	ASSERT(IsValidIndex(nIndex));
+	if ( !IsValidIndex(nIndex) )
+		return *reinterpret_cast<TYPE *>(BadIndex());
+
 	return m_pData[nIndex];
 }
 
@@ -633,7 +636,9 @@ TYPE CGTypedArray<TYPE,ARG_TYPE>::operator[](size_t nIndex) const
 template<class TYPE, class ARG_TYPE>
 TYPE& CGTypedArray<TYPE,ARG_TYPE>::ElementAt( size_t nIndex )
 {
-	ASSERT(IsValidIndex(nIndex));
+	if ( !IsValidIndex(nIndex) )
+		return *reinterpret_cast<TYPE *>(BadIndex());
+
 	return m_pData[nIndex];
 }
 
@@ -646,7 +651,9 @@ TYPE& CGTypedArray<TYPE,ARG_TYPE>::operator[](size_t nIndex)
 template<class TYPE, class ARG_TYPE>
 const TYPE& CGTypedArray<TYPE,ARG_TYPE>::ElementAt( size_t nIndex ) const
 {
-	ASSERT(IsValidIndex(nIndex));
+	if ( !IsValidIndex(nIndex) )
+		return *reinterpret_cast<const TYPE *>(BadIndex());
+
 	return m_pData[nIndex];
 }
 
