@@ -1015,6 +1015,9 @@ bool CListDefMap::r_LoadVal( LPCTSTR pszKey, CScript & s )
 			{
 				if ( strcmpi(ppCmds[2], "insert") == 0 && pszArg && *pszArg )
 				{
+					pListBase = new CListDefCont(ppCmds[0]);
+					m_Container.insert(pListBase);
+
 					if ( IsSimpleNumberString(pszArg) )
 						return pListBase->AddElementNum(Exp_GetVal(pszArg));
 					else

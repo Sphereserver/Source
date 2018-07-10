@@ -1485,7 +1485,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 		return( false );
 	}
 
-	switch (index)
+	switch ( static_cast<RC_TYPE>(index) )
 	{
 		case RC_ATTACKERTIMEOUT:
 			sVal.FormatVal(m_iAttackerTimeout);
@@ -1795,34 +1795,6 @@ LPCTSTR CResource::GetNotoTitle( int iLevel, bool bFemale ) const
 		strcpylen(pTitle, m_NotoTitles[iLevel]->GetPtr(), m_NotoTitles[iLevel]->GetLength() - strlen(pFemaleTitle));
 		return pTitle;
 	}
-}
-
-bool CResource::IsValidEmailAddressFormat( LPCTSTR pszEmail ) // static
-{
-	ADDTOCALLSTACK("CResource::IsValidEmailAddressFormat");
-	// what are the invalid email name chars ?
-	// Valid characters are, numbers, letters, underscore "_", dash "-" and the dot ".").
-
-	size_t len1 = strlen( pszEmail );
-	if ( len1 <= 0 || len1 > 128 )
-		return( false );
-
-	TCHAR szEmailStrip[256];
-	size_t len2 = Str_GetBare( szEmailStrip, pszEmail,
-		sizeof(szEmailStrip),
-		" !\"#%&()*,/:;<=>?[\\]^{|}'`+" );
-	if ( len2 != len1 )
-		return( false );
-
-	TCHAR * pszAt = const_cast<TCHAR*>(strchr( pszEmail, '@' ));
-	if ( ! pszAt )
-		return( false );
-	if ( pszAt == pszEmail )
-		return( false );
-	if ( ! strchr( pszAt, '.' ))
-		return( false );
-
-	return( true );
 }
 
 CServerRef CResource::Server_GetDef( size_t index )
@@ -3070,119 +3042,131 @@ RESOURCE_ID CResource::ResourceGetNewID( RES_TYPE restype, LPCTSTR pszName, CVar
 	RESOURCE_ID rid;
 	int iPage = 0;	// sub page
 
-	// Some types don't use named indexes at all. (Single instance)
+	// Some types don't use named indexes at all (single instance)
 	switch ( restype )
 	{
-	case RES_UNKNOWN:
-		return( ridinvalid);
-	case RES_ADVANCE:
-	case RES_BLOCKIP:
-	case RES_COMMENT:
-	case RES_DEFNAME:
-	case RES_KRDIALOGLIST:
-	case RES_MOONGATES:
-	case RES_NOTOTITLES:
-	case RES_OBSCENE:
-	case RES_RESOURCES:
-	case RES_RUNES:
-	case RES_SERVERS:
-	case RES_SPHERE:
-	case RES_STARTS:
-	case RES_TELEPORTERS:
-	case RES_TYPEDEFS:
-	case RES_WORLDVARS:
-	case RES_WORLDLISTS:
-		// Single instance stuff. (fully read in)
-		// Ignore any resource name.
-		return( RESOURCE_ID( restype ));
-	case RES_FUNCTION:		// Define a new command verb script that applies to a char.
-	case RES_ACCOUNT:
-	case RES_GMPAGE:
-	case RES_SECTOR:
-		// These must have a resource name but do not use true RESOURCE_ID format.
-		// These are multiple instance but name is not a RESOURCE_ID
-		if ( pszName[0] == '\0' )
-			return( ridinvalid );	// invalid
-		return( RESOURCE_ID( restype ));
-	// Extra args are allowed.
-	case RES_BOOK:	// BOOK BookName page
-	case RES_DIALOG:	// DIALOG GumpName ./TEXT/BUTTON
-	case RES_REGIONTYPE:
+		case RES_UNKNOWN:
+			return ridinvalid;
+		case RES_ADVANCE:
+		case RES_BLOCKIP:
+		case RES_COMMENT:
+		case RES_DEFNAME:
+		case RES_KRDIALOGLIST:
+		case RES_MOONGATES:
+		case RES_NOTOTITLES:
+		case RES_OBSCENE:
+		case RES_RESOURCES:
+		case RES_RUNES:
+		case RES_SERVERS:
+		case RES_SPHERE:
+		case RES_STARTS:
+		case RES_TELEPORTERS:
+		case RES_TYPEDEFS:
+		case RES_WORLDVARS:
+		case RES_WORLDLISTS:
+		{
+			// Single instance stuff (fully read in)
+			// Ignore any resource name
+			return RESOURCE_ID(restype);
+		}
+		case RES_ACCOUNT:
+		case RES_FUNCTION:
+		case RES_GMPAGE:
+		case RES_SECTOR:
+		{
+			// Multiple instance stuff, but name is not a RESOURCE_ID
+			// Must have a resource name but do not use true RESOURCE_ID format
+			if ( pszName[0] == '\0' )
+				return ridinvalid;
+
+			return RESOURCE_ID(restype);
+		}
+		case RES_BOOK:
+		case RES_DIALOG:
+		case RES_REGIONTYPE:
 		{
 			if ( pszName[0] == '\0' )
-				return( ridinvalid );
-			TCHAR * pArg1 = Str_GetTemp();
-			strncpy(pArg1, pszName, MAX_NAME_SIZE);
-			pszName = pArg1;
-			TCHAR * pArg2;
-			Str_Parse( pArg1, &pArg2 );
-			if ( ! strcmpi( pArg2, "TEXT" ))
+				return ridinvalid;
+
+			TCHAR *pszArg1 = Str_GetTemp();
+			strncpy(pszArg1, pszName, SCRIPT_MAX_LINE_LEN - 1);
+			pszName = pszArg1;
+
+			TCHAR *pszArg2;
+			Str_Parse(pszArg1, &pszArg2);
+
+			if ( !strcmpi(pszArg2, "TEXT") )
 				iPage = RES_DIALOG_TEXT;
-			else if ( ! strcmpi( pArg2, "BUTTON" ))
+			else if ( !strcmpi(pszArg2, "BUTTON") )
 				iPage = RES_DIALOG_BUTTON;
 			else
-				iPage = RES_GET_INDEX( Exp_GetVal( pArg2 ));
-			if ( iPage > 255 )
 			{
-				DEBUG_ERR(( "Bad resource index page %d\n", iPage ));
+				iPage = RES_GET_INDEX(Exp_GetVal(pszArg2));
+				if ( iPage > 255 )
+					DEBUG_ERR(("Bad resource index page %d\n", iPage));
 			}
+			break;
 		}
-		break;
-	case RES_NEWBIE:	// MALE_DEFAULT, FEMALE_DEFAULT, Skill
+		case RES_NEWBIE:
 		{
 			if ( pszName[0] == '\0' )
-				return( ridinvalid );
-			TCHAR * pArg1 = Str_GetTemp();
-			strncpy(pArg1, pszName, MAX_NAME_SIZE);
-			pszName = pArg1;
-			TCHAR * pArg2;
-			Str_Parse( pArg1, &pArg2 );
+				return ridinvalid;
 
-			if ( !strcmpi(pArg2, "GARG") )
+			TCHAR *pszArg1 = Str_GetTemp();
+			strncpy(pszArg1, pszName, SCRIPT_MAX_LINE_LEN - 1);
+			pszName = pszArg1;
+
+			TCHAR *pszArg2;
+			Str_Parse(pszArg1, &pszArg2);
+
+			if ( !strcmpi(pszArg2, "GARG") )
 				iPage = RACETYPE_GARGOYLE;
-			else if ( !strcmpi(pArg2, "ELF") )
+			else if ( !strcmpi(pszArg2, "ELF") )
 				iPage = RACETYPE_ELF;
 			else
 				iPage = RACETYPE_HUMAN;
 
-			if ( ! strcmpi( pszName, "MALE_DEFAULT" ))
-				return ( RESOURCE_ID( RES_NEWBIE, RES_NEWBIE_MALE_DEFAULT, iPage ));
-			else if ( ! strcmpi( pszName, "FEMALE_DEFAULT" ))
-				return ( RESOURCE_ID( RES_NEWBIE, RES_NEWBIE_FEMALE_DEFAULT, iPage ));
+			if ( !strcmpi(pszName, "MALE_DEFAULT") )
+				return RESOURCE_ID(RES_NEWBIE, RES_NEWBIE_MALE_DEFAULT, iPage);
+			else if ( !strcmpi(pszName, "FEMALE_DEFAULT") )
+				return RESOURCE_ID(RES_NEWBIE, RES_NEWBIE_FEMALE_DEFAULT, iPage);
 
-			if ( ! strcmpi( pszName, "PROFESSION_ADVANCED" ))
-				return ( RESOURCE_ID( RES_NEWBIE, RES_NEWBIE_PROF_ADVANCED, iPage ));
-			else if ( ! strcmpi( pszName, "PROFESSION_WARRIOR" ))
-				return ( RESOURCE_ID( RES_NEWBIE, RES_NEWBIE_PROF_WARRIOR, iPage ));
-			else if ( ! strcmpi( pszName, "PROFESSION_MAGE" ))
-				return ( RESOURCE_ID( RES_NEWBIE, RES_NEWBIE_PROF_MAGE, iPage ));
-			else if ( ! strcmpi( pszName, "PROFESSION_BLACKSMITH" ))
-				return ( RESOURCE_ID( RES_NEWBIE, RES_NEWBIE_PROF_BLACKSMITH, iPage ));
-			else if ( ! strcmpi( pszName, "PROFESSION_NECROMANCER" ))
-				return ( RESOURCE_ID( RES_NEWBIE, RES_NEWBIE_PROF_NECROMANCER, iPage ));
-			else if ( ! strcmpi( pszName, "PROFESSION_PALADIN" ))
-				return ( RESOURCE_ID( RES_NEWBIE, RES_NEWBIE_PROF_PALADIN, iPage ));
-			else if ( ! strcmpi( pszName, "PROFESSION_SAMURAI" ))
-				return ( RESOURCE_ID( RES_NEWBIE, RES_NEWBIE_PROF_SAMURAI, iPage ));
-			else if ( ! strcmpi( pszName, "PROFESSION_NINJA" ))
-				return ( RESOURCE_ID( RES_NEWBIE, RES_NEWBIE_PROF_NINJA, iPage ));
-		}
-		break;
-	case RES_AREA:
-	case RES_ROOM:
-		if ( !fNewStyleDef )
-		{
-			// Name is not the defname or id, just find a free id.
-			pszName = NULL;	// fake it out for now.
+			if ( !strcmpi(pszName, "PROFESSION_ADVANCED") )
+				return RESOURCE_ID(RES_NEWBIE, RES_NEWBIE_PROF_ADVANCED, iPage);
+			else if ( !strcmpi(pszName, "PROFESSION_WARRIOR") )
+				return RESOURCE_ID(RES_NEWBIE, RES_NEWBIE_PROF_WARRIOR, iPage);
+			else if ( !strcmpi(pszName, "PROFESSION_MAGE") )
+				return RESOURCE_ID(RES_NEWBIE, RES_NEWBIE_PROF_MAGE, iPage);
+			else if ( !strcmpi(pszName, "PROFESSION_BLACKSMITH") )
+				return RESOURCE_ID(RES_NEWBIE, RES_NEWBIE_PROF_BLACKSMITH, iPage);
+			else if ( !strcmpi(pszName, "PROFESSION_NECROMANCER") )
+				return RESOURCE_ID(RES_NEWBIE, RES_NEWBIE_PROF_NECROMANCER, iPage);
+			else if ( !strcmpi(pszName, "PROFESSION_PALADIN") )
+				return RESOURCE_ID(RES_NEWBIE, RES_NEWBIE_PROF_PALADIN, iPage);
+			else if ( !strcmpi(pszName, "PROFESSION_SAMURAI") )
+				return RESOURCE_ID(RES_NEWBIE, RES_NEWBIE_PROF_SAMURAI, iPage);
+			else if ( !strcmpi(pszName, "PROFESSION_NINJA") )
+				return RESOURCE_ID(RES_NEWBIE, RES_NEWBIE_PROF_NINJA, iPage);
 			break;
 		}
-		// otherwise, passthrough to default
-	default:
-		// The name is a DEFNAME or id number
-		ASSERT( restype < RES_QTY );
-		break;
+		case RES_AREA:
+		case RES_ROOM:
+		{
+			if ( !fNewStyleDef )
+			{
+				// Name is not the defname or id, just find a free id
+				pszName = NULL;
+				break;
+			}
+			// Otherwise, passthrough to default
+		}
+		default:
+		{
+			// The name is a DEFNAME or id number
+			ASSERT(restype < RES_QTY);
+			break;
+		}
 	}
-
 
 	int index;
 	if ( pszName )

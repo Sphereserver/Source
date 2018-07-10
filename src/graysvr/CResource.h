@@ -1101,7 +1101,6 @@ public:
 	PLEVEL_TYPE GetPrivCommandLevel( LPCTSTR pszCmd ) const;
 
 	static STAT_TYPE FindStatKey( LPCTSTR pszKey );
-	static bool IsValidEmailAddressFormat( LPCTSTR pszText );
 	bool IsObscene( LPCTSTR pszText ) const;
 
 	CWebPageDef * FindWebPage( LPCTSTR pszPath ) const;

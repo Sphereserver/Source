@@ -146,13 +146,6 @@ void CServerDef::SetName( LPCTSTR pszName )
 	if ( len <= 0 )
 		return;
 
-	// allow just basic chars. No spaces, only numbers, letters and underbar.
-	if ( g_Cfg.IsObscene( szName ))
-	{
-		DEBUG_ERR(( "Obscene server '%s' ignored.\n", szName ));
-		return;
-	}
-
 	m_sName = szName;
 }
 
@@ -266,11 +259,7 @@ bool CServerDef::r_LoadVal( CScript & s )
 			m_timeCreate = CServTime::GetCurrentTime() - ( s.GetArgLLVal() * TICK_PER_SEC );
 			break;
 		case SC_ADMINEMAIL:
-			if ( this != &g_Serv && !g_Serv.m_sEMail.IsEmpty() && strstr(s.GetArgStr(), g_Serv.m_sEMail) )
-				return false;
-			if ( !g_Cfg.IsValidEmailAddressFormat(s.GetArgStr()) )
-				return false;
-			if ( g_Cfg.IsObscene(s.GetArgStr()) )
+			if ( (this != &g_Serv) && !g_Serv.m_sEMail.IsEmpty() && strstr(s.GetArgStr(), g_Serv.m_sEMail) )
 				return false;
 			m_sEMail = s.GetArgStr();
 			break;
@@ -278,8 +267,6 @@ bool CServerDef::r_LoadVal( CScript & s )
 			{
 				TCHAR szLang[ 32 ];
 				Str_GetBare( szLang, s.GetArgStr(), sizeof(szLang), "<>/\"\\" );
-				if ( g_Cfg.IsObscene(szLang))	// Is the name unacceptable?
-					return( false );
 				m_sLang = szLang;
 			}
 			break;
@@ -333,14 +320,7 @@ bool CServerDef::r_LoadVal( CScript & s )
 		case SC_URL:
 		case SC_URLLINK:
 			// It is a basically valid URL ?
-			if ( this != &g_Serv )
-			{
-				if ( !g_Serv.m_sURL.IsEmpty() && strstr(s.GetArgStr(), g_Serv.m_sURL) )
-					return false;
-			}
-			if ( !strchr(s.GetArgStr(), '.' ) )
-				return false;
-			if ( g_Cfg.IsObscene(s.GetArgStr()) )	// Is the name unacceptable?
+			if ( (this != &g_Serv) && !g_Serv.m_sURL.IsEmpty() && strstr(s.GetArgStr(), g_Serv.m_sURL) )
 				return false;
 			m_sURL = s.GetArgStr();
 			break;

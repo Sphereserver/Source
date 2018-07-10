@@ -467,7 +467,7 @@ bool CContainer::r_GetRefContainer(LPCTSTR &pszKey, CScriptObj *&pRef)
 		{
 			pszKey += 4;
 			SKIP_SEPARATORS(pszKey);
-			pRef = GetAt(maximum(0, static_cast<size_t>(Exp_GetLLSingle(pszKey))));
+			pRef = GetAt(static_cast<size_t>(maximum(0, Exp_GetLLSingle(pszKey))));
 			SKIP_SEPARATORS(pszKey);
 			return true;
 		}
