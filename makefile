@@ -1,4 +1,4 @@
-MAKEFLAGS = -j $(shell nproc)
+MAKEFLAGS	= -j $(shell nproc)
 PIPE	= -pipe
 MARCH	= -march=i686 -m32
 
@@ -12,12 +12,12 @@ INCLUDE	= -L/usr/lib/mysql
 LIBS	= -lmysqlclient -lpthread -ldl
 
 ifdef NIGHTLY
-	NIGHTLYDEFS = -D_NIGHTLYBUILD		# -DTHREAD_TRACK_CALLSTACK
+	NIGHTLYDEFS	= -D_NIGHTLYBUILD		# -DTHREAD_TRACK_CALLSTACK
 endif
 
 ifdef DBG
-	DBGDEFS = -D_DEBUG -DTHREAD_TRACK_CALLSTACK		# -D_TESTEXCEPTION -DDEBUG_CRYPT_MSGS
-	DBGWARN = -ggdb3
+	DBGDEFS	= -D_DEBUG -DTHREAD_TRACK_CALLSTACK		# -D_TESTEXCEPTION -DDEBUG_CRYPT_MSGS
+	DBGWARN	= -ggdb3
 endif
 
 DEFINES	= -D_MTNETWORK $(NIGHTLYDEFS) $(DBGDEFS)
@@ -34,8 +34,10 @@ CO_FLAGS	= $(CWARN) $(DBGWARN) $(PIPE) $(EX)
 C_FLAGS		= $(OPT) $(INCLUDE) $(DEFINES)
 CC_FLAGS	= $(COPT) $(INCLUDE) $(DEFINES)
 
-GITREVISION	= $(shell expr $(shell git rev-list --count HEAD) - 2406)
-GITHASH		= $(shell git rev-parse --short HEAD)
+ifneq ($(shell git rev-parse --git-dir),)
+	GITREVISION	= $(shell expr $(shell git rev-list --count HEAD) - 2406)
+	GITHASH		= $(shell git rev-parse --short HEAD)
+endif
 
 SRC	:= 	./src/graysvr/CAccount.cpp \
 		./src/graysvr/CBase.cpp \
