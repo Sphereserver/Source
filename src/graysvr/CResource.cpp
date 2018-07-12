@@ -2650,13 +2650,13 @@ bool CResource::LoadResourceSection( CScript * pScript )
 		else
 		{
 			CRegionWorld * pRegion = new CRegionWorld( rid, pScript->GetArgStr());
-			pNewDef = pRegion;
-			ASSERT(pNewDef);
 			pRegion->r_Load( *pScript );
 			if ( ! pRegion->RealizeRegion() )
 				delete pRegion; // might be a dupe ?
 			else
 			{
+				pNewDef = pRegion;
+				ASSERT(pNewDef);
 				m_ResHash.AddSortKey( rid, pRegion );
 				// if it's old style but has a defname, it's already set via r_Load,
 				// so this will do nothing, which is good
@@ -2680,13 +2680,13 @@ bool CResource::LoadResourceSection( CScript * pScript )
 		else
 		{
 			CRegionBase * pRegion = new CRegionBase( rid, pScript->GetArgStr());
-			pNewDef = pRegion;
-			ASSERT(pNewDef);
 			pRegion->r_Load(*pScript);
 			if ( !pRegion->RealizeRegion() )
 				delete pRegion; // might be a dupe ?
 			else
 			{
+				pNewDef = pRegion;
+				ASSERT(pNewDef);
 				m_ResHash.AddSortKey( rid, pRegion );
 				// if it's old style but has a defname, it's already set via r_Load,
 				// so this will do nothing, which is good

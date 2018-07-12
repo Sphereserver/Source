@@ -466,7 +466,7 @@ TCHAR *CCrypt::WriteClientVerString(DWORD dwVer, TCHAR *pszOutput)
 		int iPatch = static_cast<int>(dwVer % 100);
 		if ( iPatch )
 		{
-			pszOutput[++iVer] = static_cast<TCHAR>(iPatch + 'a' - 1);
+			pszOutput[iVer++] = static_cast<TCHAR>(iPatch + 'a' - 1);
 			pszOutput[iVer] = '\0';
 		}
 	}
@@ -700,7 +700,7 @@ void CCrypt::InitTables()	// static
 	ADDTOCALLSTACK("CCrypt::InitTables");
 	for ( size_t i = 0; i < CRYPT_GAMEKEY_COUNT; ++i )
 	{
-		memcpy(sm_dwCodingData[i], sm_dwInitData, sizeof(sm_dwInitData));
+		memcpy(sm_dwCodingData[i], sm_dwInitData, COUNTOF(sm_dwInitData) - 1);
 
 		DWORD dwCode[3];
 		dwCode[0] = (sm_KeyTable[i][0] << 24) + (sm_KeyTable[i][1] << 16) + (sm_KeyTable[i][2] << 8) + sm_KeyTable[i][3];
@@ -882,7 +882,7 @@ void CCrypt::InitTwofish()
 	BYTE bTempBuff[TFISH_RESET];
 	memset(&bTempBuff, 0, TFISH_RESET);
 	blockEncrypt(&tf_cipher, &tf_key, &tf_cipherTable[0], 0x800, &bTempBuff[0]);
-	memcpy(&tf_cipherTable, &bTempBuff, TFISH_RESET);
+	memcpy(&tf_cipherTable, &bTempBuff, sizeof(tf_cipherTable));
 
 	if ( GetEncryptionType() == ENC_TFISH )
 		InitMD5(&bTempBuff[0]);
@@ -896,13 +896,13 @@ void CCrypt::DecryptTwofish(BYTE *pbOutput, const BYTE *pbInput, size_t iLen)
 
 	for ( size_t i = 0; i < iLen; ++i )
 	{
-		if ( tf_position >= TFISH_RESET - 1 )
+		if ( tf_position >= TFISH_RESET )
 		{
 			blockEncrypt(&tf_cipher, &tf_key, &tf_cipherTable[0], 0x800, &bTempBuff[0]);
-			memcpy(&tf_cipherTable, &bTempBuff, TFISH_RESET);
+			memcpy(&tf_cipherTable, &bTempBuff, sizeof(tf_cipherTable));
 			tf_position = 0;
 		}
-		pbOutput[i] = pbInput[i] ^ tf_cipherTable[++tf_position];
+		pbOutput[i] = pbInput[i] ^ tf_cipherTable[tf_position++];
 	}
 }
 
@@ -923,7 +923,7 @@ void CCrypt::EncryptMD5(BYTE *pbOutput, const BYTE *pbInput, size_t iLen)
 	ADDTOCALLSTACK("CCrypt::EncryptMD5");
 	for ( size_t i = 0; i < iLen; ++i )
 	{
-		pbOutput[i] = pbInput[i] ^ md5_digest[++md5_position];
+		pbOutput[i] = pbInput[i] ^ md5_digest[md5_position++];
 		md5_position &= MD5_RESET;
 	}
 }
