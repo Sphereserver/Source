@@ -302,7 +302,7 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 		}
 
 		SKIP_SEPARATORS( pszKey );
-		if ( !*pszKey )
+		if ( *pszKey == '\0' )
 			pszKey = "ID";
 
 		ITEMID_TYPE idTile = pStatic->GetDispID();
@@ -496,7 +496,7 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 		}
 
 		SKIP_SEPARATORS( pszKey );
-		if ( !*pszKey )
+		if ( *pszKey == '\0' )
 			pszKey = "ID";
 
 		ITEMID_TYPE idTile = pMultiItem->GetDispID();
@@ -641,7 +641,7 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 						} return true;
 					case PT_TERRAIN:
 						{
-							pszKey += strlen(sm_szLoadKeys[index]);
+							pszKey += 7;
 							if ( *pszKey == '.' )	// do we have an argument?
 							{
 								SKIP_SEPARATORS( pszKey );

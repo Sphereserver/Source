@@ -9,12 +9,9 @@
 
 CUnixTerminal g_UnixTerminal;
 
-CUnixTerminal::CUnixTerminal() :
-#ifdef _USECURSES
- m_window(NULL),
-#endif
- m_nextChar('\0'), m_isColorEnabled(false), m_prepared(false)
+CUnixTerminal::CUnixTerminal()
 {
+	prepare();
 }
 
 CUnixTerminal::~CUnixTerminal()
