@@ -585,16 +585,16 @@ void CClient::addSound(SOUND_TYPE id, const CObjBaseTemplate *pBase, BYTE bRepea
 	new PacketPlaySound(this, id, bRepeat, 0, pt);
 }
 
-void CClient::addBarkUNICODE(const NCHAR *pwText, const CObjBaseTemplate *pSrc, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, CLanguageID lang)
+void CClient::addBarkUNICODE(const NCHAR *pszText, const CObjBaseTemplate *pSrc, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, CLanguageID lang)
 {
 	ADDTOCALLSTACK("CClient::addBarkUNICODE");
-	if ( !pwText )
+	if ( !pszText )
 		return;
 
 	if ( !IsConnectTypePacket() )
 	{
 		// Need to convert back from unicode!
-		//SysMessage(pwText);
+		//SysMessage(pszText);
 		return;
 	}
 
@@ -604,7 +604,7 @@ void CClient::addBarkUNICODE(const NCHAR *pwText, const CObjBaseTemplate *pSrc, 
 		pSrc = NULL;
 	}
 
-	new PacketMessageUNICODE(this, pwText, pSrc, wHue, mode, font, lang);
+	new PacketMessageUNICODE(this, pszText, pSrc, wHue, mode, font, lang);
 }
 
 void CClient::addBarkLocalized(DWORD dwClilocID, const CObjBaseTemplate *pSrc, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, LPCTSTR pszArgs)
@@ -637,7 +637,7 @@ void CClient::addBarkLocalizedEx(DWORD dwClilocID, const CObjBaseTemplate *pSrc,
 	new PacketMessageLocalisedEx(this, dwClilocID, pSrc, wHue, mode, font, affix, pszAffix, pszArgs);
 }
 
-void CClient::addBarkParse(LPCTSTR pszText, const CObjBaseTemplate *pSrc, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, bool fUnicode, LPCTSTR pszName)
+void CClient::addBarkParse(LPCTSTR pszText, const CObjBaseTemplate *pSrc, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, bool fUnicode)
 {
 	ADDTOCALLSTACK("CClient::addBarkParse");
 	if ( !pszText )
@@ -739,7 +739,7 @@ void CClient::addBarkParse(LPCTSTR pszText, const CObjBaseTemplate *pSrc, HUE_TY
 		wArgs[2] = static_cast<WORD>(defaultUnicode);
 
 	if ( m_BarkBuffer.IsEmpty() )
-		m_BarkBuffer.Format("%s%s", pszName, pszText);
+		m_BarkBuffer = pszText;
 
 	switch ( wArgs[2] )
 	{
@@ -790,7 +790,7 @@ void CClient::addBarkParse(LPCTSTR pszText, const CObjBaseTemplate *pSrc, HUE_TY
 		{
 		bark_default:
 			if ( m_BarkBuffer.IsEmpty() )
-				m_BarkBuffer.Format("%s%s", pszName, pszText);
+				m_BarkBuffer = pszText;
 
 			addBark(m_BarkBuffer.GetPtr(), pSrc, static_cast<HUE_TYPE>(wArgs[0]), mode, static_cast<FONT_TYPE>(wArgs[1]));
 			break;

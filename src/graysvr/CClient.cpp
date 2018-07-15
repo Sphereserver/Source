@@ -292,20 +292,16 @@ bool CClient::CanHear(const CObjBaseTemplate *pSrc, TALKMODE_TYPE mode) const
 
 	if ( !IsConnectTypePacket() )
 		return false;
-	if ( !pSrc || (mode == TALKMODE_BROADCAST) )
+	if ( !pSrc )
 		return true;
 	if ( !m_pChar )
 		return false;
 
-	if ( IsPriv(PRIV_HEARALL) && pSrc->IsChar() && ((mode == TALKMODE_SYSTEM) || (mode == TALKMODE_SAY) || (mode == TALKMODE_WHISPER) || (mode == TALKMODE_YELL)) )
+	if ( IsPriv(PRIV_HEARALL) && pSrc->IsChar() && ((mode == TALKMODE_SAY) || (mode == TALKMODE_WHISPER) || (mode == TALKMODE_YELL)) )
 	{
-		const CChar *pCharSrc = dynamic_cast<const CChar *>(pSrc);
-		ASSERT(pCharSrc);
-		if ( pCharSrc && pCharSrc->m_pClient )
-		{
-			if ( pCharSrc->GetPrivLevel() <= GetPrivLevel() )
-				return true;
-		}
+		const CChar *pChar = static_cast<const CChar *>(pSrc);
+		if ( GetPrivLevel() >= pChar->GetPrivLevel() )
+			return true;
 	}
 
 	return m_pChar->CanHear(pSrc, mode);

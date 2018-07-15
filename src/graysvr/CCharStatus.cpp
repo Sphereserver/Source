@@ -1719,6 +1719,8 @@ bool CChar::CanHear(const CObjBaseTemplate *pSrc, TALKMODE_TYPE mode) const
 	if ( !pSrc )	// must be broadcast I guess
 		return true;
 
+	const CChar *pCharSrc = dynamic_cast<const CChar *>(pSrc);
+
 	int iHearRange = 0;
 	bool fThrough = false;
 	switch ( mode )
@@ -1727,7 +1729,7 @@ bool CChar::CanHear(const CObjBaseTemplate *pSrc, TALKMODE_TYPE mode) const
 			iHearRange = g_Cfg.m_iDistanceWhisper;
 			break;
 		case TALKMODE_YELL:
-			iHearRange = g_Cfg.m_iDistanceYell;
+			iHearRange = (pCharSrc && pCharSrc->IsPriv(PRIV_GM)) ? INT_MAX : g_Cfg.m_iDistanceYell;
 			fThrough = true;
 			break;
 		case TALKMODE_BROADCAST:
@@ -1747,10 +1749,8 @@ bool CChar::CanHear(const CObjBaseTemplate *pSrc, TALKMODE_TYPE mode) const
 		return true;
 
 	CRegionWorld *pSrcRegion;
-	if ( pSrc->IsChar() )
+	if ( pCharSrc )
 	{
-		const CChar *pCharSrc = static_cast<const CChar *>(pSrc);
-		ASSERT(pCharSrc);
 		pSrcRegion = pCharSrc->GetRegion();
 		if ( pCharSrc->IsPriv(PRIV_GM) )
 			return true;
@@ -1758,22 +1758,17 @@ bool CChar::CanHear(const CObjBaseTemplate *pSrc, TALKMODE_TYPE mode) const
 	else
 		pSrcRegion = dynamic_cast<CRegionWorld *>(pSrc->GetTopPoint().GetRegion(REGION_TYPE_MULTI|REGION_TYPE_AREA));
 
+	if ( !m_pArea || !pSrcRegion )	// should not happen really
+		return false;
 	if ( m_pArea == pSrcRegion )	// same region is always ok
 		return true;
-	if ( !pSrcRegion || !m_pArea )	// should not happen really
+
+	CItem *pItemRegion = pSrcRegion->GetResourceID().ItemFind();
+	if ( pItemRegion && !pSrcRegion->IsFlag(REGION_FLAG_SHIP) && (pItemRegion->GetKeyNum("NOMUTESPEECH", false) <= 0) )
 		return false;
 
-	bool fCanSpeech = false;
-	CVarDefCont *pVal = pSrcRegion->GetResourceID().IsItem() ? pSrcRegion->GetResourceID().ItemFind()->GetKey("NOMUTESPEECH", false) : NULL;
-	if ( pVal && (pVal->GetValNum() > 0) )
-		fCanSpeech = true;
-	if ( pSrcRegion->GetResourceID().IsItem() && !pSrcRegion->IsFlag(REGION_FLAG_SHIP) && !fCanSpeech )
-		return false;
-
-	pVal = m_pArea->GetResourceID().IsItem() ? m_pArea->GetResourceID().ItemFind()->GetKey("NOMUTESPEECH", false) : NULL;
-	if ( pVal && (pVal->GetValNum() > 0) )
-		fCanSpeech = true;
-	if ( m_pArea->GetResourceID().IsItem() && !m_pArea->IsFlag(REGION_FLAG_SHIP) && !fCanSpeech )
+	pItemRegion = m_pArea->GetResourceID().ItemFind();
+	if ( pItemRegion && !m_pArea->IsFlag(REGION_FLAG_SHIP) && (pItemRegion->GetKeyNum("NOMUTESPEECH", false) <= 0) )
 		return false;
 
 	return true;

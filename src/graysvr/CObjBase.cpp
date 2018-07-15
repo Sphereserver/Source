@@ -189,7 +189,7 @@ bool CObjBase::SetNamePool(LPCTSTR pszName)
 {
 	ADDTOCALLSTACK("CObjBase::SetNamePool");
 	ASSERT(pszName);
-	TCHAR *pszTemp = Str_GetTemp();
+	TCHAR szTemp[MAX_ITEM_NAME_SIZE];
 
 	if ( pszName[0] == '#' )
 	{
@@ -212,15 +212,15 @@ bool CObjBase::SetNamePool(LPCTSTR pszName)
 			}
 		}
 
-		strncpy(pszTemp, s.GetKey(), MAX_ITEM_NAME_SIZE);
+		strncpy(szTemp, s.GetKey(), sizeof(szTemp) - 1);
 	}
 	else
 	{
 		// Directly set the given name
-		strncpy(pszTemp, pszName, MAX_ITEM_NAME_SIZE);
+		strncpy(szTemp, pszName, sizeof(szTemp) - 1);
 	}
 
-	if ( !CObjBaseTemplate::SetName(pszTemp) )
+	if ( !CObjBaseTemplate::SetName(szTemp) )
 		return false;
 
 	UpdatePropertyFlag(AUTOTOOLTIP_FLAG_NAME);

@@ -2175,204 +2175,166 @@ void CWorld::GarbageCollection()
 	g_Log.Flush();
 }
 
-void CWorld::Speak( const CObjBaseTemplate * pSrc, LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font )
+void CWorld::Speak(const CObjBaseTemplate *pSrc, LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font)
 {
 	ADDTOCALLSTACK("CWorld::Speak");
-	if ( !pszText || !pszText[0] )
+	if ( !pszText )
 		return;
 
-	bool fSpeakAsGhost = false;	// I am a ghost ?
+	bool fSpeakAsGhost = false;
+	CGString sTextGhost;
+
 	if ( pSrc )
 	{
-		if ( pSrc->IsChar() )
+		const CChar *pCharSrc = dynamic_cast<const CChar *>(pSrc);
+		if ( pCharSrc )
 		{
-			const CChar *pCharSrc = static_cast<const CChar *>(pSrc);
-			ASSERT(pCharSrc);
 			fSpeakAsGhost = pCharSrc->IsSpeakAsGhost();
 
-			if ( wHue == HUE_TEXT_DEF && pCharSrc->m_pNPC )
+			if ( wHue == HUE_TEXT_DEF )
 				wHue = pCharSrc->m_SpeechHue;
 		}
 	}
 	else
 		mode = TALKMODE_BROADCAST;
 
-	//CGString sTextUID;
-	//CGString sTextName;	// name labelled text.
-	CGString sTextGhost; // ghost speak.
-
-	// For things
-	bool fCanSee = false;
-	CChar * pChar = NULL;
-
 	ClientIterator it;
-	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next(), fCanSee = false, pChar = NULL)
+	for ( CClient *pClient = it.next(); pClient != NULL; pClient = it.next() )
 	{
-		if ( ! pClient->CanHear( pSrc, mode ))
+		if ( !pClient->CanHear(pSrc, mode) )
 			continue;
 
-		TCHAR * myName = Str_GetTemp();
+		CChar *pChar = pClient->GetChar();
+		CGString sSpeak = pszText;
 
-		LPCTSTR pszSpeak = pszText;
-		pChar = pClient->GetChar();
-
-		if ( pChar != NULL )
+		if ( fSpeakAsGhost && pChar && !pChar->CanUnderstandGhost() )
 		{
-			fCanSee = pChar->CanSee(pSrc);
-
-			if ( fSpeakAsGhost && !pChar->CanUnderstandGhost() )
+			if ( sTextGhost.IsEmpty() )
 			{
-				if ( sTextGhost.IsEmpty() )
+				sTextGhost = pszText;
+				for ( size_t i = 0; i < sTextGhost.GetLength(); ++i )
 				{
-					sTextGhost = pszText;
-					for ( size_t i = 0; i < sTextGhost.GetLength(); i++ )
-					{
-						if ( sTextGhost[i] != ' ' &&  sTextGhost[i] != '\t' )
-							sTextGhost[i] = Calc_GetRandVal(2) ? 'O' : 'o';
-					}
+					if ( (sTextGhost[i] != ' ') && (sTextGhost[i] != '\t') )
+						sTextGhost[i] = Calc_GetRandVal(2) ? 'O' : 'o';
 				}
-				pszSpeak = sTextGhost;
-
-				static const SOUND_TYPE sm_GhostSounds[] = { 0x17E, 0x17F, 0x180, 0x181, 0x182 };
-				pClient->addSound(sm_GhostSounds[Calc_GetRandVal(COUNTOF(sm_GhostSounds))], pSrc);
 			}
-			
-			if ( !fCanSee && pSrc )
-			{
-				//if ( sTextName.IsEmpty() )
-				//{
-				//	sTextName.Format("<%s>", pSrc->GetName());
-				//}
-				//myName = sTextName;
-				if ( !*myName )
-					sprintf(myName, "<%s>", pSrc->GetName());
-			}
+			sSpeak = sTextGhost;
+			pClient->addSound(static_cast<SOUND_TYPE>(Calc_GetRandVal2(0x17E, 0x182)), pSrc);
 		}
 
-		if ( ! fCanSee && pSrc && pClient->IsPriv( PRIV_HEARALL|PRIV_DEBUG ))
-		{
-			//if ( sTextUID.IsEmpty() )
-			//{
-			//	sTextUID.Format("<%s [%lx]>", pSrc->GetName(), static_cast<DWORD>(pSrc->GetUID()));
-			//}
-			//myName = sTextUID;
-			if ( !*myName )
-				sprintf(myName, "<%s [%lx]>", pSrc->GetName(), static_cast<DWORD>(pSrc->GetUID()));
-		}
-		if (*myName)
-			pClient->addBarkParse( pszSpeak, pSrc, wHue, mode, font, false, myName );
-		else
-			pClient->addBarkParse( pszSpeak, pSrc, wHue, mode, font );
+		if ( !pClient->m_NetState->isClientEnhanced() && pSrc && !pChar->CanSee(pSrc) )
+			sSpeak.Format("<%s>%s", pSrc->GetName(), pszText);
+
+		pClient->addBarkParse(sSpeak, pSrc, wHue, mode, font);
 	}
 }
 
-void CWorld::SpeakUNICODE( const CObjBaseTemplate * pSrc, const NCHAR * pwText, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, CLanguageID lang )
+#define SPEAKFLAG_NONE		0x0
+#define SPEAKFLAG_GHOST		0x1
+#define SPEAKFLAG_NAMED		0x2
+
+void CWorld::SpeakUNICODE(const CObjBaseTemplate *pSrc, const NCHAR *pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, CLanguageID lang)
 {
 	ADDTOCALLSTACK("CWorld::SpeakUNICODE");
-	bool fSpeakAsGhost = false;
-	if ( pSrc && pSrc->IsChar() )
-	{
-		// Are they dead ? Garble the text. unless we have SpiritSpeak
-		const CChar * pCharSrc = dynamic_cast <const CChar*> (pSrc);
-		if ( pCharSrc )
-			fSpeakAsGhost = pCharSrc->IsSpeakAsGhost();
-		else
-			pSrc = NULL;
-	}
+	if ( !pszText )
+		return;
 
-	if ( !pSrc )
+	bool fSpeakAsGhost = false;
+	NCHAR szTextGhost[MAX_TALK_BUFFER];
+	szTextGhost[0] = '\0';
+	NCHAR szTextGhostNamed[MAX_TALK_BUFFER];
+	szTextGhostNamed[0] = '\0';
+	NCHAR szTextNamed[MAX_TALK_BUFFER];
+	szTextNamed[0] = '\0';
+
+	if ( pSrc )
+	{
+		const CChar *pCharSrc = dynamic_cast<const CChar *>(pSrc);
+		if ( pCharSrc )
+		{
+			fSpeakAsGhost = pCharSrc->IsSpeakAsGhost();
+
+			if ( wHue == HUE_TEXT_DEF )
+				wHue = pCharSrc->m_SpeechHue;
+		}
+	}
+	else
 		mode = TALKMODE_BROADCAST;
 
-	NCHAR wTextUID[MAX_TALK_BUFFER];	// uid labelled text.
-	wTextUID[0] = '\0';
-	NCHAR wTextName[MAX_TALK_BUFFER];	// name labelled text.
-	wTextName[0] = '\0';
-	NCHAR wTextGhost[MAX_TALK_BUFFER]; // ghost speak.
-	wTextGhost[0] = '\0';
-
-	// For things
-	bool fCanSee = false;
-	CChar * pChar = NULL;
-
 	ClientIterator it;
-	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next(), fCanSee = false, pChar = NULL)
+	for ( CClient *pClient = it.next(); pClient != NULL; pClient = it.next() )
 	{
-		if ( ! pClient->CanHear( pSrc, mode ))
+		if ( !pClient->CanHear(pSrc, mode) )
 			continue;
 
-		const NCHAR * pwSpeak = pwText;
-		pChar = pClient->GetChar();
-		
-		if ( pChar != NULL )
+		CChar *pChar = pClient->GetChar();
+
+		BYTE bFlags = SPEAKFLAG_NONE;
+		if ( fSpeakAsGhost && pChar && !pChar->CanUnderstandGhost() )
+			bFlags |= SPEAKFLAG_GHOST;
+		if ( !pClient->m_NetState->isClientEnhanced() && pSrc && !pChar->CanSee(pSrc) )
+			bFlags |= SPEAKFLAG_NAMED;
+
+		if ( bFlags & SPEAKFLAG_GHOST )
 		{
-			// Cansee?
-			fCanSee = pChar->CanSee( pSrc );
-
-			if ( fSpeakAsGhost && ! pChar->CanUnderstandGhost())
+			if ( szTextGhost[0] == '\0' )
 			{
-				if ( wTextGhost[0] == '\0' )	// Garble ghost.
+				size_t i;
+				for ( i = 0; (i < MAX_TALK_BUFFER - 1) && pszText[i]; ++i )
 				{
-					size_t i;
-					for ( i = 0; i < MAX_TALK_BUFFER - 1 && pwText[i]; ++i )
-					{
-						if ( pwText[i] != ' ' && pwText[i] != '\t' )
-							wTextGhost[i] = Calc_GetRandVal(2) ? 'O' : 'o';
-						else
-							wTextGhost[i] = pwText[i];
-					}
-					wTextGhost[i] = '\0';
-				}
-				pwSpeak = wTextGhost;
-
-				static const SOUND_TYPE sm_GhostSounds[] = { 0x17E, 0x17F, 0x180, 0x181, 0x182 };
-				pClient->addSound(sm_GhostSounds[Calc_GetRandVal(COUNTOF(sm_GhostSounds))], pSrc);
-			}
-			
-			// Must label the text.
-			if ( ! fCanSee && pSrc )
-			{
-				if ( wTextName[0] == '\0' )
-				{
-					CGString sTextName;
-					sTextName.Format("<%s>", pSrc->GetName());
-					int iLen = CvtSystemToNUNICODE( wTextName, COUNTOF(wTextName), sTextName, -1 );
-					if ( wTextGhost[0] != '\0' )
-					{
-						for ( size_t i = 0; wTextGhost[i] != '\0' && iLen < MAX_TALK_BUFFER; i++, iLen++ )
-						{
-							wTextName[iLen] = wTextGhost[i];
-						}
-					}
+					if ( (pszText[i] == ' ') || (pszText[i] == '\t') )
+						szTextGhost[i] = pszText[i];
 					else
-					{
-						for ( size_t i = 0; pwText[i] != 0 && iLen < MAX_TALK_BUFFER - 1; i++, iLen++ )
-						{
-							wTextName[iLen] = pwText[i];
-						}
-						wTextName[iLen] = '\0';
-					}
+						szTextGhost[i] = Calc_GetRandVal(2) ? 'O' : 'o';
 				}
-				pwSpeak = wTextName;
+				szTextGhost[i] = '\0';
 			}
-		}
 
-		if ( ! fCanSee && pSrc && pClient->IsPriv( PRIV_HEARALL|PRIV_DEBUG ))
-		{
-			if ( wTextUID[0] == '\0' )
+			pClient->addSound(static_cast<SOUND_TYPE>(Calc_GetRandVal2(0x17E, 0x182)), pSrc);
+			if ( !(bFlags & SPEAKFLAG_NAMED) )
 			{
-				TCHAR * pszMsg = Str_GetTemp();
-				sprintf(pszMsg, "<%s [%lx]>", pSrc->GetName(), static_cast<DWORD>(pSrc->GetUID()));
-				int iLen = CvtSystemToNUNICODE( wTextUID, COUNTOF(wTextUID), pszMsg, -1 );
-				for ( size_t i = 0; pwText[i] && iLen < MAX_TALK_BUFFER - 1; i++, iLen++ )
-				{
-					wTextUID[iLen] = pwText[i];
-				}
-				wTextUID[iLen] = '\0';
+				pClient->addBarkUNICODE(szTextGhost, pSrc, wHue, mode, font, lang);
+				return;
 			}
-			pwSpeak = wTextUID;
 		}
 
-		pClient->addBarkUNICODE( pwSpeak, pSrc, wHue, mode, font, lang );
+		if ( bFlags & SPEAKFLAG_NAMED )
+		{
+			if ( bFlags & SPEAKFLAG_GHOST )
+			{
+				if ( szTextGhostNamed[0] == '\0' )
+				{
+					CGString sName;
+					sName.Format("<%s>", pSrc->GetName());
+
+					int iLen = CvtSystemToNUNICODE(szTextGhostNamed, COUNTOF(szTextGhostNamed), sName, -1);
+					for ( size_t i = 0; (szTextGhost[i] != '\0') && (iLen < MAX_TALK_BUFFER - 1); ++i, ++iLen )
+						szTextGhostNamed[iLen] = szTextGhost[i];
+
+					szTextGhostNamed[iLen] = '\0';
+				}
+				pClient->addBarkUNICODE(szTextGhostNamed, pSrc, wHue, mode, font, lang);
+				return;
+			}
+			else
+			{
+				if ( szTextNamed[0] == '\0' )
+				{
+					CGString sName;
+					sName.Format("<%s>", pSrc->GetName());
+
+					int iLen = CvtSystemToNUNICODE(szTextNamed, COUNTOF(szTextNamed), sName, -1);
+					for ( size_t i = 0; (pszText[i] != '\0') && (iLen < MAX_TALK_BUFFER - 1); ++i, ++iLen )
+						szTextNamed[iLen] = pszText[i];
+
+					szTextNamed[iLen] = '\0';
+				}
+				pClient->addBarkUNICODE(szTextNamed, pSrc, wHue, mode, font, lang);
+				return;
+			}
+		}
+
+		pClient->addBarkUNICODE(pszText, pSrc, wHue, mode, font, lang);
 	}
 }
 

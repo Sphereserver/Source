@@ -51,7 +51,7 @@ bool CChar::TeleportToObj(int iType, TCHAR *pszArgs)
 			{
 				if ( !pObj->IsItem() )
 					continue;
-				CItem *pItem = dynamic_cast<CItem *>(pObj);
+				CItem *pItem = static_cast<CItem *>(pObj);
 				if ( !pItem->IsType(static_cast<IT_TYPE>(iArg)) )
 					continue;
 				break;
@@ -2007,14 +2007,9 @@ void CChar::SpeakUTF8(LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_T
 
 	if ( IsStatFlag(STATF_Stone) )
 		return;
-	if ( (mode == TALKMODE_YELL) && (GetPrivLevel() >= PLEVEL_Counsel) )
-		mode = TALKMODE_BROADCAST;		// GM broadcast (done if a GM yells something)
+	if ( (mode != TALKMODE_SPELL) && (g_Cfg.m_iRevealFlags & REVEALF_SPEAK) )
+		Reveal();
 
-	if ( mode != TALKMODE_SPELL )
-	{
-		if ( g_Cfg.m_iRevealFlags & REVEALF_SPEAK )
-			Reveal();
-	}
 	CObjBase::SpeakUTF8(pszText, wHue, mode, font, lang);
 }
 
@@ -2025,14 +2020,9 @@ void CChar::SpeakUTF8Ex(const NWORD *pszText, HUE_TYPE wHue, TALKMODE_TYPE mode,
 
 	if ( IsStatFlag(STATF_Stone) )
 		return;
-	if ( (mode == TALKMODE_YELL) && (GetPrivLevel() >= PLEVEL_Counsel) )
-		mode = TALKMODE_BROADCAST;		// GM broadcast (done if a GM yells something)
+	if ( (mode != TALKMODE_SPELL) && (g_Cfg.m_iRevealFlags & REVEALF_SPEAK) )
+		Reveal();
 
-	if ( mode != TALKMODE_SPELL )
-	{
-		if ( g_Cfg.m_iRevealFlags & REVEALF_SPEAK )
-			Reveal();
-	}
 	CObjBase::SpeakUTF8Ex(pszText, wHue, mode, font, lang);
 }
 
@@ -2043,14 +2033,9 @@ void CChar::Speak(LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE 
 
 	if ( IsStatFlag(STATF_Stone) )
 		return;
-	if ( (mode == TALKMODE_YELL) && (GetPrivLevel() >= PLEVEL_Counsel) )
-		mode = TALKMODE_BROADCAST;		// GM broadcast (done if a GM yells something)
+	if ( (mode != TALKMODE_SPELL) && (g_Cfg.m_iRevealFlags & REVEALF_SPEAK) )
+		Reveal();
 
-	if ( mode != TALKMODE_SPELL )
-	{
-		if ( g_Cfg.m_iRevealFlags & REVEALF_SPEAK )
-			Reveal();
-	}
 	CObjBase::Speak(pszText, wHue, mode, font);
 }
 

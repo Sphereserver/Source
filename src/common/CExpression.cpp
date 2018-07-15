@@ -989,7 +989,12 @@ INT64 CExpression::GetValMath(INT64 lVal, LPCTSTR &pszArgs)
 		case '@':
 		{
 			pszArgs++;
-			lVal = static_cast<INT64>(pow(lVal, GetVal(pszArgs)));
+			if ( lVal <= 0 )
+			{
+				DEBUG_ERR(("Exp_GetVal: Power of zero with negative base is undefined\n"));
+				break;
+			}
+			lVal = static_cast<INT64>(pow(static_cast<double>(lVal), static_cast<int>(GetVal(pszArgs))));
 			break;
 		}
 	}

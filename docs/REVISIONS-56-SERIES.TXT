@@ -1131,3 +1131,7 @@ Removed: Redundant DECREASEHITCHANCE property (to decrease hit chance, use negat
 04-07-2018, Coruja
 Added: Support for 'EquipLastWeapon' client macro.
 Changed: Reduced DClick/PickUp_Ground reachable distance [3 tiles -> 2 tiles] to match client internal DropOn_Ground distance.
+
+15-07-2018, Coruja
+Fixed: SAYU/SAYUA functions not inheriting char SPEECHCOLOR value correctly
+Changed: Yell ('! msg' client shortcut) on GM chars now will yell to all clients instead convert the message into 'broadcast'
