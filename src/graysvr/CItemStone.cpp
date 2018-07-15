@@ -1356,9 +1356,12 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 			break;
 		case ISV_TOGGLEABBREVIATION:
 			{
-				CGrayUID pMemberUid = pMember->GetLinkUID();
+				CGrayUID pMemberUid = static_cast<CGrayUID>(UID_CLEAR);
 				if ( s.HasArgs() )
 					pMemberUid = s.GetArgVal();
+				else if ( pMember )
+					pMemberUid = pMember->GetLinkUID();
+
 				CChar * pMemberChar = pMemberUid.CharFind();
 				if ( pMemberChar )
 				{

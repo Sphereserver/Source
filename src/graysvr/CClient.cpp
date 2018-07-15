@@ -10,9 +10,55 @@
 
 CClient::CClient(NetState *state)
 {
-	// This may be a web connection or Telnet?
-	m_NetState = state;
+	m_pChar = NULL;
+
+	m_Env.SetInvalid();
+
+	m_fUpdateStats = 0;
+
+	m_iWalkTimeAvg = 100;
+	m_iWalkStepCount = 0;
+	m_timeWalkStep = GetTickCount64();
+
+	m_ScreenSize.x = m_ScreenSize.y = 0;
+
+	m_Prompt_Mode = CLIMODE_NORMAL;
+
 	SetConnectType(CONNECT_UNK);	// don't know what sort of connect this is yet
+	m_NetState = state;
+	m_pAccount = NULL;
+
+	m_FeatureFlags = 0;
+	m_CharacterListFlags = 0;
+	m_TooltipEnabled = false;
+	m_ContainerGridEnabled = false;
+	m_UseNewChatSystem = false;
+
+	m_timeLogin.Init();
+	m_timeLastEvent = CServTime::GetCurrentTime();
+	m_timeLastEventItemPickup = CServTime::GetCurrentTime();
+	m_timeLastEventWalk = CServTime::GetCurrentTime();
+	m_timeNextEventWalk = 0;
+
+	m_pGMPage = NULL;
+
+	m_timeLastSkillThrowing.Init();
+	m_pSkillThrowingTarg = NULL;
+	m_SkillThrowingAnimID = ITEMID_NOTHING;
+	m_SkillThrowingAnimHue = 0;
+	m_SkillThrowingAnimRender = 0;
+
+	m_Targ_Mode = CLIMODE_SETUP_CONNECTING;
+	m_Targ_Timeout.Init();
+
+	m_Crypt.SetClientVer(g_Serv.m_ClientVersion);
+
+	m_pPopupPacket = NULL;
+
+	m_zLastMessage[0] = 0;
+	m_zLastObjMessage[0] = 0;
+
+	m_pHouseDesign = NULL;
 
 	// Update IP history
 #ifdef _MTNETWORK
@@ -23,39 +69,7 @@ CClient::CClient(NetState *state)
 	history.m_connecting++;
 	history.m_connected++;
 
-	m_Crypt.SetClientVer(g_Serv.m_ClientVersion);
-	m_pAccount = NULL;
-	m_pChar = NULL;
-	m_pGMPage = NULL;
-
-	m_timeLogin.Init();
-	m_timeLastEvent = CServTime::GetCurrentTime();
-	m_timeLastEventItemPickup = CServTime::GetCurrentTime();
-	m_timeLastEventWalk = CServTime::GetCurrentTime();
-	m_timeNextEventWalk = 0;
-
-	m_timeLastSkillThrowing.Init();
-	m_pSkillThrowingTarg = NULL;
-
-	m_iWalkStepCount = 0;
-	m_iWalkTimeAvg = 100;
-	m_timeWalkStep = GetTickCount64();
-
-	m_Targ_Timeout.Init();
-	m_Targ_Mode = CLIMODE_SETUP_CONNECTING;
-	m_Prompt_Mode = CLIMODE_NORMAL;
-
-	m_Env.SetInvalid();
-
 	g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Client connected [Total:%lu] ('%s' %ld/%ld)\n", GetSocketID(), g_Serv.StatGet(SERV_STAT_CLIENTS), GetPeerStr(), history.m_connecting, history.m_connected);
-
-	m_zLastMessage[0] = 0;
-	m_zLastObjMessage[0] = 0;
-
-	m_ScreenSize.x = m_ScreenSize.y = 0;
-	m_pPopupPacket = NULL;
-	m_pHouseDesign = NULL;
-	m_fUpdateStats = 0;
 }
 
 CClient::~CClient()
@@ -84,7 +98,7 @@ CClient::~CClient()
 		m_pAccount = NULL;
 	}
 
-	if ( m_pPopupPacket != NULL )
+	if ( m_pPopupPacket )
 	{
 		delete m_pPopupPacket;
 		m_pPopupPacket = NULL;
@@ -417,7 +431,6 @@ void CClient::UpdateFeatureFlags()
 	m_FeatureFlags = 0;
 
 	// Expansion features
-	m_FeatureFlags = 0;
 	if ( iResDisp >= RDS_T2A )
 	{
 		if ( g_Cfg.m_iFeatureT2A & FEATURE_T2A_UPDATE )
@@ -1070,7 +1083,7 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 				DEBUG_ERR(("Bad AddContextEntry usage: Function takes maximum of 4 arguments!\n"));
 				return true;
 			}
-			if ( m_pPopupPacket == NULL )
+			if ( !m_pPopupPacket )
 			{
 				DEBUG_ERR(("Bad AddContextEntry usage: Not used under a @ContextMenuRequest/@itemContextMenuRequest trigger!\n"));
 				return true;

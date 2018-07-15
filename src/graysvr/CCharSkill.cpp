@@ -49,7 +49,9 @@ void CChar::Action_StartSpecial(CREID_TYPE id)
 void CChar::Stat_AddMod(STAT_TYPE i, int iVal)
 {
 	ADDTOCALLSTACK("CChar::Stat_AddMod");
-	ASSERT((i >= STAT_STR) && (i < STAT_QTY));
+	if ( (i < STAT_STR) || (i >= STAT_QTY) )
+		return;
+
 	m_Stat[i].m_mod += iVal;
 
 	int iMaxValue = Stat_GetMax(i);		// make sure the current value is not higher than new max value
@@ -62,7 +64,8 @@ void CChar::Stat_AddMod(STAT_TYPE i, int iVal)
 void CChar::Stat_SetMod(STAT_TYPE i, int iVal)
 {
 	ADDTOCALLSTACK("CChar::Stat_SetMod");
-	ASSERT((i >= STAT_STR) && (i < STAT_QTY));
+	if ( (i < STAT_STR) || (i >= STAT_QTY) )
+		return;
 	if ( iVal > USHRT_MAX )
 		iVal = USHRT_MAX;
 	else if ( iVal < -USHRT_MAX )
@@ -111,40 +114,45 @@ void CChar::Stat_SetMod(STAT_TYPE i, int iVal)
 int CChar::Stat_GetMod(STAT_TYPE i) const
 {
 	ADDTOCALLSTACK("CChar::Stat_GetMod");
-	ASSERT((i >= STAT_STR) && (i < STAT_QTY));
+	if ( (i < STAT_STR) || (i >= STAT_QTY) )
+		return 0;
+
 	return m_Stat[i].m_mod;
 }
 
 void CChar::Stat_SetVal(STAT_TYPE i, int iVal)
 {
 	ADDTOCALLSTACK("CChar::Stat_SetVal");
+	if ( (i < STAT_STR) || (i >= STAT_QTY) )
+		return;
 	if ( iVal > USHRT_MAX )
 		iVal = USHRT_MAX;
 	else if ( iVal < -USHRT_MAX )
 		iVal = -USHRT_MAX;
 
-	if ( (i > STAT_BASE_QTY) || (i == STAT_FOOD) )	// food must trigger Statchange. Redirect to Base value
+	if ( i >= STAT_BASE_QTY )	// food must trigger @StatChange, redirect to base value
 	{
 		Stat_SetBase(i, iVal);
 		return;
 	}
-	ASSERT((i >= STAT_STR) && (i < STAT_QTY));
 	m_Stat[i].m_val = iVal;
 }
 
 int CChar::Stat_GetVal(STAT_TYPE i) const
 {
 	ADDTOCALLSTACK("CChar::Stat_GetVal");
-	if ( (i > STAT_BASE_QTY) || (i == STAT_FOOD) )	// food must trigger Statchange. Redirect to Base value
+	if ( (i < STAT_STR) || (i >= STAT_QTY) )
+		return 0;
+	if ( i >= STAT_BASE_QTY )	// food must trigger @StatChange, redirect to base value
 		return Stat_GetBase(i);
-	ASSERT((i >= STAT_STR) && (i < STAT_QTY));
 	return m_Stat[i].m_val;
 }
 
 void CChar::Stat_SetMax(STAT_TYPE i, int iVal)
 {
 	ADDTOCALLSTACK("CChar::Stat_SetMax");
-	ASSERT((i >= STAT_STR) && (i < STAT_QTY));
+	if ( (i < STAT_STR) || (i >= STAT_QTY) )
+		return;
 	if ( iVal > USHRT_MAX )
 		iVal = USHRT_MAX;
 	else if ( iVal < -USHRT_MAX )
@@ -186,7 +194,9 @@ void CChar::Stat_SetMax(STAT_TYPE i, int iVal)
 int CChar::Stat_GetMax(STAT_TYPE i) const
 {
 	ADDTOCALLSTACK("CChar::Stat_GetMax");
-	ASSERT((i >= STAT_STR) && (i < STAT_QTY));
+	if ( (i < STAT_STR) || (i >= STAT_QTY) )
+		return 0;
+
 	int iVal;
 	if ( m_Stat[i].m_max < 1 )
 	{
@@ -244,9 +254,9 @@ int CChar::Stat_GetAdjusted(STAT_TYPE i) const
 int CChar::Stat_GetBase(STAT_TYPE i) const
 {
 	ADDTOCALLSTACK("CChar::Stat_GetBase");
-	ASSERT((i >= STAT_STR) && (i < STAT_QTY));
-
-	if ( (i == STAT_FAME) && (m_Stat[i].m_base < 0) )
+	if ( (i < STAT_STR) || (i >= STAT_QTY) )
+		return 0;
+	if ( (i == STAT_FAME) && (m_Stat[i].m_base < 0) )	// fame can't be negative
 		return 0;
 	return m_Stat[i].m_base;
 }
@@ -254,7 +264,8 @@ int CChar::Stat_GetBase(STAT_TYPE i) const
 void CChar::Stat_SetBase(STAT_TYPE i, int iVal)
 {
 	ADDTOCALLSTACK("CChar::Stat_SetBase");
-	ASSERT((i >= STAT_STR) && (i < STAT_QTY));
+	if ( (i < STAT_STR) || (i >= STAT_QTY) )
+		return;
 	if ( iVal > USHRT_MAX )
 		iVal = USHRT_MAX;
 	else if ( iVal < -USHRT_MAX )

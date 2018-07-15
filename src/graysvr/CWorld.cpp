@@ -2201,13 +2201,13 @@ void CWorld::Speak(const CObjBaseTemplate *pSrc, LPCTSTR pszText, HUE_TYPE wHue,
 	ClientIterator it;
 	for ( CClient *pClient = it.next(); pClient != NULL; pClient = it.next() )
 	{
-		if ( !pClient->CanHear(pSrc, mode) )
+		CChar *pChar = pClient->GetChar();
+		if ( !pChar || !pClient->CanHear(pSrc, mode) )
 			continue;
 
-		CChar *pChar = pClient->GetChar();
 		CGString sSpeak = pszText;
 
-		if ( fSpeakAsGhost && pChar && !pChar->CanUnderstandGhost() )
+		if ( fSpeakAsGhost && !pChar->CanUnderstandGhost() )
 		{
 			if ( sTextGhost.IsEmpty() )
 			{
@@ -2264,13 +2264,12 @@ void CWorld::SpeakUNICODE(const CObjBaseTemplate *pSrc, const NCHAR *pszText, HU
 	ClientIterator it;
 	for ( CClient *pClient = it.next(); pClient != NULL; pClient = it.next() )
 	{
-		if ( !pClient->CanHear(pSrc, mode) )
+		CChar *pChar = pClient->GetChar();
+		if ( !pChar || !pClient->CanHear(pSrc, mode) )
 			continue;
 
-		CChar *pChar = pClient->GetChar();
-
 		BYTE bFlags = SPEAKFLAG_NONE;
-		if ( fSpeakAsGhost && pChar && !pChar->CanUnderstandGhost() )
+		if ( fSpeakAsGhost && !pChar->CanUnderstandGhost() )
 			bFlags |= SPEAKFLAG_GHOST;
 		if ( !pClient->m_NetState->isClientEnhanced() && pSrc && !pChar->CanSee(pSrc) )
 			bFlags |= SPEAKFLAG_NAMED;
@@ -2282,10 +2281,10 @@ void CWorld::SpeakUNICODE(const CObjBaseTemplate *pSrc, const NCHAR *pszText, HU
 				size_t i;
 				for ( i = 0; (i < MAX_TALK_BUFFER - 1) && pszText[i]; ++i )
 				{
-					if ( (pszText[i] == ' ') || (pszText[i] == '\t') )
-						szTextGhost[i] = pszText[i];
-					else
+					if ( (pszText[i] != ' ') && (pszText[i] != '\t') )
 						szTextGhost[i] = Calc_GetRandVal(2) ? 'O' : 'o';
+					else
+						szTextGhost[i] = pszText[i];
 				}
 				szTextGhost[i] = '\0';
 			}

@@ -578,7 +578,7 @@ bool CItem::Plant_OnTick()
 			{
 				CItem *pItemFruit = CItem::CreateScript(iFruitID);
 				ASSERT(pItemFruit);
-				pItemFruit->MoveToDecay(GetTopPoint(), static_cast<INT64>(g_Cfg.m_iDecay_Item * 10));
+				pItemFruit->MoveToDecay(GetTopPoint(), static_cast<INT64>(g_Cfg.m_iDecay_Item) * 10);
 				break;
 			}
 			if ( pItem->IsType(IT_FRUIT) || pItem->IsType(IT_REAGENT_RAW) )
