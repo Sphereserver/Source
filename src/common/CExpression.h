@@ -1,5 +1,5 @@
-#ifndef _INC_CEXPRSSION_H
-#define _INC_CEXPRSSION_H
+#ifndef _INC_CEXPRESSION_H
+#define _INC_CEXPRESSION_H
 #pragma once
 
 #define _ISCSYMF(ch) (IsAlpha(ch) || (ch == '_'))	// __iscsym or __iscsymf
@@ -110,9 +110,9 @@ public:
 		return GetRange(const_cast<LPCTSTR &>(pszArgs));
 	}
 
-	// Evaluate using the stuff we know.
+	// Evaluate using the stuff we know
 	INT64 GetSingle(LPCTSTR &pszArgs);
-	INT64 GetValMath(INT64 lVal, LPCTSTR &pszArgs);
+	INT64 GetValMath(INT64 iVal, LPCTSTR &pszArgs);
 	INT64 GetVal(LPCTSTR &pszArgs);
 	int GetRangeVals(LPCTSTR &pszArgs, INT64 *piVals, int iMaxQty);
 	INT64 GetRange(LPCTSTR &pszArgs);
@@ -126,24 +126,23 @@ private:
 	CExpression &operator=(const CExpression &other);
 } g_Exp;
 
-inline extern bool IsCharNumeric(char &Test);
-extern bool IsStrEmpty(LPCTSTR pszTest);
-extern bool IsStrNumericDec(LPCTSTR pszTest);
-extern bool IsStrNumeric(LPCTSTR pszTest);
-extern bool IsSimpleNumberString(LPCTSTR pszTest);
-extern bool IsValidDef(LPCTSTR pszTest);
-extern bool IsValidGameObjDef(LPCTSTR pszTest);
+extern bool IsStrEmpty(LPCTSTR pszArgs);
+extern bool IsStrNumericDec(LPCTSTR pszArgs);
+extern bool IsStrNumeric(LPCTSTR pszArgs);
+extern bool IsSimpleNumberString(LPCTSTR pszArgs);
+extern bool IsValidDef(LPCTSTR pszArgs);
+extern bool IsValidGameObjDef(LPCTSTR pszArgs);
 
 // Numeric formulas
-extern int Calc_GetLog2(UINT iVal);
-extern int Calc_GetRandVal(int iQty);
+extern int Calc_GetLog2(UINT uVal);
+extern int Calc_GetRandVal(int iVal);
 extern int Calc_GetRandVal2(int iMin, int iMax);
-extern INT64 Calc_GetRandLLVal(INT64 iQty);
+extern INT64 Calc_GetRandLLVal(INT64 iVal);
 extern INT64 Calc_GetRandLLVal2(INT64 iMin, INT64 iMax);
-extern int Calc_GetBellCurve(int iValDiff, int iVariance);
-extern int Calc_GetSCurve(int iValDiff, int iVariance);
+extern int Calc_GetBellCurve(int iMean, int iVariance);
+extern int Calc_GetSCurve(int iMean, int iVariance);
 
-extern DWORD ahextoi(LPCTSTR pszArgs);		// convert hex string to int
+extern int ahextoi(LPCTSTR pszArgs);		// convert hex string to int
 extern INT64 ahextoi64(LPCTSTR pszArgs);	// convert hex string to int64
 
 #define Exp_GetSingle(pa)	static_cast<int>(g_Exp.GetSingle(pa))
@@ -152,4 +151,4 @@ extern INT64 ahextoi64(LPCTSTR pszArgs);	// convert hex string to int64
 #define Exp_GetLLVal(pa)	g_Exp.GetVal(pa)
 #define Exp_GetRange(pa)	g_Exp.GetRange(pa)
 
-#endif	// _INC_CEXPRSSION_H
+#endif	// _INC_CEXPRESSION_H

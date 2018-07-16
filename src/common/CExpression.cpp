@@ -13,205 +13,193 @@ LPCTSTR const CExpression::sm_szMsgNames[DEFMSG_QTY] =
 	#include "../tables/defmessages.tbl"
 };
 
-DWORD ahextoi(LPCTSTR pszArgs)	// convert hex string to int
+int ahextoi(LPCTSTR pszArgs)	// convert hex string to int
 {
-	// Unfortunately the library func can't handle the number 0xFFFFFFFF
-	// TCHAR *sstop; return strtol(s, &sstop, 16);
+	// Unfortunately the library func can't handle UINT_MAX
+	//TCHAR *pszEnd; return strtol(s, &pszEnd, 16);
 
-	if ( pszArgs == NULL )
+	if ( !pszArgs )
 		return 0;
 
 	GETNONWHITESPACE(pszArgs);
 
-	bool bHex = false;
+	bool fHex = false;
 	if ( *pszArgs == '0' )
 	{
 		if ( *++pszArgs != '.' )
-			bHex = true;
-		pszArgs--;
+			fHex = true;
+		--pszArgs;
 	}
 
-	DWORD val = 0;
+	int iVal = 0;
 	for (;;)
 	{
 		TCHAR ch = static_cast<TCHAR>(toupper(*pszArgs));
 		if ( IsDigit(ch) )
 			ch -= '0';
-		else if ( bHex && (ch >= 'A') && (ch <= 'F') )
+		else if ( fHex && (ch >= 'A') && (ch <= 'F') )
 			ch -= 'A' - 10;
-		else if ( !bHex && (ch == '.') )
+		else if ( !fHex && (ch == '.') )
 		{
-			pszArgs++;
+			++pszArgs;
 			continue;
 		}
 		else
 			break;
 
-		val *= (bHex ? 0x10 : 10);
-		val += ch;
-		pszArgs++;
+		iVal *= (fHex ? 0x10 : 10);
+		iVal += ch;
+		++pszArgs;
 	}
-	return val;
+	return iVal;
 }
 
-INT64 ahextoi64(LPCTSTR pszArgs)		// convert hex string to int64
+INT64 ahextoi64(LPCTSTR pszArgs)	// convert hex string to int64
 {
-	if ( pszArgs == NULL )
+	if ( !pszArgs )
 		return 0;
 
 	GETNONWHITESPACE(pszArgs);
 
-	bool bHex = false;
+	bool fHex = false;
 	if ( *pszArgs == '0' )
 	{
 		if ( *++pszArgs != '.' )
-			bHex = true;
-		pszArgs--;
+			fHex = true;
+		--pszArgs;
 	}
 
-	INT64 val = 0;
+	INT64 iVal = 0;
 	for (;;)
 	{
 		TCHAR ch = static_cast<TCHAR>(toupper(*pszArgs));
 		if ( IsDigit(ch) )
 			ch -= '0';
-		else if ( bHex && (ch >= 'A') && (ch <= 'F') )
+		else if ( fHex && (ch >= 'A') && (ch <= 'F') )
 			ch -= 'A' - 10;
-		else if ( !bHex && (ch == '.') )
+		else if ( !fHex && (ch == '.') )
 		{
-			pszArgs++;
+			++pszArgs;
 			continue;
 		}
 		else
 			break;
 
-		val *= (bHex ? 0x10 : 10);
-		val += ch;
-		pszArgs++;
+		iVal *= (fHex ? 0x10 : 10);
+		iVal += ch;
+		++pszArgs;
 	}
-	return val;
+	return iVal;
 }
 
-inline bool IsCharNumeric(char &Test)
+bool IsStrEmpty(LPCTSTR pszArgs)
 {
-	if ( !Test )
-		return false;
-	if ( IsDigit(Test) )
-		return true;
-	if ( (tolower(Test) >= 'a') && (tolower(Test) <= 'f') )
-		return true;
-
-	return false;
-}
-
-bool IsStrEmpty(LPCTSTR pszTest)
-{
-	if ( !pszTest || !*pszTest )
+	if ( !pszArgs || !*pszArgs )
 		return true;
 
 	do
 	{
-		if ( !IsSpace(*pszTest) )
+		if ( !IsSpace(*pszArgs) )
 			return false;
-	} while ( *(++pszTest) );
+	} while ( *(++pszArgs) );
 
 	return true;
 }
 
-bool IsStrNumericDec(LPCTSTR pszTest)
+bool IsStrNumericDec(LPCTSTR pszArgs)
 {
-	if ( !pszTest || !*pszTest )
+	if ( !pszArgs || !*pszArgs )
 		return false;
 
 	do
 	{
-		if ( !IsDigit(*pszTest) )
+		if ( !IsDigit(*pszArgs) )
 			return false;
-	} while ( *(++pszTest) );
+	} while ( *(++pszArgs) );
 
 	return true;
 }
 
 
-bool IsStrNumeric(LPCTSTR pszTest)
+bool IsStrNumeric(LPCTSTR pszArgs)
 {
-	if ( !pszTest || !*pszTest )
+	if ( !pszArgs || !*pszArgs )
 		return false;
 
-	bool bHex = false;
-	if ( pszTest[0] == '0' )
-		bHex = true;
+	bool fHex = false;
+	if ( pszArgs[0] == '0' )
+		fHex = true;
 
 	do
 	{
-		if ( IsDigit(*pszTest) )
+		if ( IsDigit(*pszArgs) )
 			continue;
-		if ( bHex && (tolower(*pszTest) >= 'a') && (tolower(*pszTest) <= 'f') )
+		if ( fHex && (tolower(*pszArgs) >= 'a') && (tolower(*pszArgs) <= 'f') )
 			continue;
 		return false;
-	} while ( *(++pszTest) );
+	} while ( *(++pszArgs) );
 
 	return true;
 }
 
-bool IsSimpleNumberString(LPCTSTR pszTest)
+bool IsSimpleNumberString(LPCTSTR pszArgs)
 {
-	// is this a string or a simple numeric expression ?
-	// string = 1 2 3, sdf, sdf sdf sdf, 123d, 123 d,
-	// number = 1.0+-\*~|&!%^()2, 0aed, 123
+	// Is this a string or a simple numeric expression?
+	// String = '1 2 3', 'sdf', 'sdf sdf sdf', '123d', '123 d'
+	// Number = '1.0+-\*~|&!%^()2', '0aed', '123'
 
-	bool bMathSep = true;	// last non whitespace was a math sep.
-	bool bHextDigitStart = false;
-	bool bWhiteSpace = false;
+	bool fMathSep = true;	// last non whitespace was a math sep
+	bool fHextDigitStart = false;
+	bool fWhiteSpace = false;
 
-	for ( ; ; pszTest++ )
+	for ( ; ; ++pszArgs )
 	{
-		TCHAR ch = *pszTest;
+		TCHAR ch = *pszArgs;
 		if ( !ch )
 			return true;
 
 		if ( ((ch >= 'A') && (ch <= 'F')) || ((ch >= 'a') && (ch <= 'f')) )	// isxdigit
 		{
-			if ( !bHextDigitStart )
+			if ( !fHextDigitStart )
 				return false;
-			bWhiteSpace = false;
-			bMathSep = false;
+			fWhiteSpace = false;
+			fMathSep = false;
 			continue;
 		}
 		if ( IsSpace(ch) )
 		{
-			bHextDigitStart = false;
-			bWhiteSpace = true;
+			fHextDigitStart = false;
+			fWhiteSpace = true;
 			continue;
 		}
 		if ( IsDigit(ch) )
 		{
-			if ( bWhiteSpace && !bMathSep )
+			if ( fWhiteSpace && !fMathSep )
 				return false;
 			if ( ch == '0' )
-				bHextDigitStart = true;
-			bWhiteSpace = false;
-			bMathSep = false;
+				fHextDigitStart = true;
+			fWhiteSpace = false;
+			fMathSep = false;
 			continue;
 		}
-		if ( (ch == '/') && (pszTest[1] != '/') )
-			bMathSep = true;
+		if ( (ch == '/') && (pszArgs[1] != '/') )
+			fMathSep = true;
 		else
-			bMathSep = strchr("+-\\*~|&!%^()", ch) ? true : false;
+			fMathSep = strchr("+-\\*~|&!%^()", ch) ? true : false;
 
-		if ( !bMathSep )
+		if ( !fMathSep )
 			return false;
 
-		bHextDigitStart = false;
-		bWhiteSpace = false;
+		fHextDigitStart = false;
+		fWhiteSpace = false;
 	}
 }
 
 static size_t GetIdentifierString(TCHAR *szTag, LPCTSTR pszArgs)
 {
-	// Copy the identifier (valid char set) out to this buffer.
+	// Copy the identifier (valid char set) out to this buffer
 	size_t i = 0;
-	for ( ; pszArgs[i]; i++ )
+	for ( ; pszArgs[i]; ++i )
 	{
 		if ( !_ISCSYM(pszArgs[i]) )
 			break;
@@ -223,24 +211,24 @@ static size_t GetIdentifierString(TCHAR *szTag, LPCTSTR pszArgs)
 	return i;
 }
 
-bool IsValidDef(LPCTSTR pszTest)
+bool IsValidDef(LPCTSTR pszArgs)
 {
-	CVarDefCont *pVarBase = g_Exp.m_VarDefs.CheckParseKey(pszTest);
+	CVarDefCont *pVarBase = g_Exp.m_VarDefs.CheckParseKey(pszArgs);
 	if ( !pVarBase )
 	{
-		//check VAR.X also
-		pVarBase = g_Exp.m_VarGlobals.CheckParseKey(pszTest);
+		// Check VAR.X also
+		pVarBase = g_Exp.m_VarGlobals.CheckParseKey(pszArgs);
 		if ( !pVarBase )
 			return false;
 	}
 	return true;
 }
 
-bool IsValidGameObjDef(LPCTSTR pszTest)
+bool IsValidGameObjDef(LPCTSTR pszArgs)
 {
-	if ( !IsSimpleNumberString(pszTest) )
+	if ( !IsSimpleNumberString(pszArgs) )
 	{
-		CVarDefCont *pVarBase = g_Exp.m_VarDefs.CheckParseKey(pszTest);
+		CVarDefCont *pVarBase = g_Exp.m_VarDefs.CheckParseKey(pszArgs);
 		if ( !pVarBase )
 			return false;
 
@@ -248,7 +236,7 @@ bool IsValidGameObjDef(LPCTSTR pszTest)
 		if ( !ch || (ch == '<') )
 			return false;
 
-		RESOURCE_ID rid = g_Cfg.ResourceGetID(RES_QTY, pszTest);
+		RESOURCE_ID rid = g_Cfg.ResourceGetID(RES_QTY, pszArgs);
 		if ( (rid.GetResType() != RES_CHARDEF) && (rid.GetResType() != RES_ITEMDEF) && (rid.GetResType() != RES_SPAWN) && (rid.GetResType() != RES_TEMPLATE) )
 			return false;
 	}
@@ -258,63 +246,63 @@ bool IsValidGameObjDef(LPCTSTR pszTest)
 ///////////////////////////////////////////////////////////
 // Numeric formulas
 
-int Calc_GetLog2(UINT iVal)
+int Calc_GetLog2(UINT uVal)
 {
 	// This is really log2 + 1
 	int i = 0;
-	for ( ; iVal; i++ )
+	for ( ; uVal; ++i )
 	{
 		ASSERT(i < 32);
-		iVal >>= 1;
+		uVal >>= 1;
 	}
 	return i;
 }
 
-int Calc_GetRandVal(int iQty)
+int Calc_GetRandVal(int iVal)
 {
-	if ( iQty <= 0 )
+	if ( iVal <= 0 )
 		return 0;
-	if ( iQty >= INT_MAX )
-		return IMULDIV(g_World.m_Rand.randInt(), static_cast<DWORD>(iQty), INT_MAX);
+	if ( iVal >= INT_MAX )
+		return IMULDIV(g_World.m_Rand.randInt(), static_cast<DWORD>(iVal), INT_MAX);
 
-	return g_World.m_Rand.randInt() % iQty;
+	return g_World.m_Rand.randInt() % iVal;
 }
 
 int Calc_GetRandVal2(int iMin, int iMax)
 {
 	if ( iMin > iMax )
 	{
-		int tmp = iMin;
+		int iTemp = iMin;
 		iMin = iMax;
-		iMax = tmp;
+		iMax = iTemp;
 	}
 	return iMin + g_World.m_Rand.randInt() % ((iMax - iMin) + 1);
 }
 
-INT64 Calc_GetRandLLVal(INT64 iQty)
+INT64 Calc_GetRandLLVal(INT64 iVal)
 {
-	if ( iQty <= 0 )
+	if ( iVal <= 0 )
 		return 0;
-	if ( iQty >= LLONG_MAX )
-		return IMULDIV(g_World.m_Rand.genrand64_int64(), static_cast<DWORD>(iQty), LLONG_MAX);
+	if ( iVal >= LLONG_MAX )
+		return IMULDIV(g_World.m_Rand.genrand64_int64(), static_cast<DWORD>(iVal), LLONG_MAX);
 
-	return g_World.m_Rand.genrand64_int64() % iQty;
+	return g_World.m_Rand.genrand64_int64() % iVal;
 }
 
 INT64 Calc_GetRandLLVal2(INT64 iMin, INT64 iMax)
 {
 	if ( iMin > iMax )
 	{
-		INT64 tmp = iMin;
+		INT64 iTemp = iMin;
 		iMin = iMax;
-		iMax = tmp;
+		iMax = iTemp;
 	}
 	return iMin + g_World.m_Rand.genrand64_int64() % ((iMax - iMin) + 1);
 }
 
-int Calc_GetBellCurve(int iValDiff, int iVariance)
+int Calc_GetBellCurve(int iMean, int iVariance)
 {
-	// Produce a log curve.
+	// Produce a log curve
 	//
 	// 50+
 	//	 |
@@ -325,49 +313,52 @@ int Calc_GetBellCurve(int iValDiff, int iVariance)
 	//	 |     +
 	//	 |        +
 	//	0 --+--+--+--+------
-	//    iVar				iValDiff
+	//    iVariance			iMean
 	//
 	// ARGS:
-	//   iValDiff = Given a value relative to 0
-	//     0 = 50.0% chance.
-	//   iVariance = the 25.0% point of the bell curve
+	//   iMean = Given a value relative to 0
+	//       Negative = lower chance
+	//       0 = 50% chance
+	//       Positive = higher chance
+	//   iVariance = the 25% point of the bell curve
 	// RETURN:
-	//   (0-100.0) % chance at this iValDiff.
-	//   Chance gets smaller as Diff gets bigger.
+	//   0-100 (%) = chance at this iMean
+	//   Chance gets smaller as difference gets bigger
 	// EXAMPLE:
-	//   if ( iValDiff == iVariance ) return 250
-	//   if ( iValDiff == 0 ) return 500
+	//   if ( iMean == iVariance ) return 250
+	//   if ( iMean == 0 ) return 500
 
-	if ( iVariance <= 0 )	// this really should not happen but just in case.
+	if ( iVariance <= 0 )	// this really should not happen but just in case
 		return 500;
 
-	if ( iValDiff < 0 )
-		iValDiff = -iValDiff;
+	if ( iMean < 0 )
+		iMean = -iMean;
 
 	int iChance = 500;
-	while ( (iValDiff > iVariance) && iChance )
+	while ( (iMean > iVariance) && iChance )
 	{
-		iValDiff -= iVariance;
-		iChance /= 2;	// chance is halved for each Variance period.
+		iMean -= iVariance;
+		iChance /= 2;	// chance is halved for each variance period
 	}
 
-	return iChance - IMULDIV(iChance / 2, iValDiff, iVariance);
+	return iChance - IMULDIV(iChance / 2, iMean, iVariance);
 }
 
-int Calc_GetSCurve(int iValDiff, int iVariance)
+int Calc_GetSCurve(int iMean, int iVariance)
 {
 	// ARGS:
-	//   iValDiff = Difference between our skill level and difficulty.
-	//     positive = high chance, negative = lower chance
-	//     0 = 50.0% chance.
-	//   iVariance = the 25.0% difference point of the bell curve
+	//   iMean = Difference between our skill level and difficulty
+	//       Negative = lower chance
+	//       0 = 50% chance
+	//       Positive = higher chance
+	//   iVariance = the 25% difference point of the bell curve
 	// RETURN:
-	//   What is the (0-100.0)% chance of success = 0-1000
+	//   0-1000 (%) = chance of success
 	// NOTE:
-	//   Chance of skill gain is inverse to chance of success.
+	//   Chance of skill gain is inverse to chance of success
 
-	int iChance = Calc_GetBellCurve(iValDiff, iVariance);
-	if ( iValDiff > 0 )
+	int iChance = Calc_GetBellCurve(iMean, iVariance);
+	if ( iMean > 0 )
 		return 1000 - iChance;
 	return iChance;
 }
@@ -387,17 +378,19 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 {
 	ADDTOCALLSTACK("CExpression::GetSingle");
 	// Parse just a single expression without any operators or ranges.
-	ASSERT(pszArgs);
+	if ( !pszArgs )
+		return 0;
+
 	GETNONWHITESPACE(pszArgs);
 
 	LPCTSTR orig = pszArgs;
 	if ( pszArgs[0] == '.' )
-		pszArgs++;
+		++pszArgs;
 
-	if ( pszArgs[0] == '0' )	// leading '0' = hex value.
+	if ( pszArgs[0] == '0' )	// leading '0' = hex value
 	{
-		// A hex value.
-		if ( pszArgs[1] == '.' )	// leading 0. means it really is decimal.
+		// Hex value
+		if ( pszArgs[1] == '.' )	// leading '0.' = decimal value
 		{
 			pszArgs += 2;
 			goto try_dec;
@@ -415,7 +408,7 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 				ch = static_cast<TCHAR>(tolower(ch));
 				if ( (ch > 'f') || (ch < 'a') )
 				{
-					if ( (ch == '.') && (pStart[0] != '0') )	// ok i'm confused. it must be decimal.
+					if ( (ch == '.') && (pStart[0] != '0') )	// ok I'm confused, it must be decimal
 					{
 						pszArgs = pStart;
 						goto try_dec;
@@ -426,19 +419,19 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 			}
 			iVal *= 0x10;
 			iVal += ch;
-			pszArgs++;
+			++pszArgs;
 		}
 		return iVal;
 	}
 	else if ( (pszArgs[0] == '.') || IsDigit(pszArgs[0]) )
 	{
-		// A decminal number
+		// Decimal value
 	try_dec:
 		INT64 iVal = 0;
-		for ( ; ; pszArgs++ )
+		for ( ; ; ++pszArgs )
 		{
 			if ( *pszArgs == '.' )
-				continue;	// just skip this.
+				continue;	// just skip this
 			if ( !IsDigit(*pszArgs) )
 				break;
 			iVal *= 10;
@@ -449,35 +442,35 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 	else if ( !_ISCSYMF(pszArgs[0]) )
 	{
 #pragma region maths
-		// some sort of math op ?
+		// Some sort of math operator?
 		switch ( pszArgs[0] )
 		{
 			case '{':
-				pszArgs++;
+				++pszArgs;
 				return GetRange(pszArgs);
 			case '[':
-			case '(': // Parse out a sub expression.
-				pszArgs++;
+			case '(':	// parse out a sub expression
+				++pszArgs;
 				return GetVal(pszArgs);
 			case '+':
-				pszArgs++;
+				++pszArgs;
 				break;
 			case '-':
-				pszArgs++;
+				++pszArgs;
 				return -GetSingle(pszArgs);
-			case '~':	// Bitwise not.
-				pszArgs++;
+			case '~':	// bitwise 'not'
+				++pszArgs;
 				return ~GetSingle(pszArgs);
-			case '!':	// boolean not.
-				pszArgs++;
-				if ( pszArgs[0] == '=' )	// odd condition such as (!=x) which is always true of course.
+			case '!':	// boolean 'not'
+				++pszArgs;
+				if ( pszArgs[0] == '=' )	// odd condition such as (!=x) which is always true of course
 				{
-					pszArgs++;		// so just skip it. and compare it to 0
+					++pszArgs;		// so just skip and compare it to 0
 					return GetSingle(pszArgs);
 				}
 				return !GetSingle(pszArgs);
-			case ';':	// seperate field.
-			case ',':	// seperate field.
+			case ';':	// seperator field
+			case ',':	// seperator field
 			case '\0':
 				return 0;
 		}
@@ -486,7 +479,7 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 	else
 #pragma region intrinsics
 	{
-		// Symbol or intrinsinc function ?
+		// Symbol or intrinsinc function?
 		int index = FindTableHeadSorted(pszArgs, sm_IntrinsicFunctions, COUNTOF(sm_IntrinsicFunctions) - 1);
 		if ( index >= 0 )
 		{
@@ -510,7 +503,7 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 					}
 					case INTRINSIC_ARCCOS:
 					{
-						if ( pszArgs )
+						if ( pszArgs && *pszArgs )
 						{
 							iCount = 1;
 							iResult = static_cast<INT64>(acos(static_cast<double>(GetVal(pszArgs))));
@@ -524,7 +517,7 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 					}
 					case INTRINSIC_ARCSIN:
 					{
-						if ( pszArgs )
+						if ( pszArgs && *pszArgs )
 						{
 							iCount = 1;
 							iResult = static_cast<INT64>(asin(static_cast<double>(GetVal(pszArgs))));
@@ -538,7 +531,7 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 					}
 					case INTRINSIC_ARCTAN:
 					{
-						if ( pszArgs )
+						if ( pszArgs && *pszArgs )
 						{
 							iCount = 1;
 							iResult = static_cast<INT64>(atan(static_cast<double>(GetVal(pszArgs))));
@@ -552,7 +545,7 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 					}
 					case INTRINSIC_COS:
 					{
-						if ( pszArgs )
+						if ( pszArgs && *pszArgs )
 						{
 							iCount = 1;
 							iResult = static_cast<INT64>(cos(static_cast<double>(GetVal(pszArgs))));
@@ -566,7 +559,7 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 					}
 					case INTRINSIC_ID:
 					{
-						if ( pszArgs )
+						if ( pszArgs && *pszArgs )
 						{
 							iCount = 1;
 							iResult = RES_GET_INDEX(GetVal(pszArgs));
@@ -598,43 +591,43 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 						iCount = 0;
 						iResult = 0;
 
-						if ( pszArgs )
+						if ( pszArgs && *pszArgs )
 						{
-							INT64 iArgument = GetVal(pszArgs);
-							if ( iArgument <= 0 )
-								DEBUG_ERR(("Exp_GetVal: (x)Log(%lld) is %s\n", iArgument, !iArgument ? "infinite" : "undefined"));
+							INT64 iArgs = GetVal(pszArgs);
+							if ( iArgs <= 0 )
+								DEBUG_ERR(("Exp_GetVal: (x)Log(%lld) is %s\n", iArgs, !iArgs ? "infinite" : "undefined"));
 							else
 							{
 								iCount = 1;
 								if ( strchr(pszArgs, ',') )
 								{
-									iCount++;
+									++iCount;
 									SKIP_ARGSEP(pszArgs);
 									if ( !strcmpi(pszArgs, "e") )
-										iResult = static_cast<INT64>(log(static_cast<double>(iArgument)));
+										iResult = static_cast<INT64>(log(static_cast<double>(iArgs)));
 									else if ( !strcmpi(pszArgs, "pi") )
-										iResult = static_cast<INT64>(log(static_cast<double>(iArgument)) / log(M_PI));
+										iResult = static_cast<INT64>(log(static_cast<double>(iArgs)) / log(M_PI));
 									else
 									{
 										INT64 iBase = GetVal(pszArgs);
 										if ( iBase <= 0 )
 										{
-											DEBUG_ERR(("Exp_GetVal: (%lld)Log(%lld) is %s\n", iBase, iArgument, !iBase ? "infinite" : "undefined"));
+											DEBUG_ERR(("Exp_GetVal: (%lld)Log(%lld) is %s\n", iBase, iArgs, !iBase ? "infinite" : "undefined"));
 											iCount = 0;
 										}
 										else
-											iResult = static_cast<INT64>(log(static_cast<double>(iArgument)) / log(static_cast<double>(iBase)));
+											iResult = static_cast<INT64>(log(static_cast<double>(iArgs)) / log(static_cast<double>(iBase)));
 									}
 								}
 								else
-									iResult = static_cast<INT64>(log10(static_cast<double>(iArgument)));
+									iResult = static_cast<INT64>(log10(static_cast<double>(iArgs)));
 							}
 						}
 						break;
 					}
 					case INTRINSIC_NAPIERPOW:
 					{
-						if ( pszArgs )
+						if ( pszArgs && *pszArgs )
 						{
 							iCount = 1;
 							iResult = static_cast<INT64>(exp(static_cast<double>(GetVal(pszArgs))));
@@ -648,48 +641,48 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 					}
 					case INTRINSIC_QVAL:
 					{
-						TCHAR *ppCmd[5];
-						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppCmd, COUNTOF(ppCmd), ",");
+						TCHAR *ppArgs[5];
+						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppArgs, COUNTOF(ppArgs), ",");
 						if ( iCount < 3 )
 							iResult = 0;
 						else
 						{
-							INT64 a1 = GetSingle(ppCmd[0]);
-							INT64 a2 = GetSingle(ppCmd[1]);
-							if ( a1 < a2 )
-								iResult = GetSingle(ppCmd[2]);
-							else if ( a1 == a2 )
-								iResult = (iCount >= 4) ? GetSingle(ppCmd[3]) : 0;
+							INT64 iVal1 = GetSingle(ppArgs[0]);
+							INT64 iVal2 = GetSingle(ppArgs[1]);
+							if ( iVal1 < iVal2 )
+								iResult = GetSingle(ppArgs[2]);
+							else if ( iVal1 == iVal2 )
+								iResult = (iCount >= 4) ? GetSingle(ppArgs[3]) : 0;
 							else
-								iResult = (iCount >= 5) ? GetSingle(ppCmd[4]) : 0;
+								iResult = (iCount >= 5) ? GetSingle(ppArgs[4]) : 0;
 						}
 						break;
 					}
 					case INTRINSIC_RAND:
 					{
-						TCHAR *ppCmd[2];
-						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppCmd, COUNTOF(ppCmd), ",");
+						TCHAR *ppArgs[2];
+						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppArgs, COUNTOF(ppArgs), ",");
 						if ( iCount <= 0 )
 							iResult = 0;
 						else if ( iCount < 2 )
-							iResult = Calc_GetRandLLVal(GetVal(ppCmd[0]));
+							iResult = Calc_GetRandLLVal(GetVal(ppArgs[0]));
 						else
-							iResult = Calc_GetRandLLVal2(GetVal(ppCmd[0]), GetVal(ppCmd[1]));
+							iResult = Calc_GetRandLLVal2(GetVal(ppArgs[0]), GetVal(ppArgs[1]));
 						break;
 					}
 					case INTRINSIC_RANDBELL:
 					{
-						TCHAR *ppCmd[2];
-						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppCmd, COUNTOF(ppCmd), ",");
+						TCHAR *ppArgs[2];
+						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppArgs, COUNTOF(ppArgs), ",");
 						if ( iCount < 2 )
 							iResult = 0;
 						else
-							iResult = Calc_GetBellCurve(static_cast<int>(GetVal(ppCmd[0])), static_cast<int>(GetVal(ppCmd[1])));
+							iResult = Calc_GetBellCurve(static_cast<int>(GetVal(ppArgs[0])), static_cast<int>(GetVal(ppArgs[1])));
 						break;
 					}
 					case INTRINSIC_SIN:
 					{
-						if ( pszArgs )
+						if ( pszArgs && *pszArgs )
 						{
 							iCount = 1;
 							iResult = static_cast<INT64>(sin(static_cast<double>(GetVal(pszArgs))));
@@ -706,22 +699,22 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 						iCount = 0;
 						iResult = 0;
 
-						if ( pszArgs )
+						if ( pszArgs && *pszArgs )
 						{
-							INT64 iArgument = GetVal(pszArgs);
-							if ( iArgument >= 0 )
+							INT64 iArgs = GetVal(pszArgs);
+							if ( iArgs >= 0 )
 							{
-								iCount++;
-								iResult = static_cast<INT64>(sqrt(static_cast<double>(iArgument)));
+								++iCount;
+								iResult = static_cast<INT64>(sqrt(static_cast<double>(iArgs)));
 							}
 							else
-								DEBUG_ERR(("Exp_GetVal: Sqrt of negative number (%lld) is impossible\n", iArgument));
+								DEBUG_ERR(("Exp_GetVal: Sqrt of negative number (%lld) is impossible\n", iArgs));
 						}
 						break;
 					}
 					case INTRINSIC_STRASCII:
 					{
-						if ( pszArgs )
+						if ( pszArgs && *pszArgs )
 						{
 							iCount = 1;
 							iResult = pszArgs[0];
@@ -735,32 +728,32 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 					}
 					case INTRINSIC_STRCMP:
 					{
-						TCHAR *ppCmd[2];
-						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppCmd, COUNTOF(ppCmd), ",");
+						TCHAR *ppArgs[2];
+						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppArgs, COUNTOF(ppArgs), ",");
 						if ( iCount < 2 )
 							iResult = 1;
 						else
-							iResult = strcmp(ppCmd[0], ppCmd[1]);
+							iResult = strcmp(ppArgs[0], ppArgs[1]);
 						break;
 					}
 					case INTRINSIC_STRCMPI:
 					{
-						TCHAR *ppCmd[2];
-						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppCmd, COUNTOF(ppCmd), ",");
+						TCHAR *ppArgs[2];
+						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppArgs, COUNTOF(ppArgs), ",");
 						if ( iCount < 2 )
 							iResult = 1;
 						else
-							iResult = strcmpi(ppCmd[0], ppCmd[1]);
+							iResult = strcmpi(ppArgs[0], ppArgs[1]);
 						break;
 					}
 					case INTRINSIC_STRINDEXOF:
 					{
-						TCHAR *ppCmd[3];
-						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppCmd, COUNTOF(ppCmd), ",");
+						TCHAR *ppArgs[3];
+						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppArgs, COUNTOF(ppArgs), ",");
 						if ( iCount < 2 )
 							iResult = -1;
 						else
-							iResult = Str_IndexOf(ppCmd[0], ppCmd[1], (iCount >= 3) ? static_cast<int>(GetVal(ppCmd[2])) : 0);
+							iResult = Str_IndexOf(ppArgs[0], ppArgs[1], (iCount >= 3) ? static_cast<int>(GetVal(ppArgs[2])) : 0);
 						break;
 					}
 					case INTRINSIC_STRLEN:
@@ -771,24 +764,24 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 					}
 					case INTRINSIC_STRMATCH:
 					{
-						TCHAR *ppCmd[2];
-						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppCmd, COUNTOF(ppCmd), ",");
+						TCHAR *ppArgs[2];
+						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppArgs, COUNTOF(ppArgs), ",");
 						if ( iCount < 2 )
 							iResult = 0;
 						else
-							iResult = (Str_Match(ppCmd[0], ppCmd[1]) == MATCH_VALID) ? 1 : 0;
+							iResult = (Str_Match(ppArgs[0], ppArgs[1]) == MATCH_VALID) ? 1 : 0;
 						break;
 					}
 					case INTRINSIC_STRREGEX:
 					{
-						TCHAR *ppCmd[2];
-						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppCmd, COUNTOF(ppCmd), ",");
+						TCHAR *ppArgs[2];
+						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppArgs, COUNTOF(ppArgs), ",");
 						if ( iCount < 2 )
 							iResult = 0;
 						else
 						{
 							TCHAR *pszLastError = Str_GetTemp();
-							iResult = Str_RegExMatch(ppCmd[0], ppCmd[1], pszLastError);
+							iResult = Str_RegExMatch(ppArgs[0], ppArgs[1], pszLastError);
 							if ( iResult == -1 )
 								DEBUG_ERR(("STRREGEX: Bad function usage. Error: %s\n", pszLastError));
 						}
@@ -796,7 +789,7 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 					}
 					case INTRINSIC_TAN:
 					{
-						if ( pszArgs )
+						if ( pszArgs && *pszArgs )
 						{
 							iCount = 1;
 							iResult = static_cast<INT64>(tan(static_cast<double>(GetVal(pszArgs))));
@@ -827,19 +820,18 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 			}
 		}
 
-		// Must be a symbol of some sort ?
-		long long lVal;
-		if ( m_VarGlobals.GetParseVal(pszArgs, &lVal) )
-			return lVal;
-		if ( m_VarDefs.GetParseVal(pszArgs, &lVal) )
-			return lVal;
+		// Must be a symbol of some sort?
+		long long llVal;
+		if ( m_VarGlobals.GetParseVal(pszArgs, &llVal) )
+			return llVal;
+		if ( m_VarDefs.GetParseVal(pszArgs, &llVal) )
+			return llVal;
 	}
 #pragma endregion intrinsics
 
-	// hard end ! Error of some sort.
+	// Error of some sort
 	TCHAR szTag[EXPRESSION_MAX_KEY_LEN];
-	size_t i = GetIdentifierString(szTag, pszArgs);
-	pszArgs += i;	// skip it.
+	pszArgs += GetIdentifierString(szTag, pszArgs);		// skip it
 	if ( strlen(orig) > 1 )
 		DEBUG_ERR(("Undefined symbol '%s' ['%s']\n", szTag, orig));
 	else
@@ -847,210 +839,207 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 	return 0;
 }
 
-INT64 CExpression::GetValMath(INT64 lVal, LPCTSTR &pszArgs)
+INT64 CExpression::GetValMath(INT64 iVal, LPCTSTR &pszArgs)
 {
 	ADDTOCALLSTACK("CExpression::GetValMath");
 	GETNONWHITESPACE(pszArgs);
 
-	// Look for math type operator.
+	// Look for math type operator
 	switch ( pszArgs[0] )
 	{
 		case '\0':
 			break;
-		case ')':	// expression end markers.
+		case ')':	// expression end markers
 		case '}':
 		case ']':
 		{
-			pszArgs++;	// consume this.
+			++pszArgs;
 			break;
 		}
 		case '+':
 		{
-			pszArgs++;
-			lVal += GetVal(pszArgs);
+			++pszArgs;
+			iVal += GetVal(pszArgs);
 			break;
 		}
 		case '-':
 		{
-			pszArgs++;
-			lVal -= GetVal(pszArgs);
+			++pszArgs;
+			iVal -= GetVal(pszArgs);
 			break;
 		}
 		case '*':
 		{
-			pszArgs++;
-			lVal *= GetVal(pszArgs);
+			++pszArgs;
+			iVal *= GetVal(pszArgs);
 			break;
 		}
 		case '|':
 		{
-			pszArgs++;
-			if ( pszArgs[0] == '|' )	// boolean ?
+			++pszArgs;
+			if ( pszArgs[0] == '|' )	// boolean
 			{
-				pszArgs++;
-				lVal = (GetVal(pszArgs) || lVal);
+				++pszArgs;
+				iVal = (GetVal(pszArgs) || iVal);
 			}
 			else	// bitwise
-				lVal |= GetVal(pszArgs);
+				iVal |= GetVal(pszArgs);
 			break;
 		}
 		case '&':
 		{
-			pszArgs++;
-			if ( pszArgs[0] == '&' )	// boolean ?
+			++pszArgs;
+			if ( pszArgs[0] == '&' )	// boolean
 			{
-				pszArgs++;
-				lVal = (GetVal(pszArgs) && lVal);	// tricky stuff here. logical ops must come first or possibly not get processed.
+				++pszArgs;
+				iVal = (GetVal(pszArgs) && iVal);	// tricky stuff here, logical operators must come first or possibly not get processed
 			}
 			else	// bitwise
-				lVal &= GetVal(pszArgs);
+				iVal &= GetVal(pszArgs);
 			break;
 		}
 		case '/':
 		{
-			pszArgs++;
-			INT64 iVal = GetVal(pszArgs);
-			if ( !iVal )
+			++pszArgs;
+			INT64 iArgs = GetVal(pszArgs);
+			if ( !iArgs )
 			{
 				DEBUG_ERR(("Exp_GetVal: Divide by 0\n"));
 				break;
 			}
-			lVal /= iVal;
+			iVal /= iArgs;
 			break;
 		}
 		case '%':
 		{
-			pszArgs++;
-			INT64 iVal = GetVal(pszArgs);
-			if ( !iVal )
+			++pszArgs;
+			INT64 iArgs = GetVal(pszArgs);
+			if ( !iArgs )
 			{
 				DEBUG_ERR(("Exp_GetVal: Divide by 0\n"));
 				break;
 			}
-			lVal %= iVal;
+			iVal %= iArgs;
 			break;
 		}
 		case '^':
 		{
-			pszArgs++;
-			lVal ^= GetVal(pszArgs);
+			++pszArgs;
+			iVal ^= GetVal(pszArgs);
 			break;
 		}
-		case '>': // boolean
+		case '>':
 		{
-			pszArgs++;
-			if ( pszArgs[0] == '=' )	// boolean ?
+			++pszArgs;
+			if ( pszArgs[0] == '=' )	// boolean
 			{
-				pszArgs++;
-				lVal = (lVal >= GetVal(pszArgs));
+				++pszArgs;
+				iVal = (iVal >= GetVal(pszArgs));
 			}
 			else if ( pszArgs[0] == '>' )	// shift
 			{
-				pszArgs++;
-				lVal >>= GetVal(pszArgs);
+				++pszArgs;
+				iVal >>= GetVal(pszArgs);
 			}
 			else
-				lVal = (lVal > GetVal(pszArgs));
+				iVal = (iVal > GetVal(pszArgs));
 			break;
 		}
-		case '<': // boolean
+		case '<':
 		{
-			pszArgs++;
-			if ( pszArgs[0] == '=' )	// boolean ?
+			++pszArgs;
+			if ( pszArgs[0] == '=' )	// boolean
 			{
-				pszArgs++;
-				lVal = (lVal <= GetVal(pszArgs));
+				++pszArgs;
+				iVal = (iVal <= GetVal(pszArgs));
 			}
 			else if ( pszArgs[0] == '<' )	// shift
 			{
-				pszArgs++;
-				lVal <<= GetVal(pszArgs);
+				++pszArgs;
+				iVal <<= GetVal(pszArgs);
 			}
 			else
-				lVal = (lVal < GetVal(pszArgs));
+				iVal = (iVal < GetVal(pszArgs));
 			break;
 		}
 		case '!':
 		{
-			pszArgs++;
-			if ( pszArgs[0] != '=' )
-				break; // boolean ! is handled as a single expresion.
-			pszArgs++;
-			lVal = (lVal != GetVal(pszArgs));
+			++pszArgs;
+			if ( pszArgs[0] != '=' )	// boolean (handled as single expression)
+				break;
+			++pszArgs;
+			iVal = (iVal != GetVal(pszArgs));
 			break;
 		}
-		case '=': // boolean
+		case '=':
 		{
-			while ( pszArgs[0] == '=' )
-				pszArgs++;
-			lVal = (lVal == GetVal(pszArgs));
+			while ( pszArgs[0] == '=' )	// boolean
+				++pszArgs;
+			iVal = (iVal == GetVal(pszArgs));
 			break;
 		}
 		case '@':
 		{
-			pszArgs++;
-			if ( lVal <= 0 )
+			++pszArgs;
+			if ( iVal <= 0 )
 			{
 				DEBUG_ERR(("Exp_GetVal: Power of zero with negative base is undefined\n"));
 				break;
 			}
-			lVal = static_cast<INT64>(pow(static_cast<double>(lVal), static_cast<int>(GetVal(pszArgs))));
+			iVal = static_cast<INT64>(pow(static_cast<double>(iVal), static_cast<int>(GetVal(pszArgs))));
 			break;
 		}
 	}
 
-	return lVal;
+	return iVal;
 }
 
-int g_getval_reentrant_check = 0;
+int g_GetVal_LoopCount = 0;
 
 INT64 CExpression::GetVal(LPCTSTR &pszArgs)
 {
 	ADDTOCALLSTACK("CExpression::GetVal");
-	// Get a value (default decimal) that could also be an expression.
-	// This does not parse beyond a comma !
+	// Get a value (default decimal) that could also be an expression
+	// This does not parse beyond a comma!
 	//
-	// These are all the type of expressions and defines we'll see:
-	//
-	//	all_skin_colors					// simple DEF value
-	//	7933 						// simple decimal
-	//	-100.0						// simple negative decimal
-	//	.5						// simple decimal
-	//	0.5						// simple decimal
-	//	073a 						// hex value (leading zero and no .)
-	//
-	//	0 -1						// Subtraction. has a space separator. (Yes I know I hate this)
-	//	{0-1}						// hyphenated simple range (GET RID OF THIS!)
-	//		complex ranges must be in {}
-	//	{ 3 6}						// simple range
-	//	{ 400 1 401 1 } 				// weighted values (2nd val = 1)
-	//	{ 1102 1148 1 }					// weighted range (3rd val < 10)
-	//	{ animal_colors 1 no_colors 1 } 		// weighted range
-	//	{ red_colors 1 {34 39} 1 }			// same (red_colors expands to a range)
+	// All expression types:
+	//	all_skin_colors                 = simple DEF value
+	//	7933                            = simple decimal
+	//	-100.0                          = simple negative decimal
+	//	.5                              = simple decimal
+	//	0.5                             = simple decimal
+	//	073a                            = simple hex value (leading zero and no .)
+	//	0 -1                            = subtraction, has a space separator (yes, I know I hate this)
+	//	{ 0-1 }                         = hyphenated simple range (GET RID OF THIS!)
+	//	{ 3 6 }                         = simple range
+	//	{ 400 1 401 1 }                 = weighted values (2nd val = 1)
+	//	{ 1102 1148 1 }                 = weighted range (3rd val < 10)
+	//	{ animal_colors 1 no_colors 1 } = weighted range
+	//	{ red_colors 1 {34 39} 1 }      = same (red_colors expands to a range)
 
-	if ( pszArgs == NULL )
+	if ( !pszArgs )
 		return 0;
 
 	GETNONWHITESPACE(pszArgs);
 
-	g_getval_reentrant_check++;
-	if ( g_getval_reentrant_check > 128 )
+	++g_GetVal_LoopCount;
+	if ( g_GetVal_LoopCount > 128 )
 	{
-		DEBUG_WARN(("Deadlock detected while parsing '%s'. Fix the error in your scripts.\n", pszArgs));
-		g_getval_reentrant_check--;
+		DEBUG_WARN(("Deadlock detected while parsing '%s'. Fix the error in your scripts\n", pszArgs));
+		--g_GetVal_LoopCount;
 		return 0;
 	}
-	INT64 lVal = GetValMath(GetSingle(pszArgs), pszArgs);
-	g_getval_reentrant_check--;
+	INT64 iVal = GetValMath(GetSingle(pszArgs), pszArgs);
+	--g_GetVal_LoopCount;
 
-	return lVal;
+	return iVal;
 }
 
 int CExpression::GetRangeVals(LPCTSTR &pszArgs, INT64 *piVals, int iMaxQty)
 {
 	ADDTOCALLSTACK("CExpression::GetRangeVals");
-	// Get a list of values.
-	if ( pszArgs == NULL )
+	// Get a list of values
+	if ( !pszArgs )
 		return 0;
 
 	ASSERT(piVals);
@@ -1060,29 +1049,29 @@ int CExpression::GetRangeVals(LPCTSTR &pszArgs, INT64 *piVals, int iMaxQty)
 	{
 		if ( !pszArgs[0] )
 			break;
-		if ( pszArgs[0] == ';' )
-			break;	// seperate field.
+		if ( pszArgs[0] == ';' )	// separator field
+			break;
 		if ( pszArgs[0] == ',' )
-			pszArgs++;
+			++pszArgs;
 
 		piVals[iQty] = GetSingle(pszArgs);
 		if ( ++iQty >= iMaxQty )
 			break;
-		if ( (pszArgs[0] == '-') && (iQty == 1) )	// range separator. (if directly after, I know this is sort of strange)
+		if ( (pszArgs[0] == '-') && (iQty == 1) )	// range separator (if directly after, I know this is sort of strange)
 		{
-			pszArgs++;	// ??? This is stupid. get rid of this and clean up it's use in the scripts.
+			++pszArgs;	// ??? This is stupid, get rid of this and clean up it's use in the scripts
 			continue;
 		}
 
 		GETNONWHITESPACE(pszArgs);
 
-		// Look for math type operator.
+		// Look for math type operator
 		switch ( pszArgs[0] )
 		{
-			case ')':	// expression end markers.
+			case ')':	// expression end markers
 			case '}':
 			case ']':
-				pszArgs++;	// consume this and end.
+				++pszArgs;
 				return iQty;
 			case '+':
 			case '*':
@@ -1104,15 +1093,15 @@ int CExpression::GetRangeVals(LPCTSTR &pszArgs, INT64 *piVals, int iMaxQty)
 INT64 CExpression::GetRange(LPCTSTR &pszArgs)
 {
 	ADDTOCALLSTACK("CExpression::GetRange");
-	INT64 lVals[256];		// Maximum elements in a list
+	INT64 iVals[256];		// maximum elements in a list
 
-	int iQty = GetRangeVals(pszArgs, lVals, COUNTOF(lVals));
+	int iQty = GetRangeVals(pszArgs, iVals, COUNTOF(iVals));
 	if ( iQty == 0 )
 		return 0;
 	else if ( iQty == 1 )	// simple value
-		return lVals[0];
+		return iVals[0];
 	else if ( iQty == 2 )	// simple range
-		return Calc_GetRandLLVal2(minimum(lVals[0], lVals[1]), maximum(lVals[0], lVals[1]));
+		return Calc_GetRandLLVal2(minimum(iVals[0], iVals[1]), maximum(iVals[0], iVals[1]));
 	else	// weighted value
 	{
 		// Get total weight
@@ -1120,9 +1109,9 @@ INT64 CExpression::GetRange(LPCTSTR &pszArgs)
 		int i = 1;
 		for ( ; i < iQty; i += 2 )
 		{
-			if ( !lVals[i] )	// having a weight of 0 is very strange !
-				DEBUG_ERR(("Weight of 0 in random set?\n"));	// the whole table should really just be invalid here !
-			iTotalWeight += lVals[i];
+			if ( !iVals[i] )	// having a weight of 0 is very strange
+				DEBUG_ERR(("Weight of 0 in random set?\n"));	// the whole table should really just be invalid here
+			iTotalWeight += iVals[i];
 		}
 
 		// Roll the dice to see what value to pick
@@ -1132,10 +1121,10 @@ INT64 CExpression::GetRange(LPCTSTR &pszArgs)
 		i = 1;
 		for ( ; i < iQty; i += 2 )
 		{
-			iTotalWeight -= lVals[i];
+			iTotalWeight -= iVals[i];
 			if ( iTotalWeight <= 0 )
 				break;
 		}
-		return lVals[i - 1];
+		return iVals[i - 1];
 	}
 }

@@ -1009,7 +1009,7 @@ PacketSkills::PacketSkills(const CClient* target, const CChar* character, SKILL_
 
 		for (size_t i = 0; i < g_Cfg.m_iMaxSkill; i++)
 		{
-			if (!g_Cfg.m_SkillIndexDefs.IsValidIndex(static_cast<SKILL_TYPE>(i)))
+			if (!g_Cfg.m_SkillIndexDefs.IsValidIndex(i))
 				continue;
 
 			writeInt16(static_cast<WORD>(i + 1));
@@ -2954,7 +2954,7 @@ PacketServerList::PacketServerList(const CClient* target) : PacketSend(XCMD_Serv
 
 	writeServerEntry(&g_Serv, ++count, reverseIp);
 
-	for (size_t i = 0; count < 32; i++)		// too many servers in list can crash the client
+	for (size_t i = 0; count < MAX_SERVERS; i++)		// too many servers in list can crash the client
 	{
 		CServerRef server = g_Cfg.Server_GetDef(i);
 		if (server == NULL)

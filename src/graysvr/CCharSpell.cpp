@@ -1275,13 +1275,13 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 
 			if ( m_pClient && IsSetOF(OF_Buffs) )
 			{
-				double iStamPenalty = 3 - ((Stat_GetVal(STAT_DEX) / Stat_GetAdjusted(STAT_DEX)) * 2);
+				double dStamPenalty = 3 - ((Stat_GetVal(STAT_DEX) / maximum(1, Stat_GetAdjusted(STAT_DEX))) * 2);
 				WORD wTimerTotal = 0;
 				for ( WORD w = 0; w < wStatEffect; w++ )
 					wTimerTotal += (wStatEffect - w) * TICK_PER_SEC;
 
-				ITOA(static_cast<int>((wStatEffect - 2) * iStamPenalty), szNumBuff[0], 10);
-				ITOA(static_cast<int>((wStatEffect + 1) * iStamPenalty), szNumBuff[1], 10);
+				ITOA(static_cast<int>((wStatEffect - 2) * dStamPenalty), szNumBuff[0], 10);
+				ITOA(static_cast<int>((wStatEffect + 1) * dStamPenalty), szNumBuff[1], 10);
 				m_pClient->removeBuff(BI_STRANGLE);
 				m_pClient->addBuff(BI_STRANGLE, 1075794, 1075795, wTimerTotal, pszNumBuff, 2);
 			}
@@ -1930,8 +1930,8 @@ bool CChar::Spell_Equip_OnTick(CItem *pItem)
 		}
 		case SPELL_Strangle:
 		{
-			double iStamPenalty = 3 - ((Stat_GetVal(STAT_DEX) / Stat_GetAdjusted(STAT_DEX)) * 2);
-			int iDmg = static_cast<int>(Calc_GetRandLLVal2(pItem->m_itSpell.m_spelllevel - 2, pItem->m_itSpell.m_spelllevel + 1) * iStamPenalty);
+			double dStamPenalty = 3 - ((Stat_GetVal(STAT_DEX) / maximum(1, Stat_GetAdjusted(STAT_DEX))) * 2);
+			int iDmg = static_cast<int>(Calc_GetRandLLVal2(pItem->m_itSpell.m_spelllevel - 2, pItem->m_itSpell.m_spelllevel + 1) * dStamPenalty);
 			int iRemainingTicks = pItem->m_itSpell.m_spelllevel - pItem->m_itSpell.m_spellcharges;
 
 			OnTakeDamage(maximum(1, iDmg), pItem->m_uidLink.CharFind(), DAMAGE_MAGIC|DAMAGE_POISON|DAMAGE_NODISTURB|DAMAGE_NOREVEAL|DAMAGE_NOUNPARALYZE, 0, 0, 0, 100, 0);

@@ -2214,9 +2214,11 @@ bool PacketServerSelect::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketServerSelect::onReceive");
 
-	WORD server = readInt16();
+	WORD wIndex = readInt16();
+	if ( wIndex >= MAX_SERVERS )
+		return false;
 
-	net->m_client->Login_Relay(server);
+	net->m_client->Login_Relay(wIndex);
 	return true;
 }
 
