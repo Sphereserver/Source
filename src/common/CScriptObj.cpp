@@ -1684,9 +1684,22 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case SSC_SETBIT:
 		case SSC_CLRBIT:
 		{
+			GETNONWHITESPACE(pszKey);
+			if ( !IsDigit(pszKey[0]) )
+				return false;
+
 			INT64 iVal = Exp_GetLLVal(pszKey);
-			SKIP_ARGSEP(pszKey);
-			INT64 iBit = Exp_GetLLVal(pszKey);
+			INT64 iBit = 0;
+			if ( index != SSC_ISBIT )
+			{
+				SKIP_ARGSEP(pszKey);
+				iBit = Exp_GetLLVal(pszKey);
+				if ( iBit < 0 )
+				{
+					g_Log.EventWarn("%s(%lld,%lld): Can't shift bit by negative amount\n", sm_szLoadKeys[index], iVal, iBit);
+					iBit = 0;
+				}
+			}
 
 			if ( index == SSC_ISBIT )
 				sVal.FormatLLVal(iVal & (static_cast<INT64>(1) << iBit));
@@ -1874,7 +1887,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			pid_t child_pid = vfork();
 			if ( child_pid < 0 )
 			{
-				g_Log.EventError("SYSSPAWN failed when executing '%s'\n", pszKey);
+				g_Log.EventError("%s failed when executing '%s'\n", sm_szLoadKeys[index], pszKey);
 				return false;
 			}
 			else if ( child_pid == 0 )
@@ -1882,9 +1895,9 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				// Don't touch this :P
 				execlp(ppCmd[0], ppCmd[0], ppCmd[1], ppCmd[2], ppCmd[3], ppCmd[4], ppCmd[5], ppCmd[6], ppCmd[7], ppCmd[8], ppCmd[9], NULL);
 
-				g_Log.EventError("SYSSPAWN failed with error %d (\"%s\") when executing '%s'\n", errno, strerror(errno), pszKey);
+				g_Log.EventError("%s failed with error %d (\"%s\") when executing '%s'\n", sm_szLoadKeys[index], errno, strerror(errno), pszKey);
 				raise(SIGKILL);
-				g_Log.EventError("Failed errorhandling in SYSSPAWN. Server is UNSTABLE\n");
+				g_Log.EventError("%s failed to handle error. Server is UNSTABLE\n", sm_szLoadKeys[index]);
 
 				while ( true )
 				{

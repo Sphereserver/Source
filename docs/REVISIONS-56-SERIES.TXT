@@ -1133,5 +1133,9 @@ Added: Support for 'EquipLastWeapon' client macro.
 Changed: Reduced DClick/PickUp_Ground reachable distance [3 tiles -> 2 tiles] to match client internal DropOn_Ground distance.
 
 15-07-2018, Coruja
-Fixed: SAYU/SAYUA functions not inheriting char SPEECHCOLOR value correctly
-Changed: Yell ('! msg' client shortcut) on GM chars now will yell to all clients instead convert the message into 'broadcast'
+Fixed: SAYU/SAYUA functions not inheriting char SPEECHCOLOR value correctly.
+Changed: Yell ('! msg' client shortcut) on GM chars now will yell to all clients instead convert the message into 'broadcast'.
+
+16-07-2018, Coruja
+Added: Support for 'combat ability' (@UserSpecialMove) and 'virtue' (@UserVirtue) slots on KR toolbar (@UserKRToolbar).
+	-NOTE: KR clients still obsolete and not supported, but triggers will be called if someone want use it

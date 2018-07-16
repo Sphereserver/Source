@@ -2454,19 +2454,8 @@ bool PacketGumpDialogRet::onReceive(NetState* net)
 	{
 		if (context == CLIMODE_DIALOG_VIRTUE)
 		{
-			CChar *viewed = character;
-			if ((button == 1) && (checkCount > 0))
-			{
-				viewed = CGrayUID(readInt32()).CharFind();
-				if (!viewed)
-					viewed = character;
-			}
-			if (IsTrigUsed(TRIGGER_USERVIRTUE))
-			{
-				CScriptTriggerArgs Args(viewed);
-				Args.m_iN1 = button;
-				character->OnTrigger(CTRIG_UserVirtue, static_cast<CTextConsole *>(character), &Args);
-			}
+			CChar *pCharTarg = ((button == 1) && (checkCount > 0)) ? static_cast<CGrayUID>(readInt32()).CharFind() : character;
+			client->Event_VirtueSelect(button, pCharTarg);
 			return true;
 		}
 		else if (context == CLIMODE_DIALOG_FACESELECTION)
@@ -3317,7 +3306,7 @@ bool PacketSpellSelect::onReceive(NetState* net)
 
 	skip(2); // unknown
 	SPELL_TYPE spell = static_cast<SPELL_TYPE>(readInt16());
-	if (!spell)
+	if ( spell > SPELL_SKILLMASTERIES_QTY )
 		 return false;
 
 	const CSpellDef* spellDef = g_Cfg.GetSpellDef(spell);
@@ -4163,19 +4152,11 @@ bool PacketSpecialMove::onReceive(NetState* net)
 
 	CClient* client = net->m_client;
 	ASSERT(client);
-	CChar* character = client->GetChar();
-	if (!character)
-		return false;
 
 	skip(1);
 	DWORD ability = readInt32();
 
-	if ( IsTrigUsed(TRIGGER_USERSPECIALMOVE) )
-	{
-		CScriptTriggerArgs args;
-		args.m_iN1 = ability;
-		character->OnTrigger(CTRIG_UserSpecialMove, character, &args);
-	}
+	client->Event_CombatAbilitySelect(ability);
 	return true;
 }
 

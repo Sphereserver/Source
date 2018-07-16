@@ -388,6 +388,7 @@ public:
 	CONNECT_TYPE m_iConnectType;	// connection type
 	NetState *m_NetState;
 	CAccount *m_pAccount;
+
 	DWORD m_FeatureFlags;			// features enabled on this client
 	DWORD m_CharacterListFlags;		// character list features enabled on this client
 	bool m_TooltipEnabled;			// is tooltip feature enabled on this client?
@@ -558,6 +559,7 @@ public:
 	void Event_BugReport(const TCHAR *pszText, int len, BUGREPORT_TYPE type, CLanguageID lang = 0);
 	void Event_ChatButton(const NCHAR *pszName = NULL);
 	void Event_ChatText(const NCHAR *pszText, int len, CLanguageID lang = 0);
+	void Event_CombatAbilitySelect(DWORD dwAbility);
 	void Event_CombatMode(bool fWar);
 	bool Event_DoubleClick(CGrayUID uid, bool fMacro, bool fTestTouch, bool fScript = false);
 	void Event_ExtCmd(EXTCMD_TYPE type, TCHAR *pszName);
@@ -580,6 +582,7 @@ public:
 	void Event_VendorBuy_Cheater(int iCode = 0);
 	void Event_VendorSell(CChar *pVendor, const VendorItem *items, size_t itemCount);
 	void Event_VendorSell_Cheater(int iCode = 0);
+	void Event_VirtueSelect(DWORD dwVirtue, CChar *pCharTarg);
 	bool Event_Walk(BYTE rawdir, BYTE sequence = 0);
 	bool Event_CheckWalkBuffer();
 

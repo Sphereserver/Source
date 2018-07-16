@@ -727,6 +727,36 @@ bool CClient::Event_Walk(BYTE rawdir, BYTE sequence)
 	return true;
 }
 
+// Client selected an combat ability on book
+void CClient::Event_CombatAbilitySelect(DWORD dwAbility)
+{
+	ADDTOCALLSTACK("CClient::Event_CombatAbilitySelect");
+	if ( !m_pChar )
+		return;
+
+	if ( IsTrigUsed(TRIGGER_USERSPECIALMOVE) )
+	{
+		CScriptTriggerArgs Args;
+		Args.m_iN1 = dwAbility;
+		m_pChar->OnTrigger(CTRIG_UserSpecialMove, m_pChar, &Args);
+	}
+}
+
+// Client selected an virtue on gump
+void CClient::Event_VirtueSelect(DWORD dwVirtue, CChar *pCharTarg)
+{
+	ADDTOCALLSTACK("CClient::Event_VirtueSelect");
+	if ( !m_pChar )
+		return;
+
+	if ( IsTrigUsed(TRIGGER_USERVIRTUE) )
+	{
+		CScriptTriggerArgs Args(pCharTarg);
+		Args.m_iN1 = dwVirtue;
+		m_pChar->OnTrigger(CTRIG_UserVirtue, m_pChar, &Args);
+	}
+}
+
 // Client changed peace/war mode
 void CClient::Event_CombatMode(bool fWar)
 {
@@ -2357,22 +2387,25 @@ void CClient::Event_UseToolbar(BYTE bType, DWORD dwArg)
 	switch ( bType )
 	{
 		case 0x1:	// spell
-			Cmd_Skill_Magery(static_cast<SPELL_TYPE>(dwArg), m_pChar);
-			break;
+			if ( static_cast<SPELL_TYPE>(dwArg) <= SPELL_SPELLWEAVING_QTY )	// KR clients only have support up to spellweaving spells
+				Cmd_Skill_Magery(static_cast<SPELL_TYPE>(dwArg), m_pChar);
+			return;
 
-		case 0x2:	// weapon ability
-			break;
+		case 0x2:	// combat ability
+			Event_CombatAbilitySelect(dwArg);
+			return;
 
 		case 0x3:	// skill
 			Event_Skill_Use(static_cast<SKILL_TYPE>(dwArg));
-			break;
+			return;
 
 		case 0x4:	// item
-			Event_DoubleClick(CGrayUID(dwArg), true, true);
-			break;
+			Event_DoubleClick(static_cast<CGrayUID>(dwArg), true, true);
+			return;
 
-		case 0x5:	// scroll
-			break;
+		case 0x5:	// virtue
+			Event_VirtueSelect(dwArg, m_pChar);
+			return;
 	}
 }
 
