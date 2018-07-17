@@ -2387,7 +2387,7 @@ void CClient::Event_UseToolbar(BYTE bType, DWORD dwArg)
 	switch ( bType )
 	{
 		case 0x1:	// spell
-			if ( static_cast<SPELL_TYPE>(dwArg) <= SPELL_SPELLWEAVING_QTY )	// KR clients only have support up to spellweaving spells
+			if ( static_cast<SPELL_TYPE>(dwArg) <= SPELL_SPELLWEAVING_QTY )		// KR clients only have support up to spellweaving spells
 				Cmd_Skill_Magery(static_cast<SPELL_TYPE>(dwArg), m_pChar);
 			return;
 
@@ -2396,7 +2396,8 @@ void CClient::Event_UseToolbar(BYTE bType, DWORD dwArg)
 			return;
 
 		case 0x3:	// skill
-			Event_Skill_Use(static_cast<SKILL_TYPE>(dwArg));
+			if ( static_cast<SKILL_TYPE>(dwArg) <= SKILL_SPELLWEAVING )		// KR clients only have support up to spellweaving skill
+				Event_Skill_Use(static_cast<SKILL_TYPE>(dwArg));
 			return;
 
 		case 0x4:	// item

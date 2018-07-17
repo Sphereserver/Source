@@ -302,24 +302,22 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 		}
 
 		SKIP_SEPARATORS( pszKey );
-		if ( *pszKey == '\0' )
-			pszKey = "ID";
 
 		ITEMID_TYPE idTile = pStatic->GetDispID();
 
-		if ( !strnicmp( pszKey, "COLOR", 5 ) )
+		if ( !strnicmp(pszKey, "ID", 2) || (*pszKey == '\0') )
 		{
-			sVal.FormatHex( pStatic->m_wHue );
+			sVal.FormatHex(idTile);
 			return true;
 		}
-		else if ( !strnicmp( pszKey, "ID", 2 ) )
+		else if ( !strnicmp(pszKey, "COLOR", 5) )
 		{
-			sVal.FormatHex( idTile );
+			sVal.FormatHex(pStatic->m_wHue);
 			return true;
 		}
-		else if ( !strnicmp( pszKey, "Z", 1 ) )
+		else if ( !strnicmp(pszKey, "Z", 1) )
 		{
-			sVal.FormatVal( pStatic->m_z );
+			sVal.FormatVal(pStatic->m_z);
 			return true;
 		}
 
@@ -496,12 +494,10 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 		}
 
 		SKIP_SEPARATORS( pszKey );
-		if ( *pszKey == '\0' )
-			pszKey = "ID";
 
 		ITEMID_TYPE idTile = pMultiItem->GetDispID();
 
-		if ( !strnicmp(pszKey, "ID", 2) )
+		if ( !strnicmp(pszKey, "ID", 2) || (*pszKey == '\0') )
 		{
 			sVal.FormatHex( idTile );
 			return true;

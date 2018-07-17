@@ -45,41 +45,73 @@ bool GetDeltaStr(CPointMap &pt, TCHAR *pszDir)
 	return true;
 }
 
-/////////////////////////////////////////////////////////////////
-// -CObjBase stuff
-// Either a player, npc or item.
+///////////////////////////////////////////////////////////
+// CObjBase
 
 CObjBase::CObjBase(bool fItem)
 {
-	sm_iCount++;
-	m_wHue = HUE_DEFAULT;
 	m_timeout.Init();
 	m_timestamp.Init();
+	m_wHue = HUE_DEFAULT;
 
-	//	Init some global variables
-	m_fStatusUpdate = 0;
+	m_ModMaxWeight = 0;
+
+	m_ResPhysical = 0;
+	m_ResPhysicalMax = 0;
+	m_ResFire = 0;
+	m_ResFireMax = 0;
+	m_ResCold = 0;
+	m_ResColdMax = 0;
+	m_ResPoison = 0;
+	m_ResPoisonMax = 0;
+	m_ResEnergy = 0;
+	m_ResEnergyMax = 0;
+
+	m_Luck = 0;
+	m_DamIncrease = 0;
+	m_SpellDamIncrease = 0;
+	m_HitLifeLeech = 0;
+	m_HitManaDrain = 0;
+	m_HitManaLeech = 0;
+	m_HitStaminaLeech = 0;
+	m_HitChanceIncrease = 0;
+	m_DefChanceIncrease = 0;
+	m_DefChanceIncreaseMax = 0;
+	m_SwingSpeedIncrease = 0;
+	m_FasterCasting = 0;
+	m_FasterCastRecovery = 0;
+	m_LowerManaCost = 0;
+	m_LowerReagentCost = 0;
+	m_EnhancePotions = 0;
+	m_NightSight = 0;
+	m_ReflectPhysicalDamage = 0;
+
+	m_uidSpawnItem = UID_UNUSED;
+
+	++sm_iCount;
+
 	m_ModAr = 0;
+
+	m_fStatusUpdate = 0;
+
 	m_PropertyList = NULL;
 	m_PropertyHash = 0;
 	m_PropertyRevision = 0;
-	m_uidSpawnItem = UID_UNUSED;
-	m_ModMaxWeight = 0;
 
 	if ( g_Serv.IsLoading() )
 	{
-		// Don't do this yet if we are loading. UID will be set later.
-		// Just say if this is an item or not.
+		// Don't do this yet if we are loading, UID will be set later. Just check if this is an item
 		CObjBaseTemplate::SetUID(UID_O_DISCONNECT|UID_O_INDEX_MASK|(fItem ? UID_F_ITEM : 0));
 	}
 	else
 	{
-		// Find a free UID slot for this.
+		// Find a free UID slot for this
 		SetUID(UID_CLEAR, fItem);
 		ASSERT(IsValidUID());
 		SetContainerFlags(UID_O_DISCONNECT);	// it is no place for now
 	}
 
-	// Put in the idle list by default. (til placed in the world)
+	// Put in the idle list while this don't get moved to world
 	g_World.m_ObjNew.InsertHead(this);
 }
 
@@ -88,10 +120,10 @@ CObjBase::~CObjBase()
 	FreePropertyList();
 	g_World.m_ObjStatusUpdates.RemovePtr(this);
 
-	sm_iCount--;
+	--sm_iCount;
 	ASSERT(IsDisconnected());
 
-	// free up the UID slot.
+	// Free up the UID slot
 	SetUID(UID_UNUSED, false);
 }
 
@@ -313,7 +345,6 @@ void CObjBase::Effect(EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBase *pSourc
 		pClient->addEffect(motion, id, this, pSource, bSpeedSeconds, bLoop, fExplode, color, render, effectid, explodeid, explodesound, effectuid, type);
 	}
 }
-
 
 void CObjBase::Emote(LPCTSTR pText, CClient *pClientExclude, bool fForcePossessive)
 {

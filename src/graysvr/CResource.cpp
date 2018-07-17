@@ -2136,16 +2136,19 @@ void CResource::LoadSortSpells()
 			continue;
 
 		int	iVal = 0;
-		m_SpellDefs[i]->GetPrimarySkill( NULL, &iVal );
+		if ( !m_SpellDefs[i]->GetPrimarySkill(NULL, &iVal) )
+			continue;
 
 		size_t iQty = m_SpellDefs_Sorted.GetCount();
 		size_t k = 1;
 		while ( k < iQty )
 		{
 			int	iVal2 = 0;
-			m_SpellDefs_Sorted[k]->GetPrimarySkill( NULL, &iVal2 );
-			if ( iVal2 > iVal )
-				break;
+			if ( m_SpellDefs_Sorted[k]->GetPrimarySkill(NULL, &iVal2) )
+			{
+				if ( iVal2 > iVal )
+					break;
+			}
 			++k;
 		}
 		m_SpellDefs_Sorted.InsertAt( k, m_SpellDefs[i] );

@@ -18,7 +18,7 @@ int ahextoi(LPCTSTR pszArgs)	// convert hex string to int
 	// Unfortunately the library func can't handle UINT_MAX
 	//TCHAR *pszEnd; return strtol(s, &pszEnd, 16);
 
-	if ( !pszArgs )
+	if ( !pszArgs || !*pszArgs )
 		return 0;
 
 	GETNONWHITESPACE(pszArgs);
@@ -56,7 +56,7 @@ int ahextoi(LPCTSTR pszArgs)	// convert hex string to int
 
 INT64 ahextoi64(LPCTSTR pszArgs)	// convert hex string to int64
 {
-	if ( !pszArgs )
+	if ( !pszArgs || !*pszArgs )
 		return 0;
 
 	GETNONWHITESPACE(pszArgs);
@@ -378,7 +378,7 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 {
 	ADDTOCALLSTACK("CExpression::GetSingle");
 	// Parse just a single expression without any operators or ranges.
-	if ( !pszArgs )
+	if ( !pszArgs || !*pszArgs )
 		return 0;
 
 	GETNONWHITESPACE(pszArgs);
@@ -480,7 +480,7 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 #pragma region intrinsics
 	{
 		// Symbol or intrinsinc function?
-		int index = FindTableHeadSorted(pszArgs, sm_IntrinsicFunctions, COUNTOF(sm_IntrinsicFunctions) - 1);
+		int index = FindTableHeadSorted(pszArgs, sm_IntrinsicFunctions, COUNTOF(sm_IntrinsicFunctions) - 1, sizeof(sm_IntrinsicFunctions[0]));
 		if ( index >= 0 )
 		{
 			size_t iLen = strlen(sm_IntrinsicFunctions[index]);
@@ -1003,21 +1003,21 @@ INT64 CExpression::GetVal(LPCTSTR &pszArgs)
 	// This does not parse beyond a comma!
 	//
 	// All expression types:
-	//	all_skin_colors                 = simple DEF value
-	//	7933                            = simple decimal
-	//	-100.0                          = simple negative decimal
-	//	.5                              = simple decimal
-	//	0.5                             = simple decimal
-	//	073a                            = simple hex value (leading zero and no .)
-	//	0 -1                            = subtraction, has a space separator (yes, I know I hate this)
-	//	{ 0-1 }                         = hyphenated simple range (GET RID OF THIS!)
-	//	{ 3 6 }                         = simple range
-	//	{ 400 1 401 1 }                 = weighted values (2nd val = 1)
-	//	{ 1102 1148 1 }                 = weighted range (3rd val < 10)
-	//	{ animal_colors 1 no_colors 1 } = weighted range
-	//	{ red_colors 1 {34 39} 1 }      = same (red_colors expands to a range)
+	//  all_skin_colors               = simple DEF value
+	//  7933                          = simple decimal
+	//  -100.0                        = simple negative decimal
+	//  .5                            = simple decimal
+	//  0.5                           = simple decimal
+	//  073a                          = simple hex value (leading zero and no .)
+	//  0 -1                          = subtraction, has a space separator (yes, I know I hate this)
+	//  {0-1}                         = hyphenated simple range (GET RID OF THIS!)
+	//  {3 6}                         = simple range
+	//  {400 1 401 1}                 = weighted values (2nd val = 1)
+	//  {1102 1148 1}                 = weighted range (3rd val < 10)
+	//  {animal_colors 1 no_colors 1} = weighted range
+	//  {red_colors 1 {34 39} 1}      = weighted range (red_colors expands to a range)
 
-	if ( !pszArgs )
+	if ( !pszArgs || !*pszArgs )
 		return 0;
 
 	GETNONWHITESPACE(pszArgs);
@@ -1039,7 +1039,7 @@ int CExpression::GetRangeVals(LPCTSTR &pszArgs, INT64 *piVals, int iMaxQty)
 {
 	ADDTOCALLSTACK("CExpression::GetRangeVals");
 	// Get a list of values
-	if ( !pszArgs )
+	if ( !pszArgs || !*pszArgs )
 		return 0;
 
 	ASSERT(piVals);

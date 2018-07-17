@@ -225,6 +225,9 @@ RealType CVarFloat::GetValMath(RealType dVal, LPCTSTR &pszExpr)
 RealType CVarFloat::GetSingle(LPCTSTR &pszArgs)
 {
 	ADDTOCALLSTACK("CVarFloat::GetSingle");
+	if ( !pszArgs || !*pszArgs )
+		return 0;
+
 	GETNONWHITESPACE(pszArgs);
 	char *pchArgsCopy = new char[strlen(pszArgs) + 1];
 	strcpy(pchArgsCopy, pszArgs);
