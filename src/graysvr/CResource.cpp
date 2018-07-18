@@ -1485,7 +1485,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 		return( false );
 	}
 
-	switch ( static_cast<RC_TYPE>(index) )
+	switch ( index )
 	{
 		case RC_ATTACKERTIMEOUT:
 			sVal.FormatVal(m_iAttackerTimeout);
@@ -2403,7 +2403,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 			if (pScript->ReadKey() == false)
 			{
 				g_Log.Event(LOGM_INIT|LOGL_ERROR, "NOTOTITLES section is missing the list of karma levels\n");
-				return true;
+				return false;
 			}
 
 			INT64 piNotoLevels[64];
@@ -2419,7 +2419,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 			if (pScript->ReadKey() == false)
 			{
 				g_Log.Event(LOGM_INIT|LOGL_ERROR, "NOTOTITLES section is missing the list of fame levels\n");
-				return true;
+				return false;
 			}
 
 			// read fame levels
@@ -2454,12 +2454,11 @@ bool CResource::LoadResourceSection( CScript * pScript )
 	case RES_PLEVEL:
 		{
 			int index = rid.GetResIndex();
-			if ( (index < 0) || (static_cast<size_t>(index) >= COUNTOF(m_PrivCommands)) )
+			if ( (index < PLEVEL_Guest) || (index >= PLEVEL_QTY) )
 				return false;
 			while ( pScript->ReadKey() )
 			{
-				LPCTSTR	key = pScript->GetKey();
-				m_PrivCommands[index].AddSortString(key);
+				m_PrivCommands[index].AddSortString(pScript->GetKey());
 			}
 		}
 		return true;
@@ -2643,9 +2642,10 @@ bool CResource::LoadResourceSection( CScript * pScript )
 		pPrvDef = ResourceGetDef( rid );
 		if ( pPrvDef && fNewStyleDef )
 		{
-			CRegionWorld *	pRegion = dynamic_cast <CRegionWorld*>( pPrvDef );
+			CRegionWorld *pRegion = dynamic_cast<CRegionWorld *>(pPrvDef);
+			if ( !pRegion )
+				return false;
 			pNewDef	= pRegion;
-			ASSERT(pNewDef);
 			pRegion->UnRealizeRegion();
 			pRegion->r_Load(*pScript);
 			pRegion->RealizeRegion();
@@ -2673,9 +2673,10 @@ bool CResource::LoadResourceSection( CScript * pScript )
 		pPrvDef = ResourceGetDef( rid );
 		if ( pPrvDef && fNewStyleDef )
 		{
-			CRegionBase *	pRegion = dynamic_cast <CRegionBase*>( pPrvDef );
+			CRegionBase *pRegion = dynamic_cast<CRegionBase *>(pPrvDef);
+			if ( !pRegion )
+				return false;
 			pNewDef	= pRegion;
-			ASSERT(pNewDef);
 			pRegion->UnRealizeRegion();
 			pRegion->r_Load(*pScript);
 			pRegion->RealizeRegion();
@@ -2750,7 +2751,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 		{
 			pNewLink = dynamic_cast<CResourceLink*>(pPrvDef);
 			if ( !pNewLink )
-				return true;
+				return false;
 
 			CBaseBaseDef * pBaseDef = dynamic_cast <CBaseBaseDef*> (pNewLink);
 			if ( pBaseDef )
@@ -2779,7 +2780,8 @@ bool CResource::LoadResourceSection( CScript * pScript )
 		if ( pPrvDef )
 		{
 			pNewLink = dynamic_cast <CWebPageDef *>(pPrvDef);
-			ASSERT(pNewLink);
+			if ( !pNewLink )
+				return false;
 		}
 		else
 		{

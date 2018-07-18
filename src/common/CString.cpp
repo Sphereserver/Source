@@ -1042,14 +1042,6 @@ MATCH_TYPE Str_Match(LPCTSTR pPattern, LPCTSTR pText)
 }
 
 
-void CharToMultiByteNonNull(BYTE * Dest, const char * Src, size_t MBytes) {
-	for (size_t idx = 0; idx != MBytes * 2; idx += 2) {
-		if (Src[idx / 2] == '\0')
-			break;
-		Dest[idx] = static_cast<BYTE>(Src[idx / 2]);
-	}
-}
-
 int Str_RegExMatch(LPCTSTR pPattern, LPCTSTR pText, TCHAR * lastError)
 {
 	try
