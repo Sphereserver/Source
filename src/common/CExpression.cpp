@@ -378,9 +378,6 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 {
 	ADDTOCALLSTACK("CExpression::GetSingle");
 	// Parse just a single expression without any operators or ranges.
-	if ( !pszArgs || !*pszArgs )
-		return 0;
-
 	GETNONWHITESPACE(pszArgs);
 
 	LPCTSTR orig = pszArgs;
@@ -503,7 +500,7 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 					}
 					case INTRINSIC_ARCCOS:
 					{
-						if ( pszArgs && *pszArgs )
+						if ( *pszArgs != '\0' )
 						{
 							iCount = 1;
 							iResult = static_cast<INT64>(acos(static_cast<double>(GetVal(pszArgs))));
@@ -517,7 +514,7 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 					}
 					case INTRINSIC_ARCSIN:
 					{
-						if ( pszArgs && *pszArgs )
+						if ( *pszArgs != '\0' )
 						{
 							iCount = 1;
 							iResult = static_cast<INT64>(asin(static_cast<double>(GetVal(pszArgs))));
@@ -531,7 +528,7 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 					}
 					case INTRINSIC_ARCTAN:
 					{
-						if ( pszArgs && *pszArgs )
+						if ( *pszArgs != '\0' )
 						{
 							iCount = 1;
 							iResult = static_cast<INT64>(atan(static_cast<double>(GetVal(pszArgs))));
@@ -545,7 +542,7 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 					}
 					case INTRINSIC_COS:
 					{
-						if ( pszArgs && *pszArgs )
+						if ( *pszArgs != '\0' )
 						{
 							iCount = 1;
 							iResult = static_cast<INT64>(cos(static_cast<double>(GetVal(pszArgs))));
@@ -559,7 +556,7 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 					}
 					case INTRINSIC_ID:
 					{
-						if ( pszArgs && *pszArgs )
+						if ( *pszArgs != '\0' )
 						{
 							iCount = 1;
 							iResult = RES_GET_INDEX(GetVal(pszArgs));
@@ -591,7 +588,7 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 						iCount = 0;
 						iResult = 0;
 
-						if ( pszArgs && *pszArgs )
+						if ( *pszArgs != '\0' )
 						{
 							INT64 iArgs = GetVal(pszArgs);
 							if ( iArgs <= 0 )
@@ -627,7 +624,7 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 					}
 					case INTRINSIC_NAPIERPOW:
 					{
-						if ( pszArgs && *pszArgs )
+						if ( *pszArgs != '\0' )
 						{
 							iCount = 1;
 							iResult = static_cast<INT64>(exp(static_cast<double>(GetVal(pszArgs))));
@@ -682,7 +679,7 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 					}
 					case INTRINSIC_SIN:
 					{
-						if ( pszArgs && *pszArgs )
+						if ( *pszArgs != '\0' )
 						{
 							iCount = 1;
 							iResult = static_cast<INT64>(sin(static_cast<double>(GetVal(pszArgs))));
@@ -699,7 +696,7 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 						iCount = 0;
 						iResult = 0;
 
-						if ( pszArgs && *pszArgs )
+						if ( *pszArgs != '\0' )
 						{
 							INT64 iArgs = GetVal(pszArgs);
 							if ( iArgs >= 0 )
@@ -714,7 +711,7 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 					}
 					case INTRINSIC_STRASCII:
 					{
-						if ( pszArgs && *pszArgs )
+						if ( *pszArgs != '\0' )
 						{
 							iCount = 1;
 							iResult = pszArgs[0];
@@ -789,7 +786,7 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 					}
 					case INTRINSIC_TAN:
 					{
-						if ( pszArgs && *pszArgs )
+						if ( *pszArgs != '\0' )
 						{
 							iCount = 1;
 							iResult = static_cast<INT64>(tan(static_cast<double>(GetVal(pszArgs))));

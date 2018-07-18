@@ -274,9 +274,6 @@ bool CResource::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 			return( false );
 	}
 
-	char oldChar = *pszSep;
-	*pszSep = '\0';
-
 	int iResType = FindTableSorted( pszKey, sm_szResourceBlocks, RES_QTY );
 	bool fNewStyleDef = false;
 
@@ -288,12 +285,10 @@ bool CResource::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 			fNewStyleDef = true;
 		}
 		else
-		{
-			*pszSep = oldChar;
-			return( false );
-		}
+			return false;
 	}
 
+	char oldChar = *pszSep;
 	*pszSep = '.';
 
 	// Now get the index.
@@ -1229,7 +1224,7 @@ bool CResource::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 		if ( !strnicmp( pszKey, "REGEN", 5 ))
 		{
 			index = ATOI(pszKey+5);
-			if ( (static_cast<STAT_TYPE>(index) < STAT_STR) || (static_cast<STAT_TYPE>(index) >= STAT_QTY) )
+			if ( (index < STAT_STR) || (index >= STAT_QTY) )
 				return false;
 			sVal.FormatVal(g_Cfg.m_iRegenRate[index] / TICK_PER_SEC);
 			return true;
@@ -2488,7 +2483,9 @@ bool CResource::LoadResourceSection( CScript * pScript )
 			pPrvDef = ResourceGetDef( rid );
 			if ( pPrvDef )
 			{
-				pSpell = dynamic_cast<CSpellDef*>(pPrvDef);
+				pSpell = dynamic_cast<CSpellDef *>(pPrvDef);
+				if ( !pSpell )
+					return false;
 			}
 			else
 			{
@@ -2514,7 +2511,9 @@ bool CResource::LoadResourceSection( CScript * pScript )
 			pPrvDef = ResourceGetDef( rid );
 			if ( pPrvDef )
 			{
-				pSkill = dynamic_cast <CSkillDef*>(pPrvDef);
+				pSkill = dynamic_cast<CSkillDef *>(pPrvDef);
+				if ( !pSkill )
+					return false;
 			}
 			else
 			{
@@ -2548,8 +2547,9 @@ bool CResource::LoadResourceSection( CScript * pScript )
 		pPrvDef = ResourceGetDef( rid );
 		if ( pPrvDef )
 		{
-			CItemTypeDef * pTypeDef	= dynamic_cast <CItemTypeDef*>(pPrvDef);
-			ASSERT( pTypeDef );
+			CItemTypeDef *pTypeDef = dynamic_cast<CItemTypeDef *>(pPrvDef);
+			if ( !pTypeDef )
+				return false;
 			pNewLink = pTypeDef;
 			ASSERT(pNewLink);
 
@@ -2622,8 +2622,9 @@ bool CResource::LoadResourceSection( CScript * pScript )
 		pPrvDef = ResourceGetDef( rid );
 		if ( pPrvDef )
 		{
-			pNewLink = dynamic_cast <CRegionResourceDef*>( pPrvDef );
-			ASSERT(pNewLink);
+			pNewLink = dynamic_cast<CRegionResourceDef *>(pPrvDef);
+			if ( !pNewLink )
+				return false;
 		}
 		else
 		{
@@ -2706,8 +2707,9 @@ bool CResource::LoadResourceSection( CScript * pScript )
 		pPrvDef = ResourceGetDef( rid );
 		if ( pPrvDef )
 		{
-			pNewLink = dynamic_cast <CRandGroupDef*>(pPrvDef);
-			ASSERT(pNewLink);
+			pNewLink = dynamic_cast<CRandGroupDef *>(pPrvDef);
+			if ( !pNewLink )
+				return false;
 		}
 		else
 		{
@@ -2726,8 +2728,9 @@ bool CResource::LoadResourceSection( CScript * pScript )
 		pPrvDef = ResourceGetDef( rid );
 		if ( pPrvDef )
 		{
-			pNewLink = dynamic_cast <CSkillClassDef*>(pPrvDef);
-			ASSERT(pNewLink);
+			pNewLink = dynamic_cast<CSkillClassDef *>(pPrvDef);
+			if ( !pNewLink )
+				return false;
 		}
 		else
 		{
@@ -3024,7 +3027,7 @@ bool CResource::LoadResourceSection( CScript * pScript )
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("section '%s' args '%s'\n", pszSection, pScript ? pScript->GetArgStr() : "");
+	g_Log.EventDebug("section '%s' args '%s'\n", pszSection, pScript->GetArgStr());
 	EXC_DEBUG_END;
 	return false;
 }

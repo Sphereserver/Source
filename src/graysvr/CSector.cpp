@@ -441,16 +441,16 @@ int CSector::GetLocalTime() const
 
 	if ( !g_Cfg.m_bAllowLightOverride )
 	{
-		iLocalTime += ( pt.m_x * 24*60 ) / g_MapList.GetX(pt.m_map);
+		iLocalTime += (pt.m_x * 24 * 60) / maximum(1, g_MapList.GetX(pt.m_map));
 	}
 	else
 	{
 		// Time difference between adjacent sectors in minutes
-		int iSectorTimeDiff = (24*60) / g_MapList.GetSectorCols(pt.m_map);
+		int iSectorTimeDiff = (24 * 60) / maximum(1, g_MapList.GetSectorCols(pt.m_map));
 
 		// Calculate the # of columns between here and Castle Britannia ( x = 1400 )
-		//int iSectorOffset = ( pt.m_x / g_MapList.GetX(pt.m_map) ) - ( (24*60) / g_MapList.GetSectorSize(pt.m_map));
-		int iSectorOffset = ( pt.m_x / g_MapList.GetSectorSize(pt.m_map));
+		//int iSectorOffset = (pt.m_x / g_MapList.GetX(pt.m_map)) - ((24 * 60) / maximum(1, g_MapList.GetSectorSize(pt.m_map)));
+		int iSectorOffset = (pt.m_x / maximum(1, g_MapList.GetSectorSize(pt.m_map)));
 
 		// Calculate the time offset from global time
 		int iTimeOffset = iSectorOffset * iSectorTimeDiff;
@@ -652,7 +652,7 @@ void CSector::SetDefaultWeatherChance()
 {
 	ADDTOCALLSTACK("CSector::SetDefaultWeatherChance");
 	CPointMap pt = GetBasePoint();
-	BYTE iPercent = static_cast<BYTE>(IMULDIV( pt.m_y, 100, g_MapList.GetY(pt.m_map) ));	// 100 = south
+	BYTE iPercent = static_cast<BYTE>(IMULDIV(pt.m_y, 100, maximum(1, g_MapList.GetY(pt.m_map))));	// 100 = south
 	if ( iPercent < 50 )
 	{
 		// Anywhere north of the Britain Moongate is a good candidate for snow

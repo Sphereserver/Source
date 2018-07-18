@@ -341,16 +341,8 @@ LPCTSTR CResource::Calc_MaptoSextant(CPointMap pt)
 	CPointMap ptCenter;
 	ptCenter.Read(strncpy(pszArgs, g_Cfg.m_sZeroPoint, 16));
 
-	int iLat = 0;
-	int iLong = 0;
-	if ( g_MapList.IsMapSupported(ptCenter.m_map) )
-	{
-		iLat = (pt.m_y - ptCenter.m_y) * 360 * 60 / g_MapList.GetY(ptCenter.m_map);
-		if ( pt.m_map <= 1 )
-			iLong = (pt.m_x - ptCenter.m_x) * 360 * 60 / UO_SIZE_X_REAL;
-		else
-			iLong = (pt.m_x - ptCenter.m_x) * 360 * 60 / g_MapList.GetX(pt.m_map);
-	}
+	int iLat = (pt.m_y - ptCenter.m_y) * 360 * 60 / maximum(1, g_MapList.GetY(ptCenter.m_map));
+	int iLong = (pt.m_x - ptCenter.m_x) * 360 * 60 / ((pt.m_map <= 1) ? UO_SIZE_X_REAL : maximum(1, g_MapList.GetX(pt.m_map)));
 
 	TCHAR *pszCoords = Str_GetTemp();
 	sprintf(pszCoords, "%do %d'%s, %do %d'%s", abs(iLat / 60), abs(iLat % 60), (iLat <= 0) ? "N" : "S", abs(iLong / 60), abs(iLong % 60), (iLong >= 0) ? "E" : "W");

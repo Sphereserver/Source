@@ -1518,53 +1518,65 @@ public:
 
 	bool IsMapSupported(int map)
 	{
-		if (( map < 0 ) || ( map > 255 )) return( false );
-		return( m_maps[map] );
+		if ( (map < 0) || (map > 255) )
+			return false;
+		return m_maps[map];
 	}
 
 	int GetX(int map)
 	{
-		if (( map < 0 ) || ( map > 255 )) return 0;
+		if ( (map < 0) || (map > 255) )
+			return 0;
 		return m_sizex[map];
 	}
 	int GetY(int map)
 	{
-		if (( map < 0 ) || ( map > 255 )) return 0;
+		if ( (map < 0) || (map > 255) )
+			return 0;
 		return m_sizey[map];
 	}
+
 	int GetCenterX(int map)
 	{
-		if (( map < 0 ) || ( map > 255 )) return 0;
-		return (m_sizex[map]/2);
+		if ( (map < 0) || (map > 255) )
+			return 0;
+		return m_sizex[map] / 2;
 	}
 	int GetCenterY(int map)
 	{
-		if (( map < 0 ) || ( map > 255 )) return 0;
-		return (m_sizey[map]/2);
+		if ( (map < 0) || (map > 255) )
+			return 0;
+		return m_sizey[map] / 2;
 	}
+
 	int GetSectorSize(int map)
 	{
-		if (( map < 0 ) || ( map > 255 )) return 0;
+		if ( (map < 0) || (map > 255) )
+			return 0;
 		return m_sectorsize[map];
 	}
 	int GetSectorCols(int map)
 	{
-		if (( map < 0 ) || ( map > 255 )) return 0;
-		return (m_sizex[map] / GetSectorSize(map));
+		if ( (map < 0) || (map > 255) || (m_sectorsize[map] <= 0) )
+			return 0;
+		return m_sizex[map] / m_sectorsize[map];
 	}
 	int GetSectorRows(int map)
 	{
-		if (( map < 0 ) || ( map > 255 )) return 0;
-		return (m_sizey[map] / GetSectorSize(map));
+		if ( (map < 0) || (map > 255) || (m_sectorsize[map] <= 0) )
+			return 0;
+		return m_sizey[map] / m_sectorsize[map];
 	}
 	int GetSectorQty(int map)
 	{
-		return ( GetSectorCols(map) * GetSectorRows(map) );
+		if ( (map < 0) || (map > 255) || (m_sectorsize[map] <= 0) )
+			return 0;
+		return (m_sizex[map] / m_sectorsize[map]) * (m_sizey[map] / m_sectorsize[map]);
 	}
 
 	bool IsInitialized(int map)
 	{
-		return (m_mapsinitalized[map]);
+		return m_mapsinitalized[map];
 	}
 } g_MapList;
 
