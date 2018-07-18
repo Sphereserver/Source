@@ -502,7 +502,7 @@ size_t Str_ParseCmds(TCHAR * pCmdLine, INT64 * piCmd, size_t iMax, LPCTSTR pSep 
 * @param iElemSize size of elements of the table.
 * @return the index of string if success, -1 otherwise.
 */
-int FindTable(LPCTSTR pFind, LPCTSTR const * ppTable, size_t iCount, size_t iElemSize = sizeof(LPCTSTR));
+int FindTable(LPCTSTR pszFind, LPCTSTR const *ppszTable, size_t iCount, size_t iElemSize = sizeof(LPCTSTR *));
 /**
 * @brief Look for a string in a table (binary search).
 * @param pFind string we are looking for.
@@ -511,7 +511,8 @@ int FindTable(LPCTSTR pFind, LPCTSTR const * ppTable, size_t iCount, size_t iEle
 * @param iElemSize size of elements of the table.
 * @return the index of string if success, -1 otherwise.
 */
-int FindTableSorted(LPCTSTR pFind, LPCTSTR const * ppTable, size_t iCount, size_t iElemSize = sizeof(LPCTSTR));/**
+int FindTableSorted(LPCTSTR pszFind, LPCTSTR const *ppszTable, size_t iCount, size_t iElemSize = sizeof(LPCTSTR *));
+/**
 * @brief Look for a string header in a table (uses Str_CmpHeadI to compare instead of strcmpi).
 * @param pFind string we are looking for.
 * @param ppTable table where we are looking for the string.
@@ -519,7 +520,7 @@ int FindTableSorted(LPCTSTR pFind, LPCTSTR const * ppTable, size_t iCount, size_
 * @param iElemSize size of elements of the table.
 * @return the index of string if success, -1 otherwise.
 */
-int FindTableHead(LPCTSTR pFind, LPCTSTR const * ppTable, size_t iCount, size_t iElemSize = sizeof(LPCTSTR));
+int FindTableHead(LPCTSTR pszFind, LPCTSTR const *ppszTable, size_t iCount, size_t iElemSize = sizeof(LPCTSTR *));
 /**
 * @brief Look for a string header in a table (binary search, uses Str_CmpHeadI to compare instead of strcmpi).
 * @param pFind string we are looking for.
@@ -528,7 +529,7 @@ int FindTableHead(LPCTSTR pFind, LPCTSTR const * ppTable, size_t iCount, size_t 
 * @param iElemSize size of elements of the table.
 * @return the index of string if success, -1 otherwise.
 */
-int FindTableHeadSorted(LPCTSTR pFind, LPCTSTR const * ppTable, size_t iCount, size_t iElemSize = sizeof(LPCTSTR));
+int FindTableHeadSorted(LPCTSTR pszFind, LPCTSTR const *ppszTable, size_t iCount, size_t iElemSize = sizeof(LPCTSTR *));
 
 void CharToMultiByteNonNull(BYTE*, const char* , size_t);
 

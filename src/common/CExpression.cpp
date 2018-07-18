@@ -480,7 +480,7 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 #pragma region intrinsics
 	{
 		// Symbol or intrinsinc function?
-		int index = FindTableHeadSorted(pszArgs, sm_IntrinsicFunctions, COUNTOF(sm_IntrinsicFunctions) - 1, sizeof(sm_IntrinsicFunctions[0]));
+		int index = FindTableHeadSorted(pszArgs, sm_IntrinsicFunctions, COUNTOF(sm_IntrinsicFunctions) - 1);
 		if ( index >= 0 )
 		{
 			size_t iLen = strlen(sm_IntrinsicFunctions[index]);

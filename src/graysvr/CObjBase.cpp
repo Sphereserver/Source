@@ -53,8 +53,22 @@ CObjBase::CObjBase(bool fItem)
 	m_timeout.Init();
 	m_timestamp.Init();
 	m_wHue = HUE_DEFAULT;
+	m_RunningTrigger = NULL;
 
+	m_Can = 0;
 	m_ModMaxWeight = 0;
+
+	m_attackBase = 0;
+	m_attackRange = 0;
+
+	m_defenseBase = 0;
+	m_defenseRange = 0;
+
+	m_DamPhysical = 0;
+	m_DamFire = 0;
+	m_DamCold = 0;
+	m_DamPoison = 0;
+	m_DamEnergy = 0;
 
 	m_ResPhysical = 0;
 	m_ResPhysicalMax = 0;
