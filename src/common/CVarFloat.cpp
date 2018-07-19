@@ -305,11 +305,10 @@ RealType CVarFloat::GetSingle(LPCTSTR &pszArgs)
 			{
 				case INTRINSIC_ARCCOS:
 				{
-					if ( pszArgs && *pszArgs )
+					if ( *pszArgs != '\0' )
 					{
 						iCount = 1;
-						RealType dArgument = MakeFloatMath(pszArgs);
-						dResult = acos(dArgument) * 180 / M_PI;
+						dResult = acos(MakeFloatMath(pszArgs)) * 180 / M_PI;
 					}
 					else
 					{
@@ -320,11 +319,10 @@ RealType CVarFloat::GetSingle(LPCTSTR &pszArgs)
 				}
 				case INTRINSIC_ARCSIN:
 				{
-					if ( pszArgs && *pszArgs )
+					if ( *pszArgs != '\0' )
 					{
 						iCount = 1;
-						RealType dArgument = MakeFloatMath(pszArgs);
-						dResult = asin(dArgument) * 180 / M_PI;
+						dResult = asin(MakeFloatMath(pszArgs)) * 180 / M_PI;
 					}
 					else
 					{
@@ -335,11 +333,10 @@ RealType CVarFloat::GetSingle(LPCTSTR &pszArgs)
 				}
 				case INTRINSIC_ARCTAN:
 				{
-					if ( pszArgs && *pszArgs )
+					if ( *pszArgs != '\0' )
 					{
 						iCount = 1;
-						RealType dArgument = MakeFloatMath(pszArgs);
-						dResult = atan(dArgument) * 180 / M_PI;
+						dResult = atan(MakeFloatMath(pszArgs)) * 180 / M_PI;
 					}
 					else
 					{
@@ -350,11 +347,10 @@ RealType CVarFloat::GetSingle(LPCTSTR &pszArgs)
 				}
 				case INTRINSIC_COS:
 				{
-					if ( pszArgs && *pszArgs )
+					if ( *pszArgs != '\0' )
 					{
 						iCount = 1;
-						RealType dArgument = MakeFloatMath(pszArgs);
-						dResult = cos(dArgument * M_PI / 180);
+						dResult = cos(MakeFloatMath(pszArgs) * M_PI / 180);
 					}
 					else
 					{
@@ -365,7 +361,7 @@ RealType CVarFloat::GetSingle(LPCTSTR &pszArgs)
 				}
 				case INTRINSIC_ID:
 				{
-					if ( pszArgs && *pszArgs )
+					if ( *pszArgs != '\0' )
 					{
 						iCount = 1;
 						dResult = RES_GET_INDEX(static_cast<int>(MakeFloatMath(pszArgs)));
@@ -432,7 +428,7 @@ RealType CVarFloat::GetSingle(LPCTSTR &pszArgs)
 				}
 				case INTRINSIC_NAPIERPOW:
 				{
-					if ( pszArgs && *pszArgs )
+					if ( *pszArgs != '\0' )
 					{
 						iCount = 1;
 						dResult = exp(MakeFloatMath(pszArgs));
@@ -511,11 +507,10 @@ RealType CVarFloat::GetSingle(LPCTSTR &pszArgs)
 				}
 				case INTRINSIC_SIN:
 				{
-					if ( pszArgs && *pszArgs )
+					if ( *pszArgs != '\0' )
 					{
 						iCount = 1;
-						RealType dArgument = MakeFloatMath(pszArgs);
-						dResult = sin(dArgument * M_PI / 180);
+						dResult = sin(MakeFloatMath(pszArgs) * M_PI / 180);
 					}
 					else
 					{
@@ -527,7 +522,7 @@ RealType CVarFloat::GetSingle(LPCTSTR &pszArgs)
 				case INTRINSIC_SQRT:
 				{
 					iCount = 0;
-					if ( pszArgs && *pszArgs )
+					if ( *pszArgs != '\0' )
 					{
 						RealType dTosquare = MakeFloatMath(pszArgs);
 						if ( dTosquare >= 0 )
@@ -547,7 +542,7 @@ RealType CVarFloat::GetSingle(LPCTSTR &pszArgs)
 				}
 				case INTRINSIC_STRASCII:
 				{
-					if ( pszArgs && *pszArgs )
+					if ( *pszArgs != '\0' )
 					{
 						iCount = 1;
 						dResult = pszArgs[0];
@@ -625,11 +620,10 @@ RealType CVarFloat::GetSingle(LPCTSTR &pszArgs)
 				}
 				case INTRINSIC_TAN:
 				{
-					if ( pszArgs && *pszArgs )
+					if ( *pszArgs != '\0' )
 					{
 						iCount = 1;
-						RealType dArgument = MakeFloatMath(pszArgs);
-						dResult = tan(dArgument * M_PI / 180);
+						dResult = tan(MakeFloatMath(pszArgs) * M_PI / 180);
 					}
 					else
 					{

@@ -546,7 +546,7 @@ public:
 	// Status and attributes
 	int IsWeird() const;
 	signed char GetFixZ(CPointMap pt, DWORD dwBlockFlags = 0);
-	virtual void Delete(bool bForce = false, CClient *pClient = NULL);
+	virtual void Delete(bool fForce = false, CClient *pClient = NULL);
 	virtual bool NotifyDelete(CClient *pClient = NULL);
 	bool IsStatFlag(DWORD dwStatFlag) const
 	{
@@ -1144,11 +1144,11 @@ private:
 
 	void Spell_Dispel(int iLevel);
 	CChar *Spell_Summon(CREID_TYPE id, CPointMap ptTarg);
-	bool Spell_Recall(CItem *pTarg, bool bGate);
-	CItem *Spell_Effect_Create(SPELL_TYPE spell, LAYER_TYPE layer, int iSkillLevel, int iDuration, CObjBase *pSrc = NULL, bool bEquip = true);
+	bool Spell_Recall(CItem *pTarg, bool fGate);
+	CItem *Spell_Effect_Create(SPELL_TYPE spell, LAYER_TYPE layer, int iSkillLevel, int iDuration, CObjBase *pSrc = NULL, bool fEquip = true);
 	bool Spell_Equip_OnTick(CItem *pItem);
 
-	void Spell_Field(CPointMap ptTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, unsigned int fieldWidth, unsigned int fieldGauge, int iSkillLevel, CChar *pCharSrc = NULL, ITEMID_TYPE idNewEW = ITEMID_NOTHING, ITEMID_TYPE idNewNS = ITEMID_NOTHING, int iDuration = 0, HUE_TYPE iColor = HUE_DEFAULT);
+	void Spell_Field(CPointMap ptTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, BYTE bFieldWidth, BYTE bFieldGauge, int iSkillLevel, CChar *pCharSrc = NULL, int iDuration = 0, HUE_TYPE wColor = HUE_DEFAULT);
 	void Spell_Area(CPointMap ptTarg, int iDist, int iSkillLevel);
 	bool Spell_TargCheck_Face();
 	bool Spell_TargCheck();
@@ -1159,10 +1159,10 @@ private:
 
 public:
 	bool Spell_CastDone();
-	bool OnSpellEffect(SPELL_TYPE spell, CChar *pCharSrc, int iSkillLevel, CItem *pSourceItem, bool bReflecting = false);
-	bool Spell_Resurrection(CItemCorpse *pCorpse = NULL, CChar *pCharSrc = NULL, bool bNoFail = false);
-	bool Spell_Teleport(CPointMap ptNew, bool bTakePets = false, bool bCheckAntiMagic = true, bool bDisplayEffect = true, ITEMID_TYPE iEffect = ITEMID_NOTHING, SOUND_TYPE iSound = SOUND_NONE);
-	bool Spell_CreateGate(CPointMap ptNew, bool bCheckAntiMagic = true);
+	bool OnSpellEffect(SPELL_TYPE spell, CChar *pCharSrc, int iSkillLevel, CItem *pSourceItem, bool fReflecting = false);
+	bool Spell_Resurrection(CItemCorpse *pCorpse = NULL, CChar *pCharSrc = NULL, bool fNoFail = false);
+	bool Spell_Teleport(CPointMap ptNew, bool fTakePets = false, bool fCheckAntiMagic = true, bool fDisplayEffect = true, ITEMID_TYPE iEffect = ITEMID_NOTHING, SOUND_TYPE iSound = SOUND_NONE);
+	bool Spell_CreateGate(CPointMap ptNew, bool fCheckAntiMagic = true);
 	bool Spell_CanCast(SPELL_TYPE &spell, bool fTest, CObjBase *pSrc, bool fFailMsg, bool fCheckAntiMagic = true);
 	int	GetSpellDuration(SPELL_TYPE spell, int iSkillLevel, CChar *pCharSrc = NULL);
 
@@ -1258,8 +1258,8 @@ public:
 
 	//
 	bool Player_OnVerb(CScript &s, CTextConsole *pSrc);
-	bool ReadScriptTrig(CCharBase *pCharDef, CTRIG_TYPE trig, bool bVendor = false);
-	bool ReadScript(CResourceLock &s, bool bVendor = false);
+	bool ReadScriptTrig(CCharBase *pCharDef, CTRIG_TYPE trig, bool fVendor = false);
+	bool ReadScript(CResourceLock &s, bool fVendor = false);
 	void NPC_LoadScript(bool fRestock);
 	void NPC_CreateTrigger();
 
@@ -1451,7 +1451,7 @@ public:
 	void NPC_OnHear(LPCTSTR pszCmd, CChar *pSrc, bool fAllPets = false);
 	bool NPC_OnItemGive(CChar *pCharSrc, CItem *pItem);
 	bool NPC_SetVendorPrice(CItem *pItem, int iPrice);
-	bool OnTriggerSpeech(bool bIsPet, LPCTSTR pszText, CChar *pSrc, TALKMODE_TYPE &mode, HUE_TYPE wHue = HUE_DEFAULT);
+	bool OnTriggerSpeech(bool fPet, LPCTSTR pszText, CChar *pSrc, TALKMODE_TYPE &mode, HUE_TYPE wHue = HUE_DEFAULT);
 
 	// Outside events that occur to us
 	int OnTakeDamage(int iDmg, CChar *pSrc, DAMAGE_TYPE uType, int iDmgPhysical = 0, int iDmgFire = 0, int iDmgCold = 0, int iDmgPoison = 0, int iDmgEnergy = 0);
