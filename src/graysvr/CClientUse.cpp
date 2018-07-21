@@ -1268,19 +1268,19 @@ bool CClient::Cmd_SecureTrade(CChar *pChar, CItem *pItem)
 	}
 
 	CItem *pItem1 = CItem::CreateBase(ITEMID_Bulletin1);
-	if ( !pItem1 )
+	CItem *pItem2 = CItem::CreateBase(ITEMID_Bulletin1);
+	if ( !pItem1 || !pItem2 )
 		return false;
 
-	CItemContainer *pCont1 = static_cast<CItemContainer *>(pItem1);
-	if ( !pCont1 )
+	CItemContainer *pCont1 = dynamic_cast<CItemContainer *>(pItem1);
+	CItemContainer *pCont2 = dynamic_cast<CItemContainer *>(pItem2);
+	if ( !pCont1 || !pCont2 )
 	{
-		DEBUG_ERR(("Item 0%x must be a container type to enable player trading.\n", ITEMID_Bulletin1));
+		DEBUG_ERR(("Can't create trade window on char '%s' [0%lx]: Itemdef 0%x is not a container type\n", m_pChar->GetName(), static_cast<DWORD>(m_pChar->GetUID()), ITEMID_Bulletin1));
 		pItem1->Delete();
+		pItem2->Delete();
 		return false;
 	}
-
-	CItemContainer *pCont2 = static_cast<CItemContainer *>(CItem::CreateBase(ITEMID_Bulletin1));
-	ASSERT(pCont2);
 
 	pCont1->SetName("Trade Window");
 	pCont1->SetType(IT_EQ_TRADE_WINDOW);

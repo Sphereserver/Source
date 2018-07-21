@@ -818,39 +818,36 @@ bool CChar::Stats_Regen(INT64 iTimeDiff)
 
 	for ( STAT_TYPE i = STAT_STR; i <= STAT_FOOD; i = static_cast<STAT_TYPE>(i + 1) )
 	{
-		if ( g_Cfg.m_iRegenRate[i] < 0 )
+		if ( g_Cfg.m_iRegenRate[i] <= 0 )
 			continue;
 
-		int iMod = Stats_GetRegenVal(i, true);
+		WORD wRate = Stats_GetRegenVal(i, true);
+		if ( wRate <= 0 )
+			continue;
+
 		m_Stat[i].m_regen += static_cast<WORD>(iTimeDiff);
-		if ( m_Stat[i].m_regen < static_cast<WORD>(iMod) )
+		if ( m_Stat[i].m_regen < wRate )
 			continue;
 
+		m_Stat[i].m_regen = 0;
+
+		int iMod = Stats_GetRegenVal(i, false);
 		if ( (i == STAT_STR) && (g_Cfg.m_iRacialFlags & RACIALF_HUMAN_TOUGH) && IsHuman() )
-			iMod += 2;		// Humans always have +2 hitpoint regeneration (Tough racial trait)
+			iMod += 2;		// humans always have +2 hitpoint regeneration (Tough racial trait)
 
 		int iStatLimit = Stat_GetMax(i);
 
 		if ( IsTrigUsed(TRIGGER_REGENSTAT) )
 		{
 			CScriptTriggerArgs Args;
-			Args.m_VarsLocal.SetNum("StatID", i, true);
+			Args.m_VarsLocal.SetNum("StatID", i, true);		// read-only
 			Args.m_VarsLocal.SetNum("Value", iMod, true);
 			Args.m_VarsLocal.SetNum("StatLimit", iStatLimit, true);
 			if ( i == STAT_FOOD )
 				Args.m_VarsLocal.SetNum("HitsHungerLoss", iHitsHungerLoss);
 
 			if ( OnTrigger(CTRIG_RegenStat, this, &Args) == TRIGRET_RET_TRUE )
-			{
-				m_Stat[i].m_regen = 0;
 				continue;
-			}
-
-			i = static_cast<STAT_TYPE>(Args.m_VarsLocal.GetKeyNum("StatID"));
-			if ( i < STAT_STR )
-				i = STAT_STR;
-			else if ( i > STAT_FOOD )
-				i = STAT_FOOD;
 
 			iMod = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Value"));
 			iStatLimit = static_cast<int>(Args.m_VarsLocal.GetKeyNum("StatLimit"));
@@ -859,8 +856,6 @@ bool CChar::Stats_Regen(INT64 iTimeDiff)
 		}
 		if ( iMod == 0 )
 			continue;
-
-		m_Stat[i].m_regen = 0;
 
 		if ( i == STAT_FOOD )
 			OnTickFood(iMod, iHitsHungerLoss);
@@ -874,8 +869,8 @@ WORD CChar::Stats_GetRegenVal(STAT_TYPE iStat, bool fGetTicks)
 {
 	ADDTOCALLSTACK("CChar::Stats_GetRegenVal");
 	// Return regen rates and regen val for the given stat.
-	// bGetTicks = true returns the regen ticks
-	// bGetTicks = false returns the values of regeneration.
+	// fGetTicks = true returns the regen ticks
+	// fGetTicks = false returns the values of regeneration.
 
 	LPCTSTR pszStat = NULL;
 	switch ( iStat )
@@ -898,20 +893,20 @@ WORD CChar::Stats_GetRegenVal(STAT_TYPE iStat, bool fGetTicks)
 
 	if ( iStat <= STAT_FOOD )
 	{
-		char sRegen[14];
+		char chRegen[14];
 		if ( fGetTicks )
 		{
-			sprintf(sRegen, "REGEN%s", pszStat);
-			WORD wRate = static_cast<WORD>(maximum(0, GetDefNum(sRegen))) * TICK_PER_SEC;
+			sprintf(chRegen, "REGEN%s", pszStat);
+			WORD wRate = static_cast<WORD>(maximum(0, GetDefNum(chRegen)));
 			if ( wRate )
-				return wRate;
+				return wRate * TICK_PER_SEC;
 
 			return static_cast<WORD>(maximum(0, g_Cfg.m_iRegenRate[iStat]));
 		}
 		else
 		{
-			sprintf(sRegen, "REGENVAL%s", pszStat);
-			return static_cast<WORD>(maximum(1, GetDefNum(sRegen)));
+			sprintf(chRegen, "REGENVAL%s", pszStat);
+			return static_cast<WORD>(maximum(1, GetDefNum(chRegen)));
 		}
 	}
 	return 0;
