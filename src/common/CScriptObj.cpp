@@ -45,8 +45,8 @@ int CTextConsole::OnConsoleKey(CGString &sText, TCHAR szChar, bool fEcho)
 		// Extract up to start of the word
 		LPCTSTR pszArgs = sText.GetPtr() + sText.GetLength();
 		while ( (pszArgs >= sText.GetPtr()) && (*pszArgs != '.') && (*pszArgs != ' ') && (*pszArgs != '/') && (*pszArgs != '=') )
-			pszArgs--;
-		pszArgs++;
+			--pszArgs;
+		++pszArgs;
 		size_t inputLen = strlen(pszArgs);
 
 		// Search in the auto-complete list for starting on P, and save coords of first/last match
@@ -138,7 +138,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop(CScript &s, int iType, CTextConsole *p
 		TCHAR *pszCond;
 		CGString sOrig;
 		TemporaryString pszTemp;
-		int iWhile = 0;
+		int i = 0;
 
 		sOrig.Copy(s.GetArgStr());
 		for (;;)
@@ -147,13 +147,13 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop(CScript &s, int iType, CTextConsole *p
 			if ( g_Cfg.m_iMaxLoopTimes && (iLoopsMade >= g_Cfg.m_iMaxLoopTimes) )
 				goto toomanyloops;
 
-			pArgs->m_VarsLocal.SetNum("_WHILE", iWhile, false);
-			++iWhile;
 			strcpy(pszTemp, sOrig.GetPtr());
 			pszCond = pszTemp;
 			ParseText(pszCond, pSrc, 0, pArgs);
 			if ( !Exp_GetLLVal(pszCond) )
 				break;
+
+			pArgs->m_VarsLocal.SetNum("_WHILE", i, false);
 			TRIGRET_TYPE iRet = OnTriggerRun(s, TRIGRUN_SECTION_TRUE, pSrc, pArgs, psResult);
 			if ( iRet == TRIGRET_BREAK )
 			{
@@ -167,6 +167,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop(CScript &s, int iType, CTextConsole *p
 			else
 				EndContext = s.GetContext();
 			s.SeekContext(StartContext);
+			++i;
 		}
 	}
 	else
@@ -190,16 +191,16 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop(CScript &s, int iType, CTextConsole *p
 			}
 			case 2:		// FOR min max, FOR name max
 			{
-				if ( IsDigit(*ppArgs[0]) )
+				if ( IsDigit(*ppArgs[0]) || ((*ppArgs[0] == '-') && IsDigit(*(ppArgs[0] + 1))) )
 				{
 					iMin = Exp_GetSingle(ppArgs[0]);
 					iMax = Exp_GetSingle(ppArgs[1]);
 				}
 				else
 				{
+					sLoopVar = ppArgs[0];
 					iMin = 1;
 					iMax = Exp_GetSingle(ppArgs[1]);
-					sLoopVar = ppArgs[0];
 				}
 				break;
 			}
@@ -1716,7 +1717,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		{
 			GETNONWHITESPACE(pszKey);
 			if ( *pszKey == '-' )
-				pszKey++;
+				++pszKey;
 			sVal.FormatVal(IsStrNumeric(pszKey));
 			return true;
 		}
@@ -2383,7 +2384,7 @@ bool CScriptTriggerArgs::r_GetRef(LPCTSTR &pszKey, CScriptObj *&pRef)
 				if ( !*pszTemp || (*pszTemp == '.') )
 				{
 					if ( *pszTemp == '.' )
-						pszTemp++;
+						++pszTemp;
 
 					pRef = m_VarObjs.Get(wNumber);
 					pszKey = pszTemp;
@@ -2481,7 +2482,7 @@ bool CScriptTriggerArgs::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole
 					if ( !fQuotes && !fInerQuotes && (*s == ',') )
 					{
 						*s = '\0';
-						s++;
+						++s;
 						break;
 					}
 					++s;
@@ -2497,14 +2498,14 @@ bool CScriptTriggerArgs::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole
 			return true;
 		}
 
-		size_t iNum = static_cast<size_t>(maximum(0, Exp_GetLLSingle(pszKey)));
-		SKIP_SEPARATORS(pszKey);
-		if ( !m_v.IsValidIndex(iNum) )
+		INT64 iKey = Exp_GetLLSingle(pszKey);
+		if ( (iKey < 0) || !m_v.IsValidIndex(static_cast<size_t>(iKey)) )
 		{
 			sVal = "";
 			return true;
 		}
-		sVal = m_v.GetAt(iNum);
+
+		sVal = m_v.GetAt(static_cast<size_t>(iKey));
 		return true;
 	}
 
@@ -2600,7 +2601,7 @@ bool CScriptTriggerArgs::r_Verb(CScript &s, CTextConsole *pSrc)
 			index = AGC_O;
 		else
 		{
-			pszKey++;
+			++pszKey;
 			CObjBase *pObj = static_cast<CObjBase *>(static_cast<CGrayUID>(Exp_GetSingle(pszKey)).ObjFind());
 			m_pO1 = pObj ? pObj : NULL;
 			return true;

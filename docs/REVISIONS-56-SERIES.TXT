@@ -1142,4 +1142,5 @@ Added: Support for 'combat ability' (@UserSpecialMove) and 'virtue' (@UserVirtue
 
 21-07-2018, Coruja
 Fixed: Possible exploit when client open an trade window while trade window itemdef is not scripted.
+Fixed: FOR loop not working correctly when range value is negative.
 [sphereCrypt.ini]: Added crypt key for classic client 7.0.66 and enhanced client 4.0.66

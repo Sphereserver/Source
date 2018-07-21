@@ -363,7 +363,7 @@ size_t CContainer::ResourceConsumePart(const CResourceQtyArray *pResources, DWOR
 
 	size_t iMissing = pResources->BadIndex();
 	size_t iQtyRes = pResources->GetCount();
-	for ( size_t i = 0; i < iQtyRes; i++ )
+	for ( size_t i = 0; i < iQtyRes; ++i )
 	{
 		DWORD dwResQty = static_cast<DWORD>(pResources->GetAt(i).GetResQty());
 		if ( dwResQty <= 0 ) // not sure why this would be true
@@ -403,7 +403,7 @@ DWORD CContainer::ResourceConsume(const CResourceQtyArray *pResources, DWORD dwR
 	}
 
 	DWORD dwQtyMin = ULONG_MAX;
-	for ( size_t i = 0; i < pResources->GetCount(); i++ )
+	for ( size_t i = 0; i < pResources->GetCount(); ++i )
 	{
 		DWORD dwResQty = static_cast<DWORD>(pResources->GetAt(i).GetResQty());
 		if ( dwResQty <= 0 )	// not sure why this would be true
@@ -440,7 +440,7 @@ DWORD CContainer::ContentCountAll() const
 	DWORD dwTotal = 0;
 	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
-		dwTotal++;
+		++dwTotal;
 		CItemContainer *pCont = dynamic_cast<CItemContainer *>(pItem);
 		if ( !pCont )
 			continue;
@@ -467,7 +467,8 @@ bool CContainer::r_GetRefContainer(LPCTSTR &pszKey, CScriptObj *&pRef)
 		{
 			pszKey += 4;
 			SKIP_SEPARATORS(pszKey);
-			pRef = GetAt(static_cast<size_t>(maximum(0, Exp_GetLLSingle(pszKey))));
+			INT64 iKey = Exp_GetLLSingle(pszKey);
+			pRef = (iKey >= 0) ? GetAt(static_cast<size_t>(iKey)) : NULL;
 			SKIP_SEPARATORS(pszKey);
 			return true;
 		}
@@ -508,7 +509,7 @@ bool CContainer::r_WriteValContainer(LPCTSTR pszKey, CGString &sVal, CTextConsol
 		{
 			WORD wTotal = 0;
 			for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
-				wTotal++;
+				++wTotal;
 
 			sVal.FormatUVal(wTotal);
 			break;
@@ -626,13 +627,13 @@ void CItemContainer::Trade_Status(bool fCheck)
 	{
 		CScriptTriggerArgs Args1(pChar1);
 		WORD i = 1;
-		for ( CItem *pItem = pPartner->GetContentHead(); pItem != NULL; pItem = pItem->GetNext(), i++ )
+		for ( CItem *pItem = pPartner->GetContentHead(); pItem != NULL; pItem = pItem->GetNext(), ++i )
 			Args1.m_VarObjs.Insert(i, pItem, true);
 		Args1.m_iN1 = --i;
 
 		CScriptTriggerArgs Args2(pChar2);
 		i = 1;
-		for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext(), i++ )
+		for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext(), ++i )
 			Args2.m_VarObjs.Insert(i, pItem, true);
 		Args2.m_iN2 = --i;
 
@@ -894,7 +895,7 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 		{ GUMP_CHEST_METAL2, 18, 105, 162, 178 }
 	};
 
-	for ( size_t i = 0; i < COUNTOF(sm_ContainerRect); i++ )
+	for ( size_t i = 0; i < COUNTOF(sm_ContainerRect); ++i )
 	{
 		if ( gump != sm_ContainerRect[i].m_gump )
 			continue;
@@ -993,7 +994,7 @@ void CItemContainer::ContentAdd(CItem *pItem, CPointMap pt, BYTE gridIndex)
 	if ( !fValidGrid )
 	{
 		// The grid index we've been given is already in use, so find the first unused grid index
-		for ( gridIndex = 0; (gridIndex < UCHAR_MAX) && !fValidGrid; gridIndex++ )
+		for ( gridIndex = 0; (gridIndex < UCHAR_MAX) && !fValidGrid; ++gridIndex )
 		{
 			fValidGrid = true;
 			for ( CItem *pTry = GetContentHead(); pTry != NULL; pTry = pTry->GetNext() )
@@ -1507,7 +1508,7 @@ void CItemContainer::Game_Create()
 
 	if ( m_itGameBoard.m_GameType == 0 )	// chess
 	{
-		for ( size_t i = 0; i < COUNTOF(sm_Item_ChessPieces); i++ )
+		for ( size_t i = 0; i < COUNTOF(sm_Item_ChessPieces); ++i )
 		{
 			// Add all it's pieces (if not already added)
 			CItem *pPiece = CItem::CreateBase(sm_Item_ChessPieces[i]);
@@ -1531,7 +1532,7 @@ void CItemContainer::Game_Create()
 	}
 	else if ( m_itGameBoard.m_GameType == 1 )	// checkers
 	{
-		for ( size_t i = 0; i < 24; i++ )
+		for ( size_t i = 0; i < 24; ++i )
 		{
 			// Add all it's pieces (if not already added)
 			CItem *pPiece = CItem::CreateBase((i >= 12) ? ITEMID_GAME1_CHECKER : ITEMID_GAME2_CHECKER);
@@ -1555,7 +1556,7 @@ void CItemContainer::Game_Create()
 	}
 	else if ( m_itGameBoard.m_GameType == 2 )	// backgammon
 	{
-		for ( size_t i = 0; i < 30; i++ )
+		for ( size_t i = 0; i < 30; ++i )
 		{
 			// Add all it's pieces (if not already added)
 			CItem *pPiece = CItem::CreateBase((i >= 15) ? ITEMID_GAME1_CHECKER : ITEMID_GAME2_CHECKER);
