@@ -564,22 +564,22 @@ bool CClient::addKick(CTextConsole *pSrc, bool fBlock)
 	return true;
 }
 
-void CClient::addSound(SOUND_TYPE id, const CObjBaseTemplate *pBase, BYTE bRepeat)
+void CClient::addSound(SOUND_TYPE id, const CObjBaseTemplate *pSrc, BYTE bRepeat)
 {
 	ADDTOCALLSTACK("CClient::addSound");
 	if ( !g_Cfg.m_fGenericSounds )
 		return;
 
 	CPointMap pt;
-	if ( pBase )
+	if ( pSrc )
 	{
-		pBase = pBase->GetTopLevelObj();
-		pt = pBase->GetTopPoint();
+		pSrc = pSrc->GetTopLevelObj();
+		pt = pSrc->GetTopPoint();
 	}
 	else
 		pt = m_pChar->GetTopPoint();
 
-	if ( (id > 0) && !bRepeat && !pBase )
+	if ( (id > 0) && !bRepeat && !pSrc )
 		return;
 
 	new PacketPlaySound(this, id, bRepeat, 0, pt);
@@ -839,23 +839,17 @@ void CClient::addObjMessage(LPCTSTR pszMsg, const CObjBaseTemplate *pSrc, HUE_TY
 	addBarkParse(pszMsg, pSrc, wHue, mode);
 }
 
-void CClient::addEffect(EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate *pDst, const CObjBaseTemplate *pSrc, BYTE bSpeedSeconds, BYTE bLoop, bool fExplode, DWORD dwColor, DWORD dwRender, WORD wEffectID, WORD wExplodeID, WORD wExplodeSound, DWORD dwEffectUID, BYTE bType)
+void CClient::addEffect(EFFECT_TYPE motion, const CObjBaseTemplate *pSrc, CPointMap ptSrc, const CObjBaseTemplate *pDest, CPointMap ptDest, ITEMID_TYPE id, BYTE bSpeed, BYTE bFrames, bool fExplode, DWORD dwColor, DWORD dwRender, WORD wEffectID, WORD wExplodeID, WORD wExplodeSound, DWORD dwItemUID, BYTE bLayer)
 {
 	ADDTOCALLSTACK("CClient::addEffect");
-	// bSpeedSeconds = seconds (0=very fast, 7=slow)
-
 	ASSERT(m_pChar);
-	ASSERT(pDst);
-
-	if ( !pSrc && (motion == EFFECT_BOLT) )		// bolt effect requires an source
-		return;
 
 	if ( wEffectID || wExplodeID )
-		new PacketEffect(this, motion, id, pDst, pSrc, bSpeedSeconds, bLoop, fExplode, dwColor, dwRender, wEffectID, wExplodeID, wExplodeSound, dwEffectUID, bType);
+		new PacketEffect(this, motion, pSrc, ptSrc, pDest, ptDest, id, bSpeed, bFrames, fExplode, dwColor, dwRender, wEffectID, wExplodeID, wExplodeSound, dwItemUID, bLayer);
 	else if ( dwColor || dwRender )
-		new PacketEffect(this, motion, id, pDst, pSrc, bSpeedSeconds, bLoop, fExplode, dwColor, dwRender);
+		new PacketEffect(this, motion, pSrc, ptSrc, pDest, ptDest, id, bSpeed, bFrames, fExplode, dwColor, dwRender);
 	else
-		new PacketEffect(this, motion, id, pDst, pSrc, bSpeedSeconds, bLoop, fExplode);
+		new PacketEffect(this, motion, pSrc, ptSrc, pDest, ptDest, id, bSpeed, bFrames, fExplode);
 }
 
 void CClient::GetAdjustedItemID(const CChar *pChar, const CItem *pItem, ITEMID_TYPE &id, HUE_TYPE &wHue) const

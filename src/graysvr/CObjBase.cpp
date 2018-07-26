@@ -342,21 +342,41 @@ void CObjBase::Sound(SOUND_TYPE id, BYTE iRepeat) const
 	}
 }
 
-void CObjBase::Effect(EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBase *pSource, BYTE bSpeedSeconds, BYTE bLoop, bool fExplode, DWORD color, DWORD render, WORD effectid, WORD explodeid, WORD explodesound, DWORD effectuid, BYTE type) const
+void CObjBase::Effect(EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate *pSrc, BYTE bSpeed, BYTE bFrames, bool fExplode, DWORD dwColor, DWORD dwRender, WORD wEffectID, WORD wExplodeID, WORD wExplodeSound, DWORD dwItemUID, BYTE bLayer, CPointMap ptSrc, CPointMap ptDest) const
 {
 	ADDTOCALLSTACK("CObjBase::Effect");
-	// show for everyone near by.
-	//
-	// bSpeedSeconds
-	// bLoop
-	// fExplode
+	// Send effect to everyone nearby
+
+	CObjBaseTemplate *pDest = NULL;
+	if ( ptSrc.IsValidXY() )
+	{
+		pSrc = NULL;
+	}
+	else
+	{
+		pSrc = pSrc->GetTopLevelObj();
+		ptSrc = pSrc->GetTopPoint();
+		pDest = GetTopLevelObj();
+		ptDest = pDest->GetTopPoint();
+	}
 
 	ClientIterator it;
 	for ( CClient *pClient = it.next(); pClient != NULL; pClient = it.next() )
 	{
-		if ( !pClient->CanSee(this) )
+		CChar *pChar = pClient->GetChar();
+		if ( !pChar )
 			continue;
-		pClient->addEffect(motion, id, this, pSource, bSpeedSeconds, bLoop, fExplode, color, render, effectid, explodeid, explodesound, effectuid, type);
+		if ( pDest )
+		{
+			if ( !pChar->CanSee(pDest) )
+				continue;
+		}
+		else
+		{
+			if ( pChar->GetTopPoint().GetDist(ptDest) > pChar->m_iVisualRange )
+				continue;
+		}
+		pClient->addEffect(motion, pSrc, ptSrc, pDest, ptDest, id, bSpeed, bFrames, fExplode, dwColor, dwRender, wEffectID, wExplodeID, wExplodeSound, dwItemUID, bLayer);
 	}
 }
 
@@ -1958,36 +1978,61 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 			pClientSrc->Cmd_EditItem(this, -1);
 			break;
 		}
-		case OV_EFFECT: // some visual effect.
+		case OV_EFFECT:
 		{
 			EXC_SET("EFFECT");
+			// Visual effect based on obj location
+			// Syntax: EFFECT motion, id, speed, frames, [explode, color, render, effectID, explodeID, explodeSound, itemUID, layer]
+
 			INT64 piCmd[12];
 			size_t iArgQty = Str_ParseCmds(s.GetArgStr(), piCmd, COUNTOF(piCmd));
-			if ( iArgQty < 2 )
-				return false;
-			CObjBase *pThis = this;
-			if ( piCmd[0] == -1 )
-			{
-				if ( pCharSrc )
-				{
-					piCmd[0] = EFFECT_BOLT;
-					pThis = pCharSrc;
-					pCharSrc = dynamic_cast<CChar *>(this);
-				}
+			if ( iArgQty < 4 )
+				return true;
 
-			}
-			pThis->Effect(static_cast<EFFECT_TYPE>(piCmd[0]), static_cast<ITEMID_TYPE>(RES_GET_INDEX(piCmd[1])),
-				pCharSrc,
-				(iArgQty >= 3) ? static_cast<BYTE>(piCmd[2]) : 5,		// BYTE bSpeedSeconds = 5,
-				(iArgQty >= 4) ? static_cast<BYTE>(piCmd[3]) : 1,		// BYTE bLoop = 1,
-				(iArgQty >= 5) ? (piCmd[4] != 0) : false,				// bool fExplode = false
-				(iArgQty >= 6) ? static_cast<DWORD>(piCmd[5]) : 0,		// Hue
-				(iArgQty >= 7) ? static_cast<DWORD>(piCmd[6]) : 0,		// Render mode,		
-				(iArgQty >= 8) ? static_cast<WORD>(piCmd[7]) : 0,		// EffectID	//New Packet 0xc7
+			Effect(
+				static_cast<EFFECT_TYPE>(piCmd[0]),						// Motion
+				static_cast<ITEMID_TYPE>(RES_GET_INDEX(piCmd[1])),		// ID
+				pCharSrc ? pCharSrc : this,								// Source
+				static_cast<BYTE>(piCmd[2]),							// Speed
+				static_cast<BYTE>(piCmd[3]),							// Frames
+				(iArgQty >= 5) ? (piCmd[4] != 0) : false,				// Explode
+				(iArgQty >= 6) ? static_cast<DWORD>(piCmd[5]) : 0,		// Color
+				(iArgQty >= 7) ? static_cast<DWORD>(piCmd[6]) : 0,		// Render
+				(iArgQty >= 8) ? static_cast<WORD>(piCmd[7]) : 0,		// EffectID
 				(iArgQty >= 9) ? static_cast<WORD>(piCmd[8]) : 0,		// ExplodeID
 				(iArgQty >= 10) ? static_cast<WORD>(piCmd[9]) : 0,		// ExplodeSound
-				(iArgQty >= 11) ? static_cast<DWORD>(piCmd[10]) : 0,	// EffectUID
-				(iArgQty >= 12) ? static_cast<BYTE>(piCmd[11]) : 0		// Type
+				(iArgQty >= 11) ? static_cast<DWORD>(piCmd[10]) : 0,	// ItemUID
+				(iArgQty >= 12) ? static_cast<BYTE>(piCmd[11]) : 0		// Layer
+			);
+			break;
+		}
+		case OV_EFFECTP:
+		{
+			EXC_SET("EFFECTP");
+			// Visual effect based on P location
+			// Syntax: EFFECTLOC srcX, srcY, srcZ, srcM, destX, destY, destZ, destM, motion, id, speed, frames, [explode, color, render, effectID, explodeID, explodeSound, itemUID, layer]
+
+			INT64 piCmd[20];
+			size_t iArgQty = Str_ParseCmds(s.GetArgStr(), piCmd, COUNTOF(piCmd));
+			if ( iArgQty < 12 )
+				return true;
+
+			Effect(
+				static_cast<EFFECT_TYPE>(piCmd[8]),						// Motion
+				static_cast<ITEMID_TYPE>(RES_GET_INDEX(piCmd[9])),		// ID
+				NULL,													// Source
+				static_cast<BYTE>(piCmd[10]),							// Speed
+				static_cast<BYTE>(piCmd[11]),							// Frames
+				(iArgQty >= 5) ? (piCmd[12] != 0) : false,				// Explode
+				(iArgQty >= 6) ? static_cast<DWORD>(piCmd[13]) : 0,		// Color
+				(iArgQty >= 7) ? static_cast<DWORD>(piCmd[14]) : 0,		// Render
+				(iArgQty >= 8) ? static_cast<WORD>(piCmd[15]) : 0,		// EffectID
+				(iArgQty >= 9) ? static_cast<WORD>(piCmd[16]) : 0,		// ExplodeID
+				(iArgQty >= 10) ? static_cast<WORD>(piCmd[17]) : 0,		// ExplodeSound
+				(iArgQty >= 11) ? static_cast<DWORD>(piCmd[18]) : 0,	// ItemUID
+				(iArgQty >= 12) ? static_cast<BYTE>(piCmd[19]) : 0,		// Layer
+				CPointMap(static_cast<WORD>(piCmd[0]), static_cast<WORD>(piCmd[1]), static_cast<signed char>(piCmd[2]), static_cast<unsigned char>(piCmd[3])),	// Source P
+				CPointMap(static_cast<WORD>(piCmd[4]), static_cast<WORD>(piCmd[5]), static_cast<signed char>(piCmd[6]), static_cast<unsigned char>(piCmd[7]))	// Dest P
 			);
 			break;
 		}

@@ -1144,3 +1144,9 @@ Added: Support for 'combat ability' (@UserSpecialMove) and 'virtue' (@UserVirtue
 Fixed: Possible exploit when client open an trade window while trade window itemdef is not scripted.
 Fixed: FOR loop not working correctly when range value is negative.
 [sphereCrypt.ini]: Added crypt key for classic client 7.0.66 and enhanced client 4.0.66
+
+25-07-2018, Coruja
+Added: New function EFFECTP, which works in the same way as EFFECT but showing the animation on given P location instead given object.
+	-Syntax: EFFECTP SrcX, SrcY, SrcZ, SrcM, DestX, DestY, DestZ, DestM, Motion, ItemID, Speed, Frames, [Explode, Color, Render, EffectID, ExplodeID, ExplodeSound]
+	-First 12 args are required, remaining args are optional
+	-Main idea ported from Sphere experimental branch, credits to Drk84 / XuN

@@ -1767,108 +1767,93 @@ void PacketTradeAction::prepareUpdateLedger(const CItemContainer *container, DWO
  *
  *
  ***************************************************************************/
-PacketEffect::PacketEffect(const CClient* target, EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate* dst, const CObjBaseTemplate* src, BYTE speed, BYTE loop, bool explode) : PacketSend(XCMD_Effect, 20, PRI_NORMAL)
+PacketEffect::PacketEffect(const CClient *target, EFFECT_TYPE motion, const CObjBaseTemplate *pSrc, CPointMap ptSrc, const CObjBaseTemplate *pDest, CPointMap ptDest, ITEMID_TYPE id, BYTE bSpeed, BYTE bFrames, bool fExplode) : PacketSend(XCMD_Effect, 20, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketEffect::PacketEffect");
 
-	writeBasicEffect(motion, id, dst, src, speed, loop, explode);
+	writeBasicEffect(motion, pSrc, ptSrc, pDest, ptDest, id, bSpeed, bFrames, fExplode);
 
 	push(target);
 }
 
-PacketEffect::PacketEffect(const CClient* target, EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate* dst, const CObjBaseTemplate* src, BYTE speed, BYTE loop, bool explode, DWORD hue, DWORD render) : PacketSend(XCMD_EffectEx, 28, PRI_NORMAL)
+PacketEffect::PacketEffect(const CClient *target, EFFECT_TYPE motion, const CObjBaseTemplate *pSrc, CPointMap ptSrc, const CObjBaseTemplate *pDest, CPointMap ptDest, ITEMID_TYPE id, BYTE bSpeed, BYTE bFrames, bool fExplode, DWORD dwColor, DWORD dwRender) : PacketSend(XCMD_EffectEx, 28, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketEffect::PacketEffect(2)");
 
-	writeBasicEffect(motion, id, dst, src, speed, loop, explode);
-	writeHuedEffect(hue, render);
+	writeBasicEffect(motion, pSrc, ptSrc, pDest, ptDest, id, bSpeed, bFrames, fExplode);
+	writeHuedEffect(dwColor, dwRender);
 
 	push(target);
 }
 
-PacketEffect::PacketEffect(const CClient* target, EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate* dst, const CObjBaseTemplate* src, BYTE speed, BYTE loop, bool explode, DWORD hue, DWORD render, WORD effectid, WORD explodeid, WORD explodesound, DWORD effectuid, BYTE type) : PacketSend(XCMD_EffectParticle, 49, PRI_NORMAL)
+PacketEffect::PacketEffect(const CClient *target, EFFECT_TYPE motion, const CObjBaseTemplate *pSrc, CPointMap ptSrc, const CObjBaseTemplate *pDest, CPointMap ptDest, ITEMID_TYPE id, BYTE bSpeed, BYTE bFrames, bool fExplode, DWORD dwColor, DWORD dwRender, WORD wEffectID, WORD wExplodeID, WORD wExplodeSound, DWORD dwItemUID, BYTE bLayer) : PacketSend(XCMD_EffectParticle, 49, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketEffect::PacketEffect(3)");
 
-	writeBasicEffect(motion, id, dst, src, speed, loop, explode);
-	writeHuedEffect(hue, render);
-
-	writeInt16(effectid);
-	writeInt16(explodeid);
-	writeInt16(explodesound);
-	writeInt32(effectuid);
-	writeByte((type == 0) ? 0xFF : 0x03);
+	writeBasicEffect(motion, pSrc, ptSrc, pDest, ptDest, id, bSpeed, bFrames, fExplode);
+	writeHuedEffect(dwColor, dwRender);
+	writeInt16(wEffectID);
+	writeInt16(wExplodeID);
+	writeInt16(wExplodeSound);
+	writeInt32(dwItemUID);
+	writeByte((bLayer == 0) ? 0xFF : 0x3);
 	writeInt16(0);
+
 	push(target);
 }
 
-void PacketEffect::writeBasicEffect(EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate* dst, const CObjBaseTemplate* src, BYTE speed, BYTE loop, bool explode)
+void PacketEffect::writeBasicEffect(EFFECT_TYPE motion, const CObjBaseTemplate *pSrc, CPointMap ptSrc, const CObjBaseTemplate *pDest, CPointMap ptDest, ITEMID_TYPE id, BYTE bSpeed, BYTE bFrames, bool fExplode)
 {
 	ADDTOCALLSTACK("PacketEffect::writeBasicEffect");
 
-	bool oneDirection = true;
-	dst = dst->GetTopLevelObj();
-	CPointMap dstpos = dst->GetTopPoint();
-
-	CPointMap srcpos;
-	if (src && (motion == EFFECT_BOLT))
-	{
-		src = src->GetTopLevelObj();
-		srcpos = src->GetTopPoint();
-	}
-	else
-		srcpos = dstpos;
-
-
 	writeByte(static_cast<BYTE>(motion));
 
-	switch (motion)
+	bool fFixedDirection = true;
+	switch ( motion )
 	{
-		case EFFECT_BOLT: // a targeted bolt
-			if (!src)
-				src = dst;
-
-			oneDirection = false;
-			loop = 0; // does not apply.
-
-			writeInt32(src->GetUID()); // source
-			writeInt32(dst->GetUID());
+		case EFFECT_BOLT:
+		{
+			fFixedDirection = false;
+			writeInt32(pSrc ? pSrc->GetUID() : 0);
+			writeInt32(pDest ? pDest->GetUID() : 0);
 			break;
-
-		case EFFECT_LIGHTNING: // lightning bolt.
-		case EFFECT_XYZ: // stay at current xyz
-		case EFFECT_OBJ: // effect at single object.
-			writeInt32(dst->GetUID());
+		}
+		case EFFECT_LIGHTNING:
+		case EFFECT_XYZ:
+		case EFFECT_OBJ:
+		{
+			writeInt32(pDest ? pDest->GetUID() : 0);
 			writeInt32(0);
 			break;
-
-		default: // unknown (should never happen)
+		}
+		default:	// this should never happen
+		{
 			writeInt32(0);
 			writeInt32(0);
 			break;
+		}
 	}
 
 	writeInt16(static_cast<WORD>(id));
-	writeInt16(srcpos.m_x);
-	writeInt16(srcpos.m_y);
-	writeByte(srcpos.m_z);
-	writeInt16(dstpos.m_x);
-	writeInt16(dstpos.m_y);
-	writeByte(dstpos.m_z);
-	writeByte(speed); // 0=very fast, 7=slow
-	writeByte(loop); // 0=really long, 1=shortest, 6=longer
+	writeInt16(ptSrc.m_x);
+	writeInt16(ptSrc.m_y);
+	writeByte(ptSrc.m_z);
+	writeInt16(ptDest.m_x);
+	writeInt16(ptDest.m_y);
+	writeByte(ptDest.m_z);
+	writeByte(bSpeed);
+	writeByte(bFrames);
 	writeInt16(0);
-	writeBool(oneDirection);
-	writeBool(explode);
-
+	writeBool(fFixedDirection);
+	writeBool(fExplode);
 }
 
-void PacketEffect::writeHuedEffect(DWORD hue, DWORD render)
+void PacketEffect::writeHuedEffect(DWORD dwColor, DWORD dwRender)
 {
 	ADDTOCALLSTACK("PacketEffect::writeHuedEffect");
 
-	writeInt32(hue);
-	writeInt32(render);
+	writeInt32(dwColor);
+	writeInt32(dwRender);
 }
 
 
