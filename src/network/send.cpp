@@ -1814,15 +1814,15 @@ void PacketEffect::writeBasicEffect(EFFECT_TYPE motion, const CObjBaseTemplate *
 		case EFFECT_BOLT:
 		{
 			fFixedDirection = false;
-			writeInt32(pSrc ? pSrc->GetUID() : 0);
-			writeInt32(pDest ? pDest->GetUID() : 0);
+			writeInt32(pSrc ? static_cast<DWORD>(pSrc->GetUID()) : 0);
+			writeInt32(pDest ? static_cast<DWORD>(pDest->GetUID()) : 0);
 			break;
 		}
 		case EFFECT_LIGHTNING:
 		case EFFECT_XYZ:
 		case EFFECT_OBJ:
 		{
-			writeInt32(pDest ? pDest->GetUID() : 0);
+			writeInt32(pDest ? static_cast<DWORD>(pDest->GetUID()) : 0);
 			writeInt32(0);
 			break;
 		}
