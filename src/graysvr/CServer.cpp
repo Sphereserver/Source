@@ -503,7 +503,7 @@ bool CServer::OnConsoleCmd(CGString &sText, CTextConsole *pSrc)
 	TCHAR szLow = static_cast<TCHAR>(tolower(sText[0]));
 	bool fRet = true;
 
-	if ( ((len > 2) || ((len == 2) && (sText[1] != '#'))) && (sText[0] != 'd') )
+	if ( ((len > 2) || ((len == 2) && (sText[1] != '#'))) && (szLow != 'd') )
 		goto longcommand;
 
 	switch ( szLow )

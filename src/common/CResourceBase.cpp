@@ -256,11 +256,10 @@ LPCTSTR CResourceBase::ResourceGetName(RESOURCE_ID_BASE rid) const
 		return pResourceDef->GetResourceName();
 
 	TCHAR *pszTmp = Str_GetTemp();
-	ASSERT(pszTmp);
 	if ( rid.IsValidUID() )
 		sprintf(pszTmp, "0%x", rid.GetResIndex());
 	else
-		sprintf(pszTmp, "%lu", rid.GetPrivateUID());
+		sprintf(pszTmp, "%ld", static_cast<long>(rid.GetPrivateUID()));
 	return pszTmp;
 }
 
