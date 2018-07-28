@@ -89,7 +89,7 @@ void CGString::Empty(bool bTotal)
 			gMemAmount -= m_iMaxLength;
 #endif
 			delete[] m_pchData;
-			m_pchData = NULL;
+			m_pchData = '\0';
 			m_iMaxLength = 0;
 		}
 	}
@@ -113,13 +113,13 @@ size_t CGString::SetLength(size_t iNewLength)
 
 		size_t iMinLength = minimum(iNewLength, m_iLength);
 		strncpy(pNewData, m_pchData, iMinLength);
-		pNewData[m_iLength] = 0;
+		pNewData[m_iLength] = '\0';
 
 		if (m_pchData) delete[] m_pchData;
 		m_pchData = pNewData;
 	}
 	m_iLength = iNewLength;
-	m_pchData[m_iLength] = 0;
+	m_pchData[m_iLength] = '\0';
 	return m_iLength;
 }
 
@@ -181,14 +181,14 @@ CGString::CGString()
 CGString::CGString(LPCTSTR pStr)
 {
 	m_iMaxLength = m_iLength = 0;
-	m_pchData = NULL;
+	m_pchData = '\0';
 	Copy(pStr);
 }
 
 CGString::CGString(const CGString &s)
 {
 	m_iMaxLength = m_iLength = 0;
-	m_pchData = NULL;
+	m_pchData = '\0';
 	Copy(s.GetPtr());
 }
 
@@ -443,7 +443,7 @@ void CGString::Init()
 #endif
 	m_iLength = 0;
 	m_pchData = new TCHAR[m_iMaxLength + 1];
-	m_pchData[m_iLength] = 0;
+	m_pchData[m_iLength] = '\0';
 }
 
 //***************************************************************************
@@ -564,7 +564,7 @@ size_t Str_ParseCmds(TCHAR * pszCmdLine, TCHAR ** ppCmd, size_t iMax, LPCTSTR ps
 		}
 	}
 	for (size_t j = iQty; j < iMax; j++)
-		ppCmd[j] = NULL;	// terminate if possible.
+		ppCmd[j] = '\0';	// terminate if possible.
 	return(iQty);
 }
 

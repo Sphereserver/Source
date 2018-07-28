@@ -1404,7 +1404,7 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			SKIP_SEPARATORS(pszKey);
 
 			sVal.FormatVal(0);
-			if ( (iNumber < 0) || (iNumber >= g_Serv.StatGet(SERV_STAT_CLIENTS)) )
+			if ( iNumber >= g_Serv.StatGet(SERV_STAT_CLIENTS) )
 				return true;
 
 			size_t i = 0;
