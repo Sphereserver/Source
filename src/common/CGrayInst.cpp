@@ -5,64 +5,53 @@
 bool CGrayInstall::FindInstall()
 {
 #ifdef _WIN32
-	// Get the install path from the registry.
-
+	// Get the install path from the registry
 	static LPCTSTR m_szKeys[] =
 	{
-		"Software\\Origin Worlds Online\\Ultima Online\\1.0",
-		"Software\\Origin Worlds Online\\Ultima Online Third Dawn\\1.0",
-		"Software\\Origin Worlds Online\\Ultima Online\\KR Legacy Beta",
+		"Software\\Electronic Arts\\EA Games\\Ultima Online Classic",
 		"Software\\Electronic Arts\\EA Games\\Ultima Online Stygian Abyss Classic",
-		"Software\\Electronic Arts\\EA Games\\Ultima Online Classic"
+		"Software\\Origin Worlds Online\\Ultima Online\\KR Legacy Beta",
+		"Software\\Origin Worlds Online\\Ultima Online Third Dawn\\1.0",
+		"Software\\Origin Worlds Online\\Ultima Online\\1.0"
 	};
-	
-	HKEY hKey = NULL;
+
 	LSTATUS lRet = 0;
-	for ( size_t i = 0; i < COUNTOF(m_szKeys); i++ )
+	HKEY hKey = NULL;
+	for ( size_t i = 0; i < COUNTOF(m_szKeys); ++i )
 	{
-		lRet = RegOpenKeyEx( HKEY_LOCAL_MACHINE,
-			m_szKeys[i], // address of name of subkey to query
-			0, KEY_READ, &hKey );
+		lRet = RegOpenKeyEx(HKEY_LOCAL_MACHINE, m_szKeys[i], 0, KEY_READ, &hKey);
 		if ( lRet == ERROR_SUCCESS )
 			break;
 	}
 	if ( lRet != ERROR_SUCCESS )
-	{
-		return( false );
-	}
+		return false;
 
-	TCHAR szValue[ _MAX_PATH ];
-	DWORD lSize = sizeof( szValue );
 	DWORD dwType = REG_SZ;
-	lRet = RegQueryValueEx(hKey, "ExePath", NULL, &dwType, (BYTE*)szValue, &lSize);
-
-	if ( lRet == ERROR_SUCCESS && dwType == REG_SZ )
+	TCHAR szValue[_MAX_PATH];
+	DWORD dwSize = sizeof(szValue);
+	lRet = RegQueryValueEx(hKey, "ExePath", NULL, &dwType, reinterpret_cast<BYTE *>(szValue), &dwSize);
+	if ( (lRet == ERROR_SUCCESS) && (dwType == REG_SZ) )
 	{
-		TCHAR * pSlash = strrchr( szValue, '\\' );	// get rid of the client.exe part of the name
-		if ( pSlash ) * pSlash = '\0';
+		TCHAR *pSlash = strrchr(szValue, '\\');		// get rid of the client.exe part of the name
+		if ( pSlash )
+			*pSlash = '\0';
 		m_sExePath = szValue;
 	}
 	else
 	{
-		lRet = RegQueryValueEx(hKey, "InstallDir", NULL, &dwType, (BYTE*)szValue, &lSize);
-		if ( lRet == ERROR_SUCCESS && dwType == REG_SZ )
+		lRet = RegQueryValueEx(hKey, "InstallDir", NULL, &dwType, reinterpret_cast<BYTE *>(szValue), &dwSize);
+		if ( (lRet == ERROR_SUCCESS) && (dwType == REG_SZ) )
 			m_sExePath = szValue;
 	}
 
-	// ??? Find CDROM install base as well, just in case.
-	// uo.cfg CdRomDataPath=e:\uo
-
-	lRet = RegQueryValueEx(hKey, "InstCDPath", NULL, &dwType, (BYTE*)szValue, &lSize);
-
-	if ( lRet == ERROR_SUCCESS && dwType == REG_SZ )
-	{
+	// Check CD-ROM install path as well, just in case
+	lRet = RegQueryValueEx(hKey, "InstCDPath", NULL, &dwType, reinterpret_cast<BYTE *>(szValue), &dwSize);
+	if ( (lRet == ERROR_SUCCESS) && (dwType == REG_SZ) )
 		m_sCDPath = szValue;
-	}
 
-	RegCloseKey( hKey );
-
+	RegCloseKey(hKey);
 #else
-	// LINUX has no registry so we must have the INI file show us where it is installed.
+	// Linux has no registry, 'MulFiles' path must be set manually on sphere.ini
 #endif
 	return true;
 }
@@ -71,66 +60,47 @@ void CGrayInstall::DetectMulVersions()
 {
 	ADDTOCALLSTACK("CGrayInstall::DetectMulVersions");
 
-	// assume all formats are original to start with
-	for (size_t i = 0; i < COUNTOF(m_FileFormat); i++)
+	// Assume all formats are original to start with
+	for ( size_t i = 0; i < COUNTOF(m_FileFormat); ++i )
 		m_FileFormat[i] = VERFORMAT_ORIGINAL;
 
-	// check for High Seas tiledata format
-	// this can be tested for by checking the file size, which was 3188736 bytes at release
-	if ( m_File[VERFILE_TILEDATA].IsFileOpen() && m_File[VERFILE_TILEDATA].GetLength() >= 3188736 )
+	// Check for High Seas tiledata format
+	// This can be tested checking the file size, which was 3188736 bytes at release
+	if ( m_File[VERFILE_TILEDATA].IsFileOpen() && (m_File[VERFILE_TILEDATA].GetLength() >= 3188736) )
 		m_FileFormat[VERFILE_TILEDATA] = VERFORMAT_HIGHSEAS;
-	
-	// check for High Seas multi format
-	// we can't use multi.mul length because it varies and multi.idx is always 98184 bytes, the best option
+
+	// Check for High Seas multi format
+	// We can't use multi.mul length because it varies and multi.idx is always 98184 bytes, the best option
 	// so far seems to be to check the size of the first entry to see if its length is divisible by the new
 	// format length (risky if the first entry is custom and happens to be be divisible by both lengths)
 	CUOIndexRec index;
-	if (ReadMulIndex( VERFILE_MULTIIDX, VERFILE_MULTI, 0x00, index) && (index.GetBlockLength() % sizeof(CUOMultiItemRec2)) == 0)
+	if ( ReadMulIndex(VERFILE_MULTIIDX, VERFILE_MULTI, 0x0, index) && (index.GetBlockLength() % sizeof(CUOMultiItemRec2) == 0) )
 		m_FileFormat[VERFILE_MULTIIDX] = VERFORMAT_HIGHSEAS;
 }
 
-bool CGrayInstall::OpenFile( CGFile & file, LPCTSTR pszName, WORD wFlags )
-{
-	ADDTOCALLSTACK("CGrayInstall::OpenFile");
-	ASSERT(pszName);
-	if ( !m_sPreferPath.IsEmpty() )
-	{
-		if ( file.Open(GetPreferPath(pszName), wFlags) )
-			return true;
-	}
-	else
-	{
-		if ( file.Open(GetFullExePath(pszName), wFlags) )
-			return true;
-		if ( file.Open(GetFullCDPath(pszName), wFlags) )
-			return true;
-	}
-	return false;
-}
-
-LPCTSTR CGrayInstall::GetBaseFileName( VERFILE_TYPE i ) // static
+LPCTSTR CGrayInstall::GetBaseFileName(VERFILE_TYPE i)	// static
 {
 	ADDTOCALLSTACK("CGrayInstall::GetBaseFileName");
 	static LPCTSTR const sm_szFileNames[VERFILE_QTY] =
 	{
-		"artidx.mul",	// Index to ART
-		"art.mul",		// Artwork such as ground, objects, etc.
+		"artidx.mul",
+		"art.mul",
 		"anim.idx",
-		"anim.mul",		// Animations such as monsters, people, and armor.
-		"soundidx.mul", // Index into SOUND
-		"sound.mul",	// Sampled sounds
-		"texidx.mul",	// Index into TEXMAPS
-		"texmaps.mul",	// Texture map data (the ground).
-		"gumpidx.mul",	// Index to GUMPART
-		"gumpart.mul",	// Gumps. Stationary controller bitmaps such as windows, buttons, paperdoll pieces, etc.
+		"anim.mul",
+		"soundidx.mul",
+		"sound.mul",
+		"texidx.mul",
+		"texmaps.mul",
+		"gumpidx.mul",
+		"gumpart.mul",
 		"multi.idx",
-		"multi.mul",	// Groups of art (houses, castles, etc)
+		"multi.mul",
 		"skills.idx",
 		"skills.mul",
 		"verdata.mul",
-		"map0.mul",		// MAP(s)
-		"staidx0.mul",	// STAIDX(s)
-		"statics0.mul",	// Static objects on MAP(s)
+		"map0.mul",
+		"staidx0.mul",
+		"statics0.mul",
 		NULL,
 		NULL,
 		NULL,
@@ -143,76 +113,77 @@ LPCTSTR CGrayInstall::GetBaseFileName( VERFILE_TYPE i ) // static
 		NULL,
 		NULL,
 		NULL,
-		"tiledata.mul", // Data about tiles in ART. name and flags, etc
-		"animdata.mul", //
-		"hues.mul"		// the 16 bit color pallete we use for everything.
+		"tiledata.mul",
+		"animdata.mul",
+		"hues.mul"
 	};
 
-	return ( i<0 || i>=VERFILE_QTY ) ? NULL : sm_szFileNames[i];
+	if ( (i >= 0) && (i < VERFILE_QTY) )
+		return sm_szFileNames[i];
+
+	return NULL;
 }
 
-bool CGrayInstall::OpenFile( VERFILE_TYPE i )
+bool CGrayInstall::OpenFile(CGFile &file, LPCTSTR pszFileName, WORD wFlags)
 {
 	ADDTOCALLSTACK("CGrayInstall::OpenFile");
-	CGFile	*pFile = GetMulFile(i);
-	if ( !pFile )
-		return false;
-	if ( pFile->IsFileOpen())
+	ASSERT(pszFileName);
+	if ( !m_sPreferPath.IsEmpty() && file.Open(GetPreferPath(pszFileName), wFlags) )
+		return true;
+	if ( file.Open(GetFullExePath(pszFileName), wFlags) )
+		return true;
+	if ( file.Open(GetFullCDPath(pszFileName), wFlags) )
 		return true;
 
-	if ( !pFile->GetFilePath().IsEmpty() )
-	{
-		if ( pFile->Open(pFile->GetFilePath(), OF_READ|OF_SHARE_DENY_WRITE) )
-			return true;
-	}
-
-	LPCTSTR pszTitle = GetBaseFileName(static_cast<VERFILE_TYPE>(i));
-	if ( !pszTitle ) return false;
-
-	return OpenFile(m_File[i], pszTitle, OF_READ|OF_SHARE_DENY_WRITE);
+	return false;
 }
 
-VERFILE_TYPE CGrayInstall::OpenFiles( DWORD dwMask )
+bool CGrayInstall::OpenFile(VERFILE_TYPE i)
+{
+	ADDTOCALLSTACK("CGrayInstall::OpenFile");
+	CGFile *pFile = GetMulFile(i);
+	if ( !pFile )
+		return false;
+
+	if ( pFile->IsFileOpen() )
+		return true;
+	if ( !pFile->GetFilePath().IsEmpty() && pFile->Open(pFile->GetFilePath(), OF_READ|OF_SHARE_DENY_WRITE) )
+		return true;
+
+	LPCTSTR pszFileName = GetBaseFileName(static_cast<VERFILE_TYPE>(i));
+	if ( !pszFileName )
+		return false;
+
+	return OpenFile(m_File[i], pszFileName, OF_READ|OF_SHARE_DENY_WRITE);
+}
+
+VERFILE_TYPE CGrayInstall::OpenFiles(DWORD dwMask)
 {
 	ADDTOCALLSTACK("CGrayInstall::OpenFiles");
-	// Now open all the required files.
-	// RETURN: VERFILE_QTY = all open success.
-	int i(0);
+	// Open all the required files
+	// RETURN:
+	//  VERFILE_QTY = success
 
-	for ( i = 0; i < VERFILE_QTY; i++ )
+	int i = 0;
+	for ( ; i < VERFILE_HUES; ++i )
 	{
-		if ( ! ( dwMask & ( 1 << i )) ) continue;
-		if ( GetBaseFileName(static_cast<VERFILE_TYPE>(i)) == NULL ) continue;
+		if ( !(dwMask & (1 << i)) )
+			continue;
+		if ( !GetBaseFileName(static_cast<VERFILE_TYPE>(i)) )
+			continue;
 
-		bool bFileLoaded = true;
-		switch (i)
+		bool fFileLoaded = true;
+		switch ( i )
 		{
-			default:
-				if ( !OpenFile(static_cast<VERFILE_TYPE>(i)))
-				{
-					//	make some MULs optional
-					switch ( i )
-					{
-						case VERFILE_VERDATA:
-							break;
-
-						default:
-							bFileLoaded = false;
-							break;
-					}
-				}
-				break;
-
 			case VERFILE_MAP:
-				// map file is handled differently
+			{
+				// Map file is handled differently
 				TCHAR z[256];
-
-				//	check for map files of custom maps
-				for ( int m = 0; m < 256; m++ )
+				for ( int m = 0; m < 256; ++m )
 				{
-					if (g_MapList.IsInitialized(m) || (m == 0)) //Need at least a minimum of map0... (Ben)
+					if ( g_MapList.IsInitialized(m) || (m == 0) )	// need at least a minimum of map0... (Ben)
 					{
-						int	index = g_MapList.m_mapnum[m];
+						int index = g_MapList.m_mapnum[m];
 						if ( index == -1 )
 						{
 							g_MapList.m_maps[m] = false;
@@ -224,77 +195,75 @@ VERFILE_TYPE CGrayInstall::OpenFiles( DWORD dwMask )
 							sprintf(z, "map%d.mul", index);
 							OpenFile(m_Maps[index], z, OF_READ|OF_SHARE_DENY_WRITE);
 
-							if (m_Maps[index].IsFileOpen())
-							{
+							if ( m_Maps[index].IsFileOpen() )
 								m_IsMapUopFormat[index] = false;
-							}
 							else
 							{
 								sprintf(z, "map%dLegacyMUL.uop", index);
 								OpenFile(m_Maps[index], z, OF_READ|OF_SHARE_DENY_WRITE);
 
-								//Should parse uop file here for faster reference later.
-								if (m_Maps[index].IsFileOpen())
+								// Should parse uop file here for faster reference later
+								if ( m_Maps[index].IsFileOpen() )
 								{
 									m_IsMapUopFormat[index] = true;
 
-									unsigned long dwHashLo, dwHashHi, dwCompressedSize, dwHeaderLenght, dwFilesInBlock, dwTotalFiles, dwLoop;
-									unsigned long long qwUOPPtr;
+									DWORD dwHashLo, dwHashHi, dwCompressedSize, dwHeaderLength, dwFilesInBlock, dwTotalFiles, dwLoop;
+									UINT64 qwUOPPtr;
 
-									m_Maps[index].Seek( sizeof(DWORD)*3, SEEK_SET );
-									m_Maps[index].Read( &dwHashLo, sizeof(DWORD));
-									m_Maps[index].Read( &dwHashHi, sizeof(DWORD));
-									qwUOPPtr = ((INT64)dwHashHi << 32) + dwHashLo;
-									m_Maps[index].Seek( sizeof(DWORD), SEEK_CUR );
-									m_Maps[index].Read( &dwTotalFiles, sizeof(DWORD));
-									m_Maps[index].Seek( static_cast<long>(qwUOPPtr), SEEK_SET );
+									m_Maps[index].Seek(sizeof(DWORD) * 3, SEEK_SET);
+									m_Maps[index].Read(&dwHashLo, sizeof(DWORD));
+									m_Maps[index].Read(&dwHashHi, sizeof(DWORD));
+									qwUOPPtr = (static_cast<INT64>(dwHashHi) << 32) + dwHashLo;
+									m_Maps[index].Seek(sizeof(DWORD), SEEK_CUR);
+									m_Maps[index].Read(&dwTotalFiles, sizeof(DWORD));
+									m_Maps[index].Seek(static_cast<LONG>(qwUOPPtr), SEEK_SET);
 									dwLoop = dwTotalFiles;
 
-									while (qwUOPPtr > 0)
+									while ( qwUOPPtr > 0 )
 									{
-										m_Maps[index].Read( &dwFilesInBlock, sizeof(DWORD));
-										m_Maps[index].Read( &dwHashLo, sizeof(DWORD));
-										m_Maps[index].Read( &dwHashHi, sizeof(DWORD));
-										qwUOPPtr = ((INT64)dwHashHi << 32) + dwHashLo;
+										m_Maps[index].Read(&dwFilesInBlock, sizeof(DWORD));
+										m_Maps[index].Read(&dwHashLo, sizeof(DWORD));
+										m_Maps[index].Read(&dwHashHi, sizeof(DWORD));
+										qwUOPPtr = (static_cast<INT64>(dwHashHi) << 32) + dwHashLo;
 
-										while ((dwFilesInBlock > 0)&&(dwTotalFiles > 0))
+										while ( (dwFilesInBlock > 0) && (dwTotalFiles > 0) )
 										{
-											dwTotalFiles--;
-											dwFilesInBlock--;
+											--dwTotalFiles;
+											--dwFilesInBlock;
 
-											m_Maps[index].Read( &dwHashLo, sizeof(DWORD));
-											m_Maps[index].Read( &dwHashHi, sizeof(DWORD));
-											m_Maps[index].Read( &dwHeaderLenght, sizeof(DWORD));
-											m_Maps[index].Read( &dwCompressedSize, sizeof(DWORD));
+											m_Maps[index].Read(&dwHashLo, sizeof(DWORD));
+											m_Maps[index].Read(&dwHashHi, sizeof(DWORD));
+											m_Maps[index].Read(&dwHeaderLength, sizeof(DWORD));
+											m_Maps[index].Read(&dwCompressedSize, sizeof(DWORD));
 
 											MapAddress pMapAddress;
-											pMapAddress.qwAdress = (((INT64)dwHashHi << 32) + dwHashLo) + dwHeaderLenght;
+											pMapAddress.qwAdress = ((static_cast<INT64>(dwHashHi) << 32) + dwHashLo) + dwHeaderLength;
 
-											m_Maps[index].Seek( sizeof(DWORD), SEEK_CUR );
-											m_Maps[index].Read( &dwHashLo, sizeof(DWORD));
-											m_Maps[index].Read( &dwHashHi, sizeof(DWORD));
-											unsigned long long qwHash = ((INT64)dwHashHi << 32) + dwHashLo;
-											m_Maps[index].Seek( sizeof(DWORD)+sizeof(WORD), SEEK_CUR );
-					
-											for (unsigned int x = 0; x < dwLoop; x++)
+											m_Maps[index].Seek(sizeof(DWORD), SEEK_CUR);
+											m_Maps[index].Read(&dwHashLo, sizeof(DWORD));
+											m_Maps[index].Read(&dwHashHi, sizeof(DWORD));
+											UINT64 qwHash = (static_cast<INT64>(dwHashHi) << 32) + dwHashLo;
+											m_Maps[index].Seek(sizeof(DWORD) + sizeof(WORD), SEEK_CUR);
+
+											for ( DWORD x = 0; x < dwLoop; ++x )
 											{
-												sprintf(z, "build/map%dlegacymul/%.8u.dat", index, x);
-												if (HashFileName(z) == qwHash)
+												sprintf(z, "build/map%dlegacymul/%.8lu.dat", index, x);
+												if ( HashFileName(z) == qwHash )
 												{
-													pMapAddress.dwFirstBlock = x*4096;
-													pMapAddress.dwLastBlock = (x*4096)+(dwCompressedSize / 196)-1;
+													pMapAddress.dwFirstBlock = x * 4096;
+													pMapAddress.dwLastBlock = (x * 4096) + (dwCompressedSize / 196) - 1;
 													m_UopMapAddress[index][x] = pMapAddress;
 													break;
 												}
 											}
 										}
 
-										m_Maps[index].Seek( static_cast<long>(qwUOPPtr), SEEK_SET );
+										m_Maps[index].Seek(static_cast<LONG>(qwUOPPtr), SEEK_SET);
 									}
-								}//End of UOP Map parsing
-								else if (index == 0) // neither file exists, map0 is required
+								}
+								else if ( index == 0 )	// neither file exists, map0 is required
 								{
-									bFileLoaded = false;
+									fFileLoaded = false;
 									break;
 								}
 							}
@@ -338,52 +307,73 @@ VERFILE_TYPE CGrayInstall::OpenFiles( DWORD dwMask )
 							}
 						}
 
-						//	if any of the map files are not available, mark map as unavailable
-						//	mapdif and stadif files are not required.
-						if ( !m_Maps[index].IsFileOpen() ||
-							 !m_Staidx[index].IsFileOpen() ||
-							 !m_Statics[index].IsFileOpen() )
+						// If any of the map files are not available, mark map as unavailable (mapdif and stadif files are not required)
+						if ( !m_Maps[index].IsFileOpen() || !m_Staidx[index].IsFileOpen() || !m_Statics[index].IsFileOpen() )
 						{
-							if ( m_Maps[index].IsFileOpen() )		m_Maps[index].Close();
-							if ( m_Staidx[index].IsFileOpen() )		m_Staidx[index].Close();
-							if ( m_Statics[index].IsFileOpen() )	m_Statics[index].Close();
-						
-							if (index == 1 && m_Maps[0].IsFileOpen())
+							if ( m_Maps[index].IsFileOpen() )
+								m_Maps[index].Close();
+							if ( m_Staidx[index].IsFileOpen() )
+								m_Staidx[index].Close();
+							if ( m_Statics[index].IsFileOpen() )
+								m_Statics[index].Close();
+
+							if ( (index == 1) && m_Maps[0].IsFileOpen() )
 								g_MapList.m_mapnum[m] = 0;
 							else
 								g_MapList.m_mapid[m] = 0;
 						}
 
-						//	mapdif and mapdifl are not required, but if one exists so should
-						//	the other
+						// mapdif and mapdifl are not required, but if one exists so should the other
 						if ( m_Mapdif[index].IsFileOpen() != m_Mapdifl[index].IsFileOpen() )
 						{
-							if ( m_Mapdif[index].IsFileOpen() )		m_Mapdif[index].Close();
-							if ( m_Mapdifl[index].IsFileOpen() )	m_Mapdifl[index].Close();
+							if ( m_Mapdif[index].IsFileOpen() )
+								m_Mapdif[index].Close();
+							if ( m_Mapdifl[index].IsFileOpen() )
+								m_Mapdifl[index].Close();
 						}
 
-						//	if one of the stadif files exissts, so should the others
-						if ( m_Stadif[index].IsFileOpen() != m_Stadifi[index].IsFileOpen() ||
-							 m_Stadif[index].IsFileOpen() != m_Stadifl[index].IsFileOpen() )
+						// If one of the stadif files exissts, so should the others
+						if ( (m_Stadif[index].IsFileOpen() != m_Stadifi[index].IsFileOpen()) || (m_Stadif[index].IsFileOpen() != m_Stadifl[index].IsFileOpen()) )
 						{
-							if ( m_Stadif[index].IsFileOpen() )		m_Stadif[index].Close();
-							if ( m_Stadifi[index].IsFileOpen() )	m_Stadifi[index].Close();
-							if ( m_Stadifl[index].IsFileOpen() )	m_Stadifl[index].Close();
+							if ( m_Stadif[index].IsFileOpen() )
+								m_Stadif[index].Close();
+							if ( m_Stadifi[index].IsFileOpen() )
+								m_Stadifi[index].Close();
+							if ( m_Stadifl[index].IsFileOpen() )
+								m_Stadifl[index].Close();
 						}
 					}
 				}
 				break;
+			}
+			default:
+			{
+				if ( !OpenFile(static_cast<VERFILE_TYPE>(i)) )
+				{
+					// Make some MULs optional
+					switch ( i )
+					{
+						case VERFILE_VERDATA:
+							break;
+						default:
+							fFileLoaded = false;
+							break;
+					}
+				}
+				break;
+			}
 		}
 
-		// stop if we hit a failure
-		if (bFileLoaded == false)
+		// Stop on first failure
+		if ( !fFileLoaded )
 			break;
 	}
 
 	DetectMulVersions();
 	g_MapList.Init();
 
-
+	if ( i == VERFILE_HUES )	// return VERFILE_QTY if the for loop was completed successfully
+		i = VERFILE_QTY;
 
 	return static_cast<VERFILE_TYPE>(i);
 }
@@ -391,148 +381,156 @@ VERFILE_TYPE CGrayInstall::OpenFiles( DWORD dwMask )
 void CGrayInstall::CloseFiles()
 {
 	ADDTOCALLSTACK("CGrayInstall::CloseFiles");
-	int i;
 
-	for ( i = 0; i < VERFILE_QTY; i++ )
-	{
+	for ( size_t i = 0; i < VERFILE_QTY; ++i )
 		if ( m_File[i].IsFileOpen() ) m_File[i].Close();
-	}
 
-	for ( i = 0; i < 256; i++ )
+	for ( size_t i = 0; i < 256; ++i )
 	{
-		if ( m_Maps[i].IsFileOpen() )		m_Maps[i].Close();
-		if ( m_Statics[i].IsFileOpen() )	m_Statics[i].Close();
-		if ( m_Staidx[i].IsFileOpen() )		m_Staidx[i].Close();
-		if ( m_Mapdif[i].IsFileOpen() )		m_Mapdif[i].Close();
-		if ( m_Mapdifl[i].IsFileOpen() )	m_Mapdifl[i].Close();
-		if ( m_Stadif[i].IsFileOpen() )		m_Stadif[i].Close();
-		if ( m_Stadifi[i].IsFileOpen() )		m_Stadifi[i].Close();
-		if ( m_Stadifl[i].IsFileOpen() )		m_Stadifl[i].Close();
+		if ( m_Maps[i].IsFileOpen() )
+			m_Maps[i].Close();
+		if ( m_Statics[i].IsFileOpen() )
+			m_Statics[i].Close();
+		if ( m_Staidx[i].IsFileOpen() )
+			m_Staidx[i].Close();
+		if ( m_Mapdif[i].IsFileOpen() )
+			m_Mapdif[i].Close();
+		if ( m_Mapdifl[i].IsFileOpen() )
+			m_Mapdifl[i].Close();
+		if ( m_Stadif[i].IsFileOpen() )
+			m_Stadif[i].Close();
+		if ( m_Stadifi[i].IsFileOpen() )
+			m_Stadifi[i].Close();
+		if ( m_Stadifl[i].IsFileOpen() )
+			m_Stadifl[i].Close();
 	}
 }
 
-bool CGrayInstall::ReadMulIndex(CGFile &file, DWORD id, CUOIndexRec &Index)
+bool CGrayInstall::ReadMulIndex(CGFile &file, DWORD id, CUOIndexRec &index)
 {
 	ADDTOCALLSTACK("CGrayInstall::ReadMulIndex");
-	DWORD lOffset = id * sizeof(CUOIndexRec);
 
-	if ( file.Seek(lOffset, SEEK_SET) != lOffset )
+	DWORD dwOffset = id * sizeof(CUOIndexRec);
+	if ( file.Seek(dwOffset, SEEK_SET) != dwOffset )
 		return false;
 
-	if ( file.Read(static_cast<void *>(&Index), sizeof(CUOIndexRec)) != sizeof(CUOIndexRec) )
+	if ( file.Read(static_cast<void *>(&index), sizeof(CUOIndexRec)) != sizeof(CUOIndexRec) )
 		return false;
 
-	return Index.HasData();
+	return index.HasData();
 }
 
-bool CGrayInstall::ReadMulData(CGFile &file, const CUOIndexRec &Index, void * pData)
+bool CGrayInstall::ReadMulData(CGFile &file, const CUOIndexRec &index, void *pData)
 {
 	ADDTOCALLSTACK("CGrayInstall::ReadMulData");
-	if ( file.Seek(Index.GetFileOffset(), SEEK_SET) != Index.GetFileOffset() )
+
+	DWORD dwOffset = index.GetFileOffset();
+	if ( file.Seek(dwOffset, SEEK_SET) != dwOffset )
 		return false;
 
-	DWORD dwLength = Index.GetBlockLength();
+	DWORD dwLength = index.GetBlockLength();
 	if ( file.Read(pData, dwLength) != dwLength )
 		return false;
 
 	return true;
 }
 
-bool CGrayInstall::ReadMulIndex(VERFILE_TYPE fileindex, VERFILE_TYPE filedata, DWORD id, CUOIndexRec & Index)
+bool CGrayInstall::ReadMulIndex(VERFILE_TYPE fileindex, VERFILE_TYPE filedata, DWORD id, CUOIndexRec &index)
 {
 	ADDTOCALLSTACK("CGrayInstall::ReadMulIndex");
-	// Read about this data type in one of the index files.
-	// RETURN: true = we are ok.
-	ASSERT(fileindex<VERFILE_QTY);
+	// Read about this data type in one of the index files
+	// RETURN:
+	//  true = success
+	ASSERT(fileindex < VERFILE_QTY);
 
-	// Is there an index for it in the VerData ?
-	if ( g_VerData.FindVerDataBlock(filedata, id, Index) )
+	// Is there an index for it in the verdata?
+	if ( g_VerData.FindVerDataBlock(filedata, id, index) )
 		return true;
 
-	return ReadMulIndex(m_File[fileindex], id, Index);
+	return ReadMulIndex(m_File[fileindex], id, index);
 }
 
-bool CGrayInstall::ReadMulData(VERFILE_TYPE filedata, const CUOIndexRec & Index, void * pData)
+bool CGrayInstall::ReadMulData(VERFILE_TYPE filedata, const CUOIndexRec &index, void *pData)
 {
 	ADDTOCALLSTACK("CGrayInstall::ReadMulData");
-	// Use CGFile::GetLastError() for error.
-	if ( Index.IsVerData() ) filedata = VERFILE_VERDATA;
+	// Use CGFile::GetLastError() for error
+	if ( index.IsVerData() )
+		filedata = VERFILE_VERDATA;
 
-	return ReadMulData(m_File[filedata], Index, pData);
+	return ReadMulData(m_File[filedata], index, pData);
 }
 
-
-//UOP Filename Hash function
-unsigned long long HashFileName(CGString csFile)
+UINT64 CGrayInstall::HashFileName(CGString sFile)
 {
-	UINT eax, ecx, edx, ebx, esi, edi;
+	ADDTOCALLSTACK("CGrayInstall::HashFileName");
+	// Get UOP filename hash
 
+	UINT eax, ecx, edx, ebx, edi, esi;
 	eax = ecx = edx = 0;
-	ebx = edi = esi = (INT32) csFile.GetLength() + 0xDEADBEEF;
+	ebx = edi = esi = static_cast<INT32>(sFile.GetLength()) + 0xDEADBEEF;
 
 	size_t i = 0;
-
-	for ( i = 0; i + 12 < csFile.GetLength(); i += 12 )
+	for ( ; i + 12 < sFile.GetLength(); i += 12 )
 	{
-		edi = (INT32) ( ( csFile[ i + 7 ] << 24 ) | ( csFile[ i + 6 ] << 16 ) | ( csFile[ i + 5 ] << 8 ) | csFile[ i + 4 ] ) + edi;
-		esi = (INT32) ( ( csFile[ i + 11 ] << 24 ) | ( csFile[ i + 10 ] << 16 ) | ( csFile[ i + 9 ] << 8 ) | csFile[ i + 8 ] ) + esi;
-		edx = (INT32) ( ( csFile[ i + 3 ] << 24 ) | ( csFile[ i + 2 ] << 16 ) | ( csFile[ i + 1 ] << 8 ) | csFile[ i ] ) - esi;
+		edi = static_cast<INT32>((sFile[i +  7] << 24) | (sFile[i +  6] << 16) | (sFile[i + 5] << 8) | sFile[i + 4]) + edi;
+		esi = static_cast<INT32>((sFile[i + 11] << 24) | (sFile[i + 10] << 16) | (sFile[i + 9] << 8) | sFile[i + 8]) + esi;
+		edx = static_cast<INT32>((sFile[i +  3] << 24) | (sFile[i +  2] << 16) | (sFile[i + 1] << 8) | sFile[i]) - esi;
 
-		edx = ( edx + ebx ) ^ ( esi >> 28 ) ^ ( esi << 4 );
+		edx = (edx + ebx) ^ (esi >> 28) ^ (esi << 4);
 		esi += edi;
-		edi = ( edi - edx ) ^ ( edx >> 26 ) ^ ( edx << 6 );
+		edi = (edi - edx) ^ (edx >> 26) ^ (edx << 6);
 		edx += esi;
-		esi = ( esi - edi ) ^ ( edi >> 24 ) ^ ( edi << 8 );
+		esi = (esi - edi) ^ (edi >> 24) ^ (edi << 8);
 		edi += edx;
-		ebx = ( edx - esi ) ^ ( esi >> 16 ) ^ ( esi << 16 );
+		ebx = (edx - esi) ^ (esi >> 16) ^ (esi << 16);
 		esi += edi;
-		edi = ( edi - ebx ) ^ ( ebx >> 13 ) ^ ( ebx << 19 );
+		edi = (edi - ebx) ^ (ebx >> 13) ^ (ebx << 19);
 		ebx += esi;
-		esi = ( esi - edi ) ^ ( edi >> 28 ) ^ ( edi << 4 );
+		esi = (esi - edi) ^ (edi >> 28) ^ (edi << 4);
 		edi += ebx;
 	}
 
-	if ( csFile.GetLength() - i > 0 )
+	if ( sFile.GetLength() - i > 0 )
 	{
-		switch ( csFile.GetLength() - i )
+		switch ( sFile.GetLength() - i )
 		{
 			case 12:
-				esi += (INT32) csFile[ i + 11 ] << 24;
+				esi += static_cast<INT32>(sFile[i + 11]) << 24;
 			case 11:
-				esi += (INT32) csFile[ i + 10 ] << 16;
+				esi += static_cast<INT32>(sFile[i + 10]) << 16;
 			case 10:
-				esi += (INT32) csFile[ i + 9 ] << 8;
+				esi += static_cast<INT32>(sFile[i + 9]) << 8;
 			case 9:
-				esi += (INT32) csFile[ i + 8 ];
+				esi += static_cast<INT32>(sFile[i + 8]);
 			case 8:
-				edi += (INT32) csFile[ i + 7 ] << 24;
+				edi += static_cast<INT32>(sFile[i + 7]) << 24;
 			case 7:
-				edi += (INT32) csFile[ i + 6 ] << 16;
+				edi += static_cast<INT32>(sFile[i + 6]) << 16;
 			case 6:
-				edi += (INT32) csFile[ i + 5 ] << 8;
+				edi += static_cast<INT32>(sFile[i + 5]) << 8;
 			case 5:
-				edi += (INT32) csFile[ i + 4 ];
+				edi += static_cast<INT32>(sFile[i + 4]);
 			case 4:
-				ebx += (INT32) csFile[ i + 3 ] << 24;
+				ebx += static_cast<INT32>(sFile[i + 3]) << 24;
 			case 3:
-				ebx += (INT32) csFile[ i + 2 ] << 16;
+				ebx += static_cast<INT32>(sFile[i + 2]) << 16;
 			case 2:
-				ebx += (INT32) csFile[ i + 1 ] << 8;
-			case 1:		
-				ebx += (INT32) csFile[ i ];
-				break;			
+				ebx += static_cast<INT32>(sFile[i + 1]) << 8;
+			case 1:
+				ebx += static_cast<INT32>(sFile[i]);
+				break;
 		}
 
-		esi = ( esi ^ edi ) - ( ( edi >> 18 ) ^ ( edi << 14 ) );
-		ecx = ( esi ^ ebx ) - ( ( esi >> 21 ) ^ ( esi << 11 ) );
-		edi = ( edi ^ ecx ) - ( ( ecx >> 7 ) ^ ( ecx << 25 ) );
-		esi = ( esi ^ edi ) - ( ( edi >> 16 ) ^ ( edi << 16 ) );
-		edx = ( esi ^ ecx ) - ( ( esi >> 28 ) ^ ( esi << 4 ) );
-		edi = ( edi ^ edx ) - ( ( edx >> 18 ) ^ ( edx << 14 ) );
-		eax = ( esi ^ edi ) - ( ( edi >> 8 ) ^ ( edi << 24 ) );
+		esi = (esi ^ edi) - ((edi >> 18) ^ (edi << 14));
+		ecx = (esi ^ ebx) - ((esi >> 21) ^ (esi << 11));
+		edi = (edi ^ ecx) - ((ecx >>  7) ^ (ecx << 25));
+		esi = (esi ^ edi) - ((edi >> 16) ^ (edi << 16));
+		edx = (esi ^ ecx) - ((esi >> 28) ^ (esi <<  4));
+		edi = (edi ^ edx) - ((edx >> 18) ^ (edx << 14));
+		eax = (esi ^ edi) - ((edi >>  8) ^ (edi << 24));
 
-		return ( (INT64) edi << 32 ) | eax;
+		return (static_cast<INT64>(edi) << 32) | eax;
 	}
 
-	return ( (INT64) esi << 32 ) | eax;
+	return (static_cast<INT64>(esi) << 32) | eax;
 }
