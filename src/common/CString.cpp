@@ -111,11 +111,13 @@ size_t CGString::SetLength(size_t iNewLength)
 		TCHAR	*pNewData = new TCHAR[m_iMaxLength + 1];
 		ASSERT(pNewData);
 
-		size_t iMinLength = minimum(iNewLength, m_iLength);
-		strncpy(pNewData, m_pchData, iMinLength);
-		pNewData[m_iLength] = '\0';
+		if ( m_pchData )
+		{
+			strncpy(pNewData, m_pchData, minimum(iNewLength, m_iLength));
+			delete[] m_pchData;
+		}
 
-		if (m_pchData) delete[] m_pchData;
+		pNewData[m_iLength] = '\0';
 		m_pchData = pNewData;
 	}
 	m_iLength = iNewLength;
@@ -180,15 +182,15 @@ CGString::CGString()
 
 CGString::CGString(LPCTSTR pStr)
 {
-	m_iMaxLength = m_iLength = 0;
 	m_pchData = '\0';
+	m_iLength = m_iMaxLength = 0;
 	Copy(pStr);
 }
 
 CGString::CGString(const CGString &s)
 {
-	m_iMaxLength = m_iLength = 0;
 	m_pchData = '\0';
+	m_iLength = m_iMaxLength = 0;
 	Copy(s.GetPtr());
 }
 

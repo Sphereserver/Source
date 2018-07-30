@@ -617,8 +617,8 @@ bool PacketSpeakReq::onReceive(NetState* net)
 		return false;
 
 	packetLength -= getPosition();
-	if (packetLength > MAX_TALK_BUFFER)
-		packetLength = MAX_TALK_BUFFER;
+	if (packetLength >= MAX_TALK_BUFFER)
+		return false;
 
 	TCHAR text[MAX_TALK_BUFFER];
 	readStringASCII(text, minimum(COUNTOF(text), packetLength));
@@ -2085,8 +2085,8 @@ bool PacketPromptResponse::onReceive(NetState* net)
 		return false;
 
 	packetLength -= getPosition();
-	if (packetLength > MAX_TALK_BUFFER)
-		packetLength = MAX_TALK_BUFFER;
+	if (packetLength >= MAX_TALK_BUFFER)
+		return false;
 
 	TCHAR* text = Str_GetTemp();
 	readStringASCII(text, packetLength, false);
@@ -2379,7 +2379,7 @@ bool PacketSpeakReqUNICODE::onReceive(NetState* net)
 
 	packetLength -= getPosition();
 	if (packetLength >= MAX_TALK_BUFFER)
-		packetLength = MAX_TALK_BUFFER - 1;
+		return false;
 
 	if (mode & 0xc0) // text contains keywords
 	{
@@ -2576,7 +2576,7 @@ bool PacketChatCommand::onReceive(NetState* net)
 
 	packetLength -= getPosition();
 	if (packetLength >= MAX_TALK_BUFFER)
-		packetLength = MAX_TALK_BUFFER - 1;
+		return false;
 
 	NCHAR text[MAX_TALK_BUFFER];
 	readStringUNICODE(reinterpret_cast<WCHAR *>(text), (packetLength / sizeof(WCHAR)) - 1, false);
@@ -2794,7 +2794,7 @@ bool PacketExtendedCommand::onReceive(NetState* net)
 		return false;
 
 	WORD packetLength = readInt16();
-	if (packetLength > MAX_TALK_BUFFER)
+	if (packetLength > 32)
 		return false;
 
 	EXTDATA_TYPE type = static_cast<EXTDATA_TYPE>(readInt16());
@@ -2809,11 +2809,8 @@ bool PacketExtendedCommand::onReceive(NetState* net)
 		return false;
 
 	handler->seek();
-	for (WORD i = 0; i < packetLength; i++)
-	{
-		BYTE next = readByte();
-		handler->writeByte(next);
-	}
+	for ( WORD i = 0; i < packetLength; ++i )
+		handler->writeByte(readByte());
 
 	handler->resize(packetLength);
 	handler->seek(5);
@@ -3736,7 +3733,7 @@ bool PacketEncodedCommand::onReceive(NetState* net)
 		return false;
 
 	WORD packetLength = readInt16();
-	if (packetLength > 16)
+	if (packetLength > 32)
 		return false;
 
 	CGrayUID serial(readInt32());
@@ -3755,11 +3752,8 @@ bool PacketEncodedCommand::onReceive(NetState* net)
 		return false;
 
 	handler->seek();
-	for (WORD i = 0; i < packetLength; i++)
-	{
-		BYTE next = readByte();
-		handler->writeByte(next);
-	}
+	for ( WORD i = 0; i < packetLength; ++i )
+		handler->writeByte(readByte());
 
 	handler->resize(packetLength);
 	handler->seek(9);
