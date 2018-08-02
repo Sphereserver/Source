@@ -3521,8 +3521,7 @@ BYTE CClient::Setup_Start(CChar *pChar)
 		sprintf(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_MSG_GMPAGES), static_cast<int>(g_World.m_GMPages.GetCount()), g_Cfg.m_cCommandPrefix);
 		addSysMessage(pszTemp);
 	}
-	if ( IsPriv(PRIV_JAILED) )
-		m_pChar->Jail(&g_Serv, true, static_cast<int>(m_pAccount->m_TagDefs.GetKeyNum("JailCell")));
+
 	if ( g_Serv.m_timeShutdown.IsTimeValid() )
 		addBarkParse(g_Cfg.GetDefaultMsg(DEFMSG_MSG_SERV_SHUTDOWN_SOON), NULL, HUE_TEXT_DEF, TALKMODE_SYSTEM, FONT_BOLD);
 

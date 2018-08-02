@@ -132,19 +132,8 @@ bool CChar::Spell_Teleport(CPointMap ptDest, bool fTakePets, bool fCheckAntiMagi
 	{
 		if ( iEffect != ITEMID_NOTHING )
 		{
-			// Departing effect
-			if ( ptOld.IsValidPoint() )
-			{
-				CItem *pItem = CItem::CreateBase(ITEMID_NODRAW);
-				ASSERT(pItem);
-				pItem->SetAttr(ATTR_MOVE_NEVER);
-				pItem->MoveTo(ptOld);
-				pItem->Effect(EFFECT_XYZ, iEffect, this, 10, 10);
-				pItem->Delete();
-			}
-
-			// Entering effect
-			Effect(EFFECT_XYZ, iEffect, this, 10, 10);
+			Effect(EFFECT_XYZ, iEffect, NULL, 10, 10, false, 0, 0, 0, 0, 0, 0, 0, ptOld, ptOld);
+			Effect(EFFECT_XYZ, iEffect, NULL, 10, 10, false, 0, 0, 0, 0, 0, 0, 0, ptDest, ptDest);
 		}
 		if ( iSound != SOUND_NONE )
 			Sound(iSound);

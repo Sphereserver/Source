@@ -127,44 +127,46 @@ void CChar::Jail(CTextConsole *pSrc, bool fSet, int iCell)
 
 	if ( IsTrigUsed(TRIGGER_JAILED) )
 	{
-		CScriptTriggerArgs Args(fSet ? 1 : 0, static_cast<INT64>(iCell), static_cast<INT64>(0));
+		CScriptTriggerArgs Args(static_cast<INT64>(fSet), static_cast<INT64>(iCell));
 		if ( OnTrigger(CTRIG_Jailed, pSrc, &Args) == TRIGRET_RET_TRUE )
 			return;
 	}
 
 	if ( fSet )
 	{
-		if ( m_pPlayer )
-		{
-			CAccount *pAccount = m_pPlayer->m_pAccount;
-			ASSERT(pAccount);
-			pAccount->SetPrivFlags(PRIV_JAILED);
-			pAccount->m_TagDefs.SetNum("JailCell", iCell, true);
-		}
-
-		TCHAR szJailName[128];
+		TCHAR szJailName[16];
 		if ( iCell )
 			sprintf(szJailName, "jail%d", iCell);
 		else
 			strcpy(szJailName, "jail");
 
 		CPointMap ptJail = g_Cfg.GetRegionPoint(szJailName);
-		if ( ptJail.IsValidPoint() && (GetTopPoint().GetRegion(REGION_TYPE_AREA) != ptJail.GetRegion(REGION_TYPE_AREA)) )
+		if ( ptJail.IsValidPoint() )
 			Spell_Teleport(ptJail, true, false);
-		SysMessageDefault(DEFMSG_MSG_JAILED);
+
+		if ( m_pPlayer )
+		{
+			CAccount *pAccount = m_pPlayer->m_pAccount;
+			if ( !pAccount || pAccount->IsPriv(PRIV_JAILED) )
+				return;
+
+			pAccount->SetPrivFlags(PRIV_JAILED);
+			pAccount->m_TagDefs.SetNum("JailCell", iCell, true);
+			SysMessageDefault(DEFMSG_MSG_JAILED);
+		}
 	}
 	else
 	{
 		if ( m_pPlayer )
 		{
 			CAccount *pAccount = m_pPlayer->m_pAccount;
-			ASSERT(pAccount);
-			if ( !pAccount->IsPriv(PRIV_JAILED) )
+			if ( !pAccount || !pAccount->IsPriv(PRIV_JAILED) )
 				return;
+
 			pAccount->ClearPrivFlags(PRIV_JAILED);
 			pAccount->m_TagDefs.DeleteKey("JailCell");
+			SysMessageDefault(DEFMSG_MSG_FORGIVEN);
 		}
-		SysMessageDefault(DEFMSG_MSG_FORGIVEN);
 	}
 }
 
