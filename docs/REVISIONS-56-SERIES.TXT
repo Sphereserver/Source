@@ -1150,3 +1150,11 @@ Added: New function EFFECTP, which works in the same way as EFFECT but showing t
 	-Syntax: EFFECTP SrcX, SrcY, SrcZ, SrcM, DestX, DestY, DestZ, DestM, Motion, ItemID, Speed, Frames, [Explode, Color, Render, EffectID, ExplodeID, ExplodeSound]
 	-First 12 args are required, remaining args are optional
 	-Main idea ported from Sphere experimental branch, credits to Drk84 / XuN
+
+28-07-2018, Coruja
+Changed: When 'MulPath' is not set on sphere.ini, Sphere now will search UO install dir looking for newest UO versions first (Windows only)
+
+02-08-2018, Coruja
+Changed: Internal improvements on Teleport / Recall / Gate Travel spells.
+	-Gate Travel now will use proper blue/red moongate ITEMDEFs instead always use blue moongate changing its color when needed
+	-Gate Travel now will link moongates to each other based on UID instead MOREP. This will make possible cast Gate Travel inside moving boats (if multi region flags allow cast it)

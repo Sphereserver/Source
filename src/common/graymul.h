@@ -121,9 +121,7 @@ enum ITEMID_TYPE	// InsideUO is great for this stuff.
 	ITEMID_DOOR_WOODENGATE_2	= 0x866,
 
 	ITEMID_FOOD_FISH_RAW		= 0x97A,
-
 	ITEMID_BANK_BOX				= 0x9B2,	// another pack really but used as bank box
-
 	ITEMID_JAR_HONEY			= 0x9EC,
 
 	ITEMID_BEDROLL_O_EW			= 0xA55,
@@ -135,10 +133,10 @@ enum ITEMID_TYPE	// InsideUO is great for this stuff.
 	ITEMID_WATER_TROUGH_1		= 0xB41,
 	ITEMID_WATER_TROUGH_2		= 0xB44,
 
+	ITEMID_MOONGATE_RED			= 0xDDA,
 	ITEMID_KINDLING1			= 0xDE1,
 	ITEMID_CAMPFIRE				= 0xDE3,
 	ITEMID_EMBERS				= 0xDE9,
-
 	ITEMID_WOOL					= 0xDF8,
 
 	ITEMID_YARN1				= 0xE1D,
@@ -160,6 +158,7 @@ enum ITEMID_TYPE	// InsideUO is great for this stuff.
 	ITEMID_EMPTY_BOTTLE			= 0xF0E,
 	ITEMID_GEMS					= 0xF20,
 	ITEMID_DAGGER				= 0xF51,
+	ITEMID_MOONGATE_BLUE		= 0xF6C,
 	ITEMID_REAG_SA				= 0xF8C,	// sulfurous ash
 	ITEMID_REAG_SS				= 0xF8D,	// spider's silk
 	ITEMID_CLOTH_BOLT1			= 0xF95,

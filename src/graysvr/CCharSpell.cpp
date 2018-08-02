@@ -23,7 +23,7 @@ void CChar::Spell_Dispel(int iLevel)
 	}
 }
 
-bool CChar::Spell_Teleport(CPointMap ptNew, bool fTakePets, bool fCheckAntiMagic, bool fDisplayEffect, ITEMID_TYPE iEffect, SOUND_TYPE iSound)
+bool CChar::Spell_Teleport(CPointMap ptDest, bool fTakePets, bool fCheckAntiMagic, bool fDisplayEffect, ITEMID_TYPE iEffect, SOUND_TYPE iSound)
 {
 	ADDTOCALLSTACK("CChar::Spell_Teleport");
 	// Teleport you to this place.
@@ -31,24 +31,13 @@ bool CChar::Spell_Teleport(CPointMap ptNew, bool fTakePets, bool fCheckAntiMagic
 	// ex. ships plank.
 	// RETURN: true = it worked.
 
-	if ( !ptNew.IsValidPoint() )
+	ptDest.m_z = GetFixZ(ptDest);
+	if ( !ptDest.IsValidPoint() )
 		return false;
 
-	ptNew.m_z = GetFixZ(ptNew);
-
-	if ( g_Cfg.m_iMountHeight )
+	if ( !IsPriv(PRIV_GM) )
 	{
-		if ( !IsVerticalSpace(ptNew, false) )
-		{
-			SysMessageDefault(DEFMSG_MSG_MOUNT_CEILING);
-			return false;
-		}
-	}
-
-	if ( IsPriv(PRIV_JAILED) )
-	{
-		CRegionBase *pJail = g_Cfg.GetRegion("jail");
-		if ( !pJail || !pJail->IsInside2d(ptNew) )
+		if ( IsPriv(PRIV_JAILED) )
 		{
 			// Must be /PARDONed to leave jail area
 			static LPCTSTR const sm_szPunishMsg[] =
@@ -57,37 +46,27 @@ bool CChar::Spell_Teleport(CPointMap ptNew, bool fTakePets, bool fCheckAntiMagic
 				g_Cfg.GetDefaultMsg(DEFMSG_SPELL_TELE_JAILED_2)
 			};
 			SysMessage(sm_szPunishMsg[Calc_GetRandVal(COUNTOF(sm_szPunishMsg))]);
-
-			int iCell = 0;
-			if ( m_pPlayer && m_pPlayer->m_pAccount )
-				iCell = static_cast<int>(m_pPlayer->m_pAccount->m_TagDefs.GetKeyNum("JailCell"));
-
-			if ( iCell )
-			{
-				TCHAR szJailName[128];
-				sprintf(szJailName, "jail%d", iCell);
-				pJail = g_Cfg.GetRegion(szJailName);
-			}
-
-			if ( pJail )
-				ptNew = pJail->m_pt;
-			else
-				ptNew.InitPoint();
-		}
-	}
-
-	// Is it a valid teleport location that allows this ?
-	if ( fCheckAntiMagic && !IsPriv(PRIV_GM) )
-	{
-		CRegionBase *pArea = CheckValidMove(ptNew, NULL, DIR_QTY, NULL);
-		if ( !pArea )
-		{
-			SysMessageDefault(DEFMSG_SPELL_TELE_CANT);
 			return false;
 		}
-		if ( pArea->IsFlag(REGION_ANTIMAGIC_RECALL_IN|REGION_ANTIMAGIC_TELEPORT) )
+
+		if ( fCheckAntiMagic )
 		{
-			SysMessageDefault(DEFMSG_SPELL_TELE_AM);
+			CRegionBase *pArea = CheckValidMove(ptDest, NULL, DIR_QTY, NULL);
+			if ( !pArea )
+			{
+				SysMessageDefault(DEFMSG_SPELL_TELE_CANT);
+				return false;
+			}
+			if ( pArea->IsFlag(REGION_ANTIMAGIC_RECALL_IN|REGION_ANTIMAGIC_TELEPORT) )
+			{
+				SysMessageDefault(DEFMSG_SPELL_TELE_AM);
+				return false;
+			}
+		}
+
+		if ( g_Cfg.m_iMountHeight && !IsVerticalSpace(ptDest, false) )
+		{
+			SysMessageDefault(DEFMSG_MSG_MOUNT_CEILING);
 			return false;
 		}
 	}
@@ -96,7 +75,7 @@ bool CChar::Spell_Teleport(CPointMap ptNew, bool fTakePets, bool fCheckAntiMagic
 	{
 		if ( m_pPlayer )
 		{
-			if ( IsPriv(PRIV_GM) && !IsPriv(PRIV_PRIV_NOSHOW) && !IsStatFlag(STATF_Incognito) )
+			if ( IsPriv(PRIV_GM) )
 			{
 				iEffect = g_Cfg.m_iSpell_Teleport_Effect_Staff;
 				iSound = g_Cfg.m_iSpell_Teleport_Sound_Staff;
@@ -115,9 +94,9 @@ bool CChar::Spell_Teleport(CPointMap ptNew, bool fTakePets, bool fCheckAntiMagic
 	}
 
 	CPointMap ptOld = GetTopPoint();
-	if ( ptOld.IsValidPoint() )		// guards might have just been created
+	if ( fTakePets )	// look for any creatures that might be following me nearby
 	{
-		if ( fTakePets )	// look for any creatures that might be following me nearby
+		if ( ptOld.IsValidPoint() )
 		{
 			CWorldSearch Area(ptOld, UO_MAP_VIEW_SIGHT);
 			for (;;)
@@ -128,19 +107,19 @@ bool CChar::Spell_Teleport(CPointMap ptNew, bool fTakePets, bool fCheckAntiMagic
 				if ( pChar == this )
 					continue;
 
-				if ( (pChar->Skill_GetActive() == NPCACT_FOLLOW_TARG) && (pChar->m_Act_Targ == GetUID()) )	// my pet?
+				if ( (pChar->Skill_GetActive() == NPCACT_FOLLOW_TARG) && (pChar->m_Act_Targ == GetUID()) )
 				{
 					if ( pChar->CanMoveWalkTo(ptOld, false, true) )
-						pChar->Spell_Teleport(ptNew, fTakePets, fCheckAntiMagic, fDisplayEffect, iEffect, iSound);
+						pChar->Spell_Teleport(ptDest, fTakePets, fCheckAntiMagic, fDisplayEffect, iEffect, iSound);
 				}
 			}
 		}
 	}
 
-	MoveTo(ptNew);		// move character
+	MoveTo(ptDest);		// move character
 
 	CClient *pClientIgnore = NULL;
-	if ( m_pClient && (ptNew.m_map != ptOld.m_map) )
+	if ( m_pClient && (ptDest.m_map != ptOld.m_map) )
 	{
 		m_pClient->addReSync();
 		pClientIgnore = m_pClient;	// we don't need update this client again
@@ -174,76 +153,82 @@ bool CChar::Spell_Teleport(CPointMap ptNew, bool fTakePets, bool fCheckAntiMagic
 	return true;
 }
 
-bool CChar::Spell_CreateGate(CPointMap ptNew, bool fCheckAntiMagic)
+bool CChar::Spell_CreateGate(CPointMap ptDest, bool fCheckAntiMagic)
 {
 	ADDTOCALLSTACK("CChar::Spell_CreateGate");
 	// Create moongate between current pt and destination pt
 	// RETURN: true = it worked.
 
-	if ( !ptNew.IsValidPoint() )
+	if ( !m_pArea || !ptDest.IsValidPoint() )
 		return false;
 
-	ptNew.m_z = GetFixZ(ptNew);
-
-	if ( IsPriv(PRIV_JAILED) )
-	{
-		// Must be /PARDONed to leave jail area
-		static LPCTSTR const sm_szPunishMsg[] =
-		{
-			g_Cfg.GetDefaultMsg(DEFMSG_SPELL_TELE_JAILED_1),
-			g_Cfg.GetDefaultMsg(DEFMSG_SPELL_TELE_JAILED_2)
-		};
-		SysMessage(sm_szPunishMsg[Calc_GetRandVal(COUNTOF(sm_szPunishMsg))]);
-		return false;
-	}
-
-	CRegionBase *pAreaDest = ptNew.GetRegion(REGION_TYPE_AREA|REGION_TYPE_ROOM|REGION_TYPE_MULTI);
+	CRegionBase *pAreaDest = ptDest.GetRegion(REGION_TYPE_AREA|REGION_TYPE_ROOM|REGION_TYPE_MULTI);
 	if ( !pAreaDest )
 		return false;
 
-	if ( pAreaDest->IsFlag(REGION_FLAG_SHIP) )
+	if ( !IsPriv(PRIV_GM) )
 	{
-		SysMessageDefault(DEFMSG_SPELL_GATE_SOMETHINGBLOCKING);
-		return false;
-	}
-
-	if ( fCheckAntiMagic )
-	{
-		if ( pAreaDest->IsFlag(REGION_ANTIMAGIC_ALL|REGION_ANTIMAGIC_GATE) )
+		if ( IsPriv(PRIV_JAILED) )
 		{
-			SysMessageDefault(DEFMSG_SPELL_GATE_AM);
-			if ( !IsPriv(PRIV_GM) )
-				return false;
-		}
-	}
-
-	if ( g_World.IsItemTypeNear(GetTopPoint(), IT_TELEPAD, 0, false, true) || g_World.IsItemTypeNear(ptNew, IT_TELEPAD, 0, false, true) )
-	{
-		SysMessageDefault(DEFMSG_SPELL_GATE_ALREADYTHERE);
-		if ( !IsPriv(PRIV_GM) )
+			// Must be /PARDONed to leave jail area
+			static LPCTSTR const sm_szPunishMsg[] =
+			{
+				g_Cfg.GetDefaultMsg(DEFMSG_SPELL_TELE_JAILED_1),
+				g_Cfg.GetDefaultMsg(DEFMSG_SPELL_TELE_JAILED_2)
+			};
+			SysMessage(sm_szPunishMsg[Calc_GetRandVal(COUNTOF(sm_szPunishMsg))]);
 			return false;
+		}
+
+		if ( pAreaDest->IsFlag(REGION_FLAG_SHIP) )
+		{
+			SysMessageDefault(DEFMSG_SPELL_GATE_SOMETHINGBLOCKING);
+			return false;
+		}
+
+		if ( fCheckAntiMagic )
+		{
+			if ( pAreaDest->IsFlag(REGION_ANTIMAGIC_ALL|REGION_ANTIMAGIC_GATE) )
+			{
+				SysMessageDefault(DEFMSG_SPELL_GATE_AM);
+				return false;
+			}
+		}
+
+		if ( g_World.IsItemTypeNear(GetTopPoint(), IT_TELEPAD, 0, false, true) || g_World.IsItemTypeNear(ptDest, IT_TELEPAD, 0, false, true) )
+		{
+			SysMessageDefault(DEFMSG_SPELL_GATE_ALREADYTHERE);
+			return false;
+		}
 	}
 
 	const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(SPELL_Gate_Travel);
 	ASSERT(pSpellDef);
+
+	ptDest.m_z = GetFixZ(ptDest);
+	ITEMID_TYPE id = pSpellDef->m_idEffect;
 	int iDuration = pSpellDef->m_Duration.GetLinear(0);
 
-	CItem *pGate = CItem::CreateBase(pSpellDef->m_idEffect);
-	ASSERT(pGate);
-	pGate->m_uidLink = GetUID();
-	pGate->SetType(IT_TELEPAD);
-	pGate->SetAttr(ATTR_MAGIC|ATTR_MOVE_NEVER|ATTR_CAN_DECAY);
-	pGate->SetHue(static_cast<HUE_TYPE>(pAreaDest->IsGuarded() ? HUE_DEFAULT : HUE_RED));
-	pGate->m_itTelepad.m_ptMark = ptNew;
-	pGate->MoveToDecay(GetTopPoint(), iDuration);
-	pGate->Sound(pSpellDef->m_sound);
+	CItem *pGateOrig = CItem::CreateBase((id != ITEMID_NOTHING) ? id : (pAreaDest->IsFlag(REGION_FLAG_SAFE|REGION_FLAG_GUARDED|REGION_FLAG_NO_PVP) ? ITEMID_MOONGATE_BLUE : ITEMID_MOONGATE_RED));
+	ASSERT(pGateOrig);
+	pGateOrig->SetType(IT_TELEPAD);
+	pGateOrig->SetAttr(ATTR_MOVE_NEVER);
+	pGateOrig->m_itNormal.m_more1 = static_cast<DWORD>(GetUID());
+	pGateOrig->m_itTelepad.m_ptMark = ptDest;
+	pGateOrig->MoveToDecay(GetTopPoint(), iDuration);
+	pGateOrig->Sound(pSpellDef->m_sound);
 
-	pGate = CItem::CreateDupeItem(pGate);
-	ASSERT(pGate);
-	pGate->SetHue(static_cast<HUE_TYPE>((m_pArea && m_pArea->IsGuarded()) ? HUE_DEFAULT : HUE_RED));
-	pGate->m_itTelepad.m_ptMark = GetTopPoint();
-	pGate->MoveToDecay(ptNew, iDuration);
-	pGate->Sound(pSpellDef->m_sound);
+	CItem *pGateDest = CItem::CreateBase((id != ITEMID_NOTHING) ? id : (m_pArea->IsFlag(REGION_FLAG_SAFE|REGION_FLAG_GUARDED|REGION_FLAG_NO_PVP) ? ITEMID_MOONGATE_BLUE : ITEMID_MOONGATE_RED));
+	ASSERT(pGateDest);
+	pGateDest->SetType(IT_TELEPAD);
+	pGateDest->SetAttr(ATTR_MOVE_NEVER);
+	pGateDest->m_itNormal.m_more1 = static_cast<DWORD>(GetUID());
+	pGateDest->m_itTelepad.m_ptMark = GetTopPoint();
+	pGateDest->MoveToDecay(ptDest, iDuration);
+	pGateDest->Sound(pSpellDef->m_sound);
+
+	pGateOrig->m_uidLink = pGateDest->GetUID();
+	pGateDest->m_uidLink = pGateOrig->GetUID();
 
 	SysMessageDefault(DEFMSG_SPELL_GATE_OPEN);
 	return true;
@@ -255,7 +240,7 @@ CChar *CChar::Spell_Summon(CREID_TYPE id, CPointMap ptTarg)
 	// Summon an NPC using summon spells.
 
 	int iSkill;
-	CSpellDef *pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
+	const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
 	if ( !pSpellDef || !pSpellDef->GetPrimarySkill(&iSkill, NULL) )
 		return NULL;
 
@@ -476,7 +461,7 @@ bool CChar::Spell_Resurrection(CItemCorpse *pCorpse, CChar *pCharSrc, bool fNoFa
 
 	}
 
-	CSpellDef *pSpellDef = g_Cfg.GetSpellDef(SPELL_Resurrection);
+	const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(SPELL_Resurrection);
 	if ( pSpellDef->m_idEffect )
 		Effect(EFFECT_OBJ, pSpellDef->m_idEffect, this, 10, 16);
 	Sound(pSpellDef->m_sound);
@@ -2232,7 +2217,7 @@ bool CChar::Spell_CanCast(SPELL_TYPE &spell, bool fTest, CObjBase *pSrc, bool fF
 	if ( !pSrc || (spell <= SPELL_NONE) )
 		return false;
 
-	const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(spell);
+	CSpellDef *pSpellDef = g_Cfg.GetSpellDef(spell);
 	if ( !pSpellDef )
 		return false;
 	if ( pSpellDef->IsSpellType(SPELLFLAG_DISABLED) )
@@ -2850,7 +2835,7 @@ bool CChar::Spell_CastDone()
 			case SPELL_Reaper_Form:
 			{
 				// This has a menu select for client.
-				if ( !pObj || ((pObj != this) && (GetPrivLevel() < PLEVEL_Seer)) )
+				if ( !pObj || ((pObj != this) && !IsPriv(PRIV_GM)) )
 					return false;
 				pObj->OnSpellEffect(spell, this, iSkillLevel, dynamic_cast<CItem *>(pObjSrc));
 				break;
@@ -3009,7 +2994,7 @@ int CChar::Spell_CastStart()
 	//  0-100
 	//  -1 = instant failure.
 
-	const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
+	CSpellDef *pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
 	if ( !pSpellDef )
 		return -1;
 
@@ -3033,7 +3018,7 @@ int CChar::Spell_CastStart()
 		return -1;
 
 	iDifficulty /= 10;		// adjust to 0 - 100
-	bool fWOP = (GetPrivLevel() >= PLEVEL_Counsel) ? g_Cfg.m_fWordsOfPowerStaff : g_Cfg.m_fWordsOfPowerPlayer;
+	bool fWOP = IsPriv(PRIV_GM) ? g_Cfg.m_fWordsOfPowerStaff : g_Cfg.m_fWordsOfPowerPlayer;
 	if ( !NPC_CanSpeak() || IsStatFlag(STATF_Insubstantial) )
 		fWOP = false;
 

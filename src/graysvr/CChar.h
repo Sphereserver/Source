@@ -1161,8 +1161,8 @@ public:
 	bool Spell_CastDone();
 	bool OnSpellEffect(SPELL_TYPE spell, CChar *pCharSrc, int iSkillLevel, CItem *pSourceItem, bool fReflecting = false);
 	bool Spell_Resurrection(CItemCorpse *pCorpse = NULL, CChar *pCharSrc = NULL, bool fNoFail = false);
-	bool Spell_Teleport(CPointMap ptNew, bool fTakePets = false, bool fCheckAntiMagic = true, bool fDisplayEffect = true, ITEMID_TYPE iEffect = ITEMID_NOTHING, SOUND_TYPE iSound = SOUND_NONE);
-	bool Spell_CreateGate(CPointMap ptNew, bool fCheckAntiMagic = true);
+	bool Spell_Teleport(CPointMap ptDest, bool fTakePets = false, bool fCheckAntiMagic = true, bool fDisplayEffect = true, ITEMID_TYPE iEffect = ITEMID_NOTHING, SOUND_TYPE iSound = SOUND_NONE);
+	bool Spell_CreateGate(CPointMap ptDest, bool fCheckAntiMagic = true);
 	bool Spell_CanCast(SPELL_TYPE &spell, bool fTest, CObjBase *pSrc, bool fFailMsg, bool fCheckAntiMagic = true);
 	int	GetSpellDuration(SPELL_TYPE spell, int iSkillLevel, CChar *pCharSrc = NULL);
 
