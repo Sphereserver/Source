@@ -1160,6 +1160,8 @@ Changed: Internal improvements on Teleport / Recall / Gate Travel spells.
 	-Gate Travel now will link moongates to each other based on UID instead MOREP. This will make possible cast Gate Travel inside moving boats (if multi region flags allow cast it)
 
 03-08-2018, Coruja
+Changed: SPEEDMODE=4 now can be only used on GM chars
+	-NOTE: As reported, SPEEDMODE=4 disable walk movement on classic clients, but on enhanced clients it's used as 'GM Teleport' so set it on non-GM chars can be risky.
 Changed: Updated recall rune (typedef t_rune) internal tooltips, name, and renaming behavior.
 [items/sphere_item_magic_magery.scp]: Updated 'i_rune_marker' itemdef
 [sphere_msgs.scp]: Updated message list with the following changes

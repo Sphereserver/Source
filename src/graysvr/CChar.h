@@ -78,6 +78,15 @@ public:
 	int GetNpcAiFlags(const CChar *pChar) const;
 };
 
+enum SPEEDMODE_TYPE		// m_speedMode
+{
+	SPEEDMODE_DEFAULT,			// Foot: Default speed (140ms)	/ Mount: Default speed (70ms)
+	SPEEDMODE_FAST,				// Foot: Double Speed (70ms)	/ Mount: Default speed (70ms)
+	SPEEDMODE_SLOW,				// Foot: Always Walk (280ms)	/ Mount: Always Walk (140ms)
+	SPEEDMODE_HYBRID,			// Foot: Always Run (140ms)		/ Mount: Always Walk (140ms)
+	SPEEDMODE_GMTELEPORT		// GM Teleport (enhanced client only)
+};
+
 struct CCharPlayer
 {
 	// Stuff that is specific to a player character
@@ -104,7 +113,7 @@ public:
 
 	WORD m_wMurders;		// Murder count
 	WORD m_wDeaths;			// Death count
-	BYTE m_speedMode;		// speed mode (0x0 = default, 0x1 = fast, 0x2 = slow, 0x3 = hybrid)
+	BYTE m_speedMode;
 	bool m_bRefuseTrades;
 	bool m_bKrToolbarEnabled;
 
@@ -889,8 +898,6 @@ public:
 	bool UpdateAnimate(ANIM_TYPE action, bool fTranslate = true, bool fBackward = false, BYTE iFrameDelay = 0, BYTE iAnimLen = 7);
 
 	void UpdateMode(CClient *pExcludeClient = NULL, bool fFull = false);
-	void UpdateSpeedMode();
-	void UpdateVisualRange();
 	void UpdateMove(const CPointMap &ptOld, CClient *pClientExclude = NULL, bool bFull = false);
 	void UpdateDir(DIR_TYPE dir);
 	void UpdateDir(const CPointMap &pt);

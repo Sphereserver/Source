@@ -549,29 +549,29 @@ bool CClient::Event_CheckWalkBuffer()
 	// Check if the client is trying to walk too fast.
 	// Direction changes don't count.
 
-	if ( !g_Cfg.m_iWalkBuffer )
+	if ( !g_Cfg.m_iWalkBuffer || !m_pChar->m_pPlayer )
 		return true;
 	if ( (m_iWalkStepCount % 7) != 0 )	// only check when we have taken 8 steps
 		return true;
 
 	// Client only allows 4 steps of walk ahead.
-	ULONGLONG CurrTime = GetTickCount64();
-	int iTimeDiff = static_cast<int>((CurrTime - m_timeWalkStep) / 10);
+	ULONGLONG uCurTime = GetTickCount64();
+	int iTimeDiff = static_cast<int>((uCurTime - m_timeWalkStep) / 10);
 	int iTimeMin = m_pChar->IsStatFlag(STATF_OnHorse|STATF_Hovering) ? 70 : 140; // minimum time to move 8 steps
 
-	if ( m_pChar->m_pPlayer && (m_pChar->m_pPlayer->m_speedMode != 0) )
+	switch ( m_pChar->m_pPlayer->m_speedMode )
 	{
-		// Speed Modes:
-		// 0 = Foot=Normal, Mount=Normal                         140 -  70
-		// 1 = Foot=Double Speed, Mount=Normal                    70 -  70    = 70
-		// 2 = Foot=Always Walk, Mount=Always Walk (Half Speed)  280 - 140    = x2
-		// 3 = Foot=Always Run, Mount=Always Walk                140 - 140    = 70|x2 (1|2)
-		// 4 = No Movement                                       N/A - N/A    = (handled by OnFreezeCheck)
-
-		if ( m_pChar->m_pPlayer->m_speedMode & 0x1 )
+		case SPEEDMODE_DEFAULT:
+			break;
+		case SPEEDMODE_FAST:
 			iTimeMin = 70;
-		if ( m_pChar->m_pPlayer->m_speedMode & 0x2 )
+			break;
+		case SPEEDMODE_SLOW:
 			iTimeMin *= 2;
+			break;
+		case SPEEDMODE_HYBRID:
+			iTimeMin = 140;
+			break;
 	}
 
 	if ( iTimeDiff > iTimeMin )
@@ -607,7 +607,7 @@ bool CClient::Event_CheckWalkBuffer()
 		}
 	}
 
-	m_timeWalkStep = CurrTime;
+	m_timeWalkStep = uCurTime;
 	return true;
 }
 

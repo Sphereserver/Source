@@ -1138,28 +1138,6 @@ void CChar::UpdateMode(CClient *pExcludeClient, bool fFull)
 	}
 }
 
-void CChar::UpdateSpeedMode()
-{
-	ADDTOCALLSTACK("CChar::UpdateSpeedMode");
-	if ( g_Serv.IsLoading() || !m_pPlayer )
-		return;
-
-	if ( m_pClient )
-		m_pClient->addSpeedMode(m_pPlayer->m_speedMode);
-}
-
-void CChar::UpdateVisualRange()
-{
-	ADDTOCALLSTACK("CChar::UpdateVisualRange");
-	if ( g_Serv.IsLoading() || !m_pPlayer )
-		return;
-
-	DEBUG_WARN(("CChar::UpdateVisualRange called, m_iVisualRange is %hhu\n", m_iVisualRange));
-
-	if ( m_pClient )
-		m_pClient->addVisualRange(m_iVisualRange);
-}
-
 // Character is moving (walk/run/teleport)
 void CChar::UpdateMove(const CPointMap &ptOld, CClient *pExcludeClient, bool bFull)
 {
@@ -2783,9 +2761,6 @@ bool CChar::OnFreezeCheck()
 
 	if ( m_pPlayer )
 	{
-		if ( m_pPlayer->m_speedMode & 0x4 )		// speed mode '4' prevents movement
-			return true;
-
 		if ( IsSetMagicFlags(MAGICF_FREEZEONCAST) && g_Cfg.IsSkillFlag(m_Act_SkillCurrent, SKF_MAGIC) )		// casting magic spells
 		{
 			CSpellDef *pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);

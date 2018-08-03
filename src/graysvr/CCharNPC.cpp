@@ -136,7 +136,7 @@ CCharPlayer::CCharPlayer(CChar *pChar, CAccount *pAccount) : m_pAccount(pAccount
 {
 	m_wMurders = 0;
 	m_wDeaths = 0;
-	m_speedMode = 0;
+	m_speedMode = SPEEDMODE_DEFAULT;
 	m_bRefuseTrades = false;
 	m_bKrToolbarEnabled = false;
 	m_timeLastUsed.Init();
@@ -480,8 +480,12 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 			} return true;
 		case CPC_SPEEDMODE:
 			{
-				m_speedMode = static_cast<BYTE>(s.GetArgVal());
-				pChar->UpdateSpeedMode();
+				long lVal = s.GetArgVal();
+				if ( (lVal < SPEEDMODE_DEFAULT) || (lVal > SPEEDMODE_GMTELEPORT) || ((lVal == SPEEDMODE_GMTELEPORT) && !pChar->IsPriv(PRIV_GM)) )
+					return false;
+				m_speedMode = static_cast<BYTE>(lVal);
+				if ( pChar->m_pClient )
+					pChar->m_pClient->addSpeedMode(m_speedMode);
 			} return true;
 		case CPC_STATLOCK:
 			{
