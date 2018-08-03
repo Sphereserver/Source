@@ -2901,13 +2901,10 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 						case IT_RUNE:
 						{
 							const CPointMap pt = pItem->m_itTelepad.m_ptMark;
-							if ( !pt.IsValidPoint() )
+							if ( !pt.IsValidXY() )
 								break;
 
 							bool fRegionMulti = (pt.GetRegion(REGION_TYPE_MULTI) != NULL);
-							LPCTSTR pszRegionName = g_Cfg.GetDefaultMsg(DEFMSG_RUNE_LOCATION_UNK);
-							if ( pt.GetRegion(REGION_TYPE_AREA) )
-								pszRegionName = pt.GetRegion(REGION_TYPE_AREA)->GetName();
 
 							if ( pt.m_map == 0 )
 								m_TooltipData.Add(t = new CClientTooltip(fRegionMulti ? 1062452 : 1060805)); // ~1_val~ (Felucca)[(House)]
@@ -2920,10 +2917,10 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 							else if ( pt.m_map == 5 )
 								m_TooltipData.Add(t = new CClientTooltip(fRegionMulti ? 1113206 : 1113205)); // ~1_val~ (Ter Mur)[(House)]
 							else
-								// There's no proper clilocs for Ilshenar (map2) and custom facets (map > 5), so let's use a generic cliloc
+								// There's no proper clilocs for Ilshenar (map = 2) and custom facets (map > 5), so use a empty cliloc instead
 								m_TooltipData.Add(t = new CClientTooltip(1042971)); // ~1_NOTHING~
 
-							t->FormatArgs("%s %s", g_Cfg.GetDefaultMsg(DEFMSG_RUNE_TO), pszRegionName);
+							t->FormatArgs("%s%s", g_Cfg.GetDefaultMsg(DEFMSG_RUNE_NAME_MARKED), pObj->GetName());
 							break;
 						}
 

@@ -1158,3 +1158,11 @@ Changed: When 'MulPath' is not set on sphere.ini, Sphere now will search UO inst
 Changed: Internal improvements on Teleport / Recall / Gate Travel spells.
 	-Gate Travel now will use proper blue/red moongate ITEMDEFs instead always use blue moongate changing its color when needed
 	-Gate Travel now will link moongates to each other based on UID instead MOREP. This will make possible cast Gate Travel inside moving boats (if multi region flags allow cast it)
+
+03-08-2018, Coruja
+Changed: Updated recall rune (typedef t_rune) internal tooltips, name, and renaming behavior.
+[items/sphere_item_magic_magery.scp]: Updated 'i_rune_marker' itemdef
+[sphere_msgs.scp]: Updated message list with the following changes
+	-Added: msg_rename_obscene, rune_name_marked, rune_name_unmarked, rune_rename_prompt, rune_rename_success
+	-Removed: itemuse_rune_name, msg_rename_success, msg_rename_wname, rune_to, rune_location_unk, rune_name, key_name, stone_name
+	-Updated: msg_rename_cancel

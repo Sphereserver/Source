@@ -324,7 +324,13 @@ bool CClient::Cmd_Use_Item(CItem *pItem, bool fTestTouch, bool fScript)
 		{
 			if ( !m_pChar->CanMove(pItem) )
 				return false;
-			addPromptConsole(CLIMODE_PROMPT_NAME_RUNE, g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_RUNE_NAME), pItem->GetUID());
+
+			if ( !pItem->m_itTelepad.m_ptMark.IsValidXY() )
+			{
+				SysMessageDefault(DEFMSG_SPELL_RECALL_RUNENOTMARKED);
+				return false;
+			}
+			addPromptConsole(CLIMODE_PROMPT_NAME_RUNE, g_Cfg.GetDefaultMsg(DEFMSG_RUNE_RENAME_PROMPT), pItem->GetUID());
 			return true;
 		}
 

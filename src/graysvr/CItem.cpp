@@ -1451,9 +1451,13 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 			break;
 		case IT_RUNE:
 			if ( !m_itRune.m_ptMark.IsValidPoint() )
-				len += strcpylen( pTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_BLANK ) );
-			else if ( ! m_itRune.m_Charges )
-				len += strcpylen( pTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_FADED ) );
+				len += strcpylen(pTemp + len, g_Cfg.GetDefaultMsg(DEFMSG_RUNE_NAME_UNMARKED));
+			else
+			{
+				if ( !m_itRune.m_Charges )
+					len += strcpylen(pTemp + len, g_Cfg.GetDefaultMsg(DEFMSG_ITEMTITLE_FADED));
+				len += strcpylen(pTemp + len, g_Cfg.GetDefaultMsg(DEFMSG_RUNE_NAME_MARKED));
+			}
 			break;
 		default:
 			break;

@@ -1369,9 +1369,7 @@ void CClient::Event_PromptResp(LPCTSTR pszText, size_t len, DWORD context1, DWOR
 
 	TCHAR szText[MAX_TALK_BUFFER];
 	if ( len <= 0 )		// cancel
-	{
-		szText[0] = 0;
-	}
+		szText[0] = '\0';
 	else
 	{
 		if ( bNoStrip )		// Str_GetBare will eat unicode characters
@@ -1382,11 +1380,22 @@ void CClient::Event_PromptResp(LPCTSTR pszText, size_t len, DWORD context1, DWOR
 			len = Str_GetBare(szText, pszText, COUNTOF(szText), "|~,=[]{|}~");
 	}
 
-	LPCTSTR pszReName = NULL;
-	LPCTSTR pszPrefix = NULL;
+	LPCTSTR pszPrefix = "";
 
 	switch ( promptMode )
 	{
+		case CLIMODE_PROMPT_NAME_RUNE:
+		case CLIMODE_PROMPT_NAME_SIGN:
+			break;
+
+		case CLIMODE_PROMPT_NAME_KEY:
+			pszPrefix = g_Cfg.GetDefaultMsg(DEFMSG_KEY_TO);
+			break;
+
+		case CLIMODE_PROMPT_NAME_SHIP:
+			pszPrefix = "SS ";
+			break;
+
 		case CLIMODE_PROMPT_GM_PAGE_TEXT:
 			// m_Targ_Text
 			Cmd_GM_Page(szText);
@@ -1402,31 +1411,6 @@ void CClient::Event_PromptResp(LPCTSTR pszText, size_t len, DWORD context1, DWOR
 				pCharVendor->NPC_SetVendorPrice(m_Prompt_Uid.ItemFind(), ATOI(szText));
 			return;
 		}
-
-		case CLIMODE_PROMPT_NAME_RUNE:
-			pszReName = g_Cfg.GetDefaultMsg(DEFMSG_RUNE_NAME);
-			pszPrefix = g_Cfg.GetDefaultMsg(DEFMSG_RUNE_TO);
-			break;
-
-		case CLIMODE_PROMPT_NAME_KEY:
-			pszReName = g_Cfg.GetDefaultMsg(DEFMSG_KEY_NAME);
-			pszPrefix = g_Cfg.GetDefaultMsg(DEFMSG_KEY_TO);
-			break;
-
-		case CLIMODE_PROMPT_NAME_SHIP:
-			pszReName = "Ship";
-			pszPrefix = "SS ";
-			break;
-
-		case CLIMODE_PROMPT_NAME_SIGN:
-			pszReName = "Sign";
-			pszPrefix = "";
-			break;
-
-		case CLIMODE_PROMPT_STONE_NAME:
-			pszReName = g_Cfg.GetDefaultMsg(DEFMSG_STONE_NAME);
-			pszPrefix = g_Cfg.GetDefaultMsg(DEFMSG_STONE_FOR);
-			break;
 
 		case CLIMODE_PROMPT_TARG_VERB:
 			// Send a msg to the pre-tergetted player. "ETARGVERB"
@@ -1451,33 +1435,35 @@ void CClient::Event_PromptResp(LPCTSTR pszText, size_t len, DWORD context1, DWOR
 			return;
 		}
 
+		case CLIMODE_PROMPT_STONE_NAME:
+			pszPrefix = g_Cfg.GetDefaultMsg(DEFMSG_STONE_FOR);
+			break;
+
 		default:
 			//DEBUG_ERR(("%lx:Unrequested Prompt mode %d\n", GetSocketID(), promptMode));
 			SysMessageDefault(DEFMSG_MSG_PROMPT_UNEXPECTED);
 			return;
 	}
 
-	ASSERT(pszReName);
-
 	CItem *pItem = m_Prompt_Uid.ItemFind();
 	if ( !pItem || (type == 0) || (szText[0] == '\0') )
 	{
-		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_RENAME_CANCEL), pszReName);
+		SysMessageDefault(DEFMSG_MSG_RENAME_CANCEL);
 		return;
 	}
 
 	if ( g_Cfg.IsObscene(szText) )
 	{
-		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_RENAME_WNAME), pszReName, szText);
+		SysMessageDefault(DEFMSG_MSG_RENAME_OBSCENE);
 		return;
 	}
 
 	CGString sMsg;
 	sMsg.Format("%s%s", pszPrefix, szText);
 	pItem->SetName(sMsg);
-	sMsg.Format(g_Cfg.GetDefaultMsg(DEFMSG_MSG_RENAME_SUCCESS), pszReName, pItem->GetName());
 
-	SysMessage(sMsg);
+	if ( promptMode == CLIMODE_PROMPT_NAME_RUNE )
+		SysMessageDefault(DEFMSG_RUNE_RENAME_SUCCESS);
 }
 
 void CClient::Event_Talk_Common(TCHAR *szText)
