@@ -712,7 +712,7 @@ public:
 	void addLight();
 	void addMusic(MIDI_TYPE id);
 	void addArrowQuest(WORD x, WORD y, DWORD id);
-	void addEffect(EFFECT_TYPE motion, const CObjBaseTemplate *pSrc, CPointMap ptSrc, const CObjBaseTemplate *pDest, CPointMap ptDest, ITEMID_TYPE id, BYTE bSpeed = 5, BYTE bFrames = 1, bool fExplode = false, DWORD dwColor = 0, DWORD dwRender = 0, WORD wEffectID = 0, WORD wExplodeID = 0, WORD wExplodeSound = 0, DWORD dwItemUID = 0, BYTE bLayer = 0);
+	void addEffect(EFFECT_TYPE motion, const CObjBaseTemplate *pSrc, CPointMap ptSrc, const CObjBaseTemplate *pDest, CPointMap ptDest, ITEMID_TYPE id, BYTE bSpeed = 0, BYTE bFrames = 0, bool fExplode = false, DWORD dwColor = 0, DWORD dwRender = 0, WORD wEffectID = 0, WORD wExplodeID = 0, WORD wExplodeSound = 0, DWORD dwItemUID = 0, BYTE bLayer = 0);
 	void addSound(SOUND_TYPE id, const CObjBaseTemplate *pSrc = NULL, BYTE bRepeat = 1);
 	void addReSync();
 	void addMap();

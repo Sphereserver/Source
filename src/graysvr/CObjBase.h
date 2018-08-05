@@ -317,7 +317,8 @@ public:
 	bool SetNamePool(LPCTSTR pszName);
 
 	void Sound(SOUND_TYPE id, BYTE iRepeat = 1) const;
-	void Effect(EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate *pSrc = NULL, BYTE bSpeed = 5, BYTE bFrames = 1, bool fExplode = false, DWORD dwColor = 0, DWORD dwRender = 0, WORD wEffectID = 0, WORD wExplodeID = 0, WORD wExplodeSound = 0, DWORD dwItemUID = 0, BYTE bLayer = 0, CPointMap ptSrc = CPointMap(-1, -1), CPointMap ptDest = CPointMap(-1, -1)) const;
+	void Effect(EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate *pSrc = NULL, BYTE bSpeed = 0, BYTE bFrames = 0, bool fExplode = false, DWORD dwColor = 0, DWORD dwRender = 0, WORD wEffectID = 0, WORD wExplodeID = 0, WORD wExplodeSound = 0, DWORD dwItemUID = 0, BYTE bLayer = 0) const;
+	void Effect(EFFECT_TYPE motion, ITEMID_TYPE id, CPointMap ptSrc = CPointMap(-1, -1), CPointMap ptDest = CPointMap(-1, -1), BYTE bSpeed = 0, BYTE bFrames = 0, bool fExplode = false, DWORD dwColor = 0, DWORD dwRender = 0, WORD wEffectID = 0, WORD wExplodeID = 0, WORD wExplodeSound = 0, DWORD dwItemUID = 0, BYTE bLayer = 0) const;
 
 	void r_WriteSafe(CScript &s);
 

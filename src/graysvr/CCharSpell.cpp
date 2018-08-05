@@ -132,8 +132,8 @@ bool CChar::Spell_Teleport(CPointMap ptDest, bool fTakePets, bool fCheckAntiMagi
 	{
 		if ( iEffect != ITEMID_NOTHING )
 		{
-			Effect(EFFECT_XYZ, iEffect, NULL, 10, 10, false, 0, 0, 0, 0, 0, 0, 0, ptOld, ptOld);
-			Effect(EFFECT_XYZ, iEffect, NULL, 10, 10, false, 0, 0, 0, 0, 0, 0, 0, ptDest, ptDest);
+			Effect(EFFECT_XYZ, iEffect, ptOld, ptOld, 10, 10);
+			Effect(EFFECT_XYZ, iEffect, ptDest, ptDest, 10, 10);
 		}
 		if ( iSound != SOUND_NONE )
 			Sound(iSound);

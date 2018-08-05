@@ -1168,3 +1168,7 @@ Changed: Updated recall rune (typedef t_rune) internal tooltips, name, and renam
 	-Added: msg_rename_obscene, rune_name_marked, rune_name_unmarked, rune_rename_prompt, rune_rename_success
 	-Removed: itemuse_rune_name, msg_rename_success, msg_rename_wname, rune_to, rune_location_unk, rune_name, key_name, stone_name
 	-Updated: msg_rename_cancel
+
+05-08-2018, Coruja
+Added: EFFECT function now supports client fade screen effect (EFFECT 4,[0-4])
+	-NOTE: It can be used only directly on client chars and requires client >= 6x

@@ -999,10 +999,11 @@ enum SCROLL_TYPE	// Client messages for scrolls types.
 
 enum EFFECT_TYPE
 {
-	EFFECT_BOLT = 0,	// a targetted bolt
-	EFFECT_LIGHTNING,	// lightning bolt.
-	EFFECT_XYZ,			// Stay at current xyz ??? not sure about this.
-	EFFECT_OBJ			// effect at single Object.
+	EFFECT_BOLT,		// Flying bolt
+	EFFECT_LIGHTNING,	// Lightning bolt
+	EFFECT_XYZ,			// Ground-based effect
+	EFFECT_OBJ,			// Object-based effect
+	EFFECT_FADE_SCREEN	// Fade client screen (only available on clients >= 6.0.0.0)
 };
 
 enum NOTO_TYPE
