@@ -347,17 +347,16 @@ void CObjBase::Effect(EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate
 	ADDTOCALLSTACK("CObjBase::Effect");
 	// Send effect to everyone nearby
 
-	CObjBaseTemplate *pDest = NULL;
+	CObjBaseTemplate *pDest;
 	if ( ptSrc.IsValidXY() )
 	{
 		pSrc = NULL;
+		pDest = NULL;
 	}
 	else
 	{
 		pSrc = pSrc->GetTopLevelObj();
-		ptSrc = pSrc->GetTopPoint();
 		pDest = GetTopLevelObj();
-		ptDest = pDest->GetTopPoint();
 	}
 
 	ClientIterator it;
