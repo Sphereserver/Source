@@ -368,11 +368,12 @@ protected:
 	DWORD m_PropertyRevision;			// current property list revision
 
 public:
-	PacketPropertyList *GetPropertyList(void) const { return m_PropertyList; }
+	PacketPropertyList *GetPropertyList() const { return m_PropertyList; }
 	void SetPropertyList(PacketPropertyList *pPropertyList);
-	void FreePropertyList(void);
+	DWORD GetPropertyHash() const { return m_PropertyHash; }
 	DWORD UpdatePropertyRevision(DWORD dwHash);
 	void UpdatePropertyFlag(int iMask);
+	void FreePropertyList();
 };
 
 #endif	// _INC_COBJBASE_H

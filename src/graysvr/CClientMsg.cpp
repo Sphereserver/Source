@@ -3026,6 +3026,17 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 		}
 		dwHash |= UID_F_ITEM;
 
+		if ( g_Cfg.m_iTooltipMode == TOOLTIPMODE_SENDVERSION )
+		{
+			// If client receive an tooltip with given obj UID / revision, and for some reason
+			// the server delete this obj and create another one with the same UID / revision,
+			// the client will show the previous cached tooltip on the new obj. To avoid this,
+			// compare both tooltip hashes to check if it really got changed, and if positive,
+			// send the full tooltip instead just the revision number
+			if ( pObj->GetPropertyHash() != dwHash )
+				fRequested = true;
+		}
+
 		// Clients actually expect to use an incremental revision number and not a
 		// hash to check if a tooltip needs updating - the client will not request
 		// updated tooltip data if the hash happens to be less than the previous one

@@ -1658,7 +1658,7 @@ protected:
 	CGrayUID m_object;
 	UINT64 m_time;
 	DWORD m_version;
-	int m_entryCount;
+	size_t m_entryCount;
 
 public:
 	PacketPropertyList(const CObjBase* object, DWORD version, const CGObArray<CClientTooltip*>* data);
@@ -1667,8 +1667,8 @@ public:
 
 	CGrayUID getObject(void) const { return m_object; }
 	DWORD getVersion(void) const { return m_version; }
-	int getEntryCount(void) const { return m_entryCount; }
-	bool isEmpty(void) const { return m_entryCount == 0; }
+	size_t getEntryCount(void) const { return m_entryCount; }
+	bool isEmpty(void) const { return (m_entryCount == 0); }
 
 	bool hasExpired(int timeout) const;
 

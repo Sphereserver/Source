@@ -1172,3 +1172,6 @@ Changed: Updated recall rune (typedef t_rune) internal tooltips, name, and renam
 05-08-2018, Coruja
 Added: EFFECT function now supports client fade screen effect (EFFECT 4,[0-4])
 	-NOTE: It can be used only directly on client chars and requires client >= 6x
+
+06-08-2018, Coruja
+Fixed: Tooltips not updating correctly when TooltipMode=1 is set on sphere.ini.

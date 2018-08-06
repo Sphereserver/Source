@@ -356,8 +356,12 @@ void CObjBase::Effect(EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate
 		return;
 	}
 
-	pSrc = pSrc->GetTopLevelObj();
-	CPointMap ptSrc = pSrc->GetTopPoint();
+	CPointMap ptSrc = NULL;
+	if ( pSrc )
+	{
+		pSrc = pSrc->GetTopLevelObj();
+		ptSrc = pSrc->GetTopPoint();
+	}
 
 	CObjBaseTemplate *pDest = GetTopLevelObj();
 	CPointMap ptDest = GetTopPoint();
