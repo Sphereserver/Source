@@ -357,14 +357,23 @@ void CObjBase::Effect(EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate
 	}
 
 	CPointMap ptSrc = NULL;
-	if ( pSrc )
+	CObjBaseTemplate *pDest = GetTopLevelObj();
+	CPointMap ptDest = pDest->GetTopPoint();
+
+	if ( motion == EFFECT_BOLT )
 	{
+		// Source should be a valid object when using moving effects
+		if ( !pSrc )
+			return;
 		pSrc = pSrc->GetTopLevelObj();
 		ptSrc = pSrc->GetTopPoint();
 	}
-
-	CObjBaseTemplate *pDest = GetTopLevelObj();
-	CPointMap ptDest = GetTopPoint();
+	else
+	{
+		// Otherwise, source is not needed (set the same as dest just to fill the packet)
+		pSrc = pDest;
+		ptSrc = ptDest;
+	}
 
 	ClientIterator it;
 	for ( CClient *pClient = it.next(); pClient != NULL; pClient = it.next() )
@@ -2003,7 +2012,7 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 			Effect(
 				static_cast<EFFECT_TYPE>(piCmd[0]),						// Motion
 				static_cast<ITEMID_TYPE>(RES_GET_INDEX(piCmd[1])),		// ID
-				pCharSrc ? pCharSrc : this,								// Source
+				pCharSrc,												// Source
 				(iArgQty >= 3) ? static_cast<BYTE>(piCmd[2]) : 0,		// Speed
 				(iArgQty >= 4) ? static_cast<BYTE>(piCmd[3]) : 0,		// Frames
 				(iArgQty >= 5) ? (piCmd[4] != 0) : false,				// Explode

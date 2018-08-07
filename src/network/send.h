@@ -650,7 +650,6 @@ public:
 	PacketEffect(const CClient *target, EFFECT_TYPE motion, const CObjBaseTemplate *pSrc, CPointMap ptSrc, const CObjBaseTemplate *pDest, CPointMap ptDest, ITEMID_TYPE id, BYTE bSpeed, BYTE bFrames, bool fExplode, DWORD dwColor, DWORD dwRender);
 	PacketEffect(const CClient *target, EFFECT_TYPE motion, const CObjBaseTemplate *pSrc, CPointMap ptSrc, const CObjBaseTemplate *pDest, CPointMap ptDest, ITEMID_TYPE id, BYTE bSpeed, BYTE bFrames, bool fExplode, DWORD dwColor, DWORD dwRender, WORD wEffectID, WORD wExplodeID, WORD wExplodeSound, DWORD dwItemUID, BYTE bLayer);
 	void writeBasicEffect(EFFECT_TYPE motion, const CObjBaseTemplate *pSrc, CPointMap ptSrc, const CObjBaseTemplate *pDest, CPointMap ptDest, ITEMID_TYPE id, BYTE bSpeed, BYTE bFrames, bool fExplode);
-	void writeHuedEffect(DWORD dwColor, DWORD dwRender);
 };
 
 /***************************************************************************

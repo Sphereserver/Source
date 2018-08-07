@@ -65,8 +65,7 @@ PacketWeb::PacketWeb(const CClient * target, const BYTE * data, size_t length) :
 	if (data && (length > 0))
 		setData(data, length);
 
-	if (target)
-		push(target);
+	push(target);
 }
 
 void PacketWeb::setData(const BYTE * data, size_t length)
@@ -1781,7 +1780,8 @@ PacketEffect::PacketEffect(const CClient *target, EFFECT_TYPE motion, const CObj
 	ADDTOCALLSTACK("PacketEffect::PacketEffect(2)");
 
 	writeBasicEffect(motion, pSrc, ptSrc, pDest, ptDest, id, bSpeed, bFrames, fExplode);
-	writeHuedEffect(dwColor, dwRender);
+	writeInt32(dwColor);
+	writeInt32(dwRender);
 
 	push(target);
 }
@@ -1791,7 +1791,8 @@ PacketEffect::PacketEffect(const CClient *target, EFFECT_TYPE motion, const CObj
 	ADDTOCALLSTACK("PacketEffect::PacketEffect(3)");
 
 	writeBasicEffect(motion, pSrc, ptSrc, pDest, ptDest, id, bSpeed, bFrames, fExplode);
-	writeHuedEffect(dwColor, dwRender);
+	writeInt32(dwColor);
+	writeInt32(dwRender);
 	writeInt16(wEffectID);
 	writeInt16(wExplodeID);
 	writeInt16(wExplodeSound);
@@ -1807,33 +1808,8 @@ void PacketEffect::writeBasicEffect(EFFECT_TYPE motion, const CObjBaseTemplate *
 	ADDTOCALLSTACK("PacketEffect::writeBasicEffect");
 
 	writeByte(static_cast<BYTE>(motion));
-
-	bool fFixedDirection = true;
-	switch ( motion )
-	{
-		case EFFECT_BOLT:
-		{
-			fFixedDirection = false;
-			writeInt32(pSrc ? static_cast<DWORD>(pSrc->GetUID()) : 0);
-			writeInt32(pDest ? static_cast<DWORD>(pDest->GetUID()) : 0);
-			break;
-		}
-		case EFFECT_LIGHTNING:
-		case EFFECT_XYZ:
-		case EFFECT_OBJ:
-		{
-			writeInt32(pDest ? static_cast<DWORD>(pDest->GetUID()) : 0);
-			writeInt32(0);
-			break;
-		}
-		default:	// this should never happen
-		{
-			writeInt32(0);
-			writeInt32(0);
-			break;
-		}
-	}
-
+	writeInt32(pSrc ? static_cast<DWORD>(pSrc->GetUID()) : 0);
+	writeInt32(pDest ? static_cast<DWORD>(pDest->GetUID()) : 0);
 	writeInt16(static_cast<WORD>(id));
 	writeInt16(ptSrc.m_x);
 	writeInt16(ptSrc.m_y);
@@ -1844,16 +1820,8 @@ void PacketEffect::writeBasicEffect(EFFECT_TYPE motion, const CObjBaseTemplate *
 	writeByte(bSpeed);
 	writeByte(bFrames);
 	writeInt16(0);
-	writeBool(fFixedDirection);
+	writeBool(motion != EFFECT_BOLT);
 	writeBool(fExplode);
-}
-
-void PacketEffect::writeHuedEffect(DWORD dwColor, DWORD dwRender)
-{
-	ADDTOCALLSTACK("PacketEffect::writeHuedEffect");
-
-	writeInt32(dwColor);
-	writeInt32(dwRender);
 }
 
 
@@ -3675,8 +3643,7 @@ PacketPropertyListVersionOld::PacketPropertyListVersionOld(const CClient* target
 	writeInt32(object->GetUID());
 	writeInt32(version);
 
-	if (target)
-		push(target, false);
+	push(target, false);
 }
 
 bool PacketPropertyListVersionOld::onSend(const CClient* client)
@@ -4480,8 +4447,7 @@ PacketPropertyListVersion::PacketPropertyListVersion(const CClient* target, cons
 	writeInt32(object->GetUID());
 	writeInt32(version);
 
-	if (target)
-		push(target);
+	push(target);
 }
 
 bool PacketPropertyListVersion::onSend(const CClient* client)
