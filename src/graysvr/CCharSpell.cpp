@@ -798,8 +798,6 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 		case SPELL_Mana_Drain:
 		{
 			UpdateStatVal(STAT_INT, +wStatEffect);
-			Effect(EFFECT_OBJ, ITEMID_FX_SPARKLE_2, this, 10, 25);
-			Sound(0x28E);
 			return;
 		}
 		case SPELL_Reactive_Armor:
@@ -840,8 +838,6 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 		case SPELL_Protection:
 		case SPELL_Arch_Prot:
 		{
-			Sound(0x1ed);
-			Effect(EFFECT_OBJ, ITEMID_FX_SPARKLE, this, 9, 20);
 			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 			{
 				m_ResPhysical += pSpell->m_itSpell.m_PolyStr;
@@ -3286,20 +3282,6 @@ bool CChar::OnSpellEffect(SPELL_TYPE spell, CChar *pCharSrc, int iSkillLevel, CI
 	iEffect = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Effect"));
 	iDuration = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Duration"));
 
-	if ( iEffectID )
-	{
-		if ( iEffectID > ITEMID_QTY )
-			iEffectID = pSpellDef->m_idEffect;
-
-		if ( pSpellDef->IsSpellType(SPELLFLAG_FX_BOLT) )
-			Effect(EFFECT_BOLT, iEffectID, pCharSrc, 5, 1, fExplode, wColor, dwRender);
-		if ( pSpellDef->IsSpellType(SPELLFLAG_FX_TARG) )
-			Effect(EFFECT_OBJ, iEffectID, this, 0, 15, fExplode, wColor, dwRender);
-	}
-
-	if ( iSound )
-		Sound(iSound);
-
 	if ( pSpellDef->IsSpellType(SPELLFLAG_DAMAGE) )
 	{
 		iResist = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Resist"));
@@ -3419,9 +3401,10 @@ bool CChar::OnSpellEffect(SPELL_TYPE spell, CChar *pCharSrc, int iSkillLevel, CI
 
 		case SPELL_Reveal:
 			if ( !Reveal() )
-				break;
-			if ( iEffectID )
-				Effect(EFFECT_OBJ, iEffectID, this, 0, 15, fExplode, wColor, dwRender);
+			{
+				iEffectID = ITEMID_NOTHING;
+				iSound = SOUND_NONE;
+			}
 			break;
 
 		case SPELL_Invis:
@@ -3465,14 +3448,8 @@ bool CChar::OnSpellEffect(SPELL_TYPE spell, CChar *pCharSrc, int iSkillLevel, CI
 			break;
 		}
 
-		case SPELL_Meteor_Swarm:
-			if ( iEffectID )
-				Effect(EFFECT_BOLT, iEffectID, pCharSrc, 9, 6, fExplode, wColor, dwRender);
-			break;
-
 		case SPELL_Lightning:
 		case SPELL_Chain_Lightning:
-			GetTopSector()->LightFlash();
 			Effect(EFFECT_LIGHTNING, ITEMID_NOTHING, pCharSrc);
 			break;
 
@@ -3480,15 +3457,14 @@ bool CChar::OnSpellEffect(SPELL_TYPE spell, CChar *pCharSrc, int iSkillLevel, CI
 			return Spell_Resurrection(NULL, pCharSrc, (pSourceItem && pSourceItem->IsType(IT_SHRINE)));
 
 		case SPELL_Light:
-			if ( iEffectID )
-				Effect(EFFECT_OBJ, iEffectID, this, 9, 6, fExplode, wColor, dwRender);
 			Spell_Effect_Create(spell, LAYER_FLAG_Potion, iSkillLevel, iDuration, pCharSrc);
 			break;
 
 		case SPELL_Hallucination:
 		{
 			CItem *pItem = Spell_Effect_Create(spell, LAYER_FLAG_Hallucination, iSkillLevel, 10 * TICK_PER_SEC, pCharSrc);
-			pItem->m_itSpell.m_spellcharges = Calc_GetRandVal(30);
+			if ( pItem )
+				pItem->m_itSpell.m_spellcharges = Calc_GetRandVal(30);
 			break;
 		}
 
@@ -3607,6 +3583,18 @@ bool CChar::OnSpellEffect(SPELL_TYPE spell, CChar *pCharSrc, int iSkillLevel, CI
 		default:
 			break;
 	}
+
+	if ( (iEffectID > ITEMID_NOTHING) && (iEffectID < ITEMID_QTY) )
+	{
+		if ( pSpellDef->IsSpellType(SPELLFLAG_FX_BOLT) )
+			Effect(EFFECT_BOLT, iEffectID, pCharSrc, 5, 1, fExplode, wColor, dwRender);
+		if ( pSpellDef->IsSpellType(SPELLFLAG_FX_TARG) )
+			Effect(EFFECT_OBJ, iEffectID, this, 0, 15, fExplode, wColor, dwRender);
+	}
+
+	if ( iSound )
+		Sound(iSound);
+
 	return true;
 }
 

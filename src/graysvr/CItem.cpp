@@ -4653,6 +4653,11 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	iSkillLevel = static_cast<int>(Args.m_iN2);
 	pSpellDef = g_Cfg.GetSpellDef( spell );
 
+	if ( pCharSrc && !pCharSrc->IsPriv(PRIV_GM) && pCharSrc->GetRegion()->CheckAntiMagic(spell) )
+	{
+		pCharSrc->SysMessageDefault(DEFMSG_SPELL_TRY_AM);
+		return false;
+	}
 
 	if ( IsType(IT_WAND) )	// try to recharge the wand.
 	{
@@ -4671,21 +4676,18 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		}
 	}
 
-	if ( pCharSrc && (!pCharSrc->IsPriv(PRIV_GM) && pCharSrc->GetRegion()->CheckAntiMagic(spell)) )
-	{
-		pCharSrc->SysMessageDefault( DEFMSG_SPELL_TRY_AM );
-		return false;
-	}
-
+	ITEMID_TYPE iEffectID = pSpellDef->m_idEffect;
 	WORD uDamage = 0;
+
 	switch ( spell )
 	{
 		case SPELL_Dispel_Field:
 			if ( GetType() == IT_SPELL )
 			{
 				if ( IsTopLevel() )
-					Effect( EFFECT_XYZ, ITEMID_FX_HEAL_EFFECT, pCharSrc, 9, 20 );
+					Effect(EFFECT_XYZ, iEffectID, pCharSrc, 9, 20);
 				Delete();
+				return true;
 			}
 			break;
 
@@ -4694,8 +4696,9 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 			if ( GetType() == IT_SPELL )
 			{
 				if ( IsTopLevel() )
-					Effect( EFFECT_XYZ, ITEMID_FX_TELE_VANISH, pCharSrc, 8, 20 );
+					Effect(EFFECT_XYZ, iEffectID, pCharSrc, 8, 20);
 				Delete();
+				return true;
 			}
 			break;
 
@@ -4756,6 +4759,18 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 
 		default:
 			break;
+	}
+
+	if ( (iEffectID > ITEMID_NOTHING) && (iEffectID < ITEMID_QTY) )
+	{
+		bool fExplode = (pSpellDef->IsSpellType(SPELLFLAG_FX_BOLT) && !pSpellDef->IsSpellType(SPELLFLAG_GOOD));		// bolt (chasing) spells have explode = 1 by default (if not good spell)
+		HUE_TYPE wColor = static_cast<HUE_TYPE>(maximum(0, Args.m_VarsLocal.GetKeyNum("EffectColor")));
+		DWORD dwRender = static_cast<DWORD>(maximum(0, Args.m_VarsLocal.GetKeyNum("EffectRender")));
+
+		if ( pSpellDef->IsSpellType(SPELLFLAG_FX_BOLT) )
+			Effect(EFFECT_BOLT, iEffectID, pCharSrc, 5, 1, fExplode, wColor, dwRender);
+		if ( pSpellDef->IsSpellType(SPELLFLAG_FX_TARG) )
+			Effect(EFFECT_OBJ, iEffectID, this, 0, 15, fExplode, wColor, dwRender);
 	}
 
 	// ??? Potions should explode when hit (etc..)

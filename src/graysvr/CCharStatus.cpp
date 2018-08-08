@@ -1547,9 +1547,9 @@ bool CChar::CanSeeLOS(const CObjBaseTemplate *pObj, WORD wFlags) const
 		const CChar *pChar = dynamic_cast<const CChar *>(pObj);
 		if ( pChar )
 			pt.m_z = minimum(pt.m_z + pChar->GetHeightMount(), UO_SIZE_Z);
-		return CanSeeLOS_Adv(pt, NULL, GetSight(), wFlags);
+		return CanSeeLOS_Adv(pt, NULL, UO_MAP_VIEW_SIGHT, wFlags);
 	}
-	return CanSeeLOS(pObj->GetTopPoint(), NULL, GetSight(), wFlags);
+	return CanSeeLOS(pObj->GetTopPoint(), NULL, UO_MAP_VIEW_SIGHT, wFlags);
 }
 
 bool CChar::CanTouch(const CPointMap &pt) const
