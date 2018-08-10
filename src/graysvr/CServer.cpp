@@ -1335,7 +1335,7 @@ bool CServer::r_Verb(CScript &s, CTextConsole *pSrc)
 				break;
 			}
 
-			if ( g_World.Import(ppArgs[0], pSrc->GetChar(), (iQty >= 2) ? static_cast<WORD>(ATOI(ppArgs[1])) : IMPFLAGS_BOTH, (iQty >= 3) ? ATOI(ppArgs[2]) : SHRT_MAX) )
+			if ( g_World.Import(ppArgs[0], pSrc->GetChar(), (iQty >= 2) ? static_cast<WORD>(ATOI(ppArgs[1])) : IMPFLAGS_ITEMS|IMPFLAGS_CHARS, (iQty >= 3) ? ATOI(ppArgs[2]) : SHRT_MAX) )
 				pSrc->SysMessagef("Import complete\n");
 			else
 				pSrc->SysMessage("Import failed\n");
@@ -1378,7 +1378,7 @@ bool CServer::r_Verb(CScript &s, CTextConsole *pSrc)
 				break;
 			}
 
-			if ( g_World.Import(ppArgs[0], pSrc->GetChar(), IMPFLAGS_BOTH|IMPFLAGS_ACCOUNT, SHRT_MAX, ppArgs[1], ppArgs[2]) )
+			if ( g_World.Import(ppArgs[0], pSrc->GetChar(), IMPFLAGS_ITEMS|IMPFLAGS_CHARS|IMPFLAGS_ACCOUNT, SHRT_MAX, ppArgs[1], ppArgs[2]) )
 				pSrc->SysMessagef("Restore complete\n");
 			else
 				pSrc->SysMessage("Restore failed\n");
