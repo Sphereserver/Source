@@ -599,37 +599,6 @@ static const BYTE sm_FeluccaPhaseBrightness[] =
 		return( m_Env.m_Light + 1 );
 }
 
-void CSector::SetLightNow( bool fFlash )
-{
-	ADDTOCALLSTACK("CSector::SetLightNow");
-	// Set the light level for all the CClients here.
-
-	CChar * pChar = static_cast<CChar *>( m_Chars_Active.GetHead());
-	for ( ; pChar != NULL; pChar = pChar->GetNext())
-	{
-		if ( pChar->IsStatFlag( STATF_DEAD | STATF_NightSight ))
-			continue;
-
-		if ( pChar->m_pClient )
-		{
-			if ( fFlash )	// This does not seem to work predicably !
-			{
-				BYTE bPrvLight = m_Env.m_Light;
-				m_Env.m_Light = LIGHT_BRIGHT;	// full bright.
-				pChar->m_pClient->addLight();
-				m_Env.m_Light = bPrvLight;	// back to previous.
-			}
-			pChar->m_pClient->addLight();
-		}
-
-		// don't fire trigger when server is loading or light is flashing
-		if (( ! g_Serv.IsLoading() && fFlash == false ) && ( IsTrigUsed(TRIGGER_ENVIRONCHANGE) ))
-		{
-			pChar->OnTrigger( CTRIG_EnvironChange, pChar );
-		}
-	}
-}
-
 void CSector::SetLight( int light )
 {
 	ADDTOCALLSTACK("CSector::SetLight");
@@ -645,7 +614,6 @@ void CSector::SetLight( int light )
 	{
 		m_Env.m_Light = (BYTE) ( light | LIGHT_OVERRIDE );
 	}
-	SetLightNow(false);
 }
 
 void CSector::SetDefaultWeatherChance()
@@ -1048,11 +1016,7 @@ void CSector::OnTick(size_t iPulseCount)
 					{
 						int iVal = Calc_GetRandVal(30);
 						if ( iVal < 5 )
-						{
-							// Mess up the light levels for a sec..
-							LightFlash();
 							sound = sm_SfxThunder[ Calc_GetRandVal( COUNTOF( sm_SfxThunder )) ];
-						}
 						else if ( iVal < 10 )
 							sound = sm_SfxRain[ Calc_GetRandVal( COUNTOF( sm_SfxRain )) ];
 						else if ( iVal < 15 )

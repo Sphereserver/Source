@@ -37,7 +37,6 @@ private:
 	void SetDefaultWeatherChance();
 	WEATHER_TYPE GetWeatherCalc() const;
 	BYTE GetLightCalc(bool fQuickSet) const;
-	void SetLightNow(bool fFlash = false);
 	bool IsMoonVisible(unsigned int iPhase, int iLocalTime) const;
 
 public:
