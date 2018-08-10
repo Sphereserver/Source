@@ -958,7 +958,7 @@ void CSector::Restock()
 	}
 }
 
-void CSector::OnTick(int iPulseCount)
+void CSector::OnTick(size_t iPulseCount)
 {
 	ADDTOCALLSTACK_INTENSIVE("CSector::OnTick");
 	// CWorld gives OnTick() to all CSectors.

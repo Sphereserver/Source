@@ -394,7 +394,7 @@ void CObjBase::Effect(EFFECT_TYPE motion, ITEMID_TYPE id, CPointMap ptSrc, CPoin
 	for ( CClient *pClient = it.next(); pClient != NULL; pClient = it.next() )
 	{
 		CChar *pChar = pClient->GetChar();
-		if ( !pChar || (pChar->GetTopPoint().GetDist(ptDest) > pChar->m_iVisualRange) )
+		if ( !pChar || (pChar->GetTopPoint().GetDist(ptDest) > pChar->GetSight()) )
 			continue;
 		pClient->addEffect(motion, NULL, ptSrc, NULL, ptDest, id, bSpeed, bFrames, fExplode, dwColor, dwRender, wEffectID, wExplodeID, wExplodeSound, dwItemUID, bLayer);
 	}

@@ -36,7 +36,7 @@ TCHAR *CScriptKey::GetArgStr(bool *fQuoted)
 	return pszStr;
 }
 
-UINT64 CScriptKey::GetArgFlag(UINT64 uiStart, UINT64 uiMask)
+UINT64 CScriptKey::GetArgFlag(UINT64 uStart, UINT64 uMask)
 {
 	ADDTOCALLSTACK("CScriptKey::GetArgFlag");
 	// No args = toggle the flag
@@ -46,11 +46,11 @@ UINT64 CScriptKey::GetArgFlag(UINT64 uiStart, UINT64 uiMask)
 	ASSERT(m_pszArg);
 
 	if ( !HasArgs() )
-		return (uiStart ^ uiMask);
+		return (uStart ^ uMask);
 	else if ( GetArgVal() )
-		return (uiStart | uiMask);
+		return (uStart | uMask);
 	else
-		return (uiStart & ~uiMask);
+		return (uStart & ~uMask);
 }
 
 long long CScriptKey::GetArgLLVal()
@@ -214,7 +214,7 @@ void CScript::InitBase()
 	InitKey();
 }
 
-bool CScript::Open(LPCTSTR pszFilename, UINT uiFlags)
+bool CScript::Open(LPCTSTR pszFilename, UINT uFlags)
 {
 	ADDTOCALLSTACK("CScript::Open");
 	// If we are in read mode and we have no script file
@@ -238,12 +238,12 @@ bool CScript::Open(LPCTSTR pszFilename, UINT uiFlags)
 		strncpy(szTemp, GetFilePath(), sizeof(szTemp) - 1);
 		strcat(szTemp, SPHERE_SCRIPT);
 		SetFilePath(szTemp);
-		uiFlags |= OF_TEXT;
+		uFlags |= OF_TEXT;
 	}
 
-	if ( !CCacheableScriptFile::Open(GetFilePath(), uiFlags) )
+	if ( !CCacheableScriptFile::Open(GetFilePath(), uFlags) )
 	{
-		if ( !(uiFlags & OF_NONCRIT) )
+		if ( !(uFlags & OF_NONCRIT) )
 			g_Log.Event(LOGL_WARN, "'%s' not found\n", static_cast<LPCTSTR>(GetFilePath()));
 		return false;
 	}
@@ -292,18 +292,18 @@ bool CScript::FindTextHeader(LPCTSTR pszName)
 	return true;
 }
 
-DWORD CScript::Seek(long lOffset, UINT uiOrigin)
+DWORD CScript::Seek(long lOffset, UINT uOrigin)
 {
 	ADDTOCALLSTACK("CScript::Seek");
 	// Go to the start of a new section
 	// RETURN: the new offset in bytes from start of file
 
-	if ( (lOffset == 0) && (uiOrigin == SEEK_SET) )
+	if ( (lOffset == 0) && (uOrigin == SEEK_SET) )
 		m_iLineNum = 0;		// so we don't have to override SeekToBegin
 
 	m_fSectionHead = false;		// unknown, so start at the beginning
 	m_lSectionData = lOffset;
-	return CCacheableScriptFile::Seek(lOffset, uiOrigin);
+	return CCacheableScriptFile::Seek(lOffset, uOrigin);
 }
 
 bool CScript::FindNextSection()

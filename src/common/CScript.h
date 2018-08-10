@@ -82,7 +82,7 @@ public:
 	{
 		return GetArgStr(NULL);
 	}
-	UINT64 GetArgFlag(UINT64 uiStart, UINT64 uiMask);
+	UINT64 GetArgFlag(UINT64 uStart, UINT64 uMask);
 	long long GetArgLLVal();
 	long GetArgVal();
 	long GetArgRange();
@@ -135,7 +135,7 @@ public:
 
 protected:
 	void InitBase();
-	virtual DWORD Seek(long lOffset = 0, UINT uiOrigin = SEEK_SET);
+	virtual DWORD Seek(long lOffset = 0, UINT uOrigin = SEEK_SET);
 
 public:
 	// Text only functions
@@ -143,7 +143,7 @@ public:
 	bool FindTextHeader(LPCTSTR pszName);
 
 public:
-	virtual bool Open(LPCTSTR pszFilename = NULL, UINT uiFlags = OF_READ|OF_TEXT);
+	virtual bool Open(LPCTSTR pszFilename = NULL, UINT uFlags = OF_READ|OF_TEXT);
 	virtual void Close();
 	virtual void CloseForce()
 	{
