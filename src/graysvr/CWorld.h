@@ -37,10 +37,10 @@ private:
 	void SetDefaultWeatherChance();
 	WEATHER_TYPE GetWeatherCalc() const;
 	BYTE GetLightCalc(bool fQuickSet) const;
-	bool IsMoonVisible(unsigned int iPhase, int iLocalTime) const;
+	bool IsMoonVisible(unsigned int uPhase, int iLocalTime) const;
 
 public:
-	void OnTick(size_t iPulse);
+	void OnTick(int iPulse);
 
 	// Time
 	int GetLocalTime() const;
@@ -58,7 +58,7 @@ public:
 	{
 		return m_Env.m_Weather;
 	}
-	void SetWeather(WEATHER_TYPE w);
+	void SetWeather(WEATHER_TYPE weather);
 	void SetWeatherChance(bool fRain, int iChance);
 
 	BYTE GetRainChance() const
@@ -148,12 +148,12 @@ public:
 
 	bool IsCharActiveIn(const CChar *pChar) const
 	{
-		// Assume the char is active (not disconnected)
+		// Check if char is active
 		return (pChar->GetParent() == &m_Chars_Active);
 	}
 	bool IsCharDisconnectedIn(const CChar *pChar) const
 	{
-		// Assume the char is active (not disconnected)
+		// Check if char is inactive (disconnected)
 		return (pChar->GetParent() == &m_Chars_Disconnect);
 	}
 
@@ -194,8 +194,8 @@ public:
 
 	bool v_AllChars(CScript &s, CTextConsole *pSrc);
 	bool v_AllCharsIdle(CScript &s, CTextConsole *pSrc);
-	bool v_AllItems(CScript &s, CTextConsole *pSrc);
 	bool v_AllClients(CScript &s, CTextConsole *pSrc);
+	bool v_AllItems(CScript &s, CTextConsole *pSrc);
 
 private:
 	CSector(const CSector &copy);
