@@ -409,7 +409,7 @@ public:
 private:
 	static void GetBackupName(CGString &sBuffer, LPCTSTR pszBaseDir, TCHAR pszType, int iSaveCount);
 	bool LoadFile(LPCTSTR pszFileName);
-	void LoadWorld();
+	bool LoadWorld();
 
 	bool SaveTry(bool fForceImmediate);
 	bool SaveStage();
@@ -501,7 +501,7 @@ public:
 	bool Import(LPCTSTR pszFileName, const CChar *pSrc, WORD wModeFlags = IMPFLAGS_ITEMS, int iDist = SHRT_MAX, TCHAR *pszArg1 = NULL, TCHAR *pszArg2 = NULL);
 	bool Save(bool fForceImmediate);
 	void SaveStatics();
-	void LoadAll();
+	bool LoadAll();
 	bool DumpAreas(CTextConsole *pSrc, LPCTSTR pszFileName);
 	void Close();
 

@@ -1180,3 +1180,6 @@ Fixed: Tooltips not updating correctly when TooltipMode=1 is set on sphere.ini.
 Fixed: EFFECT_ID/SOUND not working correctly on some spells.
 Changed: LOS checks now will use max distance of 14 tiles instead character VISUALRANGE value.
 	-This will provide the same gameplay experience for all clients, avoiding clients with higher screen resolution take unfair advantage over clients using lower screen resolution.
+
+11-08-2018, Coruja
+Changed: When server startup can't load save files correctly it will now return fatal error instead silently load previous save files.

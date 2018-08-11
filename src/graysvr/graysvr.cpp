@@ -617,7 +617,8 @@ int Sphere_InitServer( int argc, char *argv[] )
 	WritePidFile(2);
 
 	EXC_SET("load world");
-	g_World.LoadAll();
+	if ( !g_World.LoadAll() )
+		return -8;
 
 	EXC_SET("sockets init");
 	if ( !g_Serv.SocketsInit() )

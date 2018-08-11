@@ -1039,7 +1039,7 @@ void CWorld::Init()
 
 		if ( *pszMaps )
 			strcat(pszMaps, ", ");
-		sprintf(pszMapName, "%d='%s'", iMap, (iMap < COUNTOF(sm_szMapNames)) ? sm_szMapNames[iMap] : "[Unnamed]");
+		sprintf(pszMapName, "%d='%s'", iMap, (static_cast<size_t>(iMap) < COUNTOF(sm_szMapNames)) ? sm_szMapNames[iMap] : "[Unnamed]");
 		strcat(pszMaps, pszMapName);
 
 		if ( *pszSectors )
@@ -1403,10 +1403,10 @@ bool CWorld::Save(bool fForceImmediate)
 	try
 	{
 		CScriptTriggerArgs Args(fForceImmediate, m_iSaveStage);
-		enum TRIGRET_TYPE tr;
-		if ( g_Serv.r_Call("f_onserver_save", &g_Serv, &Args, NULL, &tr) )
-			if ( tr == TRIGRET_RET_TRUE )
-				return false;
+		TRIGRET_TYPE tr = TRIGRET_RET_DEFAULT;
+		g_Serv.r_Call("f_onserver_save", &g_Serv, &Args, NULL, &tr);
+		if ( tr == TRIGRET_RET_TRUE )
+			return false;
 
 		// Fushing before the server should fix #2306
 		// The scripts fills the clients buffer and the server flush the data during the save.
@@ -1584,87 +1584,48 @@ bool CWorld::LoadFile(LPCTSTR pszFileName)
 	}
 	else
 	{
-		g_Log.Event(LOGM_INIT|LOGL_CRIT, "File is corrupt: No [EOF] marker found\n");
+		g_Log.Event(LOGM_INIT|LOGL_CRIT, "File is corrupt, no [EOF] marker found\n");
 		return false;
 	}
 }
 
-void CWorld::LoadWorld()
+bool CWorld::LoadWorld()
 {
 	EXC_TRY("LoadWorld");
 	// Load world from save files
+	int iLoadedFiles = 0;
 
 	CGString sDataName;
 	sDataName.Format("%s" SPHERE_FILE "data", static_cast<LPCTSTR>(g_Cfg.m_sWorldBaseDir));
-
-	CGString sStaticsName;
-	sStaticsName.Format("%s" SPHERE_FILE "statics", static_cast<LPCTSTR>(g_Cfg.m_sWorldBaseDir));
-
-	CGString sMultisName;
-	sMultisName.Format("%s" SPHERE_FILE "multis", static_cast<LPCTSTR>(g_Cfg.m_sWorldBaseDir));
+	if ( LoadFile(sDataName) )
+		++iLoadedFiles;
 
 	CGString sWorldName;
 	sWorldName.Format("%s" SPHERE_FILE "world", static_cast<LPCTSTR>(g_Cfg.m_sWorldBaseDir));
+	if ( LoadFile(sWorldName) )
+		++iLoadedFiles;
 
 	CGString sCharsName;
 	sCharsName.Format("%s" SPHERE_FILE "chars", static_cast<LPCTSTR>(g_Cfg.m_sWorldBaseDir));
+	if ( LoadFile(sCharsName) )
+		++iLoadedFiles;
 
-	long lPrevSaveCountID = m_iSaveCountID;
-	for (;;)
-	{
-		LoadFile(sDataName);
-		LoadFile(sStaticsName);
-		LoadFile(sMultisName);
-		if ( LoadFile(sWorldName) && LoadFile(sCharsName) )
-			return;
+	CGString sMultisName;
+	sMultisName.Format("%s" SPHERE_FILE "multis", static_cast<LPCTSTR>(g_Cfg.m_sWorldBaseDir));
+	if ( LoadFile(sMultisName) )
+		++iLoadedFiles;
 
-		// If can't open the file at all then it was a bust
-		if ( m_iSaveCountID == lPrevSaveCountID )
-			break;
+	CGString sStaticsName;
+	sStaticsName.Format("%s" SPHERE_FILE "statics", static_cast<LPCTSTR>(g_Cfg.m_sWorldBaseDir));
+	LoadFile(sStaticsName);		// optional
 
-		// No current save files found, reset everything that has been loaded and try again using previous backup files
-		m_Stones.RemoveAll();
-		m_Parties.DeleteAll();
-		m_GMPages.DeleteAll();
-		m_ObjStatusUpdates.RemoveAll();
-
-		if ( m_Sectors )
-		{
-			for ( size_t s = 0; s < m_SectorsQty; ++s )
-				m_Sectors[s]->Close();
-		}
-
-		CloseAllUIDs();
-		m_Clock.Init();
-		m_UIDs.SetCount(8 * 1024);
-
-		// Get previous backup name
-		CGString sBackupName;
-		GetBackupName(sBackupName, g_Cfg.m_sWorldBaseDir, 'w', m_iSaveCountID);
-		if ( !sBackupName.CompareNoCase(sWorldName) )	// same file? break infinite loop
-			break;
-		sWorldName = sBackupName;
-
-		GetBackupName(sBackupName, g_Cfg.m_sWorldBaseDir, 'c', m_iSaveCountID);
-		if ( !sBackupName.CompareNoCase(sCharsName) )	// same file? break infinite loop
-			break;
-		sCharsName = sBackupName;
-
-		GetBackupName(sBackupName, g_Cfg.m_sWorldBaseDir, 'm', m_iSaveCountID);
-		if ( !sBackupName.CompareNoCase(sMultisName) )	// same file? break infinite loop
-			break;
-		sMultisName = sBackupName;
-
-		GetBackupName(sBackupName, g_Cfg.m_sWorldBaseDir, 'd', m_iSaveCountID);
-		if ( !sBackupName.CompareNoCase(sDataName) )	// same file? break infinite loop
-			break;
-		sDataName = sBackupName;
-	}
+	return ((iLoadedFiles == 0) || (iLoadedFiles == 4));
 
 	EXC_CATCH;
+	return false;
 }
 
-void CWorld::LoadAll()
+bool CWorld::LoadAll()
 {
 	// Load world/accounts from save files
 
@@ -1673,7 +1634,8 @@ void CWorld::LoadAll()
 	m_Clock.Init();		// will be loaded from world file
 
 	g_Accounts.Account_LoadAll(false);
-	LoadWorld();
+	if ( !LoadWorld() )
+		return false;
 
 	m_timeStartup = GetCurrentTime();
 	m_timeSave = GetCurrentTime() + g_Cfg.m_iSavePeriod;	// next save time
@@ -1704,9 +1666,7 @@ void CWorld::LoadAll()
 	EXC_TRYSUB("Load");
 	GarbageCollection();
 	EXC_CATCHSUB("Garbage collect");
-
-	// Set the current version now
-	r_SetVal("VERSION", SPHERE_VERSION);	// set m_iLoadVersion value
+	return true;
 }
 
 void CWorld::r_Write(CScript &s)
