@@ -1183,3 +1183,5 @@ Changed: LOS checks now will use max distance of 14 tiles instead character VISU
 
 11-08-2018, Coruja
 Changed: When server startup can't load save files correctly it will now return fatal error instead silently load previous save files.
+[sphere.ini]: Added new COMBATF_MAXITEMDURABILITY combat flag to make damageable items get destroyed when lose max durability instead current durability (OSI-like)
+[sphereCrypt.ini]: Added crypt key for classic client 7.0.67 and enhanced client 4.0.67

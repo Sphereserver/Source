@@ -4917,28 +4917,31 @@ int CItem::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 	if ( IsTypeArmorWeapon())
 	{
 forcedamage:
-		if ( m_itArmor.m_Hits_Cur <= 1 )
+		int iPrevDefense = Armor_GetDefense();
+		int iPrevDamage = Weapon_GetAttack();
+
+		if ( m_itArmor.m_Hits_Cur > 0 )
+			--m_itArmor.m_Hits_Cur;
+		else if ( (m_itArmor.m_Hits_Max > 0) && IsSetCombatFlags(COMBAT_MAXITEMDURABILITY) )
+			--m_itArmor.m_Hits_Max;
+		else
 		{
 			Emote(g_Cfg.GetDefaultMsg(DEFMSG_ITEM_DMG_DESTROYED));
 			Delete();
 			return INT_MAX;
 		}
 
-		int previousDefense = Armor_GetDefense();
-		int previousDamage = Weapon_GetAttack();
-
-		--m_itArmor.m_Hits_Cur;
 		UpdatePropertyFlag(AUTOTOOLTIP_FLAG_DURABILITY);
 
 		CChar *pChar = dynamic_cast<CChar *>(GetTopLevelObj());
 		if ( pChar && IsItemEquipped() )
 		{
-			if ( previousDefense != Armor_GetDefense() )
+			if ( iPrevDefense != Armor_GetDefense() )
 			{
 				pChar->m_defense = pChar->CalcArmorDefense();
 				pChar->UpdateStatsFlag();
 			}
-			else if ( previousDamage != Weapon_GetAttack() )
+			else if ( iPrevDamage != Weapon_GetAttack() )
 			{
 				pChar->UpdateStatsFlag();
 			}

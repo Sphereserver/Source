@@ -105,6 +105,7 @@ enum COMBATFLAGS_TYPE
 	COMBAT_FACECOMBAT			= 0x0002,	// Allow faced combat only (recommended)
 	COMBAT_PREHIT				= 0x0004,	// Allow prehit for close combat. first hit is instant (delay 0.1sec)
 	COMBAT_ELEMENTAL_ENGINE		= 0x0008,	// Use DAM*/RES* to split damage/resist into Physical/Fire/Cold/Poison/Energy (AOS) instead use old AR (pre-AOS)
+	COMBAT_MAXITEMDURABILITY	= 0x0010,	// Make damageable items get destroyed when lose max durability instead current durability (OSI-like)
 	COMBAT_DCLICKSELF_UNMOUNTS	= 0x0020,	// Unmount horse when dclicking self while in warmode
 	COMBAT_ALLOWHITFROMSHIP		= 0x0040,	// Allow attacking opponents from ships
 	COMBAT_ARCHERYCANMOVE		= 0x0100,	// Allow firing bow while moving
