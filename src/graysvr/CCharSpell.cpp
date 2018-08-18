@@ -342,7 +342,7 @@ bool CChar::Spell_Recall(CItem *pTarg, bool fGate)
 		if ( !IsPriv(PRIV_GM) )
 		{
 			--pTarg->m_itRune.m_Charges;
-			pTarg->ResendTooltip();
+			pTarg->UpdatePropertyFlag();
 		}
 		return true;
 	}

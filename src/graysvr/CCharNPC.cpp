@@ -700,7 +700,7 @@ bool CCharNPC::r_LoadVal( CChar * pChar, CScript &s )
 	EXC_TRY("LoadVal");
 	switch ( FindTableSorted( s.GetKey(), sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
 	{
-	//Set as Strings
+	// Set as string
 	case CNC_THROWDAM:
 	case CNC_THROWOBJ:
 	case CNC_THROWRANGE:
@@ -709,11 +709,9 @@ bool CCharNPC::r_LoadVal( CChar * pChar, CScript &s )
 			pChar->SetDefStr(s.GetKey(), s.GetArgStr( &fQuoted ), fQuoted);
 		}
 		break;
-	//Set as numbers only
 	case CNC_BONDED:
 		m_bonded = (s.GetArgVal() > 0);
-		if ( !g_Serv.IsLoading() )
-			pChar->ResendTooltip();
+		pChar->UpdatePropertyFlag();
 		break;
 	case CNC_ACTPRI:
 		m_Act_Motivation = static_cast<BYTE>(s.GetArgVal());

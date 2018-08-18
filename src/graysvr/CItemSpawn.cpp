@@ -225,7 +225,7 @@ void CItemSpawn::DelObj(CGrayUID uid)
 		m_obj[i].InitUID();								// Finished moving higher entries (if any) so we free the last entry.
 		break;
 	}
-	ResendTooltip();
+	UpdatePropertyFlag();
 }
 
 void CItemSpawn::AddObj(CGrayUID uid)
@@ -283,8 +283,7 @@ void CItemSpawn::AddObj(CGrayUID uid)
 			break;
 		}
 	}
-	if ( !g_Serv.IsLoading() )
-		ResendTooltip();
+	UpdatePropertyFlag();
 }
 
 void CItemSpawn::OnTick(bool fExec)

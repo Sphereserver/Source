@@ -2684,14 +2684,11 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_HITPOINTS:
 			if ( !IsTypeArmorWeapon() )
 			{
-				DEBUG_ERR(("Item:Hitpoints assigned for non-weapon %s\n", GetResourceName()));
+				DEBUG_ERR(("Can't set hitpoints on non-weapon/armor item '%s'\n", GetResourceName()));
+				return false;
 			}
-			else
-			{
-				m_itArmor.m_Hits_Cur = m_itArmor.m_Hits_Max = static_cast<WORD>(s.GetArgVal());
-				UpdatePropertyFlag(AUTOTOOLTIP_FLAG_DURABILITY);
-			}
-			return true;
+			m_itArmor.m_Hits_Cur = m_itArmor.m_Hits_Max = static_cast<WORD>(s.GetArgVal());
+			break;
 		case IC_ID:
 			return SetID(static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetIndexType( RES_ITEMDEF, s.GetArgStr())));
 		case IC_LAYER:
@@ -2815,7 +2812,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		default:
 			return( CObjBase::r_LoadVal( s ));
 	}
-	ResendTooltip();
+	UpdatePropertyFlag();
 	return true;
 	EXC_CATCH;
 
@@ -4372,7 +4369,7 @@ bool CItem::Use_Light()
 
 	SetID(id);
 	Update();
-	ResendTooltip();
+	UpdatePropertyFlag();
 
 	if ( IsType(IT_LIGHT_LIT) )
 	{

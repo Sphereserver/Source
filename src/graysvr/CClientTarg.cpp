@@ -1623,7 +1623,7 @@ bool CClient::OnTarg_Use_Item(CObjBase *pObjTarg, CPointMap &pt, ITEMID_TYPE id)
 				return false;
 			pItemUse->m_uidLink = pItemTarg->GetUID();
 			pItemUse->Speak("Linked");
-			pItemUse->ResendTooltip();
+			pItemUse->UpdatePropertyFlag();
 			return true;
 		}
 		case IT_POTION:

@@ -181,7 +181,6 @@ bool CChar::NPC_OnHearPetCmd(LPCTSTR pszCmd, CChar *pSrc, bool bAllPets)
 			SoundChar(CRESND_NOTICE);
 			Skill_Start(SKILL_NONE);
 			NPC_PetClearOwners();
-			ResendTooltip();
 			break;
 
 		case PC_DROP:
@@ -533,7 +532,7 @@ void CChar::NPC_PetClearOwners(bool bResendTooltip)
 		if ( IsSetOF(OF_PetSlots) )
 			pOwner->FollowersUpdate(this, -m_FollowerSlots);
 		if ( bResendTooltip )
-			ResendTooltip();
+			UpdatePropertyFlag();
 	}
 }
 
@@ -568,7 +567,7 @@ bool CChar::NPC_PetSetOwner(CChar *pChar, bool bResendTooltip)
 	if ( IsSetOF(OF_PetSlots) )
 		pChar->FollowersUpdate(this, m_FollowerSlots);
 	if ( bResendTooltip )
-		ResendTooltip();
+		UpdatePropertyFlag();
 
 	return true;
 }

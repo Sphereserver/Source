@@ -1113,12 +1113,12 @@ bool CChar::Use_KeyChange(CItem *pItem)
 			return true;
 		case IT_CONTAINER:
 			pItem->SetType(IT_CONTAINER_LOCKED);
-			pItem->ResendTooltip();
+			pItem->UpdatePropertyFlag();
 			SysMessageDefault(DEFMSG_MSG_KEY_TARG_CONT_LOCK);
 			return true;
 		case IT_CONTAINER_LOCKED:
 			pItem->SetType(IT_CONTAINER);
-			pItem->ResendTooltip();
+			pItem->UpdatePropertyFlag();
 			SysMessageDefault(DEFMSG_MSG_KEY_TARG_CONT_ULOCK);
 			return true;
 		case IT_SHIP_HOLD:

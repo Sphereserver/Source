@@ -93,7 +93,6 @@ public:
 		CVarDefCont *pRange = GetDefKey("RANGE", true);
 		return static_cast<BYTE>((pRange ? pRange->GetValNum() : 0) & UCHAR_MAX);
 	}
-
 	BYTE RangeH() const
 	{
 		CVarDefCont *pRange = GetDefKey("RANGE", true);
@@ -218,7 +217,7 @@ protected:
 
 public:
 	virtual void DeletePrepare();
-	virtual void Delete(bool bForce = false);
+	virtual void Delete(bool fForce = false);
 
 	bool IsTriggerActive(LPCTSTR pszTrig);
 	LPCTSTR GetTriggerActive();
@@ -257,7 +256,7 @@ public:
 	}
 
 public:
-	void SetHue(HUE_TYPE wHue, bool bAvoidTrigger = true, CTextConsole *pSrc = NULL, CObjBase *pObj = NULL, SOUND_TYPE wSound = 0);
+	void SetHue(HUE_TYPE wHue, bool fSkipTrigger = true, CTextConsole *pSrc = NULL, CObjBase *pObj = NULL, SOUND_TYPE wSound = 0);
 	HUE_TYPE GetHue() const
 	{
 		return m_wHue;
@@ -309,14 +308,14 @@ public:
 	}
 
 public:
-	virtual bool MoveTo(CPointMap pt, bool bForceFix = false) = 0;
+	virtual bool MoveTo(CPointMap pt, bool fForceFix = false) = 0;
 
 	virtual bool MoveNear(CPointMap pt, WORD wSteps = 0);
 	virtual bool MoveNearObj(const CObjBaseTemplate *pObj, WORD wSteps = 0);
 
 	bool SetNamePool(LPCTSTR pszName);
 
-	void Sound(SOUND_TYPE id, BYTE iRepeat = 1) const;
+	void Sound(SOUND_TYPE id, BYTE bRepeat = 1) const;
 	void Effect(EFFECT_TYPE motion, ITEMID_TYPE id, const CObjBaseTemplate *pSrc = NULL, BYTE bSpeed = 0, BYTE bFrames = 0, bool fExplode = false, DWORD dwColor = 0, DWORD dwRender = 0, WORD wEffectID = 0, WORD wExplodeID = 0, WORD wExplodeSound = 0, DWORD dwItemUID = 0, BYTE bLayer = 0) const;
 	void Effect(EFFECT_TYPE motion, ITEMID_TYPE id, CPointMap ptSrc = CPointMap(-1, -1), CPointMap ptDest = CPointMap(-1, -1), BYTE bSpeed = 0, BYTE bFrames = 0, bool fExplode = false, DWORD dwColor = 0, DWORD dwRender = 0, WORD wEffectID = 0, WORD wExplodeID = 0, WORD wExplodeSound = 0, DWORD dwItemUID = 0, BYTE bLayer = 0) const;
 
@@ -337,9 +336,9 @@ public:
 
 	void RemoveFromView(CClient *pClientExclude = NULL, bool fHardcoded = true);
 	void ResendOnEquip(bool fAllClients = false);	// fix for Enhanced Client when equipping items via DClick, these must be removed from where they are and sent again
-	void ResendTooltip(bool bSendFull = false, bool bUseCache = false);
+	void ResendTooltip(bool fSendFull = false, bool fUseCache = false);
 	void UpdateCanSee(PacketSend *pPacket, CClient *pClientExclude = NULL) const;
-	void UpdateObjMessage(LPCTSTR pszTextThem, LPCTSTR pszTextYou, CClient *pClientExclude, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font = FONT_NORMAL, bool bUnicode = false) const;
+	void UpdateObjMessage(LPCTSTR pszTextThem, LPCTSTR pszTextYou, CClient *pClientExclude, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font = FONT_NORMAL, bool fUnicode = false) const;
 
 	TRIGRET_TYPE OnHearTrigger(CResourceLock &s, LPCTSTR pszCmd, CChar *pSrc, TALKMODE_TYPE &mode, HUE_TYPE wHue = HUE_DEFAULT);
 
@@ -347,10 +346,10 @@ public:
 
 	virtual void Update(const CClient *pClientExclude = NULL) = 0;
 	virtual void Flip() = 0;
-	virtual bool OnSpellEffect(SPELL_TYPE spell, CChar *pCharSrc, int iSkillLevel, CItem *pSourceItem, bool bReflecting = false) = 0;
+	virtual bool OnSpellEffect(SPELL_TYPE spell, CChar *pCharSrc, int iSkillLevel, CItem *pSourceItem, bool fReflecting = false) = 0;
 
 	virtual TRIGRET_TYPE Spell_OnTrigger(SPELL_TYPE spell, SPTRIG_TYPE stage, CChar *pSrc, CScriptTriggerArgs *pArgs);
-	inline bool CallPersonalTrigger(TCHAR *pszArgs, CTextConsole *pSrc, TRIGRET_TYPE &trResult, bool bFull);
+	inline bool CallPersonalTrigger(TCHAR *pszArgs, CTextConsole *pSrc, TRIGRET_TYPE &tr, bool fFull);
 
 public:
 	// Some global object variables
@@ -372,7 +371,7 @@ public:
 	void SetPropertyList(PacketPropertyList *pPropertyList);
 	DWORD GetPropertyHash() const { return m_PropertyHash; }
 	DWORD UpdatePropertyRevision(DWORD dwHash);
-	void UpdatePropertyFlag(int iMask);
+	void UpdatePropertyFlag(int iMask = 0);
 	void FreePropertyList();
 };
 

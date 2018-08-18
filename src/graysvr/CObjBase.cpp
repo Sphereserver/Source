@@ -1808,7 +1808,7 @@ bool CObjBase::r_LoadVal(CScript &s)
 	if ( fSendUpdate )
 	{
 		if ( IsItem() )
-			ResendTooltip();
+			UpdatePropertyFlag();
 		else
 			static_cast<CChar *>(this)->UpdateStatsFlag();
 	}
@@ -2777,7 +2777,7 @@ DWORD CObjBase::UpdatePropertyRevision(DWORD dwHash)
 void CObjBase::UpdatePropertyFlag(int iMask)
 {
 	ADDTOCALLSTACK("CObjBase::UpdatePropertyFlag");
-	if ( g_Serv.IsLoading() || ((g_Cfg.m_iAutoTooltipResend & iMask) == 0) )
+	if ( g_Serv.IsLoading() || (iMask && ((g_Cfg.m_iAutoTooltipResend & iMask) == 0)) )
 		return;
 
 	m_fStatusUpdate |= SU_UPDATE_TOOLTIP;
