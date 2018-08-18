@@ -1105,17 +1105,17 @@ bool CChar::UpdateAnimate(ANIM_TYPE action, bool fTranslate, bool fBackward, BYT
 }
 
 // Resend character after change status, polymorph, warmode, hide, etc
-void CChar::UpdateMode(CClient *pExcludeClient, bool fFull)
+void CChar::Update(bool fFull, CClient *pClientExclude)
 {
-	ADDTOCALLSTACK("CChar::UpdateMode");
+	ADDTOCALLSTACK("CChar::Update");
 
-	if ( !pExcludeClient )
+	if ( !pClientExclude )
 		m_fStatusUpdate &= ~SU_UPDATE_MODE;
 
 	ClientIterator it;
 	for ( CClient *pClient = it.next(); pClient != NULL; pClient = it.next() )
 	{
-		if ( pExcludeClient == pClient )
+		if ( pClient == pClientExclude )
 			continue;
 		if ( !pClient->GetChar() )
 			continue;
@@ -1139,7 +1139,7 @@ void CChar::UpdateMode(CClient *pExcludeClient, bool fFull)
 }
 
 // Character is moving (walk/run/teleport)
-void CChar::UpdateMove(const CPointMap &ptOld, CClient *pExcludeClient, bool bFull)
+void CChar::UpdateMove(const CPointMap &ptOld, CClient *pExcludeClient)
 {
 	ADDTOCALLSTACK("CChar::UpdateMove");
 
@@ -1157,7 +1157,7 @@ void CChar::UpdateMove(const CPointMap &ptOld, CClient *pExcludeClient, bool bFu
 		if ( pClient == m_pClient )
 		{
 			EXC_SET("AddPlayerView");
-			pClient->addPlayerView(ptOld, bFull);
+			pClient->addPlayerView(ptOld);
 			continue;
 		}
 
@@ -1220,37 +1220,6 @@ void CChar::UpdateDir(const CObjBaseTemplate *pObj)
 	if ( !pObj || (pObj == this) )		// in our own pack
 		return;
 	UpdateDir(pObj->GetTopPoint());
-}
-
-// Resend character after change status, body, etc
-void CChar::Update(const CClient *pClientExclude)
-{
-	ADDTOCALLSTACK("CChar::Update");
-
-	if ( !pClientExclude )
-		m_fStatusUpdate &= ~SU_UPDATE_MODE;
-
-	ClientIterator it;
-	for ( CClient *pClient = it.next(); pClient != NULL; pClient = it.next() )
-	{
-		if ( pClient == pClientExclude )
-			continue;
-		if ( !pClient->GetChar() )
-			continue;
-		if ( GetTopPoint().GetDistSight(pClient->GetChar()->GetTopPoint()) > pClient->GetChar()->GetSight() )
-			continue;
-		if ( !pClient->CanSee(this) )
-		{
-			// In the case of "INVIS" used by GM's we must use this
-			pClient->addObjectRemove(this);
-			continue;
-		}
-
-		if ( pClient == m_pClient )
-			pClient->addReSync();
-		else
-			pClient->addChar(this);
-	}
 }
 
 // Make this char generate some sound according to the given action
@@ -1975,7 +1944,7 @@ bool CChar::Reveal(DWORD dwFlags)
 		return false;
 
 	m_StepStealth = 0;
-	UpdateMode(NULL, true);
+	Update();
 	SysMessageDefault(DEFMSG_HIDING_REVEALED);
 	return true;
 }
@@ -2160,7 +2129,7 @@ bool CChar::Horse_Mount(CChar *pHorse)
 		}
 	}
 
-	Horse_UnMount();		// unmount if already mounted
+	Horse_UnMount();	// unmount if already mounted
 
 	if ( IsTrigUsed(TRIGGER_MOUNT) )
 	{
@@ -2169,13 +2138,12 @@ bool CChar::Horse_Mount(CChar *pHorse)
 			return false;
 	}
 
+	if ( IsPriv(PRIV_GM) )
+		pHorse->NPC_PetSetOwner(this);
+
 	CItem *pItem = pHorse->Make_Figurine(GetUID(), id);
 	if ( !pItem )
 		return false;
-
-	// Set a new owner if it is not us (check first to prevent friends taking ownership)
-	if ( !pHorse->NPC_IsOwnedBy(this, false) )
-		pHorse->NPC_PetSetOwner(this, false);
 
 	pItem->SetType(IT_EQ_HORSE);
 	pItem->SetTimeout(TICK_PER_SEC);
@@ -2435,7 +2403,7 @@ void CChar::Wake()
 	{
 		RaiseCorpse(pCorpse);
 		StatFlag_Clear(STATF_Sleeping);
-		UpdateMode();
+		Update(false);
 	}
 
 	// The sleeping corpse is gone, so the char will die
@@ -2462,7 +2430,7 @@ void CChar::SleepStart(bool fFrontFall)
 	SetID(m_prev_id);
 	StatFlag_Set(STATF_Sleeping);
 	StatFlag_Clear(STATF_Hidden);
-	UpdateMode();
+	Update(false);
 }
 
 // Create the char corpse when I die (STATF_DEAD) or fall asleep (STATF_Sleeping)
@@ -2660,7 +2628,7 @@ bool CChar::Death()
 		if ( m_pNPC->m_bonded )
 		{
 			m_Can |= CAN_C_GHOST;
-			UpdateMode(NULL, true);
+			Update();
 			return true;
 		}
 
@@ -3649,7 +3617,7 @@ void CChar::OnTickStatusUpdate()
 
 	if ( m_fStatusUpdate & SU_UPDATE_MODE )
 	{
-		UpdateMode();
+		Update(false);
 		m_fStatusUpdate &= ~SU_UPDATE_MODE;
 	}
 

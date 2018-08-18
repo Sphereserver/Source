@@ -1693,10 +1693,7 @@ bool CObjBase::r_LoadVal(CScript &s)
 				break;
 			}
 			SetHue(static_cast<HUE_TYPE>(s.GetArgVal()), false, &g_Serv);	// @Dye is called from @Create/.xcolor/script command here. Since we can not receive pSrc on this r_LoadVal function ARGO/SRC will be null
-			if ( IsChar() )
-				static_cast<CChar *>(this)->UpdateMode(NULL, true);
-			else
-				static_cast<CItem *>(this)->Update();
+			Update();
 			break;
 		}
 		case OC_EVENTS:
@@ -2149,8 +2146,23 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 				CPointMap pt = GetTopPoint();
 				if ( !GetDeltaStr(pt, s.GetArgStr()) )
 					return false;
+
 				MoveTo(pt);
-				Update();
+
+				CChar *pChar = dynamic_cast<CChar *>(this);
+				if ( pChar )
+				{
+					pChar->Update(true, pChar->m_pClient);
+					if ( pChar->m_pClient )
+						pChar->m_pClient->addPlayerUpdate();
+					break;
+				}
+				CItem *pItem = dynamic_cast<CItem *>(this);
+				if ( pItem )
+				{
+					pItem->Update();
+					break;
+				}
 			}
 			break;
 		}
@@ -2158,13 +2170,11 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 		{
 			EXC_SET("MOVENEAR");
 			CObjBase *pObjNear;
-			INT64 piCmd[4];
+			INT64 piCmd[2];
 
 			size_t iArgQty = Str_ParseCmds(s.GetArgStr(), piCmd, COUNTOF(piCmd));
 			if ( iArgQty <= 0 )
 				return false;
-			if ( iArgQty < 3 )
-				piCmd[2] = 1;
 			if ( iArgQty < 2 )
 				piCmd[1] = 1;
 
@@ -2172,9 +2182,8 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 			pObjNear = uid.ObjFind();
 			if ( !pObjNear )
 				return false;
+
 			MoveNearObj(pObjNear, static_cast<WORD>(piCmd[1]));
-			if ( piCmd[2] )
-				Update();
 			break;
 		}
 		case OV_NUDGEDOWN:
@@ -2182,9 +2191,21 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 			EXC_SET("NUDGEDOWN");
 			if ( IsTopLevel() )
 			{
-				signed char zdiff = static_cast<signed char>(s.GetArgVal());
-				SetTopZ(GetTopZ() - (zdiff ? zdiff : 1));
-				Update();
+				SetTopZ(GetTopZ() - static_cast<signed char>(maximum(1, s.GetArgVal())));
+				CChar *pChar = dynamic_cast<CChar *>(this);
+				if ( pChar )
+				{
+					pChar->Update(true, pChar->m_pClient);
+					if ( pChar->m_pClient )
+						pChar->m_pClient->addPlayerUpdate();
+					break;
+				}
+				CItem *pItem = dynamic_cast<CItem *>(this);
+				if ( pItem )
+				{
+					pItem->Update();
+					break;
+				}
 			}
 			break;
 		}
@@ -2193,9 +2214,21 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 			EXC_SET("NUDGEUP");
 			if ( IsTopLevel() )
 			{
-				signed char zdiff = static_cast<signed char>(s.GetArgVal());
-				SetTopZ(GetTopZ() + (zdiff ? zdiff : 1));
-				Update();
+				SetTopZ(GetTopZ() + static_cast<signed char>(maximum(1, s.GetArgVal())));
+				CChar *pChar = dynamic_cast<CChar *>(this);
+				if ( pChar )
+				{
+					pChar->Update(true, pChar->m_pClient);
+					if ( pChar->m_pClient )
+						pChar->m_pClient->addPlayerUpdate();
+					break;
+				}
+				CItem *pItem = dynamic_cast<CItem *>(this);
+				if ( pItem )
+				{
+					pItem->Update();
+					break;
+				}
 			}
 			break;
 		}
@@ -2561,9 +2594,18 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 				pSrc->SysMessage("Setting the UID this way is not allowed");
 			return false;
 		case OV_UPDATE:
+		{
 			EXC_SET("UPDATE");
-			Update();
+			CClient *pClientExclude = NULL;
+			CChar *pChar = dynamic_cast<CChar *>(this);
+			if ( pChar && pChar->m_pClient )
+			{
+				pChar->m_pClient->addReSync();
+				pClientExclude = pChar->m_pClient;	// don't update this client again
+			}
+			Update(true, pClientExclude);
 			break;
+		}
 		case OV_UPDATEX:
 			EXC_SET("UPDATEX");
 			// Some things like equipped items need to be removed before they can be updated !
@@ -2626,24 +2668,24 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 			EXC_SET("FIX or Z");
 			if ( IsItemEquipped() )
 				return false;
-			if ( s.HasArgs() )
-				SetTopZ(static_cast<signed char>(s.GetArgVal()));
-			else if ( IsTopLevel() )
+
+			CChar *pChar = dynamic_cast<CChar *>(this);
+			if ( pChar )
 			{
-				CChar *pChar = dynamic_cast<CChar *>(this);
-				CItem *pItem = dynamic_cast<CItem *>(this);
-				if ( pChar )
-					SetTopZ(pChar->GetFixZ(GetTopPoint()));
-				else if ( pItem )
-					SetTopZ(pItem->GetFixZ(GetTopPoint()));
-				else
-				{
-					g_Log.EventDebug("Failed to get reference in FIX or Z\n");
-					break;
-				}
+				SetTopZ(s.HasArgs() ? static_cast<signed char>(s.GetArgVal()) : pChar->GetFixZ(GetTopPoint()));
+				pChar->Update(true, pChar->m_pClient);
+				if ( pChar->m_pClient )
+					pChar->m_pClient->addPlayerUpdate();
+				break;
 			}
-			Update();
-			break;
+			CItem *pItem = dynamic_cast<CItem *>(this);
+			if ( pItem )
+			{
+				SetTopZ(s.HasArgs() ? static_cast<signed char>(s.GetArgVal()) : pItem->GetFixZ(GetTopPoint()));
+				pItem->Update();
+				break;
+			}
+			return false;
 		}
 		default:
 			return false;

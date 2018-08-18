@@ -1237,7 +1237,7 @@ void CChar::SetID(CREID_TYPE id)
 		if ( pHand )
 			GetContainerCreate(LAYER_PACK)->ContentAdd(pHand);
 	}
-	UpdateMode(NULL, true);
+	Update();
 }
 
 enum CHR_TYPE
@@ -2656,7 +2656,7 @@ bool CChar::r_LoadVal(CScript &s)
 			StatFlag_Mod(STATF_Stone, fSet);
 			if ( fChange )
 			{
-				UpdateMode(NULL, true);
+				Update();
 				if ( m_pClient )
 					m_pClient->addCharMove(this);
 			}
@@ -3098,7 +3098,7 @@ bool CChar::r_Verb(CScript &s, CTextConsole *pSrc)	// execute command from scrip
 			if ( pSrc )
 			{
 				m_StatFlag = s.GetArgFlag(m_StatFlag, STATF_Insubstantial);
-				UpdateMode(NULL, true);
+				Update();
 				if ( IsStatFlag(STATF_Insubstantial) )
 				{
 					if ( m_pClient )
@@ -3372,7 +3372,7 @@ bool CChar::r_Verb(CScript &s, CTextConsole *pSrc)	// execute command from scrip
 			if ( !IsPlayableCharacter() )
 				return false;
 			SetHue(GetHue() ^ HUE_MASK_UNDERWEAR);
-			UpdateMode();
+			Update(false);
 			break;
 		}
 		case CHV_UNEQUIP:

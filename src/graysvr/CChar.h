@@ -897,13 +897,12 @@ public:
 	ANIM_TYPE GenerateAnimate(ANIM_TYPE action, bool fTranslate = true, bool fBackward = false, BYTE iFrameDelay = 0, BYTE iAnimLen = 7);
 	bool UpdateAnimate(ANIM_TYPE action, bool fTranslate = true, bool fBackward = false, BYTE iFrameDelay = 0, BYTE iAnimLen = 7);
 
-	void UpdateMode(CClient *pExcludeClient = NULL, bool fFull = false);
-	void UpdateMove(const CPointMap &ptOld, CClient *pClientExclude = NULL, bool bFull = false);
+	void Update(bool fFull = true, CClient *pClientExclude = NULL);
+	void UpdateMove(const CPointMap &ptOld, CClient *pClientExclude = NULL);
 	void UpdateDir(DIR_TYPE dir);
 	void UpdateDir(const CPointMap &pt);
 	void UpdateDir(const CObjBaseTemplate *pObj);
 	void UpdateDrag(CItem *pItem, CObjBase *pCont = NULL, CPointMap *pt = NULL);
-	void Update(const CClient *pClientExclude = NULL);
 
 public:
 	LPCTSTR GetPronoun() const;	// he

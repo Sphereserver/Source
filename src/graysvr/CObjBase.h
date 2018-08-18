@@ -344,7 +344,7 @@ public:
 
 	bool IsContainer() const;
 
-	virtual void Update(const CClient *pClientExclude = NULL) = 0;
+	virtual void Update(bool fFull = true, CClient *pClientExclude = NULL) = 0;
 	virtual void Flip() = 0;
 	virtual bool OnSpellEffect(SPELL_TYPE spell, CChar *pCharSrc, int iSkillLevel, CItem *pSourceItem, bool fReflecting = false) = 0;
 

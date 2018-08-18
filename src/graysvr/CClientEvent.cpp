@@ -796,7 +796,7 @@ void CClient::Event_CombatMode(bool fWar)
 	}
 
 	addPlayerWarMode();
-	m_pChar->UpdateMode(this, m_pChar->IsStatFlag(STATF_DEAD));
+	m_pChar->Update(false, this);
 }
 
 bool CClient::Event_Command(LPCTSTR pszCommand, TALKMODE_TYPE mode)

@@ -677,7 +677,7 @@ void CChar::NotoSave_Update()
 {
 	ADDTOCALLSTACK("CChar::NotoSave_Update");
 	NotoSave_Clear();
-	UpdateMode(NULL, true);
+	Update();
 }
 
 int CChar::NotoSave_GetID(CChar *pChar)
@@ -1832,7 +1832,8 @@ effect_bounce:
 		if ( IsStatFlag(STATF_Freeze) )
 		{
 			StatFlag_Clear(STATF_Freeze);
-			UpdateMode();
+			if ( m_pClient )
+				m_pClient->addCharMove(this);
 		}
 	}
 

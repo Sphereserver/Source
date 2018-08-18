@@ -2554,7 +2554,7 @@ int CChar::Skill_Hiding(SKTRIG_TYPE stage)
 		ObjMessage(g_Cfg.GetDefaultMsg(DEFMSG_HIDING_SUCCESS), this);
 		StatFlag_Set(STATF_Hidden);
 		Reveal(STATF_Invisible);	// clear previous invisibility spell effect (this will not reveal the char because STATF_Hidden still set)
-		UpdateMode();
+		Update(false);
 		if ( m_pClient )
 		{
 			m_pClient->removeBuff(BI_HIDDEN);

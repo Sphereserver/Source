@@ -118,14 +118,19 @@ bool CChar::Spell_Teleport(CPointMap ptDest, bool fTakePets, bool fCheckAntiMagi
 
 	MoveTo(ptDest);		// move character
 
-	CClient *pClientIgnore = NULL;
-	if ( m_pClient && (ptDest.m_map != ptOld.m_map) )
+	CClient *pClientExclude = NULL;
+	if ( m_pClient )
 	{
-		m_pClient->addReSync();
-		pClientIgnore = m_pClient;	// we don't need update this client again
+		if ( ptDest.m_map == ptOld.m_map )
+			m_pClient->addPlayerView(NULL);
+		else
+		{
+			m_pClient->addReSync();
+			pClientExclude = m_pClient;	// don't update this client again
+		}
 	}
 
-	UpdateMove(ptOld, pClientIgnore, true);
+	UpdateMove(ptOld, pClientExclude);
 	Reveal();
 
 	if ( fDisplayEffect )

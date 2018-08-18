@@ -728,7 +728,7 @@ public:
 		m_containedGridIndex = index;
 	}
 
-	void Update(const CClient *pClientExclude = NULL);
+	void Update(bool fFull = true, CClient *pClientExclude = NULL);
 	void Flip();
 	bool LoadSetContainer(CGrayUID uid, LAYER_TYPE layer);
 

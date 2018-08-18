@@ -3313,16 +3313,16 @@ void CItem::SetAnim( ITEMID_TYPE id, int iTime )
 	Update();
 }
 
-void CItem::Update(const CClient * pClientExclude)
+void CItem::Update(bool fFull, CClient *pClientExclude)
 {
 	ADDTOCALLSTACK("CItem::Update");
+	UNREFERENCED_PARAMETER(fFull);
+	UNREFERENCED_PARAMETER(pClientExclude);
 	// Send this new item to all that can see it.
 
 	ClientIterator it;
 	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
 	{
-		if ( pClient == pClientExclude )
-			continue;
 		if ( ! pClient->CanSee( this ))
 			continue;
 
