@@ -389,7 +389,7 @@ enum RC_TYPE
 	RC_TAG0,
 	RC_TAGAT,
 	RC_TAGCOUNT,
-	RC_TYPEREGION,
+	RC_TYPE,
 	RC_UID,
 	RC_UNDERGROUND,
 	RC_QTY
@@ -441,7 +441,7 @@ bool CRegionBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pS
 	if ( index < 0 )
 		return CScriptObj::r_WriteVal(pszKey, sVal, pSrc);
 
-	switch ( static_cast<RC_TYPE>(index) )
+	switch ( index )
 	{
 		case RC_ANNOUNCE:
 			sVal.FormatVal( IsFlag(REGION_FLAG_ANNOUNCE));
@@ -594,7 +594,7 @@ bool CRegionBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pS
 				sVal = m_TagDefs.GetKeyStr( pszKey, fZero );
 				return( true );
 			}
-		case RC_TYPEREGION:
+		case RC_TYPE:
 			{
 				const CItemBase * pBase = NULL;
 				const CItem * pItem = GetResourceID().ItemFind();
@@ -652,7 +652,7 @@ bool CRegionBase::r_LoadVal( CScript & s )
 	if ( index < 0 )
 		return false;
 
-	switch ( static_cast<RC_TYPE>(index) )
+	switch ( index )
 	{
 		case RC_ANNOUNCE:
 			TogRegionFlags( REGION_FLAG_ANNOUNCE, ( ! s.HasArgs()) || s.GetArgVal());

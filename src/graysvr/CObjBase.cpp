@@ -1517,7 +1517,7 @@ bool CObjBase::r_LoadVal(CScript &s)
 	if ( index < 0 )
 		return CScriptObj::r_LoadVal(s);
 
-	bool bUpdateClientStats = false;
+	bool fSendUpdate = false;
 
 	switch ( index )
 	{
@@ -1527,6 +1527,7 @@ bool CObjBase::r_LoadVal(CScript &s)
 		case OC_EXPANSION:
 		case OC_NAMELOC:
 			SetDefNum(s.GetKey(), s.GetArgVal(), false);
+			fSendUpdate = true;
 			break;
 
 		case OC_REGENFOOD:
@@ -1540,7 +1541,7 @@ bool CObjBase::r_LoadVal(CScript &s)
 		case OC_COMBATBONUSSTAT:
 		case OC_COMBATBONUSPERCENT:
 			SetDefNum(s.GetKey(), s.GetArgVal());
-			bUpdateClientStats = true;
+			fSendUpdate = true;
 			break;
 
 		case OC_ARMOR:
@@ -1549,102 +1550,114 @@ bool CObjBase::r_LoadVal(CScript &s)
 				return false;
 
 			INT64 piVal[2];
-			size_t iQty = Str_ParseCmds(s.GetArgStr(), piVal, COUNTOF(piVal));
+			size_t iArgQty = Str_ParseCmds(s.GetArgStr(), piVal, COUNTOF(piVal));
 			m_defenseBase = static_cast<WORD>(piVal[0]);
-			m_defenseRange = (iQty > 1) ? static_cast<WORD>(piVal[1]) - m_defenseBase : 0;
-			bUpdateClientStats = true;
+			m_defenseRange = (iArgQty > 1) ? static_cast<WORD>(piVal[1]) - m_defenseBase : 0;
+			fSendUpdate = true;
 			break;
 		}
 		case OC_DAM:
 		{
 			INT64 piVal[2];
-			size_t iQty = Str_ParseCmds(s.GetArgStr(), piVal, COUNTOF(piVal));
+			size_t iArgQty = Str_ParseCmds(s.GetArgStr(), piVal, COUNTOF(piVal));
 			m_attackBase = static_cast<WORD>(piVal[0]);
-			m_attackRange = (iQty > 1) ? static_cast<WORD>(piVal[1]) - m_attackBase : 0;
-			bUpdateClientStats = true;
+			m_attackRange = (iArgQty > 1) ? static_cast<WORD>(piVal[1]) - m_attackBase : 0;
+			fSendUpdate = true;
 			break;
 		}
 		case OC_DAMCOLD:
 			m_DamCold = static_cast<int>(s.GetArgVal());
+			fSendUpdate = true;
 			break;
 		case OC_DAMENERGY:
 			m_DamEnergy = static_cast<int>(s.GetArgVal());
+			fSendUpdate = true;
 			break;
 		case OC_DAMFIRE:
 			m_DamFire = static_cast<int>(s.GetArgVal());
+			fSendUpdate = true;
 			break;
 		case OC_DAMPHYSICAL:
 			m_DamPhysical = static_cast<int>(s.GetArgVal());
+			fSendUpdate = true;
 			break;
 		case OC_DAMPOISON:
 			m_DamPoison = static_cast<int>(s.GetArgVal());
+			fSendUpdate = true;
 			break;
 		case OC_INCREASEDAM:
 			m_DamIncrease = static_cast<int>(s.GetArgVal());
-			bUpdateClientStats = true;
+			fSendUpdate = true;
 			break;
 		case OC_INCREASEDEFCHANCE:
 			m_DefChanceIncrease = static_cast<int>(s.GetArgVal());
-			bUpdateClientStats = true;
+			fSendUpdate = true;
 			break;
 		case OC_INCREASEDEFCHANCEMAX:
 			m_DefChanceIncreaseMax = static_cast<int>(s.GetArgVal());
-			bUpdateClientStats = true;
+			fSendUpdate = true;
 			break;
 		case OC_INCREASEHITCHANCE:
 			m_HitChanceIncrease = static_cast<int>(s.GetArgVal());
-			bUpdateClientStats = true;
+			fSendUpdate = true;
 			break;
 		case OC_INCREASESPELLDAM:
 			m_SpellDamIncrease = static_cast<int>(s.GetArgVal());
-			bUpdateClientStats = true;
+			fSendUpdate = true;
 			break;
 		case OC_INCREASESWINGSPEED:
 			m_SwingSpeedIncrease = static_cast<int>(s.GetArgVal());
-			bUpdateClientStats = true;
+			fSendUpdate = true;
 			break;
 		case OC_FASTERCASTING:
 			m_FasterCasting = static_cast<int>(s.GetArgVal());
-			bUpdateClientStats = true;
+			fSendUpdate = true;
 			break;
 		case OC_FASTERCASTRECOVERY:
 			m_FasterCastRecovery = static_cast<int>(s.GetArgVal());
-			bUpdateClientStats = true;
+			fSendUpdate = true;
 			break;
 		case OC_HITLEECHLIFE:
 			m_HitLifeLeech = static_cast<int>(s.GetArgVal());
+			fSendUpdate = true;
 			break;
 		case OC_HITLEECHMANA:
 			m_HitManaLeech = static_cast<int>(s.GetArgVal());
+			fSendUpdate = true;
 			break;
 		case OC_HITLEECHSTAM:
 			m_HitStaminaLeech = static_cast<int>(s.GetArgVal());
+			fSendUpdate = true;
 			break;
 		case OC_HITMANADRAIN:
 			m_HitManaDrain = static_cast<int>(s.GetArgVal());
+			fSendUpdate = true;
 			break;
 		case OC_LOWERMANACOST:
 			m_LowerManaCost = static_cast<int>(s.GetArgVal());
-			bUpdateClientStats = true;
+			fSendUpdate = true;
 			break;
 		case OC_LOWERREAGENTCOST:
 			m_LowerReagentCost = static_cast<int>(s.GetArgVal());
-			bUpdateClientStats = true;
+			fSendUpdate = true;
 			break;
 		case OC_ENHANCEPOTIONS:
 			m_EnhancePotions = static_cast<int>(s.GetArgVal());
+			fSendUpdate = true;
 			break;
 		case OC_NIGHTSIGHT:
 			m_NightSight = static_cast<int>(s.GetArgVal());
+			fSendUpdate = true;
 			break;
 		case OC_REFLECTPHYSICALDAM:
 			m_ReflectPhysicalDamage = static_cast<int>(s.GetArgVal());
+			fSendUpdate = true;
 			break;
 		case OC_RANGE:
 		{
 			INT64 piVal[2];
-			size_t iQty = Str_ParseCmds(s.GetArgStr(), piVal, COUNTOF(piVal));
-			if ( iQty > 1 )
+			size_t iArgQty = Str_ParseCmds(s.GetArgStr(), piVal, COUNTOF(piVal));
+			if ( iArgQty > 1 )
 			{
 				INT64 iRange = ((piVal[0] & 0xFF) << 8) & 0xFF00;
 				iRange |= (piVal[1] & 0xFF);
@@ -1652,6 +1665,7 @@ bool CObjBase::r_LoadVal(CScript &s)
 			}
 			else
 				SetDefNum(s.GetKey(), piVal[0], false);
+			fSendUpdate = true;
 			break;
 		}
 		case OC_CAN:
@@ -1659,34 +1673,37 @@ bool CObjBase::r_LoadVal(CScript &s)
 			break;
 		case OC_MODMAXWEIGHT:
 			m_ModMaxWeight = static_cast<int>(s.GetArgVal());
-			bUpdateClientStats = true;
+			fSendUpdate = true;
 			break;
 		case OC_COLOR:
 		{
 			if ( !strcmpi(s.GetArgStr(), "match_shirt") || !strcmpi(s.GetArgStr(), "match_hair") )
 			{
-				CChar *pChar = dynamic_cast<CChar *>(GetTopLevelObj());
+				const CChar *pChar = dynamic_cast<const CChar *>(GetTopLevelObj());
 				if ( pChar )
 				{
-					CItem *pMatch = pChar->LayerFind(!strcmpi(s.GetArgStr() + 6, "shirt") ? LAYER_SHIRT : LAYER_HAIR);
+					const CItem *pMatch = pChar->LayerFind(!strcmpi(s.GetArgStr() + 6, "shirt") ? LAYER_SHIRT : LAYER_HAIR);
 					if ( pMatch )
 					{
 						m_wHue = pMatch->GetHue();
 						break;
 					}
 				}
-				m_wHue = HUE_GRAY;
+				m_wHue = HUE_DEFAULT;
 				break;
 			}
 			SetHue(static_cast<HUE_TYPE>(s.GetArgVal()), false, &g_Serv);	// @Dye is called from @Create/.xcolor/script command here. Since we can not receive pSrc on this r_LoadVal function ARGO/SRC will be null
-			Update();
+			if ( IsChar() )
+				static_cast<CChar *>(this)->UpdateMode(NULL, true);
+			else
+				static_cast<CItem *>(this)->Update();
 			break;
 		}
 		case OC_EVENTS:
 			return m_OEvents.r_LoadVal(s, RES_EVENTS);
 		case OC_LUCK:
 			m_Luck = static_cast<int>(s.GetArgVal());
-			bUpdateClientStats = true;
+			fSendUpdate = true;
 			break;
 		case OC_MAP:
 		{
@@ -1709,59 +1726,60 @@ bool CObjBase::r_LoadVal(CScript &s)
 		case OC_MODAR:
 		case OC_MODAC:
 			m_ModAr = s.GetArgVal();
-			bUpdateClientStats = true;
+			fSendUpdate = true;
 			break;
 		case OC_NAME:
 			SetName(static_cast<LPCTSTR>(s.GetArgStr()));
+			fSendUpdate = true;
 			break;
 		case OC_P:
 			return false;	// must set the point via the CItem or CChar methods
 		case OC_RESCOLD:
 			m_ResCold = static_cast<int>(s.GetArgVal());
-			bUpdateClientStats = true;
+			fSendUpdate = true;
 			break;
 		case OC_RESCOLDMAX:
 			m_ResColdMax = static_cast<int>(s.GetArgVal());
-			bUpdateClientStats = true;
+			fSendUpdate = true;
 			break;
 		case OC_RESENERGY:
 			m_ResEnergy = static_cast<int>(s.GetArgVal());
-			bUpdateClientStats = true;
+			fSendUpdate = true;
 			break;
 		case OC_RESENERGYMAX:
 			m_ResEnergyMax = static_cast<int>(s.GetArgVal());
-			bUpdateClientStats = true;
+			fSendUpdate = true;
 			break;
 		case OC_RESFIRE:
 			m_ResFire = static_cast<int>(s.GetArgVal());
-			bUpdateClientStats = true;
+			fSendUpdate = true;
 			break;
 		case OC_RESFIREMAX:
 			m_ResFireMax = static_cast<int>(s.GetArgVal());
-			bUpdateClientStats = true;
+			fSendUpdate = true;
 			break;
 		case OC_RESPHYSICAL:
 			m_ResPhysical = static_cast<int>(s.GetArgVal());
-			bUpdateClientStats = true;
+			fSendUpdate = true;
 			break;
 		case OC_RESPHYSICALMAX:
 			m_ResPhysicalMax = static_cast<int>(s.GetArgVal());
-			bUpdateClientStats = true;
+			fSendUpdate = true;
 			break;
 		case OC_RESPOISON:
 			m_ResPoison = static_cast<int>(s.GetArgVal());
-			bUpdateClientStats = true;
+			fSendUpdate = true;
 			break;
 		case OC_RESPOISONMAX:
 			m_ResPoisonMax = static_cast<int>(s.GetArgVal());
-			bUpdateClientStats = true;
+			fSendUpdate = true;
 			break;
 		case OC_SPEED:
 		{
 			if ( !IsItem() )
 				return false;
-			CItem *pItem = static_cast<CItem *>(this);
-			pItem->m_speed = static_cast<BYTE>(s.GetArgVal());
+			static_cast<CItem *>(this)->m_speed = static_cast<BYTE>(s.GetArgVal());
+			fSendUpdate = true;
 			break;
 		}
 		case OC_TIMER:
@@ -1787,15 +1805,12 @@ bool CObjBase::r_LoadVal(CScript &s)
 			return false;
 	}
 
-	if ( !g_Serv.IsLoading() )
+	if ( fSendUpdate )
 	{
 		if ( IsItem() )
 			ResendTooltip();
-		else if ( bUpdateClientStats )
-		{
-			CChar *pChar = static_cast<CChar *>(this);
-			pChar->UpdateStatsFlag();
-		}
+		else
+			static_cast<CChar *>(this)->UpdateStatsFlag();
 	}
 	return true;
 	EXC_CATCH;
