@@ -2359,53 +2359,39 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 	if ( !m_TooltipEnabled && !fShop )
 		return;
 
-	// Don't send tooltips for items out of LOS
+	// Don't send tooltips for objects out of LOS
 	const CObjBaseTemplate *pObjTop = pObj->GetTopLevelObj();
 	if ( !pObjTop || (m_pChar->GetTopPoint().GetDistSight(pObjTop->GetTopPoint()) > m_pChar->GetSight() + 1) )
 		return;
 
-	// We check here if we are sending a tooltip for a static/non-movable items
-	// (client doesn't expect us to) but only in the world
-	if ( pObj->IsItem() )
-	{
-		const CItem *pItem = static_cast<const CItem *>(pObj);
-		if ( !pItem->GetParentObj() && pItem->IsAttr(/*ATTR_MOVE_NEVER|*/ATTR_STATIC) )
-		{
-			if ( !m_pChar->IsPriv(PRIV_GM) && !m_pChar->IsPriv(PRIV_ALLMOVE) )
-				return;
-		}
-	}
+	// Don't send tooltips for static items
+	const CItem *pItem = dynamic_cast<const CItem *>(pObj);
+	if ( pItem && (pItem->Item_GetDef()->GetTFlags() & (UFLAG1_WALL|UFLAG1_BLOCK|UFLAG2_PLATFORM)) && !IsPriv(PRIV_GM) )
+		return;
 
 	PacketPropertyList *pPropertyList = pObj->GetPropertyList();
 	if ( !pPropertyList || pPropertyList->hasExpired(g_Cfg.m_iTooltipCache) )
 	{
-		CItem *pItem = const_cast<CItem *>(dynamic_cast<const CItem *>(pObj));
-		CChar *pChar = const_cast<CChar *>(dynamic_cast<const CChar *>(pObj));
-
 		const_cast<CObjBase *>(pObj)->FreePropertyList();
 
 		CClientTooltip *t = NULL;
 		m_TooltipData.Clean(true);
 
-		if ( !m_TooltipEnabled ) // if we only want to display the name
+		if ( !m_TooltipEnabled )
 		{
-			DWORD dwClilocName = static_cast<DWORD>(pObj->GetDefNum("NAMELOC", true));
-			if ( dwClilocName )
-				m_TooltipData.InsertAt(0, new CClientTooltip(dwClilocName));
-			else
-			{
-				m_TooltipData.InsertAt(0, t = new CClientTooltip(1042971)); // ~1_NOTHING~
-				t->FormatArgs("%s", pObj->GetName());
-			}
+			// Tooltips are disabled on server-side but client still need it to fill vendor buy/sell menu, so send just the obj name
+			m_TooltipData.InsertAt(0, t = new CClientTooltip(1042971)); // ~1_NOTHING~
+			t->FormatArgs("%s", pObj->GetName());
 		}
 		else
 		{
+			const CChar *pChar = dynamic_cast<const CChar *>(pObj);
 			TRIGRET_TYPE tr = TRIGRET_RET_FALSE;
 			if ( IsTrigUsed(TRIGGER_CLIENTTOOLTIP) || (pItem && IsTrigUsed(TRIGGER_ITEMCLIENTTOOLTIP)) || (pChar && IsTrigUsed(TRIGGER_CHARCLIENTTOOLTIP)) )
 			{
 				CScriptTriggerArgs Args(const_cast<CObjBase *>(pObj));
 				Args.m_iN1 = fRequested;
-				tr = const_cast<CObjBase *>(pObj)->OnTrigger("@ClientTooltip", m_pChar, &Args); //ITRIG_CLIENTTOOLTIP , CTRIG_ClientTooltip
+				tr = const_cast<CObjBase *>(pObj)->OnTrigger("@ClientTooltip", m_pChar, &Args);	// ITRIG_CLIENTTOOLTIP, CTRIG_ClientTooltip
 			}
 
 			if ( tr != TRIGRET_RET_TRUE )
@@ -2533,7 +2519,7 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 					if ( pItem->IsAttr(ATTR_MAGIC) )
 						m_TooltipData.Add(new CClientTooltip(3010064)); // Magic
 					if ( pItem->IsAttr(ATTR_NEWBIE) )
-						m_TooltipData.Add(new CClientTooltip(1070722, g_Cfg.GetDefaultMsg(DEFMSG_TOOLTIP_TAG_NEWBIE))); // ~1_NOTHING~
+						m_TooltipData.Add(new CClientTooltip(1042971, g_Cfg.GetDefaultMsg(DEFMSG_TOOLTIP_TAG_NEWBIE))); // ~1_NOTHING~
 					if ( pItem->IsAttr(ATTR_NODROPTRADE) )
 					{
 						m_TooltipData.Add(new CClientTooltip(1076253)); // NO-DROP
@@ -2550,14 +2536,14 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 						}
 					}
 
-					CChar *pCraftsman = static_cast<CGrayUID>(pItem->GetDefNum("CRAFTEDBY")).CharFind();
+					const CChar *pCraftsman = static_cast<CGrayUID>(pItem->GetDefNum("CRAFTEDBY")).CharFind();
 					if ( pCraftsman )
 					{
 						m_TooltipData.Add(t = new CClientTooltip(1050043)); // crafted by ~1_NAME~
 						t->FormatArgs("%s", pCraftsman->GetName());
 					}
 					else
-						pItem->SetDefNum("CRAFTEDBY", 0);
+						const_cast<CItem *>(pItem)->SetDefNum("CRAFTEDBY", 0);
 
 					if ( pItem->IsAttr(ATTR_EXCEPTIONAL) )
 						m_TooltipData.Add(new CClientTooltip(1060636)); // exceptional
@@ -3025,10 +3011,7 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 								t->FormatArgs("%d", iStrengthRequirement);
 							}
 
-							if ( pItem->Item_GetDef()->GetEquipLayer() == LAYER_HAND2 )
-								m_TooltipData.Add(new CClientTooltip(1061171)); // two-handed weapon
-							else
-								m_TooltipData.Add(new CClientTooltip(1061824)); // one-handed weapon
+							m_TooltipData.Add(new CClientTooltip((pItem->Item_GetDef()->GetEquipLayer() == LAYER_HAND2) ? 1061171 : 1061824)); // two-handed weapon : one-handed weapon
 
 							if ( !pItem->m_UseBestWeaponSkill )
 							{
@@ -3050,7 +3033,7 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 
 						case IT_WAND:
 						{
-							m_TooltipData.Add(t = new CClientTooltip(1054132)); // [charges: ~1_charges~]
+							m_TooltipData.Add(t = new CClientTooltip(1060741)); // charges: ~1_val~
 							t->FormatArgs("%d", pItem->m_itWeapon.m_spellcharges);
 							break;
 						}
@@ -3071,22 +3054,16 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 							if ( !pt.IsValidXY() )
 								break;
 
-							bool fRegionMulti = (pt.GetRegion(REGION_TYPE_MULTI) != NULL);
-
-							if ( pt.m_map == 0 )
-								m_TooltipData.Add(t = new CClientTooltip(fRegionMulti ? 1062452 : 1060805)); // ~1_val~ (Felucca)[(House)]
-							else if ( pt.m_map == 1 )
-								m_TooltipData.Add(t = new CClientTooltip(fRegionMulti ? 1062453 : 1060806)); // ~1_val~ (Trammel)[(House)]
-							else if ( pt.m_map == 3 )
-								m_TooltipData.Add(t = new CClientTooltip(fRegionMulti ? 1062454 : 1060804)); // ~1_val~ (Malas)[(House)]
-							else if ( pt.m_map == 4 )
-								m_TooltipData.Add(t = new CClientTooltip(fRegionMulti ? 1063260 : 1063259)); // ~1_val~ (Tokuno Islands)[(House)]
-							else if ( pt.m_map == 5 )
-								m_TooltipData.Add(t = new CClientTooltip(fRegionMulti ? 1113206 : 1113205)); // ~1_val~ (Ter Mur)[(House)]
-							else
-								// There's no proper clilocs for Ilshenar (map = 2) and custom facets (map > 5), so use a empty cliloc instead
-								m_TooltipData.Add(t = new CClientTooltip(1042971)); // ~1_NOTHING~
-
+							bool fHouse = (pt.GetRegion(REGION_TYPE_MULTI) != NULL);
+							switch ( pt.m_map )
+							{
+								case 0:		m_TooltipData.Add(t = new CClientTooltip(fHouse ? 1062452 : 1060805));	break; // ~1_val~ (Felucca)[(House)]
+								case 1:		m_TooltipData.Add(t = new CClientTooltip(fHouse ? 1062453 : 1060806));	break; // ~1_val~ (Trammel)[(House)]
+								case 3:		m_TooltipData.Add(t = new CClientTooltip(fHouse ? 1062454 : 1060804));	break; // ~1_val~ (Malas)[(House)]
+								case 4:		m_TooltipData.Add(t = new CClientTooltip(fHouse ? 1063260 : 1063259));	break; // ~1_val~ (Tokuno Islands)[(House)]
+								case 5:		m_TooltipData.Add(t = new CClientTooltip(fHouse ? 1113206 : 1113205));	break; // ~1_val~ (Ter Mur)[(House)]
+								default:	m_TooltipData.Add(t = new CClientTooltip(1070722));						break; // ~1_NOTHING~
+							}
 							t->FormatArgs("%s%s", g_Cfg.GetDefaultMsg(DEFMSG_RUNE_NAME_MARKED), pObj->GetName());
 							break;
 						}
@@ -3107,23 +3084,13 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 
 						case IT_SPAWN_CHAR:
 						{
-							CResourceDef *pSpawnCharDef = g_Cfg.ResourceGetDef(pItem->m_itSpawnChar.m_CharID);
-							LPCTSTR pszName = NULL;
-							if ( pSpawnCharDef )
-							{
-								CCharBase *pCharBase = dynamic_cast<CCharBase *>(pSpawnCharDef);
-								pszName = pCharBase ? pCharBase->GetTradeName() : pSpawnCharDef->GetName();
-
-								while ( *pszName == '#' )
-									++pszName;
-							}
-
+							const CResourceDef *pSpawnCharDef = g_Cfg.ResourceGetDef(pItem->m_itSpawnChar.m_CharID);
 							m_TooltipData.Add(t = new CClientTooltip(1060658)); // ~1_val~: ~2_val~
-							t->FormatArgs("Character\t%s", pszName ? pszName : "none");
+							t->FormatArgs("Character\t%s", pSpawnCharDef ? pSpawnCharDef->GetResourceName() : "none");
 							m_TooltipData.Add(t = new CClientTooltip(1061169)); // range ~1_val~
 							t->FormatArgs("%hhu", pItem->m_itSpawnChar.m_DistMax);
 							m_TooltipData.Add(t = new CClientTooltip(1074247)); // Live Creatures: ~1_NUM~ / ~2_MAX~
-							t->FormatArgs("%hhu\t%hu", static_cast<CItemSpawn *>(pItem)->m_currentSpawned, pItem->GetAmount());
+							t->FormatArgs("%hhu\t%hu", static_cast<const CItemSpawn *>(pItem)->m_currentSpawned, pItem->GetAmount());
 							m_TooltipData.Add(t = new CClientTooltip(1060659)); // ~1_val~: ~2_val~
 							t->FormatArgs("Time range\t%hu min / %hu max", pItem->m_itSpawnChar.m_TimeLoMin, pItem->m_itSpawnChar.m_TimeHiMin);
 							m_TooltipData.Add(t = new CClientTooltip(1060660)); // ~1_val~: ~2_val~
@@ -3133,13 +3100,13 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 
 						case IT_SPAWN_ITEM:
 						{
-							CResourceDef *pSpawnItemDef = g_Cfg.ResourceGetDef(pItem->m_itSpawnItem.m_ItemID);
+							const CResourceDef *pSpawnItemDef = g_Cfg.ResourceGetDef(pItem->m_itSpawnItem.m_ItemID);
 							m_TooltipData.Add(t = new CClientTooltip(1060658)); // ~1_val~: ~2_val~
-							t->FormatArgs("Item\t%lu %s", maximum(1, pItem->m_itSpawnItem.m_pile), pSpawnItemDef ? pSpawnItemDef->GetName() : "none");
+							t->FormatArgs("Item\t%lu %s", maximum(1, pItem->m_itSpawnItem.m_pile), pSpawnItemDef ? pSpawnItemDef->GetResourceName() : "none");
 							m_TooltipData.Add(t = new CClientTooltip(1061169)); // range ~1_val~
 							t->FormatArgs("%hhu", pItem->m_itSpawnItem.m_DistMax);
 							m_TooltipData.Add(t = new CClientTooltip(1074247)); // Live Creatures: ~1_NUM~ / ~2_MAX~
-							t->FormatArgs("%hhu\t%hu", static_cast<CItemSpawn *>(pItem)->m_currentSpawned, pItem->GetAmount());
+							t->FormatArgs("%hhu\t%hu", static_cast<const CItemSpawn *>(pItem)->m_currentSpawned, pItem->GetAmount());
 							m_TooltipData.Add(t = new CClientTooltip(1060659)); // ~1_val~: ~2_val~
 							t->FormatArgs("Time range\t%hu min / %hu max", pItem->m_itSpawnItem.m_TimeLoMin, pItem->m_itSpawnItem.m_TimeHiMin);
 							m_TooltipData.Add(t = new CClientTooltip(1060660)); // ~1_val~: ~2_val~
@@ -3149,7 +3116,7 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 
 						case IT_COMM_CRYSTAL:
 						{
-							CItem *pLink = pItem->m_uidLink.ItemFind();
+							const CItem *pLink = pItem->m_uidLink.ItemFind();
 							m_TooltipData.Add(new CClientTooltip((pLink && pLink->IsType(IT_COMM_CRYSTAL)) ? 1060742 : 1060743)); // active / inactive
 							m_TooltipData.Add(new CClientTooltip(1060745)); // broadcast
 							break;
@@ -3157,17 +3124,14 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 
 						case IT_STONE_GUILD:
 						{
+							const CItemStone *pGuildStone = static_cast<const CItemStone *>(pItem);
 							m_TooltipData.Clean(true);
 							m_TooltipData.Add(t = new CClientTooltip(1041429)); // a guildstone
-							CItemStone *pGuildStone = static_cast<CItemStone *>(pItem);
-							if ( pGuildStone )
-							{
-								m_TooltipData.Add(t = new CClientTooltip(1060802)); // Guild name: ~1_val~
-								if ( pGuildStone->GetAbbrev()[0] )
-									t->FormatArgs("%s [%s]", pGuildStone->GetName(), pGuildStone->GetAbbrev());
-								else
-									t->FormatArgs("%s", pGuildStone->GetName());
-							}
+							m_TooltipData.Add(t = new CClientTooltip(1060802)); // Guild name: ~1_val~
+							if ( pGuildStone->GetAbbrev()[0] )
+								t->FormatArgs("%s [%s]", pGuildStone->GetName(), pGuildStone->GetAbbrev());
+							else
+								t->FormatArgs("%s", pGuildStone->GetName());
 							break;
 						}
 
@@ -3178,7 +3142,7 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 			}
 		}
 
-		// Build a hash value from the tooltip entries
+		// Build tooltip hash (version)
 		DWORD dwHash = 0;
 		DWORD dwArgumentHash = 0;
 		for ( size_t i = 0; i < m_TooltipData.GetCount(); ++i )
@@ -3204,15 +3168,10 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 				fRequested = true;
 		}
 
-		// Clients actually expect to use an incremental revision number and not a
-		// hash to check if a tooltip needs updating - the client will not request
-		// updated tooltip data if the hash happens to be less than the previous one
-		//
-		// We still want to generate a hash though, so we don't have to increment
-		// the revision number if the tooltip hasn't actually been changed
+		// Build tooltip packet
 		pPropertyList = new PacketPropertyList(pObj, const_cast<CObjBase *>(pObj)->UpdatePropertyRevision(dwHash), &m_TooltipData);
 
-		// Cache the property list for next time, unless property list is incomplete (name only) or caching is disabled
+		// Store tooltip cache
 		if ( m_TooltipEnabled && (g_Cfg.m_iTooltipCache > 0) )
 			const_cast<CObjBase *>(pObj)->SetPropertyList(pPropertyList);
 	}
@@ -3221,7 +3180,7 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 	{
 		switch ( g_Cfg.m_iTooltipMode )
 		{
-			case TOOLTIPMODE_SENDVERSION:	// send property list version (client will send a request the full tooltip if needed)
+			case TOOLTIPMODE_SENDVERSION:	// send only tooltip version (client will compare the version and request the full tooltip if needed)
 				if ( !fRequested && !fShop )
 				{
 					if ( PacketPropertyListVersion::CanSendTo(m_NetState) )
@@ -3231,7 +3190,7 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 					break;
 				}
 
-			case TOOLTIPMODE_SENDFULL:		// send full property list
+			case TOOLTIPMODE_SENDFULL:		// send full tooltip
 			default:
 				new PacketPropertyList(this, pPropertyList);
 				break;
