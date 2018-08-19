@@ -1190,3 +1190,6 @@ Changed: When server startup can't load save files correctly it will now return 
 Fixed: UPDATE/RESENDTOOLTIP being called twice when char/item properties get changed.
 Fixed: Function REGION.TYPE not working correctly.
 Changed: Improved 'update' packets handling, making the server send smaller packets to clients (this should significantly improve the gameplay experience on PvP/PvM).
+
+19-08-2018, Coruja
+Fixed: Corpses on ground not showing equipped items correctly.

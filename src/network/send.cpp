@@ -1071,20 +1071,25 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* co
 {
 	ADDTOCALLSTACK("PacketItemContents::PacketItemContents");
 
-	initLength();
-	skip(2);
+	const CChar* viewer = target->GetChar();
 
 	bool isLayerSent[LAYER_HORSE];
 	memset(isLayerSent, 0, sizeof(isLayerSent));
-	WORD count = 0;
 
-	const CChar* viewer = target->GetChar();
+	// Skip these layers
+	isLayerSent[LAYER_NONE] = true;
+	isLayerSent[LAYER_PACK] = true;
+
+	initLength();
+	skip(2);
+
 	const CItemBase* itemDefinition;
 	ITEMID_TYPE id;
 	WORD amount;
 	HUE_TYPE hue;
 	CPointMap pos;
-	LAYER_TYPE layer;
+	BYTE layer;
+	WORD count = 0;
 
 	for ( CItem* item = container->GetContentTail(); item != NULL; item = item->GetPrev() )
 	{
@@ -1112,21 +1117,11 @@ PacketItemContents::PacketItemContents(CClient* target, const CItemContainer* co
 
 		if ( filterLayers )
 		{
-			layer = static_cast<LAYER_TYPE>(item->GetContainedLayer());
-			ASSERT(layer < LAYER_HORSE);
-			switch ( layer )	// don't put these on a corpse.
-			{
-				case LAYER_NONE:
-				case LAYER_PACK: // these display strange.
-					continue;
+			layer = item->GetContainedLayer();
+			if ( isLayerSent[layer] )
+				continue;
 
-				default:
-					// Make sure that no more than one of each layer goes out to client....crashes otherwise!!
-					if ( isLayerSent[layer] )
-						continue;
-					isLayerSent[layer] = true;
-					break;
-			}
+			isLayerSent[layer] = true;
 		}
 
 		if ( itemDefinition && (target->GetResDisp() < itemDefinition->GetResLevel()) )
@@ -2344,34 +2339,26 @@ PacketCorpseEquipment::PacketCorpseEquipment(CClient* target, const CItemContain
 	bool isLayerSent[LAYER_HORSE];
 	memset(isLayerSent, 0, sizeof(isLayerSent));
 
+	// Skip these layers
+	isLayerSent[LAYER_NONE] = true;
+	isLayerSent[LAYER_PACK] = true;
+
 	initLength();
 	writeInt32(corpse->GetUID());
 
-	LAYER_TYPE layer;
-	size_t count = 0;
+	BYTE layer;
+	WORD count = 0;
 
 	for (CItem* item = corpse->GetContentHead(); item != NULL; item = item->GetNext())
 	{
 		if (item->IsAttr(ATTR_INVIS) && !viewer->CanSee(item))
 			continue;
 		
-		layer = static_cast<LAYER_TYPE>(item->GetContainedLayer());
-		ASSERT(layer < LAYER_HORSE);
-		switch (layer) // don't put these on a corpse.
-		{
-			case LAYER_NONE:
-			case LAYER_PACK:
-				continue;
+		layer = item->GetContainedLayer();
+		if ( isLayerSent[layer] )
+			continue;
 
-			default:
-				// make certain that no more than one of each layer goes out to client....crashes otherwise!!
-				if (isLayerSent[layer])
-					continue;
-				isLayerSent[layer] = true;
-				break;
-		}
-
-		writeByte(static_cast<BYTE>(layer));
+		writeByte(layer + 1);
 		writeInt32(item->GetUID());
 
 		target->addAOSTooltip(item);
@@ -2380,7 +2367,7 @@ PacketCorpseEquipment::PacketCorpseEquipment(CClient* target, const CItemContain
 			break;
 	}
 
-	writeByte(0); // terminator
+	writeByte(0);
 	push(target);
 }
 
