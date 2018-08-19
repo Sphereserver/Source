@@ -1193,3 +1193,4 @@ Changed: Improved 'update' packets handling, making the server send smaller pack
 
 19-08-2018, Coruja
 Fixed: Corpses on ground not showing equipped items correctly.
+Fixed: Buff/debuff bar not showing some buff icons when client log-in.

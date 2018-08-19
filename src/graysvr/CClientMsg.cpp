@@ -17,31 +17,37 @@ unsigned long HashString(LPCTSTR str, size_t length)
 
 void CClient::resendBuffs()
 {
-	// These checks are in addBuff too, but it would be useless to call it so many times
-	if ( !IsSetOF(OF_Buffs) || !PacketBuff::CanSendTo(m_NetState) )
-		return;
-
+	ADDTOCALLSTACK("CClient::resendBuffs");
 	// NOTE: If the player logout and login again without close the client, buffs with remaining
 	// time will stay cached on client, making it not display the remaining time if the server
 	// send this same buff again. To avoid this, we must remove the buff before send it again.
+
+	if ( !IsSetOF(OF_Buffs) || !PacketBuff::CanSendTo(m_NetState) )
+		return;
 
 	if ( m_pChar->IsStatFlag(STATF_NightSight) )
 		addBuff(BI_NIGHTSIGHT, 1075643, 1075644);
 	if ( m_pChar->IsStatFlag(STATF_Hidden|STATF_Insubstantial) )
 		addBuff(BI_HIDDEN, 1075655, 1075656);
+	if ( m_pChar->IsStatFlag(STATF_Hovering) )
+		addBuff(BI_GARGOYLEFLY, 1112193, 1112567);
+	if ( m_pChar->m_Act_SkillCurrent == SKILL_MEDITATION )
+		addBuff(BI_ACTIVEMEDITATION, 1075657, 1075658);
+	if ( m_pChar->LayerFind(LAYER_FLAG_Criminal) )
+		addBuff(BI_CRIMINALSTATUS, 1153802, 1153828);
 
-	CItem *pStuck = m_pChar->LayerFind(LAYER_FLAG_Stuck);
-	if ( pStuck )
+	CItem *pMemory = m_pChar->LayerFind(LAYER_FLAG_Stuck);
+	if ( pMemory )
 	{
 		removeBuff(BI_PARALYZE);
-		addBuff(BI_PARALYZE, 1075827, 1075828, static_cast<WORD>(pStuck->GetTimerAdjusted()));
+		addBuff(BI_PARALYZE, 1075827, 1075828, static_cast<WORD>(maximum(pMemory->GetTimerAdjusted(), 0)));
 	}
-
-	TCHAR szNumBuff[7][MAX_NAME_SIZE];
-	LPCTSTR pszNumBuff[7] = { szNumBuff[0], szNumBuff[1], szNumBuff[2], szNumBuff[3], szNumBuff[4], szNumBuff[5], szNumBuff[6] };
 
 	WORD wStatEffect = 0;
 	WORD wTimerEffect = 0;
+
+	TCHAR szNumBuff[7][MAX_NAME_SIZE];
+	LPCTSTR pszNumBuff[7] = { szNumBuff[0], szNumBuff[1], szNumBuff[2], szNumBuff[3], szNumBuff[4], szNumBuff[5], szNumBuff[6] };
 
 	for ( CItem *pItem = m_pChar->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
@@ -53,24 +59,11 @@ void CClient::resendBuffs()
 
 		switch ( pItem->m_itSpell.m_spell )
 		{
-			case SPELL_Night_Sight:
-			{
-				removeBuff(BI_NIGHTSIGHT);
-				addBuff(BI_NIGHTSIGHT, 1075643, 1075644, wTimerEffect);
-				break;
-			}
 			case SPELL_Clumsy:
 			{
 				ITOA(wStatEffect, szNumBuff[0], 10);
 				removeBuff(BI_CLUMSY);
 				addBuff(BI_CLUMSY, 1075831, 1075832, wTimerEffect, pszNumBuff, 1);
-				break;
-			}
-			case SPELL_Weaken:
-			{
-				ITOA(wStatEffect, szNumBuff[0], 10);
-				removeBuff(BI_WEAKEN);
-				addBuff(BI_WEAKEN, 1075837, 1075838, wTimerEffect, pszNumBuff, 1);
 				break;
 			}
 			case SPELL_Feeblemind:
@@ -80,54 +73,10 @@ void CClient::resendBuffs()
 				addBuff(BI_FEEBLEMIND, 1075833, 1075834, wTimerEffect, pszNumBuff, 1);
 				break;
 			}
-			case SPELL_Curse:
+			case SPELL_Night_Sight:
 			{
-				for ( int i = STAT_STR; i < STAT_BASE_QTY; ++i )
-					ITOA(wStatEffect, szNumBuff[i], 10);
-				for ( int i = 3; i < 7; ++i )
-					ITOA(10, szNumBuff[i], 10);
-
-				removeBuff(BI_CURSE);
-				addBuff(BI_CURSE, 1075835, 1075836, wTimerEffect, pszNumBuff, 7);
-				break;
-			}
-			case SPELL_Mass_Curse:
-			{
-				for ( int i = STAT_STR; i < STAT_BASE_QTY; ++i )
-					ITOA(wStatEffect, szNumBuff[i], 10);
-
-				removeBuff(BI_MASSCURSE);
-				addBuff(BI_MASSCURSE, 1075839, 1075840, wTimerEffect, pszNumBuff, 3);
-				break;
-			}
-			case SPELL_Strength:
-			{
-				ITOA(wStatEffect, szNumBuff[0], 10);
-				removeBuff(BI_STRENGTH);
-				addBuff(BI_STRENGTH, 1075845, 1075846, wTimerEffect, pszNumBuff, 1);
-				break;
-			}
-			case SPELL_Agility:
-			{
-				ITOA(wStatEffect, szNumBuff[0], 10);
-				removeBuff(BI_AGILITY);
-				addBuff(BI_AGILITY, 1075841, 1075842, wTimerEffect, pszNumBuff, 1);
-				break;
-			}
-			case SPELL_Cunning:
-			{
-				ITOA(wStatEffect, szNumBuff[0], 10);
-				removeBuff(BI_CUNNING);
-				addBuff(BI_CUNNING, 1075843, 1075844, wTimerEffect, pszNumBuff, 1);
-				break;
-			}
-			case SPELL_Bless:
-			{
-				for ( int i = STAT_STR; i < STAT_BASE_QTY; ++i )
-					ITOA(wStatEffect, szNumBuff[i], 10);
-
-				removeBuff(BI_BLESS);
-				addBuff(BI_BLESS, 1075847, 1075848, wTimerEffect, pszNumBuff, STAT_BASE_QTY);
+				removeBuff(BI_NIGHTSIGHT);
+				addBuff(BI_NIGHTSIGHT, 1075643, 1075644, wTimerEffect);
 				break;
 			}
 			case SPELL_Reactive_Armor:
@@ -143,6 +92,27 @@ void CClient::resendBuffs()
 				}
 				else
 					addBuff(BI_REACTIVEARMOR, 1075812, 1070722, wTimerEffect);
+				break;
+			}
+			case SPELL_Weaken:
+			{
+				ITOA(wStatEffect, szNumBuff[0], 10);
+				removeBuff(BI_WEAKEN);
+				addBuff(BI_WEAKEN, 1075837, 1075838, wTimerEffect, pszNumBuff, 1);
+				break;
+			}
+			case SPELL_Agility:
+			{
+				ITOA(wStatEffect, szNumBuff[0], 10);
+				removeBuff(BI_AGILITY);
+				addBuff(BI_AGILITY, 1075841, 1075842, wTimerEffect, pszNumBuff, 1);
+				break;
+			}
+			case SPELL_Cunning:
+			{
+				ITOA(wStatEffect, szNumBuff[0], 10);
+				removeBuff(BI_CUNNING);
+				addBuff(BI_CUNNING, 1075843, 1075844, wTimerEffect, pszNumBuff, 1);
 				break;
 			}
 			case SPELL_Protection:
@@ -167,22 +137,43 @@ void CClient::resendBuffs()
 					addBuff(BuffIcon, BuffCliloc, 1070722, wTimerEffect);
 				break;
 			}
+			case SPELL_Strength:
+			{
+				ITOA(wStatEffect, szNumBuff[0], 10);
+				removeBuff(BI_STRENGTH);
+				addBuff(BI_STRENGTH, 1075845, 1075846, wTimerEffect, pszNumBuff, 1);
+				break;
+			}
+			case SPELL_Bless:
+			{
+				for ( int i = STAT_STR; i < STAT_BASE_QTY; ++i )
+					ITOA(wStatEffect, szNumBuff[i], 10);
+
+				removeBuff(BI_BLESS);
+				addBuff(BI_BLESS, 1075847, 1075848, wTimerEffect, pszNumBuff, STAT_BASE_QTY);
+				break;
+			}
 			case SPELL_Poison:
 			{
 				removeBuff(BI_POISON);
 				addBuff(BI_POISON, 1017383, 1070722, wTimerEffect);
 				break;
 			}
+			case SPELL_Curse:
+			{
+				for ( int i = STAT_STR; i < STAT_BASE_QTY; ++i )
+					ITOA(wStatEffect, szNumBuff[i], 10);
+				for ( int i = 3; i < 7; ++i )
+					ITOA(10, szNumBuff[i], 10);
+
+				removeBuff(BI_CURSE);
+				addBuff(BI_CURSE, 1075835, 1075836, wTimerEffect, pszNumBuff, 7);
+				break;
+			}
 			case SPELL_Incognito:
 			{
 				removeBuff(BI_INCOGNITO);
 				addBuff(BI_INCOGNITO, 1075819, 1075820, wTimerEffect);
-				break;
-			}
-			case SPELL_Paralyze:
-			{
-				removeBuff(BI_PARALYZE);
-				addBuff(BI_PARALYZE, 1075827, 1075828, wTimerEffect);
 				break;
 			}
 			case SPELL_Magic_Reflect:
@@ -200,16 +191,191 @@ void CClient::resendBuffs()
 					addBuff(BI_MAGICREFLECTION, 1075817, 1070722, wTimerEffect);
 				break;
 			}
+			case SPELL_Paralyze:
+			{
+				removeBuff(BI_PARALYZE);
+				addBuff(BI_PARALYZE, 1075827, 1075828, wTimerEffect);
+				break;
+			}
 			case SPELL_Invis:
 			{
 				removeBuff(BI_INVISIBILITY);
 				addBuff(BI_INVISIBILITY, 1075825, 1075826, wTimerEffect);
 				break;
 			}
+			case SPELL_Mass_Curse:
+			{
+				for ( int i = STAT_STR; i < STAT_BASE_QTY; ++i )
+					ITOA(wStatEffect, szNumBuff[i], 10);
+
+				removeBuff(BI_MASSCURSE);
+				addBuff(BI_MASSCURSE, 1075839, 1075840, wTimerEffect, pszNumBuff, 3);
+				break;
+			}
+			case SPELL_Polymorph:
+			case SPELL_BeastForm:
+			case SPELL_Monster_Form:
+			{
+				LPCTSTR pszName = "creature";
+				CCharBase *pPolyCharDef = CCharBase::FindCharBase(m_pChar->m_atMagery.m_SummonID);
+				if ( pPolyCharDef && (pPolyCharDef->GetName()[0] != '#') )
+				{
+					pszName = pPolyCharDef->GetName();
+					_strlwr(const_cast<TCHAR *>(pszName));
+				}
+
+				strcpy(szNumBuff[0], Str_GetArticleAndSpace(pszName));
+				strncpy(szNumBuff[1], pszName, sizeof(szNumBuff[1]) - 1);
+				szNumBuff[0][strlen(szNumBuff[0]) - 1] = '\0';		// trim whitespace from "a " / "an " strings
+				removeBuff(BI_POLYMORPH);
+				addBuff(BI_POLYMORPH, 1075824, 1075823, wTimerEffect, pszNumBuff, 2);
+				break;
+			}
+			case SPELL_Blood_Oath:
+			{
+				const CChar *pCaster = pItem->m_uidLink.CharFind();
+				if ( pCaster )
+				{
+					strncpy(szNumBuff[0], pCaster->GetName(), sizeof(szNumBuff[0]) - 1);
+					strncpy(szNumBuff[1], pCaster->GetName(), sizeof(szNumBuff[1]) - 1);
+					removeBuff(BI_BLOODOATHCURSE);
+					addBuff(BI_BLOODOATHCURSE, 1075659, 1075660, wTimerEffect, pszNumBuff, 2);
+				}
+				break;
+			}
+			case SPELL_Corpse_Skin:
+			{
+				removeBuff(BI_CORPSESKIN);
+				addBuff(BI_CORPSESKIN, 1075663, 1075664, wTimerEffect);
+				break;
+			}
+			case SPELL_Horrific_Beast:
+			{
+				ITOA(pItem->m_itSpell.m_PolyStr, szNumBuff[0], 10);
+				ITOA(pItem->m_itSpell.m_PolyDex, szNumBuff[1], 10);
+				removeBuff(BI_HORRIFICBEAST);
+				addBuff(BI_HORRIFICBEAST, 1060514, 1153763, wTimerEffect, pszNumBuff, 2);
+				break;
+			}
+			case SPELL_Lich_Form:
+			{
+				ITOA(pItem->m_itSpell.m_PolyStr, szNumBuff[0], 10);
+				ITOA(pItem->m_itSpell.m_PolyDex, szNumBuff[1], 10);
+				ITOA(pItem->m_itSpell.m_spellcharges, szNumBuff[2], 10);
+				ITOA(pItem->m_itSpell.m_spellcharges, szNumBuff[3], 10);
+				ITOA(pItem->m_itSpell.m_spellcharges, szNumBuff[4], 10);
+				removeBuff(BI_LICHFORM);
+				addBuff(BI_LICHFORM, 1060515, 1153767, wTimerEffect, pszNumBuff, 5);
+				break;
+			}
+			case SPELL_Strangle:
+			{
+				double dStamPenalty = 3 - ((m_pChar->Stat_GetVal(STAT_DEX) / maximum(1, m_pChar->Stat_GetAdjusted(STAT_DEX))) * 2);
+				WORD wTimerTotal = 0;
+				for ( WORD w = 0; w < wStatEffect; ++w )
+					wTimerTotal += (wStatEffect - w) * TICK_PER_SEC;
+
+				ITOA(static_cast<int>((wStatEffect - 2) * dStamPenalty), szNumBuff[0], 10);
+				ITOA(static_cast<int>((wStatEffect + 1) * dStamPenalty), szNumBuff[1], 10);
+				removeBuff(BI_STRANGLE);
+				addBuff(BI_STRANGLE, 1075794, 1075795, wTimerTotal, pszNumBuff, 2);
+				break;
+			}
+			case SPELL_Vampiric_Embrace:
+			{
+				ITOA(pItem->m_itSpell.m_PolyStr, szNumBuff[0], 10);
+				ITOA(pItem->m_itSpell.m_PolyDex, szNumBuff[1], 10);
+				ITOA(pItem->m_itSpell.m_spellcharges, szNumBuff[2], 10);
+				ITOA(pItem->m_itSpell.m_spelllevel, szNumBuff[3], 10);
+				removeBuff(BI_VAMPIRICEMBRACE);
+				addBuff(BI_VAMPIRICEMBRACE, 1060521, 1153768, wTimerEffect, pszNumBuff, 4);
+				break;
+			}
+			case SPELL_Wraith_Form:
+			{
+				ITOA(pItem->m_itSpell.m_PolyStr, szNumBuff[0], 10);
+				ITOA(pItem->m_itSpell.m_PolyDex, szNumBuff[1], 10);
+				ITOA(pItem->m_itSpell.m_PolyDex, szNumBuff[2], 10);
+				ITOA(pItem->m_itSpell.m_PolyDex, szNumBuff[3], 10);
+				removeBuff(BI_WRAITHFORM);
+				addBuff(BI_WRAITHFORM, 1060524, 1153829, wTimerEffect, pszNumBuff, 4);
+				break;
+			}
+			case SPELL_Gift_of_Renewal:
+			{
+				ITOA(pItem->m_itSpell.m_spelllevel, szNumBuff[0], 10);
+				removeBuff(BI_GIFTOFRENEWAL);
+				addBuff(BI_GIFTOFRENEWAL, 1075796, 1075797, wTimerEffect, pszNumBuff, 1);
+				break;
+			}
+			case SPELL_Attunement:
+			{
+				ITOA(pItem->m_itSpell.m_spelllevel, szNumBuff[0], 10);
+				removeBuff(BI_ATTUNEWEAPON);
+				addBuff(BI_ATTUNEWEAPON, 1075798, 1075799, wTimerEffect, pszNumBuff, 1);
+				break;
+			}
+			case SPELL_Thunderstorm:
+			{
+				ITOA(pItem->m_itSpell.m_spelllevel, szNumBuff[0], 10);
+				removeBuff(BI_THUNDERSTORM);
+				addBuff(BI_THUNDERSTORM, 1075800, 1075801, wTimerEffect, pszNumBuff, 1);
+				break;
+			}
+			case SPELL_Reaper_Form:
+			{
+				ITOA(pItem->m_itSpell.m_PolyStr, szNumBuff[0], 10);
+				ITOA(pItem->m_itSpell.m_PolyStr, szNumBuff[1], 10);
+				ITOA(pItem->m_itSpell.m_PolyDex, szNumBuff[2], 10);
+				ITOA(pItem->m_itSpell.m_PolyDex, szNumBuff[3], 10);
+				ITOA(pItem->m_itSpell.m_PolyDex, szNumBuff[4], 10);
+				ITOA(pItem->m_itSpell.m_PolyDex, szNumBuff[5], 10);
+				ITOA(pItem->m_itSpell.m_spellcharges, szNumBuff[6], 10);
+				removeBuff(BI_REAPERFORM);
+				addBuff(BI_REAPERFORM, 1071034, 1153781, wTimerEffect, pszNumBuff, 7);
+				break;
+			}
+			case SPELL_Essence_of_Wind:
+			{
+				ITOA(pItem->m_itSpell.m_spelllevel, szNumBuff[0], 10);
+				removeBuff(BI_ESSENCEOFWIND);
+				addBuff(BI_ESSENCEOFWIND, 1075802, 1075803, wTimerEffect, pszNumBuff, 1);
+				break;
+			}
+			case SPELL_Ethereal_Voyage:
+			{
+				removeBuff(BI_ETHEREALVOYAGE);
+				addBuff(BI_ETHEREALVOYAGE, 1075804, 1075805, wTimerEffect);
+				break;
+			}
+			case SPELL_Gift_of_Life:
+			{
+				removeBuff(BI_GIFTOFLIFE);
+				addBuff(BI_GIFTOFLIFE, 1075806, 1075807, wTimerEffect);
+				break;
+			}
+			case SPELL_Arcane_Empowerment:
+			{
+				ITOA(pItem->m_itSpell.m_spelllevel, szNumBuff[0], 10);
+				ITOA(pItem->m_itSpell.m_spellcharges, szNumBuff[1], 10);
+				removeBuff(BI_ARCANEEMPOWERMENT);
+				addBuff(BI_ARCANEEMPOWERMENT, 1075805, 1075804, wTimerEffect, pszNumBuff, 1);
+				break;
+			}
+			case SPELL_Stone_Form:
+			{
+				ITOA(-pItem->m_itSpell.m_PolyStr, szNumBuff[0], 10);
+				ITOA(-pItem->m_itSpell.m_PolyDex, szNumBuff[1], 10);
+				ITOA(pItem->m_itSpell.m_spellcharges, szNumBuff[2], 10);
+				ITOA(pItem->m_itSpell.m_spellcharges, szNumBuff[3], 10);
+				ITOA(pItem->m_itSpell.m_PolyStr, szNumBuff[4], 10);
+				removeBuff(BI_STONEFORM);
+				addBuff(BI_STONEFORM, 1080145, 1080146, wTimerEffect, pszNumBuff, 5);
+				break;
+			}
 			default:
 				break;
 		}
-
 	}
 }
 

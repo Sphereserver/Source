@@ -1383,17 +1383,18 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 		}
 		case LAYER_SPELL_Corpse_Skin:
 		{
+			pSpell->m_itSpell.m_PolyStr = 10;
+			pSpell->m_itSpell.m_PolyDex = 15;
+			m_ResPhysical += pSpell->m_itSpell.m_PolyStr;
+			m_ResFire -= pSpell->m_itSpell.m_PolyDex;
+			m_ResCold += pSpell->m_itSpell.m_PolyStr;
+			m_ResPoison -= pSpell->m_itSpell.m_PolyDex;
+
 			if ( m_pClient && IsSetOF(OF_Buffs) )
 			{
 				m_pClient->removeBuff(BI_CORPSESKIN);
-				m_pClient->addBuff(BI_CORPSESKIN, 1075805, 1075804, wTimerEffect, pszNumBuff, 1);
+				m_pClient->addBuff(BI_CORPSESKIN, 1075663, 1075664, wTimerEffect);
 			}
-			pSpell->m_itSpell.m_PolyDex = 15;
-			pSpell->m_itSpell.m_PolyStr = 10;
-			m_ResFire -= pSpell->m_itSpell.m_PolyDex;
-			m_ResPoison -= pSpell->m_itSpell.m_PolyDex;
-			m_ResCold += pSpell->m_itSpell.m_PolyStr;
-			m_ResPhysical += pSpell->m_itSpell.m_PolyStr;
 			return;
 		}
 		case LAYER_SPELL_Mind_Rot:
