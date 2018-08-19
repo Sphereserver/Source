@@ -515,11 +515,11 @@ void CClient::addItem_OnGround(CItem *pItem)
 	// Send corpse clothing
 	if ( !IsPriv(PRIV_DEBUG) && (pItem->GetDispID() == ITEMID_CORPSE) && CCharBase::IsPlayableID(pItem->GetCorpseType()) )
 	{
-		CItemCorpse *pCorpse = static_cast<CItemCorpse *>(pItem);
+		const CItemCorpse *pCorpse = dynamic_cast<const CItemCorpse *>(pItem);
 		if ( pCorpse )
 		{
 			addContents(pCorpse, false, true);	// send all corpse items
-			addContents(pCorpse, true, true);	// equip proper items on corpse
+			addContents(pCorpse, true, true);	// equip items on corpse
 		}
 	}
 
@@ -529,7 +529,7 @@ void CClient::addItem_OnGround(CItem *pItem)
 	// Send house design version
 	if ( pItem->IsType(IT_MULTI_CUSTOM) && (m_pChar->GetTopPoint().GetDistSight(pItem->GetTopPoint()) <= m_pChar->GetSight()) )
 	{
-		CItemMultiCustom *pItemMulti = static_cast<CItemMultiCustom *>(pItem);
+		CItemMultiCustom *pItemMulti = dynamic_cast<CItemMultiCustom *>(pItem);
 		if ( pItemMulti )
 			pItemMulti->SendVersionTo(this);
 	}
@@ -539,9 +539,7 @@ void CClient::addItem_Equipped(const CItem *pItem)
 {
 	ADDTOCALLSTACK("CClient::addItem_Equipped");
 	ASSERT(pItem);
-	CChar *pChar = dynamic_cast<CChar *>(pItem->GetParent());
-	ASSERT(pChar);
-	if ( !m_pChar->CanSeeItem(pItem) && (m_pChar != pChar) )
+	if ( (pItem->GetParent() != m_pChar) && !m_pChar->CanSeeItem(pItem) )
 		return;
 
 	new PacketItemEquipped(this, pItem);
@@ -553,9 +551,6 @@ void CClient::addItem_InContainer(const CItem *pItem)
 {
 	ADDTOCALLSTACK("CClient::addItem_InContainer");
 	ASSERT(pItem);
-	CItemContainer *pCont = dynamic_cast<CItemContainer *>(pItem->GetParent());
-	if ( !pCont )
-		return;
 
 	new PacketItemContainer(this, pItem);
 
@@ -628,15 +623,10 @@ void CClient::LogOpenedContainer(const CItemContainer *pContainer)
 		return;
 
 	CObjBaseTemplate *pTopMostContainer = pContainer->GetTopLevelObj();
-	CObjBase *pTopContainer = pContainer->GetParentObj();
-
 	DWORD dwTopMostContainerUID = pTopMostContainer->GetUID().GetPrivateUID();
-	DWORD dwTopContainerUID = 0;
 
-	if ( pTopContainer )
-		dwTopContainerUID = pTopContainer->GetUID().GetPrivateUID();
-	else
-		dwTopContainerUID = dwTopMostContainerUID;
+	CObjBase *pTopContainer = pContainer->GetParentObj();
+	DWORD dwTopContainerUID = pTopContainer ? pTopContainer->GetUID().GetPrivateUID() : dwTopMostContainerUID;
 
 	m_openedContainers[pContainer->GetUID().GetPrivateUID()] = std::make_pair(std::make_pair(dwTopContainerUID, dwTopMostContainerUID), pTopMostContainer->GetTopPoint());
 }
@@ -1068,7 +1058,6 @@ void CClient::GetAdjustedItemID(const CChar *pChar, const CItem *pItem, ITEMID_T
 			wHue &= (HUE_MASK_LO|HUE_MASK_UNDERWEAR|HUE_MASK_TRANSLUCENT);
 		else
 			wHue &= (HUE_MASK_HI|HUE_MASK_UNDERWEAR|HUE_MASK_TRANSLUCENT);
-
 	}
 
 	if ( pItemDef && (GetResDisp() < pItemDef->GetResLevel()) )
@@ -1207,16 +1196,16 @@ void CClient::addItemName(const CItem *pItem)
 			len += sprintf(szName + len, " (%s)", pItem->Armor_GetRepairDesc());
 	}
 
-	CItemContainer *pParentCont = dynamic_cast<CItemContainer *>(pItem->GetParent());
+	const CItemContainer *pParentCont = dynamic_cast<const CItemContainer *>(pItem->GetParent());
 	if ( pParentCont && pParentCont->IsType(IT_EQ_VENDOR_BOX) )
 	{
-		const CItemVendable *pVendItem = static_cast<const CItemVendable *>(pItem);
+		const CItemVendable *pVendItem = dynamic_cast<const CItemVendable *>(pItem);
 		if ( pVendItem )
 			len += sprintf(szName + len, " (%lu gp)", pVendItem->GetBasePrice());
 	}
 
 	HUE_TYPE wHue = HUE_TEXT_DEF;
-	const CItemCorpse *pCorpseItem = static_cast<const CItemCorpse *>(pItem);
+	const CItemCorpse *pCorpseItem = dynamic_cast<const CItemCorpse *>(pItem);
 	if ( pCorpseItem )
 	{
 		CChar *pCharCorpse = pCorpseItem->m_uidLink.CharFind();
@@ -1236,7 +1225,7 @@ void CClient::addItemName(const CItem *pItem)
 			case IT_SPAWN_CHAR:
 			case IT_SPAWN_ITEM:
 			{
-				CItemSpawn *pSpawn = static_cast<CItemSpawn *>(const_cast<CItem *>(pItem));
+				const CItemSpawn *pSpawn = dynamic_cast<const CItemSpawn *>(pItem);
 				if ( pSpawn )
 					len += pSpawn->GetName(szName + len);
 				break;
@@ -2112,7 +2101,7 @@ void CClient::addSpellbookOpen(CItem *pBook)
 void CClient::addCustomSpellbookOpen(CItem *pBook, GUMP_TYPE gumpID)
 {
 	ADDTOCALLSTACK("CClient::addCustomSpellbookOpen");
-	const CItemContainer *pContainer = static_cast<CItemContainer *>(pBook);
+	const CItemContainer *pContainer = dynamic_cast<CItemContainer *>(pBook);
 	if ( !pContainer )
 		return;
 
@@ -2290,7 +2279,7 @@ bool CClient::addBBoardMessage(const CItemContainer *pBoard, BBOARDF_TYPE flag, 
 	ADDTOCALLSTACK("CClient::addBBoardMessage");
 	ASSERT(pBoard);
 
-	CItemMessage *pMsgItem = static_cast<CItemMessage *>(uidMsg.ItemFind());
+	CItemMessage *pMsgItem = dynamic_cast<CItemMessage *>(uidMsg.ItemFind());
 	if ( !pBoard->IsItemInside(pMsgItem) )
 		return false;
 
@@ -3254,7 +3243,7 @@ void CClient::SendPacket(TCHAR *pszKey)
 		if ( packet->getLength() > SCRIPT_MAX_LINE_LEN - 4 )
 		{
 			// We won't get here because this lenght is enforced in all scripts
-			DEBUG_ERR(("SENDPACKET too big.\n"));
+			DEBUG_ERR(("SENDPACKET function exceeded max length allowed (%" FMTSIZE_T "/%d)\n", packet->getLength(), SCRIPT_MAX_LINE_LEN - 4));
 			delete packet;
 			return;
 		}
@@ -3643,7 +3632,7 @@ BYTE CClient::Setup_Start(CChar *pChar)
 		}
 		if ( m_pChar->m_pArea && m_pChar->m_pArea->IsGuarded() && !m_pChar->m_pArea->IsFlag(REGION_FLAG_ANNOUNCE) )
 		{
-			const CVarDefContStr *pVarStr = static_cast<CVarDefContStr *>(m_pChar->m_pArea->m_TagDefs.GetKey("GuardOwner"));
+			const CVarDefContStr *pVarStr = dynamic_cast<CVarDefContStr *>(m_pChar->m_pArea->m_TagDefs.GetKey("GuardOwner"));
 			SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_GUARDSP), pVarStr ? pVarStr->GetValStr() : g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_GUARDSPT));
 			if ( m_pChar->m_pArea->m_TagDefs.GetKeyNum("RED") )
 				SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_REDDEF), g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_REDENTER));
