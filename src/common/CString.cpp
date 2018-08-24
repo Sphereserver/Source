@@ -615,82 +615,79 @@ int FindTableHeadSorted(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount
 {
 	// Do a binary search (un-cased) on a sorted table.
 	// RETURN: -1 = not found
-	int iHigh = iCount - 1;
-	if (iHigh < 0)
-	{
+
+	if ( iCount == 0 )
 		return -1;
-	}
+	if ( iElemSize <= 0 )
+		iElemSize = sizeof(LPCTSTR);
+
 	int iLow = 0;
-	while (iLow <= iHigh)
+	int iHigh = iCount - 1;
+
+	while ( iLow <= iHigh )
 	{
-		int i = (iHigh + iLow) / 2;
-		LPCTSTR pszName = *((const LPCTSTR *)(((const BYTE *)ppszTable) + (i * iElemSize)));
+		int i = (iLow + iHigh) / 2;
+		LPCTSTR pszName = *reinterpret_cast<const LPCTSTR *>(reinterpret_cast<const BYTE *>(ppszTable) + (i * iElemSize));
+
 		int iCompare = Str_CmpHeadI(pszFind, pszName);
-		if (iCompare == 0)
-			return(i);
-		if (iCompare > 0)
-		{
+		if ( iCompare == 0 )
+			return i;
+		else if ( iCompare > 0 )
 			iLow = i + 1;
-		}
 		else
-		{
 			iHigh = i - 1;
-		}
 	}
-	return(-1);
+	return -1;
 }
 
-int FindTableHead(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount, size_t iElemSize)
+int FindTableHead(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount)
 {
-	for (size_t i = 0; i < iCount; i++)
+	for ( size_t i = 0; i < iCount; ++i )
 	{
-		int iCompare = Str_CmpHeadI(pszFind, *ppszTable);
-		if (!iCompare)
-			return(i);
-		ppszTable = (const LPCTSTR *)(((const BYTE *)ppszTable) + iElemSize);
+		if ( Str_CmpHeadI(pszFind, *ppszTable) == 0 )
+			return i;
+		ppszTable = reinterpret_cast<const LPCTSTR *>(reinterpret_cast<const BYTE *>(ppszTable) + sizeof(LPCTSTR));
 	}
-	return(-1);
+	return -1;
 }
 
-int FindTableSorted(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount, size_t iElemSize)
+int FindTableSorted(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount)
 {
 	// Do a binary search (un-cased) on a sorted table.
 	// RETURN: -1 = not found
-	int iHigh = iCount - 1;
-	if (iHigh < 0)
-	{
+
+	if ( iCount == 0 )
 		return -1;
-	}
+
 	int iLow = 0;
-	while (iLow <= iHigh)
+	int iHigh = iCount - 1;
+
+	while ( iLow <= iHigh )
 	{
-		int i = (iHigh + iLow) / 2;
-		LPCTSTR pszName = *((const LPCTSTR *)(((const BYTE *)ppszTable) + (i * iElemSize)));
+		int i = (iLow + iHigh) / 2;
+		LPCTSTR pszName = *reinterpret_cast<const LPCTSTR *>(reinterpret_cast<const BYTE *>(ppszTable) + (i * sizeof(LPCTSTR)));
+
 		int iCompare = strcmpi(pszFind, pszName);
-		if (iCompare == 0)
-			return(i);
-		if (iCompare > 0)
-		{
+		if ( iCompare == 0 )
+			return i;
+		else if ( iCompare > 0 )
 			iLow = i + 1;
-		}
 		else
-		{
 			iHigh = i - 1;
-		}
 	}
-	return(-1);
+	return -1;
 }
 
-int FindTable(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount, size_t iElemSize)
+int FindTable(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount)
 {
 	// A non-sorted table.
-	for (size_t i = 0; i < iCount; i++)
+	for ( size_t i = 0; i < iCount; ++i )
 	{
-		if (!strcmpi(*ppszTable, pszFind))
-			return(i);
-		ppszTable = (const LPCTSTR *)(((const BYTE *)ppszTable) + iElemSize);
+		if ( strcmpi(pszFind, *ppszTable) == 0 )
+			return i;
+		ppszTable = reinterpret_cast<const LPCTSTR *>(reinterpret_cast<const BYTE *>(ppszTable) + sizeof(LPCTSTR));
 	}
-	return(-1);
+	return -1;
 }
 
 size_t Str_GetBare(TCHAR * pszOut, LPCTSTR pszInp, size_t iMaxOutSize, LPCTSTR pszStrip)
