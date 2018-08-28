@@ -1154,7 +1154,7 @@ bool CItemMultiCustom::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute com
 
 		case IMCV_CUSTOMIZE:
 		{
-			const CChar *pChar = s.HasArgs() ? CGrayUID(s.GetArgVal()).CharFind() : NULL;
+			const CChar *pChar = s.HasArgs() ? static_cast<CGrayUID>(s.GetArgVal()).CharFind() : (pSrc ? pSrc->GetChar() : NULL);
 			if ( !pChar || !pChar->m_pClient )
 				return false;
 
@@ -1187,7 +1187,7 @@ bool CItemMultiCustom::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute com
 
 		case IMCV_RESYNC:
 		{
-			const CChar *pChar = s.HasArgs() ? CGrayUID(s.GetArgVal()).CharFind() : NULL;
+			const CChar *pChar = s.HasArgs() ? static_cast<CGrayUID>(s.GetArgVal()).CharFind() : (pSrc ? pSrc->GetChar() : NULL);
 			if ( !pChar || !pChar->m_pClient )
 				return false;
 

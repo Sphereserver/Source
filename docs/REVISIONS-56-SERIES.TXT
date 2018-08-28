@@ -1197,4 +1197,5 @@ Fixed: Buff/debuff bar not showing some buff icons when client log-in.
 Fixed: Tooltips not showing on items with ATTR=attr_static set.
 
 27-08-2018, Coruja
+Fixed: Multi function CUSTOMIZE not working correctly.
 [sphere.ini]: Added new CHATF_GLOBALCHAT chat flag to enable Global Chat feature on clients >= 7.0.62.2 (still incomplete yet)

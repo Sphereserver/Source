@@ -422,6 +422,7 @@ void CClient::UpdateFeatureFlags()
 	// 0x100000		Enable jungle custom house tiles
 	// 0x200000		Enable shadowguard custom house tiles
 	// 0x400000		Enable TOL features
+	// 0x800000		Free account (Endless Journey)
 
 	if ( !m_pAccount )
 		return;
@@ -450,7 +451,7 @@ void CClient::UpdateFeatureFlags()
 	if ( iResDisp >= RDS_AOS )
 	{
 		if ( g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_A )
-			m_FeatureFlags |= (0x10|0x8000);
+			m_FeatureFlags |= 0x10;
 	}
 
 	if ( iResDisp >= RDS_SE )
