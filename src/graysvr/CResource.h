@@ -78,10 +78,11 @@ enum REVEALFLAGS_TYPE
 
 enum CHATFLAGS_TYPE
 {
-	CHATF_AUTOJOIN				= 0x1,		// Auto join first static channel available (new chat system: join after client login / old chat system: join after open chat window)
-	CHATF_CHANNELCREATION		= 0x2,		// Enable channel creation
-	CHATF_CHANNELMODERATION		= 0x4,		// Enable channel moderation (old chat system only)
-	CHATF_CUSTOMNAMES			= 0x8		// Enable custom name selection when open chat window for the first time (old chat system only)
+	CHATF_AUTOJOIN				= 0x01,		// Auto join first static channel available (new chat system: join after client login / old chat system: join after open chat window)
+	CHATF_CHANNELCREATION		= 0x02,		// Enable channel creation
+	CHATF_CHANNELMODERATION		= 0x04,		// Enable channel moderation (old chat system only)
+	CHATF_CUSTOMNAMES			= 0x08,		// Enable custom name selection when open chat window for the first time (old chat system only)
+	CHATF_GLOBALCHAT			= 0x10		// Enable global chat system on clients >= 7.0.62.2 (INCOMPLETE)
 };
 
 enum RACIALFLAGS_TYPE

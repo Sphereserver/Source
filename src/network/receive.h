@@ -1462,6 +1462,20 @@ public:
 };
 
 /***************************************************************************
+ *
+ *
+ *	Packet 0xF9 : PacketGlobalChatReq				global chat (INCOMPLETE)
+ *
+ *
+ ***************************************************************************/
+class PacketGlobalChatReq : public Packet
+{
+public:
+	PacketGlobalChatReq();
+	virtual bool onReceive(NetState* net);
+};
+
+/***************************************************************************
 *
 *
 *	Packet 0xFA : PacketUltimaStoreButton			ultima store button pressed

@@ -2046,6 +2046,7 @@ void CClient::Event_Target(CLIMODE_TYPE context, CGrayUID uid, CPointMap pt, BYT
 		case CLIMODE_TARG_STONE_RECRUIT:	OnTarg_Stone_Recruit(uid.CharFind());		break;
 		case CLIMODE_TARG_STONE_RECRUITFULL:OnTarg_Stone_Recruit(uid.CharFind(), true);	break;
 		case CLIMODE_TARG_PARTY_ADD:		OnTarg_Party_Add(uid.CharFind());			break;
+		case CLIMODE_TARG_GLOBALCHAT_ADD:	OnTarg_GlobalChat_Add(uid.CharFind());		break;
 
 		default:																		break;
 	}
@@ -2167,6 +2168,13 @@ void CClient::Event_AOSPopupMenuRequest(CGrayUID uid) //construct packet after a
 					m_pPopupPacket->addOption(POPUP_TRADE_ALLOW, 1154112);
 				else
 					m_pPopupPacket->addOption(POPUP_TRADE_REFUSE, 1154113);
+			}
+			if ( m_NetState->isClientVersion(MINCLIVER_GLOBALCHAT) && (g_Cfg.m_iChatFlags & CHATF_GLOBALCHAT) )
+			{
+				if ( pChar->m_pPlayer->m_bRefuseGlobalChatRequests )
+					m_pPopupPacket->addOption(POPUP_GLOBALCHAT_ALLOW, 1158415);
+				else
+					m_pPopupPacket->addOption(POPUP_GLOBALCHAT_REFUSE, 1158416);
 			}
 		}
 		else
@@ -2336,6 +2344,16 @@ void CClient::Event_AOSPopupMenuSelect(CGrayUID uid, WORD EntryTag)	//do somethi
 
 		case POPUP_TRADE_OPEN:
 			Cmd_SecureTrade(pChar, NULL);
+			break;
+
+		case POPUP_GLOBALCHAT_ALLOW:
+			if ( m_pChar->m_pPlayer )
+				m_pChar->m_pPlayer->m_bRefuseGlobalChatRequests = false;
+			break;
+
+		case POPUP_GLOBALCHAT_REFUSE:
+			if ( m_pChar->m_pPlayer )
+				m_pChar->m_pPlayer->m_bRefuseGlobalChatRequests = true;
 			break;
 	}
 }

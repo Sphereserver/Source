@@ -178,4 +178,50 @@ private:
 	LPCTSTR GetChatName();
 };
 
+class CGlobalChat		// This is member of CClient
+{
+public:
+	static const char *m_sClassName;
+
+	CGlobalChat() { };
+	~CGlobalChat() { };
+
+private:
+	DWORD m_dwID;		// client connection ID
+	LPCTSTR m_pszJID;	// client Jabber ID
+	bool m_fVisible;	// client visibility status (online/offline)
+
+public:
+	void SetID(DWORD dwID)
+	{
+		m_dwID = dwID;
+	}
+	DWORD GetID() const
+	{
+		return m_dwID;
+	}
+
+	void SetJID(LPCTSTR pszJID)
+	{
+		m_pszJID = pszJID;
+	}
+	LPCTSTR GetJID() const
+	{
+		return m_pszJID;
+	}
+
+	void SetVisible(bool fSet)
+	{
+		m_fVisible = fSet;
+	}
+	bool IsVisible() const
+	{
+		return m_fVisible;
+	}
+
+private:
+	CGlobalChat(const CChatMember &copy);
+	CGlobalChat &operator=(const CChatMember &other);
+};
+
 #endif	// _INC_CCHAT_H

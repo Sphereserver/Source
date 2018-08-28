@@ -4888,3 +4888,28 @@ PacketContainer::PacketContainer(const CClient* target, CObjBase** objects, size
 
 	push(target);
 }
+
+
+/***************************************************************************
+ *
+ *
+ *	Packet 0xF9 : PacketGlobalChat			global chat (LOW) (INCOMPLETE)
+ *
+ *
+ ***************************************************************************/
+PacketGlobalChat::PacketGlobalChat(const CClient *target, BYTE unknown, BYTE action, BYTE stanza, LPCTSTR xml) : PacketSend(XCMD_GlobalChat, 4, g_Cfg.m_fUsePacketPriorities ? PRI_LOW : PRI_NORMAL)
+{
+	ADDTOCALLSTACK("PacketGlobalChat::PacketGlobalChat");
+
+	TCHAR *xmlFull = Str_GetTemp();
+	sprintf(xmlFull, "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?><ultima_stanza>%s</ultima_stanza>", xml);
+	//DEBUG_ERR(("GlobalChat XML sent: %s\n", xmlFull));
+
+	writeByte(unknown);
+	writeByte(action);
+	writeByte(stanza);
+	writeStringASCII(xmlFull);
+
+	trim();
+	push(target);
+}

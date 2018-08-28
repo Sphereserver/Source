@@ -138,6 +138,7 @@ CCharPlayer::CCharPlayer(CChar *pChar, CAccount *pAccount) : m_pAccount(pAccount
 	m_wDeaths = 0;
 	m_speedMode = SPEEDMODE_DEFAULT;
 	m_bRefuseTrades = false;
+	m_bRefuseGlobalChatRequests = false;
 	m_bKrToolbarEnabled = false;
 	m_timeLastUsed.Init();
 
@@ -334,6 +335,9 @@ bool CCharPlayer::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 				sVal = szLine;
 			}
 			return( true );
+		case CPC_REFUSEGLOBALCHATREQUESTS:
+			sVal.FormatVal(m_bRefuseGlobalChatRequests);
+			return true;
 		case CPC_REFUSETRADES:
 			sVal.FormatVal(m_bRefuseTrades);
 			return true;
@@ -463,6 +467,9 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 		case CPC_PROFILE:
 			m_sProfile = Str_MakeFiltered( s.GetArgStr());
 			return( true );
+		case CPC_REFUSEGLOBALCHATREQUESTS:
+			m_bRefuseGlobalChatRequests = (s.GetArgVal() != 0);
+			return true;
 		case CPC_REFUSETRADES:
 			m_bRefuseTrades = (s.GetArgVal() != 0);
 			return true;
@@ -532,6 +539,8 @@ void CCharPlayer::r_WriteChar( CChar * pChar, CScript & s )
 		s.WriteKeyVal("SPEEDMODE", m_speedMode);
 	if ( m_bRefuseTrades )
 		s.WriteKeyVal("REFUSETRADES", m_bRefuseTrades);
+	if ( m_bRefuseGlobalChatRequests )
+		s.WriteKeyVal("REFUSEGLOBALCHATREQUESTS", m_bRefuseGlobalChatRequests);
 	if ( (m_pAccount->GetResDisp() >= RDS_KR) && m_bKrToolbarEnabled )
 		s.WriteKeyVal("KRTOOLBARSTATUS", m_bKrToolbarEnabled);
 

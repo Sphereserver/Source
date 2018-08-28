@@ -94,6 +94,7 @@ enum CLIMODE_TYPE	// What mode is the client to server connection in? (waiting f
 	CLIMODE_TARG_STONE_RECRUIT,		// recruit members for a stone
 	CLIMODE_TARG_STONE_RECRUITFULL,	// recruit/make a member and set abbrev show
 	CLIMODE_TARG_PARTY_ADD,
+	CLIMODE_TARG_GLOBALCHAT_ADD,
 
 	CLIMODE_TARG_QTY
 };
@@ -344,7 +345,7 @@ class PacketSend;
 class PacketServerRelay;
 struct VendorItem;
 
-class CClient : public CGObListRec, public CScriptObj, public CChatMember, public CTextConsole
+class CClient : public CGObListRec, public CScriptObj, public CChatMember, public CGlobalChat, public CTextConsole
 {
 	// TCP/IP connection to the player or console
 public:
@@ -526,6 +527,7 @@ private:
 	bool OnTarg_Use_Deed(CItem *pDeed, CPointMap &pt);
 	bool OnTarg_Use_Item(CObjBase *pObjTarg, CPointMap &pt, ITEMID_TYPE id);
 	bool OnTarg_Party_Add(CChar *pChar);
+	bool OnTarg_GlobalChat_Add(CChar *pChar);
 	CItem *OnTarg_Use_Multi(const CItemBase *pItemDef, CPointMap &pt, DWORD dwAttr, HUE_TYPE wHue);
 
 	int OnSkill_AnimalLore(CGrayUID uid, int iSkillLevel, bool fTest);
@@ -780,6 +782,9 @@ public:
 	void addLoginComplete();
 	void addChatSystemMessage(CHATMSG_TYPE type, LPCTSTR pszName1 = NULL, LPCTSTR pszName2 = NULL, CLanguageID lang = 0);
 
+	void addGlobalChatConnect();
+	void addGlobalChatStatusToggle();
+
 	void addCharPaperdoll(const CChar *pChar);
 
 	void addAOSTooltip(const CObjBase *pObj, bool fRequested = false, bool fShop = false);
@@ -798,6 +803,8 @@ private:
 	#define POPUP_TRADE_ALLOW		15
 	#define POPUP_TRADE_REFUSE		16
 	#define POPUP_TRADE_OPEN		17
+	#define POPUP_GLOBALCHAT_ALLOW	18
+	#define POPUP_GLOBALCHAT_REFUSE	19
 	#define POPUP_BANKBOX			21
 	#define POPUP_VENDORBUY			31
 	#define POPUP_VENDORSELL		32

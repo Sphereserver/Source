@@ -4676,6 +4676,59 @@ bool PacketCreateHS::onReceive(NetState* net)
 
 
 /***************************************************************************
+ *
+ *
+ *	Packet 0xF9 : PacketGlobalChatReq				global chat (INCOMPLETE)
+ *
+ *
+ ***************************************************************************/
+PacketGlobalChatReq::PacketGlobalChatReq() : Packet(0)
+{
+}
+
+bool PacketGlobalChatReq::onReceive(NetState *net)
+{
+	ADDTOCALLSTACK("PacketGlobalChatReq::onReceive");
+
+	CClient *client = net->m_client;
+	ASSERT(client);
+
+	if ( !(g_Cfg.m_iChatFlags & CHATF_GLOBALCHAT) )
+	{
+		client->SysMessage("Global Chat is currently unavailable.");
+		return true;
+	}
+
+	BYTE unknown = readByte();
+	BYTE action = readByte();
+	skip(1);
+
+	TCHAR xml[MAX_TALK_BUFFER * 2];
+	readStringASCII(xml, COUNTOF(xml));
+	//DEBUG_ERR(("GlobalChat XML received: %s\n", xml));
+	
+	switch ( action )
+	{
+		case PacketGlobalChat::MessageSend:
+			// TO-DO
+			return true;
+		case PacketGlobalChat::FriendRemove:
+			// TO-DO
+			return true;
+		case PacketGlobalChat::FriendAddTarg:
+			client->addTarget(CLIMODE_TARG_GLOBALCHAT_ADD, "Target player to request as Global Chat friend.");
+			return true;
+		case PacketGlobalChat::StatusToggle:
+			client->addGlobalChatStatusToggle();
+			return true;
+		default:
+			DEBUG_ERR(("%lx:Unknown global chat action 0%lx\n", net->id(), action));
+			return true;
+	}
+}
+
+
+/***************************************************************************
 *
 *
 *	Packet 0xFA : PacketUltimaStoreButton			ultima store button pressed

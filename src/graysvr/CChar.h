@@ -115,6 +115,7 @@ public:
 	WORD m_wDeaths;			// Death count
 	BYTE m_speedMode;
 	bool m_bRefuseTrades;
+	bool m_bRefuseGlobalChatRequests;
 	bool m_bKrToolbarEnabled;
 
 	static LPCTSTR const sm_szLoadKeys[];

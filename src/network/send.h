@@ -1942,4 +1942,39 @@ public:
 	}
 };
 
+/***************************************************************************
+ *
+ *
+ *	Packet 0xF9 : PacketGlobalChat			global chat (LOW) (INCOMPLETE)
+ *
+ *
+ ***************************************************************************/
+class PacketGlobalChat : public PacketSend
+{
+public:
+	enum Action
+	{
+		FriendToggle	= 0x01,		// client <- server
+		FriendRemove	= 0x10,		// client -> server
+		FriendAddTarg	= 0x76,		// client -> server
+		StatusToggle	= 0x8A,		// client -> server
+		Connect			= 0xB9,		// client <- server
+		MessageSend		= 0xC6		// client -> server
+	};
+	enum Stanza
+	{
+		Presence		= 0x0,
+		Message			= 0x1,
+		InfoQuery		= 0x2
+	};
+
+	PacketGlobalChat(const CClient *target, BYTE unknown, BYTE action, BYTE stanza, LPCTSTR xml);
+
+	virtual bool canSendTo(const NetState *state) const { return CanSendTo(state); }
+	static bool CanSendTo(const NetState *state)
+	{
+		return state->isClientVersion(MINCLIVER_GLOBALCHAT);
+	}
+};
+
 #endif

@@ -2357,3 +2357,53 @@ bool CClient::OnTarg_Party_Add(CChar *pChar)
 	new PacketPartyInvite(pChar->m_pClient, m_pChar);
 	return true;
 }
+
+bool CClient::OnTarg_GlobalChat_Add(CChar *pChar)
+{
+	ADDTOCALLSTACK("CClient::OnTarg_GlobalChat_Add");
+	// CLIMODE_TARG_GLOBALCHAT_ADD
+	// Invite this person to join our global chat friend list
+
+	if ( !CGlobalChat::IsVisible() )
+	{
+		SysMessage("You must enable Global Chat to request a friend.");
+		return false;
+	}
+	if ( !pChar || !pChar->m_pPlayer || (pChar == m_pChar) )
+	{
+		SysMessage("Invalid target.");
+		return false;
+	}
+	if ( !pChar->m_pClient )
+	{
+		SysMessage("Player currently unavailable.");
+		return false;
+	}
+	if ( pChar->m_pPlayer->m_bRefuseGlobalChatRequests )		// TO-DO: also check if pChar is online on global chat -> CGlobalChat::IsVisible()
+	{
+		SysMessage("This user is not accepting Global Chat friend requests at this time.");
+		return false;
+	}
+	/*if ( iFriendsCount >= 50 )		// TO-DO
+	{
+		SysMessage("You have reached your global chat friend limit.");
+		return false;
+	}*/
+
+	if ( IsPriv(PRIV_GM) && (pChar->m_pClient->GetPrivLevel() < GetPrivLevel()) )
+	{
+		// TO-DO: auto-accept the request without send 'friend request' dialog
+		return true;
+	}
+
+	CVarDefCont *pTagInviteTime = m_pChar->m_TagDefs.GetKey("GLOBALCHAT_LASTINVITETIME");
+	if ( pTagInviteTime && (g_World.GetCurrentTime().GetTimeRaw() < static_cast<UINT64>(pTagInviteTime->GetValNum())) )
+	{
+		SysMessage("You are unable to add new friends at this time. Please try again in a moment.");
+		return false;
+	}
+	m_pChar->SetKeyNum("GLOBALCHAT_LASTINVITETIME", g_World.GetCurrentTime().GetTimeRaw() + (30 * TICK_PER_SEC));
+
+	// TO-DO: send 'friend request' dialog
+	return true;
+}

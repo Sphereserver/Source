@@ -304,6 +304,7 @@ enum XCMD_TYPE	// XCMD_* messages are unique in both directions.
 	XCMD_MoveShip			= 0xf6,
 	XCMD_PacketCont			= 0xf7,
 	XCMD_CreateHS			= 0xf8,
+	XCMD_GlobalChat			= 0xf9,
 	XCMD_UltimaStoreButton	= 0xfa
 };
 
@@ -1042,10 +1043,10 @@ enum NOTO_TYPE
 //#define MINCLIVER_CLILOCS			1260202	// minimum client to use clilocs (1.26.2b)
 #define MINCLIVER_PADCHARLIST		3000010	// minimum client to pad character list to at least 5 characters
 #define MINCLIVER_CLOSEDIALOG		4000400	// minimum client where close dialog does not trigger a client response
-#define MINCLIVER_NEWVERSIONING		5000605	// minimum client to use the new versioning format (after 5.0.6e it change to 5.0.6.5)
+#define MINCLIVER_NEWVERSIONING		5000605	// minimum client to use new versioning format (after 5.0.6e it change to 5.0.6.5)
 #define MINCLIVER_CONTAINERGRID		6000107	// minimum client to use container grid index (6.0.1.7)
-#define MINCLIVER_NEWCHATSYSTEM		7000401	// minimum client to use the new chat system (7.0.4.1) - classic client
-#define MINCLIVER_NEWCHATSYSTEM_EC	4000400	// minimum client to use the new chat system (4.0.4.0) - enhanced client
+#define MINCLIVER_NEWCHATSYSTEM		7000400	// minimum client to use new chat system (7.0.4.0)
+#define MINCLIVER_GLOBALCHAT		7006202	// minimum client to use global chat system (7.0.62.2)
 
 // Client versions (packets)
 #define MINCLIVER_STATLOCKS			4000100	// minimum client to receive 0xBF.0x19.0x02 packet
