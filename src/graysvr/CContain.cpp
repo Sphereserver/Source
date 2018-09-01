@@ -980,35 +980,24 @@ void CItemContainer::ContentAdd(CItem *pItem, CPointMap pt, BYTE gridIndex)
 			pt = GetRandContainerLoc();
 	}
 
-	// Check if the grid index is already in use
-	bool fValidGrid = true;
-	for ( CItem *pTry = GetContentHead(); pTry != NULL; pTry = pTry->GetNext() )
+	// Try drop it on given container grid index (if not available, drop it on next free index)
+	bool fGridAvailable;
+	for ( size_t i = 0; i < UCHAR_MAX; ++i )
 	{
-		if ( pTry->GetContainedGridIndex() == gridIndex )
+		fGridAvailable = true;
+		for ( CItem *pTry = GetContentHead(); pTry != NULL; pTry = pTry->GetNext() )
 		{
-			fValidGrid = false;
-			break;
-		}
-	}
-
-	if ( !fValidGrid )
-	{
-		// The grid index we've been given is already in use, so find the first unused grid index
-		for ( gridIndex = 0; (gridIndex < UCHAR_MAX) && !fValidGrid; ++gridIndex )
-		{
-			fValidGrid = true;
-			for ( CItem *pTry = GetContentHead(); pTry != NULL; pTry = pTry->GetNext() )
+			if ( pTry->GetContainedGridIndex() == gridIndex )
 			{
-				if ( pTry->GetContainedGridIndex() == gridIndex )
-				{
-					fValidGrid = false;
-					break;
-				}
-			}
-
-			if ( fValidGrid )
+				fGridAvailable = false;
 				break;
+			}
 		}
+		if ( fGridAvailable )
+			break;
+
+		if ( ++gridIndex >= MAX_ITEMS_CONT )
+			gridIndex = 0;
 	}
 
 	CContainer::ContentAddPrivate(pItem);
