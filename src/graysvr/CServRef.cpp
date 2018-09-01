@@ -134,19 +134,22 @@ DWORD CServerDef::StatGet(SERV_STAT_TYPE i) const
 	return 0;
 }
 
-void CServerDef::SetName( LPCTSTR pszName )
+void CServerDef::SetName(LPCTSTR pszName)
 {
 	ADDTOCALLSTACK("CServerDef::SetName");
-	if ( ! pszName )
+	if ( !pszName )
 		return;
 
-	// No HTML tags using <> either.
-	TCHAR szName[ 2*MAX_SERVER_NAME_SIZE ];
-	size_t len = Str_GetBare( szName, pszName, sizeof(szName), "<>/\"\\" );
-	if ( len <= 0 )
+	TCHAR szName[MAX_SERVER_NAME_SIZE];
+	size_t iLen = Str_GetBare(szName, pszName, sizeof(szName), "<>/\"\\");
+	if ( iLen <= 0 )
 		return;
 
 	m_sName = szName;
+#ifdef _WIN32
+	// Update console window title
+	NTWindow_SetWindowTitle();
+#endif
 }
 
 void CServerDef::SetValidTime()

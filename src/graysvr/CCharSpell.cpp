@@ -31,9 +31,10 @@ bool CChar::Spell_Teleport(CPointMap ptDest, bool fTakePets, bool fCheckAntiMagi
 	// ex. ships plank.
 	// RETURN: true = it worked.
 
-	ptDest.m_z = GetFixZ(ptDest);
-	if ( !ptDest.IsValidPoint() )
+	if ( !ptDest.IsValidXY() )
 		return false;
+
+	ptDest.m_z = GetFixZ(ptDest);
 
 	if ( !IsPriv(PRIV_GM) )
 	{

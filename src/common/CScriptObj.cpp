@@ -805,9 +805,8 @@ TRIGRET_TYPE CScriptObj::OnTriggerRun(CScript &s, TRIGRUN_TYPE trigger, CTextCon
 					break;
 				}
 
-				CObjBase *pObj = dynamic_cast<CObjBase *>(this);
 				CContainer *pCont = dynamic_cast<CContainer *>(this);
-				if ( !pObj || !pCont )
+				if ( !pCont )
 				{
 					DEBUG_ERR(("FORCONT[id/type] called on non-container object '%s'\n", GetName()));
 					iRet = OnTriggerRun(s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, psResult);
@@ -997,11 +996,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerRun(CScript &s, TRIGRUN_TYPE trigger, CTextCon
 						TCHAR *piCmd[7];
 						size_t iQty = Str_ParseCmds(pszArgs, piCmd, COUNTOF(piCmd), " ,\t");
 						if ( iQty == 2 )
-						{
-							CGrayUID uid = static_cast<CGrayUID>(ATOI(piCmd[1]));
-							if ( uid.ObjFind() )
-								pRef = uid.ObjFind();
-						}
+							pRef = static_cast<CGrayUID>(ATOI(piCmd[1])).ObjFind();
 
 						// Parse object references, SRC.* is not parsed by r_GetRef so do it manually
 						if ( !strnicmp("SRC.", pszArgs, 4) )
@@ -1301,21 +1296,20 @@ bool CScriptObj::r_GetRef(LPCTSTR &pszKey, CScriptObj *&pRef)
 	else if ( !strnicmp(pszKey, "UID.", 4) )
 	{
 		pszKey += 4;
-		CGrayUID uid = static_cast<CGrayUID>(Exp_GetLLVal(pszKey));
-		pRef = uid.ObjFind();
+		pRef = static_cast<CGrayUID>(Exp_GetLLVal(pszKey)).ObjFind();
 		SKIP_SEPARATORS(pszKey);
 		return true;
 	}
 	else if ( !strnicmp(pszKey, "OBJ.", 4) )
 	{
 		pszKey += 4;
-		pRef = g_World.m_uidObj ? g_World.m_uidObj.ObjFind() : NULL;
+		pRef = g_World.m_uidObj.ObjFind();
 		return true;
 	}
 	else if ( !strnicmp(pszKey, "NEW.", 4) )
 	{
 		pszKey += 4;
-		pRef = g_World.m_uidNew ? g_World.m_uidNew.ObjFind() : NULL;
+		pRef = g_World.m_uidNew.ObjFind();
 		return true;
 	}
 	else if ( !strnicmp(pszKey, "I.", 2) )
@@ -1437,7 +1431,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		CScriptObj *pRefTemp = pRef ? pRef : pSrc->GetChar();
 		if ( pRefTemp == &g_Serv )
 			sVal.FormatHex(0x1);
-		else if ( pRefTemp == &(g_Serv.fhFile) )
+		else if ( pRefTemp == &g_Serv.fhFile )
 			sVal.FormatHex(0x2);
 		else if ( (pRefTemp == &g_Serv.m_hdb) || dynamic_cast<CDataBase *>(pRefTemp) )
 			sVal.FormatHex(0x8);
@@ -1491,10 +1485,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		if ( pszKey[0] == '\0' )	// just testing the ref
 		{
 			pObj = dynamic_cast<CObjBase *>(pRef);
-			if ( pObj )
-				sVal.FormatHex(static_cast<DWORD>(pObj->GetUID()));
-			else
-				sVal.FormatVal(1);
+			sVal.FormatHex(pObj ? pObj->GetUID() : 1);
 			return true;
 		}
 		return pRef->r_WriteVal(pszKey, sVal, pSrc);
@@ -1583,12 +1574,12 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			return true;
 		case SSC_OBJ:
 			if ( !g_World.m_uidObj.ObjFind() )
-				g_World.m_uidObj = 0;
+				g_World.m_uidObj = UID_CLEAR;
 			sVal.FormatHex(static_cast<DWORD>(g_World.m_uidObj));
 			return true;
 		case SSC_NEW:
 			if ( !g_World.m_uidNew.ObjFind() )
-				g_World.m_uidNew = 0;
+				g_World.m_uidNew = UID_CLEAR;
 			sVal.FormatHex(static_cast<DWORD>(g_World.m_uidNew));
 			return true;
 		case SSC_SRC:
@@ -1603,7 +1594,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			}
 			if ( !pRef )
 			{
-				sVal.FormatVal(0);
+				sVal.FormatHex(0);
 				return true;
 			}
 			if ( !*pszKey )
@@ -1744,10 +1735,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				iPos = iLen;
 
 			TCHAR *pszPos = const_cast<TCHAR *>(strchr(pszKey + iPos, szVal));
-			if ( pszPos )
-				sVal.FormatVal(static_cast<long>(pszPos - pszKey));
-			else
-				sVal.FormatVal(-1);
+			sVal.FormatVal(pszPos ? static_cast<long>(pszPos - pszKey) : -1);
 			return true;
 		}
 		case SSC_StrSub:
@@ -2055,14 +2043,14 @@ bool CScriptObj::r_Verb(CScript &s, CTextConsole *pSrc)
 		{
 			g_World.m_uidObj = s.GetArgVal();
 			if ( !g_World.m_uidObj.ObjFind() )
-				g_World.m_uidObj = 0;
+				g_World.m_uidObj = UID_CLEAR;
 			break;
 		}
 		case SSV_NEW:
 		{
 			g_World.m_uidNew = s.GetArgVal();
 			if ( !g_World.m_uidNew.ObjFind() )
-				g_World.m_uidNew = 0;
+				g_World.m_uidNew = UID_CLEAR;
 			break;
 		}
 		case SSV_NEWDUPE:
@@ -2071,7 +2059,7 @@ bool CScriptObj::r_Verb(CScript &s, CTextConsole *pSrc)
 			CObjBase *pObj = uid.ObjFind();
 			if ( !pObj )
 			{
-				g_World.m_uidNew = 0;
+				g_World.m_uidNew = UID_CLEAR;
 				return false;
 			}
 
@@ -2526,10 +2514,7 @@ bool CScriptTriggerArgs::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole
 		case AGC_O:
 		{
 			CObjBase *pObj = dynamic_cast<CObjBase *>(m_pO1);
-			if ( pObj )
-				sVal.FormatHex(pObj->GetUID());
-			else
-				sVal.FormatVal(0);
+			sVal.FormatHex(pObj ? static_cast<DWORD>(pObj->GetUID()) : 0);
 			break;
 		}
 		case AGC_S:
@@ -2575,9 +2560,7 @@ bool CScriptTriggerArgs::r_Verb(CScript &s, CTextConsole *pSrc)
 				pszTemp = pchEnd;
 				if ( !*pszTemp )	// setting REFx to a new object
 				{
-					CGrayUID uid = s.GetArgVal();
-					CObjBase *pObj = uid.ObjFind();
-					m_VarObjs.Insert(wNumber, pObj, true);
+					m_VarObjs.Insert(wNumber, static_cast<CGrayUID>(s.GetArgVal()).ObjFind(), true);
 					pszKey = pszTemp;
 					return true;
 				}
@@ -2602,8 +2585,7 @@ bool CScriptTriggerArgs::r_Verb(CScript &s, CTextConsole *pSrc)
 		else
 		{
 			++pszKey;
-			CObjBase *pObj = static_cast<CObjBase *>(static_cast<CGrayUID>(Exp_GetSingle(pszKey)).ObjFind());
-			m_pO1 = pObj ? pObj : NULL;
+			m_pO1 = static_cast<CGrayUID>(Exp_GetSingle(pszKey)).ObjFind();
 			return true;
 		}
 	}

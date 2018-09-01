@@ -183,7 +183,12 @@ class CGlobalChat		// This is member of CClient
 public:
 	static const char *m_sClassName;
 
-	CGlobalChat() { };
+	CGlobalChat()
+	{
+		m_dwID = 0;
+		m_pszJID = '\0';
+		m_fVisible = false;
+	}
 	~CGlobalChat() { };
 
 private:
@@ -220,8 +225,8 @@ public:
 	}
 
 private:
-	CGlobalChat(const CChatMember &copy);
-	CGlobalChat &operator=(const CChatMember &other);
+	CGlobalChat(const CGlobalChat &copy);
+	CGlobalChat &operator=(const CGlobalChat &other);
 };
 
 #endif	// _INC_CCHAT_H
