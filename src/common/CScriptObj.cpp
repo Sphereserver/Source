@@ -1485,7 +1485,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		if ( pszKey[0] == '\0' )	// just testing the ref
 		{
 			pObj = dynamic_cast<CObjBase *>(pRef);
-			sVal.FormatHex(pObj ? pObj->GetUID() : 1);
+			sVal.FormatHex(pObj ? static_cast<DWORD>(pObj->GetUID()) : 1);
 			return true;
 		}
 		return pRef->r_WriteVal(pszKey, sVal, pSrc);

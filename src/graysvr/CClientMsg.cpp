@@ -2059,7 +2059,9 @@ void CClient::addHealthBarUpdate(const CChar *pChar)
 	if ( !pChar )
 		return;
 
-	if ( PacketHealthBarUpdate::CanSendTo(m_NetState) )
+	if ( PacketHealthBarUpdateNew::CanSendTo(m_NetState) )
+		new PacketHealthBarUpdateNew(this, pChar);
+	else if ( PacketHealthBarUpdate::CanSendTo(m_NetState) )
 		new PacketHealthBarUpdate(this, pChar);
 }
 
@@ -2331,7 +2333,6 @@ void CClient::addGlobalChatConnect()
 	TCHAR *pszXML = Str_GetTemp();
 	sprintf(pszXML, "<iq to=\"%s\" id=\"iq_%lu\" type=\"6\" version=\"1\" jid=\"%s\" />", CGlobalChat::GetJID(), CGlobalChat::GetID(), CGlobalChat::GetJID());
 
-	CGlobalChat::SetVisible(false);
 	new PacketGlobalChat(this, 0, PacketGlobalChat::Connect, PacketGlobalChat::InfoQuery, pszXML);
 	SysMessage("Global Chat is now connected.");
 }

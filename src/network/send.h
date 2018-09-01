@@ -81,10 +81,34 @@ public:
 /***************************************************************************
  *
  *
- *	Packet 0x17 : PacketHealthBarUpdate		update health bar colour (LOW)
+ *	Packet 0x16 : PacketHealthBarUpdateNew	update health bar color (LOW)
+ *	Packet 0x17 : PacketHealthBarUpdate		update health bar color (LOW)
  *
  *
  ***************************************************************************/
+class PacketHealthBarUpdateNew : public PacketSend
+{
+private:
+	CGrayUID m_character;
+
+public:
+	enum Color
+	{
+		GreenBar	= 0x1,
+		YellowBar	= 0x2
+	};
+
+	PacketHealthBarUpdateNew(const CClient* target, const CChar* character);
+
+	virtual bool onSend(const CClient* client);
+
+	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }
+	static bool CanSendTo(const NetState* state)
+	{
+		return state->isClientEnhanced();
+	}
+};
+
 class PacketHealthBarUpdate : public PacketSend
 {
 private:
@@ -93,8 +117,8 @@ private:
 public:
 	enum Color
 	{
-		GreenBar = 1,
-		YellowBar = 2
+		GreenBar	= 0x1,
+		YellowBar	= 0x2
 	};
 
 	PacketHealthBarUpdate(const CClient* target, const CChar* character);
@@ -104,7 +128,7 @@ public:
 	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }
 	static bool CanSendTo(const NetState* state)
 	{
-		return state->isClientVersion(MINCLIVER_SA) || state->isClientEnhanced();
+		return state->isClientVersion(MINCLIVER_SA) || state->isClientKR();
 	}
 };
 

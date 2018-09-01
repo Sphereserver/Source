@@ -2387,7 +2387,7 @@ bool CChar::SetPoison(int iSkill, int iTicks, CChar *pCharSrc)
 
 	SysMessageDefault(DEFMSG_JUST_BEEN_POISONED);
 	StatFlag_Set(STATF_Poisoned);
-	UpdateStatsFlag();
+	UpdateModeFlag();
 	return true;
 }
 

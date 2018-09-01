@@ -307,10 +307,45 @@ PacketHealthBarInfo::PacketHealthBarInfo(const CClient *target, CObjBase *object
 /***************************************************************************
  *
  *
- *	Packet 0x17 : PacketHealthBarUpdate		update health bar colour (LOW)
+ *	Packet 0x16 : PacketHealthBarUpdateNew	update health bar color (LOW)
+ *	Packet 0x17 : PacketHealthBarUpdate		update health bar color (LOW)
  *
  *
  ***************************************************************************/
+PacketHealthBarUpdateNew::PacketHealthBarUpdateNew(const CClient* target, const CChar* character) : PacketSend(XCMD_HealthBarColorNew, 12, g_Cfg.m_fUsePacketPriorities ? PRI_LOW : PRI_NORMAL), m_character(character->GetUID())
+{
+	ADDTOCALLSTACK("PacketHealthBarUpdateNew::PacketHealthBarUpdateNew");
+
+	WORD wColor = 0;
+	if ( character->IsStatFlag(STATF_Poisoned) )
+		wColor = GreenBar;
+	else if ( character->IsStatFlag(STATF_Freeze|STATF_Stone) )
+		wColor = YellowBar;
+
+	initLength();
+
+	writeInt32(character->GetUID());
+	writeInt16(1);
+	writeInt16(wColor);
+	writeBool(wColor != 0);
+
+	push(target);
+}
+
+bool PacketHealthBarUpdateNew::onSend(const CClient* client)
+{
+	ADDTOCALLSTACK("PacketHealthBarUpdateNew::onSend");
+#ifndef _MTNETWORK
+	if (g_NetworkOut.isActive())
+#else
+	if (g_NetworkManager.isOutputThreaded())
+#endif
+		return true;
+
+	return client->CanSee(m_character.CharFind());
+}
+
+
 PacketHealthBarUpdate::PacketHealthBarUpdate(const CClient* target, const CChar* character) : PacketSend(XCMD_HealthBarColor, 15, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL), m_character(character->GetUID())
 {
 	ADDTOCALLSTACK("PacketHealthBarUpdate::PacketHealthBarUpdate");
@@ -318,12 +353,11 @@ PacketHealthBarUpdate::PacketHealthBarUpdate(const CClient* target, const CChar*
 	initLength();
 
 	writeInt32(character->GetUID());
-
 	writeInt16(2);
 	writeInt16(GreenBar);
 	writeByte(character->IsStatFlag(STATF_Poisoned));
 	writeInt16(YellowBar);
-	writeByte(character->IsStatFlag(STATF_Freeze|STATF_Sleeping|STATF_Hallucinating|STATF_Stone));
+	writeByte(character->IsStatFlag(STATF_Freeze|STATF_Stone));
 
 	push(target);
 }

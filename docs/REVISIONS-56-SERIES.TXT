@@ -1201,5 +1201,6 @@ Fixed: Multi function CUSTOMIZE not working correctly.
 [sphere.ini]: Added new CHATF_GLOBALCHAT chat flag to enable Global Chat feature on clients >= 7.0.62.2 (still incomplete yet)
 
 01-09-2018, Coruja
-Changed: When enhanced clients drop items on container grid index already in use, the item now will be placed on next available index (OSI style) instead first available index starting on 0.
+Fixed: Enhanced clients showing wrong hitpoints color on health bar.
+Changed: When enhanced clients drop items on container grid index already in use, the item now will be placed on next available index (OSI style) instead first available index starting on 0
 [sphereCrypt.ini]: Added crypt key for classic client 7.0.68 and enhanced client 4.0.68

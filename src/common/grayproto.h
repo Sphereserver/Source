@@ -143,6 +143,7 @@ enum XCMD_TYPE	// XCMD_* messages are unique in both directions.
 	XCMD_Status			= 0x11,
 	XCMD_ExtCmd			= 0x12,
 	XCMD_ItemEquipReq	= 0x13,
+	XCMD_HealthBarColorNew	= 0x16,
 	XCMD_HealthBarColor	= 0x17,
 	XCMD_Put			= 0x1a,
 	XCMD_Start			= 0x1b,
