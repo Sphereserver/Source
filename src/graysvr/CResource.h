@@ -28,25 +28,25 @@ enum OF_TYPE	// option flags
 	OF_NoPrefix					= 0x04000,
 	OF_DyeType					= 0x08000,
 	OF_DrinkIsFood				= 0x10000,
-	OF_DClickNoTurn				= 0x20000
+	OF_NoDClickTurn				= 0x20000
 };
 
 enum EF_TYPE	// experimental flags
 {
-	EF_NoDiagonalCheckLOS		= 0x000001,
-	EF_Dynamic_Backsave			= 0x000002,
-	EF_ItemStacking				= 0x000004,
-	EF_ItemStackDrop			= 0x000008,
-	EF_FastWalkPrevention		= 0x000010,
-	EF_Intrinsic_Locals			= 0x000020,
-	EF_Item_Strict_Comparison	= 0x000040,
-	EF_AllowTelnetPacketFilter	= 0x000200,
-	EF_Script_Profiler			= 0x000400,
-	EF_DamageTools				= 0x002000,
-	EF_UsePingServer			= 0x008000,
-	EF_FixCanSeeInClosedConts	= 0x020000,
+	EF_NoDiagonalCheckLOS		= 0x00001,
+	EF_DynamicBackgroundSave	= 0x00002,
+	EF_ItemStacking				= 0x00004,
+	EF_ItemStackDrop			= 0x00008,
+	EF_FastWalkPrevention		= 0x00010,
+	EF_Intrinsic_Locals			= 0x00020,
+	EF_Item_Strict_Comparison	= 0x00040,
+	EF_AllowTelnetPacketFilter	= 0x00200,
+	EF_Script_Profiler			= 0x00400,
+	EF_DamageTools				= 0x02000,
+	EF_UsePingServer			= 0x08000,
+	EF_FixCanSeeInClosedConts	= 0x20000,
 #ifndef _MTNETWORK
-	EF_NetworkOutThread			= 0x800000
+	EF_NetworkOutThread			= 0x40000
 #endif
 };
 

@@ -135,7 +135,7 @@ CResource::CResource()
 	m_fNoResRobe = 0;
 	m_iLostNPCTeleport = 50;
 	m_iExperimental = 0;
-	m_iOptionFlags = (OF_Command_Sysmsgs|OF_NoHouseMuteSpeech);
+	m_iOptionFlags = (OF_NoDClickTarget|OF_Command_Sysmsgs|OF_OSIMultiSight|OF_NoHouseMuteSpeech|OF_Buffs|OF_NoDClickTurn);
 	m_iWoolGrowthTime = 30 * 60 * TICK_PER_SEC;
 	m_iAttackerTimeout = 300 * TICK_PER_SEC;
 	m_iNotoTimeout = 30 * TICK_PER_SEC;

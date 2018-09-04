@@ -1579,29 +1579,21 @@ bool CClient::OnTarg_Use_Item(CObjBase *pObjTarg, CPointMap &pt, ITEMID_TYPE id)
 	m_Targ_p = pt;
 
 	ITRIG_TYPE type;
-	if ( !pObjTarg )
+	if ( pObjTarg )
 	{
-		m_Targ_UID.ClearUID();
-		if ( pt.IsValidPoint() )
-		{
-			if ( !IsSetOF(OF_DClickNoTurn) )
-				m_pChar->UpdateDir(pt);
-		}
-		type = ITRIG_TARGON_GROUND;
+		type = pObjTarg->IsChar() ? ITRIG_TARGON_CHAR : ITRIG_TARGON_ITEM;
+		m_Targ_UID = pObjTarg->GetUID();
+		m_pChar->UpdateDir(pObjTarg);
 	}
 	else
 	{
-		m_Targ_UID = pObjTarg->GetUID();
-		if ( !IsSetOF(OF_DClickNoTurn) )
-			m_pChar->UpdateDir(pObjTarg);
-
-		if ( pObjTarg->IsChar() )
-			type = ITRIG_TARGON_CHAR;
-		else
-			type = ITRIG_TARGON_ITEM;
+		type = ITRIG_TARGON_GROUND;
+		m_Targ_UID.ClearUID();
+		if ( pt.IsValidPoint() )
+			m_pChar->UpdateDir(pt);
 	}
 
-	if ( (IsTrigUsed(CItem::sm_szTrigName[type])) || (IsTrigUsed(CChar::sm_szTrigName[(CTRIG_itemAfterClick - 1) + type])) )	//ITRIG_TARGON_GROUND, ITRIG_TARGON_CHAR, ITRIG_TARGON_ITEM
+	if ( IsTrigUsed(CItem::sm_szTrigName[type]) || IsTrigUsed(CChar::sm_szTrigName[(CTRIG_itemAfterClick - 1) + type]) )	//ITRIG_TARGON_GROUND, ITRIG_TARGON_CHAR, ITRIG_TARGON_ITEM
 	{
 		CScriptTriggerArgs Args(id, 0, pObjTarg);
 		if ( pItemUse->OnTrigger(type, m_pChar, &Args) == TRIGRET_RET_TRUE )

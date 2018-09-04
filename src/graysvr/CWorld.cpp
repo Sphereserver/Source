@@ -1138,7 +1138,7 @@ bool CWorld::SaveStage()
 	else if ( m_iSaveStage < static_cast<int>(m_SectorsQty) )
 	{
 		// Save world sectors
-		if ( IsSetEF(EF_Dynamic_Backsave) )
+		if ( IsSetEF(EF_DynamicBackgroundSave) )
 		{
 			unsigned int uComplexity = 0;
 
