@@ -1759,7 +1759,7 @@ bool CClient::OnTarg_Use_Item(CObjBase *pObjTarg, CPointMap &pt, ITEMID_TYPE id)
 				}
 				break;
 			}
-			else if ( pItemTarg )
+			else
 			{
 				switch ( m_pChar->CanTouchStatic(pt, id, pItemTarg) )
 				{
@@ -1847,6 +1847,8 @@ bool CClient::OnTarg_Use_Item(CObjBase *pObjTarg, CPointMap &pt, ITEMID_TYPE id)
 					//case IT_FOLIAGE:
 					case IT_CROPS:
 					{
+						if ( !pItemTarg )
+							return false;
 						pItemTarg->Plant_CropReset();
 						return true;
 					}

@@ -1781,10 +1781,10 @@ bool CChar::CanMove(CItem *pItem, bool fMsg) const
 	// NOT: test if need to steal. CChar::IsTakeCrime()
 	// NOT: test if close enough. CChar::CanTouch()
 
-	if ( IsPriv(PRIV_GM|PRIV_ALLMOVE|PRIV_DEBUG) )
-		return true;
 	if ( !pItem )
 		return false;
+	if ( IsPriv(PRIV_GM|PRIV_ALLMOVE|PRIV_DEBUG) )
+		return true;
 	if ( pItem->IsAttr(ATTR_MOVE_NEVER|ATTR_LOCKEDDOWN) && !pItem->IsAttr(ATTR_MOVE_ALWAYS) )
 		return false;
 
