@@ -1208,3 +1208,6 @@ Changed: When enhanced clients drop items on container grid index already in use
 04-09-2018, Coruja
 Fixed: Optional flag OF_NoDClickTurn on sphere.ini affecting target-based actions (now it will affect only DClick actions, as the name suggests).
 [sphere.ini]: Updated OptionFlags default value
+
+11-09-2018, Coruja
+Fixed: PRIVSET / ACCOUNT.PLEVEL functions not clearing previous plevel flags when plevel get decreased.

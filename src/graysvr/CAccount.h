@@ -169,6 +169,14 @@ public:
 	void SetPrivLevel(PLEVEL_TYPE plevel)
 	{
 		m_PrivLevel = plevel;
+		if ( plevel >= PLEVEL_GM )
+			SetPrivFlags(PRIV_GM|PRIV_GM_PAGE);
+		else
+		{
+			ClearPrivFlags(PRIV_GM|PRIV_GM_PAGE|PRIV_HEARALL|PRIV_ALLMOVE|PRIV_DEBUG|PRIV_PRIV_NOSHOW);
+			if ( plevel >= PLEVEL_Counsel )
+				SetPrivFlags(PRIV_GM_PAGE);
+		}
 	}
 
 	bool IsPriv(WORD wPrivFlags) const

@@ -3404,39 +3404,36 @@ bool CChar::SetPrivLevel(CTextConsole *pSrc, LPCTSTR pszFlags)
 {
 	ADDTOCALLSTACK("CChar::SetPrivLevel");
 
-	if ( !m_pPlayer || !pszFlags[0] || (pSrc->GetPrivLevel() < PLEVEL_Admin) || (pSrc->GetPrivLevel() < GetPrivLevel()) )
+	if ( !m_pPlayer || !m_pPlayer->m_pAccount || !pszFlags[0] || (pSrc->GetPrivLevel() < PLEVEL_Admin) || (pSrc->GetPrivLevel() < GetPrivLevel()) )
 		return false;
 
-	CAccount *pAccount = m_pPlayer->m_pAccount;
-	PLEVEL_TYPE PrivLevel = CAccount::GetPrivLevelText(pszFlags);
+	PLEVEL_TYPE plevel = m_pPlayer->m_pAccount->GetPrivLevelText(pszFlags);
+	m_pPlayer->m_pAccount->SetPrivLevel(plevel);
 
-	// Remove previous GM Robe
-	ContentConsume(RESOURCE_ID(RES_ITEMDEF, ITEMID_GM_ROBE), ULONG_MAX);
-
-	if ( PrivLevel >= PLEVEL_Counsel )
+	if ( plevel >= PLEVEL_Counsel )
 	{
-		pAccount->SetPrivFlags(PRIV_GM_PAGE | (PrivLevel >= PLEVEL_GM ? PRIV_GM : 0));
+		// Set GM status
 		StatFlag_Set(STATF_INVUL);
 
-		UnEquipAllItems();
-
-		CItem *pItem = CItem::CreateScript(ITEMID_GM_ROBE, this);
-		if ( pItem )
+		CItem *pRobe = ContentFind(RESOURCE_ID(RES_ITEMDEF, ITEMID_GM_ROBE));
+		if ( !pRobe )
+			pRobe = CItem::CreateScript(ITEMID_GM_ROBE, this);
+		if ( pRobe )
 		{
-			pItem->SetAttr(ATTR_MOVE_NEVER|ATTR_NEWBIE|ATTR_MAGIC);
-			pItem->SetHue(static_cast<HUE_TYPE>((PrivLevel >= PLEVEL_GM) ? HUE_RED : HUE_BLUE_NAVY));	// since sept/2014 OSI changed 'Counselor' plevel to 'Advisor', using GM Robe color 05f
-			ItemEquip(pItem);
+			pRobe->SetAttr(ATTR_NEWBIE|ATTR_MAGIC);
+			pRobe->SetHue(static_cast<HUE_TYPE>((plevel >= PLEVEL_GM) ? HUE_RED : HUE_BLUE_NAVY));	// since sept/2014 OSI changed 'Counselor' plevel to 'Advisor', using GM Robe color 05f
+			UnEquipAllItems();
+			ItemEquip(pRobe);
 		}
 	}
 	else
 	{
-		// Revoke GM status
-		pAccount->ClearPrivFlags(PRIV_GM_PAGE|PRIV_GM);
+		// Clear GM status
 		StatFlag_Clear(STATF_INVUL);
+		ContentConsume(RESOURCE_ID(RES_ITEMDEF, ITEMID_GM_ROBE));
 	}
-
-	pAccount->SetPrivLevel(PrivLevel);
 	NotoSave_Update();
+	UpdatePropertyFlag();
 	return true;
 }
 
