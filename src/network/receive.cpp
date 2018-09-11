@@ -3733,7 +3733,7 @@ bool PacketEncodedCommand::onReceive(NetState* net)
 		return false;
 
 	WORD packetLength = readInt16();
-	if (packetLength > 32)
+	if (packetLength > 33)
 		return false;
 
 	CGrayUID serial(readInt32());
@@ -4699,7 +4699,7 @@ bool PacketGlobalChatReq::onReceive(NetState *net)
 		return true;
 	}
 
-	BYTE unknown = readByte();
+	skip(1);
 	BYTE action = readByte();
 	skip(1);
 
@@ -4722,7 +4722,7 @@ bool PacketGlobalChatReq::onReceive(NetState *net)
 			client->addGlobalChatStatusToggle();
 			return true;
 		default:
-			DEBUG_ERR(("%lx:Unknown global chat action 0%lx\n", net->id(), action));
+			DEBUG_ERR(("%lx:Unknown global chat action 0%hhx\n", net->id(), action));
 			return true;
 	}
 }
