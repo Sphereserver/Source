@@ -168,107 +168,102 @@ bool CItemShip::Ship_MoveDelta(CPointBase pdelta)
 {
 	ADDTOCALLSTACK("CItemShip::Ship_MoveDelta");
 	// Move the ship one space in some direction.
-
 	ASSERT(m_pRegion->m_iLinkedSectors);
 
-	int znew = GetTopZ() + pdelta.m_z;
-	if (pdelta.m_z > 0)
-	{
-		if (znew >= (UO_SIZE_Z - PLAYER_HEIGHT) - 1)
-			return(false);
-	}
-	else if (pdelta.m_z < 0)
-	{
-		if (znew <= (UO_SIZE_MIN_Z + 3))
-			return(false);
-	}
+	signed char zNew = GetTopZ() + pdelta.m_z;
+	if ( (pdelta.m_z > 0) && (zNew >= (UO_SIZE_Z - PLAYER_HEIGHT) - 1) )
+		return false;
+	if ( (pdelta.m_z < 0) && (zNew <= (UO_SIZE_MIN_Z + 3)) )
+		return false;
 
 	// Move the ship and everything on the deck
-	CObjBase * ppObjs[MAX_MULTI_LIST_OBJS + 1];
+	CObjBase *ppObjs[MAX_MULTI_LIST_OBJS + 1];
 	size_t iCount = Ship_ListObjs(ppObjs);
 
-	for (size_t i = 0; i < iCount; i++)
+	CObjBase *pObj = NULL;
+	CPointMap pt, ptOld;
+	for ( size_t i = 0; i < iCount; ++i )
 	{
-		CObjBase * pObj = ppObjs[i];
-		if (!pObj) continue;
-		CPointMap pt = pObj->GetTopPoint();
+		pObj = ppObjs[i];
+		if ( !pObj )
+			continue;
+
+		pt = pObj->GetTopPoint();
 		pt += pdelta;
 
-		if (!pt.IsValidPoint())  // boat goes out of bounds !
+		if ( !pt.IsValidPoint() )
 		{
-			DEBUG_ERR(("Ship uid=0%lx out of bounds\n", (DWORD)GetUID()));
+			DEBUG_ERR(("Ship uid=0%lx out of bounds\n", static_cast<DWORD>(GetUID())));
 			continue;
 		}
 		pObj->MoveTo(pt);
 	}
 
+	CChar *pChar = NULL;
+	CChar *pCharSrc = NULL;
 	ClientIterator it;
-	for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
+	for ( CClient *pClient = it.next(); pClient != NULL; pClient = it.next() )
 	{
-		CChar * tMe = pClient->GetChar();
-		if (tMe == NULL)
+		pCharSrc = pClient->GetChar();
+		if ( !pCharSrc )
 			continue;
 
-		BYTE tViewDist = static_cast<unsigned char>(tMe->GetSight());
-		for (size_t i = 0; i < iCount; i++)
+		int iViewDist = pCharSrc->GetSight();
+		for ( size_t i = 0; i < iCount; ++i )
 		{
-			CObjBase *pObj = ppObjs[i];
-			if (!pObj) continue; //no object anymore? skip!
-			CPointMap pt = pObj->GetTopPoint();
-			CPointMap ptOld = pt;
+			pObj = ppObjs[i];
+			if ( !pObj )
+				continue;
+
+			pt = pObj->GetTopPoint();
+			ptOld = pt;
 			ptOld -= pdelta;
 
-			//Remove objects that just moved out of sight
-			if ((tMe->GetTopPoint().GetDistSight(pt) >= tViewDist) && (tMe->GetTopPoint().GetDistSight(ptOld) < tViewDist))
+			// Remove objects that just moved out of sight
+			if ( (pCharSrc->GetTopPoint().GetDist(pt) >= iViewDist) && (pCharSrc->GetTopPoint().GetDist(ptOld) < iViewDist) )
 			{
 				pClient->addObjectRemove(pObj);
-				continue; //no need to keep going. skip!
+				continue;
 			}
 
-			if (pClient->CanSee(pObj))
+			if ( pClient->CanSee(pObj) )
 			{
-				if (pObj == this) //This is the ship (usually the first item in the list)
+				if ( pObj == this )		// this is the ship (usually the first item in the list)
 				{
-					if (pClient->m_NetState->isClientVersion(MINCLIVER_HS) || pClient->m_NetState->isClientEnhanced())
+					if ( pClient->m_NetState->isClientVersion(MINCLIVER_HS) || pClient->m_NetState->isClientEnhanced() )
 					{
-						if (!IsSetOF(OF_NoSmoothSailing))
+						if ( !IsSetOF(OF_NoSmoothSailing) )
 						{
 							new PacketMoveShip(pClient, this, ppObjs, iCount, m_itShip.m_DirMove, m_itShip.m_DirFace, Multi_GetDef()->m_SpeedMode);
 
-							//If client is on Ship
-							if (tMe->GetRegion()->GetResourceID().GetObjUID() == GetUID())
+							if ( pCharSrc->GetRegion()->GetResourceID().GetObjUID() == GetUID() )	// if client is on ship
 							{
-								pClient->addPlayerSee(tMe->GetTopPoint());
-								break; //skip to next client
+								pClient->addPlayerSee(pCharSrc->GetTopPoint());
+								break;
 							}
 						}
-						else if (pClient->m_NetState->isClientEnhanced())
-							pClient->addObjectRemove(pObj);	//it will be added again in the if clause below
+						else if ( pClient->m_NetState->isClientEnhanced() )
+							pClient->addObjectRemove(pObj);		// it will be added again in the if clause below
 					}
 				}
-				if (pObj->IsItem())
+
+				if ( pObj->IsItem() )
 				{
-					if ((tMe->GetTopPoint().GetDistSight(pt) < tViewDist)
-						&& ( (tMe->GetTopPoint().GetDistSight(ptOld) >= tViewDist) || !(pClient->m_NetState->isClientVersion(MINCLIVER_HS) || pClient->m_NetState->isClientEnhanced()) || IsSetOF(OF_NoSmoothSailing) ))
-					{
-						CItem *pItem = static_cast<CItem *>(pObj);
-						pClient->addItem(pItem);
-					}
-						
+					if ( (pCharSrc->GetTopPoint().GetDist(pt) < iViewDist) && (IsSetOF(OF_NoSmoothSailing) || (pCharSrc->GetTopPoint().GetDist(ptOld) >= iViewDist) || !(pClient->m_NetState->isClientVersion(MINCLIVER_HS) || pClient->m_NetState->isClientEnhanced())) )
+						pClient->addItem(static_cast<CItem *>(pObj));
 				}
 				else
 				{
-					CChar *pChar = static_cast<CChar *>(pObj);
-					if (pClient == pChar->m_pClient)
-						pClient->addPlayerView( ptOld );
-					else if ((tMe->GetTopPoint().GetDistSight(pt) <= tViewDist)
-						&& ( (tMe->GetTopPoint().GetDistSight(ptOld) > tViewDist) || !(pClient->m_NetState->isClientVersion(MINCLIVER_HS) || pClient->m_NetState->isClientEnhanced()) || IsSetOF(OF_NoSmoothSailing) ))
+					pChar = static_cast<CChar *>(pObj);
+					if ( pClient == pChar->m_pClient )
+						pClient->addPlayerSee(ptOld);
+					else if ( (pCharSrc->GetTopPoint().GetDist(pt) <= iViewDist) && (IsSetOF(OF_NoSmoothSailing) || (pCharSrc->GetTopPoint().GetDist(ptOld) > iViewDist) || !(pClient->m_NetState->isClientVersion(MINCLIVER_HS) || pClient->m_NetState->isClientEnhanced())) )
 					{
-						if ( (pt.GetDist(ptOld) > 1) && (pClient->m_NetState->isClientLessVersion(MINCLIVER_HS)) && (pChar->GetTopPoint().GetDistSight(ptOld) < tViewDist) )
-							pClient->addCharMove( pChar );
+						if ( (pt.GetDist(ptOld) > 1) && (pClient->m_NetState->isClientLessVersion(MINCLIVER_HS)) && (pChar->GetTopPoint().GetDist(ptOld) < iViewDist) )
+							pClient->addCharMove(pChar);
 						else
 						{
-							pClient->addObjectRemove( pChar );
+							pClient->addObjectRemove(pChar);
 							pClient->addChar(pChar);
 						}
 					}
@@ -276,8 +271,7 @@ bool CItemShip::Ship_MoveDelta(CPointBase pdelta)
 			}
 		}
 	}
-
-	return( true );
+	return true;
 }
 
 bool CItemShip::Ship_CanMoveTo( const CPointMap & pt ) const
@@ -748,14 +742,14 @@ bool CItemShip::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fr
 	if ( !pSrc || !IsTopLevel() )
 		return false;
 
-	CChar * pChar = pSrc->GetChar();
-
-	// Only key holders can command the ship ???
-	// if ( pChar && pChar->ContentFindKeyFor( pItem ))
-
 	// Find the tiller man object.
 	CItem * pTiller = Multi_GetSign();
 	ASSERT( pTiller );
+
+	// Only key holders can command the ship ???
+	CChar *pChar = pSrc->GetChar();
+	if ( !pChar || !pChar->ContentFindKeyFor(pTiller) )
+		return false;
 
 	// Get current facing dir.
 	DIR_TYPE DirFace = sm_Ship_FaceDir[ Ship_GetFaceOffset() ];
@@ -1213,55 +1207,54 @@ bool CItemShip::r_LoadVal( CScript & s  )
 		{
 			CItemMulti *pItemMulti = static_cast<CItemMulti *>(this);
 			BYTE speed = static_cast<BYTE>(s.GetArgVal());
-			if (speed > 4)
+			if ( speed < 1 )
+				speed = 1;
+			else if ( speed > 4 )
 				speed = 4;
-			else if (speed < 1)
-				speed = 1;	//Max = 4, Min = 1.
 			pItemMulti->m_SpeedMode = speed;
 			return true;
 		}
-
 		case IMCS_SHIPSPEED:
 		{
 			pszKey += 9;
-			if (*pszKey == '.')
+			if ( *pszKey == '.' )
 			{
 				pszKey++;
 				CItemMulti *pItemMulti = static_cast<CItemMulti *>(this);
-				if (!strcmpi(pszKey, "TILES"))
+				if ( !strcmpi(pszKey, "TILES") )
 				{
 					pItemMulti->m_shipSpeed.tiles = static_cast<BYTE>(s.GetArgVal());
 					return true;
 				}
-				else if (!strcmpi(pszKey, "PERIOD"))
+				else if ( !strcmpi(pszKey, "PERIOD") )
 				{
 					pItemMulti->m_shipSpeed.period = static_cast<BYTE>(s.GetArgVal());
 					return true;
 				}
 				INT64 piVal[2];
 				size_t iQty = Str_ParseCmds(s.GetArgStr(), piVal, COUNTOF(piVal));
-				if (iQty == 2)
+				if ( iQty == 2 )
 				{
 					pItemMulti->m_shipSpeed.period = static_cast<BYTE>(piVal[0]);
 					pItemMulti->m_shipSpeed.tiles = static_cast<BYTE>(piVal[1]);
 					return true;
 				}
-				else
-					return false;
+				return false;
 			}
-		} break;
+			break;
+		}
 		case IMCS_PILOT:
 		{
-			CChar *pChar = dynamic_cast<CChar *>(static_cast<CGrayUID>(s.GetArgVal()).CharFind());
-			if (pChar)
-				m_itShip.m_Pilot = pChar->GetUID() ;
+			CChar *pChar = static_cast<CGrayUID>(s.GetArgVal()).CharFind();
+			if ( pChar )
+				m_itShip.m_Pilot = pChar->GetUID();
 			else
 			{
 				m_itShip.m_Pilot.InitUID();
 				Ship_Stop();
 			}
-			return 1;
-		} break;
+			return true;
+		}
 		default:
 			return CItemMulti::r_LoadVal(s);
 	}
