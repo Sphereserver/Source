@@ -795,7 +795,6 @@ bool CWorld::Export( LPCTSTR pszFilename, const CChar * pSrc, WORD wModeFlags, i
 		// Export as UOX format. for world forge stuff.
 		int index = 0;
 		CWorldSearch AreaItems( pSrc->GetTopPoint(), iDist );
-		AreaItems.SetSearchSquare(true);
 		for (;;)
 		{
 			CItem * pItem = AreaItems.GetItem();
@@ -810,7 +809,6 @@ bool CWorld::Export( LPCTSTR pszFilename, const CChar * pSrc, WORD wModeFlags, i
 	if ( wModeFlags & IMPFLAGS_CHARS )
 	{
 		CWorldSearch AreaChars( pSrc->GetTopPoint(), iDist );
-		AreaChars.SetSearchSquare(true);
 		AreaChars.SetAllShow( pSrc->IsPriv( PRIV_ALLSHOW ));	// show logged out chars?
 		for (;;)
 		{
@@ -834,7 +832,6 @@ bool CWorld::Export( LPCTSTR pszFilename, const CChar * pSrc, WORD wModeFlags, i
 	{
 		// Items on the ground.
 		CWorldSearch AreaItems( pSrc->GetTopPoint(), iDist );
-		AreaItems.SetSearchSquare(true);
 		AreaItems.SetAllShow( pSrc->IsPriv( PRIV_ALLSHOW ));	// show logged out chars?
 		for (;;)
 		{

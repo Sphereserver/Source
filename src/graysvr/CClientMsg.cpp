@@ -467,7 +467,6 @@ void CClient::addRemoveAll(bool fItems, bool fChars)
 	{
 		// Remove any multi objects first, or client will hang
 		CWorldSearch AreaItems(m_pChar->GetTopPoint(), UO_MAP_VIEW_RADAR);
-		AreaItems.SetSearchSquare(true);
 		for (;;)
 		{
 			CItem *pItem = AreaItems.GetItem();
@@ -480,7 +479,6 @@ void CClient::addRemoveAll(bool fItems, bool fChars)
 	{
 		CWorldSearch AreaChars(m_pChar->GetTopPoint(), m_pChar->GetSight());
 		AreaChars.SetAllShow(IsPriv(PRIV_ALLSHOW));
-		AreaChars.SetSearchSquare(true);
 		for (;;)
 		{
 			CChar *pChar = AreaChars.GetChar();
@@ -1808,7 +1806,6 @@ void CClient::addPlayerSee(const CPointMap &ptOld)
 	unsigned int iSeeMax = g_Cfg.m_iMaxItemComplexity * 30;
 
 	CWorldSearch AreaItems(m_pChar->GetTopPoint(), UO_MAP_VIEW_RADAR);
-	AreaItems.SetSearchSquare(true);
 	for (;;)
 	{
 		pItem = AreaItems.GetItem();
@@ -1855,7 +1852,6 @@ void CClient::addPlayerSee(const CPointMap &ptOld)
 
 	CWorldSearch AreaChars(m_pChar->GetTopPoint(), iViewDist);
 	AreaChars.SetAllShow(IsPriv(PRIV_ALLSHOW));
-	AreaChars.SetSearchSquare(true);
 	for (;;)
 	{
 		pChar = AreaChars.GetChar();

@@ -2702,7 +2702,6 @@ bool CChar::Death()
 			if ( g_Cfg.m_fDeadCannotSeeLiving )
 			{
 				CWorldSearch AreaChars(GetTopPoint(), GetSight());
-				AreaChars.SetSearchSquare(true);
 				for (;;)
 				{
 					CChar *pChar = AreaChars.GetChar();

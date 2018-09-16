@@ -525,7 +525,6 @@ private:
 	const CPointMap m_pt;		// base search point (center)
 	const int m_iDist;			// max distance to search
 	bool m_fAllShow;			// include inert items and disconnected chars
-	bool m_fSearchSquare;		// search using a square area (UO-sight distance) instead circle area (standard distance)
 
 	CObjBase *m_pObj;			// current object
 	CObjBase *m_pObjNext;		// next object (in case the current object get deleted)
@@ -546,10 +545,6 @@ public:
 	void SetAllShow(bool fAllShow)
 	{
 		m_fAllShow = fAllShow;
-	}
-	void SetSearchSquare(bool fSearchSquare)
-	{
-		m_fSearchSquare = fSearchSquare;
 	}
 	void RestartSearch()
 	{

@@ -2246,7 +2246,7 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 			EXC_SET("INFO");
 			if ( !pClientSrc )
 				return false;
-			return pClientSrc->addGumpDialogProps(GetUID());
+			return pClientSrc->addGumpDialogProps(this);
 		case OV_REMOVE:
 			EXC_SET("REMOVE");
 			Delete();	// remove this object now

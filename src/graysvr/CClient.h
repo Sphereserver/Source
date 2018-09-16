@@ -780,7 +780,7 @@ public:
 	void addItemMenu(CLIMODE_TYPE mode, const CMenuItem *item, size_t count, CObjBase *pObj = NULL);
 	void addGumpDialog(CLIMODE_TYPE mode, const CGString *psControls, size_t iControls, const CGString *psText, size_t iTexts, DWORD x, DWORD y, CObjBase *pObj = NULL, DWORD rid = 0);
 
-	bool addGumpDialogProps(CGrayUID uid);
+	bool addGumpDialogProps(CObjBase *pObj);
 
 	void addLoginComplete();
 	void addChatSystemMessage(CHATMSG_TYPE type, LPCTSTR pszName1 = NULL, LPCTSTR pszName2 = NULL, CLanguageID lang = 0);
@@ -898,7 +898,7 @@ public:
 	bool CanHear(const CObjBaseTemplate *pSrc, TALKMODE_TYPE mode) const;
 
 	bool Dialog_Setup(CLIMODE_TYPE mode, RESOURCE_ID_BASE rid, int iPage, CObjBase *pObj, LPCTSTR pszArgs = "");
-	bool Dialog_Close(CObjBase *pObj, DWORD rid, DWORD buttonID);
+	bool Dialog_Close(CObjBase *pObj, DWORD rid, DWORD dwButtonID);
 	void Menu_Setup(RESOURCE_ID_BASE rid, CObjBase *pObj = NULL);
 
 	int OnSkill_Info(SKILL_TYPE skill, CGrayUID uid, int iSkillLevel, bool fTest);

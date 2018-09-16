@@ -174,12 +174,7 @@ void CTimedFunctionHandler::OnTick()
 				if ( pObj )		// just in case
 				{
 					CObjBaseTemplate *pObjTop = pObj->GetTopLevelObj();
-					CTextConsole *pSrc;
-
-					if ( pObjTop->IsChar() )
-						pSrc = dynamic_cast<CTextConsole *>(pObjTop);
-					else
-						pSrc = &g_Serv;
+					CTextConsole *pSrc = pObjTop->IsChar() ? dynamic_cast<CTextConsole *>(pObjTop) : &g_Serv;
 
 					m_tFrecycled.push_back(tf);
 					if ( m_timedFunctions[iTick].size() == 1 )
@@ -446,7 +441,6 @@ void CTimedFunctionHandler::r_Write(CScript &s)
 CWorldSearch::CWorldSearch(const CPointMap &pt, int iDist) : m_pt(pt), m_iDist(iDist)
 {
 	m_fAllShow = false;
-	m_fSearchSquare = false;
 
 	m_pObj = m_pObjNext = NULL;
 	m_fInertToggle = false;
@@ -504,32 +498,8 @@ CItem *CWorldSearch::GetItem()
 
 jumpover:
 		m_pObjNext = m_pObj->GetNext();
-		if ( m_fSearchSquare )
-		{
-			if ( m_fAllShow )
-			{
-				if ( m_pt.GetDistBase(m_pObj->GetTopPoint()) <= m_iDist )
-					return static_cast<CItem *>(m_pObj);
-			}
-			else
-			{
-				if ( m_pt.GetDist(m_pObj->GetTopPoint()) <= m_iDist )
-					return static_cast<CItem *>(m_pObj);
-			}
-		}
-		else
-		{
-			if ( m_fAllShow )
-			{
-				if ( m_pt.GetDistBase(m_pObj->GetTopPoint()) <= m_iDist )
-					return static_cast<CItem *>(m_pObj);
-			}
-			else
-			{
-				if ( m_pt.GetDist(m_pObj->GetTopPoint()) <= m_iDist )
-					return static_cast<CItem *>(m_pObj);
-			}
-		}
+		if ( (m_fAllShow && (m_pt.GetDistBase(m_pObj->GetTopPoint()) <= m_iDist)) || (m_pt.GetDist(m_pObj->GetTopPoint()) <= m_iDist) )
+			return static_cast<CItem *>(m_pObj);
 	}
 }
 
@@ -562,32 +532,8 @@ CChar *CWorldSearch::GetChar()
 
 jumpover:
 		m_pObjNext = m_pObj->GetNext();
-		if ( m_fSearchSquare )
-		{
-			if ( m_fAllShow )
-			{
-				if ( m_pt.GetDistBase(m_pObj->GetTopPoint()) <= m_iDist )
-					return static_cast<CChar *>(m_pObj);
-			}
-			else
-			{
-				if ( m_pt.GetDist(m_pObj->GetTopPoint()) <= m_iDist )
-					return static_cast<CChar *>(m_pObj);
-			}
-		}
-		else
-		{
-			if ( m_fAllShow )
-			{
-				if ( m_pt.GetDistBase(m_pObj->GetTopPoint()) <= m_iDist )
-					return static_cast<CChar *>(m_pObj);
-			}
-			else
-			{
-				if ( m_pt.GetDist(m_pObj->GetTopPoint()) <= m_iDist )
-					return static_cast<CChar *>(m_pObj);
-			}
-		}
+		if ( (m_fAllShow && (m_pt.GetDistBase(m_pObj->GetTopPoint()) <= m_iDist)) || (m_pt.GetDist(m_pObj->GetTopPoint()) <= m_iDist) )
+			return static_cast<CChar *>(m_pObj);
 	}
 }
 
@@ -1756,10 +1702,7 @@ bool CWorld::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			if ( !strcmpi(pszKey, "HANDLED") )
 			{
 				CClient *pClient = pPage->FindGMHandler();
-				if ( pClient && pClient->GetChar() )
-					sVal.FormatHex(pClient->GetChar()->GetUID());
-				else
-					sVal.FormatVal(0);
+				sVal.FormatHex((pClient && pClient->GetChar()) ? pClient->GetChar()->GetUID() : 0);
 				return true;
 			}
 			else

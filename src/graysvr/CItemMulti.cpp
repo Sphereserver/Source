@@ -25,7 +25,6 @@ CItemMulti::~CItemMulti()
 		return;
 
 	CWorldSearch Area(m_pRegion->m_pt, Multi_GetMaxDist());
-	Area.SetSearchSquare(true);
 	for (;;)
 	{
 		CItem *pItem = Area.GetItem();
@@ -116,7 +115,6 @@ void CItemMulti::MultiUnRealizeRegion()
 
 	// Find all creatures in the region and remove this from them
 	CWorldSearch Area(m_pRegion->m_pt, Multi_GetMaxDist());
-	Area.SetSearchSquare(true);
 	for (;;)
 	{
 		CChar *pChar = Area.GetChar();
@@ -279,7 +277,6 @@ CItem * CItemMulti::Multi_FindItemType( IT_TYPE type ) const
 		return NULL;
 
 	CWorldSearch Area(GetTopPoint(), Multi_GetMaxDist());
-	Area.SetSearchSquare(true);
 	for (;;)
 	{
 		CItem *pItem = Area.GetItem();

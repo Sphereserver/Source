@@ -145,7 +145,6 @@ void CItemMultiCustom::BeginCustomize(CClient * pClientSrc)
 
 	// hide all dynamic items inside the house
 	CWorldSearch Area(GetTopPoint(), GetDesignArea().GetWidth()/2);
-	Area.SetSearchSquare(true);
 	for (;;)
 	{
 		CItem *pItem = Area.GetItem();
@@ -264,7 +263,6 @@ void CItemMultiCustom::CommitChanges(CClient * pClientSrc)
 
 	// remove all existing dynamic item fixtures
 	CWorldSearch Area(GetTopPoint(), GetDesignArea().GetWidth());
-	Area.SetSearchSquare(true);
 	CItem *pItem;
 	for (;;)
 	{

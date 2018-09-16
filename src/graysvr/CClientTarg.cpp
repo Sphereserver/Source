@@ -84,7 +84,7 @@ bool CClient::OnTarg_Obj_Info(CObjBase *pObj, const CPointMap &pt, ITEMID_TYPE i
 	if ( pObj )
 	{
 		SetTargMode();
-		addGumpDialogProps(pObj->GetUID());
+		addGumpDialogProps(pObj);
 	}
 	else
 	{
@@ -432,7 +432,6 @@ int CClient::Cmd_Extract(CScript *pScript, CRectMap &rect, signed char &zLowest)
 	int ry = 1 + abs(rect.m_bottom - rect.m_top) / 2;
 
 	CWorldSearch AreaItem(ptCtr, maximum(rx, ry));
-	AreaItem.SetSearchSquare(true);
 	for (;;)
 	{
 		CItem *pItem = AreaItem.GetItem();
@@ -527,7 +526,6 @@ bool CClient::OnTarg_Tile(CObjBase *pObj, const CPointMap &pt)
 
 			CWorldSearch AreaItem(ptCtr, iRadius);
 			AreaItem.SetAllShow(IsPriv(PRIV_ALLSHOW));
-			AreaItem.SetSearchSquare(true);
 			for (;;)
 			{
 				CItem *pItem = AreaItem.GetItem();
@@ -544,7 +542,6 @@ bool CClient::OnTarg_Tile(CObjBase *pObj, const CPointMap &pt)
 
 			CWorldSearch AreaChar(ptCtr, iRadius);
 			AreaChar.SetAllShow(IsPriv(PRIV_ALLSHOW));
-			AreaChar.SetSearchSquare(true);
 			for (;;)
 			{
 				CChar *pChar = AreaChar.GetChar();
@@ -565,7 +562,6 @@ bool CClient::OnTarg_Tile(CObjBase *pObj, const CPointMap &pt)
 		{
 			CWorldSearch AreaItem(ptCtr, iRadius);
 			AreaItem.SetAllShow(IsPriv(PRIV_ALLSHOW));
-			AreaItem.SetSearchSquare(true);
 			for (;;)
 			{
 				CItem *pItem = AreaItem.GetItem();
@@ -591,7 +587,6 @@ bool CClient::OnTarg_Tile(CObjBase *pObj, const CPointMap &pt)
 		{
 			CWorldSearch AreaChar(ptCtr, iRadius);
 			AreaChar.SetAllShow(IsPriv(PRIV_ALLSHOW));
-			AreaChar.SetSearchSquare(true);
 			for (;;)
 			{
 				CChar *pChar = AreaChar.GetChar();
@@ -1500,7 +1495,6 @@ CItem *CClient::OnTarg_Use_Multi(const CItemBase *pItemDef, CPointMap &pt, DWORD
 
 		// Check for chars in the way
 		CWorldSearch Area(pt, maximum(rect.GetWidth(), rect.GetHeight()));
-		Area.SetSearchSquare(true);
 		for (;;)
 		{
 			CChar *pChar = Area.GetChar();

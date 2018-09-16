@@ -634,61 +634,49 @@ void CClient::addGumpInpVal( bool fCancel, INPVAL_STYLE style, DWORD iMaxLength,
 }
 
 
-void CClient::addGumpDialog( CLIMODE_TYPE mode, const CGString * psControls, size_t iControls, const CGString * psText, size_t iTexts, DWORD x, DWORD y, CObjBase * pObj, DWORD rid )
+void CClient::addGumpDialog(CLIMODE_TYPE mode, const CGString *psControls, size_t iControls, const CGString *psText, size_t iTexts, DWORD x, DWORD y, CObjBase *pObj, DWORD rid)
 {
 	ADDTOCALLSTACK("CClient::addGumpDialog");
-	// Add a generic GUMP menu.
+	// Open generic dialog
 	// Should return a PacketGumpDialogRet::onReceive
 	// NOTE: These packets can get rather LARGE.
 	// x,y = where on the screen ?
-
 	if ( !pObj )
 		pObj = m_pChar;
 
-	DWORD context_mode = mode;
+	DWORD context = mode;
 	if ( (mode == CLIMODE_DIALOG) && (rid != 0) )
-		context_mode = (rid & 0xFFFFFF);
+		context = (rid & 0xFFFFFF);
 
-	PacketGumpDialog *cmd = new PacketGumpDialog(x, y, pObj, context_mode);
+	PacketGumpDialog *cmd = new PacketGumpDialog(x, y, pObj, context);
 	cmd->writeControls(this, psControls, iControls, psText, iTexts);
 	cmd->push(this);
 	
 	if ( m_pChar )
-		m_mapOpenedGumps[context_mode]++;
+		++m_mapOpenedGumps[context];
 }
 
-bool CClient::addGumpDialogProps( CGrayUID uid )
+bool CClient::addGumpDialogProps(CObjBase *pObj)
 {
 	ADDTOCALLSTACK("CClient::addGumpDialogProps");
-	// put up a prop dialog for the object.
-	CObjBase * pObj = uid.ObjFind();
-	if ( pObj == NULL )
-		return false;
-	if ( m_pChar == NULL )
-		return( false );
-	if ( ! m_pChar->CanTouch( pObj ))	// probably a security issue.
-		return( false );
-
-	m_Prop_UID = m_Targ_UID = uid;
-	if ( uid.IsChar() )
-		addSkillWindow(static_cast<SKILL_TYPE>(g_Cfg.m_iMaxSkill), true);
-
-	TCHAR *pszMsg = Str_GetTemp();
-	strcpy(pszMsg, pObj->IsItem() ? "d_ITEMPROP1" : "d_CHARPROP1" );
-
-	RESOURCE_ID rid = g_Cfg.ResourceGetIDType(RES_DIALOG, pszMsg);
-	if ( ! rid.IsValidUID())
+	// Open object properties dialog
+	if ( !pObj )
 		return false;
 
-	Dialog_Setup( CLIMODE_DIALOG, rid, 0, pObj );
-	return( true );
+	RESOURCE_ID rid = g_Cfg.ResourceGetIDType(RES_DIALOG, pObj->IsItem() ? "d_ITEMPROP1" : "d_CHARPROP1");
+	if ( !rid.IsValidUID() )
+		return false;
+
+	m_Prop_UID = m_Targ_UID = pObj->GetUID();
+	Dialog_Setup(CLIMODE_DIALOG, rid, 0, pObj);
+	return true;
 }
 
-TRIGRET_TYPE CClient::Dialog_OnButton( RESOURCE_ID_BASE rid, DWORD dwButtonID, CObjBase * pObj, CDialogResponseArgs * pArgs )
+TRIGRET_TYPE CClient::Dialog_OnButton(RESOURCE_ID_BASE rid, DWORD dwButtonID, CObjBase *pObj, CDialogResponseArgs *pArgs)
 {
 	ADDTOCALLSTACK("CClient::Dialog_OnButton");
-	// one of the gump dialog buttons was pressed.
-	if ( !pObj )		// object is gone ?
+	// Dialog button was pressed
+	if ( !pObj )
 		return TRIGRET_ENDIF;
 
 	CResourceLock s;
@@ -696,57 +684,55 @@ TRIGRET_TYPE CClient::Dialog_OnButton( RESOURCE_ID_BASE rid, DWORD dwButtonID, C
 		return TRIGRET_ENDIF;
 
 	INT64 piCmd[3];
-	while ( s.ReadKeyParse())
+	while ( s.ReadKeyParse() )
 	{
-		if ( ! s.IsKeyHead( "ON", 2 ))
+		if ( !s.IsKeyHead("ON", 2) )
 			continue;
 
-		size_t iArgs = Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd) );
+		size_t iArgs = Str_ParseCmds(s.GetArgStr(), piCmd, COUNTOF(piCmd));
 		if ( iArgs == 0 )
 			continue;
-
-		if ( iArgs == 1 )
+		else if ( iArgs == 1 )
 		{
-			// single button value
-			if ( (DWORD)piCmd[0] != dwButtonID )
+			// Single button value
+			if ( dwButtonID != static_cast<DWORD>(piCmd[0]) )
 				continue;
 		}
 		else
 		{
-			// range of button values
-			if ( dwButtonID < (DWORD)piCmd[0] || dwButtonID > (DWORD)piCmd[1] )
+			// Range of button values
+			if ( (dwButtonID < static_cast<DWORD>(piCmd[0])) || (dwButtonID > static_cast<DWORD>(piCmd[1])) )
 				continue;
 		}
 
-		pArgs->m_iN1	 = dwButtonID;		
-		return pObj->OnTriggerRunVal( s, TRIGRUN_SECTION_TRUE, m_pChar, pArgs );
+		pArgs->m_iN1 = dwButtonID;
+		return pObj->OnTriggerRunVal(s, TRIGRUN_SECTION_TRUE, m_pChar, pArgs);
 	}
-
-	return( TRIGRET_ENDIF );
+	return TRIGRET_ENDIF;
 }
 
-
-bool CClient::Dialog_Close( CObjBase * pObj, DWORD rid, DWORD buttonID )
+bool CClient::Dialog_Close(CObjBase *pObj, DWORD rid, DWORD dwButtonID)
 {
 	ADDTOCALLSTACK("CClient::Dialog_Close");
-	DWORD gumpContext = (rid & 0xFFFFFF);
+	// Dialog was closed
 
-	new PacketGumpChange(this, gumpContext, buttonID);
+	DWORD context = (rid & 0xFFFFFF);
+	new PacketGumpChange(this, context, dwButtonID);
 
 	if ( m_NetState->isClientVersion(MINCLIVER_CLOSEDIALOG) )
 	{
-		CChar * pSrc = dynamic_cast<CChar*>( pObj );
+		CChar *pSrc = dynamic_cast<CChar *>(pObj);
 		if ( pSrc )
 		{
-			OpenedGumpsMap_t::iterator itGumpFound = m_mapOpenedGumps.find( gumpContext );
-			if (( itGumpFound != m_mapOpenedGumps.end() ) && ( (*itGumpFound).second > 0 ))
+			OpenedGumpsMap_t::iterator itGumpFound = m_mapOpenedGumps.find(context);
+			if ( (itGumpFound != m_mapOpenedGumps.end()) && ((*itGumpFound).second > 0) )
 			{
 				PacketGumpDialogRet packet;
 				packet.writeByte(XCMD_GumpDialogRet);
 				packet.writeInt16(27);
 				packet.writeInt32(pObj->GetUID());
-				packet.writeInt32(gumpContext);
-				packet.writeInt32(buttonID);
+				packet.writeInt32(context);
+				packet.writeInt32(dwButtonID);
 				packet.writeInt32(0);
 				packet.writeInt32(0);
 				packet.writeInt32(0);
@@ -756,7 +742,6 @@ bool CClient::Dialog_Close( CObjBase * pObj, DWORD rid, DWORD buttonID )
 			}
 		}
 	}
-
 	return true;
 }
 

@@ -561,7 +561,7 @@ void CClient::Cmd_EditItem(CObjBase *pObj, int iSelect)
 	CContainer *pContainer = dynamic_cast<CContainer *>(pObj);
 	if ( !pContainer )
 	{
-		addGumpDialogProps(pObj->GetUID());
+		addGumpDialogProps(pObj);
 		return;
 	}
 
@@ -574,7 +574,7 @@ void CClient::Cmd_EditItem(CObjBase *pObj, int iSelect)
 			return;
 
 		if ( m_Targ_Text.IsEmpty() )
-			addGumpDialogProps(m_tmMenu.m_Item[iSelect]);
+			addGumpDialogProps(CGrayUID(m_tmMenu.m_Item[iSelect]).ObjFind());
 		else
 			OnTarg_Obj_Set(CGrayUID(m_tmMenu.m_Item[iSelect]).ObjFind());
 		return;
