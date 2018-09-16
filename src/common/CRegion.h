@@ -129,7 +129,7 @@ public:
 	{
 		return( m_pt.m_z );
 	}
-	unsigned char GetTopMap() const
+	BYTE GetTopMap() const
 	{
 		return( m_pt.m_map );
 	}
@@ -162,7 +162,7 @@ public:
 		ASSERT( pObj );
 		if ( pObj->IsDisconnected())
 			return( SHRT_MAX );
-		return( GetTopPoint().GetDistSight( pObj->GetTopPoint()));
+		return GetTopPoint().GetDist(pObj->GetTopPoint());
 	}
 
 	int GetDist( const CObjBaseTemplate * pObj ) const
@@ -402,10 +402,10 @@ public:
 	CPointBase GetCenter() const
 	{
 		CPointBase pt;
-		pt.m_x = static_cast<short>(( m_left + m_right ) / 2);
-		pt.m_y = static_cast<short>((m_top + m_bottom) / 2);
+		pt.m_x = static_cast<signed short>((m_left + m_right) / 2);
+		pt.m_y = static_cast<signed short>((m_top + m_bottom) / 2);
 		pt.m_z = 0;
-		pt.m_map = static_cast<unsigned char>(m_map);
+		pt.m_map = static_cast<BYTE>(m_map);
 		return( pt );
 	}
 

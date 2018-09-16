@@ -112,24 +112,6 @@ int CPointBase::GetDist( const CPointBase & pt ) const // Distance between point
 	return GetDistBase(pt);
 }
 
-int CPointBase::GetDistSightBase( const CPointBase & pt ) const // Distance between points based on UO sight
-{
-	int dx = abs(m_x - pt.m_x);
-	int dy = abs(m_y - pt.m_y);
-	return maximum(dx, dy);
-}
-
-int CPointBase::GetDistSight( const CPointBase & pt ) const // Distance between points based on UO sight
-{
-	ADDTOCALLSTACK("CPointBase::GetDistSight");
-	if ( !pt.IsValidPoint() )
-		return SHRT_MAX;
-	if ( pt.m_map != m_map )
-		return SHRT_MAX;
-
-	return GetDistSightBase(pt);
-}
-
 int CPointBase::GetDist3D( const CPointBase & pt ) const // Distance between points
 {
 	ADDTOCALLSTACK("CPointBase::GetDist3D");
@@ -192,7 +174,7 @@ void CPointBase::Set( const CPointBase & pt )
 	m_map = pt.m_map;
 }
 
-void CPointBase::Set( WORD x, WORD y, signed char z, unsigned char map )
+void CPointBase::Set(signed short x, signed short y, signed char z, BYTE map )
 {
 	m_x = x;
 	m_y = y;
@@ -368,8 +350,7 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 						break;
 					if (pMultiItem->m_visible == 0)
 						continue;
-
-					CPointMap ptTest(static_cast<WORD>(ptMulti.m_x + pMultiItem->m_dx), static_cast<WORD>(ptMulti.m_y + pMultiItem->m_dy), static_cast<signed char>(ptMulti.m_z + pMultiItem->m_dz), this->m_map);
+					CPointMap ptTest(ptMulti.m_x + pMultiItem->m_dx, ptMulti.m_y + pMultiItem->m_dy, ptMulti.m_z + static_cast<signed char>(pMultiItem->m_dz), m_map);
 					if (GetDist(ptTest) > 0)
 						continue;
 
@@ -434,7 +415,7 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 						break;
 					if (pMultiItem->m_visible == 0)
 						continue;
-					CPointMap ptTest(static_cast<WORD>(ptMulti.m_x + pMultiItem->m_dx), static_cast<WORD>(ptMulti.m_y + pMultiItem->m_dy), static_cast<signed char>(ptMulti.m_z + pMultiItem->m_dz), this->m_map);
+					CPointMap ptTest(ptMulti.m_x + pMultiItem->m_dx, ptMulti.m_y + pMultiItem->m_dy, ptMulti.m_z + static_cast<signed char>(pMultiItem->m_dz), m_map);
 					if (GetDist(ptTest) > 0)
 						continue;
 
@@ -472,7 +453,7 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 						break;
 					if (pMultiItem->m_visible == 0)
 						continue;
-					CPointMap ptTest(static_cast<WORD>(ptMulti.m_x + pMultiItem->m_dx), static_cast<WORD>(ptMulti.m_y + pMultiItem->m_dy), static_cast<signed char>(ptMulti.m_z + pMultiItem->m_dz), this->m_map);
+					CPointMap ptTest(ptMulti.m_x + pMultiItem->m_dx, ptMulti.m_y + pMultiItem->m_dy, ptMulti.m_z + static_cast<signed char>(pMultiItem->m_dz), m_map);
 					if (GetDist(ptTest) > 0)
 						continue;
 
@@ -736,8 +717,8 @@ int CPointBase::StepLinePath( const CPointBase & ptSrc, int iSteps )
 	if ( ! iDist2D )
 		return 0;
 
-	m_x = static_cast<short>(ptSrc.m_x + IMULDIV( iSteps, dx, iDist2D ));
-	m_y = static_cast<short>(ptSrc.m_y + IMULDIV( iSteps, dy, iDist2D ));
+	m_x = ptSrc.m_x + static_cast<signed short>(IMULDIV(iSteps, dx, iDist2D));
+	m_y = ptSrc.m_y + static_cast<signed short>(IMULDIV(iSteps, dy, iDist2D));
 	return( iDist2D );
 }
 
@@ -774,7 +755,7 @@ size_t CPointBase::Read( TCHAR * pszVal )
 		case 4:	// m_map
 			if ( IsDigit(ppVal[3][0]))
 			{
-				m_map = static_cast<unsigned char>(ATOI(ppVal[3]));
+				m_map = static_cast<BYTE>(ATOI(ppVal[3]));
 				if ( !g_MapList.m_maps[m_map] )
 				{
 					g_Log.EventError("Unsupported map #%hhu specified. Auto-fixing that to 0\n", m_map);
@@ -820,7 +801,7 @@ CSector * CPointBase::GetSector() const
 	return g_World.GetSector(m_map, (m_y / iSectorSize * g_MapList.GetSectorCols(m_map)) + (m_x / iSectorSize));
 }
 
-CRegionBase * CPointBase::GetRegion( DWORD dwType ) const
+CRegionBase *CPointBase::GetRegion(BYTE bType) const
 {
 	ADDTOCALLSTACK("CPointBase::GetRegion");
 	// What region in the current CSector am i in ?
@@ -831,12 +812,12 @@ CRegionBase * CPointBase::GetRegion( DWORD dwType ) const
 
 	CSector *pSector = GetSector();
 	if ( pSector )
-		return pSector->GetRegion(*this, dwType);
+		return pSector->GetRegion(*this, bType);
 
 	return NULL;
 }
 
-size_t CPointBase::GetRegions( DWORD dwType, CRegionLinks & rlinks ) const
+size_t CPointBase::GetRegions(BYTE bType, CRegionLinks &rlinks) const
 {
 	ADDTOCALLSTACK("CPointBase::GetRegions");
 	if ( !IsValidPoint() )
@@ -844,7 +825,7 @@ size_t CPointBase::GetRegions( DWORD dwType, CRegionLinks & rlinks ) const
 
 	CSector *pSector = GetSector();
 	if ( pSector )
-		return pSector->GetRegions(*this, dwType, rlinks);
+		return pSector->GetRegions(*this, bType, rlinks);
 
 	return 0;
 }

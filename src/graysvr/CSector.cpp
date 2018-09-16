@@ -4,7 +4,7 @@ int CSectorBase::m_iMapBlockCacheTime = 0;
 
 CSector::CSector()
 {
-	m_dwFlags = 0;
+	m_bFlags = 0;
 
 	m_ListenItems = 0;
 	m_fSaveParity = false;
@@ -81,7 +81,7 @@ bool CSector::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			return true;
 		}
 		case SC_FLAGS:
-			sVal.FormatHex(m_dwFlags);
+			sVal.FormatHex(m_bFlags);
 			return true;
 		case SC_ISDARK:
 			sVal.FormatVal(IsDark());
@@ -132,7 +132,7 @@ bool CSector::r_LoadVal(CScript &s)
 			SetWeatherChance(false, s.HasArgs() ? s.GetArgVal() : -1);
 			return true;
 		case SC_FLAGS:
-			m_dwFlags = s.GetArgVal();
+			m_bFlags = s.GetArgVal();
 			return true;
 		case SC_LIGHT:
 			if ( g_Cfg.m_bAllowLightOverride )
@@ -242,10 +242,10 @@ void CSector::r_Write()
 	m_fSaveParity = g_World.m_fSaveParity;
 	bool fHeaderCreated = false;
 
-	if ( m_dwFlags > 0 )
+	if ( m_bFlags > 0 )
 	{
-		g_World.m_FileWorld.WriteSection("SECTOR %d,%d,0,%d", pt.m_x, pt.m_y, pt.m_map);
-		g_World.m_FileWorld.WriteKeyHex("FLAGS", m_dwFlags);
+		g_World.m_FileWorld.WriteSection("SECTOR %hd,%hd,0,%hhu", pt.m_x, pt.m_y, pt.m_map);
+		g_World.m_FileWorld.WriteKeyHex("FLAGS", m_bFlags);
 		fHeaderCreated = true;
 	}
 
@@ -253,7 +253,7 @@ void CSector::r_Write()
 	{
 		if ( !fHeaderCreated )
 		{
-			g_World.m_FileWorld.WriteSection("SECTOR %d,%d,0,%d", pt.m_x, pt.m_y, pt.m_map);
+			g_World.m_FileWorld.WriteSection("SECTOR %hd,%hd,0,%hhu", pt.m_x, pt.m_y, pt.m_map);
 			fHeaderCreated = true;
 		}
 
@@ -264,7 +264,7 @@ void CSector::r_Write()
 	{
 		if ( !fHeaderCreated )
 		{
-			g_World.m_FileWorld.WriteSection("SECTOR %d,%d,0,%d", pt.m_x, pt.m_y, pt.m_map);
+			g_World.m_FileWorld.WriteSection("SECTOR %hd,%hd,0,%hhu", pt.m_x, pt.m_y, pt.m_map);
 			fHeaderCreated = true;
 		}
 
@@ -278,7 +278,7 @@ void CSector::r_Write()
 	if ( GetSeason() != SEASON_Summer )
 	{
 		if ( !fHeaderCreated )
-			g_World.m_FileWorld.WriteSection("SECTOR %d,%d,0,%d", pt.m_x, pt.m_y, pt.m_map);
+			g_World.m_FileWorld.WriteSection("SECTOR %hd,%hd,0,%hhu", pt.m_x, pt.m_y, pt.m_map);
 
 		g_World.m_FileWorld.WriteKeyVal("SEASON", GetSeason());
 	}

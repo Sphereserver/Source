@@ -255,11 +255,11 @@ bool CClient::OnTarg_UnExtract(CObjBase *pObj, const CPointMap &pt)
 		if ( !pItem )
 			return false;
 
-		CPointMap ptOffset(static_cast<WORD>(piCmd[0]), static_cast<WORD>(piCmd[1]), static_cast<signed char>(piCmd[2]));
+		CPointMap ptOffset(static_cast<signed short>(piCmd[0]), static_cast<signed short>(piCmd[1]), static_cast<signed char>(piCmd[2]));
 		ptOffset += pt;
 		ptOffset.m_map = pt.m_map;
 		pItem->MoveToUpdate(ptOffset);
-		iItemCount--;
+		--iItemCount;
 	}
 	return true;
 }
@@ -275,7 +275,7 @@ bool CClient::OnTarg_Char_Add(CObjBase *pObj, const CPointMap &pt)
 	if ( !pt.GetRegion(REGION_TYPE_AREA) || (pObj && pObj->IsItemInContainer()) )
 		return false;
 
-	for ( WORD i = 0; i < m_tmAdd.m_amount; i++ )
+	for ( WORD i = 0; i < m_tmAdd.m_amount; ++i )
 	{
 		CChar *pChar = CChar::CreateBasic(static_cast<CREID_TYPE>(m_tmAdd.m_id));
 		if ( !pChar )
@@ -390,11 +390,11 @@ int CClient::Cmd_Extract(CScript *pScript, CRectMap &rect, signed char &zLowest)
 	CPointMap ptCtr = rect.GetCenter();
 
 	int iCount = 0;
-	for ( int mx = rect.m_left; mx <= rect.m_right; mx++ )
+	for ( int mx = rect.m_left; mx <= rect.m_right; ++mx )
 	{
-		for ( int my = rect.m_top; my <= rect.m_bottom; my++ )
+		for ( int my = rect.m_top; my <= rect.m_bottom; ++my )
 		{
-			CPointMap ptCur(static_cast<WORD>(mx), static_cast<WORD>(my), 0, static_cast<unsigned char>(rect.m_map));
+			CPointMap ptCur(static_cast<signed short>(mx), static_cast<signed short>(my), 0, static_cast<BYTE>(rect.m_map));
 			const CGrayMapBlock *pBlock = g_World.GetMapBlock(ptCur);
 			if ( !pBlock )
 				continue;
@@ -404,13 +404,13 @@ int CClient::Cmd_Extract(CScript *pScript, CRectMap &rect, signed char &zLowest)
 
 			int x2 = pBlock->GetOffsetX(mx);
 			int y2 = pBlock->GetOffsetY(my);
-			for ( size_t i = 0; i < iQty; i++ )
+			for ( size_t i = 0; i < iQty; ++i )
 			{
 				if ( !pBlock->m_Statics.IsStaticPoint(i, x2, y2) )
 					continue;
 				const CUOStaticItemRec *pStatic = pBlock->m_Statics.GetStatic(i);
 				ASSERT(pStatic);
-				iCount++;
+				++iCount;
 				if ( pScript )
 				{
 					// This static is at the coordinates in question
@@ -442,7 +442,7 @@ int CClient::Cmd_Extract(CScript *pScript, CRectMap &rect, signed char &zLowest)
 			continue;
 
 		CPointMap pt = pItem->GetTopPoint();
-		iCount++;
+		++iCount;
 		if ( pScript )
 		{
 			// This static is at the coordinates in question.
@@ -523,7 +523,7 @@ bool CClient::OnTarg_Tile(CObjBase *pObj, const CPointMap &pt)
 			INT64 piArgs[3];		// maximum parameters in one line
 			Str_ParseCmds(szTmp, piArgs, COUNTOF(piArgs));
 
-			CPointMap ptNudge(static_cast<WORD>(piArgs[0]), static_cast<WORD>(piArgs[1]), static_cast<signed char>(piArgs[2]));
+			CPointMap ptNudge(static_cast<signed short>(piArgs[0]), static_cast<signed short>(piArgs[1]), static_cast<signed char>(piArgs[2]));
 
 			CWorldSearch AreaItem(ptCtr, iRadius);
 			AreaItem.SetAllShow(IsPriv(PRIV_ALLSHOW));
@@ -539,7 +539,7 @@ bool CClient::OnTarg_Tile(CObjBase *pObj, const CPointMap &pt)
 				CPointMap ptMove = pItem->GetTopPoint();
 				ptMove += ptNudge;
 				pItem->MoveToCheck(ptMove);
-				iCount++;
+				++iCount;
 			}
 
 			CWorldSearch AreaChar(ptCtr, iRadius);
@@ -556,7 +556,7 @@ bool CClient::OnTarg_Tile(CObjBase *pObj, const CPointMap &pt)
 				CPointMap ptMove = pChar->GetTopPoint();
 				ptMove += ptNudge;
 				pChar->MoveTo(ptMove);
-				iCount++;
+				++iCount;
 			}
 			SysMessagef("%d %s", iCount, g_Cfg.GetDefaultMsg(DEFMSG_NUDGED_OBJECTS));
 			break;
@@ -582,7 +582,7 @@ bool CClient::OnTarg_Tile(CObjBase *pObj, const CPointMap &pt)
 					if ( !pItem->r_Verb(script, this) )
 						continue;
 				}
-				iCount++;
+				++iCount;
 			}
 			SysMessagef("%d %s", iCount, g_Cfg.GetDefaultMsg(DEFMSG_NUKED_ITEMS));
 			break;
@@ -608,7 +608,7 @@ bool CClient::OnTarg_Tile(CObjBase *pObj, const CPointMap &pt)
 					if ( !pChar->r_Verb(script, this) )
 						continue;
 				}
-				iCount++;
+				++iCount;
 			}
 			SysMessagef("%d %s", iCount, g_Cfg.GetDefaultMsg(DEFMSG_NUKED_CHARS));
 			break;
@@ -623,18 +623,18 @@ bool CClient::OnTarg_Tile(CObjBase *pObj, const CPointMap &pt)
 			size_t iArg = 0;
 
 			signed char z = static_cast<signed char>(piArgs[0]);	// z height is the first arg
-			for ( int mx = rect.m_left; mx <= rect.m_right; mx++ )
+			for ( int mx = rect.m_left; mx <= rect.m_right; ++mx )
 			{
-				for ( int my = rect.m_top; my <= rect.m_bottom; my++ )
+				for ( int my = rect.m_top; my <= rect.m_bottom; ++my )
 				{
 					if ( ++iArg >= iArgQty )
 						iArg = 1;
 					CItem *pItem = CItem::CreateTemplate(static_cast<ITEMID_TYPE>(RES_GET_INDEX(piArgs[iArg])), NULL, m_pChar);
 					ASSERT(pItem);
 					pItem->SetAttr(ATTR_MOVE_NEVER);
-					CPointMap ptCur(static_cast<WORD>(mx), static_cast<WORD>(my), z, pt.m_map);
+					CPointMap ptCur(static_cast<signed short>(mx), static_cast<signed short>(my), z, pt.m_map);
 					pItem->MoveToUpdate(ptCur);
-					iCount++;
+					++iCount;
 				}
 			}
 			SysMessagef("%d %s", iCount, g_Cfg.GetDefaultMsg(DEFMSG_TILED_ITEMS));
@@ -1435,7 +1435,7 @@ CItem *CClient::OnTarg_Use_Multi(const CItemBase *pItemDef, CPointMap &pt, DWORD
 	if ( pMultiDef && !(dwAttr & ATTR_MAGIC) )
 	{
 		if ( CItemBase::IsID_Multi(pItemDef->GetID()) )
-			pt.m_y -= static_cast<short>(pMultiDef->m_rect.m_bottom) - 1;
+			pt.m_y -= static_cast<signed short>(pMultiDef->m_rect.m_bottom) - 1;
 
 		// Check region and bumpy terrain
 		CGRect rect = pMultiDef->m_rect;
@@ -1446,11 +1446,11 @@ CItem *CClient::OnTarg_Use_Multi(const CItemBase *pItemDef, CPointMap &pt, DWORD
 		int x = rect.m_left;
 		for ( ; x < rect.m_right; ++x )
 		{
-			ptn.m_x = static_cast<short>(x);
+			ptn.m_x = static_cast<signed short>(x);
 			int y = rect.m_top;
 			for ( ; y < rect.m_bottom; ++y )
 			{
-				ptn.m_y = static_cast<short>(y);
+				ptn.m_y = static_cast<signed short>(y);
 
 				if ( !ptn.IsValidPoint() )
 				{

@@ -1119,7 +1119,7 @@ void CChar::Update(bool fFull, CClient *pClientExclude)
 			continue;
 		if ( !pClient->GetChar() )
 			continue;
-		if ( GetTopPoint().GetDistSight(pClient->GetChar()->GetTopPoint()) > pClient->GetChar()->GetSight() )
+		if ( GetTopPoint().GetDist(pClient->GetChar()->GetTopPoint()) > pClient->GetChar()->GetSight() )
 			continue;
 		if ( !pClient->CanSee(this) )
 		{
@@ -1166,7 +1166,7 @@ void CChar::UpdateMove(const CPointMap &ptOld, CClient *pExcludeClient)
 		if ( !pChar )
 			continue;
 
-		bool fCouldSee = (ptOld.GetDistSight(pChar->GetTopPoint()) <= pChar->GetSight());
+		bool fCouldSee = (ptOld.GetDist(pChar->GetTopPoint()) <= pChar->GetSight());
 		EXC_SET("CanSee");
 		if ( !pClient->CanSee(this) )
 		{
@@ -2568,7 +2568,7 @@ bool CChar::Death()
 	TCHAR *pszKillStr = Str_GetTemp();
 	int iKillStrLen = sprintf(pszKillStr, g_Cfg.GetDefaultMsg(DEFMSG_MSG_KILLED_BY), m_pPlayer ? 'P' : 'N', GetNameWithoutIncognito());
 
-	for ( size_t i = 0; i < m_lastAttackers.size(); i++ )
+	for ( size_t i = 0; i < m_lastAttackers.size(); ++i )
 	{
 		LastAttackers &refAttacker = m_lastAttackers.at(i);
 		pKiller = static_cast<CGrayUID>(refAttacker.charUID).CharFind();

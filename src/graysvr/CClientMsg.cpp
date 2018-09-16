@@ -3,10 +3,10 @@
 
 // Simple string hashing algorithm function (by D. J. Bernstein)
 // Original code found at: http://www.cse.yorku.ca/~oz/hash.html
-unsigned long HashString(LPCTSTR str, size_t length)
+DWORD HashString(LPCTSTR str, size_t length)
 {
-	unsigned long hash = 5381;
-	for ( size_t i = 0; i < length; i++ )
+	DWORD hash = 5381;
+	for ( size_t i = 0; i < length; ++i )
 		hash = ((hash << 5) + hash) + *str++;
 
 	return hash;
@@ -527,7 +527,7 @@ void CClient::addItem_OnGround(CItem *pItem)
 	addAOSTooltip(pItem);
 
 	// Send house design version
-	if ( pItem->IsType(IT_MULTI_CUSTOM) && (m_pChar->GetTopPoint().GetDistSight(pItem->GetTopPoint()) <= m_pChar->GetSight()) )
+	if ( pItem->IsType(IT_MULTI_CUSTOM) && (m_pChar->GetTopPoint().GetDist(pItem->GetTopPoint()) <= m_pChar->GetSight()) )
 	{
 		CItemMultiCustom *pItemMulti = dynamic_cast<CItemMultiCustom *>(pItem);
 		if ( pItemMulti )
@@ -1815,7 +1815,7 @@ void CClient::addPlayerSee(const CPointMap &ptOld)
 		if ( !pItem )
 			break;
 
-		iOldDist = ptOld.GetDistSight(pItem->GetTopPoint());
+		iOldDist = ptOld.GetDist(pItem->GetTopPoint());
 		if ( (iOldDist > UO_MAP_VIEW_RADAR) && pItem->IsTypeMulti() )		// incoming multi on radar view
 		{
 			addItem_OnGround(pItem);
@@ -1827,8 +1827,8 @@ void CClient::addPlayerSee(const CPointMap &ptOld)
 
 		if ( fOSIMultiSight )
 		{
-			if ( (((ptOld.GetRegion(REGION_TYPE_HOUSE) != pCurrentCharRegion) || (ptOld.GetDistSight(pItem->GetTopPoint()) > iViewDist)) && (pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_HOUSE) == pCurrentCharRegion))		// item is in same house as me
-				|| (((ptOld.GetDistSight(pItem->GetTopPoint()) > iViewDist) && (m_pChar->GetTopPoint().GetDistSight(pItem->GetTopPoint()) <= iViewDist))	// item just came into view
+			if ( (((ptOld.GetRegion(REGION_TYPE_HOUSE) != pCurrentCharRegion) || (ptOld.GetDist(pItem->GetTopPoint()) > iViewDist)) && (pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_HOUSE) == pCurrentCharRegion))		// item is in same house as me
+				|| (((ptOld.GetDist(pItem->GetTopPoint()) > iViewDist) && (m_pChar->GetTopPoint().GetDist(pItem->GetTopPoint()) <= iViewDist))	// item just came into view
 					&& (!pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_HOUSE)		// item is not in a house (ships are ok)
 						|| (pItem->m_uidLink.IsValidUID() && pItem->m_uidLink.IsItem() && pItem->m_uidLink.ItemFind()->IsTypeMulti())		// item is linked to a multi
 						|| pItem->IsTypeMulti()		// item is an multi
@@ -1840,7 +1840,7 @@ void CClient::addPlayerSee(const CPointMap &ptOld)
 		}
 		else
 		{
-			if ( (iOldDist > iViewDist) && (m_pChar->GetTopPoint().GetDistSight(pItem->GetTopPoint()) <= iViewDist) )		// item just came into view
+			if ( (iOldDist > iViewDist) && (m_pChar->GetTopPoint().GetDist(pItem->GetTopPoint()) <= iViewDist) )		// item just came into view
 			{
 				++iSeeCurrent;
 				addItem_OnGround(pItem);
@@ -1864,7 +1864,7 @@ void CClient::addPlayerSee(const CPointMap &ptOld)
 		if ( (m_pChar == pChar) || !CanSee(pChar) )
 			continue;
 
-		if ( ptOld.GetDistSight(pChar->GetTopPoint()) > iViewDist )
+		if ( ptOld.GetDist(pChar->GetTopPoint()) > iViewDist )
 		{
 			++iSeeCurrent;
 			addChar(pChar);
@@ -2411,7 +2411,7 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 
 	// Don't send tooltips for objects out of LOS
 	const CObjBaseTemplate *pObjTop = pObj->GetTopLevelObj();
-	if ( !pObjTop || (m_pChar->GetTopPoint().GetDistSight(pObjTop->GetTopPoint()) > m_pChar->GetSight() + 1) )
+	if ( !pObjTop || (m_pChar->GetTopPoint().GetDist(pObjTop->GetTopPoint()) > m_pChar->GetSight() + 1) )
 		return;
 
 	// Don't send tooltips for static items

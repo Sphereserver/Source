@@ -2649,9 +2649,9 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 					{
 						default:
 						case 2:
-							pt.m_y = static_cast<short>(ATOI(ppVal[1]));
+							pt.m_y = static_cast<signed short>(ATOI(ppVal[1]));
 						case 1:
-							pt.m_x = static_cast<short>(ATOI(ppVal[0]));
+							pt.m_x = static_cast<signed short>(ATOI(ppVal[0]));
 						case 0:
 							break;
 					}
@@ -2764,11 +2764,11 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 								pt.m_map = static_cast<BYTE>(ATOI(ppVal[3]));
 						case 3:
 							if ( IsDigit(ppVal[2][0]) || (ppVal[2][0] == '-') )
-								pt.m_z = static_cast<char>(ATOI(ppVal[2]));
+								pt.m_z = static_cast<signed char>(ATOI(ppVal[2]));
 						case 2:
-							pt.m_y = static_cast<short>(ATOI(ppVal[1]));
+							pt.m_y = static_cast<signed short>(ATOI(ppVal[1]));
 						case 1:
-							pt.m_x = static_cast<short>(ATOI(ppVal[0]));
+							pt.m_x = static_cast<signed short>(ATOI(ppVal[0]));
 						case 0:
 							break;
 					}
@@ -2783,13 +2783,13 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 			}
 			break;
 		case IC_MOREX:
-			m_itNormal.m_morep.m_x = static_cast<short>(s.GetArgVal());
+			m_itNormal.m_morep.m_x = static_cast<signed short>(s.GetArgVal());
 			return true;
 		case IC_MOREY:
-			m_itNormal.m_morep.m_y = static_cast<short>(s.GetArgVal());
+			m_itNormal.m_morep.m_y = static_cast<signed short>(s.GetArgVal());
 			break;
 		case IC_MOREZ:
-			m_itNormal.m_morep.m_z = static_cast<char>(s.GetArgVal());
+			m_itNormal.m_morep.m_z = static_cast<signed char>(s.GetArgVal());
 			break;
 		case IC_P:
 			// Loading or import ONLY ! others use the r_Verb
@@ -3706,12 +3706,12 @@ bool CItem::Use_DoorNew( bool bJustOpen )
 			return Use_Door(bJustOpen);
 	}
 
-	short sDifX = m_itNormal.m_morep.m_x;
+	signed short sDifX = m_itNormal.m_morep.m_x;
 	if ( !sDifX )
-		sDifX = static_cast<short>(pItemDef->m_ttDoor.m_iXChange);
-	short sDifY = m_itNormal.m_morep.m_y;
+		sDifX = static_cast<signed short>(pItemDef->m_ttDoor.m_iXChange);
+	signed short sDifY = m_itNormal.m_morep.m_y;
 	if ( !sDifY )
-		sDifY = static_cast<short>(pItemDef->m_ttDoor.m_iYChange);
+		sDifY = static_cast<signed short>(pItemDef->m_ttDoor.m_iYChange);
 
 	CPointMap pt = GetTopPoint();
 	SOUND_TYPE iSnd;
@@ -4169,7 +4169,7 @@ LPCTSTR CItem::Use_SpyGlass( CChar * pUser ) const
 	double rWeatherSight = wtWeather == WEATHER_RAIN ? (0.25 * BASE_SIGHT) : 0.0;
 	// Light level bonus
 	double rLightSight = (1.0 - (static_cast<double>(iLight) / 25.0)) * BASE_SIGHT * 0.25;
-	int iVisibility = (int) (BASE_SIGHT + rWeatherSight + rLightSight);
+	signed short iVisibility = static_cast<signed short>(BASE_SIGHT + rWeatherSight + rLightSight);
 
 	// Check for the nearest land, only check every 4th square for speed
 	const CUOMapMeter * pMeter = g_World.GetMapMeter( ptCoords ); // Are we at sea?
@@ -4187,11 +4187,11 @@ LPCTSTR CItem::Use_SpyGlass( CChar * pUser ) const
 		{
 			// Look for land if at sea
 			CPointMap ptLand;
-			for (int x = ptCoords.m_x - iVisibility; x <= (ptCoords.m_x + iVisibility); x += 2)
+			for ( signed short x = ptCoords.m_x - iVisibility; x <= (ptCoords.m_x + iVisibility); x += 2)
 			{
-				for (int y = ptCoords.m_y - iVisibility; y <= (ptCoords.m_y + iVisibility); y += 2)
+				for ( signed short y = ptCoords.m_y - iVisibility; y <= (ptCoords.m_y + iVisibility); y += 2)
 				{
-					CPointMap ptCur(static_cast<WORD>(x), static_cast<WORD>(y), ptCoords.m_z);
+					CPointMap ptCur(x, y, ptCoords.m_z);
 					pMeter = g_World.GetMapMeter( ptCur );
 					if ( pMeter == NULL )
 						continue;

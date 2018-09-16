@@ -108,15 +108,15 @@ protected:
 
 	std::deque<CPointMap> m_LastPath;
 
-	int m_RealX;
-	int m_RealY;
+	signed short m_RealX;
+	signed short m_RealY;
 
 	CChar *m_pChar;
 	CPointMap m_Target;
 
 protected:
 	void Clear();
-	unsigned long Heuristic(CPathFinderPointRef& Pt1,CPathFinderPointRef& Pt2);
+	int Heuristic(CPathFinderPointRef &pt1, CPathFinderPointRef &pt2);
 	void GetChildren(CPathFinderPointRef& Point, std::list<CPathFinderPointRef>& ChildrenRefList );
 	void FillMap();	// prepares map with walkable statuses
 };

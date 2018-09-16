@@ -1172,13 +1172,13 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 
 			if ( pClient )
 			{
-				RESOURCE_ID rid = g_Cfg.ResourceGetIDType(RES_DIALOG, pszKey);
-				int context = static_cast<DWORD>(rid) & 0xFFFFFF;
+				DWORD context = static_cast<DWORD>(g_Cfg.ResourceGetIDType(RES_DIALOG, pszKey));
 				if ( pClient->m_NetState->isClientKR() )
 					context = g_Cfg.GetKRDialog(context);
+				context &= 0xFFFFFF;
 
-				CClient::OpenedGumpsMap_t::iterator itGumpFound = pClient->m_mapOpenedGumps.find(context);
-				sVal.FormatVal((itGumpFound != pClient->m_mapOpenedGumps.end())? (*itGumpFound).second : 0);
+				CClient::OpenedGumpsMap_t::iterator itGumpFound = pClient->m_mapOpenedGumps.find(static_cast<int>(context));
+				sVal.FormatVal((itGumpFound != pClient->m_mapOpenedGumps.end()) ? (*itGumpFound).second : 0);
 			}
 			else
 				sVal.FormatVal(0);
@@ -1976,17 +1976,17 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 			if ( pChar )
 				pChar->OnTakeDamage(static_cast<int>(piCmd[0]),
 					pCharSrc,
-					(iArgQty >= 1) ? static_cast<DAMAGE_TYPE>(piCmd[1]) : DAMAGE_HIT_BLUNT|DAMAGE_GENERAL,
-					(iArgQty >= 3) ? static_cast<int>(piCmd[3]) : 0,		// physical damage %
-					(iArgQty >= 4) ? static_cast<int>(piCmd[4]) : 0,		// fire damage %
-					(iArgQty >= 5) ? static_cast<int>(piCmd[5]) : 0,		// cold damage %
-					(iArgQty >= 6) ? static_cast<int>(piCmd[6]) : 0,		// poison damage %
-					(iArgQty >= 7) ? static_cast<int>(piCmd[7]) : 0			// energy damage %
+					(iArgQty >= 2) ? static_cast<DAMAGE_TYPE>(piCmd[1]) : DAMAGE_HIT_BLUNT|DAMAGE_GENERAL,
+					(iArgQty >= 4) ? static_cast<int>(piCmd[3]) : 0,		// physical damage %
+					(iArgQty >= 5) ? static_cast<int>(piCmd[4]) : 0,		// fire damage %
+					(iArgQty >= 6) ? static_cast<int>(piCmd[5]) : 0,		// cold damage %
+					(iArgQty >= 7) ? static_cast<int>(piCmd[6]) : 0,		// poison damage %
+					(iArgQty >= 8) ? static_cast<int>(piCmd[7]) : 0			// energy damage %
 				);
 			else if ( pItem )
 				pItem->OnTakeDamage(static_cast<int>(piCmd[0]),
 					pCharSrc,
-					(iArgQty >= 1) ? static_cast<DAMAGE_TYPE>(piCmd[1]) : DAMAGE_HIT_BLUNT|DAMAGE_GENERAL
+					(iArgQty >= 2) ? static_cast<DAMAGE_TYPE>(piCmd[1]) : DAMAGE_HIT_BLUNT|DAMAGE_GENERAL
 				);
 			break;
 		}
@@ -2042,8 +2042,8 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 			Effect(
 				static_cast<EFFECT_TYPE>(piCmd[8]),						// Motion
 				static_cast<ITEMID_TYPE>(RES_GET_INDEX(piCmd[9])),		// ID
-				CPointMap(static_cast<WORD>(piCmd[0]), static_cast<WORD>(piCmd[1]), static_cast<signed char>(piCmd[2]), static_cast<unsigned char>(piCmd[3])),	// Source P
-				CPointMap(static_cast<WORD>(piCmd[4]), static_cast<WORD>(piCmd[5]), static_cast<signed char>(piCmd[6]), static_cast<unsigned char>(piCmd[7])),	// Dest P
+				CPointMap(static_cast<signed short>(piCmd[0]), static_cast<signed short>(piCmd[1]), static_cast<signed char>(piCmd[2]), static_cast<BYTE>(piCmd[3])),	// Source P
+				CPointMap(static_cast<signed short>(piCmd[4]), static_cast<signed short>(piCmd[5]), static_cast<signed char>(piCmd[6]), static_cast<BYTE>(piCmd[7])),	// Dest P
 				(iArgQty >= 11) ? static_cast<BYTE>(piCmd[10]) : 0,		// Speed
 				(iArgQty >= 12) ? static_cast<BYTE>(piCmd[11]) : 0,		// Frames
 				(iArgQty >= 13) ? (piCmd[12] != 0) : false,				// Explode
@@ -2274,7 +2274,7 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 			EXC_SET("SAYU");
 			SpeakUTF8(s.GetArgStr(), HUE_TEXT_DEF, TALKMODE_SAY, FONT_NORMAL);
 			break;
-		case OV_SAYUA:		// this can have full args. SAYUA Color, Mode, Font, Lang, Text Text
+		case OV_SAYUA:		// this can have full args. SAYUA Color, Mode, Font, Lang, Text
 		{
 			EXC_SET("SAYUA");
 			TCHAR *ppArgs[5];
@@ -2459,15 +2459,12 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 
 			if ( index == OV_SDIALOG )
 			{
-				RESOURCE_ID rid = g_Cfg.ResourceGetIDType(RES_DIALOG, ppArgs[0]);
-				int context;
-
+				DWORD context = static_cast<DWORD>(g_Cfg.ResourceGetIDType(RES_DIALOG, ppArgs[0]));
 				if ( pClientSrc->m_NetState->isClientKR() )
-					context = g_Cfg.GetKRDialog(static_cast<DWORD>(rid)) & 0x00FFFFFF;
-				else
-					context = static_cast<DWORD>(rid) & 0x00FFFFFF;
+					context = g_Cfg.GetKRDialog(context);
+				context &= 0xFFFFFF;
 
-				CClient::OpenedGumpsMap_t::iterator itGumpFound = pClientSrc->m_mapOpenedGumps.find(context);
+				CClient::OpenedGumpsMap_t::iterator itGumpFound = pClientSrc->m_mapOpenedGumps.find(static_cast<int>(context));
 				if ( pCharSrc && (itGumpFound != pClientSrc->m_mapOpenedGumps.end()) && ((*itGumpFound).second > 0) )
 					break;
 			}
@@ -2485,11 +2482,11 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 			if ( iArgQty < 1 )
 				return false;
 
-			DWORD rid = g_Cfg.ResourceGetIDType(RES_DIALOG, ppArgs[0]);
+			DWORD context = static_cast<DWORD>(g_Cfg.ResourceGetIDType(RES_DIALOG, ppArgs[0]));
 			if ( pClientSrc->m_NetState->isClientKR() )
-				rid = g_Cfg.GetKRDialog(rid);
+				context = g_Cfg.GetKRDialog(context);
 
-			pClientSrc->Dialog_Close(this, rid, (iArgQty > 1) ? Exp_GetVal(ppArgs[1]) : 0);
+			pClientSrc->Dialog_Close(this, context, (iArgQty > 1) ? Exp_GetVal(ppArgs[1]) : 0);
 			break;
 		}
 		case OV_TRYP:
@@ -2577,6 +2574,10 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 			if ( pSrc )
 				pSrc->SysMessage("Setting the UID this way is not allowed");
 			return false;
+		case OV_UPDATEX:
+			EXC_SET("UPDATEX");
+			RemoveFromView();
+			// no break here, UPDATEX just remove the object from view before update it
 		case OV_UPDATE:
 		{
 			EXC_SET("UPDATE");
@@ -2590,12 +2591,6 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 			Update(true, pClientExclude);
 			break;
 		}
-		case OV_UPDATEX:
-			EXC_SET("UPDATEX");
-			// Some things like equipped items need to be removed before they can be updated !
-			RemoveFromView();
-			Update();
-			break;
 		case OV_CLICK:
 		{
 			EXC_SET("CLICK");

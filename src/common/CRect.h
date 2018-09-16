@@ -58,8 +58,6 @@ public:
 	int GetDistZAdj( const CPointBase & pt ) const;
 	int GetDistBase( const CPointBase & pt ) const; // Distance between points
 	int GetDist( const CPointBase & pt ) const; // Distance between points
-	int GetDistSightBase( const CPointBase & pt ) const; // Distance between points based on UO sight
-	int GetDistSight( const CPointBase & pt ) const; // Distance between points based on UO sight
 	int GetDist3D( const CPointBase & pt ) const; // 3D Distance between points
 
 	bool IsValidXY() const;
@@ -71,7 +69,7 @@ public:
 	bool IsSame2D( const CPointBase & pt ) const;
 
 	void Set( const CPointBase & pt );
-	void Set( WORD x, WORD y, signed char z = 0, unsigned char map = 0 );
+	void Set(signed short x, signed short y, signed char z = 0, BYTE map = 0);
 	size_t Read( TCHAR * pVal );
 
 	TCHAR * WriteUsed( TCHAR * pszBuffer ) const;
@@ -92,8 +90,8 @@ public:
 #define REGION_TYPE_HOUSE 4
 #define REGION_TYPE_SHIP  8
 #define REGION_TYPE_MULTI 12
-	CRegionBase * GetRegion( DWORD dwType ) const;
-	size_t GetRegions( DWORD dwType, CRegionLinks & rlinks ) const;
+	CRegionBase *GetRegion(BYTE bType) const;
+	size_t GetRegions(BYTE bType, CRegionLinks &rlinks) const;
 
 	long GetPointSortIndex() const
 	{
@@ -111,7 +109,7 @@ struct CPointMap : public CPointBase
 	{
 		InitPoint();
 	}
-	CPointMap( WORD x, WORD y, signed char z = 0, unsigned char map = 0 )
+	CPointMap(signed short x, signed short y, signed char z = 0, BYTE map = 0)
 	{
 		m_x = x;
 		m_y = y;
@@ -139,7 +137,7 @@ struct CPointSort : public CPointMap
 	{
 		InitPoint();
 	}
-	CPointSort( WORD x, WORD y, signed char z = 0, unsigned char map = 0 )
+	CPointSort(signed short x, signed short y, signed char z = 0, BYTE map = 0)
 	{
 		m_x = x;
 		m_y = y;

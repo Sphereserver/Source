@@ -338,10 +338,10 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 	// Check that we can fit into this space.
 	CPointMap ptTmp;
 	ptTmp.m_z = GetTopPoint().m_z;
-	ptTmp.m_map = static_cast<unsigned char>(rect.m_map);
-	for (ptTmp.m_x = static_cast<short>(rect.m_left); ptTmp.m_x < static_cast<short>(rect.m_right); ptTmp.m_x++)
+	ptTmp.m_map = static_cast<BYTE>(rect.m_map);
+	for (ptTmp.m_x = static_cast<signed short>(rect.m_left); ptTmp.m_x < static_cast<signed short>(rect.m_right); ptTmp.m_x++)
 	{
-		for (ptTmp.m_y = static_cast<short>(rect.m_top); ptTmp.m_y < static_cast<short>(rect.m_bottom); ptTmp.m_y++)
+		for (ptTmp.m_y = static_cast<signed short>(rect.m_top); ptTmp.m_y < static_cast<signed short>(rect.m_bottom); ptTmp.m_y++)
 		{
 			if (m_pRegion->IsInside2d(ptTmp))
 				continue;
@@ -396,8 +396,8 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 				yd = -ydiff;
 				break;
 		}
-		pt.m_x = static_cast<short>(GetTopPoint().m_x + xd);
-		pt.m_y = static_cast<short>(GetTopPoint().m_y + yd);
+		pt.m_x = static_cast<signed short>(GetTopPoint().m_x + xd);
+		pt.m_y = static_cast<signed short>(GetTopPoint().m_y + yd);
 		if ( pObj->IsItem() )
 		{
 			pItem = static_cast<CItem *>(pObj);
@@ -451,7 +451,7 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 		pObj->Update();
 	}
 
-	m_itShip.m_DirFace = static_cast<unsigned char>(dir);
+	m_itShip.m_DirFace = static_cast<BYTE>(dir);
 	return true;
 }
 
@@ -516,9 +516,9 @@ bool CItemShip::Ship_Move( DIR_TYPE dir, int distance )
 			case DIR_NE:
 			case DIR_NW:
 				ptTest.m_y = ptFore.m_y; // align y coordinate
-				for (int x = ptLeft.m_x; x <= ptRight.m_x; x++)
+				for ( signed short x = ptLeft.m_x; x <= ptRight.m_x; ++x )
 				{
-					ptTest.m_x = static_cast<short>(x);
+					ptTest.m_x = x;
 					SPAWNSHIPTRACK(ptTest, 0x40)
 					if (Ship_CanMoveTo(ptTest) == false)
 					{
@@ -532,9 +532,9 @@ bool CItemShip::Ship_Move( DIR_TYPE dir, int distance )
 			case DIR_SE:
 			case DIR_SW:
 				ptTest.m_y = ptFore.m_y;
-				for (int x = ptRight.m_x; x <= ptLeft.m_x; x++)
+				for ( signed short x = ptRight.m_x; x <= ptLeft.m_x; ++x )
 				{
-					ptTest.m_x = static_cast<short>(x);
+					ptTest.m_x = x;
 					SPAWNSHIPTRACK(ptTest, 0x40)
 					if (Ship_CanMoveTo(ptTest) == false)
 					{
@@ -555,10 +555,10 @@ bool CItemShip::Ship_Move( DIR_TYPE dir, int distance )
 			case DIR_NE:
 			case DIR_SE:
 				ptTest.m_x = ptFore.m_x; // align x coordinate
-				for (int y = ptLeft.m_y; y <= ptRight.m_y; y++)
+				for ( signed short y = ptLeft.m_y; y <= ptRight.m_y; ++y )
 				{
-					ptTest.m_y = static_cast<short>(y);
-					SPAWNSHIPTRACK(ptTest, 0xe0)
+					ptTest.m_y = y;
+					SPAWNSHIPTRACK(ptTest, 0xE0)
 					if (Ship_CanMoveTo(ptTest) == false)
 					{
 						bStopped = true;
@@ -571,10 +571,10 @@ bool CItemShip::Ship_Move( DIR_TYPE dir, int distance )
 			case DIR_NW:
 			case DIR_SW:
 				ptTest.m_x = ptFore.m_x;
-				for (int y = ptRight.m_y; y <= ptLeft.m_y; y++)
+				for (int y = ptRight.m_y; y <= ptLeft.m_y; ++y )
 				{
-					ptTest.m_y = static_cast<short>(y);
-					SPAWNSHIPTRACK(ptTest, 0xe0)
+					ptTest.m_y = y;
+					SPAWNSHIPTRACK(ptTest, 0xE0)
 					if (Ship_CanMoveTo(ptTest) == false)
 					{
 						bStopped = true;
@@ -819,10 +819,10 @@ anchored:
 				break;
 			}
 			DIR_TYPE DirMove = static_cast<DIR_TYPE>(m_itShip.m_DirMove);
-			m_itShip.m_DirMove = static_cast<unsigned char>(GetDirTurn(DirFace, DirMoveChange));
+			m_itShip.m_DirMove = static_cast<BYTE>(GetDirTurn(DirFace, DirMoveChange));
 			if (! Ship_Face(static_cast<DIR_TYPE>(m_itShip.m_DirMove)) )
 			{
-				m_itShip.m_DirMove = static_cast<unsigned char>(DirMove);
+				m_itShip.m_DirMove = static_cast<BYTE>(DirMove);
 				return false;
 			}
 			break;
@@ -1230,20 +1230,20 @@ bool CItemShip::r_LoadVal( CScript & s  )
 				CItemMulti *pItemMulti = static_cast<CItemMulti *>(this);
 				if (!strcmpi(pszKey, "TILES"))
 				{
-					pItemMulti->m_shipSpeed.tiles = static_cast<unsigned char>(s.GetArgVal());
+					pItemMulti->m_shipSpeed.tiles = static_cast<BYTE>(s.GetArgVal());
 					return true;
 				}
 				else if (!strcmpi(pszKey, "PERIOD"))
 				{
-					pItemMulti->m_shipSpeed.period = static_cast<unsigned char>(s.GetArgVal());
+					pItemMulti->m_shipSpeed.period = static_cast<BYTE>(s.GetArgVal());
 					return true;
 				}
 				INT64 piVal[2];
 				size_t iQty = Str_ParseCmds(s.GetArgStr(), piVal, COUNTOF(piVal));
 				if (iQty == 2)
 				{
-					pItemMulti->m_shipSpeed.period = static_cast<unsigned char>(piVal[0]);
-					pItemMulti->m_shipSpeed.tiles = static_cast<unsigned char>(piVal[1]);
+					pItemMulti->m_shipSpeed.period = static_cast<BYTE>(piVal[0]);
+					pItemMulti->m_shipSpeed.tiles = static_cast<BYTE>(piVal[1]);
 					return true;
 				}
 				else

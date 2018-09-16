@@ -81,7 +81,7 @@ CSectorBase::CSectorBase()
 {
 	m_map = 0;
 	m_index = 0;
-	m_dwFlags = 0;
+	m_bFlags = 0;
 }
 
 CSectorBase::~CSectorBase()
@@ -219,7 +219,7 @@ bool CSectorBase::IsInDungeon() const
 	return (pRegion && pRegion->IsFlag(REGION_FLAG_UNDERGROUND));
 }
 
-CRegionBase *CSectorBase::GetRegion(const CPointBase &pt, DWORD dwType) const
+CRegionBase *CSectorBase::GetRegion(const CPointBase &pt, BYTE bType) const
 {
 	ADDTOCALLSTACK("CSectorBase::GetRegion");
 	// Does it match the mask of types we care about?
@@ -241,20 +241,20 @@ CRegionBase *CSectorBase::GetRegion(const CPointBase &pt, DWORD dwType) const
 			CItemShip *pShipItem = dynamic_cast<CItemShip *>(pRegion->GetResourceID().ItemFind());
 			if ( pShipItem )
 			{
-				if ( !(dwType & REGION_TYPE_SHIP) )
+				if ( !(bType & REGION_TYPE_SHIP) )
 					continue;
 			}
-			else if ( !(dwType & REGION_TYPE_HOUSE) )
+			else if ( !(bType & REGION_TYPE_HOUSE) )
 				continue;
 		}
 		else if ( pRegion->GetResourceID().GetResType() == RES_AREA )
 		{
-			if ( !(dwType & REGION_TYPE_AREA) )
+			if ( !(bType & REGION_TYPE_AREA) )
 				continue;
 		}
 		else
 		{
-			if ( !(dwType & REGION_TYPE_ROOM) )
+			if ( !(bType & REGION_TYPE_ROOM) )
 				continue;
 		}
 
@@ -267,7 +267,7 @@ CRegionBase *CSectorBase::GetRegion(const CPointBase &pt, DWORD dwType) const
 	return NULL;
 }
 
-size_t CSectorBase::GetRegions(const CPointBase &pt, DWORD dwType, CRegionLinks &rList) const
+size_t CSectorBase::GetRegions(const CPointBase &pt, BYTE bType, CRegionLinks &rList) const
 {
 	ADDTOCALLSTACK("CSectorBase::GetRegions");
 	// Get regions list (to cicle through intercepted house regions)
@@ -284,20 +284,20 @@ size_t CSectorBase::GetRegions(const CPointBase &pt, DWORD dwType, CRegionLinks 
 			CItemShip *pShipItem = dynamic_cast<CItemShip *>(pRegion->GetResourceID().ItemFind());
 			if ( pShipItem )
 			{
-				if ( !(dwType & REGION_TYPE_SHIP) )
+				if ( !(bType & REGION_TYPE_SHIP) )
 					continue;
 			}
-			else if ( !(dwType & REGION_TYPE_HOUSE) )
+			else if ( !(bType & REGION_TYPE_HOUSE) )
 				continue;
 		}
 		else if ( pRegion->GetResourceID().GetResType() == RES_AREA )
 		{
-			if ( !(dwType & REGION_TYPE_AREA) )
+			if ( !(bType & REGION_TYPE_AREA) )
 				continue;
 		}
 		else
 		{
-			if ( !(dwType & REGION_TYPE_ROOM) )
+			if ( !(bType & REGION_TYPE_ROOM) )
 				continue;
 		}
 
@@ -406,7 +406,7 @@ CPointMap CSectorBase::GetBasePoint() const
 
 	int iSectorCols = maximum(1, g_MapList.GetSectorCols(m_map));
 	int iSectorSize = g_MapList.GetSectorSize(m_map);
-	CPointMap pt((static_cast<WORD>((m_index % iSectorCols) * iSectorSize)), static_cast<WORD>((m_index / iSectorCols) * iSectorSize), 0, static_cast<unsigned char>(m_map));
+	CPointMap pt(static_cast<signed short>((m_index % iSectorCols) * iSectorSize), static_cast<signed short>((m_index / iSectorCols) * iSectorSize), 0, static_cast<BYTE>(m_map));
 	return pt;
 }
 

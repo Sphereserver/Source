@@ -108,7 +108,7 @@ public:
 	CRegionLinks m_RegionLinks;					// CRegionBase(s) in this CSector
 	CObPointSortArray m_Teleports;				// CTeleport array
 	static int m_iMapBlockCacheTime;
-	DWORD m_dwFlags;
+	BYTE m_bFlags;
 
 public:
 	void Init(int index, int newmap);
@@ -119,8 +119,8 @@ public:
 
 	const CGrayMapBlock *GetMapBlock(const CPointMap &pt);
 	bool IsInDungeon() const;
-	CRegionBase *GetRegion(const CPointBase &pt, DWORD dwType) const;
-	size_t GetRegions(const CPointBase &pt, DWORD dwType, CRegionLinks &rList) const;
+	CRegionBase *GetRegion(const CPointBase &pt, BYTE bType) const;
+	size_t GetRegions(const CPointBase &pt, BYTE bType, CRegionLinks &rList) const;
 	bool UnLinkRegion(CRegionBase *pRegionOld);
 	bool LinkRegion(CRegionBase *pRegionNew);
 
@@ -136,9 +136,9 @@ public:
 #define SECF_NoSleep	0x1
 #define SECF_InstaSleep	0x2
 
-	bool IsFlagSet(DWORD dwFlag) const
+	bool IsFlagSet(BYTE bFlag) const
 	{
-		return (m_dwFlags & dwFlag);
+		return (m_bFlags & bFlag);
 	}
 
 private:

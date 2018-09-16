@@ -189,7 +189,7 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 	//for ( iQty = 0; iQty < 4; ++iQty )
 	//	ptElem[iQty].m_z = UO_SIZE_MIN_Z;
 	ptElem[0].m_z = ptElem[1].m_z  = ptElem[2].m_z  = ptElem[3].m_z = UO_SIZE_MIN_Z;
-	ptElem[4] = CPointMap(USHRT_MAX, USHRT_MAX, UO_SIZE_MIN_Z);
+	ptElem[4] = CPointMap(SHRT_MAX, SHRT_MAX, UO_SIZE_MIN_Z);
 
 	bool fElem[4] = { false, false, false, false };
 
@@ -276,7 +276,7 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 				if ( !pMultiItem->m_visible )
 					continue;
 
-				ptTest = CPointMap( pMultiItem->m_dx + pt.m_x, pMultiItem->m_dy + pt.m_y, static_cast<signed char>( pMultiItem->m_dz + pt.m_z ), pt.m_map );
+				ptTest = CPointMap(pMultiItem->m_dx + pt.m_x, pMultiItem->m_dy + pt.m_y, static_cast<signed char>(pMultiItem->m_dz) + pt.m_z, pt.m_map);
 
 				pItemDef = CItemBase::FindItemBase( pMultiItem->GetDispID() );
 				if ( pItemDef == NULL )
@@ -402,7 +402,7 @@ CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDi
 	{
 		for ( int y = rect.m_top; y < rect.m_bottom; ++y, pMeter = NULL )
 		{
-			ptTest = CPointMap(static_cast<WORD>(x), static_cast<WORD>(y), pt.m_z, pt.m_map);
+			ptTest = CPointMap(static_cast<signed short>(x), static_cast<signed short>(y), pt.m_z, pt.m_map);
 			pMeter = GetMapMeter(ptTest);
 			if ( !pMeter )
 				continue;
@@ -525,7 +525,7 @@ CPointMap CWorld::FindItemTypeNearby(const CPointMap & pt, IT_TYPE iType, int iD
 	{
 		for ( int y = rect.m_top; y < rect.m_bottom; y++, pMeter = NULL )
 		{
-			CPointMap ptTest(static_cast<WORD>(x), static_cast<WORD>(y), pt.m_z, pt.m_map);
+			CPointMap ptTest(static_cast<signed short>(x), static_cast<signed short>(y), pt.m_z, pt.m_map);
 			pMeter = GetMapMeter(ptTest);
 
 			if ( !pMeter )
@@ -567,7 +567,7 @@ CPointMap CWorld::FindItemTypeNearby(const CPointMap & pt, IT_TYPE iType, int iD
 	{
 		for ( int y = rect.m_top; y < rect.m_bottom; y += UO_BLOCK_SIZE, pMapBlock = NULL )
 		{
-			CPointMap ptTest(static_cast<WORD>(x), static_cast<WORD>(y), pt.m_z, pt.m_map);
+			CPointMap ptTest(static_cast<signed short>(x), static_cast<signed short>(y), pt.m_z, pt.m_map);
 			pMapBlock = GetMapBlock( ptTest );
 
 			if ( !pMapBlock )
@@ -624,7 +624,7 @@ CPointMap CWorld::FindItemTypeNearby(const CPointMap & pt, IT_TYPE iType, int iD
 		{
 			for (int y = rect.m_top; y < rect.m_bottom; y++)
 			{
-				CPointMap ptTest(static_cast<WORD>(x), static_cast<WORD>(y), pt.m_z, pt.m_map);
+				CPointMap ptTest(static_cast<signed short>(x), static_cast<signed short>(y), pt.m_z, pt.m_map);
 
 				CRegionLinks rlinks;
 				size_t iRegionQty = ptTest.GetRegions(REGION_TYPE_MULTI, rlinks);
@@ -816,7 +816,7 @@ void CWorld::GetFixPoint( const CPointMap & pt, CGrayMapBlockState & block)
 						if ( pMultiItem->m_dx != x2 || pMultiItem->m_dy != y2 )
 							continue;
 
-						z = static_cast<signed char>(pItem->GetTopZ() + pMultiItem->m_dz);
+						z = pItem->GetTopZ() + static_cast<signed char>(pMultiItem->m_dz);
 
 						pItemDef = CItemBase::FindItemBase( pMultiItem->GetDispID() );
 						if ( pItemDef != NULL )
@@ -1114,7 +1114,7 @@ void CWorld::GetHeightPoint( const CPointMap & pt, CGrayMapBlockState & block, b
 							if ( pMultiItem->m_dx != x2 || pMultiItem->m_dy != y2 )
 								continue;
 
-							z = static_cast<signed char>( pItem->GetTopZ() + pMultiItem->m_dz );
+							z = pItem->GetTopZ() + static_cast<signed char>(pMultiItem->m_dz);
 							if ( ! block.IsUsableZ(z,block.m_zHeight))
 								continue;
 
@@ -1355,7 +1355,7 @@ void CWorld::GetHeightPoint2( const CPointMap & pt, CGrayMapBlockState & block, 
 							if ( pMultiItem->m_dx != x2 || pMultiItem->m_dy != y2 )
 								continue;
 
-							signed char zitem = static_cast<signed char>( pItem->GetTopZ() + pMultiItem->m_dz );
+							signed char zitem = pItem->GetTopZ() + static_cast<signed char>(pMultiItem->m_dz);
 							if ( ! block.IsUsableZ(zitem,PLAYER_HEIGHT))
 								continue;
 

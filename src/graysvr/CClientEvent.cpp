@@ -2010,7 +2010,7 @@ void CClient::Event_Target(CLIMODE_TYPE context, CGrayUID uid, CPointMap pt, BYT
 		}
 		else
 		{
-			if ( m_pChar->GetTopPoint().GetDistSight(pt) > m_pChar->GetSight() )
+			if ( m_pChar->GetTopPoint().GetDist(pt) > m_pChar->GetSight() )
 				return;
 		}
 	}

@@ -859,7 +859,7 @@ bool CChar::CanSee(const CObjBaseTemplate *pObj) const
 			return false;
 
 		int iDist = pItem->IsTypeMulti() ? UO_MAP_VIEW_RADAR : GetSight();
-		if ( GetTopPoint().GetDistSight(pObj->GetTopLevelObj()->GetTopPoint()) > iDist )
+		if ( GetTopPoint().GetDist(pObj->GetTopLevelObj()->GetTopPoint()) > iDist )
 			return false;
 
 		CObjBase *pObjCont = pItem->GetParentObj();
@@ -886,7 +886,7 @@ bool CChar::CanSee(const CObjBaseTemplate *pObj) const
 		const CChar *pChar = static_cast<const CChar *>(pObj);
 		if ( pChar == this )
 			return true;
-		if ( GetTopPoint().GetDistSight(pChar->GetTopPoint()) > GetSight() )
+		if ( GetTopPoint().GetDist(pChar->GetTopPoint()) > GetSight() )
 			return false;
 		if ( IsPriv(PRIV_ALLSHOW) )
 			return (GetPrivLevel() >= pChar->GetPrivLevel());
@@ -934,7 +934,7 @@ bool CChar::CanSee(const CObjBaseTemplate *pObj) const
 	}
 
 	if ( IsPriv(PRIV_ALLSHOW) && (pObj->IsTopLevel() || pObj->IsDisconnected()) )		// don't exclude for logged out and diff maps
-		return (GetTopPoint().GetDistSightBase(pObj->GetTopPoint()) <= GetSight());
+		return (GetTopPoint().GetDistBase(pObj->GetTopPoint()) <= GetSight());
 
 	return true;
 }
@@ -1052,9 +1052,9 @@ bool CChar::CanSeeLOS_Adv(const CPointMap &ptDst, CPointMap *pptBlock, int iMaxD
 	ptSrc.m_z = minimum(ptSrc.m_z + GetHeightMount(), UO_SIZE_Z);
 	WARNLOS(("Total Z: %hhd\n", ptSrc.m_z));
 
-	int dx = ptDst.m_x - ptSrc.m_x;
-	int dy = ptDst.m_y - ptSrc.m_y;
-	int dz = ptDst.m_z - ptSrc.m_z;
+	signed short dx = ptDst.m_x - ptSrc.m_x;
+	signed short dy = ptDst.m_y - ptSrc.m_y;
+	signed char dz = ptDst.m_z - ptSrc.m_z;
 
 	double dist2d = sqrt(static_cast<double>(dx * dx + dy * dy));
 	double dist3d = dz ? sqrt(static_cast<double>(dist2d * dist2d + dz * dz)) : dist2d;
@@ -1078,22 +1078,22 @@ bool CChar::CanSeeLOS_Adv(const CPointMap &ptDst, CPointMap *pptBlock, int iMaxD
 	{
 		if ( BETWEENPOINT(nPx, ptDst.m_x, ptSrc.m_x) && BETWEENPOINT(nPy, ptDst.m_y, ptSrc.m_y) && BETWEENPOINT(nPz, ptDst.m_z, ptSrc.m_z) )
 		{
-			dx = static_cast<int>(APPROX(nPx));
-			dy = static_cast<int>(APPROX(nPy));
-			dz = static_cast<int>(APPROX(nPz));
+			dx = static_cast<signed short>(APPROX(nPx));
+			dy = static_cast<signed short>(APPROX(nPy));
+			dz = static_cast<signed char>(APPROX(nPz));
 
 			// Add point to vector
 			if ( path.size() )
 			{
 				CPointMap ptEnd = path.at(path.size() - 1);
 				if ( (ptEnd.m_x != dx) || (ptEnd.m_y != dy) || (ptEnd.m_z != dz) )
-					path.push_back(CPointMap(static_cast<WORD>(dx), static_cast<WORD>(dy), static_cast<signed char>(dz), ptSrc.m_map));
+					path.push_back(CPointMap(dx, dy, dz, ptSrc.m_map));
 			}
 			else
 			{
-				path.push_back(CPointMap(static_cast<WORD>(dx), static_cast<WORD>(dy), static_cast<signed char>(dz), ptSrc.m_map));
+				path.push_back(CPointMap(dx, dy, dz, ptSrc.m_map));
 			}
-			WARNLOS(("PATH X:%d Y:%d Z:%d\n", dx, dy, dz));
+			WARNLOS(("PATH X:%hd Y:%hd Z:%hhd\n", dx, dy, dz));
 
 			nPx += dFactorX;
 			nPy += dFactorY;

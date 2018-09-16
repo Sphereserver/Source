@@ -561,24 +561,24 @@ void CCharPlayer::r_WriteChar( CChar * pChar, CScript & s )
 	}
 
 	EXC_SET("saving stats locks");
-	for ( int x = 0; x < STAT_BASE_QTY; x++)	// Don't write all lock states!
+	for ( size_t i = 0; i < STAT_BASE_QTY; ++i )
 	{
-		if ( ! m_StatLock[x] )
+		if ( !m_StatLock[i] )
 			continue;
-		TCHAR szTemp[128];
-		sprintf( szTemp, "StatLock[%d]", x );	// smaller storage space.
-		s.WriteKeyVal( szTemp, m_StatLock[x] );
+		TCHAR szTemp[30];
+		sprintf(szTemp, "StatLock[%" FMTSIZE_T "]", i);
+		s.WriteKeyVal(szTemp, m_StatLock[i]);
 	}
 
 	EXC_SET("saving skill locks");
-	for ( size_t j = 0; j < g_Cfg.m_iMaxSkill; j++ )	// Don't write all lock states!
+	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; ++i )
 	{
-		ASSERT(j < COUNTOF(m_SkillLock));
-		if ( ! m_SkillLock[j] )
+		ASSERT(i < COUNTOF(m_SkillLock));
+		if ( !m_SkillLock[i] )
 			continue;
-		TCHAR szTemp[128];
-		sprintf( szTemp, "SkillLock[%" FMTSIZE_T "]", j );	// smaller storage space.
-		s.WriteKeyVal( szTemp, m_SkillLock[j] );
+		TCHAR szTemp[30];
+		sprintf(szTemp, "SkillLock[%" FMTSIZE_T "]", i);
+		s.WriteKeyVal(szTemp, m_SkillLock[i]);
 	}
 	EXC_CATCH;
 }

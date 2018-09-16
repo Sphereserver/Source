@@ -2092,13 +2092,13 @@ void CChar::Spell_Field(CPointMap ptTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, BY
 				CPointMap pt = ptTarg;
 				if ( dx > dy )
 				{
-					pt.m_y += static_cast<short>(ix);
-					pt.m_x += static_cast<short>(iy);
+					pt.m_x += static_cast<signed short>(iy);
+					pt.m_y += static_cast<signed short>(ix);
 				}
 				else
 				{
-					pt.m_x += static_cast<short>(ix);
-					pt.m_y += static_cast<short>(iy);
+					pt.m_x += static_cast<signed short>(ix);
+					pt.m_y += static_cast<signed short>(iy);
 				}
 
 				DWORD dwBlockFlags = 0;
@@ -2127,13 +2127,13 @@ void CChar::Spell_Field(CPointMap ptTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, BY
 			CPointMap pt = ptTarg;
 			if ( dx > dy )
 			{
-				pt.m_y += static_cast<short>(ix);
-				pt.m_x += static_cast<short>(iy);
+				pt.m_y += static_cast<signed short>(ix);
+				pt.m_x += static_cast<signed short>(iy);
 			}
 			else
 			{
-				pt.m_x += static_cast<short>(ix);
-				pt.m_y += static_cast<short>(iy);
+				pt.m_x += static_cast<signed short>(ix);
+				pt.m_y += static_cast<signed short>(iy);
 			}
 
 			// Check for direct cast on a creature.

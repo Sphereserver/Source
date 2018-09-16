@@ -508,12 +508,12 @@ jumpover:
 		{
 			if ( m_fAllShow )
 			{
-				if ( m_pt.GetDistSightBase(m_pObj->GetTopPoint()) <= m_iDist )
+				if ( m_pt.GetDistBase(m_pObj->GetTopPoint()) <= m_iDist )
 					return static_cast<CItem *>(m_pObj);
 			}
 			else
 			{
-				if ( m_pt.GetDistSight(m_pObj->GetTopPoint()) <= m_iDist )
+				if ( m_pt.GetDist(m_pObj->GetTopPoint()) <= m_iDist )
 					return static_cast<CItem *>(m_pObj);
 			}
 		}
@@ -566,12 +566,12 @@ jumpover:
 		{
 			if ( m_fAllShow )
 			{
-				if ( m_pt.GetDistSightBase(m_pObj->GetTopPoint()) <= m_iDist )
+				if ( m_pt.GetDistBase(m_pObj->GetTopPoint()) <= m_iDist )
 					return static_cast<CChar *>(m_pObj);
 			}
 			else
 			{
-				if ( m_pt.GetDistSight(m_pObj->GetTopPoint()) <= m_iDist )
+				if ( m_pt.GetDist(m_pObj->GetTopPoint()) <= m_iDist )
 					return static_cast<CChar *>(m_pObj);
 			}
 		}

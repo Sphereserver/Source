@@ -831,9 +831,9 @@ public:
 
 	bool IsSwimming() const;
 
-	bool MoveToRegionReTest(DWORD dwType)
+	bool MoveToRegionReTest(BYTE bType)
 	{
-		return MoveToRegion(dynamic_cast<CRegionWorld *>(GetTopPoint().GetRegion(dwType)), false);
+		return MoveToRegion(dynamic_cast<CRegionWorld *>(GetTopPoint().GetRegion(bType)), false);
 	}
 	bool MoveToChar(CPointMap pt, bool bForceFix = false);
 	bool MoveTo(CPointMap pt, bool bForceFix = false)
