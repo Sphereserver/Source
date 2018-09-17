@@ -1144,7 +1144,7 @@ bool CChar::CanSeeLOS_Adv(const CPointMap &ptDst, CPointMap *pptBlock, int iMaxD
 	{
 		ptNow = path.at(i);
 		WARNLOS(("---------------------------------------------\n"));
-		WARNLOS(("Point %d,%d,%d\n", ptNow.m_x, ptNow.m_y, ptNow.m_z));
+		WARNLOS(("Point %hd,%hd,%hhd\n", ptNow.m_x, ptNow.m_y, ptNow.m_z));
 
 		pNowRegion = ptNow.GetRegion(REGION_TYPE_AREA|REGION_TYPE_ROOM|REGION_TYPE_MULTI);
 
@@ -1181,12 +1181,12 @@ bool CChar::CanSeeLOS_Adv(const CPointMap &ptDst, CPointMap *pptBlock, int iMaxD
 			{
 				// ------ MapX.mul Check ----------
 				wTerrainId = pBlock->GetTerrain(UO_BLOCK_OFFSET(ptNow.m_x), UO_BLOCK_OFFSET(ptNow.m_y))->m_wTerrainIndex;
-				WARNLOS(("Terrain %d\n", wTerrainId));
+				WARNLOS(("Terrain %hu\n", wTerrainId));
 
 				if ( (wFlags & LOS_FISHING) && (ptSrc.GetDist(ptNow) >= 2) && (g_World.GetTerrainItemType(wTerrainId) != IT_WATER) && (g_World.GetTerrainItemType(wTerrainId) != IT_NORMAL) )
 				{
-					WARNLOS(("Terrain %d blocked - wFlags & LOS_FISHING, distance >= 2 and type of pItemDef is not IT_WATER\n", wTerrainId));
-					WARNLOS(("ptSrc: %d,%d,%d; ptNow: %d,%d,%d; wTerrainId: %d; wTerrainId type: %d\n", ptSrc.m_x, ptSrc.m_y, ptSrc.m_z, ptNow.m_x, ptNow.m_y, ptNow.m_z, wTerrainId, g_World.GetTerrainItemType(wTerrainId)));
+					WARNLOS(("Terrain %hu blocked - wFlags & LOS_FISHING, distance >= 2 and type of pItemDef is not IT_WATER\n", wTerrainId));
+					WARNLOS(("ptSrc: %hd,%hd,%hhd; ptNow: %hd,%hd,%hhd; wTerrainId: %hu; wTerrainId type: %d\n", ptSrc.m_x, ptSrc.m_y, ptSrc.m_z, ptNow.m_x, ptNow.m_y, ptNow.m_z, wTerrainId, g_World.GetTerrainItemType(wTerrainId)));
 					fPath = false;
 					break;
 				}
@@ -1213,12 +1213,12 @@ bool CChar::CanSeeLOS_Adv(const CPointMap &ptDst, CPointMap *pptBlock, int iMaxD
 								min_z = minimum(min_z, pBlock->GetTerrain(pos_x, pos_y)->m_z);
 						}
 
-						WARNLOS(("Terrain %d - m:%d M:%d\n", wTerrainId, min_z, max_z));
+						WARNLOS(("Terrain %hu - min:%hhd max:%hhd\n", wTerrainId, min_z, max_z));
 						if ( CUOMapMeter::IsTerrainNull(wTerrainId) )
 							fNullTerrain = true;	// what if there are some items on that hole?
 						if ( ((min_z <= ptNow.m_z) && (max_z >= ptNow.m_z)) && ((ptNow.m_x != ptDst.m_x) || (ptNow.m_y != ptDst.m_y) || (min_z > ptDst.m_z) || (max_z < ptDst.m_z)) )
 						{
-							WARNLOS(("Terrain %d - m:%d M:%d - block\n", wTerrainId, min_z, max_z));
+							WARNLOS(("Terrain %hu - min:%hhd max:%hhd - block\n", wTerrainId, min_z, max_z));
 							fPath = false;
 							break;
 						}
@@ -1270,16 +1270,16 @@ bool CChar::CanSeeLOS_Adv(const CPointMap &ptDst, CPointMap *pptBlock, int iMaxD
 						{
 							WARNLOS(("Not a parent item (STATIC)\n"));
 							pDupeDef = CItemBaseDupe::GetDupeRef(pStatic->GetDispID());
-							if ( !pDupeDef )
-							{
-								g_Log.EventDebug("Failed to get non-parent reference (static) (DispID 0%x) (X: %d Y: %d Z: %d)\n", pStatic->GetDispID(), ptNow.m_x, ptNow.m_y, pStatic->m_z);
-								dwTFlags = pItemDef->GetTFlags();
-								iHeight = pItemDef->GetHeight();
-							}
-							else
+							if ( pDupeDef )
 							{
 								dwTFlags = pDupeDef->GetTFlags();
 								iHeight = pDupeDef->GetHeight();
+							}
+							else
+							{
+								g_Log.EventDebug("Failed to get non-parent reference (static) (DispID 0%x) (X:%hd Y:%hd Z:%hhd)\n", pStatic->GetDispID(), ptNow.m_x, ptNow.m_y, pStatic->m_z);
+								dwTFlags = pItemDef->GetTFlags();
+								iHeight = pItemDef->GetHeight();
 							}
 						}
 						else
@@ -1291,17 +1291,17 @@ bool CChar::CanSeeLOS_Adv(const CPointMap &ptDst, CPointMap *pptBlock, int iMaxD
 
 						if ( ((dwTFlags & (UFLAG1_WALL|UFLAG1_BLOCK|UFLAG2_PLATFORM)) || (pItemDef->m_Can & CAN_I_BLOCKLOS)) && !((dwTFlags & UFLAG2_WINDOW) && (wFlags & LOS_NB_WINDOWS)) )
 						{
-							WARNLOS(("pStatic %0x %d,%d,%d - %d\n", pStatic->GetDispID(), pStatic->m_x, pStatic->m_y, pStatic->m_z, iHeight));
+							WARNLOS(("pStatic 0%x %hhu,%hhu,%hhd - %hhu\n", pStatic->GetDispID(), pStatic->m_x, pStatic->m_y, pStatic->m_z, iHeight));
 							min_z = pStatic->m_z;
 							max_z = minimum(iHeight + min_z, UO_SIZE_Z);
 							WARNLOS(("dwTFlags(0%lx)\n", dwTFlags));
 
-							WARNLOS(("pStatic %0x Z check: %d,%d (Now: %d) (Dest: %d)\n", pStatic->GetDispID(), min_z, max_z, ptNow.m_z, ptDst.m_z));
+							WARNLOS(("pStatic 0%x Z check: %hhd,%hhd (now: %hhd) (dest: %hhd)\n", pStatic->GetDispID(), min_z, max_z, ptNow.m_z, ptDst.m_z));
 							if ( (min_z <= ptNow.m_z) && (max_z >= ptNow.m_z) )
 							{
 								if ( (ptNow.m_x != ptDst.m_x) || (ptNow.m_y != ptDst.m_y) || (min_z > ptDst.m_z) || (max_z < ptDst.m_z) )
 								{
-									WARNLOS(("pStatic blocked - m:%d M:%d\n", min_z, max_z));
+									WARNLOS(("pStatic blocked - min:%hhd max:%hhd\n", min_z, max_z));
 									fPath = false;
 									break;
 								}
@@ -1363,7 +1363,7 @@ bool CChar::CanSeeLOS_Adv(const CPointMap &ptDst, CPointMap *pptBlock, int iMaxD
 							pDupeDef = CItemBaseDupe::GetDupeRef(pItem->GetDispID());
 							if ( !pDupeDef )
 							{
-								g_Log.EventDebug("Failed to get non-parent reference (dynamic) (DispID 0%x) (X: %d Y: %d Z: %d)\n", pItem->GetDispID(), ptNow.m_x, ptNow.m_y, pItem->GetTopZ());
+								g_Log.EventDebug("Failed to get non-parent reference (dynamic) (DispID 0%x) (X:%hd Y:%hd Z:%hhd)\n", pItem->GetDispID(), ptNow.m_x, ptNow.m_y, pItem->GetTopZ());
 								dwTFlags = pItemDef->GetTFlags();
 								iHeight = pItemDef->GetHeight();
 							}
@@ -1382,17 +1382,17 @@ bool CChar::CanSeeLOS_Adv(const CPointMap &ptDst, CPointMap *pptBlock, int iMaxD
 
 						if ( ((dwTFlags & (UFLAG1_WALL|UFLAG1_BLOCK|UFLAG2_PLATFORM)) || (pItemDef->m_Can & CAN_I_BLOCKLOS)) && !((dwTFlags & UFLAG2_WINDOW) && (wFlags & LOS_NB_WINDOWS)) )
 						{
-							WARNLOS(("pItem %0lx(%0x) %d,%d,%d - %d\n", static_cast<DWORD>(pItem->GetUID()), pItem->GetDispID(), pItem->GetTopPoint().m_x, pItem->GetTopPoint().m_y, pItem->GetTopPoint().m_z, iHeight));
+							WARNLOS(("pItem 0%lx(0%x) %hd,%hd,%hhd - %hhu\n", static_cast<DWORD>(pItem->GetUID()), pItem->GetDispID(), pItem->GetTopPoint().m_x, pItem->GetTopPoint().m_y, pItem->GetTopPoint().m_z, iHeight));
 							min_z = pItem->GetTopZ();
 							max_z = minimum(iHeight + min_z, UO_SIZE_Z);
 							WARNLOS(("dwTFlags(0%lx)\n", dwTFlags));
 
-							WARNLOS(("pItem %0lx(%0x) Z check: %d,%d (Now: %d) (Dest: %d)\n", static_cast<DWORD>(pItem->GetUID()), pItem->GetDispID(), min_z, max_z, ptNow.m_z, ptDst.m_z));
+							WARNLOS(("pItem 0%lx(0%x) Z check: %hhd,%hhd (now: %hhd) (dest: %hhd)\n", static_cast<DWORD>(pItem->GetUID()), pItem->GetDispID(), min_z, max_z, ptNow.m_z, ptDst.m_z));
 							if ( (min_z <= ptNow.m_z) && (max_z >= ptNow.m_z) )
 							{
 								if ( (ptNow.m_x != ptDst.m_x) || (ptNow.m_y != ptDst.m_y) || (min_z > ptDst.m_z) || (max_z < ptDst.m_z) )
 								{
-									WARNLOS(("pItem blocked - m:%d M:%d\n", min_z, max_z));
+									WARNLOS(("pItem blocked - min:%hhd max:%hhd\n", min_z, max_z));
 									fPath = false;
 									break;
 								}
@@ -1467,7 +1467,7 @@ bool CChar::CanSeeLOS_Adv(const CPointMap &ptDst, CPointMap *pptBlock, int iMaxD
 									pDupeDef = CItemBaseDupe::GetDupeRef(pMultiItem->GetDispID());
 									if ( !pDupeDef )
 									{
-										g_Log.EventDebug("Failed to get non-parent reference (multi) (DispID 0%x) (X: %d Y: %d Z: %d)\n", pMultiItem->GetDispID(), ptNow.m_x, ptNow.m_y, pMultiItem->m_dz + pItem->GetTopPoint().m_z);
+										g_Log.EventDebug("Failed to get non-parent reference (multi) (DispID 0%x) (X:%hd Y:%hd Z:%hhd)\n", pMultiItem->GetDispID(), ptNow.m_x, ptNow.m_y, static_cast<signed char>(pMultiItem->m_dz) + pItem->GetTopPoint().m_z);
 										dwTFlags = pItemDef->GetTFlags();
 										iHeight = pItemDef->GetHeight();
 									}
@@ -1486,7 +1486,7 @@ bool CChar::CanSeeLOS_Adv(const CPointMap &ptDst, CPointMap *pptBlock, int iMaxD
 
 								if ( ((dwTFlags & (UFLAG1_WALL|UFLAG1_BLOCK|UFLAG2_PLATFORM)) || (pItemDef->m_Can & CAN_I_BLOCKLOS)) && !((dwTFlags & UFLAG2_WINDOW) && (wFlags & LOS_NB_WINDOWS)) )
 								{
-									WARNLOS(("pMultiItem %0x %d,%d,%d - %d\n", pMultiItem->GetDispID(), pMultiItem->m_dx, pMultiItem->m_dy, pMultiItem->m_dz, iHeight));
+									WARNLOS(("pMultiItem 0%x %hd,%hd,%hd - %hhu\n", pMultiItem->GetDispID(), pMultiItem->m_dx, pMultiItem->m_dy, pMultiItem->m_dz, iHeight));
 									min_z = static_cast<signed char>(pMultiItem->m_dz) + pItem->GetTopPoint().m_z;
 									max_z = minimum(iHeight + min_z, UO_SIZE_Z);
 									WARNLOS(("dwTFlags(0%lx)\n", dwTFlags));
@@ -1495,7 +1495,7 @@ bool CChar::CanSeeLOS_Adv(const CPointMap &ptDst, CPointMap *pptBlock, int iMaxD
 									{
 										if ( (ptNow.m_x != ptDst.m_x) || (ptNow.m_y != ptDst.m_y) || (min_z > ptDst.m_z) || (max_z < ptDst.m_z) )
 										{
-											WARNLOS(("pMultiItem blocked - m:%d M:%d\n", min_z, max_z));
+											WARNLOS(("pMultiItem blocked - min:%hhd max:%hhd\n", min_z, max_z));
 											fPath = false;
 											break;
 										}
@@ -2012,7 +2012,7 @@ CRegionBase *CChar::CheckValidMove(CPointBase &ptDst, DWORD *pdwBlockFlags, DIR_
 	}
 
 	DWORD dwCan = GetMoveBlockFlags();
-	WARNWALK(("GetMoveBlockFlags()(0x%lx)\n", dwCan));
+	WARNWALK(("GetMoveBlockFlags()(0%lx)\n", dwCan));
 	if ( !(dwCan & (CAN_C_SWIM|CAN_C_WALK|CAN_C_FLY|CAN_C_RUN|CAN_C_HOVER)) )
 		return NULL;	// cannot move at all, so WTF?
 
@@ -2043,14 +2043,14 @@ CRegionBase *CChar::CheckValidMove(CPointBase &ptDst, DWORD *pdwBlockFlags, DIR_
 	{
 		dwBlockFlags |= CAN_I_ROOF;		// we are covered by something
 
-		WARNWALK(("block.m_Top.m_z(%hhd) > ptDst.m_z(%hhd) + m_zClimbHeight(%hhu) + (block.m_Top.m_dwTile(0x%lx) > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT / 2)(%d)\n", block.m_Top.m_z, ptDst.m_z, m_zClimbHeight, block.m_Top.m_dwTile, ptDst.m_z - (m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT / 2))));
+		WARNWALK(("block.m_Top.m_z(%hhd) > ptDst.m_z(%hhd) + m_zClimbHeight(%hhu) + (block.m_Top.m_dwTile(0x%lx) > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT / 2)(%hhu)\n", block.m_Top.m_z, ptDst.m_z, m_zClimbHeight, block.m_Top.m_dwTile, ptDst.m_z - (m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT / 2))));
 		if ( block.m_Top.m_z < block.m_Bottom.m_z + (m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? iCharHeight : iCharHeight / 2)) )
 			dwBlockFlags |= CAN_I_BLOCK;	// we can't fit under this
 	}
 
 	if ( (dwCan != ULONG_MAX) && (dwBlockFlags != 0x0) )
 	{
-		WARNWALK(("BOTTOMitemID(0%lx) TOPitemID(0%lx)\n", block.m_Bottom.m_dwTile - TERRAIN_QTY, block.m_Top.m_dwTile - TERRAIN_QTY));
+		WARNWALK(("BottomItemID(0%lx) TopItemID(0%lx)\n", block.m_Bottom.m_dwTile - TERRAIN_QTY, block.m_Top.m_dwTile - TERRAIN_QTY));
 		CCharBase *pCharDef = Char_GetDef();
 		ASSERT(pCharDef);
 

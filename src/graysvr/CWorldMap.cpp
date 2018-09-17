@@ -1,146 +1,119 @@
-#include "graysvr.h"	// predef header.
+#include "graysvr.h"	// predef header
 
-//************************
-// Natural resources.
-
-CItem * CWorld::CheckNaturalResource( const CPointMap & pt, IT_TYPE Type, bool fTest, CChar * pCharSrc )
+CItem *CWorld::CheckNaturalResource(const CPointMap &pt, IT_TYPE type, bool fTest, CChar *pCharSrc)
 {
 	ADDTOCALLSTACK("CWorld::CheckNaturalResource");
-	// RETURN: 
-	//  The resource tracking item.
-	//  NULL = nothing here.
-
+	// Check natural resources at this location
+	// RETURN: The resource tracking item (NULL = nothing here)
 	if ( !pt.IsValidPoint() )
 		return NULL;
 
 	EXC_TRY("CheckNaturalResource");
-
-	// Check/Decrement natural resources at this location.
-	// We create an invis object to time out and produce more.
-	// RETURN: Quantity they wanted. 0 = none here.
-
-	if ( fTest )	// Is the resource avail at all here ?
+	if ( fTest )
 	{
-		EXC_SET("is item near type");
-		if ((Type != IT_TREE) && (Type != IT_ROCK) )
+		EXC_SET("check nearby");
+		if ( (type != IT_TREE) && (type != IT_ROCK) )
 		{
-			if ( !g_World.IsTypeNear_Top(pt, Type, 0) )
+			if ( !g_World.IsTypeNear_Top(pt, type) )
 				return NULL;
 		}
 		else
 		{
-			if ( !g_World.IsItemTypeNear(pt, Type, 0, false) ) //cannot be used, because it does no Z check... what if there is a static tile 70 tiles under me?
+			if ( !g_World.IsItemTypeNear(pt, type) )		// cannot be used, because it does no Z check... what if there is a static tile 70 tiles under me?
 				return NULL;
 		}
 	}
 
-	// Find the resource object.
-	EXC_SET("find existant bit");
-	CItem * pResBit;
+	// Find the resource object
+	EXC_SET("get worldgem bit");
+	CItem *pResBit = NULL;
 	CWorldSearch Area(pt);
 	for (;;)
 	{
 		pResBit = Area.GetItem();
 		if ( !pResBit )
 			break;
-		// NOTE: ??? Not all resource objects are world gems. should they be ?
-		// I wanted to make tree stumps etc be the resource block some day.
-
-		if ( pResBit->IsType(Type) && pResBit->GetID() == ITEMID_WorldGem )
+		if ( pResBit->IsType(type) && (pResBit->GetID() == ITEMID_WorldGem) )
 			break;
 	}
-
-	// If none then create one.
 	if ( pResBit )
 		return pResBit;
 
-	// What type of ore is here ?
-	// NOTE: This is unrelated to the fact that we might not be skilled enough to find it.
-	// Odds of a vein of ore being present are unrelated to my skill level.
-	// Odds of my finding it are.
-	// RES_REGIONRESOURCE from RES_REGIONTYPE linked to RES_AREA
-
 	EXC_SET("get region");
-	CRegionWorld* pRegion = dynamic_cast<CRegionWorld*>( pt.GetRegion( REGION_TYPE_AREA ));
+	CRegionWorld *pRegion = dynamic_cast<CRegionWorld *>(pt.GetRegion(REGION_TYPE_AREA));
 	if ( !pRegion )
 		return NULL;
 
-	CWorldSearch AreaItems( pt );
-	AreaItems.SetAllShow(1);
+	CItem *pItem = NULL;
+	CWorldSearch AreaItems(pt);
+	AreaItems.SetAllShow(true);
 	for (;;)
 	{
-		CItem *pItem = AreaItems.GetItem();
+		pItem = AreaItems.GetItem();
 		if ( !pItem )
 			break;
-		if ( pItem->GetType() != Type )
+		if ( !pItem->IsType(type) )
 			return NULL;
 	}
 
-	// just use the background (default) region for this
+	// Just use the background (default) region for this
 	if ( pRegion->m_Events.GetCount() <= 0 )
 	{
-		CPointMap ptZero(0,0,0,pt.m_map);
-		pRegion = dynamic_cast<CRegionWorld*>(ptZero.GetRegion(REGION_TYPE_AREA));
+		CPointMap ptZero(0, 0, 0, pt.m_map);
+		pRegion = dynamic_cast<CRegionWorld *>(ptZero.GetRegion(REGION_TYPE_AREA));
 		if ( !pRegion )
 			return NULL;
 	}
 
 	// Find RES_REGIONTYPE
-	EXC_SET("resource group");
-	const CRandGroupDef * pResGroup = pRegion->FindNaturalResource(Type);
+	EXC_SET("get resource group");
+	const CRandGroupDef *pResGroup = pRegion->FindNaturalResource(type);
 	if ( !pResGroup )
 		return NULL;
 
 	// Find RES_REGIONRESOURCE
 	EXC_SET("get random group element");
 	size_t id = pResGroup->GetRandMemberIndex(pCharSrc);
-	CRegionResourceDef * pOreDef;
-	if ( id == pResGroup->BadMemberIndex() )
-	{
-		pOreDef	= dynamic_cast <CRegionResourceDef *> (g_Cfg.ResourceGetDefByName(RES_REGIONRESOURCE, "mr_nothing"));
-	}
+	CRegionResourceDef *pOreDef;
+	if ( id != pResGroup->BadMemberIndex() )
+		pOreDef = dynamic_cast<CRegionResourceDef *>(g_Cfg.ResourceGetDef(pResGroup->GetMemberID(id)));
 	else
-	{
-		RESOURCE_ID rid	= pResGroup->GetMemberID( id );
-		pOreDef = dynamic_cast <CRegionResourceDef *>( g_Cfg.ResourceGetDef( rid ));
-	}
+		pOreDef = dynamic_cast<CRegionResourceDef *>(g_Cfg.ResourceGetDefByName(RES_REGIONRESOURCE, "mr_nothing"));
 
 	if ( !pOreDef )
 		return NULL;
 
-	EXC_SET("create bit");
+	EXC_SET("create worldgem bit");
 	pResBit = CItem::CreateScript(ITEMID_WorldGem, pCharSrc);
 	if ( !pResBit )
 		return NULL;
-	
-	pResBit->SetType(Type);
-	pResBit->SetAttr(ATTR_INVIS|ATTR_MOVE_NEVER);
-	pResBit->m_itResource.m_rid_res = pOreDef->GetResourceID();
 
-	// Total amount of ore here.
-	WORD amount = static_cast<WORD>(pOreDef->m_Amount.GetRandom());
+	WORD wAmount = static_cast<WORD>(pOreDef->m_Amount.GetRandom());
 	if ( (g_Cfg.m_iRacialFlags & RACIALF_HUMAN_WORKHORSE) && pCharSrc->IsHuman() )
 	{
-		if ( (Type == IT_ROCK) && (pCharSrc->GetTopMap() == 0) )
-			amount += 1;	// Workhorse racial bonus, giving +1 ore to humans in Felucca.
-		else if ( (Type == IT_TREE) && (pCharSrc->GetTopMap() == 1) )
-			amount += 2;	// Workhorse racial bonus, giving +2 logs to humans in Trammel.
+		if ( (type == IT_ROCK) && (pCharSrc->GetTopMap() == 0) )
+			wAmount += 1;	// Workhorse racial trait, give +1 ore to humans in Felucca
+		else if ( (type == IT_TREE) && (pCharSrc->GetTopMap() == 1) )
+			wAmount += 2;	// Workhorse racial trait, give +2 logs to humans in Trammel
 	}
-	pResBit->SetAmount(amount);
-	pResBit->MoveToDecay(pt, pOreDef->m_iRegenerateTime.GetRandom() * TICK_PER_SEC);	// Delete myself in this amount of time.
 
-	EXC_SET("resourcefound");
+	pResBit->SetType(type);
+	pResBit->SetAttr(ATTR_INVIS|ATTR_MOVE_NEVER);
+	pResBit->SetAmount(wAmount);
+	pResBit->m_itResource.m_rid_res = pOreDef->GetResourceID();
+	pResBit->MoveToDecay(pt, pOreDef->m_iRegenerateTime.GetRandom() * TICK_PER_SEC);
 
-	if ( pCharSrc != NULL)
+	EXC_SET("resource found");
+	if ( pCharSrc )
 	{
-		CScriptTriggerArgs	Args(0, 0, pResBit);
-		TRIGRET_TYPE tRet = TRIGRET_RET_DEFAULT;
+		CScriptTriggerArgs Args(0, 0, pResBit);
+		TRIGRET_TYPE tr = TRIGRET_RET_DEFAULT;
 		if ( IsTrigUsed(TRIGGER_REGIONRESOURCEFOUND) )
-			tRet = pCharSrc->OnTrigger(CTRIG_RegionResourceFound, pCharSrc, &Args);
+			tr = pCharSrc->OnTrigger(CTRIG_RegionResourceFound, pCharSrc, &Args);
 		if ( IsTrigUsed(TRIGGER_RESOURCEFOUND) )
-			tRet = pOreDef->OnTrigger("@ResourceFound", pCharSrc, &Args);
+			tr = pOreDef->OnTrigger("@ResourceFound", pCharSrc, &Args);
 
-		if (tRet == TRIGRET_RET_TRUE)
+		if ( tr == TRIGRET_RET_TRUE )
 		{
 			if ( pResBit->IsDisconnected() )
 				return NULL;
@@ -148,534 +121,435 @@ CItem * CWorld::CheckNaturalResource( const CPointMap & pt, IT_TYPE Type, bool f
 		}
 	}
 	return pResBit;
-
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("point '%d,%d,%d,%d' type '%d' [0%lx]\n", pt.m_x, pt.m_y, pt.m_z, pt.m_map, static_cast<int>(Type), 
-		pCharSrc ? static_cast<DWORD>(pCharSrc->GetUID()) : 0);
+	g_Log.EventDebug("point '%hd,%hd,%hhd,%hhu' type '%d' [0%lx]\n", pt.m_x, pt.m_y, pt.m_z, pt.m_map, static_cast<int>(type), pCharSrc ? static_cast<DWORD>(pCharSrc->GetUID()) : 0);
 	EXC_DEBUG_END;
 	return NULL;
 }
 
-//////////////////////////////////////////////////////////////////
-// Map reading and blocking.
-
-bool CWorld::IsTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDistance )
+bool CWorld::IsTypeNear_Top(const CPointMap &pt, IT_TYPE type, int iDist)
 {
 	ADDTOCALLSTACK("CWorld::IsTypeNear_Top");
 	if ( !pt.IsValidPoint() )
 		return false;
-	CPointMap ptn = FindTypeNear_Top( pt, iType, iDistance );
-	return( ptn.IsValidPoint());
+
+	CPointMap ptTest = FindTypeNear_Top(pt, type, iDist);
+	return ptTest.IsValidPoint();
 }
 
-CPointMap CWorld::FindTypeNear_Top( const CPointMap & pt, IT_TYPE iType, int iDistance )
+CPointMap CWorld::FindTypeNear_Top(const CPointMap &pt, IT_TYPE type, int iDist)
 {
 	ADDTOCALLSTACK("CWorld::FindTypeNear_Top");
-#define RESOURCE_Z_CHECK 8
-	CPointMap ptFound;
-	CItemBase * pItemDef = NULL;
-	CItem * pItem = NULL;
-	CItemBaseDupe * pDupeDef = NULL;
-	height_t Height = 0;
-	BYTE z = 0;
-	CPointMap ptTest;
+	#define RESOURCE_Z_CHECK 8
 
-	unsigned int iRetElem = 4;
+	BYTE z = 0;
+	height_t iHeight = 0;
+	CItem *pItem = NULL;
+	CItemBase *pItemDef = NULL;
+	CItemBaseDupe *pDupeDef = NULL;
+	CPointMap ptTest;
 
 	CPointMap ptElem[5];
 	memset(ptElem, 0, sizeof(ptElem));
-	//for ( iQty = 0; iQty < 4; ++iQty )
-	//	ptElem[iQty].m_z = UO_SIZE_MIN_Z;
-	ptElem[0].m_z = ptElem[1].m_z  = ptElem[2].m_z  = ptElem[3].m_z = UO_SIZE_MIN_Z;
+	ptElem[0].m_z = ptElem[1].m_z = ptElem[2].m_z = ptElem[3].m_z = UO_SIZE_MIN_Z;
 	ptElem[4] = CPointMap(SHRT_MAX, SHRT_MAX, UO_SIZE_MIN_Z);
-
 	bool fElem[4] = { false, false, false, false };
+	size_t iRetElem = 4;
 
-	// Check dynamics
-	CWorldSearch Area( pt, iDistance );
-	Area.SetAllShow( true );
+	// Check dynamic items
+	CWorldSearch Area(pt, iDist);
+	Area.SetAllShow(true);
 	for (;;)
 	{
 		z = 0;
-		Height = 0;
+		iHeight = 0;
 		pItem = Area.GetItem();
-		if ( pItem == NULL )
+		if ( !pItem )
 			break;
 
-		if ( pt.GetDist( pItem->GetTopPoint() ) > iDistance )
+		if ( pt.GetDist(pItem->GetTopPoint()) > iDist )
 			continue;
 
-		pItemDef = CItemBase::FindItemBase( pItem->GetDispID() );
-		if ( pItemDef == NULL )
+		pItemDef = CItemBase::FindItemBase(pItem->GetDispID());
+		if ( !pItemDef )
 			continue;
 
-		Height = pItemDef->GetHeight();
-		if ( pItemDef->GetID() != pItem->GetDispID() ) //not a parent item
+		iHeight = pItemDef->GetHeight();
+		if ( pItemDef->GetID() != pItem->GetDispID() )		// not a parent item
 		{
 			pDupeDef = CItemBaseDupe::GetDupeRef(static_cast<ITEMID_TYPE>(pItem->GetDispID()));
-			if ( ! pDupeDef )
-			{
-				g_Log.EventDebug("Failed to get non-parent reference (dynamic) (DispID 0%x) (X: %d Y: %d Z: %d)\n",pItem->GetDispID(),ptTest.m_x,ptTest.m_y,ptTest.m_z);
-				Height = pItemDef->GetHeight();
-			}
+			if ( pDupeDef )
+				iHeight = pDupeDef->GetHeight();
 			else
-				Height = pDupeDef->GetHeight();
+			{
+				g_Log.EventDebug("Failed to get non-parent reference (dynamic) (DispID 0%x) (X:%hd Y:%hd Z:%hhd)\n", pItem->GetDispID(), ptTest.m_x, ptTest.m_y, ptTest.m_z);
+				iHeight = pItemDef->GetHeight();
+			}
 		}
-		z = minimum( Height + pItem->GetTopPoint().m_z, UO_SIZE_Z ); //height + current position = the top point
+		z = minimum(iHeight + pItem->GetTopPoint().m_z, UO_SIZE_Z);		// Z + height = top point
 
-		if ( ptElem[0].m_z > z ) //if ( ptElem[0].m_z > pItem->GetTopPoint().m_z )
+		if ( ptElem[0].m_z > z )
+			continue;
+		if ( (pt.m_z - z < -RESOURCE_Z_CHECK) || (z - pt.m_z > RESOURCE_Z_CHECK) )
+			continue;
+		if ( (z < ptElem[0].m_z) || ((z == ptElem[0].m_z) && fElem[0]) )
 			continue;
 
-		if ( ((( z - pt.m_z ) > 0) && ( z - pt.m_z ) > RESOURCE_Z_CHECK ) || ((( pt.m_z - z ) < 0) && (( pt.m_z - z ) < - RESOURCE_Z_CHECK ))) //if ( ((( pItem->GetTopPoint().m_z - pt.m_z ) > 0) && ( pItem->GetTopPoint().m_z - pt.m_z ) > RESOURCE_Z_CHECK ) || ((( pt.m_z - pItem->GetTopPoint().m_z ) < 0) && (( pt.m_z - pItem->GetTopPoint().m_z ) < - RESOURCE_Z_CHECK )))
-			continue;
-
-		if (( z < ptElem[0].m_z ) || (( z == ptElem[0].m_z ) && ( fElem[0] )))
-			continue;
-        
 		ptElem[0] = pItem->GetTopPoint();
 		ptElem[0].m_z = z;
 		fElem[0] = false;
 
-		//DEBUG_ERR(("dynamic pItem->IsType( iType %d) %d\n",iType,pItem->IsType( iType )));
-		if ( pItem->IsType( iType ) )  //( pItem->Item_GetDef()->IsType(iType) ) )
+		if ( pItem->IsType(type) )
 		{
 			fElem[0] = true;
 			iRetElem = 0;
 		}
 	}
 
-	// Parts of multis ?
+	// Check multi components
 	CRegionLinks rlinks;
 	size_t iRegionQty = pt.GetRegions(REGION_TYPE_MULTI, rlinks);
 	if ( iRegionQty > 0 )
 	{
 		CRegionBase *pRegion = NULL;
-		const CGrayMulti *pMulti = NULL;			// Multi Def (multi check)
-		const CUOMultiItemRec2 *pMultiItem = NULL;	// Multi item iterator
-		for ( size_t iRegion = 0; iRegion < iRegionQty; pMulti = NULL, ++iRegion )
+		const CGrayMulti *pMulti = NULL;
+		const CUOMultiItemRec2 *pMultiItem = NULL;
+		for ( size_t iRegion = 0; iRegion < iRegionQty; ++iRegion )
 		{
 			pRegion = rlinks.GetAt(iRegion);
 			pItem = pRegion->GetResourceID().ItemFind();
 			if ( !pItem )
 				continue;
+
 			pMulti = g_Cfg.GetMultiItemDefs(pItem);
 			if ( !pMulti )
 				continue;
+
 			size_t iMultiQty = pMulti->GetItemCount();
-			for ( size_t iMulti = 0; iMulti < iMultiQty; pItemDef = NULL, pMultiItem = NULL, Height = 0, ++iMulti )
+			for ( size_t iMulti = 0; iMulti < iMultiQty; ++iMulti )
 			{
 				pMultiItem = pMulti->GetItem(iMulti);
-				
 				if ( !pMultiItem )
 					break;
-
-				//DEBUG_ERR(("abs( pMultiItem->m_dx ) %x, abs( pMultiItem->m_dy ) %x, abs( pMultiItem->m_dz ) %x,\n             iDistance %x IF STATEMENT %x %x\n", abs( pMultiItem->m_dx ), abs( pMultiItem->m_dy ), abs( pMultiItem->m_dz ), iDistance, ( abs( pMultiItem->m_dx ) <= iDistance ), ( abs( pMultiItem->m_dy ) <= iDistance ) ));
-
 				if ( !pMultiItem->m_visible )
 					continue;
 
-				ptTest = CPointMap(pMultiItem->m_dx + pt.m_x, pMultiItem->m_dy + pt.m_y, static_cast<signed char>(pMultiItem->m_dz) + pt.m_z, pt.m_map);
-
-				pItemDef = CItemBase::FindItemBase( pMultiItem->GetDispID() );
-				if ( pItemDef == NULL )
+				pItemDef = CItemBase::FindItemBase(pMultiItem->GetDispID());
+				if ( !pItemDef )
 					continue;
 
-				Height = pItemDef->GetHeight();
-				if ( pItemDef->GetID() != pMultiItem->GetDispID() ) //not a parent item
+				ptTest = CPointMap(pMultiItem->m_dx + pt.m_x, pMultiItem->m_dy + pt.m_y, static_cast<signed char>(pMultiItem->m_dz) + pt.m_z, pt.m_map);
+				iHeight = pItemDef->GetHeight();
+				if ( pItemDef->GetID() != pMultiItem->GetDispID() )		// not a parent item
 				{
 					pDupeDef = CItemBaseDupe::GetDupeRef(static_cast<ITEMID_TYPE>(pMultiItem->GetDispID()));
-					if ( ! pDupeDef )
-					{
-						g_Log.EventDebug("Failed to get non-parent reference (multi) (DispID 0%x) (X: %d Y: %d Z: %d)\n",pMultiItem->GetDispID(),ptTest.m_x,ptTest.m_y,ptTest.m_z);
-						Height = pItemDef->GetHeight();
-					}
+					if ( pDupeDef )
+						iHeight = pDupeDef->GetHeight();
 					else
-						Height = pDupeDef->GetHeight();
+					{
+						g_Log.EventDebug("Failed to get non-parent reference (multi) (DispID 0%x) (X:%hd Y:%hd Z:%hhd)\n", pMultiItem->GetDispID(), ptTest.m_x, ptTest.m_y, ptTest.m_z);
+						iHeight = pItemDef->GetHeight();
+					}
 				}
-				ptTest.m_z = minimum(ptTest.m_z + Height, UO_SIZE_Z); //height + current position = the top point
+				ptTest.m_z = minimum(ptTest.m_z + iHeight, UO_SIZE_Z);	// Z + height = top point
 
-				if ( pt.GetDist( ptTest ) > iDistance )
+				if ( pt.GetDist(ptTest) > iDist )
 					continue;
-
 				if ( ptElem[1].m_z > ptTest.m_z )
 					continue;
-		
-				if ( ((( ptTest.m_z - pt.m_z ) > 0) && ( ptTest.m_z - pt.m_z ) > RESOURCE_Z_CHECK ) || ((( pt.m_z - ptTest.m_z ) < 0) && (( pt.m_z - ptTest.m_z ) < - RESOURCE_Z_CHECK )))
+				if ( (pt.m_z - ptTest.m_z < -RESOURCE_Z_CHECK) || (ptTest.m_z - pt.m_z > RESOURCE_Z_CHECK) )
 					continue;
-	
-				if (( ptTest.m_z < ptElem[1].m_z ) || (( ptTest.m_z == ptElem[1].m_z ) && ( fElem[1] )))
+				if ( (ptTest.m_z < ptElem[1].m_z) || ((ptTest.m_z == ptElem[1].m_z) && fElem[1]) )
 					continue;
-		        //DEBUG_ERR(("pMultiItem->GetDispID()%x\n",pMultiItem->GetDispID()));
+
 				ptElem[1] = ptTest;
 				fElem[1] = false;
 
-				//DEBUG_ERR(("multi pItemDef->IsType( iType %d) %d\n",iType,pItemDef->IsType( iType )));
-				if ( pItemDef->IsType( iType ) )
+				if ( pItemDef->IsType(type) )
 				{
 					fElem[1] = true;
-					//if ( ptElem[iRetElem].m_z > ptElem[1].m_z )
 					if ( ptElem[1].m_z > ptElem[iRetElem].m_z )
 						iRetElem = 1;
 				}
-
-				//DEBUG_ERR(( "DISPID: %x X %d Y %d Z %d\n", pMultiItem->GetDispID(), (pMultiItem->m_dx), (pMultiItem->m_dy), (pMultiItem->m_dz) ));
 			}
 		}
 	}
 
-	// STATIC - checks one 8x8 block
-	const CGrayMapBlock * pMapBlock = GetMapBlock( pt );
-	ASSERT( pMapBlock );
-
+	// Check map statics
+	const CGrayMapBlock *pMapBlock = GetMapBlock(pt);
 	size_t iStaticQty = pMapBlock ? pMapBlock->m_Statics.GetStaticQty() : 0;
-	if ( iStaticQty > 0 )  // no static items here.
+	if ( iStaticQty > 0 )
 	{
-		const CUOStaticItemRec * pStatic = NULL;
-
-		for ( size_t i = 0; i < iStaticQty; ++i, pStatic = NULL, Height = 0, pItemDef = NULL )
+		const CUOStaticItemRec *pStatic = NULL;
+		for ( size_t i = 0; i < iStaticQty; ++i )
 		{
-			pStatic = pMapBlock->m_Statics.GetStatic( i );
-
-			ptTest = CPointMap( pStatic->m_x + pMapBlock->m_x, pStatic->m_y + pMapBlock->m_y, pStatic->m_z, pt.m_map );
-
-			pItemDef = CItemBase::FindItemBase( pStatic->GetDispID() );
-			if ( pItemDef == NULL )
+			pStatic = pMapBlock->m_Statics.GetStatic(i);
+			pItemDef = CItemBase::FindItemBase(pStatic->GetDispID());
+			if ( !pItemDef )
 				continue;
 
-			//DEBUG_ERR(("pStatic->GetDispID() %d; name %s; pStatic->m_z %d\n",pStatic->GetDispID(),pItemDef->GetName(),pStatic->m_z));
-			Height = pItemDef->GetHeight();
-			if ( pItemDef->GetID() != pStatic->GetDispID() ) //not a parent item
+			ptTest = CPointMap(pStatic->m_x + pMapBlock->m_x, pStatic->m_y + pMapBlock->m_y, pStatic->m_z, pt.m_map);
+			iHeight = pItemDef->GetHeight();
+			if ( pItemDef->GetID() != pStatic->GetDispID() )	// not a parent item
 			{
 				pDupeDef = CItemBaseDupe::GetDupeRef(static_cast<ITEMID_TYPE>(pStatic->GetDispID()));
-				if ( ! pDupeDef )
-				{
-					g_Log.EventDebug("Failed to get non-parent reference (static) (DispID 0%x) (X: %d Y: %d Z: %d)\n",pStatic->GetDispID(),ptTest.m_x,ptTest.m_y,ptTest.m_z);
-					Height = pItemDef->GetHeight();
-				}
+				if ( pDupeDef )
+					iHeight = pDupeDef->GetHeight();
 				else
-					Height = pDupeDef->GetHeight();
+				{
+					g_Log.EventDebug("Failed to get non-parent reference (static) (DispID 0%x) (X:%hd Y:%hd Z:%hhd)\n", pStatic->GetDispID(), ptTest.m_x, ptTest.m_y, ptTest.m_z);
+					iHeight = pItemDef->GetHeight();
+				}
 			}
-			ptTest.m_z = minimum(ptTest.m_z + Height, UO_SIZE_Z); //height + current position = the top point
+			ptTest.m_z = minimum(ptTest.m_z + iHeight, UO_SIZE_Z);	// Z + height = top point
 
-			if ( pt.GetDist( ptTest ) > iDistance )
+			if ( pt.GetDist(ptTest) > iDist )
 				continue;
-
-			if ( pt.GetDist( ptTest ) > iDistance )
-				continue;
-
-			//if ( ptElem[2].m_z > pStatic->m_z )
 			if ( ptElem[2].m_z > ptTest.m_z )
 				continue;
-
-			if ( ((( pStatic->m_z - pt.m_z ) > 0) && ( pStatic->m_z - pt.m_z ) > RESOURCE_Z_CHECK ) || ((( pt.m_z - pStatic->m_z ) < 0) && (( pt.m_z - pStatic->m_z ) < - RESOURCE_Z_CHECK )))
+			if ( (pt.m_z - pStatic->m_z < -RESOURCE_Z_CHECK) || (pStatic->m_z - pt.m_z > RESOURCE_Z_CHECK) )
 				continue;
-
-			if (( ptTest.m_z < ptElem[2].m_z ) || (( ptTest.m_z == ptElem[2].m_z ) && ( fElem[2] )))
+			if ( (ptTest.m_z < ptElem[2].m_z) || ((ptTest.m_z == ptElem[2].m_z) && fElem[2]) )
 				continue;
 
 			ptElem[2] = ptTest;
 			fElem[2] = false;
 
-			//DEBUG_ERR(("static pItemDef->IsType( iType %d) %d;pItemDef->GetType() %d;pItemDef->GetID() %d;pItemDef->GetDispID() %d\n",iType,pItemDef->IsType( iType ),pItemDef->GetType(),pItemDef->GetID(),pItemDef->GetDispID()));
-			if ( pItemDef->IsType( iType ) )
+			if ( pItemDef->IsType(type) )
 			{
-				//DEBUG_ERR(("found %d; ptTest: %d,%d,%d\n",__LINE__,ptTest.m_x,ptTest.m_y,ptTest.m_z));
 				fElem[2] = true;
-				//DEBUG_ERR(("ptElem[iRetElem].m_z %d, ptElem[2].m_z %d\n",ptElem[iRetElem].m_z,ptElem[2].m_z));
-				//if ( ptElem[iRetElem].m_z > ptElem[2].m_z )
 				if ( ptElem[2].m_z > ptElem[iRetElem].m_z )
 					iRetElem = 2;
 			}
 		}
 	}
 
-	// Check for appropriate terrain type
+	// Check terrain type
 	CRectMap rect;
-	rect.SetRect( pt.m_x - iDistance, pt.m_y - iDistance,
-		pt.m_x + iDistance + 1, pt.m_y + iDistance + 1,
-		pt.m_map);
-
-	const CUOMapMeter * pMeter = NULL;
-	for ( int x = rect.m_left; x < rect.m_right; ++x, pMeter = NULL )
+	rect.SetRect(pt.m_x - iDist, pt.m_y - iDist, pt.m_x + iDist + 1, pt.m_y + iDist + 1, pt.m_map);
+	const CUOMapMeter *pMapMeter = NULL;
+	for ( int x = rect.m_left; x < rect.m_right; ++x )
 	{
-		for ( int y = rect.m_top; y < rect.m_bottom; ++y, pMeter = NULL )
+		for ( int y = rect.m_top; y < rect.m_bottom; ++y )
 		{
 			ptTest = CPointMap(static_cast<signed short>(x), static_cast<signed short>(y), pt.m_z, pt.m_map);
-			pMeter = GetMapMeter(ptTest);
-			if ( !pMeter )
+			pMapMeter = GetMapMeter(ptTest);
+			if ( !pMapMeter )
 				continue;
-			if ( pt.GetDist( ptTest ) > iDistance )
+			if ( pt.GetDist(ptTest) > iDist )
 				continue;
-			if ( ptElem[3].m_z > pMeter->m_z )
+			if ( ptElem[3].m_z > pMapMeter->m_z )
 				continue;
-
-			//DEBUG_ERR(("(( pMeter->m_z (%d) - pt.m_z (%d) ) > 0) && ( pMeter->m_z (%d) - pt.m_z (%d) ) > RESOURCE_Z_CHECK (%d) >> %d\n",pMeter->m_z,pt.m_z,pMeter->m_z,pt.m_z,RESOURCE_Z_CHECK,(( pMeter->m_z - pt.m_z ) > 0) && ( pMeter->m_z - pt.m_z ) > RESOURCE_Z_CHECK));
-			//DEBUG_ERR(("(( pt.m_z (%d) - pMeter->m_z (%d) ) < 0) && (( pt.m_z (%d) - pMeter->m_z (%d) ) < - RESOURCE_Z_CHECK (%d) )) >> %d\n",pt.m_z,pMeter->m_z,pt.m_z,pMeter->m_z,- RESOURCE_Z_CHECK,((( pt.m_z - pMeter->m_z ) < 0) && (( pt.m_z - pMeter->m_z ) < - RESOURCE_Z_CHECK ))));
-			if ( ((( pMeter->m_z - pt.m_z ) > 0) && ( pMeter->m_z - pt.m_z ) > RESOURCE_Z_CHECK ) || ((( pt.m_z - pMeter->m_z ) < 0) && (( pt.m_z - pMeter->m_z ) < - RESOURCE_Z_CHECK )))
+			if ( (pt.m_z - pMapMeter->m_z < -RESOURCE_Z_CHECK) || (pMapMeter->m_z - pt.m_z > RESOURCE_Z_CHECK) )
 				continue;
-
-			//DEBUG_ERR(("pMeter->m_z (%d) < ptElem[3].m_z (%d) >> %d\n",pMeter->m_z,ptElem[3].m_z,pMeter->m_z < ptElem[3].m_z));
-			if (( pMeter->m_z < ptElem[3].m_z ) || (( pMeter->m_z == ptElem[3].m_z ) && ( fElem[3] )))
+			if ( (pMapMeter->m_z < ptElem[3].m_z) || ((pMapMeter->m_z == ptElem[3].m_z) && fElem[3]) )
 				continue;
 
 			ptElem[3] = ptTest;
 			fElem[3] = false;
 
-			//DEBUG_ERR(("iType %x, TerrainType %x\n",iType,g_World.GetTerrainItemType( pMeter->m_wTerrainIndex )));
-			if ( iType == g_World.GetTerrainItemType( pMeter->m_wTerrainIndex ) )
+			if ( type == g_World.GetTerrainItemType(pMapMeter->m_wTerrainIndex) )
 			{
 				fElem[3] = true;
-				//if ( ptElem[iRetElem].m_z > ptElem[3].m_z )
-				//DEBUG_ERR(("ptElem[3].m_z %d; ptElem[iRetElem].m_z %d\n",ptElem[3].m_z, ptElem[iRetElem].m_z));
 				if ( ptElem[3].m_z > ptElem[iRetElem].m_z )
-						iRetElem = 3;
-				//DEBUG_ERR(("fElem3 %d %d\n",ptElem[3].m_z, fElem[3]));
+					iRetElem = 3;
 				continue;
 			}
 
-			rect.SetRect( pt.m_x - iDistance, pt.m_y - iDistance, pt.m_x + iDistance + 1, pt.m_y + iDistance + 1, pt.m_map);
+			rect.SetRect(pt.m_x - iDist, pt.m_y - iDist, pt.m_x + iDist + 1, pt.m_y + iDist + 1, pt.m_map);
 		}
 	}
 
-	/*CPointMap a;
-	a.m_z = maximum(
-	// priority dynamic->multi->static->terrain
-	int iRetElem;
-	if (( ptElem[0].m_z >= ptElem[1].m_z ) && ( fElem[0] ))
-		iRetElem = 0;
-	else if (( ptElem[1].m_z >= ptElem[2].m_z ) && ( fElem[1] ))
-		iRetElem = 1;
-	else if (( ptElem[2].m_z >= ptElem[3].m_z ) && ( fElem[2] ))
-		iRetElem = 2;
-	else if ( fElem[3] )
-		iRetElem = 3;
-	else
-		iRetElem = 4;*/
-
 	ASSERT(iRetElem < COUNTOF(ptElem));
-	if ( 0 != iRetElem && ptElem[0].m_z > ptElem[iRetElem].m_z )
-			 iRetElem = 4;
-	else if ( 1 != iRetElem && ptElem[1].m_z > ptElem[iRetElem].m_z )
-		     iRetElem = 4;
-	else if ( 2 != iRetElem && ptElem[2].m_z > ptElem[iRetElem].m_z )
-		     iRetElem = 4;
-	else if ( 3 != iRetElem && ptElem[3].m_z > ptElem[iRetElem].m_z )
-		     iRetElem = 4;
+	if ( (iRetElem != 0) && (ptElem[0].m_z > ptElem[iRetElem].m_z) )
+		iRetElem = 4;
+	else if ( (iRetElem != 1) && (ptElem[1].m_z > ptElem[iRetElem].m_z) )
+		iRetElem = 4;
+	else if ( (iRetElem != 2) && (ptElem[2].m_z > ptElem[iRetElem].m_z) )
+		iRetElem = 4;
+	else if ( (iRetElem != 3) && (ptElem[3].m_z > ptElem[iRetElem].m_z) )
+		iRetElem = 4;
 
-	//DEBUG_ERR(("iRetElem %d; %d %d %d %d; %d %d %d ISVALID: %d\n",iRetElem,ptElem[1].m_z,ptElem[2].m_z,ptElem[3].m_z,ptElem[4].m_z,pt.m_x,pt.m_y,pt.m_z,ptElem[iRetElem].IsValidPoint()));
-	//DEBUG_ERR(("X: %d  Y: %d  Z: %d\n",ptElem[iRetElem].m_x,ptElem[iRetElem].m_y,ptElem[iRetElem].m_z));
-	return ( ptElem[iRetElem] );
-#undef RESOURCE_Z_CHECK
+	return ptElem[iRetElem];
+	#undef RESOURCE_Z_CHECK
 }
 
-bool CWorld::IsItemTypeNear(const CPointMap & pt, IT_TYPE iType, int iDistance, bool bCheckMulti, bool bLimitZ)
+bool CWorld::IsItemTypeNear(const CPointMap &pt, IT_TYPE type, int iDist, bool fCheckMulti, bool fLimitZ)
 {
 	ADDTOCALLSTACK("CWorld::IsItemTypeNear");
 	if ( !pt.IsValidPoint() )
 		return false;
-	CPointMap ptTest = FindItemTypeNearby(pt, iType, iDistance, bCheckMulti, bLimitZ);
+
+	CPointMap ptTest = FindItemTypeNearby(pt, type, iDist, fCheckMulti, fLimitZ);
 	return ptTest.IsValidPoint();
 }
 
-CPointMap CWorld::FindItemTypeNearby(const CPointMap & pt, IT_TYPE iType, int iDistance, bool bCheckMulti, bool bLimitZ)
+CPointMap CWorld::FindItemTypeNearby(const CPointMap &pt, IT_TYPE type, int iDist, bool fCheckMulti, bool fLimitZ)
 {
 	ADDTOCALLSTACK("CWorld::FindItemTypeNearby");
-	// Find the closest item of this type.
-	// This does not mean that i can touch it.
-	// ARGS:
-	//   iDistance = 2d distance to search.
+	// Find the closest item of this type
+	// NOTE: this doesn't mean that I can touch it
 
+	int iDistTest;
 	CPointMap ptFound;
-	int iTestDistance;
 
-		
-	// Check dynamics first since they are the easiest.
-	CWorldSearch Area( pt, iDistance );
+	// Check dynamic items
+	CItem *pItem = NULL;
+	CWorldSearch Area(pt, iDist);
 	for (;;)
 	{
-		CItem * pItem = Area.GetItem();
-		if ( pItem == NULL )
+		pItem = Area.GetItem();
+		if ( !pItem )
 			break;
-
-		if ( ! pItem->IsType( iType ) && ! pItem->Item_GetDef()->IsType(iType) )
+		if ( !pItem->IsType(type) && !pItem->Item_GetDef()->IsType(type) )
 			continue;
-		if ( bLimitZ && (abs(pItem->GetTopPoint().m_z - pt.m_z) > PLAYER_HEIGHT) )
+		if ( fLimitZ && (abs(pItem->GetTopPoint().m_z - pt.m_z) > PLAYER_HEIGHT) )
 			continue;
 
-		iTestDistance = pt.GetDist(pItem->GetTopPoint());
-		if ( iTestDistance > iDistance )
+		iDistTest = pt.GetDist(pItem->GetTopPoint());
+		if ( iDistTest > iDist )
 			continue;
 
 		ptFound = pItem->GetTopPoint();
-		iDistance = iTestDistance;	// tighten up the search.
-		if ( ! iDistance )
-			return( ptFound );
+		iDist = iDistTest;		// tighten up the search
+		if ( !iDist )
+			return ptFound;
 	}
 
-	// Check for appropriate terrain type
+	// Check terrain type
 	CRectMap rect;
-	rect.SetRect( pt.m_x - iDistance, pt.m_y - iDistance,
-		pt.m_x + iDistance + 1, pt.m_y + iDistance + 1,
-		pt.m_map);
-
-	const CUOMapMeter * pMeter = NULL;
-	for (int x = rect.m_left; x < rect.m_right; x++, pMeter = NULL )
+	rect.SetRect(pt.m_x - iDist, pt.m_y - iDist, pt.m_x + iDist + 1, pt.m_y + iDist + 1, pt.m_map);
+	const CUOMapMeter *pMapMeter = NULL;
+	for ( int x = rect.m_left; x < rect.m_right; ++x )
 	{
-		for ( int y = rect.m_top; y < rect.m_bottom; y++, pMeter = NULL )
+		for ( int y = rect.m_top; y < rect.m_bottom; ++y )
 		{
 			CPointMap ptTest(static_cast<signed short>(x), static_cast<signed short>(y), pt.m_z, pt.m_map);
-			pMeter = GetMapMeter(ptTest);
-
-			if ( !pMeter )
+			pMapMeter = GetMapMeter(ptTest);
+			if ( !pMapMeter )
 				continue;
-			if ( bLimitZ && (abs(pMeter->m_z - pt.m_z) > PLAYER_HEIGHT) )
+			if ( fLimitZ && (abs(pMapMeter->m_z - pt.m_z) > PLAYER_HEIGHT) )
 				continue;
-
-			ptTest.m_z = pMeter->m_z;
-
-			if ( iType != g_World.GetTerrainItemType( pMeter->m_wTerrainIndex ) )
+			if ( type != g_World.GetTerrainItemType(pMapMeter->m_wTerrainIndex) )
 				continue;
 
-			iTestDistance = pt.GetDist(ptTest);
-			if ( iTestDistance > iDistance )
+			ptTest.m_z = pMapMeter->m_z;
+			iDistTest = pt.GetDist(ptTest);
+			if ( iDistTest > iDist )
 				break;
 
 			ptFound = ptTest;
-			iDistance = iTestDistance;	// tighten up the search.
-			if ( ! iDistance )
-				return( ptFound );
+			iDist = iDistTest;		// tighten up the search
+			if ( !iDist )
+				return ptFound;
 
-			rect.SetRect( pt.m_x - iDistance, pt.m_y - iDistance,
-				pt.m_x + iDistance + 1, pt.m_y + iDistance + 1,
-				pt.m_map);
+			rect.SetRect(pt.m_x - iDist, pt.m_y - iDist, pt.m_x + iDist + 1, pt.m_y + iDist + 1, pt.m_map);
 		}
 	}
 
-
-	// Check for statics
-	rect.SetRect( pt.m_x - iDistance, pt.m_y - iDistance,
-		pt.m_x + iDistance + 1, pt.m_y + iDistance + 1,
-		pt.m_map);
-
-	const CGrayMapBlock * pMapBlock = NULL;
-	const CUOStaticItemRec * pStatic = NULL;
-	const CItemBase * pItemDef = NULL;
-
-	for (int x = rect.m_left; x < rect.m_right; x += UO_BLOCK_SIZE, pMapBlock = NULL )
+	// Check map statics
+	rect.SetRect(pt.m_x - iDist, pt.m_y - iDist, pt.m_x + iDist + 1, pt.m_y + iDist + 1, pt.m_map);
+	const CGrayMapBlock *pMapBlock = NULL;
+	const CUOStaticItemRec *pStatic = NULL;
+	const CItemBase *pItemDef = NULL;
+	for ( int x = rect.m_left; x < rect.m_right; x += UO_BLOCK_SIZE )
 	{
-		for ( int y = rect.m_top; y < rect.m_bottom; y += UO_BLOCK_SIZE, pMapBlock = NULL )
+		for ( int y = rect.m_top; y < rect.m_bottom; y += UO_BLOCK_SIZE )
 		{
 			CPointMap ptTest(static_cast<signed short>(x), static_cast<signed short>(y), pt.m_z, pt.m_map);
-			pMapBlock = GetMapBlock( ptTest );
-
+			pMapBlock = GetMapBlock(ptTest);
 			if ( !pMapBlock )
 				continue;
-			
-			size_t iQty = pMapBlock->m_Statics.GetStaticQty();
-			if ( iQty <= 0 )
+
+			size_t iStaticQty = pMapBlock->m_Statics.GetStaticQty();
+			if ( iStaticQty <= 0 )
 				continue;
 
-			pStatic = NULL; 
-			pItemDef = NULL;
-
-			for ( size_t i = 0; i < iQty; i++, pStatic = NULL, pItemDef = NULL )
+			for ( size_t i = 0; i < iStaticQty; ++i )
 			{
-				pStatic = pMapBlock->m_Statics.GetStatic( i );
-				if ( bLimitZ && (abs(pStatic->m_z - ptTest.m_z) > PLAYER_HEIGHT) )
+				pStatic = pMapBlock->m_Statics.GetStatic(i);
+				if ( fLimitZ && (abs(pStatic->m_z - ptTest.m_z) > PLAYER_HEIGHT) )
 					continue;
 
-				// inside the range we want ?
-				CPointMap ptStatic( pStatic->m_x+pMapBlock->m_x, pStatic->m_y+pMapBlock->m_y, pStatic->m_z, ptTest.m_map);
-				iTestDistance = pt.GetDist(ptStatic);
-				if ( iTestDistance > iDistance )
+				CPointMap ptStatic(pStatic->m_x + pMapBlock->m_x, pStatic->m_y + pMapBlock->m_y, pStatic->m_z, ptTest.m_map);
+				iDistTest = pt.GetDist(ptStatic);
+				if ( iDistTest > iDist )
 					continue;
 
-				ITEMID_TYPE idTile = pStatic->GetDispID();
-
-				// Check the script def for the item.
-				pItemDef = CItemBase::FindItemBase( idTile );
-				if ( pItemDef == NULL )
+				pItemDef = CItemBase::FindItemBase(pStatic->GetDispID());
+				if ( !pItemDef )
 					continue;
-				if ( ! pItemDef->IsType( iType ))
+				if ( !pItemDef->IsType(type) )
 					continue;
 
 				ptFound = ptStatic;
-				iDistance = iTestDistance;
-				if ( ! iDistance )
-					return( ptFound );
+				iDist = iDistTest;
+				if ( !iDist )
+					return ptFound;
 
-				rect.SetRect( pt.m_x - iDistance, pt.m_y - iDistance,
-					pt.m_x + iDistance + 1, pt.m_y + iDistance + 1,
-					pt.m_map);
+				rect.SetRect(pt.m_x - iDist, pt.m_y - iDist, pt.m_x + iDist + 1, pt.m_y + iDist + 1, pt.m_map);
 			}
 		}
 	}
 
-	// Check for multi components
-	if (bCheckMulti == true)
+	// Check multi components
+	if ( fCheckMulti )
 	{
-		rect.SetRect( pt.m_x - iDistance, pt.m_y - iDistance,
-			pt.m_x + iDistance + 1, pt.m_y + iDistance + 1,
-			pt.m_map);
-
-		for (int x = rect.m_left; x < rect.m_right; x++)
+		rect.SetRect(pt.m_x - iDist, pt.m_y - iDist, pt.m_x + iDist + 1, pt.m_y + iDist + 1, pt.m_map);
+		for ( int x = rect.m_left; x < rect.m_right; ++x )
 		{
-			for (int y = rect.m_top; y < rect.m_bottom; y++)
+			for ( int y = rect.m_top; y < rect.m_bottom; ++y )
 			{
 				CPointMap ptTest(static_cast<signed short>(x), static_cast<signed short>(y), pt.m_z, pt.m_map);
-
 				CRegionLinks rlinks;
 				size_t iRegionQty = ptTest.GetRegions(REGION_TYPE_MULTI, rlinks);
 				if ( iRegionQty > 0 )
 				{
-					for (size_t iRegion = 0; iRegion < iRegionQty; iRegion++)
+					CRegionBase *pRegion = NULL;
+					CItem *pItem = NULL;
+					for ( size_t iRegion = 0; iRegion < iRegionQty; ++iRegion )
 					{
-						CRegionBase* pRegion = rlinks.GetAt(iRegion);
-						CItem* pItem = pRegion->GetResourceID().ItemFind();
-						if (pItem == NULL)
+						pRegion = rlinks.GetAt(iRegion);
+						pItem = pRegion->GetResourceID().ItemFind();
+						if ( !pItem )
 							continue;
 
-						const CGrayMulti * pMulti = g_Cfg.GetMultiItemDefs(pItem);
-						if (pMulti == NULL)
+						const CGrayMulti *pMulti = g_Cfg.GetMultiItemDefs(pItem);
+						if ( !pMulti )
 							continue;
 
 						int x2 = ptTest.m_x - pItem->GetTopPoint().m_x;
 						int y2 = ptTest.m_y - pItem->GetTopPoint().m_y;
 
 						size_t iItemQty = pMulti->GetItemCount();
-						for (size_t iItem = 0; iItem < iItemQty; iItem++)
+						for ( size_t iItem = 0; iItem < iItemQty; ++iItem )
 						{
-							const CUOMultiItemRec2* pMultiItem = pMulti->GetItem(iItem);
-							ASSERT(pMultiItem);
-
+							const CUOMultiItemRec2 *pMultiItem = pMulti->GetItem(iItem);
+							if ( !pMultiItem )
+								break;
 							if ( !pMultiItem->m_visible )
 								continue;
-							if ( pMultiItem->m_dx != x2 || pMultiItem->m_dy != y2 )
+							if ( (pMultiItem->m_dx != x2) || (pMultiItem->m_dy != y2) )
 								continue;
-							if ( bLimitZ && (abs(pMultiItem->m_dz - ptTest.m_z) > PLAYER_HEIGHT) )
-								continue;
-
-							iTestDistance = pt.GetDist(ptTest);
-							if (iTestDistance > iDistance)
+							if ( fLimitZ && (abs(pMultiItem->m_dz - ptTest.m_z) > PLAYER_HEIGHT) )
 								continue;
 
-							ITEMID_TYPE idTile = pMultiItem->GetDispID();
+							iDistTest = pt.GetDist(ptTest);
+							if ( iDistTest > iDist )
+								continue;
 
-							// Check the script def for the item.
-							pItemDef = CItemBase::FindItemBase(idTile);
-							if (pItemDef == NULL || !pItemDef->IsType(iType))
+							pItemDef = CItemBase::FindItemBase(pMultiItem->GetDispID());
+							if ( !pItemDef || !pItemDef->IsType(type) )
 								continue;
 
 							ptFound = ptTest;
-							iDistance = iTestDistance;
-							if ( !iDistance )
-								return( ptFound );
+							iDist = iDistTest;
+							if ( !iDist )
+								return ptFound;
 
-							rect.SetRect( pt.m_x - iDistance, pt.m_y - iDistance,
-										  pt.m_x + iDistance + 1, pt.m_y + iDistance + 1,
-										  pt.m_map);
+							rect.SetRect(pt.m_x - iDist, pt.m_y - iDist, pt.m_x + iDist + 1, pt.m_y + iDist + 1, pt.m_map);
 						}
 					}
 				}
@@ -686,78 +560,76 @@ CPointMap CWorld::FindItemTypeNearby(const CPointMap & pt, IT_TYPE iType, int iD
 	return ptFound;
 }
 
-//****************************************************
-
-void CWorld::GetFixPoint( const CPointMap & pt, CGrayMapBlockState & block)
+void CWorld::GetFixPoint(const CPointMap &pt, CGrayMapBlockState &block)
 {
-	//Will get the highest CAN_I_PLATFORM|CAN_I_CLIMB and places it into block.Bottom
 	ADDTOCALLSTACK("CWorld::GetFixPoint");
-	CItemBase * pItemDef = NULL;
-	CItemBaseDupe * pDupeDef = NULL;
-	CItem * pItem = NULL;
-	DWORD dwBlockThis = 0;
-	signed char z = 0;
-	int x2 = 0, y2 = 0;
+	// Get the highest CAN_I_PLATFORM|CAN_I_CLIMB and set it into block.m_Bottom
 
-	// Height of statics at/above given coordinates
-	// do gravity here for the z.
-	const CGrayMapBlock * pMapBlock = GetMapBlock( pt );
-	if (pMapBlock == NULL)
+	CItem *pItem = NULL;
+	CItemBase *pItemDef = NULL;
+	CItemBaseDupe *pDupeDef = NULL;
+	DWORD dwBlockThis = 0;
+	int x2 = 0, y2 = 0;
+	signed char z = 0;
+
+	const CGrayMapBlock *pMapBlock = GetMapBlock(pt);
+	if ( !pMapBlock )
 		return;
 
+	// Check map statics
+	// Height of statics at/above given coordinates (do gravity here for the z)
 	size_t iQty = pMapBlock->m_Statics.GetStaticQty();
-	if ( iQty > 0 )  // no static items here.
+	if ( iQty > 0 )
 	{
 		x2 = pMapBlock->GetOffsetX(pt.m_x);
 		y2 = pMapBlock->GetOffsetY(pt.m_y);
-		const CUOStaticItemRec * pStatic = NULL;
-		for ( size_t i = 0; i < iQty; ++i, z = 0, pStatic = NULL, pDupeDef = NULL )
+		const CUOStaticItemRec *pStatic = NULL;
+		for ( size_t i = 0; i < iQty; ++i )
 		{
-			if ( ! pMapBlock->m_Statics.IsStaticPoint( i, x2, y2 ))
+			if ( !pMapBlock->m_Statics.IsStaticPoint(i, x2, y2) )
 				continue;
 
-			pStatic = pMapBlock->m_Statics.GetStatic( i );
-			if ( pStatic == NULL )
+			pStatic = pMapBlock->m_Statics.GetStatic(i);
+			if ( !pStatic )
 				continue;
 
 			z = pStatic->m_z;
-
-			pItemDef = CItemBase::FindItemBase( pStatic->GetDispID() );
+			pItemDef = CItemBase::FindItemBase(pStatic->GetDispID());
 			if ( pItemDef )
 			{
-				if (pItemDef->GetID() == pStatic->GetDispID()) //parent item
+				if ( pItemDef->GetID() == pStatic->GetDispID() )	// parent item
 				{
 					dwBlockThis = (pItemDef->m_Can & CAN_I_MOVEMASK);
-					z += ((dwBlockThis & CAN_I_CLIMB) ? pItemDef->GetHeight()/2 : pItemDef->GetHeight());
+					z += (dwBlockThis & CAN_I_CLIMB) ? pItemDef->GetHeight() / 2 : pItemDef->GetHeight();
 				}
-				else //non-parent item
+				else
 				{
 					pDupeDef = CItemBaseDupe::GetDupeRef(static_cast<ITEMID_TYPE>(pStatic->GetDispID()));
-					if ( ! pDupeDef )
+					if ( pDupeDef )
 					{
-						g_Log.EventDebug("Failed to get non-parent reference (static) (DispID 0%x) (X: %d Y: %d Z: %d)\n",pStatic->GetDispID(),pStatic->m_x+pMapBlock->m_x,pStatic->m_y+pMapBlock->m_y,pStatic->m_z);
-						dwBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK );
-						z += ((dwBlockThis & CAN_I_CLIMB) ? pItemDef->GetHeight()/2 : pItemDef->GetHeight());
+						dwBlockThis = (pDupeDef->m_Can & CAN_I_MOVEMASK);
+						z += (dwBlockThis & CAN_I_CLIMB) ? pDupeDef->GetHeight() / 2 : pDupeDef->GetHeight();
 					}
 					else
 					{
-						dwBlockThis = (pDupeDef->m_Can & CAN_I_MOVEMASK);
-						z += ((dwBlockThis & CAN_I_CLIMB) ? pDupeDef->GetHeight()/2 : pDupeDef->GetHeight());
+						g_Log.EventDebug("Failed to get non-parent reference (static) (DispID 0%x) (X:%hd Y:%hd Z:%hhd)\n", pStatic->GetDispID(), pStatic->m_x + pMapBlock->m_x, pStatic->m_y + pMapBlock->m_y, pStatic->m_z);
+						dwBlockThis = (pItemDef->m_Can & CAN_I_MOVEMASK);
+						z += (dwBlockThis & CAN_I_CLIMB) ? pItemDef->GetHeight() / 2 : pItemDef->GetHeight();
 					}
 				}
 			}
 			else if ( pStatic->GetDispID() )
-				CItemBase::GetItemTiledataFlags(dwBlockThis,pStatic->GetDispID());
+				CItemBase::GetItemTiledataFlags(dwBlockThis, pStatic->GetDispID());
 
-			if (block.m_Bottom.m_z < z)
+			if ( block.m_Bottom.m_z < z )
 			{
-				if ((z < pt.m_z+PLAYER_HEIGHT) && (dwBlockThis & (CAN_I_PLATFORM|CAN_I_CLIMB|CAN_I_WATER)))
+				if ( (z < pt.m_z + PLAYER_HEIGHT) && (dwBlockThis & (CAN_I_PLATFORM|CAN_I_CLIMB|CAN_I_WATER)) )
 				{
 					block.m_Bottom.m_dwBlockFlags = dwBlockThis;
 					block.m_Bottom.m_dwTile = pStatic->GetDispID() + TERRAIN_QTY;
 					block.m_Bottom.m_z = z;
 				}
-				else if (block.m_Top.m_z > z)
+				else if ( block.m_Top.m_z > z )
 				{
 					block.m_Top.m_dwBlockFlags = dwBlockThis;
 					block.m_Top.m_dwTile = pStatic->GetDispID() + TERRAIN_QTY;
@@ -767,116 +639,87 @@ void CWorld::GetFixPoint( const CPointMap & pt, CGrayMapBlockState & block)
 		}
 	}
 
-	pItemDef = NULL;
-	pDupeDef = NULL;
-	pItem = NULL;
-	dwBlockThis = 0;
-	z = 0;
-	x2 = y2 = 0;
-	iQty = 0;
-
-	// Any multi items here ?
-	// Check all of them
+	// Check multi components
 	CRegionLinks rlinks;
-	size_t iRegionQty = pt.GetRegions( REGION_TYPE_MULTI, rlinks );
+	size_t iRegionQty = pt.GetRegions(REGION_TYPE_MULTI, rlinks);
 	if ( iRegionQty > 0 )
 	{
-		//  ------------ For variables --------------------
-		CRegionBase * pRegion = NULL;
-		const CGrayMulti * pMulti = NULL;
-		const CUOMultiItemRec2 * pMultiItem = NULL;
-		x2 = 0;
-		y2 = 0;
-		//  ------------ For variables --------------------
-
-		for ( size_t iRegion = 0; iRegion < iRegionQty; ++iRegion, pRegion = NULL, pItem = NULL, pMulti = NULL, x2 = 0, y2 = 0 )
+		CRegionBase *pRegion = NULL;
+		const CGrayMulti *pMulti = NULL;
+		const CUOMultiItemRec2 *pMultiItem = NULL;
+		for ( size_t iRegion = 0; iRegion < iRegionQty; ++iRegion )
 		{
 			pRegion = rlinks.GetAt(iRegion);
-			if ( pRegion != NULL )
-				pItem = pRegion->GetResourceID().ItemFind();
+			pItem = pRegion->GetResourceID().ItemFind();
+			if ( !pItem )
+				continue;
 
-			if ( pItem != NULL )
+			pMulti = g_Cfg.GetMultiItemDefs(pItem);
+			if ( !pMulti )
+				continue;
+
+			x2 = pt.m_x - pItem->GetTopPoint().m_x;
+			y2 = pt.m_y - pItem->GetTopPoint().m_y;
+			iQty = pMulti->GetItemCount();
+			for ( size_t iItem = 0; iItem < iQty; ++iItem )
 			{
-				pMulti = g_Cfg.GetMultiItemDefs(pItem);
-				if ( pMulti )
+				pMultiItem = pMulti->GetItem(iItem);
+				if ( !pMultiItem )
+					break;
+				if ( !pMultiItem->m_visible )
+					continue;
+				if ( (pMultiItem->m_dx != x2) || (pMultiItem->m_dy != y2) )
+					continue;
+
+				z = pItem->GetTopZ() + static_cast<signed char>(pMultiItem->m_dz);
+				pItemDef = CItemBase::FindItemBase(pMultiItem->GetDispID());
+				if ( pItemDef )
 				{
-					x2 = pt.m_x - pItem->GetTopPoint().m_x;
-					y2 = pt.m_y - pItem->GetTopPoint().m_y;
-					iQty = pMulti->GetItemCount();
-					for ( size_t ii = 0; ii < iQty; ++ii, pMultiItem = NULL, z = 0 )
+					if ( pItemDef->GetID() == pMultiItem->GetDispID() )		// parent item
 					{
-						pMultiItem = pMulti->GetItem(ii);
-
-						if ( !pMultiItem )
-							break;
-
-						if ( ! pMultiItem->m_visible )
-							continue;
-
-						if ( pMultiItem->m_dx != x2 || pMultiItem->m_dy != y2 )
-							continue;
-
-						z = pItem->GetTopZ() + static_cast<signed char>(pMultiItem->m_dz);
-
-						pItemDef = CItemBase::FindItemBase( pMultiItem->GetDispID() );
-						if ( pItemDef != NULL )
+						dwBlockThis = (pItemDef->m_Can & CAN_I_MOVEMASK);
+						z += (dwBlockThis & CAN_I_CLIMB) ? pItemDef->GetHeight() / 2 : pItemDef->GetHeight();
+					}
+					else
+					{
+						pDupeDef = CItemBaseDupe::GetDupeRef(static_cast<ITEMID_TYPE>(pMultiItem->GetDispID()));
+						if ( pDupeDef )
 						{
-							if ( pItemDef->GetID() == pMultiItem->GetDispID() ) //parent item
-							{
-								dwBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK );
-								z += ((dwBlockThis & CAN_I_CLIMB) ? pItemDef->GetHeight()/2 : pItemDef->GetHeight());
-							}
-							else //non-parent item
-							{
-								pDupeDef = CItemBaseDupe::GetDupeRef(static_cast<ITEMID_TYPE>(pMultiItem->GetDispID()));
-								if ( pDupeDef == NULL )
-								{
-									g_Log.EventDebug("Failed to get non-parent reference (multi) (DispID 0%x) (X: %d Y: %d Z: %d)\n",pMultiItem->GetDispID(),pMultiItem->m_dx+pItem->GetTopPoint().m_x,pMultiItem->m_dy+pItem->GetTopPoint().m_y,pMultiItem->m_dz+pItem->GetTopPoint().m_z);
-									dwBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK );
-									z += ((dwBlockThis & CAN_I_CLIMB) ? pItemDef->GetHeight()/2 : pItemDef->GetHeight());
-								}
-								else
-								{
-									dwBlockThis = ( pDupeDef->m_Can & CAN_I_MOVEMASK );
-									z += ((dwBlockThis & CAN_I_CLIMB) ? pDupeDef->GetHeight()/2 : pDupeDef->GetHeight());
-								}
-							}
+							dwBlockThis = (pDupeDef->m_Can & CAN_I_MOVEMASK);
+							z += (dwBlockThis & CAN_I_CLIMB) ? pDupeDef->GetHeight() / 2 : pDupeDef->GetHeight();
 						}
-						else if ( pMultiItem->GetDispID() )
-							CItemBase::GetItemTiledataFlags(dwBlockThis,pMultiItem->GetDispID());
-
-						if (block.m_Bottom.m_z < z)
+						else
 						{
-							if ( (z < pt.m_z + PLAYER_HEIGHT) && (dwBlockThis & (CAN_I_PLATFORM|CAN_I_CLIMB|CAN_I_WATER)) )
-							{
-								block.m_Bottom.m_dwBlockFlags = dwBlockThis;
-								block.m_Bottom.m_dwTile = pMultiItem->GetDispID() + TERRAIN_QTY;
-								block.m_Bottom.m_z = z;
-							}
-							else if ( block.m_Top.m_z > z )
-							{
-								block.m_Top.m_dwBlockFlags = dwBlockThis;
-								block.m_Top.m_dwTile = pMultiItem->GetDispID() + TERRAIN_QTY;
-								block.m_Top.m_z = z;
-							}
+							g_Log.EventDebug("Failed to get non-parent reference (multi) (DispID 0%x) (X:%hd Y:%hd Z:%hd)\n", pMultiItem->GetDispID(), pMultiItem->m_dx + pItem->GetTopPoint().m_x, pMultiItem->m_dy + pItem->GetTopPoint().m_y, pMultiItem->m_dz + pItem->GetTopPoint().m_z);
+							dwBlockThis = (pItemDef->m_Can & CAN_I_MOVEMASK);
+							z += (dwBlockThis & CAN_I_CLIMB) ? pItemDef->GetHeight() / 2 : pItemDef->GetHeight();
 						}
+					}
+				}
+				else if ( pMultiItem->GetDispID() )
+					CItemBase::GetItemTiledataFlags(dwBlockThis, pMultiItem->GetDispID());
+
+				if ( block.m_Bottom.m_z < z )
+				{
+					if ( (z < pt.m_z + PLAYER_HEIGHT) && (dwBlockThis & (CAN_I_PLATFORM|CAN_I_CLIMB|CAN_I_WATER)) )
+					{
+						block.m_Bottom.m_dwBlockFlags = dwBlockThis;
+						block.m_Bottom.m_dwTile = pMultiItem->GetDispID() + TERRAIN_QTY;
+						block.m_Bottom.m_z = z;
+					}
+					else if ( block.m_Top.m_z > z )
+					{
+						block.m_Top.m_dwBlockFlags = dwBlockThis;
+						block.m_Top.m_dwTile = pMultiItem->GetDispID() + TERRAIN_QTY;
+						block.m_Top.m_z = z;
 					}
 				}
 			}
 		}
 	}
 
-	pItemDef = NULL;
-	pDupeDef = NULL;
-	pItem = NULL;
-	dwBlockThis = 0;
-	x2 = y2 = iQty = 0;
-	z = 0;
-
-	// Any dynamic items here ?
-	// NOTE: This could just be an item that an NPC could just move ?
-	CWorldSearch Area( pt );
-
+	// Check dynamic items
+	CWorldSearch Area(pt);
 	for (;;)
 	{
 		pItem = Area.GetItem();
@@ -884,30 +727,27 @@ void CWorld::GetFixPoint( const CPointMap & pt, CGrayMapBlockState & block)
 			break;
 
 		z = pItem->GetTopZ();
-
-		// Invis items should not block ???
-		pItemDef = CItemBase::FindItemBase( pItem->GetDispID() );
-
+		pItemDef = CItemBase::FindItemBase(pItem->GetDispID());
 		if ( pItemDef )
 		{
-			if ( pItemDef->GetDispID() == pItem->GetDispID() )//parent item
+			if ( pItemDef->GetDispID() == pItem->GetDispID() )		// parent item
 			{
-				dwBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK );
-				z += ((dwBlockThis & CAN_I_CLIMB) ? pItemDef->GetHeight()/2 : pItemDef->GetHeight());
+				dwBlockThis = (pItemDef->m_Can & CAN_I_MOVEMASK);
+				z += (dwBlockThis & CAN_I_CLIMB) ? pItemDef->GetHeight() / 2 : pItemDef->GetHeight();
 			}
-			else //non-parent item
+			else
 			{
 				pDupeDef = CItemBaseDupe::GetDupeRef(static_cast<ITEMID_TYPE>(pItem->GetDispID()));
-				if ( ! pDupeDef )
+				if ( pDupeDef )
 				{
-					g_Log.EventDebug("Failed to get non-parent reference (dynamic) (DispID 0%x) (X: %d Y: %d Z: %d)\n",pItem->GetDispID(),pItem->GetTopPoint().m_x,pItem->GetTopPoint().m_y,pItem->GetTopPoint().m_z);
-					dwBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK );
-					z += ((dwBlockThis & CAN_I_CLIMB) ? pItemDef->GetHeight()/2 : pItemDef->GetHeight());
+					dwBlockThis = (pDupeDef->m_Can & CAN_I_MOVEMASK);
+					z += (dwBlockThis & CAN_I_CLIMB) ? pDupeDef->GetHeight() / 2 : pDupeDef->GetHeight();
 				}
 				else
 				{
-					dwBlockThis = ( pDupeDef->m_Can & CAN_I_MOVEMASK );
-					z += ((dwBlockThis & CAN_I_CLIMB) ? pDupeDef->GetHeight()/2 : pDupeDef->GetHeight());
+					g_Log.EventDebug("Failed to get non-parent reference (dynamic) (DispID 0%x) (X:%hd Y:%hd Z:%hhd)\n", pItem->GetDispID(), pItem->GetTopPoint().m_x, pItem->GetTopPoint().m_y, pItem->GetTopPoint().m_z);
+					dwBlockThis = (pItemDef->m_Can & CAN_I_MOVEMASK);
+					z += (dwBlockThis & CAN_I_CLIMB) ? pItemDef->GetHeight() / 2 : pItemDef->GetHeight();
 				}
 			}
 
@@ -927,57 +767,52 @@ void CWorld::GetFixPoint( const CPointMap & pt, CGrayMapBlockState & block)
 				}
 			}
 		}
-		else if (pItem->GetDispID())
-			CItemBase::GetItemTiledataFlags(dwBlockThis,pItem->GetDispID());
+		else if ( pItem->GetDispID() )
+			CItemBase::GetItemTiledataFlags(dwBlockThis, pItem->GetDispID());
 	}
 
-	dwBlockThis = 0;
-	// Terrain height is screwed. Since it is related to all the terrain around it.
-	const CUOMapMeter * pMeter = pMapBlock->GetTerrain( UO_BLOCK_OFFSET(pt.m_x), UO_BLOCK_OFFSET(pt.m_y));
-	if ( ! pMeter )
+	// Check terrain
+	const CUOMapMeter *pMapMeter = pMapBlock->GetTerrain(UO_BLOCK_OFFSET(pt.m_x), UO_BLOCK_OFFSET(pt.m_y));
+	if ( !pMapMeter )
 		return;
 
-	if ( pMeter->m_wTerrainIndex == TERRAIN_HOLE )
-	{
+	if ( pMapMeter->m_wTerrainIndex == TERRAIN_HOLE )
 		dwBlockThis = 0;
-	}
-	else if ( CUOMapMeter::IsTerrainNull( pMeter->m_wTerrainIndex ) )	// inter dungeon type.
-	{
+	else if ( CUOMapMeter::IsTerrainNull(pMapMeter->m_wTerrainIndex) )		// inter dungeon type
 		dwBlockThis = CAN_I_BLOCK;
-	}
 	else
 	{
-		CGrayTerrainInfo land( pMeter->m_wTerrainIndex );
-		//DEBUG_ERR(("Terrain flags - land.m_flags 0%x dwBlockThis (0%x)\n",land.m_flags,dwBlockThis));
+		CGrayTerrainInfo land(pMapMeter->m_wTerrainIndex);
+		dwBlockThis = 0;
 		if ( land.m_flags & UFLAG1_WATER )
 			dwBlockThis |= CAN_I_WATER;
 		if ( land.m_flags & UFLAG1_DAMAGE )
 			dwBlockThis |= CAN_I_FIRE;
 		if ( land.m_flags & UFLAG1_BLOCK )
 			dwBlockThis |= CAN_I_BLOCK;
-		if ( !dwBlockThis || (land.m_flags & UFLAG2_PLATFORM) ) // Platform items should take precendence over non-platforms.
+		if ( !dwBlockThis || (land.m_flags & UFLAG2_PLATFORM) )		// platform items should take precedence over non-platforms
 			dwBlockThis = CAN_I_PLATFORM;
 	}
 
-	if (block.m_Bottom.m_z < pMeter->m_z)
+	if ( block.m_Bottom.m_z < pMapMeter->m_z )
 	{
-		if (((pMeter->m_z < pt.m_z+PLAYER_HEIGHT) && (dwBlockThis & (CAN_I_PLATFORM|CAN_I_CLIMB|CAN_I_WATER))) || (block.m_Bottom.m_z == UO_SIZE_MIN_Z))
+		if ( ((pMapMeter->m_z < pt.m_z + PLAYER_HEIGHT) && (dwBlockThis & (CAN_I_PLATFORM|CAN_I_CLIMB|CAN_I_WATER))) || (block.m_Bottom.m_z == UO_SIZE_MIN_Z) )
 		{
 			block.m_Bottom.m_dwBlockFlags = dwBlockThis;
-			block.m_Bottom.m_dwTile = pMeter->m_wTerrainIndex;
-			block.m_Bottom.m_z = pMeter->m_z;
+			block.m_Bottom.m_dwTile = pMapMeter->m_wTerrainIndex;
+			block.m_Bottom.m_z = pMapMeter->m_z;
 		}
-		else if (block.m_Top.m_z > pMeter->m_z)
+		else if ( block.m_Top.m_z > pMapMeter->m_z )
 		{
 			block.m_Top.m_dwBlockFlags = dwBlockThis;
-			block.m_Top.m_dwTile = pMeter->m_wTerrainIndex;
-			block.m_Top.m_z = pMeter->m_z;
+			block.m_Top.m_dwTile = pMapMeter->m_wTerrainIndex;
+			block.m_Top.m_z = pMapMeter->m_z;
 		}
 	}
 
 	if ( block.m_Bottom.m_z == UO_SIZE_MIN_Z )
 	{
-		//Fail safe...  Reset to 0z with no top block;
+		// Fail safe, reset to 0 with no top block
 		block.m_Bottom.m_dwBlockFlags = 0;
 		block.m_Bottom.m_dwTile = 0;
 		block.m_Bottom.m_z = 0;
@@ -988,183 +823,146 @@ void CWorld::GetFixPoint( const CPointMap & pt, CGrayMapBlockState & block)
 	}
 }
 
-void CWorld::GetHeightPoint( const CPointMap & pt, CGrayMapBlockState & block, bool fHouseCheck )
+void CWorld::GetHeightPoint(const CPointMap &pt, CGrayMapBlockState &block, bool fHouseCheck)
 {
 	ADDTOCALLSTACK("CWorld::GetHeightPoint");
-	CItemBase * pItemDef = NULL;
-	CItemBaseDupe * pDupeDef = NULL;
-	CItem * pItem = NULL;
+
+	CItem *pItem = NULL;
+	CItemBase *pItemDef = NULL;
+	CItemBaseDupe *pDupeDef = NULL;
 	DWORD dwBlockThis = 0;
+	int x2 = 0, y2 = 0;
 	signed char z = 0;
 	height_t zHeight = 0;
-	int x2 = 0, y2 = 0;
 
-	// Height of statics at/above given coordinates
-	// do gravity here for the z.
-	const CGrayMapBlock * pMapBlock = GetMapBlock( pt );
-	if (pMapBlock == NULL)
+	const CGrayMapBlock *pMapBlock = GetMapBlock(pt);
+	if ( !pMapBlock )
 		return;
 
+	// Check map statics
 	size_t iQty = pMapBlock->m_Statics.GetStaticQty();
-	if ( iQty > 0 )  // no static items here.
+	if ( iQty > 0 )
 	{
 		x2 = pMapBlock->GetOffsetX(pt.m_x);
 		y2 = pMapBlock->GetOffsetY(pt.m_y);
-		const CUOStaticItemRec * pStatic = NULL;
-		for ( size_t i = 0; i < iQty; ++i, z = 0, zHeight = 0, pStatic = NULL, pDupeDef = NULL )
+		const CUOStaticItemRec *pStatic = NULL;
+		for ( size_t iStatic = 0; iStatic < iQty; ++iStatic )
 		{
-			if ( ! pMapBlock->m_Statics.IsStaticPoint( i, x2, y2 ))
+			if ( !pMapBlock->m_Statics.IsStaticPoint(iStatic, x2, y2) )
 				continue;
 
-			pStatic = pMapBlock->m_Statics.GetStatic( i );
-			if ( pStatic == NULL )
+			pStatic = pMapBlock->m_Statics.GetStatic(iStatic);
+			if ( !pStatic )
 				continue;
 
 			z = pStatic->m_z;
-
-			//DEBUG_ERR(("z (%d)  block.m_zHeight (%d) block.m_Bottom.m_z (%d)\n",z,block.m_zHeight,block.m_Bottom.m_z));
-			if ( ! block.IsUsableZ( z, block.m_zHeight ))
+			if ( !block.IsUsableZ(z, block.m_zHeight) )
 				continue;
 
-			// This static is at the coordinates in question.
-			// enough room for me to stand here ?
-
-			pItemDef = CItemBase::FindItemBase( pStatic->GetDispID() );
+			pItemDef = CItemBase::FindItemBase(pStatic->GetDispID());
 			if ( pItemDef )
 			{
-				//DEBUG_ERR(("pItemDef->GetID(0%x) pItemDef->GetDispID(0%x) pStatic->GetDispID(0%x)\n",pItemDef->GetID(),pItemDef->GetDispID(),pStatic->GetDispID()));
-				if ( pItemDef->GetID() == pStatic->GetDispID() ) //parent item
+				if ( pItemDef->GetID() == pStatic->GetDispID() )	// parent item
 				{
 					zHeight = pItemDef->GetHeight();
-					dwBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK ); //Use only Block flags, other remove
+					dwBlockThis = (pItemDef->m_Can & CAN_I_MOVEMASK);	// use only block flags, other remove
 				}
-				else //non-parent item
+				else
 				{
 					pDupeDef = CItemBaseDupe::GetDupeRef(static_cast<ITEMID_TYPE>(pStatic->GetDispID()));
-					if ( ! pDupeDef )
+					if ( pDupeDef )
 					{
-						g_Log.EventDebug("Failed to get non-parent reference (static) (DispID 0%x) (X: %d Y: %d Z: %d)\n",pStatic->GetDispID(),pStatic->m_x+pMapBlock->m_x,pStatic->m_y+pMapBlock->m_y,pStatic->m_z);
-						zHeight = pItemDef->GetHeight();
-						dwBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK );
+						zHeight = pDupeDef->GetHeight();
+						dwBlockThis = (pDupeDef->m_Can & CAN_I_MOVEMASK);	// use only block flags, other remove - CAN flags cannot be inherited from the parent item due to bad script pack...
 					}
 					else
 					{
-						zHeight = pDupeDef->GetHeight();
-						dwBlockThis = ( pDupeDef->m_Can & CAN_I_MOVEMASK ); //Use only Block flags, other remove - CAN flags cannot be inherited from the parent item due to bad script pack...
+						g_Log.EventDebug("Failed to get non-parent reference (static) (DispID 0%x) (X:%hd Y:%hd Z:%hhd)\n", pStatic->GetDispID(), pStatic->m_x + pMapBlock->m_x, pStatic->m_y + pMapBlock->m_y, pStatic->m_z);
+						zHeight = pItemDef->GetHeight();
+						dwBlockThis = (pItemDef->m_Can & CAN_I_MOVEMASK);
 					}
 				}
 			}
 			else if ( pStatic->GetDispID() )
-				CItemBase::GetItemTiledataFlags(dwBlockThis,pStatic->GetDispID());
+				CItemBase::GetItemTiledataFlags(dwBlockThis, pStatic->GetDispID());
 
-			block.CheckTile_Item( dwBlockThis, z, zHeight, pStatic->GetDispID() + TERRAIN_QTY );
+			block.CheckTile_Item(dwBlockThis, z, zHeight, pStatic->GetDispID() + TERRAIN_QTY);
 		}
 	}
 
-	pItemDef = NULL;
-	pDupeDef = NULL;
-	pItem = NULL;
-	dwBlockThis = 0;
-	z = 0;
-	zHeight = 0;
-	x2 = y2 = 0;
-	iQty = 0;
-
-	// Any multi items here ?
-	// Check all of them
+	// Check multi components
 	if ( fHouseCheck )
 	{
 		CRegionLinks rlinks;
-		size_t iRegionQty = pt.GetRegions( REGION_TYPE_MULTI, rlinks );
+		size_t iRegionQty = pt.GetRegions(REGION_TYPE_MULTI, rlinks);
 		if ( iRegionQty > 0 )
 		{
-			//  ------------ For variables --------------------
-			CRegionBase * pRegion = NULL;
-			const CGrayMulti * pMulti = NULL;
-			const CUOMultiItemRec2 * pMultiItem = NULL;
-			x2 = 0;
-			y2 = 0;
-			//  ------------ For variables --------------------
-
-			for ( size_t iRegion = 0; iRegion < iRegionQty; ++iRegion, pRegion = NULL, pItem = NULL, pMulti = NULL, x2 = 0, y2 = 0 )
+			CRegionBase *pRegion = NULL;
+			const CGrayMulti *pMulti = NULL;
+			const CUOMultiItemRec2 *pMultiItem = NULL;
+			for ( size_t iRegion = 0; iRegion < iRegionQty; ++iRegion )
 			{
 				pRegion = rlinks.GetAt(iRegion);
-				if ( pRegion != NULL )
-					pItem = pRegion->GetResourceID().ItemFind();
+				pItem = pRegion->GetResourceID().ItemFind();
+				if ( !pItem )
+					continue;
 
-				if ( pItem != NULL )
+				pMulti = g_Cfg.GetMultiItemDefs(pItem);
+				if ( !pMulti )
+					continue;
+
+				x2 = pt.m_x - pItem->GetTopPoint().m_x;
+				y2 = pt.m_y - pItem->GetTopPoint().m_y;
+				iQty = pMulti->GetItemCount();
+				for ( size_t iMulti = 0; iMulti < iQty; ++iMulti )
 				{
-					pMulti = g_Cfg.GetMultiItemDefs(pItem);
-					if ( pMulti )
+					pMultiItem = pMulti->GetItem(iMulti);
+					if ( !pMultiItem )
+						break;
+					if ( !pMultiItem->m_visible )
+						continue;
+					if ( (pMultiItem->m_dx != x2) || (pMultiItem->m_dy != y2) )
+						continue;
+
+					z = pItem->GetTopZ() + static_cast<signed char>(pMultiItem->m_dz);
+					if ( !block.IsUsableZ(z, block.m_zHeight) )
+						continue;
+
+					pItemDef = CItemBase::FindItemBase(pMultiItem->GetDispID());
+					if ( pItemDef )
 					{
-						x2 = pt.m_x - pItem->GetTopPoint().m_x;
-						y2 = pt.m_y - pItem->GetTopPoint().m_y;
-
-						iQty = pMulti->GetItemCount();
-						for ( size_t ii = 0; ii < iQty; ++ii, pMultiItem = NULL, z = 0, zHeight = 0 )
+						if ( pItemDef->GetID() == pMultiItem->GetDispID() )		// parent item
 						{
-							pMultiItem = pMulti->GetItem(ii);
-
-							if ( !pMultiItem )
-								break;
-
-							if ( ! pMultiItem->m_visible )
-								continue;
-
-							if ( pMultiItem->m_dx != x2 || pMultiItem->m_dy != y2 )
-								continue;
-
-							z = pItem->GetTopZ() + static_cast<signed char>(pMultiItem->m_dz);
-							if ( ! block.IsUsableZ(z,block.m_zHeight))
-								continue;
-
-							pItemDef = CItemBase::FindItemBase( pMultiItem->GetDispID() );
-							if ( pItemDef != NULL )
+							zHeight = pItemDef->GetHeight();
+							dwBlockThis = (pItemDef->m_Can & CAN_I_MOVEMASK);	// use only block flags, other remove
+						}
+						else
+						{
+							pDupeDef = CItemBaseDupe::GetDupeRef(static_cast<ITEMID_TYPE>(pMultiItem->GetDispID()));
+							if ( pDupeDef )
 							{
-								if ( pItemDef->GetID() == pMultiItem->GetDispID() ) //parent item
-								{
-									zHeight = pItemDef->GetHeight();
-									dwBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK ); //Use only Block flags, other remove
-								}
-								else //non-parent item
-								{
-									pDupeDef = CItemBaseDupe::GetDupeRef(static_cast<ITEMID_TYPE>(pMultiItem->GetDispID()));
-									if ( pDupeDef == NULL )
-									{
-										g_Log.EventDebug("Failed to get non-parent reference (multi) (DispID 0%x) (X: %d Y: %d Z: %d)\n",pMultiItem->GetDispID(),pMultiItem->m_dx+pItem->GetTopPoint().m_x,pMultiItem->m_dy+pItem->GetTopPoint().m_y,pMultiItem->m_dz+pItem->GetTopPoint().m_z);
-										zHeight = pItemDef->GetHeight();
-										dwBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK );
-									}
-									else
-									{
-										zHeight = pDupeDef->GetHeight();
-										dwBlockThis = ( pDupeDef->m_Can & CAN_I_MOVEMASK ); //Use only Block flags, other remove - CAN flags cannot be inherited from the parent item due to bad script pack...
-									}
-								}
+								zHeight = pDupeDef->GetHeight();
+								dwBlockThis = (pDupeDef->m_Can & CAN_I_MOVEMASK);	// use only block flags, other remove - CAN flags cannot be inherited from the parent item due to bad script pack...
 							}
-							else if ( pMultiItem->GetDispID() )
-								CItemBase::GetItemTiledataFlags(dwBlockThis,pMultiItem->GetDispID());
-
-							block.CheckTile_Item( dwBlockThis, z, zHeight, pMultiItem->GetDispID() + TERRAIN_QTY );
+							else
+							{
+								g_Log.EventDebug("Failed to get non-parent reference (multi) (DispID 0%x) (X:%hd Y:%hd Z:%hd)\n", pMultiItem->GetDispID(), pMultiItem->m_dx + pItem->GetTopPoint().m_x, pMultiItem->m_dy + pItem->GetTopPoint().m_y, pMultiItem->m_dz + pItem->GetTopPoint().m_z);
+								zHeight = pItemDef->GetHeight();
+								dwBlockThis = (pItemDef->m_Can & CAN_I_MOVEMASK);
+							}
 						}
 					}
+					else if ( pMultiItem->GetDispID() )
+						CItemBase::GetItemTiledataFlags(dwBlockThis, pMultiItem->GetDispID());
+
+					block.CheckTile_Item(dwBlockThis, z, zHeight, pMultiItem->GetDispID() + TERRAIN_QTY);
 				}
 			}
 		}
 	}
 
-	pItemDef = NULL;
-	pDupeDef = NULL;
-	pItem = NULL;
-	dwBlockThis = 0;
-	x2 = y2 = iQty = 0;
-	zHeight = 0;
-	z = 0;
-
-	// Any dynamic items here ?
-	// NOTE: This could just be an item that an NPC could just move ?
-	CWorldSearch Area( pt );
-
+	// Check dynamic items
+	CWorldSearch Area(pt);
 	for (;;)
 	{
 		pItem = Area.GetItem();
@@ -1172,73 +970,64 @@ void CWorld::GetHeightPoint( const CPointMap & pt, CGrayMapBlockState & block, b
 			break;
 
 		z = pItem->GetTopZ();
-		if ( !block.IsUsableZ( z, block.m_zHeight ) )
+		if ( !block.IsUsableZ(z, block.m_zHeight) )
 			continue;
 
-		// Invis items should not block ???
-		pItemDef = CItemBase::FindItemBase( pItem->GetDispID() );
-
+		pItemDef = CItemBase::FindItemBase(pItem->GetDispID());
 		if ( pItemDef )
 		{
-			if ( pItemDef->GetDispID() == pItem->GetDispID() )//parent item
+			if ( pItemDef->GetDispID() == pItem->GetDispID() )		// parent item
 			{
 				zHeight = pItemDef->GetHeight();
-				dwBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK ); //Use only Block flags, other remove
+				dwBlockThis = (pItemDef->m_Can & CAN_I_MOVEMASK);	// use only block flags, other remove
 			}
-			else //non-parent item
+			else
 			{
 				pDupeDef = CItemBaseDupe::GetDupeRef(static_cast<ITEMID_TYPE>(pItem->GetDispID()));
-				if ( ! pDupeDef )
+				if ( pDupeDef )
 				{
-					g_Log.EventDebug("Failed to get non-parent reference (dynamic) (DispID 0%x) (X: %d Y: %d Z: %d)\n",pItem->GetDispID(),pItem->GetTopPoint().m_x,pItem->GetTopPoint().m_y,pItem->GetTopPoint().m_z);
-					zHeight = pItemDef->GetHeight();
-					dwBlockThis = ( pItemDef->m_Can & CAN_I_MOVEMASK );
+					zHeight = pDupeDef->GetHeight();
+					dwBlockThis = (pDupeDef->m_Can & CAN_I_MOVEMASK);	// use only block flags, other remove - CAN flags cannot be inherited from the parent item due to bad script pack...
 				}
 				else
 				{
-					zHeight = pDupeDef->GetHeight();
-					dwBlockThis = ( pDupeDef->m_Can & CAN_I_MOVEMASK ); //Use only Block flags, other remove - CAN flags cannot be inherited from the parent item due to bad script pack...
+					g_Log.EventDebug("Failed to get non-parent reference (dynamic) (DispID 0%x) (X:%hd Y:%hd Z:%hhd)\n", pItem->GetDispID(), pItem->GetTopPoint().m_x, pItem->GetTopPoint().m_y, pItem->GetTopPoint().m_z);
+					zHeight = pItemDef->GetHeight();
+					dwBlockThis = (pItemDef->m_Can & CAN_I_MOVEMASK);
 				}
 			}
 		}
-		else if (pItem->GetDispID())
-			CItemBase::GetItemTiledataFlags(dwBlockThis,pItem->GetDispID());
+		else if ( pItem->GetDispID() )
+			CItemBase::GetItemTiledataFlags(dwBlockThis, pItem->GetDispID());
 
 		block.CheckTile_Item(dwBlockThis, z, zHeight, pItem->GetDispID() + TERRAIN_QTY);
 	}
 
-	dwBlockThis = 0;
-	// Terrain height is screwed. Since it is related to all the terrain around it.
-	const CUOMapMeter * pMeter = pMapBlock->GetTerrain( UO_BLOCK_OFFSET(pt.m_x), UO_BLOCK_OFFSET(pt.m_y));
-	if ( ! pMeter )
+	// Check terrain
+	const CUOMapMeter *pMapMeter = pMapBlock->GetTerrain(UO_BLOCK_OFFSET(pt.m_x), UO_BLOCK_OFFSET(pt.m_y));
+	if ( !pMapMeter )
 		return;
 
-	if ( block.IsUsableZ( pMeter->m_z,block.m_zHeight ) )
+	if ( block.IsUsableZ(pMapMeter->m_z, block.m_zHeight) )
 	{
-		//DEBUG_ERR(("pMeter->m_wTerrainIndex 0%x dwBlockThis (0%x)\n",pMeter->m_wTerrainIndex,wBlockThis));
-		if ( pMeter->m_wTerrainIndex == TERRAIN_HOLE )
-		{
+		if ( pMapMeter->m_wTerrainIndex == TERRAIN_HOLE )
 			dwBlockThis = 0;
-		}
-		else if ( CUOMapMeter::IsTerrainNull( pMeter->m_wTerrainIndex ) )	// inter dungeon type.
-		{
+		else if ( CUOMapMeter::IsTerrainNull(pMapMeter->m_wTerrainIndex) )		// inter dungeon type
 			dwBlockThis = CAN_I_BLOCK;
-		}
 		else
 		{
-			CGrayTerrainInfo land( pMeter->m_wTerrainIndex );
-			//DEBUG_ERR(("Terrain flags - land.m_flags 0%x dwBlockThis (0%x)\n",land.m_flags,wBlockThis));
+			CGrayTerrainInfo land(pMapMeter->m_wTerrainIndex);
+			dwBlockThis = 0;
 			if ( land.m_flags & UFLAG1_WATER )
 				dwBlockThis |= CAN_I_WATER;
 			if ( land.m_flags & UFLAG1_DAMAGE )
 				dwBlockThis |= CAN_I_FIRE;
 			if ( land.m_flags & UFLAG1_BLOCK )
 				dwBlockThis |= CAN_I_BLOCK;
-			if ( !dwBlockThis || (land.m_flags & UFLAG2_PLATFORM) ) // Platform items should take precendence over non-platforms.
+			if ( !dwBlockThis || (land.m_flags & UFLAG2_PLATFORM) )		// platform items should take precedence over non-platforms
 				dwBlockThis = CAN_I_PLATFORM;
 		}
-		//DEBUG_ERR(("TERRAIN dwBlockThis (0%x)\n", dwBlockThis));
-		block.CheckTile_Terrain( dwBlockThis, pMeter->m_z, pMeter->m_wTerrainIndex );
+		block.CheckTile_Terrain(dwBlockThis, pMapMeter->m_z, pMapMeter->m_wTerrainIndex);
 	}
 
 	if ( block.m_Bottom.m_z == UO_SIZE_MIN_Z )
@@ -1253,177 +1042,129 @@ void CWorld::GetHeightPoint( const CPointMap & pt, CGrayMapBlockState & block, b
 	}
 }
 
-signed char CWorld::GetHeightPoint( const CPointBase & pt, DWORD & dwBlockFlags, bool fHouseCheck )
-{
-	ADDTOCALLSTACK("CWorld::GetHeightPoint");
-	DWORD dwCan = dwBlockFlags;
-	CGrayMapBlockState block( dwBlockFlags, pt.m_z + (PLAYER_HEIGHT / 2), pt.m_z + PLAYER_HEIGHT );
-
-	GetHeightPoint( pt, block, fHouseCheck );
-
-	// Pass along my results.
-	dwBlockFlags = block.m_Bottom.m_dwBlockFlags;
-	if ( block.m_Top.m_dwBlockFlags )
-		dwBlockFlags |= CAN_I_ROOF;	// we are covered by something.
-
-	if (( block.m_Lowest.m_dwBlockFlags & CAN_I_HOVER ) || ( block.m_Bottom.m_dwBlockFlags & CAN_I_HOVER ) || ( block.m_Top.m_dwBlockFlags & CAN_I_HOVER ))
-	{
-		if ( dwCan & CAN_C_HOVER )
-			dwBlockFlags = 0; // we can hover over this
-		else
-			dwBlockFlags &= ~CAN_I_HOVER; // we don't have the ability to fly
-	}
-
-	if (( dwBlockFlags & ( CAN_I_CLIMB|CAN_I_PLATFORM) ) && ( dwCan & CAN_C_WALK ))
-	{
-		dwBlockFlags &= ~CAN_I_CLIMB;
-		dwBlockFlags |= CAN_I_PLATFORM;	// not really true but hack it anyhow.
-		//DEBUG_MSG(("block.m_Bottom.m_z (%d)\n",block.m_Bottom.m_z));
-		return( block.m_Bottom.m_z );
-	}
-	if ( dwCan & CAN_C_FLY )
-		return( pt.m_z );
-
-	return( block.m_Bottom.m_z );
-}
-
-void CWorld::GetHeightPoint2( const CPointMap & pt, CGrayMapBlockState & block, bool fHouseCheck )
+void CWorld::GetHeightPoint2(const CPointMap &pt, CGrayMapBlockState &block, bool fHouseCheck)
 {
 	ADDTOCALLSTACK("CWorld::GetHeightPoint2");
-	// Height of statics at/above given coordinates
-	// do gravity here for the z.
+	// Height of statics at/above given coordinates (do gravity here for the z)
 
-	DWORD dwBlockThis = 0;
-	const CGrayMapBlock * pMapBlock = GetMapBlock( pt );
+	const CGrayMapBlock *pMapBlock = GetMapBlock(pt);
 	if ( !pMapBlock )
 	{
-		g_Log.EventWarn("GetMapBlock failed at %s.\n", pt.WriteUsed());
+		g_Log.EventWarn("GetMapBlock failed at %s\n", pt.WriteUsed());
 		return;
 	}
 
-	{
-		size_t iStaticQty = pMapBlock->m_Statics.GetStaticQty();
-		if ( iStaticQty > 0 )  // no static items here.
-		{
-			int x2 = pMapBlock->GetOffsetX(pt.m_x);
-			int y2 = pMapBlock->GetOffsetY(pt.m_y);
-			for ( size_t i = 0; i < iStaticQty; i++ )
-			{
-				if ( ! pMapBlock->m_Statics.IsStaticPoint( i, x2, y2 ))
-					continue;
-				const CUOStaticItemRec * pStatic = pMapBlock->m_Statics.GetStatic( i );
-				signed char z = pStatic->m_z;
-				if ( ! block.IsUsableZ(z,PLAYER_HEIGHT))
-					continue;
+	DWORD dwBlockThis = 0;
 
-				// This static is at the coordinates in question.
-				// enough room for me to stand here ?
-				dwBlockThis = 0;
-				height_t zHeight = CItemBase::GetItemHeight( pStatic->GetDispID(), dwBlockThis );
-				block.CheckTile( dwBlockThis, z, zHeight, pStatic->GetDispID() + TERRAIN_QTY );
-			}
+	// Check map statics
+	size_t iStaticQty = pMapBlock->m_Statics.GetStaticQty();
+	if ( iStaticQty > 0 )
+	{
+		int x2 = pMapBlock->GetOffsetX(pt.m_x);
+		int y2 = pMapBlock->GetOffsetY(pt.m_y);
+		for ( size_t iStatic = 0; iStatic < iStaticQty; ++iStatic )
+		{
+			if ( !pMapBlock->m_Statics.IsStaticPoint(iStatic, x2, y2) )
+				continue;
+
+			const CUOStaticItemRec *pStatic = pMapBlock->m_Statics.GetStatic(iStatic);
+			signed char z = pStatic->m_z;
+			if ( !block.IsUsableZ(z, PLAYER_HEIGHT) )
+				continue;
+
+			dwBlockThis = 0;
+			height_t zHeight = CItemBase::GetItemHeight(pStatic->GetDispID(), dwBlockThis);
+			block.CheckTile(dwBlockThis, z, zHeight, pStatic->GetDispID() + TERRAIN_QTY);
 		}
 	}
 
-	// Any multi items here ?
+	// Check multi components
 	if ( fHouseCheck )
 	{
 		CRegionLinks rlinks;
-		size_t iRegionQty = pt.GetRegions( REGION_TYPE_MULTI, rlinks );
+		size_t iRegionQty = pt.GetRegions(REGION_TYPE_MULTI, rlinks);
 		if ( iRegionQty > 0 )
 		{
-			for ( size_t i = 0; i < iRegionQty; i++)
+			for ( size_t iRegion = 0; iRegion < iRegionQty; ++iRegion )
 			{
-				CRegionBase * pRegion = rlinks.GetAt(i);
-				CItem * pItem = pRegion->GetResourceID().ItemFind();
-				if ( pItem != NULL )
+				CRegionBase *pRegion = rlinks.GetAt(iRegion);
+				CItem *pItem = pRegion->GetResourceID().ItemFind();
+				if ( !pItem )
+					continue;
+
+				const CGrayMulti *pMulti = g_Cfg.GetMultiItemDefs(pItem);
+				if ( !pMulti )
+					continue;
+
+				int x2 = pt.m_x - pItem->GetTopPoint().m_x;
+				int y2 = pt.m_y - pItem->GetTopPoint().m_y;
+				size_t iMultiQty = pMulti->GetItemCount();
+				for ( size_t iMulti = 0; iMulti < iMultiQty; ++iMulti )
 				{
-					const CGrayMulti * pMulti = g_Cfg.GetMultiItemDefs(pItem);
-					if ( pMulti )
-					{
-						int x2 = pt.m_x - pItem->GetTopPoint().m_x;
-						int y2 = pt.m_y - pItem->GetTopPoint().m_y;
+					const CUOMultiItemRec2 *pMultiItem = pMulti->GetItem(iMulti);
+					if ( !pMultiItem )
+						break;
+					if ( !pMultiItem->m_visible )
+						continue;
+					if ( (pMultiItem->m_dx != x2) || (pMultiItem->m_dy != y2) )
+						continue;
 
-						size_t iMultiQty = pMulti->GetItemCount();
-						for ( size_t j = 0; j < iMultiQty; j++ )
-						{
-							const CUOMultiItemRec2 * pMultiItem = pMulti->GetItem(j);
-							ASSERT(pMultiItem);
+					signed char z = pItem->GetTopZ() + static_cast<signed char>(pMultiItem->m_dz);
+					if ( !block.IsUsableZ(z, PLAYER_HEIGHT) )
+						continue;
 
-							if ( ! pMultiItem->m_visible )
-								continue;
-							if ( pMultiItem->m_dx != x2 || pMultiItem->m_dy != y2 )
-								continue;
-
-							signed char zitem = pItem->GetTopZ() + static_cast<signed char>(pMultiItem->m_dz);
-							if ( ! block.IsUsableZ(zitem,PLAYER_HEIGHT))
-								continue;
-
-							dwBlockThis = 0;
-							height_t zHeight = CItemBase::GetItemHeight( pMultiItem->GetDispID(), dwBlockThis );
-							block.CheckTile( dwBlockThis, zitem, zHeight, pMultiItem->GetDispID() + TERRAIN_QTY );
-						}
-					}
+					dwBlockThis = 0;
+					height_t zHeight = CItemBase::GetItemHeight(pMultiItem->GetDispID(), dwBlockThis);
+					block.CheckTile(dwBlockThis, z, zHeight, pMultiItem->GetDispID() + TERRAIN_QTY);
 				}
 			}
 		}
 	}
 
-	{
-	// Any dynamic items here ?
-	// NOTE: This could just be an item that an NPC could just move ?
-	CWorldSearch Area( pt );
+	// Check dynamic items
+	CWorldSearch Area(pt);
 	for (;;)
 	{
-		CItem * pItem = Area.GetItem();
-		if ( pItem == NULL )
+		CItem *pItem = Area.GetItem();
+		if ( !pItem )
 			break;
 
-		signed char zitem = pItem->GetTopZ();
-		if ( ! block.IsUsableZ(zitem,PLAYER_HEIGHT))
+		signed char z = pItem->GetTopZ();
+		if ( !block.IsUsableZ(z, PLAYER_HEIGHT) )
 			continue;
 
-		// Invis items should not block ???
-		CItemBase * pItemDef = pItem->Item_GetDef();
+		// Get Attributes from ItemDef. If not set, get them from the static object (DISPID)
+		CItemBase *pItemDef = pItem->Item_GetDef();
 		ASSERT(pItemDef);
-
-		// Get Attributes from ItemDef. If they are not set, get them from the static object (DISPID)
-		dwBlockThis = pItemDef->m_Can & (CAN_I_DOOR | CAN_I_WATER | CAN_I_CLIMB | CAN_I_BLOCK | CAN_I_PLATFORM);
+		dwBlockThis = pItemDef->m_Can & (CAN_I_DOOR|CAN_I_WATER|CAN_I_CLIMB|CAN_I_BLOCK|CAN_I_PLATFORM);
 		height_t zHeight = pItemDef->GetHeight();
 
 		DWORD dwStaticBlockThis = 0;
 		height_t zStaticHeight = CItemBase::GetItemHeight(pItem->GetDispID(), dwStaticBlockThis);
 
-		if (dwBlockThis == 0)
+		if ( dwBlockThis == 0 )
 			dwBlockThis = dwStaticBlockThis;
-		if (zHeight == 0)
+		if ( zHeight == 0 )
 			zHeight = zStaticHeight;
 
-		if ( !block.CheckTile( 
-			dwBlockThis,
-			zitem, zHeight, pItemDef->GetDispID() + TERRAIN_QTY ) )
-		{
-		}
-	}
+		block.CheckTile(dwBlockThis, z, zHeight, pItemDef->GetDispID() + TERRAIN_QTY);
 	}
 
-	// Check Terrain here.
-	// Terrain height is screwed. Since it is related to all the terrain around it.
+	// Check terrain
+	const CUOMapMeter *pMapMeter = pMapBlock->GetTerrain(UO_BLOCK_OFFSET(pt.m_x), UO_BLOCK_OFFSET(pt.m_y));
+	if ( !pMapMeter )
+		return;
 
+	if ( block.IsUsableZ(pMapMeter->m_z, 0) )
 	{
-	const CUOMapMeter * pMeter = pMapBlock->GetTerrain( UO_BLOCK_OFFSET(pt.m_x), UO_BLOCK_OFFSET(pt.m_y));
-	ASSERT(pMeter);
-
-	if ( block.IsUsableZ(pMeter->m_z,0))
-	{
-		if ( pMeter->m_wTerrainIndex == TERRAIN_HOLE )
+		if ( pMapMeter->m_wTerrainIndex == TERRAIN_HOLE )
 			dwBlockThis = 0;
-		else if ( pMeter->m_wTerrainIndex == TERRAIN_NULL )	// inter dungeon type.
+		else if ( pMapMeter->m_wTerrainIndex == TERRAIN_NULL )		// inter dungeon type
 			dwBlockThis = CAN_I_BLOCK;
 		else
 		{
-			CGrayTerrainInfo land( pMeter->m_wTerrainIndex );
-			if ( land.m_flags & UFLAG2_PLATFORM ) // Platform items should take precendence over non-platforms.
+			CGrayTerrainInfo land(pMapMeter->m_wTerrainIndex);
+			if ( land.m_flags & UFLAG2_PLATFORM )	// platform items should take precedence over non-platforms
 				dwBlockThis = CAN_I_PLATFORM;
 			else if ( land.m_flags & UFLAG1_WATER )
 				dwBlockThis = CAN_I_WATER;
@@ -1434,17 +1175,46 @@ void CWorld::GetHeightPoint2( const CPointMap & pt, CGrayMapBlockState & block, 
 			else
 				dwBlockThis = CAN_I_PLATFORM;
 		}
-		block.CheckTile( dwBlockThis, pMeter->m_z, 0, pMeter->m_wTerrainIndex );
-	}
+		block.CheckTile(dwBlockThis, pMapMeter->m_z, 0, pMapMeter->m_wTerrainIndex);
 	}
 
 	if ( block.m_Bottom.m_z == UO_SIZE_MIN_Z )
-	{
 		block.m_Bottom = block.m_Lowest;
-	}
 }
 
-signed char CWorld::GetHeightPoint2( const CPointBase & pt, DWORD & dwBlockFlags, bool fHouseCheck ) // Height of player who walked to X/Y/OLDZ
+signed char CWorld::GetHeightPoint(const CPointBase &pt, DWORD &dwBlockFlags, bool fHouseCheck)
+{
+	ADDTOCALLSTACK("CWorld::GetHeightPoint");
+
+	DWORD dwCan = dwBlockFlags;
+	CGrayMapBlockState block(dwBlockFlags, pt.m_z + (PLAYER_HEIGHT / 2), pt.m_z + PLAYER_HEIGHT);
+	GetHeightPoint(pt, block, fHouseCheck);
+
+	dwBlockFlags = block.m_Bottom.m_dwBlockFlags;
+	if ( block.m_Top.m_dwBlockFlags )
+		dwBlockFlags |= CAN_I_ROOF;		// we are covered by something
+
+	if ( (block.m_Lowest.m_dwBlockFlags & CAN_I_HOVER) || (block.m_Bottom.m_dwBlockFlags & CAN_I_HOVER) || (block.m_Top.m_dwBlockFlags & CAN_I_HOVER) )
+	{
+		if ( dwCan & CAN_C_HOVER )
+			dwBlockFlags = 0;		// we can hover over this
+		else
+			dwBlockFlags &= ~CAN_I_HOVER;	// we don't have the ability to fly
+	}
+
+	if ( (dwCan & CAN_C_WALK) && (dwBlockFlags & (CAN_I_CLIMB|CAN_I_PLATFORM)) )
+	{
+		dwBlockFlags &= ~CAN_I_CLIMB;
+		dwBlockFlags |= CAN_I_PLATFORM;		// not really true but hack it anyhow
+		return block.m_Bottom.m_z;
+	}
+	if ( dwCan & CAN_C_FLY )
+		return pt.m_z;
+
+	return block.m_Bottom.m_z;
+}
+
+signed char CWorld::GetHeightPoint2(const CPointBase &pt, DWORD &dwBlockFlags, bool fHouseCheck)
 {
 	ADDTOCALLSTACK("CWorld::GetHeightPoint2");
 	// Given our coords at pt including pt.m_z
@@ -1454,106 +1224,81 @@ signed char CWorld::GetHeightPoint2( const CPointBase & pt, DWORD & dwBlockFlags
 	//  pt = the point of interest.
 	//  pt.m_z = my starting altitude.
 	//  dwBlockFlags = what we can pass thru. doors, water, walls ?
-	//		CAN_C_GHOST	= Moves thru doors etc.	- CAN_I_DOOR						
-	//		CAN_C_SWIM = walk thru water - CAN_I_WATER
-	//		CAN_C_WALK = it is possible that i can step up. - CAN_I_PLATFORM
-	//		CAN_C_PASSWALLS	= walk through all blocking items - CAN_I_BLOCK
-	//		CAN_C_FLY  = gravity does not effect me. - CAN_I_CLIMB
-	//		CAN_C_FIRE_IMMUNE = i can walk into lava etc. - CAN_I_FIRE
+	//    CAN_C_GHOST = Moves thru doors etc. - CAN_I_DOOR
+	//    CAN_C_SWIM = walk thru water - CAN_I_WATER
+	//    CAN_C_WALK = it is possible that i can step up. - CAN_I_PLATFORM
+	//    CAN_C_PASSWALLS = walk through all blocking items - CAN_I_BLOCK
+	//    CAN_C_FLY = gravity does not effect me. - CAN_I_CLIMB
+	//    CAN_C_FIRE_IMMUNE = i can walk into lava etc. - CAN_I_FIRE
 	//  pRegion = possible regional effects. (multi's)
 	// RETURN:
 	//  pt.m_z = Our new height at pt.m_x,pt.m_y
 	//  dwBlockFlags = our blocking flags at the given location. CAN_I_WATER,CAN_C_WALK,CAN_FLY,CAN_SPIRIT,
 	//    CAN_C_INDOORS = i am covered from the sky
-	//
-
-	// ??? NOTE: some creatures should be taller than others !!!
 
 	DWORD dwCan = dwBlockFlags;
 	CGrayMapBlockState block(dwBlockFlags, pt.m_z, PLAYER_HEIGHT);
+	GetHeightPoint2(pt, block, fHouseCheck);
 
-	GetHeightPoint2( pt, block, fHouseCheck );
-
-	// Pass along my results.
 	dwBlockFlags = block.m_Bottom.m_dwBlockFlags;
-	if (block.m_Top.m_dwBlockFlags)
+	if ( block.m_Top.m_dwBlockFlags )
 	{
-		dwBlockFlags |= CAN_I_ROOF;	// we are covered by something.
+		dwBlockFlags |= CAN_I_ROOF;		// we are covered by something
 
 		// Do not check for landtiles to block me. We pass through if statics are under them
-		if (block.m_Top.m_dwTile > TERRAIN_QTY)
+		if ( block.m_Top.m_dwTile > TERRAIN_QTY )
 		{
 			// If this tile possibly blocks me, roof cannot block me
-			if (block.m_Top.m_dwBlockFlags &~(CAN_I_ROOF))
+			if ( block.m_Top.m_dwBlockFlags & ~CAN_I_ROOF )
 			{
-				if (block.m_Top.m_z < block.m_Bottom.m_z + PLAYER_HEIGHT)
-					dwBlockFlags |= CAN_I_BLOCK; // we can't fit under this!
+				if ( block.m_Top.m_z < block.m_Bottom.m_z + PLAYER_HEIGHT )
+					dwBlockFlags |= CAN_I_BLOCK;
 			}
 		}
 	}
 
-	if (( block.m_Lowest.m_dwBlockFlags & CAN_I_HOVER ) || ( block.m_Bottom.m_dwBlockFlags & CAN_I_HOVER ) || ( block.m_Top.m_dwBlockFlags & CAN_I_HOVER ))
+	if ( (block.m_Lowest.m_dwBlockFlags & CAN_I_HOVER) || (block.m_Bottom.m_dwBlockFlags & CAN_I_HOVER) || (block.m_Top.m_dwBlockFlags & CAN_I_HOVER) )
 	{
 		if ( dwCan & CAN_C_HOVER )
-			dwBlockFlags = 0; // we can hover over this
+			dwBlockFlags = 0;		// we can hover over this
 		else
-			dwBlockFlags &= ~CAN_I_HOVER; // we don't have the ability to fly
+			dwBlockFlags &= ~CAN_I_HOVER;	// we don't have the ability to fly
 	}
 
-	if (( dwBlockFlags & ( CAN_I_CLIMB|CAN_I_PLATFORM) ) && ( dwCan & CAN_C_WALK ))
+	if ( (dwCan & CAN_C_WALK) && (dwBlockFlags & (CAN_I_CLIMB|CAN_I_PLATFORM)) )
 	{
 		dwBlockFlags &= ~CAN_I_CLIMB;
-		dwBlockFlags |= CAN_I_PLATFORM;	// not really true but hack it anyhow.
-		return( block.m_Bottom.m_z );
+		dwBlockFlags |= CAN_I_PLATFORM;		// not really true but hack it anyhow
+		return block.m_Bottom.m_z;
 	}
-
 	if ( dwCan & CAN_C_FLY )
-		return( pt.m_z );
+		return pt.m_z;
 
-	return( block.m_Bottom.m_z );
+	return block.m_Bottom.m_z;
 }
 
-
-CItemTypeDef * CWorld::GetTerrainItemTypeDef( DWORD dwTerrainIndex )
+CItemTypeDef *CWorld::GetTerrainItemTypeDef(DWORD dwIndex)
 {
 	ADDTOCALLSTACK("CWorld::GetTerrainItemTypeDef");
-	CResourceDef *	pRes = NULL;
-
-	if ( g_World.m_TileTypes.IsValidIndex( dwTerrainIndex ) )
-	{
-		pRes = g_World.m_TileTypes[dwTerrainIndex];
-	}
-		
+	CResourceDef *pRes = (g_World.m_TileTypes.IsValidIndex(dwIndex)) ? g_World.m_TileTypes[dwIndex] : NULL;
 	if ( !pRes )
 	{
-		RESOURCE_ID	rid( RES_TYPEDEF, 0 );
-		pRes = g_Cfg.ResourceGetDef( rid );
+		RESOURCE_ID rid(RES_TYPEDEF, IT_NORMAL);
+		pRes = g_Cfg.ResourceGetDef(rid);
 	}
-	ASSERT( pRes );
-
-	CItemTypeDef * pItemTypeDef = dynamic_cast <CItemTypeDef*> (pRes);
-	ASSERT( pItemTypeDef );
-
-	return( pItemTypeDef );
+	ASSERT(pRes);
+	return dynamic_cast<CItemTypeDef *>(pRes);
 }
 
-
-IT_TYPE CWorld::GetTerrainItemType( DWORD dwTerrainIndex )
+IT_TYPE CWorld::GetTerrainItemType(DWORD dwIndex)
 {
 	ADDTOCALLSTACK("CWorld::GetTerrainItemType");
-	CResourceDef * pRes = NULL;
-
-	if ( g_World.m_TileTypes.IsValidIndex( dwTerrainIndex ) )
+	CResourceDef *pRes = (g_World.m_TileTypes.IsValidIndex(dwIndex)) ? g_World.m_TileTypes[dwIndex] : NULL;
+	if ( pRes )
 	{
-		pRes = g_World.m_TileTypes[dwTerrainIndex];
+		const CItemTypeDef *pItemTypeDef = dynamic_cast<CItemTypeDef *>(pRes);
+		if ( pItemTypeDef )
+			return static_cast<IT_TYPE>(pItemTypeDef->GetItemType());
 	}
-
-	if ( !pRes )
-		return IT_NORMAL;
-
-	const CItemTypeDef * pItemTypeDef = dynamic_cast<CItemTypeDef *>(pRes);
-	if ( !pItemTypeDef )
-		return IT_NORMAL;
-
-	return static_cast<IT_TYPE>(pItemTypeDef->GetItemType());
+	return IT_NORMAL;
 }

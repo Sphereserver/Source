@@ -469,13 +469,13 @@ public:
 		return pMapBlock->GetTerrain(UO_BLOCK_OFFSET(pt.m_x), UO_BLOCK_OFFSET(pt.m_y));
 	}
 
-	CPointMap FindItemTypeNearby(const CPointMap &pt, IT_TYPE iType, int iDistance = 0, bool fCheckMulti = false, bool fLimitZ = false);
-	bool IsItemTypeNear(const CPointMap &pt, IT_TYPE iType, int iDistance = 0, bool fCheckMulti = false, bool fLimitZ = false);
+	CPointMap FindItemTypeNearby(const CPointMap &pt, IT_TYPE type, int iDist = 0, bool fCheckMulti = false, bool fLimitZ = false);
+	bool IsItemTypeNear(const CPointMap &pt, IT_TYPE type, int iDist = 0, bool fCheckMulti = false, bool fLimitZ = false);
 
-	CPointMap FindTypeNear_Top(const CPointMap &pt, IT_TYPE iType, int iDistance = 0);
-	bool IsTypeNear_Top(const CPointMap &pt, IT_TYPE iType, int iDistance = 0);
+	CPointMap FindTypeNear_Top(const CPointMap &pt, IT_TYPE type, int iDist = 0);
+	bool IsTypeNear_Top(const CPointMap &pt, IT_TYPE type, int iDist = 0);
 
-	CItem *CheckNaturalResource(const CPointMap &pt, IT_TYPE iType, bool fTest = true, CChar *pCharSrc = NULL);
+	CItem *CheckNaturalResource(const CPointMap &pt, IT_TYPE type, bool fTest = true, CChar *pCharSrc = NULL);
 
 	static bool OpenScriptBackup(CScript &s, LPCTSTR pszBaseDir, LPCTSTR pszBaseName, int iSaveCount);
 

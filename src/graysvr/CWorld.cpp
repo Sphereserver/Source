@@ -1702,7 +1702,7 @@ bool CWorld::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			if ( !strcmpi(pszKey, "HANDLED") )
 			{
 				CClient *pClient = pPage->FindGMHandler();
-				sVal.FormatHex((pClient && pClient->GetChar()) ? pClient->GetChar()->GetUID() : 0);
+				sVal.FormatHex((pClient && pClient->GetChar()) ? pClient->GetChar()->GetUID() : static_cast<CGrayUID>(UID_CLEAR));
 				return true;
 			}
 			else
