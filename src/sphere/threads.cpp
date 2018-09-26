@@ -431,10 +431,8 @@ void AbstractThread::onStart()
 
 void AbstractThread::setPriority(IThread::Priority pri)
 {
-	m_priority = pri;
-
 	// detect a sleep period for thread depending on priority
-	switch( m_priority )
+	switch ( pri )
 	{
 		case IThread::Idle:
 			m_tickPeriod = 1000;
@@ -442,6 +440,8 @@ void AbstractThread::setPriority(IThread::Priority pri)
 		case IThread::Low:
 			m_tickPeriod = 200;
 			break;
+		default:
+			pri = IThread::Normal;
 		case IThread::Normal:
 			m_tickPeriod = 100;
 			break;
@@ -457,9 +457,8 @@ void AbstractThread::setPriority(IThread::Priority pri)
 		case IThread::Disabled:
 			m_tickPeriod = AutoResetEvent::_infinite;
 			break;
-		default:
-			throw CException(LOGL_FATAL, 0, "Unable to determine thread priority");
 	}
+	m_priority = pri;
 }
 
 bool AbstractThread::shouldExit()
