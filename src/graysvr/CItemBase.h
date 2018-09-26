@@ -563,6 +563,13 @@ public:
 		return ((id >= ITEMID_MULTI) && (id < ITEMID_MULTI_MAX));
 	}
 
+	static bool IsID_House(ITEMID_TYPE id)
+	{
+		// IT_MULTI
+		// IT_MULTI_CUSTOM
+		return (((id >= ITEMID_HOUSE_SMALL_ST_PL) && (id <= ITEMID_HOUSE_SMALL_SHOP_MB)) || ((id >= ITEMID_FOUNDATION_7x7) && (id <= ITEMID_FOUNDATION_30x30)));
+	}
+
 	static bool IsID_Ship(ITEMID_TYPE id)
 	{
 		// IT_SHIP

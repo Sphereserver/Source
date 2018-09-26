@@ -1211,3 +1211,7 @@ Fixed: Optional flag OF_NoDClickTurn on sphere.ini affecting target-based action
 
 11-09-2018, Coruja
 Fixed: PRIVSET / ACCOUNT.PLEVEL functions not clearing previous plevel flags when plevel get decreased.
+
+25-09-2018, Coruja
+Fixed: Deeds showing target for non-house multis on wrong Y position.
+[sphereCrypt.ini]: Added crypt key for classic client 7.0.69 ~ 7.0.70 and enhanced client 4.0.69 ~ 4.0.70

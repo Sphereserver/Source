@@ -1429,7 +1429,7 @@ CItem *CClient::OnTarg_Use_Multi(const CItemBase *pItemDef, CPointMap &pt, DWORD
 	const CItemBaseMulti *pMultiDef = dynamic_cast<const CItemBaseMulti *>(pItemDef);
 	if ( pMultiDef && !(dwAttr & ATTR_MAGIC) )
 	{
-		if ( CItemBase::IsID_Multi(pItemDef->GetID()) )
+		if ( CItemBase::IsID_House(pItemDef->GetID()) )
 			pt.m_y -= static_cast<signed short>(pMultiDef->m_rect.m_bottom) - 1;
 
 		// Check region and bumpy terrain
