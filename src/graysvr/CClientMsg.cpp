@@ -1710,7 +1710,10 @@ bool CClient::addTargetItems(CLIMODE_TYPE mode, ITEMID_TYPE id, HUE_TYPE wHue, b
 		pItemDef = CItemBase::FindItemBase(id);
 		if ( !pItemDef )
 			return false;
+
 		pszName = pItemDef->GetName();
+		if ( !pszName )
+			pszName = "item";
 
 		if ( pItemDef->IsType(IT_STONE_GUILD) )
 		{
@@ -1754,6 +1757,14 @@ void CClient::addTargetCancel()
 
 	SetTargMode();
 	new PacketAddTarget(this, PacketAddTarget::Object, 0, PacketAddTarget::Cancel);
+}
+
+void CClient::addCodexOfWisdom(DWORD dwTopicID, bool fForceOpen)
+{
+	ADDTOCALLSTACK("CClient::addCodexOfWisdom");
+	// Open Codex of Wisdom
+
+	new PacketCodexOfWisdom(this, dwTopicID, fForceOpen);
 }
 
 void CClient::addDyeOption(const CObjBase *pObj)

@@ -734,6 +734,7 @@ public:
 	void addSysMessage(LPCTSTR pszMsg);
 	void addObjMessage(LPCTSTR pszMsg, const CObjBaseTemplate *pSrc, HUE_TYPE wHue = HUE_TEXT_DEF, TALKMODE_TYPE mode = TALKMODE_OBJ);
 
+	void addCodexOfWisdom(DWORD dwTopicID, bool fForceOpen = false);
 	void addDyeOption(const CObjBase *pObj);
 	void addWebLaunch(LPCTSTR pszURL);
 

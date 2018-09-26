@@ -1250,6 +1250,19 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 				closeUIWindow(pChar, 0x2);
 			break;
 		}
+		case CV_CODEXOFWISDOM:
+		{
+			INT64 piArgs[2];
+			size_t iArgQty = Str_ParseCmds(s.GetArgStr(), piArgs, COUNTOF(piArgs));
+			if ( iArgQty < 1 )
+			{
+				SysMessage("Usage: CODEXOFWISDOM TopicID [ForceOpen]");
+				break;
+			}
+
+			addCodexOfWisdom(static_cast<DWORD>(piArgs[0]), static_cast<bool>(piArgs[1]));
+			break;
+		}
 		case CV_DYE:
 		{
 			const CObjBase *pObj = s.HasArgs() ? static_cast<CGrayUID>(s.GetArgVal()).ObjFind() : NULL;

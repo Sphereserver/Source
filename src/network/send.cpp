@@ -3795,6 +3795,25 @@ PacketCloseContainer::PacketCloseContainer(const CClient* target, const CObjBase
 /***************************************************************************
  *
  *
+ *	Packet 0xBF.0x17 : PacketCodexOfWisdom		open Codex of Wisdom (LOW)
+ *
+ *
+ ***************************************************************************/
+PacketCodexOfWisdom::PacketCodexOfWisdom(const CClient *target, DWORD dwTopicID, bool fForceOpen) : PacketExtended(EXTDATA_Codex_Wisdom, 11, g_Cfg.m_fUsePacketPriorities ? PRI_LOW : PRI_NORMAL)
+{
+	ADDTOCALLSTACK("PacketCodexOfWisdom::PacketCodexOfWisdom");
+
+	writeByte(1);
+	writeInt32(dwTopicID);
+	writeBool(fForceOpen);
+
+	push(target);
+}
+
+
+/***************************************************************************
+ *
+ *
  *	Packet 0xBF.0x18 : PacketEnableMapDiffs		enable use of map diff files (NORMAL)
  *
  *

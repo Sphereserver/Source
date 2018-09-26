@@ -1459,6 +1459,19 @@ public:
 /***************************************************************************
  *
  *
+ *	Packet 0xBF.0x17 : PacketCodexOfWisdom		open Codex of Wisdom (LOW)
+ *
+ *
+ ***************************************************************************/
+class PacketCodexOfWisdom : public PacketExtended
+{
+public:
+	PacketCodexOfWisdom(const CClient *target, DWORD dwTopicID, bool fForceOpen);
+};
+
+/***************************************************************************
+ *
+ *
  *	Packet 0xBF.0x18 : PacketEnableMapDiffs		enable use of map diff files (NORMAL)
  *
  *
