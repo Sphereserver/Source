@@ -84,30 +84,22 @@ void FormatDateTime(TCHAR *pszTemp, LPCTSTR pszFormat, const struct tm *ptmTemp)
 LPCTSTR CGTime::Format(LPCTSTR pszFormat) const
 {
 	ADDTOCALLSTACK("CGTime::Format");
-	struct tm *ptmTemp = localtime(&m_time);
-	if ( !ptmTemp )
-		return '\0';
-
 	if ( !pszFormat )
 		pszFormat = "%Y/%m/%d %H:%M:%S";
 
 	TCHAR *pszTemp = Str_GetTemp();
-	FormatDateTime(pszTemp, pszFormat, ptmTemp);
+	FormatDateTime(pszTemp, pszFormat, localtime(&m_time));
 	return pszTemp;
 }
 
 LPCTSTR CGTime::FormatGmt(LPCTSTR pszFormat) const
 {
 	ADDTOCALLSTACK("CGTime::FormatGmt");
-	struct tm *ptmTemp = gmtime(&m_time);
-	if ( !ptmTemp )
-		return '\0';
-
 	if ( !pszFormat )
 		pszFormat = "%a, %d %b %Y %H:%M:%S GMT";
 
 	TCHAR *pszTemp = Str_GetTemp();
-	FormatDateTime(pszTemp, pszFormat, ptmTemp);
+	FormatDateTime(pszTemp, pszFormat, gmtime(&m_time));
 	return pszTemp;
 }
 

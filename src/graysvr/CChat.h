@@ -186,7 +186,7 @@ public:
 	CGlobalChat()
 	{
 		m_dwID = 0;
-		m_pszJID = '\0';
+		m_pszJID = NULL;
 		m_fVisible = false;
 	}
 	~CGlobalChat() { };

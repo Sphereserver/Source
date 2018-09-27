@@ -909,12 +909,12 @@ void defragSphere(char *path)
 	CGFile ouf;
 	char z[256], z1[256], buf[1024];
 	size_t i;
-	DWORD uid(0);
-	char *p(NULL), *p1(NULL);
+	DWORD uid = UID_CLEAR;
+	char *p = NULL, *p1 = NULL;
 	DWORD dBytesRead;
 	DWORD dTotalMb;
-	DWORD mb10(10*1024*1024);
-	DWORD mb5(5*1024*1024);
+	DWORD mb10 = 10 * 1024 * 1024;
+	DWORD mb5 = 5 * 1024 * 1024;
 	bool bSpecial;
 	DWORD dTotalUIDs;
 
@@ -929,7 +929,7 @@ void defragSphere(char *path)
 		"The process can take up to several hours depending on the CPU you have.\n"
 		"After finished, you will have your '" SPHERE_FILE "*.scp' save files converted to '" SPHERE_FILE "*.scp.new'.\n");
 
-	DWORD *uids = (DWORD*)calloc(ULONG_MAX, sizeof(DWORD));
+	DWORD *uids = static_cast<DWORD *>(calloc((SIZE_MAX / 2) / sizeof(DWORD), sizeof(DWORD)));
 	for ( i = 0; i < 3; i++ )
 	{
 		strncpy(z, path, sizeof(z) - 1);
