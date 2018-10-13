@@ -734,7 +734,7 @@ Fixed: Weapons not playing hit/miss sounds on combat.
 [sphere_backward_compatibility.scp]: Added some few itemdefs on backward compatibility list
 
 21-08-2017, Coruja
-[items/sphere_item_christmas.scp]: File renamed to 'sphere_item_holiday_christmas.scp' 
+[items/sphere_item_christmas.scp]: File renamed to 'sphere_item_holiday_christmas.scp'
 [items/sphere_item_halloween.scp]: File renamed to 'sphere_item_holiday_halloween.scp'
 
 26-08-2017, Coruja
@@ -1200,6 +1200,13 @@ Fixed: Tooltips not showing on items with ATTR=attr_static set.
 Fixed: Multi function CUSTOMIZE not working correctly.
 [sphere.ini]: Added new CHATF_GLOBALCHAT chat flag to enable Global Chat feature on clients >= 7.0.62.2 (still incomplete yet)
 
+29-08-2018, GitMadKing
+[sphere_newb.scp]: Wrong Comment Section
+[items/sphere_item_unsorted.scp]: UNEXISTANT RESOURCE i_pillow_fancy
+[items/sphere_item_theme_pack_shadow.scp]: WRONG DUPEITEM 0363e -> 0360e
+[sphere_skills.scp]: ArmorRating MISTAPE ArmorRaring
+[sphere_template_sets.scp]: Fixed some error on server start
+
 01-09-2018, Coruja
 Fixed: Enhanced clients showing wrong hitpoints color on health bar.
 Changed: When enhanced clients drop items on container grid index already in use, the item now will be placed on next available index (OSI style) instead first available index starting on 0
@@ -1217,3 +1224,17 @@ Fixed: Deeds showing target for non-house multis on wrong Y position.
 Added: New function CODEXOFWISDOM to open client Codex of Wisdom menu at given topic ID.
 	-Syntax: CODEXOFWISDOM TopicID (1~176), [ForceOpen (0/1)]
 [sphereCrypt.ini]: Added crypt key for classic client 7.0.69 ~ 7.0.70 and enhanced client 4.0.69 ~ 4.0.70
+
+09-10-2018, Coruja
+[items/sphere_item_char_icons.scp]: Added char icon 'i_pet_skeletal_cat' and 'i_pet_khal_ankur'
+[items/sphere_item_holiday_anniversary.scp]: Added publish 101 items
+[items/sphere_item_holiday_halloween.scp]: Added publish 101 items
+[items/sphere_item_holiday_thanksgiving.scp]: File renamed to 'sphere_item_holiday_other.scp' and added publish 100 items
+[items/sphere_item_memories.scp]: Added mount memory 'i_mt_skeletal_cat'
+[items/sphere_item_vegetation.scp]: Added publish 100 items
+[npcs/sphere_monsters.scp]: Added new TOL mount chardef 'c_skeletal_cat' and 'c_khal_ankur'
+[sphere_defs.scp]: Added mount defs for Skeletal Cat and some new bufficon/buffcliloc defs
+
+13-10-2018, Coruja
+Fixed: Boat/ship movement not updating client screen.
+Fixed: Function NUDGEUP/NUDGEDOWN not working correctly.

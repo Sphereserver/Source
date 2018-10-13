@@ -719,7 +719,7 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		if ( Base_GetDef()->r_WriteVal(pszKey, sVal, pSrc) )
 			return true;
 
-		return	CScriptObj::r_WriteVal(pszKey, sVal, pSrc);
+		return CScriptObj::r_WriteVal(pszKey, sVal, pSrc);
 	}
 
 	bool fZero = false;
@@ -908,8 +908,7 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 
 				if ( fCanSee || !pt.IsValidPoint() )
 				{
-					CGrayUID uid = static_cast<CGrayUID>(Exp_GetVal(pszKey));
-					pObj = uid.ObjFind();
+					pObj = static_cast<CGrayUID>(Exp_GetVal(pszKey)).ObjFind();
 					if ( !fCanSee && pObj )
 						pt = pObj->GetTopPoint();
 				}
@@ -1029,27 +1028,23 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 
 			if ( *pszKey )
 			{
-				CPointMap	pt = g_Cfg.GetRegionPoint(pszKey);
+				CPointMap pt = g_Cfg.GetRegionPoint(pszKey);
 
 				if ( pt.IsValidPoint() )
 				{
 					if ( !pThis->GetTopPoint().IsValidPoint() )
 						return false;
-					else
-						sVal.FormatVal(pThis->GetTopDist(pt));
+					sVal.FormatVal(pThis->GetTopDist(pt));
 					return true;
 				}
-
-				CGrayUID uid = static_cast<CGrayUID>(Exp_GetVal(pszKey));
-				SKIP_SEPARATORS(pszKey);
-				GETNONWHITESPACE(pszKey);
-				pObj = uid.ObjFind();
+				pObj = static_cast<CGrayUID>(Exp_GetVal(pszKey)).ObjFind();
 			}
 
 			if ( pObj && !pObj->IsTopLevel() )
 				pObj = dynamic_cast<CObjBase *>(pObj->GetTopLevelObj());
 			if ( !pObj )
 				return false;
+
 			sVal.FormatVal(pThis->GetDist(pObj));
 			break;
 		}
@@ -1072,15 +1067,10 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				{
 					if ( !pThis->GetTopPoint().IsValidPoint() )
 						return false;
-					else
-						sVal.FormatVal(pThis->GetTopPoint().GetDir(pt));
+					sVal.FormatVal(pThis->GetTopPoint().GetDir(pt));
 					return true;
 				}
-
-				CGrayUID uid = static_cast<CGrayUID>(Exp_GetVal(pszKey));
-				SKIP_SEPARATORS(pszKey);
-				GETNONWHITESPACE(pszKey);
-				pObj = uid.ObjFind();
+				pObj = static_cast<CGrayUID>(Exp_GetVal(pszKey)).ObjFind();
 			}
 
 			if ( !pObj )
@@ -1195,8 +1185,7 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				TCHAR *pszArg = Str_GetTemp();
 				strcpylen(pszArg, pszKey, strlen(pszKey) + 1);
 
-				CGrayUID uid = static_cast<CGrayUID>(Exp_GetVal(pszKey));
-				pItem = dynamic_cast<CItem *>(uid.ObjFind());
+				pItem = dynamic_cast<CItem *>(static_cast<CGrayUID>(Exp_GetVal(pszKey)).ObjFind());
 				if ( !pItem )
 				{
 					ITEMID_TYPE id = static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetID(RES_ITEMDEF, const_cast<LPCTSTR &>(reinterpret_cast<LPTSTR &>(pszArg))).GetResIndex());
@@ -1233,8 +1222,7 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				TCHAR *pszArg = Str_GetTemp();
 				strcpylen(pszArg, pszKey, strlen(pszKey) + 1);
 
-				CGrayUID uid = static_cast<CGrayUID>(Exp_GetVal(pszKey));
-				pItem = dynamic_cast<CItem *>(uid.ObjFind());
+				pItem = dynamic_cast<CItem *>(static_cast<CGrayUID>(Exp_GetVal(pszKey)).ObjFind());
 				if ( !pItem )
 				{
 					ITEMID_TYPE id = static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetID(RES_ITEMDEF, const_cast<LPCTSTR &>(reinterpret_cast<LPTSTR &>(pszArg))).GetResIndex());
@@ -1362,14 +1350,10 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case OC_SEXTANTP:
 		{
 			pszKey += 8;
-			SKIP_SEPARATORS(pszKey); GETNONWHITESPACE(pszKey);
+			SKIP_SEPARATORS(pszKey);
+			GETNONWHITESPACE(pszKey);
 
-			CPointMap pt;
-			if ( *pszKey )
-				pt = g_Cfg.GetRegionPoint(pszKey);
-			else
-				pt = GetTopPoint();
-
+			CPointMap pt = *pszKey ? g_Cfg.GetRegionPoint(pszKey) : GetTopPoint();
 			if ( !pt.IsValidPoint() )
 				return false;
 
@@ -1416,12 +1400,12 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 					sVal.Format("%s=%s", pTagAt->GetKey(), pTagAt->GetValStr());
 					return true;
 				}
-				else if ( !strnicmp(pszKey, "KEY", 3) ) // key?
+				else if ( !strnicmp(pszKey, "KEY", 3) )
 				{
 					sVal = pTagAt->GetKey();
 					return true;
 				}
-				else if ( !strnicmp(pszKey, "VAL", 3) ) // val?
+				else if ( !strnicmp(pszKey, "VAL", 3) )
 				{
 					sVal = pTagAt->GetValStr();
 					return true;
@@ -1452,12 +1436,12 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 					sVal.Format("%s=%s", pTagAt->GetKey(), pTagAt->GetValStr());
 					return true;
 				}
-				else if ( !strnicmp(pszKey, "KEY", 3) ) // key?
+				else if ( !strnicmp(pszKey, "KEY", 3) )
 				{
 					sVal = pTagAt->GetKey();
 					return true;
 				}
-				else if ( !strnicmp(pszKey, "VAL", 3) ) // val?
+				else if ( !strnicmp(pszKey, "VAL", 3) )
 				{
 					sVal = pTagAt->GetValStr();
 					return true;
@@ -1927,7 +1911,7 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 	EXC_TRY("Verb");
 	ASSERT(pSrc);
 
-	LPCTSTR	pszKey = s.GetKey();
+	LPCTSTR pszKey = s.GetKey();
 	if ( !strnicmp(pszKey, "CLEARTAGS", 9) )
 	{
 		pszKey = s.GetArgStr();
@@ -1956,7 +1940,7 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 
 	switch ( index )
 	{
-		case OV_DAMAGE:	//	"Dmg, SourceFlags, SourceCharUid, DmgPhysical(%), DmgFire(%), DmgCold(%), DmgPoison(%), DmgEnergy(%)" = do me some damage.
+		case OV_DAMAGE:	// "Dmg, SourceFlags, SourceCharUid, DmgPhysical(%), DmgFire(%), DmgCold(%), DmgPoison(%), DmgEnergy(%)" = do me some damage.
 		{
 			EXC_SET("DAMAGE");
 			INT64 piCmd[8];
@@ -2164,8 +2148,7 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 			if ( iArgQty < 2 )
 				piCmd[1] = 1;
 
-			CGrayUID uid = static_cast<CGrayUID>(piCmd[0]);
-			pObjNear = uid.ObjFind();
+			pObjNear = static_cast<CGrayUID>(piCmd[0]).ObjFind();
 			if ( !pObjNear )
 				return false;
 
@@ -2177,7 +2160,8 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 			EXC_SET("NUDGEDOWN");
 			if ( IsTopLevel() )
 			{
-				SetTopZ(GetTopZ() - static_cast<signed char>(maximum(1, s.GetArgVal())));
+				signed char zDiff = static_cast<signed char>(s.GetArgVal());
+				SetTopZ(GetTopZ() - (zDiff ? zDiff : 1));
 				CChar *pChar = dynamic_cast<CChar *>(this);
 				if ( pChar )
 				{
@@ -2200,7 +2184,8 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 			EXC_SET("NUDGEUP");
 			if ( IsTopLevel() )
 			{
-				SetTopZ(GetTopZ() + static_cast<signed char>(maximum(1, s.GetArgVal())));
+				signed char zDiff = static_cast<signed char>(s.GetArgVal());
+				SetTopZ(GetTopZ() + (zDiff ? zDiff : 1));
 				CChar *pChar = dynamic_cast<CChar *>(this);
 				if ( pChar )
 				{
@@ -2302,21 +2287,10 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 			switch ( iArgQty )
 			{
 				case 4:
-				{
-					CGrayUID uid = static_cast<CGrayUID>(piCmd[3]);
-					pItemSrc = uid.ItemFind();
-				}
+					pItemSrc = static_cast<CGrayUID>(piCmd[3]).ItemFind();
 				case 3:
-				{
-					if ( piCmd[2] == -1 )
-						pCharSrc = dynamic_cast<CChar *>(this);
-					else
-					{
-						CGrayUID uid = static_cast<CGrayUID>(piCmd[2]);
-						pCharSrc = uid.CharFind();
-					}
+					pCharSrc = (piCmd[2] == -1) ? dynamic_cast<CChar *>(this) : static_cast<CGrayUID>(piCmd[2]).CharFind();
 					break;
-				}
 				default:
 					break;
 			}
@@ -2937,8 +2911,7 @@ inline bool CObjBase::CallPersonalTrigger(TCHAR *pszArgs, CTextConsole *pSrc, TR
 			}
 			else if ( iTriggerArgType == 3 )	// ARGO
 			{
-				CGrayUID uid = static_cast<CGrayUID>(Exp_GetVal(ppCmdTrigger[2]));
-				CObjBase *pTriggerArgObj = uid.ObjFind();
+				CObjBase *pTriggerArgObj = static_cast<CGrayUID>(Exp_GetVal(ppCmdTrigger[2])).ObjFind();
 				if ( pTriggerArgObj )
 					csTriggerArgs.m_pO1 = pTriggerArgObj;
 			}
@@ -2963,8 +2936,7 @@ inline bool CObjBase::CallPersonalTrigger(TCHAR *pszArgs, CTextConsole *pSrc, TR
 				// ARGO
 				if ( iArgQty >= 1 )
 				{
-					CGrayUID uid = static_cast<CGrayUID>(Exp_GetVal(ppArgs[0]));
-					CObjBase *pTriggerArgObj = uid.ObjFind();
+					CObjBase *pTriggerArgObj = static_cast<CGrayUID>(Exp_GetVal(ppArgs[0])).ObjFind();
 					if ( pTriggerArgObj )
 						csTriggerArgs.m_pO1 = pTriggerArgObj;
 				}
