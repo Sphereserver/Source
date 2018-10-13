@@ -1238,3 +1238,4 @@ Added: New function CODEXOFWISDOM to open client Codex of Wisdom menu at given t
 13-10-2018, Coruja
 Fixed: Boat/ship movement not updating client screen.
 Fixed: Function NUDGEUP/NUDGEDOWN not working correctly.
+[sphereCrypt.ini]: Added crypt key for classic client 7.0.71 and enhanced client 4.0.71

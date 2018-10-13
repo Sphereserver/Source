@@ -865,7 +865,7 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 		{ GUMP_CHEST_WOOD_FINISH, 10, 10, 170, 115 },
 		{ GUMP_CHEST_WOOD_FINISH2, 10, 10, 170, 115 },
 		//{ GUMP_BLESSED_STATUE, 0, 0, 0, 0 },		// TO-DO: confirm gump size
-		//{ GUMP_MAIL_BOX, 0, 0, 0, 0 },			// TO-DO: confirm gump size
+		//{ GUMP_MAILBOX, 0, 0, 0, 0 },				// TO-DO: confirm gump size
 		{ GUMP_GIFT_BOX_CUBE, 23, 51, 163, 151 },
 		{ GUMP_GIFT_BOX_CYLINDER, 16, 51, 156, 166 },
 		{ GUMP_GIFT_BOX_OCTOGON, 25, 51, 165, 166 },
@@ -878,6 +878,10 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 		//{ GUMP_CHEST_PIRATE, 0, 0, 0, 0 },		// TO-DO: confirm gump size
 		//{ GUMP_FOUNTAIN_LIFE, 0, 0, 0, 0 },		// TO-DO: confirm gump size
 		//{ GUMP_SECRET_CHEST, 0, 0, 0, 0 },		// TO-DO: confirm gump size
+		//{ GUMP_MAILBOX_DOLPHIN, 0, 0, 0, 0 },		// TO-DO: confirm gump size
+		//{ GUMP_MAILBOX_SQUIRREL, 0, 0, 0, 0 },	// TO-DO: confirm gump size
+		//{ GUMP_MAILBOX_BARREL, 0, 0, 0, 0 },		// TO-DO: confirm gump size
+		//{ GUMP_MAILBOX_LANTERN, 0, 0, 0, 0 },		// TO-DO: confirm gump size
 		{ GUMP_SECURE_TRADE, 20, 30, 380, 180 },
 		{ GUMP_BOARD_CHECKER, 0, 0, 282, 230 },
 		{ GUMP_BOARD_BACKGAMMON, 0, 0, 282, 210 },
@@ -892,6 +896,12 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 		{ GUMP_CRATE_FLETCHING, 24, 96, 196, 152 },
 		{ GUMP_CHEST_WOODEN, 10, 10, 170, 115 },
 		//{ GUMP_PILLOW_HEART, 0, 0, 0, 0 },		// TO-DO: confirm gump size
+		{ GUMP_CHEST_METAL_LARGE, 50, 60, 500, 300 },
+		{ GUMP_CHEST_METAL_GOLD_LARGE, 50, 60, 500, 300 },
+		{ GUMP_CHEST_WOOD_LARGE, 50, 60, 500, 300 },
+		{ GUMP_CHEST_CRATE_LARGE, 50, 60, 500, 300 },
+		{ GUMP_MINERS_SATCHEL, 44, 65, 186, 159 },
+		{ GUMP_LUMBERJACKS_SATCHEL, 44, 65, 186, 159 },
 		{ GUMP_CHEST_METAL2, 18, 105, 162, 178 }
 	};
 
