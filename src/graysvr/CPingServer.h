@@ -11,7 +11,7 @@ class CPingServer : public AbstractSphereThread
 {
 public:
 	CPingServer();
-	virtual ~CPingServer();
+	virtual ~CPingServer() { };
 
 private:
 	CGSocket m_socket;

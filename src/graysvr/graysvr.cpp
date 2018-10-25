@@ -326,18 +326,12 @@ bool WritePidFile(int iMode = 0)
 
 int CEventLog::VEvent(DWORD dwMask, LPCTSTR pszFormat, va_list args)
 {
-	if ( (pszFormat == NULL) || (pszFormat[0] == '\0') )
+	if ( !pszFormat || (pszFormat[0] == '\0') )
 		return 0;
 
 	TemporaryString pszTemp;
-	size_t len = _vsnprintf(pszTemp, (SCRIPT_MAX_LINE_LEN - 1), pszFormat, args);
-	if ( !len )
-		strncpy(pszTemp, pszFormat, (SCRIPT_MAX_LINE_LEN - 1));
-
-	// This get rids of exploits done sending 0xC to the log subsytem
-	//TCHAR *pFix;
-	//if ( (pFix = strchr(pszText, 0xC)) )
-	//	*pFix = ' ';
+	if ( _vsnprintf(pszTemp, SCRIPT_MAX_LINE_LEN - 1, pszFormat, args) == 0 )
+		strncpy(pszTemp, pszFormat, SCRIPT_MAX_LINE_LEN - 1);
 
 	return EventStr(dwMask, pszTemp);
 }

@@ -890,32 +890,29 @@ bool CWorldClock::Advance()
 	ADDTOCALLSTACK("CWorldClock::Advance");
 	UINT64 uSystemClock = GetSystemClock();
 
-	INT64 iTimeDiff = uSystemClock - m_SystemClock_Prev;
-	iTimeDiff = IMULDIVDOWN(TICK_PER_SEC, iTimeDiff, CLOCKS_PER_SEC);
+	INT64 iTimeDiff = IMULDIVDOWN(TICK_PER_SEC, uSystemClock - m_SystemClock_Prev, CLOCKS_PER_SEC);
 	if ( !iTimeDiff )
 		return false;
+
+	m_SystemClock_Prev = uSystemClock;
 
 	if ( iTimeDiff < 0 )
 	{
 		// System clock has changed forward
-		// Just wait until next cycle and it should be ok
-		g_Log.Event(LOGL_WARN, "System clock has changed forward (daylight saving change, etc). This may cause strange behavior on some objects\n");
-		m_SystemClock_Prev = uSystemClock;
+		g_Log.Event(LOGL_WARN, "System clock has changed forward (daylight saving change, etc). This may cause strange behavior on some object timers\n", iTimeDiff);
 		return false;
 	}
 
-	m_SystemClock_Prev = uSystemClock;
 	CServTime timeClock = m_TimeClock + iTimeDiff;
+	m_TimeClock = timeClock;
 
-	if ( timeClock < m_TimeClock )	// this will overflow after ~7 years of runtime
+	if ( timeClock < m_TimeClock )
 	{
 		// System clock has changed backward
-		g_Log.Event(LOGL_WARN, "System clock has changed backward (daylight saving change, etc). This may cause strange behavior on some objects\n");
-		m_TimeClock = timeClock;
+		g_Log.Event(LOGL_WARN, "System clock has changed backward (daylight saving change, etc). This may cause strange behavior on some object timers\n");
 		return false;
 	}
 
-	m_TimeClock = timeClock;
 	return true;
 }
 

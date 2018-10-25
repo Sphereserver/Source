@@ -146,10 +146,10 @@ bool CServer::SocketsInit()
 	g_Log.Event(LOGM_INIT, "\nServer started on hostname '%s'\n", szName);
 	if ( !iRet && pHost && pHost->h_addr )
 	{
-		for ( size_t i = 0; pHost->h_addr_list[i] != NULL; i++ )
+		for ( size_t i = 0; pHost->h_addr_list[i] != NULL; ++i )
 		{
 			CSocketAddressIP ip;
-			ip.SetAddrIP(*((DWORD *)pHost->h_addr_list[i]));	// 0.1.2.3
+			ip.SetAddrIP(*reinterpret_cast<DWORD *>(pHost->h_addr_list[i]));	// 0.1.2.3
 			if ( !m_ip.IsLocalAddr() && !m_ip.IsSameIP(ip) )
 				continue;
 			g_Log.Event(LOGM_INIT, "Monitoring IP %s:%d (TCP) - Main server\n", ip.GetAddrStr(), m_ip.GetPort());
@@ -354,14 +354,14 @@ int CServer::PrintPercent(long iCount, long iTotal)
 	{
 		SysMessage(pszTemp);
 #endif
-		size_t len = strlen(pszTemp);
-		while ( len > 0 ) // backspace it
+		size_t iLen = strlen(pszTemp);
+		while ( iLen > 0 )	// backspace it
 		{
 			PrintTelnet("\x08");
 #ifndef _WIN32
 			SysMessage("\x08");
 #endif
-			len--;
+			--iLen;
 		}
 #ifndef _WIN32
 	}
@@ -383,13 +383,13 @@ bool CServer::CommandLine(int argc, TCHAR *argv[])
 	// RETURN:
 	//  true = keep running after this
 
-	for ( int argn = 1; argn < argc; argn++ )
+	for ( int argn = 1; argn < argc; ++argn )
 	{
 		TCHAR *pszArg = argv[argn];
 		if ( !_IS_SWITCH(pszArg[0]) )
 			continue;
 
-		pszArg++;
+		++pszArg;
 		switch ( toupper(pszArg[0]) )
 		{
 			case '?':
@@ -446,7 +446,7 @@ bool CServer::CommandLine(int argc, TCHAR *argv[])
 				if ( !ft.Open("defs.txt", OF_WRITE|OF_TEXT) )
 					return false;
 
-				for ( size_t i = 0; i < g_Exp.m_VarDefs.GetCount(); i++ )
+				for ( size_t i = 0; i < g_Exp.m_VarDefs.GetCount(); ++i )
 				{
 					if ( (i % 0x1FF) == 0 )
 						PrintPercent(i, g_Exp.m_VarDefs.GetCount());
@@ -495,15 +495,15 @@ bool CServer::OnConsoleCmd(CGString &sText, CTextConsole *pSrc)
 	// RETURN:
 	//  false = unsuccessful command
 
-	size_t len = sText.GetLength();
-	if ( len <= 0 )
+	size_t iLen = sText.GetLength();
+	if ( iLen <= 0 )
 		return true;
 
 	// Convert first character to lowercase
 	TCHAR szLow = static_cast<TCHAR>(tolower(sText[0]));
 	bool fRet = true;
 
-	if ( ((len > 2) || ((len == 2) && (sText[1] != '#'))) && (szLow != 'd') )
+	if ( ((iLen > 2) || ((iLen == 2) && (sText[1] != '#'))) && (szLow != 'd') )
 		goto longcommand;
 
 	switch ( szLow )
@@ -545,7 +545,7 @@ bool CServer::OnConsoleCmd(CGString &sText, CTextConsole *pSrc)
 				goto do_resync;
 
 			g_World.Save(true);
-			if ( (len > 1) && (sText[1] == '#') )
+			if ( (iLen > 1) && (sText[1] == '#') )
 				g_World.SaveStatics();
 			break;
 		}
@@ -568,7 +568,7 @@ bool CServer::OnConsoleCmd(CGString &sText, CTextConsole *pSrc)
 			{
 				case 'a':	// areas
 				{
-					pszKey++;
+					++pszKey;
 					GETNONWHITESPACE(pszKey);
 					if ( g_World.DumpAreas(pSrc, pszKey) )
 						pSrc->SysMessage("Areas dump successful\n");
@@ -581,12 +581,12 @@ bool CServer::OnConsoleCmd(CGString &sText, CTextConsole *pSrc)
 				}
 				case 'u':	// unscripted
 				{
-					pszKey++;
+					++pszKey;
 					switch ( tolower(*pszKey) )
 					{
 						case 'i':	// items
 						{
-							pszKey++;
+							++pszKey;
 							GETNONWHITESPACE(pszKey);
 							if ( g_Cfg.DumpUnscriptedItems(pSrc, pszKey) )
 								pSrc->SysMessage("Unscripted items dump successful\n");
@@ -668,7 +668,7 @@ bool CServer::OnConsoleCmd(CGString &sText, CTextConsole *pSrc)
 		}
 		case 'p':
 		{
-			ProfileDump(pSrc, ((len > 1) && (sText[1] == '#')));
+			ProfileDump(pSrc, ((iLen > 1) && (sText[1] == '#')));
 			break;
 		}
 		case 'r':
@@ -708,7 +708,7 @@ bool CServer::OnConsoleCmd(CGString &sText, CTextConsole *pSrc)
 		}
 		case 'x':
 		{
-			bool fSave = ((len > 1) && (sText[1] == '#'));
+			bool fSave = ((iLen > 1) && (sText[1] == '#'));
 			if ( g_Cfg.m_fSecure && !fSave )
 			{
 				pSrc->SysMessage("NOTE: Secure mode prevents keyboard exit\n");
@@ -792,7 +792,7 @@ bool CServer::OnConsoleCmd(CGString &sText, CTextConsole *pSrc)
 	goto endconsole;
 
 longcommand:
-	if ( ((len > 1) && (sText[1] != ' ')) || (szLow == 'b') )
+	if ( ((iLen > 1) && (sText[1] != ' ')) || (szLow == 'b') )
 	{
 		LPCTSTR pszText = sText;
 		if ( !strnicmp(pszText, "strip", 5) )
@@ -859,7 +859,7 @@ longcommand:
 		}
 
 		if ( g_Cfg.IsConsoleCmd(szLow) )
-			pszText++;
+			++pszText;
 
 		if ( !g_Cfg.CanUsePrivVerb(this, pszText, pSrc) )
 		{
@@ -902,12 +902,12 @@ void CServer::ListClients(CTextConsole *pConsole) const
 	TCHAR *pszMsgTemp = Str_GetTemp();
 	TCHAR szPriv;
 	LPCTSTR pszState = NULL;
-	size_t numClients = 0;
+	size_t iClients = 0;
 
 	ClientIterator it;
 	for ( const CClient *pClient = it.next(); pClient != NULL; pClient = it.next() )
 	{
-		numClients++;
+		++iClients;
 		pChar = pClient->GetChar();
 		pAcc = pClient->m_pAccount;
 		szPriv = (pAcc && (pAcc->GetPrivLevel() > PLEVEL_Player)) ? '+' : '=';
@@ -949,12 +949,12 @@ void CServer::ListClients(CTextConsole *pConsole) const
 		strcat(pszMsg, pszMsgTemp);
 	}
 
-	if ( numClients <= 0 )
+	if ( iClients <= 0 )
 		sprintf(pszMsgTemp, "%s\n", g_Cfg.GetDefaultMsg(DEFMSG_HL_NO_CLIENT));
-	else if ( numClients == 1 )
+	else if ( iClients == 1 )
 		sprintf(pszMsgTemp, "%s\n", g_Cfg.GetDefaultMsg(DEFMSG_HL_ONE_CLIENT));
 	else
-		sprintf(pszMsgTemp, "%s %" FMTSIZE_T "\n", g_Cfg.GetDefaultMsg(DEFMSG_HL_MANY_CLIENTS), numClients);
+		sprintf(pszMsgTemp, "%s %" FMTSIZE_T "\n", g_Cfg.GetDefaultMsg(DEFMSG_HL_MANY_CLIENTS), iClients);
 
 	pConsole->SysMessage(pszMsg);
 	pConsole->SysMessage(pszMsgTemp);
@@ -1006,7 +1006,7 @@ bool CServer::r_GetRef(LPCTSTR &pszKey, CScriptObj *&pRef)
 	{
 		size_t i = 1;
 		while ( IsDigit(pszKey[i]) )
-			i++;
+			++i;
 
 		if ( pszKey[i] == '.' )
 		{
@@ -1045,9 +1045,9 @@ bool CServer::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		// Try to fetch using indexes
 		if ( (*pszTemp >= '0') && (*pszTemp <= '9') )
 		{
-			size_t num = Exp_GetVal(pszTemp);
-			if ( (*pszTemp == '\0') && (num < g_Accounts.Account_GetCount()) )
-				pAccount = g_Accounts.Account_Get(num);
+			size_t iNum = Exp_GetVal(pszTemp);
+			if ( (*pszTemp == '\0') && (iNum < g_Accounts.Account_GetCount()) )
+				pAccount = g_Accounts.Account_Get(iNum);
 		}
 
 		// Indexes failed, try to fetch using names
@@ -1195,9 +1195,9 @@ bool CServer::r_Verb(CScript &s, CTextConsole *pSrc)
 			// Try to fetch using indexes
 			if ( (*pszTemp >= '0') && (*pszTemp <= '9') )
 			{
-				size_t num = Exp_GetVal(pszTemp);
-				if ( (*pszTemp == '\0') && (num < g_Accounts.Account_GetCount()) )
-					pAccount = g_Accounts.Account_Get(num);
+				size_t iNum = Exp_GetVal(pszTemp);
+				if ( (*pszTemp == '\0') && (iNum < g_Accounts.Account_GetCount()) )
+					pAccount = g_Accounts.Account_Get(iNum);
 			}
 
 			// Indexes failed, try to fetch using names
@@ -1351,7 +1351,7 @@ bool CServer::r_Verb(CScript &s, CTextConsole *pSrc)
 			LPCTSTR pszArgs = s.GetArgStr();
 			if ( pszArgs && (*pszArgs == '@') )
 			{
-				pszArgs++;
+				++pszArgs;
 				if ( *pszArgs != '@' )
 					dwMask |= LOGM_NOCONTEXT;
 			}

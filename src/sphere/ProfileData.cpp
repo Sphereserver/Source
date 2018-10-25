@@ -171,9 +171,9 @@ LPCTSTR ProfileData::GetDescription(PROFILE_TYPE id) const
 	int iCount	= m_PreviousTimes[id].m_iCount;
 
 	if ( id >= PROFILE_DATA_QTY )
-		sprintf(pszTmp, "%llu (total: %llu) instances", m_PreviousTimes[id].m_Time, m_AverageTimes[id].m_Time);
+		sprintf(pszTmp, "%3llu (total: %llu) instances", m_PreviousTimes[id].m_Time, m_AverageTimes[id].m_Time);
 	else if ( id >= PROFILE_TIME_QTY )
-		sprintf(pszTmp, "%llu (avg: %llu) bytes", m_PreviousTimes[id].m_Time, m_AverageTimes[id].m_Time);
+		sprintf(pszTmp, "%3llu (avg: %llu) bytes", m_PreviousTimes[id].m_Time, m_AverageTimes[id].m_Time);
 	else
 	{
 		sprintf(pszTmp, "%3i.%04is  avg: %3i.%04is  [samples: %7i  avg: %7i]  runtime: %is",
