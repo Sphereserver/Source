@@ -754,6 +754,9 @@ ANIM_TYPE CChar::GenerateAnimate(ANIM_TYPE action, bool fTranslate, bool fBackwa
 					case IT_WEAPON_XBOW:
 						action = ANIM_ATTACK_XBOW;
 						break;
+					case IT_WEAPON_WHIP:
+						action = ANIM_ATTACK_1H_BASH;
+						break;
 					default:
 						break;
 				}
@@ -998,6 +1001,9 @@ bool CChar::UpdateAnimate(ANIM_TYPE action, bool fTranslate, bool fBackward, BYT
 					break;
 				case IT_WEAPON_XBOW:
 					subaction = NANIM_ATTACK_CROSSBOW;
+					break;
+				case IT_WEAPON_WHIP:
+					subaction = NANIM_ATTACK_1H_BASH;
 					break;
 				default:
 					break;
@@ -1281,6 +1287,8 @@ void CChar::SoundChar(CRESND_TYPE type)
 						return Sound(static_cast<SOUND_TYPE>(0x234));		//xbow
 					case IT_WEAPON_THROWING:
 						return Sound(static_cast<SOUND_TYPE>(0x5D2));		//throwH
+					case IT_WEAPON_WHIP:
+						return Sound(static_cast<SOUND_TYPE>(0x67E));		//whip01
 					default:
 						break;
 				}

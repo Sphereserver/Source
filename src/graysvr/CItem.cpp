@@ -3920,45 +3920,30 @@ bool CItem::Use_Door( bool bJustOpen )
 bool CItem::Armor_IsRepairable() const
 {
 	ADDTOCALLSTACK("CItem::Armor_IsRepairable");
-	// We might want to check based on skills:
-	// SKILL_BLACKSMITHING (armor)
-	// SKILL_BOWERY (xbows)
-	// SKILL_TAILORING (leather)
-	//
+	// Check if this item is repairable
 
-	if ( Can( CAN_I_REPAIR ))
-		return( true );
+	if ( Can(CAN_I_REPAIR) )
+		return true;
 
 	switch ( m_type )
 	{
-		case IT_CLOTHING:
-		case IT_ARMOR_LEATHER:
-			return( false );	// Not this way anyhow.
 		case IT_SHIELD:
-		case IT_ARMOR:				// some type of armor. (no real action)
-			// ??? Bone armor etc is not !
-			break;
+		case IT_ARMOR:
 		case IT_WEAPON_MACE_CROOK:
 		case IT_WEAPON_MACE_PICK:
-		case IT_WEAPON_MACE_SMITH:	// Can be used for smithing ?
+		case IT_WEAPON_MACE_SMITH:
 		case IT_WEAPON_MACE_STAFF:
-		case IT_WEAPON_MACE_SHARP:	// war axe can be used to cut/chop trees.
+		case IT_WEAPON_MACE_SHARP:
 		case IT_WEAPON_SWORD:
 		case IT_WEAPON_FENCE:
 		case IT_WEAPON_AXE:
-		case IT_WEAPON_THROWING:
-			break;
-
-		case IT_WEAPON_BOW:
-			// wood Bows are not repairable !
-			return( false );
 		case IT_WEAPON_XBOW:
-			return( true );
+		case IT_WEAPON_THROWING:
+		case IT_WEAPON_WHIP:
+			return true;
 		default:
-			return( false );
+			return false;
 	}
-
-	return( true );
 }
 
 int CItem::Armor_GetDefense() const
@@ -4034,6 +4019,7 @@ SKILL_TYPE CItem::Weapon_GetSkill() const
 		case IT_WEAPON_MACE_STAFF:
 		case IT_WEAPON_MACE_CROOK:
 		case IT_WEAPON_MACE_PICK:
+		case IT_WEAPON_WHIP:
 			return SKILL_MACEFIGHTING;
 		case IT_WEAPON_SWORD:
 		case IT_WEAPON_AXE:

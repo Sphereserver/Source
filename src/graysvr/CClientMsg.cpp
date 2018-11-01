@@ -1281,13 +1281,13 @@ void CClient::addCharName(const CChar *pChar)
 	strncat(pszName, pChar->GetName(), MAX_NAME_SIZE - 1);
 	strncat(pszName, pChar->GetKeyStr("NAME.SUFFIX"), MAX_NAME_SIZE - 1);
 
-	LPCTSTR pszAbbrev = pChar->Guild_AbbrevBracket(MEMORY_TOWN);
+	LPCTSTR pszAbbrev = pChar->Guild_Abbrev(MEMORY_TOWN);
 	if ( pszAbbrev )
-		strncat(pszName, pszAbbrev, MAX_NAME_SIZE - 1);
+		sprintf(pszName, " [%s]", pszAbbrev);
 
-	pszAbbrev = pChar->Guild_AbbrevBracket(MEMORY_GUILD);
+	pszAbbrev = pChar->Guild_Abbrev(MEMORY_GUILD);
 	if ( pszAbbrev )
-		strncat(pszName, pszAbbrev, MAX_NAME_SIZE - 1);
+		sprintf(pszName, " [%s]", pszAbbrev);
 
 	if ( pChar->m_pNPC && g_Cfg.m_fVendorTradeTitle && (pChar->GetNPCBrain() == NPCBRAIN_HUMAN) )
 	{
@@ -2897,8 +2897,11 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 								t->FormatArgs("%d", iStrengthRequirement);
 							}
 
-							m_TooltipData.Add(t = new CClientTooltip(1060639)); // durability ~1_val~ / ~2_val~
-							t->FormatArgs("%hu\t%hu", pItem->m_itArmor.m_Hits_Cur, pItem->m_itArmor.m_Hits_Max);
+							if ( pItem->m_itArmor.m_Hits_Max > 0 )
+							{
+								m_TooltipData.Add(t = new CClientTooltip(1060639)); // durability ~1_val~ / ~2_val~
+								t->FormatArgs("%hu\t%hu", pItem->m_itArmor.m_Hits_Cur, pItem->m_itArmor.m_Hits_Max);
+							}
 							break;
 						}
 
@@ -2913,6 +2916,7 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 						case IT_WEAPON_AXE:
 						case IT_WEAPON_XBOW:
 						case IT_WEAPON_THROWING:
+						case IT_WEAPON_WHIP:
 						{
 							if ( pItem->m_itWeapon.m_poison_skill )
 								m_TooltipData.Add(new CClientTooltip(1017383)); // poisoned
@@ -3083,8 +3087,11 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 								}
 							}
 
-							m_TooltipData.Add(t = new CClientTooltip(1060639)); // durability ~1_val~ / ~2_val~
-							t->FormatArgs("%hu\t%hu", pItem->m_itWeapon.m_Hits_Cur, pItem->m_itWeapon.m_Hits_Max);
+							if ( pItem->m_itWeapon.m_Hits_Max > 0 )
+							{
+								m_TooltipData.Add(t = new CClientTooltip(1060639)); // durability ~1_val~ / ~2_val~
+								t->FormatArgs("%hu\t%hu", pItem->m_itWeapon.m_Hits_Cur, pItem->m_itWeapon.m_Hits_Max);
+							}
 							break;
 						}
 

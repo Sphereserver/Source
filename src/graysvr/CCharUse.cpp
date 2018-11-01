@@ -1548,6 +1548,7 @@ int CChar::Do_Use_Item(CItem *pItem, bool fLink)
 		case IT_WEAPON_MACE_STAFF:
 		case IT_JEWELRY:
 		case IT_WEAPON_THROWING:
+		case IT_WEAPON_WHIP:
 		{
 			if ( fLink )
 				return false;

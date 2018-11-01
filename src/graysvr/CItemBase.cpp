@@ -300,6 +300,7 @@ bool CItemBase::IsTypeWeapon(IT_TYPE type)  // static
 		case IT_WEAPON_SWORD:
 		case IT_WEAPON_FENCE:
 		case IT_WEAPON_BOW:
+		case IT_WEAPON_WHIP:
 		case IT_WAND:
 			return true;
 		default:
@@ -1060,6 +1061,7 @@ bool CItemBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				case IT_WEAPON_MACE_STAFF:
 				case IT_WEAPON_MACE_CROOK:
 				case IT_WEAPON_MACE_PICK:
+				case IT_WEAPON_WHIP:
 					skill = SKILL_MACEFIGHTING;
 					break;
 				case IT_WEAPON_FENCE:

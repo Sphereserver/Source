@@ -1201,9 +1201,9 @@ Fixed: Multi function CUSTOMIZE not working correctly.
 [sphere.ini]: Added new CHATF_GLOBALCHAT chat flag to enable Global Chat feature on clients >= 7.0.62.2 (still incomplete yet)
 
 29-08-2018, GitMadKing
-[sphere_newb.scp]: Wrong Comment Section
-[items/sphere_item_unsorted.scp]: UNEXISTANT RESOURCE i_pillow_fancy
 [items/sphere_item_theme_pack_shadow.scp]: WRONG DUPEITEM 0363e -> 0360e
+[items/sphere_item_unsorted.scp]: UNEXISTANT RESOURCE i_pillow_fancy
+[sphere_newb.scp]: Wrong Comment Section
 [sphere_skills.scp]: ArmorRating MISTAPE ArmorRaring
 [sphere_template_sets.scp]: Fixed some error on server start
 
@@ -1239,3 +1239,22 @@ Added: New function CODEXOFWISDOM to open client Codex of Wisdom menu at given t
 Fixed: Boat/ship movement not updating client screen.
 Fixed: Function NUDGEUP/NUDGEDOWN not working correctly.
 [sphereCrypt.ini]: Added crypt key for classic client 7.0.71 and enhanced client 4.0.71
+
+20-10-2018, Coruja
+[items/sphere_item_buildings.scp]: Renamed defname 'i_telescope' to 'i_telescope_giant'
+[items/sphere_item_deco_dungeons_traps_dead.scp]: Removed duplicated defname 'i_statue_faie' and added 'm_kotl_sacrificial_altar'
+[items/sphere_item_deco_wall_hangings.scp]: Added publish 100 items
+[items/sphere_item_magic_jewelry.scp]: Removed unused file
+[items/sphere_item_provisions_jewelry.scp]: Moved all RES* from @Create trigger to ITEMDEF base
+[items/multis/multis_stairs.scp]: Added missing jungle/shadowguard stairs
+[sphere_template_sets.scp]: Removed unused file
+
+21-10-2018, Coruja
+[items/sphere_item_profession_tailor_tanner.scp]: Fixed wrong RESOURCES/SKILLMAKE on 'i_spinning_wheel_elven'
+[items/sphere_item_vice_virtue.scp]: Added publish 102 items
+[items/sphere_item_wedding.scp]: Added missing REQSTR on clothes
+[sphere_spells.scp]: Updated FLAGS/EFFECT_ID on many spells. Mark spell now will also dye marked runes based on facet color
+
+01-11-2018, Coruja
+Added: Support for new Whip weapon type
+[sphereCrypt.ini]: Added crypt key for classic client 7.0.72 ~ 7.0.73 and enhanced client 4.0.72 ~ 4.0.73

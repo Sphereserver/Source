@@ -899,7 +899,7 @@ bool CWorldClock::Advance()
 	if ( iTimeDiff < 0 )
 	{
 		// System clock has changed forward
-		g_Log.Event(LOGL_WARN, "System clock has changed forward (daylight saving change, etc). This may cause strange behavior on some object timers\n", iTimeDiff);
+		g_Log.Event(LOGL_WARN, "System clock has changed forward (daylight saving change, etc). This may cause strange behavior on some object timers\n");
 		return false;
 	}
 
