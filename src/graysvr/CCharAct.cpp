@@ -258,7 +258,7 @@ void CChar::LayerAdd(CItem *pItem, LAYER_TYPE layer)
 					Skill_Start(Fight_GetWeaponSkill());	// update char action
 				}
 			}
-			else if ( pItem->IsTypeArmor() )
+			else if ( pItem->IsType(IT_SHIELD) )
 				StatFlag_Set(STATF_HasShield);
 			break;
 		}
@@ -298,7 +298,7 @@ void CChar::LayerAdd(CItem *pItem, LAYER_TYPE layer)
 			case IT_EQ_MEMORY_OBJ:
 			{
 				CItemMemory *pMemory = dynamic_cast<CItemMemory *>(pItem);
-				if ( pMemory )
+				if ( pMemory && (pMemory->GetMemoryTypes() != MEMORY_NONE) )
 					Memory_UpdateFlags(pMemory);
 				break;
 			}
@@ -352,7 +352,7 @@ void CChar::OnRemoveOb(CGObListRec *pObRec)	// override this = called when remov
 					Skill_Start(Fight_GetWeaponSkill());	// update char action
 				}
 			}
-			else if ( pItem->IsTypeArmor() )
+			else if ( pItem->IsType(IT_SHIELD) )
 				StatFlag_Clear(STATF_HasShield);
 
 			if ( (m_Act_SkillCurrent == SKILL_MINING) || (m_Act_SkillCurrent == SKILL_FISHING) || (m_Act_SkillCurrent == SKILL_LUMBERJACKING) )
@@ -405,7 +405,13 @@ void CChar::OnRemoveOb(CGObListRec *pObRec)	// override this = called when remov
 			{
 				CItemMemory *pMemory = dynamic_cast<CItemMemory *>(pItem);
 				if ( pMemory )
-					Memory_UpdateClearTypes(pMemory, USHRT_MAX);
+				{
+					if ( pMemory->GetMemoryTypes() & MEMORY_IPET )
+						StatFlag_Clear(STATF_Pet);
+
+					pMemory->SetMemoryTypes(MEMORY_NONE);
+					Memory_UpdateFlags(pMemory);
+				}
 				break;
 			}
 			default:
@@ -1062,14 +1068,14 @@ bool CChar::UpdateAnimate(ANIM_TYPE action, bool fTranslate, bool fBackward, BYT
 					action1 = NANIM_ATTACK;
 					subaction = NANIM_ATTACK_WRESTLING;
 					break;
-					/*case ANIM_BOW:		// these 2 anims doesn't showing properly when hovering/mounted, so we skip them
-						action1 = NANIM_EMOTE;
-						subaction = NANIM_EMOTE_BOW;
-						break;
-					case ANIM_SALUTE:
-						action1 = NANIM_EMOTE;
-						subaction = NANIM_EMOTE_SALUTE;
-						break;*/
+				/*case ANIM_BOW:		// these 2 anims doesn't showing properly when hovering/mounted, so we skip them
+					action1 = NANIM_EMOTE;
+					subaction = NANIM_EMOTE_BOW;
+					break;
+				case ANIM_SALUTE:
+					action1 = NANIM_EMOTE;
+					subaction = NANIM_EMOTE_SALUTE;
+					break;*/
 				case ANIM_EAT:
 					action1 = NANIM_EAT;
 					break;
@@ -2579,7 +2585,7 @@ bool CChar::Death()
 	for ( size_t i = 0; i < m_lastAttackers.size(); ++i )
 	{
 		LastAttackers &refAttacker = m_lastAttackers.at(i);
-		pKiller = static_cast<CGrayUID>(refAttacker.charUID).CharFind();
+		pKiller = refAttacker.charUID.CharFind();
 		if ( pKiller && (refAttacker.damage > 0) )
 		{
 			if ( IsTrigUsed(TRIGGER_KILL) )

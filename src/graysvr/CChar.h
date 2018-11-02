@@ -366,7 +366,7 @@ private:
 
 public:
 	struct LastAttackers {
-		DWORD charUID;
+		CGrayUID charUID;
 		INT64 elapsed;
 		INT64 damage;
 		INT64 threat;
@@ -374,7 +374,7 @@ public:
 	std::vector<LastAttackers> m_lastAttackers;
 
 	struct NotoSaves {
-		DWORD charUID;
+		CGrayUID charUID;
 		INT64 elapsed;
 		NOTO_TYPE value;
 		NOTO_TYPE color;
@@ -964,7 +964,7 @@ public:
 	void LayerAdd(CItem *pItem, LAYER_TYPE layer = LAYER_QTY);
 
 	TRIGRET_TYPE OnCharTrigForLayerLoop(CScript &s, CTextConsole *pSrc, CScriptTriggerArgs *pArgs, CGString *pResult, LAYER_TYPE layer);
-	TRIGRET_TYPE OnCharTrigForMemTypeLoop(CScript &s, CTextConsole *pSrc, CScriptTriggerArgs *pArgs, CGString *pResult, WORD wMemType);
+	TRIGRET_TYPE OnCharTrigForMemTypeLoop(CScript &s, CTextConsole *pSrc, CScriptTriggerArgs *pArgs, CGString *pResult, WORD wMemTypes);
 
 	void OnWeightChange(int iChange);
 	int GetWeight(WORD wAmount = 0) const
@@ -1004,15 +1004,15 @@ public:
 
 private:
 	// Fame/Karma stuff
-	void Noto_Karma(int iKarmaChange, int iBottom = INT_MIN, bool bMessage = false);
+	void Noto_Karma(int iKarmaChange, int iBottom = INT_MIN, bool fMessage = false);
 	void Noto_Fame(int iFameChange);
 	void Noto_ChangeNewMsg(int iPrvLevel);
 	void Noto_ChangeDeltaMsg(int iDelta, LPCTSTR pszType);
 
 public:
 	// Notoriety stuff
-	NOTO_TYPE Noto_GetFlag(const CChar *pCharViewer, bool bAllowInvul = false, bool bGetColor = false) const;
-	NOTO_TYPE Noto_CalcFlag(const CChar *pCharViewer, bool bAllowInvul = false) const;
+	NOTO_TYPE Noto_GetFlag(const CChar *pCharViewer, bool fAllowInvul = false, bool fGetColor = false) const;
+	NOTO_TYPE Noto_CalcFlag(const CChar *pCharViewer, bool fAllowInvul = false) const;
 	HUE_TYPE Noto_GetHue(const CChar *pCharViewer) const;
 
 	bool Noto_IsNeutral() const;
@@ -1176,7 +1176,6 @@ public:
 	// Memories about objects in the world
 	bool Memory_OnTick(CItemMemory *pMemory);
 	bool Memory_UpdateFlags(CItemMemory *pMemory);
-	bool Memory_UpdateClearTypes(CItemMemory *pMemory, WORD wMemTypes);
 	void Memory_AddTypes(CItemMemory *pMemory, WORD wMemTypes);
 	bool Memory_ClearTypes(CItemMemory *pMemory, WORD wMemTypes);
 	CItemMemory *Memory_CreateObj(CGrayUID uid, WORD wMemTypes);
@@ -1235,12 +1234,12 @@ public:
 	void Memory_Fight_Start(const CChar *pTarg);
 	bool Memory_Fight_OnTick(CItemMemory *pMemory);
 
-	bool Fight_Attack(const CChar *pCharTarg, bool bToldByMaster = false);
+	bool Fight_Attack(const CChar *pCharTarg, bool fToldByMaster = false);
 	void Fight_Clear();
 	void Fight_HitTry();
 	WAR_SWING_TYPE Fight_Hit(CChar *pCharTarg);
 	SKILL_TYPE Fight_GetWeaponSkill() const;
-	int Fight_CalcDamage(const CItem *pWeapon, bool bNoRandom = false, bool bGetMax = true) const;
+	int Fight_CalcDamage(const CItem *pWeapon, bool fNoRandom = false, bool fGetMax = true) const;
 
 	// Attacker system
 	enum ATTACKER_CLEAR_TYPE
@@ -1252,9 +1251,9 @@ public:
 		ATTACKER_CLEAR_SCRIPT
 	};
 
-	bool Attacker_Add(CChar *pChar, INT64 threat = 0);
-	bool Attacker_Delete(int id, bool bForced = false, ATTACKER_CLEAR_TYPE type = ATTACKER_CLEAR_FORCED);
-	bool Attacker_Delete(CChar *pChar, bool bForced = false, ATTACKER_CLEAR_TYPE type = ATTACKER_CLEAR_FORCED);
+	bool Attacker_Add(CChar *pChar, INT64 iThreat = 0);
+	bool Attacker_Delete(int id, bool fForced = false, ATTACKER_CLEAR_TYPE type = ATTACKER_CLEAR_FORCED);
+	bool Attacker_Delete(CChar *pChar, bool fForced = false, ATTACKER_CLEAR_TYPE type = ATTACKER_CLEAR_FORCED);
 	int Attacker_GetID(CChar *pChar);
 	CChar *Attacker_GetHighestDam();
 	CChar *Attacker_GetLowestElapsed();
@@ -1327,7 +1326,6 @@ public:
 	CItemStone *Guild_Find(MEMORY_TYPE MemType) const;
 	CStoneMember *Guild_FindMember(MEMORY_TYPE MemType) const;
 	LPCTSTR Guild_Abbrev(MEMORY_TYPE MemType) const;
-	LPCTSTR Guild_AbbrevBracket(MEMORY_TYPE MemType) const;
 
 	bool Use_EatQty(CItem *pItem, WORD wQty = 1);
 	bool Use_Eat(CItem *pItem, WORD wQty = 1);
@@ -1464,7 +1462,7 @@ public:
 	int OnTakeDamage(int iDmg, CChar *pSrc, DAMAGE_TYPE uType, int iDmgPhysical = 0, int iDmgFire = 0, int iDmgCold = 0, int iDmgPoison = 0, int iDmgEnergy = 0);
 	void OnTakeDamageArea(int iDmg, CChar *pSrc, DAMAGE_TYPE uType, int iDmgPhysical = 0, int iDmgFire = 0, int iDmgCold = 0, int iDmgPoison = 0, int iDmgEnergy = 0, HUE_TYPE effectHue = HUE_DEFAULT, SOUND_TYPE effectSound = SOUND_NONE);
 	void OnHarmedBy(CChar *pCharSrc);
-	bool OnAttackedBy(CChar *pCharSrc, bool bPetsCommand = false, bool bShouldReveal = true);
+	bool OnAttackedBy(CChar *pCharSrc, bool fPetsCommand = false, bool fShouldReveal = true);
 
 	bool OnTickEquip(CItem *pItem);
 	void OnTickFood(int iVal, int iHitsHungerLoss);

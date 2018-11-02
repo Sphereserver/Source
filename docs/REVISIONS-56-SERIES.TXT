@@ -1257,4 +1257,9 @@ Fixed: Function NUDGEUP/NUDGEDOWN not working correctly.
 
 01-11-2018, Coruja
 Added: Support for new Whip weapon type
+[items/sphere_item_holiday_halloween.scp]: Added new halloween costumes and updated some jack o' lantern items
+[items/sphere_item_profession_barber.scp]: Added new hairs/beards/horns from publish 103
+[items/sphere_item_provisions_clothing.scp]: Removed duplicated defname 'i_costume'
+[items/sphere_item_quests.scp]: Added Krampus Encounter quest items
+[sphere_defs.scp]: Added new typedef 't_weapon_whip' and some new bufficon/buffcliloc defs
 [sphereCrypt.ini]: Added crypt key for classic client 7.0.72 ~ 7.0.73 and enhanced client 4.0.72 ~ 4.0.73
