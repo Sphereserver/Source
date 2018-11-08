@@ -1802,10 +1802,14 @@ void CClient::addSkillWindow(SKILL_TYPE skill, bool fFromInfo)
 	new PacketSkills(this, pChar, skill);
 }
 
-void CClient::addPlayerSee(const CPointMap &ptOld)
+void CClient::addPlayerSee(const CPointMap &ptOld, bool fIgnoreSelfRegion)
 {
 	ADDTOCALLSTACK("CClient::addPlayerSee");
 	// Adjust to my new location. What do I see here?
+	// ARGS:
+	//  ptOld = previous pt, used to calculate which objects will enter/exit view sight (NULL = resend everything)
+	//  fIgnoreSelfRegion = ignore objects on same region, used by HS boat mouse movement feature which doesn't need to reload objects inside the boat
+
 	int iViewDist = m_pChar->GetSight();
 	bool fOSIMultiSight = IsSetOF(OF_OSIMultiSight);
 	CRegionBase *pCurrentCharRegion = m_pChar->GetTopPoint().GetRegion(REGION_TYPE_HOUSE);
@@ -1822,6 +1826,8 @@ void CClient::addPlayerSee(const CPointMap &ptOld)
 		pItem = AreaItems.GetItem();
 		if ( !pItem )
 			break;
+		if ( fIgnoreSelfRegion && (m_pChar->GetTopPoint().GetRegion(REGION_TYPE_MULTI) == pItem->GetTopPoint().GetRegion(REGION_TYPE_MULTI)) )
+			continue;
 
 		iOldDist = ptOld.GetDist(pItem->GetTopPoint());
 		if ( (iOldDist > UO_MAP_VIEW_RADAR) && pItem->IsTypeMulti() )		// incoming multi on radar view
@@ -1868,6 +1874,8 @@ void CClient::addPlayerSee(const CPointMap &ptOld)
 		pChar = AreaChars.GetChar();
 		if ( !pChar || (iSeeCurrent > iSeeMax) )
 			break;
+		if ( fIgnoreSelfRegion && (m_pChar->m_pArea == pChar->m_pArea) )
+			continue;
 		if ( (m_pChar == pChar) || !CanSee(pChar) )
 			continue;
 
@@ -1879,20 +1887,20 @@ void CClient::addPlayerSee(const CPointMap &ptOld)
 	}
 }
 
-void CClient::addPlayerView(const CPointMap &pt, bool fFull)
+void CClient::addPlayerView(const CPointMap &ptOld, bool fFull)
 {
 	ADDTOCALLSTACK("CClient::addPlayerView");
 	// I moved = Change my point of view. Teleport etc..
 
 	addPlayerUpdate();
 
-	if ( m_pChar->GetTopPoint().IsSame2D(pt) )
+	if ( m_pChar->GetTopPoint().IsSame2D(ptOld) )
 		return;		// not a real move i guess, might just have been a change in face dir
 
 	m_Env.SetInvalid();		// must resend environ stuff
 
 	if ( fFull )
-		addPlayerSee(pt);
+		addPlayerSee(ptOld);
 }
 
 void CClient::addReSync()

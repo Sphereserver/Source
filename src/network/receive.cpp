@@ -3511,50 +3511,44 @@ PacketWheelBoatMove::PacketWheelBoatMove() : Packet(0)
 {
 }
 
-bool PacketWheelBoatMove::onReceive(NetState* net)
+bool PacketWheelBoatMove::onReceive(NetState *net)
 {
 	ADDTOCALLSTACK("PacketWheelBoatMove::onReceive");
 
-	//UO:HS clients >= 7.0.8f
-	//base code below, cleaning needed
-
-	CClient* client = net->m_client;
+	CClient *client = net->m_client;
 	ASSERT(client);
-	CChar* character = client->GetChar();
-	if (!character)
+	CChar *character = client->GetChar();
+	if ( !character )
 		return false;
 
-	skip(4);
-	//DWORD serial = readInt32(); //player serial
-	//CGrayUID from(serial &~ UID_F_RESOURCE); //do we need this? NetState provides the player character
+	skip(4);	//DWORD serial = readInt32();				// player serial
+	DIR_TYPE facing = static_cast<DIR_TYPE>(readByte());	// boat facing direction
+	DIR_TYPE moving = static_cast<DIR_TYPE>(readByte());	// boat moving direction
+	BYTE speed = readByte();								// boat moving speed (0 = stop, 1 = slow, 2 = fast) - values are NOT the same as packet 0xF6
 
-	DIR_TYPE facing = static_cast<DIR_TYPE>(readByte()); //new boat facing, yes client send it
-	DIR_TYPE moving = static_cast<DIR_TYPE>(readByte()); //the boat movement
-	//skip(1);
-	BYTE speed = readByte(); //(0 = Stop Movement, 1 = One Tile Movement, 2 = Normal Movement) ***These speeds are NOT the same as 0xF6 packet
+	CRegionWorld *pRegion = character->m_pArea;
+	if ( !pRegion || !pRegion->IsFlag(REGION_FLAG_SHIP) )
+		return false;
 
-	CRegionWorld *area = character->m_pArea;
-	if (area && area->IsFlag(REGION_FLAG_SHIP))
+	CItemShip *pShip = dynamic_cast<CItemShip *>(pRegion->GetResourceID().ItemFind());
+	if ( !pShip || (pShip->m_itShip.m_Pilot != character->GetUID()) )
 	{
-		CItemShip *pShipItem = dynamic_cast<CItemShip *>(area->GetResourceID().ItemFind());
-		if (pShipItem && (pShipItem->m_itShip.m_Pilot == character->GetUID()))
-		{
-			//direction of movement = moving - ship_face
-			//	moving = read from packet
-			//	ship_face = pShipItem->Ship_Face()
-
-			//Ship_* need to be private? there is another way to ask the ship to move?
-			//pShipItem->Ship_Move(static_cast<DIR_TYPE>((moving - pShipItem->m_itShip.m_DirFace)), pShipItem->m_shipSpeed.tiles);
-
-			if (((facing == DIR_N) || (facing == DIR_E) || (facing == DIR_S) || (facing == DIR_W)) && (pShipItem->m_itShip.m_DirFace != facing)) //boat cannot face intermediate directions
-				pShipItem->Ship_Face(moving);
-
-			if (pShipItem->Ship_SetMoveDir(facing, speed, true))//pShipItem->m_itShip.m_DirMove = static_cast<BYTE>(facing);
-				pShipItem->Ship_Move(moving, speed);
-		}
-		else
-			return false;
+		CItem *pMemory = character->ContentFind(RESOURCE_ID(RES_ITEMDEF, ITEMID_MEMORY_SHIP_PILOT));
+		if ( pMemory )
+			pMemory->Delete();
+		return false;
 	}
+
+	if ( speed > 0 )
+	{
+		if ( (speed == 2) && (facing != pShip->m_itShip.m_DirFace) )
+			pShip->Ship_Face(facing);
+
+		if ( pShip->Ship_SetMoveDir(facing, speed, true) )
+			pShip->Ship_Move(moving, speed);
+	}
+	else
+		pShip->Ship_Stop();
 
 	return true;
 }

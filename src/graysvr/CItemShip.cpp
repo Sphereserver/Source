@@ -11,7 +11,7 @@
 
 CItemShip::CItemShip( ITEMID_TYPE id, CItemBase * pItemDef ) : CItemMulti( id, pItemDef )
 {
-	m_NextMove = CServTime::GetCurrentTime();
+	m_NextMove.Init();
 }
 
 CItemShip::~CItemShip()
@@ -75,7 +75,7 @@ void CItemShip::Ship_SetPilot(CChar *pChar)
 	// Enable boat mouse movement on HS clients >= 7.0.9.0
 
 	CChar *pCharPrev = m_itShip.m_Pilot.CharFind();
-	if ( (pChar == pCharPrev) || !pChar->m_pPlayer )
+	if ( pChar && (!pChar->m_pPlayer || (pChar == pCharPrev)) )
 		return;
 
 	Ship_Stop();
@@ -138,11 +138,6 @@ bool CItemShip::Ship_SetMoveDir(DIR_TYPE dir, BYTE speed, bool bWheelMove)
 	m_itShip.m_DirMove = static_cast<BYTE>(dir);	// we set new direction regardless of click limitations, so click in another direction means changing dir but makes not more moves until ship's timer moves it.
 	if ( bWheelMove && m_NextMove > CServTime::GetCurrentTime() )
 		return false;
-
-	if ( m_itShip.m_DirFace == m_itShip.m_DirMove && m_itShip.m_fSail == 1 )
-		speed = 2;
-	else if ( !speed )
-		speed = 1;
 
 	m_itShip.m_fSail = minimum(speed, 2);	// checking here that packet is legit from client and not modified by 3rd party tools to send speed > 2.
 	GetTopSector()->SetSectorWakeStatus();	// may get here b4 my client does.
@@ -294,9 +289,9 @@ bool CItemShip::Ship_MoveDelta(CPointBase pdelta)
 						{
 							new PacketMoveShip(pClient, this, ppObjs, iCount, m_itShip.m_DirMove, m_itShip.m_DirFace, Multi_GetDef()->m_SpeedMode);
 
-							if ( pCharSrc->GetRegion()->GetResourceID().GetObjUID() == GetUID() )	// if client is on ship
+							if ( pCharSrc->m_pArea == m_pRegion )	// if client is on ship
 							{
-								pClient->addPlayerSee(pCharSrc->GetTopPoint());
+								pClient->addPlayerSee(NULL, true);
 								break;
 							}
 						}
@@ -357,9 +352,8 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 	ADDTOCALLSTACK("CItemShip::Ship_Face");
 	// Change the direction of the ship.
 
-	if ( !IsTopLevel() || !m_pRegion ) {
+	if ( !IsTopLevel() || !m_pRegion || (dir % 2 == 1) )	// ship can't face diagonal directions
 		return false;
-	}
 
 	unsigned int iDirection = 0;
 	for ( ; ; ++iDirection )
@@ -484,23 +478,26 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 				CScriptTriggerArgs Args( dir, sm_Ship_FaceDir[ iFaceOffset ] );
 				pItem->OnTrigger( ITRIG_Ship_Turn, &g_Serv, &Args );
 			}
+
+			pItem->MoveTo(pt);
+			pItem->Update();
 		}
-		else if ( pObj->IsChar() )
+		else
 		{
 			pChar = static_cast<CChar *>(pObj);
 			if ( !pChar )
 				continue;
 
+			CPointMap ptOld = pChar->GetTopPoint();
+			pChar->MoveTo(pt);
 			pChar->m_dirFace = GetDirTurn(pChar->m_dirFace, iTurn);
-			pChar->RemoveFromView();
-		}
-		pObj->MoveTo(pt);
-	}
 
-	for ( size_t i = 0; i < iCount; i++ )
-	{
-		pObj = ppObjs[i];
-		pObj->Update();
+			CClient *pClient = pChar->m_pClient;
+			if ( pClient )
+				pClient->addPlayerView(ptOld);
+
+			pChar->Update(false, pClient);
+		}
 	}
 
 	m_itShip.m_DirFace = static_cast<BYTE>(dir);
