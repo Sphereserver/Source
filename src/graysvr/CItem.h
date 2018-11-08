@@ -1464,6 +1464,7 @@ private:
 
 public:
 	void Ship_Stop();
+	void Ship_SetPilot(CChar *pChar);
 	bool Ship_SetMoveDir(DIR_TYPE dir, BYTE speed = 0, bool bWheelMove = false);
 	bool Ship_Face(DIR_TYPE dir);
 	bool Ship_Move(DIR_TYPE dir, int distance);
@@ -1494,9 +1495,10 @@ enum MEMORY_TYPE
 	MEMORY_FRIEND		= 0x4000	// They can command me but not release me (not primary blame)
 };
 
-enum NPC_MEM_ACT_TYPE	// A simgle primary memory about the object
+enum NPC_MEM_ACT_TYPE
 {
-	// related to MEMORY_SPEAK
+	// MEMORY_SPEAK
+	// A single primary memory about the object
 	NPC_MEM_ACT_NONE,			// we spoke about something non-specific,
 	NPC_MEM_ACT_SPEAK_TRAIN,	// I am speaking about training (waiting for money)
 	NPC_MEM_ACT_SPEAK_HIRE,		// I am speaking about being hired (waiting for money)

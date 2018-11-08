@@ -295,8 +295,22 @@ bool CClient::Cmd_Use_Item(CItem *pItem, bool fTestTouch, bool fScript)
 		}
 
 		case IT_SHIP_TILLER:
+		{
+			if ( m_NetState->isClientVersion(MINCLIVER_HS) )
+			{
+				CItemShip *pShip = dynamic_cast<CItemShip *>(pItem->m_uidLink.ItemFind());
+				if ( pShip )
+				{
+					if ( m_pChar->ContentFindKeyFor(pItem) )
+						pShip->Ship_SetPilot((pShip->m_itShip.m_Pilot != m_pChar->GetUID()) ? m_pChar : NULL);
+					else
+						pItem->Speak(g_Cfg.GetDefaultMsg(DEFMSG_TILLER_NOTYOURSHIP));
+					return true;
+				}
+			}
 			pItem->Speak(g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_TILLERMAN), HUE_TEXT_DEF, TALKMODE_SAY, FONT_NORMAL);
 			return true;
+		}
 
 		case IT_WAND:
 		case IT_SCROLL:

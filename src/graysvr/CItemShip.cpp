@@ -69,6 +69,66 @@ void CItemShip::Ship_Stop()
 	m_itShip.m_fSail = 0;
 }
 
+void CItemShip::Ship_SetPilot(CChar *pChar)
+{
+	ADDTOCALLSTACK("CItemShip::Ship_SetPilot");
+	// Enable boat mouse movement on HS clients >= 7.0.9.0
+
+	CChar *pCharPrev = m_itShip.m_Pilot.CharFind();
+	if ( (pChar == pCharPrev) || !pChar->m_pPlayer )
+		return;
+
+	Ship_Stop();
+
+	// Remove memory on previous pilot
+	if ( pCharPrev )
+	{
+		CItem *pMemoryPrev = pCharPrev->ContentFind(RESOURCE_ID(RES_ITEMDEF, ITEMID_MEMORY_SHIP_PILOT));
+		if ( pMemoryPrev )
+		{
+			pMemoryPrev->Delete();
+			pCharPrev->SysMessageDefault(DEFMSG_SHIP_PILOT_OFF);
+		}
+		m_itShip.m_Pilot.InitUID();
+	}
+
+	// Create memory on new pilot
+	if ( pChar )
+	{
+		if ( pChar->m_pArea != m_pRegion )
+		{
+			pChar->SysMessageDefault(DEFMSG_SHIP_PILOT_CANTABOARD);
+			return;
+		}
+		else if ( pChar->IsStatFlag(STATF_OnHorse) )
+		{
+			pChar->SysMessageDefault(DEFMSG_ITEMUSE_CANTMOUNTED);
+			return;
+		}
+		else if ( pChar->IsStatFlag(STATF_Hovering) )
+		{
+			pChar->SysMessageDefault(DEFMSG_SHIP_PILOT_CANTFLYING);
+			return;
+		}
+		else if ( m_itShip.m_fAnchored != 0 )
+		{
+			pChar->SysMessageDefault(DEFMSG_SHIP_PILOT_CANTANCHOR);
+			return;
+		}
+
+		CItem *pMemory = CItem::CreateScript(ITEMID_MEMORY_SHIP_PILOT);
+		if ( !pMemory )
+			return;
+
+		pMemory->SetType(IT_EQ_HORSE);
+		pMemory->SetName(GetName());
+		pMemory->m_uidLink = GetUID();
+		pChar->LayerAdd(pMemory, LAYER_HORSE);
+		pChar->SysMessageDefault(DEFMSG_SHIP_PILOT_ON);
+		m_itShip.m_Pilot = pChar->GetUID();
+	}
+}
+
 bool CItemShip::Ship_SetMoveDir(DIR_TYPE dir, BYTE speed, bool bWheelMove)
 {
 	ADDTOCALLSTACK("CItemShip::Ship_SetMoveDir");
@@ -1243,14 +1303,7 @@ bool CItemShip::r_LoadVal( CScript & s  )
 		}
 		case IMCS_PILOT:
 		{
-			CChar *pChar = static_cast<CGrayUID>(s.GetArgVal()).CharFind();
-			if ( pChar )
-				m_itShip.m_Pilot = pChar->GetUID();
-			else
-			{
-				m_itShip.m_Pilot.InitUID();
-				Ship_Stop();
-			}
+			Ship_SetPilot(static_cast<CGrayUID>(s.GetArgVal()).CharFind());
 			return true;
 		}
 		default:

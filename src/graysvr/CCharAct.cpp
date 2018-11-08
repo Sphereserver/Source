@@ -2180,6 +2180,14 @@ bool CChar::Horse_UnMount()
 		return false;
 	}
 
+	if ( pItem->GetDispID() == ITEMID_MEMORY_SHIP_PILOT )
+	{
+		CItemShip *pShip = dynamic_cast<CItemShip *>(pItem->m_uidLink.ItemFind());
+		if ( pShip )
+			pShip->Ship_SetPilot(NULL);
+		return true;
+	}
+
 	CChar *pHorse = pItem->m_itFigurine.m_UID.CharFind();
 	if ( IsTrigUsed(TRIGGER_DISMOUNT) && pHorse && pHorse->IsDisconnected() && !pHorse->IsDeleted() )
 	{
