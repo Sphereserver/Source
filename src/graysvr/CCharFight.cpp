@@ -2796,9 +2796,12 @@ WAR_SWING_TYPE CChar::Fight_Hit(CChar *pCharTarg)
 		if ( pCharTarg->Skill_GetBase(SKILL_PARRYING) >= 1000 )
 			iParryChance += 5;
 
-		int iDex = pCharTarg->Stat_GetAdjusted(STAT_DEX);
-		if ( iDex < 80 )
-			iParryChance = iParryChance * (20 + iDex) / 100;
+		if ( pCharTarg->m_pPlayer )
+		{
+			int iDex = pCharTarg->Stat_GetAdjusted(STAT_DEX);
+			if ( iDex < 80 )
+				iParryChance = iParryChance * (20 + iDex) / 100;
+		}
 
 		if ( pCharTarg->Skill_UseQuick(SKILL_PARRYING, iParryChance, true, false) )
 		{
@@ -2878,7 +2881,7 @@ WAR_SWING_TYPE CChar::Fight_Hit(CChar *pCharTarg)
 			pCharTarg->SetPoison(10 * bPoisonLevel, bPoisonLevel / 5, this);
 
 			pWeapon->m_itWeapon.m_poison_skill -= bPoisonLevel / 2;		// reduce weapon poison charges
-			pWeapon->UpdatePropertyFlag(AUTOTOOLTIP_FLAG_POISON);
+			pWeapon->UpdatePropertyFlag();
 		}
 
 		// Check if the weapon will be damaged

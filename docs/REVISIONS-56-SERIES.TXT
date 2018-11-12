@@ -1272,3 +1272,6 @@ Changed: Misc improvements on ship movement packets.
 [items/sphere_item_deco_furniture.scp]: Minor updates on some few 'ruined bed' items
 [items/sphere_item_memories.scp]: Added itemdef 'i_memory_ship_pilot'
 [sphere_msgs.scp]: Added new messages 'itemuse_cantmounted', 'itemuse_cantmountedflying', 'ship_pilot_cantaboard', 'ship_pilot_cantanchor', 'ship_pilot_cantflying', 'ship_pilot_on', 'ship_pilot_off', 'tiller_notyourship'
+
+11-11-2018, Coruja
+Fixed: Combat Parrying formula incorrectly applying PvP DEX penalty on PvM.
