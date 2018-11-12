@@ -793,7 +793,7 @@ void CItemContainer::OnWeightChange(int iChange)
 		return;
 
 	CContainer::OnWeightChange(iChange);
-	UpdatePropertyFlag(AUTOTOOLTIP_FLAG_WEIGHT);
+	UpdatePropertyFlag();
 
 	// Propagate the weight change to parent container
 	CContainer *pCont = dynamic_cast<CContainer *>(GetParent());
@@ -1067,7 +1067,7 @@ void CItemContainer::ContentAdd(CItem *pItem, CPointMap pt, BYTE gridIndex)
 	}
 
 	pItem->Update();
-	UpdatePropertyFlag(AUTOTOOLTIP_FLAG_WEIGHT);
+	UpdatePropertyFlag();
 }
 
 void CItemContainer::ContentAdd(CItem *pItem)
@@ -1118,7 +1118,7 @@ void CItemContainer::OnRemoveOb(CGObListRec *pObRec)	// override this = called w
 	}
 
 	CContainer::OnRemoveOb(pObRec);
-	UpdatePropertyFlag(AUTOTOOLTIP_FLAG_WEIGHT);
+	UpdatePropertyFlag();
 	if ( IsType(IT_KEYRING) )
 		SetKeyRing();
 }

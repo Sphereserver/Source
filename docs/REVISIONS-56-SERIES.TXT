@@ -1275,3 +1275,6 @@ Changed: Misc improvements on ship movement packets.
 
 11-11-2018, Coruja
 Fixed: Combat Parrying formula incorrectly applying PvP DEX penalty on PvM.
+[sphere.ini]: Removed EF_DamageTools experimental flag and AutoTooltipResend setting
+	-EF_DamageTools is not needed anymore because its already softcoded on sphere_skills.scp
+	-AutoTooltipResend is not needed anymore because now all tooltips are updated by default

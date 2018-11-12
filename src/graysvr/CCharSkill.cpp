@@ -2308,7 +2308,7 @@ int CChar::Skill_Poisoning(SKTRIG_TYPE stage)
 		case IT_WEAPON_SWORD:
 		case IT_WEAPON_FENCE:
 			pItem->m_itWeapon.m_poison_skill = static_cast<BYTE>(pPoison->m_itPotion.m_skillquality / 10);
-			pItem->UpdatePropertyFlag(AUTOTOOLTIP_FLAG_POISON);
+			pItem->UpdatePropertyFlag();
 			break;
 		default:
 			SysMessageDefault(DEFMSG_POISONING_WITEM);

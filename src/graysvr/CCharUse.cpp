@@ -737,7 +737,7 @@ bool CChar::Use_Repair(CItem *pItem)
 	Emote(pszMsg);
 
 	if ( pItem->m_itArmor.m_Hits_Cur > 0 )
-		pItem->UpdatePropertyFlag(AUTOTOOLTIP_FLAG_DURABILITY);
+		pItem->UpdatePropertyFlag();
 	else
 	{
 		pszText = g_Cfg.GetDefaultMsg(DEFMSG_REPAIR_5);

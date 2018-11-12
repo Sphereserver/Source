@@ -1772,7 +1772,7 @@ void CItem::SetAmount( WORD wAmount )
 		pParentCont->OnWeightChange(GetWeight(wAmount) - GetWeight(wAmountOld));
 	}
 	
-	UpdatePropertyFlag(AUTOTOOLTIP_FLAG_AMOUNT);
+	UpdatePropertyFlag();
 }
 
 
@@ -3587,7 +3587,7 @@ int CItem::AddSpellbookSpell( SPELL_TYPE spell, bool fUpdate )
 		}
 	}
 
-	UpdatePropertyFlag(AUTOTOOLTIP_FLAG_SPELLBOOK);
+	UpdatePropertyFlag();
 	return 0;
 }
 
@@ -3733,7 +3733,7 @@ bool CItem::Use_DoorNew( bool bJustOpen )
 	else
 	{
 		SetAttr(ATTR_OPENED);
-		SetTimeout(20 * TICK_PER_SEC);
+		SetTimeout(15 * TICK_PER_SEC);
 		pt.m_x += sDifX;
 		pt.m_y += sDifY;
 
@@ -4655,7 +4655,7 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 			}
 
 			m_itWeapon.m_spellcharges++;
-			UpdatePropertyFlag(AUTOTOOLTIP_FLAG_WANDCHARGES);
+			UpdatePropertyFlag();
 		}
 	}
 
@@ -4811,7 +4811,7 @@ int CItem::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 		if ( m_itArmor.m_Hits_Cur > m_itArmor.m_Hits_Max )
 			m_itArmor.m_Hits_Cur = m_itArmor.m_Hits_Max;
 
-		UpdatePropertyFlag(AUTOTOOLTIP_FLAG_DURABILITY);
+		UpdatePropertyFlag();
 		return( 0 );
 	}
 
@@ -4914,7 +4914,7 @@ forcedamage:
 			return INT_MAX;
 		}
 
-		UpdatePropertyFlag(AUTOTOOLTIP_FLAG_DURABILITY);
+		UpdatePropertyFlag();
 
 		CChar *pChar = dynamic_cast<CChar *>(GetTopLevelObj());
 		if ( pChar && IsItemEquipped() )

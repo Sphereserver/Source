@@ -2310,7 +2310,7 @@ bool CChar::Spell_CanCast(SPELL_TYPE &spell, bool fTest, CObjBase *pSrc, bool fF
 			if ( !fTest && (pItem->m_itWeapon.m_spellcharges != 255) )
 			{
 				--pItem->m_itWeapon.m_spellcharges;
-				pItem->UpdatePropertyFlag(AUTOTOOLTIP_FLAG_WANDCHARGES);
+				pItem->UpdatePropertyFlag();
 			}
 		}
 		else if ( pItem->IsType(IT_SCROLL) )

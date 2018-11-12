@@ -239,7 +239,6 @@ CResource::CResource()
 
 	m_iTooltipCache = 30 * TICK_PER_SEC;
 	m_iTooltipMode = TOOLTIPMODE_SENDVERSION;
-	m_iAutoTooltipResend = (AUTOTOOLTIP_FLAG_NAME|AUTOTOOLTIP_FLAG_AMOUNT|AUTOTOOLTIP_FLAG_WEIGHT|AUTOTOOLTIP_FLAG_DURABILITY|AUTOTOOLTIP_FLAG_POISON|AUTOTOOLTIP_FLAG_WANDCHARGES|AUTOTOOLTIP_FLAG_SPELLBOOK);
 
 	m_iRegenRate[STAT_STR] = 40 * TICK_PER_SEC;		// Seconds to heal ONE hp (before stam/food adjust)
 	m_iRegenRate[STAT_INT] = 20 * TICK_PER_SEC;		// Seconds to heal ONE mn
@@ -371,7 +370,6 @@ enum RC_TYPE
 	RC_ATTACKINGISACRIME,			// m_fAttackingIsACrime
 	RC_AUTONEWBIEKEYS,				// m_fAutoNewbieKeys
 	RC_AUTORESDISP,					// m_bAutoResDisp
-	RC_AUTOTOOLTIPRESEND,			// m_iAutoTooltipResend
 	RC_BACKUPLEVELS,				// m_iSaveBackupLevels
 	RC_BANKMAXITEMS,				// m_iBankIMax
 	RC_BANKMAXWEIGHT,				// m_iBankWMax
@@ -595,7 +593,6 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY + 1] =
 	{"ATTACKINGISACRIME",			{ELEM_BOOL,		OFFSETOF(CResource, m_fAttackingIsACrime),				0}},
 	{"AUTONEWBIEKEYS",				{ELEM_BOOL,		OFFSETOF(CResource, m_fAutoNewbieKeys),					0}},
 	{"AUTORESDISP",					{ELEM_BOOL,		OFFSETOF(CResource, m_bAutoResDisp),					0}},
-	{"AUTOTOOLTIPRESEND",			{ELEM_INT,		OFFSETOF(CResource, m_iAutoTooltipResend),				0}},
 	{"BACKUPLEVELS",				{ELEM_INT,		OFFSETOF(CResource, m_iSaveBackupLevels),				0}},
 	{"BANKMAXITEMS",				{ELEM_DWORD,	OFFSETOF(CResource, m_iBankIMax),						0}},
 	{"BANKMAXWEIGHT",				{ELEM_INT,		OFFSETOF(CResource, m_iBankWMax),						0}},

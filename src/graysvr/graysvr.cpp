@@ -1190,8 +1190,6 @@ int _cdecl main( int argc, char * argv[] )
 
 #ifndef _MTNETWORK
 		g_NetworkIn.onStart();
-		if (IsSetEF( EF_NetworkOutThread ))
-			g_NetworkOut.start();
 #else
 		g_NetworkManager.start();
 #endif

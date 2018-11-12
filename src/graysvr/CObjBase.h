@@ -371,7 +371,7 @@ public:
 	void SetPropertyList(PacketPropertyList *pPropertyList);
 	DWORD GetPropertyHash() const { return m_PropertyHash; }
 	DWORD UpdatePropertyRevision(DWORD dwHash);
-	void UpdatePropertyFlag(int iMask = 0);
+	void UpdatePropertyFlag();
 	void FreePropertyList();
 };
 

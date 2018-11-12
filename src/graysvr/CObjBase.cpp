@@ -269,7 +269,7 @@ bool CObjBase::SetNamePool(LPCTSTR pszName)
 	if ( !CObjBaseTemplate::SetName(szTemp) )
 		return false;
 
-	UpdatePropertyFlag(AUTOTOOLTIP_FLAG_NAME);
+	UpdatePropertyFlag();
 	return true;
 }
 
@@ -2770,10 +2770,10 @@ DWORD CObjBase::UpdatePropertyRevision(DWORD dwHash)
 	return m_PropertyRevision;
 }
 
-void CObjBase::UpdatePropertyFlag(int iMask)
+void CObjBase::UpdatePropertyFlag()
 {
 	ADDTOCALLSTACK("CObjBase::UpdatePropertyFlag");
-	if ( g_Serv.IsLoading() || (iMask && ((g_Cfg.m_iAutoTooltipResend & iMask) == 0)) )
+	if ( (!(g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_B)) || g_Serv.IsLoading() )
 		return;
 
 	m_fStatusUpdate |= SU_UPDATE_TOOLTIP;

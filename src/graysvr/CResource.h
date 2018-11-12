@@ -42,12 +42,8 @@ enum EF_TYPE	// experimental flags
 	EF_Item_Strict_Comparison	= 0x00040,
 	EF_AllowTelnetPacketFilter	= 0x00200,
 	EF_Script_Profiler			= 0x00400,
-	EF_DamageTools				= 0x02000,
 	EF_UsePingServer			= 0x08000,
-	EF_FixCanSeeInClosedConts	= 0x20000,
-#ifndef _MTNETWORK
-	EF_NetworkOutThread			= 0x40000
-#endif
+	EF_FixCanSeeInClosedConts	= 0x20000
 };
 
 enum MAGICFLAGS_TYPE
@@ -1077,14 +1073,6 @@ public:
 
 	int m_iTooltipCache;
 	int m_iTooltipMode;
-	#define AUTOTOOLTIP_FLAG_NAME			0x01
-	#define AUTOTOOLTIP_FLAG_AMOUNT			0x02
-	#define AUTOTOOLTIP_FLAG_WEIGHT			0x04
-	#define AUTOTOOLTIP_FLAG_DURABILITY		0x08
-	#define AUTOTOOLTIP_FLAG_POISON			0x10
-	#define AUTOTOOLTIP_FLAG_WANDCHARGES	0x20
-	#define AUTOTOOLTIP_FLAG_SPELLBOOK		0x40
-	int m_iAutoTooltipResend;
 
 	int m_iRegenRate[STAT_QTY];
 	int m_iTimerCall;
