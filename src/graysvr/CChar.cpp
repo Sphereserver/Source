@@ -2088,9 +2088,6 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case CHC_MAXSTAM:
 			sVal.FormatVal(Stat_GetMax(STAT_DEX));
 			break;
-		case CHC_HIT:
-		case CHC_HITTRY:
-			break;
 		case CHC_HOME:
 			sVal = m_ptHome.WriteUsed();
 			break;
@@ -3006,7 +3003,7 @@ bool CChar::r_Verb(CScript &s, CTextConsole *pSrc)	// execute command from scrip
 			break;
 		}
 		case CHV_DROP:
-			return ItemDrop(CGrayUID(s.GetArgVal()).ItemFind(), GetTopPoint());
+			return ItemDrop(static_cast<CGrayUID>(s.GetArgVal()).ItemFind(), GetTopPoint());
 		case CHV_DUPE:
 		{
 			CChar *pChar = CreateNPC(GetID());
@@ -3376,7 +3373,7 @@ bool CChar::r_Verb(CScript &s, CTextConsole *pSrc)	// execute command from scrip
 			break;
 		}
 		case CHV_UNEQUIP:
-			return ItemBounce(CGrayUID(s.GetArgVal()).ItemFind());
+			return ItemBounce(static_cast<CGrayUID>(s.GetArgVal()).ItemFind());
 		case CHV_WHERE:
 		{
 			if ( pCharSrc )

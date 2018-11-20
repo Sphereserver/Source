@@ -594,14 +594,7 @@ public:
 	{
 		return static_cast<CCharBase *>(Base_GetDef());
 	}
-	CRegionWorld *GetRegion() const
-	{
-		return m_pArea;
-	}
-	CRegionBase *GetRoom() const
-	{
-		return m_pRoom;
-	}
+
 	int GetSight() const
 	{
 		return static_cast<int>(m_iVisualRange);
@@ -685,21 +678,6 @@ public:
 	{
 		return GetName(true);
 	}
-
-	LPCTSTR GetNameWithoutIncognito() const
-	{
-		if ( IsStatFlag(STATF_Incognito) )
-		{
-			CItem *pSpell = LayerFind(LAYER_SPELL_Incognito);
-			if ( !pSpell )
-				pSpell = LayerFind(LAYER_FLAG_Potion);
-
-			if ( pSpell && pSpell->IsType(IT_SPELL) && (pSpell->m_itSpell.m_spell == SPELL_Incognito) )
-				return pSpell->GetName();
-		}
-		return GetName();
-	}
-
 	LPCTSTR GetName(bool fAllowAlt) const
 	{
 		if ( fAllowAlt )
@@ -716,8 +694,21 @@ public:
 		}
 		return CObjBase::GetName();
 	}
+	LPCTSTR GetNameWithoutIncognito() const
+	{
+		if ( IsStatFlag(STATF_Incognito) )
+		{
+			CItem *pSpell = LayerFind(LAYER_SPELL_Incognito);
+			if ( !pSpell )
+				pSpell = LayerFind(LAYER_FLAG_Potion);
 
+			if ( pSpell && pSpell->IsType(IT_SPELL) && (pSpell->m_itSpell.m_spell == SPELL_Incognito) )
+				return pSpell->GetName();
+		}
+		return GetName();
+	}
 	bool SetName(LPCTSTR pszName);
+
 	height_t GetHeightMount() const;
 	height_t GetHeight() const;
 

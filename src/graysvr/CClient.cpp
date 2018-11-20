@@ -117,13 +117,9 @@ bool CClient::CanInstantLogOut() const
 		return true;
 	if ( !m_pChar || m_pChar->IsStatFlag(STATF_DEAD) )
 		return true;
-
-	const CRegionWorld *pArea = m_pChar->GetRegion();
-	if ( !pArea || pArea->IsFlag(REGION_FLAG_INSTA_LOGOUT) )
+	if ( !m_pChar->m_pArea || m_pChar->m_pArea->IsFlag(REGION_FLAG_INSTA_LOGOUT) )
 		return true;
-
-	const CRegionBase *pRoom = m_pChar->GetRoom();
-	if ( pRoom && pRoom->IsFlag(REGION_FLAG_INSTA_LOGOUT) )
+	if ( m_pChar->m_pRoom && m_pChar->m_pRoom->IsFlag(REGION_FLAG_INSTA_LOGOUT) )
 		return true;
 
 	return false;

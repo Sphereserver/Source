@@ -2143,11 +2143,9 @@ void CChar::Spell_Field(CPointMap ptTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, BY
 				CChar *pChar = AreaChar.GetChar();
 				if ( !pChar )
 					break;
-
 				if ( pChar->GetPrivLevel() > GetPrivLevel() )	// skip higher priv characters
 					continue;
-
-				if ( (pSpellDef->IsSpellType(SPELLFLAG_HARM)) && (!pChar->OnAttackedBy(this, false)) )	// they should know they where attacked.
+				if ( pSpellDef->IsSpellType(SPELLFLAG_HARM) && !pChar->OnAttackedBy(this, false) )	// they should know they where attacked
 					continue;
 
 				if ( !pSpellDef->IsSpellType(SPELLFLAG_NOUNPARALYZE) )
@@ -3168,35 +3166,32 @@ bool CChar::OnSpellEffect(SPELL_TYPE spell, CChar *pCharSrc, int iSkillLevel, CI
 		}
 	}
 
-	if ( pSpellDef->IsSpellType(SPELLFLAG_DAMAGE) )
+	if ( pSpellDef->IsSpellType(SPELLFLAG_DAMAGE) && IsSetMagicFlags(MAGICF_OSIFORMULAS) )
 	{
-		if ( IsSetMagicFlags(MAGICF_OSIFORMULAS) )
+		if ( pCharSrc )
 		{
-			if ( !pCharSrc )
-				iEffect *= ((iSkillLevel * 3) / 1000) + 1;
-			else
-			{
-				// Evaluating Intelligence mult
-				iEffect *= ((pCharSrc->Skill_GetBase(SKILL_EVALINT) * 3) / 1000) + 1;
+			// Evaluating Intelligence mult
+			iEffect *= ((pCharSrc->Skill_GetBase(SKILL_EVALINT) * 3) / 1000) + 1;
 
-				// Spell Damage Increase bonus
-				int iDamageBonus = pCharSrc->m_SpellDamIncrease;
-				if ( (iDamageBonus > 15) && m_pPlayer && pCharSrc->m_pPlayer )		// Spell Damage Increase is capped at 15% on PvP
-					iDamageBonus = 15;
+			// Spell Damage Increase bonus
+			int iDamageBonus = pCharSrc->m_SpellDamIncrease;
+			if ( (iDamageBonus > 15) && m_pPlayer && pCharSrc->m_pPlayer )		// Spell Damage Increase is capped at 15% on PvP
+				iDamageBonus = 15;
 
-				// INT bonus
-				iDamageBonus += pCharSrc->Stat_GetAdjusted(STAT_INT) / 10;
+			// INT bonus
+			iDamageBonus += pCharSrc->Stat_GetAdjusted(STAT_INT) / 10;
 
-				// Inscription bonus
-				iDamageBonus += pCharSrc->Skill_GetBase(SKILL_INSCRIPTION) / 100;
+			// Inscription bonus
+			iDamageBonus += pCharSrc->Skill_GetBase(SKILL_INSCRIPTION) / 100;
 
-				// Racial Bonus (Berserk), gargoyles gains +3% Spell Damage Increase per each 20 HP lost
-				if ( (g_Cfg.m_iRacialFlags & RACIALF_GARG_BERSERK) && IsGargoyle() )
-					iDamageBonus += minimum(3 * ((Stat_GetMax(STAT_STR) - Stat_GetVal(STAT_STR)) / 20), 12);		// value is capped at 12%
+			// Racial Bonus (Berserk), gargoyles gains +3% Spell Damage Increase per each 20 HP lost
+			if ( (g_Cfg.m_iRacialFlags & RACIALF_GARG_BERSERK) && IsGargoyle() )
+				iDamageBonus += minimum(3 * ((Stat_GetMax(STAT_STR) - Stat_GetVal(STAT_STR)) / 20), 12);		// value is capped at 12%
 
-				iEffect += iEffect * iDamageBonus / 100;
-			}
+			iEffect += iEffect * iDamageBonus / 100;
 		}
+		else
+			iEffect *= ((iSkillLevel * 3) / 1000) + 1;
 	}
 
 	CScriptTriggerArgs Args(static_cast<int>(spell), iSkillLevel, pSourceItem);

@@ -1751,7 +1751,7 @@ bool CChar::CanHear(const CObjBaseTemplate *pSrc, TALKMODE_TYPE mode) const
 	CRegionWorld *pSrcRegion;
 	if ( pCharSrc )
 	{
-		pSrcRegion = pCharSrc->GetRegion();
+		pSrcRegion = pCharSrc->m_pArea;
 		if ( pCharSrc->IsPriv(PRIV_GM) )
 			return true;
 	}

@@ -168,19 +168,18 @@ bool CChar::NPC_Vendor_Restock(bool bForce, bool bFillStock)
 
 	if ( !bForce && m_pNPC->m_timeRestock.IsTimeValid() )
 	{
-		// Restock occurs every 10 minutes of inactivity (unless
-		// region tag specifies different time)
-		CRegionWorld *region = GetRegion();
+		// Restock occurs every 10 minutes of inactivity (unless region tag specifies different time)
 		INT64 restockIn = 10 * 60 * TICK_PER_SEC;
-		if( region != NULL )
+		if ( m_pArea )
 		{
-			CVarDefCont *vardef = region->m_TagDefs.GetKey("RestockVendors");
-			if( vardef != NULL )
-				restockIn = vardef->GetValNum();
-			if ( region->m_TagDefs.GetKey("NoRestock") != NULL )
+			CVarDefCont *pVar = m_pArea->m_TagDefs.GetKey("RestockVendors");
+			if ( pVar )
+				restockIn = pVar->GetValNum();
+			if ( m_pArea->m_TagDefs.GetKey("NoRestock") )
 				bRestockNow = false;
 		}
-		if ( m_TagDefs.GetKey("NoRestock") != NULL )
+
+		if ( m_TagDefs.GetKey("NoRestock") )
 			bRestockNow = false;
 		
 		if (bRestockNow)
@@ -2037,7 +2036,7 @@ CChar * CChar::NPC_FightFindBestTarget()
 		for ( size_t i = 0; i < m_lastAttackers.size(); i++ )
 		{
 			LastAttackers &refAttacker = m_lastAttackers.at(i);
-			pChar = static_cast<CGrayUID>(refAttacker.charUID).CharFind();
+			pChar = refAttacker.charUID.CharFind();
 			if ( !pChar )
 				continue;
 			if ( !pChar->Fight_IsAttackable() )
@@ -2200,8 +2199,8 @@ void CChar::NPC_Act_Fight()
 				ITEMID_TYPE id = ITEMID_NOTHING;
 				if (pRock)
 				{
-					LPCTSTR t_Str = pRock->GetValStr();
-					RESOURCE_ID_BASE rid = static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID( RES_ITEMDEF, t_Str ));
+					LPCTSTR pszRock = pRock->GetValStr();
+					RESOURCE_ID_BASE rid = static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID(RES_ITEMDEF, pszRock));
 					ITEMID_TYPE obj = static_cast<ITEMID_TYPE>(rid.GetResIndex());
 					if ( ContentFind( RESOURCE_ID(RES_ITEMDEF,obj), 0, 2 ) )
 						id = ITEMID_NODRAW;
@@ -2211,7 +2210,6 @@ void CChar::NPC_Act_Fight()
 					if ( ContentFind( RESOURCE_ID(RES_TYPEDEF,IT_AROCK), 0, 2 ) )
 						id = ITEMID_NODRAW;
 				}
-
 
 				if ( id != ITEMID_NOTHING )
 				{

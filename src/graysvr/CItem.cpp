@@ -4636,7 +4636,7 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	iSkillLevel = static_cast<int>(Args.m_iN2);
 	pSpellDef = g_Cfg.GetSpellDef( spell );
 
-	if ( pCharSrc && !pCharSrc->IsPriv(PRIV_GM) && pCharSrc->GetRegion()->CheckAntiMagic(spell) )
+	if ( pCharSrc && !pCharSrc->IsPriv(PRIV_GM) && pCharSrc->m_pArea->CheckAntiMagic(spell) )
 	{
 		pCharSrc->SysMessageDefault(DEFMSG_SPELL_TRY_AM);
 		return false;

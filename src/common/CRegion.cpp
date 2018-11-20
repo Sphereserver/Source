@@ -931,7 +931,7 @@ bool CRegionBase::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command 
 			for (CClient* pClient = it.next(); pClient != NULL; pClient = it.next())
 			{
 				CChar * pChar = pClient->GetChar();
-				if ( !pChar || ( pChar->GetRegion() != this ))
+				if ( !pChar || (pChar->m_pArea != this) )
 					continue;
 
 				CScript script( s.GetArgStr() );
