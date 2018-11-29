@@ -901,7 +901,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerRun(CScript &s, TRIGRUN_TYPE trigger, CTextCon
 				EXC_SET("if statement");
 				bool fTrigger = (s.GetArgVal() != 0);
 				bool fBeenTrue = false;
-				for ( ;;)
+				for (;;)
 				{
 					iRet = OnTriggerRun(s, fTrigger ? TRIGRUN_SECTION_TRUE : TRIGRUN_SECTION_FALSE, pSrc, pArgs, psResult);
 					if ( (iRet < TRIGRET_ENDIF) || (iRet >= TRIGRET_RET_HALFBAKED) )
@@ -1574,12 +1574,12 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			return true;
 		case SSC_OBJ:
 			if ( !g_World.m_uidObj.ObjFind() )
-				g_World.m_uidObj = UID_CLEAR;
+				g_World.m_uidObj = static_cast<CGrayUID>(UID_CLEAR);
 			sVal.FormatHex(static_cast<DWORD>(g_World.m_uidObj));
 			return true;
 		case SSC_NEW:
 			if ( !g_World.m_uidNew.ObjFind() )
-				g_World.m_uidNew = UID_CLEAR;
+				g_World.m_uidNew = static_cast<CGrayUID>(UID_CLEAR);
 			sVal.FormatHex(static_cast<DWORD>(g_World.m_uidNew));
 			return true;
 		case SSC_SRC:
@@ -2043,23 +2043,23 @@ bool CScriptObj::r_Verb(CScript &s, CTextConsole *pSrc)
 		{
 			g_World.m_uidObj = s.GetArgVal();
 			if ( !g_World.m_uidObj.ObjFind() )
-				g_World.m_uidObj = UID_CLEAR;
+				g_World.m_uidObj = static_cast<CGrayUID>(UID_CLEAR);
 			break;
 		}
 		case SSV_NEW:
 		{
 			g_World.m_uidNew = s.GetArgVal();
 			if ( !g_World.m_uidNew.ObjFind() )
-				g_World.m_uidNew = UID_CLEAR;
+				g_World.m_uidNew = static_cast<CGrayUID>(UID_CLEAR);
 			break;
 		}
 		case SSV_NEWDUPE:
 		{
-			CGrayUID uid(s.GetArgVal());
+			CGrayUID uid = s.GetArgVal();
 			CObjBase *pObj = uid.ObjFind();
 			if ( !pObj )
 			{
-				g_World.m_uidNew = UID_CLEAR;
+				g_World.m_uidNew = static_cast<CGrayUID>(UID_CLEAR);
 				return false;
 			}
 

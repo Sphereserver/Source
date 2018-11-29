@@ -890,7 +890,7 @@ bool CWorldClock::Advance()
 	ADDTOCALLSTACK("CWorldClock::Advance");
 	UINT64 uSystemClock = GetSystemClock();
 
-	INT64 iTimeDiff = IMULDIVDOWN(TICK_PER_SEC, uSystemClock - m_SystemClock_Prev, CLOCKS_PER_SEC);
+	INT64 iTimeDiff = (TICK_PER_SEC * (uSystemClock - m_SystemClock_Prev)) / CLOCKS_PER_SEC;
 	if ( !iTimeDiff )
 		return false;
 

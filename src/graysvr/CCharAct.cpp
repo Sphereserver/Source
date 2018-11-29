@@ -355,7 +355,7 @@ void CChar::OnRemoveOb(CGObListRec *pObRec)	// override this = called when remov
 			else if ( pItem->IsType(IT_SHIELD) )
 				StatFlag_Clear(STATF_HasShield);
 
-			if ( (m_Act_SkillCurrent == SKILL_MINING) || (m_Act_SkillCurrent == SKILL_FISHING) || (m_Act_SkillCurrent == SKILL_LUMBERJACKING) )
+			if ( g_Cfg.IsSkillFlag(m_Act_SkillCurrent, SKF_GATHER) )
 				Skill_Cleanup();
 			break;
 		}
@@ -418,89 +418,92 @@ void CChar::OnRemoveOb(CGObListRec *pObRec)	// override this = called when remov
 				break;
 		}
 
-		if ( pItem->IsTypeArmor() )
+		if ( CItemBase::IsVisibleLayer(layer) )
 		{
-			if ( !IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
-				m_defense = CalcArmorDefense();
-
-			m_ResPhysical -= pItem->m_ResPhysical;
-			m_ResPhysicalMax -= pItem->m_ResPhysicalMax;
-			m_ResFire -= pItem->m_ResFire;
-			m_ResFireMax -= pItem->m_ResFireMax;
-			m_ResCold -= pItem->m_ResCold;
-			m_ResColdMax -= pItem->m_ResColdMax;
-			m_ResPoison -= pItem->m_ResPoison;
-			m_ResPoisonMax -= pItem->m_ResPoisonMax;
-			m_ResEnergy -= pItem->m_ResEnergy;
-			m_ResEnergyMax -= pItem->m_ResEnergyMax;
-		}
-		else if ( pItem->IsTypeWeapon() )
-		{
-			m_DamPhysical -= pItem->m_DamPhysical;
-			m_DamFire -= pItem->m_DamFire;
-			m_DamCold -= pItem->m_DamCold;
-			m_DamPoison -= pItem->m_DamPoison;
-			m_DamEnergy -= pItem->m_DamEnergy;
-
-			const CItem *pCursedMemory = LayerFind(LAYER_SPELL_Curse_Weapon);
-			if ( pCursedMemory )
-				pItem->m_HitLifeLeech -= pCursedMemory->m_itSpell.m_spelllevel;
-		}
-
-		if ( pItem->m_StrengthBonus != 0 )
-			Stat_SetMod(STAT_STR, Stat_GetMod(STAT_STR) - pItem->m_StrengthBonus);
-		if ( pItem->m_DexterityBonus != 0 )
-			Stat_SetMod(STAT_DEX, Stat_GetMod(STAT_DEX) - pItem->m_DexterityBonus);
-		if ( pItem->m_IntelligenceBonus != 0 )
-			Stat_SetMod(STAT_INT, Stat_GetMod(STAT_INT) - pItem->m_IntelligenceBonus);
-
-		if ( pItem->m_HitpointIncrease != 0 )
-			Stat_SetMax(STAT_STR, Stat_GetMax(STAT_STR) - pItem->m_HitpointIncrease);
-		if ( pItem->m_StaminaIncrease != 0 )
-			Stat_SetMax(STAT_DEX, Stat_GetMax(STAT_DEX) - pItem->m_StaminaIncrease);
-		if ( pItem->m_ManaIncrease != 0 )
-			Stat_SetMax(STAT_INT, Stat_GetMax(STAT_INT) - pItem->m_ManaIncrease);
-
-		if ( pItem->m_MageWeapon != 0 )
-		{
-			WORD wSkillVal = Skill_GetBase(SKILL_MAGERY) + static_cast<WORD>(pItem->m_MageWeapon * 10);
-			Skill_SetBase(SKILL_MAGERY, wSkillVal);
-			m_TagDefs.DeleteKey("OVERRIDE.SKILLCAP_25");
-		}
-
-		if ( pItem->m_SpellChanneling )
-			m_FasterCasting += 1;
-
-		m_Luck -= pItem->m_Luck;
-		m_DamIncrease -= pItem->m_DamIncrease;
-		m_SpellDamIncrease -= pItem->m_SpellDamIncrease;
-		m_HitLifeLeech -= pItem->m_HitLifeLeech;
-		m_HitManaDrain -= pItem->m_HitManaDrain;
-		m_HitManaLeech -= pItem->m_HitManaLeech;
-		m_HitStaminaLeech -= pItem->m_HitStaminaLeech;
-		m_HitChanceIncrease -= pItem->m_HitChanceIncrease;
-		m_DefChanceIncrease -= pItem->m_DefChanceIncrease;
-		m_DefChanceIncreaseMax -= pItem->m_DefChanceIncreaseMax;
-		m_SwingSpeedIncrease -= pItem->m_SwingSpeedIncrease;
-		m_FasterCasting -= pItem->m_FasterCasting;
-		m_FasterCastRecovery -= pItem->m_FasterCastRecovery;
-		m_LowerManaCost -= pItem->m_LowerManaCost;
-		m_LowerReagentCost -= pItem->m_LowerReagentCost;
-		m_EnhancePotions -= pItem->m_EnhancePotions;
-		if ( pItem->m_NightSight )
-		{
-			if ( m_NightSight )
+			if ( pItem->IsTypeArmor() )
 			{
-				StatFlag_Mod(STATF_NightSight, 0);
-				if ( m_pClient )
-				{
-					m_pClient->addLight();
-					m_pClient->removeBuff(BI_NIGHTSIGHT);
-				}
+				if ( !IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
+					m_defense = CalcArmorDefense();
+
+				m_ResPhysical -= pItem->m_ResPhysical;
+				m_ResPhysicalMax -= pItem->m_ResPhysicalMax;
+				m_ResFire -= pItem->m_ResFire;
+				m_ResFireMax -= pItem->m_ResFireMax;
+				m_ResCold -= pItem->m_ResCold;
+				m_ResColdMax -= pItem->m_ResColdMax;
+				m_ResPoison -= pItem->m_ResPoison;
+				m_ResPoisonMax -= pItem->m_ResPoisonMax;
+				m_ResEnergy -= pItem->m_ResEnergy;
+				m_ResEnergyMax -= pItem->m_ResEnergyMax;
 			}
-			m_NightSight -= pItem->m_NightSight;
+			else if ( pItem->IsTypeWeapon() )
+			{
+				m_DamPhysical -= pItem->m_DamPhysical;
+				m_DamFire -= pItem->m_DamFire;
+				m_DamCold -= pItem->m_DamCold;
+				m_DamPoison -= pItem->m_DamPoison;
+				m_DamEnergy -= pItem->m_DamEnergy;
+
+				if ( pItem->m_MageWeapon != 0 )
+				{
+					WORD wSkillVal = Skill_GetBase(SKILL_MAGERY) + static_cast<WORD>(pItem->m_MageWeapon * 10);
+					Skill_SetBase(SKILL_MAGERY, wSkillVal);
+					m_TagDefs.DeleteKey("OVERRIDE.SKILLCAP_25");
+				}
+
+				const CItem *pCursedMemory = LayerFind(LAYER_SPELL_Curse_Weapon);
+				if ( pCursedMemory )
+					pItem->m_HitLifeLeech -= pCursedMemory->m_itSpell.m_spelllevel;
+			}
+
+			if ( pItem->m_StrengthBonus != 0 )
+				Stat_SetMod(STAT_STR, Stat_GetMod(STAT_STR) - pItem->m_StrengthBonus);
+			if ( pItem->m_DexterityBonus != 0 )
+				Stat_SetMod(STAT_DEX, Stat_GetMod(STAT_DEX) - pItem->m_DexterityBonus);
+			if ( pItem->m_IntelligenceBonus != 0 )
+				Stat_SetMod(STAT_INT, Stat_GetMod(STAT_INT) - pItem->m_IntelligenceBonus);
+
+			if ( pItem->m_HitpointIncrease != 0 )
+				Stat_SetMax(STAT_STR, Stat_GetMax(STAT_STR) - pItem->m_HitpointIncrease);
+			if ( pItem->m_StaminaIncrease != 0 )
+				Stat_SetMax(STAT_DEX, Stat_GetMax(STAT_DEX) - pItem->m_StaminaIncrease);
+			if ( pItem->m_ManaIncrease != 0 )
+				Stat_SetMax(STAT_INT, Stat_GetMax(STAT_INT) - pItem->m_ManaIncrease);
+
+			if ( pItem->m_SpellChanneling )
+				m_FasterCasting += 1;
+
+			m_Luck -= pItem->m_Luck;
+			m_DamIncrease -= pItem->m_DamIncrease;
+			m_SpellDamIncrease -= pItem->m_SpellDamIncrease;
+			m_HitLifeLeech -= pItem->m_HitLifeLeech;
+			m_HitManaDrain -= pItem->m_HitManaDrain;
+			m_HitManaLeech -= pItem->m_HitManaLeech;
+			m_HitStaminaLeech -= pItem->m_HitStaminaLeech;
+			m_HitChanceIncrease -= pItem->m_HitChanceIncrease;
+			m_DefChanceIncrease -= pItem->m_DefChanceIncrease;
+			m_DefChanceIncreaseMax -= pItem->m_DefChanceIncreaseMax;
+			m_SwingSpeedIncrease -= pItem->m_SwingSpeedIncrease;
+			m_FasterCasting -= pItem->m_FasterCasting;
+			m_FasterCastRecovery -= pItem->m_FasterCastRecovery;
+			m_LowerManaCost -= pItem->m_LowerManaCost;
+			m_LowerReagentCost -= pItem->m_LowerReagentCost;
+			m_EnhancePotions -= pItem->m_EnhancePotions;
+			if ( pItem->m_NightSight )
+			{
+				if ( m_NightSight )
+				{
+					StatFlag_Mod(STATF_NightSight, 0);
+					if ( m_pClient )
+					{
+						m_pClient->addLight();
+						m_pClient->removeBuff(BI_NIGHTSIGHT);
+					}
+				}
+				m_NightSight -= pItem->m_NightSight;
+			}
+			m_ReflectPhysicalDamage -= pItem->m_ReflectPhysicalDamage;
 		}
-		m_ReflectPhysicalDamage -= pItem->m_ReflectPhysicalDamage;
 
 		// If items are magical then remove effect here
 		Spell_Effect_Remove(pItem);
@@ -1767,103 +1770,99 @@ bool CChar::ItemEquip(CItem *pItem, CChar *pCharMsg, bool fFromDClick)
 
 	Spell_Effect_Add(pItem);
 
-	if ( CItemBase::IsVisibleLayer(layer) )
-	{
-		SOUND_TYPE iSound = SOUND_USE_CLOTH;
-		CVarDefCont *pVar = GetDefKey("EQUIPSOUND", true);
-		if ( pVar )
-			iSound = static_cast<SOUND_TYPE>(pVar->GetValNum());
-		Sound(iSound);
-	}
-
 	if ( fFromDClick )
 		pItem->ResendOnEquip();
 
-	if ( pItem->IsTypeArmor() )
+	if ( CItemBase::IsVisibleLayer(layer) )
 	{
-		if ( !IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
-			m_defense = CalcArmorDefense();
+		CVarDefCont *pVar = GetDefKey("EQUIPSOUND", true);
+		Sound(pVar ? static_cast<SOUND_TYPE>(pVar->GetValNum()) : SOUND_USE_CLOTH);
 
-		m_ResPhysical += pItem->m_ResPhysical;
-		m_ResPhysicalMax += pItem->m_ResPhysicalMax;
-		m_ResFire += pItem->m_ResFire;
-		m_ResFireMax += pItem->m_ResFireMax;
-		m_ResCold += pItem->m_ResCold;
-		m_ResColdMax += pItem->m_ResColdMax;
-		m_ResPoison += pItem->m_ResPoison;
-		m_ResPoisonMax += pItem->m_ResPoisonMax;
-		m_ResEnergy += pItem->m_ResEnergy;
-		m_ResEnergyMax += pItem->m_ResEnergyMax;
-	}
-	else if ( pItem->IsTypeWeapon() )
-	{
-		m_DamPhysical += pItem->m_DamPhysical;
-		m_DamFire += pItem->m_DamFire;
-		m_DamCold += pItem->m_DamCold;
-		m_DamPoison += pItem->m_DamPoison;
-		m_DamEnergy += pItem->m_DamEnergy;
-
-		const CItem *pCursedMemory = LayerFind(LAYER_SPELL_Curse_Weapon);
-		if ( pCursedMemory )
-			pItem->m_HitLifeLeech += pCursedMemory->m_itSpell.m_spelllevel;
-	}
-
-	if ( pItem->m_StrengthBonus != 0 )
-		Stat_SetMod(STAT_STR, Stat_GetMod(STAT_STR) + pItem->m_StrengthBonus);
-	if ( pItem->m_DexterityBonus != 0 )
-		Stat_SetMod(STAT_DEX, Stat_GetMod(STAT_DEX) + pItem->m_DexterityBonus);
-	if ( pItem->m_IntelligenceBonus != 0 )
-		Stat_SetMod(STAT_INT, Stat_GetMod(STAT_INT) + pItem->m_IntelligenceBonus);
-
-	if ( pItem->m_HitpointIncrease != 0 )
-		Stat_SetMax(STAT_STR, Stat_GetMax(STAT_STR) + pItem->m_HitpointIncrease);
-	if ( pItem->m_StaminaIncrease != 0 )
-		Stat_SetMax(STAT_DEX, Stat_GetMax(STAT_DEX) + pItem->m_StaminaIncrease);
-	if ( pItem->m_ManaIncrease != 0 )
-		Stat_SetMax(STAT_INT, Stat_GetMax(STAT_INT) + pItem->m_ManaIncrease);
-
-	if ( pItem->m_MageWeapon != 0 )
-	{
-		WORD wSkillVal = Skill_GetBase(SKILL_MAGERY) - static_cast<WORD>(pItem->m_MageWeapon * 10);
-		WORD wSkillCap = Skill_GetMax(SKILL_MAGERY) - static_cast<WORD>(pItem->m_MageWeapon * 10);
-		Skill_SetBase(SKILL_MAGERY, wSkillVal);
-		m_TagDefs.SetNum("OVERRIDE.SKILLCAP_25", wSkillCap, true);
-	}
-
-	if ( pItem->m_SpellChanneling )
-		m_FasterCasting -= 1;
-
-	m_Luck += pItem->m_Luck;
-	m_DamIncrease += pItem->m_DamIncrease;
-	m_SpellDamIncrease += pItem->m_SpellDamIncrease;
-	m_HitLifeLeech += pItem->m_HitLifeLeech;
-	m_HitManaDrain += pItem->m_HitManaDrain;
-	m_HitManaLeech += pItem->m_HitManaLeech;
-	m_HitStaminaLeech += pItem->m_HitStaminaLeech;
-	m_HitChanceIncrease += pItem->m_HitChanceIncrease;
-	m_DefChanceIncrease += pItem->m_DefChanceIncrease;
-	m_DefChanceIncreaseMax += pItem->m_DefChanceIncreaseMax;
-	m_SwingSpeedIncrease += pItem->m_SwingSpeedIncrease;
-	m_FasterCasting += pItem->m_FasterCasting;
-	m_FasterCastRecovery += pItem->m_FasterCastRecovery;
-	m_LowerManaCost += pItem->m_LowerManaCost;
-	m_LowerReagentCost += pItem->m_LowerReagentCost;
-	m_EnhancePotions += pItem->m_EnhancePotions;
-	if ( pItem->m_NightSight )
-	{
-		if ( !m_NightSight )
+		if ( pItem->IsTypeArmor() )
 		{
-			StatFlag_Mod(STATF_NightSight, 1);
-			if ( m_pClient )
-			{
-				m_pClient->addLight();
-				m_pClient->addBuff(BI_NIGHTSIGHT, 1075643, 1075644);
-			}
-		}
-		m_NightSight += pItem->m_NightSight;
-	}
-	m_ReflectPhysicalDamage += pItem->m_ReflectPhysicalDamage;
+			if ( !IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
+				m_defense = CalcArmorDefense();
 
+			m_ResPhysical += pItem->m_ResPhysical;
+			m_ResPhysicalMax += pItem->m_ResPhysicalMax;
+			m_ResFire += pItem->m_ResFire;
+			m_ResFireMax += pItem->m_ResFireMax;
+			m_ResCold += pItem->m_ResCold;
+			m_ResColdMax += pItem->m_ResColdMax;
+			m_ResPoison += pItem->m_ResPoison;
+			m_ResPoisonMax += pItem->m_ResPoisonMax;
+			m_ResEnergy += pItem->m_ResEnergy;
+			m_ResEnergyMax += pItem->m_ResEnergyMax;
+		}
+		else if ( pItem->IsTypeWeapon() )
+		{
+			m_DamPhysical += pItem->m_DamPhysical;
+			m_DamFire += pItem->m_DamFire;
+			m_DamCold += pItem->m_DamCold;
+			m_DamPoison += pItem->m_DamPoison;
+			m_DamEnergy += pItem->m_DamEnergy;
+
+			if ( pItem->m_MageWeapon != 0 )
+			{
+				WORD wSkillVal = Skill_GetBase(SKILL_MAGERY) - static_cast<WORD>(pItem->m_MageWeapon * 10);
+				WORD wSkillCap = Skill_GetMax(SKILL_MAGERY) - static_cast<WORD>(pItem->m_MageWeapon * 10);
+				Skill_SetBase(SKILL_MAGERY, wSkillVal);
+				m_TagDefs.SetNum("OVERRIDE.SKILLCAP_25", wSkillCap, true);
+			}
+
+			const CItem *pCursedMemory = LayerFind(LAYER_SPELL_Curse_Weapon);
+			if ( pCursedMemory )
+				pItem->m_HitLifeLeech += pCursedMemory->m_itSpell.m_spelllevel;
+		}
+
+		if ( pItem->m_StrengthBonus != 0 )
+			Stat_SetMod(STAT_STR, Stat_GetMod(STAT_STR) + pItem->m_StrengthBonus);
+		if ( pItem->m_DexterityBonus != 0 )
+			Stat_SetMod(STAT_DEX, Stat_GetMod(STAT_DEX) + pItem->m_DexterityBonus);
+		if ( pItem->m_IntelligenceBonus != 0 )
+			Stat_SetMod(STAT_INT, Stat_GetMod(STAT_INT) + pItem->m_IntelligenceBonus);
+
+		if ( pItem->m_HitpointIncrease != 0 )
+			Stat_SetMax(STAT_STR, Stat_GetMax(STAT_STR) + pItem->m_HitpointIncrease);
+		if ( pItem->m_StaminaIncrease != 0 )
+			Stat_SetMax(STAT_DEX, Stat_GetMax(STAT_DEX) + pItem->m_StaminaIncrease);
+		if ( pItem->m_ManaIncrease != 0 )
+			Stat_SetMax(STAT_INT, Stat_GetMax(STAT_INT) + pItem->m_ManaIncrease);
+
+		if ( pItem->m_SpellChanneling )
+			m_FasterCasting -= 1;
+
+		m_Luck += pItem->m_Luck;
+		m_DamIncrease += pItem->m_DamIncrease;
+		m_SpellDamIncrease += pItem->m_SpellDamIncrease;
+		m_HitLifeLeech += pItem->m_HitLifeLeech;
+		m_HitManaDrain += pItem->m_HitManaDrain;
+		m_HitManaLeech += pItem->m_HitManaLeech;
+		m_HitStaminaLeech += pItem->m_HitStaminaLeech;
+		m_HitChanceIncrease += pItem->m_HitChanceIncrease;
+		m_DefChanceIncrease += pItem->m_DefChanceIncrease;
+		m_DefChanceIncreaseMax += pItem->m_DefChanceIncreaseMax;
+		m_SwingSpeedIncrease += pItem->m_SwingSpeedIncrease;
+		m_FasterCasting += pItem->m_FasterCasting;
+		m_FasterCastRecovery += pItem->m_FasterCastRecovery;
+		m_LowerManaCost += pItem->m_LowerManaCost;
+		m_LowerReagentCost += pItem->m_LowerReagentCost;
+		m_EnhancePotions += pItem->m_EnhancePotions;
+		if ( pItem->m_NightSight )
+		{
+			if ( !m_NightSight )
+			{
+				StatFlag_Mod(STATF_NightSight, 1);
+				if ( m_pClient )
+				{
+					m_pClient->addLight();
+					m_pClient->addBuff(BI_NIGHTSIGHT, 1075643, 1075644);
+				}
+			}
+			m_NightSight += pItem->m_NightSight;
+		}
+		m_ReflectPhysicalDamage += pItem->m_ReflectPhysicalDamage;
+	}
 	return true;
 }
 

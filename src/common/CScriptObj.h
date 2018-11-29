@@ -83,10 +83,6 @@ class CScriptTriggerArgs;
 class CScriptObj
 {
 	// This object can be scripted (but might not be)
-	#define SKIP_SEPARATORS(p)			while ( *(p)=='.' ) { (p)++; }	// || ISWHITESPACE(*(p))
-	#define SKIP_ARGSEP(p)				while ( (*(p)== ',') || IsSpace(*p) ) { (p)++; }
-	#define SKIP_IDENTIFIERSTRING(p)	while ( _ISCSYM(*p) ) { (p)++; }
-
 public:
 	static const char *m_sClassName;
 	static LPCTSTR const sm_szScriptKeys[];

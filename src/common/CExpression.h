@@ -2,8 +2,26 @@
 #define _INC_CEXPRESSION_H
 #pragma once
 
-#define _ISCSYMF(ch) (IsAlpha(ch) || (ch == '_'))	// __iscsym or __iscsymf
-#define _ISCSYM(ch) (isalnum(ch) || (ch == '_'))	// __iscsym or __iscsymf
+#define ISWHITESPACE(ch)				(IsSpace(ch) || ((unsigned char)(ch) == 0xA0))
+#define _IS_SWITCH(ch)					(((ch) == '-') || ((ch) == '/'))	// command line switch
+#define _ISCSYMF(ch)					(IsAlpha(ch) || (ch == '_'))		// __iscsym or __iscsymf
+#define _ISCSYM(ch)						(isalnum(ch) || (ch == '_'))		// __iscsym or __iscsymf
+
+#define SKIP_SEPARATORS(pszStr)			while (*(pszStr) == '.') { ++(pszStr); }	// || ISWHITESPACE(*(pszStr))
+#define SKIP_ARGSEP(pszStr)				while ((*(pszStr) == ',') || IsSpace(*pszStr)) { ++(pszStr); }
+#define SKIP_IDENTIFIERSTRING(pszStr)	while (_ISCSYM(*pszStr)) { ++(pszStr); }
+
+#define GETNONWHITESPACE(pszStr)		while (ISWHITESPACE(pszStr[0])) { ++(pszStr); }
+
+#define REMOVE_QUOTES(x)	\
+{							\
+	GETNONWHITESPACE(x);	\
+	if (*x == '"')			\
+		++x;				\
+	TCHAR *pszX = const_cast<TCHAR *>(strchr(x, '"'));	\
+	if (pszX)				\
+		*pszX = '\0';		\
+}
 
 #ifndef M_PI 
 	#define M_PI 3.14159265358979323846
