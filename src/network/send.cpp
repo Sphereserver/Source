@@ -379,17 +379,17 @@ bool PacketHealthBarUpdate::onSend(const CClient* client)
 /***************************************************************************
  *
  *
- *	Packet 0x1A : PacketItemWorld			sends item on ground (NORMAL)
+ *	Packet 0x1A : PacketWorldItem			sends item on ground (NORMAL)
  *
  *
  ***************************************************************************/
-PacketItemWorld::PacketItemWorld(BYTE id, size_t size, CGrayUID uid) : PacketSend(id, size, PRI_NORMAL), m_item(uid)
+PacketWorldItem::PacketWorldItem(BYTE id, size_t size, CGrayUID uid) : PacketSend(id, size, PRI_NORMAL), m_item(uid)
 {
 }
 
-PacketItemWorld::PacketItemWorld(const CClient* target, CItem *item) : PacketSend(XCMD_Put, 20, PRI_NORMAL), m_item(item->GetUID())
+PacketWorldItem::PacketWorldItem(const CClient* target, CItem *item) : PacketSend(XCMD_WorldItem, 20, PRI_NORMAL), m_item(item->GetUID())
 {
-	ADDTOCALLSTACK("PacketItemWorld::PacketItemWorld");
+	ADDTOCALLSTACK("PacketWorldItem::PacketWorldItem");
 
 	DWORD uid = static_cast<DWORD>(item->GetUID());
 	WORD amount = item->GetAmount();
@@ -441,9 +441,9 @@ PacketItemWorld::PacketItemWorld(const CClient* target, CItem *item) : PacketSen
 	push(target);
 }
 
-void PacketItemWorld::adjustItemData(const CClient* target, CItem* item, ITEMID_TYPE &id, HUE_TYPE &hue, WORD &amount, BYTE &layer, BYTE &flags)
+void PacketWorldItem::adjustItemData(const CClient* target, CItem* item, ITEMID_TYPE &id, HUE_TYPE &hue, WORD &amount, BYTE &layer, BYTE &flags)
 {
-	ADDTOCALLSTACK("PacketItemWorld::adjustItemData");
+	ADDTOCALLSTACK("PacketWorldItem::adjustItemData");
 	// Modify item values for compatibility with this specific client
 	// NOTE: layer value can return both 'light' (on light sources) or 'direction' (on corpses)
 	const CItemBase *itemDefintion = item->Item_GetDef();
@@ -512,9 +512,9 @@ void PacketItemWorld::adjustItemData(const CClient* target, CItem* item, ITEMID_
 	}
 }
 
-bool PacketItemWorld::onSend(const CClient* client)
+bool PacketWorldItem::onSend(const CClient* client)
 {
-	ADDTOCALLSTACK("PacketItemWorld::onSend");
+	ADDTOCALLSTACK("PacketWorldItem::onSend");
 #ifndef _MTNETWORK
 	if (g_NetworkOut.isActive())
 #else
@@ -938,7 +938,7 @@ PacketDragCancel::PacketDragCancel(const CClient* target, Reason code) : PacketS
 /***************************************************************************
  *
  *
- *	Packet 0x29 : PacketDropAccepted		notify drop accepted (kr) (NORMAL)
+ *	Packet 0x29 : PacketDropAccepted		notify drop accepted (NORMAL) (KR)
  *
  *
  ***************************************************************************/
@@ -2427,7 +2427,7 @@ bool PacketCorpseEquipment::onSend(const CClient* client)
  *
  *
  ***************************************************************************/
-PacketSignGump::PacketSignGump(const CClient* target, const CObjBase* object, GUMP_TYPE gump, LPCTSTR unknown, LPCTSTR text) : PacketSend(XCMD_GumpTextDisp, 13, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketSignGump::PacketSignGump(const CClient* target, const CObjBase* object, GUMP_TYPE gump, LPCTSTR name, LPCTSTR text) : PacketSend(XCMD_GumpTextDisp, 13, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketSignGump::PacketSignGump");
 
@@ -2435,11 +2435,11 @@ PacketSignGump::PacketSignGump(const CClient* target, const CObjBase* object, GU
 	writeInt32(object->GetUID());
 	writeInt16(static_cast<WORD>(gump));
 
-	if (unknown != NULL)
+	if (name != NULL)
 	{
-		size_t len = strlen(unknown) + 1;
+		size_t len = strlen(name) + 1;
 		writeInt16(static_cast<WORD>(len));
-		writeStringFixedASCII(unknown, len);
+		writeStringFixedASCII(name, len);
 	}
 	else
 	{
@@ -3859,6 +3859,7 @@ PacketEnableMapDiffs::PacketEnableMapDiffs(const CClient* target) : PacketExtend
 *
 *
 *	Packet 0xBF.0x19.0x02 : PacketStatLocks		update lock status of stats (NORMAL)
+*	Packet 0xBF.0x19.0x05 : PacketStatLocks		update lock status of stats (NORMAL) (KR/SA)
 *
 *
 ***************************************************************************/
@@ -4707,17 +4708,17 @@ PacketTimeSyncResponse::PacketTimeSyncResponse(const CClient* target) : PacketSe
 /***************************************************************************
  *
  *
- *	Packet 0xF3 : PacketItemWorldNew		sends item on ground (NORMAL)
+ *	Packet 0xF3 : PacketWorldObj			sends object on ground (NORMAL)
  *
  *
  ***************************************************************************/
-PacketItemWorldNew::PacketItemWorldNew(BYTE id, size_t size, CGrayUID uid) : PacketItemWorld(id, size, uid)
+PacketWorldObj::PacketWorldObj(BYTE id, size_t size, CGrayUID uid) : PacketWorldItem(id, size, uid)
 {
 }
 
-PacketItemWorldNew::PacketItemWorldNew(const CClient* target, CItem *item) : PacketItemWorld(XCMD_PutNew, 26, item->GetUID())
+PacketWorldObj::PacketWorldObj(const CClient* target, CItem *item) : PacketWorldItem(XCMD_WorldObj, 26, item->GetUID())
 {
-	ADDTOCALLSTACK("PacketItemWorldNew::PacketItemWorldNew");
+	ADDTOCALLSTACK("PacketWorldObj::PacketWorldObj");
 
 	DataSource source;
 	ITEMID_TYPE id = item->GetDispID();
@@ -4761,7 +4762,7 @@ PacketItemWorldNew::PacketItemWorldNew(const CClient* target, CItem *item) : Pac
 	push(target);
 }
 
-PacketItemWorldNew::PacketItemWorldNew(const CClient* target, CChar* mobile) : PacketItemWorld(XCMD_PutNew, 26, mobile->GetUID())
+PacketWorldObj::PacketWorldObj(const CClient* target, CChar* mobile) : PacketWorldItem(XCMD_WorldObj, 26, mobile->GetUID())
 {
 	DataSource source = Character;
 	CREID_TYPE id = mobile->GetDispID();
@@ -4862,13 +4863,13 @@ PacketMoveShip::PacketMoveShip(const CClient* target, const CItemShip* ship, COb
 /***************************************************************************
  *
  *
- *	Packet 0xF7 : PacketContainer			multiple packets (NORMAL)
+ *	Packet 0xF7 : PacketWorldObjCont		sends multiple objects on ground (NORMAL)
  *
  *
  ***************************************************************************/
-PacketContainer::PacketContainer(const CClient* target, CObjBase** objects, size_t objectCount) : PacketItemWorldNew(XCMD_PacketCont, 5, PRI_NORMAL)
+PacketWorldObjCont::PacketWorldObjCont(const CClient* target, CObjBase** objects, size_t objectCount) : PacketWorldObj(XCMD_WorldObjCont, 5, PRI_NORMAL)
 {
-	ADDTOCALLSTACK("PacketContainer::PacketContainer");
+	ADDTOCALLSTACK("PacketWorldObjCont::PacketWorldObjCont");
 	ASSERT(objectCount > 0);
 
 	initLength();
@@ -4880,7 +4881,7 @@ PacketContainer::PacketContainer(const CClient* target, CObjBase** objects, size
 		if (object->IsItem())
 		{
 			CItem *item = static_cast<CItem *>(object);
-			DataSource source = TileData;
+			DataSource source;
 			ITEMID_TYPE id = item->GetDispID();
 			HUE_TYPE hue = item->GetHue();
 			CPointMap pt = item->GetTopPoint();
@@ -4893,7 +4894,12 @@ PacketContainer::PacketContainer(const CClient* target, CObjBase** objects, size
 			if ( id >= ITEMID_MULTI )
 			{
 				source = Multi;
-				id = static_cast<ITEMID_TYPE>(id - ITEMID_MULTI);
+				id = static_cast<ITEMID_TYPE>(id & 0x3FFF);
+			}
+			else
+			{
+				source = (item->Can(CAN_I_DAMAGEABLE) && (target->m_NetState->isClientVersion(MINCLIVER_STATUS_V6))) ? Damageable : TileData;
+				id = static_cast<ITEMID_TYPE>(id & 0xFFFF);		// SA: 0x7FFF, HS: 0xFFFF
 			}
 
 			writeByte(0xF3);
@@ -4904,8 +4910,8 @@ PacketContainer::PacketContainer(const CClient* target, CObjBase** objects, size
 			writeByte(0);
 			writeInt16(amount);
 			writeInt16(amount);
-			writeInt16(static_cast<WORD>(pt.m_x));
-			writeInt16(static_cast<WORD>(pt.m_y));
+			writeInt16(static_cast<WORD>(pt.m_x & 0x7FFF));
+			writeInt16(static_cast<WORD>(pt.m_y & 0x3FFF));
 			writeByte(static_cast<BYTE>(pt.m_z));
 			writeByte(layer);
 			writeInt16(static_cast<WORD>(hue));

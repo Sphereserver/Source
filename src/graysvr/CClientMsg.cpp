@@ -497,10 +497,10 @@ void CClient::addItem_OnGround(CItem *pItem)
 	if ( !pItem )
 		return;
 
-	if ( PacketItemWorldNew::CanSendTo(m_NetState) )
-		new PacketItemWorldNew(this, pItem);
+	if ( PacketWorldObj::CanSendTo(m_NetState) )
+		new PacketWorldObj(this, pItem);
 	else
-		new PacketItemWorld(this, pItem);
+		new PacketWorldItem(this, pItem);
 
 	// Send KR drop confirmation
 	if ( PacketDropAccepted::CanSendTo(m_NetState) )

@@ -135,20 +135,20 @@ public:
 /***************************************************************************
  *
  *
- *	Packet 0x1A : PacketItemWorld			sends item on ground (NORMAL)
+ *	Packet 0x1A : PacketWorldItem			sends item on ground (NORMAL)
  *
  *
  ***************************************************************************/
-class PacketItemWorld : public PacketSend
+class PacketWorldItem : public PacketSend
 {
 private:
 	CGrayUID m_item;
 
 protected:
-	PacketItemWorld(BYTE id, size_t size, CGrayUID uid);
+	PacketWorldItem(BYTE id, size_t size, CGrayUID uid);
 
 public:
-	PacketItemWorld(const CClient* target, CItem* item);
+	PacketWorldItem(const CClient* target, CItem* item);
 
 	void adjustItemData(const CClient* target, CItem* item, ITEMID_TYPE &id, HUE_TYPE &hue, WORD &amount, BYTE &layer, BYTE &flags);
 
@@ -925,7 +925,7 @@ public:
 class PacketSignGump : public PacketSend
 {
 public:
-	PacketSignGump(const CClient* target, const CObjBase* object, GUMP_TYPE gump, LPCTSTR unknown, LPCTSTR text);
+	PacketSignGump(const CClient* target, const CObjBase* object, GUMP_TYPE gump, LPCTSTR name, LPCTSTR text);
 };
 
 /***************************************************************************
@@ -1899,14 +1899,14 @@ public:
 /***************************************************************************
  *
  *
- *	Packet 0xF3 : PacketItemWorldNew		sends item on ground (NORMAL)
+ *	Packet 0xF3 : PacketWorldObj			sends object on ground (NORMAL)
  *
  *
  ***************************************************************************/
-class PacketItemWorldNew : public PacketItemWorld
+class PacketWorldObj : public PacketWorldItem
 {
 protected:
-	PacketItemWorldNew(BYTE id, size_t size, CGrayUID uid);
+	PacketWorldObj(BYTE id, size_t size, CGrayUID uid);
 
 public:
 	enum DataSource
@@ -1917,8 +1917,8 @@ public:
 		Damageable	= 0x3
 	};
 
-	PacketItemWorldNew(const CClient* target, CItem* item);
-	PacketItemWorldNew(const CClient* target, CChar* mobile);
+	PacketWorldObj(const CClient* target, CItem* item);
+	PacketWorldObj(const CClient* target, CChar* mobile);
 
 	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }
 	static bool CanSendTo(const NetState* state)
@@ -1962,15 +1962,14 @@ public:
 /***************************************************************************
  *
  *
- *	Packet 0xF7 : PacketContainer			multiple packets (NORMAL)
+ *	Packet 0xF7 : PacketWorldObjCont		sends multiple objects on ground (NORMAL)
  *
  *
  ***************************************************************************/
-class PacketContainer : public PacketItemWorldNew// public PacketSend
-	//friend PacketItemWorldNew
+class PacketWorldObjCont : public PacketWorldObj
 {
 public:
-	PacketContainer(const CClient* target, CObjBase** objects, size_t objectCount);
+	PacketWorldObjCont(const CClient* target, CObjBase** objects, size_t objectCount);
 
 	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }
 	static bool CanSendTo(const NetState* state)
