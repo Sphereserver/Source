@@ -3184,7 +3184,7 @@ RESOURCE_ID CResource::ResourceGetNewID(RES_TYPE restype, LPCTSTR pszName, CVarD
 		case RES_ITEMDEF:
 		{
 			iHashRange = 2000;
-			index = ITEMID_SCRIPT2|0x4000;	// add another offset to avoid Sphere ranges
+			index = ITEMID_SCRIPT|0x4000;	// add another offset to avoid Sphere ranges
 			break;
 		}
 		case RES_TEMPLATE:

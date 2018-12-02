@@ -231,7 +231,7 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 			{
 				if ( bFemale )
 					goto InvalidInfo;
-				if ( !(((idBeard >= ITEMID_BEARD_LONG) && (idBeard <= ITEMID_BEARD_MOUSTACHE)) || ((idBeard >= ITEMID_BEARD_SH_M) && (idBeard <= ITEMID_BEARD_GO_M))) )
+				if ( !(((idBeard >= ITEMID_BEARD_LONG) && (idBeard <= ITEMID_BEARD_MUST)) || ((idBeard >= ITEMID_BEARD_SHORT_MUST) && (idBeard <= ITEMID_BEARD_VANDYKE))) )
 					goto InvalidInfo;
 
 				if ( (wBeardHue < HUE_HAIR_LOW) || (wBeardHue > HUE_HAIR_HIGH) )
@@ -253,11 +253,11 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 
 			if ( idHair )
 			{
-				if ( !(((idHair >= ITEMID_HAIR_ML_ELF) && (idHair <= ITEMID_HAIR_ML_MULLET)) || ((idHair >= ITEMID_HAIR_ML_FLOWER) && (idHair <= ITEMID_HAIR_ML_SPYKE))) )
+				if ( !(((idHair >= ITEMID_HAIR_MID_LONG) && (idHair <= ITEMID_HAIR_MULLET)) || ((idHair >= ITEMID_HAIR_FLOWER) && (idHair <= ITEMID_HAIR_SPIKED))) )
 					goto InvalidInfo;
-				if ( bFemale && ((idHair == ITEMID_HAIR_ML_LONG2) || (idHair == ITEMID_HAIR_ML_ELF)) )
+				if ( bFemale && ((idHair == ITEMID_HAIR_MID_LONG) || (idHair == ITEMID_HAIR_LONG_ELF)) )
 					goto InvalidInfo;
-				if ( !bFemale && ((idHair == ITEMID_HAIR_ML_FLOWER) || (idHair == ITEMID_HAIR_ML_LONG4)) )
+				if ( !bFemale && ((idHair == ITEMID_HAIR_FLOWER) || (idHair == ITEMID_HAIR_BUNS_ELF)) )
 					goto InvalidInfo;
 
 				const HUE_TYPE sm_ElfHairHues[] = { 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x58, 0x8E, 0x8F, 0x90, 0x91, 0x92, 0x101, 0x159, 0x15A, 0x15B, 0x15C, 0x15D, 0x15E, 0x128, 0x12F, 0x1BD, 0x1E4, 0x1F3, 0x207, 0x211, 0x239, 0x251, 0x26C, 0x2C3, 0x2C9, 0x31D, 0x31E, 0x31F, 0x320, 0x321, 0x322, 0x323, 0x324, 0x325, 0x326, 0x369, 0x386, 0x387, 0x388, 0x389, 0x38A, 0x59D, 0x6B8, 0x725, 0x853 };

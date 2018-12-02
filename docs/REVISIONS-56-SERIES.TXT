@@ -1278,3 +1278,8 @@ Fixed: Combat Parrying formula incorrectly applying PvP DEX penalty on PvM.
 [sphere.ini]: Removed EF_DamageTools experimental flag and AutoTooltipResend setting
 	-EF_DamageTools is not needed anymore because its already softcoded on sphere_skills.scp
 	-AutoTooltipResend is not needed anymore because now all tooltips are updated by default
+
+02-12-2018, Coruja
+Added: Support for new keep/castle multis added on publish 102/103.
+Fixed: Some SA doors not working correctly.
+[sphereCrypt.ini]: Added crypt key for classic client 7.0.74 and enhanced client 4.0.74

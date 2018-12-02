@@ -656,7 +656,7 @@ int CItem::FixWeirdness()
 				m_uidLink.InitUID();	// the item has been laundered.
 			else
 			{
-				DEBUG_ERR(("'%s' Bad Link to 0%lx\n", GetName(), static_cast<DWORD>(m_uidLink)));
+				DEBUG_ERR(("Item '%s' has bad link to 0%lx\n", GetName(), static_cast<DWORD>(m_uidLink)));
 				m_uidLink.InitUID();
 				return 0x2205;	// get rid of it.
 			}
@@ -3686,24 +3686,24 @@ bool CItem::IsDoorOpen() const
 	return( CItemBase::IsID_DoorOpen( GetDispID()));
 }
 
-bool CItem::Use_DoorNew( bool bJustOpen )
+bool CItem::Use_DoorNew(bool fJustOpen)
 {
 	ADDTOCALLSTACK("CItem::Use_DoorNew");
 
 	if ( !IsTopLevel() )
 		return false;
 
-	bool bClosing = IsAttr(ATTR_OPENED);
-	if ( bJustOpen && bClosing )
+	bool fClosing = IsAttr(ATTR_OPENED);
+	if ( fClosing && fJustOpen )
 		return true;	// links just open
 
 	CItemBase *pItemDef = Item_GetDef();
-	ITEMID_TYPE idSwitch = static_cast<ITEMID_TYPE>(GetDefNum("DOOROPENID"));
-	if ( !idSwitch )
+	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(GetDefNum("DOOROPENID"));
+	if ( !id )
 	{
-		idSwitch = pItemDef->m_ttDoor.m_idSwitch;
-		if ( !idSwitch )
-			return Use_Door(bJustOpen);
+		id = pItemDef->m_ttDoor.m_idSwitch;
+		if ( !id )
+			return Use_Door(fJustOpen);
 	}
 
 	signed short sDifX = m_itNormal.m_morep.m_x;
@@ -3715,7 +3715,8 @@ bool CItem::Use_DoorNew( bool bJustOpen )
 
 	CPointMap pt = GetTopPoint();
 	SOUND_TYPE iSnd;
-	if ( bClosing )
+
+	if ( fClosing )
 	{
 		ClrAttr(ATTR_OPENED);
 		SetTimeout(-1);
@@ -3747,13 +3748,13 @@ bool CItem::Use_DoorNew( bool bJustOpen )
 	}
 
 	SetDefNum("DOOROPENID", GetDispID());
-	SetDispID(idSwitch);
+	SetDispID(id);
 	MoveToUpdate(pt);
 	Sound(iSnd);
-	return !bClosing;
+	return !fClosing;
 }
 
-bool CItem::Use_Door( bool bJustOpen )
+bool CItem::Use_Door(bool fJustOpen)
 {
 	ADDTOCALLSTACK("CItem::Use_Door");
 	// don't call this directly but call CChar::Use_Item() instead.
@@ -3762,95 +3763,95 @@ bool CItem::Use_Door( bool bJustOpen )
 	//  true = open
 
 	ITEMID_TYPE id = GetDispID();
-	int doordir = CItemBase::IsID_Door(id) - 1;
-	if ( !IsTopLevel() || (doordir < 0) )
+	int iDir = CItemBase::IsID_Door(id) - 1;
+	if ( iDir < 0 )
 		return false;
 
-	id = static_cast<ITEMID_TYPE>(id - doordir);
-
-	bool bClosing = (doordir & DOOR_OPENED);	// currently open
-	if ( bJustOpen && bClosing )
+	bool fClosing = (iDir & DOOR_OPENED);
+	if ( fClosing && fJustOpen )
 		return true;	// links just open
 
+	id = static_cast<ITEMID_TYPE>(id - iDir);
 	CPointMap pt = GetTopPoint();
-	switch ( doordir )
+	SOUND_TYPE iSnd;
+
+	switch ( iDir )
 	{
 		case 0:
-			pt.m_x--;
-			pt.m_y++;
-			doordir++;
+			--pt.m_x;
+			++pt.m_y;
+			++iDir;
 			break;
 		case DOOR_OPENED:
-			pt.m_x++;
-			pt.m_y--;
-			doordir--;
+			++pt.m_x;
+			--pt.m_y;
+			--iDir;
 			break;
 		case DOOR_RIGHTLEFT:
-			pt.m_x++;
-			pt.m_y++;
-			doordir++;
+			++pt.m_x;
+			++pt.m_y;
+			++iDir;
 			break;
-		case (DOOR_RIGHTLEFT+DOOR_OPENED):
-			pt.m_x--;
-			pt.m_y--;
-			doordir--;
+		case (DOOR_RIGHTLEFT|DOOR_OPENED):
+			--pt.m_x;
+			--pt.m_y;
+			--iDir;
 			break;
 		case DOOR_INOUT:
-			pt.m_x--;
-			doordir++;
+			--pt.m_x;
+			++iDir;
 			break;
-		case (DOOR_INOUT+DOOR_OPENED):
-			pt.m_x++;
-			doordir--;
+		case (DOOR_INOUT|DOOR_OPENED):
+			++pt.m_x;
+			--iDir;
 			break;
 		case (DOOR_INOUT|DOOR_RIGHTLEFT):
-			pt.m_x++;
-			pt.m_y--;
-			doordir++;
+			++pt.m_x;
+			--pt.m_y;
+			++iDir;
 			break;
 		case (DOOR_INOUT|DOOR_RIGHTLEFT|DOOR_OPENED):
-			pt.m_x--;
-			pt.m_y++;
-			doordir--;
+			--pt.m_x;
+			++pt.m_y;
+			--iDir;
 			break;
 		case 8:
-			pt.m_x++;
-			pt.m_y++;
-			doordir++;
+			++pt.m_x;
+			++pt.m_y;
+			++iDir;
 			break;
 		case 9:
-			pt.m_x--;
-			pt.m_y--;
-			doordir--;
+			--pt.m_x;
+			--pt.m_y;
+			--iDir;
 			break;
 		case 10:
-			pt.m_x++;
-			pt.m_y--;
-			doordir++;
+			++pt.m_x;
+			--pt.m_y;
+			++iDir;
 			break;
 		case 11:
-			pt.m_x--;
-			pt.m_y++;
-			doordir--;
+			--pt.m_x;
+			++pt.m_y;
+			--iDir;
 			break;
 		case 12:
-			doordir++;
+			++iDir;
 			break;
 		case 13:
-			doordir--;
+			--iDir;
 			break;
 		case 14:
-			pt.m_y--;
-			doordir++;
+			--pt.m_y;
+			++iDir;
 			break;
 		case 15:
-			pt.m_y++;
-			doordir--;
+			++pt.m_y;
+			--iDir;
 			break;
 	}
 
-	SOUND_TYPE iSnd;
-	if ( bClosing )
+	if ( fClosing )
 	{
 		SetTimeout(-1);
 
@@ -3859,19 +3860,19 @@ bool CItem::Use_Door( bool bJustOpen )
 		{
 			switch ( id )
 			{
-				case ITEMID_DOOR_SECRET_1:
-				case ITEMID_DOOR_SECRET_2:
-				case ITEMID_DOOR_SECRET_3:
-				case ITEMID_DOOR_SECRET_4:
-				case ITEMID_DOOR_SECRET_5:
-				case ITEMID_DOOR_SECRET_6:
+				case ITEMID_DOOR_SECRET_STONE_1:
+				case ITEMID_DOOR_SECRET_STONE_2:
+				case ITEMID_DOOR_SECRET_STONE_3:
+				case ITEMID_DOOR_SECRET_WOOD_1:
+				case ITEMID_DOOR_SECRET_WOOD_2:
+				case ITEMID_DOOR_SECRET_STONE_4:
 					iSnd = 0x2E;
 					break;
-				case ITEMID_DOOR_METAL_S:
-				case ITEMID_DOOR_BARRED:
-				case ITEMID_DOOR_METAL_L:
-				case ITEMID_DOOR_IRONGATE_1:
-				case ITEMID_DOOR_IRONGATE_2:
+				case ITEMID_DOOR_METAL_1:
+				case ITEMID_DOOR_METAL_BARRED_1:
+				case ITEMID_DOOR_METAL_2:
+				case ITEMID_GATE_IRON_1:
+				case ITEMID_GATE_IRON_2:
 					iSnd = 0xF3;
 					break;
 				default:
@@ -3882,26 +3883,26 @@ bool CItem::Use_Door( bool bJustOpen )
 	}
 	else
 	{
-		SetTimeout(60 * TICK_PER_SEC);
+		SetTimeout(15 * TICK_PER_SEC);
 
 		iSnd = static_cast<SOUND_TYPE>(GetDefNum("DOOROPENSOUND"));
 		if ( !iSnd )
 		{
 			switch ( id )
 			{
-				case ITEMID_DOOR_SECRET_1:
-				case ITEMID_DOOR_SECRET_2:
-				case ITEMID_DOOR_SECRET_3:
-				case ITEMID_DOOR_SECRET_4:
-				case ITEMID_DOOR_SECRET_5:
-				case ITEMID_DOOR_SECRET_6:
+				case ITEMID_DOOR_SECRET_STONE_1:
+				case ITEMID_DOOR_SECRET_STONE_2:
+				case ITEMID_DOOR_SECRET_STONE_3:
+				case ITEMID_DOOR_SECRET_WOOD_1:
+				case ITEMID_DOOR_SECRET_WOOD_2:
+				case ITEMID_DOOR_SECRET_STONE_4:
 					iSnd = 0x2F;
 					break;
-				case ITEMID_DOOR_METAL_S:
-				case ITEMID_DOOR_BARRED:
-				case ITEMID_DOOR_METAL_L:
-				case ITEMID_DOOR_IRONGATE_1:
-				case ITEMID_DOOR_IRONGATE_2:
+				case ITEMID_DOOR_METAL_1:
+				case ITEMID_DOOR_METAL_BARRED_1:
+				case ITEMID_DOOR_METAL_2:
+				case ITEMID_GATE_IRON_1:
+				case ITEMID_GATE_IRON_2:
 					iSnd = 0xEB;
 					break;
 				default:
@@ -3911,10 +3912,10 @@ bool CItem::Use_Door( bool bJustOpen )
 		}
 	}
 
-	SetDispID(static_cast<ITEMID_TYPE>(id + doordir));
+	SetDispID(static_cast<ITEMID_TYPE>(id + iDir));
 	MoveToUpdate(pt);
 	Sound(iSnd);
-	return !bClosing;
+	return !fClosing;
 }
 
 bool CItem::Armor_IsRepairable() const
@@ -4853,7 +4854,7 @@ int CItem::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 		if ( RES_GET_INDEX(m_itPotion.m_Type) == SPELL_Explosion )
 		{
 			CSpellDef *pSpell = g_Cfg.GetSpellDef(SPELL_Explosion);
-			CItem *pItem = CItem::CreateBase(ITEMID_FX_EXPLODE_3);
+			CItem *pItem = CItem::CreateBase(ITEMID_FX_EXPLODE);
 			if ( !pItem )
 				return( 0 );
 
@@ -5001,7 +5002,7 @@ void CItem::OnExplosion()
 			pChar->OnTakeDamage( m_itExplode.m_iDamage, pSrc, m_itExplode.m_wFlags, iDmgPhysical, iDmgFire, iDmgCold, iDmgPoison, iDmgEnergy );
 	}
 
-	Effect(EFFECT_XYZ, ITEMID_FX_EXPLODE_3, this, 9, 10);
+	Effect(EFFECT_XYZ, ITEMID_FX_EXPLODE, this, 9, 10);
 	Sound(0x307);
 }
 
