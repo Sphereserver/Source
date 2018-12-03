@@ -171,12 +171,6 @@
     <ClCompile Include="src\sphere\threads.cpp">
       <Filter>sphere</Filter>
     </ClCompile>
-    <ClCompile Include="src\graysvr\CItemMultiCustom.cpp">
-      <Filter>graysvr</Filter>
-    </ClCompile>
-    <ClCompile Include="src\graysvr\CItemShip.cpp">
-      <Filter>graysvr</Filter>
-    </ClCompile>
     <ClCompile Include="src\common\crashdump\crashdump.cpp">
       <Filter>common\crashdump</Filter>
     </ClCompile>
@@ -295,6 +289,12 @@
       <Filter>graysvr</Filter>
     </ClCompile>
     <ClCompile Include="src\graysvr\CItemMulti.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graysvr\CItemMultiCustom.cpp">
+      <Filter>graysvr</Filter>
+    </ClCompile>
+    <ClCompile Include="src\graysvr\CItemShip.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
     <ClCompile Include="src\graysvr\CItemSpawn.cpp">
@@ -585,6 +585,15 @@
       <Filter>graysvr</Filter>
     </ClInclude>
     <ClInclude Include="src\graysvr\CItemBase.h">
+      <Filter>graysvr</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graysvr\CItemMulti.h">
+      <Filter>graysvr</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graysvr\CItemMultiCustom.h">
+      <Filter>graysvr</Filter>
+    </ClInclude>
+    <ClInclude Include="src\graysvr\CItemShip.h">
       <Filter>graysvr</Filter>
     </ClInclude>
     <ClInclude Include="src\graysvr\CNTService.h">

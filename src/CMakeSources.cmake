@@ -37,8 +37,11 @@ graysvr/CItemBase.h
 graysvr/CItem.cpp
 graysvr/CItem.h
 graysvr/CItemMulti.cpp
+graysvr/CItemMulti.h
 graysvr/CItemMultiCustom.cpp
+graysvr/CItemMultiCustom.h
 graysvr/CItemShip.cpp
+graysvr/CItemShip.h
 graysvr/CItemSpawn.cpp
 graysvr/CItemStone.cpp
 graysvr/CItemVend.cpp
