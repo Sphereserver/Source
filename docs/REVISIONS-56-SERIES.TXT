@@ -1283,3 +1283,7 @@ Fixed: Combat Parrying formula incorrectly applying PvP DEX penalty on PvM.
 Added: Support for new keep/castle multis added on publish 102/103.
 Fixed: Some SA doors not working correctly.
 [sphereCrypt.ini]: Added crypt key for classic client 7.0.74 and enhanced client 4.0.74
+
+12-12-2018, Coruja
+Fixed: House customization engine not hiding dynamic items correctly before open customization menu.
+Fixed: House customization exploit allowing place non-stairs items on front stairs spot.

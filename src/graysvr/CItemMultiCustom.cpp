@@ -101,14 +101,17 @@ void CItemMultiCustom::BeginCustomize(CClient *pClient)
 	pChar->UpdateMove(ptOld);
 
 	// Hide all dynamic items inside the building
-	CWorldSearch Area(GetTopPoint(), GetDesignArea().GetWidth() / 2);
+	const CGRect rect = GetDesignArea();
+	CWorldSearch Area(GetTopPoint(), Multi_GetMaxDist());
 	for (;;)
 	{
 		CItem *pItem = Area.GetItem();
 		if ( !pItem )
 			break;
-		if ( pItem != this )
-			pClient->addObjectRemove(pItem);
+		if ( (pItem == this) || !rect.IsInsideX(pItem->GetTopPoint().m_x) || !rect.IsInsideY(pItem->GetTopPoint().m_y - 1) )
+			continue;
+
+		pClient->addObjectRemove(pItem);
 	}
 
 	// Enter customization mode
@@ -201,7 +204,7 @@ void CItemMultiCustom::AddItem(CClient *pClient, ITEMID_TYPE id, signed short x,
 			const CGRect rect = GetDesignArea();
 			if ( !rect.IsInside2d(pt) )
 			{
-				if ( rect.IsInsideY(pt.m_y - 1) )
+				if ( (pItemBase->GetTFlags() & UFLAG2_CLIMBABLE) && rect.IsInsideY(pt.m_y - 1) )
 				{
 					// External stairs can be placed 1 tile south of the edit area, but only at ground level
 					z = 0;
@@ -536,7 +539,7 @@ void CItemMultiCustom::CommitChanges(CClient *pClient)
 		return;
 
 	// Delete existing fixtures
-	CWorldSearch Area(GetTopPoint(), GetDesignArea().GetWidth());
+	CWorldSearch Area(GetTopPoint(), Multi_GetMaxDist());
 	CItem *pItem;
 	for (;;)
 	{
