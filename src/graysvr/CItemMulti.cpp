@@ -1,75 +1,64 @@
 #include "graysvr.h"	// predef header.
 
-/////////////////////////////////////////////////////////////////////////////
-
-CItemMulti::CItemMulti( ITEMID_TYPE id, CItemBase * pItemDef ) :	// CItemBaseMulti
-	CItem( id, pItemDef )
+CItemMulti::CItemMulti(ITEMID_TYPE id, CItemBase *pItemDef) : CItem(id, pItemDef)		// CItemBaseMulti
 {
 	CItemBaseMulti *pItemBase = static_cast<CItemBaseMulti *>(Base_GetDef());
+	m_pRegion = NULL;
 	m_shipSpeed.period = pItemBase->m_shipSpeed.period;
 	m_shipSpeed.tiles = pItemBase->m_shipSpeed.tiles;
 	m_SpeedMode = pItemBase->m_SpeedMode;
-	m_pRegion = NULL;
 }
 
 CItemMulti::~CItemMulti()
 {
-	MultiUnRealizeRegion();		// unrealize before removed from ground.
-	DeletePrepare();			// Must remove early because virtuals will fail in child destructor.
-	// NOTE: ??? This is dangerous to iterators. The "next" item may no longer be valid !
-
-	// Attempt to remove all the accessory junk.
-	// NOTE: assume we have already been removed from Top Level
+	MultiUnRealizeRegion();		// unrealize before remove from ground
+	DeletePrepare();			// must remove early because virtuals will fail in child destructor
 
 	if ( !m_pRegion )
 		return;
 
+	// Remove all the accessory junk
+	// NOTE: Assume the multi is already been removed from top level
 	CWorldSearch Area(m_pRegion->m_pt, Multi_GetMaxDist());
 	for (;;)
 	{
 		CItem *pItem = Area.GetItem();
 		if ( !pItem )
 			break;
-		if ( pItem == this )	// this gets deleted seperately
+		if ( pItem == this )	// this must be deleted seperately
 			continue;
 		if ( !Multi_IsPartOf(pItem) )
 			continue;
-		pItem->Delete();		// delete the key id for the door/key/sign
-		Area.RestartSearch();	// we removed an item and this will mess the search loop, so restart to fix it
+		pItem->Delete();
+		Area.RestartSearch();	// the removed item will mess the loop sequence, so restart the loop
 	}
-
 	delete m_pRegion;
+}
+
+const CItemBaseMulti *CItemMulti::Multi_GetDef(ITEMID_TYPE id)	// static
+{
+	ADDTOCALLSTACK("CItemMulti::Multi_GetDef");
+	return static_cast<const CItemBaseMulti *>(CItemBase::FindItemBase(id));
 }
 
 int CItemMulti::Multi_GetMaxDist() const
 {
 	ADDTOCALLSTACK("CItemMulti::Multi_GetMaxDist");
 	const CItemBaseMulti *pMultiDef = Multi_GetDef();
-	if ( !pMultiDef )
-		return 0;
-	return pMultiDef->GetMaxDist();
+	return pMultiDef ? pMultiDef->GetMaxDist() : 0;
 }
 
-const CItemBaseMulti * CItemMulti::Multi_GetDef( ITEMID_TYPE id ) // static
-{
-	ADDTOCALLSTACK("CItemMulti::Multi_GetDef");
-	return static_cast<const CItemBaseMulti *>(CItemBase::FindItemBase(id));
-}
-
-bool CItemMulti::MultiRealizeRegion()
+void CItemMulti::MultiRealizeRegion()
 {
 	ADDTOCALLSTACK("CItemMulti::MultiRealizeRegion");
-	// Add/move a region for the multi so we know when we are in it.
-	// RETURN: ignored.
-
 	if ( !IsTopLevel() )
-		return false;
+		return;
 
 	const CItemBaseMulti *pMultiDef = Multi_GetDef();
 	if ( !pMultiDef )
 	{
-		DEBUG_ERR(("Bad Multi type 0%x, uid=0%lx\n", GetID(), static_cast<DWORD>(GetUID())));
-		return false;
+		DEBUG_ERR(("Bad multi type 0%x, uid=0%lx\n", GetID(), static_cast<DWORD>(GetUID())));
+		return;
 	}
 
 	if ( !m_pRegion )
@@ -79,17 +68,18 @@ bool CItemMulti::MultiRealizeRegion()
 		m_pRegion = new CRegionWorld(rid);
 	}
 
-	// Get Background region
+	// Get background region
 	CPointMap pt = GetTopPoint();
 	const CRegionWorld *pRegionBack = static_cast<CRegionWorld *>(pt.GetRegion(REGION_TYPE_AREA));
 	if ( !pRegionBack || (pRegionBack == m_pRegion) )
-		return false;
+		return;
 
 	// Create the new region rectangle
 	CRectMap rect;
 	reinterpret_cast<CGRect &>(rect) = pMultiDef->m_rect;
-	rect.m_map = pt.m_map;
 	rect.OffsetRect(pt.m_x, pt.m_y);
+	rect.m_map = pt.m_map;
+
 	m_pRegion->SetRegionRect(rect);
 	m_pRegion->m_pt = pt;
 
@@ -102,7 +92,7 @@ bool CItemMulti::MultiRealizeRegion()
 	sprintf(pszTemp, "%s (%s)", pRegionBack->GetName(), GetName());
 	m_pRegion->SetName(pszTemp);
 
-	return m_pRegion->RealizeRegion();
+	m_pRegion->RealizeRegion();
 }
 
 void CItemMulti::MultiUnRealizeRegion()
@@ -113,7 +103,7 @@ void CItemMulti::MultiUnRealizeRegion()
 
 	m_pRegion->UnRealizeRegion();
 
-	// Find all creatures in the region and remove this from them
+	// Move all chars in this region to background region
 	CWorldSearch Area(m_pRegion->m_pt, Multi_GetMaxDist());
 	for (;;)
 	{
@@ -126,24 +116,24 @@ void CItemMulti::MultiUnRealizeRegion()
 	}
 }
 
-bool CItemMulti::Multi_CreateComponent( ITEMID_TYPE id, signed short dx, signed short dy, signed char dz, DWORD dwKeyCode )
+bool CItemMulti::Multi_CreateComponent(ITEMID_TYPE id, signed short x, signed short y, signed char z, DWORD dwKeyCode)
 {
 	ADDTOCALLSTACK("CItemMulti::Multi_CreateComponent");
 	CItem *pItem = CreateTemplate(id);
 	ASSERT(pItem);
 
 	CPointMap pt = GetTopPoint();
-	bool fNeedKey = false;
-	pt.m_x += dx;
-	pt.m_y += dy;
-	pt.m_z += dz;
+	pt.m_x += x;
+	pt.m_y += y;
+	pt.m_z += z;
 
+	bool fNeedKey = false;
 	switch ( pItem->GetType() )
 	{
 		case IT_KEY:
 		case IT_SIGN_GUMP:
 		case IT_SHIP_TILLER:
-			pItem->m_itKey.m_lockUID.SetPrivateUID(dwKeyCode);	// set the key id for the key/sign
+			pItem->m_itKey.m_lockUID.SetPrivateUID(dwKeyCode);	// set key id for the key/sign
 			m_uidLink.SetPrivateUID(pItem->GetUID());
 			fNeedKey = true;
 			break;
@@ -165,19 +155,17 @@ bool CItemMulti::Multi_CreateComponent( ITEMID_TYPE id, signed short dx, signed 
 		case IT_SHIP_HOLD:
 			pItem->SetType(IT_SHIP_HOLD_LOCK);
 			break;
-		default:
-			break;
 	}
 
 	if ( pItem->GetHue() == HUE_DEFAULT )
 		pItem->SetHue(GetHue());
 
 	pItem->SetAttr(ATTR_MOVE_NEVER | (m_Attr & (ATTR_MAGIC|ATTR_INVIS)));
-	pItem->m_uidLink = GetUID();	// lock it down with the structure
+	pItem->m_uidLink = GetUID();
 
 	if ( pItem->IsTypeLockable() || pItem->IsTypeLocked() )
 	{
-		pItem->m_itContainer.m_lockUID.SetPrivateUID(dwKeyCode);	// set the key id for the door/key/sign
+		pItem->m_itContainer.m_lockUID.SetPrivateUID(dwKeyCode);	// set key id for the door/key/sign
 		pItem->m_itContainer.m_lock_complexity = 10000;				// never pickable
 	}
 
@@ -186,14 +174,14 @@ bool CItemMulti::Multi_CreateComponent( ITEMID_TYPE id, signed short dx, signed 
 	return fNeedKey;
 }
 
-void CItemMulti::Multi_Create( CChar * pChar, DWORD dwKeyCode )
+void CItemMulti::Multi_Create(CChar *pChar, DWORD dwKeyCode)
 {
 	ADDTOCALLSTACK("CItemMulti::Multi_Create");
-	// Create house or Ship extra stuff.
+	// Create multi components
 	// ARGS:
-	//  dwKeyCode = set the key code for the doors/sides to this in case it's a drydocked ship.
+	//  dwKeyCode = set the key code for the doors/sides to this
 	// NOTE: 
-	//  This can only be done after the house is given location.
+	//  This can only be done after multi item is already placed on world
 
 	const CItemBaseMulti *pMultiDef = Multi_GetDef();
 	if ( !pMultiDef || !IsTopLevel() )
@@ -204,25 +192,10 @@ void CItemMulti::Multi_Create( CChar * pChar, DWORD dwKeyCode )
 
 	bool fNeedKey = false;
 	size_t iQty = pMultiDef->m_Components.GetCount();
-	for ( size_t i = 0; i < iQty; i++ )
+	for ( size_t i = 0; i < iQty; ++i )
 	{
 		const CItemBaseMulti::CMultiComponentItem &component = pMultiDef->m_Components.ElementAt(i);
 		fNeedKey |= Multi_CreateComponent(component.m_id, component.m_dx, component.m_dy, component.m_dz, dwKeyCode);
-	}
-
-	CItem *pKey = NULL;
-	if ( fNeedKey )
-	{
-		// Create the key to the door
-		ITEMID_TYPE id = IsAttr(ATTR_MAGIC) ? ITEMID_KEY_MAGIC : ITEMID_KEY_COPPER;
-		pKey = CreateScript(id, pChar);
-		ASSERT(pKey);
-		pKey->SetType(IT_KEY);
-		if ( g_Cfg.m_fAutoNewbieKeys )
-			pKey->SetAttr(ATTR_NEWBIE);
-		pKey->SetAttr(m_Attr & ATTR_MAGIC);
-		pKey->m_itKey.m_lockUID.SetPrivateUID(dwKeyCode);
-		pKey->m_uidLink = GetUID();
 	}
 
 	Multi_GetSign();	// set the m_uidLink
@@ -232,25 +205,31 @@ void CItemMulti::Multi_Create( CChar * pChar, DWORD dwKeyCode )
 		m_itShip.m_UIDCreator = pChar->GetUID();
 		pChar->Memory_AddObjTypes(this, MEMORY_GUARD);
 
-		if ( pKey )
+		if ( fNeedKey )
 		{
-			// Put primary key in pack
-			pChar->GetContainerCreate(LAYER_PACK)->ContentAdd(pKey);
+			CItem *pKey = CreateScript(IsAttr(ATTR_MAGIC) ? ITEMID_KEY_MAGIC : ITEMID_KEY_COPPER, pChar);
+			if ( pKey )
+			{
+				pKey->SetType(IT_KEY);
+				pKey->SetAttr(g_Cfg.m_fAutoNewbieKeys ? ATTR_NEWBIE|ATTR_MAGIC : ATTR_MAGIC);
+				pKey->m_itKey.m_lockUID.SetPrivateUID(dwKeyCode);
+				pKey->m_uidLink = GetUID();
 
-			// Put secondary key in bank
-			pKey = CreateDupeItem(pKey);
-			pChar->GetContainerCreate(LAYER_BANKBOX)->ContentAdd(pKey);
-			pChar->SysMessageDefault(DEFMSG_MSG_KEY_DUPEBANK);
+				// Put primary key on backpack
+				pChar->GetContainerCreate(LAYER_PACK)->ContentAdd(pKey);
+
+				// Put secondary key on bankbox
+				pKey = CreateDupeItem(pKey);
+				pChar->GetContainerCreate(LAYER_BANKBOX)->ContentAdd(pKey);
+				pChar->SysMessageDefault(DEFMSG_MSG_KEY_DUPEBANK);
+			}
 		}
 	}
 }
 
-bool CItemMulti::Multi_IsPartOf( const CItem * pItem ) const
+bool CItemMulti::Multi_IsPartOf(const CItem *pItem) const
 {
 	ADDTOCALLSTACK("CItemMulti::Multi_IsPartOf");
-	// Assume it is in my area test already.
-	// IT_MULTI
-	// IT_SHIP
 	if ( !pItem )
 		return false;
 	if ( pItem == this )
@@ -258,21 +237,10 @@ bool CItemMulti::Multi_IsPartOf( const CItem * pItem ) const
 	return (pItem->m_uidLink == GetUID());
 }
 
-CItem * CItemMulti::Multi_FindItemComponent( int iComp ) const		// wtf? this function always return NULL
-{
-	ADDTOCALLSTACK("CItemMulti::Multi_FindItemComponent");
-	UNREFERENCED_PARAMETER(iComp);
-	const CItemBaseMulti *pMultiDef = Multi_GetDef();
-	if ( !pMultiDef )
-		return NULL;
-
-	return NULL;
-}
-
-CItem * CItemMulti::Multi_FindItemType( IT_TYPE type ) const
+CItem *CItemMulti::Multi_FindItemType(IT_TYPE type) const
 {
 	ADDTOCALLSTACK("CItemMulti::Multi_FindItemType");
-	// Find a part of this multi nearby.
+	// Find an multi component with given type
 	if ( !IsTopLevel() )
 		return NULL;
 
@@ -281,11 +249,51 @@ CItem * CItemMulti::Multi_FindItemType( IT_TYPE type ) const
 	{
 		CItem *pItem = Area.GetItem();
 		if ( !pItem )
-			return NULL;
-		if ( !Multi_IsPartOf(pItem) )
+			break;
+		if ( !Multi_IsPartOf(pItem) || !pItem->IsType(type) )
 			continue;
-		if ( pItem->IsType(type) )
-			return pItem;
+		return pItem;
+	}
+	return NULL;
+}
+
+CItem *CItemMulti::Multi_GetSign()
+{
+	ADDTOCALLSTACK("CItemMulti::Multi_GetSign");
+	// Get multi sign (houses) or tiller (ships)
+	CItem *pItem = m_uidLink.ItemFind();
+	if ( !pItem )
+	{
+		pItem = Multi_FindItemType(IsType(IT_SHIP) ? IT_SHIP_TILLER : IT_SIGN_GUMP);
+		if ( !pItem )
+			return this;
+		m_uidLink = pItem->GetUID();
+	}
+	return pItem;
+}
+
+void CItemMulti::OnHearRegion(LPCTSTR pszCmd, CChar *pSrc)
+{
+	ADDTOCALLSTACK("CItemMulti::OnHearRegion");
+	// Someone is saying something inside multi region
+	// Check if the multi have an speech filter script
+
+	const CItemBaseMulti *pMultiDef = Multi_GetDef();
+	if ( !pMultiDef )
+		return;
+
+	TALKMODE_TYPE mode = TALKMODE_SAY;
+	for ( size_t i = 0; i < pMultiDef->m_Speech.GetCount(); ++i )
+	{
+		CResourceLink *pLink = pMultiDef->m_Speech[i];
+		ASSERT(pLink);
+		CResourceLock s;
+		if ( !pLink->ResourceLock(s) )
+			continue;
+		TRIGRET_TYPE tr = OnHearTrigger(s, pszCmd, pSrc, mode);
+		if ( (tr == TRIGRET_ENDIF) || (tr == TRIGRET_RET_FALSE) )
+			continue;
+		break;
 	}
 }
 
@@ -298,63 +306,22 @@ bool CItemMulti::OnTick()
 void CItemMulti::OnMoveFrom()
 {
 	ADDTOCALLSTACK("CItemMulti::OnMoveFrom");
-	// Being removed from the top level.
-	// Might just be moving.
+	// Multi item is being removed from background region
+	// Or might just get moved (ships)
 
 	ASSERT(m_pRegion);
 	m_pRegion->UnRealizeRegion();
 }
 
-bool CItemMulti::MoveTo(CPointMap pt, bool bForceFix)
+bool CItemMulti::MoveTo(CPointMap pt, bool fForceFix)
 {
 	ADDTOCALLSTACK("CItemMulti::MoveTo");
-	// Move this item to it's point in the world (ground/top level)
-	if ( !CItem::MoveTo(pt, bForceFix) )
+	// Move multi to given pt on world
+	if ( !CItem::MoveTo(pt, fForceFix) )
 		return false;
 
-	// Multis need special region info to track when u are inside them.
-	// Add new region info.
 	MultiRealizeRegion();
 	return true;
-}
-
-CItem * CItemMulti::Multi_GetSign()
-{
-	ADDTOCALLSTACK("CItemMulti::Multi_GetSign");
-	// Get my sign or tiller link.
-	CItem *pTiller = m_uidLink.ItemFind();
-	if ( !pTiller )
-	{
-		pTiller = Multi_FindItemType(IsType(IT_SHIP) ? IT_SHIP_TILLER : IT_SIGN_GUMP);
-		if ( !pTiller )
-			return this;
-		m_uidLink = pTiller->GetUID();
-	}
-	return pTiller;
-}
-
-void CItemMulti::OnHearRegion( LPCTSTR pszCmd, CChar * pSrc )
-{
-	ADDTOCALLSTACK("CItemMulti::OnHearRegion");
-	// IT_SHIP or IT_MULTI
-
-	const CItemBaseMulti *pMultiDef = Multi_GetDef();
-	if ( !pMultiDef )
-		return;
-	TALKMODE_TYPE mode = TALKMODE_SAY;
-
-	for ( size_t i = 0; i < pMultiDef->m_Speech.GetCount(); i++ )
-	{
-		CResourceLink *pLink = pMultiDef->m_Speech[i];
-		ASSERT(pLink);
-		CResourceLock s;
-		if ( !pLink->ResourceLock(s) )
-			continue;
-		TRIGRET_TYPE iRet = OnHearTrigger(s, pszCmd, pSrc, mode);
-		if ( iRet == TRIGRET_ENDIF || iRet == TRIGRET_RET_FALSE )
-			continue;
-		break;
-	}
 }
 
 enum
@@ -369,18 +336,10 @@ LPCTSTR const CItemMulti::sm_szVerbKeys[SHV_QTY + 1] =
 	NULL
 };
 
-bool CItemMulti::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
+bool CItemMulti::r_GetRef(LPCTSTR &pszKey, CScriptObj *&pRef)
 {
 	ADDTOCALLSTACK("CItemMulti::r_GetRef");
 
-	if ( !strnicmp(pszKey, "COMP(", 4) )
-	{
-		pszKey += 5;
-		int i = Exp_GetVal(pszKey);
-		SKIP_SEPARATORS(pszKey);
-		pRef = Multi_FindItemComponent(i);
-		return true;
-	}
 	if ( !strnicmp(pszKey, "REGION", 6) )
 	{
 		pszKey += 6;
@@ -391,28 +350,22 @@ bool CItemMulti::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 	return CItem::r_GetRef(pszKey, pRef);
 }
 
-bool CItemMulti::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from script
+bool CItemMulti::r_Verb(CScript &s, CTextConsole *pSrc)		// execute command from script
 {
 	ADDTOCALLSTACK("CItemMulti::r_Verb");
 	EXC_TRY("Verb");
-	// Speaking in this multis region.
-	// return: true = command for the multi.
 
-	int iCmd = FindTableSorted(s.GetKey(), sm_szVerbKeys, COUNTOF(sm_szVerbKeys) - 1);
-	switch ( iCmd )
+	int index = FindTableSorted(s.GetKey(), sm_szVerbKeys, COUNTOF(sm_szVerbKeys) - 1);
+	switch ( index )
 	{
 		case SHV_MULTICREATE:
 		{
-			CGrayUID uid = s.GetArgVal();
-			CChar *pCharSrc = uid.CharFind();
-			Multi_Create(pCharSrc, 0);
+			Multi_Create(static_cast<CGrayUID>(s.GetArgVal()).CharFind(), UID_CLEAR);
 			return true;
 		}
-
 		default:
 			return CItem::r_Verb(s, pSrc);
 	}
-
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
@@ -421,7 +374,7 @@ bool CItemMulti::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 	return true;
 }
 
-void CItemMulti::r_Write( CScript & s )
+void CItemMulti::r_Write(CScript &s)
 {
 	ADDTOCALLSTACK_INTENSIVE("CItemMulti::r_Write");
 	CItem::r_Write(s);
@@ -429,15 +382,14 @@ void CItemMulti::r_Write( CScript & s )
 		m_pRegion->r_WriteBody(s, "REGION.");
 }
 
-bool CItemMulti::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
+bool CItemMulti::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 {
 	ADDTOCALLSTACK("CItemMulti::r_WriteVal");
 	if ( !strnicmp(pszKey, "COMP", 4) )
 	{
-		const CItemBaseMulti *pMultiDef = Multi_GetDef();
 		pszKey += 4;
+		const CItemBaseMulti *pMultiDef = Multi_GetDef();
 
-		// no component uid
 		if ( *pszKey == '\0' )
 		{
 			sVal.FormatVal(pMultiDef->m_Components.GetCount());
@@ -445,28 +397,26 @@ bool CItemMulti::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSr
 		}
 		else if ( *pszKey == '.' )
 		{
-			CItemBaseMulti::CMultiComponentItem	item;
-
-			SKIP_SEPARATORS(pszKey);
+			++pszKey;
 			size_t iQty = Exp_GetVal(pszKey);
 			if ( !pMultiDef->m_Components.IsValidIndex(iQty) )
 				return false;
 
 			SKIP_SEPARATORS(pszKey);
-			item = pMultiDef->m_Components.GetAt(iQty);
+			CItemBaseMulti::CMultiComponentItem component = pMultiDef->m_Components.GetAt(iQty);
 
 			if ( !strnicmp(pszKey, "ID", 2) )
-				sVal.FormatVal(item.m_id);
+				sVal.FormatVal(component.m_id);
 			else if ( !strnicmp(pszKey, "DX", 2) )
-				sVal.FormatVal(item.m_dx);
+				sVal.FormatVal(component.m_dx);
 			else if ( !strnicmp(pszKey, "DY", 2) )
-				sVal.FormatVal(item.m_dy);
+				sVal.FormatVal(component.m_dy);
 			else if ( !strnicmp(pszKey, "DZ", 2) )
-				sVal.FormatVal(item.m_dz);
+				sVal.FormatVal(component.m_dz);
 			else if ( !strnicmp(pszKey, "D", 1) )
-				sVal.Format("%i,%i,%i", item.m_dx, item.m_dy, item.m_dz);
+				sVal.Format("%hd,%hd,%hhd", component.m_dx, component.m_dy, component.m_dz);
 			else
-				sVal.Format("%u,%i,%i,%i", item.m_id, item.m_dx, item.m_dy, item.m_dz);
+				sVal.Format("%d,%hd,%hd,%hhd", component.m_id, component.m_dx, component.m_dy, component.m_dz);
 			return true;
 		}
 		return false;
@@ -474,7 +424,7 @@ bool CItemMulti::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSr
 	return CItem::r_WriteVal(pszKey, sVal, pSrc);
 }
 
-bool CItemMulti::r_LoadVal( CScript & s )
+bool CItemMulti::r_LoadVal(CScript &s)
 {
 	ADDTOCALLSTACK("CItemMulti::r_LoadVal");
 	EXC_TRY("LoadVal");
@@ -498,7 +448,7 @@ bool CItemMulti::r_LoadVal( CScript & s )
 	return false;
 }
 
-void CItemMulti::DupeCopy( const CItem * pItem )
+void CItemMulti::DupeCopy(const CItem *pItem)
 {
 	ADDTOCALLSTACK("CItemMulti::DupeCopy");
 	CItem::DupeCopy(pItem);

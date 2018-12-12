@@ -31,7 +31,7 @@ public:
 public:
 	static const CItemBaseMulti *Multi_GetDef(ITEMID_TYPE id);
 	int Multi_GetMaxDist() const;
-	bool MultiRealizeRegion();
+	void MultiRealizeRegion();
 	void MultiUnRealizeRegion();
 	void Multi_Create(CChar *pChar, DWORD dwKeyCode);
 
@@ -53,7 +53,6 @@ protected:
 	bool Multi_CreateComponent(ITEMID_TYPE id, signed short x, signed short y, signed char z, DWORD dwKeyCode);
 	bool Multi_IsPartOf(const CItem *pItem) const;
 
-	CItem *Multi_FindItemComponent(int iComp) const;
 	CItem *Multi_FindItemType(IT_TYPE type) const;
 
 	const CItemBaseMulti *Multi_GetDef() const
