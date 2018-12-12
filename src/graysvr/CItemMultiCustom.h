@@ -21,8 +21,8 @@ public:
 	struct Component
 	{
 		CUOMultiItemRec2 m_item;
-		short m_isStair;
-		bool m_isFloor;
+		int m_iStairID;
+		bool m_fFloor;
 	};
 
 private:
@@ -31,8 +31,8 @@ private:
 	{
 		DWORD m_dwRevision;
 		ComponentsContainer m_vectorComponents;
-		PacketHouseDesign *m_pData;
-		DWORD m_dwDataRevision;
+		PacketHouseDesign *m_pPacket;
+		DWORD m_dwPacketRevision;
 	};
 
 	class CGrayMultiCustom : public CGrayMulti
@@ -50,7 +50,6 @@ private:
 	DesignDetails m_designMain;
 	DesignDetails m_designWorking;
 	DesignDetails m_designBackup;
-	DesignDetails m_designRevert;
 
 	CClient *m_pArchitect;
 	CGrayMultiCustom *m_pGrayMulti;
@@ -63,42 +62,36 @@ public:
 	void BeginCustomize(CClient *pClient);
 	void EndCustomize(bool fForce = false);
 
-	void SwitchToLevel(CClient *pClient, BYTE bLevel);
-	void CommitChanges(CClient *pClient = NULL);
-
-	void AddItem(CClient *pClient, ITEMID_TYPE id, signed short x, signed short y, signed char z = SCHAR_MIN, short iStairID = 0);
-	void AddStairs(CClient *pClient, ITEMID_TYPE id, signed short x, signed short y, signed char z = SCHAR_MIN, short iStairID = -1);
-	void AddRoof(CClient *pClient, ITEMID_TYPE id, signed short x, signed short y, signed char z);
-
+	void AddItem(CClient *pClient, ITEMID_TYPE id, signed short x, signed short y, signed char z = SCHAR_MIN, int iStairID = 0);
 	void RemoveItem(CClient *pClient, ITEMID_TYPE id, signed short x, signed short y, signed char z);
-	bool RemoveStairs(Component *pComponent);
+
+	void AddStairs(CClient *pClient, ITEMID_TYPE id, signed short x, signed short y, signed char z = SCHAR_MIN);
+
+	void AddRoof(CClient *pClient, ITEMID_TYPE id, signed short x, signed short y, signed char z);
 	void RemoveRoof(CClient *pClient, ITEMID_TYPE id, signed short x, signed short y, signed char z);
 
-	void SendVersionTo(CClient *pClient);
-	void SendStructureTo(CClient *pClient);
-
+	void SwitchToLevel(CClient *pClient, BYTE bLevel);
 	void BackupStructure();
 	void RestoreStructure(CClient *pClient = NULL);
 	void RevertChanges(CClient *pClient = NULL);
 	void ResetStructure(CClient *pClient = NULL);
+	void CommitChanges(CClient *pClient = NULL);
+
+	void SendVersionTo(CClient *pClient);
+	void SendStructureTo(CClient *pClient);
 
 	DWORD GetRevision(const CClient *pClient = NULL) const;
-	BYTE GetLevelCount();
-	WORD GetStairID();
-	size_t GetFixtureCount(DesignDetails *pDesign = NULL);
-	size_t GetComponentsAt(signed short x, signed short y, signed char z, Component **ppComponents, DesignDetails *pDesign = NULL);
+	size_t GetFixtureCount(DesignDetails *pDesign);
+	size_t GetComponentsAt(signed short x, signed short y, signed char z, Component **ppComponentList, DesignDetails *pDesign);
 
 	const CGrayMultiCustom *GetMultiItemDefs();
 	const CGRect GetDesignArea();
-	static BYTE GetPlane(signed char z);
-	static BYTE GetPlane(Component *pComponent);
-	static signed char GetPlaneZ(BYTE bPlane);
+	static BYTE GetLevel(signed char z);
+	static signed char GetLevelZ(BYTE bLevel);
 
 private:
 	const CPointMap GetComponentPoint(Component *pComponent) const;
-	const CPointMap GetComponentPoint(signed short x, signed short y, signed char z) const;
-
-	void CopyDesign(DesignDetails *designFrom, DesignDetails *designTo);
+	void CopyDesign(DesignDetails *pDesignFrom, DesignDetails *pDesignTo);
 
 	static bool IsValidItem(ITEMID_TYPE id, CClient *pClient, bool fMulti);
 	static bool LoadValidItems();

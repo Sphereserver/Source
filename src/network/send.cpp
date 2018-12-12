@@ -3939,12 +3939,12 @@ PacketSpellbookContent::PacketSpellbookContent(const CClient* target, const CIte
  *
  *
  ***************************************************************************/
-PacketHouseDesignVersion::PacketHouseDesignVersion(const CClient* target, const CItemMultiCustom* house) : PacketExtended(EXTDATA_HouseDesignVer, 13, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketHouseDesignVersion::PacketHouseDesignVersion(const CClient *target, const CItemMultiCustom *pHouse) : PacketExtended(EXTDATA_HouseDesignVer, 13, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketHouseDesignVersion::PacketHouseDesignVersion");
 
-	writeInt32(house->GetUID());
-	writeInt32(house->GetRevision(target));
+	writeInt32(pHouse->GetUID());
+	writeInt32(pHouse->GetRevision(target));
 
 	push(target);
 }
@@ -3957,13 +3957,13 @@ PacketHouseDesignVersion::PacketHouseDesignVersion(const CClient* target, const 
  *
  *
  ***************************************************************************/
-PacketHouseBeginCustomise::PacketHouseBeginCustomise(const CClient* target, const CItemMultiCustom* house) : PacketExtended(EXTDATA_HouseCustom, 17, PRI_NORMAL)
+PacketHouseBeginCustomise::PacketHouseBeginCustomise(const CClient *target, const CItemMultiCustom *pHouse) : PacketExtended(EXTDATA_HouseCustom, 17, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketHouseBeginCustomise::PacketHouseBeginCustomise");
 
-	writeInt32(house->GetUID());
-	writeByte(0x04);
-	writeInt16(0x0000);
+	writeInt32(pHouse->GetUID());
+	writeByte(0x4);
+	writeInt16(0);
 	writeInt16(0xFFFF);
 	writeInt16(0xFFFF);
 	writeByte(0xFF);
@@ -3979,13 +3979,13 @@ PacketHouseBeginCustomise::PacketHouseBeginCustomise(const CClient* target, cons
  *
  *
  ***************************************************************************/
-PacketHouseEndCustomise::PacketHouseEndCustomise(const CClient* target, const CItemMultiCustom* house) : PacketExtended(EXTDATA_HouseCustom, 17, PRI_NORMAL)
+PacketHouseEndCustomise::PacketHouseEndCustomise(const CClient *target, const CItemMultiCustom *pHouse) : PacketExtended(EXTDATA_HouseCustom, 17, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketHouseEndCustomise::PacketHouseEndCustomise");
 
-	writeInt32(house->GetUID());
-	writeByte(0x05);
-	writeInt16(0x0000);
+	writeInt32(pHouse->GetUID());
+	writeByte(0x5);
+	writeInt16(0);
 	writeInt16(0xFFFF);
 	writeInt16(0xFFFF);
 	writeByte(0xFF);
@@ -4308,90 +4308,87 @@ bool PacketPropertyList::hasExpired(int timeout) const
  *
  *
  ***************************************************************************/
-PacketHouseDesign::PacketHouseDesign(const CItemMultiCustom *house, DWORD revision) : PacketSend(XCMD_AOSCustomHouse, 64, g_Cfg.m_fUsePacketPriorities? PRI_IDLE : PRI_NORMAL)
+PacketHouseDesign::PacketHouseDesign(const CItemMultiCustom *pHouse, DWORD dwRevision) : PacketSend(XCMD_AOSCustomHouse, 64, g_Cfg.m_fUsePacketPriorities ? PRI_IDLE : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketHouseDesign::PacketHouseDesign");
 
-	m_house = house;
+	m_pStairBuffer = new StairData[HOUSEDESIGN_STAIRS_PER_BLOCK];
+	memset(m_pStairBuffer, 0, HOUSEDESIGN_STAIRDATA_BUFFER);
+	m_wStairCount = 0;
+	m_wItemCount = 0;
+	m_wDataSize = 1;
+	m_bLevelCount = 0;
+	m_bStairLevelCount = 0;
+	m_pHouse = pHouse;
 
 	initLength();
 
 	writeByte(0x3);
 	writeByte(0);
-	writeInt32(house->GetUID());
-	writeInt32(revision);
-	writeInt16(0); // item count
-	writeInt16(0); // data size
-	writeByte(0); // plane count
-
-	m_itemCount = 0;
-	m_dataSize = 1;
-	m_planeCount = 0;
-	m_stairPlaneCount = 0;
-
-	m_stairBuffer = new StairData[STAIRSPERBLOCK];
-	memset(m_stairBuffer, 0, STAIRDATA_BUFFER);
-	m_stairCount = 0;
+	writeInt32(pHouse->GetUID());
+	writeInt32(dwRevision);
+	writeInt16(0);	// item count
+	writeInt16(0);	// data size
+	writeByte(0);	// level count
 }
 
-PacketHouseDesign::PacketHouseDesign(const PacketHouseDesign *other) : PacketSend(other)
+PacketHouseDesign::PacketHouseDesign(const PacketHouseDesign *pPacket) : PacketSend(pPacket)
 {
 	ADDTOCALLSTACK("PacketHouseDesign::PacketHouseDesign(2)");
 
-	m_house = other->m_house;
-	m_itemCount = other->m_itemCount;
-	m_dataSize = other->m_dataSize;
-	m_planeCount = other->m_planeCount;
-	m_stairPlaneCount = other->m_stairPlaneCount;
-
-	m_stairBuffer = new StairData[STAIRSPERBLOCK];
-	memcpy(m_stairBuffer, other->m_stairBuffer, STAIRDATA_BUFFER);
-	m_stairCount = other->m_stairCount;
+	m_pStairBuffer = new StairData[HOUSEDESIGN_STAIRS_PER_BLOCK];
+	memcpy(m_pStairBuffer, pPacket->m_pStairBuffer, HOUSEDESIGN_STAIRDATA_BUFFER);
+	m_wStairCount = pPacket->m_wStairCount;
+	m_wItemCount = pPacket->m_wItemCount;
+	m_wDataSize = pPacket->m_wDataSize;
+	m_bLevelCount = pPacket->m_bLevelCount;
+	m_bStairLevelCount = pPacket->m_bStairLevelCount;
+	m_pHouse = pPacket->m_pHouse;
 }
 
 PacketHouseDesign::~PacketHouseDesign(void)
 {
-	if (m_stairBuffer != NULL)
+	if ( m_pStairBuffer )
 	{
-		delete[] m_stairBuffer;
-		m_stairBuffer = NULL;
+		delete[] m_pStairBuffer;
+		m_pStairBuffer = NULL;
 	}
 }
 
-bool PacketHouseDesign::writePlaneData(BYTE plane, WORD itemCount, BYTE *data, DWORD dataSize)
+bool PacketHouseDesign::writeLevelData(BYTE bLevel, WORD wItemCount, BYTE *pbData, DWORD dwDataSize)
 {
-	ADDTOCALLSTACK("PacketHouseDesign::writePlaneData");
+	ADDTOCALLSTACK("PacketHouseDesign::writeLevelData");
 
-	// compress data
-	z_uLongf compressLength = z_compressBound(dataSize);
+	// Compress data
+	z_uLongf compressLength = z_compressBound(dwDataSize);
 	z_Bytef *compressBuffer = new z_Bytef[compressLength];
 
-	int error = z_compress2(compressBuffer, &compressLength, data, dataSize, Z_DEFAULT_COMPRESSION);
+	int error = z_compress2(compressBuffer, &compressLength, pbData, dwDataSize, Z_DEFAULT_COMPRESSION);
 	if ( error != Z_OK )
 	{
-		// an error occured with this floor, but we should be able to continue to the next without problems
+		// An error occured with this floor, but we should be able to continue to the next without problems
 		delete[] compressBuffer;
-		g_Log.EventError("Compress failed with error %d when generating house design for floor %hhu on building 0%lx.\n", error, plane, static_cast<DWORD>(m_house->GetUID()));
+		g_Log.EventError("Compress failed with error %d when generating house design for floor %hhu on building 0%lx.\n", error, bLevel, static_cast<DWORD>(m_pHouse->GetUID()));
 		return false;
 	}
-	else if ( (compressLength <= 0) || (compressLength >= PLANEDATA_BUFFER) )
+	else if ( (compressLength <= 0) || (compressLength >= HOUSEDESIGN_LEVELDATA_BUFFER) )
 	{
-		// too much data, but we should be able to continue to the next floor without problems
+		// Too much data, but we should be able to continue to the next floor without problems
 		delete[] compressBuffer;
-		g_Log.EventWarn("Floor %hhu on building 0%lx too large with compressed length of %lu.\n", plane, static_cast<DWORD>(m_house->GetUID()), compressLength);
+		g_Log.EventWarn("Floor %hhu on building 0%lx too large with compressed length of %lu.\n", bLevel, static_cast<DWORD>(m_pHouse->GetUID()), compressLength);
 		return false;
 	}
 
-	writeByte(plane|0x20);
-	writeByte(static_cast<BYTE>(dataSize));
+	writeByte(bLevel|0x20);
+	writeByte(static_cast<BYTE>(dwDataSize));
 	writeByte(static_cast<BYTE>(compressLength));
-	writeByte(static_cast<BYTE>(((dataSize >> 4) & 0xF0) | ((compressLength >> 8) & 0xF)));
+	writeByte(static_cast<BYTE>(((dwDataSize >> 4) & 0xF0) | ((compressLength >> 8) & 0xF)));
 	writeData(compressBuffer, compressLength);
 	delete[] compressBuffer;
 
-	m_planeCount++;
-	m_itemCount += itemCount;
-	m_dataSize += static_cast<WORD>(4 + compressLength);
+	m_wItemCount += wItemCount;
+	m_wDataSize += static_cast<WORD>(4 + compressLength);
+	++m_bLevelCount;
 	return true;
 }
 
@@ -4399,13 +4396,12 @@ bool PacketHouseDesign::writeStairData(ITEMID_TYPE id, BYTE x, BYTE y, BYTE z)
 {
 	ADDTOCALLSTACK("PacketHouseDesign::writeStairData");
 
-	m_stairBuffer[m_stairCount].m_id = static_cast<WORD>(id);
-	m_stairBuffer[m_stairCount].m_x = x;
-	m_stairBuffer[m_stairCount].m_y = y;
-	m_stairBuffer[m_stairCount].m_z = z;
-	m_stairCount++;
+	m_pStairBuffer[m_wStairCount].m_id = static_cast<WORD>(id);
+	m_pStairBuffer[m_wStairCount].m_x = x;
+	m_pStairBuffer[m_wStairCount].m_y = y;
+	m_pStairBuffer[m_wStairCount].m_z = z;
 
-	if (m_stairCount >= STAIRSPERBLOCK)
+	if ( m_wStairCount++ >= HOUSEDESIGN_STAIRS_PER_BLOCK )
 		flushStairData();
 
 	return true;
@@ -4415,58 +4411,58 @@ void PacketHouseDesign::flushStairData(void)
 {
 	ADDTOCALLSTACK("PacketHouseDesign::flushStairData");
 
-	if (m_stairCount <= 0)
+	if ( m_wStairCount <= 0 )
 		return;
 
-	WORD stairCount = m_stairCount;
-	DWORD stairSize = stairCount * sizeof(StairData);
-	m_stairCount = 0;
+	WORD wStairCount = m_wStairCount;
+	DWORD dwStairSize = wStairCount * sizeof(StairData);
+	m_wStairCount = 0;
 
-	// compress data
-	z_uLongf compressLength = z_compressBound(stairSize);
+	// Compress data
+	z_uLongf compressLength = z_compressBound(dwStairSize);
 	z_Bytef *compressBuffer = new z_Bytef[compressLength];
 
-	int error = z_compress2(compressBuffer, &compressLength, reinterpret_cast<const z_Bytef *>(m_stairBuffer), stairSize, Z_DEFAULT_COMPRESSION);
+	int error = z_compress2(compressBuffer, &compressLength, reinterpret_cast<const z_Bytef *>(m_pStairBuffer), dwStairSize, Z_DEFAULT_COMPRESSION);
 	if ( error != Z_OK )
 	{
-		// an error occured with this block, but we should be able to continue to the next without problems
+		// An error occured with this block, but we should be able to continue to the next without problems
 		delete[] compressBuffer;
-		g_Log.EventError("Compress failed with error %d when generating house design on building 0%lx.\n", error, static_cast<DWORD>(m_house->GetUID()));
+		g_Log.EventError("Compress failed with error %d when generating house design on building 0%lx.\n", error, static_cast<DWORD>(m_pHouse->GetUID()));
 		return;
 	}
-	else if ( (compressLength <= 0) || (compressLength >= STAIRDATA_BUFFER) )
+	else if ( (compressLength <= 0) || (compressLength >= HOUSEDESIGN_STAIRDATA_BUFFER) )
 	{
-		// too much data, but we should be able to continue to the next block without problems
+		// Too much data, but we should be able to continue to the next block without problems
 		delete[] compressBuffer;
-		g_Log.EventWarn("Building 0%lx too large with compressed length of %lu.\n", static_cast<DWORD>(m_house->GetUID()), compressLength);
+		g_Log.EventWarn("Building 0%lx too large with compressed length of %lu.\n", static_cast<DWORD>(m_pHouse->GetUID()), compressLength);
 		return;
 	}
 
-	writeByte(m_stairPlaneCount + 9);
-	writeByte(static_cast<BYTE>(stairSize));
+	writeByte(m_bStairLevelCount + 9);
+	writeByte(static_cast<BYTE>(dwStairSize));
 	writeByte(static_cast<BYTE>(compressLength));
-	writeByte(static_cast<BYTE>(((stairSize >> 4) & 0xF0) | ((compressLength >> 8) & 0xF)));
+	writeByte(static_cast<BYTE>(((dwStairSize >> 4) & 0xF0) | ((compressLength >> 8) & 0xF)));
 	writeData(compressBuffer, compressLength);
 	delete[] compressBuffer;
 
-	m_stairPlaneCount++;
-	m_itemCount += stairCount;
-	m_dataSize += static_cast<WORD>(4 + compressLength);
+	m_wItemCount += wStairCount;
+	m_wDataSize += static_cast<WORD>(4 + compressLength);
+	++m_bStairLevelCount;
 	return;
 }
 
-void PacketHouseDesign::finalise(void)
+void PacketHouseDesign::finalize(void)
 {
-	ADDTOCALLSTACK("PacketHouseDesign::finalise");
+	ADDTOCALLSTACK("PacketHouseDesign::finalize");
 
 	flushStairData();
 
 	size_t endPosition(getPosition());
 
 	seek(13);
-	writeInt16(m_itemCount);
-	writeInt16(m_dataSize);
-	writeByte(m_planeCount + m_stairPlaneCount);
+	writeInt16(m_wItemCount);
+	writeInt16(m_wDataSize);
+	writeByte(m_bLevelCount + m_bStairLevelCount);
 
 	seek(endPosition);
 }

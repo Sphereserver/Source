@@ -1543,7 +1543,7 @@ public:
 class PacketHouseDesignVersion : public PacketExtended
 {
 public:
-	PacketHouseDesignVersion(const CClient* target, const CItemMultiCustom* house);
+	PacketHouseDesignVersion(const CClient *target, const CItemMultiCustom *pHouse);
 };
 
 /***************************************************************************
@@ -1556,7 +1556,7 @@ public:
 class PacketHouseBeginCustomise : public PacketExtended
 {
 public:
-	PacketHouseBeginCustomise(const CClient* target, const CItemMultiCustom* house);
+	PacketHouseBeginCustomise(const CClient *target, const CItemMultiCustom *pHouse);
 
 	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }
 	static bool CanSendTo(const NetState* state)
@@ -1724,9 +1724,9 @@ public:
  ***************************************************************************/
 class PacketHouseDesign : public PacketSend
 {
-#define PLANEDATA_BUFFER	1024	// bytes reserved for plane data
-#define STAIRSPERBLOCK		750		// number of stair items per block
-#define STAIRDATA_BUFFER	(sizeof(StairData) * STAIRSPERBLOCK) // bytes reserved for stair data
+	#define HOUSEDESIGN_LEVELDATA_BUFFER	1024	// bytes reserved for level data
+	#define HOUSEDESIGN_STAIRS_PER_BLOCK	750		// number of stairs items per block
+	#define HOUSEDESIGN_STAIRDATA_BUFFER	(sizeof(StairData) * HOUSEDESIGN_STAIRS_PER_BLOCK)	// bytes reserved for stair data
 
 private:
 	struct StairData
@@ -1736,26 +1736,24 @@ private:
 		BYTE m_y;
 		BYTE m_z;
 	};
+	StairData *m_pStairBuffer;
 
-	StairData *m_stairBuffer;
-	WORD m_stairCount;
-
-protected:
-	WORD m_itemCount;
-	WORD m_dataSize;
-	BYTE m_planeCount;
-	BYTE m_stairPlaneCount;
-	const CItemMultiCustom *m_house;
+	WORD m_wStairCount;
+	WORD m_wItemCount;
+	WORD m_wDataSize;
+	BYTE m_bLevelCount;
+	BYTE m_bStairLevelCount;
+	const CItemMultiCustom *m_pHouse;
 
 public:
-	PacketHouseDesign(const CItemMultiCustom *house, DWORD revision);
-	PacketHouseDesign(const PacketHouseDesign *other);
+	PacketHouseDesign(const CItemMultiCustom *pHouse, DWORD dwRevision);
+	PacketHouseDesign(const PacketHouseDesign *pPacket);
 	virtual ~PacketHouseDesign(void);
 
-	bool writePlaneData(BYTE plane, WORD itemCount, BYTE *data, DWORD dataSize);
+	bool writeLevelData(BYTE bLevel, WORD wItemCount, BYTE *pbData, DWORD dwDataSize);
 	bool writeStairData(ITEMID_TYPE id, BYTE x, BYTE y, BYTE z);
 	void flushStairData(void);
-	void finalise(void);
+	void finalize(void);
 
 	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }
 	static bool CanSendTo(const NetState* state)

@@ -3349,18 +3349,18 @@ bool PacketHouseDesignReq::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketHouseDesignReq::onReceive");
 
-	CClient* client = net->m_client;
-	ASSERT(client);
+	CClient *pClient = net->m_client;
+	ASSERT(pClient);
 
-	CItem* house = CGrayUID(readInt32()).ItemFind();
-	if (!house)
+	CItem *pItem = static_cast<CGrayUID>(readInt32()).ItemFind();
+	if ( !pItem )
 		return true;
 
-	CItemMultiCustom* multi = dynamic_cast<CItemMultiCustom*>(house);
-	if (!multi)
+	CItemMultiCustom *pHouse = dynamic_cast<CItemMultiCustom *>(pItem);
+	if ( !pHouse )
 		return true;
 
-	multi->SendStructureTo(client);
+	pHouse->SendStructureTo(pClient);
 	return true;
 }
 
@@ -3770,14 +3770,14 @@ bool PacketHouseDesignBackup::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketHouseDesignBackup::onReceive");
 
-	CClient* client = net->m_client;
-	ASSERT(client);
+	CClient *pClient = net->m_client;
+	ASSERT(pClient);
 
-	CItemMultiCustom* house = client->m_pHouseDesign;
-	if (!house)
+	CItemMultiCustom *pHouse = pClient->m_pHouseDesign;
+	if ( !pHouse )
 		return true;
 
-	house->BackupStructure();
+	pHouse->BackupStructure();
 	return true;
 }
 
@@ -3797,14 +3797,14 @@ bool PacketHouseDesignRestore::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketHouseDesignRestore::onReceive");
 
-	CClient* client = net->m_client;
-	ASSERT(client);
+	CClient *pClient = net->m_client;
+	ASSERT(pClient);
 
-	CItemMultiCustom* house = client->m_pHouseDesign;
-	if (!house)
+	CItemMultiCustom *pHouse = pClient->m_pHouseDesign;
+	if ( !pHouse )
 		return true;
 
-	house->RestoreStructure(client);
+	pHouse->RestoreStructure(pClient);
 	return true;
 }
 
@@ -3824,14 +3824,14 @@ bool PacketHouseDesignCommit::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketHouseDesignCommit::onReceive");
 
-	CClient* client = net->m_client;
-	ASSERT(client);
+	CClient *pClient = net->m_client;
+	ASSERT(pClient);
 
-	CItemMultiCustom* house = client->m_pHouseDesign;
-	if (!house)
+	CItemMultiCustom *pHouse = pClient->m_pHouseDesign;
+	if ( !pHouse )
 		return true;
 
-	house->CommitChanges(client);
+	pHouse->CommitChanges(pClient);
 	return true;
 }
 
@@ -3851,23 +3851,23 @@ bool PacketHouseDesignDestroyItem::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketHouseDesignDestroyItem::onReceive");
 
-	CClient* client = net->m_client;
-	ASSERT(client);
+	CClient *pClient = net->m_client;
+	ASSERT(pClient);
 
-	CItemMultiCustom* house = client->m_pHouseDesign;
-	if (!house)
+	CItemMultiCustom *pHouse = pClient->m_pHouseDesign;
+	if ( !pHouse )
 		return true;
 
-	skip(1); // 0x00
+	skip(1);
 	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(readInt32());
-	skip(1); // 0x00
-	short x = static_cast<short>(readInt32());
-	skip(1); // 0x00
-	short y = static_cast<short>(readInt32());
-	skip(1); // 0x00
-	char z = static_cast<char>(readInt32());
+	skip(1);
+	signed short x = static_cast<signed short>(readInt32());
+	skip(1);
+	signed short y = static_cast<signed short>(readInt32());
+	skip(1);
+	signed char z = static_cast<signed char>(readInt32());
 
-	house->RemoveItem(client, id, x, y, z);
+	pHouse->RemoveItem(pClient, id, x, y, z);
 	return true;
 }
 
@@ -3887,21 +3887,21 @@ bool PacketHouseDesignPlaceItem::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketHouseDesignPlaceItem::onReceive");
 
-	CClient* client = net->m_client;
-	ASSERT(client);
+	CClient *pClient = net->m_client;
+	ASSERT(pClient);
 
-	CItemMultiCustom* house = client->m_pHouseDesign;
-	if (!house)
+	CItemMultiCustom *pHouse = pClient->m_pHouseDesign;
+	if ( !pHouse )
 		return true;
 
-	skip(1); // 0x00
+	skip(1);
 	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(readInt32());
-	skip(1); // 0x00
-	short x = static_cast<short>(readInt32());
-	skip(1); // 0x00
-	short y = static_cast<short>(readInt32());
+	skip(1);
+	signed short x = static_cast<signed short>(readInt32());
+	skip(1);
+	signed short y = static_cast<signed short>(readInt32());
 
-	house->AddItem(client, id, x, y);
+	pHouse->AddItem(pClient, id, x, y);
 	return true;
 }
 
@@ -3921,14 +3921,14 @@ bool PacketHouseDesignExit::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketHouseDesignExit::onReceive");
 
-	CClient* client = net->m_client;
-	ASSERT(client);
+	CClient *pClient = net->m_client;
+	ASSERT(pClient);
 
-	CItemMultiCustom* house = client->m_pHouseDesign;
-	if (!house)
+	CItemMultiCustom *pHouse = pClient->m_pHouseDesign;
+	if ( !pHouse )
 		return true;
 
-	house->EndCustomize();
+	pHouse->EndCustomize();
 	return true;
 }
 
@@ -3948,21 +3948,21 @@ bool PacketHouseDesignPlaceStair::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketHouseDesignPlaceStair::onReceive");
 
-	CClient* client = net->m_client;
-	ASSERT(client);
+	CClient *pClient = net->m_client;
+	ASSERT(pClient);
 
-	CItemMultiCustom* house = client->m_pHouseDesign;
-	if (!house)
+	CItemMultiCustom *pHouse = pClient->m_pHouseDesign;
+	if ( !pHouse )
 		return true;
 
-	skip(1); // 0x00
+	skip(1);
 	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(readInt32() + ITEMID_MULTI);
-	skip(1); // 0x00
-	short x = static_cast<short>(readInt32());
-	skip(1); // 0x00
-	short y = static_cast<short>(readInt32());
+	skip(1);
+	signed short x = static_cast<signed short>(readInt32());
+	skip(1);
+	signed short y = static_cast<signed short>(readInt32());
 
-	house->AddStairs(client, id, x, y);
+	pHouse->AddStairs(pClient, id, x, y);
 	return true;
 }
 
@@ -3982,14 +3982,14 @@ bool PacketHouseDesignSync::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketHouseDesignSync::onReceive");
 
-	CClient* client = net->m_client;
-	ASSERT(client);
+	CClient *pClient = net->m_client;
+	ASSERT(pClient);
 
-	CItemMultiCustom* house = client->m_pHouseDesign;
-	if (!house)
+	CItemMultiCustom *pHouse = pClient->m_pHouseDesign;
+	if ( !pHouse )
 		return true;
 
-	house->SendStructureTo(client);
+	pHouse->SendStructureTo(pClient);
 	return true;
 }
 
@@ -4009,14 +4009,14 @@ bool PacketHouseDesignClear::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketHouseDesignClear::onReceive");
 
-	CClient* client = net->m_client;
-	ASSERT(client);
+	CClient *pClient = net->m_client;
+	ASSERT(pClient);
 
-	CItemMultiCustom* house = client->m_pHouseDesign;
-	if (!house)
+	CItemMultiCustom *pHouse = pClient->m_pHouseDesign;
+	if ( !pHouse )
 		return true;
 
-	house->ResetStructure(client);
+	pHouse->ResetStructure(pClient);
 	return true;
 }
 
@@ -4036,17 +4036,17 @@ bool PacketHouseDesignSwitch::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketHouseDesignSwitch::onReceive");
 
-	CClient* client = net->m_client;
-	ASSERT(client);
+	CClient *pClient = net->m_client;
+	ASSERT(pClient);
 
-	CItemMultiCustom* house = client->m_pHouseDesign;
-	if (!house)
+	CItemMultiCustom *pHouse = pClient->m_pHouseDesign;
+	if ( !pHouse )
 		return true;
 
-	skip(1); // 0x00
-	BYTE level = static_cast<BYTE>(readInt32());
+	skip(1);
+	BYTE bLevel = static_cast<BYTE>(readInt32());
 
-	house->SwitchToLevel(client, level);
+	pHouse->SwitchToLevel(pClient, bLevel);
 	return true;
 }
 
@@ -4066,23 +4066,23 @@ bool PacketHouseDesignPlaceRoof::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketHouseDesignPlaceRoof::onReceive");
 
-	CClient* client = net->m_client;
-	ASSERT(client);
+	CClient *pClient = net->m_client;
+	ASSERT(pClient);
 
-	CItemMultiCustom* house = client->m_pHouseDesign;
-	if (!house)
+	CItemMultiCustom *pHouse = pClient->m_pHouseDesign;
+	if ( !pHouse )
 		return true;
 
-	skip(1); // 0x00
+	skip(1);
 	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(readInt32());
-	skip(1); // 0x00
-	short x = static_cast<short>(readInt32());
-	skip(1); // 0x00
-	short y = static_cast<short>(readInt32());
-	skip(1); // 0x00
-	char z = static_cast<char>(readInt32());
+	skip(1);
+	signed short x = static_cast<signed short>(readInt32());
+	skip(1);
+	signed short y = static_cast<signed short>(readInt32());
+	skip(1);
+	signed char z = static_cast<signed char>(readInt32());
 
-	house->AddRoof(client, id, x, y, z);
+	pHouse->AddRoof(pClient, id, x, y, z);
 	return true;
 }
 
@@ -4102,23 +4102,23 @@ bool PacketHouseDesignDestroyRoof::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketHouseDesignDestroyRoof::onReceive");
 
-	CClient* client = net->m_client;
-	ASSERT(client);
+	CClient *pClient = net->m_client;
+	ASSERT(pClient);
 
-	CItemMultiCustom* house = client->m_pHouseDesign;
-	if (!house)
+	CItemMultiCustom *pHouse = pClient->m_pHouseDesign;
+	if ( !pHouse )
 		return true;
 
-	skip(1); // 0x00
+	skip(1);
 	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(readInt32());
-	skip(1); // 0x00
-	short x = static_cast<short>(readInt32());
-	skip(1); // 0x00
-	short y = static_cast<short>(readInt32());
-	skip(1); // 0x00
-	char z = static_cast<char>(readInt32());
+	skip(1);
+	signed short x = static_cast<signed short>(readInt32());
+	skip(1);
+	signed short y = static_cast<signed short>(readInt32());
+	skip(1);
+	signed char z = static_cast<signed char>(readInt32());
 
-	house->RemoveRoof(client, id, x, y, z);
+	pHouse->RemoveRoof(pClient, id, x, y, z);
 	return true;
 }
 
@@ -4164,14 +4164,14 @@ bool PacketHouseDesignRevert::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketHouseDesignRevert::onReceive");
 
-	CClient* client = net->m_client;
-	ASSERT(client);
+	CClient *pClient = net->m_client;
+	ASSERT(pClient);
 
-	CItemMultiCustom* house = client->m_pHouseDesign;
-	if (!house)
+	CItemMultiCustom *pHouse = pClient->m_pHouseDesign;
+	if ( !pHouse )
 		return true;
 
-	house->RevertChanges(client);
+	pHouse->RevertChanges(pClient);
 	return true;
 }
 
