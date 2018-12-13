@@ -261,22 +261,19 @@ bool CServer::Load()
 	g_Log.EventWarn("\n"
 					"This is a NIGHTLY build of SphereServer. Nightly builds are compiled automatically\n"
 					"from the source code with the latest updates, but might contain errors or might be\n"
-					"unstable. Take caution when using it on live servers.\n"
-					"----------------------------------------------------------------------------------\n\n");
+					"unstable. Take caution when using it on live servers.\n\n");
 #endif
 #ifdef _DEBUG
 	g_Log.EventWarn("\n"
 					"This is a DEBUG build of SphereServer. Debug builds are compiled manually by developers\n"
 					"for testing purposes. It have extra debug behaviors that are useful for development but\n"
-					"will decrease server performance. Do not use it on live servers.\n"
-					"---------------------------------------------------------------------------------------\n\n");
+					"will decrease server performance. Do not use it on live servers.\n\n");
 #endif
 #ifdef _PRIVATEBUILD
 	g_Log.EventWarn("\n"
 					"This is a CUSTOM build of SphereServer. Custom builds are non-official builds, which\n"
 					"have custom changes on source code not verified by official Sphere development team.\n"
-					"Use it at your own risk.\n"
-					"------------------------------------------------------------------------------------\n\n");
+					"Use it at your own risk.\n\n");
 #endif
 
 #ifndef _WIN32
@@ -729,63 +726,6 @@ bool CServer::OnConsoleCmd(CGString &sText, CTextConsole *pSrc)
 			}
 			break;
 		}
-#ifdef _TESTEXCEPTION
-		case '$':	// call stack integrity
-		{
-#ifdef EXCEPTIONS_DEBUG
-			{
-				// Test without PAUSECALLSTACK
-				EXC_TRY("Test1");
-				ADDTOCALLSTACK("CServer::TestException1");
-				throw CGrayError(LOGM_DEBUG, 0, "Test Exception #1");
-			}
-			catch ( const CGrayError &e )
-			{
-				// The following call will destroy the stack trace on linux due to a call to CGFile::Close from CLog::EventStr
-				g_Log.Event(LOGM_DEBUG, "Caught exception\n");
-				EXC_CATCH_EXCEPTION(&e);
-			}
-		}
-		{
-			// Test with PAUSECALLSTACK
-			EXC_TRY("Test2");
-			ADDTOCALLSTACK("CServer::TestException2");
-			throw CGrayError(LOGM_DEBUG, 0, "Test Exception #2");
-		}
-		catch ( const CGrayError &e )
-		{
-			// With PAUSECALLSTACK, the following call won't be recorded
-			PAUSECALLSTACK;
-			g_Log.Event(LOGM_DEBUG, "Caught exception\n");
-			UNPAUSECALLSTACK;
-			EXC_CATCH_EXCEPTION(&e);
-		}
-	}
-#else
-			throw CGrayError(LOGL_CRIT, E_FAIL, "This test requires exception debugging enabled");
-#endif
-			break;
-}
-		case '%':	// throw simple exception
-		{
-			throw 0;
-		}
-		case '^':	// throw language exception (div by 0)
-		{
-			int i = 5;
-			int j = 0;
-			i /= j;
-		}
-		case '&':	// throw NULL pointer exception
-		{
-			CChar *pChar = NULL;
-			pChar->SetName("yo!");
-		}
-		case '*':	// throw custom exception
-		{
-			throw CGrayError(LOGL_CRIT, E_FAIL, "Test Exception");
-		}
-#endif
 		default:
 			goto longcommand;
 	}
@@ -1094,9 +1034,6 @@ enum SV_TYPE
 	SV_CHARS,		//read only
 	SV_CLEARLISTS,
 	SV_CONSOLE,
-#ifdef _TEST_EXCEPTION
-	SV_CRASH,
-#endif
 	SV_EXPORT,
 	SV_GARBAGE,
 	SV_HEARALL,
@@ -1132,9 +1069,6 @@ LPCTSTR const CServer::sm_szVerbKeys[SV_QTY + 1] =
 	"CHARS",		// read only
 	"CLEARLISTS",
 	"CONSOLE",
-#ifdef _TEST_EXCEPTION
-	"CRASH",
-#endif
 	"EXPORT",
 	"GARBAGE",
 	"HEARALL",
@@ -1280,15 +1214,6 @@ bool CServer::r_Verb(CScript &s, CTextConsole *pSrc)
 			OnConsoleCmd(sVal, pSrc);
 			break;
 		}
-#ifdef _TEST_EXCEPTION
-		case SV_CRASH:
-		{
-			g_Log.Event(0, "Testing exceptions\n");
-			pSrc = NULL;
-			pSrc->GetChar();
-			break;
-		}
-#endif
 		case SV_EXPORT:
 		{
 			TCHAR *ppArgs[3];

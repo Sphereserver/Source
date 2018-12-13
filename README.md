@@ -20,8 +20,8 @@ Even using 64bit OS, Sphere must be compiled/executed in 32bit mode to work prop
 * On top menu, select the build configuration (Debug/Local/Nightly/Release) and click on `Build > Build Solution` to compile
 
 ##### NOTES:
-* **VS > 2010 users:** When opening `SphereSvr.vcxproj` for the first time it will request an update on project file, just click OK to update
-* **VS 2017 users:** VS 2017 have an modular installation, it comes with just basic components and extra components must be installed as needed. To use Sphere source you must open **Visual Studio Installer** to install `Desktop Development with C++` workload and `Windows Universal CRT SDK` individual component
+* **VS >= 2012 users:** When opening `SphereSvr.vcxproj` for the first time it will request an update on project file, just click OK to update
+* **VS >= 2017 users:** Newest VS have an modular installation which comes with just basic components, and extra components must be installed as needed. To compile Sphere you must open **Visual Studio Installer** to install `Desktop Development with C++` workload
 
 #### CMake / MinGW
 You can compile using provided files.
@@ -29,14 +29,14 @@ You can compile using provided files.
 ### Linux
 Some libs are required to compile/execute Sphere on Linux. Use these commands to install:
 
-#### Ubuntu 12.x ~ 18.x
+#### Ubuntu 12 ~ 19
 If you're using 64bit OS, enable 32bit support using:
 ```
 sudo dpkg --add-architecture i386
 sudo apt-get update
 sudo apt-get dist-upgrade
 ```
-If you're using Ubuntu 14.x (or older), the default package repository only have support up to MySQL 5.6, so add support for MySQL 5.7 packages using:
+If you're using Ubuntu 14 or older, the default package repository only have support up to MySQL 5.6, so add support for MySQL 5.7 packages using:
 ```
 sudo add-apt-repository 'deb http://repo.mysql.com/apt/ubuntu/ trusty mysql-5.7'
 sudo apt-get update
