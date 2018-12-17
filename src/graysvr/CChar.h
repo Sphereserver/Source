@@ -8,17 +8,17 @@
 
 enum NPCBRAIN_TYPE
 {
-	NPCBRAIN_NONE,		// 0 = This should never really happen
-	NPCBRAIN_ANIMAL,	// 1 = Can be tamed
-	NPCBRAIN_HUMAN,		// 2 = Generic human
-	NPCBRAIN_HEALER,	// 3 = Can resurrect
-	NPCBRAIN_GUARD,		// 4 = Will attack criminal/murderers
-	NPCBRAIN_BANKER,	// 5 = Can open bank box for you
-	NPCBRAIN_VENDOR,	// 6 = Can buy/sell items
-	NPCBRAIN_STABLE,	// 7 = Can stable pets
-	NPCBRAIN_MONSTER,	// 8 = Usually evil
-	NPCBRAIN_BERSERK,	// 9 = Attack every nearby creature (blade spirit, energy vortex)
-	NPCBRAIN_DRAGON,	// 10 = Can breath fire attacks
+	NPCBRAIN_NONE,				// 0 = This should never really happen
+	NPCBRAIN_ANIMAL,			// 1 = Can be tamed
+	NPCBRAIN_HUMAN,				// 2 = Generic human
+	NPCBRAIN_HEALER,			// 3 = Can resurrect
+	NPCBRAIN_GUARD,				// 4 = Will attack criminal/murderers
+	NPCBRAIN_BANKER,			// 5 = Can open bank box for you
+	NPCBRAIN_VENDOR,			// 6 = Can buy/sell items
+	NPCBRAIN_ANIMAL_TRAINER,	// 7 = Can stable pets
+	NPCBRAIN_MONSTER,			// 8 = Usually evil
+	NPCBRAIN_BERSERK,			// 9 = Attack every nearby creature (blade spirit, energy vortex)
+	NPCBRAIN_DRAGON,			// 10 = Can breath fire attacks
 	NPCBRAIN_QTY
 };
 
@@ -1424,7 +1424,7 @@ public:
 
 	bool NPC_IsVendor() const
 	{
-		return (m_pNPC && ((m_pNPC->m_Brain == NPCBRAIN_HEALER) || (m_pNPC->m_Brain == NPCBRAIN_BANKER) || (m_pNPC->m_Brain == NPCBRAIN_VENDOR) || (m_pNPC->m_Brain == NPCBRAIN_STABLE)));
+		return (m_pNPC && ((m_pNPC->m_Brain == NPCBRAIN_HEALER) || (m_pNPC->m_Brain == NPCBRAIN_BANKER) || (m_pNPC->m_Brain == NPCBRAIN_VENDOR) || (m_pNPC->m_Brain == NPCBRAIN_ANIMAL_TRAINER)));
 	}
 
 	bool NPC_IsMonster() const

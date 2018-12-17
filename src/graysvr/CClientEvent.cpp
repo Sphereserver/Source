@@ -1406,7 +1406,7 @@ void CClient::Event_PromptResp(LPCTSTR pszText, size_t len, DWORD context1, DWOR
 			// Setting the vendor price for an item.
 			if ( (type == 0) || (szText[0] == '\0') )	// cancel
 				return;
-			CChar *pCharVendor = CGrayUID(context2).CharFind();
+			CChar *pCharVendor = static_cast<CGrayUID>(context2).CharFind();
 			if ( pCharVendor )
 				pCharVendor->NPC_SetVendorPrice(m_Prompt_Uid.ItemFind(), ATOI(szText));
 			return;
@@ -2117,7 +2117,7 @@ void CClient::Event_AOSPopupMenuRequest(CGrayUID uid) //construct packet after a
 		{
 			if ( pChar->m_pNPC->m_Brain == NPCBRAIN_BANKER )
 				m_pPopupPacket->addOption(POPUP_BANKBOX, 6105);
-			else if ( pChar->m_pNPC->m_Brain == NPCBRAIN_STABLE )
+			else if ( pChar->m_pNPC->m_Brain == NPCBRAIN_ANIMAL_TRAINER )
 			{
 				m_pPopupPacket->addOption(POPUP_STABLESTABLE, 6126);
 				m_pPopupPacket->addOption(POPUP_STABLERETRIEVE, 6127);

@@ -293,7 +293,7 @@ bool CChar::NPC_StablePetRetrieve( CChar * pCharPlayer )
 	// Get pets for this person from my inventory.
 	// May want to put up a menu ???
 
-	if ( !m_pNPC || m_pNPC->m_Brain != NPCBRAIN_STABLE )
+	if ( !m_pNPC || (m_pNPC->m_Brain != NPCBRAIN_ANIMAL_TRAINER) )
 		return false;
 
 	int iCount = 0;
@@ -603,7 +603,7 @@ bool CChar::NPC_OnTrainHear( CChar * pCharSrc, LPCTSTR pszCmd )
 	// We are asking for training ?
 
 	// Check the NPC is capable of teaching
-	if ( !m_pNPC || (m_pNPC->m_Brain < NPCBRAIN_HUMAN) || (m_pNPC->m_Brain > NPCBRAIN_STABLE) || (m_pNPC->m_Brain == NPCBRAIN_GUARD) )
+	if ( !m_pNPC || (m_pNPC->m_Brain < NPCBRAIN_HUMAN) || (m_pNPC->m_Brain > NPCBRAIN_ANIMAL_TRAINER) || (m_pNPC->m_Brain == NPCBRAIN_GUARD) )
 		return false;
 
 	// Check the NPC isn't busy fighting
@@ -1309,7 +1309,7 @@ bool CChar::NPC_LookAtChar( CChar *pChar )
 
 		case NPCBRAIN_BANKER:
 		case NPCBRAIN_VENDOR:
-		case NPCBRAIN_STABLE:
+		case NPCBRAIN_ANIMAL_TRAINER:
 		case NPCBRAIN_ANIMAL:
 		case NPCBRAIN_HUMAN:
 			if ( NPC_LookAtCharHuman(pChar) )
