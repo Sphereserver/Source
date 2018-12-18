@@ -63,10 +63,7 @@ bool CChar::NPC_OnVerb( CScript &s, CTextConsole * pSrc ) // Execute command fro
 		if ( !pCharSrc || !pCharSrc->m_pClient )
 			return false;
 
-		if ( !pCharSrc->m_pClient->addShopMenuBuy(this) )
-			Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_NO_GOODS));
-		else
-			pCharSrc->m_pClient->m_TagDefs.SetNum("BUYSELLTIME", g_World.GetCurrentTime().GetTimeRaw());
+		pCharSrc->m_pClient->addShopMenuBuy(this);
 		break;
 	}
 	case NV_BYE:
@@ -110,10 +107,7 @@ bool CChar::NPC_OnVerb( CScript &s, CTextConsole * pSrc ) // Execute command fro
 		if ( !pCharSrc || !pCharSrc->m_pClient )
 			return false;
 
-		if ( !pCharSrc->m_pClient->addShopMenuSell(this) )
-			Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_NOTHING_BUY));
-		else
-			pCharSrc->m_pClient->m_TagDefs.SetNum("BUYSELLTIME", g_World.GetCurrentTime().GetTimeRaw());
+		pCharSrc->m_pClient->addShopMenuSell(this);
 		break;
 	}
 	case NV_SHRINK:

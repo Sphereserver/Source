@@ -726,7 +726,7 @@ public:
 class PacketVendorBuyList : public PacketSend
 {
 public:
-	PacketVendorBuyList(const CClient* target, const CItemContainer* contParent, int convertFactor);
+	PacketVendorBuyList(const CClient* target, const CChar *vendor, const CItemContainer* contParent);
 };
 
 /***************************************************************************
@@ -1021,7 +1021,7 @@ public:
 class PacketVendorSellList : public PacketSend
 {
 public:
-	PacketVendorSellList(const CClient* target, const CChar* vendor, const CItemContainer* contParent, CItemContainer* contBuy, int convertFactor);
+	PacketVendorSellList(const CClient* target, const CChar* vendor, const CItemContainer* contParent, CItemContainer* contBuy);
 };
 
 /***************************************************************************

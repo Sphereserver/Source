@@ -1991,7 +1991,7 @@ PacketPingAck::PacketPingAck(const CClient* target, BYTE value) : PacketSend(XCM
  *
  *
  ***************************************************************************/
-PacketVendorBuyList::PacketVendorBuyList(const CClient* target, const CItemContainer* contParent, int convertFactor) : PacketSend(XCMD_VendOpenBuy, 8, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketVendorBuyList::PacketVendorBuyList(const CClient* target, const CChar *vendor, const CItemContainer* contParent) : PacketSend(XCMD_VendOpenBuy, 8, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketVendorBuyList::PacketVendorBuyList");
 
@@ -2001,6 +2001,8 @@ PacketVendorBuyList::PacketVendorBuyList(const CClient* target, const CItemConta
 	size_t count = 0;
 	size_t countpos = getPosition();
 	skip(1);
+
+	int convertFactor = vendor->NPC_GetVendorMarkup();
 
 	// Enhanced Client wants the prices to be sent in reverse order
 	bool bIsClientEnhanced = target->m_NetState->isClientEnhanced();
@@ -2684,7 +2686,7 @@ PacketAddPrompt::PacketAddPrompt(const CClient* target, CGrayUID context1, CGray
  *
  *
  ***************************************************************************/
-PacketVendorSellList::PacketVendorSellList(const CClient* target, const CChar* vendor, const CItemContainer* contParent, CItemContainer* contBuy, int convertFactor) : PacketSend(XCMD_VendOpenSell, 9, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketVendorSellList::PacketVendorSellList(const CClient* target, const CChar* vendor, const CItemContainer* contParent, CItemContainer* contBuy) : PacketSend(XCMD_VendOpenSell, 9, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketVendorSellList::PacketVendorSellList");
 
@@ -2694,6 +2696,8 @@ PacketVendorSellList::PacketVendorSellList(const CClient* target, const CChar* v
 	size_t count = 0;
 	size_t countpos = getPosition();
 	skip(2);
+
+	int convertFactor = -vendor->NPC_GetVendorMarkup();
 
 	CItem* item = contParent->GetContentHead();
 	if (!item)
@@ -2752,6 +2756,12 @@ PacketVendorSellList::PacketVendorSellList(const CClient* target, const CChar* v
 			otherBoxes.pop_front();
 			item = contParent->GetContentHead();
 		}
+	}
+
+	if ( count == 0 )
+	{
+		const_cast<CChar *>(vendor)->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_SELL_NOTHING));
+		return;
 	}
 
 	// seek back to write count

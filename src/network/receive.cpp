@@ -1045,7 +1045,7 @@ bool PacketVendorBuyReq::onReceive(NetState* net)
 		return true;
 
 	CChar* vendor = vendorSerial.CharFind();
-	if (!vendor || !vendor->m_pNPC || !vendor->NPC_IsVendor())
+	if (!vendor || !vendor->NPC_IsVendor())
 	{
 		client->Event_VendorBuy_Cheater(0x1);
 		return true;
@@ -1053,32 +1053,20 @@ bool PacketVendorBuyReq::onReceive(NetState* net)
 
 	if (!buyer->CanTouch(vendor))
 	{
-		client->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_CANTREACH));
+		client->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_TOOFAR));
 		return true;
 	}
 
-	int iConvertFactor = vendor->NPC_GetVendorMarkup();
-
-	VendorItem items[MAX_ITEMS_CONT];
-	memset(items, 0, sizeof(items));
 	size_t itemCount = minimum((packetLength - 8) / 7, MAX_ITEMS_CONT);
 
-	// check buying speed
-	const CVarDefCont* vardef = g_Cfg.m_bAllowBuySellAgent ? NULL : client->m_TagDefs.GetKey("BUYSELLTIME");
-	if (vardef)
-	{
-		CServTime allowsell;
-		allowsell.InitTime(vardef->GetValNum() + (itemCount * 3));
-		if (g_World.GetCurrentTime() < allowsell)
-		{
-			client->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_BUYFAST));
-			return true;
-		}
-	}
-
 	// combine goods into one list
+	VendorItem items[MAX_ITEMS_CONT];
+	memset(items, 0, sizeof(items));
+	int iConvertFactor = vendor->NPC_GetVendorMarkup();
+
 	CItemVendable *item = NULL;
-	for (size_t i = 0; i < itemCount; i++)
+	CItemContainer *itemContainer = NULL;
+	for ( size_t i = 0; i < itemCount; ++i )
 	{
 		skip(1); // layer
 		CGrayUID serial(readInt32());
@@ -1087,17 +1075,18 @@ bool PacketVendorBuyReq::onReceive(NetState* net)
 		item = dynamic_cast<CItemVendable*>(serial.ItemFind());
 		if (!item || !item->IsValidSaleItem(true))
 		{
+			vendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_ORDER_CANTFULFILL));
 			client->Event_VendorBuy_Cheater(0x2);
 			return true;
 		}
 
 		// search for it in the list
 		size_t index;
-		for (index = 0; index < itemCount; index++)
+		for ( index = 0; index < itemCount; ++index )
 		{
-			if (serial == items[index].m_serial)
+			if ( items[index].m_serial == serial )
 				break;
-			else if (items[index].m_serial.GetPrivateUID() == 0)
+			else if ( items[index].m_serial.GetPrivateUID() == UID_CLEAR )
 			{
 				items[index].m_serial = serial;
 				items[index].m_price = item->GetVendorPrice(iConvertFactor);
@@ -1108,7 +1097,7 @@ bool PacketVendorBuyReq::onReceive(NetState* net)
 		items[index].m_amount += amount;
 		if (items[index].m_price <= 0)
 		{
-			vendor->Speak("Alas, I don't have these goods currently stocked. Let me know if there is something else thou wouldst buy.");
+			vendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_ORDER_CANTFULFILL));
 			client->Event_VendorBuy_Cheater(0x3);
 			return true;
 		}
@@ -2050,7 +2039,7 @@ bool PacketAllNamesReq::onReceive(NetState* net)
 	const CObjBase* object;
 	for (WORD length = readInt16(); length > sizeof(DWORD); length -= sizeof(DWORD))
 	{
-		object = CGrayUID(readInt32()).ObjFind();
+		object = static_cast<CGrayUID>(readInt32()).ObjFind();
 		if (!object || !character->CanSee(object))
 			continue;
 
@@ -2149,7 +2138,7 @@ bool PacketVendorSellReq::onReceive(NetState* net)
 	size_t itemCount = readInt16();
 
 	CChar* vendor = vendorSerial.CharFind();
-	if (!vendor || !vendor->m_pNPC || !vendor->NPC_IsVendor())
+	if (!vendor || !vendor->NPC_IsVendor())
 	{
 		client->Event_VendorSell_Cheater(0x1);
 		return true;
@@ -2157,7 +2146,7 @@ bool PacketVendorSellReq::onReceive(NetState* net)
 	
 	if (!seller->CanTouch(vendor))
 	{
-		client->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_CANTREACH));
+		client->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_TOOFAR));
 		return true;
 	}
 
@@ -2168,29 +2157,18 @@ bool PacketVendorSellReq::onReceive(NetState* net)
 	}
 	else if (itemCount >= MAX_ITEMS_CONT)
 	{
-		client->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_SELLMUCH));
+		TCHAR *pszText = Str_GetTemp();
+		sprintf(pszText, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_SELL_LIMIT), MAX_ITEMS_CONT);
+		vendor->Speak(pszText);
 		return true;
-	}
-
-	// check selling speed
-	const CVarDefCont* vardef = g_Cfg.m_bAllowBuySellAgent ? NULL : client->m_TagDefs.GetKey("BUYSELLTIME");
-	if (vardef)
-	{
-		CServTime allowsell;
-		allowsell.InitTime(vardef->GetValNum() + (itemCount * 3));
-		if (g_World.GetCurrentTime() < allowsell)
-		{
-			client->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_SELLFAST));
-			return true;
-		}
 	}
 
 	VendorItem items[MAX_ITEMS_CONT];
 	memset(items, 0, sizeof(items));
 
-	for (size_t i = 0; i < itemCount; i++)
+	for ( size_t i = 0; i < itemCount; ++i )
 	{
-		items[i].m_serial = CGrayUID(readInt32());
+		items[i].m_serial = static_cast<CGrayUID>(readInt32());
 		items[i].m_amount = readInt16();
 	}
 
@@ -3169,7 +3147,7 @@ bool PacketAosTooltipInfo::onReceive(NetState* net)
 	if (!character)
 		return false;
 
-	const CObjBase* object = CGrayUID(readInt32()).ObjFind();
+	const CObjBase* object = static_cast<CGrayUID>(readInt32()).ObjFind();
 	if (object && character->CanSee(object))
 		client->addAOSTooltip(object, true);
 
@@ -3406,8 +3384,8 @@ bool PacketBandageMacro::onReceive(NetState* net)
 	if (!character)
 		return false;
 
-	CItem* bandage = CGrayUID(readInt32()).ItemFind();
-	CObjBase* target = CGrayUID(readInt32()).ObjFind();
+	CItem* bandage = static_cast<CGrayUID>(readInt32()).ItemFind();
+	CObjBase* target = static_cast<CGrayUID>(readInt32()).ObjFind();
 	if (!bandage || !target)
 		return true;
 
@@ -3693,7 +3671,7 @@ bool PacketAOSTooltipReq::onReceive(NetState* net)
 	const CObjBase* object;
 	for (WORD length = readInt16(); length > sizeof(DWORD); length -= sizeof(DWORD))
 	{
-		object = CGrayUID(readInt32()).ObjFind();
+		object = static_cast<CGrayUID>(readInt32()).ObjFind();
 		if (!object || !character->CanSee(object))
 			continue;
 
@@ -4454,7 +4432,7 @@ bool PacketEquipItemMacro::onReceive(NetState* net)
 	CItem* item = NULL;
 	for (BYTE i = 0; i < itemCount; i++)
 	{
-		item = CGrayUID(readInt32()).ItemFind();
+		item = static_cast<CGrayUID>(readInt32()).ItemFind();
 		if (!item)
 			continue;
 		if ((item->GetTopLevelObj() != character) || item->IsItemEquipped())

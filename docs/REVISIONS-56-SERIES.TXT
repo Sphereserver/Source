@@ -1287,3 +1287,7 @@ Fixed: Some SA doors not working correctly.
 12-12-2018, Coruja
 Fixed: House customization engine not hiding dynamic items correctly before open customization menu.
 Fixed: House customization exploit allowing place non-stairs items on front stairs spot.
+
+18-12-2018, Coruja
+Changed: Some improvements on NPC vendor BUY/SELL engine.
+[sphere_msgs.scp]: Removed old 'npc_vendor_*' messages and added new ones with updated texts

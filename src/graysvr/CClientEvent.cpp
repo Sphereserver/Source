@@ -885,8 +885,6 @@ void CClient::Event_Attack(CGrayUID uid)
 void CClient::Event_VendorBuy_Cheater(int iCode)
 {
 	ADDTOCALLSTACK("CClient::Event_VendorBuy_Cheater");
-
-	// iCode descriptions
 	static LPCTSTR const sm_BuyPacketCheats[] =
 	{
 		"Other",
@@ -895,17 +893,20 @@ void CClient::Event_VendorBuy_Cheater(int iCode)
 		"Requested items out of stock",
 		"Total cost is too high"
 	};
-
 	g_Log.Event(LOGL_WARN|LOGM_CHEAT, "%lx:Cheater '%s' is submitting illegal buy packet (%s)\n", GetSocketID(), m_pAccount->GetName(), sm_BuyPacketCheats[iCode]);
-	SysMessageDefault(DEFMSG_NPC_VENDOR_CANTBUY);
 }
 
 // Client is buying items from an vendor
 void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t itemCount)
 {
 	ADDTOCALLSTACK("CClient::Event_VendorBuy");
-	if ( !m_pChar || !pVendor || !items || (itemCount <= 0) )
+	if ( !m_pChar || !pVendor )
 		return;
+	if ( !items || (itemCount <= 0) )
+	{
+		addVendorClose(pVendor);
+		return;
+	}
 
 	bool bPlayerVendor = pVendor->IsStatFlag(STATF_Pet);
 	pVendor->GetContainerCreate(LAYER_VENDOR_STOCK);
@@ -928,7 +929,7 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 
 		if ( (items[i].m_amount <= 0) || (items[i].m_amount > pItem->GetAmount()) )
 		{
-			pVendor->Speak("Your order cannot be fulfilled, please try again.");
+			pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_ORDER_CANTFULFILL));
 			Event_VendorBuy_Cheater(0x3);
 			return;
 		}
@@ -948,7 +949,7 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 			{
 				if ( !m_pChar->IsPlayableCharacter() )
 				{
-					pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_CANTBUY));
+					pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_ORDER_CANTFULFILL));
 					continue;
 				}
 				break;
@@ -957,7 +958,7 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 			{
 				if ( (m_pChar->GetDispID() != CREID_MAN) && (m_pChar->GetDispID() != CREID_GARGMAN) )
 				{
-					pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_CANTBUY));
+					pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_ORDER_CANTFULFILL));
 					return;
 				}
 				break;
@@ -969,7 +970,7 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 
 	if ( costtotal > ULONG_MAX / 4 )
 	{
-		pVendor->Speak("Your order cannot be fulfilled, please try again.");
+		pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_ORDER_CANTFULFILL));
 		Event_VendorBuy_Cheater(0x4);
 		return;
 	}
@@ -987,7 +988,7 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 		{
 			if ( m_pChar->m_virtualGold < costtotal )
 			{
-				pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_NOMONEY1));
+				pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_BUY_CANTAFFORD_BANK));
 				return;
 			}
 		}
@@ -999,7 +1000,7 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 
 			if ( iGold )
 			{
-				pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_NOMONEY1));
+				pVendor->Speak(g_Cfg.GetDefaultMsg(g_Cfg.m_fPayFromPackOnly ? DEFMSG_NPC_VENDOR_BUY_CANTAFFORD : DEFMSG_NPC_VENDOR_BUY_CANTAFFORD_BANK));
 				return;
 			}
 		}
@@ -1102,30 +1103,27 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 		pItem->Update();
 	}
 
-	// Say the message about the bought goods
-	TCHAR *sMsg = Str_GetTemp();
-	TCHAR *pszTemp1 = Str_GetTemp();
-	TCHAR *pszTemp2 = Str_GetTemp();
-	sprintf(pszTemp1, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_HYARE), m_pChar->GetName());
-	sprintf(pszTemp2, bBoss ? g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_S1) : g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_B1), static_cast<INT64>(costtotal), (costtotal == 1) ? "" : g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_CA));
-	sprintf(sMsg, "%s %s %s", pszTemp1, pszTemp2, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_TY));
-	pVendor->Speak(sMsg);
-
 	// Consume gold
-	if ( !bBoss )
+	if ( bBoss )
+		pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_BUY_CHARGE));
+	else
 	{
+		TCHAR *pszText = Str_GetTemp();
 		if ( g_Cfg.m_iFeatureTOL & FEATURE_TOL_VIRTUALGOLD )
 		{
 			m_pChar->m_virtualGold -= costtotal;
 			m_pChar->UpdateStatsFlag();
+			sprintf(pszText, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_BUY_BANK), static_cast<int>(costtotal));
 		}
 		else
 		{
 			DWORD iGold = m_pChar->GetContainerCreate(LAYER_PACK)->ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), costtotal);
 			if ( !g_Cfg.m_fPayFromPackOnly && iGold )
 				m_pChar->ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), iGold);
+			sprintf(pszText, g_Cfg.GetDefaultMsg(g_Cfg.m_fPayFromPackOnly ? DEFMSG_NPC_VENDOR_BUY : DEFMSG_NPC_VENDOR_BUY_BANK), static_cast<int>(costtotal));
 		}
 		pVendor->GetContainerCreate(LAYER_BANKBOX)->m_itEqBankBox.m_Check_Amount += costtotal;
+		pVendor->Speak(pszText);
 	}
 
 	// Close vendor gump
@@ -1136,17 +1134,13 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 void CClient::Event_VendorSell_Cheater(int iCode)
 {
 	ADDTOCALLSTACK("CClient::Event_VendorSell_Cheater");
-
-	// iCode descriptions
 	static LPCTSTR const sm_SellPacketCheats[] =
 	{
 		"Other",
 		"Bad vendor UID",
 		"Bad item UID"
 	};
-
 	g_Log.Event(LOGL_WARN|LOGM_CHEAT, "%lx:Cheater '%s' is submitting illegal sell packet (%s)\n", GetSocketID(), m_pAccount->GetName(), sm_SellPacketCheats[iCode]);
-	SysMessageDefault(DEFMSG_NPC_VENDOR_CANTSELL);
 }
 
 // Client is selling items to an vendor
@@ -1160,23 +1154,16 @@ void CClient::Event_VendorSell(CChar *pVendor, const VendorItem *items, size_t i
 	CItemContainer *pContStock = pVendor->GetContainerCreate(LAYER_VENDOR_STOCK);
 	CItemContainer *pContBuy = pVendor->GetContainerCreate(LAYER_VENDOR_BUYS);
 	CItemContainer *pContExtra = pVendor->GetContainerCreate(LAYER_VENDOR_EXTRA);
-	if ( !pBank || !pContStock )
-	{
-		addVendorClose(pVendor);
-		pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_GUARDS));
-		return;
-	}
-
 	int iConvertFactor = -pVendor->NPC_GetVendorMarkup();
-
 	DWORD iGold = 0;
 	bool bShortfall = false;
 
-	for ( size_t i = 0; i < itemCount; i++ )
+	for ( size_t i = 0; i < itemCount; ++i )
 	{
-		CItemVendable *pItem = static_cast<CItemVendable *>(items[i].m_serial.ItemFind());
+		CItemVendable *pItem = dynamic_cast<CItemVendable *>(items[i].m_serial.ItemFind());
 		if ( !pItem || !pItem->IsValidSaleItem(true) )
 		{
+			pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_ORDER_CANTFULFILL));
 			Event_VendorSell_Cheater(0x2);
 			return;
 		}
@@ -1239,12 +1226,12 @@ void CClient::Event_VendorSell(CChar *pVendor, const VendorItem *items, size_t i
 
 	if ( iGold )
 	{
-		char *z = Str_GetTemp();
-		sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_SELL_TY), static_cast<int>(iGold), (iGold == 1) ? "" : g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_CA));
-		pVendor->Speak(z);
+		TCHAR *pszText = Str_GetTemp();
+		sprintf(pszText, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_SELL), static_cast<int>(iGold));
+		pVendor->Speak(pszText);
 
 		if ( bShortfall )
-			pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_NOMONEY));
+			pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_SELL_CANTAFFORD));
 
 		if ( g_Cfg.m_iFeatureTOL & FEATURE_TOL_VIRTUALGOLD )
 		{
@@ -1261,7 +1248,7 @@ void CClient::Event_VendorSell(CChar *pVendor, const VendorItem *items, size_t i
 	else
 	{
 		if ( bShortfall )
-			pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_CANTAFFORD));
+			pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_SELL_CANTAFFORD));
 	}
 }
 

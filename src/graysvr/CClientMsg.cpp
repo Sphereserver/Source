@@ -2165,12 +2165,28 @@ void CClient::addVendorClose(const CChar *pVendor)
 	new PacketCloseVendor(this, pVendor);
 }
 
-bool CClient::addShopMenuBuy(CChar *pVendor)
+void CClient::addShopMenuBuy(CChar *pVendor)
 {
 	ADDTOCALLSTACK("CClient::addShopMenuBuy");
 	// Try to buy stuff that the vendor has
 	if ( !pVendor || !pVendor->NPC_IsVendor() )
-		return false;
+		return;
+
+	if ( !g_Cfg.m_bAllowBuySellAgent )
+	{
+		const CVarDefCont *pVar = m_TagDefs.GetKey("BUYSELLTIME");
+		if ( pVar )
+		{
+			CServTime timeDelay;
+			timeDelay.InitTime(pVar->GetValNum() + 3);
+			if ( g_World.GetCurrentTime() < timeDelay )
+			{
+				pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_ORDER_WAIT));
+				return;
+			}
+		}
+		m_TagDefs.SetNum("BUYSELLTIME", g_World.GetCurrentTime().GetTimeRaw());
+	}
 
 	//OpenPacketTransaction transaction(this, PacketSend::PRI_HIGH);
 
@@ -2180,8 +2196,6 @@ bool CClient::addShopMenuBuy(CChar *pVendor)
 
 	CItemContainer *pContainerStock = pVendor->GetContainerCreate(LAYER_VENDOR_STOCK);
 	CItemContainer *pContainerExtra = pVendor->GetContainerCreate(LAYER_VENDOR_EXTRA);
-	if ( !pContainerStock || !pContainerExtra )
-		return false;
 
 	// Get item list
 	addItem(pContainerStock);	// sending the full tooltip, instead of the one with just the name
@@ -2189,23 +2203,37 @@ bool CClient::addShopMenuBuy(CChar *pVendor)
 	addItem(pContainerExtra);
 
 	// Get price list
-	new PacketVendorBuyList(this, pContainerStock, pVendor->NPC_GetVendorMarkup());
+	new PacketVendorBuyList(this, pVendor, pContainerStock);
 
 	// Open gump
 	addOpenGump(pVendor, GUMP_VENDOR_RECT);
 	new PacketHealthBarInfo(this, m_pChar);		// update char 'gold available' value on gump
-	return true;
 }
 
-bool CClient::addShopMenuSell(CChar *pVendor)
+void CClient::addShopMenuSell(CChar *pVendor)
 {
 	ADDTOCALLSTACK("CClient::addShopMenuSell");
 	// Player selling to vendor
 	// What things do you have in your inventory that the vendor would want?
 	// Should end with a returned Event_VendorSell()
-
 	if ( !pVendor || !pVendor->NPC_IsVendor() )
-		return false;
+		return;
+
+	if ( !g_Cfg.m_bAllowBuySellAgent )
+	{
+		const CVarDefCont *pVar = m_TagDefs.GetKey("BUYSELLTIME");
+		if ( pVar )
+		{
+			CServTime timeDelay;
+			timeDelay.InitTime(pVar->GetValNum() + 3);
+			if ( g_World.GetCurrentTime() < timeDelay )
+			{
+				pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_ORDER_WAIT));
+				return;
+			}
+		}
+		m_TagDefs.SetNum("BUYSELLTIME", g_World.GetCurrentTime().GetTimeRaw());
+	}
 
 	//OpenPacketTransaction transaction(this, PacketSend::PRI_LOW);
 
@@ -2218,8 +2246,7 @@ bool CClient::addShopMenuSell(CChar *pVendor)
 	addItem(pContainerBuy);
 	addItem(pContainerStock);
 
-	new PacketVendorSellList(this, pVendor, m_pChar->GetContainerCreate(LAYER_PACK), pContainerBuy, -pVendor->NPC_GetVendorMarkup());
-	return true;
+	new PacketVendorSellList(this, pVendor, m_pChar->GetContainerCreate(LAYER_PACK), pContainerBuy);
 }
 
 void CClient::addBankOpen(CChar *pChar, LAYER_TYPE layer)

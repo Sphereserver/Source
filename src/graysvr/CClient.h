@@ -755,8 +755,8 @@ public:
 	void addScrollResource(LPCTSTR pszName, SCROLL_TYPE type, DWORD dwScrollID = 0);
 
 	void addVendorClose(const CChar *pVendor);
-	bool addShopMenuBuy(CChar *pVendor);
-	bool addShopMenuSell(CChar *pVendor);
+	void addShopMenuBuy(CChar *pVendor);
+	void addShopMenuSell(CChar *pVendor);
 	void addBankOpen(CChar *pChar, LAYER_TYPE layer = LAYER_BANKBOX);
 
 	void addSpellbookOpen(CItem *pBook);
