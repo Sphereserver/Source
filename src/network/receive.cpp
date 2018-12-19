@@ -1065,7 +1065,6 @@ bool PacketVendorBuyReq::onReceive(NetState* net)
 	int iConvertFactor = vendor->NPC_GetVendorMarkup();
 
 	CItemVendable *item = NULL;
-	CItemContainer *itemContainer = NULL;
 	for ( size_t i = 0; i < itemCount; ++i )
 	{
 		skip(1); // layer

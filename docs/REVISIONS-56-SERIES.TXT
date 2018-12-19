@@ -1291,3 +1291,7 @@ Fixed: House customization exploit allowing place non-stairs items on front stai
 18-12-2018, Coruja
 Changed: Some improvements on NPC vendor BUY/SELL engine.
 [sphere_msgs.scp]: Removed old 'npc_vendor_*' messages and added new ones with updated texts
+
+19-12-2018, Coruja
+Fixed: Sphere startup setting wrong TIMER on objects loaded from worldsave files.
+Fixed: VendorTradeTitle feature on sphere.ini not working correctly.

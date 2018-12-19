@@ -241,8 +241,10 @@ bool CObjBase::SetNamePool(LPCTSTR pszName)
 	{
 		// Pick random name from the given #NAMES list
 		++pszName;
+		strcpy(szTemp, pszName);
+
 		TCHAR *ppArgs[2];
-		Str_ParseCmds(const_cast<TCHAR *>(pszName), ppArgs, COUNTOF(ppArgs));
+		Str_ParseCmds(szTemp, ppArgs, COUNTOF(ppArgs));
 
 		CResourceLock s;
 		if ( !g_Cfg.ResourceLock(s, RES_NAMES, ppArgs[0]) || !s.ReadKey() )

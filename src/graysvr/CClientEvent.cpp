@@ -1151,7 +1151,6 @@ void CClient::Event_VendorSell(CChar *pVendor, const VendorItem *items, size_t i
 		return;
 
 	CItemContainer *pBank = pVendor->GetContainerCreate(LAYER_BANKBOX);
-	CItemContainer *pContStock = pVendor->GetContainerCreate(LAYER_VENDOR_STOCK);
 	CItemContainer *pContBuy = pVendor->GetContainerCreate(LAYER_VENDOR_BUYS);
 	CItemContainer *pContExtra = pVendor->GetContainerCreate(LAYER_VENDOR_EXTRA);
 	int iConvertFactor = -pVendor->NPC_GetVendorMarkup();

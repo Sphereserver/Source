@@ -1543,6 +1543,15 @@ bool CWorld::LoadWorld()
 	if ( LoadFile(sDataName) )
 		++iLoadedFiles;
 
+	CGString sStaticsName;
+	sStaticsName.Format("%s" SPHERE_FILE "statics", static_cast<LPCTSTR>(g_Cfg.m_sWorldBaseDir));
+	LoadFile(sStaticsName);		// optional
+
+	CGString sMultisName;
+	sMultisName.Format("%s" SPHERE_FILE "multis", static_cast<LPCTSTR>(g_Cfg.m_sWorldBaseDir));
+	if ( LoadFile(sMultisName) )
+		++iLoadedFiles;
+
 	CGString sWorldName;
 	sWorldName.Format("%s" SPHERE_FILE "world", static_cast<LPCTSTR>(g_Cfg.m_sWorldBaseDir));
 	if ( LoadFile(sWorldName) )
@@ -1552,15 +1561,6 @@ bool CWorld::LoadWorld()
 	sCharsName.Format("%s" SPHERE_FILE "chars", static_cast<LPCTSTR>(g_Cfg.m_sWorldBaseDir));
 	if ( LoadFile(sCharsName) )
 		++iLoadedFiles;
-
-	CGString sMultisName;
-	sMultisName.Format("%s" SPHERE_FILE "multis", static_cast<LPCTSTR>(g_Cfg.m_sWorldBaseDir));
-	if ( LoadFile(sMultisName) )
-		++iLoadedFiles;
-
-	CGString sStaticsName;
-	sStaticsName.Format("%s" SPHERE_FILE "statics", static_cast<LPCTSTR>(g_Cfg.m_sWorldBaseDir));
-	LoadFile(sStaticsName);		// optional
 
 	return ((iLoadedFiles == 0) || (iLoadedFiles == 4));
 
