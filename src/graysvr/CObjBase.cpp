@@ -241,7 +241,7 @@ bool CObjBase::SetNamePool(LPCTSTR pszName)
 	{
 		// Pick random name from the given #NAMES list
 		++pszName;
-		strcpy(szTemp, pszName);
+		strncpy(szTemp, pszName, sizeof(szTemp) - 1);
 
 		TCHAR *ppArgs[2];
 		Str_ParseCmds(szTemp, ppArgs, COUNTOF(ppArgs));

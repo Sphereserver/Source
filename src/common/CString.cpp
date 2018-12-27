@@ -96,7 +96,7 @@ void CGString::Empty(bool bTotal)
 	else m_iLength = 0;
 }
 
-size_t CGString::SetLength(size_t iNewLength)
+void CGString::SetLength(size_t iNewLength)
 {
 	if (iNewLength >= m_iMaxLength)
 	{
@@ -121,8 +121,8 @@ size_t CGString::SetLength(size_t iNewLength)
 		m_pchData = pNewData;
 	}
 	m_iLength = iNewLength;
-	m_pchData[m_iLength] = '\0';
-	return m_iLength;
+	if ( m_pchData )
+		m_pchData[m_iLength] = '\0';
 }
 
 void CGString::Copy(LPCTSTR pszStr)

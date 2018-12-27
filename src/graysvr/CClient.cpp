@@ -841,29 +841,29 @@ bool CClient::r_LoadVal(CScript &s)
 	{
 		case CC_ALLMOVE:
 		{
-			addRemoveAll(true, false);
 			m_pAccount->TogPrivFlags(PRIV_ALLMOVE, s.GetArgStr());
+			addPlayerSee(NULL);
 			if ( IsSetOF(OF_Command_Sysmsgs) )
 				m_pChar->SysMessage(IsPriv(PRIV_ALLMOVE) ? "Allmove ON" : "Allmove OFF");
-			addPlayerSee(NULL);
 			break;
 		}
 		case CC_ALLSHOW:
 		{
-			addRemoveAll(false, true);
+			if ( IsPriv(PRIV_ALLSHOW) )
+				addRemoveAll(false, true);
 			m_pAccount->TogPrivFlags(PRIV_ALLSHOW, s.GetArgStr());
+			addPlayerSee(NULL);
 			if ( IsSetOF(OF_Command_Sysmsgs) )
 				m_pChar->SysMessage(IsPriv(PRIV_ALLSHOW) ? "Allshow ON" : "Allshow OFF");
-			addPlayerSee(NULL);
 			break;
 		}
 		case CC_DEBUG:
 		{
 			addRemoveAll(true, false);
 			m_pAccount->TogPrivFlags(PRIV_DEBUG, s.GetArgStr());
+			addPlayerSee(NULL);
 			if ( IsSetOF(OF_Command_Sysmsgs) )
 				m_pChar->SysMessage(IsPriv(PRIV_DEBUG) ? "Debug ON" : "Debug OFF");
-			addPlayerSee(NULL);
 			break;
 		}
 		case CC_DETAIL:
@@ -873,12 +873,13 @@ bool CClient::r_LoadVal(CScript &s)
 				m_pChar->SysMessage(IsPriv(PRIV_DETAIL) ? "Detail ON" : "Detail OFF");
 			break;
 		}
-		case CC_GM: // toggle your GM status on/off
+		case CC_GM:
 		{
 			if ( GetPrivLevel() >= PLEVEL_GM )
 			{
 				m_pAccount->TogPrivFlags(PRIV_GM, s.GetArgStr());
 				m_pChar->UpdatePropertyFlag();
+				addPlayerSee(NULL);
 				if ( IsSetOF(OF_Command_Sysmsgs) )
 					m_pChar->SysMessage(IsPriv(PRIV_GM) ? "GM ON" : "GM OFF");
 			}

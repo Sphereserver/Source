@@ -71,9 +71,8 @@ public:
 	* If the new length is bigger than the current length, alloc memory for the string and copy.
 	* If DEBUG_STRINGS setted, update statistical information (reallocs count, total memory allocated).
 	* @param iLen new length of the string.
-	* @return the new length of the CGString.
 	*/
-	size_t SetLength(size_t iLen);
+	void SetLength(size_t iLen);
 	/**
 	* @brief Get the length of the CGString.
 	* @return the length of the CGString.
