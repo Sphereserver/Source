@@ -1295,3 +1295,25 @@ Changed: Some improvements on NPC vendor BUY/SELL engine.
 19-12-2018, Coruja
 Fixed: Sphere startup setting wrong TIMER on objects loaded from worldsave files.
 Fixed: VendorTradeTitle feature on sphere.ini not working correctly.
+
+21-12-2018, Coruja
+[sphere_events_human.scp]: Removed unused file
+[npcs/sphere_citizens.scp]: Removed unused speeches/events from NPCs
+[npcs/sphere_guildmasters.scp]: Removed unused speeches/events from NPCs
+[npcs/sphere_monsters.scp]: Removed unused speeches/events from NPCs
+[npcs/sphere_vendors.scp]: Removed unused speeches/events from NPCs
+[npcs/spherechar_evil.scp]: Removed unused speeches/events from NPCs
+[npcs/spherechar_human.scp]: Removed unused speeches/events from NPCs
+[speech/speakhuman.scp]: Removed unused speeches
+[speech/speakshopkeep.scp]: Removed unused speeches
+
+26-12-2018, Coruja
+[items/sphere_item_holiday_christmas.scp]: Added new christmas gifts from publish 103
+[items/sphere_item_quests.scp]: Added Treasures of Khaldun quest items
+[items/sphere_item_typedef_equipitem.scp]: Removed all duplicated code already handled by Sphere internal source
+[items/sphere_item_vice_virtue.scp]: Fixed wrong sculptures itemdefs and added missing sound when lit/unlit sculptures
+[sphere_skills.scp]: Updated Fishing, Lumberjacking, Mining and Stealth skills
+
+27-12-2018, Coruja
+Fixed: Function PILOT on ships making the ship move faster than spoken commands.
+Fixed: Recall spell on ship keys not working correctly.

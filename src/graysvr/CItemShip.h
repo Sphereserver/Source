@@ -22,7 +22,7 @@ private:
 public:
 	void Ship_Stop();
 	void Ship_SetPilot(CChar *pChar);
-	bool Ship_SetMoveDir(DIR_TYPE dir, BYTE bSpeed = 0, bool fWheelMove = false);
+	bool Ship_SetMoveDir(DIR_TYPE dir, BYTE bSpeed = 2, bool fWheelMove = false);
 	bool Ship_Face(DIR_TYPE dir);
 	bool Ship_Move(DIR_TYPE dir, int iDist);
 

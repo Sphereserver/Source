@@ -365,7 +365,12 @@ bool CChar::Spell_Recall(CItem *pTarg, bool fGate)
 			else
 			{
 				CItemContainer *pHatch = pBoat->GetShipHold();
-				if ( !pHatch || !Spell_Teleport(pHatch->GetTopPoint(), true) )
+				if ( !pHatch )
+					return false;
+
+				CPointMap pt = pHatch->GetTopPoint();
+				pt.m_z += pHatch->GetHeight();
+				if ( !Spell_Teleport(pt, true) )
 					return false;
 			}
 			return true;

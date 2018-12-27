@@ -3518,6 +3518,9 @@ bool PacketWheelBoatMove::onReceive(NetState *net)
 
 	if ( speed > 0 )
 	{
+		if ( speed > 2 )
+			speed = 2;
+
 		if ( (speed == 2) && (facing != pShip->m_itShip.m_DirFace) )
 			pShip->Ship_Face(facing);
 

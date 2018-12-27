@@ -78,8 +78,6 @@ void CItemShip::Ship_SetPilot(CChar *pChar)
 	if ( pChar && (!pChar->m_pPlayer || (pChar == pCharPrev)) )
 		return;
 
-	Ship_Stop();
-
 	// Remove memory on previous pilot
 	if ( pCharPrev )
 	{
@@ -120,36 +118,38 @@ void CItemShip::Ship_SetPilot(CChar *pChar)
 		if ( !pMemory )
 			return;
 
+		Ship_Stop();
+		m_itShip.m_Pilot = pChar->GetUID();
+
 		pMemory->SetType(IT_EQ_HORSE);
 		pMemory->SetName(GetName());
 		pMemory->m_uidLink = GetUID();
 		pChar->LayerAdd(pMemory, LAYER_HORSE);
 		pChar->SysMessageDefault(DEFMSG_SHIP_PILOT_ON);
-		m_itShip.m_Pilot = pChar->GetUID();
 	}
 }
 
-bool CItemShip::Ship_SetMoveDir(DIR_TYPE dir, BYTE speed, bool bWheelMove)
+bool CItemShip::Ship_SetMoveDir(DIR_TYPE dir, BYTE bSpeed, bool fWheelMove)
 {
 	ADDTOCALLSTACK("CItemShip::Ship_SetMoveDir");
 	// Set the direction we will move next time we get a tick.
 	// Called from Packet 0xBF.0x32 : PacketWheelBoatMove to check if ship can move while setting dir and checking times in the proccess, otherwise for each click with mouse it will do 1 move.
 
+	m_itShip.m_fSail = bSpeed;
 	m_itShip.m_DirMove = static_cast<BYTE>(dir);	// we set new direction regardless of click limitations, so click in another direction means changing dir but makes not more moves until ship's timer moves it.
-	if ( bWheelMove && m_NextMove > CServTime::GetCurrentTime() )
+
+	if ( fWheelMove && (m_NextMove > CServTime::GetCurrentTime()) )
 		return false;
 
-	m_itShip.m_fSail = minimum(speed, 2);	// checking here that packet is legit from client and not modified by 3rd party tools to send speed > 2.
 	GetTopSector()->SetSectorWakeStatus();	// may get here b4 my client does.
+
 	CItemMulti *pItemMulti = static_cast<CItemMulti *>(this);
-	pItemMulti->m_SpeedMode = (speed == 1) ? 3 : 4;
+	pItemMulti->m_SpeedMode = (bSpeed == 1) ? 3 : 4;
+
 	g_Serv.ShipTimers_Delete(this);
 	g_Serv.ShipTimers_Add(this);
 
-	if ( IsSetOF(OF_NoSmoothSailing) )
-		m_NextMove = CServTime::GetCurrentTime() + maximum(1, (m_itShip.m_fSail == 1) ? pItemMulti->m_shipSpeed.period * 2 : pItemMulti->m_shipSpeed.period);
-	else
-		m_NextMove = CServTime::GetCurrentTime() + maximum(1, (m_itShip.m_fSail == 1) ? pItemMulti->m_shipSpeed.period : pItemMulti->m_shipSpeed.period / 2);
+	m_NextMove = CServTime::GetCurrentTime() + ((m_itShip.m_fSail == 1) ? pItemMulti->m_shipSpeed.period * 4 : pItemMulti->m_shipSpeed.period * 2);
 	return true;
 }
 
@@ -686,10 +686,8 @@ bool CItemShip::Ship_OnMoveTick()
 		Ship_Stop();
 		return( true );
 	}
-	if (IsSetOF(OF_NoSmoothSailing))
-		m_NextMove = CServTime::GetCurrentTime() + maximum(1, (m_itShip.m_fSail == 1) ? pItemMulti->m_shipSpeed.period * 2 : (pItemMulti->m_shipSpeed.period));
-	else
-		m_NextMove = CServTime::GetCurrentTime() + maximum(1, (m_itShip.m_fSail == 1) ? pItemMulti->m_shipSpeed.period : (pItemMulti->m_shipSpeed.period / 2));
+
+	m_NextMove = CServTime::GetCurrentTime() + ((m_itShip.m_fSail == 1) ? pItemMulti->m_shipSpeed.period * 4 : pItemMulti->m_shipSpeed.period * 2);
 	return(true);
 }
 
