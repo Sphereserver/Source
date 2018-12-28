@@ -480,8 +480,8 @@ TRIGRET_TYPE CScriptObj::OnTriggerScript(CScript &s, LPCTSTR pszTrigName, CTextC
 			g_profiler.TriggersTail = pTrigger;
 		}
 
-		pTrigger->called++;
-		g_profiler.called++;
+		++pTrigger->called;
+		++g_profiler.called;
 		TIME_PROFILE_START;
 	}
 
@@ -1607,6 +1607,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		}
 		case SSC_VAR0:
 			fZero = true;
+			// fall through
 		case SSC_VAR:
 		{
 			CVarDefCont *pVar = g_Exp.m_VarGlobals.GetKey(pszKey);
@@ -2233,8 +2234,8 @@ bool CScriptObj::r_Call(LPCTSTR pszFunction, CTextConsole *pSrc, CScriptTriggerA
 				g_profiler.FunctionsTail = pFun;
 			}
 
-			pFun->called++;
-			g_profiler.called++;
+			++pFun->called;
+			++g_profiler.called;
 			TIME_PROFILE_START;
 		}
 

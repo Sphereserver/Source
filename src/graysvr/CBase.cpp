@@ -367,7 +367,8 @@ bool CBaseBaseDef::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc
 			break;
 		case OBC_TAG0:
 			fZero = true;
-			pszKey++;
+			++pszKey;
+			// fall through
 		case OBC_TAG:
 			if ( pszKey[3] != '.' )
 				return false;

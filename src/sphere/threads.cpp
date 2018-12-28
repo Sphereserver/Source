@@ -442,6 +442,7 @@ void AbstractThread::setPriority(IThread::Priority pri)
 			break;
 		default:
 			pri = IThread::Normal;
+			// fall through
 		case IThread::Normal:
 			m_tickPeriod = 100;
 			break;

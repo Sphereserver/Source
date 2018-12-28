@@ -1295,7 +1295,8 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case OC_TAG0:
 			fZero = true;
 			++pszKey;
-		case OC_TAG:			// "TAG" = get/set a local tag.
+			// fall through
+		case OC_TAG:
 		{
 			if ( pszKey[3] != '.' )
 				return false;
@@ -1339,6 +1340,7 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case OC_UID:
 			if ( pszKey[3] == '.' )
 				return CScriptObj::r_WriteVal(pszKey, sVal, pSrc);
+			// fall through
 		case OC_SERIAL:
 			sVal.FormatHex(GetUID());
 			break;
@@ -2619,6 +2621,7 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 		}
 		case OV_FIX:
 			s.GetArgStr()[0] = '\0';
+			// fall through
 		case OV_Z:
 		{
 			EXC_SET("FIX or Z");

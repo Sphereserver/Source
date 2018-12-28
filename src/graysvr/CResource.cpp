@@ -3107,6 +3107,7 @@ RESOURCE_ID CResource::ResourceGetNewID(RES_TYPE restype, LPCTSTR pszName, CVarD
 						const CVarDefContStr *pVarStr = dynamic_cast<CVarDefContStr *>(pVarBase);
 						if ( pVarStr )
 							return ResourceGetNewID(restype, pVarStr->GetValStr(), ppVarNum, fNewStyleDef);
+						// fall through
 					}
 					default:
 					{
@@ -3198,6 +3199,7 @@ RESOURCE_ID CResource::ResourceGetNewID(RES_TYPE restype, LPCTSTR pszName, CVarD
 		{
 			if ( iPage )	// must define the main section first
 				return ridInvalid;
+			// fall through
 		}
 		case RES_REGIONTYPE:
 		{

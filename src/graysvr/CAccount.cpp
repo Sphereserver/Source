@@ -66,7 +66,7 @@ bool CAccounts::Account_SaveAll()
 			 "// NOTE: This file cannot be edited while the server is running.\n"
 			 "// Changes must be made on " SPHERE_FILE "acct" SPHERE_SCRIPT " to be applied on next worldsave.\n");
 
-	for ( size_t i = 0; i < m_Accounts.GetCount(); i++ )
+	for ( size_t i = 0; i < m_Accounts.GetCount(); ++i )
 	{
 		CAccountRef pAccount = Account_Get(i);
 		if ( pAccount )
@@ -325,7 +325,7 @@ CAccountRef CAccounts::Account_FindCreate(LPCTSTR pszName, bool fCreate)
 CAccountRef CAccounts::Account_FindChat(LPCTSTR pszName)
 {
 	ADDTOCALLSTACK("CAccounts::Account_FindChat");
-	for ( size_t i = 0; i < m_Accounts.GetCount(); i++ )
+	for ( size_t i = 0; i < m_Accounts.GetCount(); ++i )
 	{
 		CAccountRef pAccount = Account_Get(i);
 		if ( pAccount && (pAccount->m_sChatName.CompareNoCase(pszName) == 0) )
@@ -382,12 +382,12 @@ bool CAccounts::Cmd_ListUnused(CTextConsole *pSrc, LPCTSTR pszDays, LPCTSTR pszV
 	size_t iCountOrig = Account_GetCount();
 	size_t iCountCheck = iCountOrig;
 	size_t iCount = 0;
-	for ( size_t i = 0; ; i++ )
+	for ( size_t i = 0; ; ++i )
 	{
 		if ( Account_GetCount() < iCountCheck )
 		{
-			iCountCheck--;
-			i--;
+			--iCountCheck;
+			--i;
 		}
 
 		CAccountRef pAccount = Account_Get(i);
@@ -403,10 +403,10 @@ bool CAccounts::Cmd_ListUnused(CTextConsole *pSrc, LPCTSTR pszDays, LPCTSTR pszV
 		if ( wPrivFlags && !pAccount->IsPriv(wPrivFlags) )
 			continue;
 
-		iCount++;
+		++iCount;
 		if ( fDelete && (pAccount->GetPrivLevel() > PLEVEL_Player) )
 		{
-			iCount--;
+			--iCount;
 			pSrc->SysMessagef("Can't delete PrivLevel %d account '%s' this way\n", pAccount->GetPrivLevel(), pAccount->GetName());
 		}
 		else
@@ -637,7 +637,7 @@ bool CAccount::CheckPasswordTries(CSocketAddress csaPeerName)
 		}
 		else
 		{
-			itResult.second++;
+			++itResult.second;
 			if ( itResult.second >= g_Cfg.m_iClientLoginMaxTries )
 			{
 				// Max tries reached, apply temporary ban
@@ -747,7 +747,7 @@ void CAccount::OnLogin(CClient *pClient)
 	pClient->m_timeLogin = CServTime::GetCurrentTime();
 
 	if ( pClient->GetConnectType() == CONNECT_TELNET )
-		g_Serv.m_iAdminClients++;
+		++g_Serv.m_iAdminClients;
 	if ( GetPrivLevel() >= PLEVEL_Counsel )
 		m_PrivFlags |= PRIV_GM_PAGE;
 
@@ -772,7 +772,7 @@ void CAccount::OnLogout(CClient *pClient, bool fWasChar)
 	ASSERT(pClient);
 
 	if ( pClient->GetConnectType() == CONNECT_TELNET )
-		g_Serv.m_iAdminClients--;
+		--g_Serv.m_iAdminClients;
 
 	if ( pClient->IsConnectTypePacket() && fWasChar )
 	{
@@ -1134,7 +1134,8 @@ bool CAccount::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			break;
 		case AC_TAG0:
 			fZero = true;
-			pszKey++;
+			++pszKey;
+			// fall through
 		case AC_TAG:
 		{
 			if ( pszKey[3] != '.' )

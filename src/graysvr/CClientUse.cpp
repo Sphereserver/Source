@@ -164,7 +164,7 @@ bool CClient::Cmd_Use_Item(CItem *pItem, bool fTestTouch, bool fScript)
 				if ( !IsPriv(PRIV_GM) )
 					return false;
 			}
-
+			// fall through
 		case IT_CORPSE:
 		case IT_SHIP_HOLD:
 		case IT_CONTAINER:
@@ -600,7 +600,7 @@ void CClient::Cmd_EditItem(CObjBase *pObj, int iSelect)
 	size_t count = 0;
 	for ( CItem *pItem = pContainer->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
-		count++;
+		++count;
 		m_tmMenu.m_Item[count] = pItem->GetUID();
 		item[count].m_sText = pItem->GetName();
 		item[count].m_id = static_cast<WORD>(pItem->GetDispID());
@@ -679,12 +679,12 @@ bool CClient::Cmd_Skill_Menu(RESOURCE_ID_BASE rid, int iSelect)
 		static int sm_iReentrant = 0;
 		if ( sm_iReentrant < 12 )
 		{
-			sm_iReentrant++;
+			++sm_iReentrant;
 
 			// If there is just one menu then select it.
 			bool fSuccess = Cmd_Skill_Menu(rid, m_tmMenu.m_Item[1]);
 
-			sm_iReentrant--;
+			--sm_iReentrant;
 			return fSuccess;
 		}
 
@@ -771,18 +771,18 @@ size_t CClient::Cmd_Skill_Menu_Build(RESOURCE_ID_BASE rid, int iSelect, CMenuIte
 
 			// a new option to look at.
 			fSkip = false;
-			iOnCount++;
+			++iOnCount;
 
 			if ( iSelect < 0 )	// building up the list.
 			{
 				if ( (iSelect < -1) && (iShowCount >= 1) )		// just a test. so we are done.
 					return 1;
 
-				iShowCount++;
+				++iShowCount;
 				if ( !item[iSelect == -2 ? 0 : iShowCount].ParseLine(s.GetArgRaw(), NULL, m_pChar) )
 				{
 					// remove if the item is invalid.
-					iShowCount--;
+					--iShowCount;
 					fSkip = true;
 					continue;
 				}
@@ -813,7 +813,7 @@ size_t CClient::Cmd_Skill_Menu_Build(RESOURCE_ID_BASE rid, int iSelect, CMenuIte
 			CResourceQtyArray skills(s.GetArgStr());
 			if ( !skills.IsResourceMatchAll(m_pChar) )
 			{
-				iShowCount--;
+				--iShowCount;
 				fSkip = true;
 			}
 			continue;
@@ -824,7 +824,7 @@ size_t CClient::Cmd_Skill_Menu_Build(RESOURCE_ID_BASE rid, int iSelect, CMenuIte
 			m_pChar->ParseText(s.GetArgRaw(), m_pChar);
 			if ( !s.GetArgVal() )
 			{
-				iShowCount--;
+				--iShowCount;
 				fSkip = true;
 			}
 			continue;
@@ -838,7 +838,7 @@ size_t CClient::Cmd_Skill_Menu_Build(RESOURCE_ID_BASE rid, int iSelect, CMenuIte
 			if ( tRet != TRIGRET_RET_DEFAULT )
 				return tRet == TRIGRET_RET_TRUE ? 0 : 1;
 
-			iShowCount++;	// we are good. but continue til the end
+			++iShowCount;	// we are good. but continue til the end
 		}
 		else
 		{
@@ -860,7 +860,7 @@ size_t CClient::Cmd_Skill_Menu_Build(RESOURCE_ID_BASE rid, int iSelect, CMenuIte
 					CMenuItem pReentrantMenuItem;
 					if ( !Cmd_Skill_Menu_Build(g_Cfg.ResourceGetIDType(RES_SKILLMENU, s.GetArgStr()), -2, &pReentrantMenuItem, iMaxSize, fShowMenu, fLimitReached) )
 					{
-						iShowCount--;
+						--iShowCount;
 						fSkip = true;
 					}
 					else
@@ -877,7 +877,7 @@ size_t CClient::Cmd_Skill_Menu_Build(RESOURCE_ID_BASE rid, int iSelect, CMenuIte
 				// There should ALWAYS be a valid id here.
 				if ( !m_pChar->Skill_MakeItem(static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetIndexType(RES_ITEMDEF, s.GetArgStr())), m_Targ_UID, SKTRIG_SELECT) )
 				{
-					iShowCount--;
+					--iShowCount;
 					fSkip = true;
 				}
 				continue;
@@ -1104,7 +1104,7 @@ bool CClient::Cmd_Skill_Tracking(WORD wTrackType, bool bExec)
 			if ( !pCharDef )
 				continue;
 
-			count++;
+			++count;
 			item[count].m_id = static_cast<WORD>(pCharDef->m_trackID);
 			item[count].m_color = 0;
 			item[count].m_sText = pChar->GetName();

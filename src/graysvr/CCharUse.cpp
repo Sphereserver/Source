@@ -40,7 +40,7 @@ bool CChar::Use_CarveCorpse(CItemCorpse *pCorpse)
 
 	size_t iItems = 0;
 	size_t iCount = pCorpseDef->m_BaseResources.GetCount();
-	for ( size_t i = 0; i < iCount; i++ )
+	for ( size_t i = 0; i < iCount; ++i )
 	{
 		RESOURCE_ID rid = pCorpseDef->m_BaseResources[i].GetResourceID();
 		if ( rid.GetResType() != RES_ITEMDEF )
@@ -50,7 +50,7 @@ bool CChar::Use_CarveCorpse(CItemCorpse *pCorpse)
 		if ( id == ITEMID_NOTHING )
 			break;
 
-		iItems++;
+		++iItems;
 		WORD wQty = static_cast<WORD>(pCorpseDef->m_BaseResources[i].GetResQty());
 
 		CItem *pPart = CItem::CreateTemplate(id, NULL, this);
@@ -124,7 +124,7 @@ bool CChar::Use_MoonGate(CItem *pItem)
 		// What gate are we at ?
 		size_t i = 0;
 		size_t iCount = g_Cfg.m_MoonGates.GetCount();
-		for ( ; i < iCount; i++ )
+		for ( ; i < iCount; ++i )
 		{
 			if ( GetTopPoint().GetDist(g_Cfg.m_MoonGates[i]) <= UO_MAP_VIEW_SIZE )
 				break;
@@ -497,7 +497,7 @@ bool CChar::Use_Train_ArcheryButte(CItem *pItem, bool fSetup)
 		if ( WeaponAmmoID )
 		{
 			pItem->m_itArcheryButte.m_AmmoType = WeaponAmmoID;
-			pItem->m_itArcheryButte.m_AmmoCount++;
+			++pItem->m_itArcheryButte.m_AmmoCount;
 		}
 	}
 	else
@@ -716,13 +716,13 @@ bool CChar::Use_Repair(CItem *pItem)
 		if ( !Calc_GetRandVal(6) )
 		{
 			pszText = g_Cfg.GetDefaultMsg(DEFMSG_REPAIR_2);
-			pItem->m_itArmor.m_Hits_Max--;
-			pItem->m_itArmor.m_Hits_Cur--;
+			--pItem->m_itArmor.m_Hits_Max;
+			--pItem->m_itArmor.m_Hits_Cur;
 		}
 		else if ( !Calc_GetRandVal(3) )
 		{
 			pszText = g_Cfg.GetDefaultMsg(DEFMSG_REPAIR_3);
-			pItem->m_itArmor.m_Hits_Cur--;
+			--pItem->m_itArmor.m_Hits_Cur;
 		}
 		else
 			pszText = g_Cfg.GetDefaultMsg(DEFMSG_REPAIR_4);
@@ -1377,7 +1377,7 @@ int CChar::Do_Use_Item(CItem *pItem, bool fLink)
 			if ( id )
 			{
 				ItemBounce(CItem::CreateScript(id, this));
-				pItem->m_itBeeHive.m_honeycount--;
+				--pItem->m_itBeeHive.m_honeycount;
 			}
 			else
 			{
@@ -1438,6 +1438,7 @@ int CChar::Do_Use_Item(CItem *pItem, bool fLink)
 				SysMessageDefault(DEFMSG_ITEMUSE_PORT_LOCKED);
 				return true;
 			}
+			// fall through
 		case IT_PORTCULIS:
 			// Open a metal gate vertically
 			pItem->Use_Portculis();
@@ -1458,6 +1459,7 @@ int CChar::Do_Use_Item(CItem *pItem, bool fLink)
 				if ( !IsPriv(PRIV_GM) )
 					return true;
 			}
+			// fall through
 		case IT_DOOR_OPEN:
 		case IT_DOOR:
 		{
@@ -1483,7 +1485,7 @@ int CChar::Do_Use_Item(CItem *pItem, bool fLink)
 			{
 				// Teleport to plank if I'm outside the ship
 				CPointMap ptTarg = pItem->GetTopPoint();
-				ptTarg.m_z++;
+				++ptTarg.m_z;
 				Spell_Teleport(ptTarg, true, false, false);
 			}
 			return true;
@@ -1495,6 +1497,7 @@ int CChar::Do_Use_Item(CItem *pItem, bool fLink)
 				SysMessageDefault(DEFMSG_ITEMUSE_SHIPSIDE);
 				return true;
 			}
+			// fall through
 		case IT_SHIP_SIDE:
 			// Open the plank
 			pItem->Ship_Plank(true);
@@ -1619,7 +1622,7 @@ bool CChar::Use_Item(CItem *pItem, bool fLink)
 	if ( (result & MASK_RETURN_FOLLOW_LINKS) == MASK_RETURN_FOLLOW_LINKS )
 	{
 		CItem *pLinkItem = pItem;
-		for ( int i = 0; i < 64; i++ )	// dumb protection for endless loop
+		for ( int i = 0; i < 64; ++i )	// dumb protection for endless loop
 		{
 			pLinkItem = pLinkItem->m_uidLink.ItemFind();
 			if ( !pLinkItem || (pLinkItem == pItem) )
@@ -1660,7 +1663,7 @@ bool CChar::ItemEquipArmor(bool fForce)
 	if ( !fForce )
 	{
 		// Block those layers that are already used
-		for ( size_t i = 0; i < COUNTOF(iBestScore); i++ )
+		for ( size_t i = 0; i < COUNTOF(iBestScore); ++i )
 		{
 			pBestArmor[i] = LayerFind(static_cast<LAYER_TYPE>(i));
 			if ( pBestArmor[i] )
@@ -1687,7 +1690,7 @@ bool CChar::ItemEquipArmor(bool fForce)
 	}
 
 	// Equip all the stuff we found
-	for ( size_t i = 0; i < COUNTOF(iBestScore); i++ )
+	for ( size_t i = 0; i < COUNTOF(iBestScore); ++i )
 	{
 		if ( pBestArmor[i] )
 			ItemEquip(pBestArmor[i], this);
