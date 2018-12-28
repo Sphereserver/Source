@@ -89,7 +89,7 @@ void CGString::Empty(bool bTotal)
 			gMemAmount -= m_iMaxLength;
 #endif
 			delete[] m_pchData;
-			m_pchData = NULL;
+			m_pchData = '\0';
 			m_iMaxLength = 0;
 		}
 	}
@@ -121,8 +121,7 @@ void CGString::SetLength(size_t iNewLength)
 		m_pchData = pNewData;
 	}
 	m_iLength = iNewLength;
-	if ( m_pchData )
-		m_pchData[m_iLength] = '\0';
+	m_pchData[m_iLength] = '\0';
 }
 
 void CGString::Copy(LPCTSTR pszStr)
@@ -182,15 +181,13 @@ CGString::CGString()
 
 CGString::CGString(LPCTSTR pStr)
 {
-	m_pchData = NULL;
-	m_iLength = m_iMaxLength = 0;
+	Init();
 	Copy(pStr);
 }
 
 CGString::CGString(const CGString &s)
 {
-	m_pchData = NULL;
-	m_iLength = m_iMaxLength = 0;
+	Init();
 	Copy(s.GetPtr());
 }
 
