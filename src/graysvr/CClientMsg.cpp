@@ -2617,6 +2617,8 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 						m_TooltipData.Add(new CClientTooltip(1076253)); // NO-DROP
 						m_TooltipData.Add(new CClientTooltip(1076255)); // NO-TRADE
 					}
+					if ( pItem->IsAttr(ATTR_NOREPAIR) )
+						m_TooltipData.Add(new CClientTooltip(1151782)); // cannot be repaired
 
 					if ( g_Cfg.m_iFeatureML & FEATURE_ML_UPDATE )
 					{

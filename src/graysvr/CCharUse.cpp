@@ -180,7 +180,7 @@ bool CChar::Use_Kindling(CItem *pItem)
 	}
 
 	pItem->SetID(ITEMID_CAMPFIRE);
-	pItem->SetAttr(ATTR_MOVE_NEVER|ATTR_CAN_DECAY);
+	pItem->SetAttr(ATTR_MOVE_NEVER|ATTR_DECAY);
 	pItem->SetTimeout((4 + pItem->GetAmount()) * 60 * TICK_PER_SEC);
 	pItem->SetAmount(1);	// all kindling is set to one fire
 	pItem->m_itLight.m_pattern = LIGHT_LARGEST;

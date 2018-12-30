@@ -1512,7 +1512,7 @@ bool CChar::Skill_Mining_Smelt(CItem *pItemOre, CItem *pItemTarg)
 	pItemEffect->MoveToDecay(pt, TICK_PER_SEC);
 
 	UpdateDir(m_Act_p);
-	if ( pItemOre->IsAttr(ATTR_MAGIC|ATTR_BLESSED|ATTR_BLESSED2) )	// not magic items
+	if ( pItemOre->IsAttr(ATTR_MAGIC) )	// not magic items
 	{
 		SysMessageDefault(DEFMSG_MINING_FIRE);
 		return false;

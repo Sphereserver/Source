@@ -96,33 +96,28 @@ public:
 	CGrayUID m_uidLink;			// linked to this other object in the world (if this link is set but not valid, the object will be deleted)
 	BYTE m_speed;
 
-	#define ATTR_IDENTIFIED		0x0000001	// This is the identified name ???
-	#define ATTR_DECAY			0x0000002	// Timer currently set to decay
-	#define ATTR_NEWBIE			0x0000004	// Not lost on death or sellable ?
-	#define ATTR_MOVE_ALWAYS	0x0000008	// Always movable (else Default as stored in client) (even if MUL says not movalble) NEVER DECAYS !
-	#define ATTR_MOVE_NEVER		0x0000010	// Never movable (else Default as stored in client) NEVER DECAYS !
-	#define ATTR_MAGIC			0x0000020	// DON'T SET THIS WHILE WORN! This item is magic as apposed to marked or markable
-	#define ATTR_OWNED			0x0000040	// This is owned by the town. You need to steal it. NEVER DECAYS !
-	#define ATTR_INVIS			0x0000080	// Gray hidden item (to GM's or owners?)
-	#define ATTR_CURSED			0x0000100
-	#define ATTR_CURSED2		0x0000200	// cursed damned unholy
-	#define ATTR_BLESSED		0x0000400
-	#define ATTR_BLESSED2		0x0000800	// blessed sacred holy
-	#define ATTR_FORSALE		0x0001000	// For sale on a vendor
-	#define ATTR_STOLEN			0x0002000	// The item is hot. m_uidLink = previous owner
-	#define ATTR_CAN_DECAY		0x0004000	// This item can decay. but it would seem that it would not (ATTR_MOVE_NEVER etc)
-	#define ATTR_STATIC			0x0008000	// WorldForge merge marker. (used for statics saves)
-	#define ATTR_EXCEPTIONAL	0x0010000	// Is Exceptional
-	#define ATTR_ENCHANTED		0x0020000	// Is Enchanted
-	#define ATTR_IMBUED			0x0040000	// Is Imbued
-	#define ATTR_QUESTITEM		0x0080000	// Is Quest Item
-	#define ATTR_INSURED		0x0100000	// Is Insured
-	#define ATTR_NODROPTRADE	0x0200000	// No-drop/trade
-	#define ATTR_ARTIFACT		0x0400000	// Artifact
-	#define ATTR_LOCKEDDOWN		0x0800000	// Is Locked Down
-	#define ATTR_SECURE			0x1000000	// Is Secure
-	#define ATTR_REFORGED		0x2000000	// Is Runic Reforged
-	#define ATTR_OPENED			0x4000000	// Is Door Opened
+	#define ATTR_IDENTIFIED		0x0000001	// Item got identified by ItemID skill and will reveal its magic properties on name (obsolete, only used when client tooltip feature is disabled)
+	#define ATTR_DECAY			0x0000002	// Item dropped on ground will decay after some time
+	#define ATTR_NEWBIE			0x0000004	// Item will stay on character body when die (same as ATTR_BLESSED)
+	#define ATTR_MOVE_ALWAYS	0x0000008	// Will turn static item into movable item
+	#define ATTR_MOVE_NEVER		0x0000010	// Will turn movable item into static item
+	#define ATTR_MAGIC			0x0000020	// Item might have some magic effects when equipped (eg: spell memories, armors, weapons). DON'T SET THIS WHILE WORN!
+	#define ATTR_OWNED			0x0000040	// Item is owned by someone (item LINK = owner UID)
+	#define ATTR_INVIS			0x0000080	// Item is invisible (can be only seen by GMs and chars specified on TAG.SeenBy_[CharUID])
+	#define ATTR_CURSED			0x0000100	// Item will fall to character corpse when die (can't be blessed/insured)
+	#define ATTR_BLESSED		0x0000400	// Item will stay on character body when die
+	#define ATTR_STATIC			0x0008000	// Item will be locked on ground and must be saved separately on world static save (WorldForge merge marker)
+	#define ATTR_EXCEPTIONAL	0x0010000	// Item is exceptional
+	#define ATTR_ENCHANTED		0x0020000	// Item is enchanted
+	#define ATTR_IMBUED			0x0040000	// Item is imbued
+	#define ATTR_QUESTITEM		0x0080000	// Item is used on quests
+	#define ATTR_INSURED		0x0100000	// Item is insured (same as ATTR_BLESSED, but the effect only lasts for a single death)
+	#define ATTR_NODROPTRADE	0x0200000	// Item can't be dropped on ground or trade window
+	#define ATTR_NOREPAIR		0x0400000	// Item can't be repaired
+	#define ATTR_LOCKEDDOWN		0x0800000	// Item is locked down on house
+	#define ATTR_SECURE			0x1000000	// Item is locked down and secured on house
+	#define ATTR_REFORGED		0x2000000	// Item is runic reforged
+	#define ATTR_OPENED			0x4000000	// Door is opened (only used when DOOROPENID is set on the door)
 	DWORD m_Attr;
 
 	int m_StrengthBonus;

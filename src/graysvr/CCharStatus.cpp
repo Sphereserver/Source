@@ -1818,7 +1818,7 @@ bool CChar::CanMove(CItem *pItem, bool fMsg) const
 		}
 
 		// Can't move/steal newbie items from another char
-		if ( pItem->IsAttr(ATTR_NEWBIE|ATTR_CURSED|ATTR_CURSED2|ATTR_BLESSED2) )
+		if ( pItem->IsAttr(ATTR_NEWBIE|ATTR_CURSED|ATTR_BLESSED) )
 		{
 			const CObjBaseTemplate *pObjTop = pItem->GetTopLevelObj();
 			if ( pObjTop->IsItem() )
@@ -1833,7 +1833,7 @@ bool CChar::CanMove(CItem *pItem, bool fMsg) const
 			}
 			else if ( pObjTop->IsChar() && (pObjTop != this) )
 			{
-				if ( pItem->IsAttr(ATTR_NEWBIE) && g_Cfg.m_bAllowNewbTransfer )
+				if ( pItem->IsAttr(ATTR_NEWBIE|ATTR_BLESSED) && g_Cfg.m_bAllowNewbTransfer )
 				{
 					const CChar *pPet = dynamic_cast<const CChar *>(pObjTop);
 					if ( pPet && (pPet->NPC_PetGetOwner() != this) )
@@ -1843,7 +1843,7 @@ bool CChar::CanMove(CItem *pItem, bool fMsg) const
 					return false;
 			}
 
-			if ( pItem->IsAttr(ATTR_CURSED|ATTR_CURSED2) )
+			if ( pItem->IsAttr(ATTR_CURSED) )
 			{
 				if ( fMsg )
 					SysMessagef("%s %s", pItem->GetName(), g_Cfg.GetDefaultMsg(DEFMSG_CANTMOVE_CURSED));

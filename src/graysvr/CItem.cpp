@@ -652,14 +652,9 @@ int CItem::FixWeirdness()
 			if ( m_type == IT_EQ_MEMORY_OBJ || m_type == IT_SPELL )
 				return 0;	// get rid of it.	(this is not an ERROR per se)
 
-			if ( IsAttr(ATTR_STOLEN) )
-				m_uidLink.InitUID();	// the item has been laundered.
-			else
-			{
-				DEBUG_ERR(("Item '%s' has bad link to 0%lx\n", GetName(), static_cast<DWORD>(m_uidLink)));
-				m_uidLink.InitUID();
-				return 0x2205;	// get rid of it.
-			}
+			DEBUG_ERR(("Item '%s' has bad link to 0%lx\n", GetName(), static_cast<DWORD>(m_uidLink)));
+			m_uidLink.InitUID();
+			return 0x2205;	// get rid of it.
 		}
 	}
 
@@ -671,14 +666,6 @@ int CItem::FixWeirdness()
 		else if ( !pItemDef->IsStackableType() && !IsType(IT_CORPSE) && !IsType(IT_EQ_MEMORY_OBJ) )		// stacks of these should not exist.
 			SetAmount(1);
 	}
-
-	// Check Attributes
-
-	//	allow bless/curse for memory items only, and of course deny both blessed+cursed
-	if ( !IsType(IT_EQ_MEMORY_OBJ) )
-		ClrAttr(ATTR_CURSED|ATTR_CURSED2|ATTR_BLESSED|ATTR_BLESSED2);
-	else if ( IsAttr(ATTR_CURSED|ATTR_CURSED2) && IsAttr(ATTR_BLESSED|ATTR_BLESSED2) )
-		ClrAttr(ATTR_CURSED|ATTR_CURSED2|ATTR_BLESSED|ATTR_BLESSED2);
 
 	if ( IsMovableType() )
 	{
@@ -701,7 +688,7 @@ int CItem::FixWeirdness()
 
 			if ( GetID() == ITEMID_DEATHSHROUD )
 			{
-				if ( IsAttr(ATTR_MAGIC) && IsAttr(ATTR_NEWBIE) )
+				if ( IsAttr(ATTR_MAGIC) && IsAttr(ATTR_NEWBIE|ATTR_BLESSED) )
 					break;	// special
 				if ( !pChar->IsStatFlag(STATF_DEAD) )
 					return 0x2207;	// get rid of it.
@@ -1379,35 +1366,18 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 		len += sprintf( pTemp+len, pszTitle, GetAmount());
 	}
 
-	if ( fIdentified && IsAttr(ATTR_CURSED|ATTR_CURSED2|ATTR_BLESSED|ATTR_BLESSED2|ATTR_MAGIC))
+	if ( fIdentified )
 	{
 		bool fTitleSet = false;
-		switch ( m_Attr & ( ATTR_CURSED|ATTR_CURSED2|ATTR_BLESSED|ATTR_BLESSED2))
+		if ( IsAttr(ATTR_BLESSED) )
 		{
-			case (ATTR_CURSED|ATTR_CURSED2):
-				pszTitle = g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_UNHOLY );
-				fTitleSet = true;
-				break;
-			case ATTR_CURSED2:
-				pszTitle = g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_DAMNED );
-				fTitleSet = true;
-				break;
-			case ATTR_CURSED:
-				pszTitle = g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_CURSED );
-				fTitleSet = true;
-				break;
-			case (ATTR_BLESSED|ATTR_BLESSED2):
-				pszTitle = g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_HOLY );
-				fTitleSet = true;
-				break;
-			case ATTR_BLESSED2:
-				pszTitle = g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_SACRED );
-				fTitleSet = true;
-				break;
-			case ATTR_BLESSED:
-				pszTitle = g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_BLESSED );
-				fTitleSet = true;
-				break;
+			pszTitle = g_Cfg.GetDefaultMsg(DEFMSG_ITEMTITLE_BLESSED);
+			fTitleSet = true;
+		}
+		else if ( IsAttr(ATTR_CURSED) )
+		{
+			pszTitle = g_Cfg.GetDefaultMsg(DEFMSG_ITEMTITLE_CURSED);
+			fTitleSet = true;
 		}
 		if ( fTitleSet )
 		{
@@ -1424,8 +1394,9 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 				len = strcpylen( pTemp, pszTitle );
 			}
 
-			if ( !IsTypeArmorWeapon() && (strnicmp( pszName, "MAGIC", 5 ) != 0))		// don't put "magic" prefix on armor/weapons and names already starting with "magic"
-				len += strcpylen( pTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_MAGIC ) );
+			LPCTSTR pszMagic = g_Cfg.GetDefaultMsg(DEFMSG_ITEMTITLE_MAGIC);
+			if ( !IsTypeArmorWeapon() && (strnicmp(pszName, pszMagic, strlen(pszMagic)) != 0) )		// don't put "magic" prefix on armor/weapons and names already starting with "magic"
+				len += strcpylen(pTemp + len, pszMagic);
 		}
 	}
 
@@ -1527,21 +1498,6 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 
 		default:
 			break;
-	}
-
-	
-	if ( IsAttr(ATTR_STOLEN))
-	{
-		// Who is it stolen from ?
-		const CChar * pChar = m_uidLink.CharFind();
-		if ( pChar )
-		{
-			len += sprintf( pTemp+len, " (%s %s)", g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_STOLEN_FROM ), pChar->GetName());
-		}
-		else
-		{
-			len += sprintf( pTemp+len, " (%s)", g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_STOLEN ) );
-		}
 	}
 
 	return( pTemp );
@@ -2945,8 +2901,8 @@ bool CItem::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from s
 		{
 			if (!pCharSrc)
 				return false;
-			CItem * pTarg = static_cast<CItem*>(static_cast<CGrayUID>(s.GetArgVal()).ItemFind());
-			return pCharSrc->Skill_Mining_Smelt(this, pTarg ? pTarg : NULL);
+			CItem *pTarg = static_cast<CGrayUID>(s.GetArgVal()).ItemFind();
+			return pCharSrc->Skill_Mining_Smelt(this, pTarg);
 		}
 
 		default:
@@ -3923,6 +3879,8 @@ bool CItem::Armor_IsRepairable() const
 	ADDTOCALLSTACK("CItem::Armor_IsRepairable");
 	// Check if this item is repairable
 
+	if ( IsAttr(ATTR_NOREPAIR) )
+		return false;
 	if ( Can(CAN_I_REPAIR) )
 		return true;
 
@@ -4114,8 +4072,7 @@ CItem *CItem::Weapon_FindRangedAmmo(RESOURCE_ID_BASE id)
 	if ( pVarCont )
 	{
 		// Search container using UID
-		CGrayUID uidCont = static_cast<CGrayUID>(pVarCont->GetValNum());
-		CContainer *pCont = dynamic_cast<CContainer *>(uidCont.ItemFind());
+		CContainer *pCont = dynamic_cast<CContainer *>(static_cast<CGrayUID>(pVarCont->GetValNum()).ItemFind());
 		if ( pCont )
 			return pCont->ContentFind(id);
 

@@ -1317,3 +1317,8 @@ Fixed: VendorTradeTitle feature on sphere.ini not working correctly.
 27-12-2018, Coruja
 Fixed: Function PILOT on ships making the ship move faster than spoken commands.
 Fixed: Recall spell on ship keys not working correctly.
+
+29-12-2018, Coruja
+[sphere_defs.scp]: Updated items ATTR flag list:
+	-Removed unused 'attr_cursed2', 'attr_blessed2', 'attr_forsale', 'attr_stolen', 'attr_can_decay' and 'attr_artifact'
+	-Added new 'attr_norepair'

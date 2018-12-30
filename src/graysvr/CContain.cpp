@@ -318,7 +318,7 @@ void CContainer::ContentsDump(const CPointMap &pt, DWORD dwAttrLeave)
 {
 	ADDTOCALLSTACK("CContainer::ContentsDump");
 	// Just dump the contents onto the ground
-	dwAttrLeave |= (ATTR_NEWBIE|ATTR_MOVE_NEVER|ATTR_CURSED2|ATTR_BLESSED2);
+	dwAttrLeave |= (ATTR_NEWBIE|ATTR_MOVE_NEVER|ATTR_BLESSED);
 	CItem *pItemNext = NULL;
 	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItemNext )
 	{
@@ -341,7 +341,7 @@ void CContainer::ContentsTransfer(CItemContainer *pCont, bool fNoNewbie)
 	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItemNext )
 	{
 		pItemNext = pItem->GetNext();
-		if ( fNoNewbie && pItem->IsAttr(ATTR_NEWBIE|ATTR_MOVE_NEVER|ATTR_CURSED2|ATTR_BLESSED2) )
+		if ( fNoNewbie && pItem->IsAttr(ATTR_NEWBIE|ATTR_MOVE_NEVER|ATTR_BLESSED) )
 			continue;
 		pCont->ContentAdd(pItem);
 	}
