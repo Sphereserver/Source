@@ -1322,3 +1322,7 @@ Fixed: Recall spell on ship keys not working correctly.
 [sphere_defs.scp]: Updated items ATTR flag list:
 	-Removed unused 'attr_cursed2', 'attr_blessed2', 'attr_forsale', 'attr_stolen', 'attr_can_decay' and 'attr_artifact'
 	-Added new 'attr_norepair'
+
+30-12-2018, Coruja
+Added: Missing functionality of item ATTR flags 'attr_blessed', 'attr_insured' and 'attr_nodroptrade'
+[sphere_msgs.scp]: Added new message 'item_cantdroptrade'

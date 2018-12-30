@@ -244,6 +244,23 @@ void CClient::Event_Item_Drop(CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, BY
 		return;
 	}
 
+	if ( pItem->IsAttr(ATTR_NODROPTRADE) )
+	{
+		// These items can be dropped only on player backpack or trash can
+		CItem *pPack = dynamic_cast<CItem *>(pObjOn);
+		if ( pPack && pPack->IsType(IT_TRASH_CAN) )
+		{
+			addSound(pItem->GetDropSound(pObjOn));
+			pItem->Delete();
+			return;
+		}
+		else if ( (pPack != m_pChar->LayerFind(LAYER_PACK)) && !IsPriv(PRIV_GM) )
+		{
+			SysMessageDefault(DEFMSG_ITEM_CANTDROPTRADE);
+			return Event_Item_Drop_Fail(pItem);
+		}
+	}
+
 	if ( pObjOn )
 	{
 		// Dropped over an object
@@ -279,7 +296,7 @@ void CClient::Event_Item_Drop(CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, BY
 			{
 				pItem->ClrAttr(ATTR_OWNED);
 				if ( !g_Cfg.m_bAllowNewbTransfer )
-					pItem->ClrAttr(ATTR_NEWBIE);
+					pItem->ClrAttr(ATTR_NEWBIE|ATTR_BLESSED|ATTR_INSURED);
 			}
 
 			CItemContainer *pBankBox = pCharTop->GetContainerCreate(LAYER_BANKBOX);

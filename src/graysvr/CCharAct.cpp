@@ -530,20 +530,20 @@ void CChar::DropAll(CItemContainer *pDest, DWORD dwAttr)
 	UnEquipAllItems(pDest);
 }
 
-// Drop all equipped items to an giver container
+// Drop all equipped items to an given container
 void CChar::UnEquipAllItems(CItemContainer *pDest, bool bLeaveHands)
 {
 	ADDTOCALLSTACK("CChar::UnEquipAllItems");
-	if ( GetCount() <= 0 )
-		return;
 
 	CItemContainer *pPack = GetContainerCreate(LAYER_PACK);
+	bool fDestCorpse = (pDest && pDest->IsType(IT_CORPSE));
 
 	CItem *pItemNext = NULL;
+	LAYER_TYPE layer = LAYER_NONE;
 	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItemNext )
 	{
 		pItemNext = pItem->GetNext();
-		LAYER_TYPE layer = pItem->GetEquipLayer();
+		layer = pItem->GetEquipLayer();
 
 		switch ( layer )
 		{
@@ -570,7 +570,7 @@ void CChar::UnEquipAllItems(CItemContainer *pDest, bool bLeaveHands)
 			case LAYER_BEARD:
 			{
 				// Copy hair and beard to corpse
-				if ( pDest && pDest->IsType(IT_CORPSE) )
+				if ( fDestCorpse )
 				{
 					CItem *pDupe = CItem::CreateDupeItem(pItem);
 					pDest->ContentAdd(pDupe);
@@ -597,18 +597,27 @@ void CChar::UnEquipAllItems(CItemContainer *pDest, bool bLeaveHands)
 				break;
 			}
 		}
-		if ( pDest && !pItem->IsAttr(ATTR_NEWBIE|ATTR_MOVE_NEVER|ATTR_BLESSED|ATTR_INSURED|ATTR_NODROPTRADE) )
+
+		// Move item to given dest container
+		if ( pDest )
 		{
-			// Move item to dest (corpse usually)
-			pDest->ContentAdd(pItem);
-			if ( pDest->IsType(IT_CORPSE) )
-				pItem->SetContainedLayer(static_cast<BYTE>(layer));
+			if ( fDestCorpse && pItem->IsAttr(ATTR_INSURED) )
+			{
+				pItem->ClrAttr(ATTR_INSURED);
+				pItem->UpdatePropertyFlag();
+			}
+			else if ( !pItem->IsAttr(ATTR_NEWBIE|ATTR_MOVE_NEVER|ATTR_BLESSED) )
+			{
+				pDest->ContentAdd(pItem);
+				if ( fDestCorpse )
+					pItem->SetContainedLayer(static_cast<BYTE>(layer));
+				continue;
+			}
 		}
-		else if ( pPack )
-		{
-			// Move item to char pack
+
+		// Move item to char pack
+		if ( pPack )
 			pPack->ContentAdd(pItem);
-		}
 	}
 }
 

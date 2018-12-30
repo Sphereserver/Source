@@ -87,7 +87,7 @@ bool CItemVendable::IsValidSaleItem(bool fBuyFromVendor) const
 			DEBUG_ERR(("Vendor uid=0%lx selling unmovable item '%s'\n", static_cast<DWORD>(GetTopLevelObj()->GetUID()), GetResourceName()));
 		return false;
 	}
-	if ( !fBuyFromVendor && IsAttr(ATTR_NEWBIE|ATTR_MOVE_NEVER) )
+	if ( !fBuyFromVendor && IsAttr(ATTR_NEWBIE|ATTR_MOVE_NEVER|ATTR_BLESSED) )
 		return false;
 	if ( IsType(IT_COIN) )
 		return false;
