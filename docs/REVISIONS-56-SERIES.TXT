@@ -1325,4 +1325,5 @@ Fixed: Recall spell on ship keys not working correctly.
 
 30-12-2018, Coruja
 Added: Missing functionality of item ATTR flags 'attr_blessed', 'attr_insured' and 'attr_nodroptrade'
-[sphere_msgs.scp]: Added new message 'item_cantdroptrade'
+Changed: Updated REPAIR function on craft skills.
+[sphere_msgs.scp]: Updated 'repair_*' messages and added new 'item_cantdroptrade'
