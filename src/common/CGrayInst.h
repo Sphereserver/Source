@@ -22,13 +22,15 @@ public:
 	CGrayInstall()
 	{
 		memset(m_FileFormat, 0, sizeof(m_FileFormat));
+		m_IsMultiUopFormat = false;
 		memset(m_IsMapUopFormat, 0, sizeof(m_IsMapUopFormat));
 		memset(m_UopMapAddress, 0, sizeof(m_UopMapAddress));
 	};
 
 public:
 	VERFILE_FORMAT m_FileFormat[VERFILE_QTY];	// File format versions
-	bool m_IsMapUopFormat[256];					// True for maps that are uop format
+	bool m_IsMultiUopFormat;					// True when multi file is MultiCollection.uop instead multi.mul (STILL INCOMPLETE)
+	bool m_IsMapUopFormat[256];					// True when map file is map[x]LegacyMUL.uop instead map[x].mul
 	MapAddress m_UopMapAddress[256][256];		// For UOP parsing (note: might need to be ajusted later if format changes)
 
 	CGFile m_File[VERFILE_QTY];	// List of files to access

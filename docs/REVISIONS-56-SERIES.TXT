@@ -1327,3 +1327,11 @@ Fixed: Recall spell on ship keys not working correctly.
 Added: Missing functionality of item ATTR flags 'attr_blessed', 'attr_insured' and 'attr_nodroptrade'
 Changed: Updated REPAIR function on craft skills.
 [sphere_msgs.scp]: Updated 'repair_*' messages and added new 'item_cantdroptrade'
+
+31-12-2018, Coruja
+[items/multis/multis_foundations.scp]: Added new TOL house foundations
+[items/multis/multis_houses.scp]: Added new TOL keeps/castles
+[items/sphere_item_artifacts.scp]: Misc improvements and added new Artifacts of the Cult
+[items/sphere_item_artifacts_minor.scp]: Misc improvements
+[items/sphere_item_artifacts_tokuno.scp]: Misc improvements
+[items/sphere_item_magic_wands.scp]: Removed unused file

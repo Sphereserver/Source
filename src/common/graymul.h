@@ -1712,8 +1712,8 @@ struct CUOMultiItemRec2 // (Multi.mul, High Seas+)
 	signed short m_dx;	// signed delta.
 	signed short m_dy;
 	signed short m_dz;
-	DWORD m_visible;	// 0 or 1 (non-visible items are things like doors and signs)
-	DWORD m_unknown;	// unknown data
+	DWORD m_visible;	// 0 or 1 (non-static item, like doors and signs)
+	DWORD m_shipAccess;	// 0 or 1 (rope item used to enter/exit galleons)
 
 	ITEMID_TYPE GetDispID() const
 	{

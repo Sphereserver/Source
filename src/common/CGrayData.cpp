@@ -332,55 +332,61 @@ size_t CGrayMulti::Load( MULTI_TYPE id )
 	ADDTOCALLSTACK("CGrayMulti::Load");
 	// Just load the whole thing.
 
-	CUOIndexRec Index;
-	if ( (id >= MULTI_QTY) || !g_Install.ReadMulIndex(VERFILE_MULTIIDX, VERFILE_MULTI, id, Index) )
+	if ( id >= MULTI_QTY )
 		return 0;
 
 	Release();
 	InitCacheTime();		// This is invalid !
 	m_id = id;
 
-	switch ( g_Install.GetMulFormat( VERFILE_MULTIIDX ) )
+	//if ( g_Install.m_IsMultiUopFormat )
+	//	TO-DO: add support to read new multi UOP format here (MultiCollection.uop)
+	//else
 	{
-		case VERFORMAT_HIGHSEAS: // high seas multi format (CUOMultiItemRec2)
-			m_iItemQty = Index.GetBlockLength() / sizeof(CUOMultiItemRec2);
-			m_pItems = new CUOMultiItemRec2 [ m_iItemQty ];
-			ASSERT( m_pItems );
+		CUOIndexRec index;
+		if ( !g_Install.ReadMulIndex(VERFILE_MULTIIDX, VERFILE_MULTI, id, index) )
+			return 0;
 
-			ASSERT( (sizeof(m_pItems[0]) * m_iItemQty) >= Index.GetBlockLength() );
-			if ( ! g_Install.ReadMulData( VERFILE_MULTI, Index, static_cast <CUOMultiItemRec2 *>(m_pItems) ))
+		if ( g_Install.GetMulFormat(VERFILE_MULTIIDX) == VERFORMAT_HIGHSEAS )
+		{
+			// High Seas multi format (CUOMultiItemRec2)
+			m_iItemQty = index.GetBlockLength() / sizeof(CUOMultiItemRec2);
+			m_pItems = new CUOMultiItemRec2[m_iItemQty];
+			ASSERT(m_pItems);
+
+			ASSERT(m_iItemQty * sizeof(m_pItems[0]) >= index.GetBlockLength());
+			if ( !g_Install.ReadMulData(VERFILE_MULTI, index, static_cast<void *>(m_pItems)) )
 				return 0;
-			break;
+		}
+		else
+		{
+			// Old multi format (CUOMultiItemRec)
+			m_iItemQty = index.GetBlockLength() / sizeof(CUOMultiItemRec);
+			m_pItems = new CUOMultiItemRec2[m_iItemQty];
+			ASSERT(m_pItems);
 
-		case VERFORMAT_ORIGINAL: // old format (CUOMultiItemRec)
-		default:
-			m_iItemQty = Index.GetBlockLength() / sizeof(CUOMultiItemRec);
-			m_pItems = new CUOMultiItemRec2 [ m_iItemQty ];
-			ASSERT( m_pItems );
-
-			CUOMultiItemRec* pItems = new CUOMultiItemRec[m_iItemQty];
-			ASSERT( (sizeof(pItems[0]) * m_iItemQty) >= Index.GetBlockLength() );
-			if ( ! g_Install.ReadMulData( VERFILE_MULTI, Index, static_cast <CUOMultiItemRec *>(pItems) ))
+			CUOMultiItemRec *pItems = new CUOMultiItemRec[m_iItemQty];
+			ASSERT(m_iItemQty * sizeof(pItems[0]) >= index.GetBlockLength());
+			if ( !g_Install.ReadMulData(VERFILE_MULTI, index, static_cast<void *>(pItems)) )
 			{
 				delete[] pItems;
 				return 0;
 			}
 
-			// copy to new format
-			for (size_t i = 0; i < m_iItemQty; i++)
+			// Copy to new format
+			for ( size_t i = 0; i < m_iItemQty; ++i )
 			{
 				m_pItems[i].m_wTileID = pItems[i].m_wTileID;
 				m_pItems[i].m_dx = pItems[i].m_dx;
 				m_pItems[i].m_dy = pItems[i].m_dy;
 				m_pItems[i].m_dz = pItems[i].m_dz;
 				m_pItems[i].m_visible = pItems[i].m_visible;
-				m_pItems[i].m_unknown = 0;
+				m_pItems[i].m_shipAccess = 0;
 			}
-
 			delete[] pItems;
-			break;
+		}
 	}
 
 	HitCacheTime();
-	return( m_iItemQty );
+	return m_iItemQty;
 }

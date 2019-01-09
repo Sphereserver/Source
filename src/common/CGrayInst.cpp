@@ -150,7 +150,7 @@ bool CGrayInstall::OpenFile(VERFILE_TYPE i)
 	if ( !pFile->GetFilePath().IsEmpty() && pFile->Open(pFile->GetFilePath(), OF_READ|OF_SHARE_DENY_WRITE) )
 		return true;
 
-	LPCTSTR pszFileName = GetBaseFileName(static_cast<VERFILE_TYPE>(i));
+	LPCTSTR pszFileName = GetBaseFileName(i);
 	if ( !pszFileName )
 		return false;
 
@@ -346,6 +346,18 @@ VERFILE_TYPE CGrayInstall::OpenFiles(DWORD dwMask)
 				}
 				break;
 			}
+			/*case VERFILE_MULTIIDX:
+			{
+				// If MultiCollection.uop is found, use it instead multi.idx + multi.mul (STILL INCOMPLETE)
+				OpenFile(m_File[VERFILE_MULTI], "MultiCollection.uop", OF_READ|OF_SHARE_DENY_WRITE);
+				if ( m_File[VERFILE_MULTI].IsFileOpen() )
+				{
+					m_IsMultiUopFormat = true;
+					++i;	// skip VERFILE_MULTI
+					break;
+				}
+				// fall through
+			}*/
 			default:
 			{
 				if ( !OpenFile(static_cast<VERFILE_TYPE>(i)) )
