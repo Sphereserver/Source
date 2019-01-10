@@ -886,7 +886,6 @@ bool PacketResynchronize::onReceive(NetState* net)
 	new PacketCharacter(client, pChar);
 	client->addPlayerUpdate();
 	client->addPlayerSee(NULL);
-	net->m_sequence = 0;
 	return true;
 }
 
@@ -902,26 +901,9 @@ PacketDeathStatus::PacketDeathStatus() : Packet(2)
 {
 }
 
-size_t PacketDeathStatus::getExpectedLength(NetState* net, Packet* packet)
-{
-	ADDTOCALLSTACK("PacketDeathStatus::getExpectedLength");
-	UNREFERENCED_PARAMETER(net);
-
-	// different size depending on client
-	size_t pos = packet->getPosition();
-	packet->skip(1);
-	DEATH_MODE_TYPE mode = static_cast<DEATH_MODE_TYPE>(readByte());
-	packet->seek(pos);
-
-	if (mode != DEATH_MODE_MANIFEST)
-		return 2;
-
-	return 7;
-}
-
 bool PacketDeathStatus::onReceive(NetState* net)
 {
-	ADDTOCALLSTACK("PacketDeathStatus::onReceive");  
+	ADDTOCALLSTACK("PacketDeathStatus::onReceive");
 
 	CClient* client = net->m_client;
 	ASSERT(client);
@@ -929,22 +911,14 @@ bool PacketDeathStatus::onReceive(NetState* net)
 	if (!ghost)
 		return false;
 
-	DEATH_MODE_TYPE mode = static_cast<DEATH_MODE_TYPE>(readByte());
+	BYTE mode = readByte();
 	if (mode != DEATH_MODE_MANIFEST)
 	{
 		// Play as a ghost.
 		client->SysMessage("You are a ghost");
 		client->addSound(0x17f);
 		client->addPlayerStart(ghost); // Do practically a full reset (to clear death menu)
-		return true;
 	}
-
-	// toggle manifest mode (more data)
-	skip(1); // unknown
-	bool manifest = readBool();
-	skip(3); // unknown
-
-	client->Event_CombatMode(manifest);
 	return true;
 }
 
@@ -2216,7 +2190,7 @@ bool PacketSystemInfo::onReceive(NetState* net)
 	ADDTOCALLSTACK("PacketSystemInfo::onReceive");
 	UNREFERENCED_PARAMETER(net);
 
-	skip(148);
+	// Ignore this packet
 	return true;
 }
 
@@ -2813,11 +2787,11 @@ bool PacketScreenSize::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 
-	DWORD x = readInt32();
-	DWORD y = readInt32();
+	skip(2);
+	WORD x = readInt16();
+	WORD y = readInt16();
+	skip(2);
 	
-	DEBUG_MSG(("0x%lx - 0x%lx (%ld-%ld)\n", x, y, x, y));
-
 	client->SetScreenSize(x, y);
 	return true;
 }
@@ -3050,6 +3024,7 @@ bool PacketStatusClose::onReceive(NetState* net)
 	ADDTOCALLSTACK("PacketStatusClose::onReceive");
 	UNREFERENCED_PARAMETER(net);
 
+	// Ignore this packet
 	return true;
 }
 
@@ -3119,8 +3094,7 @@ bool PacketClientInfo::onReceive(NetState* net)
 	ADDTOCALLSTACK("PacketClientInfo::onReceive");
 	UNREFERENCED_PARAMETER(net);
 
-	skip(1); // 0x0A
-	skip(4); // flags
+	// Ignore this packet
 	return true;
 }
 
@@ -3358,6 +3332,7 @@ bool PacketAntiCheat::onReceive(NetState* net)
 	ADDTOCALLSTACK("PacketAntiCheat::onReceive");
 	UNREFERENCED_PARAMETER(net);
 
+	// Ignore this packet
 	return true;
 }
 
@@ -4259,32 +4234,7 @@ bool PacketHardwareInfo::onReceive(NetState* net)
 	ADDTOCALLSTACK("PacketHardwareInfo::onReceive");
 	UNREFERENCED_PARAMETER(net);
 
-	skip(1); // client type
-	skip(4); // instance id
-	skip(4); // os major
-	skip(4); // os minor
-	skip(4); // os revision
-	skip(1); // cpu manufacturer
-	skip(4); // cpu family
-	skip(4); // cpu model
-	skip(4); // cpu clock speed
-	skip(1); // cpu quantity
-	skip(4); // physical memory
-	skip(4); // screen width
-	skip(4); // screen height
-	skip(4); // screen depth
-	skip(2); // directx major
-	skip(2); // directx minor
-	skip(64 * sizeof(WCHAR)); // video card description
-	skip(4); // video card vendor id
-	skip(4); // video card device id
-	skip(4); // video card memory
-	skip(1); // distribution
-	skip(1); // clients running
-	skip(1); // clients installed
-	skip(1); // clients partial installed
-	skip(4 * sizeof(WCHAR)); // language
-	skip(32 * sizeof(WCHAR)); // unknown
+	// Ignore this packet
 	return true;
 }
 
@@ -4364,11 +4314,7 @@ bool PacketRemoveUIHighlight::onReceive(NetState* net)
 	ADDTOCALLSTACK("PacketRemoveUIHighlight::onReceive");
 	UNREFERENCED_PARAMETER(net);
 
-	skip(4); // serial
-	skip(2); // ui id
-	skip(4); // destination serial
-	skip(1); // 1
-	skip(1); // 1
+	// Ignore this packet
 	return true;
 }
 

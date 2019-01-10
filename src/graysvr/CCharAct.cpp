@@ -2696,7 +2696,7 @@ bool CChar::Death()
 		StatFlag_Set(STATF_Insubstantial);
 		StatFlag_Clear(STATF_War);
 
-		m_pPlayer->m_wDeaths++;
+		++m_pPlayer->m_wDeaths;
 		SetHue(HUE_DEFAULT);	// get all pale
 		SetID(static_cast<CREID_TYPE>(g_Cfg.ResourceGetIndexType(RES_CHARDEF, pszGhostName)));
 		LayerAdd(CItem::CreateScript(ITEMID_DEATHSHROUD, this));
@@ -2706,17 +2706,16 @@ bool CChar::Death()
 			if ( g_Cfg.m_iPacketDeathAnimation || m_pClient->m_NetState->isClientKR() || m_pClient->m_NetState->isClientEnhanced() )
 			{
 				// Display the "You are dead" screen animation (this must be always enabled on enhanced clients)
-				new PacketDeathMenu(m_pClient, PacketDeathMenu::ServerSent);
-				new PacketDeathMenu(m_pClient, PacketDeathMenu::Ghost);
+				new PacketDeathMenu(m_pClient, DEATH_MODE_MANIFEST);
 			}
 			else
 			{
 				// OSI uses PacketDeathMenu to update client screen on death. If this packet is disabled,
 				// the client must be updated manually using these others packets as workaround
 				m_pClient->addPlayerUpdate();
-				m_pClient->addPlayerWarMode();
 			}
 
+			m_pClient->addPlayerWarMode();
 			m_pClient->addSeason(SEASON_Desolate);
 			m_pClient->addMapWaypoint(pCorpse, Corpse);		// add corpse map waypoint on enhanced clients
 

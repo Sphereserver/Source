@@ -66,8 +66,8 @@ CClient::CClient(NetState *state)
 #else
 	HistoryIP &history = g_NetworkIn.getIPHistoryManager().getHistoryForIP(GetPeer());
 #endif
-	history.m_connecting++;
-	history.m_connected++;
+	++history.m_connecting;
+	++history.m_connected;
 
 	g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Client connected [Total:%lu] ('%s' %ld/%ld)\n", GetSocketID(), g_Serv.StatGet(SERV_STAT_CLIENTS), GetPeerStr(), history.m_connecting, history.m_connected);
 }
@@ -752,7 +752,7 @@ bool CClient::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			break;
 		case CC_REPORTEDCLIVER:
 		{
-			pszKey += strlen(sm_szLoadKeys[index]);
+			pszKey += 14;
 			GETNONWHITESPACE(pszKey);
 
 			DWORD dwCliVer = m_NetState->getReportedVersion();
@@ -773,18 +773,18 @@ bool CClient::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		{
 			if ( pszKey[10] == '.' )
 			{
-				pszKey += strlen(sm_szLoadKeys[index]);
+				pszKey += 10;
 				SKIP_SEPARATORS(pszKey);
 
 				if ( !strnicmp("X", pszKey, 1) )
-					sVal.Format("%lu", m_ScreenSize.x);
+					sVal.Format("%hu", m_ScreenSize.x);
 				else if ( !strnicmp("Y", pszKey, 1) )
-					sVal.Format("%lu", m_ScreenSize.y);
+					sVal.Format("%hu", m_ScreenSize.y);
 				else
 					return false;
 			}
 			else
-				sVal.Format("%lu,%lu", m_ScreenSize.x, m_ScreenSize.y);
+				sVal.Format("%hu,%hu", m_ScreenSize.x, m_ScreenSize.y);
 			break;
 		}
 		case CC_TARG:

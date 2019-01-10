@@ -957,11 +957,11 @@ PacketDropAccepted::PacketDropAccepted(const CClient* target) : PacketSend(XCMD_
  *
  *
  ***************************************************************************/
-PacketDeathMenu::PacketDeathMenu(const CClient* target, Reason reason) : PacketSend(XCMD_DeathMenu, 2, PRI_NORMAL)
+PacketDeathMenu::PacketDeathMenu(const CClient *target, BYTE mode) : PacketSend(XCMD_DeathMenu, 2, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketDeathMenu::PacketDeathMenu");
 
-	writeByte(static_cast<BYTE>(reason));
+	writeByte(mode);
 	push(target);
 }
 

@@ -381,8 +381,8 @@ private:
 	// Screensize
 	struct __screensize
 	{
-		DWORD x;
-		DWORD y;
+		WORD x;
+		WORD y;
 	} m_ScreenSize;
 
 	// Promptconsole
@@ -873,7 +873,7 @@ public:
 		return false;
 	}
 
-	void SetScreenSize(DWORD x, DWORD y)
+	void SetScreenSize(WORD x, WORD y)
 	{
 		m_ScreenSize.x = x;
 		m_ScreenSize.y = y;

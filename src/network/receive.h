@@ -189,7 +189,6 @@ class PacketDeathStatus : public Packet
 {
 public:
 	PacketDeathStatus();
-	virtual size_t getExpectedLength(NetState* client, Packet* packet);
 	virtual bool onReceive(NetState* net);
 };
 

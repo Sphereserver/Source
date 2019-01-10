@@ -1335,3 +1335,7 @@ Changed: Updated REPAIR function on craft skills.
 [items/sphere_item_artifacts_minor.scp]: Misc improvements
 [items/sphere_item_artifacts_tokuno.scp]: Misc improvements
 [items/sphere_item_magic_wands.scp]: Removed unused file
+
+10-01-2019, Coruja
+[Port from Experimental: 07-01-2019, Nolok] Fixed: PacketDeathAnimation setting on sphere.ini making some client versions crash.
+[Port from Experimental: 07-01-2019, Nolok] Fixed: ScreenSize packet incorrectly parsing received data.

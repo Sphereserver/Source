@@ -351,14 +351,7 @@ public:
 class PacketDeathMenu : public PacketSend
 {
 public:
-	enum Reason
-	{
-		ServerSent	= 0x0,
-		Resurrect	= 0x1,
-		Ghost		= 0x2
-	};
-
-	PacketDeathMenu(const CClient* target, Reason reason);
+	PacketDeathMenu(const CClient *target, BYTE mode);
 };
 
 /***************************************************************************
