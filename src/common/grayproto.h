@@ -374,7 +374,7 @@ enum EXTDATA_TYPE
 	EXTDATA_TargetedSpell		= 0x2D,	// client  -> server
 	EXTDATA_TargetedSkill		= 0x2E,	// client  -> server
 	//
-	EXTDATA_TargetByResource	= 0x30,	// client  -> server
+	EXTDATA_TargetedResource	= 0x30,	// client  -> server
 	//
 	EXTDATA_GargoyleFly			= 0x32,	// client  -> server
 	EXTDATA_WheelBoatMove		= 0x33	// client  -> server
