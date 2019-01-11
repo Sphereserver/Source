@@ -576,7 +576,6 @@ int Sphere_InitServer( int argc, char *argv[] )
 	const char *m_sClassName = "Sphere";
 #endif
 	EXC_TRY("Init");
-	ASSERT(MAX_BUFFER >= sizeof(CCommand));
 	ASSERT(MAX_BUFFER >= sizeof(CEvent));
 	ASSERT(sizeof(int) == sizeof(DWORD));	// make this assumption often.
 	ASSERT(sizeof(ITEMID_TYPE) == sizeof(DWORD));

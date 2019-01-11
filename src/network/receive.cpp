@@ -3406,6 +3406,69 @@ bool PacketBandageMacro::onReceive(NetState* net)
 /***************************************************************************
  *
  *
+ *	Packet 0xBF.0x2D : PacketTargetedSpell			use targeted spell
+ *
+ *
+ ***************************************************************************/
+PacketTargetedSpell::PacketTargetedSpell() : Packet(0)
+{
+}
+
+bool PacketTargetedSpell::onReceive(NetState *net)
+{
+	ADDTOCALLSTACK("PacketTargetedSpell::onReceive");
+	UNREFERENCED_PARAMETER(net);
+
+	// Ignore this packet
+	return true;
+}
+
+
+/***************************************************************************
+ *
+ *
+ *	Packet 0xBF.0x2E : PacketTargetedSkill			use targeted skill
+ *
+ *
+ ***************************************************************************/
+PacketTargetedSkill::PacketTargetedSkill() : Packet(0)
+{
+}
+
+bool PacketTargetedSkill::onReceive(NetState *net)
+{
+	ADDTOCALLSTACK("PacketTargetedSkill::onReceive");
+	UNREFERENCED_PARAMETER(net);
+
+	// Ignore this packet
+	return true;
+}
+
+
+/***************************************************************************
+ *
+ *
+ *	Packet 0xBF.0x30 : PacketTargetedResource		use targeted resource
+ *
+ *
+ ***************************************************************************/
+PacketTargetedResource::PacketTargetedResource() : Packet(0)
+{
+}
+
+bool PacketTargetedResource::onReceive(NetState *net)
+{
+	ADDTOCALLSTACK("PacketTargetedResource::onReceive");
+	UNREFERENCED_PARAMETER(net);
+
+	// Ignore this packet
+	return true;
+}
+
+
+/***************************************************************************
+ *
+ *
  *	Packet 0xBF.0x32 : PacketGargoyleFly			gargoyle toggle flying
  *
  *

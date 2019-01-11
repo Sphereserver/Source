@@ -657,39 +657,42 @@ void PacketManager::registerStandardPackets(void)
 	// extended packets (0xBF)
 	registerExtended(EXTDATA_ScreenSize, new PacketScreenSize());				// client screen size
 	registerExtended(EXTDATA_Party_Msg, new PacketPartyMessage());				// party command
-	registerExtended(EXTDATA_Arrow_Click, new PacketArrowClick());				// click quest arrow
-	registerExtended(EXTDATA_Wrestle_DisArm, new PacketWrestleDisarm());		// wrestling disarm macro
-	registerExtended(EXTDATA_Wrestle_Stun, new PacketWrestleStun());			// wrestling stun macro
-	registerExtended(EXTDATA_Lang, new PacketLanguage());						// client language
+	registerExtended(EXTDATA_QuestArrow_Click, new PacketArrowClick());			// click quest arrow
+	registerExtended(EXTDATA_Wrestle_Disarm, new PacketWrestleDisarm());		// wrestling disarm macro (obsolete, removed since AOS)
+	registerExtended(EXTDATA_Wrestle_Stun, new PacketWrestleStun());			// wrestling stun macro (obsolete, removed since AOS)
+	registerExtended(EXTDATA_Language, new PacketLanguage());					// client language
 	registerExtended(EXTDATA_StatusClose, new PacketStatusClose());				// status window closed
-	registerExtended(EXTDATA_Yawn, new PacketAnimationReq());					// play animation
-	registerExtended(EXTDATA_Unk15, new PacketClientInfo());					// client information
+	registerExtended(EXTDATA_AnimationReq, new PacketAnimationReq());			// play animation
+	registerExtended(EXTDATA_ClientInfo, new PacketClientInfo());				// client information
 	registerExtended(EXTDATA_OldAOSTooltipInfo, new PacketAosTooltipInfo());	//
 	registerExtended(EXTDATA_Popup_Request, new PacketPopupReq());				// request popup menu
 	registerExtended(EXTDATA_Popup_Select, new PacketPopupSelect());			// select popup option
-	registerExtended(EXTDATA_Stats_Change, new PacketChangeStatLock());			// change stat lock
-	registerExtended(EXTDATA_NewSpellSelect, new PacketSpellSelect());			//
-	registerExtended(EXTDATA_HouseDesignDet, new PacketHouseDesignReq());		// house design request
-	registerExtended(EXTDATA_AntiCheat, new PacketAntiCheat());					// anti-cheat / unknown
+	registerExtended(EXTDATA_StatLock, new PacketChangeStatLock());				// change stat lock
+	registerExtended(EXTDATA_CastSpell, new PacketSpellSelect());				//
+	registerExtended(EXTDATA_HouseDesignReq, new PacketHouseDesignReq());		// house design request
+	registerExtended(EXTDATA_AntiCheat, new PacketAntiCheat());					// anti-cheat / unknown (sent by SE clients, every second or so)
 	registerExtended(EXTDATA_BandageMacro, new PacketBandageMacro());			//
+	registerExtended(EXTDATA_TargetedSpell, new PacketTargetedSpell());		    // use targeted skill
+	registerExtended(EXTDATA_TargetedSkill, new PacketTargetedSkill());		    // use targeted skill
+	registerExtended(EXTDATA_TargetByResource, new PacketTargetByResource());	//
 	registerExtended(EXTDATA_GargoyleFly, new PacketGargoyleFly());				// gargoyle flying action
 	registerExtended(EXTDATA_WheelBoatMove, new PacketWheelBoatMove());			// wheel boat movement
 
 	// encoded packets (0xD7)
-	registerEncoded(EXTAOS_HcBackup, new PacketHouseDesignBackup());			// house design - backup
-	registerEncoded(EXTAOS_HcRestore, new PacketHouseDesignRestore());			// house design - restore
-	registerEncoded(EXTAOS_HcCommit, new PacketHouseDesignCommit());			// house design - commit
-	registerEncoded(EXTAOS_HcDestroyItem, new PacketHouseDesignDestroyItem());	// house design - remove item
-	registerEncoded(EXTAOS_HcPlaceItem, new PacketHouseDesignPlaceItem());		// house design - place item
-	registerEncoded(EXTAOS_HcExit, new PacketHouseDesignExit());				// house design - exit designer
-	registerEncoded(EXTAOS_HcPlaceStair, new PacketHouseDesignPlaceStair());	// house design - place stairs
-	registerEncoded(EXTAOS_HcSynch, new PacketHouseDesignSync());				// house design - synchronise
-	registerEncoded(EXTAOS_HcClear, new PacketHouseDesignClear());				// house design - clear
-	registerEncoded(EXTAOS_HcSwitch, new PacketHouseDesignSwitch());			// house design - change floor
-	registerEncoded(EXTAOS_HcPlaceRoof, new PacketHouseDesignPlaceRoof());		// house design - place roof
-	registerEncoded(EXTAOS_HcDestroyRoof, new PacketHouseDesignDestroyRoof());	// house design - remove roof
-	registerEncoded(EXTAOS_SpecialMove, new PacketSpecialMove());				//
-	registerEncoded(EXTAOS_HcRevert, new PacketHouseDesignRevert());			// house design - revert
+	registerEncoded(EXTAOS_HouseDesign_Backup, new PacketHouseDesignBackup());			// house design - backup
+	registerEncoded(EXTAOS_HouseDesign_Restore, new PacketHouseDesignRestore());		// house design - restore
+	registerEncoded(EXTAOS_HouseDesign_Commit, new PacketHouseDesignCommit());			// house design - commit
+	registerEncoded(EXTAOS_HouseDesign_RemItem, new PacketHouseDesignDestroyItem());	// house design - remove item
+	registerEncoded(EXTAOS_HouseDesign_AddItem, new PacketHouseDesignPlaceItem());		// house design - place item
+	registerEncoded(EXTAOS_HouseDesign_Exit, new PacketHouseDesignExit());				// house design - exit designer
+	registerEncoded(EXTAOS_HouseDesign_AddStair, new PacketHouseDesignPlaceStair());	// house design - place stairs
+	registerEncoded(EXTAOS_HouseDesign_Sync, new PacketHouseDesignSync());				// house design - synchronise
+	registerEncoded(EXTAOS_HouseDesign_Clear, new PacketHouseDesignClear());			// house design - clear
+	registerEncoded(EXTAOS_HouseDesign_Switch, new PacketHouseDesignSwitch());			// house design - change floor
+	registerEncoded(EXTAOS_HouseDesign_AddRoof, new PacketHouseDesignPlaceRoof());		// house design - place roof
+	registerEncoded(EXTAOS_HouseDesign_RemRoof, new PacketHouseDesignDestroyRoof());	// house design - remove roof
+	registerEncoded(EXTAOS_CombatAbility, new PacketSpecialMove());						//
+	registerEncoded(EXTAOS_HouseDesign_Revert, new PacketHouseDesignRevert());			// house design - revert
 	registerEncoded(EXTAOS_EquipLastWeapon, new PacketEquipLastWeapon());		//
 	registerEncoded(EXTAOS_GuildButton, new PacketGuildButton());				// guild button press
 	registerEncoded(EXTAOS_QuestButton, new PacketQuestButton());				// quest button press

@@ -3539,7 +3539,7 @@ PacketExtended::PacketExtended(EXTDATA_TYPE type, size_t len, Priority priority)
  *
  *
  ***************************************************************************/
-PacketGumpChange::PacketGumpChange(const CClient *target, DWORD context, DWORD buttonId) : PacketExtended(EXTDATA_GumpChange, 13, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
+PacketGumpChange::PacketGumpChange(const CClient *target, DWORD context, DWORD buttonId) : PacketExtended(EXTDATA_CloseGump, 13, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketGumpChange::PacketGumpChange");
 
@@ -3774,7 +3774,7 @@ void PacketDisplayPopup::finalise(void)
  *
  *
  ***************************************************************************/
-PacketCloseUIWindow::PacketCloseUIWindow(const CClient* target, const CChar* character, DWORD command) : PacketExtended(EXTDATA_CloseUI_Window, 13, PRI_NORMAL)
+PacketCloseUIWindow::PacketCloseUIWindow(const CClient* target, const CChar* character, DWORD command) : PacketExtended(EXTDATA_CloseUIWindow, 13, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketCloseUIWindow::PacketCloseUIWindow");
 
@@ -3791,7 +3791,7 @@ PacketCloseUIWindow::PacketCloseUIWindow(const CClient* target, const CChar* cha
  *
  *
  ***************************************************************************/
-PacketCloseContainer::PacketCloseContainer(const CClient* target, const CObjBase* object) : PacketExtended(EXTDATA_CloseUI_Window, 13, PRI_NORMAL)
+PacketCloseContainer::PacketCloseContainer(const CClient* target, const CObjBase* object) : PacketExtended(EXTDATA_CloseUIWindow, 13, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketCloseContainer::PacketCloseContainer");
 
@@ -3809,7 +3809,7 @@ PacketCloseContainer::PacketCloseContainer(const CClient* target, const CObjBase
  *
  *
  ***************************************************************************/
-PacketCodexOfWisdom::PacketCodexOfWisdom(const CClient *target, DWORD dwTopicID, bool fForceOpen) : PacketExtended(EXTDATA_Codex_Wisdom, 11, g_Cfg.m_fUsePacketPriorities ? PRI_LOW : PRI_NORMAL)
+PacketCodexOfWisdom::PacketCodexOfWisdom(const CClient *target, DWORD dwTopicID, bool fForceOpen) : PacketExtended(EXTDATA_CodexOfWisdom, 11, g_Cfg.m_fUsePacketPriorities ? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketCodexOfWisdom::PacketCodexOfWisdom");
 
@@ -3828,7 +3828,7 @@ PacketCodexOfWisdom::PacketCodexOfWisdom(const CClient *target, DWORD dwTopicID,
  *
  *
  ***************************************************************************/
-PacketEnableMapDiffs::PacketEnableMapDiffs(const CClient* target) : PacketExtended(EXTDATA_Map_Diff, 13, PRI_NORMAL)
+PacketEnableMapDiffs::PacketEnableMapDiffs(const CClient* target) : PacketExtended(EXTDATA_EnableMapDiffs, 13, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketEnableMapDiffs::PacketEnableMapDiffs");
 
@@ -3873,7 +3873,7 @@ PacketEnableMapDiffs::PacketEnableMapDiffs(const CClient* target) : PacketExtend
 *
 *
 ***************************************************************************/
-PacketStatLocks::PacketStatLocks(const CClient* target, const CChar* character) : PacketExtended(EXTDATA_Stats_Enable, 12, PRI_NORMAL)
+PacketStatLocks::PacketStatLocks(const CClient* target, const CChar* character) : PacketExtended(EXTDATA_ExtendedStats, 12, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketStatLocks::PacketStatLocks");
 
@@ -3909,7 +3909,7 @@ PacketStatLocks::PacketStatLocks(const CClient* target, const CChar* character) 
 *
 ***************************************************************************/
 
-PacketBondedStatus::PacketBondedStatus(const CClient * target, const CChar * pChar, bool IsGhost) : PacketExtended(EXTDATA_Stats_Enable, 11, PRI_NORMAL)
+PacketBondedStatus::PacketBondedStatus(const CClient * target, const CChar * pChar, bool IsGhost) : PacketExtended(EXTDATA_ExtendedStats, 11, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketBondedStatus::PacketBondedStatus");
 
@@ -3928,7 +3928,7 @@ PacketBondedStatus::PacketBondedStatus(const CClient * target, const CChar * pCh
  *
  *
  ***************************************************************************/
-PacketSpellbookContent::PacketSpellbookContent(const CClient* target, const CItem* spellbook, WORD offset) : PacketExtended(EXTDATA_NewSpellbook, 23, PRI_NORMAL)
+PacketSpellbookContent::PacketSpellbookContent(const CClient* target, const CItem* spellbook, WORD offset) : PacketExtended(EXTDATA_SpellbookContent, 23, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketSpellbookContent::PacketSpellbookContent");
 
@@ -3963,13 +3963,13 @@ PacketHouseDesignVersion::PacketHouseDesignVersion(const CClient *target, const 
 /***************************************************************************
  *
  *
- *	Packet 0xBF.0x20.0x04 : PacketHouseBeginCustomise	begin house customisation (NORMAL)
+ *	Packet 0xBF.0x20.0x04 : PacketHouseBeginCustomize	begin house customization (NORMAL)
  *
  *
  ***************************************************************************/
-PacketHouseBeginCustomise::PacketHouseBeginCustomise(const CClient *target, const CItemMultiCustom *pHouse) : PacketExtended(EXTDATA_HouseCustom, 17, PRI_NORMAL)
+PacketHouseBeginCustomize::PacketHouseBeginCustomize(const CClient *target, const CItemMultiCustom *pHouse) : PacketExtended(EXTDATA_HouseCustomize, 17, PRI_NORMAL)
 {
-	ADDTOCALLSTACK("PacketHouseBeginCustomise::PacketHouseBeginCustomise");
+	ADDTOCALLSTACK("PacketHouseBeginCustomize::PacketHouseBeginCustomize");
 
 	writeInt32(pHouse->GetUID());
 	writeByte(0x4);
@@ -3985,13 +3985,13 @@ PacketHouseBeginCustomise::PacketHouseBeginCustomise(const CClient *target, cons
 /***************************************************************************
  *
  *
- *	Packet 0xBF.0x20.0x05 : PacketHouseEndCustomise	end house customisation (NORMAL)
+ *	Packet 0xBF.0x20.0x05 : PacketHouseEndCustomize	end house customization (NORMAL)
  *
  *
  ***************************************************************************/
-PacketHouseEndCustomise::PacketHouseEndCustomise(const CClient *target, const CItemMultiCustom *pHouse) : PacketExtended(EXTDATA_HouseCustom, 17, PRI_NORMAL)
+PacketHouseEndCustomize::PacketHouseEndCustomize(const CClient *target, const CItemMultiCustom *pHouse) : PacketExtended(EXTDATA_HouseCustomize, 17, PRI_NORMAL)
 {
-	ADDTOCALLSTACK("PacketHouseEndCustomise::PacketHouseEndCustomise");
+	ADDTOCALLSTACK("PacketHouseEndCustomize::PacketHouseEndCustomize");
 
 	writeInt32(pHouse->GetUID());
 	writeByte(0x5);
@@ -4011,7 +4011,7 @@ PacketHouseEndCustomise::PacketHouseEndCustomise(const CClient *target, const CI
  *
  *
  ***************************************************************************/
-PacketCombatDamageOld::PacketCombatDamageOld(const CClient* target, BYTE damage, CGrayUID uid) : PacketExtended(EXTDATA_DamagePacketOld, 11, PRI_NORMAL)
+PacketCombatDamageOld::PacketCombatDamageOld(const CClient* target, BYTE damage, CGrayUID uid) : PacketExtended(EXTDATA_CombatDamage, 11, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketCombatDamageOld::PacketCombatDamageOld");
 

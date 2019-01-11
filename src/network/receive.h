@@ -959,6 +959,48 @@ public:
 /***************************************************************************
  *
  *
+ *	Packet 0xBF.0x2D : PacketTargetedSpell			use targeted spell
+ *
+ *
+ ***************************************************************************/
+class PacketTargetedSpell : public Packet
+{
+public:
+	PacketTargetedSpell();
+	virtual bool onReceive(NetState *net);
+};
+
+/***************************************************************************
+ *
+ *
+ *	Packet 0xBF.0x2E : PacketTargetedSkill			use targeted skill
+ *
+ *
+ ***************************************************************************/
+class PacketTargetedSkill : public Packet
+{
+public:
+	PacketTargetedSkill();
+	virtual bool onReceive(NetState *net);
+};
+
+/***************************************************************************
+ *
+ *
+ *	Packet 0xBF.0x30 : PacketTargetedResource		use targeted resource
+ *
+ *
+ ***************************************************************************/
+class PacketTargetedResource : public Packet
+{
+public:
+	PacketTargetedResource();
+	virtual bool onReceive(NetState *net);
+};
+
+/***************************************************************************
+ *
+ *
  *	Packet 0xBF.0x32 : PacketGargoyleFly			gargoyle toggle flying
  *
  *
