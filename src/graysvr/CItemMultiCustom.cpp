@@ -72,7 +72,7 @@ void CItemMultiCustom::BeginCustomize(CClient *pClient)
 {
 	ADDTOCALLSTACK("CItemMultiCustom::BeginCustomize");
 	// Make client enter house customization mode
-	if ( !pClient || !pClient->GetChar() || !PacketHouseBeginCustomise::CanSendTo(pClient->m_NetState) )
+	if ( !pClient || !pClient->GetChar() || !PacketHouseBeginCustomize::CanSendTo(pClient->m_NetState) )
 		return;
 
 	if ( m_pArchitect )
@@ -119,7 +119,7 @@ void CItemMultiCustom::BeginCustomize(CClient *pClient)
 	++m_designWorking.m_dwRevision;
 
 	m_pArchitect = pClient;
-	new PacketHouseBeginCustomise(pClient, this);
+	new PacketHouseBeginCustomize(pClient, this);
 
 	pClient->m_pHouseDesign = this;
 	pClient->addItem(this);
@@ -135,7 +135,7 @@ void CItemMultiCustom::EndCustomize(bool fForce)
 		return;
 
 	// Exit customization mode
-	new PacketHouseEndCustomise(pClient, this);
+	new PacketHouseEndCustomize(pClient, this);
 	pClient->m_pHouseDesign = NULL;
 	m_pArchitect = NULL;
 

@@ -1542,14 +1542,14 @@ public:
 /***************************************************************************
  *
  *
- *	Packet 0xBF.0x20.0x04 : PacketHouseBeginCustomise	begin house customisation (NORMAL)
+ *	Packet 0xBF.0x20.0x04 : PacketHouseBeginCustomize	begin house customization (NORMAL)
  *
  *
  ***************************************************************************/
-class PacketHouseBeginCustomise : public PacketExtended
+class PacketHouseBeginCustomize : public PacketExtended
 {
 public:
-	PacketHouseBeginCustomise(const CClient *target, const CItemMultiCustom *pHouse);
+	PacketHouseBeginCustomize(const CClient *target, const CItemMultiCustom *pHouse);
 
 	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }
 	static bool CanSendTo(const NetState* state)
@@ -1561,14 +1561,14 @@ public:
 /***************************************************************************
  *
  *
- *	Packet 0xBF.0x20.0x05 : PacketHouseEndCustomise		end house customisation (NORMAL)
+ *	Packet 0xBF.0x20.0x05 : PacketHouseEndCustomize		end house customization (NORMAL)
  *
  *
  ***************************************************************************/
-class PacketHouseEndCustomise : public PacketExtended
+class PacketHouseEndCustomize : public PacketExtended
 {
 public:
-	PacketHouseEndCustomise(const CClient* target, const CItemMultiCustom* house);
+	PacketHouseEndCustomize(const CClient *target, const CItemMultiCustom *pHouse);
 };
 
 /***************************************************************************

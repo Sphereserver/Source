@@ -674,7 +674,7 @@ void PacketManager::registerStandardPackets(void)
 	registerExtended(EXTDATA_BandageMacro, new PacketBandageMacro());			//
 	registerExtended(EXTDATA_TargetedSpell, new PacketTargetedSpell());		    // use targeted skill
 	registerExtended(EXTDATA_TargetedSkill, new PacketTargetedSkill());		    // use targeted skill
-	registerExtended(EXTDATA_TargetByResource, new PacketTargetByResource());	//
+	registerExtended(EXTDATA_TargetedResource, new PacketTargetedResource());	//
 	registerExtended(EXTDATA_GargoyleFly, new PacketGargoyleFly());				// gargoyle flying action
 	registerExtended(EXTDATA_WheelBoatMove, new PacketWheelBoatMove());			// wheel boat movement
 
