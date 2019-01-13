@@ -47,7 +47,7 @@ public:
 		}
 		virtual PLEVEL_TYPE GetPrivLevel() const
 		{
-			return PLEVEL_Admin;
+			return PLEVEL_QTY;
 		}
 		virtual LPCTSTR GetName() const
 		{

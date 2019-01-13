@@ -1343,3 +1343,4 @@ Changed: Updated REPAIR function on craft skills.
 13-01-2019, Coruja
 Added: Support for enhanced client macro: 'Target by Resource'.
 Added: Support for classic client macros: 'Wrestling Disarm' (pre-AOS) and 'Wrestling Stun Punch' (pre-AOS).
+Fixed: Function DISCONNECT not disconnecting accounts with PLEVEL >= 6 (Admin/Owner) when called by scripts/console.

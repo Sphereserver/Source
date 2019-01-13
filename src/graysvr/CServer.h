@@ -86,7 +86,7 @@ public:
 	}
 	PLEVEL_TYPE GetPrivLevel() const
 	{
-		return PLEVEL_Owner;
+		return PLEVEL_QTY;
 	}
 
 private:
