@@ -1339,3 +1339,7 @@ Changed: Updated REPAIR function on craft skills.
 10-01-2019, Coruja
 [Port from Experimental: 07-01-2019, Nolok] Fixed: PacketDeathAnimation setting on sphere.ini making some client versions crash.
 [Port from Experimental: 07-01-2019, Nolok] Fixed: ScreenSize packet incorrectly parsing received data.
+
+13-01-2019, Coruja
+Added: Support for enhanced client macro: 'Target by Resource'.
+Added: Support for classic client macros: 'Wrestling Disarm' (pre-AOS) and 'Wrestling Stun Punch' (pre-AOS).

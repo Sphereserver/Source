@@ -2209,7 +2209,7 @@ bool CChar::Spell_CanCast(SPELL_TYPE &spell, bool fTest, CObjBase *pSrc, bool fF
 	ADDTOCALLSTACK("CChar::Spell_CanCast");
 	// ARGS:
 	//  pSrc = possible scroll or wand source.
-	if ( !pSrc || (spell <= SPELL_NONE) )
+	if ( !pSrc || (spell <= SPELL_NONE) || (m_pPlayer && (spell > SPELL_SKILLMASTERIES_QTY)) )
 		return false;
 
 	CSpellDef *pSpellDef = g_Cfg.GetSpellDef(spell);

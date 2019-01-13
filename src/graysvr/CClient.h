@@ -543,21 +543,20 @@ private:
 	int OnSkill_ItemID(CGrayUID uid, int iSkillLevel, bool fTest);
 	int OnSkill_TasteID(CGrayUID uid, int iSkillLevel, bool fTest);
 
-	bool OnTarg_Skill_Magery(CObjBase *pObj, const CPointMap &pt);
-	bool OnTarg_Skill_Herd_Dest(CObjBase *pObj, const CPointMap &pt);
-	bool OnTarg_Skill_Poison(CObjBase *pObj);
-	bool OnTarg_Skill_Provoke(CObjBase *pObj);
-	bool OnTarg_Skill(CObjBase *pObj);
-
 	bool OnTarg_Pet_Command(CObjBase *pObj, const CPointMap &pt);
 	bool OnTarg_Pet_Stable(CChar *pCharPet);
 
 	// Commands from client
-	void Event_Skill_Use(SKILL_TYPE x);		// skill clicked on the skill list
 	void Event_Talk_Common(TCHAR *szText);	// PC speech
 	bool Event_Command(LPCTSTR pszCommand, TALKMODE_TYPE mode = TALKMODE_SYSTEM);	// client entered a '/' command like /ADD
 
 public:
+	bool OnTarg_Skill(CObjBase *pObj);
+	bool OnTarg_Skill_Provoke(CObjBase *pObj);
+	bool OnTarg_Skill_Poison(CObjBase *pObj);
+	bool OnTarg_Skill_Herd_Dest(CObjBase *pObj, const CPointMap &pt);
+	bool OnTarg_Skill_Magery(CObjBase *pObj, const CPointMap &pt);
+
 	void GetAdjustedCharID(const CChar *pChar, CREID_TYPE &id, HUE_TYPE &wHue) const;
 	void GetAdjustedItemID(const CChar *pChar, const CItem *pItem, ITEMID_TYPE &id, HUE_TYPE &wHue) const;
 
@@ -579,6 +578,7 @@ public:
 	void Event_PromptResp(LPCTSTR pszText, size_t len, DWORD context1, DWORD context2, DWORD type, bool bNoStrip = false);
 	void Event_SetName(CGrayUID uid, const char *pszCharName);
 	void Event_SingleClick(CGrayUID uid);
+	void Event_Skill_Use(SKILL_TYPE skill);
 	void Event_Talk(LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, bool bNoStrip = false);
 	void Event_TalkUNICODE(NWORD *wszText, int iTextLen, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, LPCTSTR pszLang);
 	void Event_Target(CLIMODE_TYPE context, CGrayUID uid, CPointMap pt, BYTE flags = 0, ITEMID_TYPE id = ITEMID_NOTHING);

@@ -1639,9 +1639,6 @@ bool PacketMenuChoice::onReceive(NetState* net)
 
 	CClient* client = net->m_client;
 	ASSERT(client);
-	const CChar* character = client->GetChar();
-	if (!character)
-		return false;
 
 	CGrayUID serial(readInt32());
 	WORD context = readInt16();
@@ -2957,7 +2954,10 @@ bool PacketWrestleDisarm::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketWrestleDisarm::onReceive");
 
-	net->m_client->SysMessageDefault(DEFMSG_MSG_WRESTLING_NOGO);
+	CClient *pClient = net->m_client;
+	ASSERT(pClient);
+
+	pClient->Event_CombatAbilitySelect(0x5);	// Disarm
 	return true;
 }
 
@@ -2977,7 +2977,10 @@ bool PacketWrestleStun::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketWrestleStun::onReceive");
 
-	net->m_client->SysMessageDefault(DEFMSG_MSG_WRESTLING_NOGO);
+	CClient *pClient = net->m_client;
+	ASSERT(pClient);
+
+	pClient->Event_CombatAbilitySelect(0xB);	// Paralyzing Blow
 	return true;
 }
 
@@ -3246,41 +3249,32 @@ bool PacketSpellSelect::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketSpellSelect::onReceive");
 
-	CClient* client = net->m_client;
-	ASSERT(client);
-	CChar* character = client->GetChar();
-	if (!character)
+	CClient *pClient = net->m_client;
+	ASSERT(pClient);
+	CChar *pChar = pClient->GetChar();
+	if ( !pChar )
 		return false;
 
-	skip(2); // unknown
+	skip(2);	// unknown
 	SPELL_TYPE spell = static_cast<SPELL_TYPE>(readInt16());
-	if ( spell > SPELL_SKILLMASTERIES_QTY )
-		 return false;
-
-	const CSpellDef* spellDef = g_Cfg.GetSpellDef(spell);
-	if (!spellDef)
+	const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(spell);
+	if ( !pSpellDef )
 		return true;
 
-	int skill;
-	if ( !spellDef->GetPrimarySkill(&skill, NULL) )
-		return true;
-	if ( !character->Skill_CanUse(static_cast<SKILL_TYPE>(skill)) )
-		return true;
-
-	if (IsSetMagicFlags(MAGICF_PRECAST))
+	if ( IsSetMagicFlags(MAGICF_PRECAST) && !pSpellDef->IsSpellType(SPELLFLAG_NOPRECAST) )
 	{
-		if (!spellDef->IsSpellType(SPELLFLAG_NOPRECAST))
-		{
-			client->m_tmSkillMagery.m_Spell = spell;
-			character->m_atMagery.m_Spell = spell;
-			client->m_Targ_UID = character->GetUID();
-			client->m_Targ_PrvUID = character->GetUID();
-			character->Skill_Start(static_cast<SKILL_TYPE>(skill));
+		int skill;
+		if ( !pSpellDef->GetPrimarySkill(&skill) )
 			return true;
-		}
-	}
 
-	client->Cmd_Skill_Magery(spell, character);
+		pClient->m_tmSkillMagery.m_Spell = spell;
+		pChar->m_atMagery.m_Spell = spell;
+		pClient->m_Targ_UID = pChar->GetUID();
+		pClient->m_Targ_PrvUID = pChar->GetUID();
+		pChar->Skill_Start(static_cast<SKILL_TYPE>(skill));
+	}
+	else
+		pClient->Cmd_Skill_Magery(spell, pChar);
 	return true;
 }
 
@@ -3352,53 +3346,24 @@ bool PacketBandageMacro::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketBandageMacro::onReceive");
 
-	CClient* client = net->m_client;
-	ASSERT(client);
-	const CChar* character = client->GetChar();
-	if (!character)
+	CClient *pClient = net->m_client;
+	ASSERT(pClient);
+	CChar *pChar = pClient->GetChar();
+	if ( !pChar )
 		return false;
 
-	CItem* bandage = static_cast<CGrayUID>(readInt32()).ItemFind();
-	CObjBase* target = static_cast<CGrayUID>(readInt32()).ObjFind();
-	if (!bandage || !target)
-		return true;
+	CItem *pBandage = static_cast<CGrayUID>(readInt32()).ItemFind();
+	if ( !pBandage || !pBandage->IsType(IT_BANDAGE) || !pChar->CanUse(pBandage, false) )
+		return false;
 
-	// check the client can see the bandage they're trying to use
-	if (!character->CanSee(bandage))
-	{
-		client->addObjectRemoveCantSee(bandage->GetUID(), "the target");
-		return true;
-	}
+	CObjBase *pTarget = static_cast<CGrayUID>(readInt32()).ObjFind();
+	if ( !pTarget )
+		return false;
 
-	// check the client is capable of using the bandage
-	if (!character->CanUse(bandage, false))
-		return true;
-
-	// check the bandage is in the possession of the client
-	if (bandage->GetTopLevelObj() != character)
-		return true;
-
-	// make sure the macro isn't used for other types of items
-	if (!bandage->IsType(IT_BANDAGE))
-		return true;
-
-	// clear previous target
-	client->SetTargMode();
-
-	// Should we simulate the dclick?
-	// client->m_Targ_UID = bandage->GetUID();
-	// CScriptTriggerArgs extArgs(1); // Signal we're from the macro
-	// if (bandage->OnTrigger( ITRIG_DCLICK, m_pChar, &extArgs ) == TRIGRET_RET_TRUE)
-	// 		return true;
-	//
-	// client->SetTargMode();
-
-	// prepare targeting information
-	client->m_Targ_UID = bandage->GetUID();
-	client->m_tmUseItem.m_pParent = bandage->GetParent();
-	client->SetTargMode(CLIMODE_TARG_USE_ITEM);
-
-	client->Event_Target(CLIMODE_TARG_USE_ITEM, target->GetUID(), target->GetTopPoint());
+	pClient->m_Targ_UID = pBandage->GetUID();
+	pClient->m_tmUseItem.m_pParent = pBandage->GetParent();
+	pClient->SetTargMode(CLIMODE_TARG_USE_ITEM);
+	pClient->Event_Target(CLIMODE_TARG_USE_ITEM, pTarget->GetUID(), pTarget->GetTopPoint());
 	return true;
 }
 
@@ -3417,9 +3382,24 @@ PacketTargetedSpell::PacketTargetedSpell() : Packet(0)
 bool PacketTargetedSpell::onReceive(NetState *net)
 {
 	ADDTOCALLSTACK("PacketTargetedSpell::onReceive");
-	UNREFERENCED_PARAMETER(net);
 
-	// Ignore this packet
+	CClient *pClient = net->m_client;
+	ASSERT(pClient);
+	CChar *pChar = pClient->GetChar();
+	if ( !pChar )
+		return false;
+
+	SPELL_TYPE spell = static_cast<SPELL_TYPE>(readInt16());
+	if ( !pChar->Spell_CanCast(spell, true, pChar, true) )
+		return false;
+
+	CObjBase *pTarget = static_cast<CGrayUID>(readInt32()).ObjFind();
+	if ( !pTarget )
+		return false;
+
+	pClient->m_tmSkillMagery.m_Spell = spell;
+	pClient->m_Targ_PrvUID = pChar->GetUID();
+	pClient->OnTarg_Skill_Magery(pTarget, pTarget->GetTopPoint());
 	return true;
 }
 
@@ -3438,9 +3418,23 @@ PacketTargetedSkill::PacketTargetedSkill() : Packet(0)
 bool PacketTargetedSkill::onReceive(NetState *net)
 {
 	ADDTOCALLSTACK("PacketTargetedSkill::onReceive");
-	UNREFERENCED_PARAMETER(net);
 
-	// Ignore this packet
+	CClient *pClient = net->m_client;
+	ASSERT(pClient);
+	CChar *pChar = pClient->GetChar();
+	if ( !pChar )
+		return false;
+
+	SKILL_TYPE skill = static_cast<SKILL_TYPE>(readInt16());
+	if ( !CChar::IsSkillBase(skill) || !pChar->Skill_CanUse(skill) || pChar->Skill_Wait(skill) )
+		return false;
+
+	CObjBase *pTarget = static_cast<CGrayUID>(readInt32()).ObjFind();
+	if ( !pTarget )
+		return false;
+
+	pClient->m_tmSkillTarg.m_Skill = skill;
+	pClient->OnTarg_Skill(pTarget);
 	return true;
 }
 
@@ -3459,9 +3453,43 @@ PacketTargetedResource::PacketTargetedResource() : Packet(0)
 bool PacketTargetedResource::onReceive(NetState *net)
 {
 	ADDTOCALLSTACK("PacketTargetedResource::onReceive");
-	UNREFERENCED_PARAMETER(net);
 
-	// Ignore this packet
+	CClient *pClient = net->m_client;
+	ASSERT(pClient);
+	CChar *pChar = pClient->GetChar();
+	if ( !pChar )
+		return false;
+
+	CItem *pTool = static_cast<CGrayUID>(readInt32()).ItemFind();
+	if ( !pTool || !pChar->CanUse(pTool, false) )
+		return false;
+
+	IT_TYPE type = IT_NORMAL;
+	int iDist = 0;
+
+	WORD wResourceType = readInt16();
+	switch ( wResourceType )
+	{
+		case 0:		type = IT_NORMAL;	iDist = g_Cfg.GetSkillDef(SKILL_MINING)->m_Range;			break;	// Ore
+		case 1:		type = IT_ROCK;		iDist = g_Cfg.GetSkillDef(SKILL_MINING)->m_Range;			break;	// Sand
+		case 2:		type = IT_TREE;		iDist = g_Cfg.GetSkillDef(SKILL_LUMBERJACKING)->m_Range;	break;	// Wood
+		case 3:		type = IT_DIRT;		iDist = g_Cfg.GetSkillDef(SKILL_MINING)->m_Range;			break;	// Digging Graves
+		//case 4:	type = IT_MUSHROOM;	iDist = g_Cfg.GetSkillDef(SKILL_LUMBERJACKING)->m_Range;	break;	// Red Mushroom (TO-DO)
+		case 5:		type = IT_WATER;	iDist = g_Cfg.GetSkillDef(SKILL_FISHING)->m_Range;			break;	// Water
+		case 6:		type = IT_LAVA;		iDist = g_Cfg.GetSkillDef(SKILL_FISHING)->m_Range;			break;	// Lava
+	}
+
+	CPointMap pt = g_World.FindItemTypeNearby(pChar->GetTopPoint(), type, iDist, false, true);
+	if ( !pt.IsValidPoint() )
+		pt = pChar->GetTopPoint();
+
+	if ( pTool->Item_GetDef()->IsTypeEquippable() )
+		pChar->ItemEquip(pTool);
+
+	pClient->m_Targ_UID = pTool->GetUID();
+	pClient->m_tmUseItem.m_pParent = pTool->GetParent();
+	pClient->SetTargMode(CLIMODE_TARG_USE_ITEM);
+	pClient->Event_Target(CLIMODE_TARG_USE_ITEM, UID_CLEAR, pt);
 	return true;
 }
 
@@ -4249,7 +4277,7 @@ bool PacketGuildButton::onReceive(NetState* net)
 		return false;
 
 	if ( IsTrigUsed(TRIGGER_USERGUILDBUTTON) )
-		character->OnTrigger(CTRIG_UserGuildButton, character, NULL);
+		character->OnTrigger(CTRIG_UserGuildButton, character);
 	return true;
 }
 
@@ -4276,7 +4304,7 @@ bool PacketQuestButton::onReceive(NetState* net)
 		return false;
 
 	if ( IsTrigUsed(TRIGGER_USERQUESTBUTTON) )
-		character->OnTrigger(CTRIG_UserQuestButton, character, NULL);
+		character->OnTrigger(CTRIG_UserQuestButton, character);
 	return true;
 }
 
@@ -4399,9 +4427,6 @@ bool PacketUseHotbar::onReceive(NetState* net)
 
 	CClient* client = net->m_client;
 	ASSERT(client);
-	CChar* character = client->GetChar();
-	if (!character)
-		return false;
 
 	skip(2); // 1
 	skip(2); // 6
@@ -4448,7 +4473,7 @@ bool PacketEquipItemMacro::onReceive(NetState* net)
 			continue;
 		if ((item->GetTopLevelObj() != character) || item->IsItemEquipped())
 			continue;
-		if (character->ItemPickup(item, item->GetAmount()) < 1)
+		if (character->ItemPickup(item, item->GetAmount()) == -1)
 			continue;
 
 		character->ItemEquip(item);
@@ -4493,7 +4518,7 @@ bool PacketUnEquipItemMacro::onReceive(NetState* net)
 		item = character->LayerFind(layer);
 		if (!item)
 			continue;
-		if (character->ItemPickup(item, item->GetAmount()) < 1)
+		if (character->ItemPickup(item, item->GetAmount()) == -1)
 			continue;
 
 		character->ItemBounce(item);
@@ -4733,6 +4758,6 @@ bool PacketUltimaStoreButton::onReceive(NetState *net)
 		return false;
 
 	if ( IsTrigUsed(TRIGGER_USERULTIMASTOREBUTTON) )
-		character->OnTrigger(CTRIG_UserUltimaStoreButton, character, NULL);
+		character->OnTrigger(CTRIG_UserUltimaStoreButton, character);
 	return true;
 }
