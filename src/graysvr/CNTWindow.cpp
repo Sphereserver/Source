@@ -3,123 +3,13 @@
 
 #include "graysvr.h"	// predef header
 #include "resource.h"
-#include "../common/CWindow.h"
+#include "CNTWindow.h"
 
 #define WM_USER_POST_MSG		(WM_USER+10)
 #define WM_USER_TRAY_NOTIFY		(WM_USER+12)
 #define IDC_M_LOG	10
 #define IDC_M_INPUT 11
 #define IDT_ONTICK	1
-
-class CNTWindow : public CWindow						//	CNTWindow
-{
-public:
-	static const char *m_sClassName;
-	class CAboutDlg : public CDialogBase				//	CNTWindow::CAboutDlg
-	{
-	private:
-		bool OnInitDialog();
-		bool OnCommand( WORD wNotifyCode, INT_PTR wID, HWND hwndCtl );
-	public:
-		virtual BOOL DefDialogProc( UINT message, WPARAM wParam, LPARAM lParam );
-	};
-
-	class CListTextConsole : public CTextConsole		//	CNTWindow::CListTextConsole
-	{
-		CListbox m_wndList;
-	public:
-		CListTextConsole( HWND hWndList )
-		{
-			m_wndList.m_hWnd = hWndList;
-		}
-		~CListTextConsole()
-		{
-			m_wndList.OnDestroy();
-		}
-		virtual PLEVEL_TYPE GetPrivLevel() const
-		{
-			return PLEVEL_QTY;
-		}
-		virtual LPCTSTR GetName() const
-		{
-			return "Stats";
-		}
-		virtual void SysMessage( LPCTSTR pszMessage ) const
-		{
-			if ( pszMessage == NULL || ISINTRESOURCE(pszMessage))
-				return;
-
-			TCHAR * ppMessages[255];
-			size_t iQty = Str_ParseCmds( const_cast<TCHAR*>(pszMessage), ppMessages, COUNTOF(ppMessages), "\n" );
-			for ( size_t i = 0; i < iQty; ++i )
-			{
-				if ( *ppMessages[i] )
-					m_wndList.AddString( ppMessages[i] );
-			}
-		}
-	};
-
-	class CStatusDlg : public CDialogBase				//	CNTWindow::CStatusDlg
-	{
-	public:
-		CListbox m_wndListClients;
-		CListbox m_wndListStats;
-	private:
-		bool OnInitDialog();
-		bool OnCommand( WORD wNotifyCode, INT_PTR wID, HWND hwndCtl );
-	public:
-		void FillClients();
-		void FillStats();
-		virtual BOOL DefDialogProc( UINT message, WPARAM wParam, LPARAM lParam );
-	};
-
-	COLORREF		m_dwColorNew;	// setthe color for the next block written.
-	COLORREF		m_dwColorPrv;
-	CRichEditCtrl	m_wndLog;
-	int				m_iLogTextLen;
-
-	CEdit			m_wndInput;		// the text input portion at the bottom.
-	int				m_iHeightInput;
-
-   	HFONT			m_hLogFont;
-
-	bool m_fLogScrollLock;	// lock with the rolling text ?
-
-private:
-	int OnCreate( HWND hWnd, LPCREATESTRUCT lParam );
-	bool OnSysCommand( WPARAM uCmdType, int xPos, int yPos );
-	void OnSize( WPARAM nType, int cx, int cy );
-	void OnDestroy();
-	void OnSetFocus( HWND hWndLoss );
-	bool OnClose();
-	void OnUserPostMessage( COLORREF color, CGString * psMsg );
-	LRESULT OnUserTrayNotify( WPARAM wID, LPARAM lEvent );
-	LRESULT OnNotify( int idCtrl, NMHDR * pnmh );
-	void	SetLogFont( const char * pszFont );
-
-public:
-	bool OnCommand( WORD wNotifyCode, INT_PTR wID, HWND hwndCtl );
-
-	static bool RegisterClass(char *className);
-	static LRESULT WINAPI WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam );
-
-	void List_Clear();
-	void List_Add( COLORREF color, LPCTSTR pszText );
-
-	CNTWindow();
-	virtual ~CNTWindow();
-
-	char	m_zCommands[5][256];
-};
-
-class CNTApp : public CWinApp
-{
-public:
-	static const char *m_sClassName;
-	CNTWindow m_wndMain;
-	CNTWindow::CStatusDlg m_wndStatus;
-	CNTWindow::CAboutDlg m_wndAbout;
-};
 
 CNTApp theApp;
 

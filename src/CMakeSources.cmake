@@ -176,6 +176,7 @@ sphere/threads.h
 graysvr/CNTService.cpp
 graysvr/CNTService.h
 graysvr/CNTWindow.cpp
+graysvr/CNTWindow.h
 graysvr/CUnixTerminal.cpp
 graysvr/CUnixTerminal.h
 graysvr/SphereSvr.rc
