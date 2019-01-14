@@ -24,15 +24,6 @@ public:
 		virtual BOOL DefDialogProc( UINT message, WPARAM wParam, LPARAM lParam );
 	};
 
-	class COptionsDlg : public CDialogBase				//	CNTWindow::COptionsDlg
-	{
-	private:
-		bool OnInitDialog();
-		bool OnCommand( WORD wNotifyCode, INT_PTR wID, HWND hwndCtl );
-	public:
-		virtual BOOL DefDialogProc( UINT message, WPARAM wParam, LPARAM lParam );
-	};
-
 	class CListTextConsole : public CTextConsole		//	CNTWindow::CListTextConsole
 	{
 		CListbox m_wndList;
@@ -68,7 +59,7 @@ public:
 		}
 	};
 
-	class CStatusWnd : public CDialogBase				//	CNTWindow::CStatusWnd
+	class CStatusDlg : public CDialogBase				//	CNTWindow::CStatusDlg
 	{
 	public:
 		CListbox m_wndListClients;
@@ -126,8 +117,8 @@ class CNTApp : public CWinApp
 public:
 	static const char *m_sClassName;
 	CNTWindow m_wndMain;
-	CNTWindow::CStatusWnd	m_wndStatus;
-	CNTWindow::COptionsDlg	m_dlgOptions;
+	CNTWindow::CStatusDlg m_wndStatus;
+	CNTWindow::CAboutDlg m_wndAbout;
 };
 
 CNTApp theApp;
@@ -181,48 +172,9 @@ BOOL CNTWindow::CAboutDlg::DefDialogProc( UINT message, WPARAM wParam, LPARAM lP
 }
 
 //************************************
-// -COptionsDlg
+// -CStatusDlg
 
-bool CNTWindow::COptionsDlg::OnInitDialog()
-{
-	return( false );
-}
-
-bool CNTWindow::COptionsDlg::OnCommand( WORD wNotifyCode, INT_PTR wID, HWND hwndCtl)
-{
-	UNREFERENCED_PARAMETER(wNotifyCode);
-	UNREFERENCED_PARAMETER(hwndCtl);
-
-	// WM_COMMAND
-	switch ( wID )
-	{
-		case IDOK:
-		case IDCANCEL:
-			DestroyWindow();
-			break;
-	}
-	return( FALSE );
-}
-
-BOOL CNTWindow::COptionsDlg::DefDialogProc( UINT message, WPARAM wParam, LPARAM lParam )
-{
-	switch ( message )
-	{
-	case WM_INITDIALOG:
-		return( OnInitDialog());
-	case WM_COMMAND:
-		return( OnCommand(  HIWORD(wParam), LOWORD(wParam), (HWND) lParam ));
-	case WM_DESTROY:
-		OnDestroy();
-		return( TRUE );
-	}
-	return( FALSE );
-}
-
-//************************************
-// -CStatusWnd
-
-void CNTWindow::CStatusWnd::FillClients()
+void CNTWindow::CStatusDlg::FillClients()
 {
 	if ( m_wndListClients.m_hWnd == NULL )
 		return;
@@ -233,7 +185,7 @@ void CNTWindow::CStatusWnd::FillClients()
 	iCount++;
 }
 
-void CNTWindow::CStatusWnd::FillStats()
+void CNTWindow::CStatusDlg::FillStats()
 {
 	if ( m_wndListStats.m_hWnd == NULL )
 		return;
@@ -265,7 +217,7 @@ void CNTWindow::CStatusWnd::FillStats()
 	}
 }
 
-bool CNTWindow::CStatusWnd::OnInitDialog()
+bool CNTWindow::CStatusDlg::OnInitDialog()
 {
 	m_wndListClients.m_hWnd = GetDlgItem(IDC_STAT_CLIENTS);
 	FillClients();
@@ -274,7 +226,7 @@ bool CNTWindow::CStatusWnd::OnInitDialog()
 	return( false );
 }
 
-bool CNTWindow::CStatusWnd::OnCommand( WORD wNotifyCode, INT_PTR wID, HWND hwndCtl )
+bool CNTWindow::CStatusDlg::OnCommand( WORD wNotifyCode, INT_PTR wID, HWND hwndCtl )
 {
 	UNREFERENCED_PARAMETER(wNotifyCode);
 	UNREFERENCED_PARAMETER(hwndCtl);
@@ -290,7 +242,7 @@ bool CNTWindow::CStatusWnd::OnCommand( WORD wNotifyCode, INT_PTR wID, HWND hwndC
 	return( FALSE );
 }
 
-BOOL CNTWindow::CStatusWnd::DefDialogProc( UINT message, WPARAM wParam, LPARAM lParam )
+BOOL CNTWindow::CStatusDlg::DefDialogProc( UINT message, WPARAM wParam, LPARAM lParam )
 {
 	// IDM_STATUS
 	switch ( message )
@@ -579,15 +531,17 @@ bool CNTWindow::OnCommand( WORD wNotifyCode, INT_PTR wID, HWND hwndCtl )
 		theApp.m_wndStatus.SetForegroundWindow();
 		break;
 	case IDR_ABOUT_BOX:
+		if ( theApp.m_wndAbout.m_hWnd == NULL )
 		{
-			CAboutDlg wndAbout;
-			DialogBoxParam(
-				theApp.m_hInstance,  // handle to application instance
-				MAKEINTRESOURCE(IDR_ABOUT_BOX),   // identifies dialog box template
-				m_hWnd,      // handle to owner window
+			theApp.m_wndAbout.m_hWnd = ::CreateDialogParam(
+				theApp.m_hInstance,
+				MAKEINTRESOURCE(IDR_ABOUT_BOX),
+				HWND_DESKTOP,
 				CDialogBase::DialogProc,
-				reinterpret_cast<LPARAM>(static_cast <CDialogBase*>(&wndAbout)) );  // pointer to dialog box procedure
+				reinterpret_cast<LPARAM>(static_cast <CDialogBase*>(&theApp.m_wndAbout)) );
 		}
+		theApp.m_wndAbout.ShowWindow(SW_NORMAL);
+		theApp.m_wndAbout.SetForegroundWindow();
 		break;
 
 	case IDM_MINIMIZE:
@@ -1227,10 +1181,6 @@ bool NTWindow_OnTick( int iWaitmSec )
 					}
 				}
 			}
-		}
-		if ( theApp.m_dlgOptions.m_hWnd && IsDialogMessage( theApp.m_dlgOptions.m_hWnd, &msg ))
-		{
-			return( true );
 		}
 
 		TranslateMessage(&msg);
