@@ -596,6 +596,9 @@
     <ClInclude Include="src\graysvr\CItemShip.h">
       <Filter>graysvr</Filter>
     </ClInclude>
+    <ClInclude Include="src\graysvr\CLog.h">
+      <Filter>graysvr</Filter>
+    </ClInclude>
     <ClInclude Include="src\graysvr\CNTService.h">
       <Filter>graysvr</Filter>
     </ClInclude>

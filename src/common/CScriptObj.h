@@ -2,6 +2,10 @@
 #define _INC_CSCRIPTOBJ_H
 #pragma once
 
+#include "CArray.h"
+#include "CVarDefMap.h"
+#include "CVarFloat.h"
+
 enum TRIGRUN_TYPE
 {
 	TRIGRUN_SECTION_EXEC,	// Execute this section (first line already read)

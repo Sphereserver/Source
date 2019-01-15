@@ -2,6 +2,7 @@
 #define _CEXCEPTION_H
 
 #include "../sphere/threads.h"
+#include "../graysvr/CLog.h"
 
 extern "C"
 {

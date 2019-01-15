@@ -1,4 +1,5 @@
 #include "graysvr.h"	// predef header.
+#include "CLog.h"
 #ifndef _WIN32
 	#include "CUnixTerminal.h"
 #endif
@@ -46,6 +47,8 @@ bool CLog::OpenLog( LPCTSTR pszBaseDirName )	// name set previously.
 
 void CLog::SetColor( Color color )
 {
+	// Change current console color to the specified one
+	// NOTE: Value should be reseted after used
 	switch ( color )
 	{
 #ifdef _WIN32
