@@ -1347,3 +1347,4 @@ Fixed: Function DISCONNECT not disconnecting accounts with PLEVEL >= 6 (Admin/Ow
 
 14-01-2019, Coruja
 Fixed: Items not showing 'weight' tooltip correctly.
+Fixed: Console error when an multi without MULTIREGION/TSPEECH get placed on world.

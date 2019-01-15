@@ -1526,7 +1526,7 @@ CItem *CClient::OnTarg_Use_Multi(const CItemBase *pItemDef, CPointMap &pt, DWORD
 
 	CItemMulti *pMulti = dynamic_cast<CItemMulti *>(pItemNew);
 	if ( pMulti )
-		pMulti->Multi_Create(m_pChar, UID_CLEAR);
+		pMulti->Multi_Create(m_pChar);
 
 	if ( pItemDef->IsType(IT_STONE_GUILD) )
 	{

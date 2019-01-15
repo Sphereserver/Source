@@ -1673,8 +1673,10 @@ CItemBaseDupe *CItemBaseDupe::GetDupeRef(ITEMID_TYPE id)	// static
 
 CItemBaseMulti::CItemBaseMulti(CItemBase *pBase) : CItemBase(pBase->GetID())
 {
-	m_dwRegionFlags = REGION_FLAG_NOBUILDING;
+	m_Components.Empty();
 	m_rect.SetRectEmpty();
+	m_dwRegionFlags = REGION_FLAG_NOBUILDING;
+	m_Speech.Empty();
 	m_shipSpeed.period = TICK_PER_SEC / 2;
 	m_shipSpeed.tiles = 1;
 	m_SpeedMode = 3;

@@ -163,7 +163,7 @@ bool CItemMulti::Multi_CreateComponent(ITEMID_TYPE id, signed short x, signed sh
 	pItem->SetAttr(ATTR_MOVE_NEVER | (m_Attr & (ATTR_MAGIC|ATTR_INVIS)));
 	pItem->m_uidLink = GetUID();
 
-	if ( pItem->IsTypeLockable() || pItem->IsTypeLocked() )
+	if ( pItem->IsTypeLockable() )
 	{
 		pItem->m_itContainer.m_lockUID.SetPrivateUID(dwKeyCode);	// set key id for the door/key/sign
 		pItem->m_itContainer.m_lock_complexity = 10000;				// never pickable
@@ -174,7 +174,7 @@ bool CItemMulti::Multi_CreateComponent(ITEMID_TYPE id, signed short x, signed sh
 	return fNeedKey;
 }
 
-void CItemMulti::Multi_Create(CChar *pChar, DWORD dwKeyCode)
+void CItemMulti::Multi_Create(CChar *pChar)
 {
 	ADDTOCALLSTACK("CItemMulti::Multi_Create");
 	// Create multi components
@@ -187,15 +187,11 @@ void CItemMulti::Multi_Create(CChar *pChar, DWORD dwKeyCode)
 	if ( !pMultiDef || !IsTopLevel() )
 		return;
 
-	if ( dwKeyCode == UID_CLEAR )
-		dwKeyCode = GetUID();
-
 	bool fNeedKey = false;
-	size_t iQty = pMultiDef->m_Components.GetCount();
-	for ( size_t i = 0; i < iQty; ++i )
+	for ( size_t i = 0; i < pMultiDef->m_Components.GetCount(); ++i )
 	{
 		const CItemBaseMulti::CMultiComponentItem &component = pMultiDef->m_Components.ElementAt(i);
-		fNeedKey |= Multi_CreateComponent(component.m_id, component.m_dx, component.m_dy, component.m_dz, dwKeyCode);
+		fNeedKey |= Multi_CreateComponent(component.m_id, component.m_dx, component.m_dy, component.m_dz, GetUID());
 	}
 
 	Multi_GetSign();	// set the m_uidLink
@@ -212,7 +208,7 @@ void CItemMulti::Multi_Create(CChar *pChar, DWORD dwKeyCode)
 			{
 				pKey->SetType(IT_KEY);
 				pKey->SetAttr(g_Cfg.m_fAutoNewbieKeys ? ATTR_NEWBIE|ATTR_MAGIC : ATTR_MAGIC);
-				pKey->m_itKey.m_lockUID.SetPrivateUID(dwKeyCode);
+				pKey->m_itKey.m_lockUID.SetPrivateUID(GetUID());
 				pKey->m_uidLink = GetUID();
 
 				// Put primary key on backpack
@@ -360,7 +356,7 @@ bool CItemMulti::r_Verb(CScript &s, CTextConsole *pSrc)		// execute command from
 	{
 		case SHV_MULTICREATE:
 		{
-			Multi_Create(static_cast<CGrayUID>(s.GetArgVal()).CharFind(), UID_CLEAR);
+			Multi_Create(static_cast<CGrayUID>(s.GetArgVal()).CharFind());
 			return true;
 		}
 		default:

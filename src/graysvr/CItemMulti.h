@@ -33,7 +33,7 @@ public:
 	int Multi_GetMaxDist() const;
 	void MultiRealizeRegion();
 	void MultiUnRealizeRegion();
-	void Multi_Create(CChar *pChar, DWORD dwKeyCode);
+	void Multi_Create(CChar *pChar);
 
 	CItem *Multi_GetSign();
 	void OnHearRegion(LPCTSTR pszCmd, CChar *pSrc);
@@ -57,7 +57,7 @@ protected:
 
 	const CItemBaseMulti *Multi_GetDef() const
 	{
-		return static_cast<const CItemBaseMulti *>(Base_GetDef());
+		return dynamic_cast<const CItemBaseMulti *>(Base_GetDef());
 	}
 
 	virtual void OnComponentCreate(const CItem *pComponent)

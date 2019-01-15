@@ -1567,7 +1567,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 
 			if ( g_Cfg.m_Fame.GetCount() <= 0 )
 			{
-				DEBUG_ERR(("FAME ranges have not been defined.\n"));
+				DEBUG_ERR(("FAME ranges have not been defined\n"));
 				sVal.FormatVal(0);
 				return true;
 			}
@@ -1582,11 +1582,11 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			if ( index > 0 )
 			{
 				int iFame = Stat_GetAdjusted(STAT_FAME);
-				for ( size_t i = index - 1; i > 0; i-- )
+				for ( size_t i = index - 1; i > 0; --i )
 				{
 					if ( !IsStrNumeric(ppLevel_sep[i]) )
 					{
-						DEBUG_ERR(("'%s' is not a valid fame value.\n", ppLevel_sep[i]));
+						DEBUG_ERR(("'%s' is not a valid fame value\n", ppLevel_sep[i]));
 					}
 					else if ( iFame >= ATOI(ppLevel_sep[i]) )
 					{
@@ -1657,7 +1657,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 
 			if ( g_Cfg.m_Karma.GetCount() <= 0 )
 			{
-				DEBUG_ERR(("KARMA ranges have not been defined.\n"));
+				DEBUG_ERR(("KARMA ranges have not been defined\n"));
 				sVal.FormatVal(0);
 				return true;
 			}
@@ -1672,11 +1672,11 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			if ( index > 0 )
 			{
 				int iKarma = Stat_GetAdjusted(STAT_KARMA);
-				for ( size_t i = index - 1; i > 0; i-- )
+				for ( size_t i = index - 1; i > 0; --i )
 				{
 					if ( (ppLevel_sep[i][0] != '-') && !IsStrNumeric(ppLevel_sep[i]) )
 					{
-						DEBUG_ERR(("'%s' is not a valid karma value.\n", ppLevel_sep[i]));
+						DEBUG_ERR(("'%s' is not a valid karma value\n", ppLevel_sep[i]));
 					}
 					else if ( iKarma >= ATOI(ppLevel_sep[i]) )
 					{
@@ -1914,7 +1914,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				pt = g_Cfg.GetRegionPoint(pszKey);
 				if ( !pt.IsValidPoint() )
 				{
-					DEBUG_ERR(("An invalid point passed as an argument to the function IsVerticalSpace.\n"));
+					DEBUG_ERR(("%s: invalid point passed as argument\n", sm_szLoadKeys[index]));
 					return false;
 				}
 			}
@@ -3337,7 +3337,7 @@ bool CChar::r_Verb(CScript &s, CTextConsole *pSrc)	// execute command from scrip
 				CPointMap pt = pCharSrc->GetTopPoint();
 				pt.MoveN(pCharSrc->m_dirFace, 3);
 				pItem->MoveToDecay(pt, 10 * 60 * TICK_PER_SEC);		// make the cage vanish after 10 minutes
-				pItem->Multi_Create(NULL, UID_CLEAR);
+				pItem->Multi_Create(NULL);
 				Spell_Teleport(pt, true, false);
 				break;
 			}
