@@ -1635,10 +1635,43 @@ bool CClient::OnTarg_Use_Item(CObjBase *pObjTarg, CPointMap &pt, ITEMID_TYPE id)
 		{
 			return m_pChar->Use_Key(pItemUse, pItemTarg);
 		}
-		case IT_FORGE:
+		case IT_ORE:
 		{
-			// Target the ore
-			return m_pChar->Skill_Mining_Smelt(pItemTarg, pItemUse);
+			if ( !m_pChar->CanUse(pItemUse, true) )
+			{
+				SysMessageDefault(DEFMSG_ITEMUSE_ORE_TOOFAR);
+				return false;
+			}
+			else if ( !m_pChar->CanTouch(pItemTarg) )
+			{
+				SysMessageDefault(DEFMSG_ITEMUSE_TOOFAR);
+				return false;
+			}
+			else if ( pItemTarg->IsType(IT_FORGE) )
+			{
+				// Target is an forge, so smelt the ore
+				return m_pChar->Skill_SmeltOre(pItemUse);
+			}
+			else if ( pItemTarg->IsType(IT_ORE) )
+			{
+				// Target is an ore pile, so just combine both piles
+				if ( pItemTarg == pItemUse )
+					return false;
+				else if ( pItemTarg->GetID() != pItemUse->GetID() )
+				{
+					SysMessageDefault(DEFMSG_ITEMUSE_ORE_COMBINE);
+					return false;
+				}
+				else if ( pItemTarg->GetAmount() + pItemUse->GetAmount() > g_Cfg.m_iItemsMaxAmount )
+				{
+					SysMessageDefault(DEFMSG_ITEMUSE_ORE_TOOMUCH);
+					return false;
+				}
+				pItemTarg->SetAmountUpdate(pItemTarg->GetAmount() + pItemUse->GetAmount());
+				pItemUse->Delete();
+				return true;
+			}
+			break;
 		}
 		case IT_CANNON_MUZZLE:
 		{

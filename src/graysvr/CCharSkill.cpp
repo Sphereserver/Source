@@ -1456,153 +1456,122 @@ CItem *CChar::Skill_NaturalResource_Create(CItem *pResBit, SKILL_TYPE skill)
 	return pItem;
 }
 
-bool CChar::Skill_Mining_Smelt(CItem *pItemOre, CItem *pItemTarg)
+bool CChar::Skill_SmeltOre(CItem *pOre)
 {
-	ADDTOCALLSTACK("CChar::Skill_Mining_Smelt");
-	// SKILL_MINING
-	// pItemTarg = forge or another pile of ore.
-	// RETURN: true = success.
-	if ( !pItemOre || (pItemOre == pItemTarg) )
-	{
-		SysMessageDefault(DEFMSG_MINING_NOT_ORE);
+	ADDTOCALLSTACK("CChar::Skill_SmeltOre");
+	// Smelt ores into ingots
+	if ( !pOre )
 		return false;
-	}
 
-	// The ore is on the ground
-	if ( !CanUse(pItemOre, true) )
-	{
-		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MINING_REACH), pItemOre->GetName());
-		return false;
-	}
-
-	if ( pItemOre->IsType(IT_ORE) && pItemTarg && pItemTarg->IsType(IT_ORE) )
-	{
-		// combine piles.
-		if ( (pItemTarg == pItemOre) || (pItemTarg->GetID() != pItemOre->GetID()) )
-			return false;
-		pItemTarg->SetAmountUpdate(pItemOre->GetAmount() + pItemTarg->GetAmount());
-		pItemOre->Delete();
-		return true;
-	}
-
-	if ( pItemTarg && pItemTarg->IsTopLevel() && pItemTarg->IsType(IT_FORGE) )
-		m_Act_p = pItemTarg->GetTopPoint();
-	else
-		m_Act_p = g_World.FindItemTypeNearby(GetTopPoint(), IT_FORGE, 3, false, true);
-
+	m_Act_p = g_World.FindItemTypeNearby(GetTopPoint(), IT_FORGE, 2, false, true);
 	if ( !m_Act_p.IsValidPoint() || !CanTouch(m_Act_p) )
 	{
-		SysMessageDefault(DEFMSG_MINING_FORGE);
+		SysMessageDefault(DEFMSG_SMELT_NOFORGE);
 		return false;
 	}
 
-	const CItemBase *pOreDef = pItemOre->Item_GetDef();
-	if ( pOreDef->IsType(IT_INGOT) )
+	const CItemBase *pIngotDef = CItemBase::FindItemBase(static_cast<ITEMID_TYPE>(RES_GET_INDEX(pOre->Item_GetDef()->m_ttOre.m_IngotID)));
+	if ( !pIngotDef || !pIngotDef->IsType(IT_INGOT) || pOre->IsType(IT_INGOT) )
 	{
-		SysMessageDefault(DEFMSG_MINING_INGOTS);
+		SysMessageDefault(DEFMSG_SMELT_CANT);
 		return false;
 	}
 
-	// Fire effect ?
-	CItem *pItemEffect = CItem::CreateBase(ITEMID_FIRE);
-	ASSERT(pItemEffect);
-	CPointMap pt = m_Act_p;
-	pt.m_z += 8;	// on top of the forge.
-	pItemEffect->SetAttr(ATTR_MOVE_NEVER);
-	pItemEffect->MoveToDecay(pt, TICK_PER_SEC);
+	if ( Skill_GetAdjusted(SKILL_MINING) < static_cast<WORD>(pIngotDef->m_ttIngot.m_iSkillReq) )
+	{
+		SysMessageDefault(DEFMSG_SMELT_NOSKILL);
+		return false;
+	}
 
 	UpdateDir(m_Act_p);
-	if ( pItemOre->IsAttr(ATTR_MAGIC) )	// not magic items
+
+	if ( Skill_CheckSuccess(SKILL_MINING, pIngotDef->m_ttIngot.m_iSkillReq / 10) )
 	{
-		SysMessageDefault(DEFMSG_MINING_FIRE);
+		pOre->ConsumeAmount(maximum(1, (pOre->GetAmount() / 2)));
+		SysMessageDefault(DEFMSG_SMELT_FAIL);
 		return false;
 	}
 
-	TCHAR *pszMsg = Str_GetTemp();
-	sprintf(pszMsg, "%s %s", g_Cfg.GetDefaultMsg(DEFMSG_MINING_SMELT), pItemOre->GetName());
-	Emote(pszMsg);
+	CItem *pIngot = CItem::CreateScript(pIngotDef->GetID(), this);
+	if ( !pIngot )
+	{
+		SysMessageDefault(DEFMSG_SMELT_CANT);
+		return false;
+	}
 
-	WORD wSkillLevel = Skill_GetAdjusted(SKILL_MINING);
-	WORD wOreQty = pItemOre->GetAmount();
-	WORD wIngotQty = 0;
+	pOre->Delete();
+	pIngot->SetAmount(pOre->GetAmount());
+	ItemBounce(pIngot, false);
+	SysMessageDefault(DEFMSG_SMELT_SUCCESS);
+	return true;
+}
+
+bool CChar::Skill_SmeltItem(CItem *pItem)
+{
+	ADDTOCALLSTACK("CChar::Skill_SmeltItem");
+	// Smelt armors/weapons into ingots
+	if ( !pItem )
+		return false;
+
+	m_Act_p = g_World.FindItemTypeNearby(GetTopPoint(), IT_FORGE, 2, false, true);
+	if ( !m_Act_p.IsValidPoint() || !CanTouch(m_Act_p) )
+	{
+		SysMessageDefault(DEFMSG_SMELT_NOFORGE);
+		return false;
+	}
+
+	m_Act_p = g_World.FindItemTypeNearby(GetTopPoint(), IT_ANVIL, 2, false, true);
+	if ( !m_Act_p.IsValidPoint() || !CanTouch(m_Act_p) )
+	{
+		SysMessageDefault(DEFMSG_SMELT_NOANVIL);
+		return false;
+	}
+
+	const CItemBase *pItemDef = pItem->Item_GetDef();
 	const CItemBase *pIngotDef = NULL;
-
-	if ( pOreDef->IsType(IT_ORE) )
+	WORD wAmount = 0;
+	for ( size_t i = 0; i < pItemDef->m_BaseResources.GetCount(); ++i )
 	{
-		ITEMID_TYPE idIngot = static_cast<ITEMID_TYPE>(RES_GET_INDEX(pOreDef->m_ttOre.m_IngotID));
-		pIngotDef = CItemBase::FindItemBase(idIngot);
-		wIngotQty = 1;	// ingots per ore.
-	}
-	else
-	{
-		// Smelting something like armor etc.
-		// find the ingot type resources.
-		for ( size_t i = 0; i < pOreDef->m_BaseResources.GetCount(); ++i )
-		{
-			RESOURCE_ID rid = pOreDef->m_BaseResources[i].GetResourceID();
-			if ( rid.GetResType() != RES_ITEMDEF )
-				continue;
+		RESOURCE_ID rid = pItemDef->m_BaseResources[i].GetResourceID();
+		if ( rid.GetResType() != RES_ITEMDEF )
+			continue;
 
-			const CItemBase *pBaseDef = CItemBase::FindItemBase(static_cast<ITEMID_TYPE>(rid.GetResIndex()));
-			if ( !pBaseDef )
-				continue;
+		const CItemBase *pResourceDef = CItemBase::FindItemBase(static_cast<ITEMID_TYPE>(rid.GetResIndex()));
+		if ( !pResourceDef || !pResourceDef->IsType(IT_INGOT) )
+			continue;
 
-			if ( pBaseDef->IsType(IT_GEM) )
-			{
-				// bounce the gems out of this.
-				CItem *pGem = CItem::CreateScript(pBaseDef->GetID(), this);
-				if ( pGem )
-				{
-					pGem->SetAmount(static_cast<WORD>(wOreQty * pBaseDef->m_BaseResources[i].GetResQty()));
-					ItemBounce(pGem);
-				}
-				continue;
-			}
-			if ( pBaseDef->IsType(IT_INGOT) )
-			{
-				if ( wSkillLevel < pBaseDef->m_ttIngot.m_iSkillMin )
-				{
-					SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MINING_SKILL), pBaseDef->GetName());
-					continue;
-				}
-				pIngotDef = pBaseDef;
-				wIngotQty = static_cast<WORD>(pOreDef->m_BaseResources[i].GetResQty());
-			}
-		}
+		pIngotDef = pResourceDef;
+		wAmount = static_cast<WORD>((pItemDef->m_BaseResources[i].GetResQty() * 2) / 3);
+		break;
 	}
 
-	if ( !pIngotDef || !pIngotDef->IsType(IT_INGOT) )
+	if ( !pIngotDef || pItemDef->IsType(IT_INGOT) )
 	{
-		SysMessageDefault(DEFMSG_MINING_CONSUMED);
-		pItemOre->ConsumeAmount(wOreQty);
-		return true;
-	}
-
-	wIngotQty *= wOreQty;	// max amount
-	int iSkillRange = pIngotDef->m_ttIngot.m_iSkillMax - pIngotDef->m_ttIngot.m_iSkillMin;
-	int iDifficulty = Calc_GetRandVal(iSkillRange);
-
-	// Try to make ingots
-	iDifficulty = (pIngotDef->m_ttIngot.m_iSkillMin + iDifficulty) / 10;
-	if ( !wIngotQty || !Skill_UseQuick(SKILL_MINING, iDifficulty) )
-	{
-		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MINING_NOTHING), pItemOre->GetName());
-		pItemOre->ConsumeAmount(static_cast<DWORD>(Calc_GetRandVal(pItemOre->GetAmount() / 2)) + 1);		// lose up to half the resources.
+		SysMessageDefault(DEFMSG_SMELT_CANT);
 		return false;
 	}
 
-	// Payoff - What do i get ?
-	// This is the one
-	CItem *pIngots = CItem::CreateScript(pIngotDef->GetID(), this);
-	if ( !pIngots )
+	if ( Skill_GetAdjusted(SKILL_BLACKSMITHING) < static_cast<WORD>(pIngotDef->m_ttIngot.m_iSkillReq) )
 	{
-		SysMessageDefault(DEFMSG_MINING_NOTHING);
+		SysMessageDefault(DEFMSG_BLACKSMITHING_NOSKILL);
 		return false;
 	}
 
-	pIngots->SetAmount(wIngotQty);
-	pItemOre->ConsumeAmount(pItemOre->GetAmount());
-	ItemBounce(pIngots);
+	UpdateDir(m_Act_p);
+
+	CItem *pIngot = CItem::CreateScript(pIngotDef->GetID(), this);
+	if ( !pIngot )
+	{
+		SysMessageDefault(DEFMSG_SMELT_CANT);
+		return false;
+	}
+
+	pItem->Delete();
+	pIngot->SetAmount(pItem->GetAmount() * wAmount);
+	ItemBounce(pIngot, false);
+	Sound(SOUND_DRIP3);
+	Sound(SOUND_LIQUID);
+	SysMessageDefault(DEFMSG_SMELT_ITEM_SUCCESS);
 	return true;
 }
 
@@ -1697,40 +1666,29 @@ int CChar::Skill_Mining(SKTRIG_TYPE stage)
 {
 	ADDTOCALLSTACK("CChar::Skill_Mining");
 	// SKILL_MINING
-	// m_Act_p = the point we want to mine at.
-	// m_Act_TargPrv = Pickaxe/Shovel
+	// m_Act_p = target point to look for resources
+	// m_Act_TargPrv = tool item (pickaxe / shovel)
 	//
-	// Test the chance of precious ore.
-	// resource check  to IT_ORE. How much can we get ?
 	// RETURN:
-	//  Difficulty 0-100
+	//  Difficulty = 0-100
 
 	if ( stage == SKTRIG_FAIL )
 		return 0;
 
-	CItem *pTool = m_Act_TargPrv.ItemFind();
-	if ( !pTool )
-	{
-		SysMessageDefault(DEFMSG_MINING_TOOL);
-		return -SKTRIG_ABORT;
-	}
-
 	if ( m_Act_p.m_x == -1 )
 	{
-		SysMessageDefault(DEFMSG_MINING_4);
+		SysMessageDefault(DEFMSG_MINING_NORESOURCE);
 		return -SKTRIG_QTY;
 	}
 
-	// 3D distance check and LOS
+	// Distance check
 	CSkillDef *pSkillDef = g_Cfg.GetSkillDef(SKILL_MINING);
+	if ( pSkillDef->m_Range <= 0 )
+		pSkillDef->m_Range = 2;
+
 	int iTargRange = GetTopPoint().GetDist(m_Act_p);
 	int iMaxRange = pSkillDef->m_Range;
-	if ( !iMaxRange )
-	{
-		g_Log.EventError("Mining skill doesn't have a value for RANGE, defaulting to 2\n");
-		iMaxRange = 2;
-	}
-	if ( (iTargRange < 1) && !g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_NOMINDIST) )
+	if ( (iTargRange < 1) && !g_Cfg.IsSkillFlag(SKILL_MINING, SKF_NOMINDIST) )
 	{
 		SysMessageDefault(DEFMSG_MINING_CLOSE);
 		return -SKTRIG_QTY;
@@ -1747,15 +1705,10 @@ int CChar::Skill_Mining(SKTRIG_TYPE stage)
 	}
 
 	// Resource check
-	CItem *pResBit = g_World.CheckNaturalResource(m_Act_p, static_cast<IT_TYPE>(GETINTRESOURCE(m_atResource.m_ridType)), stage == SKTRIG_START, this);
-	if ( !pResBit )
+	CItem *pResBit = g_World.CheckNaturalResource(m_Act_p, static_cast<IT_TYPE>(GETINTRESOURCE(m_atResource.m_ridType)), (stage == SKTRIG_START), this);
+	if ( !pResBit || (pResBit->GetAmount() == 0) )
 	{
-		SysMessageDefault(DEFMSG_MINING_1);
-		return -SKTRIG_QTY;
-	}
-	if ( pResBit->GetAmount() == 0 )
-	{
-		SysMessageDefault(DEFMSG_MINING_2);
+		SysMessageDefault(DEFMSG_MINING_NORESOURCE);
 		return -SKTRIG_QTY;
 	}
 
@@ -1765,18 +1718,23 @@ int CChar::Skill_Mining(SKTRIG_TYPE stage)
 		return Skill_NaturalResource_Setup(pResBit);
 	}
 
+	// Create the item
 	CItem *pItem = Skill_NaturalResource_Create(pResBit, SKILL_MINING);
 	if ( !pItem )
 	{
-		SysMessageDefault(DEFMSG_MINING_3);
+		SysMessageDefault(DEFMSG_MINING_NORESOURCE);
 		return -SKTRIG_FAIL;
 	}
 
+	SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MINING_SUCCESS), pItem->GetName());
 	if ( m_atResource.m_bounceItem )
-		ItemBounce(pItem);
+		ItemBounce(pItem, false);
 	else
-		pItem->MoveToCheck(GetTopPoint(), this);	// put at my feet.
-
+	{
+		pItem->MoveToCheck(GetTopPoint(), this);
+		if ( !pItem->IsTimerSet() )		// make sure the item will decay even on no-decay regions
+			pItem->SetDecayTime(g_Cfg.m_iDecay_Item);
+	}
 	return 0;
 }
 
@@ -1784,46 +1742,29 @@ int CChar::Skill_Fishing(SKTRIG_TYPE stage)
 {
 	ADDTOCALLSTACK("CChar::Skill_Fishing");
 	// SKILL_FISHING
-	// m_Act_p = where to fish.
-	// NOTE: don't check LOS else you can't fish off boats.
-	// Check that we dont stand too far away
-	// Make sure we aren't in a house
+	// m_Act_p = target point to look for resources
+	// m_Act_TargPrv = tool item (fishing pole / fishing net)
 	//
 	// RETURN:
-	//  difficulty = 0-100
+	//  Difficulty = 0-100
 
 	if ( stage == SKTRIG_FAIL )
 		return 0;
 
-	if ( m_Act_p.m_x == -1 )
+	if ( (m_Act_p.m_x == -1) || m_Act_p.GetRegion(REGION_TYPE_MULTI) )		// do not allow fishing through ship floor
 	{
-		SysMessageDefault(DEFMSG_FISHING_4);
+		SysMessageDefault(DEFMSG_FISHING_NOWATER);
 		return -SKTRIG_QTY;
 	}
 
-	CRegionBase *pRegion = GetTopPoint().GetRegion(REGION_TYPE_MULTI);		// are we in a house ?
-	if ( pRegion && !pRegion->IsFlag(REGION_FLAG_SHIP) )
-	{
-		SysMessageDefault(DEFMSG_FISHING_3);
-		return -SKTRIG_QTY;
-	}
-
-	if ( m_Act_p.GetRegion(REGION_TYPE_MULTI) )		// do not allow fishing through ship floor
-	{
-		SysMessageDefault(DEFMSG_FISHING_4);
-		return -SKTRIG_QTY;
-	}
-
-	// 3D distance check and LOS
+	// Distance check
 	CSkillDef *pSkillDef = g_Cfg.GetSkillDef(SKILL_FISHING);
+	if ( pSkillDef->m_Range <= 0 )
+		pSkillDef->m_Range = 4;
+
 	int iTargRange = GetTopPoint().GetDist(m_Act_p);
 	int iMaxRange = pSkillDef->m_Range;
-	if ( !iMaxRange )
-	{
-		g_Log.EventError("Fishing skill doesn't have a value for RANGE, defaulting to 4\n");
-		iMaxRange = 4;
-	}
-	if ( (iTargRange < 1) && !g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_NOMINDIST) ) // you cannot fish under your legs
+	if ( (iTargRange < 1) && !g_Cfg.IsSkillFlag(SKILL_FISHING, SKF_NOMINDIST) )
 	{
 		SysMessageDefault(DEFMSG_FISHING_CLOSE);
 		return -SKTRIG_QTY;
@@ -1835,6 +1776,7 @@ int CChar::Skill_Fishing(SKTRIG_TYPE stage)
 	}
 	if ( (m_pPlayer && (g_Cfg.m_iAdvancedLos & ADVANCEDLOS_PLAYER)) || (m_pNPC && (g_Cfg.m_iAdvancedLos & ADVANCEDLOS_NPC)) )
 	{
+		// Only check LOS when AdvancedLOS is enabled, because standard LOS will always fail (it doesn't check LOS over water)
 		if ( !CanSeeLOS(m_Act_p, NULL, iMaxRange, LOS_FISHING) )
 		{
 			SysMessageDefault(DEFMSG_FISHING_LOS);
@@ -1843,15 +1785,10 @@ int CChar::Skill_Fishing(SKTRIG_TYPE stage)
 	}
 
 	// Resource check
-	CItem *pResBit = g_World.CheckNaturalResource(m_Act_p, static_cast<IT_TYPE>(GETINTRESOURCE(m_atResource.m_ridType)), stage == SKTRIG_START, this);
-	if ( !pResBit )
+	CItem *pResBit = g_World.CheckNaturalResource(m_Act_p, static_cast<IT_TYPE>(GETINTRESOURCE(m_atResource.m_ridType)), (stage == SKTRIG_START), this);
+	if ( !pResBit || (pResBit->GetAmount() == 0) )
 	{
-		SysMessageDefault(DEFMSG_FISHING_1);
-		return -SKTRIG_QTY;
-	}
-	if ( pResBit->GetAmount() == 0 )
-	{
-		SysMessageDefault(DEFMSG_FISHING_2);
+		SysMessageDefault(DEFMSG_FISHING_NORESOURCE);
 		return -SKTRIG_QTY;
 	}
 
@@ -1862,18 +1799,23 @@ int CChar::Skill_Fishing(SKTRIG_TYPE stage)
 		return Skill_NaturalResource_Setup(pResBit);
 	}
 
+	// Create the item
 	CItem *pItem = Skill_NaturalResource_Create(pResBit, SKILL_FISHING);
 	if ( !pItem )
 	{
-		SysMessageDefault(DEFMSG_FISHING_2);
-		return -SKTRIG_ABORT;
+		SysMessageDefault(DEFMSG_FISHING_NORESOURCE);
+		return -SKTRIG_FAIL;
 	}
 
 	SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_FISHING_SUCCESS), pItem->GetName());
 	if ( m_atResource.m_bounceItem )
 		ItemBounce(pItem, false);
 	else
-		pItem->MoveToCheck(GetTopPoint(), this);	// put at my feet.
+	{
+		pItem->MoveToCheck(GetTopPoint(), this);
+		if ( !pItem->IsTimerSet() )		// make sure the item will decay even on no-decay regions
+			pItem->SetDecayTime(g_Cfg.m_iDecay_Item);
+	}
 	return 0;
 }
 
@@ -1881,39 +1823,29 @@ int CChar::Skill_Lumberjack(SKTRIG_TYPE stage)
 {
 	ADDTOCALLSTACK("CChar::Skill_Lumberjack");
 	// SKILL_LUMBERJACK
-	// m_Act_p = the point we want to chop/hack at.
-	// m_Act_TargPrv = Axe/Dagger
-	// NOTE: The skill is used for hacking with IT_FENCE (e.g. i_dagger) 
+	// m_Act_p = target point to look for resources
+	// m_Act_TargPrv = tool item (axe / dagger)
 	//
 	// RETURN:
-	//  difficulty = 0-100
+	//  Difficulty = 0-100
 
 	if ( stage == SKTRIG_FAIL )
 		return 0;
 
-	CItem *pTool = m_Act_TargPrv.ItemFind();
-	if ( !pTool )
-	{
-		SysMessageDefault(DEFMSG_LUMBERJACKING_TOOL);
-		return -SKTRIG_ABORT;
-	}
-
 	if ( m_Act_p.m_x == -1 )
 	{
-		SysMessageDefault(DEFMSG_LUMBERJACKING_6);
+		SysMessageDefault(DEFMSG_LUMBERJACKING_NORESOURCE);
 		return -SKTRIG_QTY;
 	}
 
-	// 3D distance check and LOS
-	CSkillDef *pSkillDef = g_Cfg.GetSkillDef(SKILL_LUMBERJACKING);
+	// Distance check
+	CSkillDef *pSkillDef = g_Cfg.GetSkillDef(SKILL_MINING);
+	if ( pSkillDef->m_Range <= 0 )
+		pSkillDef->m_Range = 2;
+
 	int iTargRange = GetTopPoint().GetDist(m_Act_p);
 	int iMaxRange = pSkillDef->m_Range;
-	if ( !pSkillDef->m_Range )
-	{
-		g_Log.EventError("Lumberjacking skill doesn't have a value for RANGE, defaulting to 2\n");
-		iMaxRange = 2;
-	}
-	if ( (iTargRange < 1) && !g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_NOMINDIST) )
+	if ( (iTargRange < 1) && !g_Cfg.IsSkillFlag(SKILL_LUMBERJACKING, SKF_NOMINDIST) )
 	{
 		SysMessageDefault(DEFMSG_LUMBERJACKING_CLOSE);
 		return -SKTRIG_QTY;
@@ -1930,21 +1862,10 @@ int CChar::Skill_Lumberjack(SKTRIG_TYPE stage)
 	}
 
 	// Resource check
-	CItem *pResBit = g_World.CheckNaturalResource(m_Act_p, static_cast<IT_TYPE>(GETINTRESOURCE(m_atResource.m_ridType)), stage == SKTRIG_START, this);
-	if ( !pResBit )
+	CItem *pResBit = g_World.CheckNaturalResource(m_Act_p, static_cast<IT_TYPE>(GETINTRESOURCE(m_atResource.m_ridType)), (stage == SKTRIG_START), this);
+	if ( !pResBit || (pResBit->GetAmount() == 0) )
 	{
-		if ( pTool->IsType(IT_WEAPON_FENCE) )	//dagger
-			SysMessageDefault(DEFMSG_LUMBERJACKING_3);	// not a tree
-		else
-			SysMessageDefault(DEFMSG_LUMBERJACKING_1);
-		return -SKTRIG_QTY;
-	}
-	if ( pResBit->GetAmount() == 0 )
-	{
-		if ( pTool->IsType(IT_WEAPON_FENCE) )	//dagger
-			SysMessageDefault(DEFMSG_LUMBERJACKING_4);	// no wood to harvest
-		else
-			SysMessageDefault(DEFMSG_LUMBERJACKING_2);
+		SysMessageDefault(DEFMSG_LUMBERJACKING_NORESOURCE);
 		return -SKTRIG_QTY;
 	}
 
@@ -1954,25 +1875,40 @@ int CChar::Skill_Lumberjack(SKTRIG_TYPE stage)
 		return Skill_NaturalResource_Setup(pResBit);
 	}
 
-	if ( pTool->IsType(IT_WEAPON_FENCE) )	//dagger end
+	// Create the item
+	CItem *pItem = NULL;
+	CItem *pTool = m_Act_TargPrv.ItemFind();
+	if ( pTool && pTool->IsType(IT_WEAPON_FENCE) )
 	{
-		SysMessageDefault(DEFMSG_LUMBERJACKING_5);
-		ItemBounce(CItem::CreateScript(ITEMID_KINDLING1, this));
-		pResBit->ConsumeAmount(1);
-		return 0;
+		pItem = CItem::CreateScript(ITEMID_KINDLING1, this);
+		if ( !pItem )
+		{
+			SysMessageDefault(DEFMSG_LUMBERJACKING_NORESOURCE);
+			return -SKTRIG_FAIL;
+		}
+		pResBit->ConsumeAmount();
+		SysMessageDefault(DEFMSG_LUMBERJACKING_KINDLING_SUCCESS);
+		SysMessageDefault(DEFMSG_LUMBERJACKING_KINDLING_AXE);
 	}
-
-	CItem *pItem = Skill_NaturalResource_Create(pResBit, SKILL_LUMBERJACKING);
-	if ( !pItem )
+	else
 	{
-		SysMessageDefault(DEFMSG_LUMBERJACKING_2);
-		return -SKTRIG_FAIL;
+		pItem = Skill_NaturalResource_Create(pResBit, SKILL_LUMBERJACKING);
+		if ( !pItem )
+		{
+			SysMessageDefault(DEFMSG_LUMBERJACKING_NORESOURCE);
+			return -SKTRIG_FAIL;
+		}
+		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_LUMBERJACKING_SUCCESS), pItem->GetName());
 	}
 
 	if ( m_atResource.m_bounceItem )
-		ItemBounce(pItem);
+		ItemBounce(pItem, false);
 	else
-		pItem->MoveToCheck(GetTopPoint(), this);	// put at my feet.
+	{
+		pItem->MoveToCheck(GetTopPoint(), this);
+		if ( !pItem->IsTimerSet() )		// make sure the item will decay even on no-decay regions
+			pItem->SetDecayTime(g_Cfg.m_iDecay_Item);
+	}
 	return 0;
 }
 

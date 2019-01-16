@@ -1348,3 +1348,9 @@ Fixed: Function DISCONNECT not disconnecting accounts with PLEVEL >= 6 (Admin/Ow
 14-01-2019, Coruja
 Fixed: Items not showing 'weight' tooltip correctly.
 Fixed: Console error when an multi without MULTIREGION/TSPEECH get placed on world.
+
+16-01-2019, Coruja
+Changed: Optimized Fishing, Lumberjacking and Mining skills.
+Changed: Updated SMELT function.
+	-Ores now should be smelted clicking on the ore instead the forge, and the action will require an minimum Mining skill to succeed (TDATA1 of the ingot to be created).
+[sphere_msgs.scp]: Updated 'fishing_*', 'lumberjacking_*', 'mining_*' messages and added new 'blacksmithing_noskill', 'itemuse_ore_*', 'smelt_*'

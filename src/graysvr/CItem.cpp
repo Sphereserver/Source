@@ -2899,10 +2899,9 @@ bool CItem::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from s
 			return pCharSrc->Use_Repair(this);
 		case CIV_SMELT:
 		{
-			if (!pCharSrc)
+			if ( !pCharSrc )
 				return false;
-			CItem *pTarg = static_cast<CGrayUID>(s.GetArgVal()).ItemFind();
-			return pCharSrc->Skill_Mining_Smelt(this, pTarg);
+			return IsType(IT_ORE) ? pCharSrc->Skill_SmeltOre(this) : pCharSrc->Skill_SmeltItem(this);
 		}
 
 		default:

@@ -143,7 +143,8 @@ bool CClient::Cmd_Use_Item(CItem *pItem, bool fTestTouch, bool fScript)
 		}
 
 		case IT_FISH_POLE:
-			addTarget(CLIMODE_TARG_USE_ITEM, g_Cfg.GetDefaultMsg(DEFMSG_FISHING_PROMT), true);
+			if ( bIsEquipped || !IsSetOF(OF_NoDClickTarget) )
+				addTarget(CLIMODE_TARG_USE_ITEM, g_Cfg.GetDefaultMsg(DEFMSG_FISHING_PROMT), true);
 			return true;
 
 		case IT_DEED:
@@ -359,12 +360,9 @@ bool CClient::Cmd_Use_Item(CItem *pItem, bool fTestTouch, bool fScript)
 			return Cmd_Skill_Menu(g_Cfg.ResourceGetIDType(RES_SKILLMENU, "sm_carpentry"));
 		}
 
-		case IT_FORGE:
-			addTarget(CLIMODE_TARG_USE_ITEM, g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_FORGE));
-			return true;
-
 		case IT_ORE:
-			return m_pChar->Skill_Mining_Smelt(pItem, NULL);
+			addTarget(CLIMODE_TARG_USE_ITEM, g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_ORE));
+			return true;
 
 		case IT_INGOT:
 			return Cmd_Skill_Smith(pItem);

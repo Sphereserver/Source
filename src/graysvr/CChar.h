@@ -1082,7 +1082,8 @@ public:
 	TRIGRET_TYPE Skill_OnCharTrigger(SKILL_TYPE skill, CTRIG_TYPE ctrig);
 	TRIGRET_TYPE Skill_OnCharTrigger(SKILL_TYPE skill, CTRIG_TYPE ctrig, CScriptTriggerArgs *pArgs);	// pArgs.m_iN1 will be rewritten with skill
 
-	bool Skill_Mining_Smelt(CItem *pItemOre, CItem *pItemTarg);
+	bool Skill_SmeltOre(CItem *pOre);
+	bool Skill_SmeltItem(CItem *pItem);
 	bool Skill_Tracking(CGrayUID uidTarg, int iDistMax = SHRT_MAX);
 	bool Skill_MakeItem(ITEMID_TYPE id, CGrayUID uidTarg, SKTRIG_TYPE stage, bool fSkillOnly = false, DWORD dwReplicationQty = 1);
 	bool Skill_MakeItem_Success();

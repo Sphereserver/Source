@@ -370,8 +370,7 @@ public:
 		// IT_INGOT
 		struct
 		{
-			int m_iSkillMin;	// tdata1= what is the lowest skill
-			int m_iSkillMax;	// tdata2= what is the highest skill for max yield
+			int m_iSkillReq;	// TDATA1= skill required to work with this ingot type
 		} m_ttIngot;
 
 		// IT_DOOR
