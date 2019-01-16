@@ -144,7 +144,10 @@ bool CClient::Cmd_Use_Item(CItem *pItem, bool fTestTouch, bool fScript)
 
 		case IT_FISH_POLE:
 			if ( bIsEquipped || !IsSetOF(OF_NoDClickTarget) )
-				addTarget(CLIMODE_TARG_USE_ITEM, g_Cfg.GetDefaultMsg(DEFMSG_FISHING_PROMT), true);
+			{
+				const CSkillDef *pSkillDef = g_Cfg.GetSkillDef(SKILL_FISHING);
+				addTarget(CLIMODE_TARG_USE_ITEM, pSkillDef ? pSkillDef->m_sTargetPrompt.GetPtr() : NULL, true);
+			}
 			return true;
 
 		case IT_DEED:
