@@ -412,31 +412,31 @@ bool CChar::Noto_Criminal(CChar *pChar)
 	return true;
 }
 
+#define NOTO_DEGREES	8
+#define NOTO_FACTOR		(300 / NOTO_DEGREES)
+
 void CChar::Noto_ChangeDeltaMsg(int iDelta, LPCTSTR pszType)
 {
 	ADDTOCALLSTACK("CChar::Noto_ChangeDeltaMsg");
 	if ( !iDelta )
 		return;
 
-	#define NOTO_DEGREES	8
-	#define NOTO_FACTOR		(300 / NOTO_DEGREES)
-
-	static UINT const sm_DegreeTable[8] =
+	static LPCTSTR const sm_szNotoDelta[8] =
 	{
-		DEFMSG_MSG_NOTO_CHANGE_1,
-		DEFMSG_MSG_NOTO_CHANGE_2,
-		DEFMSG_MSG_NOTO_CHANGE_3,
-		DEFMSG_MSG_NOTO_CHANGE_4,
-		DEFMSG_MSG_NOTO_CHANGE_5,
-		DEFMSG_MSG_NOTO_CHANGE_6,
-		DEFMSG_MSG_NOTO_CHANGE_7,
-		DEFMSG_MSG_NOTO_CHANGE_8		// 300 = huge
+		g_Cfg.GetDefaultMsg(DEFMSG_MSG_NOTO_CHANGE_1),
+		g_Cfg.GetDefaultMsg(DEFMSG_MSG_NOTO_CHANGE_2),
+		g_Cfg.GetDefaultMsg(DEFMSG_MSG_NOTO_CHANGE_3),
+		g_Cfg.GetDefaultMsg(DEFMSG_MSG_NOTO_CHANGE_4),
+		g_Cfg.GetDefaultMsg(DEFMSG_MSG_NOTO_CHANGE_5),
+		g_Cfg.GetDefaultMsg(DEFMSG_MSG_NOTO_CHANGE_6),
+		g_Cfg.GetDefaultMsg(DEFMSG_MSG_NOTO_CHANGE_7),
+		g_Cfg.GetDefaultMsg(DEFMSG_MSG_NOTO_CHANGE_8)
 	};
 
 	int iDegree = minimum(abs(iDelta) / NOTO_FACTOR, 7);
 
 	TCHAR *pszMsg = Str_GetTemp();
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MSG_NOTO_CHANGE_0), (iDelta < 0) ? g_Cfg.GetDefaultMsg(DEFMSG_MSG_NOTO_CHANGE_LOST) : g_Cfg.GetDefaultMsg(DEFMSG_MSG_NOTO_CHANGE_GAIN), g_Cfg.GetDefaultMsg(sm_DegreeTable[iDegree]), pszType);
+	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MSG_NOTO_CHANGE_0), (iDelta < 0) ? g_Cfg.GetDefaultMsg(DEFMSG_MSG_NOTO_CHANGE_LOST) : g_Cfg.GetDefaultMsg(DEFMSG_MSG_NOTO_CHANGE_GAIN), sm_szNotoDelta[iDegree], pszType);
 	SysMessage(pszMsg);
 }
 

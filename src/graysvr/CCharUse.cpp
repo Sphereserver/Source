@@ -92,6 +92,7 @@ bool CChar::Use_CarveCorpse(CItemCorpse *pCorpse)
 			pPart->MoveToDecay(pt, pPart->GetDecayTime());
 			continue;
 		}
+		pPart->UpdatePropertyFlag();
 		pCorpse->ContentAdd(pPart);
 	}
 
@@ -891,7 +892,7 @@ bool CChar::Use_Drink(CItem *pItem)
 	return true;
 }
 
-CChar *CChar::Use_Figurine(CItem *pItem, bool bCheckFollowerSlots)
+CChar *CChar::Use_Figurine(CItem *pItem, bool fCheckFollowerSlots)
 {
 	ADDTOCALLSTACK("CChar::Use_Figurine");
 	// NOTE: The figurine is NOT destroyed.
@@ -905,7 +906,7 @@ CChar *CChar::Use_Figurine(CItem *pItem, bool bCheckFollowerSlots)
 	}
 
 	// Create a new NPC if there's no one linked to this figurine 
-	bool bCreatedNewNpc = false;
+	bool fCreatedNewNPC = false;
 	CChar *pPet = pItem->m_itFigurine.m_UID.CharFind();
 	if ( !pPet )
 	{
@@ -919,7 +920,7 @@ CChar *CChar::Use_Figurine(CItem *pItem, bool bCheckFollowerSlots)
 				return NULL;
 			}
 		}
-		bCreatedNewNpc = true;
+		fCreatedNewNPC = true;
 		pPet = CreateNPC(id);
 		ASSERT(pPet);
 		pPet->SetName(pItem->GetName());
@@ -930,12 +931,12 @@ CChar *CChar::Use_Figurine(CItem *pItem, bool bCheckFollowerSlots)
 		}
 	}
 
-	if ( bCheckFollowerSlots && IsSetOF(OF_PetSlots) )
+	if ( fCheckFollowerSlots && IsSetOF(OF_PetSlots) )
 	{
 		if ( !FollowersUpdate(pPet, pPet->m_FollowerSlots, true) )
 		{
 			SysMessageDefault(DEFMSG_PETSLOTS_TRY_CONTROL);
-			if ( bCreatedNewNpc )
+			if ( fCreatedNewNPC )
 				pPet->Delete();
 			return NULL;
 		}
@@ -954,13 +955,13 @@ CChar *CChar::Use_Figurine(CItem *pItem, bool bCheckFollowerSlots)
 	return pPet;
 }
 
-bool CChar::FollowersUpdate(CChar *pChar, short iFollowerSlots, bool bCheckOnly)
+bool CChar::FollowersUpdate(CChar *pChar, short iFollowerSlots, bool fCheckOnly)
 {
 	ADDTOCALLSTACK("CChar::FollowersUpdate");
 	// Attemp to update followers on this character based on pChar
 	// This is supossed to be called only when OF_PetSlots is enabled, so no need to check it here.
 
-	if ( !bCheckOnly && IsTrigUsed(TRIGGER_FOLLOWERSUPDATE) )
+	if ( !fCheckOnly && IsTrigUsed(TRIGGER_FOLLOWERSUPDATE) )
 	{
 		CScriptTriggerArgs Args;
 		Args.m_iN1 = (iFollowerSlots > 0) ? 0 : 1;
@@ -974,7 +975,7 @@ bool CChar::FollowersUpdate(CChar *pChar, short iFollowerSlots, bool bCheckOnly)
 	if ( (m_FollowerCur + iFollowerSlots > m_FollowerMax) && !IsPriv(PRIV_GM) )
 		return false;
 
-	if ( !bCheckOnly )
+	if ( !fCheckOnly )
 	{
 		m_FollowerCur += iFollowerSlots;
 		if ( m_FollowerCur < 0 )
@@ -1189,7 +1190,7 @@ bool CChar::Use_Seed(CItem *pItem, CPointMap *pPoint)
 		pPlant->Plant_CropReset();
 	}
 	else
-		pPlant->SetDecayTime(static_cast<INT64>(g_Cfg.m_iDecay_Item * 10));
+		pPlant->SetDecayTime(g_Cfg.m_iDecay_Item);
 
 	pItem->ConsumeAmount();
 	return true;

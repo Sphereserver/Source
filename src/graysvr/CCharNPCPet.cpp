@@ -1,7 +1,7 @@
 // Actions specific to an NPC.
 #include "graysvr.h"	// predef header.
 
-void CChar::NPC_PetConfirmCommand(bool bSuccess, CChar *pMaster)
+void CChar::NPC_PetConfirmCommand(bool fSuccess, CChar *pMaster)
 {
 	ADDTOCALLSTACK("CChar::NPC_PetConfirmCommand");
 	// I take a command from my master
@@ -10,9 +10,9 @@ void CChar::NPC_PetConfirmCommand(bool bSuccess, CChar *pMaster)
 		return;
 
 	if ( NPC_CanSpeak() )
-		Speak(bSuccess ? g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_SUCCESS) : g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_FAILURE));
+		Speak(fSuccess ? g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_SUCCESS) : g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_FAILURE));
 	else
-		SoundChar(bSuccess ? CRESND_IDLE : CRESND_NOTICE);
+		SoundChar(fSuccess ? CRESND_IDLE : CRESND_NOTICE);
 }
 
 enum PC_TYPE
@@ -44,7 +44,7 @@ enum PC_TYPE
 	PC_QTY
 };
 
-bool CChar::NPC_OnHearPetCmd(LPCTSTR pszCmd, CChar *pSrc, bool bAllPets)
+bool CChar::NPC_OnHearPetCmd(LPCTSTR pszCmd, CChar *pSrc, bool fAllPets)
 {
 	ADDTOCALLSTACK("CChar::NPC_OnHearPetCmd");
 	// This should just be another speech block !!!
@@ -63,7 +63,7 @@ bool CChar::NPC_OnHearPetCmd(LPCTSTR pszCmd, CChar *pSrc, bool bAllPets)
 	TALKMODE_TYPE mode = TALKMODE_SAY;
 	if ( OnTriggerSpeech(true, pszCmd, pSrc, mode) )
 	{
-		m_fIgnoreNextPetCmd = !bAllPets;
+		m_fIgnoreNextPetCmd = !fAllPets;
 		return true;
 	}
 
@@ -107,8 +107,8 @@ bool CChar::NPC_OnHearPetCmd(LPCTSTR pszCmd, CChar *pSrc, bool bAllPets)
 	if ( !NPC_PetCheckAccess(iCmd, pSrc) )
 		return true;
 
-	bool bTargAllowGround = false;
-	bool bCheckCrime = false;
+	bool fTargAllowGround = false;
+	bool fCheckCrime = false;
 	LPCTSTR pTargPrompt = NULL;
 	CCharBase *pCharDef = Char_GetDef();
 
@@ -117,7 +117,7 @@ bool CChar::NPC_OnHearPetCmd(LPCTSTR pszCmd, CChar *pSrc, bool bAllPets)
 		case PC_ATTACK:
 		case PC_KILL:
 			pTargPrompt = g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_TARG_ATT);
-			bCheckCrime = true;
+			fCheckCrime = true;
 			break;
 
 		case PC_COME:
@@ -144,12 +144,12 @@ bool CChar::NPC_OnHearPetCmd(LPCTSTR pszCmd, CChar *pSrc, bool bAllPets)
 
 		case PC_GO:
 			pTargPrompt = g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_TARG_GO);
-			bTargAllowGround = true;
+			fTargAllowGround = true;
 			break;
 
 		case PC_GUARD:
 			pTargPrompt = g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_TARG_GUARD);
-			bCheckCrime = true;
+			fCheckCrime = true;
 			break;
 
 		case PC_GUARD_ME:
@@ -306,10 +306,10 @@ bool CChar::NPC_OnHearPetCmd(LPCTSTR pszCmd, CChar *pSrc, bool bAllPets)
 		pszCmd += strlen(sm_PetCommands[iCmd]);
 		GETNONWHITESPACE(pszCmd);
 		pSrc->m_pClient->m_tmPetCmd.m_iCmd = iCmd;
-		pSrc->m_pClient->m_tmPetCmd.m_fAllPets = bAllPets;
+		pSrc->m_pClient->m_tmPetCmd.m_fAllPets = fAllPets;
 		pSrc->m_pClient->m_Targ_UID = GetUID();
 		pSrc->m_pClient->m_Targ_Text = pszCmd;
-		pSrc->m_pClient->addTarget(CLIMODE_TARG_PET_CMD, pTargPrompt, bTargAllowGround, bCheckCrime);
+		pSrc->m_pClient->addTarget(CLIMODE_TARG_PET_CMD, pTargPrompt, fTargAllowGround, fCheckCrime);
 		return true;
 	}
 
@@ -332,7 +332,7 @@ bool CChar::NPC_OnHearPetCmdTarg(int iCmd, CChar *pSrc, CObjBase *pObj, const CP
 	if ( !NPC_PetCheckAccess(iCmd, pSrc) )
 		return true;
 
-	bool bSuccess = false;
+	bool fSuccess = false;
 	CItem *pItemTarg = dynamic_cast<CItem *>(pObj);
 	CChar *pCharTarg = dynamic_cast<CChar *>(pObj);
 
@@ -343,9 +343,9 @@ bool CChar::NPC_OnHearPetCmdTarg(int iCmd, CChar *pSrc, CObjBase *pObj, const CP
 		{
 			if ( !pCharTarg || (pCharTarg == this) || (pCharTarg == pSrc) )
 				break;
-			bSuccess = pCharTarg->OnAttackedBy(pSrc, true);
-			if ( bSuccess )
-				bSuccess = Fight_Attack(pCharTarg, true);
+			fSuccess = pCharTarg->OnAttackedBy(pSrc, true);
+			if ( fSuccess )
+				fSuccess = Fight_Attack(pCharTarg, true);
 			break;
 		}
 
@@ -353,7 +353,7 @@ bool CChar::NPC_OnHearPetCmdTarg(int iCmd, CChar *pSrc, CObjBase *pObj, const CP
 			if ( !pCharTarg || (pCharTarg == this) )
 				break;
 			m_Act_Targ = pCharTarg->GetUID();
-			bSuccess = Skill_Start(NPCACT_FOLLOW_TARG);
+			fSuccess = Skill_Start(NPCACT_FOLLOW_TARG);
 			break;
 
 		case PC_FRIEND:
@@ -374,7 +374,7 @@ bool CChar::NPC_OnHearPetCmdTarg(int iCmd, CChar *pSrc, CObjBase *pObj, const CP
 			Memory_AddObjTypes(pCharTarg, MEMORY_FRIEND);
 
 			m_Act_Targ = pCharTarg->GetUID();
-			bSuccess = Skill_Start(NPCACT_FOLLOW_TARG);
+			fSuccess = Skill_Start(NPCACT_FOLLOW_TARG);
 			break;
 		}
 
@@ -396,7 +396,7 @@ bool CChar::NPC_OnHearPetCmdTarg(int iCmd, CChar *pSrc, CObjBase *pObj, const CP
 			pMemory->Delete();
 
 			m_Act_Targ = pSrc->GetUID();
-			bSuccess = Skill_Start(NPCACT_FOLLOW_TARG);
+			fSuccess = Skill_Start(NPCACT_FOLLOW_TARG);
 			break;
 		}
 
@@ -404,7 +404,7 @@ bool CChar::NPC_OnHearPetCmdTarg(int iCmd, CChar *pSrc, CObjBase *pObj, const CP
 			if ( !pt.IsValidPoint() )
 				break;
 			m_Act_p = pt;
-			bSuccess = Skill_Start(NPCACT_GOTO);
+			fSuccess = Skill_Start(NPCACT_GOTO);
 			break;
 
 		case PC_GUARD:
@@ -412,7 +412,7 @@ bool CChar::NPC_OnHearPetCmdTarg(int iCmd, CChar *pSrc, CObjBase *pObj, const CP
 				break;
 			pCharTarg->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_TARG_GUARD_SUCCESS), GetName());
 			m_Act_Targ = pCharTarg->GetUID();
-			bSuccess = Skill_Start(NPCACT_GUARD_TARG);
+			fSuccess = Skill_Start(NPCACT_GUARD_TARG);
 			break;
 
 		case PC_TRANSFER:
@@ -426,7 +426,7 @@ bool CChar::NPC_OnHearPetCmdTarg(int iCmd, CChar *pSrc, CObjBase *pObj, const CP
 					break;
 				}
 			}
-			bSuccess = NPC_PetSetOwner(pCharTarg);
+			fSuccess = NPC_PetSetOwner(pCharTarg);
 			break;
 
 		case PC_PRICE:
@@ -444,8 +444,8 @@ bool CChar::NPC_OnHearPetCmdTarg(int iCmd, CChar *pSrc, CObjBase *pObj, const CP
 	}
 
 	// Make some sound to confirm we heard it
-	NPC_PetConfirmCommand(bSuccess, pSrc);
-	return bSuccess;
+	NPC_PetConfirmCommand(fSuccess, pSrc);
+	return fSuccess;
 }
 
 bool CChar::NPC_PetCheckAccess(int iCmd, CChar *pChar)
@@ -485,7 +485,7 @@ bool CChar::NPC_PetCheckAccess(int iCmd, CChar *pChar)
 	return true;
 }
 
-void CChar::NPC_PetClearOwners(bool bResendTooltip)
+void CChar::NPC_PetClearOwners(bool fResendTooltip)
 {
 	ADDTOCALLSTACK("CChar::NPC_PetClearOwners");
 	CChar *pOwner = NPC_PetGetOwner();
@@ -504,7 +504,7 @@ void CChar::NPC_PetClearOwners(bool bResendTooltip)
 			pOwner->AddGoldToPack(pBankVendor->m_itEqBankBox.m_Check_Amount, pBankOwner);
 			pBankVendor->m_itEqBankBox.m_Check_Amount = 0;
 
-			for ( size_t i = 0; i < COUNTOF(sm_VendorLayers); i++ )
+			for ( size_t i = 0; i < COUNTOF(sm_VendorLayers); ++i )
 			{
 				CItemContainer *pCont = GetContainerCreate(sm_VendorLayers[i]);
 				if ( !pCont )
@@ -531,12 +531,12 @@ void CChar::NPC_PetClearOwners(bool bResendTooltip)
 	{
 		if ( IsSetOF(OF_PetSlots) )
 			pOwner->FollowersUpdate(this, -m_FollowerSlots);
-		if ( bResendTooltip )
+		if ( fResendTooltip )
 			UpdatePropertyFlag();
 	}
 }
 
-bool CChar::NPC_PetSetOwner(CChar *pChar, bool bResendTooltip)
+bool CChar::NPC_PetSetOwner(CChar *pChar, bool fResendTooltip)
 {
 	ADDTOCALLSTACK("CChar::NPC_PetSetOwner");
 	// m_pNPC may not be set yet if this is a conjured creature.
@@ -566,7 +566,7 @@ bool CChar::NPC_PetSetOwner(CChar *pChar, bool bResendTooltip)
 
 	if ( IsSetOF(OF_PetSlots) )
 		pChar->FollowersUpdate(this, m_FollowerSlots);
-	if ( bResendTooltip )
+	if ( fResendTooltip )
 		UpdatePropertyFlag();
 
 	return true;
@@ -626,7 +626,7 @@ bool CChar::NPC_CheckHirelingStatus()
 	return true;
 }
 
-void CChar::NPC_OnHirePayMore(CItem *pGold, bool bHire)
+void CChar::NPC_OnHirePayMore(CItem *pGold, bool fHire)
 {
 	ADDTOCALLSTACK("CChar::NPC_OnHirePayMore");
 	// We have been handed money.
@@ -639,7 +639,7 @@ void CChar::NPC_OnHirePayMore(CItem *pGold, bool bHire)
 
 	if ( pGold )
 	{
-		if ( bHire )
+		if ( fHire )
 			pBank->m_itEqBankBox.m_Check_Amount = 0;	// clear previous balance
 
 		pBank->m_itEqBankBox.m_Check_Amount += pGold->GetAmount();
@@ -777,19 +777,19 @@ bool CChar::NPC_SetVendorPrice(CItem *pItem, int iPrice)
 void CChar::NPC_PetDesert()
 {
 	ADDTOCALLSTACK("CChar::NPC_PetDesert");
-	CChar *pCharOwn = NPC_PetGetOwner();
-	if ( !pCharOwn )
+	CChar *pOwner = NPC_PetGetOwner();
+	if ( !pOwner )
 		return;
 
 	if ( IsTrigUsed(TRIGGER_PETDESERT) )
 	{
-		if ( OnTrigger(CTRIG_PetDesert, pCharOwn) == TRIGRET_RET_TRUE )
+		if ( OnTrigger(CTRIG_PetDesert, pOwner) == TRIGRET_RET_TRUE )
 			return;
 	}
 
 	NPC_PetClearOwners();
-	if ( !pCharOwn->CanSee(this) )
-		pCharOwn->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_DESERTED), GetName());
+	if ( !pOwner->CanSee(this) )
+		pOwner->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_DESERTED), GetName());
 
 	TCHAR *pszMsg = Str_GetTemp();
 	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_DECIDE_MASTER), GetName());

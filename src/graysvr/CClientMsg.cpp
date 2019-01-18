@@ -2620,41 +2620,44 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 					if ( pItem->IsAttr(ATTR_NOREPAIR) )
 						m_TooltipData.Add(new CClientTooltip(1151782)); // cannot be repaired
 
-					const CContainer *pContainer = dynamic_cast<const CContainer *>(pItem);
-					if ( pContainer || pItem->IsMovable() )
+					if ( !pItem->IsType(IT_CORPSE) )
 					{
-						int iWeight = pItem->GetWeight() / WEIGHT_UNITS;
-						if ( iWeight > 0 )
+						const CContainer *pContainer = dynamic_cast<const CContainer *>(pItem);
+						if ( pContainer || pItem->IsMovable() )
 						{
-							m_TooltipData.Add(t = new CClientTooltip((iWeight == 1) ? 1072788 : 1072789)); // Weight: ~1_WEIGHT~ stone / Weight: ~1_WEIGHT~ stones
-							t->FormatArgs("%d", iWeight);
-						}
-					}
-					if ( pContainer )
-					{
-						if ( m_NetState->isClientVersion(MINCLIVER_ML) )
-						{
-							if ( pItem->m_ModMaxWeight )
+							int iWeight = pItem->GetWeight() / WEIGHT_UNITS;
+							if ( iWeight > 0 )
 							{
-								m_TooltipData.Add(t = new CClientTooltip(1072241)); // Contents: ~1_COUNT~/~2_MAXCOUNT~ items, ~3_WEIGHT~/~4_MAXWEIGHT~ stones
-								t->FormatArgs("%" FMTSIZE_T "\t%d\t%d\t%d", pContainer->GetCount(), MAX_ITEMS_CONT, pContainer->GetTotalWeight() / WEIGHT_UNITS, pItem->m_ModMaxWeight / WEIGHT_UNITS);
+								m_TooltipData.Add(t = new CClientTooltip((iWeight == 1) ? 1072788 : 1072789)); // Weight: ~1_WEIGHT~ stone / Weight: ~1_WEIGHT~ stones
+								t->FormatArgs("%d", iWeight);
+							}
+						}
+						if ( pContainer )
+						{
+							if ( m_NetState->isClientVersion(MINCLIVER_ML) )
+							{
+								if ( pItem->m_ModMaxWeight )
+								{
+									m_TooltipData.Add(t = new CClientTooltip(1072241)); // Contents: ~1_COUNT~/~2_MAXCOUNT~ items, ~3_WEIGHT~/~4_MAXWEIGHT~ stones
+									t->FormatArgs("%" FMTSIZE_T "\t%d\t%d\t%d", pContainer->GetCount(), MAX_ITEMS_CONT, pContainer->GetTotalWeight() / WEIGHT_UNITS, pItem->m_ModMaxWeight / WEIGHT_UNITS);
+								}
+								else
+								{
+									m_TooltipData.Add(t = new CClientTooltip(1073841)); // Contents: ~1_COUNT~/~2_MAXCOUNT~ items, ~3_WEIGHT~ stones
+									t->FormatArgs("%" FMTSIZE_T "\t%d\t%d", pContainer->GetCount(), MAX_ITEMS_CONT, pContainer->GetTotalWeight() / WEIGHT_UNITS);
+								}
 							}
 							else
 							{
-								m_TooltipData.Add(t = new CClientTooltip(1073841)); // Contents: ~1_COUNT~/~2_MAXCOUNT~ items, ~3_WEIGHT~ stones
-								t->FormatArgs("%" FMTSIZE_T "\t%d\t%d", pContainer->GetCount(), MAX_ITEMS_CONT, pContainer->GetTotalWeight() / WEIGHT_UNITS);
+								m_TooltipData.Add(t = new CClientTooltip(1050044)); // ~1_COUNT~ items, ~2_WEIGHT~ stones
+								t->FormatArgs("%" FMTSIZE_T "\t%d", pContainer->GetCount(), pContainer->GetTotalWeight() / WEIGHT_UNITS);
 							}
-						}
-						else
-						{
-							m_TooltipData.Add(t = new CClientTooltip(1050044)); // ~1_COUNT~ items, ~2_WEIGHT~ stones
-							t->FormatArgs("%" FMTSIZE_T "\t%d", pContainer->GetCount(), pContainer->GetTotalWeight() / WEIGHT_UNITS);
-						}
 
-						if ( pItem->m_WeightReduction != 0 )
-						{
-							m_TooltipData.Add(t = new CClientTooltip(1072210)); // Weight reduction: ~1_PERCENTAGE~%
-							t->FormatArgs("%d", pItem->m_WeightReduction);
+							if ( pItem->m_WeightReduction != 0 )
+							{
+								m_TooltipData.Add(t = new CClientTooltip(1072210)); // Weight reduction: ~1_PERCENTAGE~%
+								t->FormatArgs("%d", pItem->m_WeightReduction);
+							}
 						}
 					}
 

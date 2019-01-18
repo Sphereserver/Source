@@ -46,38 +46,38 @@ void CChar::Action_StartSpecial(CREID_TYPE id)
 ///////////////////////////////////////////////////////////
 // Stats
 
-void CChar::Stat_AddMod(STAT_TYPE i, int iVal)
+void CChar::Stat_AddMod(STAT_TYPE stat, int iVal)
 {
 	ADDTOCALLSTACK("CChar::Stat_AddMod");
-	if ( (i < STAT_STR) || (i >= STAT_QTY) )
+	if ( (stat < STAT_STR) || (stat >= STAT_QTY) )
 		return;
 
-	m_Stat[i].m_mod += iVal;
+	m_Stat[stat].m_mod += iVal;
 
-	int iMaxValue = Stat_GetMax(i);		// make sure the current value is not higher than new max value
-	if ( m_Stat[i].m_val > iMaxValue )
-		m_Stat[i].m_val = iMaxValue;
+	int iMaxValue = Stat_GetMax(stat);		// make sure the current value is not higher than new max value
+	if ( m_Stat[stat].m_val > iMaxValue )
+		m_Stat[stat].m_val = iMaxValue;
 
 	UpdateStatsFlag();
 }
 
-void CChar::Stat_SetMod(STAT_TYPE i, int iVal)
+void CChar::Stat_SetMod(STAT_TYPE stat, int iVal)
 {
 	ADDTOCALLSTACK("CChar::Stat_SetMod");
-	if ( (i < STAT_STR) || (i >= STAT_QTY) )
+	if ( (stat < STAT_STR) || (stat >= STAT_QTY) )
 		return;
 	if ( iVal > USHRT_MAX )
 		iVal = USHRT_MAX;
 	else if ( iVal < -USHRT_MAX )
 		iVal = -USHRT_MAX;
 
-	int iStatVal = Stat_GetMod(i);
+	int iStatVal = Stat_GetMod(stat);
 	if ( IsTrigUsed(TRIGGER_STATCHANGE) && !IsTriggerActive("CREATE") )
 	{
-		if ( (i >= STAT_STR) && (i <= STAT_DEX) )
+		if ( (stat >= STAT_STR) && (stat <= STAT_DEX) )
 		{
 			CScriptTriggerArgs args;
-			args.m_iN1 = i + 8;		// shift by 8 to indicate modSTR, modINT, modDEX
+			args.m_iN1 = stat + 8;		// shift by 8 to indicate modSTR, modINT, modDEX
 			args.m_iN2 = iStatVal;
 			args.m_iN3 = iVal;
 			if ( OnTrigger(CTRIG_StatChange, this, &args) == TRIGRET_RET_TRUE )
@@ -87,9 +87,9 @@ void CChar::Stat_SetMod(STAT_TYPE i, int iVal)
 		}
 	}
 
-	m_Stat[i].m_mod = iVal;
+	m_Stat[stat].m_mod = iVal;
 
-	if ( (i == STAT_STR) && (iVal < iStatVal) )
+	if ( (stat == STAT_STR) && (iVal < iStatVal) )
 	{
 		// ModSTR is being decreased, so check if the char still have enough STR to use current equipped items
 		CItem *pItemNext = NULL;
@@ -104,54 +104,54 @@ void CChar::Stat_SetMod(STAT_TYPE i, int iVal)
 		}
 	}
 
-	int iMaxValue = Stat_GetMax(i);		// make sure the current value is not higher than new max value
-	if ( m_Stat[i].m_val > iMaxValue )
-		m_Stat[i].m_val = iMaxValue;
+	int iMaxValue = Stat_GetMax(stat);		// make sure the current value is not higher than new max value
+	if ( m_Stat[stat].m_val > iMaxValue )
+		m_Stat[stat].m_val = iMaxValue;
 
 	UpdateStatsFlag();
 }
 
-int CChar::Stat_GetMod(STAT_TYPE i) const
+int CChar::Stat_GetMod(STAT_TYPE stat) const
 {
 	ADDTOCALLSTACK("CChar::Stat_GetMod");
-	if ( (i < STAT_STR) || (i >= STAT_QTY) )
+	if ( (stat < STAT_STR) || (stat >= STAT_QTY) )
 		return 0;
 
-	return m_Stat[i].m_mod;
+	return m_Stat[stat].m_mod;
 }
 
-void CChar::Stat_SetVal(STAT_TYPE i, int iVal)
+void CChar::Stat_SetVal(STAT_TYPE stat, int iVal)
 {
 	ADDTOCALLSTACK("CChar::Stat_SetVal");
-	if ( (i < STAT_STR) || (i >= STAT_QTY) )
+	if ( (stat < STAT_STR) || (stat >= STAT_QTY) )
 		return;
 	if ( iVal > USHRT_MAX )
 		iVal = USHRT_MAX;
 	else if ( iVal < -USHRT_MAX )
 		iVal = -USHRT_MAX;
 
-	if ( i >= STAT_BASE_QTY )	// food must trigger @StatChange, redirect to base value
+	if ( stat >= STAT_BASE_QTY )	// food must trigger @StatChange, redirect to base value
 	{
-		Stat_SetBase(i, iVal);
+		Stat_SetBase(stat, iVal);
 		return;
 	}
-	m_Stat[i].m_val = iVal;
+	m_Stat[stat].m_val = iVal;
 }
 
-int CChar::Stat_GetVal(STAT_TYPE i) const
+int CChar::Stat_GetVal(STAT_TYPE stat) const
 {
 	ADDTOCALLSTACK("CChar::Stat_GetVal");
-	if ( (i < STAT_STR) || (i >= STAT_QTY) )
+	if ( (stat < STAT_STR) || (stat >= STAT_QTY) )
 		return 0;
-	if ( i >= STAT_BASE_QTY )	// food must trigger @StatChange, redirect to base value
-		return Stat_GetBase(i);
-	return m_Stat[i].m_val;
+	if ( stat >= STAT_BASE_QTY )	// food must trigger @StatChange, redirect to base value
+		return Stat_GetBase(stat);
+	return m_Stat[stat].m_val;
 }
 
-void CChar::Stat_SetMax(STAT_TYPE i, int iVal)
+void CChar::Stat_SetMax(STAT_TYPE stat, int iVal)
 {
 	ADDTOCALLSTACK("CChar::Stat_SetMax");
-	if ( (i < STAT_STR) || (i >= STAT_QTY) )
+	if ( (stat < STAT_STR) || (stat >= STAT_QTY) )
 		return;
 	if ( iVal > USHRT_MAX )
 		iVal = USHRT_MAX;
@@ -159,16 +159,16 @@ void CChar::Stat_SetMax(STAT_TYPE i, int iVal)
 		iVal = -USHRT_MAX;
 
 	if ( g_Cfg.m_iStatFlag && ((g_Cfg.m_iStatFlag & STAT_FLAG_DENYMAX) || (m_pPlayer && (g_Cfg.m_iStatFlag & STAT_FLAG_DENYMAXP)) || (m_pNPC && (g_Cfg.m_iStatFlag & STAT_FLAG_DENYMAXN))) )
-		m_Stat[i].m_max = 0;
+		m_Stat[stat].m_max = 0;
 	else
 	{
 		if ( IsTrigUsed(TRIGGER_STATCHANGE) && !IsTriggerActive("CREATE") )
 		{
-			if ( (i >= STAT_STR) && (i <= STAT_FOOD) )		// only STR, DEX, INT, FOOD fire MaxHits, MaxMana, MaxStam, MaxFood for @StatChange
+			if ( (stat >= STAT_STR) && (stat <= STAT_FOOD) )		// only STR, DEX, INT, FOOD fire MaxHits, MaxMana, MaxStam, MaxFood for @StatChange
 			{
 				CScriptTriggerArgs args;
-				args.m_iN1 = i + 4;		// shift by 4 to indicate MaxHits, etc..
-				args.m_iN2 = Stat_GetMax(i);
+				args.m_iN1 = stat + 4;		// shift by 4 to indicate MaxHits, etc..
+				args.m_iN2 = Stat_GetMax(stat);
 				args.m_iN3 = iVal;
 				if ( OnTrigger(CTRIG_StatChange, this, &args) == TRIGRET_RET_TRUE )
 					return;
@@ -176,40 +176,46 @@ void CChar::Stat_SetMax(STAT_TYPE i, int iVal)
 				iVal = static_cast<int>(args.m_iN3);
 			}
 		}
-		m_Stat[i].m_max = iVal;
+		m_Stat[stat].m_max = iVal;
 
-		int iMaxValue = Stat_GetMax(i);		// make sure the current value is not higher than new max value
-		if ( m_Stat[i].m_val > iMaxValue )
-			m_Stat[i].m_val = iMaxValue;
+		int iMaxValue = Stat_GetMax(stat);		// make sure the current value is not higher than new max value
+		if ( m_Stat[stat].m_val > iMaxValue )
+			m_Stat[stat].m_val = iMaxValue;
 
-		if ( i == STAT_STR )
-			UpdateHitsFlag();
-		else if ( i == STAT_INT )
-			UpdateManaFlag();
-		else if ( i == STAT_DEX )
-			UpdateStamFlag();
+		switch ( stat )
+		{
+			case STAT_STR:
+				UpdateHitsFlag();
+				break;
+			case STAT_INT:
+				UpdateManaFlag();
+				break;
+			case STAT_DEX:
+				UpdateStamFlag();
+				break;
+		}
 	}
 }
 
-int CChar::Stat_GetMax(STAT_TYPE i) const
+int CChar::Stat_GetMax(STAT_TYPE stat) const
 {
 	ADDTOCALLSTACK("CChar::Stat_GetMax");
-	if ( (i < STAT_STR) || (i >= STAT_QTY) )
+	if ( (stat < STAT_STR) || (stat >= STAT_QTY) )
 		return 0;
 
 	int iVal;
-	if ( m_Stat[i].m_max < 1 )
+	if ( m_Stat[stat].m_max < 1 )
 	{
-		if ( i == STAT_FOOD )
+		if ( stat == STAT_FOOD )
 		{
 			CCharBase *pCharDef = Char_GetDef();
 			ASSERT(pCharDef);
 			iVal = pCharDef->m_MaxFood;
 		}
 		else
-			iVal = Stat_GetAdjusted(i);
+			iVal = Stat_GetAdjusted(stat);
 
-		if ( i == STAT_INT )
+		if ( stat == STAT_INT )
 		{
 			if ( (g_Cfg.m_iRacialFlags & RACIALF_ELF_WISDOM) && IsElf() )
 				iVal += 20;		// elves always have +20 max mana (Wisdom racial trait)
@@ -220,9 +226,9 @@ int CChar::Stat_GetMax(STAT_TYPE i) const
 		return iVal;
 	}
 
-	iVal = m_Stat[i].m_max;
-	if ( i >= STAT_BASE_QTY )
-		iVal += m_Stat[i].m_mod;
+	iVal = m_Stat[stat].m_max;
+	if ( stat >= STAT_BASE_QTY )
+		iVal += m_Stat[stat].m_mod;
 
 	if ( iVal < 0 )
 		return m_pPlayer ? 1 : 0;
@@ -239,46 +245,46 @@ int CChar::Stat_GetSum() const
 	return iStatSum;
 }
 
-int CChar::Stat_GetAdjusted(STAT_TYPE i) const
+int CChar::Stat_GetAdjusted(STAT_TYPE stat) const
 {
 	ADDTOCALLSTACK("CChar::Stat_GetAdjusted");
-	int iVal = Stat_GetBase(i) + Stat_GetMod(i);
-	if ( i == STAT_KARMA )
+	int iVal = Stat_GetBase(stat) + Stat_GetMod(stat);
+	if ( stat == STAT_KARMA )
 		iVal = maximum(g_Cfg.m_iMinKarma, minimum(g_Cfg.m_iMaxKarma, iVal));
-	else if ( i == STAT_FAME )
+	else if ( stat == STAT_FAME )
 		iVal = maximum(0, minimum(g_Cfg.m_iMaxFame, iVal));
 
 	return iVal;
 }
 
-int CChar::Stat_GetBase(STAT_TYPE i) const
+int CChar::Stat_GetBase(STAT_TYPE stat) const
 {
 	ADDTOCALLSTACK("CChar::Stat_GetBase");
-	if ( (i < STAT_STR) || (i >= STAT_QTY) )
+	if ( (stat < STAT_STR) || (stat >= STAT_QTY) )
 		return 0;
-	if ( (i == STAT_FAME) && (m_Stat[i].m_base < 0) )	// fame can't be negative
+	if ( (stat == STAT_FAME) && (m_Stat[stat].m_base < 0) )		// fame can't be negative
 		return 0;
-	return m_Stat[i].m_base;
+	return m_Stat[stat].m_base;
 }
 
-void CChar::Stat_SetBase(STAT_TYPE i, int iVal)
+void CChar::Stat_SetBase(STAT_TYPE stat, int iVal)
 {
 	ADDTOCALLSTACK("CChar::Stat_SetBase");
-	if ( (i < STAT_STR) || (i >= STAT_QTY) )
+	if ( (stat < STAT_STR) || (stat >= STAT_QTY) )
 		return;
 	if ( iVal > USHRT_MAX )
 		iVal = USHRT_MAX;
 	else if ( iVal < -USHRT_MAX )
 		iVal = -USHRT_MAX;
 
-	int iStatVal = Stat_GetBase(i);
+	int iStatVal = Stat_GetBase(stat);
 	if ( IsTrigUsed(TRIGGER_STATCHANGE) && !g_Serv.IsLoading() && !IsTriggerActive("CREATE") )
 	{
 		// Only Str, Dex, Int, Food fire @StatChange here
-		if ( (i >= STAT_STR) && (i <= STAT_FOOD) )
+		if ( (stat >= STAT_STR) && (stat <= STAT_FOOD) )
 		{
 			CScriptTriggerArgs args;
-			args.m_iN1 = i;
+			args.m_iN1 = stat;
 			args.m_iN2 = iStatVal;
 			args.m_iN3 = iVal;
 			if ( OnTrigger(CTRIG_StatChange, this, &args) == TRIGRET_RET_TRUE )
@@ -286,9 +292,9 @@ void CChar::Stat_SetBase(STAT_TYPE i, int iVal)
 			// do not restore argn1 to i, bad things will happen! leave i untouched. (matex)
 			iVal = static_cast<int>(args.m_iN3);
 
-			if ( (i != STAT_FOOD) && (m_Stat[i].m_max < 1) ) // MaxFood cannot depend on something, otherwise if the Stat depends on STR, INT, DEX, fire MaxHits, MaxMana, MaxStam
+			if ( (stat != STAT_FOOD) && (m_Stat[stat].m_max < 1) ) // MaxFood cannot depend on something, otherwise if the Stat depends on STR, INT, DEX, fire MaxHits, MaxMana, MaxStam
 			{
-				args.m_iN1 = i + 4; // Shift by 4 to indicate MaxHits, MaxMana, MaxStam
+				args.m_iN1 = stat + 4; // Shift by 4 to indicate MaxHits, MaxMana, MaxStam
 				args.m_iN2 = iStatVal;
 				args.m_iN3 = iVal;
 				if ( OnTrigger(CTRIG_StatChange, this, &args) == TRIGRET_RET_TRUE )
@@ -298,7 +304,7 @@ void CChar::Stat_SetBase(STAT_TYPE i, int iVal)
 			}
 		}
 	}
-	switch ( i )
+	switch ( stat )
 	{
 		case STAT_STR:
 		{
@@ -333,9 +339,9 @@ void CChar::Stat_SetBase(STAT_TYPE i, int iVal)
 			throw CGrayError(LOGL_CRIT, 0, "Stat_SetBase: index out of range");
 	}
 
-	m_Stat[i].m_base = iVal;
+	m_Stat[stat].m_base = iVal;
 
-	if ( (i == STAT_STR) && (iVal < iStatVal) )
+	if ( (stat == STAT_STR) && (iVal < iStatVal) )
 	{
 		// STR is being decreased, so check if the char still have enough STR to use current equipped items
 		CItem *pItemNext = NULL;
@@ -350,16 +356,16 @@ void CChar::Stat_SetBase(STAT_TYPE i, int iVal)
 		}
 	}
 
-	int iMaxValue = Stat_GetMax(i);		// make sure the current value is not higher than new max value
-	if ( m_Stat[i].m_val > iMaxValue )
-		m_Stat[i].m_val = iMaxValue;
+	int iMaxValue = Stat_GetMax(stat);		// make sure the current value is not higher than new max value
+	if ( m_Stat[stat].m_val > iMaxValue )
+		m_Stat[stat].m_val = iMaxValue;
 
 	UpdateStatsFlag();
-	if ( !g_Serv.IsLoading() && (i == STAT_KARMA) )
+	if ( !g_Serv.IsLoading() && (stat == STAT_KARMA) )
 		NotoSave_Update();
 }
 
-int CChar::Stat_GetLimit(STAT_TYPE i) const
+int CChar::Stat_GetLimit(STAT_TYPE stat) const
 {
 	ADDTOCALLSTACK("CChar::Stat_GetLimit");
 	const CVarDefCont *pTagStorage = NULL;
@@ -369,25 +375,25 @@ int CChar::Stat_GetLimit(STAT_TYPE i) const
 	{
 		const CSkillClassDef *pSkillClass = m_pPlayer->GetSkillClass();
 		ASSERT(pSkillClass);
-		if ( i == STAT_QTY )
+		if ( stat == STAT_QTY )
 		{
 			if ( (pTagStorage = GetKey("OVERRIDE.STATSUM", true)) != NULL )
 				return static_cast<int>(pTagStorage->GetValNum());
 
 			return pSkillClass->m_StatSumMax;
 		}
-		ASSERT((i >= STAT_STR) && (i < STAT_BASE_QTY));
+		ASSERT((stat >= STAT_STR) && (stat < STAT_BASE_QTY));
 
-		sprintf(sStatName, "OVERRIDE.STATCAP_%d", static_cast<int>(i));
+		sprintf(sStatName, "OVERRIDE.STATCAP_%d", static_cast<int>(stat));
 		int iStatMax;
 		if ( (pTagStorage = GetKey(sStatName, true)) != NULL )
 			iStatMax = static_cast<int>(pTagStorage->GetValNum());
 		else
-			iStatMax = pSkillClass->m_StatMax[i];
+			iStatMax = pSkillClass->m_StatMax[stat];
 
-		if ( m_pPlayer->Stat_GetLock(i) >= SKILLLOCK_DOWN )
+		if ( m_pPlayer->Stat_GetLock(stat) >= SKILLLOCK_DOWN )
 		{
-			int iStatLevel = Stat_GetBase(i);
+			int iStatLevel = Stat_GetBase(stat);
 			if ( iStatLevel < iStatMax )
 				iStatMax = iStatLevel;
 		}
@@ -396,7 +402,7 @@ int CChar::Stat_GetLimit(STAT_TYPE i) const
 	}
 	else
 	{
-		if ( i == STAT_QTY )
+		if ( stat == STAT_QTY )
 		{
 			if ( (pTagStorage = GetKey("OVERRIDE.STATSUM", true)) != NULL )
 				return static_cast<int>(pTagStorage->GetValNum());
@@ -404,7 +410,7 @@ int CChar::Stat_GetLimit(STAT_TYPE i) const
 			return 300;
 		}
 
-		sprintf(sStatName, "OVERRIDE.STATCAP_%d", static_cast<int>(i));
+		sprintf(sStatName, "OVERRIDE.STATCAP_%d", static_cast<int>(stat));
 		if ( (pTagStorage = GetKey(sStatName, true)) != NULL )
 			return static_cast<int>(pTagStorage->GetValNum());
 
@@ -665,7 +671,7 @@ void CChar::Skill_Decay()
 	// deduct a point from the chosen skill
 	if ( skillDeduct != SKILL_NONE )
 	{
-		wSkillLevel--;
+		--wSkillLevel;
 		Skill_SetBase(skillDeduct, wSkillLevel);
 	}
 }
@@ -749,7 +755,7 @@ void CChar::Skill_Experience(SKILL_TYPE skill, int iDifficulty)
 #endif
 			if ( iRoll <= iChance )
 			{
-				wSkillLevel++;
+				++wSkillLevel;
 				Skill_SetBase(skill, wSkillLevel);
 			}
 		}
@@ -865,7 +871,7 @@ bool CChar::Stats_Regen(INT64 iTimeDiff)
 	return true;
 }
 
-WORD CChar::Stats_GetRegenVal(STAT_TYPE iStat, bool fGetTicks)
+WORD CChar::Stats_GetRegenVal(STAT_TYPE stat, bool fGetTicks)
 {
 	ADDTOCALLSTACK("CChar::Stats_GetRegenVal");
 	// Return regen rates and regen val for the given stat.
@@ -873,7 +879,7 @@ WORD CChar::Stats_GetRegenVal(STAT_TYPE iStat, bool fGetTicks)
 	// fGetTicks = false returns the values of regeneration.
 
 	LPCTSTR pszStat = NULL;
-	switch ( iStat )
+	switch ( stat )
 	{
 		case STAT_STR:
 			pszStat = "HITS";
@@ -891,7 +897,7 @@ WORD CChar::Stats_GetRegenVal(STAT_TYPE iStat, bool fGetTicks)
 			break;
 	}
 
-	if ( iStat <= STAT_FOOD )
+	if ( stat <= STAT_FOOD )
 	{
 		char chRegen[14];
 		if ( fGetTicks )
@@ -901,7 +907,7 @@ WORD CChar::Stats_GetRegenVal(STAT_TYPE iStat, bool fGetTicks)
 			if ( wRate )
 				return wRate * TICK_PER_SEC;
 
-			return static_cast<WORD>(maximum(0, g_Cfg.m_iRegenRate[iStat]));
+			return static_cast<WORD>(maximum(0, g_Cfg.m_iRegenRate[stat]));
 		}
 		else
 		{
@@ -2382,7 +2388,7 @@ int CChar::Skill_Taming(SKTRIG_TYPE stage)
 		Speak(pszMsg);
 
 		// Keep trying and updating the animation
-		m_atTaming.m_Stroke_Count--;
+		--m_atTaming.m_Stroke_Count;
 		Skill_SetTimeout();
 		return -SKTRIG_STROKE;
 	}
@@ -2660,7 +2666,7 @@ int CChar::Skill_Meditation(SKTRIG_TYPE stage)
 			if ( !g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_NOSFX) )
 				Sound(SOUND_SFX6);
 		}
-		m_atTaming.m_Stroke_Count++;
+		++m_atTaming.m_Stroke_Count;
 		UpdateStatVal(STAT_INT, 1);
 		Skill_SetTimeout();		// next update (depends on skill)
 		return -SKTRIG_STROKE;
@@ -3418,14 +3424,14 @@ int CChar::Skill_Stroke(bool fResource)
 	if ( fResource )
 	{
 		if ( m_atResource.m_Stroke_Count )
-			m_atResource.m_Stroke_Count--;
+			--m_atResource.m_Stroke_Count;
 		if ( m_atResource.m_Stroke_Count < 1 )
 			return SKTRIG_SUCCESS;
 	}
 	else
 	{
 		if ( m_atCreate.m_Stroke_Count )
-			m_atCreate.m_Stroke_Count--;
+			--m_atCreate.m_Stroke_Count;
 		if ( m_atCreate.m_Stroke_Count < 1 )
 			return SKTRIG_SUCCESS;
 	}

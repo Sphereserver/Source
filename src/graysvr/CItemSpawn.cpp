@@ -205,7 +205,7 @@ void CItemSpawn::DelObj(CGrayUID uid)
 		return;
 
 	BYTE iMax = GetCount();
-	for ( BYTE i = 0; i < iMax; i++ )
+	for ( BYTE i = 0; i < iMax; ++i )
 	{
 		if ( m_obj[i] != uid )
 			continue;
@@ -213,14 +213,14 @@ void CItemSpawn::DelObj(CGrayUID uid)
 		CObjBase *pObj = uid.ObjFind();
 		pObj->m_uidSpawnItem.InitUID();
 
-		m_currentSpawned--;
+		--m_currentSpawned;
 		if ( GetType() == IT_SPAWN_CHAR )
 			uid.CharFind()->StatFlag_Clear(STATF_Spawned);
 
 		while ( m_obj[i + 1].IsValidUID() )				// searching for any entry higher than this one...
 		{
 			m_obj[i] = m_obj[i + 1];					// and moving it 1 position to keep values 'together'.
-			i++;
+			++i;
 		}
 		m_obj[i].InitUID();								// Finished moving higher entries (if any) so we free the last entry.
 		break;
@@ -260,12 +260,12 @@ void CItemSpawn::AddObj(CGrayUID uid)
 	}
 
 	BYTE iMax = maximum(GetAmount(), 1);
-	for ( BYTE i = 0; i < iMax; i++ )
+	for ( BYTE i = 0; i < iMax; ++i )
 	{
 		if ( !m_obj[i].IsValidUID() )
 		{
 			m_obj[i] = uid;
-			m_currentSpawned++;
+			++m_currentSpawned;
 
 			// objects are linked to the spawn at each server start
 			if ( !g_Serv.IsLoading() )
@@ -327,7 +327,7 @@ void CItemSpawn::KillChildren()
 	if ( m_currentSpawned <= 0 )
 		return;
 
-	for ( BYTE i = 0; i < m_currentSpawned; i++ )
+	for ( BYTE i = 0; i < m_currentSpawned; ++i )
 	{
 		CObjBase *pObj = m_obj[i].ObjFind();
 		if ( !pObj )
@@ -474,7 +474,7 @@ void CItemSpawn::r_Write(CScript &s)
 	if ( wTotal <= 0 )
 		return;
 
-	for ( WORD w = 0; w < wTotal; w++ )
+	for ( WORD w = 0; w < wTotal; ++w )
 	{
 		if ( !m_obj[w].IsValidUID() )
 			continue;
@@ -577,7 +577,7 @@ bool CItem::Plant_OnTick()
 			{
 				CItem *pItemFruit = CItem::CreateScript(iFruitID);
 				ASSERT(pItemFruit);
-				pItemFruit->MoveToDecay(GetTopPoint(), static_cast<INT64>(g_Cfg.m_iDecay_Item) * 10);
+				pItemFruit->MoveToDecay(GetTopPoint(), g_Cfg.m_iDecay_Item);
 				break;
 			}
 			if ( pItem->IsType(IT_FRUIT) || pItem->IsType(IT_REAGENT_RAW) )
@@ -636,7 +636,7 @@ bool CItemMap::IsSameType(const CObjBase *pObj) const
 			return false;
 
 		// Check individual pins in the same place
-		for ( size_t i = 0; i < m_Pins.GetCount(); i++ )
+		for ( size_t i = 0; i < m_Pins.GetCount(); ++i )
 		{
 			if ( m_Pins[i].m_x != pItemMap->m_Pins[i].m_x )
 				return false;
@@ -701,7 +701,7 @@ void CItemMap::r_Write(CScript &s)
 {
 	ADDTOCALLSTACK_INTENSIVE("CItemMap::r_Write");
 	CItemVendable::r_Write(s);
-	for ( size_t i = 0; i < m_Pins.GetCount(); i++ )
+	for ( size_t i = 0; i < m_Pins.GetCount(); ++i )
 		s.WriteKeyFormat("PIN", "%i,%i", m_Pins[i].m_x, m_Pins[i].m_y);
 }
 
@@ -871,7 +871,7 @@ void CItemMessage::DupeCopy(const CItem *pItem)
 		return;
 
 	m_sAuthor = pMsgItem->m_sAuthor;
-	for ( WORD w = 0; w < pMsgItem->GetPageCount(); w++ )
+	for ( WORD w = 0; w < pMsgItem->GetPageCount(); ++w )
 		SetPageText(w, pMsgItem->GetPageText(w));
 }
 
@@ -1003,7 +1003,7 @@ void CItemCommCrystal::OnHear(LPCTSTR pszCmd, CChar *pSrc)
 	// IT_COMM_CRYSTAL
 	// STATF_COMM_CRYSTAL = if i am on a person.
 	TALKMODE_TYPE mode = TALKMODE_SAY;
-	for ( size_t i = 0; i < m_Speech.GetCount(); i++ )
+	for ( size_t i = 0; i < m_Speech.GetCount(); ++i )
 	{
 		CResourceLink *pLink = m_Speech[i];
 		ASSERT(pLink);

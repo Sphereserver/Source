@@ -3567,16 +3567,16 @@ void CChar::ChangeExperience(int iDelta, CChar *pCharDead)
 
 		if ( m_pClient && fShowMsg && iDelta )
 		{
-			static UINT const keyWords[] =
+			static LPCTSTR const sm_szExpDelta[] =
 			{
-				DEFMSG_MSG_EXP_CHANGE_1,
-				DEFMSG_MSG_EXP_CHANGE_2,
-				DEFMSG_MSG_EXP_CHANGE_3,
-				DEFMSG_MSG_EXP_CHANGE_4,
-				DEFMSG_MSG_EXP_CHANGE_5,
-				DEFMSG_MSG_EXP_CHANGE_6,
-				DEFMSG_MSG_EXP_CHANGE_7,
-				DEFMSG_MSG_EXP_CHANGE_8
+				g_Cfg.GetDefaultMsg(DEFMSG_MSG_EXP_CHANGE_1),
+				g_Cfg.GetDefaultMsg(DEFMSG_MSG_EXP_CHANGE_2),
+				g_Cfg.GetDefaultMsg(DEFMSG_MSG_EXP_CHANGE_3),
+				g_Cfg.GetDefaultMsg(DEFMSG_MSG_EXP_CHANGE_4),
+				g_Cfg.GetDefaultMsg(DEFMSG_MSG_EXP_CHANGE_5),
+				g_Cfg.GetDefaultMsg(DEFMSG_MSG_EXP_CHANGE_6),
+				g_Cfg.GetDefaultMsg(DEFMSG_MSG_EXP_CHANGE_7),
+				g_Cfg.GetDefaultMsg(DEFMSG_MSG_EXP_CHANGE_8)
 			};
 
 			int iWord = 0;
@@ -3597,7 +3597,7 @@ void CChar::ChangeExperience(int iDelta, CChar *pCharDead)
 				iWord = 2;
 			else if ( iVal >= iMaxVal / 14 )		// 7%
 				iWord = 1;
-			m_pClient->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_EXP_CHANGE_0), (iDelta > 0) ? g_Cfg.GetDefaultMsg(DEFMSG_MSG_EXP_CHANGE_GAIN) : g_Cfg.GetDefaultMsg(DEFMSG_MSG_EXP_CHANGE_LOST), g_Cfg.GetDefaultMsg(keyWords[iWord]));
+			m_pClient->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_EXP_CHANGE_0), (iDelta > 0) ? g_Cfg.GetDefaultMsg(DEFMSG_MSG_EXP_CHANGE_GAIN) : g_Cfg.GetDefaultMsg(DEFMSG_MSG_EXP_CHANGE_LOST), sm_szExpDelta[iWord]);
 		}
 	}
 

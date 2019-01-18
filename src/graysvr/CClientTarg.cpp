@@ -1236,19 +1236,19 @@ bool CClient::OnTarg_Skill_Magery(CObjBase *pObj, const CPointMap &pt)
 	// The client player has targeted a spell.
 	// CLIMODE_TARG_SKILL_MAGERY
 
-	const CSpellDef *pSpell = g_Cfg.GetSpellDef(m_tmSkillMagery.m_Spell);
-	if ( !pSpell )
+	const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(m_tmSkillMagery.m_Spell);
+	if ( !pSpellDef )
 		return false;
 
 	if ( pObj )
 	{
-		if ( !pSpell->IsSpellType(SPELLFLAG_TARG_OBJ) )
+		if ( !pSpellDef->IsSpellType(SPELLFLAG_TARG_OBJ) )
 		{
 			SysMessageDefault(DEFMSG_MAGERY_4);
 			return true;
 		}
 
-		if ( pObj->IsItem() && !pSpell->IsSpellType(SPELLFLAG_TARG_ITEM) )
+		if ( pObj->IsItem() && !pSpellDef->IsSpellType(SPELLFLAG_TARG_ITEM) )
 		{
 			SysMessageDefault(DEFMSG_MAGERY_1);
 			return true;
@@ -1256,25 +1256,25 @@ bool CClient::OnTarg_Skill_Magery(CObjBase *pObj, const CPointMap &pt)
 
 		if ( pObj->IsChar() )
 		{
-			if ( !pSpell->IsSpellType(SPELLFLAG_TARG_CHAR) )
+			if ( !pSpellDef->IsSpellType(SPELLFLAG_TARG_CHAR) )
 			{
 				SysMessageDefault(DEFMSG_MAGERY_2);
 				return true;
 			}
 			CChar *pChar = static_cast<CChar *>(pObj);
-			if ( pSpell->IsSpellType(SPELLFLAG_TARG_NO_PLAYER) && pChar->m_pPlayer )
+			if ( pSpellDef->IsSpellType(SPELLFLAG_TARG_NO_PLAYER) && pChar->m_pPlayer )
 			{
 				SysMessageDefault(DEFMSG_MAGERY_7);
 				return true;
 			}
-			if ( pSpell->IsSpellType(SPELLFLAG_TARG_NO_NPC) && pChar->m_pNPC )
+			if ( pSpellDef->IsSpellType(SPELLFLAG_TARG_NO_NPC) && pChar->m_pNPC )
 			{
 				SysMessageDefault(DEFMSG_MAGERY_8);
 				return true;
 			}
 		}
 
-		if ( pSpell->IsSpellType(SPELLFLAG_TARG_NOSELF) && (pObj == m_pChar) && !IsPriv(PRIV_GM) )
+		if ( pSpellDef->IsSpellType(SPELLFLAG_TARG_NOSELF) && (pObj == m_pChar) && !IsPriv(PRIV_GM) )
 		{
 			SysMessageDefault(DEFMSG_MAGERY_3);
 			return true;
@@ -1289,7 +1289,7 @@ bool CClient::OnTarg_Skill_Magery(CObjBase *pObj, const CPointMap &pt)
 	m_pChar->m_Act_p = pt;
 	m_Targ_p = pt;
 
-	if ( IsSetMagicFlags(MAGICF_PRECAST) && !pSpell->IsSpellType(SPELLFLAG_NOPRECAST) && m_pChar->m_pClient )
+	if ( IsSetMagicFlags(MAGICF_PRECAST) && !pSpellDef->IsSpellType(SPELLFLAG_NOPRECAST) && m_pChar->m_pClient )
 	{
 		if ( g_Cfg.IsSkillFlag(m_pChar->m_Act_SkillCurrent, SKF_MAGIC) )
 		{
@@ -1300,7 +1300,7 @@ bool CClient::OnTarg_Skill_Magery(CObjBase *pObj, const CPointMap &pt)
 	}
 
 	int skill;
-	if ( !pSpell->GetPrimarySkill(&skill, NULL) )
+	if ( !pSpellDef->GetPrimarySkill(&skill, NULL) )
 		return false;
 
 	return m_pChar->Skill_Start(static_cast<SKILL_TYPE>(skill));
@@ -1436,24 +1436,21 @@ CItem *CClient::OnTarg_Use_Multi(const CItemBase *pItemDef, CPointMap &pt, DWORD
 		CGRect rect = pMultiDef->m_rect;
 		rect.m_map = pt.m_map;
 		rect.OffsetRect(pt.m_x, pt.m_y);
-		CPointMap ptn = pt;
+		CPointMap ptCheck = pt;
 
-		int x = rect.m_left;
-		for ( ; x < rect.m_right; ++x )
+		for ( int x = rect.m_left; x < rect.m_right; ++x )
 		{
-			ptn.m_x = static_cast<signed short>(x);
-			int y = rect.m_top;
-			for ( ; y < rect.m_bottom; ++y )
+			ptCheck.m_x = static_cast<signed short>(x);
+			for ( int y = rect.m_top; y < rect.m_bottom; ++y )
 			{
-				ptn.m_y = static_cast<signed short>(y);
-
-				if ( !ptn.IsValidPoint() )
+				ptCheck.m_y = static_cast<signed short>(y);
+				if ( !ptCheck.IsValidPoint() )
 				{
 					SysMessageDefault(DEFMSG_ITEMUSE_MULTI_FAIL);
 					return NULL;
 				}
 
-				CRegionBase *pRegion = ptn.GetRegion(REGION_TYPE_MULTI|REGION_TYPE_AREA|REGION_TYPE_ROOM);
+				CRegionBase *pRegion = ptCheck.GetRegion(REGION_TYPE_MULTI|REGION_TYPE_AREA|REGION_TYPE_ROOM);
 				if ( !pRegion || pRegion->IsFlag(REGION_FLAG_NOBUILDING) )
 				{
 					SysMessageDefault(DEFMSG_ITEMUSE_MULTI_FAIL);
@@ -1463,7 +1460,7 @@ CItem *CClient::OnTarg_Use_Multi(const CItemBase *pItemDef, CPointMap &pt, DWORD
 
 				bool fShip = pItemDef->IsType(IT_SHIP);
 				DWORD dwBlockFlags = fShip ? CAN_C_SWIM : CAN_C_WALK;
-				ptn.m_z = g_World.GetHeightPoint2(ptn, dwBlockFlags, true);	//should really use the 2nd function? it does fixed #2373
+				ptCheck.m_z = g_World.GetHeightPoint2(ptCheck, dwBlockFlags, true);	//should really use the 2nd function? it does fixed #2373
 
 				if ( fShip )
 				{
@@ -1484,7 +1481,7 @@ CItem *CClient::OnTarg_Use_Multi(const CItemBase *pItemDef, CPointMap &pt, DWORD
 					}
 				}
 
-				if ( abs(ptn.m_z - pt.m_z) > 4 )
+				if ( abs(ptCheck.m_z - pt.m_z) > 4 )
 				{
 					SysMessageDefault(DEFMSG_ITEMUSE_MULTI_BUMP);
 					if ( !IsPriv(PRIV_GM) )

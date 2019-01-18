@@ -590,7 +590,7 @@ RealType CVarFloat::GetSingle(LPCTSTR &pszArgs)
 				case INTRINSIC_STRLEN:
 				{
 					iCount = 1;
-					dResult = strlen(pszArgs);
+					dResult = static_cast<RealType>(strlen(pszArgs));
 					break;
 				}
 				case INTRINSIC_STRMATCH:

@@ -171,7 +171,7 @@ void CChar::Jail(CTextConsole *pSrc, bool fSet, int iCell)
 }
 
 // A vendor is giving me gold, put it in my pack or other place
-void CChar::AddGoldToPack(DWORD dwAmount, CItemContainer *pPack, bool bSound)
+void CChar::AddGoldToPack(DWORD dwAmount, CItemContainer *pPack, bool fSound)
 {
 	ADDTOCALLSTACK("CChar::AddGoldToPack");
 
@@ -189,7 +189,7 @@ void CChar::AddGoldToPack(DWORD dwAmount, CItemContainer *pPack, bool bSound)
 		dwAmount -= wGoldStack;
 	}
 
-	if ( bSound && pGold )
+	if ( fSound && pGold )
 		Sound(pGold->GetDropSound(pPack));
 }
 
@@ -531,7 +531,7 @@ void CChar::DropAll(CItemContainer *pDest, DWORD dwAttr)
 }
 
 // Drop all equipped items to an given container
-void CChar::UnEquipAllItems(CItemContainer *pDest, bool bLeaveHands)
+void CChar::UnEquipAllItems(CItemContainer *pDest, bool fLeaveHands)
 {
 	ADDTOCALLSTACK("CChar::UnEquipAllItems");
 
@@ -586,7 +586,7 @@ void CChar::UnEquipAllItems(CItemContainer *pDest, bool bLeaveHands)
 			case LAYER_HAND1:
 			case LAYER_HAND2:
 			{
-				if ( bLeaveHands )
+				if ( fLeaveHands )
 					continue;
 				break;
 			}
@@ -687,19 +687,19 @@ void CChar::UpdateStamFlag() const
 		m_pClient->addUpdateStamFlag();
 }
 
-void CChar::UpdateRegenTimers(STAT_TYPE iStat, WORD wVal)
+void CChar::UpdateRegenTimers(STAT_TYPE stat, WORD wVal)
 {
 	ADDTOCALLSTACK("CChar::UpdateRegenTimers");
-	m_Stat[iStat].m_regen = wVal;
+	m_Stat[stat].m_regen = wVal;
 }
 
-void CChar::UpdateStatVal(STAT_TYPE type, int iChange, int iLimit)
+void CChar::UpdateStatVal(STAT_TYPE stat, int iChange, int iLimit)
 {
 	ADDTOCALLSTACK("CChar::UpdateStatVal");
-	int iValPrev = Stat_GetVal(type);
+	int iValPrev = Stat_GetVal(stat);
 	int iVal = iValPrev + iChange;
 	if ( !iLimit )
-		iLimit = Stat_GetMax(type);
+		iLimit = Stat_GetMax(stat);
 
 	if ( iVal < 0 )
 		iVal = 0;
@@ -709,9 +709,9 @@ void CChar::UpdateStatVal(STAT_TYPE type, int iChange, int iLimit)
 	if ( iVal == iValPrev )
 		return;
 
-	Stat_SetVal(type, iVal);
+	Stat_SetVal(stat, iVal);
 
-	switch ( type )
+	switch ( stat )
 	{
 		case STAT_STR:
 			UpdateHitsFlag();
@@ -1529,15 +1529,15 @@ int CChar::ItemPickup(CItem *pItem, WORD wAmount)
 	ITRIG_TYPE trigger;
 	if ( pChar )
 	{
-		bool bCanTake = false;
+		bool fCanTake = false;
 		if ( pChar == this )	// we can always take our own items
-			bCanTake = true;
+			fCanTake = true;
 		else if ( (pItem->GetParentObj() != pChar) || g_Cfg.m_fCanUndressPets )		// our owners can take items from us (with CanUndressPets=true, they can undress us too)
-			bCanTake = pChar->NPC_IsOwnedBy(this);
+			fCanTake = pChar->NPC_IsOwnedBy(this);
 		else
-			bCanTake = IsPriv(PRIV_GM) && GetPrivLevel() > pChar->GetPrivLevel();	// higher priv players can take items and undress us
+			fCanTake = IsPriv(PRIV_GM) && GetPrivLevel() > pChar->GetPrivLevel();	// higher priv players can take items and undress us
 
-		if ( !bCanTake )
+		if ( !fCanTake )
 		{
 			SysMessageDefault(DEFMSG_MSG_STEAL);
 			return -1;
@@ -1550,11 +1550,8 @@ int CChar::ItemPickup(CItem *pItem, WORD wAmount)
 	if ( trigger == ITRIG_PICKUP_GROUND )
 	{
 		// Bug with taking static/movenever items -or- catching the spell effects
-		if ( !IsPriv(PRIV_ALLMOVE|PRIV_GM) )
-		{
-			if ( pItem->IsAttr(ATTR_STATIC|ATTR_MOVE_NEVER) || pItem->IsType(IT_SPELL) )
-				return -1;
-		}
+		if ( !IsPriv(PRIV_ALLMOVE|PRIV_GM) && (pItem->IsAttr(ATTR_STATIC|ATTR_MOVE_NEVER) || pItem->IsType(IT_SPELL)) )
+			return -1;
 	}
 
 	if ( trigger != ITRIG_UNEQUIP )		// unequip is done later
@@ -1643,7 +1640,7 @@ int CChar::ItemPickup(CItem *pItem, WORD wAmount)
 }
 
 // Bounce an item into backpack
-bool CChar::ItemBounce(CItem *pItem, bool bDisplayMsg)
+bool CChar::ItemBounce(CItem *pItem, bool fDisplayMsg)
 {
 	ADDTOCALLSTACK("CChar::ItemBounce");
 	if ( !pItem )
@@ -1688,7 +1685,7 @@ bool CChar::ItemBounce(CItem *pItem, bool bDisplayMsg)
 		pItem->MoveToDecay(GetTopPoint(), pItem->GetDecayTime());	// drop it on ground
 	}
 
-	if ( bDisplayMsg )
+	if ( fDisplayMsg )
 		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ITEMPLACE), pItem->GetName(), pszWhere);
 	return true;
 }
@@ -2404,7 +2401,7 @@ bool CChar::SetPoison(int iSkill, int iTicks, CChar *pCharSrc)
 		CItem *pEvilOmen = LayerFind(LAYER_SPELL_Evil_Omen);
 		if ( pEvilOmen )
 		{
-			pPoison->m_itSpell.m_spelllevel++;		// Effect 2: next poison will have one additional level of poison.
+			++pPoison->m_itSpell.m_spelllevel;		// Effect 2: next poison will have one additional level of poison.
 			pEvilOmen->Delete();
 		}
 	}
@@ -2638,8 +2635,8 @@ bool CChar::Death()
 		Horse_UnMount();
 
 	// Create the corpse item
-	bool bFrontFall = (IsStatFlag(STATF_Fly) || Calc_GetRandVal(2));
-	CItemCorpse *pCorpse = MakeCorpse(bFrontFall);
+	bool fFrontFall = (IsStatFlag(STATF_Fly) || Calc_GetRandVal(2));
+	CItemCorpse *pCorpse = MakeCorpse(fFrontFall);
 	if ( pCorpse )
 	{
 		if ( IsTrigUsed(TRIGGER_DEATHCORPSE) )
@@ -2651,7 +2648,7 @@ bool CChar::Death()
 	m_lastAttackers.clear();	// clear list of attackers
 
 	// Play death animation (fall on ground)
-	UpdateCanSee(new PacketDeath(this, pCorpse, bFrontFall), m_pClient);
+	UpdateCanSee(new PacketDeath(this, pCorpse, fFrontFall), m_pClient);
 
 	if ( m_pNPC )
 	{
@@ -3011,7 +3008,7 @@ TRIGRET_TYPE CChar::CheckLocation(bool fStanding)
 	}
 
 	bool fStepCancel = false;
-	bool bSpellHit = false;
+	bool fSpellHit = false;
 	CWorldSearch AreaItems(GetTopPoint());
 	for (;;)
 	{
@@ -3077,12 +3074,12 @@ TRIGRET_TYPE CChar::CheckLocation(bool fStanding)
 				// will immediately paralyze again with 0ms delay at each damage tick.
 				// On OSI if the player cast multiple fields on the same tile, it will remove the previous field
 				// tile that got overlapped. But Sphere doesn't use this method, so this workaround is needed.
-				if ( bSpellHit )
+				if ( fSpellHit )
 					continue;
 
 				if ( OnSpellEffect(static_cast<SPELL_TYPE>(RES_GET_INDEX(pItem->m_itSpell.m_spell)), pItem->m_uidLink.CharFind(), static_cast<int>(pItem->m_itSpell.m_spelllevel), pItem) )
 				{
-					bSpellHit = true;
+					fSpellHit = true;
 					if ( m_pNPC && fStanding )
 					{
 						m_Act_p = GetTopPoint();
@@ -3233,10 +3230,10 @@ bool CChar::MoveToRegion(CRegionWorld *pNewArea, bool fAllowReject)
 					}
 				}
 
-				bool bRedRegionOld = (m_pArea->m_TagDefs.GetKeyNum("RED") != 0);
-				bool bRedRegionNew = (pNewArea->m_TagDefs.GetKeyNum("RED") != 0);
-				if ( bRedRegionOld != bRedRegionNew )
-					SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_REDDEF), g_Cfg.GetDefaultMsg(bRedRegionNew ? DEFMSG_MSG_REGION_REDENTER : DEFMSG_MSG_REGION_REDLEFT));
+				bool fRedRegionOld = (m_pArea->m_TagDefs.GetKeyNum("RED") != 0);
+				bool fRedRegionNew = (pNewArea->m_TagDefs.GetKeyNum("RED") != 0);
+				if ( fRedRegionOld != fRedRegionNew )
+					SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_REDDEF), g_Cfg.GetDefaultMsg(fRedRegionNew ? DEFMSG_MSG_REGION_REDENTER : DEFMSG_MSG_REGION_REDLEFT));
 
 				if ( pNewArea->IsFlag(REGION_FLAG_NO_PVP) != m_pArea->IsFlag(REGION_FLAG_NO_PVP) )
 					SysMessageDefault((pNewArea->IsFlag(REGION_FLAG_NO_PVP)) ? DEFMSG_MSG_REGION_PVPSAFE : DEFMSG_MSG_REGION_PVPNOT);
@@ -3334,7 +3331,7 @@ bool CChar::MoveToRoom(CRegionBase *pNewRoom, bool fAllowReject)
 
 // Same as MoveTo. The char is taking a step or being teleported
 // Low level: DOES NOT update display or container flags (may be offline)
-bool CChar::MoveToChar(CPointMap pt, bool bForceFix)
+bool CChar::MoveToChar(CPointMap pt, bool fForceFix)
 {
 	ADDTOCALLSTACK("CChar::MoveToChar");
 
@@ -3366,7 +3363,7 @@ bool CChar::MoveToChar(CPointMap pt, bool bForceFix)
 	bool fSectorChange = pt.GetSector()->MoveCharToSector(this);
 	SetTopPoint(pt);
 
-	if ( !m_fClimbUpdated || bForceFix )
+	if ( !m_fClimbUpdated || fForceFix )
 		FixClimbHeight();
 
 	if ( fSectorChange && !g_Serv.IsLoading() )
@@ -3381,7 +3378,7 @@ bool CChar::MoveToChar(CPointMap pt, bool bForceFix)
 }
 
 // Move char from here to a valid spot (assume "here" is not a valid spot, even if it really is)
-bool CChar::MoveToValidSpot(DIR_TYPE dir, int iDist, int iDistStart, bool bFromShip)
+bool CChar::MoveToValidSpot(DIR_TYPE dir, int iDist, int iDistStart, bool fFromShip)
 {
 	ADDTOCALLSTACK("CChar::MoveToValidSpot");
 
@@ -3411,13 +3408,13 @@ bool CChar::MoveToValidSpot(DIR_TYPE dir, int iDist, int iDistStart, bool bFromS
 			pt.m_z = g_World.GetHeightPoint(pt, dwBlockFlags, true);
 
 			// Don't allow characters to pass through walls or other blocked paths when they're disembarking from a ship
-			if ( bFromShip && (dwBlockFlags & CAN_I_BLOCK) && !(dwCan & CAN_C_PASSWALLS) && (pt.m_z > startZ) )
+			if ( fFromShip && (dwBlockFlags & CAN_I_BLOCK) && !(dwCan & CAN_C_PASSWALLS) && (pt.m_z > startZ) )
 				break;
 
 			if ( !(dwBlockFlags & ~dwCan) )
 			{
 				// We can go here
-				if ( Spell_Teleport(pt, true, !bFromShip, false) )
+				if ( Spell_Teleport(pt, true, !fFromShip, false) )
 					return true;
 			}
 		}
@@ -3672,8 +3669,8 @@ void CChar::OnTickFood(int iVal, int iHitsHungerLoss)
 	if ( (iHitsHungerLoss <= 0) || IsStatFlag(STATF_Sleeping|STATF_Stone) )
 		return;
 
-	bool bPet = IsStatFlag(STATF_Pet);
-	LPCTSTR pszMsgLevel = Food_GetLevelMessage(bPet, false);
+	bool fPet = IsStatFlag(STATF_Pet);
+	LPCTSTR pszMsgLevel = Food_GetLevelMessage(fPet, false);
 	SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_HUNGER), pszMsgLevel);
 
 	char *pszMsg = Str_GetTemp();
@@ -3689,7 +3686,7 @@ void CChar::OnTickFood(int iVal, int iHitsHungerLoss)
 	{
 		OnTakeDamage(iHitsHungerLoss, this, DAMAGE_FIXED);
 		SoundChar(CRESND_NOTICE);
-		if ( bPet )
+		if ( fPet )
 			NPC_PetDesert();
 	}
 }

@@ -558,24 +558,24 @@ public:
 	signed char GetFixZ(CPointMap pt, DWORD dwBlockFlags = 0);
 	virtual void Delete(bool fForce = false, CClient *pClient = NULL);
 	virtual bool NotifyDelete(CClient *pClient = NULL);
-	bool IsStatFlag(DWORD dwStatFlag) const
+	bool IsStatFlag(UINT64 uiStatFlag) const
 	{
-		return (m_StatFlag & dwStatFlag);
+		return (m_StatFlag & uiStatFlag);
 	}
-	void StatFlag_Set(DWORD dwStatFlag)
+	void StatFlag_Set(UINT64 uiStatFlag)
 	{
-		m_StatFlag |= dwStatFlag;
+		m_StatFlag |= uiStatFlag;
 	}
-	void StatFlag_Clear(DWORD dwStatFlag)
+	void StatFlag_Clear(UINT64 uiStatFlag)
 	{
-		m_StatFlag &= ~dwStatFlag;
+		m_StatFlag &= ~uiStatFlag;
 	}
-	void StatFlag_Mod(DWORD dwStatFlag, bool fMod)
+	void StatFlag_Mod(UINT64 uiStatFlag, bool fMod)
 	{
 		if ( fMod )
-			m_StatFlag |= dwStatFlag;
+			m_StatFlag |= uiStatFlag;
 		else
-			m_StatFlag &= ~dwStatFlag;
+			m_StatFlag &= ~uiStatFlag;
 	}
 	bool IsPriv(WORD wPrivFlags) const
 	{
@@ -763,27 +763,27 @@ public:
 	LPCTSTR Food_GetLevelMessage(bool fPet, bool fHappy) const;
 
 public:
-	int Stat_GetAdjusted(STAT_TYPE i) const;
+	int Stat_GetAdjusted(STAT_TYPE stat) const;
 
-	void Stat_SetBase(STAT_TYPE i, int iVal);
-	int Stat_GetBase(STAT_TYPE i) const;
+	void Stat_SetBase(STAT_TYPE stat, int iVal);
+	int Stat_GetBase(STAT_TYPE stat) const;
 
-	void Stat_AddMod(STAT_TYPE i, int iVal);
-	void Stat_SetMod(STAT_TYPE i, int iVal);
-	int Stat_GetMod(STAT_TYPE i) const;
+	void Stat_AddMod(STAT_TYPE stat, int iVal);
+	void Stat_SetMod(STAT_TYPE stat, int iVal);
+	int Stat_GetMod(STAT_TYPE stat) const;
 
-	void Stat_SetVal(STAT_TYPE i, int iVal);
-	int Stat_GetVal(STAT_TYPE i) const;
+	void Stat_SetVal(STAT_TYPE stat, int iVal);
+	int Stat_GetVal(STAT_TYPE stat) const;
 
-	void Stat_SetMax(STAT_TYPE i, int iVal);
-	int Stat_GetMax(STAT_TYPE i) const;
+	void Stat_SetMax(STAT_TYPE stat, int iVal);
+	int Stat_GetMax(STAT_TYPE stat) const;
 
 	int Stat_GetSum() const;
-	int Stat_GetLimit(STAT_TYPE i) const;
+	int Stat_GetLimit(STAT_TYPE stat) const;
 
 	bool Stat_Decrease(STAT_TYPE stat, SKILL_TYPE skill);
 	bool Stats_Regen(INT64 iTimeDiff);
-	WORD Stats_GetRegenVal(STAT_TYPE iStat, bool fGetTicks);
+	WORD Stats_GetRegenVal(STAT_TYPE stat, bool fGetTicks);
 
 	SKILLLOCK_TYPE Stat_GetLock(STAT_TYPE stat)
 	{
@@ -826,11 +826,11 @@ public:
 	{
 		return MoveToRegion(dynamic_cast<CRegionWorld *>(GetTopPoint().GetRegion(bType)), false);
 	}
-	bool MoveToChar(CPointMap pt, bool bForceFix = false);
-	bool MoveTo(CPointMap pt, bool bForceFix = false)
+	bool MoveToChar(CPointMap pt, bool fForceFix = false);
+	bool MoveTo(CPointMap pt, bool fForceFix = false)
 	{
 		m_fClimbUpdated = false;	// update climb height
-		return MoveToChar(pt, bForceFix);
+		return MoveToChar(pt, fForceFix);
 	}
 	virtual void SetTopZ(signed char z)
 	{
@@ -838,7 +838,7 @@ public:
 		m_fClimbUpdated = false;	// update climb height
 		FixClimbHeight();
 	}
-	bool MoveToValidSpot(DIR_TYPE dir, int iDist, int iDistStart = 1, bool bFromShip = false);
+	bool MoveToValidSpot(DIR_TYPE dir, int iDist, int iDistStart = 1, bool fFromShip = false);
 	virtual bool MoveNearObj(const CObjBaseTemplate *pObj, WORD wSteps = 0)
 	{
 		return CObjBase::MoveNearObj(pObj, wSteps);
@@ -880,12 +880,12 @@ public:
 	}
 
 	void UpdateStatsFlag() const;
-	void UpdateStatVal(STAT_TYPE type, int iChange = 0, int iLimit = 0);
+	void UpdateStatVal(STAT_TYPE stat, int iChange = 0, int iLimit = 0);
 	void UpdateHitsFlag();
 	void UpdateModeFlag();
 	void UpdateManaFlag() const;
 	void UpdateStamFlag() const;
-	void UpdateRegenTimers(STAT_TYPE iStat, WORD wVal);
+	void UpdateRegenTimers(STAT_TYPE stat, WORD wVal);
 	ANIM_TYPE GenerateAnimate(ANIM_TYPE action, bool fTranslate = true, bool fBackward = false, BYTE iFrameDelay = 0, BYTE iAnimLen = 7);
 	bool UpdateAnimate(ANIM_TYPE action, bool fTranslate = true, bool fBackward = false, BYTE iFrameDelay = 0, BYTE iAnimLen = 7);
 
@@ -909,10 +909,10 @@ public:
 		return dir;
 	}
 
-	DWORD GetMoveBlockFlags(bool bIgnoreGM = false) const
+	DWORD GetMoveBlockFlags(bool fIgnoreGM = false) const
 	{
 		// What flags can block us?
-		if ( !bIgnoreGM && IsPriv(PRIV_GM|PRIV_ALLMOVE) )	// nothing can blocks us
+		if ( !fIgnoreGM && IsPriv(PRIV_GM|PRIV_ALLMOVE) )	// nothing can blocks us
 			return ULONG_MAX;
 
 		DWORD dwCan = m_Can;
@@ -972,7 +972,7 @@ public:
 	}
 	CItemContainer *GetContainerCreate(LAYER_TYPE layer);
 	CItem *GetBackpackItem(ITEMID_TYPE id);
-	void AddGoldToPack(DWORD dwAmount, CItemContainer *pPack = NULL, bool bSound = true);
+	void AddGoldToPack(DWORD dwAmount, CItemContainer *pPack = NULL, bool fSound = true);
 
 	virtual TRIGRET_TYPE OnTrigger(LPCTSTR pszTrigName, CTextConsole *pSrc, CScriptTriggerArgs *pArgs);
 
@@ -1270,16 +1270,16 @@ private:
 	CChar *Horse_GetMountChar() const;
 
 public:
-	CChar *Use_Figurine(CItem *pItem, bool bCheckFollowerSlots = true);
+	CChar *Use_Figurine(CItem *pItem, bool fCheckFollowerSlots = true);
 	CItem *Make_Figurine(CGrayUID uidOwner = (UID_F_ITEM|UID_O_INDEX_MASK), ITEMID_TYPE id = ITEMID_NOTHING);
 	CItem *NPC_Shrink();
-	bool FollowersUpdate(CChar *pChar, short iFollowerSlots = 0, bool bCheckOnly = false);
+	bool FollowersUpdate(CChar *pChar, short iFollowerSlots = 0, bool fCheckOnly = false);
 
 	int ItemPickup(CItem *pItem, WORD wAmount);
 	bool ItemEquip(CItem *pItem, CChar *pCharMsg = NULL, bool fFromDClick = false);
 	bool ItemEquipWeapon(bool fForce);
 	bool ItemEquipArmor(bool fForce);
-	bool ItemBounce(CItem *pItem, bool bDisplayMsg = true);
+	bool ItemBounce(CItem *pItem, bool fDisplayMsg = true);
 	bool ItemDrop(CItem *pItem, const CPointMap &pt);
 
 	void Flip();
@@ -1310,7 +1310,7 @@ public:
 	bool OnFreezeCheck();
 	void ToggleFlying();
 	void DropAll(CItemContainer *pDest = NULL, DWORD dwAttr = 0);
-	void UnEquipAllItems(CItemContainer *pDest = NULL, bool bLeaveHands = false);
+	void UnEquipAllItems(CItemContainer *pDest = NULL, bool fLeaveHands = false);
 	void Wake();
 	void SleepStart(bool fFrontFall);
 
@@ -1360,7 +1360,7 @@ private:
 	WORD NPC_GetTrainMax(const CChar *pStudent, SKILL_TYPE skill) const;
 
 	bool NPC_OnVerb(CScript &s, CTextConsole *pSrc = NULL);
-	void NPC_OnHirePayMore(CItem *pGold, bool bHire = false);
+	void NPC_OnHirePayMore(CItem *pGold, bool fHire = false);
 
 public:
 	bool NPC_OnHirePay(CChar *pCharSrc, CItemMemory *pMemory, CItem *pGold);
@@ -1413,10 +1413,10 @@ public:
 	void NPC_AddSpellsFromBook(CItem *pBook);
 
 	bool NPC_PetCheckAccess(int iCmd, CChar *pChar);
-	void NPC_PetConfirmCommand(bool bSuccess, CChar *pMaster);
+	void NPC_PetConfirmCommand(bool fSuccess, CChar *pMaster);
 	void NPC_PetDesert();
-	void NPC_PetClearOwners(bool bResendTooltip = true);
-	bool NPC_PetSetOwner(CChar *pChar, bool bResendTooltip = true);
+	void NPC_PetClearOwners(bool fResendTooltip = true);
+	bool NPC_PetSetOwner(CChar *pChar, bool fResendTooltip = true);
 	CChar *NPC_PetGetOwner() const;
 	bool NPC_IsOwnedBy(const CChar *pChar, bool fAllowGM = true) const;
 	bool NPC_CanSpeak() const;
@@ -1439,10 +1439,10 @@ public:
 			return m_pNPC->GetNpcAiFlags(this);
 		return 0;
 	}
-	bool NPC_Vendor_Restock(bool bForce = false, bool bFillStock = false);
+	bool NPC_Vendor_Restock(bool fForce = false, bool fFillStock = false);
 	int NPC_GetVendorMarkup() const;
 
-	bool NPC_OnHearPetCmd(LPCTSTR pszCmd, CChar *pSrc, bool bAllPets = false);
+	bool NPC_OnHearPetCmd(LPCTSTR pszCmd, CChar *pSrc, bool fAllPets = false);
 	bool NPC_OnHearPetCmdTarg(int iCmd, CChar *pSrc, CObjBase *pObj, const CPointMap &pt, LPCTSTR pszArgs);
 	size_t NPC_OnHearName(LPCTSTR pszText) const;
 	void NPC_OnHear(LPCTSTR pszCmd, CChar *pSrc, bool fAllPets = false);
