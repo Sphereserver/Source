@@ -131,7 +131,7 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 
 	CClient *client = net->m_client;
 	ASSERT(client);
-	const CAccountRef account = client->m_pAccount;
+	CAccount *account = client->m_pAccount;
 	ASSERT(account);
 	RESDISPLAY_VERSION resdisp = static_cast<RESDISPLAY_VERSION>(account->GetResDisp());
 

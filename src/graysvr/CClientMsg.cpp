@@ -3435,7 +3435,7 @@ BYTE CClient::LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg)
 			}
 
 			sprintf(pszTemp, "GUEST%d", i);
-			CAccountRef pAccount = g_Accounts.Account_FindCreate(pszTemp, true);
+			CAccount *pAccount = g_Accounts.Account_FindCreate(pszTemp, true);
 			ASSERT(pAccount);
 			if ( !pAccount->FindClient() )
 			{
@@ -3454,7 +3454,7 @@ BYTE CClient::LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg)
 	}
 
 	bool fAutoCreate = ((g_Serv.m_eAccApp == ACCAPP_Free) || (g_Serv.m_eAccApp == ACCAPP_GuestAuto) || (g_Serv.m_eAccApp == ACCAPP_GuestTrial));
-	CAccountRef pAccount = g_Accounts.Account_FindCreate(pszAccount, fAutoCreate);
+	CAccount *pAccount = g_Accounts.Account_FindCreate(pszAccount, fAutoCreate);
 	if ( !pAccount )
 	{
 		g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' does not exist\n", GetSocketID(), pszAccount);
@@ -3482,7 +3482,7 @@ BYTE CClient::LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg)
 	return LogIn(pAccount, sMsg);
 }
 
-BYTE CClient::LogIn(CAccountRef pAccount, CGString &sMsg)
+BYTE CClient::LogIn(CAccount *pAccount, CGString &sMsg)
 {
 	ADDTOCALLSTACK("CClient::LogIn");
 	if ( !pAccount )

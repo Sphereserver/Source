@@ -81,8 +81,8 @@ bool CChar::SetPlayerAccount(CAccount *pAccount)
 bool CChar::SetPlayerAccount( LPCTSTR pszAccName )
 {
 	ADDTOCALLSTACK("CChar::SetPlayerAccount");
-	CAccountRef pAccount = g_Accounts.Account_FindCreate( pszAccName, g_Serv.m_eAccApp == ACCAPP_Free );
-	if ( pAccount == NULL )
+	CAccount *pAccount = g_Accounts.Account_FindCreate( pszAccName, g_Serv.m_eAccApp == ACCAPP_Free );
+	if ( !pAccount )
 	{
 		DEBUG_ERR(( "SetPlayerAccount '%s' can't find '%s'!\n", GetName(), pszAccName ));
 		return false;

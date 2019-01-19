@@ -92,7 +92,7 @@ void CClient::Cmd_GM_PageMenu( DWORD iEntryStart )
 	DWORD entry = 0;
 	WORD count = 0;
 	CGMPage *pPage = static_cast<CGMPage *>(g_World.m_GMPages.GetHead());
-	for ( ; pPage!= NULL; pPage = pPage->GetNext(), entry++ )
+	for ( ; pPage!= NULL; pPage = pPage->GetNext(), ++entry )
 	{
 		if ( entry < iEntryStart )
 			continue;
@@ -202,7 +202,7 @@ void CClient::Cmd_GM_PageCmd( LPCTSTR pszCmd )
 
 	if ( pszCmd == NULL || pszCmd[0] == '?' )
 	{
-		for ( size_t i = 0; i < COUNTOF(sm_pszGMPageVerbsHelp); i++ )
+		for ( size_t i = 0; i < COUNTOF(sm_pszGMPageVerbsHelp); ++i )
 		{
 			SysMessage( sm_pszGMPageVerbsHelp[i] );
 		}
@@ -278,7 +278,7 @@ void CClient::Cmd_GM_PageCmd( LPCTSTR pszCmd )
 		case GPV_BAN:
 			// This should work even if they are not logged in.
 			{
-				CAccountRef pAccount = m_pGMPage->FindAccount();
+				CAccount *pAccount = m_pGMPage->FindAccount();
 				if ( pAccount )
 				{
 					if ( ! pAccount->Kick( this, true ))

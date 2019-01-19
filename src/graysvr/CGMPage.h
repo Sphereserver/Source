@@ -31,7 +31,7 @@ private:
 	CGMPage &operator=(const CGMPage &other);
 
 public:
-	CAccountRef FindAccount() const;
+	CAccount *FindAccount() const;
 	LPCTSTR GetAccountStatus() const;
 	LPCTSTR GetName() const
 	{

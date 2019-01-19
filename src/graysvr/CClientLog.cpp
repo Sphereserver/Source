@@ -29,7 +29,7 @@ void CClient::SetConnectType(CONNECT_TYPE iType)
 #else
 		HistoryIP &history = g_NetworkManager.getIPHistoryManager().getHistoryForIP(GetPeer());
 #endif
-		history.m_connecting--;
+		--history.m_connecting;
 	}
 }
 
@@ -200,14 +200,14 @@ bool CClient::Login_Relay(WORD wRelay)
 
 	// Clients >= 1.26.00 gives a list with 1-based index
 	if ( wRelay > 0 )
-		wRelay--;
+		--wRelay;
 
 	CServerRef pServ;
 	if ( !wRelay )
 		pServ = &g_Serv;	// always list ourself first
 	else
 	{
-		wRelay--;
+		--wRelay;
 		pServ = g_Cfg.Server_GetDef(wRelay);
 		if ( !pServ )
 		{
@@ -306,7 +306,7 @@ bool CClient::OnRxConsole(const BYTE *pData, size_t iLen)
 				}
 				else
 				{
-					CAccountRef pAccount = g_Accounts.Account_Find(m_zLogin);
+					CAccount *pAccount = g_Accounts.Account_Find(m_zLogin);
 					if ( !pAccount || (pAccount->GetPrivLevel() < PLEVEL_Admin) )
 					{
 						SysMessagef("%s\n", g_Cfg.GetDefaultMsg(DEFMSG_CONSOLE_NOT_PRIV));
@@ -363,7 +363,7 @@ bool CClient::OnRxAxis(const BYTE *pData, size_t iLen)
 				}
 				else
 				{
-					CAccountRef pAccount = g_Accounts.Account_Find(m_zLogin);
+					CAccount *pAccount = g_Accounts.Account_Find(m_zLogin);
 					if ( !pAccount || (pAccount->GetPrivLevel() < PLEVEL_Counsel) )
 					{
 						SysMessagef("\"MSG:%s\"", g_Cfg.GetDefaultMsg(DEFMSG_AXIS_NOT_PRIV));
@@ -467,7 +467,7 @@ bool CClient::OnRxPing(const BYTE *pData, size_t iLen)
 
 			if ( g_Cfg.m_fLocalIPAdmin && GetPeer().IsLocalAddr() )		// don't bother logging in if local
 			{
-				CAccountRef pAccount = g_Accounts.Account_Find("Administrator");
+				CAccount *pAccount = g_Accounts.Account_Find("Administrator");
 				if ( !pAccount )
 					pAccount = g_Accounts.Account_Find("RemoteAdmin");
 
@@ -580,7 +580,7 @@ bool CClient::OnRxWebPageRequest(BYTE *pRequest, size_t iLen)
 	TCHAR *pszReferer = NULL;
 	size_t iContentLength = 0;
 	CGTime dateIfModifiedSince;
-	for ( size_t i = 1; i < iQtyLines; i++ )
+	for ( size_t i = 1; i < iQtyLines; ++i )
 	{
 		TCHAR *pszArgs = Str_TrimWhitespace(ppLines[i]);
 		if ( !strnicmp(pszArgs, "Connection:", 11) )
@@ -740,7 +740,7 @@ bool CClient::xProcessClientSetup(CEvent *pEvent, size_t iLen)
 			{
 				TCHAR szAccount[MAX_ACCOUNT_NAME_SIZE + 3];
 				Str_GetBare(szAccount, pEvent->ServersReq.m_acctname, sizeof(szAccount) - 1);
-				CAccountRef pAccount = g_Accounts.Account_Find(szAccount);
+				CAccount *pAccount = g_Accounts.Account_Find(szAccount);
 
 				if ( pAccount )
 				{
@@ -768,7 +768,7 @@ bool CClient::xProcessClientSetup(CEvent *pEvent, size_t iLen)
 
 			TCHAR szAccount[MAX_ACCOUNT_NAME_SIZE + 3];
 			Str_GetBare(szAccount, pEvent->CharListReq.m_acctname, sizeof(szAccount) - 1);
-			CAccountRef pAccount = g_Accounts.Account_Find(szAccount);
+			CAccount *pAccount = g_Accounts.Account_Find(szAccount);
 
 			DWORD dwCustomerID = 0x7F000001;
 			if ( pAccount )

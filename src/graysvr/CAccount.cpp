@@ -53,13 +53,12 @@ bool CAccounts::Account_SaveAll()
 {
 	ADDTOCALLSTACK("CAccounts::Account_SaveAll");
 	EXC_TRY("SaveAll");
-	LPCTSTR pszBaseDir = g_Cfg.m_sAcctBaseDir.IsEmpty() ? g_Cfg.m_sWorldBaseDir : g_Cfg.m_sAcctBaseDir;
 
 	// Look for changes first
 	Account_LoadAll(true);
 
 	CScript s;
-	if ( !CWorld::OpenScriptBackup(s, pszBaseDir, "accu", g_World.m_iSaveCountID) )
+	if ( !CWorld::OpenScriptBackup(s, g_Cfg.m_sAcctBaseDir, "accu", g_World.m_iSaveCountID) )
 		return false;
 
 	s.Printf("// " SPHERE_TITLE " accounts file.\n"
@@ -68,7 +67,7 @@ bool CAccounts::Account_SaveAll()
 
 	for ( size_t i = 0; i < m_Accounts.GetCount(); ++i )
 	{
-		CAccountRef pAccount = Account_Get(i);
+		CAccount *pAccount = Account_Get(i);
 		if ( pAccount )
 			pAccount->r_Write(s);
 	}
@@ -100,7 +99,7 @@ bool CAccounts::Account_Load(LPCTSTR pszName, CScript &s, bool fChanges)
 	}
 
 	m_fLoading = true;
-	CAccountRef pAccount = Account_Find(szName);
+	CAccount *pAccount = Account_Find(szName);
 	if ( pAccount )
 	{
 		if ( !fChanges )
@@ -123,18 +122,16 @@ bool CAccounts::Account_Load(LPCTSTR pszName, CScript &s, bool fChanges)
 bool CAccounts::Account_LoadAll(bool fChanges, bool fClearChanges)
 {
 	ADDTOCALLSTACK("CAccounts::Account_LoadAll");
-	LPCTSTR pszBaseDir = g_Cfg.m_sAcctBaseDir.IsEmpty() ? g_Cfg.m_sWorldBaseDir : g_Cfg.m_sAcctBaseDir;
-	LPCTSTR pszBaseName = fChanges ? SPHERE_FILE "acct" : SPHERE_FILE "accu";
 
-	char *z = Str_GetTemp();
-	strncpy(z, pszBaseDir, _MAX_PATH);
-	strncat(z, pszBaseName, _MAX_PATH);
+	TCHAR *pszFilename = Str_GetTemp();
+	strncpy(pszFilename, g_Cfg.m_sAcctBaseDir, _MAX_PATH);
+	strncat(pszFilename, fChanges ? SPHERE_FILE "acct" : SPHERE_FILE "accu", _MAX_PATH);
 
 	if ( !fChanges )
-		g_Log.Event(LOGM_INIT, "Loading %s%s\n", z, SPHERE_SCRIPT);
+		g_Log.Event(LOGM_INIT, "Loading %s%s\n", pszFilename, SPHERE_SCRIPT);
 
 	CScript s;
-	if ( !s.Open(z, OF_READ|OF_TEXT|OF_DEFAULTMODE|(fChanges ? OF_NONCRIT : 0)) )
+	if ( !s.Open(pszFilename, OF_READ|OF_TEXT|OF_DEFAULTMODE|(fChanges ? OF_NONCRIT : 0)) )
 	{
 		if ( !fChanges )
 		{
@@ -244,7 +241,7 @@ bool CAccounts::Account_OnCmd(TCHAR *pszArgs, CTextConsole *pSrc)
 			break;
 	}
 
-	CAccountRef pAccount = Account_Find(ppCmd[0]);
+	CAccount *pAccount = Account_Find(ppCmd[0]);
 	if ( !pAccount )
 	{
 		pSrc->SysMessagef("Account '%s' does not exist\n", ppCmd[0]);
@@ -254,9 +251,7 @@ bool CAccounts::Account_OnCmd(TCHAR *pszArgs, CTextConsole *pSrc)
 	if ( !ppCmd[1] || !ppCmd[1][0] )
 	{
 		CClient *pClient = pAccount->FindClient();
-		char *z = Str_GetTemp();
-		sprintf(z, "Account '%s': PLEVEL:%d, BLOCK:%d, IP:%s, CONNECTED:%s, ONLINE:%s\n", pAccount->GetName(), pAccount->GetPrivLevel(), static_cast<int>(pAccount->IsPriv(PRIV_BLOCKED)), pAccount->m_Last_IP.GetAddrStr(), pAccount->m_dateLastConnect.Format(NULL), (pClient ? (pClient->GetChar() ? pClient->GetChar()->GetName() : "<not logged>") : "no"));
-		pSrc->SysMessage(z);
+		pSrc->SysMessagef("Account '%s': PLEVEL:%d, BLOCK:%d, IP:%s, CONNECTED:%s, ONLINE:%s\n", pAccount->GetName(), pAccount->GetPrivLevel(), static_cast<int>(pAccount->IsPriv(PRIV_BLOCKED)), pAccount->m_Last_IP.GetAddrStr(), pAccount->m_dateLastConnect.Format(NULL), pClient ? (pClient->GetChar() ? pClient->GetChar()->GetName() : "<not logged>") : "no");
 		return true;
 	}
 	else
@@ -274,15 +269,15 @@ bool CAccounts::Account_OnCmd(TCHAR *pszArgs, CTextConsole *pSrc)
 	}
 }
 
-CAccountRef CAccounts::Account_Get(size_t index)
+CAccount *CAccounts::Account_Get(size_t index)
 {
 	ADDTOCALLSTACK("CAccounts::Account_Get");
 	if ( m_Accounts.IsValidIndex(index) )
-		return static_cast<CAccountRef>(m_Accounts[index]);
+		return static_cast<CAccount *>(m_Accounts[index]);
 	return NULL;
 }
 
-CAccountRef CAccounts::Account_Find(LPCTSTR pszName)
+CAccount *CAccounts::Account_Find(LPCTSTR pszName)
 {
 	ADDTOCALLSTACK("CAccounts::Account_Find");
 
@@ -297,11 +292,11 @@ CAccountRef CAccounts::Account_Find(LPCTSTR pszName)
 	return NULL;
 }
 
-CAccountRef CAccounts::Account_FindCreate(LPCTSTR pszName, bool fCreate)
+CAccount *CAccounts::Account_FindCreate(LPCTSTR pszName, bool fCreate)
 {
 	ADDTOCALLSTACK("CAccounts::Account_FindCreate");
 
-	CAccountRef pAccount = Account_Find(pszName);
+	CAccount *pAccount = Account_Find(pszName);
 	if ( pAccount )
 		return pAccount;
 
@@ -322,12 +317,12 @@ CAccountRef CAccounts::Account_FindCreate(LPCTSTR pszName, bool fCreate)
 	return NULL;
 }
 
-CAccountRef CAccounts::Account_FindChat(LPCTSTR pszName)
+CAccount *CAccounts::Account_FindChat(LPCTSTR pszName)
 {
 	ADDTOCALLSTACK("CAccounts::Account_FindChat");
 	for ( size_t i = 0; i < m_Accounts.GetCount(); ++i )
 	{
-		CAccountRef pAccount = Account_Get(i);
+		CAccount *pAccount = Account_Get(i);
 		if ( pAccount && (pAccount->m_sChatName.CompareNoCase(pszName) == 0) )
 			return pAccount;
 	}
@@ -343,7 +338,7 @@ bool CAccounts::Cmd_AddNew(CTextConsole *pSrc, LPCTSTR pszName, LPCTSTR pszPassw
 		return false;
 	}
 
-	CAccountRef pAccount = Account_Find(pszName);
+	CAccount *pAccount = Account_Find(pszName);
 	if ( pAccount )
 	{
 		pSrc->SysMessagef("Account '%s' already exists\n", pszName);
@@ -390,7 +385,7 @@ bool CAccounts::Cmd_ListUnused(CTextConsole *pSrc, LPCTSTR pszDays, LPCTSTR pszV
 			--i;
 		}
 
-		CAccountRef pAccount = Account_Get(i);
+		CAccount *pAccount = Account_Get(i);
 		if ( !pAccount )
 			break;
 
@@ -484,11 +479,14 @@ bool CAccount::SetPassword(LPCTSTR pszPassword, bool fMD5)
 	ADDTOCALLSTACK("CAccount::SetPassword");
 
 	if ( Str_Check(pszPassword) )	// prevents exploits
+	{
+		g_Log.Event(LOGL_WARN, "Account '%s': can't set new password because it have invalid strings\n", GetName());
 		return false;
+	}
 
 	if ( !g_Serv.IsLoading() )
 	{
-		CScriptTriggerArgs Args;
+		CScriptTriggerArgs Args(GetName());
 		Args.Init(GetName());
 		Args.m_VarsLocal.SetStrNew("Password", pszPassword);
 		TRIGRET_TYPE tr = TRIGRET_RET_FALSE;
@@ -498,49 +496,15 @@ bool CAccount::SetPassword(LPCTSTR pszPassword, bool fMD5)
 			return false;
 	}
 
-	size_t iGivenPasswordLength = strlen(pszPassword);
-
-	if ( g_Cfg.m_fMd5Passwords && fMD5 )
-	{
-		// If MD5 is enabled and the password is already given in MD5 hash, just set it directly
-		if ( iGivenPasswordLength == 32 )
-			m_sPassword = pszPassword;
-		return true;
-	}
-
-	size_t iCurrentPasswordBufferSize = minimum(MAX_ACCOUNT_PASSWORD_ENTER, iGivenPasswordLength) + 1;
-	char *currentPassword = new char[iCurrentPasswordBufferSize];
-	strcpylen(currentPassword, pszPassword, iCurrentPasswordBufferSize);
-
-	if ( g_Cfg.m_fMd5Passwords )
+	if ( g_Cfg.m_fMd5Passwords && (!fMD5 || (strlen(pszPassword) != 32)) )
 	{
 		char digest[33];
-		if ( !g_Accounts.m_fLoading )
-		{
-			// Auto-hash if not loading
-			CMD5::fastDigest(digest, currentPassword);
-			m_sPassword = digest;
-		}
-		else
-		{
-			if ( iGivenPasswordLength == 32 )
-			{
-				// Password already in MD5 hash, just set it directly
-				m_sPassword = pszPassword;
-			}
-			else
-			{
-				// Password must be converted to MD5 hash
-				g_Log.Event(LOGM_INIT|LOGL_EVENT, "Account '%s': password converted to MD5 hash\n", GetName());
-				CMD5::fastDigest(digest, currentPassword);
-				m_sPassword = digest;
-			}
-		}
+		CMD5::fastDigest(digest, pszPassword);
+		pszPassword = digest;
+		g_Log.Event(LOGL_EVENT, "Account '%s': plain text password converted to MD5 hash\n", GetName());
 	}
-	else
-		m_sPassword = currentPassword;
 
-	delete[] currentPassword;
+	m_sPassword = pszPassword;
 	return true;
 }
 
@@ -548,18 +512,18 @@ void CAccount::SetNewPassword(LPCTSTR pszPassword)
 {
 	ADDTOCALLSTACK("CAccount::SetNewPassword");
 
-	if ( !pszPassword || !pszPassword[0] )	// no password given, so auto-generate it
+	if ( !pszPassword || !pszPassword[0] )	// no password given, so auto-generate a random password
 	{
-		static TCHAR const szValidChars[] = "ABCDEFGHJKLMNPQRTUVWXYZ2346789";
+		TCHAR szValidChars[] = "ABCDEFGHIJKLMNOPQRSTUVXWYZ0123456789";
 		size_t iLenArray = strlen(szValidChars);
 		size_t iLen = static_cast<size_t>(Calc_GetRandVal2(MAX_ACCOUNT_PASSWORD_ENTER / 2, MAX_ACCOUNT_PASSWORD_ENTER));
 
-		TCHAR szTmp[MAX_ACCOUNT_PASSWORD_ENTER + 1];
+		TCHAR szPassword[MAX_ACCOUNT_PASSWORD_ENTER + 1];
 		for ( size_t i = 0; i < iLen; ++i )
-			szTmp[i] = szValidChars[Calc_GetRandVal(iLenArray)];
+			szPassword[i] = szValidChars[Calc_GetRandVal(iLenArray)];
 
-		szTmp[iLen] = '\0';
-		m_sNewPassword = szTmp;
+		szPassword[iLen] = '\0';
+		m_sNewPassword = szPassword;
 		return;
 	}
 
@@ -798,9 +762,7 @@ bool CAccount::Kick(CTextConsole *pSrc, bool fBlock)
 		pSrc->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_BLOCK), GetName());
 	}
 
-	TCHAR *z = Str_GetTemp();
-	sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_KICK), GetName(), fBlock ? "KICK" : "DISCONNECT", pSrc->GetName());
-	g_Log.Event(LOGL_EVENT|LOGM_GM_CMDS, "%s\n", z);
+	g_Log.Event(LOGL_EVENT|LOGM_GM_CMDS, g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_KICK), GetName(), fBlock ? "BLOCK" : "DISCONNECT", pSrc->GetName());
 	return true;
 }
 
@@ -1221,16 +1183,13 @@ bool CAccount::r_Verb(CScript &s, CTextConsole *pSrc)
 				pClient->m_NetState->markReadClosed();
 			}
 
-			LPCTSTR pszCurrentName = GetName();
-			char *z = Str_GetTemp();
-			if ( g_Accounts.Account_Delete(this) )
-				sprintf(z, "Account '%s' deleted\n", pszCurrentName);
-			else
-				sprintf(z, "Account '%s' deletion blocked via script\n", pszCurrentName);
+			LPCTSTR pszAccount = GetName();
+			TCHAR *szMsg = Str_GetTemp();
+			sprintf(szMsg, g_Accounts.Account_Delete(this) ? "Account '%s' deleted\n" : "Account '%s' deletion blocked via script\n", pszAccount);
 
-			g_Log.EventStr(0, z);
+			g_Log.EventStr(0, szMsg);
 			if ( pSrc != &g_Serv )
-				pSrc->SysMessage(z);
+				pSrc->SysMessage(szMsg);
 			return true;
 		}
 		case AV_BLOCK:

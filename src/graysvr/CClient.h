@@ -509,7 +509,7 @@ private:
 	bool OnRxWebPageRequest(BYTE *pRequest, size_t iLen);
 
 	BYTE LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg);
-	BYTE LogIn(CAccountRef pAccount, CGString &sMsg);
+	BYTE LogIn(CAccount *pAccount, CGString &sMsg);
 
 	bool CanInstantLogOut() const;
 	void Cmd_GM_PageClear();

@@ -3002,7 +3002,7 @@ PacketCharacterList::PacketCharacterList(CClient* target) : PacketSend(XCMD_Char
 {
 	ADDTOCALLSTACK("PacketCharacterList::PacketCharacterList");
 
-	const CAccountRef account = target->m_pAccount;
+	const CAccount *account = target->m_pAccount;
 	ASSERT(account);
 
 	initLength();
@@ -3418,7 +3418,7 @@ PacketProfile::PacketProfile(const CClient* target, const CChar* character) : Pa
 
 	if ( character == target->GetChar() )
 	{
-		const CAccountRef account = target->m_pAccount;
+		const CAccount *account = target->m_pAccount;
 		ASSERT(account);
 		TCHAR *age = Str_GetTemp();
 		sprintf(age, g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_AGE), (CGTime::GetCurrentTime().GetDaysTotal() - account->m_dateFirstConnect.GetDaysTotal()) / 30);

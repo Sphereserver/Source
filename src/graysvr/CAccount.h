@@ -20,8 +20,6 @@
 #define PRIV_UNUSED4		0x8000
 #define PRIV_UNUSED			(PRIV_UNUSED0|PRIV_UNUSED1|PRIV_UNUSED2|PRIV_UNUSED3|PRIV_UNUSED4)
 
-typedef CAccount *CAccountRef;
-
 class CAccounts
 {
 	friend class CAccount;
@@ -44,10 +42,10 @@ public:
 	bool Account_LoadAll(bool fChanges = true, bool fClearChanges = false);
 	bool Account_OnCmd(TCHAR *pszArgs, CTextConsole *pSrc);
 
-	CAccountRef Account_Get(size_t index);
-	CAccountRef Account_Find(LPCTSTR pszName);
-	CAccountRef Account_FindCreate(LPCTSTR pszName, bool fCreate = false);
-	CAccountRef Account_FindChat(LPCTSTR pszName);
+	CAccount *Account_Get(size_t index);
+	CAccount *Account_Find(LPCTSTR pszName);
+	CAccount *Account_FindCreate(LPCTSTR pszName, bool fCreate = false);
+	CAccount *Account_FindChat(LPCTSTR pszName);
 
 	size_t Account_GetCount() const
 	{

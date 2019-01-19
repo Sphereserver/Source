@@ -137,7 +137,7 @@ bool CGMPage::r_LoadVal( CScript & s )
 	return false;
 }
 
-CAccountRef CGMPage::FindAccount() const
+CAccount *CGMPage::FindAccount() const
 {
 	ADDTOCALLSTACK("CGMPage::FindAccount");
 	return( g_Accounts.Account_Find( m_sAccount ));
