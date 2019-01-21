@@ -398,95 +398,71 @@ void CObjBase::Effect(EFFECT_TYPE motion, ITEMID_TYPE id, CPointMap ptSrc, CPoin
 	}
 }
 
-void CObjBase::Emote(LPCTSTR pszText, CClient *pClientExclude, bool fPossessive)
+void CObjBase::Emote(LPCTSTR pszTextYou, LPCTSTR pszTextThem, CClient *pClientExclude)
 {
 	ADDTOCALLSTACK("CObjBase::Emote");
-	// IF this is not the top level object then it might be possessive ?
-
-	// "*You see NAME blah*" or "*You blah*"
-	// fPosessive = "*You see NAME's blah*" or "*Your blah*"
+	// Show message as *emote*
+	// ARGS:
+	//  pszTextYou = text to client itself
+	//  pszTextThem = text to clients nearby (if null, inherit the same message from pszTextYou)
 
 	CObjBase *pObjTop = static_cast<CObjBase *>(GetTopLevelObj());
 	if ( !pObjTop )
 		return;
 
-	TCHAR *pszThem = Str_GetTemp();
+	HUE_TYPE defaultHue = HUE_TEXT_DEF;
+	FONT_TYPE defaultFont = FONT_NORMAL;
+	bool defaultUnicode = false;
+
+	if ( *pszTextYou == '@' )
+	{
+		++pszTextYou;
+		const char *s = pszTextYou;
+		pszTextYou = strchr(s, ' ');
+
+		WORD wArgs[] = { static_cast<WORD>(defaultHue), static_cast<WORD>(defaultFont), static_cast<WORD>(defaultUnicode) };
+
+		for ( int i = 0; (s < pszTextYou) && (i < 3); ++i, ++s )
+		{
+			if ( *s != ',' )
+				wArgs[i] = static_cast<WORD>(Exp_GetLLVal(s));
+		}
+		++pszTextYou;
+
+		defaultHue = static_cast<HUE_TYPE>(wArgs[0]);
+		defaultFont = static_cast<FONT_TYPE>(wArgs[1]);
+		defaultUnicode = static_cast<bool>(wArgs[2]);
+	}
+
+	if ( !pszTextThem )
+		pszTextThem = pszTextYou;
+
+	TCHAR *pszOthers = Str_GetTemp();
 	TCHAR *pszYou = Str_GetTemp();
 
 	if ( pObjTop->IsChar() )
 	{
-		// Someone has this equipped.
-
 		if ( pObjTop != this )
 		{
-			sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_1), pObjTop->GetName(), GetName(), pszText);
-			sprintf(pszYou, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_2), GetName(), pszText);
-		}
-		else if ( fPossessive )
-		{
-			// ex. "You see joes poor shot ruin an arrow"
-			sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_3), GetName(), pszText);
-			sprintf(pszYou, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_4), pszText);
+			// Equipped items
+			sprintf(pszOthers, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_1), pObjTop->GetName(), GetName(), pszTextThem);
+			sprintf(pszYou, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_2), GetName(), pszTextYou);
 		}
 		else
 		{
-			sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_5), GetName(), pszText);
-			sprintf(pszYou, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_6), pszText);
+			// Chars
+			sprintf(pszOthers, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_5), GetName(), pszTextThem);
+			sprintf(pszYou, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_6), pszTextYou);
 		}
 	}
 	else
 	{
-		// Top level is an item. Article ?
-		sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_7), GetName(), pszText);
-		strcpy(pszYou, pszThem);
+		// Items on ground or inside container
+		sprintf(pszOthers, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_7), GetName(), pszTextThem);
+		strcpy(pszYou, pszOthers);
 	}
 
-	pObjTop->UpdateObjMessage(pszThem, pszYou, pClientExclude, HUE_TEXT_DEF, TALKMODE_EMOTE);
-}
-
-void CObjBase::Emote2(LPCTSTR pszText, LPCTSTR pszText2, CClient *pClientExclude, bool fPossessive)
-{
-	ADDTOCALLSTACK("CObjBase::Emote");
-	// IF this is not the top level object then it might be possessive ?
-
-	// "*You see NAME blah*" or "*You blah*"
-	// fPosessive = "*You see NAME's blah*" or "*Your blah*"
-
-	CObjBase *pObjTop = static_cast<CObjBase *>(GetTopLevelObj());
-	if ( !pObjTop )
-		return;
-
-	TCHAR *pszThem = Str_GetTemp();
-	TCHAR *pszYou = Str_GetTemp();
-
-	if ( pObjTop->IsChar() )
-	{
-		// Someone has this equipped.
-		if ( pObjTop != this )
-		{
-			sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_1), pObjTop->GetName(), GetName(), pszText2);
-			sprintf(pszYou, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_2), GetName(), pszText);
-		}
-		else if ( fPossessive )
-		{
-			// ex. "You see joes poor shot ruin an arrow"
-			sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_3), GetName(), pszText2);
-			sprintf(pszYou, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_4), pszText);
-		}
-		else
-		{
-			sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_5), GetName(), pszText2);
-			sprintf(pszYou, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_6), pszText);
-		}
-	}
-	else
-	{
-		// Top level is an item. Article ?
-		sprintf(pszThem, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_7), GetName(), pszText2);
-		strcpy(pszYou, pszThem);
-	}
-
-	pObjTop->UpdateObjMessage(pszThem, pszYou, pClientExclude, HUE_TEXT_DEF, TALKMODE_EMOTE);
+	pObjTop->UpdateObjMessage(pszOthers, pszYou, pClientExclude, defaultHue, TALKMODE_EMOTE, defaultFont, defaultUnicode);
 }
 
 void CObjBase::Speak(LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font)

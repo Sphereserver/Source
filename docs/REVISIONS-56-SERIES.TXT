@@ -1354,3 +1354,7 @@ Changed: Optimized Fishing, Lumberjacking and Mining skills.
 Changed: Updated SMELT function.
 	-Ores now should be smelted clicking on the ore instead the forge, and the action will require an minimum Mining skill to succeed (TDATA1 of the ingot to be created).
 [sphere_msgs.scp]: Updated 'fishing_*', 'lumberjacking_*', 'mining_*' messages and added new 'blacksmithing_noskill', 'itemuse_ore_*', 'smelt_*'
+
+21-01-2019, Coruja
+Added: EMOTE function now supports same @ args as MESSAGE/SYSMESSAGE/etc to customize message settings
+	-Syntax: EMOTE @color,font,unicode text

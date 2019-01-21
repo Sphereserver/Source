@@ -327,8 +327,7 @@ public:
 	virtual bool r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc);
 	virtual bool r_Verb(CScript &s, CTextConsole *pSrc);
 
-	void Emote(LPCTSTR pszText, CClient *pClientExclude = NULL, bool fPossessive = false);
-	void Emote2(LPCTSTR pszText, LPCTSTR pszText2, CClient *pClientExclude = NULL, bool fPossessive = false);
+	void Emote(LPCTSTR pszTextYou, LPCTSTR pszTextThem = NULL, CClient *pClientExclude = NULL);
 
 	virtual void Speak(LPCTSTR pszText, HUE_TYPE wHue = HUE_TEXT_DEF, TALKMODE_TYPE mode = TALKMODE_SAY, FONT_TYPE font = FONT_NORMAL);
 	virtual void SpeakUTF8(LPCTSTR pszText, HUE_TYPE wHue = HUE_TEXT_DEF, TALKMODE_TYPE mode = TALKMODE_SAY, FONT_TYPE font = FONT_NORMAL, CLanguageID lang = 0);

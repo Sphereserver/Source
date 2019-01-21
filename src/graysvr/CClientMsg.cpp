@@ -861,24 +861,10 @@ void CClient::addBarkParse(LPCTSTR pszText, const CObjBaseTemplate *pSrc, HUE_TY
 		const char *s = pszText;
 		pszText = strchr(s, ' ');
 
-		if ( !pszText )
-			return;
-
-		for ( int i = 0; (s < pszText) && (i < 3); )
+		for ( int i = 0; (s < pszText) && (i < 3); ++i, ++s )
 		{
-			if ( *s == ',' )	// default value, skip it
-			{
-				++i;
-				++s;
-				continue;
-			}
-			wArgs[i] = static_cast<WORD>(Exp_GetLLVal(s));
-			++i;
-
-			if ( *s == ',' )
-				++s;
-			else
-				break;	// no more args here!
+			if ( *s != ',' )
+				wArgs[i] = static_cast<WORD>(Exp_GetLLVal(s));
 		}
 		++pszText;
 		if ( wArgs[1] > FONT_QTY )
@@ -2588,7 +2574,7 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 								m_TooltipData.Add(new CClientTooltip(1080078)); // guarding
 						}
 
-						if ( pChar->IsStatFlag(STATF_Conjured) )
+						if ( pChar->IsStatFlag(STATF_Conjured) && (pChar->m_pNPC->m_Brain != NPCBRAIN_GUARD) )
 							m_TooltipData.Add(new CClientTooltip(1049646)); // (summoned)
 						else if ( pChar->IsStatFlag(STATF_Pet) )
 							m_TooltipData.Add(new CClientTooltip(pChar->m_pNPC->m_bonded ? 1049608 : 502006)); // (bonded) / (tame)

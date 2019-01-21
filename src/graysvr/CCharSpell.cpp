@@ -1866,7 +1866,7 @@ bool CChar::Spell_Equip_OnTick(CItem *pItem)
 					g_Cfg.GetDefaultMsg(DEFMSG_SPELL_OSIPOISON_DEADLY1),
 					g_Cfg.GetDefaultMsg(DEFMSG_SPELL_OSIPOISON_LETHAL1)
 				};
-				Emote2(sm_szPoisonMsg[iLevel], sm_szPoisonMsg_Other[iLevel], m_pClient);
+				Emote(NULL, sm_szPoisonMsg_Other[iLevel], m_pClient);
 				SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_SPELL_YOUFEEL), sm_szPoisonMsg[iLevel]);
 			}
 			else
@@ -1896,7 +1896,7 @@ bool CChar::Spell_Equip_OnTick(CItem *pItem)
 
 				TCHAR *pszMsg = Str_GetTemp();
 				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_SPELL_LOOKS), sm_szPoisonMsg[iLevel]);
-				Emote(pszMsg, m_pClient);
+				Emote(NULL, pszMsg, m_pClient);
 				SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_SPELL_YOUFEEL), sm_szPoisonMsg[iLevel]);
 			}
 
