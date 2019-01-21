@@ -1858,7 +1858,9 @@ int CChar::OnTakeDamage(int iDmg, CChar *pSrc, DAMAGE_TYPE uType, int iDmgPhysic
 		return iDmg;
 	}
 
-	if ( m_atFight.m_Swing_State != WAR_SWING_SWINGING )	// don't interrupt my swing animation
+	if ( m_pNPC && IsStatFlag(STATF_Hovering) )		// flying NPCs should land when get hit
+		ToggleFlying();
+	else if ( m_atFight.m_Swing_State != WAR_SWING_SWINGING )	// don't interrupt swing animation
 		UpdateAnimate(ANIM_GET_HIT);
 
 	return iDmg;
@@ -2210,6 +2212,9 @@ bool CChar::Fight_Attack(const CChar *pCharTarg, bool fToldByMaster)
 	// I'm attacking (or defending)
 	if ( !IsStatFlag(STATF_War) )
 	{
+		if ( m_pNPC && IsStatFlag(STATF_Hovering) )		// flying NPCs should land when enter warmode
+			ToggleFlying();
+
 		StatFlag_Set(STATF_War);
 		UpdateModeFlag();
 		if ( m_pClient )

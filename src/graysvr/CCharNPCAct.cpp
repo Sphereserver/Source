@@ -2769,6 +2769,13 @@ void CChar::NPC_Act_Idle()
 		}
 	}
 
+	// Periodically fly/land
+	if ( Can(CAN_C_FLY) && !Calc_GetRandVal(15) )
+	{
+		ToggleFlying();
+		return;
+	}
+
 	// Periodically head home.
 	if ( m_ptHome.IsValidPoint() && ! Calc_GetRandVal( 15 ))
 	{

@@ -1358,3 +1358,6 @@ Changed: Updated SMELT function.
 21-01-2019, Coruja
 Added: EMOTE function now supports same @ args as MESSAGE/SYSMESSAGE/etc to customize message settings
 	-Syntax: EMOTE @color,font,unicode text
+Added: NPCs with CAN=mt_fly flag now will periodically fly while wandering (as seem on OSI).
+	-This flag should be used only on NPCs that have proper flying animation
+	-Default script pack already have this flag set on NPCs, but if your script pack is outdated, just update it (or remove 'mt_fly' from NPCs if you don't want this feature)
