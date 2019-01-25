@@ -23,14 +23,13 @@ enum NPCBRAIN_TYPE
 };
 
 // Number of steps to remember for pathfinding (default to 24 steps, will have 24*4 extra bytes per char)
-#define MAX_NPC_PATH_STORAGE_SIZE	UO_MAP_VIEW_SIGHT * 2
+#define MAX_NPC_PATH_STORAGE_SIZE	(UO_MAP_VIEW_SIGHT * 2)
 
 struct CCharNPC
 {
 	// This is basically the unique "brains" for any character
 public:
-	CCharNPC(CChar *pChar, NPCBRAIN_TYPE NPCBrain);
-	~CCharNPC();
+	CCharNPC(CChar *pChar, NPCBRAIN_TYPE brain);
 
 private:
 	CCharNPC(const CCharNPC &copy);
@@ -65,8 +64,7 @@ public:
 	std::vector<Spells> m_spells;	// spells stored in this NPC
 
 	int Spells_GetCount();
-	SPELL_TYPE Spells_GetAt(BYTE id);
-	bool Spells_DelAt(BYTE id);
+	SPELL_TYPE Spells_GetAt(size_t index);
 	bool Spells_Add(SPELL_TYPE spell);
 	int Spells_FindSpell(SPELL_TYPE spell);
 
@@ -599,19 +597,19 @@ public:
 	{
 		return static_cast<int>(m_iVisualRange);
 	}
-	void SetSight(BYTE newSight)
+	void SetSight(BYTE bRange)
 	{
 		// NOTE: Client 7.0.55.27 added new screen resolutions on options menu, and it will lock
 		// visual range value based on current resolution, so there's no way to change the value
 		// manually anymore (but enhanced clients still allow changes). Using higher resolutions
 		// will also increase max visual range (18 -> 24)
+		BYTE bPrevRange = m_iVisualRange;
+		m_iVisualRange = minimum(bRange, 24);
 
-		BYTE iPreviousRange = m_iVisualRange;
-		m_iVisualRange = minimum(newSight, 24);
 		if ( m_pClient )
 		{
 			m_pClient->addVisualRange(m_iVisualRange);
-			if ( m_iVisualRange > iPreviousRange )
+			if ( m_iVisualRange > bPrevRange )
 				m_pClient->addPlayerSee(NULL);
 		}
 	}
@@ -862,7 +860,7 @@ public:
 	void SetDisconnected();
 	bool SetPlayerAccount(CAccount *pAccount);
 	bool SetPlayerAccount(LPCTSTR pszAccName);
-	bool SetNPCBrain(NPCBRAIN_TYPE NPCBrain);
+	bool SetNPCBrain(NPCBRAIN_TYPE brain);
 	NPCBRAIN_TYPE GetNPCBrain(bool fGroupTypes = true) const;
 	void ClearNPC();
 	void ClearPlayer();
@@ -1368,20 +1366,18 @@ public:
 	WORD NPC_OnTrainCheck(CChar *pCharSrc, SKILL_TYPE skill);
 	bool NPC_OnTrainPay(CChar *pCharSrc, CItemMemory *pMemory, CItem *pGold);
 	bool NPC_OnTrainHear(CChar *pCharSrc, LPCTSTR pszCmd);
-	bool NPC_TrainSkill(CChar *pCharSrc, SKILL_TYPE skill, WORD wVal);
 
 private:
 	bool NPC_CheckWalkHere(const CPointBase &pt, const CRegionBase *pArea) const;
 	void NPC_OnNoticeSnoop(CChar *pCharThief, CChar *pCharMark);
 
-	void NPC_LootMemory(CItem *pItem);
 	bool NPC_LookAtCharGuard(CChar *pChar);
 	bool NPC_LookAtCharHealer(CChar *pChar);
 	bool NPC_LookAtCharHuman(CChar *pChar);
 	bool NPC_LookAtCharMonster(CChar *pChar);
 	bool NPC_LookAtChar(CChar *pChar);
-	bool NPC_LookAtItem(CItem *pItem, int iDist);
-	bool NPC_LookAround(bool fForceCheckItems = false);
+	bool NPC_LookAtItem(CItem *pItem);
+	bool NPC_LookAround(bool fCheckItems = false);
 	int NPC_WalkToPoint(bool fRun = false);
 	CChar *NPC_FightFindBestTarget();
 	bool NPC_FightMagery(CChar *pChar);
@@ -1390,7 +1386,7 @@ private:
 	bool NPC_FightMayCast(bool fCheckSkill = true) const;
 	void NPC_GetAllSpellbookSpells();
 
-	bool NPC_Act_Follow(bool fFlee = false, int maxDistance = 1, bool fMoveAway = false);
+	bool NPC_Act_Follow(bool fFlee = false, int iMaxDist = 1, bool fMoveAway = false);
 	void NPC_Act_Guard();
 	void NPC_Act_GoHome();
 	bool NPC_Act_Talk();
@@ -1399,16 +1395,15 @@ private:
 	void NPC_Act_Idle();
 	void NPC_Act_Looting();
 	void NPC_Act_Flee();
-	void NPC_Act_Goto(int iDist = 30);
-	void NPC_Act_Runto(int iDist = 30);
+	void NPC_Act_GoTo(int iDist = 30);
+	void NPC_Act_RunTo(int iDist = 30);
 	bool NPC_Act_Food();
 
-	void NPC_ActStart_SpeakTo(CChar *pSrc);
+	void NPC_ActStart_SpeakTo(CChar *pChar);
 	void NPC_OnTickAction();
 
 public:
 	void NPC_Pathfinding();
-	void NPC_Food();
 	void NPC_ExtraAI();
 	void NPC_AddSpellsFromBook(CItem *pBook);
 
@@ -1446,7 +1441,7 @@ public:
 	bool NPC_OnHearPetCmdTarg(int iCmd, CChar *pSrc, CObjBase *pObj, const CPointMap &pt, LPCTSTR pszArgs);
 	size_t NPC_OnHearName(LPCTSTR pszText) const;
 	void NPC_OnHear(LPCTSTR pszCmd, CChar *pSrc, bool fAllPets = false);
-	bool NPC_OnItemGive(CChar *pCharSrc, CItem *pItem);
+	bool NPC_OnReceiveItem(CChar *pCharSrc, CItem *pItem);
 	bool NPC_SetVendorPrice(CItem *pItem, int iPrice);
 	bool OnTriggerSpeech(bool fPet, LPCTSTR pszText, CChar *pSrc, TALKMODE_TYPE &mode, HUE_TYPE wHue = HUE_DEFAULT);
 

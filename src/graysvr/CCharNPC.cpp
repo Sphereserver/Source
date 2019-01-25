@@ -91,25 +91,16 @@ bool CChar::SetPlayerAccount( LPCTSTR pszAccName )
 }
 
 // Set up the char as an NPC
-bool CChar::SetNPCBrain( NPCBRAIN_TYPE NPCBrain )
+bool CChar::SetNPCBrain(NPCBRAIN_TYPE brain)
 {
 	ADDTOCALLSTACK("CChar::SetNPCBrain");
-	if ( NPCBrain == NPCBRAIN_NONE )
+	if ( m_pPlayer || (brain == NPCBRAIN_NONE) )
 		return false;
-
-	if ( m_pPlayer )
-	{
-		if ( m_pPlayer->m_pAccount )
-			DEBUG_ERR(("SetNPCBrain to Player Account '%s'\n", m_pPlayer->m_pAccount->GetName()));
-		else
-			DEBUG_ERR(("SetNPCBrain to Player Name '%s'\n", GetName()));
-		return false;
-	}
 
 	if ( m_pNPC )
-		m_pNPC->m_Brain = NPCBrain;		// just replace existing brain
+		m_pNPC->m_Brain = brain;	// just replace existing brain
 	else
-		m_pNPC = new CCharNPC(this, NPCBrain);
+		m_pNPC = new CCharNPC(this, brain);
 	return true;
 }
 
@@ -680,28 +671,75 @@ bool CChar::Player_OnVerb( CScript &s, CTextConsole * pSrc )
 //////////////////////////
 // -CCharNPC
 
-CCharNPC::CCharNPC( CChar * pChar, NPCBRAIN_TYPE NPCBrain )
+CCharNPC::CCharNPC(CChar *pChar, NPCBRAIN_TYPE brain)
 {
-	UNREFERENCED_PARAMETER(pChar);
-	m_Brain = NPCBrain;
-	m_Home_Dist_Wander = SHRT_MAX;	// as far as i want.
+	m_Brain = brain;
+	m_Home_Dist_Wander = SHRT_MAX;
 	m_Act_Motivation = 0;
 	m_bonded = false;
-#ifndef _WIN32
-	for (int i_tmpN=0;i_tmpN < MAX_NPC_PATH_STORAGE_SIZE;i_tmpN++)
-	{
-		m_nextX[i_tmpN] = 0;
-		m_nextY[i_tmpN] = 0;
-	}
-#else
+#ifdef _WIN32
 	memset(m_nextX, 0, sizeof(m_nextX));
 	memset(m_nextY, 0, sizeof(m_nextY));
+#else
+	for ( int i = 0; i < MAX_NPC_PATH_STORAGE_SIZE; ++i )
+	{
+		m_nextX[i] = 0;
+		m_nextY[i] = 0;
+	}
 #endif
 	m_timeRestock.Init();
+	pChar->SetSight(UO_MAP_VIEW_SIGHT);
 }
 
-CCharNPC::~CCharNPC()
+int CCharNPC::Spells_GetCount()
 {
+	// Get total of spells this NPC have in its spell list
+	ADDTOCALLSTACK("CCharNPC::Spells_GetAll");
+	if ( m_spells.empty() )
+		return -1;
+
+	return m_spells.size();
+}
+
+SPELL_TYPE CCharNPC::Spells_GetAt(size_t index)
+{
+	// Get the spell this NPC have stored at given index
+	ADDTOCALLSTACK("CCharNPC::Spells_GetAt");
+	if ( m_spells.empty() || (index >= m_spells.size()) )
+		return SPELL_NONE;
+
+	Spells refSpell = m_spells.at(index);
+	return refSpell.id ? refSpell.id : SPELL_NONE;
+}
+
+bool CCharNPC::Spells_Add(SPELL_TYPE spell)
+{
+	// Add spell to this NPC spell list
+	ADDTOCALLSTACK("CCharNPC::Spells_Add");
+	if ( Spells_FindSpell(spell) >= 0 )
+		return false;
+
+	CSpellDef *pSpell = g_Cfg.GetSpellDef(spell);
+	if ( !pSpell )
+		return false;
+
+	Spells refSpell;
+	refSpell.id = spell;
+	m_spells.push_back(refSpell);
+	return true;
+}
+
+int CCharNPC::Spells_FindSpell(SPELL_TYPE spell)
+{
+	// Get the index this NPC have stored the given spell
+	ADDTOCALLSTACK("CCharNPC::Spells_FindSpell");
+	for ( size_t i = 0; i < m_spells.size(); ++i )
+	{
+		Spells refSpell = m_spells.at(i);
+		if ( refSpell.id == spell )
+			return i;
+	}
+	return -1;
 }
 
 bool CCharNPC::r_LoadVal( CChar * pChar, CScript &s )

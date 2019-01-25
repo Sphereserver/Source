@@ -1,10 +1,6 @@
-// Actions specific to an NPC.
-#include "graysvr.h"	// predef header.
+#include "graysvr.h"	// predef header
 #include "../graysvr/CPathFinder.h"
 #include "../network/receive.h"
-
-//////////////////////////
-// CChar
 
 enum NV_TYPE
 {
@@ -26,7 +22,7 @@ enum NV_TYPE
 	NV_QTY
 };
 
-LPCTSTR const CCharNPC::sm_szVerbKeys[NV_QTY+1] =
+LPCTSTR const CCharNPC::sm_szVerbKeys[NV_QTY + 1] =
 {
 	"BUY",
 	"BYE",
@@ -46,444 +42,405 @@ LPCTSTR const CCharNPC::sm_szVerbKeys[NV_QTY+1] =
 	NULL
 };
 
-bool CChar::NPC_OnVerb( CScript &s, CTextConsole * pSrc ) // Execute command from script
+bool CChar::NPC_OnVerb(CScript &s, CTextConsole *pSrc)		// execute command from script
 {
 	ADDTOCALLSTACK("CChar::NPC_OnVerb");
-	// Stuff that only NPC's do.
 	if ( !m_pNPC )
 		return false;
 
-	CChar * pCharSrc = pSrc->GetChar();
-
-	switch ( FindTableSorted( s.GetKey(), CCharNPC::sm_szVerbKeys, COUNTOF(CCharNPC::sm_szVerbKeys)-1 ))
+	switch ( FindTableSorted(s.GetKey(), CCharNPC::sm_szVerbKeys, COUNTOF(CCharNPC::sm_szVerbKeys) - 1) )
 	{
-	case NV_BUY:
-	{
-		// Open up the buy dialog.
-		if ( !pCharSrc || !pCharSrc->m_pClient )
-			return false;
-
-		pCharSrc->m_pClient->addShopMenuBuy(this);
-		break;
-	}
-	case NV_BYE:
-		Skill_Start( SKILL_NONE );
-		m_Act_Targ.InitUID();
-		break;
-	case NV_LEAVE:
-	case NV_FLEE:
-		// Short amount of fleeing.
-		m_atFlee.m_iStepsMax = s.GetArgVal();	// how long should it take to get there.
-		if ( ! m_atFlee.m_iStepsMax )
-			m_atFlee.m_iStepsMax = 20;
-
-		m_atFlee.m_iStepsCurrent = 0;	// how long has it taken ?
-		Skill_Start( NPCACT_FLEE );
-		break;
-	case NV_GOTO:
-		m_Act_p = g_Cfg.GetRegionPoint( s.GetArgStr());
-		Skill_Start( NPCACT_GOTO );
-		break;
-	case NV_HIRE:
-		return NPC_OnHireHear( pCharSrc);
-	case NV_PETRETRIEVE:
-		return( NPC_StablePetRetrieve( pCharSrc ));
-	case NV_PETSTABLE:
-		return( NPC_StablePetSelect( pCharSrc ));
-	case NV_RESTOCK:	// individual restock command.
-		return NPC_Vendor_Restock(true, s.GetArgVal() != 0);
-	case NV_RUN:
-		m_Act_p = GetTopPoint();
-		m_Act_p.Move( GetDirStr( s.GetArgRaw()));
-		NPC_WalkToPoint( true );
-		break;
-	case NV_RUNTO:
-		m_Act_p = g_Cfg.GetRegionPoint( s.GetArgStr());
-		Skill_Start( NPCACT_RUNTO );
-		break;
-	case NV_SELL:
-	{
-		// Open up the sell dialog.
-		if ( !pCharSrc || !pCharSrc->m_pClient )
-			return false;
-
-		pCharSrc->m_pClient->addShopMenuSell(this);
-		break;
-	}
-	case NV_SHRINK:
-	{
-		if ( !NPC_IsOwnedBy(pCharSrc) )
-			return false;
-
-		CItem *pItem = NPC_Shrink();
-		if ( pCharSrc && (pCharSrc != this) )
+		case NV_BUY:
 		{
-			if ( pItem )
-				pCharSrc->m_Act_Targ = pItem->GetUID();
-			if ( s.GetArgVal() )
-				pCharSrc->ItemBounce(pItem);
+			CChar *pCharSrc = pSrc->GetChar();
+			if ( pCharSrc && pCharSrc->m_pClient )
+				pCharSrc->m_pClient->addShopMenuBuy(this);
+			return true;
 		}
-		return (pItem != NULL);
+		case NV_BYE:
+		{
+			Skill_Start(SKILL_NONE);
+			m_Act_Targ.InitUID();
+			return true;
+		}
+		case NV_FLEE:
+		case NV_LEAVE:
+		{
+			m_atFlee.m_iStepsMax = s.GetArgVal();
+			if ( !m_atFlee.m_iStepsMax )
+				m_atFlee.m_iStepsMax = 20;
+
+			m_atFlee.m_iStepsCurrent = 0;
+			Skill_Start(NPCACT_FLEE);
+			return true;
+		}
+		case NV_GOTO:
+		{
+			m_Act_p = g_Cfg.GetRegionPoint(s.GetArgStr());
+			Skill_Start(NPCACT_GOTO);
+			return true;
+		}
+		case NV_HIRE:
+			return NPC_OnHireHear(pSrc->GetChar());
+		case NV_PETRETRIEVE:
+			return NPC_StablePetRetrieve(pSrc->GetChar());
+		case NV_PETSTABLE:
+			return NPC_StablePetSelect(pSrc->GetChar());
+		case NV_RESTOCK:
+			return NPC_Vendor_Restock(true, (s.GetArgVal() != 0));
+		case NV_RUN:
+		{
+			m_Act_p = GetTopPoint();
+			m_Act_p.Move(GetDirStr(s.GetArgRaw()));
+			NPC_WalkToPoint(true);
+			return true;
+		}
+		case NV_RUNTO:
+		{
+			m_Act_p = g_Cfg.GetRegionPoint(s.GetArgStr());
+			Skill_Start(NPCACT_RUNTO);
+			return true;
+		}
+		case NV_SELL:
+		{
+			CChar *pCharSrc = pSrc->GetChar();
+			if ( pCharSrc && pCharSrc->m_pClient )
+				pCharSrc->m_pClient->addShopMenuSell(this);
+			return true;
+		}
+		case NV_SHRINK:
+		{
+			CChar *pCharSrc = pSrc->GetChar();
+			if ( !NPC_IsOwnedBy(pCharSrc) )
+				return false;
+
+			CItem *pItem = NPC_Shrink();
+			if ( pCharSrc && (pCharSrc != this) )
+			{
+				if ( pItem )
+					pCharSrc->m_Act_Targ = pItem->GetUID();
+				if ( s.GetArgVal() )
+					pCharSrc->ItemBounce(pItem);
+			}
+			return (pItem != NULL);
+		}
+		case NV_TRAIN:
+			return NPC_OnTrainHear(pSrc->GetChar(), s.GetArgStr());
+		case NV_WALK:
+		{
+			m_Act_p = GetTopPoint();
+			m_Act_p.Move(GetDirStr(s.GetArgRaw()));
+			NPC_WalkToPoint(false);
+			return true;
+		}
+		default:
+			return false;
 	}
-	case NV_TRAIN:
-		return( NPC_OnTrainHear( pCharSrc, s.GetArgStr()));
-	case NV_WALK:
-		m_Act_p = GetTopPoint();
-		m_Act_p.Move( GetDirStr( s.GetArgRaw()));
-		NPC_WalkToPoint( false );
-		break;
-	default:
-		// Eat all the CClient::sm_szVerbKeys and CCharPlayer::sm_szVerbKeys verbs ?
-		//if ( FindTableSorted(s.GetKey(), CClient::sm_szVerbKeys, COUNTOF(sm_szVerbKeys)-1) < 0 )
-		return false;
-	}
-	return true;
 }
 
-const LAYER_TYPE CChar::sm_VendorLayers[] = // static
+const LAYER_TYPE CChar::sm_VendorLayers[] =		// static
 {
-	LAYER_VENDOR_STOCK, LAYER_VENDOR_EXTRA, LAYER_VENDOR_BUYS,
+	LAYER_VENDOR_STOCK,
+	LAYER_VENDOR_EXTRA,
+	LAYER_VENDOR_BUYS
 };
 
-bool CChar::NPC_Vendor_Restock(bool bForce, bool bFillStock)
+bool CChar::NPC_Vendor_Restock(bool fForce, bool fFillStock)
 {
 	ADDTOCALLSTACK("CChar::NPC_Vendor_Restock");
-	// Restock this NPC char.
-	// Then Set the next restock time for this .
-
-	if ( m_pNPC == NULL )
+	// Restock this NPC vendor
+	if ( !NPC_IsVendor() || IsStatFlag(STATF_Pet) )
 		return false;
 
-	// Make sure that we're a vendor and not a pet
-	if ( IsStatFlag(STATF_Pet) || !NPC_IsVendor() )
-		return false;
-
-	bool bRestockNow = true;
-
-	if ( !bForce && m_pNPC->m_timeRestock.IsTimeValid() )
+	bool fDeleteStock = true;
+	if ( !fForce && m_pNPC->m_timeRestock.IsTimeValid() )
 	{
 		// Restock occurs every 10 minutes of inactivity (unless region tag specifies different time)
-		INT64 restockIn = 10 * 60 * TICK_PER_SEC;
+		INT64 iRestockTimer = 10 * 60 * TICK_PER_SEC;
 		if ( m_pArea )
 		{
-			CVarDefCont *pVar = m_pArea->m_TagDefs.GetKey("RestockVendors");
-			if ( pVar )
-				restockIn = pVar->GetValNum();
 			if ( m_pArea->m_TagDefs.GetKey("NoRestock") )
-				bRestockNow = false;
+				fDeleteStock = false;
+			else
+			{
+				CVarDefCont *pVar = m_pArea->m_TagDefs.GetKey("RestockVendors");
+				if ( pVar )
+					iRestockTimer = pVar->GetValNum();
+			}
 		}
 
 		if ( m_TagDefs.GetKey("NoRestock") )
-			bRestockNow = false;
-		
-		if (bRestockNow)
-			bRestockNow = ( CServTime::GetCurrentTime().GetTimeDiff(m_pNPC->m_timeRestock) > restockIn );
+			fDeleteStock = false;
+
+		if ( fDeleteStock )
+			fDeleteStock = (CServTime::GetCurrentTime().GetTimeDiff(m_pNPC->m_timeRestock) > iRestockTimer);
 	}
 
-	// At restock the containers are actually emptied
-	if ( bRestockNow )
+	if ( fDeleteStock )
 	{
 		m_pNPC->m_timeRestock.Init();
-
 		for ( size_t i = 0; i < COUNTOF(sm_VendorLayers); ++i )
 		{
 			CItemContainer *pCont = GetContainerCreate(sm_VendorLayers[i]);
-			if ( !pCont )
-				return false;
-
-			pCont->Empty();
+			if ( pCont )
+				pCont->Empty();
 		}
 	}
 
-	if ( bFillStock )
+	if ( fFillStock )
 	{
-		// An invalid restock time means that the containers are
-		// waiting to be filled
-		if ( !m_pNPC->m_timeRestock.IsTimeValid() )
+		if ( !m_pNPC->m_timeRestock.IsTimeValid() )		// invalid timer means that containers are waiting to be filled
 		{
 			if ( IsTrigUsed(TRIGGER_NPCRESTOCK) )
-			{
-				CCharBase *pCharDef = Char_GetDef();
-				ReadScriptTrig(pCharDef, CTRIG_NPCRestock, true);
-			}
+				ReadScriptTrig(Char_GetDef(), CTRIG_NPCRestock, true);
 
-			//	we need restock vendor money as well
+			// Restock vendor money as well
 			CItemContainer *pCont = GetContainer(LAYER_BANKBOX);
 			if ( pCont )
 				pCont->Restock();
 		}
-
-		// remember that the stock was filled (or considered up-to-date)
 		m_pNPC->m_timeRestock.SetCurrentTime();
 	}
 	return true;
 }
 
-bool CChar::NPC_StablePetSelect( CChar * pCharPlayer )
+bool CChar::NPC_StablePetSelect(CChar *pCharPlayer)
 {
 	ADDTOCALLSTACK("CChar::NPC_StablePetSelect");
-	// I am a stable master.
-	// I will stable a pet for the player.
+	// Player is trying to stable an pet on stable master NPC
+	if ( !m_pNPC || (m_pNPC->m_Brain != NPCBRAIN_ANIMAL_TRAINER) || !pCharPlayer || !pCharPlayer->m_pClient )
+		return false;
 
-	if ( !pCharPlayer || !pCharPlayer->m_pClient )
-		return( false );
-
-	// Might have too many pets already ?
-	int iCount = 0;
 	CItemContainer *pBank = GetContainerCreate(LAYER_BANKBOX);
 	if ( pBank->GetCount() >= MAX_ITEMS_CONT )
 	{
-		Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_STABLEMASTER_FULL ) );
-		return( false );
+		Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_STABLEMASTER_FULL));
+		return false;
 	}
 
-	// Calculate the max limit of pets that the NPC can hold for the player
-	double iSkillTaming = pCharPlayer->Skill_GetAdjusted(SKILL_TAMING);
-	double iSkillAnimalLore = pCharPlayer->Skill_GetAdjusted(SKILL_ANIMALLORE);
-	double iSkillVeterinary = pCharPlayer->Skill_GetAdjusted(SKILL_VETERINARY);
-	double iSkillSum = iSkillTaming + iSkillAnimalLore + iSkillVeterinary;
-
-	int iPetMax;
-	if ( iSkillSum >= 240.0 )
-		iPetMax = 5;
-	else if ( iSkillSum >= 200.0 )
-		iPetMax = 4;
-	else if ( iSkillSum >= 160.0 )
-		iPetMax = 3;
-	else
-		iPetMax = 2;
-
-	if ( iSkillTaming >= 100.0 )
-		iPetMax += (int)((iSkillTaming - 90.0) / 10);
-
-	if ( iSkillAnimalLore >= 100.0 )
-		iPetMax += (int)((iSkillAnimalLore - 90.0) / 10);
-
-	if ( iSkillVeterinary >= 100.0 )
-		iPetMax += (int)((iSkillVeterinary - 90.0) / 10);
-
-	if ( m_TagDefs.GetKey("MAXPLAYERPETS") )
-		iPetMax = static_cast<int>(m_TagDefs.GetKeyNum("MAXPLAYERPETS"));
-
+	int iPetCount = 0;
 	for ( CItem *pItem = pBank->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
-		if ( pItem->IsType(IT_FIGURINE) && pItem->m_uidLink == pCharPlayer->GetUID() )
-			iCount++;
+		if ( pItem->IsType(IT_FIGURINE) && (pItem->m_uidLink == pCharPlayer->GetUID()) )
+			++iPetCount;
 	}
-	if ( iCount >= iPetMax )
+
+	int iPetMax;
+	if ( m_TagDefs.GetKey("MAXPLAYERPETS") )
+		iPetMax = static_cast<int>(m_TagDefs.GetKeyNum("MAXPLAYERPETS"));
+	else
 	{
-		Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_STABLEMASTER_TOOMANY ) );
-		return( false );
+		WORD wSkillTaming = pCharPlayer->Skill_GetAdjusted(SKILL_TAMING);
+		WORD wSkillAnimalLore = pCharPlayer->Skill_GetAdjusted(SKILL_ANIMALLORE);
+		WORD wSkillVeterinary = pCharPlayer->Skill_GetAdjusted(SKILL_VETERINARY);
+		WORD wSkillSum = wSkillTaming + wSkillAnimalLore + wSkillVeterinary;
+
+		if ( wSkillSum >= 2400 )
+			iPetMax = 5;
+		else if ( wSkillSum >= 2000 )
+			iPetMax = 4;
+		else if ( wSkillSum >= 1600 )
+			iPetMax = 3;
+		else
+			iPetMax = 2;
+
+		if ( wSkillTaming >= 1000 )
+			iPetMax += (wSkillTaming - 900) / 10;
+		if ( wSkillAnimalLore >= 1000 )
+			iPetMax += (wSkillAnimalLore - 900) / 10;
+		if ( wSkillVeterinary >= 1000 )
+			iPetMax += (wSkillVeterinary - 900) / 10;
+	}
+
+	if ( iPetCount >= iPetMax )
+	{
+		Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_STABLEMASTER_TOOMANY));
+		return false;
 	}
 
 	pCharPlayer->m_pClient->m_Targ_PrvUID = GetUID();
-	pCharPlayer->m_pClient->addTarget( CLIMODE_TARG_PET_STABLE, g_Cfg.GetDefaultMsg( DEFMSG_NPC_STABLEMASTER_TARG ) );
-	return( true );
+	pCharPlayer->m_pClient->addTarget(CLIMODE_TARG_PET_STABLE, g_Cfg.GetDefaultMsg(DEFMSG_NPC_STABLEMASTER_TARG));
+	return true;
 }
 
-bool CChar::NPC_StablePetRetrieve( CChar * pCharPlayer )
+bool CChar::NPC_StablePetRetrieve(CChar *pCharPlayer)
 {
 	ADDTOCALLSTACK("CChar::NPC_StablePetRetrieve");
-	// Get pets for this person from my inventory.
-	// May want to put up a menu ???
-
-	if ( !m_pNPC || (m_pNPC->m_Brain != NPCBRAIN_ANIMAL_TRAINER) )
+	// Player is trying to retrieve an stabled pet on stable master NPC
+	if ( !m_pNPC || (m_pNPC->m_Brain != NPCBRAIN_ANIMAL_TRAINER) || !pCharPlayer || !pCharPlayer->m_pClient )
 		return false;
 
-	int iCount = 0;
+	int iPetCount = 0;
 	CItem *pItemNext = NULL;
 	for ( CItem *pItem = GetContainerCreate(LAYER_BANKBOX)->GetContentHead(); pItem != NULL; pItem = pItemNext )
 	{
 		pItemNext = pItem->GetNext();
-		if ( pItem->IsType(IT_FIGURINE) && pItem->m_uidLink == pCharPlayer->GetUID() )
+		if ( pItem->IsType(IT_FIGURINE) && (pItem->m_uidLink == pCharPlayer->GetUID()) )
 		{
 			if ( !pCharPlayer->Use_Figurine(pItem) )
 			{
-				TCHAR *pszTemp = Str_GetTemp();
-				sprintf(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_NPC_STABLEMASTER_CLAIM_FOLLOWER), pItem->GetName());
-				Speak(pszTemp);
+				TCHAR *pszMsg = Str_GetTemp();
+				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_STABLEMASTER_CLAIM_FOLLOWER), pItem->GetName());
+				Speak(pszMsg);
 				return true;
 			}
-
 			pItem->Delete();
-			iCount++;
+			++iPetCount;
 		}
 	}
 
-	Speak(g_Cfg.GetDefaultMsg((iCount > 0) ? DEFMSG_NPC_STABLEMASTER_CLAIM : DEFMSG_NPC_STABLEMASTER_CLAIM_NOPETS));
+	Speak(g_Cfg.GetDefaultMsg((iPetCount > 0) ? DEFMSG_NPC_STABLEMASTER_CLAIM : DEFMSG_NPC_STABLEMASTER_CLAIM_NOPETS));
 	return true;
 }
 
-void CChar::NPC_ActStart_SpeakTo( CChar * pSrc )
+void CChar::NPC_ActStart_SpeakTo(CChar *pChar)
 {
 	ADDTOCALLSTACK("CChar::NPC_ActStart_SpeakTo");
-	// My new action is that i am speaking to this person.
-	// Or just update the amount of time i will wait for this person.
-	m_Act_Targ = pSrc->GetUID();
+	// NPC is speaking with this char
+	if ( !m_pNPC || !pChar )
+		return;
+
+	m_Act_Targ = pChar->GetUID();
 	m_atTalk.m_WaitCount = 20;
 	m_atTalk.m_HearUnknown = 0;
 
-	Skill_Start( ( pSrc->Stat_GetAdjusted(STAT_FAME) > 7000 ) ? NPCACT_TALK_FOLLOW : NPCACT_TALK );
-	SetTimeout(3*TICK_PER_SEC);
-	UpdateDir(pSrc);
+	Skill_Start((pChar->Stat_GetAdjusted(STAT_FAME) > 7000) ? NPCACT_TALK_FOLLOW : NPCACT_TALK);
+	SetTimeout(3 * TICK_PER_SEC);
+	UpdateDir(pChar);
 }
 
-void CChar::NPC_OnHear( LPCTSTR pszCmd, CChar * pSrc, bool fAllPets )
+void CChar::NPC_OnHear(LPCTSTR pszCmd, CChar *pSrc, bool fAllPets)
 {
 	ADDTOCALLSTACK("CChar::NPC_OnHear");
-	// This CChar has heard you say something.
+	// NPC is hearing someone speak nearby
 	if ( !m_pNPC || !pSrc )
 		return;
 
-	// Pets always have a basic set of actions.
+	// Pets always have a basic set of actions
 	if ( NPC_OnHearPetCmd(pszCmd, pSrc, fAllPets) || !NPC_CanSpeak() )
 		return;
 
-	// What where we doing ?
-	// too busy to talk ?
-
-	switch ( Skill_GetActive())
+	// Check if NPC is too busy to talk
+	SKILL_TYPE skill = Skill_GetActive();
+	if ( (skill == NPCACT_TALK) || (skill == NPCACT_TALK_FOLLOW) )
 	{
-		case SKILL_BEGGING: // busy begging. (hack)
-			if ( !g_Cfg.IsSkillFlag( SKILL_BEGGING, SKF_SCRIPTED ) )
-				return;
-			break;
-		case NPCACT_TALK:
-		case NPCACT_TALK_FOLLOW:
-			// Was NPC talking to someone else ?
-			if ( m_Act_Targ != pSrc->GetUID())
+		if ( (m_Act_Targ != pSrc->GetUID()) && NPC_Act_Talk() )		// NPC is already talking with someone else
+		{
+			CChar *pCharOld = m_Act_Targ.CharFind();
+			if ( pCharOld )
 			{
-				if ( NPC_Act_Talk() )
-				{
-					CChar * pCharOld = m_Act_Targ.CharFind();
-					if (pCharOld != NULL)
-					{
-						TCHAR * z = Str_GetTemp();
-						sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_INTERRUPT), pCharOld->GetName(), pSrc->GetName());
-						Speak(z);
-					}
-				}
+				TCHAR *pszMsg = Str_GetTemp();
+				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_INTERRUPT), pCharOld->GetName(), pSrc->GetName());
+				Speak(pszMsg);
 			}
-			break;
-		default:
-			break;
+		}
 	}
 
-	// I've heard them for the first time.
-	CItemMemory * pMemory = Memory_FindObjTypes( pSrc, MEMORY_SPEAK );
-	if ( pMemory == NULL )
+	CItemMemory *pMemory = Memory_FindObjTypes(pSrc, MEMORY_SPEAK);
+	if ( !pMemory )
 	{
-		// This or CTRIG_SeeNewPlayer will be our first contact with people.
+		// NPC heard this char for the first time
 		if ( IsTrigUsed(TRIGGER_NPCHEARGREETING) )
 		{
-			if ( OnTrigger( CTRIG_NPCHearGreeting, pSrc ) == TRIGRET_RET_TRUE )
+			if ( OnTrigger(CTRIG_NPCHearGreeting, pSrc) == TRIGRET_RET_TRUE )
 				return;
 		}
 
-		// record that we attempted to speak to them.
 		pMemory = Memory_AddObjTypes(pSrc, MEMORY_SPEAK);
 		if ( pMemory )
 			pMemory->m_itEqMemory.m_Action = NPC_MEM_ACT_FIRSTSPEAK;
 	}
 
-	// Do the scripts want me to take some action based on this speech.
-	SKILL_TYPE skill = m_Act_SkillCurrent;
-
+	// Do the scripts want the NPC to take some action based on this speech?
 	TALKMODE_TYPE mode = TALKMODE_SAY;
-	for ( size_t i = 0; i < m_pNPC->m_Speech.GetCount(); i++ )
+	for ( size_t i = 0; i < m_pNPC->m_Speech.GetCount(); ++i )
 	{
-		CResourceLink * pLink = m_pNPC->m_Speech[i];
+		CResourceLink *pLink = m_pNPC->m_Speech[i];
 		if ( !pLink )
 			continue;
+
 		CResourceLock s;
 		if ( !pLink->ResourceLock(s) || !pLink->HasTrigger(XTRIG_UNKNOWN) )
 			continue;
-		TRIGRET_TYPE iRet = OnHearTrigger(s, pszCmd, pSrc, mode);
-		if ( iRet == TRIGRET_ENDIF || iRet == TRIGRET_RET_FALSE )
+
+		TRIGRET_TYPE tr = OnHearTrigger(s, pszCmd, pSrc, mode);
+		if ( (tr == TRIGRET_RET_FALSE) || (tr == TRIGRET_ENDIF) )
 			continue;
-		if ( iRet == TRIGRET_RET_DEFAULT && skill == m_Act_SkillCurrent )
-		{
-			// You are the new speaking target.
-			NPC_ActStart_SpeakTo( pSrc );
-		}
+		if ( (tr == TRIGRET_RET_DEFAULT) && (skill == Skill_GetActive()) )
+			NPC_ActStart_SpeakTo(pSrc);		// start speaking with this char
 		return;
 	}
 
-	CCharBase * pCharDef = Char_GetDef();
-	ASSERT(pCharDef != NULL);
-	for ( size_t i = 0; i < pCharDef->m_Speech.GetCount(); i++ )
+	CCharBase *pCharDef = Char_GetDef();
+	ASSERT(pCharDef);
+	for ( size_t i = 0; i < pCharDef->m_Speech.GetCount(); ++i )
 	{
-		CResourceLink * pLink = pCharDef->m_Speech[i];
+		CResourceLink *pLink = pCharDef->m_Speech[i];
 		if ( !pLink )
 			continue;
+
 		CResourceLock s;
 		if ( !pLink->ResourceLock(s) )
 			continue;
-		TRIGRET_TYPE iRet = OnHearTrigger( s, pszCmd, pSrc, mode );
-		if ( iRet == TRIGRET_ENDIF || iRet == TRIGRET_RET_FALSE )
+
+		TRIGRET_TYPE tr = OnHearTrigger(s, pszCmd, pSrc, mode);
+		if ( (tr == TRIGRET_RET_FALSE) || (tr == TRIGRET_ENDIF) )
 			continue;
-		if ( iRet == TRIGRET_RET_DEFAULT && skill == m_Act_SkillCurrent )
-		{
-			// You are the new speaking target.
-			NPC_ActStart_SpeakTo( pSrc );
-		}
+		if ( (tr == TRIGRET_RET_DEFAULT) && (skill == Skill_GetActive()) )
+			NPC_ActStart_SpeakTo(pSrc);		// start speaking with this char
 		return;
 	}
 
-	// hard code some default reactions.
-	if ( m_pNPC->m_Brain == NPCBRAIN_HEALER	|| Skill_GetBase( SKILL_SPIRITSPEAK ) >= 1000 )
+	// Speak near healer NPCs will make them note the char faster (for resurrect purposes)
+	if ( pSrc->IsStatFlag(STATF_DEAD) && (m_pNPC->m_Brain == NPCBRAIN_HEALER) )
 	{
 		if ( NPC_LookAtChar(pSrc) )
 			return;
 	}
 
-	// can't figure you out.
+	// NPC can't understand what this char is speaking
 	if ( IsTrigUsed(TRIGGER_NPCHEARUNKNOWN) )
 	{
-		if ( OnTrigger( CTRIG_NPCHearUnknown, pSrc ) == TRIGRET_RET_TRUE )
+		if ( OnTrigger(CTRIG_NPCHearUnknown, pSrc) == TRIGRET_RET_TRUE )
 			return;
 	}
 
-	if ( Skill_GetActive() == NPCACT_TALK || Skill_GetActive() == NPCACT_TALK_FOLLOW )
+	skill = Skill_GetActive();
+	if ( (skill == NPCACT_TALK) || (skill == NPCACT_TALK_FOLLOW) )
 	{
-		++ m_atTalk.m_HearUnknown;
-		int iMaxUnk = 4;
-		if ( GetDist( pSrc ) > 4 )
-			iMaxUnk = 1;
-		if ( m_atTalk.m_HearUnknown > iMaxUnk )
-		{
-			Skill_Start( SKILL_NONE ); // say good by
-		}
+		int iMaxUnk = (GetDist(pSrc) > 4) ? 1 : 4;
+		if ( m_atTalk.m_HearUnknown++ > iMaxUnk )
+			Skill_Start(SKILL_NONE);	// say goodbye
 	}
 }
 
-WORD CChar::NPC_OnTrainCheck( CChar * pCharSrc, SKILL_TYPE Skill )
+WORD CChar::NPC_OnTrainCheck(CChar *pCharSrc, SKILL_TYPE skill)
 {
 	ADDTOCALLSTACK("CChar::NPC_OnTrainCheck");
-	// Can we train in this skill ?
-	// RETURN: Amount of skill we can train.
+	// Check if NPC can train the requested skill for an char
+	// RETURN: amount of skill to train
 
-	if ( !IsSkillBase(Skill) )
+	if ( !IsSkillBase(skill) )
 	{
 		Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_DUNNO_1));
 		return 0;
 	}
 
-	WORD wSkillSrcVal = pCharSrc->Skill_GetBase(Skill);
-	WORD wSkillVal = Skill_GetBase(Skill);
-	WORD wTrainVal = maximum(0, NPC_GetTrainMax(pCharSrc, Skill) - wSkillSrcVal);
+	WORD wSkillSrcVal = pCharSrc->Skill_GetBase(skill);
+	WORD wSkillVal = Skill_GetBase(skill);
+	WORD wTrainVal = maximum(0, NPC_GetTrainMax(pCharSrc, skill) - wSkillSrcVal);
 
-	// Train npc skill cap
+	// Check if this will exceed skillcap limit
 	WORD wMaxDecrease = 0;
 	if ( pCharSrc->GetSkillTotal() + wTrainVal > pCharSrc->Skill_GetSumMax() )
-	{	
-		for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
+	{
+		for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; ++i )
 		{
-			if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(static_cast<SKILL_TYPE>(i)) )
+			SKILL_TYPE skillCheck = static_cast<SKILL_TYPE>(i);
+			if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(skillCheck) || (pCharSrc->Skill_GetLock(skillCheck) != SKILLLOCK_DOWN) )
 				continue;
 
-			if ( pCharSrc->Skill_GetLock(static_cast<SKILL_TYPE>(i)) == SKILLLOCK_DOWN )
-				wMaxDecrease += pCharSrc->Skill_GetBase(static_cast<SKILL_TYPE>(i));
+			wMaxDecrease += pCharSrc->Skill_GetBase(skillCheck);
 		}
 		wMaxDecrease = minimum(wTrainVal, wMaxDecrease);
 	}
@@ -500,13 +457,13 @@ WORD CChar::NPC_OnTrainCheck( CChar * pCharSrc, SKILL_TYPE Skill )
 	else
 		return wMaxDecrease;
 
-	char *z = Str_GetTemp();
-	sprintf(z, pszMsg, g_Cfg.GetSkillKey(Skill));
-	Speak(z);
+	TCHAR *pszTemp = Str_GetTemp();
+	sprintf(pszTemp, pszMsg, g_Cfg.GetSkillKey(skill));
+	Speak(pszTemp);
 	return 0;
 }
 
-bool CChar::NPC_OnTrainPay(CChar *pCharSrc, CItemMemory *pMemory, CItem * pGold)
+bool CChar::NPC_OnTrainPay(CChar *pCharSrc, CItemMemory *pMemory, CItem *pGold)
 {
 	ADDTOCALLSTACK("CChar::NPC_OnTrainPay");
 	SKILL_TYPE skill = static_cast<SKILL_TYPE>(pMemory->m_itEqMemory.m_Skill);
@@ -517,250 +474,216 @@ bool CChar::NPC_OnTrainPay(CChar *pCharSrc, CItemMemory *pMemory, CItem * pGold)
 	}
 
 	CVarDefCont *pVar = GetKey("OVERRIDE.TRAINSKILLCOST", false);
-	WORD wTrainCost = pVar ? pVar->GetValNum() : g_Cfg.m_iTrainSkillCost;
+	WORD wSkillCost = pVar ? pVar->GetValNum() : g_Cfg.m_iTrainSkillCost;
+	WORD wSkillTrain = NPC_OnTrainCheck(pCharSrc, skill);
 
-	wTrainCost *= NPC_OnTrainCheck(pCharSrc, skill);
+	WORD wTrainCost = wSkillTrain * wSkillCost;
 	if ( (wTrainCost <= 0) || !pGold )
 		return false;
 
-	Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_TRAINER_SUCCESS ) );
+	Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_SUCCESS));
 
-	// Consume as much money as we can train for.
 	if ( pGold->GetAmount() < wTrainCost )
 	{
-		wTrainCost = pGold->GetAmount();
+		// Received less gold, so teach less
+		wSkillTrain = pGold->GetAmount() / wSkillCost;
 	}
 	else if ( pGold->GetAmount() == wTrainCost )
 	{
-		Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_TRAINER_THATSALL_1 ) );
+		Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_THATSALL_1));
 		pMemory->m_itEqMemory.m_Action = NPC_MEM_ACT_NONE;
 	}
 	else
 	{
-		Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_TRAINER_THATSALL_2 ) );
+		// Received more gold, so give refund
+		Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_THATSALL_2));
 		pMemory->m_itEqMemory.m_Action = NPC_MEM_ACT_NONE;
 
-		// Give change back.
-		pGold->UnStackSplit(wTrainCost, pCharSrc);
+		CItem *pRefund = pGold->UnStackSplit(wTrainCost, pCharSrc);
+		if ( pRefund )
+			pCharSrc->ItemBounce(pRefund, false);
 	}
+	pGold->Delete();
 	GetContainerCreate(LAYER_BANKBOX)->m_itEqBankBox.m_Check_Amount += wTrainCost;
 
-	// Give credit for training.
-	NPC_TrainSkill(pCharSrc, skill, wTrainCost);
-	return( true );
-}
-
-bool CChar::NPC_TrainSkill( CChar * pCharSrc, SKILL_TYPE skill, WORD wVal )
-{
-	ADDTOCALLSTACK("CChar::NPC_TrainSkill");
-	WORD wTrain = wVal;
-	if ( pCharSrc->GetSkillTotal() + wVal > pCharSrc->Skill_GetSumMax() )
-	{	
-		for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
+	if ( pCharSrc->GetSkillTotal() + wSkillTrain > pCharSrc->Skill_GetSumMax() )
+	{
+		// This will exceed char skillcap limit, so decrease another skill first
+		for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; ++i )
 		{
-			if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(static_cast<SKILL_TYPE>(i)) )
+			SKILL_TYPE skillCheck = static_cast<SKILL_TYPE>(i);
+			if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(skillCheck) || (pCharSrc->Skill_GetLock(skillCheck) != SKILLLOCK_DOWN) )
 				continue;
 
-			if ( wVal < 1 )
-			{
-				pCharSrc->Skill_SetBase(skill, wTrain + pCharSrc->Skill_GetBase(skill));
+			pCharSrc->Skill_SetBase(skillCheck, maximum(pCharSrc->Skill_GetBase(skillCheck) - ((pCharSrc->GetSkillTotal() + wSkillTrain) - pCharSrc->Skill_GetSumMax()), 0));
+			if ( pCharSrc->GetSkillTotal() + wSkillTrain <= pCharSrc->Skill_GetSumMax() )
 				break;
-			}
-
-			if ( pCharSrc->Skill_GetLock(static_cast<SKILL_TYPE>(i)) == SKILLLOCK_DOWN )
-			{
-				if ( pCharSrc->Skill_GetBase(static_cast<SKILL_TYPE>(i)) > wVal )
-				{
-					pCharSrc->Skill_SetBase(static_cast<SKILL_TYPE>(i), pCharSrc->Skill_GetBase(static_cast<SKILL_TYPE>(i)) - wVal);
-					wVal = 0;
-				}
-				else
-				{
-					wVal -= pCharSrc->Skill_GetBase(static_cast<SKILL_TYPE>(i));
-					pCharSrc->Skill_SetBase(static_cast<SKILL_TYPE>(i), 0);
-				}
-			}
 		}
 	}
-	else
-	{
-		pCharSrc->Skill_SetBase(skill, wTrain + pCharSrc->Skill_GetBase(skill));
-	}
 
+	pCharSrc->Skill_SetBase(skill, pCharSrc->Skill_GetBase(skill) + wSkillTrain);
 	return true;
 }
 
-
-bool CChar::NPC_OnTrainHear( CChar * pCharSrc, LPCTSTR pszCmd )
+bool CChar::NPC_OnTrainHear(CChar *pCharSrc, LPCTSTR pszCmd)
 {
 	ADDTOCALLSTACK("CChar::NPC_OnTrainHear");
-	// We are asking for training ?
-
 	// Check the NPC is capable of teaching
 	if ( !m_pNPC || (m_pNPC->m_Brain < NPCBRAIN_HUMAN) || (m_pNPC->m_Brain > NPCBRAIN_ANIMAL_TRAINER) || (m_pNPC->m_Brain == NPCBRAIN_GUARD) )
 		return false;
 
-	// Check the NPC isn't busy fighting
-	if ( Memory_FindObjTypes( pCharSrc, MEMORY_FIGHT|MEMORY_HARMEDBY|MEMORY_IRRITATEDBY|MEMORY_AGGREIVED ))
+	if ( Memory_FindObjTypes(pCharSrc, MEMORY_FIGHT|MEMORY_HARMEDBY|MEMORY_IRRITATEDBY|MEMORY_AGGREIVED) )
 	{
-		Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_TRAINER_ENEMY ) );
+		Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_ENEMY));
 		return true;
 	}
 
-	// Did they mention a skill name i recognize ?
 	TemporaryString pszMsg;
-
 	CVarDefCont *pVar = GetKey("OVERRIDE.TRAINSKILLCOST", false);
-	WORD wTrainCost = pVar ? pVar->GetValNum() : g_Cfg.m_iTrainSkillCost;
+	WORD wSkillCost = pVar ? pVar->GetValNum() : g_Cfg.m_iTrainSkillCost;
 
-	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
+	if ( pszCmd )
 	{
-		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(static_cast<SKILL_TYPE>(i)) )
-			continue;
-
-		LPCTSTR pszSkillKey = g_Cfg.GetSkillKey(static_cast<SKILL_TYPE>(i));
-		if ( FindStrWord(pszCmd, pszSkillKey) <= 0 )
-			continue;
-
-		wTrainCost *= NPC_OnTrainCheck(pCharSrc, static_cast<SKILL_TYPE>(i));
-		if ( wTrainCost <= 0 )
-			return true;
-
-		sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_PRICE), static_cast<int>(wTrainCost), pszSkillKey);
-		Speak(pszMsg);
-		CItemMemory * pMemory = Memory_AddObjTypes( pCharSrc, MEMORY_SPEAK );
-		if ( pMemory )
+		// If char say an specific skill name, look for this specific skill
+		for ( unsigned int i = 0; i < g_Cfg.m_iMaxSkill; ++i )
 		{
-			pMemory->m_itEqMemory.m_Action = NPC_MEM_ACT_SPEAK_TRAIN;
-			pMemory->m_itEqMemory.m_Skill = static_cast<WORD>(i);
+			SKILL_TYPE skillCheck = static_cast<SKILL_TYPE>(i);
+			if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(skillCheck) )
+				continue;
+
+			LPCTSTR pszSkillKey = g_Cfg.GetSkillKey(skillCheck);
+			if ( FindStrWord(pszCmd, pszSkillKey) <= 0 )
+				continue;
+
+			WORD wTrainCost = NPC_OnTrainCheck(pCharSrc, skillCheck) * wSkillCost;
+			if ( wTrainCost <= 0 )
+				return true;
+
+			CItemMemory *pMemory = Memory_AddObjTypes(pCharSrc, MEMORY_SPEAK);
+			if ( pMemory )
+			{
+				pMemory->m_itEqMemory.m_Action = NPC_MEM_ACT_SPEAK_TRAIN;
+				pMemory->m_itEqMemory.m_Skill = static_cast<WORD>(i);
+			}
+
+			sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_PRICE), static_cast<int>(wTrainCost), pszSkillKey);
+			Speak(pszMsg);
+			return true;
 		}
-		return true;
 	}
 
-	// What can he teach me about ?
-	// Just tell them what we can teach them or set up a memory to train.
-	strcpy( pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_NPC_TRAINER_PRICE_1 ) );
-
-	LPCTSTR pPrvSkill = NULL;
+	// Show all skills available to train
+	strcpy(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_PRICE_1));
 
 	size_t iCount = 0;
-	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
+	LPCTSTR pszSkillList = NULL;
+	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; ++i )
 	{
-		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(static_cast<SKILL_TYPE>(i)) )
+		SKILL_TYPE skillCheck = static_cast<SKILL_TYPE>(i);
+		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(skillCheck) )
 			continue;
 
-		WORD wDiff = maximum(0, NPC_GetTrainMax(pCharSrc, static_cast<SKILL_TYPE>(i)) - pCharSrc->Skill_GetBase(static_cast<SKILL_TYPE>(i)));
+		WORD wDiff = maximum(0, NPC_GetTrainMax(pCharSrc, skillCheck) - pCharSrc->Skill_GetBase(skillCheck));
 		if ( wDiff <= 0 )
 			continue;
 
 		if ( iCount > 6 )
 		{
-			pPrvSkill = g_Cfg.GetDefaultMsg( DEFMSG_NPC_TRAINER_PRICE_2 );
+			pszSkillList = g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_PRICE_2);
 			break;
 		}
-		if ( iCount > 1 )
-		{
-			strcat( pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_NPC_TRAINER_PRICE_3 ) );
-		}
-		if ( pPrvSkill )
-		{
-			strcat( pszMsg, pPrvSkill );
-		}
 
-		pPrvSkill = g_Cfg.GetSkillKey(static_cast<SKILL_TYPE>(i));
-		iCount++;
+		if ( iCount > 1 )
+			strcat(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_PRICE_3));
+		if ( pszSkillList )
+			strcat(pszMsg, pszSkillList);
+
+		pszSkillList = g_Cfg.GetSkillKey(skillCheck);
+		++iCount;
 	}
 
 	if ( iCount == 0 )
 	{
-		Speak( g_Cfg.GetDefaultMsg( DEFMSG_NPC_TRAINER_THATSALL_3 ) );
+		Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_THATSALL_3));
 		return true;
 	}
-	if ( iCount > 1 )
-	{
-		strcat( pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_NPC_TRAINER_THATSALL_4 ) );
-	}
 
-	strcat( pszMsg, pPrvSkill );
-	strcat( pszMsg, "." );
-	Speak( pszMsg );
-	return( true );
+	if ( iCount > 1 )
+		strcat(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_THATSALL_4));
+
+	strcat(pszMsg, pszSkillList);
+	strcat(pszMsg, ".");
+	Speak(pszMsg);
+	return true;
 }
 
-void CChar::NPC_OnNoticeSnoop( CChar * pCharThief, CChar * pCharMark )
+void CChar::NPC_OnNoticeSnoop(CChar *pCharThief, CChar *pCharMark)
 {
 	ADDTOCALLSTACK("CChar::NPC_OnNoticeSnoop");
-	if ( !m_pNPC )
+	if ( !m_pNPC || (pCharMark != this) )
 		return;
 
-	// start making them angry at you.
-	static UINT const sm_szTextSnoop[] =
+	if ( NPC_CanSpeak() )
 	{
-		DEFMSG_NPC_GENERIC_SNOOPED_1,
-		DEFMSG_NPC_GENERIC_SNOOPED_2,
-		DEFMSG_NPC_GENERIC_SNOOPED_3,
-		DEFMSG_NPC_GENERIC_SNOOPED_4
-	};
-
-	if ( pCharMark != this )	// not me so who cares.
-		return;
-
-	if ( NPC_CanSpeak())
-	{
-		Speak( g_Cfg.GetDefaultMsg(sm_szTextSnoop[ Calc_GetRandVal( COUNTOF( sm_szTextSnoop )) ]));
+		static LPCTSTR const sm_szTextSnoop[] =
+		{
+			g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_SNOOPED_1),
+			g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_SNOOPED_2),
+			g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_SNOOPED_3),
+			g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_SNOOPED_4)
+		};
+		Speak(sm_szTextSnoop[Calc_GetRandVal(COUNTOF(sm_szTextSnoop))]);
 	}
-	if ( ! Calc_GetRandVal(4))
+
+	if ( !Calc_GetRandVal(4) )
 	{
+		// Flee from the thief
 		m_Act_Targ = pCharThief->GetUID();
-		m_atFlee.m_iStepsMax = 20;	// how long should it take to get there.
-		m_atFlee.m_iStepsCurrent = 0;	// how long has it taken ?
-		Skill_Start( NPCACT_FLEE );
+		m_atFlee.m_iStepsMax = 20;
+		m_atFlee.m_iStepsCurrent = 0;
+		Skill_Start(NPCACT_FLEE);
 	}
 }
 
-int CChar::NPC_WalkToPoint( bool fRun )
+int CChar::NPC_WalkToPoint(bool fRun)
 {
 	ADDTOCALLSTACK("CChar::NPC_WalkToPoint");
-	// Move toward my target .
-	//
+	// Move toward target point (which should be already set)
 	// RETURN:
-	//  0 = we are here.
-	//  1 = took the step.
-	//  2 = can't take this step right now. (obstacle)
-	if (Can(CAN_C_NONMOVER))
+	//  0 = char is already here
+	//  1 = char took the step
+	//  2 = char can't take this step right now (obstacle)
+	if ( Can(CAN_C_NONMOVER) )
 		return 0;
 
-	int			iDex = Stat_GetAdjusted(STAT_DEX);
-	int			iInt = Stat_GetAdjusted(STAT_INT);
-	CPointMap	ptMe = GetTopPoint();
-	DIR_TYPE	Dir = ptMe.GetDir(m_Act_p);
-	bool		bUsePathfinding = false;
-	CCharBase	*pCharDef = Char_GetDef();		
-
 	EXC_TRY("NPC_WalkToPoint");
-	if ( Dir >= DIR_QTY ) return 0;		// we are already in the spot
-	if ( iDex <= 0 ) return 2;			// we cannot move now
+	CPointMap ptMe = GetTopPoint();
+	DIR_TYPE dir = ptMe.GetDir(m_Act_p);
+	if ( dir >= DIR_QTY )
+		return 0;		// char is already in the spot
 
+	int iDex = Stat_GetAdjusted(STAT_DEX);
+	if ( iDex <= 0 )
+		return 2;		// char can't move now
+
+	// Use pathfinding
 	EXC_SET("NPC_AI_PATH");
-	//	Use pathfinding
+	bool fUsePathfinding = false;
 	if ( NPC_GetAiFlags() & NPC_AI_PATH )
 	{
 		NPC_Pathfinding();
 
-		//	walk the saved path
-		CPointMap local;
-		local.m_x = m_pNPC->m_nextX[0];
-		local.m_y = m_pNPC->m_nextY[0];
-		local.m_map = ptMe.m_map;
-			// no steps available yet, or pathfinding not usable in this situation
-			// so, use default movements
+		// Walk the saved path
+		CPointMap ptLocal;
+		ptLocal.m_x = m_pNPC->m_nextX[0];
+		ptLocal.m_y = m_pNPC->m_nextY[0];
+		ptLocal.m_map = ptMe.m_map;
 
-		if (local.m_x > 0 && local.m_y > 0)
+		// No steps available yet (or pathfinding not usable in this situation), so use default movement
+		if ( (ptLocal.m_x > 0) && (ptLocal.m_y > 0) )
 		{
-
-			bUsePathfinding = true;
-
-			if ( ptMe.GetDist(local) != 1 )
+			fUsePathfinding = true;
+			if ( ptMe.GetDist(ptLocal) != 1 )
 			{
 				// The next step is too far away, pathfinding route has become invalid
 				m_pNPC->m_nextPt.InitPoint();
@@ -769,16 +692,15 @@ int CChar::NPC_WalkToPoint( bool fRun )
 			}
 			else
 			{
-				// Update our heading to the way we need to go
-				Dir = ptMe.GetDir(local);
-				ASSERT(Dir > DIR_INVALID && Dir < DIR_QTY);
+				// Update heading to the way char need to go
+				dir = ptMe.GetDir(ptLocal);
+				ASSERT((dir > DIR_INVALID) && (dir < DIR_QTY));
 
 				EXC_TRYSUB("Array Shift");
-				//	also shift the steps array
-				for ( int j = 0; j < (MAX_NPC_PATH_STORAGE_SIZE - 1); ++j )
+				for ( int i = 0; i < (MAX_NPC_PATH_STORAGE_SIZE - 1); ++i )
 				{
-					m_pNPC->m_nextX[j] = m_pNPC->m_nextX[j+1];
-					m_pNPC->m_nextY[j] = m_pNPC->m_nextY[j+1];
+					m_pNPC->m_nextX[i] = m_pNPC->m_nextX[i + 1];
+					m_pNPC->m_nextY[i] = m_pNPC->m_nextY[i + 1];
 				}
 				m_pNPC->m_nextX[MAX_NPC_PATH_STORAGE_SIZE - 1] = 0;
 				m_pNPC->m_nextY[MAX_NPC_PATH_STORAGE_SIZE - 1] = 0;
@@ -787,90 +709,93 @@ int CChar::NPC_WalkToPoint( bool fRun )
 		}
 	}
 
-	EXC_SET("Non-Advanced pathfinding");
-	ptMe.Move( Dir );
-	if ( ! CanMoveWalkTo(ptMe, true, false, Dir ) )
+	EXC_SET("Non-advanced Pathfinding");
+	CCharBase *pCharDef = Char_GetDef();
+	ptMe.Move(dir);
+	if ( !CanMoveWalkTo(ptMe, true, false, dir) )
 	{
-		CPointMap	ptFirstTry = ptMe;
-
-		// try to step around it ?
+		// Try to step around it
 		int iDiff = 0;
-		int iRand = Calc_GetRandVal( 100 );
-		if ( iRand < 30 )	// do nothing.
+		int iRand = Calc_GetRandVal(100);
+		if ( iRand < 30 )	// do nothing
 		{
-			// whilst pathfinding we should keep trying to find new ways to our destination
-			if ( bUsePathfinding == true )
+			// While pathfinding, char should keep trying to find new ways to our destination
+			if ( fUsePathfinding )
 			{
-				SetTimeout( TICK_PER_SEC ); // wait a moment before finding a new route
-				return( 1 );
+				SetTimeout(TICK_PER_SEC);	// wait a moment before try to find a new route
+				return 1;
 			}
-			return( 2 );
+			return 2;
 		}
 
-		if ( iRand < 35 ) iDiff = 4;	// 5
-		else if ( iRand < 40 ) iDiff = 3;	// 10
-		else if ( iRand < 65 ) iDiff = 2;
-		else iDiff = 1;
-		if ( iRand & 1 ) iDiff = -iDiff;
-		ptMe = GetTopPoint();
-		Dir = GetDirTurn( Dir, iDiff );
-		ptMe.Move( Dir );
-		if ( ! CanMoveWalkTo(ptMe, true, false, Dir ))
-		{
-			bool	bClearedWay = false;
-			// Some object in my way that i could move ? Try to move it.
-			if ( !pCharDef->Can(CAN_C_USEHANDS) || IsStatFlag(STATF_DEAD|STATF_Sleeping|STATF_Freeze|STATF_Stone) ) ;		// i cannot use hands or i am frozen, so cannot move objects
-			else if (( NPC_GetAiFlags()&NPC_AI_MOVEOBSTACLES ) && ( iInt > iRand ))
-			{
-				int			i;
-				CPointMap	point;
-				for ( i = 0; i < 2; i++ )
-				{
-					if ( !i ) point = ptMe;
-					else point = ptFirstTry;
+		if ( iRand < 35 )
+			iDiff = 4;
+		else if ( iRand < 40 )
+			iDiff = 3;
+		else if ( iRand < 65 )
+			iDiff = 2;
+		else
+			iDiff = 1;
 
-					//	Scan point for items that could be moved by me and move them to my position
-					CWorldSearch	AreaItems(point);
-					for (;;)
+		if ( iRand & 1 )
+			iDiff = -iDiff;
+
+		CPointMap ptFirstTry = ptMe;
+		ptMe = GetTopPoint();
+		dir = GetDirTurn(dir, iDiff);
+		ptMe.Move(dir);
+		if ( !CanMoveWalkTo(ptMe, true, false, dir) )
+		{
+			bool fClearedWay = false;
+
+			// Check if char can move objects placed on the way
+			if ( (NPC_GetAiFlags() & NPC_AI_MOVEOBSTACLES) && pCharDef->Can(CAN_C_USEHANDS) && !IsStatFlag(STATF_DEAD|STATF_Freeze|STATF_Sleeping|STATF_Stone) )
+			{
+				int iInt = Stat_GetAdjusted(STAT_INT);
+				if ( iInt > iRand )
+				{
+					CPointMap pt;
+					for ( int i = 0; i < 2; ++i )
 					{
-						CItem	*pItem = AreaItems.GetItem();
-						if ( !pItem ) break;
-						else if ( abs(pItem->GetTopZ() - ptMe.m_z) > 3 ) continue;		// item is too high
-						else if ( !pItem->Item_GetDef()->Can(CAN_I_BLOCK) ) continue;	// this item not blocking me
-						else if ( !CanMove(pItem) || !CanCarry(pItem) ) bClearedWay = false;
-						else
+						pt = (!i) ? ptMe : ptFirstTry;
+
+						CWorldSearch AreaItems(pt);
+						for (;;)
 						{
-							//	move this item to the position I am currently in
-							pItem->MoveToUpdate(GetTopPoint());
-							bClearedWay = true;
-							break;
+							CItem *pItem = AreaItems.GetItem();
+							if ( !pItem )
+								break;
+							if ( abs(pItem->GetTopZ() - ptMe.m_z) > 5 )
+								continue;
+
+							if ( CanMove(pItem) && CanCarry(pItem) )
+							{
+								// Move item to char position
+								pItem->MoveToUpdate(GetTopPoint());
+								fClearedWay = true;
+								break;
+							}
 						}
+
+						if ( fClearedWay || (iInt < iRand * 3) )	// if path is not cleared but char is clever enough, it should try to move in the first step it was trying to move to
+							break;
 					}
 
-					if ( bClearedWay ) break;
-					//	If not cleared the way still, but I am still clever enough
-					//	I should try to move in the first step I was trying to move to
-					else if ( iInt < iRand*3 ) break;
-				}
-
-				//	we have just cleared our way
-				if ( bClearedWay )
-				{
-					if ( point == ptFirstTry )
+					if ( fClearedWay && (pt == ptFirstTry) )
 					{
-						Dir = GetTopPoint().GetDir(m_Act_p);
-						ASSERT(Dir > DIR_INVALID && Dir < DIR_QTY);
-						if (Dir >= DIR_QTY)
-							bClearedWay = false;
+						dir = GetTopPoint().GetDir(m_Act_p);
+						ASSERT((dir > DIR_INVALID) && (dir < DIR_QTY));
+						if ( dir >= DIR_QTY )
+							fClearedWay = false;
 					}
 				}
 			}
-			if ( !bClearedWay )
+			if ( !fClearedWay )
 			{
-				// whilst pathfinding we should keep trying to find new ways to our destination
-				if ( bUsePathfinding == true )
+				// While pathfinding, char should keep trying to find new ways to our destination
+				if ( fUsePathfinding )
 				{
-					SetTimeout( TICK_PER_SEC ); // wait a moment before finding a new route
+					SetTimeout(TICK_PER_SEC);	// wait a moment before try to find a new route
 					return 1;
 				}
 				return 2;
@@ -878,216 +803,186 @@ int CChar::NPC_WalkToPoint( bool fRun )
 		}
 	}
 
-	EXC_SET("Finishing Move Action a");
-	//Finish Move Action
-
-	// ??? Make sure we are not facing a wall.
-	ASSERT(Dir > DIR_INVALID && Dir < DIR_QTY);
-	m_dirFace = Dir;	// Face this direction.
-	if ( fRun && ( ! pCharDef->Can(CAN_C_RUN|CAN_C_FLY) || Stat_GetVal(STAT_DEX) <= 1 ))
+	EXC_SET("Finishing Move Action");
+	ASSERT((dir > DIR_INVALID) && (dir < DIR_QTY));
+	m_dirFace = dir;
+	if ( fRun && (!pCharDef->Can(CAN_C_RUN|CAN_C_FLY) || (Stat_GetVal(STAT_DEX) <= 1)) )
 		fRun = false;
 
-	EXC_SET("StatFlag");
-	StatFlag_Mod(STATF_Fly, fRun);
-
-	EXC_SET("Old Top Point");
 	CPointMap ptOld = GetTopPoint();
-
-	EXC_SET("Reveal");
+	StatFlag_Mod(STATF_Fly, fRun);
 	CheckRevealOnMove();
-
-	EXC_SET("MoveToChar");
 	MoveToChar(ptMe);
 
 	EXC_SET("Check Location");
-	if ( CheckLocation(false) == TRIGRET_RET_FALSE )	// check if I stepped on any item/teleport
+	if ( CheckLocation() == TRIGRET_RET_FALSE )		// check if char stepped on item/teleport
 	{
-		SetTopPoint(ptOld);		// we already moved, so move back to previous location
+		SetTopPoint(ptOld);		// char already moved, so move back to previous location
 		return 2;
 	}
 
 	EXC_SET("Move Update");
 	UpdateMove(ptOld);
 
-	EXC_SET("Speed counting");
-	// How fast can they move
-	CVarDefCont *pValue = GetKey("OVERRIDE.MOVERATE", true);
-	INT64 iTick = pValue ? pValue->GetValNum() : pCharDef->m_iMoveRate;
-	INT64 iTickNext;
+	EXC_SET("Set Timeout");
+	CVarDefCont *pVar = GetKey("OVERRIDE.MOVERATE", true);
+	INT64 iMoveRate = pVar ? pVar->GetValNum() : pCharDef->m_iMoveRate;
+	INT64 iNextTick;
 
-	if (fRun)
+	if ( fRun )
 	{
-		if (IsStatFlag(STATF_Pet))	// pets run a little faster.
-		{
-			if (iDex < 75)
-				iDex = 75;
-		}
-		iTickNext = TICK_PER_SEC / 4 + Calc_GetRandLLVal((100 - (iDex * iTick) / 100) / 5);
+		if ( IsStatFlag(STATF_Pet) && (iDex < 75) )		// pets run a bit faster
+			iDex = 75;
+		iNextTick = (TICK_PER_SEC / 4) + Calc_GetRandLLVal((100 - (iDex * iMoveRate) / 100) / 5);
 	}
 	else
-		iTickNext = TICK_PER_SEC + Calc_GetRandLLVal((100 - (iDex * iTick) / 100) / 3);
+		iNextTick = TICK_PER_SEC + Calc_GetRandLLVal((100 - (iDex * iMoveRate) / 100) / 3);
 
-	if (iTickNext < 1)
-		iTickNext = 1;
-	else if (iTickNext > 50)
-		iTickNext = 50;
+	if ( iNextTick < 1 )
+		iNextTick = 1;
+	else if ( iNextTick > 50 )
+		iNextTick = 50;
 
-	SetTimeout(iTickNext);
+	SetTimeout(iNextTick);
 	EXC_CATCH;
 	return 1;
 }
 
-bool CChar::NPC_LookAtCharGuard( CChar * pChar )
+bool CChar::NPC_LookAtCharGuard(CChar *pChar)
 {
 	ADDTOCALLSTACK("CChar::NPC_LookAtCharGuard");
-	// Does the guard hate the target ?
-
+	// Guard NPC is looking at char
 	if ( !pChar || pChar->IsStatFlag(STATF_INVUL|STATF_DEAD) || pChar->IsPriv(PRIV_GM|PRIV_JAILED) || !pChar->Noto_IsCriminal() )
 		return false;
 
 	if ( !pChar->m_pArea->IsGuarded() )
 	{
-		// At least jeer at the criminal.
+		// At least jeer at the criminal
 		if ( Calc_GetRandVal(10) )
 			return false;
 
-		static UINT const sm_szSpeakGuardJeer[] =
+		static LPCTSTR const sm_szSpeakGuardThreat[] =
 		{
-			DEFMSG_NPC_GUARD_THREAT_1,
-			DEFMSG_NPC_GUARD_THREAT_2,
-			DEFMSG_NPC_GUARD_THREAT_3,
-			DEFMSG_NPC_GUARD_THREAT_4,
-			DEFMSG_NPC_GUARD_THREAT_5
+			g_Cfg.GetDefaultMsg(DEFMSG_NPC_GUARD_THREAT_1),
+			g_Cfg.GetDefaultMsg(DEFMSG_NPC_GUARD_THREAT_2),
+			g_Cfg.GetDefaultMsg(DEFMSG_NPC_GUARD_THREAT_3),
+			g_Cfg.GetDefaultMsg(DEFMSG_NPC_GUARD_THREAT_4),
+			g_Cfg.GetDefaultMsg(DEFMSG_NPC_GUARD_THREAT_5)
 		};
 
 		TCHAR *pszMsg = Str_GetTemp();
-		sprintf(pszMsg, g_Cfg.GetDefaultMsg(sm_szSpeakGuardJeer[Calc_GetRandVal(COUNTOF(sm_szSpeakGuardJeer))]), pChar->GetName());
+		sprintf(pszMsg, sm_szSpeakGuardThreat[Calc_GetRandVal(COUNTOF(sm_szSpeakGuardThreat))], pChar->GetName());
 		Speak(pszMsg);
 		UpdateDir(pChar);
 		return false;
 	}
 
-	static UINT const sm_szSpeakGuardStrike[] =
+	static LPCTSTR const sm_szSpeakGuardStrike[] =
 	{
-		DEFMSG_NPC_GUARD_STRIKE_1,
-		DEFMSG_NPC_GUARD_STRIKE_2,
-		DEFMSG_NPC_GUARD_STRIKE_3,
-		DEFMSG_NPC_GUARD_STRIKE_4,
-		DEFMSG_NPC_GUARD_STRIKE_5
+		g_Cfg.GetDefaultMsg(DEFMSG_NPC_GUARD_STRIKE_1),
+		g_Cfg.GetDefaultMsg(DEFMSG_NPC_GUARD_STRIKE_2),
+		g_Cfg.GetDefaultMsg(DEFMSG_NPC_GUARD_STRIKE_3),
+		g_Cfg.GetDefaultMsg(DEFMSG_NPC_GUARD_STRIKE_4),
+		g_Cfg.GetDefaultMsg(DEFMSG_NPC_GUARD_STRIKE_5)
 	};
 
-	if ( (GetTopDist3D(pChar) > 1) && (g_Cfg.m_fGuardsInstantKill || pChar->Skill_GetBase(SKILL_MAGERY)) )
-		Spell_Teleport(pChar->GetTopPoint(), false, false);
-
-	if ( g_Cfg.m_fGuardsInstantKill || pChar->IsStatFlag(STATF_Conjured) )		// if intant kill is enabled, allow the guard to swing immediately
+	if ( g_Cfg.m_fGuardsInstantKill || pChar->IsStatFlag(STATF_Conjured) )
 	{
-		Speak(g_Cfg.GetDefaultMsg(sm_szSpeakGuardStrike[Calc_GetRandVal(COUNTOF(sm_szSpeakGuardStrike))]));
+		// If intant kill is enabled, make the guard instantly kill the target with a single hit
+		if ( GetTopDist3D(pChar) > 1 )
+			Spell_Teleport(pChar->GetTopPoint(), false, false);
+
+		Speak(sm_szSpeakGuardStrike[Calc_GetRandVal(COUNTOF(sm_szSpeakGuardStrike))]);
 		pChar->Stat_SetVal(STAT_STR, 1);
 		Fight_Hit(pChar);
 	}
 	else if ( !IsStatFlag(STATF_War) || (m_Act_Targ != pChar->GetUID()) )
 	{
-		Speak(g_Cfg.GetDefaultMsg(sm_szSpeakGuardStrike[Calc_GetRandVal(COUNTOF(sm_szSpeakGuardStrike))]));
+		// Otherwise just start an default combat
+		Speak(sm_szSpeakGuardStrike[Calc_GetRandVal(COUNTOF(sm_szSpeakGuardStrike))]);
 		Fight_Attack(pChar, true);
 	}
 	return true;
 }
 
-bool CChar::NPC_LookAtCharMonster( CChar * pChar )
+bool CChar::NPC_LookAtCharMonster(CChar *pChar)
 {
 	ADDTOCALLSTACK("CChar::NPC_LookAtCharMonster");
-	// return:
-	//   true = take new action.
-	//   false = continue with any previous action.
-	// motivation level:
-	//   0 = not at all.
-	//   100 = definitely.
-
+	// Monster NPC is looking at char
 	if ( !m_pNPC )
 		return false;
-	if ( Fight_IsActive() && m_Act_Targ == pChar->GetUID() )	// same targ.
-		return false;
 
-	// Attack if i am stronger.
-	// or i'm just stupid.
-	int iActMotivation = NPC_GetAttackMotivation(pChar);
-	if ( iActMotivation <= 0 )
+	if ( Fight_IsActive() && (m_Act_Targ == pChar->GetUID()) )	// already attacking this char
 		return false;
-	if ( iActMotivation < m_pNPC->m_Act_Motivation )
+	int iMotivation = NPC_GetAttackMotivation(pChar);
+	if ( (iMotivation <= 0) || (iMotivation < m_pNPC->m_Act_Motivation) )
 		return false;
-
-	if ( IsStatFlag(STATF_Hidden) && !NPC_FightMayCast() && GetTopDist3D(pChar) > 1 )
-		return false;	// element of suprise.
-
 	if ( !Fight_Attack(pChar) )
 		return false;
 
-	m_pNPC->m_Act_Motivation = static_cast<BYTE>(iActMotivation);
+	m_pNPC->m_Act_Motivation = static_cast<BYTE>(iMotivation);
 	return true;
 }
 
-bool CChar::NPC_LookAtCharHuman( CChar * pChar )
+bool CChar::NPC_LookAtCharHuman(CChar *pChar)
 {
 	ADDTOCALLSTACK("CChar::NPC_LookAtCharHuman");
+	// Human NPC is looking at char
 	if ( !m_pNPC || pChar->IsStatFlag(STATF_DEAD) )
 		return false;
 
-	bool bCriminal = (pChar->IsStatFlag(STATF_Criminal) || (pChar->Noto_IsEvil() && g_Cfg.m_fGuardsOnMurderers) || pChar->NPC_IsMonster());
-	if ( !bCriminal )
+	bool fCriminal = (pChar->IsStatFlag(STATF_Criminal) || (pChar->Noto_IsEvil() && g_Cfg.m_fGuardsOnMurderers) || pChar->NPC_IsMonster());
+	if ( !fCriminal )
 		return false;
 
-	// Yell for guard if we see someone evil.
+	// Yell for guards if NPC see someone evil
 	if ( NPC_CanSpeak() && m_pArea->IsGuarded() && !Calc_GetRandVal(3) )
 	{
-		Speak(pChar->IsStatFlag(STATF_Criminal) ? g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_SEECRIM) : g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_SEEMONS));
-
-		// Find a guard.
+		Speak(pChar->m_pPlayer ? g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_SEECRIM) : g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_SEEMONS));
 		CallGuards(pChar);
-		if ( IsStatFlag(STATF_War) )
-			return false;
 
-		// run away like a coward.
-		m_Act_Targ = pChar->GetUID();
-		m_atFlee.m_iStepsMax = 20;	// how long should it take to get there.
-		m_atFlee.m_iStepsCurrent = 0;	// how long has it taken ?
-		Skill_Start(NPCACT_FLEE);
-		m_pNPC->m_Act_Motivation = 80;
-		return true;
+		if ( !IsStatFlag(STATF_War) )
+		{
+			// Flee from the threat
+			m_Act_Targ = pChar->GetUID();
+			m_atFlee.m_iStepsMax = 20;
+			m_atFlee.m_iStepsCurrent = 0;
+			Skill_Start(NPCACT_FLEE);
+			m_pNPC->m_Act_Motivation = 80;
+			return true;
+		}
 	}
-
 	return false;
 }
 
-bool CChar::NPC_LookAtCharHealer( CChar * pChar )
+bool CChar::NPC_LookAtCharHealer(CChar *pChar)
 {
 	ADDTOCALLSTACK("CChar::NPC_LookAtCharHealer");
+	// Healer NPC is looking at char
 	if ( !pChar->IsStatFlag(STATF_DEAD) || (pChar->m_pNPC && pChar->m_pNPC->m_bonded) )
 		return false;
 
-	int iDist = GetDist(pChar);
 	UpdateDir(pChar);
 
-	if ( pChar->IsStatFlag(STATF_Insubstantial) )
-	{
-		if ( Calc_GetRandVal(5) || iDist > 3 )
-			return false;
-		Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_HEALER_MANIFEST));
-		return true;
-	}
-
-	if ( iDist > 3 )
+	if ( GetDist(pChar) > 3 )
 	{
 		if ( Calc_GetRandVal(5) )
 			return false;
 		Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_HEALER_RANGE));
 		return true;
 	}
+	else if ( pChar->IsStatFlag(STATF_Insubstantial) )
+	{
+		if ( Calc_GetRandVal(5) )
+			return false;
+		Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_HEALER_MANIFEST));
+		return true;
+	}
 
-	// What noto is this char to me ?
-	NOTO_TYPE Noto = Noto_GetFlag(this);
-	NOTO_TYPE NotoThem = pChar->Noto_GetFlag(this);
+	NOTO_TYPE notoHealer = Noto_GetFlag(this);
+	NOTO_TYPE notoTarg = pChar->Noto_GetFlag(this);
 
-	if ( !IsStatFlag(STATF_Criminal) && NotoThem == NOTO_CRIMINAL )
+	if ( (notoHealer != NOTO_CRIMINAL) && (notoTarg == NOTO_CRIMINAL) )
 	{
 		static LPCTSTR const sm_szHealerRefuseCriminals[] =
 		{
@@ -1096,13 +991,13 @@ bool CChar::NPC_LookAtCharHealer( CChar * pChar )
 			g_Cfg.GetDefaultMsg(DEFMSG_NPC_HEALER_REF_CRIM_3)
 		};
 
-		if ( Calc_GetRandVal(5) || iDist > 3 )
+		if ( Calc_GetRandVal(5) )
 			return false;
 		Speak(sm_szHealerRefuseCriminals[Calc_GetRandVal(COUNTOF(sm_szHealerRefuseCriminals))]);
 		return true;
 	}
 
-	if ( (Noto == NOTO_GOOD) && (NotoThem == NOTO_CRIMINAL || NotoThem == NOTO_EVIL) )
+	if ( (notoHealer == NOTO_GOOD) && (notoTarg == NOTO_EVIL) )
 	{
 		static LPCTSTR const sm_szHealerRefuseEvils[] =
 		{
@@ -1111,13 +1006,13 @@ bool CChar::NPC_LookAtCharHealer( CChar * pChar )
 			g_Cfg.GetDefaultMsg(DEFMSG_NPC_HEALER_REF_EVIL_3)
 		};
 
-		if ( Calc_GetRandVal(5) || iDist > 3 )
+		if ( Calc_GetRandVal(5) )
 			return false;
 		Speak(sm_szHealerRefuseEvils[Calc_GetRandVal(COUNTOF(sm_szHealerRefuseEvils))]);
 		return true;
 	}
 
-	if ( (NotoThem == NOTO_GOOD) && (Noto == NOTO_CRIMINAL || Noto == NOTO_EVIL) )
+	if ( ((notoHealer == NOTO_CRIMINAL) || (notoHealer == NOTO_EVIL)) && (notoTarg == NOTO_GOOD) )
 	{
 		static LPCTSTR const sm_szHealerRefuseGoods[] =
 		{
@@ -1126,7 +1021,7 @@ bool CChar::NPC_LookAtCharHealer( CChar * pChar )
 			g_Cfg.GetDefaultMsg(DEFMSG_NPC_HEALER_REF_GOOD_3)
 		};
 
-		if ( Calc_GetRandVal(5) || iDist > 3 )
+		if ( Calc_GetRandVal(5) )
 			return false;
 		Speak(sm_szHealerRefuseGoods[Calc_GetRandVal(COUNTOF(sm_szHealerRefuseGoods))]);
 		return true;
@@ -1150,28 +1045,27 @@ bool CChar::NPC_LookAtCharHealer( CChar * pChar )
 	return true;
 }
 
-// I might want to go pickup this item ?
-bool CChar::NPC_LookAtItem( CItem * pItem, int iDist )
+bool CChar::NPC_LookAtItem(CItem *pItem)
 {
 	ADDTOCALLSTACK("CChar::NPC_LookAtItem");
-
-	// Checking if I can use hands (Can flags can be now changed in a single character, they are inheriting CCharBase::m_can automatically on CChar's constructor, no need to check CCharBase anymore).
+	// NPC is looking at item
 	if ( !Can(CAN_C_USEHANDS) || !CanSee(pItem) )
 		return false;
 
+	int iDist = GetTopDist(pItem);
 	int iWantThisItem = NPC_WantThisItem(pItem);
+
 	if ( IsTrigUsed(TRIGGER_NPCLOOKATITEM) )
 	{
-		if ( IsTrigUsed(TRIGGER_NPCLOOKATITEM) && !pItem->IsAttr(ATTR_MOVE_NEVER|ATTR_LOCKEDDOWN|ATTR_SECURE) )
+		if ( !pItem->IsAttr(ATTR_MOVE_NEVER|ATTR_LOCKEDDOWN|ATTR_SECURE) )
 		{
+			CScriptTriggerArgs Args(iDist, iWantThisItem, pItem);
+			TRIGRET_TYPE tr = OnTrigger(CTRIG_NPCLookAtItem, this, &Args);
+			if ( tr = TRIGRET_RET_TRUE )
+				return true;
+			if ( tr = TRIGRET_RET_FALSE )
+				return false;
 
-			CScriptTriggerArgs	Args(iDist, iWantThisItem, pItem);
-			switch ( OnTrigger(CTRIG_NPCLookAtItem, this, &Args) )
-			{
-				case  TRIGRET_RET_TRUE:		return true;
-				case  TRIGRET_RET_FALSE:	return false;
-				default:					break;
-			}
 			iWantThisItem = static_cast<int>(Args.m_iN2);
 		}
 	}
@@ -1190,7 +1084,7 @@ bool CChar::NPC_LookAtItem( CItem * pItem, int iDist )
 		// Loot nearby corpses
 		if ( pItem->IsType(IT_CORPSE) )
 		{
-			if ( Memory_FindObj(pItem) )
+			if ( Memory_FindObj(pItem) )	// already looted this corpse
 				return false;
 
 			m_Act_p = pItem->GetTopPoint();
@@ -1200,12 +1094,14 @@ bool CChar::NPC_LookAtItem( CItem * pItem, int iDist )
 		}
 	}
 
-	// Check for doors we can open
+	// Check nearby doors
 	if ( pItem->IsType(IT_DOOR) )
 	{
-		if ( !Calc_GetRandVal(2) || (GetDist(pItem) > 1) || pItem->IsDoorOpen() )
+		if ( !Calc_GetRandVal(2) || (iDist > 1) || pItem->IsDoorOpen() )
 			return false;
-		if ( !Use_Item(pItem) )	// try to open it
+
+		// Try to open it
+		if ( !Use_Item(pItem) )
 			return false;
 
 		// Walk through it
@@ -1218,197 +1114,150 @@ bool CChar::NPC_LookAtItem( CItem * pItem, int iDist )
 			return true;
 		}
 	}
-
 	return false;
 }
 
-
-
-bool CChar::NPC_LookAtChar( CChar *pChar )
+bool CChar::NPC_LookAtChar(CChar *pChar)
 {
 	ADDTOCALLSTACK("CChar::NPC_LookAtChar");
-	// I see a char.
-	// Do I want to do something to this char (more that what i'm already doing ?)
+	// NPC is looking at char
 	// RETURN:
-	//   true = yes i do want to take a new action.
-	//
-
-	if ( !m_pNPC || !pChar || ( pChar == this ) || !CanSeeLOS(pChar,LOS_NB_WINDOWS) )//Flag - we can attack through a window
+	//  true = start new action
+	if ( !m_pNPC || !pChar || (pChar == this) || !CanSeeLOS(pChar, LOS_NB_WINDOWS) )
 		return false;
 
 	if ( IsTrigUsed(TRIGGER_NPCLOOKATCHAR) )
 	{
-		switch ( OnTrigger(CTRIG_NPCLookAtChar, pChar) )
-		{
-			case  TRIGRET_RET_TRUE:		return true;
-			case  TRIGRET_RET_FALSE:	return false;
-			default:					break;
-		}
+		TRIGRET_TYPE tr = OnTrigger(CTRIG_NPCLookAtChar, pChar);
+		if ( tr = TRIGRET_RET_TRUE )
+			return true;
+		if ( tr = TRIGRET_RET_FALSE )
+			return false;
 	}
 
-	if ( NPC_IsOwnedBy( pChar, false ))
+	if ( NPC_IsOwnedBy(pChar, false) )
 	{
-		// follow my owner again. (Default action)
+		// Follow its owner (default action)
 		m_Act_Targ = pChar->GetUID();
 		m_pNPC->m_Act_Motivation = 50;
-		Skill_Start(Skill_GetActive() == NPCACT_FOLLOW_TARG ? NPCACT_FOLLOW_TARG : NPCACT_GUARD_TARG);
+		Skill_Start((Skill_GetActive() == NPCACT_FOLLOW_TARG) ? NPCACT_FOLLOW_TARG : NPCACT_GUARD_TARG);
 		return true;
 	}
 
-	else
+	if ( IsStatFlag(STATF_DEAD) )
+		return false;
+
+	// Try to speak with players
+	if ( pChar->m_pPlayer && !IsStatFlag(STATF_War) && ((Skill_GetActive() == SKILL_NONE) || (Skill_GetActive() == NPCACT_WANDER)) && !Memory_FindObjTypes(pChar, MEMORY_SPEAK) )
 	{
-		// initiate a conversation ?
-		if ( ! IsStatFlag( STATF_War ) &&
-			( Skill_GetActive() == SKILL_NONE || Skill_GetActive() == NPCACT_WANDER ) && // I'm idle
-			pChar->m_pPlayer &&
-			! Memory_FindObjTypes( pChar, MEMORY_SPEAK ))
+		if ( IsTrigUsed(TRIGGER_NPCSEENEWPLAYER) )
 		{
-			if ( IsTrigUsed(TRIGGER_NPCSEENEWPLAYER) )
+			if ( OnTrigger(CTRIG_NPCSeeNewPlayer, pChar) != TRIGRET_RET_TRUE )
 			{
-				if ( OnTrigger( CTRIG_NPCSeeNewPlayer, pChar ) != TRIGRET_RET_TRUE )
-				{
-					// record that we attempted to speak to them.
-					CItemMemory * pMemory = Memory_AddObjTypes( pChar, MEMORY_SPEAK );
-					if ( pMemory )
-						pMemory->m_itEqMemory.m_Action = NPC_MEM_ACT_FIRSTSPEAK;
-					// m_Act_Hear_Unknown = 0;
-				}
+				CItemMemory *pMemory = Memory_AddObjTypes(pChar, MEMORY_SPEAK);
+				if ( pMemory )
+					pMemory->m_itEqMemory.m_Action = NPC_MEM_ACT_FIRSTSPEAK;
 			}
 		}
 	}
-	if ( IsStatFlag(STATF_DEAD) )
-		return false;
-	switch ( m_pNPC->m_Brain )	// my type of brain
+
+	switch ( m_pNPC->m_Brain )
 	{
 		case NPCBRAIN_GUARD:
-			// Guards should look around for criminals or nasty creatures.
-			if ( NPC_LookAtCharGuard( pChar ))
-				return true;
-			break;
-
+			return NPC_LookAtCharGuard(pChar);
 		case NPCBRAIN_MONSTER:
 		case NPCBRAIN_BERSERK:
 		case NPCBRAIN_DRAGON:
-			if ( NPC_LookAtCharMonster(pChar) )
-				return true;
-			break;
-
+			return NPC_LookAtCharMonster(pChar);
 		case NPCBRAIN_HEALER:
-			// Healers should look around for ghosts.
-			if ( NPC_LookAtCharHealer( pChar ))
-				return( true );
-			if ( NPC_LookAtCharHuman( pChar ))
-				return( true );
-			break;
-
+			if ( NPC_LookAtCharHealer(pChar) )
+				return true;
+			// fall through
 		case NPCBRAIN_BANKER:
 		case NPCBRAIN_VENDOR:
 		case NPCBRAIN_ANIMAL_TRAINER:
 		case NPCBRAIN_ANIMAL:
 		case NPCBRAIN_HUMAN:
-			if ( NPC_LookAtCharHuman(pChar) )
-				return true;
-			break;
-
+			return NPC_LookAtCharHuman(pChar);
 		default:
-			break;
+			return false;
 	}
-
-	return( false );
 }
 
-bool CChar::NPC_LookAround( bool fForceCheckItems )
+bool CChar::NPC_LookAround(bool fCheckItems)
 {
 	ADDTOCALLSTACK("CChar::NPC_LookAround");
-	// Take a look around for other people/chars.
-	// We may be doing something already. So check current action motivation level.
+	// NPC is looking around for items/chars
+	// It may be doing something already, so check current action motivation level
 	// RETURN:
-	//   true = found something better to do.
-
-	CSector *pSector = GetTopSector();
-	if ( !m_pNPC || !pSector )
+	//  true = found something better to do
+	if ( !m_pNPC )
 		return false;
 
-	if ( m_pNPC->m_Brain == NPCBRAIN_BERSERK || !Calc_GetRandVal(6) )
-		SoundChar(CRESND_RAND);		// Make some random noise
+	CSector *pSector = GetTopSector();
+	if ( !pSector )
+		return false;
 
-	int iRange = GetSight();
-	int iRangeBlur = UO_MAP_VIEW_SIGHT;
+	if ( (m_pNPC->m_Brain == NPCBRAIN_BERSERK) || !Calc_GetRandVal(6) )
+		SoundChar(CRESND_RAND);		// make some random noise
 
-	// If I can't move don't look to far.
-	CCharBase *pCharDef = Char_GetDef();
-	if ( !pCharDef->Can(CAN_C_SWIM|CAN_C_WALK|CAN_C_FLY|CAN_C_HOVER|CAN_C_RUN) || IsStatFlag(STATF_Freeze|STATF_Stone) )
+	int iViewSight = GetSight();
+
+	if ( !Char_GetDef()->Can(CAN_C_SWIM|CAN_C_WALK|CAN_C_FLY|CAN_C_HOVER|CAN_C_RUN) || IsStatFlag(STATF_Freeze|STATF_Stone) )
 	{
-		if ( !NPC_FightMayCast() )	// And i have no distance attack.
-			iRange = iRangeBlur = 2;
+		// Don't look too far it NPC can't move and can't cast spells at distance
+		if ( !NPC_FightMayCast() )
+			iViewSight = 2;
 	}
 	else
 	{
-		// I'm mobile. do basic check if i would move here first.
 		if ( !NPC_CheckWalkHere(GetTopPoint(), m_pArea) )
 		{
-			// I should move. Someone lit a fire under me.
+			// NPC stepped on fire/trap/etc and should run away
 			m_Act_p = GetTopPoint();
 			m_Act_p.Move(static_cast<DIR_TYPE>(Calc_GetRandVal(DIR_QTY)));
 			NPC_WalkToPoint(true);
 			return true;
 		}
-
-		if ( Stat_GetAdjusted(STAT_INT) < 50 )
-			iRangeBlur /= 2;
 	}
 
-	// If sector is too complex, lower the number of chars we look at to keep some performance
-	if ( pSector->GetCharComplexity() > (g_Cfg.m_iMaxCharComplexity / 2) )
-		iRange /= 4;
+	// If sector is too complex, lower the view range to avoid waste too much server performance
+	if ( pSector->GetCharComplexity() > g_Cfg.m_iMaxCharComplexity / 2 )
+		iViewSight /= 4;
 
-	// Any interesting chars here ?
-	int iDist = 0;
+	// Check nearby chars
 	CChar *pChar = NULL;
-	CWorldSearch AreaChars(GetTopPoint(), iRange);
+	CWorldSearch AreaChars(GetTopPoint(), iViewSight);
 	for (;;)
 	{
 		pChar = AreaChars.GetChar();
 		if ( !pChar )
 			break;
-		if ( pChar == this )	// just myself.
+		if ( pChar == this )
 			continue;
-
-		iDist = GetTopDist3D(pChar);
-		if ( iDist > iRangeBlur )
-		{
-			if ( Calc_GetRandVal(iDist) )
-				continue;	// can't see them.
-		}
 		if ( NPC_LookAtChar(pChar) )
 			return true;
 	}
 
-	// Check the ground for good stuff.
-	if ( !fForceCheckItems && (Stat_GetAdjusted(STAT_INT) > 10) && !IsSkillBase(Skill_GetActive()) && !Calc_GetRandVal(3) )
-		fForceCheckItems = true;
+	// Check nearby items
+	if ( !fCheckItems && (Stat_GetAdjusted(STAT_INT) > 10) && !IsSkillBase(Skill_GetActive()) && !Calc_GetRandVal(4) )
+		fCheckItems = true;
 
-	if ( fForceCheckItems )
+	if ( fCheckItems )
 	{
 		CItem *pItem = NULL;
-		CWorldSearch AreaItems(GetTopPoint(), iRange);
+		CWorldSearch AreaItems(GetTopPoint(), iViewSight);
 		for (;;)
 		{
 			pItem = AreaItems.GetItem();
 			if ( !pItem )
 				break;
-
-			iDist = GetTopDist3D(pItem);
-			if ( (iDist > iRangeBlur) && Calc_GetRandVal(iDist) )
-				continue;	// can't see them.
-			if ( abs(GetTopZ() - pItem->GetTopZ()) > 5 )
+			if ( abs(pItem->GetTopZ() - GetTopZ()) > 5 )
 				continue;
-			if ( NPC_LookAtItem(pItem, iDist) )
+			if ( NPC_LookAtItem(pItem) )
 				return true;
 		}
 	}
-
-	// Move stuff that is in our way ? (chests etc.)
 	return false;
 }
 
@@ -1416,27 +1265,25 @@ void CChar::NPC_Act_Wander()
 {
 	ADDTOCALLSTACK("CChar::NPC_Act_Wander");
 	// NPCACT_WANDER
-	// just wander aimlessly. (but within bounds)
-	// Stop wandering and re-eval frequently
-
+	// Just wander aimlessly
 	if ( Can(CAN_C_NONMOVER) )
 		return;
-	if ( ! Calc_GetRandVal( 7 + ( Stat_GetVal(STAT_DEX) / 30 )))
+
+	if ( !Calc_GetRandVal(7 + (Stat_GetVal(STAT_DEX) / 30)) )
 	{
-		// Stop wandering ?
-		Skill_Start( SKILL_NONE );
+		// Stop wandering
+		Skill_Start(SKILL_NONE);
 		return;
 	}
-
-	if ( Calc_GetRandVal( 2 ) )
+	else if ( Calc_GetRandVal(2) )
 	{
 		if ( NPC_LookAround() )
 			return;
 	}
 
-	// Staggering Walk around.
+	// Go back to home point when walk too far
 	m_Act_p = GetTopPoint();
-	m_Act_p.Move( GetDirTurn( m_dirFace, 1 - Calc_GetRandVal(3)));
+	m_Act_p.Move(GetDirTurn(m_dirFace, 1 - Calc_GetRandVal(3)));
 
 	if ( m_pNPC->m_Home_Dist_Wander && m_ptHome.IsValidPoint() )
 	{
@@ -1453,91 +1300,88 @@ void CChar::NPC_Act_Wander()
 void CChar::NPC_Act_Guard()
 {
 	ADDTOCALLSTACK("CChar::NPC_Act_Guard");
-	// Protect our target or owner. (m_Act_Targ)
-	if ( m_pNPC == NULL )
+	// NPCACT_GUARD_TARG
+	// Protect the target if it's in a fight (m_Act_Targ)
+	if ( !m_pNPC )
 		return;
 
-	CChar * pChar = m_Act_Targ.CharFind();
-	if ( pChar != NULL && pChar != this && CanSeeLOS(pChar, LOS_NB_WINDOWS) )
+	CChar *pChar = m_Act_Targ.CharFind();
+	if ( pChar && (pChar != this) && CanSee(pChar) )
 	{
-		if ( pChar->Fight_IsActive() )	// protect the target if they're in a fight
+		if ( pChar->Fight_IsActive() )
 		{
-			if ( Fight_Attack( pChar->m_Fight_Targ.CharFind() ))
+			if ( Fight_Attack(pChar->m_Fight_Targ.CharFind()) )
 				return;
 		}
 	}
 
-	// Target is out of range or doesn't need protecting, so just follow for now
-	//NPC_LookAtChar(pChar);
+	// Target is not fighting, so just follow him
 	NPC_Act_Follow();
 }
 
-bool CChar::NPC_Act_Follow( bool fFlee, int maxDistance, bool fMoveAway )
+bool CChar::NPC_Act_Follow(bool fFlee, int iMaxDist, bool fMoveAway)
 {
 	ADDTOCALLSTACK("CChar::NPC_Act_Follow");
-	// Follow our target or owner (m_Act_Targ), we may be fighting (m_Fight_Targ).
-	// false = can't follow any more, give up.
+	// NPCACT_FOLLOW_TARG
+	// Follow the target (m_Act_Targ / m_Fight_Targ)
+	// RETURN:
+	//  true = keep following
+	//  false = can't follow anymore, give up
 	if ( Can(CAN_C_NONMOVER) )
 		return false;
 
 	EXC_TRY("NPC_Act_Follow")
-	CChar * pChar = Fight_IsActive() ? m_Fight_Targ.CharFind() : m_Act_Targ.CharFind();
-	if ( pChar == NULL )
+	CChar *pChar = Fight_IsActive() ? m_Fight_Targ.CharFind() : m_Act_Targ.CharFind();
+	if ( !pChar )
 	{
-		// free to do as i wish !
-		Skill_Start( SKILL_NONE );
-		return( false );
+		Skill_Start(SKILL_NONE);
+		return false;
 	}
 
 	EXC_SET("Trigger");
 	if ( IsTrigUsed(TRIGGER_NPCACTFOLLOW) )
 	{
-		CScriptTriggerArgs Args( fFlee, maxDistance, fMoveAway );
-		switch ( OnTrigger( CTRIG_NPCActFollow, pChar, &Args ) )
-		{
-			case TRIGRET_RET_TRUE:	return false;
-			case TRIGRET_RET_FALSE:	return true;
-			default:				break;
-		}
+		CScriptTriggerArgs Args(fFlee, iMaxDist, fMoveAway);
+		TRIGRET_TYPE tr = OnTrigger(CTRIG_NPCActFollow, pChar, &Args);
+		if ( tr = TRIGRET_RET_TRUE )
+			return false;
+		if ( tr = TRIGRET_RET_FALSE )
+			return true;
 
-		fFlee			= (Args.m_iN1 != 0);
-		maxDistance		= static_cast<int>(Args.m_iN2);
-		fMoveAway	= (Args.m_iN3 != 0);
+		fFlee = static_cast<bool>(Args.m_iN1);
+		iMaxDist = static_cast<int>(Args.m_iN2);
+		fMoveAway = static_cast<bool>(Args.m_iN3);
 	}
 
 	EXC_SET("CanSee");
-	// Have to be able to see target to follow.
-	if ( CanSee( pChar ))
+	if ( CanSee(pChar) )
 	{
+		// Keep following the target if can see it
 		m_Act_p = pChar->GetTopPoint();
 	}
 	else
 	{
-		// Monster may get confused because he can't see you.
-		// There is a chance they could forget about you if hidden for a while.
-		if ( fFlee || !Calc_GetRandVal( 1 + (( 100 - Stat_GetAdjusted(STAT_INT)) / 20 )))
-			return( false );
+		// Can't see the target anymore, so eventually stop following it
+		if ( fFlee || !Calc_GetRandVal(1 + ((100 - Stat_GetAdjusted(STAT_INT)) / 20)) )
+			return false;
 	}
 
 	EXC_SET("Distance checks");
-	int dist = GetTopPoint().GetDist( m_Act_p );
-	if ( dist > UO_MAP_VIEW_RADAR )		// too far away ?
-		return( false );
+	int iDist = GetTopPoint().GetDist(m_Act_p);
+	if ( iDist > UO_MAP_VIEW_RADAR )
+		return false;
 
 	if ( fMoveAway )
 	{
-		if ( dist < maxDistance )
+		if ( iDist < iMaxDist )
 			fFlee = true;	// start moving away
 	}
 	else
 	{
-		if ( fFlee )
-		{
-			if ( dist >= maxDistance )
-				return( false );
-		}
-		else if ( dist <= maxDistance )
-			return( true );
+		if ( fFlee && (iDist >= iMaxDist) )
+			return false;
+		if ( iDist <= iMaxDist )
+			return true;
 	}
 
 	EXC_SET("Fleeing");
@@ -1545,142 +1389,66 @@ bool CChar::NPC_Act_Follow( bool fFlee, int maxDistance, bool fMoveAway )
 	{
 		CPointMap ptOld = m_Act_p;
 		m_Act_p = GetTopPoint();
-		m_Act_p.Move( GetDirTurn( m_Act_p.GetDir( ptOld ), 4 + 1 - Calc_GetRandVal(3)));
-		NPC_WalkToPoint( dist > 3 );
-		m_Act_p = ptOld;	// last known point of the enemy.
-		return( true );
+		m_Act_p.Move(GetDirTurn(m_Act_p.GetDir(ptOld), 4 + 1 - Calc_GetRandVal(3)));
+		NPC_WalkToPoint(iDist > 3);
+		m_Act_p = ptOld;	// last known point of the target
+		return true;
 	}
 
-	EXC_SET("WalkToPoint 1");
-	NPC_WalkToPoint( IsStatFlag( STATF_War ) ? true : ( dist > 3 ));
-	return( true );
+	EXC_SET("WalkToPoint");
+	NPC_WalkToPoint(IsStatFlag(STATF_War) || (iDist > 3));
+	return true;
 
 	EXC_CATCH;
-	return( false );
+	return false;
 }
 
-bool CChar::NPC_FightArchery( CChar * pChar )
+bool CChar::NPC_FightArchery(CChar *pChar)
 {
 	ADDTOCALLSTACK("CChar::NPC_FightArchery");
+	// Check if NPC can fight using archery
+	// RETURN:
+	//  false = switch to melee combat
 	if ( !g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_RANGED) )
-		return( false );
+		return false;
 
-	int iMinDist = 0;
-	int iMaxDist = 0;
-
-	// determine how far we can shoot with this bow
 	CItem *pWeapon = m_uidWeapon.ItemFind();
-	if ( pWeapon != NULL )
-	{
-		iMinDist = pWeapon->RangeH();
-		iMaxDist = pWeapon->RangeL();
-	}
-
-	// if range is not set on the weapon, default to ini settings
-	if ( !iMaxDist || (iMinDist == 0 && iMaxDist == 1) )
+	int iMinDist = pWeapon ? pWeapon->RangeH() : g_Cfg.m_iArcheryMinDist;
+	int iMaxDist = pWeapon ? pWeapon->RangeL() : g_Cfg.m_iArcheryMaxDist;
+	if ( !iMaxDist || ((iMinDist == 0) && (iMaxDist == 1)) )
 		iMaxDist = g_Cfg.m_iArcheryMaxDist;
 	if ( !iMinDist )
 		iMinDist = g_Cfg.m_iArcheryMinDist;
 
-	int iDist = GetTopDist3D( pChar );
-	if ( iDist > iMaxDist )	// way too far away . close in.
-		return( false );
-
-	if ( iDist > iMinDist )
-		return( true );		// always use archery if distant enough
-
-	if ( !Calc_GetRandVal( 2 ) )	// move away
+	int iDist = GetTopDist(pChar);
+	if ( iDist < iMinDist )
 	{
-		// Move away
-		NPC_Act_Follow( false, iMaxDist, true );
-		return( true );
-	}
-
-	// Fine here.
-	return( true );
-}
-
-// Retrieves all the spells this character has to spells[x] list
-int CCharNPC::Spells_GetCount()
-{
-	ADDTOCALLSTACK("CCharNPC::Spells_GetAll");
-	if (m_spells.empty())
-		return -1;
-	return m_spells.size();
-}
-
-// Retrieve the spell stored at index = n
-SPELL_TYPE CCharNPC::Spells_GetAt(BYTE id)
-{
-	ADDTOCALLSTACK("CCharNPC::Spells_GetAt");
-	if (m_spells.empty())
-		return SPELL_NONE;
-	if (id >= m_spells.size())
-		return SPELL_NONE;
-	Spells refSpell = m_spells.at(id);
-	if (refSpell.id)
-		return refSpell.id;
-	return SPELL_NONE;
-}
-
-// Delete the spell at the given index
-bool CCharNPC::Spells_DelAt(BYTE id)
-{
-	ADDTOCALLSTACK("CCharNPC::Spells_DelAt");
-	if (m_spells.empty())
+		// Target is too close, switch to melee combat
 		return false;
-	Spells refSpell = m_spells.at(id);
-	if (refSpell.id)
+	}
+	else if ( iDist > iMaxDist )
 	{
-		std::vector<Spells>::iterator it = m_spells.begin() + id;
-		m_spells.erase(it);
-		return true;
+		// Target is too far, try to get closer
+		NPC_Act_Follow(false, iMaxDist, false);
 	}
-	return false;
-}
-
-// Add this spell to this NPC's list
-bool CCharNPC::Spells_Add(SPELL_TYPE spell)
-{
-	ADDTOCALLSTACK("CCharNPC::Spells_Add");
-	if (Spells_FindSpell(spell) >= 0)
-		return false;
-	CSpellDef * pSpell = g_Cfg.GetSpellDef(spell);
-	if (!pSpell)
-		return false;
-	Spells refSpell;
-	refSpell.id = spell;
-	m_spells.push_back(refSpell);
 	return true;
 }
 
-// Retrieves the indexed id for the given spell, if found.
-int CCharNPC::Spells_FindSpell(SPELL_TYPE spellID)
-{
-	ADDTOCALLSTACK("CCharNPC::Spells_FindSpell");
-	for ( size_t i = 0; i < m_spells.size(); i++ )
-	{
-		Spells refSpell = m_spells.at(i);
-		if ( refSpell.id == spellID )
-			return i;
-	}
-	return -1;
-}
-
-// Add all spells found on spellbooks to the NPC internal spell list
 void CChar::NPC_GetAllSpellbookSpells()
 {
 	ADDTOCALLSTACK("CChar::NPC_GetAllSpellbookSpells");
-	// Search in hands
+	// Add spells found on spellbooks to the NPC internal spell list
+
+	// Search on hands
 	for ( CItem *pBook = GetContentHead(); pBook != NULL; pBook = pBook->GetNext() )
 	{
 		if ( pBook->IsTypeSpellbook() )
 			NPC_AddSpellsFromBook(pBook);
 	}
 
-	// Search in the top level of backpack
+	// Search on backpack
 	CItemContainer *pPack = GetContainer(LAYER_PACK);
-	if (pPack)
+	if ( pPack )
 	{
 		for ( CItem *pBook = pPack->GetContentHead(); pBook != NULL; pBook = pBook->GetNext() )
 		{
@@ -1690,18 +1458,18 @@ void CChar::NPC_GetAllSpellbookSpells()
 	}
 }
 
-void CChar::NPC_AddSpellsFromBook(CItem * pBook)
+void CChar::NPC_AddSpellsFromBook(CItem *pBook)
 {
 	ADDTOCALLSTACK("CChar::NPC_AddSpellsFromBook");
 	CItemBase *pBookDef = pBook->Item_GetDef();
 	if ( !pBookDef )
 		return;
 
-	DWORD min = pBookDef->m_ttSpellbook.m_Offset + 1;
-	DWORD max = pBookDef->m_ttSpellbook.m_Offset + pBookDef->m_ttSpellbook.m_MaxSpells;
+	DWORD dwMin = pBookDef->m_ttSpellbook.m_Offset + 1;
+	DWORD dwMax = pBookDef->m_ttSpellbook.m_Offset + pBookDef->m_ttSpellbook.m_MaxSpells;
 
 	SPELL_TYPE spell = SPELL_NONE;
-	for ( DWORD i = min; i <= max; i++ )
+	for ( DWORD i = dwMin; i <= dwMax; ++i )
 	{
 		spell = static_cast<SPELL_TYPE>(i);
 		if ( pBook->IsSpellInBook(spell) )
@@ -1709,237 +1477,219 @@ void CChar::NPC_AddSpellsFromBook(CItem * pBook)
 	}
 }
 
-// cast a spell if i can ?
-// or i can throw or use archery ?
-// RETURN:
-//  false = revert to melee type fighting.
-bool CChar::NPC_FightMagery(CChar * pChar)
+bool CChar::NPC_FightMagery(CChar *pChar)
 {
 	ADDTOCALLSTACK("CChar::NPC_FightMagery");
-	if (!NPC_FightMayCast(false))	// not checking skill here since it will do a search later and it's an expensive function.
-		return(false);
+	// Check if NPC can fight using magery
+	// RETURN:
+	//  false = switch to melee combat
 
-	int iSpellCount = m_pNPC->Spells_GetCount();
-	CItem * pWand = LayerFind(LAYER_HAND1);		//Try to get a working wand.
-	CObjBase * pTarg = pChar;
-	if (pWand)
-	{
-		if (pWand->GetType() != IT_WAND || pWand->m_itWeapon.m_spellcharges <= 0)// If the item is really a wand and have it charges it's a valid wand, if not ... we get rid of it.
-			pWand = NULL;
-	}
-	if (iSpellCount < 1 && !pWand)
+	if ( !NPC_FightMayCast(false) )		// not checking skill here since it will do a search later and it's an expensive function
 		return false;
 
-	int iDist = GetTopDist3D(pChar);
-	if (iDist >((UO_MAP_VIEW_SIGHT * 3) / 4))	// way too far away . close in.
-		return(false);
+	int iSpellCount = m_pNPC->Spells_GetCount();
+	if ( iSpellCount < 1 )
+		return false;
 
-	if (iDist <= 1 &&
-		Skill_GetBase(SKILL_TACTICS) > 200 &&
-		!Calc_GetRandVal(2))
-	{
-		// Within striking distance.
-		// Stand and fight for a bit.
-		return(false);
-	}
-	int skill = SKILL_NONE;
-	int iStatInt = Stat_GetBase(STAT_INT);
-	int mana = Stat_GetVal(STAT_INT);
-	int iChance = ((mana >= (iStatInt / 2)) ? mana : (iStatInt - mana));
+	int iDist = GetTopDist(pChar);
+	if ( (iDist < 3) || (iDist > GetSight()) )
+		return false;
 
-	CObjBase * pSrc = this;
-	if (Calc_GetRandVal(iChance) < iStatInt / 4)
+	// Chance to cast
+	int iInt = Stat_GetBase(STAT_INT);
+	int iMana = Stat_GetVal(STAT_INT);
+	int iChance = ((iMana >= (iInt / 2)) ? iMana : (iInt - iMana));
+	if ( Calc_GetRandVal(iChance) < iInt / 4 )
 	{
-		// we failed this test, but we could be casting next time
-		// back off from the target a bit
-		if (mana > (iStatInt / 3) && Calc_GetRandVal(iStatInt))
+		// Failed, but NPC could be casting next time
+		if ( (iMana > iInt / 3) && Calc_GetRandVal(iInt) )
 		{
-			if (iDist < 4 || iDist > 8)	// Here is fine?
+			if ( iDist < 4 )
 			{
-				NPC_Act_Follow(false, Calc_GetRandVal(3) + 2, true);
+				// Target is too close, try walk away a bit
+				NPC_Act_Follow(false, 4, true);
 			}
-			return(true);
+			else if ( iDist > 8 )
+			{
+				// Target is too far, try to get closer
+				NPC_Act_Follow(false, 0, false);
+			}
+			return true;
 		}
-		return(false);
+		return false;
 	}
 
-	// We have the total count of spells inside iSpellCount, so we use 'iRandSpell' to store a rand representing the spell that will be casted
-	BYTE iRandSpell = pWand ? 1 : 0;	// Having wand adding +1 spell to the total count
-	iRandSpell += static_cast<BYTE>(Calc_GetRandVal2(0, iSpellCount - 1));	// spells are being stored using a vector, so it's assumed to be zero-based.
+	CObjBase *pSrc = this;
+	CObjBase *pTarg = pChar;
+	size_t iRandSpell = static_cast<size_t>(Calc_GetRandVal2(0, iSpellCount - 1));	// spells are stored on a zero-based vector
 
-	if (pWand && (iRandSpell > iSpellCount))	// if iRandSpell > iSpellCount then we've got the roll pointing to use the wand's spell.
+	CItem *pWand = LayerFind(LAYER_HAND1);
+	if ( pWand && pWand->IsType(IT_WAND) )
 	{
-		SPELL_TYPE spell = static_cast<SPELL_TYPE>(pWand->m_itWeapon.m_spell);
-		const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(spell);
-		if (!pSpellDef)	// wand check failed ... we go on melee, next cast try might select another type of spell :)
-			return false;
-		pSrc = pWand;	// Seting pWand as SRC, this will force @SpellCast to have the wand as ARGO.
-		if (NPC_FightCast(pTarg, pWand, spell))
-			goto BeginCast;	//if can cast this spell we jump the for() and go directly to it's casting.
+		if ( pWand->m_itWeapon.m_spellcharges > 0 )
+		{
+			SPELL_TYPE spell = static_cast<SPELL_TYPE>(pWand->m_itWeapon.m_spell);
+			const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(spell);
+			if ( pSpellDef )
+			{
+				pSrc = pWand;		// set pWand as SRC to make @SpellCast trigger use it as ARGO
+				if ( NPC_FightCast(pTarg, pWand, spell) )
+					goto BeginCast;
+			}
+		}
+
+		// Wand is out of charge or doesn't have a valid spell, so unequip it
+		ItemBounce(pWand);
 	}
 
-	for (; iRandSpell < iSpellCount; iRandSpell++)
+	int iSkill, iSkillReq;
+	for ( ; iRandSpell < iSpellCount; ++iRandSpell )
 	{
 		SPELL_TYPE spell = m_pNPC->Spells_GetAt(iRandSpell);
-		const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(spell);
-		if (!pSpellDef)	//If it reached here it should exist, checking anyway.
+		const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(spell);
+		if ( !pSpellDef )
 			continue;
 
-		int iSkillReq = 0;
-		if (!pSpellDef->GetPrimarySkill(&skill, &iSkillReq))
-			skill = SKILL_MAGERY;
-
-		if (Skill_GetBase(static_cast<SKILL_TYPE>(skill)) < iSkillReq)
+		if ( !pSpellDef->GetPrimarySkill(&iSkill, &iSkillReq) )
+			iSkill = SKILL_MAGERY;
+		if ( Skill_GetBase(static_cast<SKILL_TYPE>(iSkill)) < iSkillReq )
 			continue;
-		if (NPC_FightCast(pTarg, this, spell, static_cast<SKILL_TYPE>(skill)))
-			goto BeginCast;	//if can cast this spell we jump the for() and go directly to it's casting.
-	}
-	return false;	// No castable spell found, go back on melee.
 
-	BeginCast:	//Start casting
-	// KRJ - give us some distance
-	// if the opponent is close, get away from him
-	if (mana > iStatInt / 3 && Calc_GetRandVal(iStatInt << 1))
-	{
-		if (iDist < 4 || iDist > 8)	// Here is fine?
-		{
-			NPC_Act_Follow(false, 5, true);
-		}
+		if ( NPC_FightCast(pTarg, this, spell, static_cast<SKILL_TYPE>(iSkill)) )
+			goto BeginCast;
 	}
-	else NPC_Act_Follow();
 
+	// Can't cast any spell, switch to melee combat
+	return false;
+
+BeginCast:
 	Reveal();
-
 	m_Act_Targ = pTarg->GetUID();
 	m_Act_TargPrv = pSrc->GetUID();
 	m_Act_p = pTarg->GetTopPoint();
-
-	// Calculate the difficulty
-	return Skill_Start(static_cast<SKILL_TYPE>(skill)); 
+	return Skill_Start(static_cast<SKILL_TYPE>(iSkill));
 }
 
-// I'm able to use magery
-// test if I can cast this spell
-// Specific behaviours for each spell and spellflag
-bool CChar::NPC_FightCast(CObjBase * &pTarg, CObjBase * pSrc, SPELL_TYPE &spell, SKILL_TYPE skill)
+bool CChar::NPC_FightCast(CObjBase *&pTarg, CObjBase *pSrc, SPELL_TYPE &spell, SKILL_TYPE skill)
 {
 	ADDTOCALLSTACK("CChar::NPC_FightCast");
-	const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(spell);
-	if (skill == SKILL_NONE)
+	// NPC can fight using magery, so check if it can cast the spell
+
+	const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(spell);
+	if ( !pTarg || !pSpellDef || pSpellDef->IsSpellType(SPELLFLAG_PLAYERONLY) )
+		return false;
+
+	if ( skill == SKILL_NONE )
 	{
-		int iSkillTest = 0;
-		if (!pSpellDef->GetPrimarySkill(&iSkillTest, NULL))
-			iSkillTest = SKILL_MAGERY;
-		skill = static_cast<SKILL_TYPE>(iSkillTest);
+		int iSkill;
+		if ( !pSpellDef->GetPrimarySkill(&iSkill) )
+			iSkill = SKILL_MAGERY;
+		skill = static_cast<SKILL_TYPE>(iSkill);
 	}
-	if (!Spell_CanCast(spell, true, pSrc, false))
-		return false;
-	if (pSpellDef->IsSpellType(SPELLFLAG_PLAYERONLY))
+
+	if ( !Spell_CanCast(spell, true, pSrc, false) )
 		return false;
 
-	if (!pSpellDef->IsSpellType(SPELLFLAG_HARM))
+	if ( !pSpellDef->IsSpellType(SPELLFLAG_HARM) )
 	{
-		if (pSpellDef->IsSpellType(SPELLFLAG_GOOD))
+		if ( pSpellDef->IsSpellType(SPELLFLAG_GOOD) )
 		{
-			if (pSpellDef->IsSpellType(SPELLFLAG_TARG_CHAR) && pTarg->IsChar())
+			if ( pSpellDef->IsSpellType(SPELLFLAG_TARG_CHAR) && pTarg->IsChar() )
 			{
-				//	help self or friends if needed. support 3 friends + self for castings
-				bool	bSpellSuits = false;
-				CChar	*pFriend[4];
-				int		iFriendIndex = 0;
-				CChar	*pTarget = pTarg->GetUID().CharFind();
-
+				// Help itself or friends when needed
+				CChar *pFriend[4];
 				pFriend[0] = this;
 				pFriend[1] = pFriend[2] = pFriend[3] = NULL;
-				iFriendIndex = 1;
+				int iFriendIndex = 1;
 
-				if (NPC_GetAiFlags()&NPC_AI_COMBAT)
+				CChar *pTarget = pTarg->GetUID().CharFind();
+				if ( NPC_GetAiFlags() & NPC_AI_COMBAT )
 				{
-					//	search for the neariest friend in combat
-					CWorldSearch AreaChars(GetTopPoint(), UO_MAP_VIEW_SIGHT);
+					CWorldSearch AreaChars(GetTopPoint(), GetSight());
 					for (;;)
 					{
 						pTarget = AreaChars.GetChar();
-						if (!pTarget)
+						if ( !pTarget )
 							break;
 
 						CItemMemory *pMemory = pTarget->Memory_FindObj(pTarg);
-						if (pMemory && pMemory->IsMemoryTypes(MEMORY_FIGHT | MEMORY_HARMEDBY | MEMORY_IRRITATEDBY))
+						if ( pMemory && pMemory->IsMemoryTypes(MEMORY_FIGHT|MEMORY_HARMEDBY|MEMORY_IRRITATEDBY) )
 						{
 							pFriend[iFriendIndex++] = pTarget;
-							if (iFriendIndex >= 4) break;
+							if ( iFriendIndex >= 4 )
+								break;
 						}
 					}
 				}
 
-				//	i cannot cast this on self. ok, then friends only
-				if (pSpellDef->IsSpellType(SPELLFLAG_TARG_NOSELF))
+				// Can't cast this on self, so cast it on friends
+				if ( pSpellDef->IsSpellType(SPELLFLAG_TARG_NOSELF) )
 				{
 					pFriend[0] = pFriend[1];
 					pFriend[1] = pFriend[2];
 					pFriend[2] = pFriend[3];
 					pFriend[3] = NULL;
 				}
-				for (iFriendIndex = 0; iFriendIndex < 4; iFriendIndex++)
+
+				bool fSpellSuits = false;
+				for ( iFriendIndex = 0; iFriendIndex < 4; ++iFriendIndex )
 				{
 					pTarget = pFriend[iFriendIndex];
-					if (!pTarget) 
+					if ( !pTarget )
 						break;
-					//	check if the target need that
-					switch (spell)
+
+					// Check if the target need that
+					switch ( spell )
 					{
-						// Healing has the top priority?
+						// Healing is top priority
 						case SPELL_Heal:
 						case SPELL_Great_Heal:
-							if (pTarget->Stat_GetVal(STAT_STR) < pTarget->Stat_GetAdjusted(STAT_STR) / 3)
-								bSpellSuits = true;
+							if ( pTarget->Stat_GetVal(STAT_STR) < pTarget->Stat_GetAdjusted(STAT_STR) / 3 )
+								fSpellSuits = true;
 							break;
 						case SPELL_Gift_of_Renewal:
-							if (pTarget->Stat_GetVal(STAT_STR) < pTarget->Stat_GetAdjusted(STAT_STR) / 2)
-								bSpellSuits = true;
-							break;
-						// Then curing poison.
-						case SPELL_Cure:
-							if (pTarget->LayerFind(LAYER_FLAG_Poison)) bSpellSuits = true;
+							if ( pTarget->Stat_GetVal(STAT_STR) < pTarget->Stat_GetAdjusted(STAT_STR) / 2 )
+								fSpellSuits = true;
 							break;
 
-						// Buffs are coming now.
-							
-						case SPELL_Reactive_Armor:	// Deffensive ones first
-							if (!pTarget->LayerFind(LAYER_SPELL_Reactive))
-								bSpellSuits = true;
+						// Then cure poison
+						case SPELL_Cure:
+							if ( pTarget->LayerFind(LAYER_FLAG_Poison) )
+								fSpellSuits = true;
+							break;
+
+						// Buffs are coming now
+						case SPELL_Reactive_Armor:
+							if ( !pTarget->LayerFind(LAYER_SPELL_Reactive) )
+								fSpellSuits = true;
 							break;
 						case SPELL_Protection:
-							if (!pTarget->LayerFind(LAYER_SPELL_Protection))
-								bSpellSuits = true;
+							if ( !pTarget->LayerFind(LAYER_SPELL_Protection) )
+								fSpellSuits = true;
 							break;
 						case SPELL_Magic_Reflect:
-							if (!pTarget->LayerFind(LAYER_SPELL_Magic_Reflect))
-								bSpellSuits = true;
+							if ( !pTarget->LayerFind(LAYER_SPELL_Magic_Reflect) )
+								fSpellSuits = true;
 							break;
-
-						case SPELL_Bless:		// time for the others ...
-							if (!pTarget->LayerFind(LAYER_SPELL_STATS))
-								bSpellSuits = true;
-							break;
-						default:
+						case SPELL_Bless:
+							if ( !pTarget->LayerFind(LAYER_SPELL_STATS) )
+								fSpellSuits = true;
 							break;
 					}
-					if (bSpellSuits)
+
+					if ( fSpellSuits )
 						break;
 
+					// If it's a buff, check if target is already under this spell effect
 					LAYER_TYPE layer = pSpellDef->m_idLayer;
-					if (layer != LAYER_NONE)	// If the spell applies an effect.
+					if ( (layer != LAYER_NONE) && !pTarget->LayerFind(layer) )
 					{
-						if (!pTarget->LayerFind(layer))	// and target doesn't have this effect already...
-						{
-							bSpellSuits = true;	//then it may need it
-							break;
-						}
+						fSpellSuits = true;
+						break;
 					}
 
 				}
-				if (bSpellSuits)
+				if ( fSpellSuits )
 				{
 					pTarg = pTarget;
 					m_atMagery.m_Spell = spell;
@@ -1947,38 +1697,27 @@ bool CChar::NPC_FightCast(CObjBase * &pTarg, CObjBase * pSrc, SPELL_TYPE &spell,
 				}
 				return false;
 			}
-			else if (pSpellDef->IsSpellType(SPELLFLAG_TARG_ITEM))
+			else if ( pSpellDef->IsSpellType(SPELLFLAG_TARG_ITEM) )
 			{
-				//	spell is good, but must be targeted at an item
-				switch (spell)
-				{
-					case SPELL_Immolating_Weapon:
-						pTarg = m_uidWeapon.ObjFind();
-						if (pTarg)
-							break;
-					default:
-						break;
-				}
+				// Spell is good, but must be targeted at an item
+				if ( spell == SPELL_Immolating_Weapon )
+					pTarg = m_uidWeapon.ObjFind();
 			}
-			if (pSpellDef->IsSpellType(SPELLFLAG_HEAL)) //Good spells that cannot be targeted
+			if ( pSpellDef->IsSpellType(SPELLFLAG_HEAL) )
 			{
-				switch (spell)
+				// No spells added ATM until they are created, good example spell to here = SPELL_Healing_Stone
+				if ( spell == SPELL_Healing_Stone )
 				{
-					//No spells added ATM until they are created, good example spell to here = SPELL_Healing_Stone
-					case SPELL_Healing_Stone:
+					CItem *pStone = GetBackpackItem(ITEMID_HEALING_STONE);
+					if ( pStone )
 					{
-						CItem * pStone = GetBackpackItem(ITEMID_HEALING_STONE);
-						if (!pStone)
-							break;
-						if ((pStone->m_itNormal.m_morep.m_z == 0) && (Stat_GetVal(STAT_STR) < static_cast<int>(pStone->m_itNormal.m_more2)) && (pStone->m_itNormal.m_more1 >= pStone->m_itNormal.m_more2))
+						if ( (pStone->m_itNormal.m_morep.m_z == 0) && (Stat_GetVal(STAT_STR) < static_cast<int>(pStone->m_itNormal.m_more2)) && (pStone->m_itNormal.m_more1 >= pStone->m_itNormal.m_more2) )
 						{
 							Use_Obj(pStone, false);
-							return true; // we are not casting any spell but suceeded at using the stone created by this one, we are done now.
+							return true;
 						}
-						return false;	// Already have a stone, no need of more
+						return false;	// target already have a stone
 					}
-					default:
-						break;
 				}
 
 				pTarg = this;
@@ -1986,36 +1725,21 @@ bool CChar::NPC_FightCast(CObjBase * &pTarg, CObjBase * pSrc, SPELL_TYPE &spell,
 				return true;
 			}
 		}
-		else if (pSpellDef->IsSpellType(SPELLFLAG_SUMMON))
+		else if ( pSpellDef->IsSpellType(SPELLFLAG_SUMMON) )
 		{
 			m_atMagery.m_Spell = spell;
-			return true;	// if flag is present ... we leave the rest to the incoming code
+			return true;
 		}
-	}
-	else
-	{
-		/*if (NPC_GetAiFlags()&NPC_AI_STRICTCAST)
-			return false;*/
-		//if ( /*!pVar &&*/ !pSpellDef->IsSpellType(SPELLFLAG_HARM))
-		//	return false;
-
-		// less chance for berserker spells
-		/*if (pSpellDef->IsSpellType(SPELLFLAG_SUMMON) && Calc_GetRandVal(2))
-			return false;
-
-		// less chance for field spells as well
-		if (pSpellDef->IsSpellType(SPELLFLAG_FIELD) && Calc_GetRandVal(4))
-			return false;*/
 	}
 	m_atMagery.m_Spell = spell;
 	return true;
 }
 
-CChar * CChar::NPC_FightFindBestTarget()
+CChar *CChar::NPC_FightFindBestTarget()
 {
 	ADDTOCALLSTACK("CChar::NPC_FightFindBestTarget");
-	// Find the best target to attack, and switch to this
-	// new target even if I'm already attacking someone.
+	// Find the best target to attack
+	// Switch to this new target even if NPC is already attacking someone
 	if ( !m_pNPC )
 		return NULL;
 
@@ -2025,44 +1749,43 @@ CChar * CChar::NPC_FightFindBestTarget()
 		int iClosest = INT_MAX;
 		INT64 iThreat = 0;
 		CChar *pChar = NULL;
-		SKILL_TYPE skillWeapon = Fight_GetWeaponSkill();
+		bool fRangedSkill = g_Cfg.IsSkillFlag(Fight_GetWeaponSkill(), SKF_RANGED);
 
-		for ( size_t i = 0; i < m_lastAttackers.size(); i++ )
+		for ( size_t i = 0; i < m_lastAttackers.size(); ++i )
 		{
 			LastAttackers &refAttacker = m_lastAttackers.at(i);
 			pChar = refAttacker.charUID.CharFind();
 			if ( !pChar )
 				continue;
 			if ( !pChar->Fight_IsAttackable() )
-			{
-				pChar = NULL;
 				continue;
-			}
-			if ( !pTarg )
-				pTarg = pChar;
 
 			int iDist = GetDist(pChar);
-			if ( g_Cfg.IsSkillFlag(skillWeapon, SKF_RANGED) && ((iDist < g_Cfg.m_iArcheryMinDist) || (iDist > g_Cfg.m_iArcheryMaxDist)) )
+			if ( fRangedSkill && ((iDist < g_Cfg.m_iArcheryMinDist) || (iDist > g_Cfg.m_iArcheryMaxDist)) )
 				continue;
 			if ( !CanSeeLOS(pChar) )
 				continue;
 
-			if ( (NPC_GetAiFlags() & NPC_AI_THREAT) && (refAttacker.threat > iThreat) )	// this char has more threat than others, let's switch to this target
+			if ( (NPC_GetAiFlags() & NPC_AI_THREAT) && (refAttacker.threat > iThreat) )
 			{
+				// This char has more threat than current target, so switch to this target
 				pTarg = pChar;
 				iClosest = iDist;
 				iThreat = refAttacker.threat;
 			}
-			else if ( iDist < iClosest )	// this char is more closer to me than my current target, let's switch to this target
+			else if ( iDist < iClosest )
 			{
+				// This char is closer than current target, so switch to this target
 				pTarg = pChar;
 				iClosest = iDist;
 			}
 		}
-		return pTarg;
+
+		if ( pTarg )
+			return pTarg;
 	}
 
-	// New target not found, check if I can keep attacking my current target
+	// Can't find another target, so check if NPC can keep attacking current target
 	pTarg = m_Fight_Targ.CharFind();
 	if ( pTarg )
 		return pTarg;
@@ -2073,259 +1796,176 @@ CChar * CChar::NPC_FightFindBestTarget()
 void CChar::NPC_Act_Fight()
 {
 	ADDTOCALLSTACK("CChar::NPC_Act_Fight");
-	// I am in an attack mode.
+	// NPC is in a fight
+	// Do some combat stuff (attack, defend, run, etc)
 	if ( !m_pNPC || !Fight_IsActive() )
 		return;
 
-	// Review our targets periodically.
-	if ( ! IsStatFlag(STATF_Pet) ||
-		m_pNPC->m_Brain == NPCBRAIN_BERSERK )
+	// Periodically look around
+	if ( !IsStatFlag(STATF_Pet) || (m_pNPC->m_Brain == NPCBRAIN_BERSERK) )
 	{
-		int iObservant = ( 130 - Stat_GetAdjusted(STAT_INT)) / 20;
-		if ( ! Calc_GetRandVal( 2 + maximum( 0, iObservant )))
+		int iObservant = (130 - Stat_GetAdjusted(STAT_INT)) / 20;
+		if ( !Calc_GetRandVal(2 + maximum(0, iObservant)) )
 		{
-			if ( NPC_LookAround())
+			if ( NPC_LookAround() )
 				return;
 		}
 	}
 
-	CChar * pChar = m_Fight_Targ.CharFind();
-	if (pChar == NULL || !pChar->IsTopLevel()) // target is not valid anymore ?
+	CChar *pChar = m_Fight_Targ.CharFind();
+	if ( !pChar )	// target is not valid anymore
 		return;
 
-	int iDist = GetDist( pChar );
+	int iDist = GetDist(pChar);
+	int iMotivation = NPC_GetAttackMotivation(pChar);
+	bool fSkipHardcoded = false;
 
-	if ( (m_pNPC->m_Brain == NPCBRAIN_GUARD) && (m_atFight.m_Swing_State == WAR_SWING_READY) && !Calc_GetRandVal(3) )
-	{
-		// If a guard is ever too far away (missed a chance to swing)
-		// Teleport me closer.
-		NPC_LookAtChar(pChar);
-	}
-
-
-	// If i'm horribly damaged and smart enough to know it.
-	int iMotivation = NPC_GetAttackMotivation( pChar );
-
-	bool fSkipHardcoded	= false;
 	if ( IsTrigUsed(TRIGGER_NPCACTFIGHT) )
 	{
-		CScriptTriggerArgs Args( iDist, iMotivation );
-		switch ( OnTrigger( CTRIG_NPCActFight, pChar, &Args ) )
+		CScriptTriggerArgs Args(iDist, iMotivation);
+		TRIGRET_TYPE tr = OnTrigger(CTRIG_NPCActFight, pChar, &Args);
+		if ( tr = TRIGRET_RET_TRUE )
+			return;
+		else if ( tr = TRIGRET_RET_FALSE )
+			fSkipHardcoded = true;
+		else if ( tr = TRIGRET_RET_DEFAULT )
 		{
-			case TRIGRET_RET_TRUE:	return;
-			case TRIGRET_RET_FALSE:	fSkipHardcoded	= true;	break;
-			case static_cast<TRIGRET_TYPE>(2):
+			SKILL_TYPE skill = static_cast<SKILL_TYPE>(Args.m_VarsLocal.GetKeyNum("skill"));
+			if ( skill )
 			{
-				SKILL_TYPE iSkillforced = static_cast<SKILL_TYPE>(Args.m_VarsLocal.GetKeyNum("skill"));
-				if (iSkillforced)
-				{
-					SPELL_TYPE iSpellforced = static_cast<SPELL_TYPE>(Args.m_VarsLocal.GetKeyNum("spell"));
-					if (g_Cfg.IsSkillFlag(iSkillforced, SKF_MAGIC))
-						m_atMagery.m_Spell = iSpellforced;
+				if ( g_Cfg.IsSkillFlag(skill, SKF_MAGIC) )
+					m_atMagery.m_Spell = static_cast<SPELL_TYPE>(Args.m_VarsLocal.GetKeyNum("spell"));
 
-					Skill_Start(iSkillforced);
-					return;
-				}
+				Skill_Start(skill);
+				return;
 			}
-			default:				break;
 		}
 
-		iDist		= static_cast<int>(Args.m_iN1);
+		iDist = static_cast<int>(Args.m_iN1);
 		iMotivation = static_cast<int>(Args.m_iN2);
 	}
 
-	if ( ! IsStatFlag(STATF_Pet))
+	if ( !IsStatFlag(STATF_Pet) && (iMotivation < 0) )
 	{
-		if ( iMotivation < 0 )
-		{
-			m_atFlee.m_iStepsMax = 20;	// how long should it take to get there.
-			m_atFlee.m_iStepsCurrent = 0;	// how long has it taken ?
-			Skill_Start( NPCACT_FLEE );	// Run away!
-			return;
-		}
+		// NPC is not motivated to keep fighting, so run away
+		m_atFlee.m_iStepsMax = 20;
+		m_atFlee.m_iStepsCurrent = 0;
+		Skill_Start(NPCACT_FLEE);
+		return;
 	}
 
-
-
-	// Can only do that with full stamina !
-	if ( !fSkipHardcoded && Stat_GetVal(STAT_DEX) >= Stat_GetAdjusted(STAT_DEX))
+	// Check if NPC have any special ability
+	if ( !fSkipHardcoded && (Stat_GetVal(STAT_DEX) >= Stat_GetAdjusted(STAT_DEX)) && CanSeeLOS(pChar, LOS_NB_WINDOWS) )
 	{
-		// If I am a dragon maybe I will breath fire.
-		// NPCACT_BREATH
-		if ( m_pNPC->m_Brain == NPCBRAIN_DRAGON &&
-			iDist >= 1 &&
-			iDist <= 8 &&
-			CanSeeLOS( pChar,LOS_NB_WINDOWS )) //Dragon can breath through a window
-		{
-			if (!IsSetCombatFlags(COMBAT_NODIRCHANGE))
-				UpdateDir( pChar );
-			Skill_Start( NPCACT_BREATH );
-			return;
-		}
-
-
-		// any special ammunition defined?
-
-		//check Range
 		int iRangeMin = 2;
-		int iRangeMax = 9;
-		CVarDefCont * pRange = GetDefKey("THROWRANGE",true);
-		if (pRange)
-		{
-			INT64 RVal[2];
-			size_t iQty = Str_ParseCmds( const_cast<TCHAR*>(pRange->GetValStr()), RVal, COUNTOF(RVal));
-			switch(iQty)
-			{
-				case 1:
-					iRangeMax = static_cast<int>(RVal[0]);
-					break;
-				case 2:
-					iRangeMin = static_cast<int>(RVal[0]);
-					iRangeMax = static_cast<int>(RVal[1]);
-					break;
-			}
-		}
-		if (iDist >= iRangeMin && iDist <= iRangeMax && CanSeeLOS( pChar,LOS_NB_WINDOWS ))//NPCs can throw through a window
-		{
-			CVarDefCont * pRock = GetDefKey("THROWOBJ",true);
-			if ( GetDispID() == CREID_OGRE || GetDispID() == CREID_ETTIN || GetDispID() == CREID_Cyclops || pRock )
-			{
-				ITEMID_TYPE id = ITEMID_NOTHING;
-				if (pRock)
-				{
-					LPCTSTR pszRock = pRock->GetValStr();
-					RESOURCE_ID_BASE rid = static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID(RES_ITEMDEF, pszRock));
-					ITEMID_TYPE obj = static_cast<ITEMID_TYPE>(rid.GetResIndex());
-					if ( ContentFind( RESOURCE_ID(RES_ITEMDEF,obj), 0, 2 ) )
-						id = ITEMID_NODRAW;
-				}
-				else 
-				{
-					if ( ContentFind( RESOURCE_ID(RES_TYPEDEF,IT_AROCK), 0, 2 ) )
-						id = ITEMID_NODRAW;
-				}
+		int iRangeMax = 8;
 
-				if ( id != ITEMID_NOTHING )
+		// Breath fire
+		if ( (m_pNPC->m_Brain == NPCBRAIN_DRAGON) && (iDist >= iRangeMin) && (iDist <= iRangeMax) )
+		{
+			Skill_Start(NPCACT_BREATH);
+			return;
+		}
+
+		// Throw objects at the target
+		if ( GetDefKey("THROWOBJ", true) || (GetDispID() == CREID_OGRE) || (GetDispID() == CREID_ETTIN) || (GetDispID() == CREID_Cyclops) )
+		{
+			CVarDefCont *pVar = GetDefKey("THROWRANGE", true);
+			if ( pVar )
+			{
+				INT64 piArgs[2];
+				size_t iQty = Str_ParseCmds(const_cast<TCHAR *>(pVar->GetValStr()), piArgs, COUNTOF(piArgs));
+				switch ( iQty )
 				{
-					if (!IsSetCombatFlags(COMBAT_NODIRCHANGE))
-						UpdateDir( pChar );
-					Skill_Start( NPCACT_THROWING );
-					return;
+					case 1:
+						iRangeMax = static_cast<int>(piArgs[0]);
+						break;
+					case 2:
+						iRangeMin = static_cast<int>(piArgs[0]);
+						iRangeMax = static_cast<int>(piArgs[1]);
+						break;
 				}
+			}
+			if ( (iDist >= iRangeMin) && (iDist <= iRangeMax) )
+			{
+				Skill_Start(NPCACT_THROWING);
+				return;
 			}
 		}
 	}
 
-	// Maybe i'll cast a spell if I can. if so maintain a distance.
-	if ( NPC_FightMagery( pChar ))
+	// Check if should do ranged combat
+	if ( NPC_FightMagery(pChar) )
+		return;
+	if ( NPC_FightArchery(pChar) )
 		return;
 
-	if ( NPC_FightArchery( pChar ))
-		return;
-
-	// Move in for melee type combat.
-	NPC_Act_Follow( false, CalcFightRange( m_uidWeapon.ItemFind() ), false );
+	// Otherwise follow the target for melee combat
+	NPC_Act_Follow(false, CalcFightRange(m_uidWeapon.ItemFind()));
 }
 
 bool CChar::NPC_Act_Talk()
 {
 	ADDTOCALLSTACK("CChar::NPC_Act_Talk");
-	// NPCACT_TALK:
+	// NPCACT_TALK
 	// NPCACT_TALK_FOLLOW
 	// RETURN:
-	//  false = do something else. go Idle
-	//  true = just keep waiting.
+	//  true = keep waiting
+	//  false = do something else (go idle)
 
-	CChar * pChar = m_Act_Targ.CharFind();
-	if ( pChar == NULL )	// they are gone ?
-		return( false );
+	CChar *pChar = m_Act_Targ.CharFind();
+	if ( !pChar )
+		return false;
 
-	// too far away.
-	int iDist = GetTopDist3D( pChar );
-	if (( iDist >= UO_MAP_VIEW_SIGHT ) || ( m_ptHome.GetDist3D( pChar->GetTopPoint() ) > m_pNPC->m_Home_Dist_Wander ))	// give up.
-		return( false );
+	int iDist = GetTopDist3D(pChar);
+	if ( m_ptHome.GetDist3D(pChar->GetTopPoint()) > m_pNPC->m_Home_Dist_Wander )
+		return false;
+	if ( !CanSee(pChar) )
+		return false;
 
-	// can't see them
-	if ( !CanSee( pChar ) )
-		return( false );
-
-	if ( Skill_GetActive() == NPCACT_TALK_FOLLOW && iDist > 3 )
+	if ( (Skill_GetActive() == NPCACT_TALK_FOLLOW) && (iDist > 3) )
 	{
-		// try to move closer.
-		if ( ! NPC_Act_Follow( false, 4, false ))
-			return( false );
+		// Try to move closer
+		if ( !NPC_Act_Follow(false, 3, false) )
+			return false;
 	}
 
 	if ( m_atTalk.m_WaitCount <= 1 )
 	{
-		if ( NPC_CanSpeak())
+		if ( NPC_CanSpeak() )
 		{
-			static LPCTSTR const sm_szText[] =
+			static LPCTSTR const sm_szGenericGoneMsg[] =
 			{
-				g_Cfg.GetDefaultMsg( DEFMSG_NPC_GENERIC_GONE_1 ),
-				g_Cfg.GetDefaultMsg( DEFMSG_NPC_GENERIC_GONE_2 )
+				g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_GONE_1),
+				g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_GONE_2)
 			};
+
 			TCHAR *pszMsg = Str_GetTemp();
-			sprintf(pszMsg, sm_szText[ Calc_GetRandVal( COUNTOF( sm_szText )) ], pChar->GetName());
+			sprintf(pszMsg, sm_szGenericGoneMsg[Calc_GetRandVal(COUNTOF(sm_szGenericGoneMsg))], pChar->GetName());
 			Speak(pszMsg);
 		}
-		return( false );
+		return false;
 	}
 
-	m_atTalk.m_WaitCount--;
-	return( true );	// just keep waiting.
+	--m_atTalk.m_WaitCount;
+	return true;
 }
 
 void CChar::NPC_Act_GoHome()
 {
 	ADDTOCALLSTACK("CChar::NPC_Act_GoHome");
 	// NPCACT_GO_HOME
-	// If our home is not valid then
 	if ( !m_pNPC )
 		return;
 
+	// Periodically look around
 	if ( !Calc_GetRandVal(2) )
 	{
 		if ( NPC_LookAround() )
 			return;
 	}
 
-	if ( m_pNPC->m_Brain == NPCBRAIN_GUARD )
-	{
-		// Had to change this guards were still roaming the forests
-		// this goes hand in hand with the change that guards arent
-		// called if the criminal makes it outside guarded territory.
-
-		const CRegionBase * pArea = m_ptHome.GetRegion( REGION_TYPE_AREA );
-		if ( pArea && pArea->IsGuarded())
-		{
-			if ( !m_pArea || !m_pArea->IsGuarded() )
-			{
-				if ( Spell_Teleport(m_ptHome, false, false) )
-				{
-					Skill_Start(SKILL_NONE);
-					return;
-				}
-			}
-		}
-		else
-		{
-			g_Log.Event( LOGL_WARN, "Guard 0%lx '%s' has no guard post (%s)!\n", static_cast<DWORD>(GetUID()), GetName(), GetTopPoint().WriteUsed());
-
-			// If we arent conjured and still got no valid home
-			// then set our status to conjured and take our life.
-			if ( ! IsStatFlag(STATF_Conjured))
-			{
-				StatFlag_Set( STATF_Conjured );
-				Stat_SetVal(STAT_STR, -1000);
-				return;
-			}
-		}
-
-		// else we are conjured and probably a timer started already.
-	}
-
-	if ( !m_ptHome.IsValidPoint() || !GetTopPoint().IsValidPoint() || ( GetTopPoint().GetDist(m_ptHome) < m_pNPC->m_Home_Dist_Wander ))
+	if ( !m_ptHome.IsValidPoint() || !GetTopPoint().IsValidPoint() || (GetTopPoint().GetDist(m_ptHome) < m_pNPC->m_Home_Dist_Wander) )
 	{
 		Skill_Start(SKILL_NONE);
 		return;
@@ -2333,73 +1973,66 @@ void CChar::NPC_Act_GoHome()
 
 	if ( g_Cfg.m_iLostNPCTeleport )
 	{
-		int	iDistance	= m_ptHome.GetDist( GetTopPoint() );
-		if ( (iDistance > g_Cfg.m_iLostNPCTeleport) && (iDistance > m_pNPC->m_Home_Dist_Wander) )
+		int iDist = m_ptHome.GetDist(GetTopPoint());
+		if ( (iDist > g_Cfg.m_iLostNPCTeleport) && (iDist > m_pNPC->m_Home_Dist_Wander) )
 		{
 			if ( IsTrigUsed(TRIGGER_NPCLOSTTELEPORT) )
 			{
-				CScriptTriggerArgs Args(iDistance);	// ARGN1 - distance
-				if ( OnTrigger(CTRIG_NPCLostTeleport, this, &Args) != TRIGRET_RET_TRUE )
-					Spell_Teleport(m_ptHome, true, false);
+				CScriptTriggerArgs Args(iDist);
+				if ( OnTrigger(CTRIG_NPCLostTeleport, this, &Args) == TRIGRET_RET_TRUE )
+				{
+					Skill_Start(SKILL_NONE);
+					return;
+				}
 			}
-			else
-			{
-				Spell_Teleport(m_ptHome, true, false);
-			}
+			Spell_Teleport(m_ptHome, true, false);
 		}
 	}
 
 	m_Act_p = m_ptHome;
-	if ( !NPC_WalkToPoint() ) // get there
+	if ( !NPC_WalkToPoint() )
 	{
 		Skill_Start(SKILL_NONE);
 		return;
 	}
 }
 
-void CChar::NPC_LootMemory( CItem * pItem )
-{
-	ADDTOCALLSTACK("CChar::NPC_LootMemory");
-	// Create a memory of this item.
-	// I have already looked at it.
-	CItem * pMemory = Memory_AddObjTypes( pItem, MEMORY_SPEAK );
-	pMemory->m_itEqMemory.m_Action = NPC_MEM_ACT_IGNORE;
-
-	// If the item is set to decay.
-	if ( pItem->IsTimerSet() && pItem->GetTimerDiff() > 0 )
-		pMemory->SetTimeout(pItem->GetTimerDiff());		// forget about this once the item is gone
-}
-
 void CChar::NPC_Act_Looting()
 {
 	ADDTOCALLSTACK("CChar::NPC_Act_Looting");
-	// We killed something, let's take a look on the corpse.
-	// Or we find something interesting on ground
-	//
-	// m_Act_Targ = UID of the item/corpse that we trying to loot
+	// NPC found something interesting to loot
+	// m_Act_Targ = UID of the item/corpse to loot
 
-	if ( !m_pNPC || m_pNPC->m_Brain != NPCBRAIN_MONSTER || !Can(CAN_C_USEHANDS) || IsStatFlag(STATF_Conjured|STATF_Pet) || (m_TagDefs.GetKeyNum("DEATHFLAGS") & DEATH_NOCORPSE) )
+	if ( !m_pNPC || (m_pNPC->m_Brain != NPCBRAIN_MONSTER) || !Can(CAN_C_USEHANDS) || IsStatFlag(STATF_Conjured|STATF_Pet) || (m_TagDefs.GetKeyNum("DEATHFLAGS") & DEATH_NOCORPSE) )
 		return;
 	if ( m_pArea->IsFlag(REGION_FLAG_SAFE|REGION_FLAG_GUARDED) )
 		return;
 
-	CItem * pItem = m_Act_Targ.ItemFind();
-	if ( pItem == NULL )
+	CItem *pItem = m_Act_Targ.ItemFind();
+	if ( !pItem )
 		return;
 
-	if ( GetDist(pItem) > 2 )	// move toward it
+	if ( GetDist(pItem) > 2 )
 	{
+		// Item is too far to loot, move closer first
 		NPC_WalkToPoint();
 		return;
 	}
 
-	CItemCorpse * pCorpse = dynamic_cast<CItemCorpse *>(pItem);
-	if ( pCorpse && pCorpse->GetCount() > 0 )
+	CItemCorpse *pCorpse = dynamic_cast<CItemCorpse *>(pItem);
+	if ( pCorpse && (pCorpse->GetCount() > 0) )		// if it's a corpse, pick a random item inside it
 		pItem = pCorpse->GetAt(Calc_GetRandVal(pCorpse->GetCount()));
 
 	if ( !CanTouch(pItem) || !CanMove(pItem) || !CanCarry(pItem) )
 	{
-		NPC_LootMemory(pItem);
+		// Can't pick this item, so make the NPC ignore it next time
+		CItem *pMemory = Memory_AddObjTypes(pItem, MEMORY_SPEAK);
+		if ( pMemory )
+		{
+			pMemory->m_itEqMemory.m_Action = NPC_MEM_ACT_IGNORE;
+			if ( pItem->IsAttr(ATTR_DECAY) && pItem->IsTimerSet() )
+				pMemory->SetTimeout(pItem->GetTimerDiff());
+		}
 		return;
 	}
 
@@ -2420,182 +2053,156 @@ void CChar::NPC_Act_Flee()
 {
 	ADDTOCALLSTACK("CChar::NPC_Act_Flee");
 	// NPCACT_FLEE
-	// I should move faster this way.
-	// ??? turn to strike if they are close.
-	if ( ++ m_atFlee.m_iStepsCurrent >= m_atFlee.m_iStepsMax )
+	// Flee from the threat
+
+	if ( m_atFlee.m_iStepsCurrent++ < m_atFlee.m_iStepsMax )
 	{
-		Skill_Start( SKILL_NONE );
-		return;
+		if ( NPC_Act_Follow(true, m_atFlee.m_iStepsMax) )
+			return;
 	}
-	if ( ! NPC_Act_Follow( true, m_atFlee.m_iStepsMax ))
+
+	// Can't flee anymore, look for something new to do
+	Skill_Start(SKILL_NONE);
+}
+
+void CChar::NPC_Act_RunTo(int iDist)
+{
+	ADDTOCALLSTACK("CChar::NPC_Act_RunTo");
+	// NPCACT_RUNTO
+	// Run to point (m_Act_p)
+
+	int iResult = NPC_WalkToPoint(true);
+	if ( iResult == 0 )
 	{
-		Skill_Start( SKILL_NONE );
-		return;
+		// Destination reached, look for something new to do
+		NPC_Act_Idle();
+	}
+	else if ( iResult == 2 )
+	{
+		// Can't run there, check if NPC should keep trying or give up
+		if ( NPC_GetAiFlags() & NPC_AI_PERSISTENTPATH )
+		{
+			if ( iDist > GetTopPoint().GetDist(m_Act_p) )
+				iDist = GetTopPoint().GetDist(m_Act_p);
+			else
+				--iDist;
+
+			if ( iDist )
+			{
+				NPC_Act_RunTo(iDist);
+				return;
+			}
+		}
+		else if ( m_Act_p.IsValidPoint() && IsPlayableCharacter() && !IsStatFlag(STATF_Freeze|STATF_Stone) )
+		{
+			Spell_Teleport(m_Act_p, true, false);
+			return;
+		}
+		NPC_Act_Idle();
 	}
 }
 
-void CChar::NPC_Act_Runto(int iDist)
+void CChar::NPC_Act_GoTo(int iDist)
 {
-	ADDTOCALLSTACK("CChar::NPC_Act_Runto");
-	// NPCACT_RUNTO:
-	// Still trying to get to this point.
+	ADDTOCALLSTACK("CChar::NPC_Act_GoTo");
+	// NPCACT_GOTO
+	// Walk to point (m_Act_p)
 
-	switch ( NPC_WalkToPoint(true))
+	int iResult = NPC_WalkToPoint();
+	if ( iResult == 0 )
 	{
-		case 0:
-			// We reached our destination
-			NPC_Act_Idle();	// look for something new to do.
-			break;
-		case 1:
-			// Took a step....keep trying to get there.
-			break;
-		case 2:
-			// Give it up...
-			// Go directly there...
-			if ( NPC_GetAiFlags()&NPC_AI_PERSISTENTPATH )
-			{
-				if (!GetTopPoint().IsValidPoint())
-					iDist --;
-				else
-					iDist = iDist > m_Act_p.GetDist(GetTopPoint()) ? m_Act_p.GetDist(GetTopPoint()) : iDist-1;
-
-				if (iDist)
-					NPC_Act_Runto(iDist);
-				else
-					NPC_Act_Idle();
-			}
-			else
-			{
-				if ( m_Act_p.IsValidPoint() &&
-					IsPlayableCharacter() &&
-					!IsStatFlag( STATF_Freeze|STATF_Stone ))
-					Spell_Teleport( m_Act_p, true, false);
-				else
-					NPC_Act_Idle();
-			}
-			break;
+		// Destination reached, look for something new to do
+		NPC_Act_Idle();
 	}
-}
-
-void CChar::NPC_Act_Goto(int iDist)
-{
-	ADDTOCALLSTACK("CChar::NPC_Act_Goto");
-	// NPCACT_GOTO:
-	// Still trying to get to this point.
-
-	switch ( NPC_WalkToPoint())
+	else if ( iResult == 2 )
 	{
-		case 0:
-			// We reached our destination
-			NPC_Act_Idle();	// look for something new to do.
-			break;
-		case 1:
-			// Took a step....keep trying to get there.
-			break;
-		case 2:
-			// Give it up...
-			// Go directly there...
-			if ( NPC_GetAiFlags()&NPC_AI_PERSISTENTPATH )
-			{
-				if (!GetTopPoint().IsValidPoint())
-					iDist --;
-				else
-					iDist = iDist > m_Act_p.GetDist(GetTopPoint()) ? m_Act_p.GetDist(GetTopPoint()) : iDist-1;
-
-				if (iDist)
-					NPC_Act_Runto(iDist);
-				else
-					NPC_Act_Idle();
-			}
+		// Can't run there, check if NPC should keep trying or give up
+		if ( NPC_GetAiFlags() & NPC_AI_PERSISTENTPATH )
+		{
+			if ( iDist > GetTopPoint().GetDist(m_Act_p) )
+				iDist = GetTopPoint().GetDist(m_Act_p);
 			else
+				--iDist;
+
+			if ( iDist )
 			{
-				if ( m_Act_p.IsValidPoint() &&
-					IsPlayableCharacter() &&
-					!IsStatFlag( STATF_Freeze|STATF_Stone ))
-					Spell_Teleport( m_Act_p, true, false);
-				else
-					NPC_Act_Idle();	// look for something new to do.
+				NPC_Act_GoTo(iDist);
+				return;
 			}
-			break;
+		}
+		else if ( m_Act_p.IsValidPoint() && IsPlayableCharacter() && !IsStatFlag(STATF_Freeze|STATF_Stone) )
+		{
+			Spell_Teleport(m_Act_p, true, false);
+			return;
+		}
+		NPC_Act_Idle();
 	}
 }
 
 bool CChar::NPC_Act_Food()
 {
 	ADDTOCALLSTACK("CChar::NPC_Act_Food");
-	// Search for food when hungry
+	// NPC is searching for food
 
 	int iFoodLevel = Food_GetLevelPercent();
-	if ( iFoodLevel > 40 )		// only search for food when hungry
+	if ( iFoodLevel > 40 )		// not hungry
 		return false;
 
 	m_pNPC->m_Act_Motivation = static_cast<BYTE>((50 - (iFoodLevel / 2)));
+	WORD wEatAmount = 1;
 
-	WORD	iEatAmount = 1;
-	int		iSearchDistance = 2;
-	CItem	*pClosestFood = NULL;
-	int		iClosestFood = 100;
-	int		iMyZ = GetTopPoint().m_z;
-	bool	bSearchGrass = false;
-	CItem	* pCropItem = NULL;
-
-	CItemContainer *pPack = GetContainer(LAYER_PACK);
-	if ( pPack )
+	// Check if NPC have some food on backpack first
+	if ( NPC_GetAiFlags() & NPC_AI_INTFOOD )
 	{
-		for ( CItem *pFood = pPack->GetContentHead(); pFood != NULL; pFood = pFood->GetNext() )
+		CItemContainer *pPack = GetContainer(LAYER_PACK);
+		if ( pPack )
 		{
-			// I have some food personaly, so no need to search for something
-			if ( pFood->IsType(IT_FOOD) )
+			for ( CItem *pFood = pPack->GetContentHead(); pFood != NULL; pFood = pFood->GetNext() )
 			{
-				if ( (iEatAmount = Food_CanEat(pFood)) > 0 )
+				if ( !pFood->IsType(IT_FOOD) )
+					continue;
+
+				wEatAmount = Food_CanEat(pFood);
+				if ( wEatAmount > 0 )
 				{
-					Use_EatQty(pFood, iEatAmount);
+					Use_EatQty(pFood, wEatAmount);
 					return true;
 				}
 			}
 		}
 	}
 
+	CItem *pCrop = NULL;
+	CItem *pClosestFood = NULL;
+	int iClosestFood = INT_MAX;
+	int iSearchDist = (GetSight() * (100 - iFoodLevel)) / 100;
+
 	// Search for food nearby
-	iSearchDistance = (UO_MAP_VIEW_SIGHT * ( 100 - iFoodLevel ) ) / 100;
-	CWorldSearch AreaItems(GetTopPoint(), minimum(iSearchDistance,m_pNPC->m_Home_Dist_Wander));
+	CWorldSearch AreaItems(GetTopPoint(), iSearchDist);
 	for (;;)
 	{
-		CItem * pItem = AreaItems.GetItem();
+		CItem *pItem = AreaItems.GetItem();
 		if ( !pItem )
 			break;
 		if ( !CanSee(pItem) )
 			continue;
-
-		if ( pItem->IsType(IT_CROPS) || pItem->IsType(IT_FOLIAGE) )
-		{
-			// is it ripe?
-			CItemBase * checkItemBase = pItem->Item_GetDef();
-			if ( checkItemBase->m_ttNormal.m_tData3 )
-			{
-				// remember this, just in case we do not find any suitable food
-				pCropItem = pItem;
-				continue;
-			}
-		}
-
-		if ( pItem->GetTopPoint().m_z > (iMyZ + 10) || pItem->GetTopPoint().m_z < (iMyZ - 1) )
+		if ( abs(pItem->GetTopZ() - GetTopZ()) > 5 )
 			continue;
 		if ( pItem->IsAttr(ATTR_MOVE_NEVER|ATTR_STATIC|ATTR_LOCKEDDOWN|ATTR_SECURE) )
 			continue;
 
-		if ( (iEatAmount = Food_CanEat(pItem)) > 0 )
+		if ( (pItem->IsType(IT_CROPS) || pItem->IsType(IT_FOLIAGE)) && pItem->Item_GetDef()->m_ttNormal.m_tData3 )
+		{
+			// Eat this if can't find anything better
+			pCrop = pItem;
+			continue;
+		}
+
+		wEatAmount = Food_CanEat(pItem);
+		if ( wEatAmount > 0 )
 		{
 			int iDist = GetDist(pItem);
-			if ( pClosestFood )
-			{
-				if ( iDist < iClosestFood )
-				{
-					pClosestFood = pItem;
-					iClosestFood = iDist;
-				}
-			}
-			else
+			if ( iDist < iClosestFood )
 			{
 				pClosestFood = pItem;
 				iClosestFood = iDist;
@@ -2603,99 +2210,64 @@ bool CChar::NPC_Act_Food()
 		}
 	}
 
+	// Check if can eat the food found
 	if ( pClosestFood )
 	{
-		if ( iClosestFood <= 1 )
+		if ( iClosestFood < 2 )
 		{
-			//	can take and eat just in place
-			EatAnim(pClosestFood->GetName(), static_cast<int>(pClosestFood->ConsumeAmount(iEatAmount)));
+			// Food is closer, just eat it
+			EatAnim(pClosestFood->GetName(), static_cast<int>(pClosestFood->ConsumeAmount(wEatAmount)));
 			if ( !pClosestFood->GetAmount() )
-				pClosestFood->Plant_CropReset();	// set growth if this is a plant
+				pClosestFood->Plant_CropReset();	// set growth timer if this is a plant
+			return true;
 		}
-		else
+		else if ( NPC_GetAiFlags() & NPC_AI_INTFOOD )
 		{
-			//	move towards this item
-			switch ( m_Act_SkillCurrent )
+			// Food is too far, must walk toward it first
+			switch ( Skill_GetActive() )
 			{
 				case NPCACT_STAY:
 				case NPCACT_GOTO:
 				case NPCACT_WANDER:
 				case NPCACT_LOOKING:
+				case NPCACT_FLEE:
 				case NPCACT_GO_HOME:
 				case NPCACT_Napping:
-				case NPCACT_FLEE:
+				{
+					CPointMap pt = pClosestFood->GetTopPoint();
+					if ( CanMoveWalkTo(pt) )
 					{
-						CPointMap pt = pClosestFood->GetTopPoint();
-						if ( CanMoveWalkTo(pt) )
-						{
-							m_Act_p = pt;
-							Skill_Start(NPCACT_GOTO);
-							return true;
-							//NPC_WalkToPoint((iFoodLevel < 5) ? true : false);
-						}
-						break;
+						m_Act_p = pt;
+						Skill_Start(NPCACT_GOTO);
+						return true;
 					}
-				default:
 					break;
+				}
 			}
 		}
 	}
-					// no food around, but maybe i am ok with grass? Or shall I try to pick crops?
-	else
+
+	// Check if can eat crops
+	if ( pCrop && (GetDist(pCrop) < 3) )
 	{
-
-		NPCBRAIN_TYPE	brain = GetNPCBrain();
-		if ( brain == NPCBRAIN_ANIMAL )						// animals eat grass always
-			bSearchGrass = true;
-		//else if (( brain == NPCBRAIN_HUMAN ) && !iFood )	// human eat grass if starving nearly to death
-		//	bSearchGrass = true;
-
-		// found any crops or foliage at least (nearby, of course)?
-		if ( pCropItem )
-		{
-			if ( GetDist(pCropItem) < 5 )
-			{
-				Use_Item(pCropItem);
-				bSearchGrass = false;	// no need to eat grass if at next tick we can eat better stuff
-			}
-		}
+		if ( Use_Item(pCrop) )
+			return true;
 	}
-	if ( bSearchGrass )
-	{
-		CCharBase			*pCharDef = Char_GetDef();
-		RESOURCE_ID_BASE	rid = RESOURCE_ID(RES_TYPEDEF, IT_GRASS);
 
-		if ( pCharDef->m_FoodType.ContainsResourceID(rid) ) // do I accept grass as food?
+	// Check if can eat grass
+	if ( GetNPCBrain() == NPCBRAIN_ANIMAL )
+	{
+		RESOURCE_ID_BASE rid = RESOURCE_ID(RES_TYPEDEF, IT_GRASS);
+		if ( Char_GetDef()->m_FoodType.ContainsResourceID(rid) )
 		{
-			CItem	*pResBit = g_World.CheckNaturalResource(GetTopPoint(), IT_GRASS, true, this);
-			if ( pResBit && pResBit->GetAmount() && ( pResBit->GetTopPoint().m_z == iMyZ ) )
+			CItem *pResBit = g_World.CheckNaturalResource(GetTopPoint(), IT_GRASS, true, this);
+			if ( pResBit && pResBit->GetAmount() && (pResBit->GetTopPoint().m_z == GetTopPoint().m_z) )
 			{
 				EatAnim("grass", static_cast<int>(pResBit->ConsumeAmount(10)) / 10);
-
-				//	the bit is not needed in a worldsave, timeout of 10 minutes
-				pResBit->m_TagDefs.SetNum("NOSAVE", 1);
-				pResBit->SetTimeout(60*10*TICK_PER_SEC);
-				//DEBUG_ERR(("Starting skill food\n"));
-				Skill_Start( NPCACT_FOOD );
-				SetTimeout(5*TICK_PER_SEC);
+				pResBit->SetTimeout(10 * 60 * TICK_PER_SEC);
+				Skill_Start(NPCACT_FOOD);
+				SetTimeout(5 * TICK_PER_SEC);
 				return true;
-			}
-			else									//	search for grass nearby
-			{
-				CPointMap pt = g_World.FindTypeNear_Top(GetTopPoint(), IT_GRASS, minimum(iSearchDistance,m_pNPC->m_Home_Dist_Wander));
-				if (( pt.m_x >= 1 ) && ( pt.m_y >= 1 ))
-				{
-					if (( pt.m_x != GetTopPoint().m_x ) && ( pt.m_y != GetTopPoint().m_y ) && ( pt.m_map == GetTopPoint().m_map ))
-					{
-						if ( CanMoveWalkTo(pt) )
-						{
-							m_Act_p = pt;
-							//DEBUG_ERR(("NPCACT_GOTO started; pt.x %d pt.y %d\n",pt.m_x,pt.m_y));
-							Skill_Start(NPCACT_GOTO);
-							return true;
-						}
-					}
-				}
 			}
 		}
 	}
@@ -2705,67 +2277,56 @@ bool CChar::NPC_Act_Food()
 void CChar::NPC_Act_Idle()
 {
 	ADDTOCALLSTACK("CChar::NPC_Act_Idle");
-	// Free to do as we please. decide what we want to do next.
-	// Idle NPC's should try to take some action.
-	m_pNPC->m_Act_Motivation = 0;	// we have no motivation to do anything.
+	// NPC is idle and should try to take some action
+	m_pNPC->m_Act_Motivation = 0;
 
-	if ( NPC_GetAiFlags()&NPC_AI_INTFOOD )
+	// Search for food
+	if ( NPC_GetAiFlags() & (NPC_AI_FOOD|NPC_AI_INTFOOD) )
 	{
-		bool fFood = NPC_Act_Food();
-		//DEBUG_ERR(("fFood %d\n",fFood));
-		if ( fFood ) //are we hungry?
+		if ( NPC_Act_Food() )
 			return;
 	}
 
-	// Look around for things to do.
+	// Look for items/chars around
 	if ( NPC_LookAround() )
 		return;
 
-	// ---------- If we found nothing else to do. do this. -----------
-
-	// If guards are found outside guarded territories, do the following.
-	if ( m_pNPC->m_Brain == NPCBRAIN_GUARD && !m_pArea->IsGuarded() && m_ptHome.IsValidPoint())
+	// Make guards outside guarded region walk back to guarded region
+	if ( (m_pNPC->m_Brain == NPCBRAIN_GUARD) && !m_pArea->IsGuarded() && m_ptHome.IsValidPoint() )
 	{
 		Skill_Start(NPCACT_GO_HOME);
 		return;
 	}
 
-	// Specific creature random actions.
-	if ( Stat_GetVal(STAT_DEX) >= Stat_GetAdjusted(STAT_DEX) && !Calc_GetRandVal(3) )
+	// Some creatures can do special actions
+	if ( (Stat_GetVal(STAT_DEX) >= Stat_GetAdjusted(STAT_DEX)) && !Calc_GetRandVal(3) )
 	{
 		if ( IsTrigUsed(TRIGGER_NPCSPECIALACTION) )
 		{
-			if ( OnTrigger( CTRIG_NPCSpecialAction, this ) == TRIGRET_RET_TRUE )
+			if ( OnTrigger(CTRIG_NPCSpecialAction, this) == TRIGRET_RET_TRUE )
 				return;
 		}
 
-		switch ( GetDispID())
+		switch ( GetDispID() )
 		{
 			case CREID_FIRE_ELEM:
+			{
 				if ( !g_World.IsItemTypeNear(GetTopPoint(), IT_FIRE, 0, false, true) )
 				{
 					Action_StartSpecial(CREID_FIRE_ELEM);
 					return;
 				}
 				break;
-
-			default:
-				// TAG.OVERRIDE.SPIDERWEB
-				CVarDefCont * pValue = GetKey("OVERRIDE.SPIDERWEB",true);
-				if ( pValue )
+			}
+			case CREID_GIANT_SPIDER:
+			{
+				if ( !g_World.IsItemTypeNear(GetTopPoint(), IT_WEB, 0, false, true) )
 				{
-					if ( GetDispID() != CREID_GIANT_SPIDER )
-					{
-						Action_StartSpecial(CREID_GIANT_SPIDER);
-						return;
-					}
-				} else {
-					if ( GetDispID() == CREID_GIANT_SPIDER )
-					{
-						Action_StartSpecial(CREID_GIANT_SPIDER);
-						return;
-					}
+					Action_StartSpecial(CREID_GIANT_SPIDER);
+					return;
 				}
+				break;
+			}
 		}
 	}
 
@@ -2776,45 +2337,39 @@ void CChar::NPC_Act_Idle()
 		return;
 	}
 
-	// Periodically head home.
-	if ( m_ptHome.IsValidPoint() && ! Calc_GetRandVal( 15 ))
+	// Periodically go home
+	if ( m_ptHome.IsValidPoint() && !Calc_GetRandVal(15) )
 	{
 		Skill_Start(NPCACT_GO_HOME);
 		return;
 	}
 
-	//	periodically use hiding skill
-	if ( Skill_GetBase(SKILL_HIDING) > 30 &&
-		! Calc_GetRandVal( 15 - Skill_GetBase(SKILL_HIDING)/100) &&
-		!m_pArea->IsGuarded())
+	// Periodically use Hiding skill
+	if ( !IsStatFlag(STATF_Hidden) && (Skill_GetBase(SKILL_HIDING) > 30) && !Calc_GetRandVal(15 - Skill_GetBase(SKILL_HIDING) / 100) && !m_pArea->IsGuarded() )
 	{
-		// Just hide here.
-		if ( !IsStatFlag(STATF_Hidden) )
-		{
-			Skill_Start(SKILL_HIDING);
-			return;
-		}
-	}
-
-	if ( Calc_GetRandVal( 100 - Stat_GetAdjusted(STAT_DEX)) < 25 )
-	{
-		// dex determines how jumpy they are.
-		// Decide to wander about ?
-		Skill_Start( NPCACT_WANDER );
+		Skill_Start(SKILL_HIDING);
 		return;
 	}
 
-	// just stand here for a bit.
+	// Start wandering around
+	if ( Calc_GetRandVal(100 - Stat_GetAdjusted(STAT_DEX)) < 25 )
+	{
+		Skill_Start(NPCACT_WANDER);
+		return;
+	}
+
+	// Just stand here for a bit
 	Skill_Start(SKILL_NONE);
-	SetTimeout(TICK_PER_SEC * 1 + Calc_GetRandLLVal(TICK_PER_SEC*2));
+	SetTimeout(Calc_GetRandVal2(1, 20) * TICK_PER_SEC);
 }
 
-bool CChar::NPC_OnItemGive( CChar *pCharSrc, CItem *pItem )
+bool CChar::NPC_OnReceiveItem(CChar *pCharSrc, CItem *pItem)
 {
-	ADDTOCALLSTACK("CChar::NPC_OnItemGive");
-	// Someone (Player) is giving me an item.
-	// return true = accept
-
+	ADDTOCALLSTACK("CChar::NPC_OnReceiveItem");
+	// NPC is receiving an item from player
+	// RETURN:
+	//  true = accept item
+	//  false = refuse item
 	if ( !m_pNPC || !pCharSrc )
 		return false;
 
@@ -2825,7 +2380,6 @@ bool CChar::NPC_OnItemGive( CChar *pCharSrc, CItem *pItem )
 			return false;
 	}
 
-	// Giving item to own pet
 	if ( NPC_IsOwnedBy(pCharSrc) )
 	{
 		if ( NPC_IsVendor() )
@@ -2847,17 +2401,19 @@ bool CChar::NPC_OnItemGive( CChar *pCharSrc, CItem *pItem )
 		{
 			if ( Use_Eat(pItem, pItem->GetAmount()) )
 			{
+				if ( !pItem->IsDeleted() )		// if the NPC don't eat the full stack, bounce back the remaining stack on player backpack
+					pCharSrc->ItemBounce(pItem);
+
 				if ( NPC_CanSpeak() )
 					Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_FOOD_TY));
-
-				if ( !pItem->IsDeleted() )		// if the NPC don't eat the full stack, bounce back the remaining amount on player backpack
-					pCharSrc->ItemBounce(pItem);
 				return true;
 			}
-
-			if ( NPC_CanSpeak() )
-				Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_FOOD_NO));
-			return false;
+			else
+			{
+				if ( NPC_CanSpeak() )
+					Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_FOOD_NO));
+				return false;
+			}
 		}
 
 		if ( pCharSrc->IsPriv(PRIV_GM) )
@@ -2889,15 +2445,13 @@ bool CChar::NPC_OnItemGive( CChar *pCharSrc, CItem *pItem )
 					return NPC_OnTrainPay(pCharSrc, pMemory, pItem);
 				case NPC_MEM_ACT_SPEAK_HIRE:
 					return NPC_OnHirePay(pCharSrc, pMemory, pItem);
-				default:
-					break;
 			}
 		}
 
 		if ( m_pNPC->m_Brain == NPCBRAIN_BANKER )
 		{
-			CItemContainer *pBankBox = pCharSrc->GetContainerCreate(LAYER_BANKBOX);
-			if ( !pBankBox )
+			CItemContainer *pBank = pCharSrc->GetContainerCreate(LAYER_BANKBOX);
+			if ( !pBank )
 				return false;
 
 			if ( NPC_CanSpeak() )
@@ -2907,14 +2461,14 @@ bool CChar::NPC_OnItemGive( CChar *pCharSrc, CItem *pItem )
 				Speak(pszMsg);
 			}
 
-			pBankBox->ContentAdd(pItem);
+			pBank->ContentAdd(pItem);
 			return true;
 		}
 	}
 
+	// Dropping item on vendor means quick sell
 	if ( NPC_IsVendor() && !IsStatFlag(STATF_Pet) )
 	{
-		// Dropping item on vendor means quick sell
 		if ( pCharSrc->m_pClient )
 		{
 			VendorItem item;
@@ -2956,131 +2510,145 @@ bool CChar::NPC_OnItemGive( CChar *pCharSrc, CItem *pItem )
 void CChar::NPC_OnTickAction()
 {
 	ADDTOCALLSTACK("CChar::NPC_OnTickAction");
-	// Our action timer has expired. last skill or task might be complete ?
-	// What action should we take now ?
-	EXC_TRY("NPC_TickAction");
-
+	// NPC action timer has expired, check what action it should do next
 	if ( !m_pNPC || !m_pArea )
 		return;
-	SKILL_TYPE iSkillActive = Skill_GetActive();
-	if ( g_Cfg.IsSkillFlag(iSkillActive, SKF_SCRIPTED) )
+
+	EXC_TRY("NPC_OnTickAction");
+	SKILL_TYPE skill = Skill_GetActive();
+	if ( g_Cfg.IsSkillFlag(skill, SKF_SCRIPTED) )
 	{
-		// SCRIPTED SKILL OnTickAction
+		// Skip hardcoded actions on scripted skills
 	}
-	else if ( g_Cfg.IsSkillFlag(iSkillActive, SKF_FIGHT) )
+	else if ( g_Cfg.IsSkillFlag(skill, SKF_FIGHT) )
 	{
 		EXC_SET("fighting");
 		NPC_Act_Fight();
 	}
-	else if ( g_Cfg.IsSkillFlag(iSkillActive, SKF_MAGIC) )
+	else if ( g_Cfg.IsSkillFlag(skill, SKF_MAGIC) )
 	{
 		EXC_SET("fighting-magic");
 		NPC_Act_Fight();
 	}
 	else
 	{
-		switch ( iSkillActive )
+		switch ( skill )
 		{
 			case SKILL_NONE:
-				// We should try to do something new.
-				EXC_SET("idle: Skill_None");
+			{
+				EXC_SET("idle");
 				NPC_Act_Idle();
 				break;
-
-			case SKILL_STEALTH:
+			}
 			case SKILL_HIDING:
-				// We are currently hidden.
+			case SKILL_STEALTH:
+			{
 				EXC_SET("look around");
-				if ( NPC_LookAround())
+				if ( NPC_LookAround() )
 					break;
-				// just remain hidden unless we find something new to do.
-				if ( Calc_GetRandVal( Skill_GetBase(SKILL_HIDING)))
+				if ( Calc_GetRandVal(Skill_GetBase(SKILL_HIDING) / 10) )	// stay hidden for some time
 					break;
-				EXC_SET("idle: Hidding");
+				EXC_SET("idle");
 				NPC_Act_Idle();
 				break;
-
-			case NPCACT_GUARD_TARG:
-				// fight with the target, or follow it
-				EXC_SET("guard");
-				NPC_Act_Guard();
-				break;
-
+			}
 			case NPCACT_FOLLOW_TARG:
-				// continue to follow our target.
+			{
 				EXC_SET("look at char");
 				NPC_LookAtChar(m_Act_Targ.CharFind());
-				EXC_SET("follow char");
+				EXC_SET("follow");
 				NPC_Act_Follow();
 				break;
+			}
 			case NPCACT_STAY:
-				// Just stay here til told to do otherwise.
+			{
+				EXC_SET("stay");
 				break;
+			}
 			case NPCACT_GOTO:
+			{
 				EXC_SET("goto");
-				NPC_Act_Goto();
+				NPC_Act_GoTo();
 				break;
+			}
 			case NPCACT_WANDER:
+			{
 				EXC_SET("wander");
 				NPC_Act_Wander();
 				break;
+			}
+			case NPCACT_LOOKING:
+			{
+				EXC_SET("look around");
+				if ( NPC_LookAround(true) )
+					break;
+				EXC_SET("idle");
+				NPC_Act_Idle();
+				break;
+			}
 			case NPCACT_FLEE:
+			{
 				EXC_SET("flee");
 				NPC_Act_Flee();
 				break;
+			}
 			case NPCACT_TALK:
 			case NPCACT_TALK_FOLLOW:
-				// Got bored just talking to you.
+			{
 				EXC_SET("talk");
-				if ( ! NPC_Act_Talk())
+				if ( !NPC_Act_Talk() )
 				{
-					EXC_SET("idle: Talk");
-					NPC_Act_Idle();	// look for something new to do.
+					EXC_SET("idle");
+					NPC_Act_Idle();
 				}
 				break;
+			}
+			case NPCACT_GUARD_TARG:
+			{
+				EXC_SET("guard");
+				NPC_Act_Guard();
+				break;
+			}
 			case NPCACT_GO_HOME:
+			{
 				EXC_SET("go home");
 				NPC_Act_GoHome();
 				break;
-			case NPCACT_LOOKING:
-				EXC_SET("looking");
-				if ( NPC_LookAround( true ) )
-					break;
-				EXC_SET("idle: Looking");
-				NPC_Act_Idle();
-				break;
+			}
 			case NPCACT_FOOD:
-				EXC_SET("Food Skill");
+			{
+				EXC_SET("food");
 				if ( NPC_GetAiFlags() & NPC_AI_INTFOOD )
 				{
-					if ( ! NPC_Act_Food() )
+					if ( !NPC_Act_Food() )
 						Skill_Start(SKILL_NONE);
 				}
 				break;
+			}
 			case NPCACT_RUNTO:
-				EXC_SET("Run To");
-				NPC_Act_Runto();
+			{
+				EXC_SET("runto");
+				NPC_Act_RunTo();
 				break;
-
+			}
 			default:
-				if ( !IsSkillBase(iSkillActive) )	// unassigned skill ? that's weird
-				{
+			{
+				if ( !IsSkillBase(skill) )		// this should never happen
 					Skill_Start(SKILL_NONE);
-				}
 				break;
+			}
 		}
 	}
 
 	EXC_SET("timer expired");
-	if ( IsTimerExpired() && IsStatFlag(STATF_War) && !(IsSetCombatFlags(COMBAT_PREHIT) && m_atFight.m_Swing_State == WAR_SWING_SWINGING) )	// Was not reset? PREHIT forces timer to be 0, so it get's defaulted here breaking NPC's speed when PREHIT is enabled. Must not check in this case.
+	if ( IsTimerExpired() && IsStatFlag(STATF_War) && !(IsSetCombatFlags(COMBAT_PREHIT) && (m_atFight.m_Swing_State == WAR_SWING_SWINGING)) )	// was not reset? PREHIT forces timer to be 0, so it get's defaulted here breaking NPC's speed when PREHIT is enabled. Must not check in this case.
 	{
-		INT64 timeout	= maximum((150-Stat_GetAdjusted(STAT_DEX))/2, 0);
-		timeout = Calc_GetRandLLVal2(timeout/2, timeout);
-		// default next brain/move tick
-		SetTimeout( TICK_PER_SEC + timeout * TICK_PER_SEC / 10 );
+		// Set timer for next tick
+		INT64 iTimeout = maximum(0, (150 - Stat_GetAdjusted(STAT_DEX)) / 2);
+		SetTimeout(TICK_PER_SEC + Calc_GetRandLLVal2(iTimeout / 2, iTimeout));
 	}
 
-	//	vendors restock periodically
+	// Periodically restock vendors
 	if ( NPC_IsVendor() )
 		NPC_Vendor_Restock();
 
@@ -3094,267 +2662,85 @@ void CChar::NPC_OnTickAction()
 void CChar::NPC_Pathfinding()
 {
 	ADDTOCALLSTACK("CChar::NPC_Pathfinding");
-	CPointMap local = GetTopPoint();
-
-	EXC_TRY("Pathfinding");
-	EXC_SET("pre-checking");
-
+	// NPC is trying to find an path to walk
 	if ( !m_pNPC )
 		return;
 
-	// If NPC_AI_ALWAYSINT is set, just make it as smart as possible.
-	int			iInt = ( NPC_GetAiFlags() & NPC_AI_ALWAYSINT ) ? 300 : Stat_GetAdjusted(STAT_INT);
-	CPointMap	pTarg = m_Act_p;
-	int			dist = local.GetDist(pTarg);
+	CPointMap pt = GetTopPoint();
 
-	//	do we really need to find the path?
-	if ( iInt < 75 ) return;					// too dumb
-	if ( m_pNPC->m_nextPt == pTarg ) return;			// we have path to that position already saved in m_NextX/Y
-	if ( !pTarg.IsValidPoint() ) return;		// invalid point
-	if (( pTarg.m_x == local.m_x ) && ( pTarg.m_y == local.m_y )) return; // same spot
-	if ( pTarg.m_map != local.m_map ) return;	// cannot just move to another map
-	if ( dist >= PATH_SIZE/2 ) return;			// skip too far locations which should be too slow
-	if ( dist < 2 ) return;						// skip too low distance (1 step) - good in default
-												// pathfinding is buggy near the edges of the map,
-												// so do not use it there
-	if (( local.m_x <= PATH_SIZE/2 ) || ( local.m_y <= PATH_SIZE/2 ) ||
-		( local.m_x >= ( g_MapList.GetX(local.m_map) - PATH_SIZE/2) ) ||
-		( local.m_y >= ( g_MapList.GetY(local.m_map) - PATH_SIZE/2) ))
+	// Check if pathfind is really needed
+	EXC_TRY("Pathfinding");
+	EXC_SET("pre-checking");
+	int iInt = (NPC_GetAiFlags() & NPC_AI_ALWAYSINT) ? 300 : Stat_GetAdjusted(STAT_INT);
+	if ( iInt < 75 )	// too dumb
 		return;
-												// need 300 int at least to pathfind each step, but always
-												// search if this is a first step
-	if (( Calc_GetRandVal(300) > iInt ) && ( m_pNPC->m_nextX[0] )) return;
+	if ( m_pNPC->m_nextPt == m_Act_p )	// path to this point is already saved
+		return;
+	if ( !m_Act_p.IsValidPoint() )		// invalid point
+		return;
+	if ( m_Act_p.m_map != pt.m_map )	// can't walk between different maps
+		return;
+	if ( (m_Act_p.m_x == pt.m_x) && (m_Act_p.m_y == pt.m_y) )	// same spot
+		return;
+	int iDist = pt.GetDist(m_Act_p);
+	if ( iDist < 2 )					// too close
+		return;
+	if ( iDist >= PATH_SIZE / 2 )		// too far
+		return;
+	if ( (pt.m_x <= PATH_SIZE / 2) || (pt.m_y <= PATH_SIZE / 2) || (pt.m_x >= g_MapList.GetX(pt.m_map) - (PATH_SIZE / 2)) || (pt.m_y >= g_MapList.GetY(pt.m_map) - (PATH_SIZE / 2)) )		// pathfind is buggy near map edges, so don't use it there
+		return;
+	if ( (Calc_GetRandVal(300) > iInt) && m_pNPC->m_nextX[0] )		// need 300 int at least to pathfind, but always search if this is a first step
+		return;
 
-	//	clear saved steps list
+	// Clear saved steps list
 	EXC_SET("clearing last steps");
-#ifndef _WIN32
-	for (int i_tmpN=0;i_tmpN < MAX_NPC_PATH_STORAGE_SIZE;i_tmpN++)
-	{
-		m_pNPC->m_nextX[i_tmpN] = 0;
-		m_pNPC->m_nextY[i_tmpN] = 0;
-	}
-#else
+#ifdef _WIN32
 	memset(m_pNPC->m_nextX, 0, sizeof(m_pNPC->m_nextX));
 	memset(m_pNPC->m_nextY, 0, sizeof(m_pNPC->m_nextY));
+#else
+	for ( int i = 0; i < MAX_NPC_PATH_STORAGE_SIZE; ++i )
+	{
+		m_pNPC->m_nextX[i] = 0;
+		m_pNPC->m_nextY[i] = 0;
+	}
 #endif
 
-	//	proceed with the pathfinding
+	// Proceed with the pathfinding
 	EXC_SET("filling the map");
-	CPathFinder	path(this, pTarg);
+	CPathFinder path(this, m_Act_p);
 
 	EXC_SET("searching the path");
 	if ( path.FindPath() == PATH_NONEXISTENT )
 		return;
 
-	//	save the found path
 	EXC_SET("saving found path");
-
-	CPointMap Next;
-	// Don't read the first step, it's the same as the current position, so i = 1
-	for ( size_t i = 1; (i != path.LastPathSize()) && (i < MAX_NPC_PATH_STORAGE_SIZE /* Don't overflow*/ ); ++i )
+	CPointMap ptNext;
+	for ( size_t i = 1; (i != path.LastPathSize()) && (i < MAX_NPC_PATH_STORAGE_SIZE); ++i )	// start on i = 1 because 0 is the current position
 	{
-		Next = path.ReadStep(i);
-		m_pNPC->m_nextX[i - 1] = Next.m_x;
-		m_pNPC->m_nextY[i - 1] = Next.m_y;
+		ptNext = path.ReadStep(i);
+		m_pNPC->m_nextX[i - 1] = ptNext.m_x;
+		m_pNPC->m_nextY[i - 1] = ptNext.m_y;
 	}
-	m_pNPC->m_nextPt = pTarg;
-	path.ClearLastPath(); // !! Use explicitly when using one CPathFinder object for more NPCs
-
+	m_pNPC->m_nextPt = m_Act_p;
+	path.ClearLastPath();	// use explicitly when using one CPathFinder object for more NPCs
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("'%s' point '%d,%d,%d,%d' [0%lx]\n", GetName(), local.m_x, local.m_y, local.m_z, local.m_map, static_cast<DWORD>(GetUID()));
+	g_Log.EventDebug("'%s' point '%d,%d,%d,%d' [0%lx]\n", GetName(), pt.m_x, pt.m_y, pt.m_z, pt.m_map, static_cast<DWORD>(GetUID()));
 	EXC_DEBUG_END;
-}
-
-void CChar::NPC_Food()
-{
-	ADDTOCALLSTACK("CChar::NPC_Food");
-	EXC_TRY("FoodAI");
-
-	int iFoodLevel = Food_GetLevelPercent();
-	if ( iFoodLevel > 40 )		// only search for food when hungry
-		return;
-
-	int		iFood = Stat_GetVal(STAT_FOOD);
-	WORD	iEatAmount = 1;
-	int		iSearchDistance = 2;
-	CItem	*pClosestFood = NULL;
-	int		iClosestFood = 100;
-	int		iMyZ = GetTopPoint().m_z;
-	bool	bSearchGrass = false;
-
-	CItemContainer *pPack = GetContainer(LAYER_PACK);
-	if ( pPack )
-	{
-		EXC_SET("searching in pack");
-		for ( CItem *pFood = pPack->GetContentHead(); pFood != NULL; pFood = pFood->GetNext() )
-		{
-			// i have some food personaly, so no need to search for something
-			if ( pFood->IsType(IT_FOOD) )
-			{
-				if ( (iEatAmount = Food_CanEat(pFood)) > 0 )
-				{
-					EXC_SET("eating from pack");
-					Use_EatQty(pFood, iEatAmount);
-					return;
-				}
-			}
-		}
-	}
-
-	// Search for food nearby
-	EXC_SET("searching nearby");
-	iSearchDistance = (UO_MAP_VIEW_SIGHT * ( 100 - iFoodLevel ) ) / 100;
-	CWorldSearch	AreaItems(GetTopPoint(), minimum(iSearchDistance,m_pNPC->m_Home_Dist_Wander));
-	for (;;)
-	{
-		CItem	*pItem = AreaItems.GetItem();
-		if ( !pItem ) break;
-		if ( !CanSee(pItem) || pItem->IsAttr(ATTR_MOVE_NEVER|ATTR_STATIC|ATTR_LOCKEDDOWN|ATTR_SECURE) ) continue;
-		if ( (pItem->GetTopPoint().m_z < iMyZ) || (pItem->GetTopPoint().m_z > (iMyZ + (m_height / 2))) )
-			continue;
-
-		if ( (iEatAmount = Food_CanEat(pItem)) > 0 )
-		{
-			int iDist = GetDist(pItem);
-			if ( pClosestFood )
-			{
-				if ( iDist < iClosestFood )
-				{
-					pClosestFood = pItem;
-					iClosestFood = iDist;
-				}
-			}
-			else
-			{
-				pClosestFood = pItem;
-				iClosestFood = iDist;
-			}
-		}
-	}
-
-	if ( pClosestFood )
-	{
-		if ( iClosestFood <= 1 )
-		{
-			//	can take and eat just in place
-			EXC_SET("eating nearby");
-			EatAnim(pClosestFood->GetName(), static_cast<int>(pClosestFood->ConsumeAmount(iEatAmount)));
-			if ( !pClosestFood->GetAmount() )
-				pClosestFood->Plant_CropReset();	// set growth if this is a plant
-		}
-		else
-		{
-			//	move towards this item
-			switch ( m_Act_SkillCurrent )
-			{
-				case NPCACT_STAY:
-				case NPCACT_GOTO:
-				case NPCACT_WANDER:
-				case NPCACT_LOOKING:
-				case NPCACT_GO_HOME:
-				case NPCACT_Napping:
-				case NPCACT_FLEE:
-					{
-						EXC_SET("walking to desired");
-						CPointMap pt = pClosestFood->GetTopPoint();
-						if ( CanMoveWalkTo(pt) )
-						{
-							m_Act_p = pt;
-							Skill_Start(NPCACT_GOTO);
-							//NPC_WalkToPoint((iFoodLevel < 5) ? true : false);
-						}
-						break;
-					}
-				default:
-					break;
-			}
-		}
-	}
-					// no food around, but maybe i am ok with grass?
-	else
-	{
-		NPCBRAIN_TYPE	brain = GetNPCBrain();
-		if ( brain == NPCBRAIN_ANIMAL )						// animals eat grass always
-			bSearchGrass = true;
-		else if (( brain == NPCBRAIN_HUMAN ) && !iFood )	// human eat grass if starving nearly dead
-			bSearchGrass = true;
-	}
-
-	if ( bSearchGrass )
-	{
-		CCharBase			*pCharDef = Char_GetDef();
-		RESOURCE_ID_BASE	rid = RESOURCE_ID(RES_TYPEDEF, IT_GRASS);
-
-		EXC_SET("searching grass");
-		if ( pCharDef->m_FoodType.ContainsResourceID(rid) ) // do I accept grass as a food?
-		{
-			CItem	*pResBit = g_World.CheckNaturalResource(GetTopPoint(), IT_GRASS, true, this);
-			if ( pResBit && pResBit->GetAmount() && ( pResBit->GetTopPoint().m_z == iMyZ ) )
-			{
-				EXC_SET("eating grass");
-				EatAnim("grass", static_cast<int>(pResBit->ConsumeAmount(15)) / 10);
-
-				//	the bit is not needed in a worldsave, timeout of 10 minutes
-				pResBit->m_TagDefs.SetNum("NOSAVE", 1);
-				pResBit->SetTimeout(60*10*TICK_PER_SEC);
-				return;
-			}
-			else									//	search for grass nearby
-			{
-				switch ( m_Act_SkillCurrent )
-				{
-					case NPCACT_STAY:
-					case NPCACT_GOTO:
-					case NPCACT_WANDER:
-					case NPCACT_LOOKING:
-					case NPCACT_GO_HOME:
-					case NPCACT_Napping:
-					case NPCACT_FLEE:
-						{
-							EXC_SET("searching grass nearby");
-							CPointMap pt;
-								pt = g_World.FindTypeNear_Top(GetTopPoint(), IT_GRASS, minimum(iSearchDistance,m_pNPC->m_Home_Dist_Wander));
-							if (( pt.m_x >= 1 ) && ( pt.m_y >= 1 ))
-							{
-								// we found grass nearby, but has it already been consumed?
-								pResBit = g_World.CheckNaturalResource(pt, IT_GRASS, false, this);
-								if ( pResBit != NULL && pResBit->GetAmount() && CanMoveWalkTo(pt) )
-								{
-									EXC_SET("walking to grass");
-									pResBit->m_TagDefs.SetNum("NOSAVE", 1);
-									pResBit->SetTimeout(60*10*TICK_PER_SEC);
-									m_Act_p = pt;
-									Skill_Start(NPCACT_GOTO);
-									return;
-								}
-							}
-							break;
-						}
-					default:
-						break;
-				}
-			}
-		}
-	}
-	EXC_CATCH;
 }
 
 void CChar::NPC_ExtraAI()
 {
 	ADDTOCALLSTACK("CChar::NPC_ExtraAI");
 	EXC_TRY("ExtraAI");
-
-	if ( !m_pNPC )
-		return;
-	if ( GetNPCBrain() != NPCBRAIN_HUMAN )
+	if ( !m_pNPC || (GetNPCBrain() != NPCBRAIN_HUMAN) )
 		return;
 
 	EXC_SET("init");
 	if ( IsTrigUsed(TRIGGER_NPCACTION) )
 	{
-		if ( OnTrigger( CTRIG_NPCAction, this ) == TRIGRET_RET_TRUE )
+		if ( OnTrigger(CTRIG_NPCAction, this) == TRIGRET_RET_TRUE )
 			return;
 	}
 
@@ -3382,14 +2768,13 @@ void CChar::NPC_ExtraAI()
 
 	// Equip lightsource at night time
 	EXC_SET("light source");
-	CPointMap pt = GetTopPoint();
-	CSector *pSector = pt.GetSector();
+	CItem *pLightSource = LayerFind(LAYER_HAND2);
+	CSector *pSector = GetTopPoint().GetSector();
 	if ( pSector && pSector->IsDark() )
 	{
-		CItem *pLightSourceCheck = LayerFind(LAYER_HAND2);
-		if ( !(pLightSourceCheck && (pLightSourceCheck->IsType(IT_LIGHT_OUT) || pLightSourceCheck->IsType(IT_LIGHT_LIT))) )
+		if ( !pLightSource || !pLightSource->IsType(IT_LIGHT_LIT) )
 		{
-			CItem *pLightSource = ContentFind(RESOURCE_ID(RES_TYPEDEF, IT_LIGHT_OUT));
+			pLightSource = ContentFind(RESOURCE_ID(RES_TYPEDEF, IT_LIGHT_OUT));
 			if ( pLightSource )
 			{
 				ItemEquip(pLightSource);
@@ -3399,8 +2784,7 @@ void CChar::NPC_ExtraAI()
 	}
 	else
 	{
-		CItem *pLightSource = LayerFind(LAYER_HAND2);
-		if ( pLightSource && (pLightSource->IsType(IT_LIGHT_OUT) || pLightSource->IsType(IT_LIGHT_LIT)) )
+		if ( pLightSource && (pLightSource->IsType(IT_LIGHT_LIT) || pLightSource->IsType(IT_LIGHT_OUT)) )
 			ItemBounce(pLightSource, false);
 	}
 
