@@ -414,7 +414,7 @@ void CObjBase::Emote(LPCTSTR pszTextYou, LPCTSTR pszTextThem, CClient *pClientEx
 	FONT_TYPE defaultFont = FONT_NORMAL;
 	bool defaultUnicode = false;
 
-	if ( *pszTextYou == '@' )
+	if ( pszTextYou && (*pszTextYou == '@') )
 	{
 		++pszTextYou;
 		const char *s = pszTextYou;

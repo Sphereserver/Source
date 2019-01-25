@@ -703,8 +703,6 @@ void CItemContainer::Trade_Status(bool fCheck)
 		UINT64 uGold2 = pPartner->m_itEqTradeWindow.m_iGold + static_cast<UINT64>(pPartner->m_itEqTradeWindow.m_iPlatinum * 1000000000);
 		pChar1->m_virtualGold += uGold2 - uGold1;
 		pChar2->m_virtualGold += uGold1 - uGold2;
-		pChar1->UpdateStatsFlag();
-		pChar2->UpdateStatsFlag();
 	}
 
 	// Done with trade

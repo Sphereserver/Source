@@ -1129,7 +1129,6 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 		if ( g_Cfg.m_iFeatureTOL & FEATURE_TOL_VIRTUALGOLD )
 		{
 			m_pChar->m_virtualGold -= costtotal;
-			m_pChar->UpdateStatsFlag();
 			sprintf(pszText, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_BUY_BANK), static_cast<int>(costtotal));
 		}
 		else
@@ -1250,10 +1249,7 @@ void CClient::Event_VendorSell(CChar *pVendor, const VendorItem *items, size_t i
 			pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_SELL_CANTAFFORD));
 
 		if ( g_Cfg.m_iFeatureTOL & FEATURE_TOL_VIRTUALGOLD )
-		{
 			m_pChar->m_virtualGold += iGold;
-			m_pChar->UpdateStatsFlag();
-		}
 		else
 			m_pChar->AddGoldToPack(iGold, NULL, false);
 

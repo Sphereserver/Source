@@ -3635,12 +3635,6 @@ SOUND_TYPE CItem::Use_Music( bool fWell ) const
 	return( static_cast<SOUND_TYPE>(fWell ? ( pItemDef->m_ttMusical.m_iSoundGood ) : ( pItemDef->m_ttMusical.m_iSoundBad )));
 }
 
-bool CItem::IsDoorOpen() const
-{
-	ADDTOCALLSTACK("CItem::IsDoorOpen");
-	return( CItemBase::IsID_DoorOpen( GetDispID()));
-}
-
 bool CItem::Use_DoorNew(bool fJustOpen)
 {
 	ADDTOCALLSTACK("CItem::Use_DoorNew");

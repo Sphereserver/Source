@@ -2682,7 +2682,6 @@ bool CChar::r_LoadVal(CScript &s)
 			break;
 		case CHC_VIRTUALGOLD:
 			m_virtualGold = static_cast<UINT64>(s.GetArgLLVal());
-			UpdateStatsFlag();
 			break;
 		case CHC_VISUALRANGE:
 			SetSight(static_cast<BYTE>(s.GetArgVal()));

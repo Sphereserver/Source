@@ -867,7 +867,6 @@ public:
 	int AddSpellbookScroll(CItem *pItem);
 	int AddSpellbookSpell(SPELL_TYPE spell, bool fUpdate);
 
-	bool IsDoorOpen() const;
 	bool Use_Door(bool fJustOpen);
 	bool Use_DoorNew(bool fJustOpen);
 	bool Use_Portculis();

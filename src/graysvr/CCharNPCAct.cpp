@@ -1082,7 +1082,7 @@ bool CChar::NPC_LookAtItem(CItem *pItem)
 	// Check nearby doors
 	if ( pItem->IsType(IT_DOOR) )
 	{
-		if ( !Calc_GetRandVal(2) || (iDist > 1) || pItem->IsDoorOpen() )
+		if ( !Calc_GetRandVal(2) || (iDist > 1) )
 			return false;
 
 		// Try to open it
@@ -2446,7 +2446,16 @@ bool CChar::NPC_OnReceiveItem(CChar *pCharSrc, CItem *pItem)
 				Speak(pszMsg);
 			}
 
-			pBank->ContentAdd(pItem);
+			if ( pCharSrc->m_pClient )
+				pCharSrc->m_pClient->addSound(pItem->GetDropSound(pBank));
+
+			if ( g_Cfg.m_iFeatureTOL & FEATURE_TOL_VIRTUALGOLD )
+			{
+				pCharSrc->m_virtualGold += pItem->GetAmount();
+				pItem->Delete();
+			}
+			else
+				pBank->ContentAdd(pItem);
 			return true;
 		}
 	}

@@ -1363,4 +1363,5 @@ Added: NPCs with CAN=mt_fly flag now will periodically fly while wandering (as s
 	-Default script pack already have this flag set on NPCs, but if your script pack is outdated, just update it (or remove 'mt_fly' from NPCs if you don't want this feature)
 
 25-01-2019, Coruja
-Fixed: Guards incorrectly attacking murderers on guarded regions with REGION.TAG.RED=1
+Fixed: Guards incorrectly attacking murderers on guarded regions with REGION.TAG.RED=1.
+Fixed: Gold coins dropped over NPC banker not being deposited on bank when FEATURE_TOL_VIRTUALGOLD feature is enabled on sphere.ini.
