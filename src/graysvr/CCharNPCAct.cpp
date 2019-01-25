@@ -852,32 +852,16 @@ bool CChar::NPC_LookAtCharGuard(CChar *pChar)
 {
 	ADDTOCALLSTACK("CChar::NPC_LookAtCharGuard");
 	// Guard NPC is looking at char
-	if ( !pChar || pChar->IsStatFlag(STATF_INVUL|STATF_DEAD) || pChar->IsPriv(PRIV_GM|PRIV_JAILED) || !pChar->Noto_IsCriminal() )
+	if ( !pChar || (pChar == this) )
+		return false;
+	if ( !m_pArea || !pChar->m_pArea || !pChar->m_pArea->IsGuarded() )
+		return false;
+	if ( pChar->IsStatFlag(STATF_INVUL|STATF_DEAD) || pChar->IsPriv(PRIV_GM|PRIV_JAILED) )
+		return false;
+	if ( !(pChar->IsStatFlag(STATF_Criminal) || (g_Cfg.m_fGuardsOnMurderers && pChar->Noto_IsEvil())) )
 		return false;
 
-	if ( !pChar->m_pArea->IsGuarded() )
-	{
-		// At least jeer at the criminal
-		if ( Calc_GetRandVal(10) )
-			return false;
-
-		static LPCTSTR const sm_szSpeakGuardThreat[] =
-		{
-			g_Cfg.GetDefaultMsg(DEFMSG_NPC_GUARD_THREAT_1),
-			g_Cfg.GetDefaultMsg(DEFMSG_NPC_GUARD_THREAT_2),
-			g_Cfg.GetDefaultMsg(DEFMSG_NPC_GUARD_THREAT_3),
-			g_Cfg.GetDefaultMsg(DEFMSG_NPC_GUARD_THREAT_4),
-			g_Cfg.GetDefaultMsg(DEFMSG_NPC_GUARD_THREAT_5)
-		};
-
-		TCHAR *pszMsg = Str_GetTemp();
-		sprintf(pszMsg, sm_szSpeakGuardThreat[Calc_GetRandVal(COUNTOF(sm_szSpeakGuardThreat))], pChar->GetName());
-		Speak(pszMsg);
-		UpdateDir(pChar);
-		return false;
-	}
-
-	static LPCTSTR const sm_szSpeakGuardStrike[] =
+	static LPCTSTR const sm_szGuardStrike[] =
 	{
 		g_Cfg.GetDefaultMsg(DEFMSG_NPC_GUARD_STRIKE_1),
 		g_Cfg.GetDefaultMsg(DEFMSG_NPC_GUARD_STRIKE_2),
@@ -891,15 +875,16 @@ bool CChar::NPC_LookAtCharGuard(CChar *pChar)
 		// If intant kill is enabled, make the guard instantly kill the target with a single hit
 		if ( GetTopDist3D(pChar) > 1 )
 			Spell_Teleport(pChar->GetTopPoint(), false, false);
-
-		Speak(sm_szSpeakGuardStrike[Calc_GetRandVal(COUNTOF(sm_szSpeakGuardStrike))]);
+		if ( !Calc_GetRandVal(3) )
+			Speak(sm_szGuardStrike[Calc_GetRandVal(COUNTOF(sm_szGuardStrike))]);
 		pChar->Stat_SetVal(STAT_STR, 1);
 		Fight_Hit(pChar);
 	}
 	else if ( !IsStatFlag(STATF_War) || (m_Act_Targ != pChar->GetUID()) )
 	{
 		// Otherwise just start an default combat
-		Speak(sm_szSpeakGuardStrike[Calc_GetRandVal(COUNTOF(sm_szSpeakGuardStrike))]);
+		if ( !Calc_GetRandVal(3) )
+			Speak(sm_szGuardStrike[Calc_GetRandVal(COUNTOF(sm_szGuardStrike))]);
 		Fight_Attack(pChar, true);
 	}
 	return true;

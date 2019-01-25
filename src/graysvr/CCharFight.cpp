@@ -1317,12 +1317,12 @@ void CChar::CallGuards()
 
 void CChar::CallGuards(CChar *pCriminal)
 {
-	ADDTOCALLSTACK("CChar::CallGuards1");
+	ADDTOCALLSTACK("CChar::CallGuards2");
 	if ( !pCriminal || (pCriminal == this) )
 		return;
-	if ( !m_pArea || !pCriminal->m_pArea->IsGuarded() || IsStatFlag(STATF_DEAD) )
+	if ( !m_pArea || !pCriminal->m_pArea || !pCriminal->m_pArea->IsGuarded() || IsStatFlag(STATF_DEAD) )
 		return;
-	if ( pCriminal->IsStatFlag(STATF_DEAD|STATF_INVUL) || pCriminal->IsPriv(PRIV_GM) )
+	if ( pCriminal->IsStatFlag(STATF_INVUL|STATF_DEAD) || pCriminal->IsPriv(PRIV_GM|PRIV_JAILED) )
 		return;
 
 	CChar *pGuard = NULL;
