@@ -1061,9 +1061,9 @@ bool CChar::NPC_LookAtItem(CItem *pItem)
 		{
 			CScriptTriggerArgs Args(iDist, iWantThisItem, pItem);
 			TRIGRET_TYPE tr = OnTrigger(CTRIG_NPCLookAtItem, this, &Args);
-			if ( tr = TRIGRET_RET_TRUE )
+			if ( tr == TRIGRET_RET_TRUE )
 				return true;
-			if ( tr = TRIGRET_RET_FALSE )
+			else if ( tr == TRIGRET_RET_FALSE )
 				return false;
 
 			iWantThisItem = static_cast<int>(Args.m_iN2);
@@ -1129,9 +1129,9 @@ bool CChar::NPC_LookAtChar(CChar *pChar)
 	if ( IsTrigUsed(TRIGGER_NPCLOOKATCHAR) )
 	{
 		TRIGRET_TYPE tr = OnTrigger(CTRIG_NPCLookAtChar, pChar);
-		if ( tr = TRIGRET_RET_TRUE )
+		if ( tr == TRIGRET_RET_TRUE )
 			return true;
-		if ( tr = TRIGRET_RET_FALSE )
+		else if ( tr == TRIGRET_RET_FALSE )
 			return false;
 	}
 
@@ -1343,9 +1343,9 @@ bool CChar::NPC_Act_Follow(bool fFlee, int iMaxDist, bool fMoveAway)
 	{
 		CScriptTriggerArgs Args(fFlee, iMaxDist, fMoveAway);
 		TRIGRET_TYPE tr = OnTrigger(CTRIG_NPCActFollow, pChar, &Args);
-		if ( tr = TRIGRET_RET_TRUE )
+		if ( tr == TRIGRET_RET_TRUE )
 			return false;
-		if ( tr = TRIGRET_RET_FALSE )
+		else if ( tr == TRIGRET_RET_FALSE )
 			return true;
 
 		fFlee = static_cast<bool>(Args.m_iN1);
@@ -1521,7 +1521,7 @@ bool CChar::NPC_FightMagery(CChar *pChar)
 
 	CObjBase *pSrc = this;
 	CObjBase *pTarg = pChar;
-	size_t iRandSpell = static_cast<size_t>(Calc_GetRandVal2(0, iSpellCount - 1));	// spells are stored on a zero-based vector
+	int iRandSpell = Calc_GetRandVal2(0, iSpellCount - 1);		// spells are stored on a zero-based vector
 
 	CItem *pWand = LayerFind(LAYER_HAND1);
 	if ( pWand && pWand->IsType(IT_WAND) )
@@ -1545,7 +1545,7 @@ bool CChar::NPC_FightMagery(CChar *pChar)
 	int iSkill, iSkillReq;
 	for ( ; iRandSpell < iSpellCount; ++iRandSpell )
 	{
-		SPELL_TYPE spell = m_pNPC->Spells_GetAt(iRandSpell);
+		SPELL_TYPE spell = m_pNPC->Spells_GetAt(static_cast<size_t>(iRandSpell));
 		const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(spell);
 		if ( !pSpellDef )
 			continue;
@@ -1824,11 +1824,11 @@ void CChar::NPC_Act_Fight()
 	{
 		CScriptTriggerArgs Args(iDist, iMotivation);
 		TRIGRET_TYPE tr = OnTrigger(CTRIG_NPCActFight, pChar, &Args);
-		if ( tr = TRIGRET_RET_TRUE )
+		if ( tr == TRIGRET_RET_TRUE )
 			return;
-		else if ( tr = TRIGRET_RET_FALSE )
+		else if ( tr == TRIGRET_RET_FALSE )
 			fSkipHardcoded = true;
-		else if ( tr = TRIGRET_RET_DEFAULT )
+		else if ( tr == TRIGRET_RET_DEFAULT )
 		{
 			SKILL_TYPE skill = static_cast<SKILL_TYPE>(Args.m_VarsLocal.GetKeyNum("skill"));
 			if ( skill )
