@@ -819,11 +819,9 @@ void CClient::Event_CombatMode(bool fWar)
 bool CClient::Event_Command(LPCTSTR pszCommand, TALKMODE_TYPE mode)
 {
 	ADDTOCALLSTACK("CClient::Event_Command");
-	if ( mode == 13 || mode == 14 ) // guild and alliance don't pass this.
+	if ( (mode == TALKMODE_GUILD) || (mode == TALKMODE_ALLIANCE) )
 		return false;
-	if ( pszCommand[0] == 0 )
-		return true;		// should not be said
-	if ( Str_Check(pszCommand) )
+	if ( (pszCommand[0] == 0) || Str_Check(pszCommand) )
 		return true;		// should not be said
 
 	if ( ((m_pChar->GetID() == CREID_EQUIP_GM_ROBE) && (pszCommand[0] == '=')) || (pszCommand[0] == g_Cfg.m_cCommandPrefix) )
@@ -1306,8 +1304,8 @@ void CClient::Event_MailMsg(CGrayUID uid1, CGrayUID uid2)
 {
 	ADDTOCALLSTACK("CClient::Event_MailMsg");
 	UNREFERENCED_PARAMETER(uid2);
-	// NOTE: How do i protect this from spamming others !!!
-	// Drag the mail bag to this clients char.
+	// Ultima Messenger button pressed on paperdoll (obsolete, feature removed since client 3.0.6e)
+	// NOTE: No hardcoded behavior, this should be softcoded using @UserMailBag trigger
 	if ( !m_pChar )
 		return;
 
@@ -1317,20 +1315,15 @@ void CClient::Event_MailMsg(CGrayUID uid1, CGrayUID uid2)
 		SysMessageDefault(DEFMSG_MSG_MAILBAG_DROP_1);
 		return;
 	}
+	if ( pChar == m_pChar )		// for some reason this is normal at startup
+		return;
 
 	if ( IsTrigUsed(TRIGGER_USERMAILBAG) )
 	{
-		if ( pChar->OnTrigger(CTRIG_UserMailBag, m_pChar, NULL) == TRIGRET_RET_TRUE )
+		if ( pChar->OnTrigger(CTRIG_UserMailBag, m_pChar) == TRIGRET_RET_TRUE )
 			return;
+		pChar->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_MAILBAG_DROP_2), m_pChar->GetName());
 	}
-
-	if ( pChar == m_pChar ) // this is normal (for some reason) at startup.
-		return;
-
-	// Might be an NPC ?
-	TCHAR *pszMsg = Str_GetTemp();
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MSG_MAILBAG_DROP_2), m_pChar->GetName());
-	pChar->SysMessage(pszMsg);
 }
 
 void CClient::Event_ToolTip(CGrayUID uid)
@@ -1581,9 +1574,7 @@ void CClient::Event_Talk(LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, boo
 	ADDTOCALLSTACK("CClient::Event_Talk");
 	if ( !m_pChar || !m_pAccount )
 		return;
-	if ( mode < 0 || mode > 14 )	// less or greater is an exploit
-		return;
-	if ( mode == 1 || mode == 3 || mode == 4 || mode == 5 || mode == 6 || mode == 7 || mode == 10 || mode == 11 || mode == 12 )		// these modes are server->client only
+	if ( !((mode == TALKMODE_SYSTEM) || (mode == TALKMODE_EMOTE) || (mode == TALKMODE_WHISPER) || (mode == TALKMODE_YELL) || (mode == TALKMODE_GUILD) || (mode == TALKMODE_ALLIANCE)) )
 		return;
 
 	if ( (wHue < HUE_BLUE_LOW) || (wHue > HUE_DYE_HIGH) )

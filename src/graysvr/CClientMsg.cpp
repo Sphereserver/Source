@@ -1175,8 +1175,8 @@ void CClient::addItemName(const CItem *pItem)
 	}
 	else if ( pItem->IsTypeArmorWeapon() )
 	{
-		int iPercent = pItem->Armor_GetRepairPercent();
-		if ( (iPercent < 50) && (m_pChar->Skill_GetAdjusted(SKILL_ARMSLORE) / 10 > iPercent) )
+		WORD wPercent = pItem->Armor_GetRepairPercent();
+		if ( (wPercent < 50) && (m_pChar->Skill_GetAdjusted(SKILL_ARMSLORE) / 10 > wPercent) )
 			len += sprintf(szName + len, " (%s)", pItem->Armor_GetRepairDesc());
 	}
 
@@ -1296,7 +1296,7 @@ void CClient::addCharName(const CChar *pChar)
 			if ( pChar->IsStatFlag(STATF_Conjured) )
 				strcat(pszName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_SUMMONED));
 			else if ( pChar->IsStatFlag(STATF_Pet) )
-				strcat(pszName, pChar->m_pNPC->m_bonded ? g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_BONDED) : g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_TAME));
+				strcat(pszName, g_Cfg.GetDefaultMsg(pChar->m_pNPC->m_bonded ? DEFMSG_CHARINFO_BONDED : DEFMSG_CHARINFO_TAME));
 		}
 		if ( pChar->IsStatFlag(STATF_INVUL) && !pChar->IsStatFlag(STATF_Incognito) && !pChar->IsPriv(PRIV_PRIV_NOSHOW) )
 			strcat(pszName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_INVUL));
@@ -3699,50 +3699,40 @@ BYTE CClient::Setup_Start(CChar *pChar)
 	addPlayerStart(pChar);
 	ASSERT(m_pChar);
 
-	bool fNoMessages = false;
-	bool fQuickLogIn = !pChar->IsDisconnected();
+	bool fNoWelcomeMsg = false;
+	bool fNoRegionMsg = false;
 	if ( IsTrigUsed(TRIGGER_LOGIN) )
 	{
-		CScriptTriggerArgs Args(fNoMessages, fQuickLogIn);
+		CScriptTriggerArgs Args(fNoWelcomeMsg, fNoRegionMsg);
 		if ( pChar->OnTrigger(CTRIG_LogIn, pChar, &Args) == TRIGRET_RET_TRUE )
 		{
 			m_pChar->ClientDetach();
 			pChar->SetDisconnected();
 			return PacketLoginError::Blocked;
 		}
-		fNoMessages = (Args.m_iN1 != 0);
-		fQuickLogIn = (Args.m_iN2 != 0);
+		fNoWelcomeMsg = (Args.m_iN1 != 0);
+		fNoRegionMsg = (Args.m_iN2 != 0);
 	}
 
-	TCHAR *pszTemp = Str_GetTemp();
-	if ( !fQuickLogIn )
+	if ( !fNoWelcomeMsg )
 	{
-		if ( !fNoMessages )
-		{
-			addBark(g_szServerDescription, NULL, HUE_YELLOW, TALKMODE_SYSTEM, FONT_NORMAL);
-			sprintf(pszTemp, (g_Serv.StatGet(SERV_STAT_CLIENTS) == 2) ? g_Cfg.GetDefaultMsg(DEFMSG_LOGIN_PLAYER) : g_Cfg.GetDefaultMsg(DEFMSG_LOGIN_PLAYERS), g_Serv.StatGet(SERV_STAT_CLIENTS) - 1);
-			addSysMessage(pszTemp);
-
-			sprintf(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_LOGIN_LASTLOGGED), m_pAccount->m_TagDefs.GetKeyStr("LastLogged"));
-			addSysMessage(pszTemp);
-		}
-		if ( m_pChar->m_pArea && m_pChar->m_pArea->IsGuarded() && !m_pChar->m_pArea->IsFlag(REGION_FLAG_ANNOUNCE) )
-		{
-			const CVarDefContStr *pVarStr = dynamic_cast<CVarDefContStr *>(m_pChar->m_pArea->m_TagDefs.GetKey("GuardOwner"));
-			SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_GUARDSP), pVarStr ? pVarStr->GetValStr() : g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_GUARDSPT));
-			if ( m_pChar->m_pArea->m_TagDefs.GetKeyNum("RED") )
-				SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_REDDEF), g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_REDENTER));
-		}
+		addBark(g_szServerDescription, NULL, HUE_YELLOW, TALKMODE_SYSTEM, FONT_NORMAL);
+		SysMessagef(g_Cfg.GetDefaultMsg((g_Serv.StatGet(SERV_STAT_CLIENTS) == 2) ? DEFMSG_LOGIN_PLAYER : DEFMSG_LOGIN_PLAYERS), g_Serv.StatGet(SERV_STAT_CLIENTS) - 1);
+		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_LOGIN_LASTLOGGED), m_pAccount->m_TagDefs.GetKeyStr("LastLogged"));
+	}
+	if ( !fNoRegionMsg && m_pChar->m_pArea && m_pChar->m_pArea->IsGuarded() && !m_pChar->m_pArea->IsFlag(REGION_FLAG_ANNOUNCE) )
+	{
+		const CVarDefContStr *pVarStr = dynamic_cast<CVarDefContStr *>(m_pChar->m_pArea->m_TagDefs.GetKey("GuardOwner"));
+		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_GUARDSP), pVarStr ? pVarStr->GetValStr() : g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_GUARDSPT));
+		if ( m_pChar->m_pArea->m_TagDefs.GetKeyNum("RED") )
+			SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_REDDEF), g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_REDENTER));
 	}
 
 	if ( IsPriv(PRIV_GM_PAGE) && (g_World.m_GMPages.GetCount() > 0) )
-	{
-		sprintf(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_MSG_GMPAGES), static_cast<int>(g_World.m_GMPages.GetCount()), g_Cfg.m_cCommandPrefix);
-		addSysMessage(pszTemp);
-	}
+		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_GMPAGES), static_cast<int>(g_World.m_GMPages.GetCount()), g_Cfg.m_cCommandPrefix);
 
 	if ( g_Serv.m_timeShutdown.IsTimeValid() )
-		addBarkParse(g_Cfg.GetDefaultMsg(DEFMSG_MSG_SERV_SHUTDOWN_SOON), NULL, HUE_TEXT_DEF, TALKMODE_SYSTEM, FONT_BOLD);
+		addBarkParse(g_Cfg.GetDefaultMsg(DEFMSG_MSG_SERV_SHUTDOWN_SOON), NULL, HUE_RED, TALKMODE_SYSTEM);
 
 	m_pAccount->m_TagDefs.DeleteKey("LastLogged");
 	Announce(true);		// announce you to the world

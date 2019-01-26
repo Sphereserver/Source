@@ -985,11 +985,6 @@ bool CAccount::r_LoadVal(CScript &s)
 			break;
 		case AC_PRIV:
 			m_PrivFlags = static_cast<WORD>(s.GetArgVal());
-			if ( m_PrivFlags & PRIV_UNUSED )
-			{
-				g_Log.EventError("Fixing PRIV field (0%hx) for account %s have not supported flags set (caught by mask 0%hx)\n", m_PrivFlags, GetName(), static_cast<WORD>(PRIV_UNUSED));
-				m_PrivFlags &= ~PRIV_UNUSED;
-			}
 			break;
 		case AC_RESDISP:
 			SetResDisp(static_cast<BYTE>(minimum(maximum(s.GetArgVal(), RDS_NONE), RDS_QTY - 1)));

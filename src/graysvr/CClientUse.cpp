@@ -67,7 +67,7 @@ bool CClient::Cmd_Use_Item(CItem *pItem, bool fTestTouch, bool fScript)
 		if ( !m_pChar->CanUse(pItem, false) )
 		{
 			if ( !m_pChar->CanTouch(pItem) )
-				SysMessage((m_pChar->IsStatFlag(STATF_DEAD)) ? g_Cfg.GetDefaultMsg(DEFMSG_REACH_GHOST) : g_Cfg.GetDefaultMsg(DEFMSG_REACH_FAIL));
+				SysMessage(g_Cfg.GetDefaultMsg((m_pChar->IsStatFlag(STATF_DEAD)) ? DEFMSG_REACH_GHOST : DEFMSG_REACH_FAIL));
 			else
 				SysMessageDefault(DEFMSG_REACH_UNABLE);
 

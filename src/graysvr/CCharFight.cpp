@@ -366,7 +366,7 @@ LPCTSTR CChar::Noto_GetTitle() const
 
 	TCHAR *pszTemp = Str_GetTemp();
 	sprintf(pszTemp, "%s%s%s%s%s%s",
-		pszTitle[0] ? (Char_GetDef()->IsFemale() ? g_Cfg.GetDefaultMsg(DEFMSG_TITLE_ARTICLE_FEMALE) : g_Cfg.GetDefaultMsg(DEFMSG_TITLE_ARTICLE_MALE)) : "",
+		pszTitle[0] ? g_Cfg.GetDefaultMsg(Char_GetDef()->IsFemale() ? DEFMSG_TITLE_ARTICLE_FEMALE : DEFMSG_TITLE_ARTICLE_MALE) : "",
 		pszTitle,
 		pszTitle[0] ? " " : "",
 		pszFameTitle,
@@ -434,10 +434,7 @@ void CChar::Noto_ChangeDeltaMsg(int iDelta, LPCTSTR pszType)
 	};
 
 	int iDegree = minimum(abs(iDelta) / NOTO_FACTOR, 7);
-
-	TCHAR *pszMsg = Str_GetTemp();
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MSG_NOTO_CHANGE_0), (iDelta < 0) ? g_Cfg.GetDefaultMsg(DEFMSG_MSG_NOTO_CHANGE_LOST) : g_Cfg.GetDefaultMsg(DEFMSG_MSG_NOTO_CHANGE_GAIN), sm_szNotoDelta[iDegree], pszType);
-	SysMessage(pszMsg);
+	SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_NOTO_CHANGE_0), g_Cfg.GetDefaultMsg((iDelta > 0) ? DEFMSG_MSG_NOTO_CHANGE_GAIN : DEFMSG_MSG_NOTO_CHANGE_LOST), sm_szNotoDelta[iDegree], pszType);
 }
 
 void CChar::Noto_ChangeNewMsg(int iPrvLevel)
@@ -1275,7 +1272,7 @@ int CChar::Skill_Stealing(SKTRIG_TYPE stage)
 	if ( m_Act_Difficulty > 0 )
 	{
 		// You should only be able to go down to -1000 karma by stealing
-		if ( CheckCrimeSeen(SKILL_STEALING, pCharMark, pItem, (stage == SKTRIG_FAIL) ? g_Cfg.GetDefaultMsg(DEFMSG_STEALING_YOUR) : g_Cfg.GetDefaultMsg(DEFMSG_STEALING_SOMEONE)) )
+		if ( CheckCrimeSeen(SKILL_STEALING, pCharMark, pItem, g_Cfg.GetDefaultMsg((stage == SKTRIG_FAIL) ? DEFMSG_STEALING_YOUR : DEFMSG_STEALING_SOMEONE)) )
 			Noto_Karma(-100, -1000, true);
 	}
 	return 0;

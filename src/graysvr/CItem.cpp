@@ -4714,13 +4714,12 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	return true;
 }
 
-int CItem::Armor_GetRepairPercent() const
+WORD CItem::Armor_GetRepairPercent() const
 {
 	ADDTOCALLSTACK("CItem::Armor_GetRepairPercent");
-
 	if ( !m_itArmor.m_Hits_Max || ( m_itArmor.m_Hits_Max < m_itArmor.m_Hits_Cur ))
-		return( 100 );
- 	return( IMULDIV( m_itArmor.m_Hits_Cur, 100, m_itArmor.m_Hits_Max ));
+		return 100;
+	return IMULDIV(m_itArmor.m_Hits_Cur, 100, m_itArmor.m_Hits_Max);
 }
 
 LPCTSTR CItem::Armor_GetRepairDesc() const
@@ -4881,37 +4880,23 @@ forcedamage:
 			}
 		}
 
-		TCHAR *pszMsg = Str_GetTemp();
-		if ( pSrc != NULL )
+		if ( pSrc && pSrc->IsPriv(PRIV_DETAIL) )
 		{
-			if (pSrc->IsPriv(PRIV_DETAIL))
-			{
-				// Tell hitter they scored !
-				if (pChar && pChar != pSrc)
-					sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_ITEM_DMG_DAMAGE1), pChar->GetName(), GetName());
-				else
-					sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_ITEM_DMG_DAMAGE2), GetName());
-				pSrc->SysMessage(pszMsg);
-			}
+			// Tell hitter they scored
+			if ( pChar && (pChar != pSrc) )
+				pSrc->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_ITEM_DMG_DAMAGE1), pChar->GetName(), GetName());
+			else
+				pSrc->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_ITEM_DMG_DAMAGE2), GetName());
 		}
-		if ( pChar && pChar != pSrc )
+		if ( pChar && pChar->IsPriv(PRIV_DETAIL) && (pChar != pSrc) )
 		{
-			if (pChar->IsPriv(PRIV_DETAIL))
-			{
-				// Tell target they got damaged.
-				*pszMsg = 0;
-				if (m_itArmor.m_Hits_Cur < m_itArmor.m_Hits_Max / 2)
-				{
-					int iPercent = Armor_GetRepairPercent();
-					if (pChar->Skill_GetAdjusted(SKILL_ARMSLORE) / 10 > iPercent)
-						sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_ITEM_DMG_DAMAGE3), GetName(), Armor_GetRepairDesc());
-				}
-				if (!*pszMsg)
-					sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_ITEM_DMG_DAMAGE4), GetName());
-				pChar->SysMessage(pszMsg);
-			}
+			// Tell target they got damaged
+			if ( (pChar->Skill_GetAdjusted(SKILL_ARMSLORE) / 10 > Armor_GetRepairPercent()) && (m_itArmor.m_Hits_Cur < m_itArmor.m_Hits_Max / 2) )
+				pChar->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_ITEM_DMG_DAMAGE3), GetName(), Armor_GetRepairDesc());
+			else
+				pChar->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_ITEM_DMG_DAMAGE4), GetName());
 		}
-		return( 2 );
+		return 2;
 	}
 
 	// don't know how to calc damage for this.

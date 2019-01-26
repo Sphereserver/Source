@@ -3119,7 +3119,7 @@ bool CChar::r_Verb(CScript &s, CTextConsole *pSrc)	// execute command from scrip
 				m_StatFlag = s.GetArgFlag(m_StatFlag, STATF_INVUL);
 				NotoSave_Update();
 				if ( IsSetOF(OF_Command_Sysmsgs) )
-					pSrc->SysMessage(IsStatFlag(STATF_INVUL) ? g_Cfg.GetDefaultMsg(DEFMSG_MSG_INVUL_ON) : g_Cfg.GetDefaultMsg(DEFMSG_MSG_INVUL_OFF));
+					pSrc->SysMessage(g_Cfg.GetDefaultMsg(IsStatFlag(STATF_INVUL) ? DEFMSG_MSG_INVUL_ON : DEFMSG_MSG_INVUL_OFF));
 			}
 			break;
 		}
@@ -3578,25 +3578,25 @@ void CChar::ChangeExperience(int iDelta, CChar *pCharDead)
 				g_Cfg.GetDefaultMsg(DEFMSG_MSG_EXP_CHANGE_8)
 			};
 
-			int iWord = 0;
 			int iVal = abs(iDelta);
 			int iMaxVal = (g_Cfg.m_bLevelSystem && g_Cfg.m_iLevelNextAt) ? maximum(g_Cfg.m_iLevelNextAt, 1000) : 1000;
+			int iDegree = 0;
 
 			if ( iVal >= iMaxVal )					// 100%
-				iWord = 7;
+				iDegree = 7;
 			else if ( iVal >= (iMaxVal * 2) / 3 )	// 66%
-				iWord = 6;
+				iDegree = 6;
 			else if ( iVal >= iMaxVal / 2 )			// 50%
-				iWord = 5;
+				iDegree = 5;
 			else if ( iVal >= iMaxVal / 3 )			// 33%
-				iWord = 4;
+				iDegree = 4;
 			else if ( iVal >= iMaxVal / 5 )			// 20%
-				iWord = 3;
+				iDegree = 3;
 			else if ( iVal >= iMaxVal / 7 )			// 14%
-				iWord = 2;
+				iDegree = 2;
 			else if ( iVal >= iMaxVal / 14 )		// 7%
-				iWord = 1;
-			m_pClient->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_EXP_CHANGE_0), (iDelta > 0) ? g_Cfg.GetDefaultMsg(DEFMSG_MSG_EXP_CHANGE_GAIN) : g_Cfg.GetDefaultMsg(DEFMSG_MSG_EXP_CHANGE_LOST), sm_szExpDelta[iWord]);
+				iDegree = 1;
+			m_pClient->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_EXP_CHANGE_0), g_Cfg.GetDefaultMsg((iDelta > 0) ? DEFMSG_MSG_EXP_CHANGE_GAIN : DEFMSG_MSG_EXP_CHANGE_LOST), sm_szExpDelta[iDegree]);
 		}
 	}
 
@@ -3628,7 +3628,7 @@ void CChar::ChangeExperience(int iDelta, CChar *pCharDead)
 			m_level = level;
 
 			if ( m_pClient && fShowMsg )
-				m_pClient->SysMessagef((abs(iDelta) == 1) ? g_Cfg.GetDefaultMsg(DEFMSG_MSG_EXP_LVLCHANGE_0) : g_Cfg.GetDefaultMsg(DEFMSG_MSG_EXP_LVLCHANGE_1), (iDelta > 0) ? g_Cfg.GetDefaultMsg(DEFMSG_MSG_EXP_LVLCHANGE_GAIN) : g_Cfg.GetDefaultMsg(DEFMSG_MSG_EXP_LVLCHANGE_LOST));
+				m_pClient->SysMessagef(g_Cfg.GetDefaultMsg((abs(iDelta) == 1) ? DEFMSG_MSG_EXP_LVLCHANGE_0 : DEFMSG_MSG_EXP_LVLCHANGE_1), g_Cfg.GetDefaultMsg((iDelta > 0) ? DEFMSG_MSG_EXP_LVLCHANGE_GAIN : DEFMSG_MSG_EXP_LVLCHANGE_LOST));
 		}
 	}
 }

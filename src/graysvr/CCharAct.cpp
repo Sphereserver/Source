@@ -2916,25 +2916,19 @@ CRegionBase *CChar::CanMoveWalkTo(CPointBase &ptDst, bool fCheckChars, bool fChe
 			if ( (iStamReq > 0) && (Stat_GetVal(STAT_DEX) < Stat_GetMax(STAT_DEX)) )
 				return NULL;
 
-			TCHAR *pszMsg = Str_GetTemp();
 			if ( Stat_GetVal(STAT_DEX) < iStamReq )		// check if we have enough stamina to push the char
 			{
-				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MSG_CANTPUSH), pChar->GetName());
-				SysMessage(pszMsg);
+				SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_CANTPUSH), pChar->GetName());
 				return NULL;
 			}
 			else if ( pChar->IsStatFlag(STATF_Invisible|STATF_Hidden) )
 			{
-				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_HIDING_STUMBLE), pChar->GetName());
 				pChar->Reveal(STATF_Invisible|STATF_Hidden);
+				if ( iRet != TRIGRET_RET_FALSE )
+					SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_HIDING_STUMBLE), pChar->GetName());
 			}
-			else if ( pChar->IsStatFlag(STATF_Sleeping) )
-				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MSG_STEPON_BODY), pChar->GetName());
-			else
-				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MSG_PUSH), pChar->GetName());
-
-			if ( iRet != TRIGRET_RET_FALSE )
-				SysMessage(pszMsg);
+			else if ( iRet != TRIGRET_RET_FALSE )
+				SysMessagef(g_Cfg.GetDefaultMsg(pChar->IsStatFlag(STATF_Sleeping) ? DEFMSG_MSG_STEPON_BODY : DEFMSG_MSG_PUSH), pChar->GetName());
 
 			break;
 		}
@@ -3673,7 +3667,7 @@ void CChar::OnTickFood(int iVal, int iHitsHungerLoss)
 	LPCTSTR pszMsgLevel = Food_GetLevelMessage(fPet, false);
 	SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_HUNGER), pszMsgLevel);
 
-	char *pszMsg = Str_GetTemp();
+	TCHAR *pszMsg = Str_GetTemp();
 	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MSG_FOOD_LVL_LOOKS), pszMsgLevel);
 	CItem *pMountItem = Horse_GetMountItem();
 	if ( pMountItem )

@@ -241,7 +241,7 @@ void CClient::Announce(bool fArrive) const
 	else if ( g_Cfg.m_iArriveDepartMsg == 1 )		// notify of players
 	{
 		const CRegionBase *pRegion = m_pChar->GetTopPoint().GetRegion(REGION_TYPE_AREA);
-		sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MSG_ARRDEP_1), m_pChar->GetName(), fArrive ? g_Cfg.GetDefaultMsg(DEFMSG_MSG_ARRDEP_2) : g_Cfg.GetDefaultMsg(DEFMSG_MSG_ARRDEP_3), pRegion ? pRegion->GetName() : g_Serv.GetName());
+		sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MSG_ARRDEP_1), m_pChar->GetName(), g_Cfg.GetDefaultMsg(fArrive ? DEFMSG_MSG_ARRDEP_2 : DEFMSG_MSG_ARRDEP_3), pRegion ? pRegion->GetName() : g_Serv.GetName());
 	}
 	if ( pszMsg )
 	{

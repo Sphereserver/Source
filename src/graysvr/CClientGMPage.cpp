@@ -35,13 +35,8 @@ void CClient::Cmd_GM_Page( LPCTSTR pszReason ) // Help button (Calls GM Call Men
 		}
 	}
 
-	if (fFound == false)
-		SysMessageDefault( DEFMSG_MSG_GMPAGE_QUED );
-	else
-		SysMessageDefault( DEFMSG_MSG_GMPAGE_NOTIFIED );
-
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg( DEFMSG_MSG_GMPAGE_QNUM ), static_cast<int>(g_World.m_GMPages.GetCount()));
-	SysMessage(pszMsg);
+	SysMessageDefault(fFound ? DEFMSG_MSG_GMPAGE_NOTIFIED : DEFMSG_MSG_GMPAGE_QUED);
+	SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_GMPAGE_QNUM), static_cast<int>(g_World.m_GMPages.GetCount()));
 
 	// Already have a message in the queue ?
 	// Find an existing GM page for this account.

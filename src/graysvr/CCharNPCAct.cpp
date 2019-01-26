@@ -923,7 +923,7 @@ bool CChar::NPC_LookAtCharHuman(CChar *pChar)
 	// Yell for guards if NPC see someone evil
 	if ( NPC_CanSpeak() && m_pArea->IsGuarded() && !Calc_GetRandVal(3) )
 	{
-		Speak(pChar->m_pPlayer ? g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_SEECRIM) : g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_SEEMONS));
+		Speak(g_Cfg.GetDefaultMsg(pChar->m_pPlayer ? DEFMSG_NPC_GENERIC_SEECRIM : DEFMSG_NPC_GENERIC_SEEMONS));
 		CallGuards(pChar);
 
 		if ( !IsStatFlag(STATF_War) )

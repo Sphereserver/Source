@@ -487,18 +487,13 @@ bool CPartyDef::DeclineEvent( CChar *pCharDecline, CGrayUID uidInviter )	// stat
 	if ( !pCharInviter || !pCharDecline || uidInviter == pCharDecline->GetUID() )
 		return false;
 
-	CVarDefCont *sTempVal = pCharInviter->GetTagDefs()->GetKey("PARTY_LASTINVITE");
-	if ( !sTempVal || (static_cast<CGrayUID>(sTempVal->GetValNum()) != pCharDecline->GetUID()) )
+	CVarDefCont *pVar = pCharInviter->GetTagDefs()->GetKey("PARTY_LASTINVITE");
+	if ( !pVar || (static_cast<CGrayUID>(pVar->GetValNum()) != pCharDecline->GetUID()) )
 		return false;
 
 	pCharInviter->DeleteKey("PARTY_LASTINVITE");
-
-	TCHAR *sTemp = Str_GetTemp();
-	sprintf(sTemp, g_Cfg.GetDefaultMsg(DEFMSG_PARTY_DECLINE_2), pCharInviter->GetName());
-	pCharDecline->SysMessage(sTemp);
-	sTemp = Str_GetTemp();
-	sprintf(sTemp, g_Cfg.GetDefaultMsg(DEFMSG_PARTY_DECLINE_1), pCharDecline->GetName());
-	pCharInviter->SysMessage(sTemp);
+	pCharInviter->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_PARTY_DECLINE_1), pCharDecline->GetName());
+	pCharDecline->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_PARTY_DECLINE_2), pCharInviter->GetName());
 	return true;
 }
 
@@ -516,12 +511,11 @@ bool CPartyDef::AcceptEvent( CChar *pCharAccept, CGrayUID uidInviter, bool bForc
 	CPartyDef *pParty = pCharInviter->m_pParty;
 	if ( !bForced )
 	{
-		CVarDefCont *sTempVal = pCharInviter->GetTagDefs()->GetKey("PARTY_LASTINVITE");
-		if ( !sTempVal || (static_cast<CGrayUID>(sTempVal->GetValNum()) != pCharAccept->GetUID()) )
+		CVarDefCont *pVar = pCharInviter->GetTagDefs()->GetKey("PARTY_LASTINVITE");
+		if ( !pVar || (static_cast<CGrayUID>(pVar->GetValNum()) != pCharAccept->GetUID()) )
 			return false;
 
 		pCharInviter->DeleteKey("PARTY_LASTINVITE");
-
 		if ( !pCharInviter->CanSee(pCharAccept) )
 			return false;
 	}
@@ -748,24 +742,24 @@ bool CPartyDef::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc )
 				if ( iQty >= m_TagDefs.GetCount() )
 					return false;	// trying to get non-existant tag
 
-				CVarDefCont *pTagAt = m_TagDefs.GetAt(iQty);
-				if ( !pTagAt )
+				CVarDefCont *pVar = m_TagDefs.GetAt(iQty);
+				if ( !pVar )
 					return false;	// trying to get non-existant tag
 
 				SKIP_SEPARATORS(pszKey);
 				if ( !*pszKey )
 				{
-					sVal.Format("%s=%s", pTagAt->GetKey(), pTagAt->GetValStr());
+					sVal.Format("%s=%s", pVar->GetKey(), pVar->GetValStr());
 					return true;
 				}
 				else if ( !strnicmp(pszKey, "KEY", 3) )
 				{
-					sVal = pTagAt->GetKey();
+					sVal = pVar->GetKey();
 					return true;
 				}
 				else if ( !strnicmp(pszKey, "VAL", 3) )
 				{
-					sVal = pTagAt->GetValStr();
+					sVal = pVar->GetValStr();
 					return true;
 				}
 			}

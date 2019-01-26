@@ -2,23 +2,17 @@
 #define _INC_CACCOUNT_H
 #pragma once
 
-#define PRIV_UNUSED0		0x0001
 #define PRIV_GM				0x0002	// Acts as a GM (dif from having GM level)
-#define PRIV_UNUSED1		0x0004
 #define PRIV_GM_PAGE		0x0008	// Listen to GM pages or not
 #define PRIV_HEARALL		0x0010	// I can hear everything said by people of lower plevel
 #define PRIV_ALLMOVE		0x0020	// I can move all things (GM only)
 #define PRIV_DETAIL			0x0040	// Show combat detail messages
 #define PRIV_DEBUG			0x0080	// Show all objects as boxes and chars as humans
-#define PRIV_UNUSED2		0x0100
 #define PRIV_PRIV_NOSHOW	0x0200	// Show the GM title and Invul flags
 #define PRIV_TELNET_SHORT	0x0400	// Disable broadcasts to be accepted by client
 #define PRIV_JAILED			0x0800	// Must be /PARDONed from jail
-#define PRIV_UNUSED3		0x1000
 #define PRIV_BLOCKED		0x2000	// The account is blocked
 #define PRIV_ALLSHOW		0x4000	// Show even the offline chars
-#define PRIV_UNUSED4		0x8000
-#define PRIV_UNUSED			(PRIV_UNUSED0|PRIV_UNUSED1|PRIV_UNUSED2|PRIV_UNUSED3|PRIV_UNUSED4)
 
 class CAccounts
 {

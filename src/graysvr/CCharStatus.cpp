@@ -704,7 +704,7 @@ LPCTSTR CChar::GetTradeTitle() const
 		CCharBase *pCharDef = Char_GetDef();
 		ASSERT(pCharDef);
 		if ( pCharDef->GetTypeName() != pCharDef->GetTradeName() )
-			sprintf(pszTemp, "%s %s", pCharDef->IsFemale() ? g_Cfg.GetDefaultMsg(DEFMSG_TRADETITLE_ARTICLE_FEMALE) : g_Cfg.GetDefaultMsg(DEFMSG_TRADETITLE_ARTICLE_MALE), pCharDef->GetTradeName());
+			sprintf(pszTemp, "%s %s", g_Cfg.GetDefaultMsg(pCharDef->IsFemale() ? DEFMSG_TRADETITLE_ARTICLE_FEMALE : DEFMSG_TRADETITLE_ARTICLE_MALE), pCharDef->GetTradeName());
 		return pszTemp;
 	}
 

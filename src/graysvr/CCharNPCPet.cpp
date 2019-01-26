@@ -10,7 +10,7 @@ void CChar::NPC_PetConfirmCommand(bool fSuccess, CChar *pMaster)
 		return;
 
 	if ( NPC_CanSpeak() )
-		Speak(fSuccess ? g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_SUCCESS) : g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_FAILURE));
+		Speak(g_Cfg.GetDefaultMsg(fSuccess ? DEFMSG_NPC_PET_SUCCESS : DEFMSG_NPC_PET_FAILURE));
 	else
 		SoundChar(fSuccess ? CRESND_IDLE : CRESND_NOTICE);
 }
@@ -731,7 +731,7 @@ bool CChar::NPC_OnHireHear(CChar *pCharSrc)
 	}
 
 	TCHAR *pszMsg = Str_GetTemp();
-	sprintf(pszMsg, Calc_GetRandVal(2) ? g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_HIRE_AMNT) : g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_HIRE_RATE), pCharDef->m_iHireDayWage);
+	sprintf(pszMsg, g_Cfg.GetDefaultMsg(Calc_GetRandVal(2) ? DEFMSG_NPC_PET_HIRE_AMNT : DEFMSG_NPC_PET_HIRE_RATE), pCharDef->m_iHireDayWage);
 	Speak(pszMsg);
 
 	pMemory = Memory_AddObjTypes(pCharSrc, MEMORY_SPEAK);

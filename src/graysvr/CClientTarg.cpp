@@ -2361,13 +2361,8 @@ bool CClient::OnTarg_Party_Add(CChar *pChar)
 			return false;
 	}
 
-	TCHAR *sTemp = Str_GetTemp();
-	sprintf(sTemp, g_Cfg.GetDefaultMsg(DEFMSG_PARTY_INVITE), pChar->GetName());
-	m_pChar->SysMessage(sTemp);
-
-	sTemp = Str_GetTemp();
-	sprintf(sTemp, g_Cfg.GetDefaultMsg(DEFMSG_PARTY_INVITE_TARG), m_pChar->GetName());
-	pChar->SysMessage(sTemp);
+	m_pChar->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_PARTY_INVITE), pChar->GetName());
+	pChar->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_PARTY_INVITE_TARG), m_pChar->GetName());
 
 	m_pChar->SetKeyNum("PARTY_LASTINVITE", static_cast<DWORD>(pChar->GetUID()));
 	m_pChar->SetKeyNum("PARTY_LASTINVITETIME", g_World.GetCurrentTime().GetTimeRaw() + (Calc_GetRandVal2(2, 5) * TICK_PER_SEC));

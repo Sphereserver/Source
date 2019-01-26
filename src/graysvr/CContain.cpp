@@ -1381,14 +1381,10 @@ void CItemContainer::OnOpenEvent(CChar *pCharOpener, const CObjBaseTemplate *pOb
 		if ( !pCharTop )
 			return;
 
-		int iStones = GetWeight() / WEIGHT_UNITS;
-		TCHAR *pszMsg = Str_GetTemp();
 		if ( pCharTop == pCharOpener )
-			sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_BVBOX_OPEN_SELF), iStones, GetName());
+			pCharOpener->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_BVBOX_OPEN_SELF), GetWeight() / WEIGHT_UNITS, GetName());
 		else
-			sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_BVBOX_OPEN_OTHER), pCharTop->GetPronoun(), iStones, pCharTop->GetPossessPronoun(), GetName());
-
-		pCharOpener->SysMessage(pszMsg);
+			pCharOpener->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_BVBOX_OPEN_OTHER), pCharTop->GetPronoun(), GetWeight() / WEIGHT_UNITS, pCharTop->GetPossessPronoun(), GetName());
 
 		// To avoid exploits, bank box should store char P when opened and only allow access from this P (see CanTouch)
 		m_itEqBankBox.m_ptOpen = pCharOpener->GetTopPoint();
