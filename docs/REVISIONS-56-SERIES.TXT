@@ -1365,3 +1365,6 @@ Added: NPCs with CAN=mt_fly flag now will periodically fly while wandering (as s
 25-01-2019, Coruja
 Fixed: Guards incorrectly attacking murderers on guarded regions with REGION.TAG.RED=1.
 Fixed: Gold coins dropped over NPC banker not being deposited on bank when FEATURE_TOL_VIRTUALGOLD feature is enabled on sphere.ini.
+
+28-01-2019, Coruja
+Fixed: Doors using wrong sound.

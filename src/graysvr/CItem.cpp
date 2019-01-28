@@ -3663,7 +3663,7 @@ bool CItem::Use_DoorNew(bool fJustOpen)
 		sDifY = static_cast<signed short>(pItemDef->m_ttDoor.m_iYChange);
 
 	CPointMap pt = GetTopPoint();
-	SOUND_TYPE iSnd;
+	SOUND_TYPE sound;
 
 	if ( fClosing )
 	{
@@ -3672,12 +3672,12 @@ bool CItem::Use_DoorNew(bool fJustOpen)
 		pt.m_x -= sDifX;
 		pt.m_y -= sDifY;
 
-		iSnd = static_cast<SOUND_TYPE>(GetDefNum("DOORCLOSESOUND"));
-		if ( !iSnd )
+		sound = static_cast<SOUND_TYPE>(GetDefNum("DOORCLOSESOUND"));
+		if ( !sound )
 		{
-			iSnd = pItemDef->m_ttDoor.m_iSoundClose;
-			if ( !iSnd )
-				iSnd = 0xF1;
+			sound = pItemDef->m_ttDoor.m_iSoundClose;
+			if ( !sound )
+				sound = 0xF1;
 		}
 	}
 	else
@@ -3687,19 +3687,19 @@ bool CItem::Use_DoorNew(bool fJustOpen)
 		pt.m_x += sDifX;
 		pt.m_y += sDifY;
 
-		iSnd = static_cast<SOUND_TYPE>(GetDefNum("DOOROPENSOUND"));
-		if ( !iSnd )
+		sound = static_cast<SOUND_TYPE>(GetDefNum("DOOROPENSOUND"));
+		if ( !sound )
 		{
-			iSnd = pItemDef->m_ttDoor.m_iSoundOpen;
-			if ( !iSnd )
-				iSnd = 0xEA;
+			sound = pItemDef->m_ttDoor.m_iSoundOpen;
+			if ( !sound )
+				sound = 0xEA;
 		}
 	}
 
 	SetDefNum("DOOROPENID", GetDispID());
 	SetDispID(id);
 	MoveToUpdate(pt);
-	Sound(iSnd);
+	Sound(sound);
 	return !fClosing;
 }
 
@@ -3722,7 +3722,6 @@ bool CItem::Use_Door(bool fJustOpen)
 
 	id = static_cast<ITEMID_TYPE>(id - iDir);
 	CPointMap pt = GetTopPoint();
-	SOUND_TYPE iSnd;
 
 	switch ( iDir )
 	{
@@ -3800,70 +3799,56 @@ bool CItem::Use_Door(bool fJustOpen)
 			break;
 	}
 
-	if ( fClosing )
+	SOUND_TYPE sound = static_cast<SOUND_TYPE>(GetDefNum(fClosing ? "DOORCLOSESOUND" : "DOOROPENSOUND"));
+	if ( !sound )
 	{
-		SetTimeout(-1);
-
-		iSnd = static_cast<SOUND_TYPE>(GetDefNum("DOORCLOSESOUND"));
-		if ( !iSnd )
+		switch ( id )
 		{
-			switch ( id )
-			{
-				case ITEMID_DOOR_SECRET_STONE_1:
-				case ITEMID_DOOR_SECRET_STONE_2:
-				case ITEMID_DOOR_SECRET_STONE_3:
-				case ITEMID_DOOR_SECRET_WOOD_1:
-				case ITEMID_DOOR_SECRET_WOOD_2:
-				case ITEMID_DOOR_SECRET_STONE_4:
-					iSnd = 0x2E;
-					break;
-				case ITEMID_DOOR_METAL_1:
-				case ITEMID_DOOR_METAL_BARRED_1:
-				case ITEMID_DOOR_METAL_2:
-				case ITEMID_GATE_IRON_1:
-				case ITEMID_GATE_IRON_2:
-					iSnd = 0xF3;
-					break;
-				default:
-					iSnd = 0xF1;
-					break;
-			}
-		}
-	}
-	else
-	{
-		SetTimeout(15 * TICK_PER_SEC);
-
-		iSnd = static_cast<SOUND_TYPE>(GetDefNum("DOOROPENSOUND"));
-		if ( !iSnd )
-		{
-			switch ( id )
-			{
-				case ITEMID_DOOR_SECRET_STONE_1:
-				case ITEMID_DOOR_SECRET_STONE_2:
-				case ITEMID_DOOR_SECRET_STONE_3:
-				case ITEMID_DOOR_SECRET_WOOD_1:
-				case ITEMID_DOOR_SECRET_WOOD_2:
-				case ITEMID_DOOR_SECRET_STONE_4:
-					iSnd = 0x2F;
-					break;
-				case ITEMID_DOOR_METAL_1:
-				case ITEMID_DOOR_METAL_BARRED_1:
-				case ITEMID_DOOR_METAL_2:
-				case ITEMID_GATE_IRON_1:
-				case ITEMID_GATE_IRON_2:
-					iSnd = 0xEB;
-					break;
-				default:
-					iSnd = 0xEA;
-					break;
-			}
+			case ITEMID_DOOR_WOODEN_2:
+			case ITEMID_DOOR_WOODEN_4:
+			case ITEMID_DOOR_GARGISH_HOVEL:
+				sound = fClosing ? 0xF2 : 0xEB;
+				break;
+			case ITEMID_DOOR_METAL_1:
+			case ITEMID_DOOR_METAL_2:
+			case ITEMID_DOOR_METAL_BARRED_1:
+			case ITEMID_DOOR_METAL_BARRED_2:
+			case ITEMID_GATE_IRON_1:
+			case ITEMID_GATE_IRON_2:
+				sound = fClosing ? 0xF3 : 0xEC;
+				break;
+			case ITEMID_DOOR_SECRET_STONE_1:
+			case ITEMID_DOOR_SECRET_STONE_2:
+			case ITEMID_DOOR_SECRET_STONE_3:
+			case ITEMID_DOOR_SECRET_STONE_4:
+			case ITEMID_DOOR_CRYSTAL:
+			case ITEMID_DOOR_JUNGLE:
+			case ITEMID_DOOR_SHADOWGUARD:
+				sound = fClosing ? 0xF4 : 0xED;
+				break;
+			case ITEMID_DOOR_PORTCULLIS_1:
+			case ITEMID_DOOR_PORTCULLIS_2:
+			case ITEMID_DOOR_GARGISH_FOLSOM:
+				sound = fClosing ? 0xEF : 0xF0;
+				break;
+			case ITEMID_DOOR_SHADOW:
+				sound = fClosing ? 0x3E7 : 0xEC;
+				break;
+			case ITEMID_DOOR_SLIDING_PAPER:
+			case ITEMID_DOOR_SLIDING_CLOTH:
+			case ITEMID_DOOR_SLIDING_WOODEN:
+				sound = 0x539;
+				break;
+			default:
+				sound = fClosing ? 0xF1 : 0xEA;
+				break;
 		}
 	}
 
+	SetTimeout(fClosing ? -1 : 15 * TICK_PER_SEC);
 	SetDispID(static_cast<ITEMID_TYPE>(id + iDir));
 	MoveToUpdate(pt);
-	Sound(iSnd);
+	Sound(sound);
 	return !fClosing;
 }
 
