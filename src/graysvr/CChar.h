@@ -445,10 +445,10 @@ public:
 		WORD m_regen;		// Tick time since last regen
 	} m_Stat[STAT_QTY];
 
-	CServTime m_timeLastRegen;	// When did i get my last regen tick ?
 	CServTime m_timeCreate;		// When was i created ?
+	CServTime m_timeLastRegen;	// When did i get my last regen tick ?
 	CServTime m_timeLastHitsUpdate;
-	UINT64 m_timeLastCallGuards;
+	CServTime m_timeLastCallGuards;
 
 	// Some character action in progress
 	SKILL_TYPE m_Act_SkillCurrent;	// Currently using a skill

@@ -34,9 +34,6 @@ int CResource::Calc_CombatAttackSpeed(CChar *pChar, CItem *pWeapon)
 	//  Should never return a value < 0 to avoid break combat timer/sequence
 
 	ASSERT(pChar);
-	if ( pChar->m_pNPC && (pChar->m_pNPC->m_Brain == NPCBRAIN_GUARD) && m_fGuardsInstantKill )
-		return 1;
-
 	BYTE bBaseSpeed = 50;	// base Wrestling speed (on ML formula it's 2.50)
 	if ( pWeapon )
 		bBaseSpeed = pWeapon->GetSpeed();

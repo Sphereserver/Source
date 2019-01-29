@@ -1368,3 +1368,6 @@ Fixed: Gold coins dropped over NPC banker not being deposited on bank when FEATU
 
 28-01-2019, Coruja
 Fixed: Doors using wrong sound.
+Changed: Improved 'brain_guard' NPC AI to match OSI style
+	-Guards now will use default combat engine (calling related combat triggers) instead just cause the damage on the target
+	-When GuardsInstantKill feature is enabled on sphere.ini, guards still kill with a single hit but now using default swing speed formula instead 1ms delay (if you want the old 1ms delay, just use LOCAL.AnimDelay=1 on @HitTry trigger on NPC)

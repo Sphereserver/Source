@@ -861,32 +861,23 @@ bool CChar::NPC_LookAtCharGuard(CChar *pChar)
 	if ( !(pChar->IsStatFlag(STATF_Criminal) || (g_Cfg.m_fGuardsOnMurderers && pChar->Noto_IsEvil())) )
 		return false;
 
-	static LPCTSTR const sm_szGuardStrike[] =
-	{
-		g_Cfg.GetDefaultMsg(DEFMSG_NPC_GUARD_STRIKE_1),
-		g_Cfg.GetDefaultMsg(DEFMSG_NPC_GUARD_STRIKE_2),
-		g_Cfg.GetDefaultMsg(DEFMSG_NPC_GUARD_STRIKE_3),
-		g_Cfg.GetDefaultMsg(DEFMSG_NPC_GUARD_STRIKE_4),
-		g_Cfg.GetDefaultMsg(DEFMSG_NPC_GUARD_STRIKE_5)
-	};
+	if ( g_Cfg.m_fGuardsInstantKill && (GetTopDist3D(pChar) > CalcFightRange(m_uidWeapon.ItemFind())) )
+		Spell_Teleport(pChar->GetTopPoint(), false, false);
 
-	if ( g_Cfg.m_fGuardsInstantKill || pChar->IsStatFlag(STATF_Conjured) )
+	if ( NPC_CanSpeak() && !Calc_GetRandVal(3) )
 	{
-		// If intant kill is enabled, make the guard instantly kill the target with a single hit
-		if ( GetTopDist3D(pChar) > 1 )
-			Spell_Teleport(pChar->GetTopPoint(), false, false);
-		if ( !Calc_GetRandVal(3) )
-			Speak(sm_szGuardStrike[Calc_GetRandVal(COUNTOF(sm_szGuardStrike))]);
-		pChar->Stat_SetVal(STAT_STR, 1);
-		Fight_Hit(pChar);
+		static LPCTSTR const sm_szGuardStrike[] =
+		{
+			g_Cfg.GetDefaultMsg(DEFMSG_NPC_GUARD_STRIKE_1),
+			g_Cfg.GetDefaultMsg(DEFMSG_NPC_GUARD_STRIKE_2),
+			g_Cfg.GetDefaultMsg(DEFMSG_NPC_GUARD_STRIKE_3),
+			g_Cfg.GetDefaultMsg(DEFMSG_NPC_GUARD_STRIKE_4),
+			g_Cfg.GetDefaultMsg(DEFMSG_NPC_GUARD_STRIKE_5)
+		};
+		Speak(sm_szGuardStrike[Calc_GetRandVal(COUNTOF(sm_szGuardStrike))]);
 	}
-	else if ( !IsStatFlag(STATF_War) || (m_Act_Targ != pChar->GetUID()) )
-	{
-		// Otherwise just start an default combat
-		if ( !Calc_GetRandVal(3) )
-			Speak(sm_szGuardStrike[Calc_GetRandVal(COUNTOF(sm_szGuardStrike))]);
-		Fight_Attack(pChar, true);
-	}
+
+	Fight_Attack(pChar, true);
 	return true;
 }
 

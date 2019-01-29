@@ -225,8 +225,7 @@ CChar::CChar(CREID_TYPE id) : CObjBase(false)
 	m_atUnk.m_Arg2 = 0;
 	m_atUnk.m_Arg3 = 0;
 
-	m_timeLastRegen = m_timeCreate = CServTime::GetCurrentTime();
-	m_timeLastHitsUpdate = m_timeLastRegen;
+	m_timeCreate = m_timeLastRegen = m_timeLastHitsUpdate = m_timeLastCallGuards = CServTime::GetCurrentTime();
 
 	m_prev_Hue = HUE_DEFAULT;
 	m_prev_id = CREID_INVALID;

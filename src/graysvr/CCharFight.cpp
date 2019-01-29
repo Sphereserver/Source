@@ -943,19 +943,11 @@ void CChar::OnNoticeCrime(CChar *pCriminal, const CChar *pCharMark)
 		OnHarmedBy(pCriminal);
 	}
 
-	if ( !NPC_CanSpeak() )
-		return;
-
-	if ( GetNPCBrain() != NPCBRAIN_HUMAN )
+	if ( m_pArea && m_pArea->IsGuarded() && (GetNPCBrain() == NPCBRAIN_HUMAN) && NPC_CanSpeak() )
 	{
-		if ( !m_pArea || !m_pArea->IsGuarded() )
-			return;
-	}
-
-	if ( m_pNPC->m_Brain != NPCBRAIN_GUARD )
 		Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_CRIM));
-
-	CallGuards(pCriminal);
+		CallGuards(pCriminal);
+	}
 }
 
 bool CChar::CheckCrimeSeen(SKILL_TYPE skill, CChar *pCharMark, const CObjBase *pItem, LPCTSTR pszAction)
@@ -1283,7 +1275,7 @@ void CChar::CallGuards()
 	ADDTOCALLSTACK("CChar::CallGuards");
 	if ( !m_pArea || !m_pArea->IsGuarded() || IsStatFlag(STATF_DEAD) )
 		return;
-	if ( g_World.GetCurrentTime().GetTimeRaw() - m_timeLastCallGuards < TICK_PER_SEC )	// flood check to avoid waste CPU performance with excessive calls of this function
+	if ( -g_World.GetTimeDiff(m_timeLastCallGuards) < TICK_PER_SEC )	// flood check to avoid waste CPU performance with excessive calls of this function
 		return;
 
 	// We don't have any target yet, let's check everyone nearby
@@ -1308,8 +1300,7 @@ void CChar::CallGuards()
 		if ( pChar->IsStatFlag(STATF_Criminal) || (g_Cfg.m_fGuardsOnMurderers && pChar->Noto_IsEvil()) )
 			CallGuards(pChar);
 	}
-	m_timeLastCallGuards = g_World.GetCurrentTime().GetTimeRaw();
-	return;
+	m_timeLastCallGuards = CServTime::GetCurrentTime();
 }
 
 void CChar::CallGuards(CChar *pCriminal)
@@ -1322,32 +1313,24 @@ void CChar::CallGuards(CChar *pCriminal)
 	if ( pCriminal->IsStatFlag(STATF_INVUL|STATF_DEAD) || pCriminal->IsPriv(PRIV_GM|PRIV_JAILED) )
 		return;
 
+	// Search for a wandering guard nearby
 	CChar *pGuard = NULL;
-	if ( m_pNPC && (m_pNPC->m_Brain == NPCBRAIN_GUARD) )
+	CWorldSearch AreaChars(GetTopPoint(), UO_MAP_VIEW_SIZE);
+	for (;;)
 	{
-		// I'm a guard, why summon someone else to do my work? :)
-		pGuard = this;
-	}
-	else
-	{
-		// Search for a wandering guard nearby
-		CWorldSearch AreaChars(GetTopPoint(), UO_MAP_VIEW_SIZE);
-		for (;;)
-		{
-			CChar *pChar = AreaChars.GetChar();
-			if ( !pChar )
-				break;
+		CChar *pChar = AreaChars.GetChar();
+		if ( !pChar )
+			break;
 
-			if ( pChar->m_pNPC && (pChar->m_pNPC->m_Brain == NPCBRAIN_GUARD) && ((pChar->m_Fight_Targ == pCriminal->GetUID()) || !pChar->IsStatFlag(STATF_War)) )
-			{
-				pGuard = pChar;
-				break;
-			}
+		if ( pChar->m_pNPC && (pChar->m_pNPC->m_Brain == NPCBRAIN_GUARD) && !pChar->IsStatFlag(STATF_War) )
+		{
+			pGuard = pChar;
+			break;
 		}
 	}
 
-	CVarDefCont *pVarDef = pCriminal->m_pArea->m_TagDefs.GetKey("OVERRIDE.GUARDS");
-	RESOURCE_ID rid = g_Cfg.ResourceGetIDType(RES_CHARDEF, (pVarDef ? pVarDef->GetValStr() : "GUARDS"));
+	CVarDefCont *pVar = pCriminal->m_pArea->m_TagDefs.GetKey("OVERRIDE.GUARDS");
+	RESOURCE_ID rid = g_Cfg.ResourceGetIDType(RES_CHARDEF, pVar ? pVar->GetValStr() : "GUARDS");
 	if ( IsTrigUsed(TRIGGER_CALLGUARDS) )
 	{
 		CScriptTriggerArgs Args(pGuard);
@@ -2014,9 +1997,6 @@ int CChar::Fight_CalcDamage(const CItem *pWeapon, bool fNoRandom, bool fGetMax) 
 	ADDTOCALLSTACK("CChar::Fight_CalcDamage");
 	// Calculate attack damage (also used to show damage on char status gump)
 
-	if ( m_pNPC && (m_pNPC->m_Brain == NPCBRAIN_GUARD) && g_Cfg.m_fGuardsInstantKill )
-		return 20000;	// swing made
-
 	int iDmgMin = 0;
 	int iDmgMax = 0;
 
@@ -2628,55 +2608,59 @@ WAR_SWING_TYPE CChar::Fight_Hit(CChar *pCharTarg)
 
 	SKILL_TYPE skill = Skill_GetActive();
 	bool fSkillRanged = g_Cfg.IsSkillFlag(skill, SKF_RANGED);
-	if ( fSkillRanged )
+
+	if ( !(m_pNPC && (m_pNPC->m_Brain == NPCBRAIN_GUARD) && g_Cfg.m_fGuardsInstantKill) )	// guards should ignore distance checks when instant kill is enabled
 	{
-		if ( IsStatFlag(STATF_HasShield) )		// this should never happen
+		if ( fSkillRanged )
 		{
-			SysMessageDefault(DEFMSG_ITEMUSE_BOW_SHIELD);
-			return WAR_SWING_INVALID;
-		}
-		else if ( !IsSetCombatFlags(COMBAT_ARCHERYCANMOVE) && !IsStatFlag(STATF_ArcherCanMove) )
-		{
-			// Only start swing 1sec after the char stop moving	(TO-DO: add .ini option to customize this delay -> SE:250ms / AOS:500ms / pre-AOS:1000ms)
-			if ( m_pClient && (-g_World.GetTimeDiff(m_pClient->m_timeLastEventWalk) < TICK_PER_SEC) )
-				return WAR_SWING_EQUIPPING;
-		}
-
-		int iMinDist = pWeapon ? pWeapon->RangeH() : g_Cfg.m_iArcheryMinDist;
-		int iMaxDist = pWeapon ? pWeapon->RangeL() : g_Cfg.m_iArcheryMaxDist;
-		if ( !iMaxDist || ((iMinDist == 0) && (iMaxDist == 1)) )
-			iMaxDist = g_Cfg.m_iArcheryMaxDist;
-		if ( !iMinDist )
-			iMinDist = g_Cfg.m_iArcheryMinDist;
-
-		if ( iDist < iMinDist )
-		{
-			SysMessageDefault(DEFMSG_COMBAT_ARCH_TOOCLOSE);
-			return IsSetCombatFlags(COMBAT_STAYINRANGE) ? WAR_SWING_EQUIPPING : WAR_SWING_READY;
-		}
-		if ( iDist > iMaxDist )
-			return IsSetCombatFlags(COMBAT_STAYINRANGE) ? WAR_SWING_EQUIPPING : WAR_SWING_READY;
-
-		if ( pWeapon )
-		{
-			RESOURCE_ID_BASE ridAmmo = pWeapon->Weapon_GetRangedAmmoRes();
-			if ( ridAmmo )
+			if ( IsStatFlag(STATF_HasShield) )		// this should never happen
 			{
-				pAmmo = pWeapon->Weapon_FindRangedAmmo(ridAmmo);
-				if ( !pAmmo && m_pPlayer )
+				SysMessageDefault(DEFMSG_ITEMUSE_BOW_SHIELD);
+				return WAR_SWING_INVALID;
+			}
+			else if ( !IsSetCombatFlags(COMBAT_ARCHERYCANMOVE) && !IsStatFlag(STATF_ArcherCanMove) )
+			{
+				// Only start swing 1sec after the char stop moving	(TO-DO: add .ini option to customize this delay -> SE:250ms / AOS:500ms / pre-AOS:1000ms)
+				if ( m_pClient && (-g_World.GetTimeDiff(m_pClient->m_timeLastEventWalk) < TICK_PER_SEC) )
+					return WAR_SWING_EQUIPPING;
+			}
+
+			int iMinDist = pWeapon ? pWeapon->RangeH() : g_Cfg.m_iArcheryMinDist;
+			int iMaxDist = pWeapon ? pWeapon->RangeL() : g_Cfg.m_iArcheryMaxDist;
+			if ( !iMaxDist || ((iMinDist == 0) && (iMaxDist == 1)) )
+				iMaxDist = g_Cfg.m_iArcheryMaxDist;
+			if ( !iMinDist )
+				iMinDist = g_Cfg.m_iArcheryMinDist;
+
+			if ( iDist < iMinDist )
+			{
+				SysMessageDefault(DEFMSG_COMBAT_ARCH_TOOCLOSE);
+				return IsSetCombatFlags(COMBAT_STAYINRANGE) ? WAR_SWING_EQUIPPING : WAR_SWING_READY;
+			}
+			if ( iDist > iMaxDist )
+				return IsSetCombatFlags(COMBAT_STAYINRANGE) ? WAR_SWING_EQUIPPING : WAR_SWING_READY;
+
+			if ( pWeapon )
+			{
+				RESOURCE_ID_BASE ridAmmo = pWeapon->Weapon_GetRangedAmmoRes();
+				if ( ridAmmo )
 				{
-					SysMessageDefault(DEFMSG_COMBAT_ARCH_NOAMMO);
-					return WAR_SWING_INVALID;
+					pAmmo = pWeapon->Weapon_FindRangedAmmo(ridAmmo);
+					if ( !pAmmo && m_pPlayer )
+					{
+						SysMessageDefault(DEFMSG_COMBAT_ARCH_NOAMMO);
+						return WAR_SWING_INVALID;
+					}
 				}
 			}
 		}
-	}
-	else
-	{
-		int iMinDist = pWeapon ? pWeapon->RangeH() : 0;
-		int iMaxDist = CalcFightRange(pWeapon);
-		if ( (iDist < iMinDist) || (iDist > iMaxDist) )
-			return IsSetCombatFlags(COMBAT_STAYINRANGE) ? WAR_SWING_EQUIPPING : WAR_SWING_READY;
+		else
+		{
+			int iMinDist = pWeapon ? pWeapon->RangeH() : 0;
+			int iMaxDist = CalcFightRange(pWeapon);
+			if ( (iDist < iMinDist) || (iDist > iMaxDist) )
+				return IsSetCombatFlags(COMBAT_STAYINRANGE) ? WAR_SWING_EQUIPPING : WAR_SWING_READY;
+		}
 	}
 
 	// Start the swing
@@ -2713,9 +2697,10 @@ WAR_SWING_TYPE CChar::Fight_Hit(CChar *pCharTarg)
 		else
 			SetTimeout(animDelay);
 
-		Reveal();
 		if ( !IsSetCombatFlags(COMBAT_NODIRCHANGE) )
 			UpdateDir(pCharTarg);
+
+		Reveal();
 		UpdateAnimate(anim, false, false, static_cast<BYTE>(animDelay / TICK_PER_SEC));
 		return WAR_SWING_SWINGING;
 	}
@@ -2739,6 +2724,14 @@ WAR_SWING_TYPE CChar::Fight_Hit(CChar *pCharTarg)
 			m_pClient->m_SkillThrowingAnimHue = AnimHue;
 			m_pClient->m_SkillThrowingAnimRender = AnimRender;
 		}
+	}
+
+	if ( m_pNPC && (m_pNPC->m_Brain == NPCBRAIN_GUARD) && g_Cfg.m_fGuardsInstantKill )
+	{
+		iTyp |= DAMAGE_GOD;
+		m_Act_Difficulty = 100;		// never miss
+		pCharTarg->Stat_SetVal(STAT_STR, 1);
+		pCharTarg->Effect(EFFECT_LIGHTNING, ITEMID_NOTHING, this);
 	}
 
 	// We missed
