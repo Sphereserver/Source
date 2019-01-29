@@ -22,7 +22,8 @@ public:
 
 	static const char *m_sClassName;
 	static LPCTSTR const sm_szVerbKeys[];
-	static LPCTSTR const sm_szLoadKeys[];
+	static LPCTSTR const sm_szLoadKeys[];
+
 private:
 	BYTE m_ListenItems;		// items on the ground that can listen (eg: communication crystal)
 	bool m_fSaveParity;		// the sector has been saved relative to the char entering it?
