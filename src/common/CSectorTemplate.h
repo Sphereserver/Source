@@ -1,8 +1,5 @@
-//
-// CSectorTemplate.h
-//
-#ifndef _INC_CSECTOR_H
-#define _INC_CSECTOR_H
+#ifndef _INC_CSECTORTEMPLATE_H
+#define _INC_CSECTORTEMPLATE_H
 #pragma once
 
 class CCharsDisconnectList : public CGObList
@@ -146,4 +143,4 @@ private:
 	CSectorBase &operator=(const CSectorBase &other);
 };
 
-#endif // _INC_CSECTOR_H
+#endif // _INC_CSECTORTEMPLATE_H

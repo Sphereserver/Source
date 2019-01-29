@@ -57,6 +57,7 @@ graysvr/CResource.cpp
 graysvr/CResourceDef.cpp
 graysvr/CResource.h
 graysvr/CSector.cpp
+graysvr/CSector.h
 graysvr/CServer.cpp
 graysvr/CServer.h
 graysvr/CServRef.cpp

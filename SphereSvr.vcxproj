@@ -308,6 +308,7 @@ if defined GitRev (
     <ClInclude Include="src\graysvr\CPathFinder.h" />
     <ClInclude Include="src\graysvr\CPingServer.h" />
     <ClInclude Include="src\graysvr\CResource.h" />
+    <ClInclude Include="src\graysvr\CSector.h" />
     <ClInclude Include="src\graysvr\CServer.h" />
     <ClInclude Include="src\graysvr\CServRef.h" />
     <ClInclude Include="src\graysvr\CUnixTerminal.h" />

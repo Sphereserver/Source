@@ -617,6 +617,9 @@
     <ClInclude Include="src\graysvr\CResource.h">
       <Filter>graysvr</Filter>
     </ClInclude>
+    <ClInclude Include="src\graysvr\CSector.h">
+      <Filter>graysvr</Filter>
+    </ClInclude>
     <ClInclude Include="src\graysvr\CServer.h">
       <Filter>graysvr</Filter>
     </ClInclude>
