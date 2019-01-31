@@ -2974,11 +2974,11 @@ bool CChar::r_Verb(CScript &s, CTextConsole *pSrc)	// execute command from scrip
 		{
 			if ( s.HasArgs() && !s.GetArgVal() )
 			{
-				CItem *pCriminal = LayerFind(LAYER_FLAG_Criminal);
-				if ( pCriminal )
+				CItem *pMemory = LayerFind(LAYER_FLAG_Criminal);
+				if ( pMemory )
 				{
 					// Removing criminal memory will already clear flag, noto and buff
-					pCriminal->Delete();
+					pMemory->Delete();
 				}
 				else
 				{
@@ -2986,7 +2986,11 @@ bool CChar::r_Verb(CScript &s, CTextConsole *pSrc)	// execute command from scrip
 					StatFlag_Clear(STATF_Criminal);
 					NotoSave_Update();
 					if ( m_pClient )
+					{
 						m_pClient->removeBuff(BI_CRIMINALSTATUS);
+						if ( !(g_Cfg.m_fGuardsOnMurderers &&Noto_IsEvil()) )
+							SysMessageDefault(DEFMSG_MSG_GUARDS_NOLONGER);
+					}
 				}
 			}
 			else

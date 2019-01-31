@@ -1371,3 +1371,7 @@ Fixed: Doors using wrong sound.
 Changed: Improved 'brain_guard' NPC AI to match OSI style
 	-Guards now will use default combat engine (calling related combat triggers) instead just cause the damage on the target
 	-When GuardsInstantKill feature is enabled on sphere.ini, guards still kill with a single hit but now using default swing speed formula instead 1ms delay (if you want the old 1ms delay, just use LOCAL.AnimDelay=1 on @HitTry trigger on NPC)
+
+31-01-2019, Coruja
+Fixed: Criminal flag message ("guards can now be called on you") showing to chars that are already murderer.
+[sphere_msgs.scp]: Updated messages 'msg_guards' and 'msg_murder', added new 'msg_guards_nolonger', and splitted 'msg_corpse_of' into 'msg_corpse_player' + 'msg_corpse_npc'

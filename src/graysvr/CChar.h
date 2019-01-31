@@ -1018,7 +1018,7 @@ public:
 	LPCTSTR Noto_GetFameTitle() const;
 	LPCTSTR Noto_GetTitle() const;
 	void Noto_Kill(CChar *pKill, bool fPetKill = false, int iTotalKillers = 0);
-	bool Noto_Criminal(CChar *pChar = NULL);
+	void Noto_Criminal(CChar *pChar = NULL);
 	void Noto_Murder();
 
 	void NotoSave_Add(CChar *pChar, NOTO_TYPE value, NOTO_TYPE color = NOTO_INVALID);
@@ -1288,7 +1288,7 @@ public:
 	CItemCorpse *MakeCorpse(bool fFrontFall);
 	bool RaiseCorpse(CItemCorpse *pCorpse);
 	bool Death();
-	bool Reveal(DWORD dwFlags = 0);
+	bool Reveal(DWORD dwFlags = (STATF_Invisible|STATF_Hidden|STATF_Sleeping));
 	void Jail(CTextConsole *pSrc, bool fSet, int iCell);
 	void EatAnim(LPCTSTR pszName, int iQty);
 

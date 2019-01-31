@@ -386,11 +386,11 @@ void CChar::Noto_Murder()
 		Spell_Effect_Create(SPELL_NONE, LAYER_FLAG_Murders, 0, g_Cfg.m_iMurderDecayTime);
 }
 
-bool CChar::Noto_Criminal(CChar *pChar)
+void CChar::Noto_Criminal(CChar *pChar)
 {
 	ADDTOCALLSTACK("CChar::Noto_Criminal");
 	if ( m_pNPC || IsPriv(PRIV_GM) )
-		return false;
+		return;
 
 	int iDecay = g_Cfg.m_iCriminalTimer;
 
@@ -400,16 +400,16 @@ bool CChar::Noto_Criminal(CChar *pChar)
 		Args.m_iN1 = iDecay;
 		Args.m_pO1 = pChar;
 		if ( OnTrigger(CTRIG_Criminal, this, &Args) == TRIGRET_RET_TRUE )
-			return false;
+			return;
 
 		iDecay = static_cast<int>(Args.m_iN1);
 	}
 
-	if ( !IsStatFlag(STATF_Criminal) )
-		SysMessageDefault(DEFMSG_MSG_GUARDS);
-
-	Spell_Effect_Create(SPELL_NONE, LAYER_FLAG_Criminal, 0, iDecay);
-	return true;
+	CItem *pMemory = LayerFind(LAYER_FLAG_Criminal);
+	if ( pMemory )
+		pMemory->SetTimeout(iDecay);
+	else
+		Spell_Effect_Create(SPELL_NONE, LAYER_FLAG_Criminal, 0, iDecay);
 }
 
 #define NOTO_DEGREES	8

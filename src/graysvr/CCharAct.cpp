@@ -267,7 +267,11 @@ void CChar::LayerAdd(CItem *pItem, LAYER_TYPE layer)
 			StatFlag_Set(STATF_Criminal);
 			NotoSave_Update();
 			if ( m_pClient )
+			{
 				m_pClient->addBuff(BI_CRIMINALSTATUS, 1153802, 1153828);
+				if ( !(g_Cfg.m_fGuardsOnMurderers && Noto_IsEvil()) )
+					SysMessageDefault(DEFMSG_MSG_GUARDS);
+			}
 			return;
 		}
 		case LAYER_FLAG_SpiritSpeak:
@@ -364,7 +368,11 @@ void CChar::OnRemoveOb(CGObListRec *pObRec)	// override this = called when remov
 			StatFlag_Clear(STATF_Criminal);
 			NotoSave_Update();
 			if ( m_pClient )
+			{
 				m_pClient->removeBuff(BI_CRIMINALSTATUS);
+				if ( !(g_Cfg.m_fGuardsOnMurderers && Noto_IsEvil()) )
+					SysMessageDefault(DEFMSG_MSG_GUARDS_NOLONGER);
+			}
 			break;
 		}
 		case LAYER_FLAG_SpiritSpeak:
@@ -1923,9 +1931,6 @@ void CChar::EatAnim(LPCTSTR pszName, int iQty)
 bool CChar::Reveal(DWORD dwFlags)
 {
 	ADDTOCALLSTACK("CChar::Reveal");
-
-	if ( !dwFlags )
-		dwFlags = (STATF_Invisible|STATF_Hidden|STATF_Sleeping);
 	if ( !IsStatFlag(dwFlags) )
 		return false;
 	if ( m_pClient && m_pClient->m_pHouseDesign )	// don't reveal while in house design mode
@@ -2468,7 +2473,7 @@ CItemCorpse *CChar::MakeCorpse(bool fFrontFall)
 	WORD wFlags = static_cast<WORD>(m_TagDefs.GetKeyNum("DEATHFLAGS"));
 	if ( wFlags & DEATH_NOCORPSE )
 		return NULL;
-	if ( IsStatFlag(STATF_Conjured) && !(wFlags & (DEATH_NOCONJUREDEFFECT|DEATH_HASCORPSE)) )	// summoned (STATF_Conjured) creatures have no corpse
+	if ( IsStatFlag(STATF_Conjured) && !(wFlags & (DEATH_NOCONJUREDEFFECT|DEATH_HASCORPSE)) )	// summoned creatures have no corpse
 	{
 		Effect(EFFECT_XYZ, ITEMID_FX_SPELL_FAIL, this, 1, 30);
 		return NULL;
@@ -2478,9 +2483,10 @@ CItemCorpse *CChar::MakeCorpse(bool fFrontFall)
 	if ( !pCorpse )		// weird internal error
 		return NULL;
 
-	TCHAR *pszMsg = Str_GetTemp();
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MSG_CORPSE_OF), GetName());
-	pCorpse->SetName(pszMsg);
+	TCHAR *pszName = Str_GetTemp();
+	sprintf(pszName, g_Cfg.GetDefaultMsg(m_pPlayer ? DEFMSG_MSG_CORPSE_PLAYER : DEFMSG_MSG_CORPSE_NPC), GetName());
+
+	pCorpse->SetName(pszName);
 	pCorpse->SetHue(GetHue());
 	pCorpse->SetCorpseType(GetDispID());
 	pCorpse->SetAttr(ATTR_MOVE_NEVER);
