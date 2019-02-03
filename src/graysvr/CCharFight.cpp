@@ -1899,7 +1899,7 @@ bool CChar::Memory_Fight_OnTick(CItemMemory *pMemory)
 	return true;	// reschedule it
 }
 
-void CChar::Memory_Fight_Start(const CChar *pTarg)
+void CChar::Memory_Fight_Start(CChar *pTarg)
 {
 	ADDTOCALLSTACK("CChar::Memory_Fight_Start");
 	// I'm attacking this creature
@@ -1907,7 +1907,7 @@ void CChar::Memory_Fight_Start(const CChar *pTarg)
 	// This is just the "intent" to fight, maybe no damage done yet
 
 	ASSERT(pTarg);
-	if ( Fight_IsActive() && m_Fight_Targ == pTarg->GetUID() )		// already fighting with this target
+	if ( Fight_IsActive() && (m_Fight_Targ == pTarg->GetUID()) )		// already fighting with this target
 		return;
 
 	WORD wMemTypes = 0;
@@ -1938,7 +1938,7 @@ void CChar::Memory_Fight_Start(const CChar *pTarg)
 		if ( !pMemory->IsMemoryTypes(MEMORY_HARMEDBY|MEMORY_SAWCRIME|MEMORY_AGGREIVED) )	// I am defending myself rightly
 			wMemTypes = MEMORY_IAGGRESSOR;
 
-		Memory_AddTypes(pMemory, MEMORY_FIGHT|wMemTypes);// Update the fight status.
+		Memory_AddTypes(pMemory, MEMORY_FIGHT|wMemTypes);	// update the fight status
 	}
 
 	if ( m_pClient && (m_Fight_Targ == pTarg->GetUID()) && !IsSetCombatFlags(COMBAT_NODIRCHANGE) )
@@ -1947,6 +1947,10 @@ void CChar::Memory_Fight_Start(const CChar *pTarg)
 		// This causes the funny turn to the target during combat!
 		new PacketSwing(m_pClient, pTarg);
 	}
+
+	// NPCs will instantly attack back when notice someone trying to attack them
+	if ( pTarg->m_pNPC && IsSetCombatFlags(COMBAT_NPC_ATTACKONNOTICE) )
+		pTarg->OnHarmedBy(this);
 }
 
 ///////////////////////////////////////////////////////////
@@ -2296,6 +2300,9 @@ bool CChar::Attacker_Add(CChar *pChar, INT64 iThreat)
 
 	// Record the start of the fight
 	Memory_Fight_Start(pChar);
+
+	if ( (m_pNPC || pChar->m_pNPC) && IsSetCombatFlags(COMBAT_NPC_NOATTACKMSG) )
+		return true;
 
 	TCHAR *pszMsg = Str_GetTemp();
 	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_COMBAT_ATTACKO), GetName(), pChar->GetName());

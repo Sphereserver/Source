@@ -1221,7 +1221,7 @@ private:
 public:
 	WORD CalcArmorDefense() const;
 
-	void Memory_Fight_Start(const CChar *pTarg);
+	void Memory_Fight_Start(CChar *pTarg);
 	bool Memory_Fight_OnTick(CItemMemory *pMemory);
 
 	bool Fight_Attack(const CChar *pCharTarg, bool fToldByMaster = false);

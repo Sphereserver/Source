@@ -1374,4 +1374,10 @@ Changed: Improved 'brain_guard' NPC AI to match OSI style
 
 31-01-2019, Coruja
 Fixed: Criminal flag message ("guards can now be called on you") showing to chars that are already murderer.
-[sphere_msgs.scp]: Updated messages 'msg_guards' and 'msg_murder', added new 'msg_guards_nolonger', and splitted 'msg_corpse_of' into 'msg_corpse_player' + 'msg_corpse_npc'
+[sphere_msgs.scp]: Updated message 'msg_murder', added new 'msg_guards_nolonger', and splitted 'msg_corpse_of' into 'msg_corpse_player' + 'msg_corpse_npc'
+[npcs/sphere_monsters_custom.scp]: Fixed 'c_wraith' using wrong sound and many drakes/dragons using wrong name (pull request by GitMadKing)
+
+02-02-2019, Coruja
+[sphere.ini]: Added new COMBATF_NPC_ATTACKONNOTICE and COMBATF_NOATTACKMSG_PVM combat flags
+	-COMBATF_NPC_ATTACKONNOTICE: make NPCs instantly attack back when notice someone trying to attack them
+	-COMBATF_NPC_NOATTACKMSG: disable *is attacking* message on NPCs

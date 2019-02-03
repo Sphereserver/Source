@@ -107,6 +107,8 @@ enum COMBATFLAGS_TYPE
 	COMBAT_ALLOWHITFROMSHIP		= 0x0040,	// Allow attacking opponents from ships
 	COMBAT_ARCHERYCANMOVE		= 0x0100,	// Allow firing bow while moving
 	COMBAT_STAYINRANGE			= 0x0200,	// Abort attack swing when out of range instead of waiting to come back in range
+	COMBAT_NPC_ATTACKONNOTICE	= 0x0400,	// NPCs will instantly attack back when notice someone trying to attack them
+	COMBAT_NPC_NOATTACKMSG		= 0x0800,	// Disable *is attacking* message on NPCs
 	COMBAT_STACKARMOR			= 0x1000,	// If a region is covered by more than one armor part, all AR will count
 	COMBAT_NOPOISONHIT			= 0x2000	// Disables old (55i like) poisoning style (0~100% chance based on Poisoning skill for monsters, or 50% chance for poisoned weapons)
 };
