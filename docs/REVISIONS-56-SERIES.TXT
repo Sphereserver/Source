@@ -1381,3 +1381,9 @@ Fixed: Criminal flag message ("guards can now be called on you") showing to char
 [sphere.ini]: Added new COMBATF_NPC_ATTACKONNOTICE and COMBATF_NOATTACKMSG_PVM combat flags
 	-COMBATF_NPC_ATTACKONNOTICE: make NPCs instantly attack back when notice someone trying to attack them
 	-COMBATF_NPC_NOATTACKMSG: disable *is attacking* message on NPCs
+
+04-02-2019, Coruja
+[items/sphere_item_building_doors.scp]: Updated all SE+ doors
+[items/sphere_item_theme_pack_crystal.scp]: Updated crystal door
+[items/sphere_item_theme_pack_shadow.scp]: Updated shadow door
+[sphere_backward_compatibility.scp]: Updated doors ITEMDEFs on backward compatibility list

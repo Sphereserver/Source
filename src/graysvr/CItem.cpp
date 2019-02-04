@@ -3806,7 +3806,6 @@ bool CItem::Use_Door(bool fJustOpen)
 		{
 			case ITEMID_DOOR_WOODEN_2:
 			case ITEMID_DOOR_WOODEN_4:
-			case ITEMID_DOOR_GARGISH_HOVEL:
 				sound = fClosing ? 0xF2 : 0xEB;
 				break;
 			case ITEMID_DOOR_METAL_1:
@@ -3821,23 +3820,11 @@ bool CItem::Use_Door(bool fJustOpen)
 			case ITEMID_DOOR_SECRET_STONE_2:
 			case ITEMID_DOOR_SECRET_STONE_3:
 			case ITEMID_DOOR_SECRET_STONE_4:
-			case ITEMID_DOOR_CRYSTAL:
-			case ITEMID_DOOR_JUNGLE:
-			case ITEMID_DOOR_SHADOWGUARD:
 				sound = fClosing ? 0xF4 : 0xED;
 				break;
 			case ITEMID_DOOR_PORTCULLIS_1:
 			case ITEMID_DOOR_PORTCULLIS_2:
-			case ITEMID_DOOR_GARGISH_FOLSOM:
 				sound = fClosing ? 0xEF : 0xF0;
-				break;
-			case ITEMID_DOOR_SHADOW:
-				sound = fClosing ? 0x3E7 : 0xEC;
-				break;
-			case ITEMID_DOOR_SLIDING_PAPER:
-			case ITEMID_DOOR_SLIDING_CLOTH:
-			case ITEMID_DOOR_SLIDING_WOODEN:
-				sound = 0x539;
 				break;
 			default:
 				sound = fClosing ? 0xF1 : 0xEA;
