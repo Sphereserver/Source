@@ -1995,11 +1995,11 @@ void CClient::addHealthBarInfo(CObjBase *pObj, bool fRequested)
 	if ( !pObj )
 		return;
 
-	if ( IsTrigUsed(TRIGGER_USERSTATS) )
+	if ( IsTrigUsed(TRIGGER_USERSTATS) && pObj->IsChar() )
 	{
 		CScriptTriggerArgs Args(0, 0, pObj);
 		Args.m_iN3 = fRequested;
-		if ( m_pChar->OnTrigger(CTRIG_UserStats, reinterpret_cast<CTextConsole *>(pObj), &Args) == TRIGRET_RET_TRUE )
+		if ( m_pChar->OnTrigger(CTRIG_UserStats, dynamic_cast<CTextConsole *>(pObj), &Args) == TRIGRET_RET_TRUE )
 			return;
 	}
 
