@@ -1390,3 +1390,13 @@ Removed: Redundant AC/MODAC property (use AR/MODAR instead).
 [items/sphere_item_theme_pack_crystal.scp]: Updated crystal door
 [items/sphere_item_theme_pack_shadow.scp]: Updated shadow door
 [sphere_backward_compatibility.scp]: Updated doors ITEMDEFs on backward compatibility list
+
+05-02-2019, Coruja
+Changed: Small improvements on FEATURE_AOS_POPUP feature
+	-Popups now can be used by dead players (note that only some few popups are available when dead, like pet commands and ankh resurrect)
+	-Added missing 'tame' popup on tameable NPCs
+	-'Train skill' popups on vendor NPCs are now hardcoded. Make sure to update the scripts below to fix duplicated popup entries
+[npcs/sphere_citizens.scp]: Removed event 'e_trainer' from all NPCs
+[npcs/sphere_guildmasters.scp]: Removed event 'e_trainer' from all NPCs
+[npcs/sphere_vendors.scp]: Removed event 'e_trainer' from all NPCs
+[sphere_events_npcs.scp]: Removed event 'e_trainer'

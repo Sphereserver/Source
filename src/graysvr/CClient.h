@@ -796,36 +796,37 @@ public:
 	void addAOSTooltip(const CObjBase *pObj, bool fRequested = false, bool fShop = false);
 
 private:
-	#define POPUPFLAG_DISABLED		0x01
-	#define POPUPFLAG_ARROW			0x02	// classic clients only
-	#define POPUPFLAG_HIGHLIGHT		0x04	// enhanced clients only
-	#define POPUPFLAG_COLOR			0x20	// classic clients only (< 6.0.0.0)
+	#define POPUPFLAG_DISABLED			0x01
+	#define POPUPFLAG_ARROW				0x02	// classic clients only
+	#define POPUPFLAG_HIGHLIGHT			0x04	// enhanced clients only
+	#define POPUPFLAG_COLOR				0x20	// classic clients only (< 6.0.0.0)
 
-	#define POPUP_REQUEST			0
-	#define POPUP_PAPERDOLL			11
-	#define POPUP_BACKPACK			12
-	#define POPUP_PARTY_ADD			13
-	#define POPUP_PARTY_REMOVE		14
-	#define POPUP_TRADE_ALLOW		15
-	#define POPUP_TRADE_REFUSE		16
-	#define POPUP_TRADE_OPEN		17
-	#define POPUP_GLOBALCHAT_ALLOW	18
-	#define POPUP_GLOBALCHAT_REFUSE	19
-	#define POPUP_BANKBOX			21
-	#define POPUP_VENDORBUY			31
-	#define POPUP_VENDORSELL		32
-	#define POPUP_PETGUARD			41
-	#define POPUP_PETFOLLOW			42
-	#define POPUP_PETDROP			43
-	#define POPUP_PETKILL			44
-	#define POPUP_PETSTOP			45
-	#define POPUP_PETSTAY			46
-	#define POPUP_PETFRIEND_ADD		47
-	#define POPUP_PETFRIEND_REMOVE	48
-	#define POPUP_PETTRANSFER		49
-	#define POPUP_PETRELEASE		50
-	#define POPUP_STABLESTABLE		51
-	#define POPUP_STABLERETRIEVE	52
+	#define POPUP_OPEN_PAPERDOLL		11
+	#define POPUP_OPEN_BACKPACK			12
+	#define POPUP_PARTY_ADD				13
+	#define POPUP_PARTY_REMOVE			14
+	#define POPUP_TRADE_ALLOW			15
+	#define POPUP_TRADE_REFUSE			16
+	#define POPUP_TRADE_OPEN			17
+	#define POPUP_GLOBALCHAT_ALLOW		18
+	#define POPUP_GLOBALCHAT_REFUSE		19
+	#define POPUP_OPEN_BANKBOX			21
+	#define POPUP_BUY					31
+	#define POPUP_SELL					32
+	#define POPUP_TAME					40
+	#define POPUP_PETCMD_GUARD			41
+	#define POPUP_PETCMD_FOLLOW			42
+	#define POPUP_PETCMD_DROP			43
+	#define POPUP_PETCMD_KILL			44
+	#define POPUP_PETCMD_STOP			45
+	#define POPUP_PETCMD_STAY			46
+	#define POPUP_PETCMD_FRIEND_ADD		47
+	#define POPUP_PETCMD_FRIEND_REMOVE	48
+	#define POPUP_PETCMD_TRANSFER		49
+	#define POPUP_PETCMD_RELEASE		50
+	#define POPUP_STABLE_PET			51
+	#define POPUP_CLAIM_PETS			52
+	#define POPUP_TRAIN_SKILL			10000
 
 	PacketDisplayPopup *m_pPopupPacket;
 
