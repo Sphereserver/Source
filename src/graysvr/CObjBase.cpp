@@ -1225,7 +1225,6 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatVal(GetTopPoint().m_map);
 			break;
 		case OC_MODAR:
-		case OC_MODAC:
 			sVal.FormatVal(m_ModAr);
 			break;
 		case OC_NAME:
@@ -1675,10 +1674,14 @@ bool CObjBase::r_LoadVal(CScript &s)
 			break;
 		}
 		case OC_MODAR:
-		case OC_MODAC:
+		{
 			m_ModAr = s.GetArgVal();
+			CChar *pChar = dynamic_cast<CChar *>(this);
+			if ( pChar )
+				pChar->m_defense = pChar->CalcArmorDefense();
 			fSendUpdate = true;
 			break;
+		}
 		case OC_NAME:
 			SetName(static_cast<LPCTSTR>(s.GetArgStr()));
 			fSendUpdate = true;

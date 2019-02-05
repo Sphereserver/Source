@@ -4,7 +4,6 @@
 //	Prefix:	CHC_
 //
 
-ADD(AC,						"AC")
 ADD(ACCOUNT,				"ACCOUNT")
 ADD(ACT,					"ACT")
 ADD(ACTARG1,				"ACTARG1")

@@ -1691,7 +1691,6 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			return true;
 		}
 		case CHC_AR:
-		case CHC_AC:
 			sVal.FormatVal(m_defense + pCharDef->m_defense);
 			return true;
 		case CHC_AGE:
@@ -2988,7 +2987,7 @@ bool CChar::r_Verb(CScript &s, CTextConsole *pSrc)	// execute command from scrip
 					if ( m_pClient )
 					{
 						m_pClient->removeBuff(BI_CRIMINALSTATUS);
-						if ( !(g_Cfg.m_fGuardsOnMurderers &&Noto_IsEvil()) )
+						if ( !(g_Cfg.m_fGuardsOnMurderers && Noto_IsEvil()) )
 							SysMessageDefault(DEFMSG_MSG_GUARDS_NOLONGER);
 					}
 				}

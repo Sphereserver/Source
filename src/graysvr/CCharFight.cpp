@@ -1599,7 +1599,7 @@ WORD CChar::CalcArmorDefense() const
 			wDefenseTotal += sm_ArmorLayers[i].m_wCoverage * wArmorRegionMax[i];
 	}
 
-	return (wDefenseTotal / 100) + static_cast<WORD>(m_ModAr);
+	return maximum(0, (wDefenseTotal / 100) + m_ModAr);
 }
 
 int CChar::OnTakeDamage(int iDmg, CChar *pSrc, DAMAGE_TYPE uType, int iDmgPhysical, int iDmgFire, int iDmgCold, int iDmgPoison, int iDmgEnergy)

@@ -1384,6 +1384,8 @@ Fixed: Criminal flag message ("guards can now be called on you") showing to char
 
 04-02-2019, Coruja
 Fixed: Console error when @UserStats trigger is called.
+Fixed: MODAR property not updating AR value instantly when used on chars.
+Removed: Redundant AC/MODAC property (use AR/MODAR instead).
 [items/sphere_item_building_doors.scp]: Updated all SE+ doors
 [items/sphere_item_theme_pack_crystal.scp]: Updated crystal door
 [items/sphere_item_theme_pack_shadow.scp]: Updated shadow door
