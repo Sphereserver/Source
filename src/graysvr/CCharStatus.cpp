@@ -708,67 +708,59 @@ LPCTSTR CChar::GetTradeTitle() const
 		return pszTemp;
 	}
 
-	int iLen;
-	SKILL_TYPE skill = Skill_GetBest();
-	if ( skill == SKILL_BUSHIDO )
+	static INT64 const sm_iSkillTitleVal[] =
 	{
-		static const CValStr sm_SkillTitles[] =
-		{
-			{ "", INT_MIN },
-			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_NEOPHYTE), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_NEOPHYTE")) },
-			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_NOVICE), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_NOVICE")) },
-			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_APPRENTICE), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_APPRENTICE")) },
-			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_JOURNEYMAN), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_JOURNEYMAN")) },
-			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_EXPERT), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_EXPERT")) },
-			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_ADEPT), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_ADEPT")) },
-			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_MASTER), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_MASTER")) },
-			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_GRANDMASTER), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_GRANDMASTER")) },
-			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_ELDER_BUSHIDO), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_ELDER")) },
-			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_LEGENDARY_BUSHIDO), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_LEGENDARY")) },
-			{ NULL, INT_MAX }
-		};
-		iLen = sprintf(pszTemp, "%s ", sm_SkillTitles->FindName(Skill_GetBase(skill)));
-	}
-	else if ( skill == SKILL_NINJITSU )
-	{
-		static const CValStr sm_SkillTitles[] =
-		{
-			{ "", INT_MIN },
-			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_NEOPHYTE), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_NEOPHYTE")) },
-			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_NOVICE), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_NOVICE")) },
-			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_APPRENTICE), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_APPRENTICE")) },
-			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_JOURNEYMAN), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_JOURNEYMAN")) },
-			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_EXPERT), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_EXPERT")) },
-			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_ADEPT), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_ADEPT")) },
-			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_MASTER), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_MASTER")) },
-			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_GRANDMASTER), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_GRANDMASTER")) },
-			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_ELDER_NINJITSU), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_ELDER")) },
-			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_LEGENDARY_NINJITSU), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_LEGENDARY")) },
-			{ NULL, INT_MAX }
-		};
-		iLen = sprintf(pszTemp, "%s ", sm_SkillTitles->FindName(Skill_GetBase(skill)));
-	}
-	else
-	{
-		static const CValStr sm_SkillTitles[] =
-		{
-			{ "", INT_MIN },
-			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_NEOPHYTE), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_NEOPHYTE")) },
-			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_NOVICE), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_NOVICE")) },
-			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_APPRENTICE), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_APPRENTICE")) },
-			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_JOURNEYMAN), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_JOURNEYMAN")) },
-			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_EXPERT), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_EXPERT")) },
-			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_ADEPT), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_ADEPT")) },
-			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_MASTER), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_MASTER")) },
-			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_GRANDMASTER), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_GRANDMASTER")) },
-			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_ELDER), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_ELDER")) },
-			{ g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_LEGENDARY), static_cast<int>(g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_LEGENDARY")) },
-			{ NULL, INT_MAX }
-		};
-		iLen = sprintf(pszTemp, "%s ", sm_SkillTitles->FindName(Skill_GetBase(skill)));
-	}
+		g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_NEOPHYTE"),
+		g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_NOVICE"),
+		g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_APPRENTICE"),
+		g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_JOURNEYMAN"),
+		g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_EXPERT"),
+		g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_ADEPT"),
+		g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_MASTER"),
+		g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_GRANDMASTER"),
+		g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_ELDER"),
+		g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_LEGENDARY")
+	};
 
-	sprintf(pszTemp + iLen, "%s", static_cast<LPCTSTR>(g_Cfg.GetSkillDef(skill)->m_sTitle));
+	static LPCTSTR const sm_szSkillTitle[] =
+	{
+		g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_NEOPHYTE),
+		g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_NOVICE),
+		g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_APPRENTICE),
+		g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_JOURNEYMAN),
+		g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_EXPERT),
+		g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_ADEPT),
+		g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_MASTER),
+		g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_GRANDMASTER),
+		g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_ELDER),
+		g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_LEGENDARY),
+
+		// Bushido/Ninjitsu skills have their own elder/legendary titles
+		g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_ELDER_BUSHIDO),
+		g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_LEGENDARY_BUSHIDO),
+		g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_ELDER_NINJITSU),
+		g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_LEGENDARY_NINJITSU)
+	};
+
+	SKILL_TYPE skill = Skill_GetBest();
+	WORD wSkillVal = Skill_GetBase(skill);
+
+	for ( int i = COUNTOF(sm_iSkillTitleVal) - 1; i >= 0; --i )
+	{
+		if ( wSkillVal < sm_iSkillTitleVal[i] )
+			continue;
+
+		if ( i >= 8 )
+		{
+			// Bushido/Ninjitsu skills have their own elder/legendary titles
+			if ( skill == SKILL_BUSHIDO )
+				i += 2;
+			else if ( skill == SKILL_NINJITSU )
+				i += 4;
+		}
+		sprintf(pszTemp, "%s %s", sm_szSkillTitle[i], static_cast<LPCTSTR>(g_Cfg.GetSkillDef(skill)->m_sTitle));
+		break;
+	}
 	return pszTemp;
 }
 

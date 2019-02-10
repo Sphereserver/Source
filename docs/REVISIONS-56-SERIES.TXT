@@ -1400,3 +1400,6 @@ Changed: Small improvements on FEATURE_AOS_POPUP feature
 [npcs/sphere_guildmasters.scp]: Removed event 'e_trainer' from all NPCs
 [npcs/sphere_vendors.scp]: Removed event 'e_trainer' from all NPCs
 [sphere_events_npcs.scp]: Removed event 'e_trainer'
+
+10-02-2019, Coruja
+Fixed: Char paperdoll not showing skill title correctly.
