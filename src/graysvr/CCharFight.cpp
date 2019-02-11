@@ -2805,6 +2805,12 @@ WAR_SWING_TYPE CChar::Fight_Hit(CChar *pCharTarg)
 				iParryChance = iParryChance * (20 + iDex) / 100;
 		}
 
+		if ( pItemHit && (pItemHit->m_LastParryChance != iParryChance) )
+		{
+			pItemHit->m_LastParryChance = iParryChance;
+			pItemHit->UpdatePropertyFlag();
+		}
+
 		if ( pCharTarg->Skill_UseQuick(SKILL_PARRYING, iParryChance, true, false) )
 		{
 			if ( IsPriv(PRIV_DETAIL) )

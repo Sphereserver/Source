@@ -94,6 +94,7 @@ private:
 
 public:
 	CGrayUID m_uidLink;			// linked to this other object in the world (if this link is set but not valid, the object will be deleted)
+	int m_LastParryChance;		// show temporary 'last parry chance' tooltip on equipped weapons/shields after they got used to parry an attack
 
 	#define ATTR_IDENTIFIED		0x0000001	// Item got identified by ItemID skill and will reveal its magic properties on name (obsolete, only used when client tooltip feature is disabled)
 	#define ATTR_DECAY			0x0000002	// Item dropped on ground will decay after some time

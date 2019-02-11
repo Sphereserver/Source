@@ -1403,3 +1403,7 @@ Changed: Small improvements on FEATURE_AOS_POPUP feature
 
 10-02-2019, Coruja
 Fixed: Char paperdoll not showing skill title correctly.
+Added: Support for 'last parry chance' tooltip on weapons/shields.
+	-Tooltip will appear on equipped weapon/shield after it got used to parry an attack, and will be cleared when unequip
+	-This is not an item property, it just show the combat parry chance formula result for tactical purposes
+	-Client >= 7.0.74.72 is required

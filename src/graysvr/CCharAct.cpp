@@ -361,6 +361,12 @@ void CChar::OnRemoveOb(CGObListRec *pObRec)	// override this = called when remov
 
 			if ( g_Cfg.IsSkillFlag(m_Act_SkillCurrent, SKF_GATHER) )
 				Skill_Cleanup();
+
+			if ( pItem->m_LastParryChance != 0 )
+			{
+				pItem->m_LastParryChance = 0;
+				pItem->UpdatePropertyFlag();
+			}
 			break;
 		}
 		case LAYER_FLAG_Criminal:

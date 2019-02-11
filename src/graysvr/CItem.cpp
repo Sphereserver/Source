@@ -59,6 +59,7 @@ CItem::CItem( ITEMID_TYPE id, CItemBase * pItemDef ) : CObjBase( true )
 	m_amount = 1;
 	m_containedGridIndex = 0;
 	m_dwDispIndex = ITEMID_NOTHING;
+	m_LastParryChance = 0;
 
 	m_itNormal.m_more1 = 0;
 	m_itNormal.m_more2 = 0;

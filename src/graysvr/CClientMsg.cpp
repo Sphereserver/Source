@@ -2923,6 +2923,15 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 								m_TooltipData.Add(t = new CClientTooltip(1060639)); // durability ~1_val~ / ~2_val~
 								t->FormatArgs("%hu\t%hu", pItem->m_itArmor.m_Hits_Cur, pItem->m_itArmor.m_Hits_Max);
 							}
+
+							if ( m_NetState->isClientVersion(MINCLIVER_PARRYCHANCETOOLTIP) )
+							{
+								if ( pItem->m_LastParryChance != 0 )
+								{
+									m_TooltipData.Add(t = new CClientTooltip(1158861)); // Last Parry Chance: ~1_val~%
+									t->FormatArgs("%d", pItem->m_LastParryChance);
+								}
+							}
 							break;
 						}
 
@@ -3112,6 +3121,15 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 							{
 								m_TooltipData.Add(t = new CClientTooltip(1060639)); // durability ~1_val~ / ~2_val~
 								t->FormatArgs("%hu\t%hu", pItem->m_itWeapon.m_Hits_Cur, pItem->m_itWeapon.m_Hits_Max);
+							}
+
+							if ( m_NetState->isClientVersion(MINCLIVER_PARRYCHANCETOOLTIP) )
+							{
+								if ( pItem->m_LastParryChance != 0 )
+								{
+									m_TooltipData.Add(t = new CClientTooltip(1158861)); // Last Parry Chance: ~1_val~%
+									t->FormatArgs("%d", pItem->m_LastParryChance);
+								}
 							}
 							break;
 						}
