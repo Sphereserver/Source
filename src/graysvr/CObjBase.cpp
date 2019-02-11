@@ -1339,14 +1339,6 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal = g_Cfg.Calc_MaptoSextant(pt);
 			break;
 		}
-		case OC_SPEED:
-		{
-			if ( !IsItem() )
-				return false;
-			CItem *pItem = static_cast<CItem *>(this);
-			sVal.FormatVal(pItem->GetSpeed());
-			break;
-		}
 		case OC_TIMESTAMP:
 			sVal.FormatLLVal(GetTimeStamp().GetTimeRaw());
 			break;
@@ -1728,14 +1720,6 @@ bool CObjBase::r_LoadVal(CScript &s)
 			m_ResPoisonMax = static_cast<int>(s.GetArgVal());
 			fSendUpdate = true;
 			break;
-		case OC_SPEED:
-		{
-			if ( !IsItem() )
-				return false;
-			static_cast<CItem *>(this)->m_speed = static_cast<BYTE>(s.GetArgVal());
-			fSendUpdate = true;
-			break;
-		}
 		case OC_TIMER:
 			SetTimeout(s.GetArgLLVal() * TICK_PER_SEC);
 			break;
