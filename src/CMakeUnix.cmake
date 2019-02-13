@@ -1,51 +1,19 @@
-SET (C_WARNING_FLAGS "-Wall -Wextra -Wno-unknown-pragmas -Wno-switch")
-SET (CXX_WARNING_FLAGS "-Wall -Wextra -Wno-unknown-pragmas -Wno-invalid-offsetof -Wno-switch")
-SET (C_ARCH_OPTS "-march=i686 -m32")
-SET (CXX_ARCH_OPTS "-march=i686 -m32")
-SET (C_OPTS "-s -fno-omit-frame-pointer -ffast-math -O3 -fno-expensive-optimizations")
-SET (CXX_OPTS "-s -fno-omit-frame-pointer -ffast-math -fpermissive -O3")
-SET (C_SPECIAL "-fexceptions -fnon-call-exceptions")
-SET (CXX_SPECIAL "-fexceptions -fnon-call-exceptions")
-SET (CMAKE_C_FLAGS "${C_WARNING_FLAGS} ${C_ARCH_OPTS} ${C_OPTS} ${C_SPECIAL}")
-SET (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-SET (CMAKE_CXX_FLAGS "${CXX_WARNING_FLAGS} ${CXX_ARCH_OPTS} ${CXX_OPTS} ${CXX_SPECIAL}")
+# Get number of CPU cores to enable multi-thread compiling
+execute_process(COMMAND nproc OUTPUT_VARIABLE CPU_CORES)
 
-TARGET_COMPILE_DEFINITIONS (spheresvr
-# Extra defs
-        PUBLIC _MTNETWORK
-# SVN defs
-        PUBLIC _SUBVERSION
-# Defines
-        PUBLIC _CONSOLE
-        PUBLIC _LINUX
-)
-TARGET_COMPILE_DEFINITIONS (spheresvrNightly
-# Nighly defs
-        PUBLIC _NIGHTLYBUILD
-        PUBLIC THREAD_TRACK_CALLSTACK
-# Debug defs
-        PUBLIC _DEBUG
-        PUBLIC _PACKETDUMP
-        PUBLIC _TESTEXCEPTION
-        PUBLIC DEBUG_CRYPT_MSGS
-# Extra defs
-        PUBLIC _MTNETWORK
-# SVN defs
-        PUBLIC _SUBVERSION
-# Defines
-        PUBLIC _CONSOLE
-        PUBLIC _LINUX
-)
-# Optimization flags set to max.
-SET_TARGET_PROPERTIES (spheresvr PROPERTIES	COMPILE_FLAGS -O3 )
-# Force dynamic linking.
-SET (CMAKE_EXE_LINKER_FLAGS "-dynamic")
+set(ARCH_FLAGS "-march=i686 -m32")
+set(CODE_GEN_FLAGS "-fexceptions -fnon-call-exceptions")
+set(GENERAL_FLAGS "-pipe -j${CPU_CORES}")
+set(LINKER_FLAGS "-s")
+set(OPTIMIZATION_FLAGS "-Os -ffast-math -fno-strict-aliasing -fno-omit-frame-pointer")
+set(WARNING_FLAGS "-Wall -Wno-implicit-function-declaration -Wno-invalid-offsetof -Wno-maybe-uninitialized -Wno-switch -Wno-unknown-pragmas -Wno-unused-result")
 
-# Linux libs.
-TARGET_LINK_LIBRARIES (
-        spheresvr
-        pthread
-        mysqlclient
-        rt
-        dl
-)
+target_compile_definitions(SphereSvr PUBLIC _MTNETWORK)
+target_compile_options(SphereSvr PUBLIC ${ARCH_FLAGS} ${CODE_GEN_FLAGS} ${GENERAL_FLAGS} ${LINKER_FLAGS} ${OPTIMIZATION_FLAGS} ${WARNING_FLAGS})
+target_link_libraries(SphereSvr -dynamic dl mysqlclient pthread rt)
+set_target_properties(SphereSvr PROPERTIES ENABLE_EXPORTS 0)		# make compiler skip -rdynamic to not include the full symbol table (~700kb) on compiled file
+
+target_compile_definitions(SphereSvrNightly PUBLIC _NIGHTLYBUILD _MTNETWORK)
+target_compile_options(SphereSvr PUBLIC ${ARCH_FLAGS} ${CODE_GEN_FLAGS} ${GENERAL_FLAGS} ${LINKER_FLAGS} ${OPTIMIZATION_FLAGS} ${WARNING_FLAGS})
+target_link_libraries(SphereSvrNightly -dynamic dl mysqlclient pthread rt)
+set_target_properties(SphereSvrNightly PROPERTIES ENABLE_EXPORTS 0)		# make compiler skip -rdynamic to not include the full symbol table (~700kb) on compiled file
