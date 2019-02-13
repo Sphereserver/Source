@@ -32,7 +32,7 @@ for:
       - sh: lsb_release -d
       - sh: gcc --version
     build_script:
-      - sh: make NIGHTLY=1 -f makefile
+      - sh: make NIGHTLY=1
     after_build:
       - sh: mkdir accounts logs save scripts
       - sh: tar -czvf SphereSvr-Linux32.tar.gz accounts/ logs/ save/ scripts/ spheresvr -C src/ sphere.ini sphereCrypt.ini

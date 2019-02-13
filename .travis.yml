@@ -1,7 +1,7 @@
 language: cpp
 compiler: gcc
 env:
-  - BUILD_CMD="make NIGHTLY=1 -f makefile"
+  - BUILD_CMD="make NIGHTLY=1"
 git:
   depth: false
 notifications:

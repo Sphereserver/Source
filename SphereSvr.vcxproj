@@ -65,9 +65,9 @@
       <Command>for /f %%r in ('git rev-list --count HEAD') do set /a GitRev=%%r-2406
 for /f %%h in ('git rev-parse --short HEAD') do set GitHash=%%h
 if defined GitRev (
-	echo Current build revision: %GitRev% ^(GIT hash: %GitHash%^)
-	echo #define __GITREVISION__ %GitRev% &gt; src/common/version/GitRevision.h
-	echo #define __GITHASH__ "%GitHash%" &gt;&gt; src/common/version/GitRevision.h
+	echo Current build revision: %GitRev% ^(Git hash: %GitHash%^)
+	echo #define __GITREVISION__ %GitRev% > src/common/version/GitRevision.h
+	echo #define __GITHASH__ "%GitHash%" >> src/common/version/GitRevision.h
 )</Command>
       <Message>Getting revision number from Git repository</Message>
     </PreBuildEvent>
@@ -93,9 +93,9 @@ if defined GitRev (
       <Command>for /f %%r in ('git rev-list --count HEAD') do set /a GitRev=%%r-2406
 for /f %%h in ('git rev-parse --short HEAD') do set GitHash=%%h
 if defined GitRev (
-	echo Current build revision: %GitRev% ^(GIT hash: %GitHash%^)
-	echo #define __GITREVISION__ %GitRev% &gt; src/common/version/GitRevision.h
-	echo #define __GITHASH__ "%GitHash%" &gt;&gt; src/common/version/GitRevision.h
+	echo Current build revision: %GitRev% ^(Git hash: %GitHash%^)
+	echo #define __GITREVISION__ %GitRev% > src/common/version/GitRevision.h
+	echo #define __GITHASH__ "%GitHash%" >> src/common/version/GitRevision.h
 )</Command>
       <Message>Getting revision number from Git repository</Message>
     </PreBuildEvent>
@@ -121,9 +121,9 @@ if defined GitRev (
       <Command>for /f %%r in ('git rev-list --count HEAD') do set /a GitRev=%%r-2406
 for /f %%h in ('git rev-parse --short HEAD') do set GitHash=%%h
 if defined GitRev (
-	echo Current build revision: %GitRev% ^(GIT hash: %GitHash%^)
-	echo #define __GITREVISION__ %GitRev% &gt; src/common/version/GitRevision.h
-	echo #define __GITHASH__ "%GitHash%" &gt;&gt; src/common/version/GitRevision.h
+	echo Current build revision: %GitRev% ^(Git hash: %GitHash%^)
+	echo #define __GITREVISION__ %GitRev% > src/common/version/GitRevision.h
+	echo #define __GITHASH__ "%GitHash%" >> src/common/version/GitRevision.h
 )</Command>
       <Message>Getting revision number from Git repository</Message>
     </PreBuildEvent>
@@ -149,9 +149,9 @@ if defined GitRev (
       <Command>for /f %%r in ('git rev-list --count HEAD') do set /a GitRev=%%r-2406
 for /f %%h in ('git rev-parse --short HEAD') do set GitHash=%%h
 if defined GitRev (
-	echo Current build revision: %GitRev% ^(GIT hash: %GitHash%^)
-	echo #define __GITREVISION__ %GitRev% &gt; src/common/version/GitRevision.h
-	echo #define __GITHASH__ "%GitHash%" &gt;&gt; src/common/version/GitRevision.h
+	echo Current build revision: %GitRev% ^(Git hash: %GitHash%^)
+	echo #define __GITREVISION__ %GitRev% > src/common/version/GitRevision.h
+	echo #define __GITHASH__ "%GitHash%" >> src/common/version/GitRevision.h
 )</Command>
       <Message>Getting revision number from Git repository</Message>
     </PreBuildEvent>

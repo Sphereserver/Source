@@ -71,7 +71,7 @@ sudo yum install mysql-community-devel.i686 mysql-community-libs.i686
 ```
 git clone https://github.com/SphereServer/Source.git
 cd Source
-make NIGHTLY=1 -f makefile
+make NIGHTLY=1
 ```
 **NOTE:** Sphere source is also compatible with CMake compiler for users that prefer it over GCC
 
@@ -81,7 +81,7 @@ make NIGHTLY=1 -f makefile
 * Removing/Changing/Adding anything that was working in one way for years should be followed by an ini setting if the changes cannot be replicated from script to keep some backwards compatibility.
 
 ## Licensing
-Copyright 2018 SphereServer development team
+Copyright 2019 SphereServer development team
 
 Licensed under the Apache License, Version 2.0 (the "License").<br>
 You may not use any file of this project except in compliance with the License.<br>
