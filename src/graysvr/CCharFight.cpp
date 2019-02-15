@@ -2164,11 +2164,6 @@ bool CChar::Fight_Attack(const CChar *pCharTarg, bool fToldByMaster)
 		Attacker_Delete(const_cast<CChar *>(pCharTarg), true);
 		return false;
 	}
-	if ( m_pNPC && !CanSeeLOS(pCharTarg) && !Calc_GetRandVal(20) )		// give up if NPC target still out of LOS after many tries
-	{
-		Skill_Start(SKILL_NONE);
-		return false;
-	}
 
 	CChar *pTarget = const_cast<CChar *>(pCharTarg);
 	if ( pCharTarg->m_pPlayer && (GetPrivLevel() <= PLEVEL_Guest) && (pCharTarg->GetPrivLevel() > PLEVEL_Guest) )
@@ -2234,13 +2229,26 @@ void CChar::Fight_HitTry()
 	CChar *pCharTarg = m_Fight_Targ.CharFind();
 	if ( !pCharTarg || !pCharTarg->Fight_IsAttackable() )
 	{
-		// Can't hit this target, try switch to another one
-		if ( !Fight_Attack(NPC_FightFindBestTarget()) )
+		// Can't hit the current target
+		if ( m_pNPC )
+		{
+			CChar *pNewTarg = NPC_FightFindBestTarget();
+			if ( pNewTarg != pCharTarg )
+			{
+				// Switch to another target
+				Fight_Attack(pNewTarg);
+			}
+			else
+			{
+				// There's no other target, so keep trying to attack the current target before give up
+				if ( !Calc_GetRandVal(10) )
+					Fight_Clear();
+			}
+		}
+		else
 		{
 			Skill_Start(SKILL_NONE);
 			m_Fight_Targ.InitUID();
-			if ( m_pNPC )
-				StatFlag_Clear(STATF_War);
 		}
 		return;
 	}
