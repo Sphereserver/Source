@@ -1733,7 +1733,7 @@ bool CChar::ItemDrop(CItem *pItem, const CPointMap &pt)
 
 	// Check if this item can flip
 	CItemBase *pItemDef = pItem->Item_GetDef();
-	if ( (g_Cfg.m_fFlipDroppedItems || pItemDef->Can(CAN_I_FLIP)) && pItem->IsMovableType() && !pItemDef->IsStackableType() )
+	if ( (g_Cfg.m_fFlipDroppedItems || pItemDef->Can(CAN_I_FLIP)) && pItem->IsMovable() && !pItemDef->IsStackableType() )
 		pItem->SetDispID(pItemDef->GetNextFlipID(pItem->GetDispID()));
 
 	return pItem->MoveToCheck(pt, this);

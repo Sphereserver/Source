@@ -1777,7 +1777,7 @@ bool CChar::CanMove(CItem *pItem, bool fMsg) const
 		return false;
 	if ( IsPriv(PRIV_GM|PRIV_ALLMOVE|PRIV_DEBUG) )
 		return true;
-	if ( pItem->IsAttr(ATTR_MOVE_NEVER|ATTR_LOCKEDDOWN) && !pItem->IsAttr(ATTR_MOVE_ALWAYS) )
+	if ( !pItem->IsMovable() )
 		return false;
 
 	if ( IsStatFlag(STATF_DEAD|STATF_Freeze|STATF_Sleeping|STATF_Insubstantial|STATF_Stone) )
@@ -1864,8 +1864,7 @@ bool CChar::CanMove(CItem *pItem, bool fMsg) const
 			}
 		}
 	}
-
-	return pItem->IsMovable();
+	return true;
 }
 
 bool CChar::IsTakeCrime(const CItem *pItem, CChar **ppCharMark) const

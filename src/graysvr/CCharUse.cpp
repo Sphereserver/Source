@@ -6,7 +6,7 @@ bool CChar::Use_MultiLockDown(CItem *pItem)
 	ASSERT(pItem);
 	ASSERT(m_pArea);
 
-	if ( pItem->IsType(IT_KEY) || !pItem->IsMovableType() || !pItem->IsTopLevel() )
+	if ( pItem->IsType(IT_KEY) || !pItem->IsMovable() || !pItem->IsTopLevel() )
 		return false;
 
 	if ( !pItem->m_uidLink.IsValidUID() )

@@ -625,7 +625,6 @@ public:
 	SOUND_TYPE GetDropSound(const CObjBase *pObjOn) const;
 
 	bool IsTopLevelMultiLocked() const;
-	bool IsMovableType() const;
 	bool IsMovable() const;
 
 	bool IsStackableException() const;

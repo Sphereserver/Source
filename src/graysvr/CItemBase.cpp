@@ -85,7 +85,7 @@ CItemBase::CItemBase(ITEMID_TYPE id) : CBaseBaseDef(RESOURCE_ID(RES_ITEMDEF, id)
 	if ( tiledata.m_flags & (UFLAG1_EQUIP|UFLAG3_EQUIP2) )
 	{
 		m_layer = tiledata.m_layer;
-		if ( m_layer && !IsMovableType() )
+		if ( m_layer && !IsMovable() )
 			m_weight = WEIGHT_UNITS;	// how I'm supposed to equip something I can't pick up?
 	}
 

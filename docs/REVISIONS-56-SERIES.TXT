@@ -1409,5 +1409,6 @@ Added: Support for 'last parry chance' tooltip on weapons/shields.
 	-Client >= 7.0.74.72 is required
 
 15-02-2019, Coruja
+Fixed: Item ATTR flag 'attr_move_always' not working correctly.
 Changed: Ogre/Ettin/Cyclops NPCs won't attack throwing rocks anymore.
 	-If you want them to keep throwing rocks just set THROWOBJ/THROWDAM/THROWRANGE properties on these chardefs scripts

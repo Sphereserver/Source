@@ -525,7 +525,7 @@ public:
 	WORD GetWeight() const
 	{
 		// Get weight in tenths of a stone
-		if ( IsMovableType() )
+		if ( IsMovable() )
 			return m_weight;
 		return WEIGHT_UNITS;	// if we can pick them up then we should be able to move them
 	}
@@ -545,7 +545,7 @@ public:
 		return (type == m_type);
 	}
 
-	bool IsMovableType() const
+	bool IsMovable() const
 	{
 		return (m_weight != USHRT_MAX);
 	}

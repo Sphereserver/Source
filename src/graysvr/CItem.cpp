@@ -364,7 +364,7 @@ CItem * CItem::CreateHeader( TCHAR * pszArg, CObjBase * pCont, bool fDupeCheck, 
 	if ( pItem != NULL )
 	{
 		// Is the item movable ?
-		if ( ! pItem->IsMovableType() && pCont && pCont->IsItem())
+		if ( !pItem->IsMovable() && pCont && pCont->IsItem() )
 		{
 			DEBUG_ERR(("Script Error: 0%x item is not movable type, cont=0%lx\n", id, static_cast<DWORD>(pCont->GetUID())));
 			pItem->Delete();
@@ -542,29 +542,17 @@ bool CItem::IsTopLevelMultiLocked() const
 	return( false );
 }
 
-bool CItem::IsMovableType() const
-{
-	ADDTOCALLSTACK("CItem::IsMovableType");
-	if ( IsAttr( ATTR_MOVE_ALWAYS ))	// this overrides other flags.
-		return( true );
-	if ( IsAttr( ATTR_MOVE_NEVER | ATTR_STATIC | ATTR_INVIS | ATTR_LOCKEDDOWN ))
-		return( false );
-	const CItemBase * pItemDef = Item_GetDef();
-	ASSERT(pItemDef);
-	if ( ! pItemDef->IsMovableType())
-		return( false );
-	return( true );
-}
-
 bool CItem::IsMovable() const
 {
 	ADDTOCALLSTACK("CItem::IsMovable");
-	if ( ! IsTopLevel() && ! IsAttr( ATTR_MOVE_NEVER | ATTR_LOCKEDDOWN ))
-	{
-		// If it's in my pack (event though not normally movable) thats ok.
-		return( true );
-	}
-	return( IsMovableType());
+	if ( IsAttr(ATTR_MOVE_NEVER|ATTR_STATIC|ATTR_INVIS|ATTR_LOCKEDDOWN) )
+		return false;
+	if ( IsAttr(ATTR_MOVE_ALWAYS) )
+		return true;
+
+	const CItemBase *pItemDef = Item_GetDef();
+	ASSERT(pItemDef);
+	return pItemDef->IsMovable();
 }
 
 // Retrieve tag.override.speed for this CItem
@@ -668,7 +656,7 @@ int CItem::FixWeirdness()
 			SetAmount(1);
 	}
 
-	if ( IsMovableType() )
+	if ( IsMovable() )
 	{
 		if ( IsType(IT_WATER) || Can(CAN_I_WATER) )
 			SetAttr(ATTR_MOVE_NEVER);
