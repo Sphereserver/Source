@@ -1844,7 +1844,7 @@ void CChar::NPC_Act_Fight()
 		}
 
 		// Throw objects at the target
-		if ( GetDefKey("THROWOBJ", true) || (GetDispID() == CREID_OGRE) || (GetDispID() == CREID_ETTIN) || (GetDispID() == CREID_Cyclops) )
+		if ( GetDefKey("THROWOBJ", true) )
 		{
 			CVarDefCont *pVar = GetDefKey("THROWRANGE", true);
 			if ( pVar )

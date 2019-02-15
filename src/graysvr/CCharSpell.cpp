@@ -2734,7 +2734,7 @@ bool CChar::Spell_CastDone()
 				CItem *pItem = CItem::CreateScript(static_cast<ITEMID_TYPE>(rid.GetResIndex()), this);
 				ASSERT(pItem);
 				if ( pSpellDef->IsSpellType(SPELLFLAG_TARG_OBJ|SPELLFLAG_TARG_XYZ) )
-					pItem->MoveToCheck(m_Act_p, this);
+					pItem->MoveToCheck(m_Act_p, this, true);
 				else
 				{
 					ItemBounce(pItem, false);
@@ -2894,7 +2894,7 @@ bool CChar::Spell_CastDone()
 					if ( !Calc_GetRandVal(2 + iGet) )
 						break;
 					CItem *pItem = CItem::CreateScript(sm_Item_Bone[i], this);
-					pItem->MoveToCheck(m_Act_p, this);
+					pItem->MoveToCheck(m_Act_p, this, true);
 					++iGet;
 				}
 				if ( !iGet )

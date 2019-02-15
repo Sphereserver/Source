@@ -1073,28 +1073,22 @@ bool CItem::Stack( CItem * pItem )
 INT64 CItem::GetDecayTime() const
 {
 	ADDTOCALLSTACK("CItem::GetDecayTime");
-	// Return time in seconds that it will take to decay this item.
-	// -1 = never decays.
+	// Return time in seconds that it will take to decay this item
 
-	switch (GetType())
+	switch ( GetType() )
 	{
 		case IT_FOLIAGE:
 		case IT_CROPS:		// crops "decay" as they grow
 			return g_World.GetTimeDiff(g_World.GetNextNewMoon((GetTopPoint().m_map == 1) ? false : true) + Calc_GetRandLLVal(20) * g_Cfg.m_iGameMinuteLength);
-		case IT_MULTI:
 		case IT_SHIP:
+		case IT_MULTI:
 		case IT_MULTI_CUSTOM:
-			return( 14*24*60*60*TICK_PER_SEC );		// very long decay updated as people use it
+			return 14 * 24 * 60 * 60 * TICK_PER_SEC;		// very long decay updated as people use it
 		case IT_TRASH_CAN:
-			return( 180*TICK_PER_SEC );		// empties in 3 minutes
+			return 180 * TICK_PER_SEC;		// empties in 3 minutes
 		default:
-			break;
+			return g_Cfg.m_iDecay_Item;
 	}
-
-	if (IsAttr(ATTR_MOVE_NEVER|ATTR_STATIC|ATTR_LOCKEDDOWN|ATTR_SECURE) || !IsMovableType())
-		return -1;
-
-	return g_Cfg.m_iDecay_Item;
 }
 
 void CItem::SetTimeout( INT64 iDelay )
@@ -1217,7 +1211,7 @@ bool CItem::MoveTo(CPointMap pt, bool bForceFix) // Put item on the ground here.
 	return( true );
 }
 
-bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
+bool CItem::MoveToCheck(const CPointMap &pt, CChar *pCharMover, bool fForceDecay)
 {
 	ADDTOCALLSTACK("CItem::MoveToCheck");
 	// Make noise and try to pile it and such.
@@ -1226,7 +1220,7 @@ bool CItem::MoveToCheck( const CPointMap & pt, CChar * pCharMover )
 		return false;
 
 	INT64 iDecayTime = GetDecayTime();
-	if ( iDecayTime > 0 )
+	if ( !fForceDecay )
 	{
 		const CRegionBase *pRegion = pt.GetRegion(REGION_TYPE_MULTI|REGION_TYPE_AREA|REGION_TYPE_ROOM);
 		if ( pRegion && pRegion->IsFlag(REGION_FLAG_NODECAY) )

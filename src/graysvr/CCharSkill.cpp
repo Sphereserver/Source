@@ -1736,11 +1736,7 @@ int CChar::Skill_Mining(SKTRIG_TYPE stage)
 	if ( m_atResource.m_bounceItem )
 		ItemBounce(pItem, false);
 	else
-	{
-		pItem->MoveToCheck(GetTopPoint(), this);
-		if ( !pItem->IsTimerSet() )		// make sure the item will decay even on no-decay regions
-			pItem->SetDecayTime(g_Cfg.m_iDecay_Item);
-	}
+		pItem->MoveToCheck(GetTopPoint(), this, true);
 	return 0;
 }
 
@@ -1817,11 +1813,7 @@ int CChar::Skill_Fishing(SKTRIG_TYPE stage)
 	if ( m_atResource.m_bounceItem )
 		ItemBounce(pItem, false);
 	else
-	{
-		pItem->MoveToCheck(GetTopPoint(), this);
-		if ( !pItem->IsTimerSet() )		// make sure the item will decay even on no-decay regions
-			pItem->SetDecayTime(g_Cfg.m_iDecay_Item);
-	}
+		pItem->MoveToCheck(GetTopPoint(), this, true);
 	return 0;
 }
 
@@ -1910,11 +1902,7 @@ int CChar::Skill_Lumberjack(SKTRIG_TYPE stage)
 	if ( m_atResource.m_bounceItem )
 		ItemBounce(pItem, false);
 	else
-	{
-		pItem->MoveToCheck(GetTopPoint(), this);
-		if ( !pItem->IsTimerSet() )		// make sure the item will decay even on no-decay regions
-			pItem->SetDecayTime(g_Cfg.m_iDecay_Item);
-	}
+		pItem->MoveToCheck(GetTopPoint(), this, true);
 	return 0;
 }
 
@@ -3273,8 +3261,7 @@ int CChar::Skill_Act_Throwing(SKTRIG_TYPE stage)
 		CItem *pItemRock = CItem::CreateScript(id, this);
 		if ( pItemRock )
 		{
-			pItemRock->SetAttr(ATTR_DECAY);
-			pItemRock->MoveToCheck(m_Act_p, this);
+			pItemRock->MoveToCheck(m_Act_p, this, true);
 			pItemRock->Effect(EFFECT_BOLT, id, this);
 		}
 		if ( !Calc_GetRandVal(pChar->GetTopPoint().GetDist(m_Act_p)) )

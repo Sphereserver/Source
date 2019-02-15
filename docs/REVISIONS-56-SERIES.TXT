@@ -1407,3 +1407,7 @@ Added: Support for 'last parry chance' tooltip on weapons/shields.
 	-Tooltip will appear on equipped weapon/shield after it got used to parry an attack, and will be cleared when unequip
 	-This is not an item property, it just show the combat parry chance formula result for tactical purposes
 	-Client >= 7.0.74.72 is required
+
+15-02-2019, Coruja
+Changed: Ogre/Ettin/Cyclops NPCs won't attack throwing rocks anymore.
+	-If you want them to keep throwing rocks just set THROWOBJ/THROWDAM/THROWRANGE properties on these chardefs scripts

@@ -685,7 +685,7 @@ public:
 		SetDecayTime(iDecayTime);
 		return MoveToUpdate(pt, bForceFix);
 	}
-	bool MoveToCheck(const CPointMap &pt, CChar *pCharMover = NULL);
+	bool MoveToCheck(const CPointMap &pt, CChar *pCharMover = NULL, bool fForceDecay = false);
 	virtual bool MoveNearObj(const CObjBaseTemplate *pObj, WORD wSteps = 0);
 
 	CItem *GetNext() const
