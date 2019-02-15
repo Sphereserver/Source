@@ -81,7 +81,7 @@ void CItemVendable::Restock(bool fSellToPlayers)
 bool CItemVendable::IsValidSaleItem(bool fBuyFromVendor) const
 {
 	ADDTOCALLSTACK("CItemVendable::IsValidSaleItem");
-	if ( !IsMovableType() )
+	if ( !IsMovable() )
 	{
 		if ( fBuyFromVendor )
 			DEBUG_ERR(("Vendor uid=0%lx selling unmovable item '%s'\n", static_cast<DWORD>(GetTopLevelObj()->GetUID()), GetResourceName()));

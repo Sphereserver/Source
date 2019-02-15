@@ -887,6 +887,12 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 		//{ GUMP_MAILBOX_SQUIRREL, 0, 0, 0, 0 },	// TO-DO: confirm gump size
 		//{ GUMP_MAILBOX_BARREL, 0, 0, 0, 0 },		// TO-DO: confirm gump size
 		//{ GUMP_MAILBOX_LANTERN, 0, 0, 0, 0 },		// TO-DO: confirm gump size
+		//{ GUMP_CABINET_LIGHT_LARGE, 0, 0, 0, 0 },	// TO-DO: confirm gump size
+		//{ GUMP_CABINET_DARK_LARGE, 0, 0, 0, 0 },	// TO-DO: confirm gump size
+		//{ GUMP_DRAWER_LIGHT_LARGE, 0, 0, 0, 0 },	// TO-DO: confirm gump size
+		//{ GUMP_DRAWER_DARK_LARGE, 0, 0, 0, 0 },	// TO-DO: confirm gump size
+		//{ GUMP_BARREL_LARGE, 0, 0, 0, 0 },		// TO-DO: confirm gump size
+		//{ GUMP_BOOK_SHELF_LARGE, 0, 0, 0, 0 },	// TO-DO: confirm gump size
 		{ GUMP_SECURE_TRADE, 20, 30, 380, 180 },
 		{ GUMP_BOARD_CHECKER, 0, 0, 282, 230 },
 		{ GUMP_BOARD_BACKGAMMON, 0, 0, 282, 210 },
@@ -907,6 +913,7 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 		{ GUMP_CHEST_CRATE_LARGE, 50, 60, 500, 300 },
 		{ GUMP_MINERS_SATCHEL, 44, 65, 186, 159 },
 		{ GUMP_LUMBERJACKS_SATCHEL, 44, 65, 186, 159 },
+		{ GUMP_SHIP_CANNON, 35, 38, 145, 116 },
 		{ GUMP_CHEST_METAL2, 18, 105, 162, 178 }
 	};
 
