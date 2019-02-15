@@ -1378,8 +1378,8 @@ Fixed: Criminal flag message ("guards can now be called on you") showing to char
 [npcs/sphere_monsters_custom.scp]: Fixed 'c_wraith' using wrong sound and many drakes/dragons using wrong name (pull request by GitMadKing)
 
 02-02-2019, Coruja
-[sphere.ini]: Added new COMBATF_NPC_ATTACKONNOTICE and COMBATF_NOATTACKMSG_PVM combat flags
-	-COMBATF_NPC_ATTACKONNOTICE: make NPCs instantly attack back when notice someone trying to attack them
+[sphere.ini]: Added new COMBATF_ATTACKONNOTICE and COMBATF_NOATTACKMSG_PVM combat flags
+	-COMBATF_ATTACKONNOTICE: make target instantly attack back when notice someone trying to attack it
 	-COMBATF_NPC_NOATTACKMSG: disable *is attacking* message on NPCs
 
 04-02-2019, Coruja

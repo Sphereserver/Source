@@ -1948,9 +1948,14 @@ void CChar::Memory_Fight_Start(CChar *pTarg)
 		new PacketSwing(m_pClient, pTarg);
 	}
 
-	// NPCs will instantly attack back when notice someone trying to attack them
-	if ( pTarg->m_pNPC && IsSetCombatFlags(COMBAT_NPC_ATTACKONNOTICE) )
-		pTarg->OnHarmedBy(this);
+	if ( IsSetCombatFlags(COMBAT_ATTACKONNOTICE) )
+	{
+		// Make target instantly attack back
+		if ( pTarg->m_pClient )
+			pTarg->m_pClient->Event_Attack(GetUID());
+		else
+			pTarg->OnHarmedBy(this);
+	}
 }
 
 ///////////////////////////////////////////////////////////
