@@ -871,10 +871,9 @@ bool CRegionBase::CheckAntiMagic( SPELL_TYPE spell ) const
 	}
 	if ( IsFlag( REGION_ANTIMAGIC_DAMAGE ))
 	{
-		const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(spell);
-		ASSERT(pSpellDef);
-		if ( pSpellDef->IsSpellType( SPELLFLAG_HARM ))
-			return( true );
+		const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(spell);
+		if ( pSpellDef && pSpellDef->IsSpellType(SPELLFLAG_HARM) )
+			return true;
 	}
 	return( false );
 }

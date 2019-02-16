@@ -4515,7 +4515,10 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	// ARGS:
 	//  iSkillLevel = 0-1000 = difficulty. may be slightly larger . how advanced is this spell (might be from a wand)
 
-	const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(spell);
+	const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(spell);
+	if ( !pSpellDef )
+		return false;
+
 	CScriptTriggerArgs Args( spell, iSkillLevel, pSourceItem );
 
 	if ( IsTrigUsed(TRIGGER_SPELLEFFECT) || IsTrigUsed(TRIGGER_ITEMSPELL) )
@@ -4523,7 +4526,7 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		switch ( OnTrigger(ITRIG_SPELLEFFECT, pCharSrc, &Args) )
 		{
 			case TRIGRET_RET_TRUE:		return false;
-			case TRIGRET_RET_FALSE:		if ( pSpellDef && pSpellDef->IsSpellType(SPELLFLAG_SCRIPTED) ) return true;
+			case TRIGRET_RET_FALSE:		if ( pSpellDef->IsSpellType(SPELLFLAG_SCRIPTED) ) return true;
 			default:					break;
 		}
 	}
@@ -4533,14 +4536,17 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		switch (Spell_OnTrigger(spell, SPTRIG_EFFECT, pCharSrc, &Args))
 		{
 			case TRIGRET_RET_TRUE:		return false;
-			case TRIGRET_RET_FALSE:		if ( pSpellDef && pSpellDef->IsSpellType(SPELLFLAG_SCRIPTED) ) return true;
+			case TRIGRET_RET_FALSE:		if ( pSpellDef->IsSpellType(SPELLFLAG_SCRIPTED) ) return true;
 			default:					break;
 		}
 	}
 
 	spell = static_cast<SPELL_TYPE>(Args.m_iN1);
 	iSkillLevel = static_cast<int>(Args.m_iN2);
-	pSpellDef = g_Cfg.GetSpellDef( spell );
+
+	pSpellDef = g_Cfg.GetSpellDef(spell);
+	if ( !pSpellDef )
+		return false;
 
 	if ( pCharSrc && !pCharSrc->IsPriv(PRIV_GM) && pCharSrc->m_pArea->CheckAntiMagic(spell) )
 	{
@@ -4759,8 +4765,8 @@ int CItem::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 		{
 			CSpellDef *pSpell = g_Cfg.GetSpellDef(SPELL_Explosion);
 			CItem *pItem = CItem::CreateBase(ITEMID_FX_EXPLODE);
-			if ( !pItem )
-				return( 0 );
+			if ( !pSpell || !pItem )
+				return 0;
 
 			if ( pSrc )
 				pItem->m_uidLink = pSrc->GetUID();

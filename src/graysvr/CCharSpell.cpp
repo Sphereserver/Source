@@ -154,7 +154,8 @@ bool CChar::Spell_CreateGate(CPointMap ptDest, bool fCheckAntiMagic)
 	// Create moongate between current pt and destination pt
 	// RETURN: true = it worked.
 
-	if ( !m_pArea || !ptDest.IsValidPoint() )
+	const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(SPELL_Gate_Travel);
+	if ( !pSpellDef || !m_pArea || !ptDest.IsValidPoint() )
 		return false;
 
 	CRegionBase *pAreaDest = ptDest.GetRegion(REGION_TYPE_AREA|REGION_TYPE_ROOM|REGION_TYPE_MULTI);
@@ -196,9 +197,6 @@ bool CChar::Spell_CreateGate(CPointMap ptDest, bool fCheckAntiMagic)
 			return false;
 		}
 	}
-
-	const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(SPELL_Gate_Travel);
-	ASSERT(pSpellDef);
 
 	ptDest.m_z = GetFixZ(ptDest);
 	ITEMID_TYPE id = pSpellDef->m_idEffect;
@@ -340,8 +338,7 @@ bool CChar::Spell_Recall(CItem *pTarg, bool fGate)
 		else
 		{
 			const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(SPELL_Recall);
-			ASSERT(pSpellDef);
-			if ( !Spell_Teleport(pTarg->m_itRune.m_ptMark, true, true, true, pSpellDef->m_idEffect, pSpellDef->m_sound) )
+			if ( !pSpellDef || !Spell_Teleport(pTarg->m_itRune.m_ptMark, true, true, true, pSpellDef->m_idEffect, pSpellDef->m_sound) )
 				return false;
 		}
 
@@ -384,7 +381,8 @@ bool CChar::Spell_Recall(CItem *pTarg, bool fGate)
 bool CChar::Spell_Resurrection(CItemCorpse *pCorpse, CChar *pCharSrc, bool fNoFail)
 {
 	ADDTOCALLSTACK("CChar::Spell_Resurrection");
-	if ( !IsStatFlag(STATF_DEAD) )
+	const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(SPELL_Resurrection);
+	if ( !pSpellDef || !IsStatFlag(STATF_DEAD) )
 		return false;
 
 	if ( IsPriv(PRIV_GM) || (pCharSrc && pCharSrc->IsPriv(PRIV_GM)) )
@@ -461,7 +459,6 @@ bool CChar::Spell_Resurrection(CItemCorpse *pCorpse, CChar *pCharSrc, bool fNoFa
 
 	}
 
-	const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(SPELL_Resurrection);
 	if ( pSpellDef->m_idEffect )
 		Effect(EFFECT_OBJ, pSpellDef->m_idEffect, this, 10, 16);
 	Sound(pSpellDef->m_sound);
@@ -2058,7 +2055,8 @@ void CChar::Spell_Field(CPointMap ptTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, BY
 	// idnewEW and idnewNS are the overriders created in @Success trigger, passed as another arguments because checks are made using default items
 
 	const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
-	ASSERT(pSpellDef);
+	if ( !pSpellDef )
+		return;
 
 	if ( m_pArea && m_pArea->IsGuarded() && pSpellDef->IsSpellType(SPELLFLAG_HARM) )
 		Noto_Criminal();
@@ -3747,8 +3745,8 @@ int CChar::GetSpellDuration(SPELL_TYPE spell, int iSkillLevel, CChar *pCharSrc)
 	if ( iDuration == -1 )
 	{
 		const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(spell);
-		ASSERT(pSpellDef);
-		iDuration = pSpellDef->m_Duration.GetLinear(iSkillLevel) / 10;
+		if ( pSpellDef )
+			iDuration = pSpellDef->m_Duration.GetLinear(iSkillLevel) / 10;
 	}
 	return iDuration * TICK_PER_SEC;
 }

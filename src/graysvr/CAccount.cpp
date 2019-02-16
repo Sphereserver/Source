@@ -500,11 +500,12 @@ bool CAccount::SetPassword(LPCTSTR pszPassword, bool fMD5)
 	{
 		char digest[33];
 		CMD5::fastDigest(digest, pszPassword);
-		pszPassword = digest;
+		m_sPassword = digest;
 		g_Log.Event(LOGL_EVENT, "Account '%s': plain text password converted to MD5 hash\n", GetName());
 	}
+	else
+		m_sPassword = pszPassword;
 
-	m_sPassword = pszPassword;
 	return true;
 }
 

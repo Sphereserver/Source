@@ -861,14 +861,17 @@ void CClient::addBarkParse(LPCTSTR pszText, const CObjBaseTemplate *pSrc, HUE_TY
 		const char *s = pszText;
 		pszText = strchr(s, ' ');
 
-		for ( int i = 0; (s < pszText) && (i < 3); ++i, ++s )
+		if ( pszText )
 		{
-			if ( *s != ',' )
-				wArgs[i] = static_cast<WORD>(Exp_GetLLVal(s));
+			for ( int i = 0; (s < pszText) && (i < 3); ++i, ++s )
+			{
+				if ( *s != ',' )
+					wArgs[i] = static_cast<WORD>(Exp_GetLLVal(s));
+			}
+			++pszText;
+			if ( wArgs[1] > FONT_QTY )
+				wArgs[1] = static_cast<WORD>(FONT_NORMAL);
 		}
-		++pszText;
-		if ( wArgs[1] > FONT_QTY )
-			wArgs[1] = static_cast<WORD>(FONT_NORMAL);
 	}
 
 	if ( wArgs[0] == HUE_TEXT_DEF )

@@ -3257,6 +3257,9 @@ bool PacketSpellSelect::onReceive(NetState* net)
 
 	skip(2);	// unknown
 	SPELL_TYPE spell = static_cast<SPELL_TYPE>(readInt16());
+	if ( spell > SPELL_SKILLMASTERIES_QTY )
+		return false;
+
 	const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(spell);
 	if ( !pSpellDef )
 		return true;
@@ -3390,7 +3393,7 @@ bool PacketTargetedSpell::onReceive(NetState *net)
 		return false;
 
 	SPELL_TYPE spell = static_cast<SPELL_TYPE>(readInt16());
-	if ( !pChar->Spell_CanCast(spell, true, pChar, true) )
+	if ( (spell > SPELL_SKILLMASTERIES_QTY) || !pChar->Spell_CanCast(spell, true, pChar, true) )
 		return false;
 
 	CObjBase *pTarget = static_cast<CGrayUID>(readInt32()).ObjFind();
@@ -3426,7 +3429,7 @@ bool PacketTargetedSkill::onReceive(NetState *net)
 		return false;
 
 	SKILL_TYPE skill = static_cast<SKILL_TYPE>(readInt16());
-	if ( !CChar::IsSkillBase(skill) || !pChar->Skill_CanUse(skill) || pChar->Skill_Wait(skill) )
+	if ( (skill >= g_Cfg.m_iMaxSkill) || !CChar::IsSkillBase(skill) || !pChar->Skill_CanUse(skill) || pChar->Skill_Wait(skill) )
 		return false;
 
 	CObjBase *pTarget = static_cast<CGrayUID>(readInt32()).ObjFind();
