@@ -2187,7 +2187,7 @@ void CChar::Spell_Field(CPointMap ptTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, BY
 				pItem->OnSpellEffect(m_atMagery.m_Spell, this, iSkillLevel, NULL);
 			}
 
-			CItem *pSpell = CItem::CreateBase(id);
+			CItem *pSpell = CItem::CreateScript(id);
 			ASSERT(pSpell);
 			pSpell->m_itSpell.m_spell = static_cast<WORD>(m_atMagery.m_Spell);
 			pSpell->m_itSpell.m_spelllevel = static_cast<WORD>(iSkillLevel);
@@ -2196,7 +2196,6 @@ void CChar::Spell_Field(CPointMap ptTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, BY
 			pSpell->SetType(IT_SPELL);
 			pSpell->SetAttr(ATTR_MAGIC);
 			pSpell->SetHue(wColor);
-			pSpell->GenerateScript(this);
 			pSpell->MoveToDecay(pt, iDuration, true);
 		}
 	}

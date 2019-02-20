@@ -3429,7 +3429,7 @@ bool PacketTargetedSkill::onReceive(NetState *net)
 		return false;
 
 	SKILL_TYPE skill = static_cast<SKILL_TYPE>(readInt16());
-	if ( (skill >= g_Cfg.m_iMaxSkill) || !CChar::IsSkillBase(skill) || !pChar->Skill_CanUse(skill) || pChar->Skill_Wait(skill) )
+	if ( (skill >= static_cast<SKILL_TYPE>(g_Cfg.m_iMaxSkill)) || !CChar::IsSkillBase(skill) || !pChar->Skill_CanUse(skill) || pChar->Skill_Wait(skill) )
 		return false;
 
 	CObjBase *pTarget = static_cast<CGrayUID>(readInt32()).ObjFind();

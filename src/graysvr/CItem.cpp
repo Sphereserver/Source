@@ -236,81 +236,31 @@ CItem * CItem::CreateDupeItem( const CItem * pItem, CChar * pSrc, bool fSetNew )
 	return( pItemNew );
 }
 
-CItem * CItem::CreateScript(ITEMID_TYPE id, CChar * pSrc) // static
+CItem *CItem::CreateScript(ITEMID_TYPE id, CChar *pSrc)		// static
 {
 	ADDTOCALLSTACK("CItem::CreateScript");
-	// Create item from the script id.
+	// Create item from the script
 
-	CItem * pItem = CreateBase(id);
+	CItem *pItem = CreateBase(id);
 	ASSERT(pItem);
-	pItem->GenerateScript(pSrc);
-	return pItem;
-}
 
-CItem * CItem::GenerateScript( CChar * pSrc)
-{
-	// Calls to @Create and @ItemCreate
-	// and some other default stuff for the item.
-	switch ( GetType())
+	if ( IsTrigUsed(TRIGGER_CREATE) )
 	{
-		case IT_CONTAINER_LOCKED:
-			{
-				// At this level it just means to add a key for it.
-				CItemContainer *pCont = static_cast<CItemContainer *>(this);
-				ASSERT(pCont);
-				pCont->MakeKey();
-			}
-			break;
-		case IT_CORPSE:
-			{
-				// Initialize TAG.BLOOD as the amount of blood inside
-				CItemBase *pItemDef = Item_GetDef();
-				INT64 iBlood = 0;
-				if ( pItemDef )
-					iBlood = pItemDef->m_TagDefs.GetKeyNum("MAXBLOOD");
-				if ( !iBlood )
-					iBlood = 5;
-				else if ( iBlood < 0 )
-					iBlood = 0;
-				m_TagDefs.SetNum("BLOOD", iBlood, true);
-			}
-			break;
-		default:
-			break;
-	}
-
-	// call the ON=@Create trigger
-	CItemBase * pItemDef = Item_GetDef();
-	ASSERT( pItemDef );
-
-	if ( pItemDef->HasTrigger(ITRIG_Create) )
-	{
+		CItemBase *pItemDef = pItem->Item_GetDef();
+		ASSERT(pItemDef);
 		CResourceLock s;
-		if ( pItemDef->ResourceLock(s))
-		{
-			if ( pSrc )
-			{
-				//pItem->OnTriggerScript( s, sm_szTrigName[ITRIG_Create], pSrc );
-				//pItem->OnTrigger( ITRIG_Create, pSrc,0);
-				OnTriggerCreate(pSrc,0);
-			}
-			else
-			{
-				//pItem->OnTriggerScript( s, sm_szTrigName[ITRIG_Create], &g_Serv );
-				//pItem->OnTrigger( ITRIG_Create, &g_Serv,0);
-				OnTriggerCreate(&g_Serv,0);
-			}
-		}
+		if ( pItemDef->ResourceLock(s) )
+			pItem->OnTriggerCreate(pSrc, NULL);
 	}
 
-	if ( (pSrc && pSrc->m_pClient) && IsTrigUsed(TRIGGER_ITEMCREATE) )
+	if ( IsTrigUsed(TRIGGER_ITEMCREATE) && (pSrc && pSrc->m_pClient) )
 	{
-		CScriptTriggerArgs	args;
-		args.m_pO1 = this;
-		pSrc->OnTrigger("@ItemCreate", pSrc, &args);
+		CScriptTriggerArgs Args;
+		Args.m_pO1 = pItem;
+		pSrc->OnTrigger("@ItemCreate", pSrc, &Args);
 	}
 
-	return this;
+	return pItem;
 }
 
 CItem * CItem::CreateHeader( TCHAR * pszArg, CObjBase * pCont, bool fDupeCheck, CChar * pSrc )
@@ -482,7 +432,7 @@ CItem * CItem::ReadTemplate( CResourceLock & s, CObjBase * pCont ) // static
 					{
 						continue;
 					}
-					pCont = static_cast<CItemContainer *>(pItem);
+					pCont = dynamic_cast<CItemContainer *>(pItem);
 					if ( pCont == NULL )
 					{
 						DEBUG_ERR(( "CreateTemplate CContainer %s is not a container\n", pItem->GetResourceName() ));

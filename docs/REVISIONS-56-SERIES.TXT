@@ -1413,3 +1413,6 @@ Fixed: Item ATTR flag 'attr_move_always' not working correctly.
 Fixed: NPCs ending combat instantly when target get out of LOS instead wait some time before give up.
 Changed: Ogre/Ettin/Cyclops NPCs won't attack throwing rocks anymore.
 	-If you want them to keep throwing rocks just set THROWOBJ/THROWDAM/THROWRANGE properties on these chardefs scripts
+
+20-02-2019, Coruja
+Fixed: Multis not firing @Create trigger.
