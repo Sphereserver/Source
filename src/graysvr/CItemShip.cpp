@@ -125,6 +125,7 @@ void CItemShip::Ship_SetPilot(CChar *pChar)
 		pMemory->SetName(GetName());
 		pMemory->m_uidLink = GetUID();
 		pChar->LayerAdd(pMemory, LAYER_HORSE);
+		pChar->UpdateDir(static_cast<DIR_TYPE>(m_itShip.m_DirFace));
 		pChar->SysMessageDefault(DEFMSG_SHIP_PILOT_ON);
 	}
 }
@@ -447,9 +448,6 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 		if ( pObj->IsItem() )
 		{
 			pItem = static_cast<CItem *>(pObj);
-			if ( !pItem )
-				continue;
-
 			if ( pItem == this )
 			{
 				m_pRegion->UnRealizeRegion();
@@ -485,9 +483,6 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 		else
 		{
 			pChar = static_cast<CChar *>(pObj);
-			if ( !pChar )
-				continue;
-
 			CPointMap ptOld = pChar->GetTopPoint();
 			pChar->MoveTo(pt);
 			pChar->m_dirFace = GetDirTurn(pChar->m_dirFace, iTurn);
@@ -678,10 +673,8 @@ bool CItemShip::Ship_OnMoveTick()
 		return( true );
 
 	// Calculate the leading point.
-	DIR_TYPE dir = static_cast<DIR_TYPE>(m_itShip.m_DirMove);
 	CItemMulti *pItemMulti = static_cast<CItemMulti *>(this);
-
-	if (!Ship_Move(dir, pItemMulti->m_shipSpeed.tiles))
+	if ( !Ship_Move(static_cast<DIR_TYPE>(m_itShip.m_DirMove), pItemMulti->m_shipSpeed.tiles) )
 	{
 		Ship_Stop();
 		return( true );
@@ -805,7 +798,6 @@ bool CItemShip::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fr
 		return false;
 
 	// Get current facing dir.
-	DIR_TYPE DirFace = sm_Ship_FaceDir[ Ship_GetFaceOffset() ];
 	int DirMoveChange;
 	LPCTSTR pszSpeak = NULL;
 
@@ -866,7 +858,7 @@ anchored:
 				break;
 			}
 			DIR_TYPE DirMove = static_cast<DIR_TYPE>(m_itShip.m_DirMove);
-			m_itShip.m_DirMove = static_cast<BYTE>(GetDirTurn(DirFace, DirMoveChange));
+			m_itShip.m_DirMove = static_cast<BYTE>(GetDirTurn(sm_Ship_FaceDir[Ship_GetFaceOffset()], DirMoveChange));
 			if (! Ship_Face(static_cast<DIR_TYPE>(m_itShip.m_DirMove)) )
 			{
 				m_itShip.m_DirMove = static_cast<BYTE>(DirMove);
@@ -891,7 +883,7 @@ anchored:
 dodirmovechange:
 			if ( m_itShip.m_fAnchored != 0 )
 				goto anchored;
-			if ( ! Ship_SetMoveDir( GetDirTurn( DirFace, DirMoveChange )))
+			if ( !Ship_SetMoveDir(GetDirTurn(sm_Ship_FaceDir[Ship_GetFaceOffset()], DirMoveChange)) )
 				return( false );
 			break;
 		}
@@ -1087,7 +1079,7 @@ void CItemShip::r_Write( CScript & s )
 		s.WriteKeyHex("HATCH", m_uidHold );
 	if ( GetShipPlankCount() > 0 )
 	{
-		for ( size_t i = 0; i < m_uidPlanks.size(); i++ )
+		for ( size_t i = 0; i < m_uidPlanks.size(); ++i )
 			s.WriteKeyHex("PLANK", m_uidPlanks.at(i));
 	}
 	if (m_itShip.m_Pilot)
@@ -1178,7 +1170,7 @@ bool CItemShip::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 
 			if (*pszKey == '.')
 			{
-				pszKey++;
+				++pszKey;
 				if (!strcmpi(pszKey, "TILES"))
 				{
 					sVal.FormatVal(pItemMulti->m_shipSpeed.tiles);
@@ -1272,7 +1264,7 @@ bool CItemShip::r_LoadVal( CScript & s  )
 			pszKey += 9;
 			if ( *pszKey == '.' )
 			{
-				pszKey++;
+				++pszKey;
 				CItemMulti *pItemMulti = static_cast<CItemMulti *>(this);
 				if ( !strcmpi(pszKey, "TILES") )
 				{
@@ -1324,27 +1316,24 @@ int CItemShip::FixWeirdness()
 	return iResultCode;
 }
 
-CItemContainer * CItemShip::GetShipHold()
+CItemContainer *CItemShip::GetShipHold()
 {
 	ADDTOCALLSTACK("CItemShip::GetShipHold");
-	CItem * pItem = m_uidHold.ItemFind();
+	CItem *pItem = m_uidHold.ItemFind();
 	if ( !pItem || pItem->IsDeleted() )
 	{
-		pItem = Multi_FindItemType( IT_SHIP_HOLD );
+		pItem = Multi_FindItemType(IT_SHIP_HOLD);
 		if ( !pItem || pItem->IsDeleted() )
-			pItem = Multi_FindItemType( IT_SHIP_HOLD_LOCK );
-
-		if ( !pItem || pItem->IsDeleted() )
-			return NULL;
-
+		{
+			pItem = Multi_FindItemType(IT_SHIP_HOLD_LOCK);
+			if ( !pItem || pItem->IsDeleted() )
+				return NULL;
+		}
 		m_uidHold = pItem->GetUID();
 	}
 
 	CItemContainer *pItemHold = dynamic_cast<CItemContainer *>(pItem);
-	if ( !pItemHold )
-		return NULL;
-
-	return pItemHold;
+	return pItemHold ? pItemHold : NULL;
 }
 
 size_t CItemShip::GetShipPlankCount()
@@ -1425,4 +1414,3 @@ void CItemShip::OnComponentCreate( const CItem * pComponent )
 	CItemMulti::OnComponentCreate( pComponent );
 	return;
 }
-

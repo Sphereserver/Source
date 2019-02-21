@@ -4533,14 +4533,15 @@ PacketBuff::PacketBuff(const CClient* target, const BUFF_ICONS iconId, const DWO
 	initLength();
 
 	writeInt32(character->GetUID());
+
 	writeInt16(static_cast<WORD>(iconId));
 	writeInt16(0x1);	// show
-
 	writeInt32(0);
+
 	writeInt16(static_cast<WORD>(iconId));
 	writeInt16(0x1);	// show
-
 	writeInt32(0);
+
 	writeInt16(time);	// simple countdown without automatic remove
 	writeInt16(0);
 	writeByte(0);
@@ -4833,33 +4834,32 @@ PacketDisplayMapNew::PacketDisplayMapNew(const CClient* target, const CItemMap* 
  *
  *
  ***************************************************************************/
-PacketMoveShip::PacketMoveShip(const CClient* target, const CItemShip* ship, CObjBase** objects, size_t objectCount, BYTE movedirection, BYTE boatdirection, BYTE speed) : PacketSend(XCMD_MoveShip, 18, PRI_NORMAL)
+PacketMoveShip::PacketMoveShip(const CClient *target, const CItemShip *pShip, CObjBase **ppComponentList, size_t iComponentCount, BYTE bDirMove, BYTE bDirFace, BYTE bSpeed) : PacketSend(XCMD_MoveShip, 18, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketMoveShip::PacketMoveShip");
 	ASSERT(objectCount > 0);
-	const CPointMap& shipLocation = ship->GetTopPoint();
+	const CPointMap ptShip = pShip->GetTopPoint();
 
 	initLength();
-	writeInt32(ship->GetUID());
-	writeByte(speed);
-	writeByte(movedirection);
-	writeByte(boatdirection);
-	writeInt16(shipLocation.m_x);
-	writeInt16(shipLocation.m_y);
-	writeInt16(shipLocation.m_z);
 
-	// assume that first object is the ship itself
-	writeInt16(static_cast<WORD>(objectCount - 1));
+	writeInt32(pShip->GetUID());
+	writeByte(bSpeed);
+	writeByte(bDirMove);
+	writeByte(bDirFace);
+	writeInt16(ptShip.m_x);
+	writeInt16(ptShip.m_y);
+	writeInt16(ptShip.m_z);
+	writeInt16(static_cast<WORD>(iComponentCount - 1));		// assume that first component is the ship itself
 
-	for (size_t i = 1; i < objectCount; i++)
+	for ( size_t i = 1; i < iComponentCount; ++i )
 	{
-		const CObjBase* object = objects[i];
-		const CPointMap& objectLocation = object->GetTopPoint();
-		
-		writeInt32(object->GetUID());
-		writeInt16(objectLocation.m_x);
-		writeInt16(objectLocation.m_y);
-		writeInt16(objectLocation.m_z);
+		const CObjBase *pObj = ppComponentList[i];
+		const CPointMap ptObj = pObj->GetTopPoint();
+
+		writeInt32(pObj->GetUID());
+		writeInt16(ptObj.m_x);
+		writeInt16(ptObj.m_y);
+		writeInt16(ptObj.m_z);
 	}
 
 	push(target);
