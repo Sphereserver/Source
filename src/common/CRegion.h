@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CRect.h"
-#include "graymul.h"
 
 class CObjBaseTemplate : public CGObListRec
 {
@@ -153,16 +152,6 @@ public:
 		if ( pObj->IsDisconnected())
 			return( SHRT_MAX );
 		return( GetTopPoint().GetDist( pObj->GetTopPoint()));
-	}
-
-	int GetTopDistSight( const CObjBaseTemplate * pObj ) const
-	{
-		// don't check for logged out.
-		// Assume both already at top level.
-		ASSERT( pObj );
-		if ( pObj->IsDisconnected())
-			return( SHRT_MAX );
-		return GetTopPoint().GetDist(pObj->GetTopPoint());
 	}
 
 	int GetDist( const CObjBaseTemplate * pObj ) const

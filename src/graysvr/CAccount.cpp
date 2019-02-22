@@ -487,7 +487,6 @@ bool CAccount::SetPassword(LPCTSTR pszPassword, bool fMD5)
 	if ( !g_Serv.IsLoading() )
 	{
 		CScriptTriggerArgs Args(GetName());
-		Args.Init(GetName());
 		Args.m_VarsLocal.SetStrNew("Password", pszPassword);
 		TRIGRET_TYPE tr = TRIGRET_RET_FALSE;
 

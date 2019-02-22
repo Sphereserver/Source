@@ -607,13 +607,9 @@ bool CClient::Event_CheckWalkBuffer()
 	else if ( m_iWalkTimeAvg < -g_Cfg.m_iWalkBuffer )
 		m_iWalkTimeAvg = -g_Cfg.m_iWalkBuffer;
 
-	if ( IsPriv(PRIV_DETAIL) && IsPriv(PRIV_DEBUG) )
-		SysMessagef("Walkcheck trace: %i / %i (%i) :: %i", iTimeDiff, iTimeMin, oldAvg, m_iWalkTimeAvg);
-
 	if ( (m_iWalkTimeAvg < 0) && (iTimeDiff >= 0) )	// TICK_PER_SEC
 	{
-		// Walking too fast.
-		DEBUG_WARN(("%s (%lx): Fast Walk ?\n", GetName(), GetSocketID()));
+		// Walking too fast
 		if ( IsTrigUsed(TRIGGER_USEREXWALKLIMIT) )
 		{
 			if ( m_pChar->OnTrigger(CTRIG_UserExWalkLimit, m_pChar) != TRIGRET_RET_TRUE )
@@ -2111,7 +2107,7 @@ void CClient::Event_AOSPopupMenuRequest(CGrayUID uid) //construct packet after a
 				{
 					if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(i) )
 						continue;
-					if ( i == SKILL_SPELLWEAVING )	// this skill can't be trained, so OSI didn't added its cliloc
+					if ( i == SKILL_SPELLWEAVING )	// skip this skill, because on OSI it can be trained only on quests so they didn't included the cliloc to use on NPCs
 						continue;
 
 					wSkillNPC = pChar->Skill_GetBase(static_cast<SKILL_TYPE>(i));

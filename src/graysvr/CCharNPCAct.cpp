@@ -1531,7 +1531,7 @@ bool CChar::NPC_FightMagery(CChar *pChar)
 		if ( Skill_GetBase(static_cast<SKILL_TYPE>(iSkill)) < iSkillReq )
 			continue;
 
-		if ( NPC_FightCast(pTarg, this, spell, static_cast<SKILL_TYPE>(iSkill)) )
+		if ( NPC_FightCast(pTarg, this, spell) )
 			goto BeginCast;
 	}
 
@@ -1546,7 +1546,7 @@ BeginCast:
 	return Skill_Start(static_cast<SKILL_TYPE>(iSkill));
 }
 
-bool CChar::NPC_FightCast(CObjBase *&pTarg, CObjBase *pSrc, SPELL_TYPE &spell, SKILL_TYPE skill)
+bool CChar::NPC_FightCast(CObjBase *&pTarg, CObjBase *pSrc, SPELL_TYPE &spell)
 {
 	ADDTOCALLSTACK("CChar::NPC_FightCast");
 	// NPC can fight using magery, so check if it can cast the spell
@@ -1554,14 +1554,6 @@ bool CChar::NPC_FightCast(CObjBase *&pTarg, CObjBase *pSrc, SPELL_TYPE &spell, S
 	const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(spell);
 	if ( !pTarg || !pSpellDef || pSpellDef->IsSpellType(SPELLFLAG_PLAYERONLY) )
 		return false;
-
-	if ( skill == SKILL_NONE )
-	{
-		int iSkill;
-		if ( !pSpellDef->GetPrimarySkill(&iSkill) )
-			iSkill = SKILL_MAGERY;
-		skill = static_cast<SKILL_TYPE>(iSkill);
-	}
 
 	if ( !Spell_CanCast(spell, true, pSrc, false) )
 		return false;

@@ -2668,11 +2668,11 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 						t->FormatArgs("%d", pItem->m_ArtifactRarity);
 					}
 
-					INT64 UsesRemaining = pItem->GetDefNum("USESCUR", true);
+					INT64 UsesRemaining = pItem->GetDefNum("USESMAX", true);
 					if ( UsesRemaining > 0 )
 					{
 						m_TooltipData.Add(t = new CClientTooltip(1060584)); // uses remaining: ~1_val~
-						t->FormatArgs("%lld", UsesRemaining);
+						t->FormatArgs("%lld", pItem->GetDefNum("USESCUR", true));
 					}
 
 					if ( pItem->IsTypeArmorWeapon() )

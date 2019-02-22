@@ -2645,7 +2645,7 @@ void CObjBase::RemoveFromView(CClient *pClientExclude, bool fHardcoded)
 		pChar = pClient->GetChar();
 		if ( !pChar )
 			continue;
-		if ( pChar->GetTopDistSight(pObjTop) > pChar->GetSight() )	// client does not support removing of items which are farther (will be removed from the radar on the next step, cause the server won't resend it)
+		if ( pChar->GetTopDist(pObjTop) > pChar->GetSight() )	// client does not support removing of items which are farther (will be removed from the radar on the next step, cause the server won't resend it)
 			continue;
 		if ( pItem && pItem->IsItemEquipped() )
 		{
@@ -2681,7 +2681,7 @@ void CObjBase::ResendOnEquip(bool fAllClients)
 		pChar = pClient->GetChar();
 		if ( !pChar )
 			continue;
-		if ( pChar->GetTopDistSight(pObjTop) > pChar->GetSight() )	// client does not support removing of items which are farther (will be removed from the radar on the next step, cause the server won't resend it)
+		if ( pChar->GetTopDist(pObjTop) > pChar->GetSight() )	// client does not support removing of items which are farther (will be removed from the radar on the next step, cause the server won't resend it)
 			continue;
 		if ( pItem )
 		{
