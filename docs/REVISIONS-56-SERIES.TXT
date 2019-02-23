@@ -1416,3 +1416,6 @@ Changed: Ogre/Ettin/Cyclops NPCs won't attack throwing rocks anymore.
 
 20-02-2019, Coruja
 Fixed: Multis not firing @Create trigger.
+
+23-02-2019, Coruja
+[sphere.ini]: Added new OF_MapBoundarySailing optional flag to make boats move to the other side of the map when reach map boundary

@@ -218,7 +218,7 @@ size_t CItemShip::Ship_ListObjs( CObjBase ** ppObjList )
 	return(iCount);
 }
 
-bool CItemShip::Ship_MoveDelta(CPointBase pdelta)
+bool CItemShip::Ship_MoveDelta(CPointBase pdelta, bool fMapBoundary)
 {
 	ADDTOCALLSTACK("CItemShip::Ship_MoveDelta");
 	// Move the ship one space in some direction.
@@ -292,7 +292,10 @@ bool CItemShip::Ship_MoveDelta(CPointBase pdelta)
 
 							if ( pCharSrc->m_pArea == m_pRegion )	// if client is on ship
 							{
-								pClient->addPlayerSee(NULL, true);
+								if ( fMapBoundary )
+									pClient->addPlayerView(NULL);
+								else
+									pClient->addPlayerSee(NULL, true);
 								break;
 							}
 						}
@@ -515,24 +518,72 @@ bool CItemShip::Ship_Move( DIR_TYPE dir, int distance )
 	ptDelta.ZeroPoint();
 
 	CPointMap ptFore(m_pRegion->GetRegionCorner(dir));
+	CPointMap ptBack(m_pRegion->GetRegionCorner(GetDirTurn(dir, 4)));
 	CPointMap ptLeft(m_pRegion->GetRegionCorner(GetDirTurn(dir, -1 - (dir % 2))));	// acquiring the flat edges requires two 'turns' for diagonal movement
 	CPointMap ptRight(m_pRegion->GetRegionCorner(GetDirTurn(dir, 1 + (dir % 2))));
 	CPointMap ptTest(ptLeft.m_x, ptLeft.m_y, GetTopZ(), GetTopMap());
 
-	bool bStopped = false, bTurbulent = false;
+	signed short iMapBoundX = (ptBack.m_map <= 1) ? 5119 : static_cast<signed short>(g_MapList.GetX(ptBack.m_map));
+	signed short iMapBoundY = static_cast<signed short>(g_MapList.GetY(ptBack.m_map));
+
+	bool bStopped = false, bTurbulent = false, fMapBoundary = false;
 
 	for (int i = 0; i < distance; ++i)
 	{
-		// Check that we aren't sailing off the edge of the world
 		ptFore.Move(dir);
 		ptFore.m_z = GetTopZ();
-		if ( ! ptFore.IsValidPoint())
+
+		if ( IsSetOF(OF_MapBoundarySailing) )
 		{
-			// Circle the globe
-			// Fall off edge of world ?
-			bStopped = true;
-			bTurbulent = true;
-			break;
+			if ( ptFore.m_x < 0 )
+			{
+				signed short iDelta = iMapBoundX - ptBack.m_x;
+				ptDelta.m_x += iDelta;
+				ptFore.m_x += iDelta;
+				ptLeft.m_x += iDelta;
+				ptRight.m_x += iDelta;
+				ptTest.m_x += iDelta;
+				fMapBoundary = true;
+			}
+			else if ( ptFore.m_y < 0 )
+			{
+				signed short iDelta = iMapBoundY - ptBack.m_y;
+				ptDelta.m_y += iDelta;
+				ptFore.m_y += iDelta;
+				ptLeft.m_y += iDelta;
+				ptRight.m_y += iDelta;
+				ptTest.m_y += iDelta;
+				fMapBoundary = true;
+			}
+			else if ( ptFore.m_x >= iMapBoundX )
+			{
+				signed short iDelta = ptBack.m_x + 1;
+				ptDelta.m_x -= iDelta;
+				ptFore.m_x -= iDelta;
+				ptLeft.m_x -= iDelta;
+				ptRight.m_x -= iDelta;
+				ptTest.m_x -= iDelta;
+				fMapBoundary = true;
+			}
+			else if ( ptFore.m_y >= iMapBoundY )
+			{
+				signed short iDelta = ptBack.m_y + 1;
+				ptDelta.m_y -= iDelta;
+				ptFore.m_y -= iDelta;
+				ptLeft.m_y -= iDelta;
+				ptRight.m_y -= iDelta;
+				ptTest.m_y -= iDelta;
+				fMapBoundary = true;
+			}
+		}
+		else
+		{
+			if ( !ptFore.IsValidPoint() )
+			{
+				bStopped = true;
+				bTurbulent = true;
+				break;
+			}
 		}
 
 #ifdef _DEBUG
@@ -643,7 +694,7 @@ bool CItemShip::Ship_Move( DIR_TYPE dir, int distance )
 
 	if (ptDelta.m_x != 0 || ptDelta.m_y != 0 || ptDelta.m_z != 0)
 	{
-		Ship_MoveDelta( ptDelta );
+		Ship_MoveDelta(ptDelta, fMapBoundary);
 
 		// Move again
 		GetTopSector()->SetSectorWakeStatus();	// may get here b4 my client does.
@@ -842,7 +893,7 @@ bool CItemShip::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command fr
 			if ( ! ptdelta.IsValidPoint())
 				return( false );
 			ptdelta -= GetTopPoint();
-			return Ship_MoveDelta( ptdelta );
+			return Ship_MoveDelta(ptdelta, true);
 		}
 
 		case SHV_SHIPTURNLEFT:

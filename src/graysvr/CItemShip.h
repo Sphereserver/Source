@@ -34,7 +34,7 @@ public:
 
 private:
 	size_t Ship_ListObjs(CObjBase **ppObjList);
-	bool Ship_MoveDelta(CPointBase ptDelta);
+	bool Ship_MoveDelta(CPointBase ptDelta, bool fMapBoundary = false);
 	bool Ship_CanMoveTo(const CPointMap &pt) const;
 	bool Ship_OnMoveTick();
 
