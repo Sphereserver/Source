@@ -1419,3 +1419,11 @@ Fixed: Multis not firing @Create trigger.
 
 23-02-2019, Coruja
 [sphere.ini]: Added new OF_MapBoundarySailing optional flag to make boats move to the other side of the map when reach map boundary
+[items/multis/multis_foundations.scp]: Updated all foundations prices/components
+[items/multis/multis_houses.scp]: Updated all houses prices/components, and moved contest houses to multis_houses_contest.scp
+[items/multis/multis_houses_contest.scp]: Added new contest castles from publish 104
+[items/multis/multis_magincia_bazaar.scp]: Updated all stalls components
+[items/multis/multis_ships.scp]: Added new 'plunderbeacon' ship from publish 104
+
+27-02-2019, Coruja
+[sphere_msgs.scp]: Removed many unused messages
