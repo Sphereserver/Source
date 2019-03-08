@@ -185,27 +185,16 @@ public:
 
 	CGlobalChat()
 	{
-		m_dwID = 0;
 		m_pszJID = NULL;
 		m_fVisible = false;
 	}
 	~CGlobalChat() { };
 
 private:
-	DWORD m_dwID;		// client connection ID
 	LPCTSTR m_pszJID;	// client Jabber ID
 	bool m_fVisible;	// client visibility status (online/offline)
 
 public:
-	void SetID(DWORD dwID)
-	{
-		m_dwID = dwID;
-	}
-	DWORD GetID() const
-	{
-		return m_dwID;
-	}
-
 	void SetJID(LPCTSTR pszJID)
 	{
 		m_pszJID = pszJID;

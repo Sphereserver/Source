@@ -2352,17 +2352,14 @@ void CClient::addGlobalChatConnect()
 	if ( !m_pChar || !PacketGlobalChat::CanSendTo(m_NetState) )
 		return;
 
-	// Set connection ID
-	CGlobalChat::SetID(static_cast<DWORD>(CGTime::GetCurrentTime().GetTime()));		// must have length=10 or client will crash
-
 	// Set Jabber ID (syntax: CharName_CharUID@ServerID)
 	TCHAR *pszJID = Str_GetTemp();
-	sprintf(pszJID, "%s_%.7lu@%.2hhu", m_pChar->GetName(), static_cast<DWORD>(m_pChar->GetUID()), 0);	// CharUID must have length=7 and ServerID must have length=2 or client will crash
+	sprintf(pszJID, "%.6s_%.7lu@%.2hhu", m_pChar->GetName(), static_cast<DWORD>(m_pChar->GetUID()), 0);
 	CGlobalChat::SetJID(pszJID);
 
 	// Send xml to client
 	TCHAR *pszXML = Str_GetTemp();
-	sprintf(pszXML, "<iq to=\"%s\" id=\"iq_%lu\" type=\"6\" version=\"1\" jid=\"%s\" />", CGlobalChat::GetJID(), CGlobalChat::GetID(), CGlobalChat::GetJID());
+	sprintf(pszXML, "<iq to=\"%s\" id=\"iq_%.10lu\" type=\"6\" version=\"1\" jid=\"%s\" />", CGlobalChat::GetJID(), static_cast<DWORD>(CGTime::GetCurrentTime().GetTime()), CGlobalChat::GetJID());
 
 	new PacketGlobalChat(this, 0, PacketGlobalChat::Connect, PacketGlobalChat::InfoQuery, pszXML);
 	SysMessage("Global Chat is now connected.");
@@ -2389,7 +2386,7 @@ void CClient::addGlobalChatStatusToggle()
 	}
 
 	TCHAR *pszXML = Str_GetTemp();
-	sprintf(pszXML, "<presence from=\"%s\" id=\"pres_%lu\" name=\"%s\" show=\"%d\" version=\"1\" />", CGlobalChat::GetJID(), CGlobalChat::GetID(), m_pChar->GetName(), iShow);
+	sprintf(pszXML, "<presence from=\"%s\" id=\"pres_%.10lu\" name=\"%.6s\" show=\"%d\" version=\"1\" />", CGlobalChat::GetJID(), static_cast<DWORD>(CGTime::GetCurrentTime().GetTime()), m_pChar->GetName(), iShow);
 
 	CGlobalChat::SetVisible(static_cast<bool>(iShow));
 	new PacketGlobalChat(this, 0, PacketGlobalChat::Connect, PacketGlobalChat::Presence, pszXML);

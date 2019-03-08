@@ -4837,7 +4837,7 @@ PacketDisplayMapNew::PacketDisplayMapNew(const CClient* target, const CItemMap* 
 PacketMoveShip::PacketMoveShip(const CClient *target, const CItemShip *pShip, CObjBase **ppComponentList, size_t iComponentCount, BYTE bDirMove, BYTE bDirFace, BYTE bSpeed) : PacketSend(XCMD_MoveShip, 18, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketMoveShip::PacketMoveShip");
-	ASSERT(objectCount > 0);
+	ASSERT(iComponentCount > 0);
 	const CPointMap ptShip = pShip->GetTopPoint();
 
 	initLength();
