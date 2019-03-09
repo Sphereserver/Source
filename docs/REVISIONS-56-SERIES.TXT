@@ -1426,4 +1426,13 @@ Fixed: Multis not firing @Create trigger.
 [items/multis/multis_ships.scp]: Added new 'plunderbeacon' ship from publish 104
 
 27-02-2019, Coruja
+[items/sphere_item_deco_themed_collections.scp]: Removed ATTR 'attr_can_decay' from items
+[items/sphere_item_holiday_valentines.scp]: Added new Valentine's Day 2019 items
+[items/sphere_item_resources.scp]: Removed ATTR 'attr_identified' from items
+[sphere_serv_triggers.scp]: Fixed function 'f_onaccount_pwchange' description
+[sphere_book.scp]: Removed unused file
 [sphere_msgs.scp]: Removed many unused messages
+
+09-03-2019, Coruja
+Fixed: Functions STRSUB and ISBIT not working correctly.
+[sphereCrypt.ini]: Added crypt key for classic client 7.0.75 and enhanced client 4.0.75

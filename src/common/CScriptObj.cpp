@@ -1682,16 +1682,12 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				return false;
 
 			INT64 iVal = Exp_GetLLVal(pszKey);
-			INT64 iBit = 0;
-			if ( index != SSC_ISBIT )
+			SKIP_ARGSEP(pszKey);
+			INT64 iBit = Exp_GetLLVal(pszKey);
+			if ( iBit < 0 )
 			{
-				SKIP_ARGSEP(pszKey);
-				iBit = Exp_GetLLVal(pszKey);
-				if ( iBit < 0 )
-				{
-					g_Log.EventWarn("%s(%lld,%lld): Can't shift bit by negative amount\n", sm_szLoadKeys[index], iVal, iBit);
-					iBit = 0;
-				}
+				g_Log.EventWarn("%s(%lld,%lld): Can't shift bit by negative position\n", sm_szLoadKeys[index], iVal, iBit);
+				iBit = 0;
 			}
 
 			if ( index == SSC_ISBIT )
@@ -1754,8 +1750,8 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			INT64 iLen = strlen(ppArgs[2]);
 			if ( iPos < 0 )
 				iPos += iLen;
-			if ( (iPos > iLen) || (iPos < 0) )
-				iPos = 0;
+			else if ( iPos > iLen )
+				iPos = iLen;
 			if ( (iPos + iCnt > iLen) || (iCnt == 0) )
 				iCnt = iLen - iPos;
 

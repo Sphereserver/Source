@@ -598,10 +598,7 @@ bool CClient::Event_CheckWalkBuffer()
 		iTimeDiff = iTimeMin + iRegen;
 	}
 
-	m_iWalkTimeAvg += iTimeDiff;
-	int	oldAvg = m_iWalkTimeAvg;
-	m_iWalkTimeAvg -= iTimeMin;
-
+	m_iWalkTimeAvg = m_iWalkTimeAvg + iTimeDiff - iTimeMin;
 	if ( m_iWalkTimeAvg > g_Cfg.m_iWalkBuffer )
 		m_iWalkTimeAvg = g_Cfg.m_iWalkBuffer;
 	else if ( m_iWalkTimeAvg < -g_Cfg.m_iWalkBuffer )
@@ -1551,8 +1548,8 @@ void CClient::Event_Talk_Common(TCHAR *szText)
 			return;		// no one heard it
 	}
 
-	// Change to all upper case for ease of search. ???
-	_strupr(szText);
+	// Change to lowercase for ease of search
+	_strlwr(szText);
 
 	// The char hears you say this.
 	pChar->NPC_OnHear(&szText[i], m_pChar);
