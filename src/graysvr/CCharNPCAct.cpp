@@ -596,7 +596,7 @@ bool CChar::NPC_OnTrainHear(CChar *pCharSrc, LPCTSTR pszCmd)
 
 		if ( *pszSkillList )
 			strcat(pszSkillList, ", ");
-		strcat(pszSkillList, g_Cfg.GetSkillKey(skillCheck));
+		strncat(pszSkillList, g_Cfg.GetSkillKey(skillCheck), MAX_TALK_BUFFER - 1);
 	}
 
 	if ( *pszSkillList )

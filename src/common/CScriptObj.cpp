@@ -1594,13 +1594,13 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			}
 			if ( !pRef )
 			{
-				sVal.FormatHex(0);
+				sVal.FormatHex(UID_CLEAR);
 				return true;
 			}
 			if ( !*pszKey )
 			{
 				pObj = dynamic_cast<CObjBase *>(pRef);
-				sVal.FormatHex(pObj ? static_cast<DWORD>(pObj->GetUID()) : 0);
+				sVal.FormatHex(pObj ? static_cast<DWORD>(pObj->GetUID()) : UID_CLEAR);
 				return true;
 			}
 			return pRef->r_WriteVal(pszKey, sVal, pSrc);
@@ -1711,28 +1711,20 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		}
 		case SSC_StrPos:
 		{
-			GETNONWHITESPACE(pszKey);
-			INT64 iPos = Exp_GetLLVal(pszKey);
-			TCHAR szVal;
-			if ( IsDigit(*pszKey) && IsDigit(*(pszKey + 1)) )
-				szVal = static_cast<TCHAR>(Exp_GetLLVal(pszKey));
-			else
-			{
-				szVal = *pszKey;
-				++pszKey;
-			}
+			TCHAR *ppArgs[3];
+			size_t iQty = Str_ParseCmds(const_cast<TCHAR *>(pszKey), ppArgs, COUNTOF(ppArgs));
+			if ( iQty < 3 )
+				return false;
 
-			GETNONWHITESPACE(pszKey);
-			INT64 iLen = strlen(pszKey);
+			INT64 iPos = Exp_GetLLVal(ppArgs[0]);
+			INT64 iLen = strlen(ppArgs[2]);
 			if ( iPos < 0 )
-				iPos = iLen + iPos;
-			if ( iPos < 0 )
-				iPos = 0;
+				iPos = maximum(0, iPos + iLen);
 			else if ( iPos > iLen )
 				iPos = iLen;
 
-			TCHAR *pszPos = const_cast<TCHAR *>(strchr(pszKey + iPos, szVal));
-			sVal.FormatVal(pszPos ? static_cast<long>(pszPos - pszKey) : -1);
+			TCHAR *pszPos = const_cast<TCHAR *>(strstr(ppArgs[2] + iPos, ppArgs[1]));
+			sVal.FormatVal(pszPos ? static_cast<long>(pszPos - ppArgs[2]) : -1);
 			return true;
 		}
 		case SSC_StrSub:
@@ -1743,16 +1735,14 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				return false;
 
 			INT64 iPos = Exp_GetLLVal(ppArgs[0]);
-			INT64 iCnt = Exp_GetLLVal(ppArgs[1]);
-			if ( iCnt < 0 )
-				return false;
-
 			INT64 iLen = strlen(ppArgs[2]);
 			if ( iPos < 0 )
-				iPos += iLen;
+				iPos = maximum(0, iPos + iLen);
 			else if ( iPos > iLen )
 				iPos = iLen;
-			if ( (iPos + iCnt > iLen) || (iCnt == 0) )
+
+			INT64 iCnt = Exp_GetLLVal(ppArgs[1]);
+			if ( (iCnt <= 0) || (iPos + iCnt > iLen) )
 				iCnt = iLen - iPos;
 
 			TCHAR *pszBuffer = Str_GetTemp();
@@ -2083,7 +2073,7 @@ bool CScriptObj::r_Verb(CScript &s, CTextConsole *pSrc)
 			// Just create the item but don't put it anyplace yet
 			TCHAR *ppCmd[4];
 			size_t iQty = Str_ParseCmds(s.GetArgRaw(), ppCmd, COUNTOF(ppCmd), ",");
-			if ( iQty <= 0 )
+			if ( iQty < 1 )
 				return false;
 
 			CItem *pItem = CItem::CreateHeader(ppCmd[0], NULL, false, pSrc->GetChar());
@@ -2511,7 +2501,7 @@ bool CScriptTriggerArgs::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole
 		case AGC_O:
 		{
 			CObjBase *pObj = dynamic_cast<CObjBase *>(m_pO1);
-			sVal.FormatHex(pObj ? static_cast<DWORD>(pObj->GetUID()) : 0);
+			sVal.FormatHex(pObj ? static_cast<DWORD>(pObj->GetUID()) : UID_CLEAR);
 			break;
 		}
 		case AGC_S:

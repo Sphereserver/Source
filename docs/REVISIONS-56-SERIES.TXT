@@ -1438,3 +1438,9 @@ Fixed: Functions STRSUB and ISBIT not working correctly.
 Changed: Improved NPC skill training behavior.
 [sphere_msgs.scp]: Updated 'npc_trainer_*' messages
 [sphereCrypt.ini]: Added crypt key for classic client 7.0.75 and enhanced client 4.0.75
+
+10-03-2019, Coruja
+Changed: Small improvements on STRPOS function
+	-Previously the 2nd argument was only accepting single unicode chars or single ASCII codes (which points to a single char/number/symbol)
+	-Now it can be used with unicode chars, numbers, symbols, and words
+	-As drawback it doesn't accept ASCII codes anymore, so if you're using it with ASCII codes, just replace it with the related unicode value
