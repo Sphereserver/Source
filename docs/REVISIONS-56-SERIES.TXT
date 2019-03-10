@@ -1435,4 +1435,6 @@ Fixed: Multis not firing @Create trigger.
 
 09-03-2019, Coruja
 Fixed: Functions STRSUB and ISBIT not working correctly.
+Changed: Improved NPC skill training behavior.
+[sphere_msgs.scp]: Updated 'npc_trainer_*' messages
 [sphereCrypt.ini]: Added crypt key for classic client 7.0.75 and enhanced client 4.0.75

@@ -235,32 +235,6 @@ CChar *CChar::NPC_PetGetOwner() const
 	return pMemory->m_uidLink.CharFind();
 }
 
-WORD CChar::NPC_GetTrainMax(const CChar *pStudent, SKILL_TYPE skill) const
-{
-	ADDTOCALLSTACK("CChar::NPC_GetTrainMax");
-	// What is the max I can train to ?
-	WORD wMax;
-	WORD wMaxAllowed;
-
-	CVarDefCont *pValue = GetKey("OVERRIDE.TRAINSKILLMAXPERCENT", true);
-	if ( pValue )
-		wMax = static_cast<WORD>(IMULDIV(pValue->GetValNum(), Skill_GetBase(skill), 100));
-	else
-		wMax = static_cast<WORD>(IMULDIV(g_Cfg.m_iTrainSkillPercent, Skill_GetBase(skill), 100));
-
-	pValue = GetKey("OVERRIDE.TRAINSKILLMAX", true);
-	if ( pValue )
-		wMaxAllowed = static_cast<WORD>(pValue->GetValNum());
-	else
-		wMaxAllowed = g_Cfg.m_iTrainSkillMax;
-
-	if ( wMax > wMaxAllowed )
-		return minimum(wMaxAllowed, pStudent->Skill_GetMax(skill));
-
-	// Is this more that the student can take ?
-	return minimum(wMax, pStudent->Skill_GetMax(skill));
-}
-
 bool CChar::NPC_CheckWalkHere(const CPointBase &pt, const CRegionBase *pArea) const
 {
 	ADDTOCALLSTACK("CChar::NPC_CheckWalkHere");

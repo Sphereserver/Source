@@ -1355,7 +1355,6 @@ private:
 	int NPC_GetHostilityLevelToward(const CChar *pCharTarg) const;
 	int NPC_GetAttackMotivation(CChar *pChar) const;
 	bool NPC_CheckHirelingStatus();
-	WORD NPC_GetTrainMax(const CChar *pStudent, SKILL_TYPE skill) const;
 
 	bool NPC_OnVerb(CScript &s, CTextConsole *pSrc = NULL);
 	void NPC_OnHirePayMore(CItem *pGold, bool fHire = false);
@@ -1363,7 +1362,7 @@ private:
 public:
 	bool NPC_OnHirePay(CChar *pCharSrc, CItemMemory *pMemory, CItem *pGold);
 	bool NPC_OnHireHear(CChar *pCharSrc);
-	WORD NPC_OnTrainCheck(CChar *pCharSrc, SKILL_TYPE skill);
+	WORD NPC_GetTrainValue(CChar *pCharSrc, SKILL_TYPE skill);
 	bool NPC_OnTrainPay(CChar *pCharSrc, CItemMemory *pMemory, CItem *pGold);
 	bool NPC_OnTrainHear(CChar *pCharSrc, LPCTSTR pszCmd);
 

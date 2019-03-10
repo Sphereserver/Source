@@ -2099,20 +2099,18 @@ void CClient::Event_AOSPopupMenuRequest(CGrayUID uid) //construct packet after a
 				m_pPopupPacket->addOption(POPUP_BUY, 6103);
 				m_pPopupPacket->addOption(POPUP_SELL, 6104);
 
-				WORD wFlag, wSkillNPC, wSkillPlayer;
 				for ( unsigned int i = 0; i < g_Cfg.m_iMaxSkill; ++i )
 				{
 					if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(i) )
 						continue;
-					if ( i == SKILL_SPELLWEAVING )	// skip this skill, because on OSI it can be trained only on quests so they didn't included the cliloc to use on NPCs
+
+					SKILL_TYPE skillCheck = static_cast<SKILL_TYPE>(i);
+					if ( pChar->Skill_GetBase(skillCheck) <= 0 )
+						continue;
+					if ( skillCheck == SKILL_SPELLWEAVING )		// skip this skill, because on OSI it can be trained only on quests so they didn't included the cliloc to use on NPCs
 						continue;
 
-					wSkillNPC = pChar->Skill_GetBase(static_cast<SKILL_TYPE>(i));
-					if ( (wSkillNPC <= 0) )
-						continue;
-
-					wSkillPlayer = m_pChar->Skill_GetBase(static_cast<SKILL_TYPE>(i));
-					wFlag = ((wSkillPlayer >= g_Cfg.m_iTrainSkillMax) || (wSkillPlayer >= (wSkillNPC * g_Cfg.m_iTrainSkillPercent) / 100)) ? POPUPFLAG_DISABLED : 0;
+					WORD wFlag = (pChar->NPC_GetTrainValue(m_pChar, skillCheck) <= 0) ? POPUPFLAG_DISABLED : 0;
 					m_pPopupPacket->addOption(POPUP_TRAIN_SKILL + i, 6000 + i, wFlag);
 				}
 

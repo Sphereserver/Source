@@ -125,7 +125,7 @@ bool CChar::NPC_OnVerb(CScript &s, CTextConsole *pSrc)		// execute command from 
 			return (pItem != NULL);
 		}
 		case NV_TRAIN:
-			return NPC_OnTrainHear(pSrc->GetChar(), s.GetArgStr());
+			return NPC_OnTrainHear(pSrc->GetChar(), s.HasArgs()? s.GetArgStr() : NULL);
 		case NV_WALK:
 		{
 			m_Act_p = GetTopPoint();
@@ -414,91 +414,98 @@ void CChar::NPC_OnHear(LPCTSTR pszCmd, CChar *pSrc, bool fAllPets)
 	}
 }
 
-WORD CChar::NPC_OnTrainCheck(CChar *pCharSrc, SKILL_TYPE skill)
+WORD CChar::NPC_GetTrainValue(CChar *pCharSrc, SKILL_TYPE skill)
 {
-	ADDTOCALLSTACK("CChar::NPC_OnTrainCheck");
-	// Check if NPC can train the requested skill for an char
-	// RETURN: amount of skill to train
-
-	if ( !IsSkillBase(skill) )
-	{
-		Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_DUNNO_1));
+	ADDTOCALLSTACK("CChar::NPC_GetTrainValue");
+	if ( !pCharSrc )
 		return 0;
+
+	CVarDefCont *pVar = GetKey("OVERRIDE.TRAINSKILLMAXPERCENT", false);
+	WORD wTrainVal = IMULDIV(pVar ? static_cast<WORD>(pVar->GetValNum()) : g_Cfg.m_iTrainSkillPercent, Skill_GetBase(skill), 100);
+
+	pVar = GetKey("OVERRIDE.TRAINSKILLMAX", false);
+	WORD wTrainMax = minimum(pVar ? static_cast<WORD>(pVar->GetValNum()) : g_Cfg.m_iTrainSkillMax, pCharSrc->Skill_GetMax(skill, true));
+	if ( wTrainVal > wTrainMax )
+		wTrainVal = wTrainMax;
+
+	return maximum(0, wTrainVal - pCharSrc->Skill_GetBase(skill));
+}
+
+bool CChar::NPC_OnTrainPay(CChar *pCharSrc, CItemMemory *pMemory, CItem *pGold)
+{
+	ADDTOCALLSTACK("CChar::NPC_OnTrainPay");
+	if ( !pCharSrc || !pMemory || !pGold )
+		return false;
+
+	SKILL_TYPE skill = static_cast<SKILL_TYPE>(pMemory->m_itEqMemory.m_Skill);
+	if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(skill) || (pCharSrc->Skill_GetLock(skill) != SKILLLOCK_UP) )
+	{
+		pCharSrc->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_SKILLRAISE));
+		return false;
 	}
 
-	WORD wSkillSrcVal = pCharSrc->Skill_GetBase(skill);
-	WORD wSkillVal = Skill_GetBase(skill);
-	WORD wTrainVal = maximum(0, NPC_GetTrainMax(pCharSrc, skill) - wSkillSrcVal);
+	CVarDefCont *pVar = GetKey("OVERRIDE.TRAINSKILLCOST", false);
+	WORD wSkillCost = pVar ? static_cast<WORD>(pVar->GetValNum()) : g_Cfg.m_iTrainSkillCost;
+	if ( wSkillCost < 1 )
+		wSkillCost = 1;
 
-	// Check if this will exceed skillcap limit
-	WORD wMaxDecrease = 0;
-	if ( pCharSrc->GetSkillTotal() + wTrainVal > pCharSrc->Skill_GetSumMax() )
+	WORD wSkillTrain = NPC_GetTrainValue(pCharSrc, skill);
+	if ( pCharSrc->Skill_GetBase(skill) >= wSkillTrain )
 	{
+		Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_ALREADYKNOW));
+		return false;
+	}
+
+	WORD wTrainCost = wSkillTrain * wSkillCost;
+	if ( pGold->GetAmount() < wTrainCost )
+	{
+		// Received less gold, so teach less
+		wSkillTrain = pGold->GetAmount() / wSkillCost;
+	}
+
+	DWORD wSkillTotal = pCharSrc->GetSkillTotal() + wSkillTrain;
+	DWORD wSkillCap = pCharSrc->Skill_GetSumMax();
+	if ( wSkillTotal > wSkillCap )
+	{
+		WORD wDecreaseTotal = 0;
 		for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; ++i )
 		{
 			SKILL_TYPE skillCheck = static_cast<SKILL_TYPE>(i);
 			if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(skillCheck) || (pCharSrc->Skill_GetLock(skillCheck) != SKILLLOCK_DOWN) )
 				continue;
 
-			wMaxDecrease += pCharSrc->Skill_GetBase(skillCheck);
+			wDecreaseTotal += minimum(pCharSrc->Skill_GetBase(skillCheck), wSkillTotal - wSkillCap);
+			if ( wDecreaseTotal >= wSkillTotal - wSkillCap )
+				break;
 		}
-		wMaxDecrease = minimum(wTrainVal, wMaxDecrease);
-	}
-	else
-		wMaxDecrease = wTrainVal;
 
-	LPCTSTR pszMsg;
-	if ( wSkillVal <= 0 )
-		pszMsg = g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_DUNNO_2);
-	else if ( wSkillSrcVal > wSkillVal )
-		pszMsg = g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_DUNNO_3);
-	else if ( wMaxDecrease <= 0 )
-		pszMsg = g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_DUNNO_4);
-	else
-		return wMaxDecrease;
+		if ( wDecreaseTotal > 0 )
+		{
+			for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; ++i )
+			{
+				SKILL_TYPE skillCheck = static_cast<SKILL_TYPE>(i);
+				if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(skillCheck) || (pCharSrc->Skill_GetLock(skillCheck) != SKILLLOCK_DOWN) )
+					continue;
 
-	TCHAR *pszTemp = Str_GetTemp();
-	sprintf(pszTemp, pszMsg, g_Cfg.GetSkillKey(skill));
-	Speak(pszTemp);
-	return 0;
-}
+				WORD wSkillVal = pCharSrc->Skill_GetBase(skillCheck);
+				WORD wDecreaseVal = minimum(wSkillVal, wDecreaseTotal);
+				pCharSrc->Skill_SetBase(skillCheck, wSkillVal - wDecreaseVal);
 
-bool CChar::NPC_OnTrainPay(CChar *pCharSrc, CItemMemory *pMemory, CItem *pGold)
-{
-	ADDTOCALLSTACK("CChar::NPC_OnTrainPay");
-	SKILL_TYPE skill = static_cast<SKILL_TYPE>(pMemory->m_itEqMemory.m_Skill);
-	if ( !IsSkillBase(skill) || !g_Cfg.m_SkillIndexDefs.IsValidIndex(skill) )
-	{
-		Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_FORGOT));
-		return false;
+				wDecreaseTotal -= wDecreaseVal;
+				if ( wDecreaseTotal <= 0 )
+					break;
+			}
+		}
+		else
+		{
+			pCharSrc->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_SKILLCAP), static_cast<int>(wSkillCap) / 10);
+			return false;
+		}
 	}
 
-	CVarDefCont *pVar = GetKey("OVERRIDE.TRAINSKILLCOST", false);
-	WORD wSkillCost = pVar ? pVar->GetValNum() : g_Cfg.m_iTrainSkillCost;
-	WORD wSkillTrain = NPC_OnTrainCheck(pCharSrc, skill);
-
-	WORD wTrainCost = wSkillTrain * wSkillCost;
-	if ( (wTrainCost <= 0) || !pGold )
-		return false;
-
-	Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_SUCCESS));
-
-	if ( pGold->GetAmount() < wTrainCost )
-	{
-		// Received less gold, so teach less
-		wSkillTrain = pGold->GetAmount() / wSkillCost;
-	}
-	else if ( pGold->GetAmount() == wTrainCost )
-	{
-		Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_THATSALL_1));
-		pMemory->m_itEqMemory.m_Action = NPC_MEM_ACT_NONE;
-	}
-	else
+	if ( pGold->GetAmount() > wTrainCost )
 	{
 		// Received more gold, so give refund
-		Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_THATSALL_2));
-		pMemory->m_itEqMemory.m_Action = NPC_MEM_ACT_NONE;
-
 		CItem *pRefund = pGold->UnStackSplit(wTrainCost, pCharSrc);
 		if ( pRefund )
 			pCharSrc->ItemBounce(pRefund, false);
@@ -506,22 +513,9 @@ bool CChar::NPC_OnTrainPay(CChar *pCharSrc, CItemMemory *pMemory, CItem *pGold)
 	pGold->Delete();
 	GetContainerCreate(LAYER_BANKBOX)->m_itEqBankBox.m_Check_Amount += wTrainCost;
 
-	if ( pCharSrc->GetSkillTotal() + wSkillTrain > pCharSrc->Skill_GetSumMax() )
-	{
-		// This will exceed char skillcap limit, so decrease another skill first
-		for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; ++i )
-		{
-			SKILL_TYPE skillCheck = static_cast<SKILL_TYPE>(i);
-			if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(skillCheck) || (pCharSrc->Skill_GetLock(skillCheck) != SKILLLOCK_DOWN) )
-				continue;
-
-			pCharSrc->Skill_SetBase(skillCheck, maximum(pCharSrc->Skill_GetBase(skillCheck) - ((pCharSrc->GetSkillTotal() + wSkillTrain) - pCharSrc->Skill_GetSumMax()), 0));
-			if ( pCharSrc->GetSkillTotal() + wSkillTrain <= pCharSrc->Skill_GetSumMax() )
-				break;
-		}
-	}
-
+	Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_SUCCESS));
 	pCharSrc->Skill_SetBase(skill, pCharSrc->Skill_GetBase(skill) + wSkillTrain);
+	pMemory->m_itEqMemory.m_Action = NPC_MEM_ACT_NONE;
 	return true;
 }
 
@@ -538,82 +532,81 @@ bool CChar::NPC_OnTrainHear(CChar *pCharSrc, LPCTSTR pszCmd)
 		return true;
 	}
 
-	TemporaryString pszMsg;
-	CVarDefCont *pVar = GetKey("OVERRIDE.TRAINSKILLCOST", false);
-	WORD wSkillCost = pVar ? pVar->GetValNum() : g_Cfg.m_iTrainSkillCost;
-
 	if ( pszCmd )
 	{
-		// If char say an specific skill name, look for this specific skill
+		// If an specific skill name is given, look for this specific skill
+		SKILL_TYPE skill = SKILL_NONE;
 		for ( unsigned int i = 0; i < g_Cfg.m_iMaxSkill; ++i )
 		{
 			SKILL_TYPE skillCheck = static_cast<SKILL_TYPE>(i);
 			if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(skillCheck) )
 				continue;
 
-			LPCTSTR pszSkillKey = g_Cfg.GetSkillKey(skillCheck);
-			if ( FindStrWord(pszCmd, pszSkillKey) <= 0 )
-				continue;
-
-			WORD wTrainCost = NPC_OnTrainCheck(pCharSrc, skillCheck) * wSkillCost;
-			if ( wTrainCost <= 0 )
-				return true;
-
-			CItemMemory *pMemory = Memory_AddObjTypes(pCharSrc, MEMORY_SPEAK);
-			if ( pMemory )
+			if ( FindStrWord(pszCmd, g_Cfg.GetSkillKey(skillCheck)) != 0 )
 			{
-				pMemory->m_itEqMemory.m_Action = NPC_MEM_ACT_SPEAK_TRAIN;
-				pMemory->m_itEqMemory.m_Skill = static_cast<WORD>(i);
+				skill = skillCheck;
+				break;
 			}
+		}
 
-			sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_PRICE), static_cast<int>(wTrainCost), pszSkillKey);
-			Speak(pszMsg);
+		if ( !IsSkillBase(skill) || (Skill_GetBase(skill) <= 0) )
+		{
+			Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_CANTTEACH));
 			return true;
 		}
+
+		WORD wSkillTrain = NPC_GetTrainValue(pCharSrc, skill);
+		if ( pCharSrc->Skill_GetBase(skill) >= wSkillTrain )
+		{
+			Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_ALREADYKNOW));
+			return true;
+		}
+
+		CVarDefCont *pVar = GetKey("OVERRIDE.TRAINSKILLCOST", false);
+		WORD wSkillCost = pVar ? pVar->GetValNum() : g_Cfg.m_iTrainSkillCost;
+		WORD wTrainCost = wSkillTrain * wSkillCost;
+
+		CItemMemory *pMemory = Memory_AddObjTypes(pCharSrc, MEMORY_SPEAK);
+		if ( !pMemory )
+			return false;
+
+		pMemory->m_itEqMemory.m_Action = NPC_MEM_ACT_SPEAK_TRAIN;
+		pMemory->m_itEqMemory.m_Skill = static_cast<WORD>(skill);
+
+		TCHAR *pszMsg = Str_GetTemp();
+		sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_PRICE_FULL), static_cast<int>(wTrainCost));
+		Speak(pszMsg);
+		Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_PRICE_LESS));
+		return true;
 	}
 
 	// Show all skills available to train
-	strcpy(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_PRICE_1));
-
-	size_t iCount = 0;
-	LPCTSTR pszSkillList = NULL;
+	TCHAR *pszSkillList = Str_GetTemp();
 	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; ++i )
 	{
 		SKILL_TYPE skillCheck = static_cast<SKILL_TYPE>(i);
 		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(skillCheck) )
 			continue;
-
-		WORD wDiff = maximum(0, NPC_GetTrainMax(pCharSrc, skillCheck) - pCharSrc->Skill_GetBase(skillCheck));
-		if ( wDiff <= 0 )
+		if ( Skill_GetBase(skillCheck) <= 0 )
 			continue;
 
-		if ( iCount > 6 )
-		{
-			pszSkillList = g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_PRICE_2);
-			break;
-		}
+		WORD wSkillTrain = NPC_GetTrainValue(pCharSrc, skillCheck);
+		if ( wSkillTrain <= 0 )
+			continue;
 
-		if ( iCount > 1 )
-			strcat(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_PRICE_3));
-		if ( pszSkillList )
-			strcat(pszMsg, pszSkillList);
-
-		pszSkillList = g_Cfg.GetSkillKey(skillCheck);
-		++iCount;
+		if ( *pszSkillList )
+			strcat(pszSkillList, ", ");
+		strcat(pszSkillList, g_Cfg.GetSkillKey(skillCheck));
 	}
 
-	if ( iCount == 0 )
+	if ( *pszSkillList )
 	{
-		Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_THATSALL_3));
-		return true;
+		TCHAR *pszMsg = Str_GetTemp();
+		sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_TEACH), pszSkillList);
+		Speak(pszMsg);
 	}
-
-	if ( iCount > 1 )
-		strcat(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_THATSALL_4));
-
-	strcat(pszMsg, pszSkillList);
-	strcat(pszMsg, ".");
-	Speak(pszMsg);
+	else
+		Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_NOTHING));
 	return true;
 }
 
@@ -2348,7 +2341,7 @@ bool CChar::NPC_OnReceiveItem(CChar *pCharSrc, CItem *pItem)
 			return false;
 	}
 
-	if ( NPC_IsOwnedBy(pCharSrc) )
+	if ( NPC_IsOwnedBy(pCharSrc, false) )
 	{
 		if ( NPC_IsVendor() )
 		{
