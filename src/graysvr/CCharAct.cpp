@@ -2881,10 +2881,7 @@ CRegionBase *CChar::CanMoveWalkTo(CPointBase &ptDst, bool fCheckChars, bool fChe
 	EXC_SET("Check valid move");
 	pArea = CheckValidMove(ptDst, &dwBlockFlags, dir, &ClimbHeight, fPathFinding);
 	if ( !pArea )
-	{
-		WARNWALK(("CheckValidMove failed\n"));
 		return NULL;
-	}
 
 	EXC_SET("NPC's will");
 	if ( !fCheckOnly && m_pNPC && !NPC_CheckWalkHere(ptDst, pArea) )	// does the NPC want to walk here?

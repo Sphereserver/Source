@@ -3545,8 +3545,10 @@ void CChar::ChangeExperience(int iDelta, CChar *pCharDead)
 			}
 		}
 
+#ifdef _DEBUG
 		if ( g_Cfg.m_wDebugFlags & DEBUGF_EXP )
 			DEBUG_ERR(("%s %s experience change (was %u, delta %d, now %u)\n", m_pNPC ? "NPC" : "Player", GetName(), m_exp, iDelta, m_exp + iDelta));
+#endif
 
 		bool fShowMsg = (m_pClient != NULL);
 
@@ -3624,8 +3626,10 @@ void CChar::ChangeExperience(int iDelta, CChar *pCharDead)
 			if ( (iDelta < 0) && (abs(iDelta) > static_cast<int>(m_level)) )
 				level = 0;
 
+#ifdef _DEBUG
 			if ( g_Cfg.m_wDebugFlags & DEBUGF_LEVEL )
 				DEBUG_ERR(("%s %s level change (was %u, delta %d, now %u)\n", m_pNPC ? "NPC" : "Player", GetName(), m_level, iDelta, level));
+#endif
 
 			m_level = level;
 

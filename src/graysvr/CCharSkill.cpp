@@ -3929,9 +3929,12 @@ bool CChar::Skill_Start(SKILL_TYPE skill)
 		}
 	}
 
-	// emote the action i am taking.
-	if ( (g_Cfg.m_wDebugFlags & DEBUGF_NPC_EMOTE) || IsStatFlag(STATF_EmoteAction) )
+#ifdef _DEBUG
+	if ( IsStatFlag(STATF_EmoteAction) || (g_Cfg.m_wDebugFlags & DEBUGF_NPC_EMOTE) )
 		Emote(Skill_GetName(true));
-
+#else
+	if ( IsStatFlag(STATF_EmoteAction) )
+		Emote(Skill_GetName(true));
+#endif
 	return true;
 }

@@ -1440,6 +1440,7 @@ Changed: Improved NPC skill training behavior.
 [sphereCrypt.ini]: Added crypt key for classic client 7.0.75 and enhanced client 4.0.75
 
 10-03-2019, Coruja
+Changed: DebugFlags setting on sphere.ini now will only be used on debug builds.
 Changed: Small improvements on STRPOS function
 	-Previously the 2nd argument was only accepting single unicode chars or single ASCII codes (which points to a single char/number/symbol)
 	-Now it can be used with unicode chars, numbers, symbols, and words

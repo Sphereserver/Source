@@ -1,5 +1,5 @@
-#ifndef _INC_GRAYSVR_H_
-#define _INC_GRAYSVR_H_
+#ifndef _INC_GRAYSVR_H
+#define _INC_GRAYSVR_H
 #pragma once
 
 //	Enable advanced exceptions catching. Consumes some more resources, but is very useful
@@ -7,21 +7,8 @@
 //	are local
 #ifndef _DEBUG
 	#ifndef EXCEPTIONS_DEBUG
-	#define EXCEPTIONS_DEBUG
+		#define EXCEPTIONS_DEBUG
 	#endif
-#endif
-
-#if defined(_WIN32) && !defined(_MTNETWORK)
-	// _MTNETWORK enabled via makefile for other systems
-	#define _MTNETWORK
-#endif
-
-//#define DEBUGWALKSTUFF 1
-//#ifdef _DEBUG
-#ifdef DEBUGWALKSTUFF
-	#define WARNWALK(_x_)		g_pLog->EventWarn _x_;
-#else
-	#define WARNWALK(_x_)		if ( g_Cfg.m_wDebugFlags & DEBUGF_WALK ) { g_pLog->EventWarn _x_; }
 #endif
 
 #include "../common/graycom.h"
@@ -316,4 +303,4 @@ struct TScriptProfiler
 };
 extern TScriptProfiler g_profiler;
 
-#endif
+#endif	// _INC_GRAYSVR_H

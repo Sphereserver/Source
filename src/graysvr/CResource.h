@@ -797,6 +797,7 @@ public:
 	bool m_fSecure;							// Secure mode. (will trap exceptions)
 	int m_iFreezeRestartTime;				// # seconds before restarting.
 
+#ifdef _DEBUG
 	#define DEBUGF_NPC_EMOTE		0x0001
 	#define DEBUGF_ADVANCE_STATS	0x0002
 	#define DEBUGF_EXP				0x0200	// experience gain/loss
@@ -807,6 +808,7 @@ public:
 	#define DEBUGF_PACKETS			0x4000	// log packets to file
 	#define DEBUGF_NETWORK			0x8000	// debug flags for networking
 	WORD m_wDebugFlags;						// DEBUG In game effects to turn on and off.
+#endif
 
 	// Decay
 	int m_iDecay_Item;						// Base decay time in minutes.

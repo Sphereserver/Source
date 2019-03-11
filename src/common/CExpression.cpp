@@ -901,7 +901,7 @@ INT64 CExpression::GetValMath(INT64 iVal, LPCTSTR &pszArgs)
 			INT64 iArgs = GetVal(pszArgs);
 			if ( !iArgs )
 			{
-				DEBUG_ERR(("Exp_GetVal: Divide by 0\n"));
+				DEBUG_ERR(("Can't divide by 0\n"));
 				break;
 			}
 			iVal /= iArgs;
@@ -913,7 +913,7 @@ INT64 CExpression::GetValMath(INT64 iVal, LPCTSTR &pszArgs)
 			INT64 iArgs = GetVal(pszArgs);
 			if ( !iArgs )
 			{
-				DEBUG_ERR(("Exp_GetVal: Divide by 0\n"));
+				DEBUG_ERR(("Can't divide by 0\n"));
 				break;
 			}
 			iVal %= iArgs;

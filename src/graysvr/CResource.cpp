@@ -15,7 +15,9 @@ CResource::CResource()
 	m_fSecure = true;
 	m_iFreezeRestartTime = 60;
 
+#ifdef _DEBUG
 	m_wDebugFlags = 0;
+#endif
 
 	// Decay
 	m_iDecay_Item = 30 * 60 * TICK_PER_SEC;
@@ -411,7 +413,9 @@ enum RC_TYPE
 	RC_CUOSTATUS,					// m_fCUOStatus
 	RC_DEADCANNOTSEELIVING,			// m_fDeadCannotSeeLiving
 	RC_DEADSOCKETTIME,				// m_iDeadSocketTime
+#ifdef _DEBUG
 	RC_DEBUGFLAGS,					// m_wDebugFlags
+#endif
 	RC_DECAYTIMER,					// m_iDecay_Item
 	RC_DEFAULTCOMMANDLEVEL,			// m_iDefaultCommandLevel
 	RC_DISTANCEWHISPER,				// m_iDistanceWhisper
@@ -634,7 +638,9 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY + 1] =
 	{"CUOSTATUS",					{ELEM_BOOL,		OFFSETOF(CResource, m_fCUOStatus),						0}},
 	{"DEADCANNOTSEELIVING",			{ELEM_INT,		OFFSETOF(CResource, m_fDeadCannotSeeLiving),			0}},
 	{"DEADSOCKETTIME",				{ELEM_INT,		OFFSETOF(CResource, m_iDeadSocketTime),					0}},
+#ifdef _DEBUG
 	{"DEBUGFLAGS",					{ELEM_WORD,		OFFSETOF(CResource, m_wDebugFlags),						0}},
+#endif
 	{"DECAYTIMER",					{ELEM_INT,		OFFSETOF(CResource, m_iDecay_Item),						0}},
 	{"DEFAULTCOMMANDLEVEL",			{ELEM_INT,		OFFSETOF(CResource, m_iDefaultCommandLevel),			0}},
 	{"DISTANCEWHISPER",				{ELEM_INT,		OFFSETOF(CResource, m_iDistanceWhisper),				0}},

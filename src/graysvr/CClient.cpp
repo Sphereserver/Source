@@ -1068,8 +1068,11 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 				sVal += !strcmp(ppArgs[i], "NULL") ? " " : ppArgs[i];
 			}
 
+#ifdef _DEBUG
 			if ( g_Cfg.m_wDebugFlags & DEBUGF_SCRIPTS )
-				g_Log.EventDebug("SCRIPT: addcliloc(%lu,'%s')\n", dwClilocId, static_cast<LPCTSTR>(sVal));
+				g_Log.EventDebug("SCRIPT: %s(%lu,'%s')\n", sm_szLoadKeys[index], dwClilocId, static_cast<LPCTSTR>(sVal));
+#endif
+
 			m_TooltipData.Add(new CClientTooltip(dwClilocId, sVal));
 			break;
 		}

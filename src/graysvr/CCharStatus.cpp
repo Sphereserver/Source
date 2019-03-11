@@ -1014,7 +1014,11 @@ bool CChar::CanSeeLOS(const CPointMap &ptDst, CPointMap *pptBlock, int iMaxDist,
 // a - gradient < x < b + gradient
 #define BETWEENPOINT(coord, coordt, coords)		((coord > ((double)minimum(coordt, coords) - 0.5)) && (coord < ((double)maximum(coordt, coords) + 0.5)))
 #define APPROX(num)								((double)((num - floor(num)) > 0.5) ? ceil(num) : floor(num))
-#define WARNLOS(_x_)							if ( g_Cfg.m_wDebugFlags & DEBUGF_LOS ) { g_pLog->EventWarn _x_; }
+#ifdef _DEBUG
+	#define WARNLOS(_x_)						if ( g_Cfg.m_wDebugFlags & DEBUGF_LOS ) { g_pLog->EventWarn _x_; }
+#else
+	#define WARNLOS(_x_)
+#endif
 
 bool inline CChar::CanSeeLOS_New_Failed(CPointMap *pptBlock, CPointMap &ptNow) const
 {
@@ -1963,6 +1967,12 @@ bool CChar::IsVerticalSpace(CPointMap ptDst, bool fForceMount)
 	return (iCharHeight + ptDst.m_z + (fForceMount ? 4 : 0) < block.m_Top.m_z);
 }
 
+#ifdef _DEBUG
+	#define WARNWALK(_x_)		if ( g_Cfg.m_wDebugFlags & DEBUGF_WALK ) { g_pLog->EventWarn _x_; }
+#else
+	#define WARNWALK(_x_)
+#endif
+
 CRegionBase *CChar::CheckValidMove(CPointBase &ptDst, DWORD *pdwBlockFlags, DIR_TYPE dir, height_t *pClimbHeight, bool fPathFinding) const
 {
 	ADDTOCALLSTACK("CChar::CheckValidMove");
@@ -2114,6 +2124,8 @@ CRegionBase *CChar::CheckValidMove(CPointBase &ptDst, DWORD *pdwBlockFlags, DIR_
 	ptDst.m_z = block.m_Bottom.m_z;
 	return pArea;
 }
+
+#undef WARNWALK
 
 void CChar::FixClimbHeight()
 {

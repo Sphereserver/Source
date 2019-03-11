@@ -1724,6 +1724,12 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				iPos = iLen;
 
 			TCHAR *pszPos = const_cast<TCHAR *>(strstr(ppArgs[2] + iPos, ppArgs[1]));
+
+#ifdef _DEBUG
+			if ( g_Cfg.m_wDebugFlags & DEBUGF_SCRIPTS )
+				g_Log.EventDebug("SCRIPT: %s(%lld,'%s','%s') -> '%ld'\n", sm_szLoadKeys[index], iPos, ppArgs[1], ppArgs[2], pszPos ? static_cast<long>(pszPos - ppArgs[2]) : -1);
+#endif
+
 			sVal.FormatVal(pszPos ? static_cast<long>(pszPos - ppArgs[2]) : -1);
 			return true;
 		}
@@ -1749,8 +1755,10 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			strncpy(pszBuffer, ppArgs[2] + iPos, static_cast<size_t>(iCnt));
 			pszBuffer[iCnt] = '\0';
 
+#ifdef _DEBUG
 			if ( g_Cfg.m_wDebugFlags & DEBUGF_SCRIPTS )
-				g_Log.EventDebug("SCRIPT: strsub(%lld,%lld,'%s') -> '%s'\n", iPos, iCnt, ppArgs[2], pszBuffer);
+				g_Log.EventDebug("SCRIPT: %s(%lld,%lld,'%s') -> '%s'\n", sm_szLoadKeys[index], iPos, iCnt, ppArgs[2], pszBuffer);
+#endif
 
 			sVal = pszBuffer;
 			return true;
@@ -1847,9 +1855,10 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				return false;
 
 			GETNONWHITESPACE(pszKey);
-			TCHAR *ppCmd[10];	// limit to 10 arguments
 			TCHAR *pszBuffer = Str_GetTemp();
-			strcpy(pszBuffer, pszKey);
+			strncpy(pszBuffer, pszKey, SCRIPT_MAX_LINE_LEN - 1);
+
+			TCHAR *ppCmd[10];	// limit to 10 arguments
 			size_t iQty = Str_ParseCmds(pszBuffer, ppCmd, COUNTOF(ppCmd));
 			if ( iQty < 1 )
 				return false;
@@ -1945,12 +1954,14 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			INT64 iRes = 0;
 
 			if ( iDiv == 0 )
-				g_Log.EventWarn("MULDIV(%lld,%lld,%lld): Can't divide by '0'\n", iNum, iMul, iDiv);
+				DEBUG_ERR(("Can't divide by 0\n"));
 			else
 				iRes = IMULDIV(iNum, iMul, iDiv);
 
+#ifdef _DEBUG
 			if ( g_Cfg.m_wDebugFlags & DEBUGF_SCRIPTS )
-				g_Log.EventDebug("SCRIPT: muldiv(%lld,%lld,%lld) -> %lld\n", iNum, iMul, iDiv, iRes);
+				g_Log.EventDebug("SCRIPT: %s(%lld,%lld,%lld) -> %lld\n", sm_szLoadKeys[index], iNum, iMul, iDiv, iRes);
+#endif
 
 			sVal.FormatLLVal(iRes);
 			return true;
@@ -1972,7 +1983,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatVal(iResult);
 
 			if ( iResult == -1 )
-				DEBUG_ERR(("STRREGEX: Bad function usage. Error: %s\n", pszLastError));
+				DEBUG_ERR(("%s error: %s\n", sm_szLoadKeys[index], pszLastError));
 			return true;
 		}
 		default:
@@ -2414,7 +2425,7 @@ bool CScriptTriggerArgs::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole
 		SKIP_SEPARATORS(pszKey);
 
 		size_t iQty = m_v.GetCount();
-		if ( iQty <= 0 )
+		if ( iQty < 1 )
 		{
 			// Parse it here
 			TCHAR *pszArgs = const_cast<TCHAR *>(m_s1_raw.GetPtr());

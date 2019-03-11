@@ -407,7 +407,6 @@ bool CClient::addDeleteErr(BYTE bCode, DWORD dwSlot)
 	if ( dwSlot < COUNTOF(m_tmSetupCharList) )
 		pChar = m_tmSetupCharList[dwSlot].CharFind();
 
-	g_Log.EventWarn("%lx:Account '%s' got bad character delete attempt (char='%s', code='%d')\n", GetSocketID(), m_pAccount->GetName(), pChar ? pChar->GetName() : "<NA>", bCode);
 	new PacketDeleteError(this, static_cast<PacketDeleteError::Reason>(bCode));
 	return false;
 }
@@ -1332,7 +1331,12 @@ void CClient::addCharName(const CChar *pChar)
 		strcat(pszName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_LOGOUT));
 	if ( (fAllShow || (pChar == m_pChar)) && pChar->IsStatFlag(STATF_Criminal) )
 		strcat(pszName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_CRIMINAL));
+
+#ifdef _DEBUG
 	if ( fAllShow || (IsPriv(PRIV_GM) && (g_Cfg.m_wDebugFlags & DEBUGF_NPC_EMOTE)) )
+#else
+	if ( fAllShow )
+#endif
 	{
 		strcat(pszName, " [");
 		strncat(pszName, pChar->Skill_GetName(), MAX_NAME_SIZE - 1);
