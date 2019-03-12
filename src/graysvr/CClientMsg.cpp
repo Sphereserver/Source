@@ -403,10 +403,6 @@ bool CClient::addDeleteErr(BYTE bCode, DWORD dwSlot)
 	if ( bCode == PacketDeleteError::Success )
 		return true;
 
-	CChar *pChar = NULL;
-	if ( dwSlot < COUNTOF(m_tmSetupCharList) )
-		pChar = m_tmSetupCharList[dwSlot].CharFind();
-
 	new PacketDeleteError(this, static_cast<PacketDeleteError::Reason>(bCode));
 	return false;
 }

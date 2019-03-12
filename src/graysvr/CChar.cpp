@@ -3248,12 +3248,8 @@ bool CChar::r_Verb(CScript &s, CTextConsole *pSrc)	// execute command from scrip
 		case CHV_PRIVSET:
 			return SetPrivLevel(pSrc, s.GetArgStr());
 		case CHV_RELEASE:
-		{
-			Skill_Start(SKILL_NONE);
-			NPC_PetClearOwners();
-			SoundChar(CRESND_NOTICE);
-			return true;
-		}
+			NPC_PetRelease();
+			break;
 		case CHV_REMOVE:	// remove this char from the world instantly
 		{
 			if ( m_pPlayer )

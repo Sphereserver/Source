@@ -1983,7 +1983,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatVal(iResult);
 
 			if ( iResult == -1 )
-				DEBUG_ERR(("%s error: %s\n", sm_szLoadKeys[index], pszLastError));
+				DEBUG_ERR(("%s: %s\n", sm_szLoadKeys[index], pszLastError));
 			return true;
 		}
 		default:

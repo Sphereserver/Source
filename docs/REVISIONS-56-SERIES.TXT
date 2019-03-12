@@ -1445,3 +1445,8 @@ Changed: Small improvements on STRPOS function
 	-Previously the 2nd argument was only accepting single unicode chars or single ASCII codes (which points to a single char/number/symbol)
 	-Now it can be used with unicode chars, numbers, symbols, and words
 	-As drawback it doesn't accept ASCII codes anymore, so if you're using it with ASCII codes, just replace it with the related unicode value
+
+12-03-2019, Coruja
+Changed: Pet command 'release' now will look for new 'd_pet_release' confirmation dialog.
+	-If dialog exists it will open the confirmation dialog, otherwise the pet will be released without ask for confirmation
+[sphere_dialog.scp]: Added new dialog 'd_pet_release'

@@ -1408,6 +1408,7 @@ public:
 
 	bool NPC_PetCheckAccess(int iCmd, CChar *pChar);
 	void NPC_PetConfirmCommand(bool fSuccess, CChar *pMaster);
+	void NPC_PetRelease();
 	void NPC_PetDesert();
 	void NPC_PetClearOwners(bool fResendTooltip = true);
 	bool NPC_PetSetOwner(CChar *pChar, bool fResendTooltip = true);
