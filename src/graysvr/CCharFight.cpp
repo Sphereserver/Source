@@ -2142,8 +2142,12 @@ void CChar::Fight_Clear()
 		Skill_Start(SKILL_NONE);
 		m_Fight_Targ.InitUID();
 	}
+
 	if ( m_pNPC )
 	{
+		if ( NPC_GetAiFlags() & NPC_AI_PERSISTENTPATH )
+			SetSight(GetSight() - 10);
+
 		StatFlag_Clear(STATF_War);
 		UpdateModeFlag();
 	}
@@ -2193,8 +2197,13 @@ bool CChar::Fight_Attack(const CChar *pCharTarg, bool fToldByMaster)
 	// I'm attacking (or defending)
 	if ( !IsStatFlag(STATF_War) )
 	{
-		if ( m_pNPC && IsStatFlag(STATF_Hovering) )		// flying NPCs should land when enter warmode
-			ToggleFlying();
+		if ( m_pNPC )
+		{
+			if ( IsStatFlag(STATF_Hovering) )	// flying NPCs should land when enter warmode
+				ToggleFlying();
+			if ( NPC_GetAiFlags() & NPC_AI_PERSISTENTPATH )		// increase view range during combat to make NPC follow targets for longer distances
+				SetSight(GetSight() + 10);
+		}
 
 		StatFlag_Set(STATF_War);
 		UpdateModeFlag();
@@ -2205,7 +2214,7 @@ bool CChar::Fight_Attack(const CChar *pCharTarg, bool fToldByMaster)
 	SKILL_TYPE skillActive = Skill_GetActive();
 	SKILL_TYPE skillWeapon = Fight_GetWeaponSkill();
 
-	if ( (skillActive == skillWeapon) && (m_Fight_Targ == pCharTarg->GetUID()) )		// already attacking this same target using the same skill
+	if ( (skillActive == skillWeapon) && (m_Fight_Targ == pCharTarg->GetUID()) )	// already attacking this same target using the same skill
 		return true;
 	else if ( g_Cfg.IsSkillFlag(skillActive, SKF_MAGIC) )	// don't start another fight skill when already casting spells
 		return true;

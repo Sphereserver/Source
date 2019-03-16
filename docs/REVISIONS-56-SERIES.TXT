@@ -1453,4 +1453,5 @@ Changed: Pet command 'release' now will look for new 'd_pet_release' confirmatio
 
 16-03-2019, Coruja
 Fixed: Null SRC on @Resurrect trigger when char is resurrected using bandages.
-[sphere.ini]: Added new COMBATF_NOPETDESERT combat flag to allow pet owner attack own pet without make it desert its owner (OSI-like)
+Changed: NPCAI flag NPC_AI_PERSISTENTPATH on sphere.ini now will also make NPCs follow combat target for longer distances instead give up when the target is too far.
+[sphere.ini]: Added new COMBATF_NOPETDESERT combat flag to allow pet owner attack own pet without make it desert its owner
