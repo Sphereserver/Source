@@ -1450,3 +1450,7 @@ Changed: Small improvements on STRPOS function
 Changed: Pet command 'release' now will look for new 'd_pet_release' confirmation dialog.
 	-If dialog exists it will open the confirmation dialog, otherwise the pet will be released without ask for confirmation
 [sphere_dialog.scp]: Added new dialog 'd_pet_release'
+
+16-03-2019, Coruja
+Fixed: Null SRC on @Resurrect trigger when char is resurrected using bandages.
+[sphere.ini]: Added new COMBATF_NOPETDESERT combat flag to allow pet owner attack own pet without make it desert its owner (OSI-like)

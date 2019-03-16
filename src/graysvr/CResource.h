@@ -106,6 +106,7 @@ enum COMBATFLAGS_TYPE
 	COMBAT_MAXITEMDURABILITY	= 0x0010,	// Make damageable items get destroyed when lose max durability instead current durability (OSI-like)
 	COMBAT_DCLICKSELF_UNMOUNTS	= 0x0020,	// Unmount horse when dclicking self while in warmode
 	COMBAT_ALLOWHITFROMSHIP		= 0x0040,	// Allow attacking opponents from ships
+	COMBAT_NOPETDESERT			= 0x0080,	// Allow pet owner attack own pet without make it desert its owner
 	COMBAT_ARCHERYCANMOVE		= 0x0100,	// Allow firing bow while moving
 	COMBAT_STAYINRANGE			= 0x0200,	// Abort attack swing when out of range instead of waiting to come back in range
 	COMBAT_ATTACKONNOTICE		= 0x0400,	// Make target instantly attack back when notice someone trying to attack it

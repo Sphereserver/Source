@@ -2806,7 +2806,7 @@ int CChar::Skill_Healing(SKTRIG_TYPE stage)
 
 	if ( pCorpse )
 	{
-		pChar->Spell_Resurrection(pCorpse);
+		pChar->Spell_Resurrection(pCorpse, this);
 		return 0;
 	}
 

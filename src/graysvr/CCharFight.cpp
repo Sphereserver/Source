@@ -1379,7 +1379,7 @@ void CChar::OnHarmedBy(CChar *pCharSrc)
 			return;
 	}
 
-	if ( NPC_IsOwnedBy(pCharSrc, false) )
+	if ( !IsSetCombatFlags(COMBAT_NOPETDESERT) && NPC_IsOwnedBy(pCharSrc, false) )
 		NPC_PetDesert();
 
 	Fight_Attack(pCharSrc);
