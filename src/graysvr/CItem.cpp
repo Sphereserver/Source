@@ -2044,7 +2044,6 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 			break;
 		//return as string or hex number or NULL if not set
 		case IC_CRAFTEDBY:
-		case IC_MAKERSNAME:
 			sVal = GetDefStr(pszKey);
 			break;
 		//On these ones, check BaseDef if not found on dynamic
@@ -2353,7 +2352,6 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_BONUSSKILL3:
 		case IC_BONUSSKILL4:
 		case IC_BONUSSKILL5:
-		case IC_MAKERSNAME:
 		case IC_OCOLOR:
 			{
 				bool fQuoted = false;

@@ -735,7 +735,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerRun(CScript &s, TRIGRUN_TYPE trigger, CTextCon
 				EXC_SET("forchar[layer/memorytype]");
 				if ( !s.HasArgs() )
 				{
-					DEBUG_ERR(("FORCHAR[layer/memorytype] called without arguments\n"));
+					DEBUG_ERR(("%s called without arguments\n", sm_szScriptKeys[index]));
 					iRet = OnTriggerRun(s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, psResult);
 					break;
 				}
@@ -743,7 +743,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerRun(CScript &s, TRIGRUN_TYPE trigger, CTextCon
 				CChar *pChar = dynamic_cast<CChar *>(this);
 				if ( !pChar )
 				{
-					DEBUG_ERR(("FORCHAR[layer/memorytype] called on non-char object '%s'\n", GetName()));
+					DEBUG_ERR(("%s called on non-char object '%s'\n", sm_szScriptKeys[index], GetName()));
 					iRet = OnTriggerRun(s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, psResult);
 					break;
 				}
@@ -760,7 +760,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerRun(CScript &s, TRIGRUN_TYPE trigger, CTextCon
 				EXC_SET("forcont");
 				if ( !s.HasArgs() )
 				{
-					DEBUG_ERR(("FORCONT called without arguments\n"));
+					DEBUG_ERR(("%s called without arguments\n", sm_szScriptKeys[index]));
 					iRet = OnTriggerRun(s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, psResult);
 					break;
 				}
@@ -776,7 +776,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerRun(CScript &s, TRIGRUN_TYPE trigger, CTextCon
 				CGrayUID uid = static_cast<CGrayUID>(Exp_GetLLVal(pszTempPoint));
 				if ( !uid.IsValidUID() )
 				{
-					DEBUG_ERR(("FORCONT called on invalid uid '0%lx'\n", uid.GetObjUID()));
+					DEBUG_ERR(("%s called on invalid uid '0%lx'\n", sm_szScriptKeys[index], uid.GetObjUID()));
 					iRet = OnTriggerRun(s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, psResult);
 					break;
 				}
@@ -784,7 +784,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerRun(CScript &s, TRIGRUN_TYPE trigger, CTextCon
 				CContainer *pCont = dynamic_cast<CContainer *>(uid.ObjFind());
 				if ( !pCont )
 				{
-					DEBUG_ERR(("FORCONT called on non-container uid '0%lx'\n", uid.GetObjUID()));
+					DEBUG_ERR(("%s called on non-container uid '0%lx'\n", sm_szScriptKeys[index], uid.GetObjUID()));
 					iRet = OnTriggerRun(s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, psResult);
 					break;
 				}
@@ -800,7 +800,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerRun(CScript &s, TRIGRUN_TYPE trigger, CTextCon
 				EXC_SET("forcont[id/type]");
 				if ( !s.HasArgs() )
 				{
-					DEBUG_ERR(("FORCONT[id/type] called without arguments\n"));
+					DEBUG_ERR(("%s called without arguments\n", sm_szScriptKeys[index]));
 					iRet = OnTriggerRun(s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, psResult);
 					break;
 				}
@@ -808,7 +808,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerRun(CScript &s, TRIGRUN_TYPE trigger, CTextCon
 				CContainer *pCont = dynamic_cast<CContainer *>(this);
 				if ( !pCont )
 				{
-					DEBUG_ERR(("FORCONT[id/type] called on non-container object '%s'\n", GetName()));
+					DEBUG_ERR(("%s called on non-container object '%s'\n", sm_szScriptKeys[index], GetName()));
 					iRet = OnTriggerRun(s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, psResult);
 					break;
 				}
@@ -1646,7 +1646,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case SSC_FVAL:
 		{
 			INT64 iVal = Exp_GetLLVal(pszKey);
-			sVal.Format("%s%lld.%lld", (iVal >= 0) ? "" : "-", llabs(iVal / 10), llabs(iVal % 10));
+			sVal.Format("%lld.%lld", iVal / 10, llabs(iVal % 10));
 			return true;
 		}
 		case SSC_HVAL:

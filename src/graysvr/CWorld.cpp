@@ -1975,7 +1975,6 @@ void CWorld::Speak(const CObjBaseTemplate *pSrc, LPCTSTR pszText, HUE_TYPE wHue,
 				}
 			}
 			sSpeak = sTextGhost;
-			pClient->addSound(static_cast<SOUND_TYPE>(Calc_GetRandVal2(0x17E, 0x182)), pSrc);
 		}
 
 		if ( !pClient->m_NetState->isClientEnhanced() && pSrc && !pChar->CanSee(pSrc) )
@@ -2044,7 +2043,6 @@ void CWorld::SpeakUNICODE(const CObjBaseTemplate *pSrc, const NCHAR *pszText, HU
 				szTextGhost[i] = '\0';
 			}
 
-			pClient->addSound(static_cast<SOUND_TYPE>(Calc_GetRandVal2(0x17E, 0x182)), pSrc);
 			if ( !(bFlags & SPEAKFLAG_NAMED) )
 			{
 				pClient->addBarkUNICODE(szTextGhost, pSrc, wHue, mode, font, lang);

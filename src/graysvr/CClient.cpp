@@ -984,7 +984,7 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 
 				if ( !IsValidGameObjDef(static_cast<LPCTSTR>(ppArgs[0])) )
 				{
-					g_Log.EventWarn("Invalid ADD argument '%s'\n", ppArgs[0]);
+					DEBUG_ERR(("%s: invalid argument '%s'\n", sm_szVerbKeys[index], ppArgs[0]));
 					SysMessageDefault(DEFMSG_CMD_INVALID);
 					return true;
 				}
@@ -1006,7 +1006,7 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 			if ( IsValidDef("d_add") )
 				Dialog_Setup(CLIMODE_DIALOG, g_Cfg.ResourceGetIDType(RES_DIALOG, "d_add"), 0, m_pChar);
 			else
-				Menu_Setup(g_Cfg.ResourceGetIDType(RES_MENU, "MENU_ADDITEM"));
+				SysMessageDefault(DEFMSG_CMD_INVALID);
 			break;
 		}
 		case CV_ADDBUFF:
@@ -1019,14 +1019,14 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 			{
 				if ( !IsStrNumeric(ppArgs[i]) )
 				{
-					DEBUG_ERR(("Invalid AddBuff argument number %u\n", i + 1));
+					DEBUG_ERR(("%s: invalid argument '%s'\n", sm_szVerbKeys[index], ppArgs[i]));
 					return true;
 				}
 				iArgs[i] = Exp_GetVal(ppArgs[i]);
 			}
 			if ( (iArgs[0] < 0) || (iArgs[0] > USHRT_MAX) )
 			{
-				DEBUG_ERR(("Invalid AddBuff icon ID\n"));
+				DEBUG_ERR(("%s: invalid icon '%d'\n", sm_szVerbKeys[index], iArgs[0]));
 				break;
 			}
 
@@ -1047,7 +1047,7 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 			BUFF_ICONS IconId = static_cast<BUFF_ICONS>(s.GetArgVal());
 			if ( (IconId < 0) || (IconId > USHRT_MAX) )
 			{
-				DEBUG_ERR(("Invalid RemoveBuff icon ID\n"));
+				DEBUG_ERR(("%s: invalid icon '%d'\n", sm_szVerbKeys[index], IconId));
 				break;
 			}
 			removeBuff(IconId);
@@ -1081,12 +1081,12 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 			TCHAR *ppArgs[20];
 			if ( Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), ",") > 4 )
 			{
-				DEBUG_ERR(("Bad AddContextEntry usage: Function takes maximum of 4 arguments!\n"));
+				DEBUG_ERR(("%s: too much arguments\n", sm_szVerbKeys[index]));
 				return true;
 			}
 			if ( !m_pPopupPacket )
 			{
-				DEBUG_ERR(("Bad AddContextEntry usage: Not used under a @ContextMenuRequest/@itemContextMenuRequest trigger!\n"));
+				DEBUG_ERR(("%s: function not called under @[Item/Char]ContextMenuRequest trigger\n", sm_szVerbKeys[index]));
 				return true;
 			}
 
@@ -1097,7 +1097,7 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 
 				if ( !IsStrNumeric(ppArgs[i]) )
 				{
-					DEBUG_ERR(("Bad AddContextEntry usage: Argument %d must be a number!\n", i + 1));
+					DEBUG_ERR(("%s: invalid argument '%s'\n", sm_szVerbKeys[index], ppArgs[i]));
 					return true;
 				}
 			}
@@ -1105,7 +1105,7 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 			int iTextEntry = Exp_GetVal(ppArgs[0]);
 			if ( iTextEntry < 100 )
 			{
-				DEBUG_ERR(("Bad AddContextEntry usage: TextEntry < 100 is reserved for server usage!\n"));
+				DEBUG_ERR(("%s: can't use entry '%d' (entries < 100 are reserved for internal server usage)\n", sm_szVerbKeys[index], iTextEntry));
 				return true;
 			}
 			m_pPopupPacket->addOption(static_cast<WORD>(iTextEntry), static_cast<DWORD>(Exp_GetLLVal(ppArgs[1])), static_cast<WORD>(Exp_GetLLVal(ppArgs[2])), static_cast<WORD>(Exp_GetLLVal(ppArgs[3])));
@@ -1546,12 +1546,12 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 			size_t iArgQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs));
 			if ( iArgQty < 2 )
 			{
-				g_Log.EventError("SysMessagef with less than 1 args for the given text\n");
+				g_Log.EventError("%s: too few arguments\n", sm_szVerbKeys[index]);
 				return false;
 			}
 			if ( iArgQty > 4 )
 			{
-				g_Log.EventError("Too many arguments given to SysMessagef (max = text + 3\n");
+				g_Log.EventError("%s: too many arguments\n", sm_szVerbKeys[index]);
 				return false;
 			}
 			if ( *ppArgs[0] == '"' )	// skip quotes

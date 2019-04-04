@@ -2248,17 +2248,9 @@ bool PacketGumpValueInputResponse::onReceive(NetState* net)
 	TCHAR text[MAX_NAME_SIZE];
 	readStringASCII(text, minimum(MAX_NAME_SIZE, textLength));
 
-	TCHAR* fix;
-	if ((fix = strchr(text, '\n')) != NULL)
-		*fix = '\0';
-	if ((fix = strchr(text, '\r')) != NULL)
-		*fix = '\0';
-	if ((fix = strchr(text, '\t')) != NULL)
-		*fix = ' ';
-
 	if ((client->GetTargMode() != CLIMODE_INPVAL) || (uid != client->m_Targ_UID))
 	{
-		client->SysMessage("Unexpected text input");
+		client->SysMessageDefault(DEFMSG_MENU_UNEXPECTED);
 		return true;
 	}
 
@@ -2268,6 +2260,16 @@ bool PacketGumpValueInputResponse::onReceive(NetState* net)
 	if (!object)
 		return true;
 
+	TCHAR *pszFix;
+	if ( (pszFix = strchr(text, '\n')) != NULL )
+		*pszFix = '\0';
+	if ( (pszFix = strchr(text, '\r')) != NULL )
+		*pszFix = '\0';
+	if ( (pszFix = strchr(text, '\t')) != NULL )
+		*pszFix = ' ';
+	if ( (pszFix = strchr(text, '#')) != NULL )
+		*pszFix = NULL;
+
 	// take action based on the parent context
 	if (action == 1) // ok
 	{
@@ -2275,20 +2277,15 @@ bool PacketGumpValueInputResponse::onReceive(NetState* net)
 		// m_Targ_Text = the verb we are dealing with
 		// m_Prop_UID = object we are after
 
+		TCHAR *pszLogMsg = Str_GetTemp();
+		sprintf(pszLogMsg, "%lx:'%s' tweak uid=0%lx (%s) to '%s %s'", net->id(), client->GetName(), static_cast<DWORD>(object->GetUID()), object->GetName(), static_cast<LPCTSTR>(client->m_Targ_Text), static_cast<LPCTSTR>(text));
+
 		CScript script(client->m_Targ_Text, text);
-		bool ret = object->r_Verb(script, client->GetChar());
-		if (ret)
-		{
-			if (client->IsPriv(PRIV_DETAIL))
-				client->SysMessagef("Set: %s = %s", static_cast<LPCTSTR>(client->m_Targ_Text), static_cast<LPCTSTR>(text));
-
-			object->RemoveFromView(); // weird client thing
-			object->Update();
-		}
-		else
-			client->SysMessagef("Invalid set: %s = %s", static_cast<LPCTSTR>(client->m_Targ_Text), static_cast<LPCTSTR>(text));
-
-		g_Log.Event(LOGM_GM_CMDS, "%lx:'%s' tweak uid=0%lx (%s) to '%s %s'=%d\n", net->id(), client->GetName(), static_cast<DWORD>(object->GetUID()), object->GetName(), static_cast<LPCTSTR>(client->m_Targ_Text), static_cast<LPCTSTR>(text), ret);
+		bool fRet = object->r_Verb(script, client->GetChar());
+		if ( !fRet )
+			client->SysMessageDefault(DEFMSG_MSG_ERR_INVSET);
+		if ( client->GetPrivLevel() >= g_Cfg.m_iCommandLog )
+			g_Log.Event(LOGM_GM_CMDS, "%s=%d\n", pszLogMsg, fRet);
 	}
 
 	return true;

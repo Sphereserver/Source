@@ -21,16 +21,7 @@ bool CClient::OnTarg_Obj_Set(CObjBase *pObj)
 
 	// Parse the command.
 	TCHAR *pszLogMsg = Str_GetTemp();
-	if ( pObj->IsItem() )
-	{
-		const CItem *pItem = static_cast<CItem *>(pObj);
-		if ( pItem->GetAmount() > 1 )
-			sprintf(pszLogMsg, "'%s' commands uid=0%lx (%s) [amount=%hu] to '%s'", GetName(), static_cast<DWORD>(pObj->GetUID()), pObj->GetName(), pItem->GetAmount(), static_cast<LPCTSTR>(m_Targ_Text));
-		else
-			sprintf(pszLogMsg, "'%s' commands uid=0%lx (%s) to '%s'", GetName(), static_cast<DWORD>(pObj->GetUID()), pObj->GetName(), static_cast<LPCTSTR>(m_Targ_Text));
-	}
-	else
-		sprintf(pszLogMsg, "'%s' commands uid=0%lx (%s) to '%s'", GetName(), static_cast<DWORD>(pObj->GetUID()), pObj->GetName(), static_cast<LPCTSTR>(m_Targ_Text));
+	sprintf(pszLogMsg, "%lx:'%s' commands uid=0%lx (%s) to '%s'", m_NetState->id(), GetName(), static_cast<DWORD>(pObj->GetUID()), pObj->GetName(), static_cast<LPCTSTR>(m_Targ_Text));
 
 	// Check priv level for the new verb.
 	if ( !g_Cfg.CanUsePrivVerb(pObj, m_Targ_Text, this) )
@@ -41,13 +32,10 @@ bool CClient::OnTarg_Obj_Set(CObjBase *pObj)
 	}
 
 	CScript sCmd(m_Targ_Text);
-	if ( sCmd.IsKey("COLOR") )
+	if ( sCmd.IsKey("COLOR") && !sCmd.HasArgs() )	// ".xCOLOR" command without arguments should open dye gump
 	{
-		if ( !sCmd.HasArgs() )	// ".xCOLOR" command without arguments displays dye option
-		{
-			addDyeOption(pObj);
-			return true;
-		}
+		addDyeOption(pObj);
+		return true;
 	}
 
 	bool fRet = pObj->r_Verb(sCmd, this);
@@ -1394,7 +1382,7 @@ bool CClient::OnTarg_Pet_Stable(CChar *pCharPet)
 		m_pChar->FollowersUpdate(pCharPet, -pCharPet->m_FollowerSlots);
 
 	pCharMaster->GetContainerCreate(LAYER_BANKBOX)->ContentAdd(pPetItem);
-	pCharMaster->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_STABLEMASTER_CLAIM));
+	pCharMaster->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_STABLEMASTER_TARG_SUCCESS));
 	return true;
 }
 

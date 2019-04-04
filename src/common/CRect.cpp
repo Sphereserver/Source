@@ -758,7 +758,7 @@ size_t CPointBase::Read( TCHAR * pszVal )
 				m_map = static_cast<BYTE>(ATOI(ppVal[3]));
 				if ( !g_MapList.m_maps[m_map] )
 				{
-					g_Log.EventError("Unsupported map #%hhu specified. Auto-fixing that to 0\n", m_map);
+					g_Log.EventError("Unsupported map #%hhu specified, auto-fixing to 0\n", m_map);
 					m_map = 0;
 				}
 			}
@@ -849,7 +849,7 @@ size_t CGRect::Read( LPCTSTR pszVal )
 			m_map = ATOI(ppVal[4]);
 			if (( m_map < 0 ) || ( m_map >= 256 ) || !g_MapList.m_maps[m_map] )
 			{
-				g_Log.EventError("Unsupported map #%d specified. Auto-fixing that to 0\n", m_map);
+				g_Log.EventError("Unsupported map #%d specified, auto-fixing to 0\n", m_map);
 				m_map = 0;
 			}
 			m_bottom = ATOI(ppVal[3]);
