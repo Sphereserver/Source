@@ -494,11 +494,8 @@ void CClient::UpdateFeatureFlags()
 		m_FeatureFlags |= 0x200000;
 
 	// Misc
-	if ( m_NetState->isClientKR() || m_NetState->isClientEnhanced() )
-	{
-		if ( g_Cfg.m_iFeatureExtra & FEATURE_EXTRA_ROLEPLAYFACES )
-			m_FeatureFlags |= 0x2000;
-	}
+	if ( g_Cfg.m_iFeatureExtra & FEATURE_EXTRA_ROLEPLAYFACES )
+		m_FeatureFlags |= 0x2000;
 }
 
 void CClient::UpdateCharacterListFlags()
@@ -572,9 +569,12 @@ void CClient::UpdateCharacterListFlags()
 		m_CharacterListFlags |= (0x10|0x4);
 
 	// Misc
-	if ( m_NetState->isClientKR() || m_NetState->isClientEnhanced() )		// tooltips must be always enabled on enhanced clients
-		m_CharacterListFlags |= (0x400|0x200|0x20);
-	m_TooltipEnabled = (m_CharacterListFlags & 0x20);
+	if ( m_NetState->isClientKR() )
+		m_CharacterListFlags |= (0x800|0x400);
+	else if ( m_NetState->isClientEnhanced() || m_NetState->isClientVersion(MINCLIVER_SA) )
+		m_CharacterListFlags |= (0x2000|0x800|0x400);
+
+	m_TooltipEnabled = ((m_CharacterListFlags & 0x20) || m_NetState->isClientKR() || m_NetState->isClientEnhanced());
 	m_ContainerGridEnabled = (m_NetState->isClientVersion(MINCLIVER_CONTAINERGRID) || m_NetState->isClientKR() || m_NetState->isClientEnhanced());
 	m_UseNewChatSystem = m_NetState->isClientVersion(MINCLIVER_NEWCHATSYSTEM);
 }

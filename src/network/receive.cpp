@@ -2268,7 +2268,7 @@ bool PacketGumpValueInputResponse::onReceive(NetState* net)
 	if ( (pszFix = strchr(text, '\t')) != NULL )
 		*pszFix = ' ';
 	if ( (pszFix = strchr(text, '#')) != NULL )
-		*pszFix = NULL;
+		*pszFix = ' ';
 
 	// take action based on the parent context
 	if (action == 1) // ok
