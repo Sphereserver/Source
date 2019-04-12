@@ -372,58 +372,7 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 	EXC_TRY("LoadVal");
 	
 	LPCTSTR pszKey = s.GetKey();
-
-	if ( !strnicmp(pszKey, "GMPAGE", 6) )		//	GM pages
-	{
-		pszKey += 6;
-		if ( *pszKey == '.' )						//	GMPAGE.*
-		{
-			SKIP_SEPARATORS(pszKey);
-			size_t index = Exp_GetVal(pszKey);
-			if ( index >= g_World.m_GMPages.GetCount() )
-				return false;
-
-			CGMPage *pPage = static_cast<CGMPage *>(g_World.m_GMPages.GetAt(index));
-			if ( pPage == NULL )
-				return false;
-
-			SKIP_SEPARATORS(pszKey);
-			if ( !strcmpi(pszKey, "HANDLE") )
-			{
-				CChar *ppChar = pChar;
-				LPCTSTR pszArgs = s.GetArgStr(); //Moved here because of error with quoted strings!?!?
-				if ( *pszArgs )
-					ppChar = dynamic_cast<CChar*>(g_World.FindUID(s.GetArgVal()));
-
-				if ( ppChar == NULL )
-					return false;
-
-				CClient *pClient = ppChar->m_pClient;
-				if ( pClient == NULL )
-					return false;
-
-				pPage->SetGMHandler(pClient);
-			}
-			else if ( !strcmpi(pszKey, "DELETE") )
-			{
-				delete pPage;
-			}
-			else if ( pPage->FindGMHandler() )
-			{
-				CClient *pClient = pChar->m_pClient;
-				if ( pClient != NULL && pClient->GetChar() != NULL )
-					pClient->Cmd_GM_PageCmd(pszKey);
-			}
-			else
-			{
-				return false;
-			}
-
-			return true;
-		}
-		return false;
-	}
-	else if ( ( !strnicmp(pszKey, "GUILD", 5) ) || ( !strnicmp(pszKey, "TOWN", 4) ) )
+	if ( !strnicmp(pszKey, "GUILD", 5) || !strnicmp(pszKey, "TOWN", 4) )
 	{
 		bool bIsGuild = !strnicmp(pszKey, "GUILD", 5);
 		pszKey += bIsGuild ? 5 : 4;

@@ -3747,7 +3747,7 @@ BYTE CClient::Setup_Start(CChar *pChar)
 	}
 
 	if ( IsPriv(PRIV_GM_PAGE) && (g_World.m_GMPages.GetCount() > 0) )
-		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_GMPAGES), static_cast<int>(g_World.m_GMPages.GetCount()), g_Cfg.m_cCommandPrefix);
+		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_GMPAGE_PENDING), static_cast<int>(g_World.m_GMPages.GetCount()), g_Cfg.m_cCommandPrefix);
 
 	if ( g_Serv.m_timeShutdown.IsTimeValid() )
 		addBarkParse(g_Cfg.GetDefaultMsg(DEFMSG_MSG_SERV_SHUTDOWN_SOON), NULL, HUE_RED, TALKMODE_SYSTEM);

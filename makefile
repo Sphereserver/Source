@@ -51,7 +51,6 @@ SRC :=	./src/graysvr/CAccount.cpp \
 	./src/graysvr/CClient.cpp \
 	./src/graysvr/CClientDialog.cpp \
 	./src/graysvr/CClientEvent.cpp \
-	./src/graysvr/CClientGMPage.cpp \
 	./src/graysvr/CClientLog.cpp \
 	./src/graysvr/CClientMsg.cpp \
 	./src/graysvr/CClientTarg.cpp \

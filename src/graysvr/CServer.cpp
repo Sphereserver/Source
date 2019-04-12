@@ -1006,6 +1006,20 @@ bool CServer::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		}
 		return false;
 	}
+	else if ( !strnicmp(pszKey, "GMPAGE.", 7) )
+	{
+		pszKey += 7;
+		size_t iNum = Exp_GetVal(pszKey);
+		if ( iNum >= g_World.m_GMPages.GetCount() )
+			return false;
+
+		CGMPage *pGMPage = static_cast<CGMPage *>(g_World.m_GMPages.GetAt(iNum));
+		if ( !pGMPage )
+			return false;
+
+		SKIP_SEPARATORS(pszKey);
+		return pGMPage->r_WriteVal(pszKey, sVal, pSrc);
+	}
 
 	if ( g_Cfg.r_WriteVal(pszKey, sVal, pSrc) )
 		return true;
@@ -1036,6 +1050,7 @@ enum SV_TYPE
 	SV_CONSOLE,
 	SV_EXPORT,
 	SV_GARBAGE,
+	SV_GMPAGES,		//read only
 	SV_HEARALL,
 	SV_IMPORT,
 	SV_INFORMATION,
@@ -1071,6 +1086,7 @@ LPCTSTR const CServer::sm_szVerbKeys[SV_QTY + 1] =
 	"CONSOLE",
 	"EXPORT",
 	"GARBAGE",
+	"GMPAGES",		// read only
 	"HEARALL",
 	"IMPORT",
 	"INFORMATION",
@@ -1146,8 +1162,22 @@ bool CServer::r_Verb(CScript &s, CTextConsole *pSrc)
 			}
 			return false;
 		}
+		else if ( !strnicmp(pszKey, "GMPAGE.", 7) )
+		{
+			pszKey += 7;
+			size_t iNum = Exp_GetVal(pszKey);
+			if ( iNum >= g_World.m_GMPages.GetCount() )
+				return false;
 
-		if ( !strnicmp(pszKey, "CLEARVARS", 9) )
+			CGMPage *pGMPage = static_cast<CGMPage *>(g_World.m_GMPages.GetAt(iNum));
+			if ( !pGMPage )
+				return false;
+
+			SKIP_SEPARATORS(pszKey);
+			CScript script(pszKey, s.GetArgStr());
+			return pGMPage->r_LoadVal(script);
+		}
+		else if ( !strnicmp(pszKey, "CLEARVARS", 9) )
 		{
 			pszKey = s.GetArgStr();
 			SKIP_SEPARATORS(pszKey);
@@ -1160,6 +1190,7 @@ bool CServer::r_Verb(CScript &s, CTextConsole *pSrc)
 	{
 		case SV_ACCOUNTS:
 		case SV_CHARS:
+		case SV_GMPAGES:
 		case SV_ITEMS:
 		case SV_SAVECOUNT:
 		case SV_TIME:

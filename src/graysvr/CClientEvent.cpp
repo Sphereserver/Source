@@ -536,10 +536,6 @@ void CClient::Event_Skill_Use(SKILL_TYPE skill)
 		case SKILL_INSCRIPTION:
 			Cmd_Skill_Inscription();
 			break;
-
-		default:
-			SysMessage("There is no such skill. Please tell support you saw this message.");
-			break;
 	}
 
 	if ( bDoTargeting )
@@ -1380,7 +1376,7 @@ void CClient::Event_PromptResp(LPCTSTR pszText, size_t len, DWORD context1, DWOR
 
 		case CLIMODE_PROMPT_GM_PAGE_TEXT:
 			// m_Targ_Text
-			Cmd_GM_Page(szText);
+			Event_PromptResp_GMPage(szText);
 			return;
 
 		case CLIMODE_PROMPT_VENDOR_PRICE:
@@ -1422,7 +1418,6 @@ void CClient::Event_PromptResp(LPCTSTR pszText, size_t len, DWORD context1, DWOR
 			break;
 
 		default:
-			//DEBUG_ERR(("%lx:Unrequested Prompt mode %d\n", GetSocketID(), promptMode));
 			SysMessageDefault(DEFMSG_MSG_PROMPT_UNEXPECTED);
 			return;
 	}
@@ -1446,6 +1441,51 @@ void CClient::Event_PromptResp(LPCTSTR pszText, size_t len, DWORD context1, DWOR
 
 	if ( promptMode == CLIMODE_PROMPT_NAME_RUNE )
 		SysMessageDefault(DEFMSG_RUNE_RENAME_SUCCESS);
+}
+
+void CClient::Event_PromptResp_GMPage(LPCTSTR pszReason)
+{
+	ADDTOCALLSTACK("CClient::Event_PromptResp_GMPage");
+	// Player sent an GM page
+	// CLIMODE_PROMPT_GM_PAGE_TEXT
+
+	if ( pszReason[0] == '\0' )
+	{
+		SysMessageDefault(DEFMSG_GMPAGE_PROMPT_CANCEL);
+		return;
+	}
+
+	const CPointMap &pt = m_pChar->GetTopPoint();
+	TCHAR *pszMsg = Str_GetTemp();
+	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_GMPAGE_RECEIVED), m_pChar->GetName(), static_cast<DWORD>(m_pChar->GetUID()), pt.WriteUsed(), pszReason);
+	g_Log.Event(LOGM_NOCONTEXT|LOGM_GM_PAGE, "%s\n", pszMsg);
+
+	CGMPage *pGMPage = static_cast<CGMPage *>(g_World.m_GMPages.GetHead());
+	for ( ; pGMPage != NULL; pGMPage = pGMPage->GetNext() )
+	{
+		if ( strcmp(pGMPage->GetName(), m_pAccount->GetName()) == 0 )
+			break;
+	}
+
+	if ( pGMPage )
+		SysMessageDefault(DEFMSG_GMPAGE_UPDATED);
+	else
+	{
+		pGMPage = new CGMPage(m_pAccount->GetName());
+		SysMessageDefault(DEFMSG_GMPAGE_SENT);
+	}
+	pGMPage->m_uidChar = m_pChar->GetUID();
+	pGMPage->m_pt = pt;
+	pGMPage->m_sReason = pszReason;
+	pGMPage->m_time = CServTime::GetCurrentTime();
+	SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_GMPAGE_QUEUE), static_cast<int>(g_World.m_GMPages.GetCount()));
+
+	ClientIterator it;
+	for ( CClient *pClient = it.next(); pClient != NULL; pClient = it.next() )
+	{
+		if ( pClient->IsPriv(PRIV_GM_PAGE) )
+			pClient->SysMessage(pszMsg);
+	}
 }
 
 void CClient::Event_Talk_Common(TCHAR *szText)

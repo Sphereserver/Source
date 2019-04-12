@@ -767,17 +767,21 @@ void CWorldThread::GarbageCollection_New()
 	}
 	m_ObjDelete.DeleteAll();
 
-	// Clean up GM pages not linked to an valid account
-	CGMPage *pPage = static_cast<CGMPage *>(g_World.m_GMPages.GetHead());
-	while ( pPage )
+	// Clean up GM pages not linked to an valid char/account
+	CGMPage *pGMPageNext = NULL;
+	for ( CGMPage *pGMPage = static_cast<CGMPage *>(g_World.m_GMPages.GetHead()); pGMPage != NULL; pGMPage = pGMPageNext )
 	{
-		CGMPage *pPageNext = pPage->GetNext();
-		if ( !pPage->FindAccount() )
+		pGMPageNext = pGMPage->GetNext();
+		if ( !pGMPage->m_uidChar.CharFind() )
 		{
-			DEBUG_ERR(("GC: Deleted GM Page linked to invalid account '%s'\n", pPage->GetName()));
-			delete pPage;
+			DEBUG_ERR(("GC: Deleted GM Page linked to invalid char uid=0%lx\n", static_cast<DWORD>(pGMPage->m_uidChar)));
+			delete pGMPage;
 		}
-		pPage = pPageNext;
+		else if ( !g_Accounts.Account_Find(pGMPage->m_sAccount) )
+		{
+			DEBUG_ERR(("GC: Deleted GM Page linked to invalid account '%s'\n", pGMPage->GetName()));
+			delete pGMPage;
+		}
 	}
 	EXC_CATCH;
 }
@@ -1141,9 +1145,8 @@ bool CWorld::SaveStage()
 			pRegion->r_WriteModified(m_FileData);
 		}
 
-		CGMPage *pPage = static_cast<CGMPage *>(m_GMPages.GetHead());
-		for ( ; pPage != NULL; pPage = pPage->GetNext() )
-			pPage->r_Write(m_FileData);
+		for ( CGMPage *pGMPage = static_cast<CGMPage *>(m_GMPages.GetHead()); pGMPage != NULL; pGMPage = pGMPage->GetNext() )
+			pGMPage->r_Write(m_FileData);
 	}
 	else if ( m_iSaveStage == static_cast<int>(m_SectorsQty) + 1 )
 	{
@@ -1672,43 +1675,6 @@ bool CWorld::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 {
 	ADDTOCALLSTACK("CWorld::r_WriteVal");
 	EXC_TRY("WriteVal");
-
-	if ( !strnicmp(pszKey, "GMPAGE", 6) )		// GM pages
-	{
-		pszKey += 6;
-		if ( (*pszKey == 'S') || (*pszKey == 's') )		// SERV.GMPAGES
-		{
-			++pszKey;
-			if ( *pszKey != '\0' )
-				return false;
-
-			sVal.FormatVal(m_GMPages.GetCount());
-		}
-		else if ( *pszKey == '.' )						// SERV.GMPAGE.*
-		{
-			SKIP_SEPARATORS(pszKey);
-			size_t index = Exp_GetVal(pszKey);
-			if ( index >= m_GMPages.GetCount() )
-				return false;
-
-			SKIP_SEPARATORS(pszKey);
-			CGMPage *pPage = static_cast<CGMPage *>(m_GMPages.GetAt(index));
-			if ( !pPage )
-				return false;
-
-			if ( !strcmpi(pszKey, "HANDLED") )
-			{
-				CClient *pClient = pPage->FindGMHandler();
-				sVal.FormatHex((pClient && pClient->GetChar()) ? pClient->GetChar()->GetUID() : static_cast<CGrayUID>(UID_CLEAR));
-				return true;
-			}
-			else
-				return pPage->r_WriteVal(pszKey, sVal, pSrc);
-		}
-		else
-			sVal.FormatVal(0);
-		return true;
-	}
 
 	switch ( FindTableSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1) )
 	{

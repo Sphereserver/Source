@@ -175,6 +175,7 @@ enum SC_TYPE
 	SC_CLIENTS,
 	SC_CLIENTVERSION,
 	SC_CREATE,
+	SC_GMPAGES,
 	SC_ITEMS,
 	SC_LANG,
 	SC_LASTVALIDDATE,
@@ -202,6 +203,7 @@ LPCTSTR const CServerDef::sm_szLoadKeys[SC_QTY+1] =	// static
 	"CLIENTS",
 	"CLIENTVERSION",
 	"CREATE",
+	"GMPAGES",
 	"ITEMS",
 	"LANG",
 	"LASTVALIDDATE",
@@ -407,6 +409,9 @@ bool CServerDef::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc
 		break;
 	case SC_CHARS:
 		sVal.FormatVal( StatGet( SERV_STAT_CHARS ));
+		break;
+	case SC_GMPAGES:
+		sVal.FormatVal(g_World.m_GMPages.GetCount());
 		break;
 	case SC_TIMEZONE:
 		sVal.FormatVal( m_TimeZone );

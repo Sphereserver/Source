@@ -1677,11 +1677,6 @@ bool PacketMenuChoice::onReceive(NetState* net)
 			client->Cmd_Skill_Tracking(select, true);
 			return true;
 
-		case CLIMODE_MENU_GM_PAGES:
-			// select a gm page from the menu
-			client->Cmd_GM_PageSelect(select);
-			return true;
-
 		case CLIMODE_MENU_EDIT:
 			// m_Targ_Text = what are we doing to it
 			client->Cmd_EditItem(serial.ObjFind(), select);

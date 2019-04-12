@@ -1455,3 +1455,22 @@ Changed: Pet command 'release' now will look for new 'd_pet_release' confirmatio
 Fixed: Null SRC on @Resurrect trigger when char is resurrected using bandages.
 Changed: NPCAI flag NPC_AI_PERSISTENTPATH on sphere.ini now will also make NPCs follow combat target for longer distances instead give up when the target is too far.
 [sphere.ini]: Added new COMBATF_NOPETDESERT combat flag to allow pet owner attack own pet without make it desert its owner
+
+17-03-2019, Coruja
+[npcs/sphere_vendors.scp]: Added missing speech 'spk_animaltrainer' on animal trainer NPCs
+[speech/speakhuman.scp]: Fixed vendor command 'train' not working correctly
+[speech/speakshopkeep.scp]: Added missing speech 'spk_animaltrainer' and fixed banker commands 'check' / 'withdraw' not working correctly
+
+26-03-2019, Coruja
+[sphere_dialog.scp]: Added new dialog 'd_helppage' and removed obsolete 'd_helpgm', 'd_travel', 'd_traveltown', 'd_traveldung', 'd_travelspec', 'd_travelsupply'
+[sphere_menu.scp]: Removed unused file
+
+12-04-2019, Coruja
+Changed: Updated GM page engine
+	-Old hardcoded menu is now softcoded with completely new dialogs
+	-GM pages now can be replied even to afk/offline players (when offline, the message will show on next login)
+	-Function .PAGE doesn't use args anymore, they're not required since everything is dialog-based
+	-Added new property SERV.GMPAGE.x.CHARUID (read-only) to get char UID
+[sphere_dialogs.scp]: Added new softcoded function '.page' and new GM page dialogs 'd_gmpage_queue', 'd_gmpage_info', 'd_gmpage_response'
+[sphere_msgs.scp]: Removed old 'msg_gmpage_*' messages and added new 'gmpage_*'
+[sphere_skills.scp]: Added @Login trigger on [SKILLCLASS 0] to open GM page response received when offline

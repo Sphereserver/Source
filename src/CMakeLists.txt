@@ -130,7 +130,6 @@ set(graysvr_SRCS
     graysvr/CClient.cpp
     graysvr/CClientDialog.cpp
     graysvr/CClientEvent.cpp
-    graysvr/CClientGMPage.cpp
     graysvr/CClient.h
     graysvr/CClientLog.cpp
     graysvr/CClientMsg.cpp

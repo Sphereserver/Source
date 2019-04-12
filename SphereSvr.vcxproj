@@ -192,7 +192,6 @@ if defined GitRev (
     <ClCompile Include="src\graysvr\CClient.cpp" />
     <ClCompile Include="src\graysvr\CClientDialog.cpp" />
     <ClCompile Include="src\graysvr\CClientEvent.cpp" />
-    <ClCompile Include="src\graysvr\CClientGMPage.cpp" />
     <ClCompile Include="src\graysvr\CClientLog.cpp" />
     <ClCompile Include="src\graysvr\CClientMsg.cpp" />
     <ClCompile Include="src\graysvr\CClientTarg.cpp" />

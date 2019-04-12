@@ -52,7 +52,6 @@ enum CLIMODE_TYPE	// What mode is the client to server connection in? (waiting f
 	CLIMODE_MENU_SKILL,				// result of some skill (Tracking, Tinkering, Blacksmithing, etc)
 	CLIMODE_MENU_SKILL_TRACK_SETUP,
 	CLIMODE_MENU_SKILL_TRACK,
-	CLIMODE_MENU_GM_PAGES,			// open GM pages list
 	CLIMODE_MENU_EDIT,				// edit the contents of a container
 
 	// Prompting for text input ------------------------------------------------------
@@ -408,7 +407,7 @@ public:
 	UINT64 m_timeNextEventWalk;				// fastwalk prevention: only allow more walk requests after this timer
 
 	// GM stuff
-	CGMPage *m_pGMPage;			// current GM page we are connected to
+	CGMPage *m_pGMPage;			// current GM page being handled by this client
 	CGrayUID m_Prop_UID;		// the object of /props (used for skills list as well!)
 
 	// Gump stuff
@@ -442,7 +441,6 @@ public:
 
 		// CLIMODE_MENU_*
 		// CLIMODE_MENU_SKILL
-		// CLIMODE_MENU_GM_PAGES
 		struct
 		{
 			CGrayUIDBase m_UID;
@@ -510,10 +508,7 @@ private:
 
 	BYTE LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg);
 	BYTE LogIn(CAccount *pAccount, CGString &sMsg);
-
 	bool CanInstantLogOut() const;
-	void Cmd_GM_PageClear();
-
 	void Announce(bool fArrive) const;
 
 	// GM stuff
@@ -576,6 +571,7 @@ public:
 	void Event_MailMsg(CGrayUID uid1, CGrayUID uid2);
 	void Event_Profile(BYTE fWriteMode, CGrayUID uid, LPCTSTR pszProfile, int iProfileLen);
 	void Event_PromptResp(LPCTSTR pszText, size_t len, DWORD context1, DWORD context2, DWORD type, bool bNoStrip = false);
+	void Event_PromptResp_GMPage(LPCTSTR pszReason);
 	void Event_SetName(CGrayUID uid, const char *pszCharName);
 	void Event_SingleClick(CGrayUID uid);
 	void Event_Skill_Use(SKILL_TYPE skill);
@@ -605,19 +601,12 @@ public:
 	BYTE Setup_Play(DWORD dwSlot);		// after hitting "Play Character" button
 	BYTE Setup_Start(CChar *pChar);		// send character startup stuff to player
 
-
 	// Translated commands
 private:
-	void Cmd_GM_PageInfo();
 	int Cmd_Extract(CScript *pScript, CRectMap &rect, signed char &zLowest);
 	size_t Cmd_Skill_Menu_Build(RESOURCE_ID_BASE rid, int iSelect, CMenuItem *item, size_t iMaxSize, bool &fShowMenu, bool &fLimitReached);
 
 public:
-	void Cmd_GM_PageMenu(DWORD iEntryStart = 0);
-	void Cmd_GM_PageCmd(LPCTSTR pszCmd);
-	void Cmd_GM_PageSelect(size_t iSelect);
-	void Cmd_GM_Page(LPCTSTR pszReason);	// Help button
-
 	bool Cmd_Skill_Menu(RESOURCE_ID_BASE rid, int iSelect = -1);
 	bool Cmd_Skill_Smith(CItem *pIngots);
 	bool Cmd_Skill_Magery(SPELL_TYPE iSpell, CObjBase *pSrc);

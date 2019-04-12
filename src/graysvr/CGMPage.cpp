@@ -1,105 +1,105 @@
-#include "graysvr.h"	// predef header.
+#include "graysvr.h"	// predef header
 
-//////////////////////////////////////////////////////////////////
-// -CGMPage
-
-CGMPage::CGMPage( LPCTSTR pszAccount ) :
-	m_sAccount( pszAccount )
+CGMPage::CGMPage(LPCTSTR pszAccount)
 {
-	m_pGMClient = NULL;
-	m_timePage = CServTime::GetCurrentTime();
-	// Put at the end of the list.
-	g_World.m_GMPages.InsertTail( this );
+	m_pClientHandling = NULL;
+	m_sAccount = pszAccount;
+	m_uidChar = UID_UNUSED;
+	m_pt.InitPoint();
+	m_sReason = NULL;
+	m_time = CServTime::GetCurrentTime();
+
+	g_World.m_GMPages.InsertTail(this);		// put it at the end of the list
 }
 
 CGMPage::~CGMPage()
 {
-	ClearGMHandler();
+	ClearHandler();
 }
 
-INT64 CGMPage::GetAge() const
+void CGMPage::SetHandler(CClient *pClient)
 {
-	ADDTOCALLSTACK("CGMPage::GetAge");
-	// How old in seconds.
-	return( (-g_World.GetTimeDiff( m_timePage )) / TICK_PER_SEC );
-}
-
-void CGMPage::ClearGMHandler()
-{
-	if ( m_pGMClient != NULL)	// break the link to the client.
-	{
-		ASSERT( m_pGMClient->m_pGMPage == this );
-		m_pGMClient->m_pGMPage = NULL;
-	}
-
-	m_pGMClient = NULL;
-}
-
-void CGMPage::SetGMHandler(CClient* pClient)
-{
-	if ( m_pGMClient == pClient )
+	ADDTOCALLSTACK("CGMPage::SetHandler");
+	if ( !pClient || (pClient == m_pClientHandling) )
 		return;
 
-	if ( m_pGMClient != NULL)	// break the link to the previous client.
-		ClearGMHandler();
+	if ( m_pClientHandling )
+		ClearHandler();
 
-	m_pGMClient = pClient;
-	if ( m_pGMClient != NULL )
-		m_pGMClient->m_pGMPage = this;
+	m_pClientHandling = pClient;
+	m_pClientHandling->m_pGMPage = this;
 }
 
-void CGMPage::r_Write( CScript & s ) const
+void CGMPage::ClearHandler()
+{
+	ADDTOCALLSTACK("CGMPage::ClearHandler");
+	if ( m_pClientHandling )
+	{
+		m_pClientHandling->m_pGMPage = NULL;
+		m_pClientHandling = NULL;
+	}
+}
+
+void CGMPage::r_Write(CScript &s) const
 {
 	ADDTOCALLSTACK_INTENSIVE("CGMPage::r_Write");
-	s.WriteSection( "GMPAGE %s", GetName());
-	s.WriteKey( "REASON", GetReason());
-	s.WriteKeyHex( "TIME", GetAge());
-	s.WriteKey( "P", m_ptOrigin.WriteUsed());
+	s.WriteSection("GMPAGE %s", GetName());
+	s.WriteKeyHex("CHARUID", m_uidChar);
+	s.WriteKey("P", m_pt.WriteUsed());
+	s.WriteKey("REASON", m_sReason);
+	s.WriteKeyVal("TIME", -g_World.GetTimeDiff(m_time) / TICK_PER_SEC);
 }
 
 enum GC_TYPE
 {
 	GC_ACCOUNT,
+	GC_CHARUID,
+	GC_DELETE,
+	GC_HANDLED,
 	GC_P,
 	GC_REASON,
-	GC_STATUS,
 	GC_TIME,
 	GC_QTY
 };
 
-LPCTSTR const CGMPage::sm_szLoadKeys[GC_QTY+1] =
+LPCTSTR const CGMPage::sm_szLoadKeys[GC_QTY + 1] =
 {
 	"ACCOUNT",
+	"CHARUID",
+	"DELETE",
+	"HANDLED",
 	"P",
 	"REASON",
-	"STATUS",
 	"TIME",
 	NULL
 };
 
-bool CGMPage::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
+bool CGMPage::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 {
 	ADDTOCALLSTACK("CGMPage::r_WriteVal");
 	EXC_TRY("WriteVal");
-	switch ( FindTableSorted( pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys)-1 ))
+	switch ( FindTableSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1) )
 	{
-	case GC_ACCOUNT:
-		sVal = GetName();
-		break;
-	case GC_P:	// "P"
-		sVal = m_ptOrigin.WriteUsed();
-		break;
-	case GC_REASON:	// "REASON"
-		sVal = GetReason();
-		break;
-	case GC_STATUS:
-		sVal = GetAccountStatus();
-		break;
-	case GC_TIME:	// "TIME"
-		sVal.FormatLLHex( GetAge() );
-		break;
-	default:
-		return( CScriptObj::r_WriteVal( pszKey, sVal, pSrc ));
+		case GC_ACCOUNT:
+			sVal = GetName();
+			break;
+		case GC_CHARUID:
+			sVal.FormatHex(m_uidChar);
+			break;
+		case GC_HANDLED:
+			sVal.FormatHex((m_pClientHandling && m_pClientHandling->GetChar()) ? m_pClientHandling->GetChar()->GetUID() : static_cast<CGrayUID>(UID_CLEAR));
+			break;
+		case GC_P:
+			sVal = m_pt.WriteUsed();
+			break;
+		case GC_REASON:
+			sVal = m_sReason;
+			break;
+		case GC_TIME:
+			sVal.FormatLLVal(-g_World.GetTimeDiff(m_time) / TICK_PER_SEC);
+			break;
+		default:
+			return CScriptObj::r_WriteVal(pszKey, sVal, pSrc);
 	}
 	return true;
 	EXC_CATCH;
@@ -110,23 +110,38 @@ bool CGMPage::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
 	return false;
 }
 
-bool CGMPage::r_LoadVal( CScript & s )
+bool CGMPage::r_LoadVal(CScript &s)
 {
 	ADDTOCALLSTACK("CGMPage::r_LoadVal");
 	EXC_TRY("LoadVal");
-	switch ( FindTableSorted( s.GetKey(), sm_szLoadKeys, COUNTOF(sm_szLoadKeys)-1 ))
+	switch ( FindTableSorted(s.GetKey(), sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1) )
 	{
-	case GC_P:	// "P"
-		m_ptOrigin.Read( s.GetArgStr());
-		break;
-	case GC_REASON:	// "REASON"
-		SetReason( s.GetArgStr());
-		break;
-	case GC_TIME:	// "TIME"
-		m_timePage = CServTime::GetCurrentTime() - ( s.GetArgVal() * TICK_PER_SEC );
-		break;
-	default:
-		return( CScriptObj::r_LoadVal( s ));
+		case GC_CHARUID:
+			m_uidChar = s.GetArgVal();
+			break;
+		case GC_DELETE:
+			delete this;
+			break;
+		case GC_HANDLED:
+		{
+			CChar *pChar = static_cast<CGrayUID>(s.GetArgVal()).CharFind();
+			if ( pChar && pChar->m_pClient )
+				SetHandler(pChar->m_pClient);
+			else
+				ClearHandler();
+			break;
+		}
+		case GC_P:
+			m_pt.Read(s.GetArgStr());
+			break;
+		case GC_REASON:
+			m_sReason = s.GetArgStr();
+			break;
+		case GC_TIME:
+			m_time = CServTime::GetCurrentTime() - (s.GetArgVal() * TICK_PER_SEC);
+			break;
+		default:
+			return CScriptObj::r_LoadVal(s);
 	}
 	return true;
 	EXC_CATCH;
@@ -136,22 +151,3 @@ bool CGMPage::r_LoadVal( CScript & s )
 	EXC_DEBUG_END;
 	return false;
 }
-
-CAccount *CGMPage::FindAccount() const
-{
-	ADDTOCALLSTACK("CGMPage::FindAccount");
-	return( g_Accounts.Account_Find( m_sAccount ));
-}
-
-LPCTSTR CGMPage::GetAccountStatus() const
-{
-	ADDTOCALLSTACK("CGMPage::GetAccountStatus");
-	CClient * pClient = FindAccount()->FindClient();
-	if ( pClient==NULL )
-		return "OFFLINE";
-	else if ( pClient->GetChar() == NULL )
-		return "LOGIN";
-	else
-		return pClient->GetChar()->GetName();
-}
-

@@ -261,9 +261,6 @@
     <ClCompile Include="src\graysvr\CClientEvent.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="src\graysvr\CClientGMPage.cpp">
-      <Filter>graysvr</Filter>
-    </ClCompile>
     <ClCompile Include="src\graysvr\CClientLog.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
