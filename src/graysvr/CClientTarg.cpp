@@ -26,7 +26,7 @@ bool CClient::OnTarg_Obj_Set(CObjBase *pObj)
 	// Check priv level for the new verb.
 	if ( !g_Cfg.CanUsePrivVerb(pObj, m_Targ_Text, this) )
 	{
-		SysMessageDefault(DEFMSG_MSG_CMD_LACKPRIV);
+		SysMessageDefault(DEFMSG_MSG_ACC_PRIV);
 		g_Log.Event(LOGM_GM_CMDS, "%s=0\n", pszLogMsg);
 		return false;
 	}

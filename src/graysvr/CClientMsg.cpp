@@ -699,12 +699,10 @@ bool CClient::addKick(CTextConsole *pSrc, bool fBlock)
 		m_NetState->markReadClosed();
 		return true;
 	}
-
 	if ( !m_pAccount->Kick(pSrc, fBlock) )
 		return false;
 
-	LPCTSTR pszAction = fBlock ? "KICK" : "DISCONNECT";
-	SysMessagef("You have been %sed by '%s'", pszAction, pSrc->GetName());
+	SysMessagef("You have been %sed by '%s'", fBlock ? "BLOCK" : "DISCONNECT", pSrc->GetName());
 
 	if ( IsConnectTypePacket() )
 		new PacketKick(this);
@@ -3638,7 +3636,7 @@ BYTE CClient::Setup_Delete(DWORD dwSlot)
 {
 	ADDTOCALLSTACK("CClient::Setup_Delete");
 	ASSERT(m_pAccount);
-	DEBUG_MSG(("%lx:Setup_Delete slot=%lu\n", GetSocketID(), dwSlot));
+
 	if ( dwSlot >= COUNTOF(m_tmSetupCharList) )
 		return PacketDeleteError::InvalidRequest;
 
@@ -3671,8 +3669,6 @@ BYTE CClient::Setup_Play(DWORD dwSlot)
 	ADDTOCALLSTACK("CClient::Setup_Play");
 	// Behavior after hit "Play Character" button
 	// Mode == CLIMODE_SETUP_CHARLIST
-
-	DEBUG_MSG(("%lx:Setup_Play slot %lu\n", GetSocketID(), dwSlot));
 
 	if ( !m_pAccount )
 		return PacketLoginError::Invalid;
@@ -3734,15 +3730,14 @@ BYTE CClient::Setup_Start(CChar *pChar)
 
 	if ( !fNoWelcomeMsg )
 	{
-		addBark(g_szServerDescription, NULL, HUE_YELLOW, TALKMODE_SYSTEM, FONT_NORMAL);
-		SysMessagef(g_Cfg.GetDefaultMsg((g_Serv.StatGet(SERV_STAT_CLIENTS) == 2) ? DEFMSG_LOGIN_PLAYER : DEFMSG_LOGIN_PLAYERS), g_Serv.StatGet(SERV_STAT_CLIENTS) - 1);
+		addBarkParse(g_szServerDescription, NULL, HUE_YELLOW, TALKMODE_SYSTEM);
 		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_LOGIN_LASTLOGGED), m_pAccount->m_TagDefs.GetKeyStr("LastLogged"));
 	}
 	if ( !fNoRegionMsg && m_pChar->m_pArea && m_pChar->m_pArea->IsGuarded() && !m_pChar->m_pArea->IsFlag(REGION_FLAG_ANNOUNCE) )
 	{
-		const CVarDefContStr *pVarStr = dynamic_cast<CVarDefContStr *>(m_pChar->m_pArea->m_TagDefs.GetKey("GuardOwner"));
-		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_GUARDSP), pVarStr ? pVarStr->GetValStr() : g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_GUARDSPT));
-		if ( m_pChar->m_pArea->m_TagDefs.GetKeyNum("RED") )
+		CVarDefContStr *pVarStr = dynamic_cast<CVarDefContStr *>(m_pChar->m_pArea->m_TagDefs.GetKey("GuardOwner"));
+		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_GUARDS_1), pVarStr ? pVarStr->GetValStr() : g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_GUARD_ART));
+		if ( m_pChar->m_pArea->m_TagDefs.GetKeyNum("RED") != 0 )
 			SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_REDDEF), g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_REDENTER));
 	}
 
@@ -3776,7 +3771,5 @@ BYTE CClient::Setup_Start(CChar *pChar)
 		}
 		addSysMessage(g_Cfg.GetDefaultMsg((i < 100) ? DEFMSG_MSG_REGION_WATER_1 : DEFMSG_MSG_REGION_WATER_2));
 	}
-
-	DEBUG_MSG(("%lx:Setup_Start done\n", GetSocketID()));
 	return PacketLoginError::Success;
 }

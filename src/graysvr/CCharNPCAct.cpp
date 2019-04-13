@@ -523,7 +523,7 @@ bool CChar::NPC_OnTrainHear(CChar *pCharSrc, LPCTSTR pszCmd)
 {
 	ADDTOCALLSTACK("CChar::NPC_OnTrainHear");
 	// Check the NPC is capable of teaching
-	if ( !m_pNPC || (m_pNPC->m_Brain < NPCBRAIN_HUMAN) || (m_pNPC->m_Brain > NPCBRAIN_ANIMAL_TRAINER) || (m_pNPC->m_Brain == NPCBRAIN_GUARD) )
+	if ( !m_pNPC || !pCharSrc || (m_pNPC->m_Brain < NPCBRAIN_HUMAN) || (m_pNPC->m_Brain > NPCBRAIN_ANIMAL_TRAINER) || (m_pNPC->m_Brain == NPCBRAIN_GUARD) )
 		return false;
 
 	if ( Memory_FindObjTypes(pCharSrc, MEMORY_FIGHT|MEMORY_HARMEDBY|MEMORY_IRRITATEDBY|MEMORY_AGGREIVED) )
@@ -613,7 +613,7 @@ bool CChar::NPC_OnTrainHear(CChar *pCharSrc, LPCTSTR pszCmd)
 void CChar::NPC_OnNoticeSnoop(CChar *pCharThief, CChar *pCharMark)
 {
 	ADDTOCALLSTACK("CChar::NPC_OnNoticeSnoop");
-	if ( !m_pNPC || (pCharMark != this) )
+	if ( !m_pNPC || !pCharThief || (pCharMark != this) )
 		return;
 
 	if ( NPC_CanSpeak() )
@@ -878,7 +878,7 @@ bool CChar::NPC_LookAtCharMonster(CChar *pChar)
 {
 	ADDTOCALLSTACK("CChar::NPC_LookAtCharMonster");
 	// Monster NPC is looking at char
-	if ( !m_pNPC )
+	if ( !m_pNPC || !pChar )
 		return false;
 
 	if ( Fight_IsActive() && (m_Act_Targ == pChar->GetUID()) )	// already attacking this char
@@ -897,7 +897,7 @@ bool CChar::NPC_LookAtCharHuman(CChar *pChar)
 {
 	ADDTOCALLSTACK("CChar::NPC_LookAtCharHuman");
 	// Human NPC is looking at char
-	if ( !m_pNPC || pChar->IsStatFlag(STATF_DEAD) )
+	if ( !m_pNPC || !pChar || pChar->IsStatFlag(STATF_DEAD) )
 		return false;
 
 	bool fCriminal = (pChar->IsStatFlag(STATF_Criminal) || (pChar->Noto_IsEvil() && g_Cfg.m_fGuardsOnMurderers) || pChar->NPC_IsMonster());
@@ -928,7 +928,7 @@ bool CChar::NPC_LookAtCharHealer(CChar *pChar)
 {
 	ADDTOCALLSTACK("CChar::NPC_LookAtCharHealer");
 	// Healer NPC is looking at char
-	if ( !pChar->IsStatFlag(STATF_DEAD) || (pChar->m_pNPC && pChar->m_pNPC->m_bonded) )
+	if ( !pChar || !pChar->IsStatFlag(STATF_DEAD) || (pChar->m_pNPC && pChar->m_pNPC->m_bonded) )
 		return false;
 
 	UpdateDir(pChar);
@@ -1378,7 +1378,7 @@ bool CChar::NPC_FightArchery(CChar *pChar)
 	// Check if NPC can fight using archery
 	// RETURN:
 	//  false = switch to melee combat
-	if ( !g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_RANGED) )
+	if ( !pChar || !g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_RANGED) )
 		return false;
 
 	CItem *pWeapon = m_uidWeapon.ItemFind();
@@ -1453,7 +1453,7 @@ bool CChar::NPC_FightMagery(CChar *pChar)
 	// RETURN:
 	//  false = switch to melee combat
 
-	if ( !NPC_FightMayCast(false) )		// not checking skill here since it will do a search later and it's an expensive function
+	if ( !pChar || !NPC_FightMayCast(false) )		// not checking skill here since it will do a search later and it's an expensive function
 		return false;
 
 	int iSpellCount = m_pNPC->Spells_GetCount();
@@ -2267,28 +2267,7 @@ void CChar::NPC_Act_Idle()
 			if ( OnTrigger(CTRIG_NPCSpecialAction, this) == TRIGRET_RET_TRUE )
 				return;
 		}
-
-		switch ( GetDispID() )
-		{
-			case CREID_FIRE_ELEM:
-			{
-				if ( !g_World.IsItemTypeNear(GetTopPoint(), IT_FIRE, 0, false, true) )
-				{
-					Action_StartSpecial(CREID_FIRE_ELEM);
-					return;
-				}
-				break;
-			}
-			case CREID_GIANT_SPIDER:
-			{
-				if ( !g_World.IsItemTypeNear(GetTopPoint(), IT_WEB, 0, false, true) )
-				{
-					Action_StartSpecial(CREID_GIANT_SPIDER);
-					return;
-				}
-				break;
-			}
-		}
+		UpdateStatVal(STAT_DEX, -(5 + Calc_GetRandVal(5)));
 	}
 
 	// Periodically fly/land

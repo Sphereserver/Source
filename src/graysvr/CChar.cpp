@@ -3102,14 +3102,14 @@ bool CChar::r_Verb(CScript &s, CTextConsole *pSrc)	// execute command from scrip
 					if ( m_pClient )
 						m_pClient->addBuff(BI_HIDDEN, 1075655, 1075656);
 					if ( IsSetOF(OF_Command_Sysmsgs) )
-						pSrc->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_INVIS_ON));
+						pSrc->SysMessagef("Invis %s", g_Cfg.GetDefaultMsg(DEFMSG_CMD_TOGGLE_ON));
 				}
 				else
 				{
 					if ( m_pClient && !IsStatFlag(STATF_Hidden) )
 						m_pClient->removeBuff(BI_HIDDEN);
 					if ( IsSetOF(OF_Command_Sysmsgs) )
-						pSrc->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_INVIS_OFF));
+						pSrc->SysMessagef("Invis %s", g_Cfg.GetDefaultMsg(DEFMSG_CMD_TOGGLE_OFF));
 				}
 			}
 			break;
@@ -3121,7 +3121,7 @@ bool CChar::r_Verb(CScript &s, CTextConsole *pSrc)	// execute command from scrip
 				m_StatFlag = s.GetArgFlag(m_StatFlag, STATF_INVUL);
 				NotoSave_Update();
 				if ( IsSetOF(OF_Command_Sysmsgs) )
-					pSrc->SysMessage(g_Cfg.GetDefaultMsg(IsStatFlag(STATF_INVUL) ? DEFMSG_MSG_INVUL_ON : DEFMSG_MSG_INVUL_OFF));
+					pSrc->SysMessagef("Invul %s", g_Cfg.GetDefaultMsg(IsStatFlag(STATF_INVUL) ? DEFMSG_CMD_TOGGLE_ON : DEFMSG_CMD_TOGGLE_OFF));
 			}
 			break;
 		}

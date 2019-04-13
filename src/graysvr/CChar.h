@@ -1203,7 +1203,6 @@ public:
 
 public:
 	void SoundChar(CRESND_TYPE type);
-	void Action_StartSpecial(CREID_TYPE id);
 
 private:
 	void OnNoticeCrime(CChar *pCriminal, const CChar *pCharMark);

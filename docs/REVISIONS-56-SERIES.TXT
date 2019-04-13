@@ -1471,6 +1471,12 @@ Changed: Updated GM page engine
 	-GM pages now can be replied even to afk/offline players (when offline, the message will show on next login)
 	-Function .PAGE doesn't use args anymore, they're not required since everything is dialog-based
 	-Added new property SERV.GMPAGE.x.CHARUID (read-only) to get char UID
-[sphere_dialogs.scp]: Added new softcoded function '.page' and new GM page dialogs 'd_gmpage_queue', 'd_gmpage_info', 'd_gmpage_response'
+[sphere_dialog.scp]: Added new softcoded function '.page' and new GM page dialogs 'd_gmpage_queue', 'd_gmpage_info', 'd_gmpage_response'
 [sphere_msgs.scp]: Removed old 'msg_gmpage_*' messages and added new 'gmpage_*'
 [sphere_skills.scp]: Added @Login trigger on [SKILLCLASS 0] to open GM page response received when offline
+
+13-04-2019, Coruja
+[sphere_msgs.scp]: Updated message list with the following changes
+	-Added: cmd_toggle_off, cmd_toggle_on
+	-Removed: login_player, login_players, msg_cmd_lackpriv, msg_invis_off, msg_invis_on, msg_invul_off, msg_invul_on, msg_region_guardsp, msg_region_guardspt
+	-Updated: cmd_remove_player, msg_region_guard_art

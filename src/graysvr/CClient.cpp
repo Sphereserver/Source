@@ -845,7 +845,7 @@ bool CClient::r_LoadVal(CScript &s)
 			m_pAccount->TogPrivFlags(PRIV_ALLMOVE, s.GetArgStr());
 			addPlayerSee(NULL);
 			if ( IsSetOF(OF_Command_Sysmsgs) )
-				m_pChar->SysMessage(IsPriv(PRIV_ALLMOVE) ? "Allmove ON" : "Allmove OFF");
+				m_pChar->SysMessagef("AllMove %s", g_Cfg.GetDefaultMsg(IsPriv(PRIV_ALLMOVE) ? DEFMSG_CMD_TOGGLE_ON : DEFMSG_CMD_TOGGLE_OFF));
 			break;
 		}
 		case CC_ALLSHOW:
@@ -855,7 +855,7 @@ bool CClient::r_LoadVal(CScript &s)
 			m_pAccount->TogPrivFlags(PRIV_ALLSHOW, s.GetArgStr());
 			addPlayerSee(NULL);
 			if ( IsSetOF(OF_Command_Sysmsgs) )
-				m_pChar->SysMessage(IsPriv(PRIV_ALLSHOW) ? "Allshow ON" : "Allshow OFF");
+				m_pChar->SysMessagef("AllShow %s", g_Cfg.GetDefaultMsg(IsPriv(PRIV_ALLSHOW) ? DEFMSG_CMD_TOGGLE_ON : DEFMSG_CMD_TOGGLE_OFF));
 			break;
 		}
 		case CC_DEBUG:
@@ -864,14 +864,14 @@ bool CClient::r_LoadVal(CScript &s)
 			m_pAccount->TogPrivFlags(PRIV_DEBUG, s.GetArgStr());
 			addPlayerSee(NULL);
 			if ( IsSetOF(OF_Command_Sysmsgs) )
-				m_pChar->SysMessage(IsPriv(PRIV_DEBUG) ? "Debug ON" : "Debug OFF");
+				m_pChar->SysMessagef("Debug %s", g_Cfg.GetDefaultMsg(IsPriv(PRIV_DEBUG) ? DEFMSG_CMD_TOGGLE_ON : DEFMSG_CMD_TOGGLE_OFF));
 			break;
 		}
 		case CC_DETAIL:
 		{
 			m_pAccount->TogPrivFlags(PRIV_DETAIL, s.GetArgStr());
 			if ( IsSetOF(OF_Command_Sysmsgs) )
-				m_pChar->SysMessage(IsPriv(PRIV_DETAIL) ? "Detail ON" : "Detail OFF");
+				m_pChar->SysMessagef("Detail %s", g_Cfg.GetDefaultMsg(IsPriv(PRIV_DETAIL) ? DEFMSG_CMD_TOGGLE_ON : DEFMSG_CMD_TOGGLE_OFF));
 			break;
 		}
 		case CC_GM:
@@ -882,7 +882,7 @@ bool CClient::r_LoadVal(CScript &s)
 				m_pChar->UpdatePropertyFlag();
 				addPlayerSee(NULL);
 				if ( IsSetOF(OF_Command_Sysmsgs) )
-					m_pChar->SysMessage(IsPriv(PRIV_GM) ? "GM ON" : "GM OFF");
+					m_pChar->SysMessagef("GM %s", g_Cfg.GetDefaultMsg(IsPriv(PRIV_GM) ? DEFMSG_CMD_TOGGLE_ON : DEFMSG_CMD_TOGGLE_OFF));
 			}
 			break;
 		}
@@ -890,7 +890,7 @@ bool CClient::r_LoadVal(CScript &s)
 		{
 			m_pAccount->TogPrivFlags(PRIV_HEARALL, s.GetArgStr());
 			if ( IsSetOF(OF_Command_Sysmsgs) )
-				m_pChar->SysMessage(IsPriv(PRIV_HEARALL) ? "Hearall ON" : "Hearall OFF");
+				m_pChar->SysMessagef("HearAll %s", g_Cfg.GetDefaultMsg(IsPriv(PRIV_HEARALL) ? DEFMSG_CMD_TOGGLE_ON : DEFMSG_CMD_TOGGLE_OFF));
 			break;
 		}
 		case CC_PRIVSHOW:
@@ -905,7 +905,7 @@ bool CClient::r_LoadVal(CScript &s)
 
 				m_pChar->UpdatePropertyFlag();
 				if ( IsSetOF(OF_Command_Sysmsgs) )
-					m_pChar->SysMessage(IsPriv(PRIV_PRIV_NOSHOW) ? "Privshow OFF" : "Privshow ON");
+					m_pChar->SysMessagef("PrivShow %s", g_Cfg.GetDefaultMsg(IsPriv(PRIV_PRIV_NOSHOW) ? DEFMSG_CMD_TOGGLE_ON : DEFMSG_CMD_TOGGLE_OFF));
 			}
 			break;
 		case CC_TARG:

@@ -1,48 +1,6 @@
 // CChar is either an NPC or a Player
 #include "graysvr.h"	// predef header.
 
-void CChar::Action_StartSpecial(CREID_TYPE id)
-{
-	ADDTOCALLSTACK("CChar::Action_StartSpecial");
-	// Take the special creature action
-
-	if ( !g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_NOANIM) )
-		UpdateAnimate(ANIM_CAST_AREA);
-
-	switch ( id )
-	{
-		case CREID_FIRE_ELEM:
-		{
-			// Leave a fire path
-			CItem *pItem = CItem::CreateScript(Calc_GetRandVal(2) ? ITEMID_FX_FIRE_F_EW : ITEMID_FX_FIRE_F_NS, this);
-			ASSERT(pItem);
-			pItem->SetType(IT_FIRE);
-			pItem->m_itSpell.m_spell = static_cast<WORD>(SPELL_Fire_Field);
-			pItem->m_itSpell.m_spelllevel = static_cast<WORD>(100 + Calc_GetRandVal(500));
-			pItem->m_itSpell.m_spellcharges = 1;
-			pItem->m_uidLink = GetUID();
-			pItem->MoveToDecay(GetTopPoint(), 10 + Calc_GetRandVal(50) * TICK_PER_SEC);
-			break;
-		}
-		case CREID_GIANT_SPIDER:
-		{
-			// Leave a web path
-			CItem *pItem = CItem::CreateScript(static_cast<ITEMID_TYPE>(Calc_GetRandVal2(ITEMID_WEB1_1, ITEMID_WEB1_4)), this);
-			ASSERT(pItem);
-			pItem->SetType(IT_WEB);
-			pItem->MoveToDecay(GetTopPoint(), 10 + Calc_GetRandVal(170) * TICK_PER_SEC);
-			break;
-		}
-		default:
-		{
-			SysMessage("You have no special abilities");
-			return;
-		}
-	}
-
-	UpdateStatVal(STAT_DEX, -(5 + Calc_GetRandVal(5)));		// the stamina cost
-}
-
 ///////////////////////////////////////////////////////////
 // Stats
 
@@ -657,16 +615,6 @@ void CChar::Skill_Decay()
 		skillDeduct = static_cast<SKILL_TYPE>(i);
 		wSkillLevel = Skill_GetBase(skillDeduct);
 	}
-
-#ifdef _DEBUG
-	if ( (g_Cfg.m_wDebugFlags & DEBUGF_ADVANCE_STATS) && IsPriv(PRIV_DETAIL) && (GetPrivLevel() >= PLEVEL_GM) )
-	{
-		if ( skillDeduct == SKILL_NONE )
-			SysMessage("No suitable skill to reduce.\n");
-		else
-			SysMessagef("Reducing %s=%d.%d\n", g_Cfg.GetSkillKey(skillDeduct), wSkillLevel / 10, wSkillLevel % 10);
-	}
-#endif
 
 	// deduct a point from the chosen skill
 	if ( skillDeduct != SKILL_NONE )
