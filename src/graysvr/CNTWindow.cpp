@@ -417,6 +417,7 @@ bool CNTWindow::OnCommand( WORD wNotifyCode, INT_PTR wID, HWND hwndCtl )
 				CDialogBase::DialogProc,
 				reinterpret_cast<LPARAM>(static_cast <CDialogBase*>(&theApp.m_wndStatus)) );
 		}
+		theApp.m_wndStatus.CentralizeWindow(theApp.m_wndMain.m_hWnd);
 		theApp.m_wndStatus.ShowWindow(SW_NORMAL);
 		theApp.m_wndStatus.SetForegroundWindow();
 		break;
@@ -430,6 +431,7 @@ bool CNTWindow::OnCommand( WORD wNotifyCode, INT_PTR wID, HWND hwndCtl )
 				CDialogBase::DialogProc,
 				reinterpret_cast<LPARAM>(static_cast <CDialogBase*>(&theApp.m_wndAbout)) );
 		}
+		theApp.m_wndAbout.CentralizeWindow(theApp.m_wndMain.m_hWnd);
 		theApp.m_wndAbout.ShowWindow(SW_NORMAL);
 		theApp.m_wndAbout.SetForegroundWindow();
 		break;

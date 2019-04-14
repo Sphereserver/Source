@@ -110,6 +110,24 @@ public:
 		ASSERT( m_hWnd );
 		return( ::SetFocus( m_hWnd ));
 	}
+	BOOL CentralizeWindow(HWND hWndParent)
+	{
+		ASSERT(m_hWnd);
+		// Get dialog box rects
+		RECT rcParent, rcThis, rcOffset;
+		GetWindowRect(hWndParent, &rcParent);
+		GetWindowRect(m_hWnd, &rcThis);
+		CopyRect(&rcOffset, &rcParent);
+
+		// Offset parent and dialog box rects so that right and bottom represent the width and
+		// height, and then offset the parent again to discard space taken up by the dialog box
+		OffsetRect(&rcThis, -rcThis.left, -rcThis.top);
+		OffsetRect(&rcOffset, -rcOffset.left, -rcOffset.top);
+		OffsetRect(&rcOffset, -rcThis.right, -rcThis.bottom);
+
+		// The new position is the sum of half the remaining space and the parent position
+		return ::SetWindowPos(m_hWnd, HWND_TOP, rcParent.left + (rcOffset.right / 2), rcParent.top + (rcOffset.bottom / 2), 0, 0, SWP_NOSIZE);
+	}
 	BOOL ShowWindow( int nCmdShow )
 	{
 		// SW_SHOW

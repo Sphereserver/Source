@@ -1476,6 +1476,8 @@ Changed: Updated GM page engine
 [sphere_skills.scp]: Added @Login trigger on [SKILLCLASS 0] to open GM page response received when offline
 
 13-04-2019, Coruja
+Fixed: Console dialogs Status/About now will open centered instead misaligned on top left (Windows only).
+[sphere_dialog.scp]: Updated dialogs 'd_charprop1', 'd_itemprop1', and removed 'd_charprop2', 'd_charprop3', 'd_itemprop2'
 [sphere_msgs.scp]: Updated message list with the following changes
 	-Added: cmd_toggle_off, cmd_toggle_on
 	-Removed: login_player, login_players, msg_cmd_lackpriv, msg_invis_off, msg_invis_on, msg_invul_off, msg_invul_on, msg_region_guardsp, msg_region_guardspt
