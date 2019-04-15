@@ -592,7 +592,7 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 						{
 							INT64 iArgs = GetVal(pszArgs);
 							if ( iArgs <= 0 )
-								DEBUG_ERR(("Exp_GetVal: (x)Log(%lld) is %s\n", iArgs, !iArgs ? "infinite" : "undefined"));
+								DEBUG_ERR(("%s: Log(%lld) is %s\n", sm_IntrinsicFunctions[index], iArgs, !iArgs ? "infinite" : "undefined"));
 							else
 							{
 								iCount = 1;
@@ -609,7 +609,7 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 										INT64 iBase = GetVal(pszArgs);
 										if ( iBase <= 0 )
 										{
-											DEBUG_ERR(("Exp_GetVal: (%lld)Log(%lld) is %s\n", iBase, iArgs, !iBase ? "infinite" : "undefined"));
+											DEBUG_ERR(("%s: (%lld)Log(%lld) is %s\n", sm_IntrinsicFunctions[index], iBase, iArgs, !iBase ? "infinite" : "undefined"));
 											iCount = 0;
 										}
 										else
@@ -705,7 +705,7 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 								iResult = static_cast<INT64>(sqrt(static_cast<double>(iArgs)));
 							}
 							else
-								DEBUG_ERR(("Exp_GetVal: Sqrt of negative number (%lld) is impossible\n", iArgs));
+								DEBUG_ERR(("%s(%lld): can't get square root of negative number\n", sm_IntrinsicFunctions[index], iArgs));
 						}
 						break;
 					}
@@ -780,7 +780,7 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 							TCHAR *pszLastError = Str_GetTemp();
 							iResult = Str_RegExMatch(ppArgs[0], ppArgs[1], pszLastError);
 							if ( iResult == -1 )
-								DEBUG_ERR(("STRREGEX: Bad function usage. Error: %s\n", pszLastError));
+								DEBUG_ERR(("%s: %s\n", sm_IntrinsicFunctions[index], pszLastError));
 						}
 						break;
 					}
@@ -899,7 +899,7 @@ INT64 CExpression::GetValMath(INT64 iVal, LPCTSTR &pszArgs)
 		{
 			++pszArgs;
 			INT64 iArgs = GetVal(pszArgs);
-			if ( !iArgs )
+			if ( iArgs == 0 )
 			{
 				DEBUG_ERR(("Can't divide by 0\n"));
 				break;
@@ -911,7 +911,7 @@ INT64 CExpression::GetValMath(INT64 iVal, LPCTSTR &pszArgs)
 		{
 			++pszArgs;
 			INT64 iArgs = GetVal(pszArgs);
-			if ( !iArgs )
+			if ( iArgs == 0 )
 			{
 				DEBUG_ERR(("Can't divide by 0\n"));
 				break;
@@ -980,7 +980,7 @@ INT64 CExpression::GetValMath(INT64 iVal, LPCTSTR &pszArgs)
 			++pszArgs;
 			if ( iVal <= 0 )
 			{
-				DEBUG_ERR(("Exp_GetVal: Power of zero with negative base is undefined\n"));
+				DEBUG_ERR(("Power of zero with negative base is undefined\n"));
 				break;
 			}
 			iVal = static_cast<INT64>(pow(static_cast<double>(iVal), static_cast<int>(GetVal(pszArgs))));

@@ -1377,7 +1377,7 @@ bool CScriptObj::r_LoadVal(CScript &s)
 		case SSC_LIST:
 		{
 			if ( !g_Exp.m_ListGlobals.r_LoadVal(pszKey + 5, s) )
-				DEBUG_ERR(("Unable to process command '%s %s'\n", pszKey, s.GetArgRaw()));
+				DEBUG_ERR(("%s: Unknown command '%s'\n", sm_szLoadKeys[index], pszKey));
 			return true;
 		}
 		case SSC_DEFMSG:
@@ -1901,7 +1901,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				sVal.FormatLLHex(WEXITSTATUS(status));
 			}
 #endif
-			g_Log.EventDebug("Process execution finished\n");
+			g_Log.EventDebug("%s: process execution finished\n", sm_szLoadKeys[index]);
 			return true;
 		}
 		case SSC_EXPLODE:
@@ -1954,7 +1954,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			INT64 iRes = 0;
 
 			if ( iDiv == 0 )
-				DEBUG_ERR(("Can't divide by 0\n"));
+				DEBUG_ERR(("%s: can't divide by 0\n", sm_szLoadKeys[index]));
 			else
 				iRes = IMULDIV(iNum, iMul, iDiv);
 

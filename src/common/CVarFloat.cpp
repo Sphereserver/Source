@@ -127,9 +127,9 @@ RealType CVarFloat::GetValMath(RealType dVal, LPCTSTR &pszExpr)
 		{
 			++pszExpr;
 			RealType dTempVal = MakeFloatMath(pszExpr);
-			if ( !dTempVal )
+			if ( dTempVal == 0 )
 			{
-				DEBUG_ERR(("FloatVal: Can't divide by 0\n"));
+				DEBUG_ERR(("FloatVal: can't divide by 0\n"));
 				break;
 			}
 			dVal /= dTempVal;
@@ -153,7 +153,7 @@ RealType CVarFloat::GetValMath(RealType dVal, LPCTSTR &pszExpr)
 			RealType dTempVal = MakeFloatMath(pszExpr);
 			if ( (dVal == 0) && (dTempVal < 0) )
 			{
-				DEBUG_ERR(("FloatVal: Power of zero with negative exponent is undefined\n"));
+				DEBUG_ERR(("FloatVal: power of zero with negative exponent is undefined\n"));
 				break;
 			}
 			dVal = pow(dVal, dTempVal);
@@ -168,7 +168,7 @@ RealType CVarFloat::GetValMath(RealType dVal, LPCTSTR &pszExpr)
 				dVal = static_cast<RealType>(MakeFloatMath(pszExpr) || dVal);
 			}
 			else	// bitwise
-				DEBUG_ERR(("FloatVal: Operator '%s' is not allowed\n", "|"));
+				DEBUG_ERR(("FloatVal: operator '|' is not allowed\n"));
 			break;
 		case '&':
 			++pszExpr;
@@ -178,15 +178,15 @@ RealType CVarFloat::GetValMath(RealType dVal, LPCTSTR &pszExpr)
 				dVal = static_cast<RealType>(MakeFloatMath(pszExpr) && dVal);	// tricky stuff here, logical ops must come first or possibly not get processed
 			}
 			else	// bitwise
-				DEBUG_ERR(("FloatVal: Operator '%s' is not allowed\n", "&"));
+				DEBUG_ERR(("FloatVal: operator '&' is not allowed\n"));
 			break;
 		case '%':
 			++pszExpr;
-			DEBUG_ERR(("FloatVal: Operator '%s' is not allowed\n", "%"));
+			DEBUG_ERR(("FloatVal: operator '%' is not allowed\n"));
 			break;
 		case '^':
 			++pszExpr;
-			DEBUG_ERR(("FloatVal: Operator '%s' is not allowed\n", "^"));
+			DEBUG_ERR(("FloatVal: operator '^' is not allowed\n"));
 			break;
 		case '>':	// boolean
 			++pszExpr;
@@ -198,7 +198,7 @@ RealType CVarFloat::GetValMath(RealType dVal, LPCTSTR &pszExpr)
 			else if ( pszExpr[0] == '>' )	// shift
 			{
 				++pszExpr;
-				DEBUG_ERR(("FloatVal: Operator '%s' is not allowed\n", ">>"));
+				DEBUG_ERR(("FloatVal: operator '>>' is not allowed\n"));
 			}
 			else
 				dVal = static_cast<RealType>(dVal > MakeFloatMath(pszExpr));
@@ -213,7 +213,7 @@ RealType CVarFloat::GetValMath(RealType dVal, LPCTSTR &pszExpr)
 			else if ( pszExpr[0] == '<' )	// shift
 			{
 				++pszExpr;
-				DEBUG_ERR(("FloatVal: Operator '%s' is not allowed\n", "<<"));
+				DEBUG_ERR(("FloatVal: operator '<<' is not allowed\n"));
 			}
 			else
 				dVal = static_cast<RealType>(dVal < MakeFloatMath(pszExpr));
@@ -272,7 +272,7 @@ RealType CVarFloat::GetSingle(LPCTSTR &pszArgs)
 			return -GetSingle(pszArgs);
 		case '~':	// bitwise not
 			++pszArgs;
-			DEBUG_ERR(("FloatVal: Operator '~' is not allowed\n"));
+			DEBUG_ERR(("FloatVal: operator '~' is not allowed\n"));
 			return 0;
 		case '!':	// boolean not
 			++pszArgs;
@@ -416,7 +416,7 @@ RealType CVarFloat::GetSingle(LPCTSTR &pszArgs)
 							RealType dBase = MakeFloatMath(pszCmd);
 							if ( dBase <= 0 )
 							{
-								DEBUG_ERR(("FloatVal: (%f)Log(%f) is %s\n", dBase, dArgument, !dBase ? "infinite" : "undefined"));
+								DEBUG_ERR(("%s: (%f)Log(%f) is %s\n", sm_IntrinsicFunctions[index], dBase, dArgument, !dBase ? "infinite" : "undefined"));
 								iCount = 0;
 								dResult = 0;
 							}
@@ -532,7 +532,7 @@ RealType CVarFloat::GetSingle(LPCTSTR &pszArgs)
 						}
 						else
 						{
-							DEBUG_ERR(("FloatVal: Sqrt of negative number (%f) is impossible\n", dTosquare));
+							DEBUG_ERR(("%s(%f): can't get square root of negative number\n", sm_IntrinsicFunctions[index], dTosquare));
 							dResult = 0;
 						}
 					}
@@ -613,8 +613,8 @@ RealType CVarFloat::GetSingle(LPCTSTR &pszArgs)
 					{
 						TCHAR *pszLastError = Str_GetTemp();
 						dResult = Str_RegExMatch(ppCmd[0], ppCmd[1], pszLastError);
-						if ( dResult < 0 )
-							DEBUG_ERR(("STRREGEX: Bad function usage. Error: %s\n", pszLastError));
+						if ( dResult == -1 )
+							DEBUG_ERR(("%s: %s\n", sm_IntrinsicFunctions[index], pszLastError));
 					}
 					break;
 				}
