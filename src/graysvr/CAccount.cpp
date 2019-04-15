@@ -24,7 +24,7 @@ void CAccounts::Account_Add(CAccount *pAccount)
 		g_Serv.r_Call("f_onaccount_create", &g_Serv, &Args, NULL, &tr);
 		if ( tr == TRIGRET_RET_TRUE )
 		{
-			g_Log.Event(LOGL_ERROR|LOGM_INIT, "Account '%s': creation blocked via script\n", pAccount->GetName());
+			g_Log.Event(LOGL_EVENT|LOGM_ACCOUNTS, "Account '%s': creation blocked via script\n", pAccount->GetName());
 			Account_Delete(pAccount);
 			return;
 		}
@@ -93,7 +93,7 @@ bool CAccounts::Account_Load(LPCTSTR pszName, CScript &s, bool fChanges)
 	{
 		if ( !fChanges )
 		{
-			g_Log.Event(LOGL_ERROR|LOGM_INIT, "Account '%s': bad name\n", pszName);
+			g_Log.Event(LOGL_ERROR|LOGM_ACCOUNTS, "Account '%s': bad name\n", pszName);
 			return false;
 		}
 	}
@@ -104,7 +104,7 @@ bool CAccounts::Account_Load(LPCTSTR pszName, CScript &s, bool fChanges)
 	{
 		if ( !fChanges )
 		{
-			g_Log.Event(LOGL_ERROR|LOGM_INIT, "Account '%s': duplicated name\n", pszName);
+			g_Log.Event(LOGL_ERROR|LOGM_ACCOUNTS, "Account '%s': duplicated name\n", pszName);
 			return false;
 		}
 	}
@@ -312,7 +312,7 @@ CAccount *CAccounts::Account_FindCreate(LPCTSTR pszName, bool fCreate)
 				pAccount->SetPrivLevel(PLEVEL_Guest);
 			return pAccount;
 		}
-		g_Log.Event(LOGL_ERROR|LOGM_INIT, "Account '%s': bad name\n", pszName);
+		g_Log.Event(LOGL_ERROR|LOGM_ACCOUNTS, "Account '%s': bad name\n", pszName);
 	}
 	return NULL;
 }
@@ -334,7 +334,7 @@ bool CAccounts::Cmd_AddNew(CTextConsole *pSrc, LPCTSTR pszName, LPCTSTR pszPassw
 	ADDTOCALLSTACK("CAccounts::Cmd_AddNew");
 	if ( !pszName )
 	{
-		g_Log.Event(LOGL_ERROR|LOGM_INIT, "Username is required to add an account\n");
+		g_Log.Event(LOGL_ERROR|LOGM_ACCOUNTS, "Username is required to add an account\n");
 		return false;
 	}
 
@@ -348,7 +348,7 @@ bool CAccounts::Cmd_AddNew(CTextConsole *pSrc, LPCTSTR pszName, LPCTSTR pszPassw
 	TCHAR szName[MAX_ACCOUNT_NAME_SIZE];
 	if ( !CAccount::NameStrip(szName, pszName) )
 	{
-		g_Log.Event(LOGL_ERROR|LOGM_INIT, "Account '%s': bad name\n", pszName);
+		g_Log.Event(LOGL_ERROR|LOGM_ACCOUNTS, "Account '%s': bad name\n", pszName);
 		return false;
 	}
 
@@ -436,7 +436,7 @@ CAccount::CAccount(LPCTSTR pszName)
 
 	TCHAR szName[MAX_ACCOUNT_NAME_SIZE];
 	if ( !CAccount::NameStrip(szName, pszName) )
-		g_Log.Event(LOGL_ERROR|LOGM_INIT, "Account '%s': bad name\n", pszName);
+		g_Log.Event(LOGL_ERROR|LOGM_ACCOUNTS, "Account '%s': bad name\n", pszName);
 
 	m_sName = szName;
 	m_PrivLevel = PLEVEL_Player;
@@ -480,7 +480,7 @@ bool CAccount::SetPassword(LPCTSTR pszPassword, bool fMD5)
 
 	if ( Str_Check(pszPassword) )	// prevents exploits
 	{
-		g_Log.Event(LOGL_WARN, "Account '%s': can't set new password because it have invalid strings\n", GetName());
+		g_Log.Event(LOGL_ERROR|LOGM_ACCOUNTS, "Account '%s': can't set new password because it have invalid strings\n", GetName());
 		return false;
 	}
 
@@ -500,7 +500,7 @@ bool CAccount::SetPassword(LPCTSTR pszPassword, bool fMD5)
 		char digest[33];
 		CMD5::fastDigest(digest, pszPassword);
 		m_sPassword = digest;
-		g_Log.Event(LOGL_EVENT, "Account '%s': plain text password converted to MD5 hash\n", GetName());
+		g_Log.Event(LOGL_EVENT|LOGM_ACCOUNTS, "Account '%s': plain text password converted to MD5 hash\n", GetName());
 	}
 	else
 		m_sPassword = pszPassword;
@@ -777,7 +777,7 @@ size_t CAccount::AttachChar(CChar *pChar)
 	{
 		size_t iQty = m_Chars.GetCharCount();
 		if ( iQty > MAX_CHARS_PER_ACCT )
-			g_Log.Event(LOGM_ACCOUNTS|LOGL_ERROR, "Account '%s' exceeded max characters allowed (%" FMTSIZE_T "/%d)\n", GetName(), iQty, MAX_CHARS_PER_ACCT);
+			g_Log.Event(LOGL_ERROR|LOGM_ACCOUNTS, "Account '%s' exceeded max characters allowed (%" FMTSIZE_T "/%d)\n", GetName(), iQty, MAX_CHARS_PER_ACCT);
 	}
 	return i;
 }
@@ -975,7 +975,7 @@ bool CAccount::r_LoadVal(CScript &s)
 			SetNewPassword(s.GetArgStr());
 			break;
 		case AC_PASSWORD:
-			SetPassword(s.GetArgStr());
+			SetPassword(s.GetArgStr(), g_Serv.IsLoading() ? g_Cfg.m_fMd5Passwords : false);
 			break;
 		case AC_MD5PASSWORD:
 			SetPassword(s.GetArgStr(), true);

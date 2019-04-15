@@ -1482,3 +1482,7 @@ Fixed: Console dialogs Status/About now will open centered instead misaligned on
 	-Added: cmd_toggle_off, cmd_toggle_on
 	-Removed: login_player, login_players, msg_cmd_lackpriv, msg_invis_off, msg_invis_on, msg_invul_off, msg_invul_on, msg_region_guardsp, msg_region_guardspt
 	-Updated: cmd_remove_player, msg_region_guard_art
+
+15-04-2019, Coruja
+Fixed: Md5Passwords setting on sphere.ini making sphere startup rehash all account passwords already hashed.
+Fixed: Console logs for account operations showing even when LogMask flag 'LOGM_ACCOUNTS' is disabled on sphere.ini.
