@@ -252,9 +252,9 @@ bool CServer::Load()
 	g_Log.WriteString("\n");
 
 #if defined(__GITREVISION__) && defined(__GITHASH__)
-	g_Log.Event(LOGM_INIT, "%s\nCompiled: %s (%s) [build %d / Git hash %s]\n\n", g_szServerDescription, g_szServerBuildDate, g_szServerBuildTime, __GITREVISION__, __GITHASH__);
+	g_Log.Event(LOGL_EVENT, "%s\nCompiled: %s (%s) [build %d / Git hash %s]\n\n", g_szServerDescription, g_szServerBuildDate, g_szServerBuildTime, __GITREVISION__, __GITHASH__);
 #else
-	g_Log.Event(LOGM_INIT, "%s\nCompiled: %s (%s)\n\n", g_szServerDescription, g_szServerBuildDate, g_szServerBuildTime);
+	g_Log.Event(LOGL_EVENT, "%s\nCompiled: %s (%s)\n\n", g_szServerDescription, g_szServerBuildDate, g_szServerBuildTime);
 #endif
 
 #ifdef _NIGHTLYBUILD

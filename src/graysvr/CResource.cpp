@@ -3520,7 +3520,7 @@ bool CResource::Load(bool fResync)
 	// Index all script files
 	AddResourceDir(m_sSCPBaseDir);
 	size_t iCount = m_ResourceFiles.GetCount();
-	g_Log.Event(LOGM_INIT, "Indexing %" FMTSIZE_T " scripts...\n", iCount);
+	g_Log.Event(LOGL_EVENT, "Indexing %" FMTSIZE_T " scripts...\n", iCount);
 
 	for ( size_t j = 0; ; ++j )
 	{
@@ -3555,7 +3555,7 @@ bool CResource::Load(bool fResync)
 	}
 
 	if ( m_StartDefs.GetCount() <= 0 )
-		g_Log.Event(LOGM_INIT|LOGL_ERROR, "No START locations specified. Clients will not be able to create new characters\n");
+		g_Log.Event(LOGL_ERROR, "No START locations specified. Clients will not be able to create new characters\n");
 
 	// Make region DEFNAMEs
 	size_t iMax = g_Cfg.m_RegionDefs.GetCount();
@@ -3613,7 +3613,7 @@ bool CResource::Load(bool fResync)
 
 	long lTotal, lUsed;
 	Triglist(lTotal, lUsed);
-	g_Log.Event(LOGM_INIT, "Done loading scripts (%ld of %ld triggers used)\n", lUsed, lTotal);
+	g_Log.Event(LOGL_EVENT, "Done loading scripts (%ld of %ld triggers used)\n", lUsed, lTotal);
 
 	// Load client crypt keys from sphereCrypt.ini
 	if ( fResync )

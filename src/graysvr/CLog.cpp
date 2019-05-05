@@ -132,7 +132,7 @@ int CLog::EventStr( DWORD dwMask, LPCTSTR pszMsg )
 				pszLabel = "WARNING:";
 				break;
 		}
-		if ( !pszLabel && (dwMask & LOGM_DEBUG) && !(dwMask & LOGM_INIT) )
+		if ( !pszLabel && (dwMask & LOGM_DEBUG) )
 			pszLabel = "DEBUG:";
 
 		// Get the script context. (if there is one)
@@ -148,7 +148,7 @@ int CLog::EventStr( DWORD dwMask, LPCTSTR pszMsg )
 		}
 
 		// Print to screen.
-		if ( !(dwMask & LOGM_INIT) && !g_Serv.IsLoading() )
+		if ( !g_Serv.IsLoading() )
 		{
 			SetColor(YELLOW);
 			g_Serv.PrintStr(szTime);

@@ -1486,3 +1486,6 @@ Fixed: Console dialogs Status/About now will open centered instead misaligned on
 15-04-2019, Coruja
 Fixed: Md5Passwords setting on sphere.ini making sphere startup rehash all account passwords already hashed.
 Fixed: Console logs for account operations showing even when LogMask flag 'LOGM_ACCOUNTS' is disabled on sphere.ini.
+
+05-05-2019, Coruja
+Changed: Disabling LogMask flag 'LOGM_INIT' on sphere.ini now will make console show a minimum set of init messages instead disable all init messages.

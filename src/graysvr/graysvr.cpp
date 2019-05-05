@@ -303,7 +303,7 @@ bool WritePidFile(int iMode = 0)
 		pidFile = fopen(file, "r");
 		if ( pidFile )
 		{
-			g_Log.Event(LOGM_INIT, SPHERE_FILE ".pid already exists. Secondary launch or unclean shutdown?\n");
+			g_Log.Event(LOGL_WARN, "File " SPHERE_FILE ".pid already exists. Secondary launch or unclean shutdown?\n");
 			fclose(pidFile);
 		}
 		return true;
@@ -319,7 +319,7 @@ bool WritePidFile(int iMode = 0)
 			fclose(pidFile);
 			return true;
 		}
-		g_Log.Event(LOGM_INIT, "Cannot create pid file!\n");
+		g_Log.Event(LOGL_WARN, "Unable to create file " SPHERE_FILE ".pid\n");
 		return false;
 	}
 }
@@ -650,17 +650,16 @@ int Sphere_InitServer( int argc, char *argv[] )
 		}
 	}
 
-	EXC_SET("finalizing");
-	g_Serv.SetServerMode(SERVMODE_Run);
-	g_Log.Event(LOGM_INIT, "Startup complete (Items=%lu, Chars=%lu, Accounts=%lu)\nPress '?' for console commands\n\n", g_Serv.StatGet(SERV_STAT_ITEMS), g_Serv.StatGet(SERV_STAT_CHARS), g_Serv.StatGet(SERV_STAT_ACCOUNTS));
-
+	g_Log.Event(LOGL_EVENT, "Startup complete (Items=%lu, Chars=%lu, Accounts=%lu)\nPress '?' for console commands\n\n", g_Serv.StatGet(SERV_STAT_ITEMS), g_Serv.StatGet(SERV_STAT_CHARS), g_Serv.StatGet(SERV_STAT_ACCOUNTS));
 	if ( !g_Accounts.Account_GetCount() )
-		g_Log.Event(LOGL_WARN|LOGM_INIT, "The server has no accounts. To create admin account you must type:\n  ACCOUNT ADD [login] [password]\n  ACCOUNT [login] PLEVEL 7\n");
+		g_Log.Event(LOGL_WARN, "The server has no accounts. To create admin account use:\n  ACCOUNT ADD [login] [password]\n  ACCOUNT [login] PLEVEL 7\n\n");
 
 	// Trigger server start
+	EXC_SET("finalizing");
+	g_Serv.SetServerMode(SERVMODE_Run);
+
 	g_Serv.r_Call("f_onserver_start", &g_Serv, NULL);
 	return g_Serv.m_iExitFlag;
-
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
@@ -917,7 +916,7 @@ void defragSphere(char *path)
 	// NOTE: Sure I could use CVarDefArray, but it is extremely slow with memory allocation, takes hours
 	// to read and save the data. Moreover, it takes less memory in this case and does less convertations.
 
-	g_Log.Event(LOGM_INIT, "Defragmentation (UID alteration) of " SPHERE_TITLE " saves.\n"
+	g_Log.Event(LOGL_EVENT, "Defragmentation (UID alteration) of " SPHERE_TITLE " saves.\n"
 		"Use it at your own risk and if you know what you are doing, since it can possibly harm your server.\n"
 		"The process can take up to several hours depending on the CPU you have.\n"
 		"After finished, you will have your '" SPHERE_FILE "*.scp' save files converted to '" SPHERE_FILE "*.scp.new'.\n");
@@ -926,6 +925,7 @@ void defragSphere(char *path)
 	for ( i = 0; i < 3; i++ )
 	{
 		strncpy(z, path, sizeof(z) - 1);
+		z[sizeof(z) - 1] = '\0';
 		if ( i == 0 )
 			strcat(z, SPHERE_FILE "statics" SPHERE_SCRIPT);
 		else if ( i == 1 )
@@ -933,10 +933,10 @@ void defragSphere(char *path)
 		else
 			strcat(z, SPHERE_FILE "chars" SPHERE_SCRIPT);
 
-		g_Log.Event(LOGM_INIT, "Reading %s\n", z);
+		g_Log.Event(LOGL_EVENT, "Reading %s\n", z);
 		if ( !inf.Open(z, OF_READ|OF_TEXT|OF_DEFAULTMODE) )
 		{
-			g_Log.Event(LOGM_INIT, "Can't open file '%s' for reading. Skipped!\n", z);
+			g_Log.Event(LOGL_EVENT, "Can't open file '%s' for reading. Skipped!\n", z);
 			continue;
 		}
 		dBytesRead = dTotalMb = 0;
@@ -948,7 +948,7 @@ void defragSphere(char *path)
 			{
 				dBytesRead -= mb10;
 				dTotalMb += 10;
-				g_Log.Event(LOGM_INIT, "Total read %lu Mb\n", dTotalMb);
+				g_Log.Event(LOGL_EVENT, "Total read %lu Mb\n", dTotalMb);
 			}
 			if (( buf[0] == 'S' ) && ( strstr(buf, "SERIAL=") == buf ))
 			{
@@ -971,17 +971,18 @@ void defragSphere(char *path)
 	dTotalUIDs = uid;
 	if ( dTotalUIDs <= 0 )
 	{
-		g_Log.Event(LOGM_INIT, "Save files are empty, defragmentation is not needed\n");
+		g_Log.Event(LOGL_EVENT, "Save files are empty, defragmentation is not needed\n");
 		return;
 	}
 
-	g_Log.Event(LOGM_INIT, "Found %lu UIDs (latest: 0%lx)\n", uid, uids[dTotalUIDs - 1]);
-	g_Log.Event(LOGM_INIT, "Quick-sorting UIDs array...\n");
+	g_Log.Event(LOGL_EVENT, "Found %lu UIDs (latest: 0%lx)\n", uid, uids[dTotalUIDs - 1]);
+	g_Log.Event(LOGL_EVENT, "Quick-sorting UIDs array...\n");
 	dword_q_sort(uids, 0, dTotalUIDs - 1);
 
 	for ( i = 0; i < 5; i++ )
 	{
 		strncpy(z, path, sizeof(z) - 1);
+		z[sizeof(z) - 1] = '\0';
 		if ( i == 0 )
 			strcat(z, SPHERE_FILE "accu.scp");
 		else if ( i == 1 )
@@ -993,16 +994,16 @@ void defragSphere(char *path)
 		else if ( i == 4 )
 			strcat(z, SPHERE_FILE "statics" SPHERE_SCRIPT);
 
-		g_Log.Event(LOGM_INIT, "Updating UIDs in '%s' to '%s.new'\n", z, z);
+		g_Log.Event(LOGL_EVENT, "Updating UIDs in '%s' to '%s.new'\n", z, z);
 		if ( !inf.Open(z, OF_READ|OF_TEXT|OF_DEFAULTMODE) )
 		{
-			g_Log.Event(LOGM_INIT, "Can't open file '%s' for reading. Skipped!\n", z);
+			g_Log.Event(LOGL_EVENT, "Can't open file '%s' for reading. Skipped!\n", z);
 			continue;
 		}
 		strcat(z, ".new");
 		if ( !ouf.Open(z, OF_WRITE|OF_CREATE|OF_DEFAULTMODE) )
 		{
-			g_Log.Event(LOGM_INIT, "Can't open file '%s' for writing. Skipped!\n", z);
+			g_Log.Event(LOGL_EVENT, "Can't open file '%s' for writing. Skipped!\n", z);
 			continue;
 		}
 		dBytesRead = dTotalMb = 0;
@@ -1020,7 +1021,7 @@ void defragSphere(char *path)
 			{
 				dBytesRead -= mb5;
 				dTotalMb += 5;
-				g_Log.Event(LOGM_INIT, "Total processed %lu Mb\n", dTotalMb);
+				g_Log.Event(LOGL_EVENT, "Total processed %lu Mb\n", dTotalMb);
 			}
 			p = buf;
 
@@ -1159,7 +1160,7 @@ void defragSphere(char *path)
 		ouf.Close();
 	}
 	free(uids);
-	g_Log.Event(LOGM_INIT,	"Defragmentation complete.\n");
+	g_Log.Event(LOGL_EVENT,	"Defragmentation complete.\n");
 }
 
 #ifdef _WIN32

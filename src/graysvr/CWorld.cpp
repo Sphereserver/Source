@@ -1893,9 +1893,10 @@ void CWorld::GarbageCollection()
 {
 	ADDTOCALLSTACK("CWorld::GarbageCollection");
 	g_Log.Flush();
+	SERVMODE_TYPE smPrevServMode = g_Serv.m_iModeCode;
 	g_Serv.SetServerMode(SERVMODE_Loading);
 	GarbageCollection_UIDs();
-	g_Serv.SetServerMode(SERVMODE_Run);
+	g_Serv.SetServerMode(smPrevServMode);
 	g_Log.Flush();
 }
 
