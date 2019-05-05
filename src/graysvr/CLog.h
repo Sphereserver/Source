@@ -115,7 +115,7 @@ public:
 	CLog()
 	{
 		m_fLockOpen = false;
-		m_dwMsgMask = (LOGL_ERROR|LOGM_INIT|LOGM_CLIENTS_LOG|LOGM_GM_PAGE);
+		m_dwMsgMask = (LOGM_ACCOUNTS|LOGM_INIT|LOGM_SAVE|LOGM_CLIENTS_LOG|LOGM_GM_PAGE|LOGM_PLAYER_SPEAK|LOGM_GM_CMDS|LOGM_CHEAT|LOGM_KILLS|LOGM_HTTP);
 		m_pScriptContext = NULL;
 		m_pObjectContext = NULL;
 		SetFilePath(SPHERE_FILE "log.log");		// default name

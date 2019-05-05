@@ -182,7 +182,7 @@ RealType CVarFloat::GetValMath(RealType dVal, LPCTSTR &pszExpr)
 			break;
 		case '%':
 			++pszExpr;
-			DEBUG_ERR(("FloatVal: operator '%' is not allowed\n"));
+			DEBUG_ERR(("FloatVal: operator '%%' is not allowed\n"));
 			break;
 		case '^':
 			++pszExpr;

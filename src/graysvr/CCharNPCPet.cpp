@@ -586,7 +586,7 @@ bool CChar::NPC_CheckHirelingStatus()
 	if ( !pCharDef->m_iHireDayWage || !iFoodConsumeRate )
 		return true;
 
-	DWORD dwPeriodWage = IMULDIV(pCharDef->m_iHireDayWage, iFoodConsumeRate, 24 * 60 * g_Cfg.m_iGameMinuteLength);
+	DWORD dwPeriodWage = IMULDIV(pCharDef->m_iHireDayWage, iFoodConsumeRate, static_cast<LONGLONG>(24) * 60 * g_Cfg.m_iGameMinuteLength);
 	if ( dwPeriodWage < 1 )
 		dwPeriodWage = 1;
 

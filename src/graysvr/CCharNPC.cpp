@@ -60,16 +60,12 @@ bool CChar::SetPlayerAccount(CAccount *pAccount)
 		if ( m_pPlayer->m_pAccount == pAccount )
 			return true;
 
-		DEBUG_ERR(("SetPlayerAccount '%s' already set '%s' != '%s'!\n", GetName(), m_pPlayer->m_pAccount->GetName(), pAccount->GetName()));
+		DEBUG_ERR(("Char '%s' (UID=0%lx) can't override account '%s' with '%s'\n", GetName(), static_cast<DWORD>(GetUID()), m_pPlayer->m_pAccount->GetName(), pAccount->GetName()));
 		return false;
 	}
 
 	if ( m_pNPC )
-	{
-		// This could happen if the account is set manually through
-		// scripts
 		ClearNPC();
-	}
 
 	m_pPlayer = new CCharPlayer(this, pAccount);
 	pAccount->AttachChar(this);
@@ -78,16 +74,16 @@ bool CChar::SetPlayerAccount(CAccount *pAccount)
 
 
 
-bool CChar::SetPlayerAccount( LPCTSTR pszAccName )
+bool CChar::SetPlayerAccount(LPCTSTR pszAccName)
 {
 	ADDTOCALLSTACK("CChar::SetPlayerAccount");
-	CAccount *pAccount = g_Accounts.Account_FindCreate( pszAccName, g_Serv.m_eAccApp == ACCAPP_Free );
+	CAccount *pAccount = g_Accounts.Account_FindCreate(pszAccName, (g_Serv.m_eAccApp == ACCAPP_Free));
 	if ( !pAccount )
 	{
-		DEBUG_ERR(( "SetPlayerAccount '%s' can't find '%s'!\n", GetName(), pszAccName ));
+		DEBUG_ERR(("Char '%s' (UID=0%lx) can't find account '%s'\n", GetName(), static_cast<DWORD>(GetUID()), pszAccName));
 		return false;
 	}
-	return( SetPlayerAccount( pAccount ));
+	return SetPlayerAccount(pAccount);
 }
 
 // Set up the char as an NPC
@@ -402,11 +398,11 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 				pChar->m_pClient->addKRToolbar( m_bKrToolbarEnabled );
 			return true;
 		case CPC_LASTUSED:
-			m_timeLastUsed = CServTime::GetCurrentTime() - ( s.GetArgVal() * TICK_PER_SEC );
-			return( true );
+			m_timeLastUsed = CServTime::GetCurrentTime() - (s.GetArgLLVal() * TICK_PER_SEC);
+			return true;
 		case CPC_PROFILE:
-			m_sProfile = Str_MakeFiltered( s.GetArgStr());
-			return( true );
+			m_sProfile = Str_MakeFiltered(s.GetArgStr());
+			return true;
 		case CPC_REFUSEGLOBALCHATREQUESTS:
 			m_bRefuseGlobalChatRequests = (s.GetArgVal() != 0);
 			return true;

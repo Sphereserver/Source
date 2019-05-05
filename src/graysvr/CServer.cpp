@@ -749,6 +749,8 @@ longcommand:
 			char *z = Str_GetTemp();
 
 			strncpy(z, g_Cfg.m_sStripPath, THREAD_STRING_LENGTH - 1);
+			z[THREAD_STRING_LENGTH - 1] = '\0';
+
 			strcat(z, "sphere_strip" SPHERE_SCRIPT);
 			pSrc->SysMessagef("StripPath is %s\n", z);
 
@@ -764,6 +766,8 @@ longcommand:
 			while ( (script = g_Cfg.GetResourceFile(i++)) != NULL )
 			{
 				strncpy(z, script->GetFilePath(), THREAD_STRING_LENGTH - 1);
+				z[THREAD_STRING_LENGTH - 1] = '\0';
+
 				fileScript = fopen(z, "r");
 				if ( !fileScript )
 				{
@@ -780,6 +784,7 @@ longcommand:
 					x = y;
 					GETNONWHITESPACE(x);
 					strncpy(z, x, THREAD_STRING_LENGTH - 1);
+					z[THREAD_STRING_LENGTH - 1] = '\0';
 
 					if ( ((z[0] == '[') && (strnicmp(z, "[EOF]", 5) != 0)) || !strnicmp(z, "DEFNAME", 7) || !strnicmp(z, "NAME", 4) ||
 						!strnicmp(z, "ID", 2) || !strnicmp(z, "TYPE", 4) || !strnicmp(z, "WEIGHT", 6) || !strnicmp(z, "VALUE", 5) ||
@@ -974,6 +979,7 @@ bool CServer::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		// Extract account name/index to a temporary buffer
 		TCHAR *pszTemp = Str_GetTemp();
 		strncpy(pszTemp, pszKey, MAX_ACCOUNT_NAME_SIZE - 1);
+		pszTemp[MAX_ACCOUNT_NAME_SIZE - 1] = '\0';
 
 		TCHAR *pszSplit = strchr(pszTemp, '.');
 		if ( pszSplit )
@@ -1134,6 +1140,7 @@ bool CServer::r_Verb(CScript &s, CTextConsole *pSrc)
 			// Extract account name/index to a temporary buffer
 			TCHAR *pszTemp = Str_GetTemp();
 			strncpy(pszTemp, pszKey, MAX_ACCOUNT_NAME_SIZE - 1);
+			pszTemp[MAX_ACCOUNT_NAME_SIZE - 1] = '\0';
 
 			TCHAR *pszSplit = strchr(pszTemp, '.');
 			if ( pszSplit )
@@ -1224,15 +1231,15 @@ bool CServer::r_Verb(CScript &s, CTextConsole *pSrc)
 				return true;
 			}
 
-#ifndef _MTNETWORK
-			HistoryIP &history = g_NetworkIn.getIPHistoryManager().getHistoryForIP(ppArgs[0]);
-#else
+#ifdef _MTNETWORK
 			HistoryIP &history = g_NetworkManager.getIPHistoryManager().getHistoryForIP(ppArgs[0]);
+#else
+			HistoryIP &history = g_NetworkIn.getIPHistoryManager().getHistoryForIP(ppArgs[0]);
 #endif
 
-			int iTimeout = (iQty >= 2) ? Exp_GetVal(ppArgs[1]) : -1;
+			INT64 iTimeout = (iQty >= 2) ? Exp_GetLLVal(ppArgs[1]) : -1;
 			if ( iTimeout >= 0 )
-				pSrc->SysMessagef("IP blocked for %d seconds\n", iTimeout);
+				pSrc->SysMessagef("IP blocked for %lld seconds\n", iTimeout);
 			else
 				pSrc->SysMessagef("IP%s blocked\n", history.m_blocked ? " already" : "");
 
@@ -1393,10 +1400,10 @@ bool CServer::r_Verb(CScript &s, CTextConsole *pSrc)
 		}
 		case SV_UNBLOCKIP:
 		{
-#ifndef _MTNETWORK
-			HistoryIP &history = g_NetworkIn.getIPHistoryManager().getHistoryForIP(s.GetArgRaw());
-#else
+#ifdef _MTNETWORK
 			HistoryIP &history = g_NetworkManager.getIPHistoryManager().getHistoryForIP(s.GetArgRaw());
+#else
+			HistoryIP &history = g_NetworkIn.getIPHistoryManager().getHistoryForIP(s.GetArgRaw());
 #endif
 			pSrc->SysMessagef("IP%s unblocked\n", history.m_blocked ? "" : " already");
 			history.setBlocked(false);

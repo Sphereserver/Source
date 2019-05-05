@@ -124,8 +124,7 @@ bool CAccounts::Account_LoadAll(bool fChanges, bool fClearChanges)
 	ADDTOCALLSTACK("CAccounts::Account_LoadAll");
 
 	TCHAR *pszFilename = Str_GetTemp();
-	strncpy(pszFilename, g_Cfg.m_sAcctBaseDir, _MAX_PATH);
-	strncat(pszFilename, fChanges ? SPHERE_FILE "acct" : SPHERE_FILE "accu", _MAX_PATH);
+	sprintf(pszFilename, "%s" SPHERE_FILE "%s", static_cast<LPCTSTR>(g_Cfg.m_sAcctBaseDir), fChanges ? "acct" : "accu");
 
 	if ( !fChanges )
 		g_Log.Event(LOGM_INIT, "Loading %s%s\n", pszFilename, SPHERE_SCRIPT);

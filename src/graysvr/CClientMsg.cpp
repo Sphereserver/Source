@@ -270,7 +270,7 @@ void CClient::resendBuffs()
 			}
 			case SPELL_Strangle:
 			{
-				double dStamPenalty = 3 - ((m_pChar->Stat_GetVal(STAT_DEX) / maximum(1, m_pChar->Stat_GetAdjusted(STAT_DEX))) * 2);
+				double dStamPenalty = 3 - ((static_cast<double>(m_pChar->Stat_GetVal(STAT_DEX)) / maximum(1, m_pChar->Stat_GetAdjusted(STAT_DEX))) * 2);
 				WORD wTimerTotal = 0;
 				for ( WORD w = 0; w < wStatEffect; ++w )
 					wTimerTotal += (wStatEffect - w) * TICK_PER_SEC;
@@ -1166,7 +1166,8 @@ void CClient::addItemName(const CItem *pItem)
 	const CContainer *pCont = dynamic_cast<const CContainer *>(pItem);
 	if ( pCont )
 	{
-		if ( !pItem->IsType(IT_BBOARD) )
+		// Don't show content info if container is a corpse on ground or another player backpack
+		if ( ((pItem->GetEquipLayer() != LAYER_PACK) || (pItem->GetParentObj() == m_pChar)) && !pItem->IsType(IT_CORPSE) && !pItem->IsType(IT_BBOARD) )
 			len += sprintf(szName + len, g_Cfg.GetDefaultMsg(DEFMSG_CONT_ITEMS), pCont->GetCount(), pCont->GetTotalWeight() / WEIGHT_UNITS);
 	}
 	else if ( pItem->IsTypeArmorWeapon() )
@@ -1252,35 +1253,39 @@ void CClient::addCharName(const CChar *pChar)
 	// Single click text for a character
 	ASSERT(pChar);
 
-	HUE_TYPE wHue = pChar->Noto_GetHue(m_pChar);
-
-	TCHAR *pszName = Str_GetTemp();
 	LPCTSTR pszPrefix = pChar->GetKeyStr("NAME.PREFIX");
 	if ( !*pszPrefix )
 		pszPrefix = pChar->Noto_GetFameTitle();
 
-	strncpy(pszName, pszPrefix, MAX_NAME_SIZE - 1);
-	strncat(pszName, pChar->GetName(), MAX_NAME_SIZE - 1);
-	strncat(pszName, pChar->GetKeyStr("NAME.SUFFIX"), MAX_NAME_SIZE - 1);
+	TCHAR *pszSuffix = Str_GetTemp();
+	strcpy(pszSuffix, pChar->GetKeyStr("NAME.SUFFIX"));
 
-	LPCTSTR pszAbbrev = pChar->Guild_Abbrev(MEMORY_TOWN);
-	if ( pszAbbrev )
-		sprintf(pszName, " [%s]", pszAbbrev);
-
-	pszAbbrev = pChar->Guild_Abbrev(MEMORY_GUILD);
-	if ( pszAbbrev )
-		sprintf(pszName, " [%s]", pszAbbrev);
-
-	if ( pChar->m_pNPC && g_Cfg.m_fVendorTradeTitle && (pChar->GetNPCBrain() == NPCBRAIN_HUMAN) )
+	if ( pChar->m_pPlayer )
 	{
-		LPCTSTR pszTitle = pChar->GetTradeTitle();
-		if ( *pszTitle )
+		LPCTSTR pszGuildAbbrev = pChar->Guild_Abbrev(MEMORY_GUILD);
+		if ( pszGuildAbbrev )
+			sprintf(pszSuffix, "%s [%s]", pszSuffix, pszGuildAbbrev);
+		else
 		{
-			strcat(pszName, " ");
-			strncat(pszName, pszTitle, MAX_NAME_SIZE - 1);
+			pszGuildAbbrev = pChar->Guild_Abbrev(MEMORY_TOWN);
+			if ( pszGuildAbbrev )
+				sprintf(pszSuffix, "%s [%s]", pszSuffix, pszGuildAbbrev);
+		}
+	}
+	else
+	{
+		if ( g_Cfg.m_fVendorTradeTitle && (pChar->GetNPCBrain() == NPCBRAIN_HUMAN) )
+		{
+			LPCTSTR pszTradeTitle = pChar->GetTradeTitle();
+			if ( pszTradeTitle )
+				sprintf(pszSuffix, "%s %s", pszSuffix, pszTradeTitle);
 		}
 	}
 
+	TCHAR *pszName = Str_GetTemp();
+	sprintf(pszName, "%s%s%s", pszPrefix, pChar->GetName(), pszSuffix);
+
+	HUE_TYPE wHue = pChar->Noto_GetHue(m_pChar);
 	bool fAllShow = IsPriv(PRIV_DEBUG|PRIV_ALLSHOW);
 
 	if ( g_Cfg.m_fCharTags || fAllShow )
@@ -2495,55 +2500,58 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 					LPCTSTR pszPrefix = pChar->GetKeyStr("NAME.PREFIX");
 					if ( !*pszPrefix )
 						pszPrefix = pChar->Noto_GetFameTitle();
-					if ( !*pszPrefix )
-						pszPrefix = " ";
 
 					TCHAR *pszSuffix = Str_GetTemp();
 					strcpy(pszSuffix, pChar->GetKeyStr("NAME.SUFFIX"));
 
-					if ( pChar->m_pNPC && g_Cfg.m_fVendorTradeTitle && (pChar->GetNPCBrain() == NPCBRAIN_HUMAN) )
+					if ( pChar->m_pPlayer )
 					{
-						LPCTSTR pszTitle = pChar->GetTradeTitle();
-						if ( *pszTitle )
+						LPCTSTR pszGuildAbbrev = pChar->Guild_Abbrev(MEMORY_GUILD);
+						if ( pszGuildAbbrev )
+							sprintf(pszSuffix, "%s [%s]", pszSuffix, pszGuildAbbrev);
+						else
 						{
-							strcat(pszSuffix, " ");
-							strcat(pszSuffix, pszTitle);
+							pszGuildAbbrev = pChar->Guild_Abbrev(MEMORY_TOWN);
+							if ( pszGuildAbbrev )
+								sprintf(pszSuffix, "%s [%s]", pszSuffix, pszGuildAbbrev);
+						}
+					}
+					else
+					{
+						if ( g_Cfg.m_fVendorTradeTitle && (pChar->GetNPCBrain() == NPCBRAIN_HUMAN) )
+						{
+							LPCTSTR pszTradeTitle = pChar->GetTradeTitle();
+							if ( pszTradeTitle )
+								sprintf(pszSuffix, "%s %s", pszSuffix, pszTradeTitle);
 						}
 					}
 
-					const CStoneMember *pGuildMember = pChar->Guild_FindMember(MEMORY_GUILD);
-					if ( pGuildMember )
-					{
-						const CItemStone *pParentStone = pGuildMember->GetParentStone();
-						ASSERT(pParentStone);
-						if ( pGuildMember->IsAbbrevOn() && pParentStone->GetAbbrev()[0] )
-						{
-							strcat(pszSuffix, " [");
-							strcat(pszSuffix, pParentStone->GetAbbrev());
-							strcat(pszSuffix, "]");
-						}
-					}
+					if ( !*pszPrefix )
+						pszPrefix = " ";
+					if ( !*pszSuffix )
+						pszSuffix = " ";
 
-					if ( *pszSuffix == '\0' )
-						strcpy(pszSuffix, " ");
-
-					// The name
 					m_TooltipData.InsertAt(0, t = new CClientTooltip(1050045)); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
 					if ( dwClilocName )
 						t->FormatArgs("%s\t%lu\t%s", pszPrefix, dwClilocName, pszSuffix);
 					else
 						t->FormatArgs("%s\t%s\t%s", pszPrefix, pObj->GetName(), pszSuffix);
 
-					// Need to find a way to get the ushort inside hues.mul for index wHue to get this working.
-					//t->FormatArgs("<basefont color=\"#%02x%02x%02x\">%s\t%s\t%s</basefont>", (BYTE)((((int)wHue) & 0x7C00) >> 7), (BYTE)((((int)wHue) & 0x3E0) >> 2), (BYTE)((((int)wHue) & 0x1F) << 3), pszPrefix, pObj->GetName(), pszSuffix); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
+					// Need to find a way to get the ushort inside hues.mul for index wHue to get this working
+					//HUE_TYPE wHue = pChar->Noto_GetHue(m_pChar);
+					//t->FormatArgs("<basefont color=\"#%02x%02x%02x\">%s\t%s\t%s</basefont>", (wHue & 0x7C00) >> 7, (wHue & 0x3E0) >> 2, (wHue & 0x1F) << 3, pszPrefix, pChar->GetName(), pszSuffix); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
 
-					if ( pGuildMember && pGuildMember->IsAbbrevOn() )
+					if ( pChar->m_pPlayer )
 					{
-						m_TooltipData.Add(t = new CClientTooltip(1042971)); // ~1_NOTHING~
-						if ( pGuildMember->GetTitle()[0] )
-							t->FormatArgs("%s, %s", pGuildMember->GetTitle(), pGuildMember->GetParentStone()->GetName());
-						else
-							t->FormatArgs("%s", pGuildMember->GetParentStone()->GetName());
+						const CStoneMember *pGuildMember = pChar->Guild_FindMember(MEMORY_GUILD);
+						if ( pGuildMember && pGuildMember->IsAbbrevOn() )
+						{
+							m_TooltipData.Add(t = new CClientTooltip(1042971)); // ~1_NOTHING~
+							if ( pGuildMember->GetTitle()[0] )
+								t->FormatArgs("%s, %s", pGuildMember->GetTitle(), pGuildMember->GetParentStone()->GetName());
+							else
+								t->FormatArgs("%s", pGuildMember->GetParentStone()->GetName());
+						}
 					}
 				}
 
@@ -3731,12 +3739,15 @@ BYTE CClient::Setup_Start(CChar *pChar)
 	if ( !fNoWelcomeMsg )
 	{
 		addBarkParse(g_szServerDescription, NULL, HUE_YELLOW, TALKMODE_SYSTEM);
-		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_LOGIN_LASTLOGGED), m_pAccount->m_TagDefs.GetKeyStr("LastLogged"));
+
+		CVarDefCont *pVarLastLogged = m_pChar->m_pArea->m_TagDefs.GetKey("LastLogged");
+		if ( pVarLastLogged )
+			SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_LOGIN_LASTLOGGED), pVarLastLogged->GetValStr());
 	}
 	if ( !fNoRegionMsg && m_pChar->m_pArea && m_pChar->m_pArea->IsGuarded() && !m_pChar->m_pArea->IsFlag(REGION_FLAG_ANNOUNCE) )
 	{
-		CVarDefContStr *pVarStr = dynamic_cast<CVarDefContStr *>(m_pChar->m_pArea->m_TagDefs.GetKey("GuardOwner"));
-		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_GUARDS_1), pVarStr ? pVarStr->GetValStr() : g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_GUARD_ART));
+		CVarDefCont *pVarGuardOwner = m_pChar->m_pArea->m_TagDefs.GetKey("GuardOwner");
+		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_GUARDS_1), pVarGuardOwner ? pVarGuardOwner->GetValStr() : g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_GUARD_ART));
 		if ( m_pChar->m_pArea->m_TagDefs.GetKeyNum("RED") != 0 )
 			SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_REDDEF), g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_REDENTER));
 	}

@@ -552,7 +552,7 @@ void CChar::Noto_Kill(CChar *pKill, bool fPetKill, int iTotalKillers)
 		if ( !IsPriv(PRIV_GM) )
 		{
 			CScriptTriggerArgs Args;
-			Args.m_iN1 = m_pPlayer->m_wMurders + 1;
+			Args.m_iN1 = static_cast<INT64>(m_pPlayer->m_wMurders) + 1;
 			Args.m_iN2 = true;
 
 			if ( IsTrigUsed(TRIGGER_MURDERMARK) )

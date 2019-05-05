@@ -1021,7 +1021,7 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 
 		if ( IsTrigUsed(TRIGGER_BUY) || IsTrigUsed(TRIGGER_ITEMBUY) )
 		{
-			CScriptTriggerArgs Args(amount, amount * items[i].m_price, pVendor);
+			CScriptTriggerArgs Args(amount, static_cast<INT64>(amount) * items[i].m_price, pVendor);
 			Args.m_VarsLocal.SetNum("TOTALCOST", costtotal);
 			if ( pItem->OnTrigger(ITRIG_Buy, GetChar(), &Args) == TRIGRET_RET_TRUE )
 				continue;

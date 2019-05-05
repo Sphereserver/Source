@@ -454,6 +454,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerScript(CScript &s, LPCTSTR pszTrigName, CTextC
 		// Lowercase for speed
 		TCHAR *pszName = Str_GetTemp();
 		strncpy(pszName, pszTrigName, sizeof(pTrigger->name) - 1);
+		pszName[sizeof(pTrigger->name) - 1] = '\0';
 		_strlwr(pszName);
 
 		if ( g_profiler.initstate != 0xF1 )		// profiler is not initialized
@@ -1377,7 +1378,7 @@ bool CScriptObj::r_LoadVal(CScript &s)
 		case SSC_LIST:
 		{
 			if ( !g_Exp.m_ListGlobals.r_LoadVal(pszKey + 5, s) )
-				DEBUG_ERR(("%s: Unknown command '%s'\n", sm_szLoadKeys[index], pszKey));
+				DEBUG_ERR(("%s: unknown command '%s'\n", sm_szLoadKeys[index], pszKey));
 			return true;
 		}
 		case SSC_DEFMSG:
@@ -1393,7 +1394,7 @@ bool CScriptObj::r_LoadVal(CScript &s)
 					return true;
 				}
 			}
-			g_Log.Event(LOGM_INIT|LOGL_ERROR, "Setting not used message override named '%s'\n", pszKey);
+			g_Log.Event(LOGM_INIT|LOGL_ERROR, "Unknown message '%s'\n", pszKey);
 			return false;
 		}
 	}
@@ -2203,8 +2204,9 @@ bool CScriptObj::r_Call(LPCTSTR pszFunction, CTextConsole *pSrc, CScriptTriggerA
 			char *pchName = Str_GetTemp();
 			char *pchSpace;
 			strncpy(pchName, pszFunction, sizeof(pFun->name) - 1);
+			pchName[sizeof(pFun->name) - 1] = '\0';
 			if ( (pchSpace = strchr(pchName, ' ')) != NULL )
-				*pchSpace = 0;
+				*pchSpace = '\0';
 			_strlwr(pchName);
 
 			if ( g_profiler.initstate != 0xF1 )		// profiler is not initialized

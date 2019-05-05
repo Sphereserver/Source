@@ -1253,7 +1253,7 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 
 			if ( m_pClient && IsSetOF(OF_Buffs) )
 			{
-				double dStamPenalty = 3 - ((Stat_GetVal(STAT_DEX) / maximum(1, Stat_GetAdjusted(STAT_DEX))) * 2);
+				double dStamPenalty = 3 - (static_cast<double>(Stat_GetVal(STAT_DEX) / maximum(1, Stat_GetAdjusted(STAT_DEX))) * 2);
 				WORD wTimerTotal = 0;
 				for ( WORD w = 0; w < wStatEffect; ++w )
 					wTimerTotal += (wStatEffect - w) * TICK_PER_SEC;
@@ -1880,7 +1880,7 @@ bool CChar::Spell_Equip_OnTick(CItem *pItem)
 					iLevel = 3;
 
 				pItem->m_itSpell.m_spelllevel -= 50;	// gets weaker too.	Only on old formulas
-				iDmg = IMULDIV(Stat_GetMax(STAT_STR), iLevel * 2, 100);
+				iDmg = IMULDIV(Stat_GetMax(STAT_STR), static_cast<LONGLONG>(iLevel) * 2, 100);
 				pItem->SetTimeout((5 + Calc_GetRandLLVal(4)) * TICK_PER_SEC);
 
 				static LPCTSTR const sm_szPoisonMsg[] =
@@ -1909,7 +1909,7 @@ bool CChar::Spell_Equip_OnTick(CItem *pItem)
 		}
 		case SPELL_Strangle:
 		{
-			double dStamPenalty = 3 - ((Stat_GetVal(STAT_DEX) / maximum(1, Stat_GetAdjusted(STAT_DEX))) * 2);
+			double dStamPenalty = 3 - (static_cast<double>(Stat_GetVal(STAT_DEX) / maximum(1, Stat_GetAdjusted(STAT_DEX))) * 2);
 			int iDmg = static_cast<int>(Calc_GetRandVal2(pItem->m_itSpell.m_spelllevel - 2, pItem->m_itSpell.m_spelllevel + 1) * dStamPenalty);
 			int iRemainingTicks = pItem->m_itSpell.m_spelllevel - pItem->m_itSpell.m_spellcharges;
 
@@ -3033,7 +3033,7 @@ int CChar::Spell_CastStart()
 	}
 
 	INT64 iWaitTime = pSpellDef->m_CastTime.GetLinear(Skill_GetBase(static_cast<SKILL_TYPE>(iSkill)));
-	iWaitTime -= m_FasterCasting * 2;	// correct value is 0.25, but sphere can handle only 0.2
+	iWaitTime -= static_cast<INT64>(m_FasterCasting) * 2;	// correct value is 0.25, but sphere can handle only 0.2
 	if ( (iWaitTime < 1) || IsPriv(PRIV_GM) )
 		iWaitTime = 1;
 

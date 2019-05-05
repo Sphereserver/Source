@@ -90,7 +90,7 @@ int CLog::EventStr( DWORD dwMask, LPCTSTR pszMsg )
 	// NOTE: This could be called in odd interrupt context so don't use dynamic stuff
 	if ( !IsLogged(dwMask) )	// I don't care about these.
 		return 0;
-	else if ( !pszMsg || !*pszMsg )
+	else if ( !pszMsg )
 		return 0;
 
 	int iRet = 0;
@@ -112,7 +112,7 @@ int CLog::EventStr( DWORD dwMask, LPCTSTR pszMsg )
 		}
 #endif
 
-		TCHAR szTime[32];
+		TCHAR szTime[7];
 		sprintf(szTime, "%02d:%02d:", datetime.GetHour(), datetime.GetMinute());
 		m_dateStamp = datetime;
 
@@ -137,7 +137,7 @@ int CLog::EventStr( DWORD dwMask, LPCTSTR pszMsg )
 
 		// Get the script context. (if there is one)
 		TCHAR szScriptContext[_MAX_PATH + 16];
-		if ( !(dwMask & LOGM_NOCONTEXT) && m_pScriptContext )
+		if ( m_pScriptContext && !(dwMask & LOGM_NOCONTEXT) )
 		{
 			CScriptLineContext LineContext = m_pScriptContext->GetContext();
 			sprintf(szScriptContext, "(%s,%d)", m_pScriptContext->GetFileTitle(), LineContext.m_iLineNum);

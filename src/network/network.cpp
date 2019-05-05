@@ -431,22 +431,22 @@ bool HistoryIP::checkPing(void)
 	return ( m_blocked || ( m_pings++ >= NETHISTORY_MAXPINGS ));
 }
 
-void HistoryIP::setBlocked(bool isBlocked, int timeout)
+void HistoryIP::setBlocked(bool fBlock, INT64 iTimeout)
 {
 	// block ip
 	ADDTOCALLSTACK("HistoryIP:setBlocked");
-	if (isBlocked == true)
+	if ( fBlock )
 	{
-		CScriptTriggerArgs args(m_ip.GetAddrStr());
-		args.m_iN1 = timeout;
-		g_Serv.r_Call("f_onserver_blockip", &g_Serv, &args);
-		timeout = static_cast<int>(args.m_iN1);
+		CScriptTriggerArgs Args(m_ip.GetAddrStr());
+		Args.m_iN1 = iTimeout;
+		g_Serv.r_Call("f_onserver_blockip", &g_Serv, &Args);
+		iTimeout = Args.m_iN1;
 	}
 
-	m_blocked = isBlocked;
+	m_blocked = fBlock;
 
-	if (isBlocked && (timeout >= 0))
-		m_blockExpire = CServTime::GetCurrentTime() + (timeout * TICK_PER_SEC);
+	if ( fBlock && (iTimeout > 0) )
+		m_blockExpire = CServTime::GetCurrentTime() + (iTimeout * TICK_PER_SEC);
 	else
 		m_blockExpire.Init();
 }

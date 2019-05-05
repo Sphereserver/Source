@@ -176,7 +176,8 @@ bailout3:
 	}
 
 	// Add a NULL descriptor ACL to the security descriptor
-	if ( !SetSecurityDescriptorDacl(pSD, TRUE, NULL, FALSE) )
+	PACL pDacl = NULL;
+	if ( !SetSecurityDescriptorDacl(pSD, TRUE, pDacl, FALSE) )
 		goto bailout3;
 
 	SECURITY_ATTRIBUTES sa;

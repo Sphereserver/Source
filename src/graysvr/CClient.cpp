@@ -262,7 +262,7 @@ void CClient::Announce(bool fArrive) const
 		if ( fArrive )
 		{
 			// On client login, set active timer on murder memory
-			pMurders->SetTimeout(pMurders->m_itEqMurderCount.m_Decay_Balance * TICK_PER_SEC);
+			pMurders->SetTimeout(static_cast<INT64>(pMurders->m_itEqMurderCount.m_Decay_Balance) * TICK_PER_SEC);
 		}
 		else
 		{
@@ -905,7 +905,7 @@ bool CClient::r_LoadVal(CScript &s)
 
 				m_pChar->UpdatePropertyFlag();
 				if ( IsSetOF(OF_Command_Sysmsgs) )
-					m_pChar->SysMessagef("PrivShow %s", g_Cfg.GetDefaultMsg(IsPriv(PRIV_PRIV_NOSHOW) ? DEFMSG_CMD_TOGGLE_ON : DEFMSG_CMD_TOGGLE_OFF));
+					m_pChar->SysMessagef("PrivShow %s", g_Cfg.GetDefaultMsg(IsPriv(PRIV_PRIV_NOSHOW) ? DEFMSG_CMD_TOGGLE_OFF : DEFMSG_CMD_TOGGLE_ON));
 			}
 			break;
 		case CC_TARG:

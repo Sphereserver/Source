@@ -2089,11 +2089,11 @@ CServTime CWorld::GetNextNewMoon(bool fMoonIndex) const
 
 	DWORD dwSynodic = fMoonIndex ? FELUCCA_SYNODIC_PERIOD : TRAMMEL_SYNODIC_PERIOD;
 	DWORD dwNextMonth = GetGameWorldTime() + dwSynodic;
-	DWORD dwNewStart = static_cast<DWORD>(dwNextMonth - static_cast<double>(dwNextMonth % dwSynodic));
+	UINT64 uiNewStart = dwNextMonth - (dwNextMonth % dwSynodic);
 
 	// Convert to TICK_PER_SEC ticks
 	CServTime time;
-	time.InitTime(dwNewStart * g_Cfg.m_iGameMinuteLength);
+	time.InitTime(uiNewStart * g_Cfg.m_iGameMinuteLength);
 	return time;
 }
 

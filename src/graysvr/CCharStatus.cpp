@@ -2032,10 +2032,7 @@ CRegionBase *CChar::CheckValidMove(CPointBase &ptDst, DWORD *pdwBlockFlags, DIR_
 	WARNWALK(("\t\tCGrayMapBlockState block(0%lx, %hhd, %hhd, %hhd); ptDst.m_z(%hhd) m_zClimbHeight(%hhu)\n", dwBlockFlags, ptDst.m_z, ptDst.m_z + m_zClimbHeight + iCharHeight, ptDst.m_z + m_zClimbHeight + 2, ptDst.m_z, m_zClimbHeight));
 
 	if ( !ptDst.IsValidPoint() )
-	{
-		DEBUG_ERR(("Character 0%lx on %hd,%hd,%hhd wants to move into an invalid location %hd,%hd,%hhd\n", GetUID().GetObjUID(), GetTopPoint().m_x, GetTopPoint().m_y, GetTopPoint().m_z, ptDst.m_x, ptDst.m_y, ptDst.m_z));
 		return NULL;
-	}
 
 	g_World.GetHeightPoint(ptDst, block, true);
 	dwBlockFlags = block.m_Bottom.m_dwBlockFlags;
