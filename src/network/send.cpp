@@ -112,7 +112,7 @@ PacketHealthBarInfo::PacketHealthBarInfo(const CClient *target, CObjBase *object
 	initLength();
 
 	writeInt32(object->GetUID());
-	writeStringFixedASCII(object->GetName(), 30);
+	writeStringFixedASCII(object->GetName(), MAX_NAME_SIZE);
 
 	if (objectChar && (objectChar == character))
 	{
@@ -595,9 +595,9 @@ PacketMessageASCII::PacketMessageASCII(const CClient* target, LPCTSTR pszText, c
 	// we need to ensure that the name is null terminated here when using TALKMODE_ITEM, otherwise
 	// the journal can freeze and crash older client versions
 	if (source)
-		writeStringFixedASCII(source->GetName(), 30, true);
+		writeStringFixedASCII(source->GetName(), MAX_NAME_SIZE, true);
 	else
-		writeStringFixedASCII("System", 30);
+		writeStringFixedASCII("System", MAX_NAME_SIZE);
 
 	writeStringASCII(pszText);
 
@@ -1687,8 +1687,8 @@ PacketPlayMusic::PacketPlayMusic(const CClient* target, WORD musicID) : PacketSe
 /***************************************************************************
  *
  *
- *	Packet 0x6E : PacketAction				plays an animation (pre-SA clients) (LOW)
- *	Packet 0xE2 : PacketActionNew			plays an animation (SA+ clients) (LOW)
+ *	Packet 0x6E : PacketAction				plays an animation (LOW)
+ *	Packet 0xE2 : PacketActionNew			plays an animation (LOW)
  *
  ***************************************************************************/
 PacketAction::PacketAction(const CChar* character, ANIM_TYPE action, WORD repeat, bool backward, BYTE delay, BYTE len) : PacketSend(XCMD_CharAction, 14, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
@@ -1738,7 +1738,7 @@ void PacketTradeAction::prepareContainerOpen(const CChar *character, const CItem
 	writeInt32(container1->GetUID());
 	writeInt32(container2->GetUID());
 	writeBool(true);
-	writeStringFixedASCII(character->GetName(), 30);
+	writeStringFixedASCII(character->GetName(), MAX_NAME_SIZE);
 }
 	
 void PacketTradeAction::prepareReadyChange(const CItemContainer *container1, const CItemContainer *container2)
@@ -2353,7 +2353,7 @@ PacketPaperdoll::PacketPaperdoll(const CClient* target, const CChar* character) 
 	}
 
 	writeInt32(character->GetUID());
-	writeStringFixedASCII(name, 60);
+	writeStringFixedASCII(name, MAX_NAME_SIZE * 2);
 	writeByte(flags);
 	push(target);
 }
@@ -2587,8 +2587,8 @@ PacketDisplayBook::PacketDisplayBook(const CClient* target, CItem* book) : Packe
 	writeBool(isWritable);
 	writeBool(isWritable);
 	writeInt16(pages);
-	writeStringFixedASCII(static_cast<LPCTSTR>(title), 60);
-	writeStringFixedASCII(static_cast<LPCTSTR>(author), 30);
+	writeStringFixedASCII(static_cast<LPCTSTR>(title), MAX_NAME_SIZE * 2);
+	writeStringFixedASCII(static_cast<LPCTSTR>(author), MAX_NAME_SIZE);
 
 	push(target);
 }
@@ -2641,7 +2641,7 @@ PacketAllNamesResponse::PacketAllNamesResponse(const CClient* target, const CObj
 
 	initLength();
 	writeInt32(object->GetUID());
-	writeStringFixedASCII(object->GetName(), 30);
+	writeStringFixedASCII(object->GetName(), MAX_NAME_SIZE);
 
 	push(target);
 }
@@ -2667,7 +2667,7 @@ PacketAddPrompt::PacketAddPrompt(const CClient* target, CGrayUID context1, CGray
 
 	if (useUnicode)
 	{
-		writeStringFixedASCII("", 4);
+		writeStringFixedASCII("", sizeof(DWORD));
 		writeCharUNICODE('\0');
 	}
 	else
@@ -3169,12 +3169,12 @@ PacketMessageUNICODE::PacketMessageUNICODE(const CClient* target, const NWORD* p
 	writeByte(static_cast<BYTE>(mode));
 	writeInt16(static_cast<WORD>(hue));
 	writeInt16(static_cast<WORD>(font));
-	writeStringFixedASCII(language.GetStr(), 4);
+	writeStringFixedASCII(language.GetStr(), sizeof(DWORD));
 
 	if (source)
-		writeStringFixedASCII(source->GetName(), 30);
+		writeStringFixedASCII(source->GetName(), MAX_NAME_SIZE);
 	else
-		writeStringFixedASCII("System", 30);
+		writeStringFixedASCII("System", MAX_NAME_SIZE);
 
 	writeStringUNICODE(reinterpret_cast<const WCHAR *>(pszText));
 
@@ -3359,7 +3359,7 @@ PacketChatMessage::PacketChatMessage(const CClient* target, CHATMSG_TYPE type, L
 
 	initLength();
 	writeInt16(static_cast<WORD>(type));
-	writeStringFixedASCII(language.GetStr(), 4);
+	writeStringFixedASCII(language.GetStr(), sizeof(DWORD));
 
 	if (param1 != NULL)
 		writeStringNUNICODE(param1);
@@ -4074,9 +4074,9 @@ PacketMessageLocalised::PacketMessageLocalised(const CClient* target, DWORD clil
 	writeInt32(cliloc);
 
 	if (source)
-		writeStringFixedASCII(source->GetName(), 30);
+		writeStringFixedASCII(source->GetName(), MAX_NAME_SIZE);
 	else
-		writeStringFixedASCII("System", 30);
+		writeStringFixedASCII("System", MAX_NAME_SIZE);
 
 	writeStringUNICODE(args);
 
@@ -4135,9 +4135,9 @@ PacketMessageLocalisedEx::PacketMessageLocalisedEx(const CClient* target, DWORD 
 	writeByte(static_cast<BYTE>(affixType));
 
 	if (source)
-		writeStringFixedASCII(source->GetName(), 30);
+		writeStringFixedASCII(source->GetName(), MAX_NAME_SIZE);
 	else
-		writeStringFixedASCII("System", 30);
+		writeStringFixedASCII("System", MAX_NAME_SIZE);
 
 	writeStringASCII(affix);
 	writeStringUNICODE(args);

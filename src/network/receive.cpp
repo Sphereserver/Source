@@ -2698,8 +2698,6 @@ bool PacketClientVersion::onReceive(NetState* net)
 
 		DWORD version = CCrypt::GetVerFromString(versionStr);
 		net->m_reportedVersion = version;
-
-		DEBUG_MSG(("Getting CliVersionReported %lu\n", version));
 		
 		if ((g_Serv.m_ClientVersion.GetClientVer() != 0) && (g_Serv.m_ClientVersion.GetClientVer() != version))
 			client->addLoginErr(PacketLoginError::BadVersion);
@@ -2919,12 +2917,7 @@ bool PacketArrowClick::onReceive(NetState* net)
 	if ( IsTrigUsed(TRIGGER_USERQUESTARROWCLICK) )
 	{
 		CScriptTriggerArgs Args;
-		Args.m_iN1 = (rightClick ? 1 : 0);
-#ifdef _ALPHASPHERE
-		Args.m_iN2 = character->GetKeyNum("ARROWQUEST_X");
-		Args.m_iN3 = character->GetKeyNum("ARROWQUEST_Y");
-#endif
-
+		Args.m_iN1 = static_cast<INT64>(rightClick);
 		character->OnTrigger(CTRIG_UserQuestArrowClick, character, &Args);
 	}
 	return true;

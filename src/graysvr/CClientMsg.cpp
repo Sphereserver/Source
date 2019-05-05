@@ -1253,12 +1253,14 @@ void CClient::addCharName(const CChar *pChar)
 	// Single click text for a character
 	ASSERT(pChar);
 
-	LPCTSTR pszPrefix = pChar->GetKeyStr("NAME.PREFIX");
+	TCHAR *pszPrefix = Str_GetTemp();
+	strncpy(pszPrefix, pChar->GetKeyStr("NAME.PREFIX"), MAX_NAME_SIZE - 1);
+
 	if ( !*pszPrefix )
-		pszPrefix = pChar->Noto_GetFameTitle();
+		strncat(pszPrefix, pChar->Noto_GetFameTitle(), MAX_NAME_SIZE - 1);
 
 	TCHAR *pszSuffix = Str_GetTemp();
-	strcpy(pszSuffix, pChar->GetKeyStr("NAME.SUFFIX"));
+	strncpy(pszSuffix, pChar->GetKeyStr("NAME.SUFFIX"), MAX_NAME_SIZE - 1);
 
 	if ( pChar->m_pPlayer )
 	{
@@ -2497,12 +2499,14 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 				}
 				else if ( pChar )
 				{
-					LPCTSTR pszPrefix = pChar->GetKeyStr("NAME.PREFIX");
+					TCHAR *pszPrefix = Str_GetTemp();
+					strncpy(pszPrefix, pChar->GetKeyStr("NAME.PREFIX"), MAX_NAME_SIZE - 1);
+
 					if ( !*pszPrefix )
-						pszPrefix = pChar->Noto_GetFameTitle();
+						strncat(pszPrefix, pChar->Noto_GetFameTitle(), MAX_NAME_SIZE - 1);
 
 					TCHAR *pszSuffix = Str_GetTemp();
-					strcpy(pszSuffix, pChar->GetKeyStr("NAME.SUFFIX"));
+					strncpy(pszSuffix, pChar->GetKeyStr("NAME.SUFFIX"), MAX_NAME_SIZE - 1);
 
 					if ( pChar->m_pPlayer )
 					{
@@ -2527,9 +2531,9 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 					}
 
 					if ( !*pszPrefix )
-						pszPrefix = " ";
+						strcat(pszPrefix, " ");
 					if ( !*pszSuffix )
-						pszSuffix = " ";
+						strcat(pszSuffix, " ");
 
 					m_TooltipData.InsertAt(0, t = new CClientTooltip(1050045)); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
 					if ( dwClilocName )
