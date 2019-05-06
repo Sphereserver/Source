@@ -152,10 +152,16 @@ bool CServer::SocketsInit()
 			ip.SetAddrIP(*reinterpret_cast<DWORD *>(pHost->h_addr_list[i]));	// 0.1.2.3
 			if ( !m_ip.IsLocalAddr() && !m_ip.IsSameIP(ip) )
 				continue;
-			g_Log.Event(LOGM_INIT, "Monitoring IP %s:%d (TCP) - Main server\n", ip.GetAddrStr(), m_ip.GetPort());
+			g_Log.Event(LOGM_INIT, "Monitoring local IP %s:%d (TCP) - Main server\n", ip.GetAddrStr(), m_ip.GetPort());
 			if ( IsSetEF(EF_UsePingServer) )
-				g_Log.Event(LOGM_INIT, "Monitoring IP %s:%d (UDP) - Ping server\n", ip.GetAddrStr(), PINGSERVER_PORT);
+				g_Log.Event(LOGM_INIT, "Monitoring local IP %s:%d (UDP) - Ping server\n", ip.GetAddrStr(), PINGSERVER_PORT);
 		}
+	}
+	if ( GetPublicIP() )
+	{
+		g_Log.Event(LOGM_INIT, "Monitoring public IP %s:%d (TCP) - Main server\n", m_ip.GetAddrStr(), m_ip.GetPort(), g_Serv.m_sRestAPIPublicIP);
+		if ( IsSetEF(EF_UsePingServer) )
+			g_Log.Event(LOGM_INIT, "Monitoring public IP %s:%d (UDP) - Ping server\n", m_ip.GetAddrStr(), PINGSERVER_PORT);
 	}
 	return true;
 }
@@ -168,6 +174,77 @@ void CServer::SocketsClose()
 		g_NetworkEvent.unregisterMainsocket();
 #endif
 	m_SocketMain.Close();
+}
+
+bool CServer::GetPublicIP()
+{
+	ADDTOCALLSTACK("CServer::GetPublicIP");
+	// REST API used to get server public IP and set it as ServIP automatically at server startup
+	// Should be used when local IP is behind NAT router/firewall and can't be reached directly
+	if ( g_Serv.m_sRestAPIPublicIP.IsEmpty() )
+		return false;
+
+	// Parse URL into domain/path
+	TCHAR szURL[_MAX_PATH];
+	strncpy(szURL, g_Serv.m_sRestAPIPublicIP, sizeof(szURL) - 1);
+	szURL[sizeof(szURL) - 1] = '\0';
+
+	TCHAR *pszPath = strchr(szURL, '/');
+	TCHAR *pszDomain = Str_GetTemp();
+	strncpy(pszDomain, szURL, pszPath ? pszPath - szURL : sizeof(szURL) - 1);
+	pszDomain[pszPath ? pszPath - szURL : sizeof(szURL) - 1] = '\0';
+
+	// Create socket
+	CSocketAddress sockAddr;
+	sockAddr.SetHostStr(pszDomain);
+	sockAddr.SetPort(80);
+
+	CGSocket sock;
+	sock.Create();
+	sock.Bind(sockAddr);
+
+	if ( sock.Connect(sockAddr) == SOCKET_ERROR )
+	{
+		DEBUG_ERR(("Failed to get server public IP: can't connect on REST API 'http://%s:%hu' (TCP)\n", pszDomain, sockAddr.GetPort()));
+		return false;
+	}
+
+	// Send HTTP request
+	TCHAR *pszHeader = Str_GetTemp();
+	sprintf(pszHeader, "GET %s HTTP/1.1\r\nHost: %s\r\nUser-Agent: " SPHERE_TITLE " V" SPHERE_VERSION "\r\nConnection: Close\r\n\r\n", pszPath ? pszPath : "/", pszDomain);
+	sock.Send(pszHeader, strlen(pszHeader));
+
+	// Receive HTTP response
+	TCHAR *pszBuffer = Str_GetTemp();
+	sock.Receive(pszBuffer, NETWORK_BUFFERSIZE);
+	sock.Close();
+
+	// Skip HTTP header
+	pszBuffer = strstr(pszBuffer, "\r\n\r\n");
+
+	// Remove '\r' and '\n' chars
+	if ( pszBuffer )
+	{
+		for ( size_t i = 0; i < strlen(pszBuffer); ++i )
+		{
+			if ( (pszBuffer[i] == '\r') || (pszBuffer[i] == '\n') )
+			{
+				for ( size_t j = i; j < strlen(pszBuffer); ++j )
+					pszBuffer[j] = pszBuffer[j + 1];
+				--i;
+			}
+		}
+	}
+
+	// Check if it's a valid IP address
+	TCHAR *pszLastError = Str_GetTemp();
+	if ( Str_RegExMatch("^([0-9]{1,3}).([0-9]{1,3}).([0-9]{1,3}).([0-9]{1,3})$", pszBuffer, pszLastError) == MATCH_VALID )
+	{
+		m_ip.SetAddrStr(pszBuffer);
+		return true;
+	}
+	DEBUG_ERR(("Failed to get server public IP: REST API 'http://%s' returned a non-IP value. Please check RestAPIPublicIP setting on " SPHERE_FILE ".ini\n", szURL));
+	return false;
 }
 
 void CServer::OnTick()

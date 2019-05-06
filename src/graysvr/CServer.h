@@ -60,6 +60,7 @@ public:
 	bool SocketsInit(CGSocket &socket);
 	bool SocketsInit();
 	void SocketsClose();
+	bool GetPublicIP();
 
 	void OnTick();
 	bool Load();

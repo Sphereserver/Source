@@ -57,6 +57,7 @@ public:
 	signed char m_TimeZone;	// Hours from GMT. +5=EST
 	CGString m_sEMail;		// Admin email address.
 	CGString m_sURL;			// URL for the server.
+	CGString m_sRestAPIPublicIP;	// REST API URL used to set server public IP on ServIP automatically at server startup
 	CGString m_sLang;
 	ACCAPP_TYPE m_eAccApp;	// types of new account applications.
 

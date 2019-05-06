@@ -182,11 +182,12 @@ enum SC_TYPE
 	SC_LASTVALIDTIME,
 	SC_MEM,
 	SC_NAME,
+	SC_RESTAPIPUBLICIP,
 	SC_SERVIP,
 	SC_SERVNAME,
 	SC_SERVPORT,
 	SC_TIMEZONE,
-	SC_URL,			// m_sURL
+	SC_URL,
 	SC_URLLINK,
 	SC_VERSION,
 	SC_QTY
@@ -210,11 +211,12 @@ LPCTSTR const CServerDef::sm_szLoadKeys[SC_QTY+1] =	// static
 	"LASTVALIDTIME",
 	"MEM",
 	"NAME",
+	"RESTAPIPUBLICIP",
 	"SERVIP",
 	"SERVNAME",
 	"SERVPORT",
 	"TIMEZONE",
-	"URL",			// m_sURL
+	"URL",
 	"URLLINK",
 	"VERSION",
 	NULL
@@ -294,6 +296,9 @@ bool CServerDef::r_LoadVal( CScript & s )
 		case SC_NAME:
 		case SC_SERVNAME:
 			SetName( s.GetArgStr());
+			break;
+		case SC_RESTAPIPUBLICIP:
+			m_sRestAPIPublicIP = s.GetArgStr();
 			break;
 		case SC_SERVPORT:
 			m_ip.SetPort( static_cast<WORD>(s.GetArgVal()));
@@ -391,6 +396,9 @@ bool CServerDef::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc
 	case SC_NAME:
 	case SC_SERVNAME:
 		sVal = GetName();	// What the name should be. Fill in from ping.
+		break;
+	case SC_RESTAPIPUBLICIP:
+		sVal = m_sRestAPIPublicIP;
 		break;
 	case SC_SERVPORT:
 		sVal.FormatVal( m_ip.GetPort());

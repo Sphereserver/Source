@@ -1489,3 +1489,6 @@ Fixed: Console logs for account operations showing even when LogMask flag 'LOGM_
 
 05-05-2019, Coruja
 Changed: Disabling LogMask flag 'LOGM_INIT' on sphere.ini now will make console show a minimum set of init messages instead disable all init messages.
+[sphere.ini]: Added new RestAPIPublicIP setting to set server public IP on ServIP automatically at server startup
+	-This should be useful when server local IP is behind NAT router/firewall and external IP should be set on ServIP manually, now this will set it automatically
+	-API URL is customizable
