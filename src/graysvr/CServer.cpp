@@ -83,11 +83,30 @@ void CServer::Shutdown(INT64 iMinutes)
 	g_World.Broadcastf(g_Cfg.GetDefaultMsg(DEFMSG_MSG_SERV_SHUTDOWN), iMinutes);
 }
 
-bool CServer::SocketsInit(CGSocket &socket)
+bool CServer::SocketsInit()
 {
 	ADDTOCALLSTACK("CServer::SocketsInit");
 	// Initialize socket
-	if ( !socket.Create() )
+#ifdef _WIN32
+	if ( !m_SocketMain.IsOpen() )
+	{
+		WSADATA wsaData;
+		int iRetWSA = WSAStartup(MAKEWORD(2, 2), &wsaData);
+		if ( iRetWSA != 0 )
+		{
+			g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to initialize WinSock (code %d)\n", iRetWSA);
+			return false;
+		}
+		else if ( (LOBYTE(wsaData.wVersion) != 2) || (HIBYTE(wsaData.wVersion) != 2) )
+		{
+			g_Log.Event(LOGL_FATAL|LOGM_INIT, "WinSock 2.2 is not supported\n", iRetWSA);
+			WSACleanup();
+			return false;
+		}
+	}
+#endif
+
+	if ( !m_SocketMain.Create() )
 	{
 		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to create listen socket\n");
 		return false;
@@ -96,39 +115,29 @@ bool CServer::SocketsInit(CGSocket &socket)
 	linger lVal;
 	lVal.l_onoff = 0;
 	lVal.l_linger = 10;
-	if ( socket.SetSockOpt(SO_LINGER, reinterpret_cast<const void *>(&lVal), sizeof(lVal)) == -1 )
+	if ( m_SocketMain.SetSockOpt(SO_LINGER, reinterpret_cast<const void *>(&lVal), sizeof(lVal)) == -1 )
 		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to set listen socket option SO_LINGER\n");
-	if ( socket.SetNonBlocking() == -1 )
-		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to set listen socket nonblocking mode\n");
-
+	if ( m_SocketMain.SetNonBlocking() == -1 )
+		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to set listen socket non-blocking mode\n");
 #ifndef _WIN32
-	int iOnNotOff = 1;
-	if ( socket.SetSockOpt(SO_REUSEADDR, reinterpret_cast<const void *>(&iOnNotOff), sizeof(iOnNotOff)) == -1 )
+	int iEnable = 1;
+	if ( socket.SetSockOpt(SO_REUSEADDR, reinterpret_cast<const void *>(&iEnable), sizeof(iEnable)) == -1 )
 		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to set listen socket option SO_REUSEADDR\n");
 #endif
 
-	// Bind to just one specific port if they say so
+	// Bind socket to specific IP/port
 	CSocketAddress SockAddr = m_ip;
-	int iRet = socket.Bind(SockAddr);
-	if ( iRet < 0 )
+	if ( m_SocketMain.Bind(SockAddr) == -1 )
 	{
-		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to bind listen socket %s port %hu (code %d)\n", SockAddr.GetAddrStr(), SockAddr.GetPort(), iRet);
+		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to bind listen socket %s port %hu\n", SockAddr.GetAddrStr(), SockAddr.GetPort());
 		return false;
 	}
-	socket.Listen();
+	m_SocketMain.Listen();
 
 #if !defined(_WIN32) && defined(LIBEV_REGISTERMAIN)
 	if ( g_Cfg.m_fUseAsyncNetwork != 0 )
 		g_NetworkEvent.registerMainsocket();
 #endif
-	return true;
-}
-
-bool CServer::SocketsInit()
-{
-	ADDTOCALLSTACK("CServer::SocketsInit");
-	if ( !SocketsInit(m_SocketMain) )
-		return false;
 
 	TCHAR szName[_MAX_PATH];
 	struct hostent *pHost = NULL;
@@ -139,7 +148,7 @@ bool CServer::SocketsInit()
 	else
 	{
 		pHost = gethostbyname(szName);
-		if ( pHost && pHost->h_addr && pHost->h_name && pHost->h_name[0] )
+		if ( pHost && pHost->h_addr && pHost->h_name )
 			strncpy(szName, pHost->h_name, sizeof(szName) - 1);
 	}
 
@@ -159,7 +168,7 @@ bool CServer::SocketsInit()
 	}
 	if ( GetPublicIP() )
 	{
-		g_Log.Event(LOGM_INIT, "Monitoring public IP %s:%d (TCP) - Main server\n", m_ip.GetAddrStr(), m_ip.GetPort(), g_Serv.m_sRestAPIPublicIP);
+		g_Log.Event(LOGM_INIT, "Monitoring public IP %s:%d (TCP) - Main server\n", m_ip.GetAddrStr(), m_ip.GetPort());
 		if ( IsSetEF(EF_UsePingServer) )
 			g_Log.Event(LOGM_INIT, "Monitoring public IP %s:%d (UDP) - Ping server\n", m_ip.GetAddrStr(), PINGSERVER_PORT);
 	}
@@ -304,22 +313,6 @@ void CServer::OnTick()
 bool CServer::Load()
 {
 	EXC_TRY("Load");
-
-#ifdef _WIN32
-	EXC_SET("init WinSock");
-	if ( !m_SocketMain.IsOpen() )
-	{
-		WSADATA wsaData;
-		if ( WSAStartup(MAKEWORD(2, 2), &wsaData) != 0 )
-		{
-			if ( WSAStartup(MAKEWORD(1, 1), &wsaData) != 0 )
-			{
-				g_Log.Event(LOGL_FATAL|LOGM_INIT, "WinSock not found\n");
-				return false;
-			}
-		}
-	}
-#endif
 
 	EXC_SET("loading ini");
 	if ( !g_Cfg.LoadIni(false) )

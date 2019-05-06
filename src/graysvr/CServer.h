@@ -57,7 +57,6 @@ public:
 	void SetExitFlag(int iFlag);
 	void Shutdown(INT64 iMinutes);
 
-	bool SocketsInit(CGSocket &socket);
 	bool SocketsInit();
 	void SocketsClose();
 	bool GetPublicIP();
