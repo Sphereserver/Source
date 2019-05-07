@@ -26,7 +26,7 @@
 
 #ifndef ASSERT
 	#ifdef _DEBUG
-		extern void Assert_CheckFail(LPCTSTR pszExp, LPCTSTR pszFile, long lLine);
+		extern void Assert_CheckFail(const char* pszExp, const char* pszFile, long lLine);
 		#define ASSERT(exp)		(void)((exp) || (Assert_CheckFail(#exp, __FILE__, __LINE__), 0))
 	#else
 		#define ASSERT(exp)
