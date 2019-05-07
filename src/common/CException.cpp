@@ -1,6 +1,6 @@
 #include "../graysvr/graysvr.h"
 
-void Assert_CheckFail(LPCTSTR pszExp, LPCTSTR pszFile, long lLine)
+void Assert_CheckFail(const char* pszExp, const char* pszFile, long lLine)
 {
 	throw CGrayAssert(LOGL_CRIT, pszExp, pszFile, lLine);
 }
