@@ -121,7 +121,7 @@ bool CServer::SocketsInit()
 		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to set listen socket non-blocking mode\n");
 #ifndef _WIN32
 	int iEnable = 1;
-	if ( socket.SetSockOpt(SO_REUSEADDR, reinterpret_cast<const void *>(&iEnable), sizeof(iEnable)) == -1 )
+	if ( m_SocketMain.SetSockOpt(SO_REUSEADDR, reinterpret_cast<const void *>(&iEnable), sizeof(iEnable)) == -1 )
 		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to set listen socket option SO_REUSEADDR\n");
 #endif
 

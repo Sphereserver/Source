@@ -16,6 +16,7 @@
 	#include <WinSock2.h>
 	extern const OSVERSIONINFO *GRAY_GetOSInfo();
 #else
+	#include "os_unix.h"
 	#ifdef _BSD
 		int getTimezone();
 		#define _timezone		getTimezone()

@@ -1,3 +1,4 @@
+version: 0.56.4.{build}
 configuration: Nightly
 pull_requests:
   do_not_increment_build_number: true
@@ -11,7 +12,7 @@ for:
       only:
         - image: Visual Studio 2015
     before_build:
-      - ps: Update-AppveyorBuild -Version ("0.56.4.{0}" -f ((git rev-list --count HEAD) - 2406))
+      - ps: if (!$env:APPVEYOR_PULL_REQUEST_NUMBER) {Update-AppveyorBuild -Version ("0.56.4.{0}" -f ((git rev-list --count HEAD) - 2406))}
     build:
       project: SphereSvr.vcxproj
       verbosity: minimal
