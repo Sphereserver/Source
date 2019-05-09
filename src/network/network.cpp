@@ -233,13 +233,13 @@ void NetState::init(SOCKET socket, CSocketAddress addr)
 	DEBUGNETWORK(("%lx:Initialising client\n", id()));
 	m_peerAddress = addr;
 	m_socket.SetSocket(socket);
-	if ( m_socket.SetNonBlocking() == -1 )
+	if ( m_socket.SetNonBlocking() == SOCKET_ERROR )
 		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to set listen socket nonblocking mode\n");
 
 	// disable NAGLE algorythm for data compression/coalescing.
 	// Send as fast as we can. we handle packing ourselves.
 	BOOL nbool = true;
-	if ( m_socket.SetSockOpt(TCP_NODELAY, &nbool, sizeof(BOOL), IPPROTO_TCP) == -1)
+	if ( m_socket.SetSockOpt(TCP_NODELAY, &nbool, sizeof(BOOL), IPPROTO_TCP) == SOCKET_ERROR )
 		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to set listen socket option TCP_NODELAY\n");
 
 	g_Serv.StatInc(SERV_STAT_CLIENTS);
@@ -4042,7 +4042,7 @@ size_t NetworkOutput::sendData(NetState* state, const BYTE* data, size_t length)
 		state->m_bufferWSA.buf = reinterpret_cast<CHAR *>(const_cast<BYTE *>(data));
 
 		DWORD bytesSent;
-		if (state->m_socket.SendAsync(&state->m_bufferWSA, 1, &bytesSent, 0, &state->m_overlapped, SendCompleted) == 0)
+		if (state->m_socket.SendAsync(&state->m_bufferWSA, 1, &bytesSent, 0, &state->m_overlapped, SendCompleted) != SOCKET_ERROR)
 		{
 			result = bytesSent;
 			state->setSendingAsync(true);

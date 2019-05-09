@@ -448,8 +448,8 @@ int CGSocket::GetSockOpt( int nOptionName, void * optval, int * poptlen, int nLe
 int CGSocket::SetNonBlocking(bool bEnable)
 {
 #ifdef _WIN32
-	u_long uFlags = bEnable ? 1 : 0;		// 0 =  block
-	return (ioctlsocket(m_hSocket, FIONBIO, &uFlags) == WSAEINVAL) ? -1 : 0;	// convert Windows result to Linux format
+	u_long ulFlags = static_cast<u_long>(bEnable);
+	return ioctlsocket(m_hSocket, FIONBIO, &ulFlags);
 #else
 	int iFlags = GetIOCtlSocketFlags();
 	if ( bEnable )

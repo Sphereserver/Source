@@ -115,19 +115,19 @@ bool CServer::SocketsInit()
 	linger lVal;
 	lVal.l_onoff = 0;
 	lVal.l_linger = 10;
-	if ( m_SocketMain.SetSockOpt(SO_LINGER, reinterpret_cast<const void *>(&lVal), sizeof(lVal)) == -1 )
+	if ( m_SocketMain.SetSockOpt(SO_LINGER, reinterpret_cast<const void *>(&lVal), sizeof(lVal)) == SOCKET_ERROR )
 		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to set listen socket option SO_LINGER\n");
-	if ( m_SocketMain.SetNonBlocking() == -1 )
+	if ( m_SocketMain.SetNonBlocking() == SOCKET_ERROR )
 		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to set listen socket non-blocking mode\n");
 #ifndef _WIN32
 	int iEnable = 1;
-	if ( m_SocketMain.SetSockOpt(SO_REUSEADDR, reinterpret_cast<const void *>(&iEnable), sizeof(iEnable)) == -1 )
+	if ( m_SocketMain.SetSockOpt(SO_REUSEADDR, reinterpret_cast<const void *>(&iEnable), sizeof(iEnable)) == SOCKET_ERROR )
 		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to set listen socket option SO_REUSEADDR\n");
 #endif
 
 	// Bind socket to specific IP/port
 	CSocketAddress SockAddr = m_ip;
-	if ( m_SocketMain.Bind(SockAddr) == -1 )
+	if ( m_SocketMain.Bind(SockAddr) == SOCKET_ERROR )
 	{
 		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to bind listen socket %s port %hu\n", SockAddr.GetAddrStr(), SockAddr.GetPort());
 		return false;
@@ -210,22 +210,36 @@ bool CServer::GetPublicIP()
 
 	CGSocket sock;
 	sock.Create();
-	sock.Bind(sockAddr);
+	if ( sock.Bind(sockAddr) == SOCKET_ERROR )
+	{
+		sock.Close();
+		return false;
+	}
 
 	if ( sock.Connect(sockAddr) == SOCKET_ERROR )
 	{
 		DEBUG_ERR(("Failed to get server public IP: can't connect on REST API 'http://%s:%hu' (TCP)\n", pszDomain, sockAddr.GetPort()));
+		sock.Close();
 		return false;
 	}
 
 	// Send HTTP request
 	TCHAR *pszHeader = Str_GetTemp();
 	sprintf(pszHeader, "GET %s HTTP/1.1\r\nHost: %s\r\nUser-Agent: " SPHERE_TITLE " V" SPHERE_VERSION "\r\nConnection: Close\r\n\r\n", pszPath ? pszPath : "/", pszDomain);
-	sock.Send(pszHeader, strlen(pszHeader));
+	if ( sock.Send(pszHeader, strlen(pszHeader)) == SOCKET_ERROR )
+	{
+		sock.Close();
+		return false;
+	}
 
 	// Receive HTTP response
 	TCHAR *pszBuffer = Str_GetTemp();
-	sock.Receive(pszBuffer, NETWORK_BUFFERSIZE);
+	if ( sock.Receive(pszBuffer, NETWORK_BUFFERSIZE) == SOCKET_ERROR )
+	{
+		sock.Close();
+		return false;
+	}
+
 	sock.Close();
 
 	// Skip HTTP header

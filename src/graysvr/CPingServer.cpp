@@ -27,7 +27,7 @@ void CPingServer::onStart()
 	SockAddr.SetHostStr("0.0.0.0");
 	SockAddr.SetPort(PINGSERVER_PORT);
 
-	if ( m_socket.Bind(SockAddr) == -1 )
+	if ( m_socket.Bind(SockAddr) == SOCKET_ERROR )
 	{
 		m_socket.Close();
 		return;
