@@ -1,18 +1,18 @@
-#include "graysvr.h"	// predef header.
+#include "graysvr.h"	// predef header
 #include "../network/send.h"
 
-//*****************************************************************
-// -CCharRefArray
+///////////////////////////////////////////////////////////
+// CCharRefArray
 
-size_t CCharRefArray::FindChar( const CChar *pChar ) const
+size_t CCharRefArray::FindChar(const CChar *pChar) const
 {
 	ADDTOCALLSTACK("CCharRefArray::FindChar");
 	if ( !pChar )
 		return m_uidCharArray.BadIndex();
 
-	CGrayUID uid(pChar->GetUID());
+	CGrayUID uid = pChar->GetUID();
 	size_t iQty = m_uidCharArray.GetCount();
-	for ( size_t i = 0; i < iQty; i++ )
+	for ( size_t i = 0; i < iQty; ++i )
 	{
 		if ( uid == m_uidCharArray[i] )
 			return i;
@@ -20,7 +20,7 @@ size_t CCharRefArray::FindChar( const CChar *pChar ) const
 	return m_uidCharArray.BadIndex();
 }
 
-size_t CCharRefArray::AttachChar( const CChar *pChar )
+size_t CCharRefArray::AttachChar(const CChar *pChar)
 {
 	ADDTOCALLSTACK("CCharRefArray::AttachChar");
 	size_t i = FindChar(pChar);
@@ -29,31 +29,31 @@ size_t CCharRefArray::AttachChar( const CChar *pChar )
 	return m_uidCharArray.Add(pChar->GetUID());
 }
 
-size_t CCharRefArray::InsertChar( const CChar *pChar, size_t i )
+size_t CCharRefArray::InsertChar(const CChar *pChar, size_t i)
 {
 	ADDTOCALLSTACK("CCharRefArray::InsertChar");
-	size_t currentIndex = FindChar(pChar);
-	if ( currentIndex != m_uidCharArray.BadIndex() )
+	size_t index = FindChar(pChar);
+	if ( index != m_uidCharArray.BadIndex() )
 	{
-		if ( currentIndex == i )	// already there
+		if ( index == i )	// already there
 			return i;
-		DetachChar(currentIndex);	// remove from list
+		DetachChar(index);	// remove from list
 	}
 
 	if ( !IsValidIndex(i) )		// prevent from being inserted too high
 		i = GetCharCount();
 
-	m_uidCharArray.InsertAt(i, pChar->GetUID() );
+	m_uidCharArray.InsertAt(i, pChar->GetUID());
 	return i;
 }
 
-void CCharRefArray::DetachChar( size_t i )
+void CCharRefArray::DetachChar(size_t i)
 {
 	ADDTOCALLSTACK("CCharRefArray::DetachChar");
 	m_uidCharArray.RemoveAt(i);
 }
 
-size_t CCharRefArray::DetachChar( const CChar *pChar )
+size_t CCharRefArray::DetachChar(const CChar *pChar)
 {
 	ADDTOCALLSTACK("CCharRefArray::DetachChar");
 	size_t i = FindChar(pChar);
@@ -76,29 +76,27 @@ void CCharRefArray::DeleteChars()
 }
 
 
-void CCharRefArray::WritePartyChars( CScript &s )
+void CCharRefArray::WritePartyChars(CScript &s)
 {
 	ADDTOCALLSTACK("CCharRefArray::WritePartyChars");
 	size_t iQty = m_uidCharArray.GetCount();
-	for ( size_t j = 0; j < iQty; j++ )		// write out links to all my chars
-		s.WriteKeyHex("CHARUID", m_uidCharArray[j]);
+	for ( size_t i = 0; i < iQty; ++i )		// write out links to all my chars
+		s.WriteKeyHex("CHARUID", m_uidCharArray[i]);
 }
 
-//*****************************************************************
-// -CPartyDef
+///////////////////////////////////////////////////////////
+// CPartyDef
 
-CPartyDef::CPartyDef( CChar *pCharInvite, CChar *pCharAccept )
+CPartyDef::CPartyDef(CChar *pCharInviter, CChar *pCharAccept)
 {
-	// pCharInviter = the master.
-	AcceptMember(pCharInvite);
+	AcceptMember(pCharInviter);
 	AcceptMember(pCharAccept);
 	SendAddList(NULL);		// send full list to all
-	UpdateWaypointAll(pCharInvite, PartyMember);
-	m_sName.Format("Party_0%lx", static_cast<DWORD>(pCharInvite->GetUID()));
+	UpdateWaypointAll(pCharInviter, PartyMember);
+	m_sName.Format("Party_0%lx", static_cast<DWORD>(pCharInviter->GetUID()));
 }
 
-// ---------------------------------------------------------
-size_t CPartyDef::AttachChar( CChar *pChar )
+size_t CPartyDef::AttachChar(CChar *pChar)
 {
 	ADDTOCALLSTACK("CPartyDef::AttachChar");
 	// RETURN:
@@ -109,7 +107,7 @@ size_t CPartyDef::AttachChar( CChar *pChar )
 	return i;
 }
 
-size_t CPartyDef::DetachChar( CChar *pChar )
+size_t CPartyDef::DetachChar(CChar *pChar)
 {
 	ADDTOCALLSTACK("CPartyDef::DetachChar");
 	// RETURN:
@@ -122,9 +120,9 @@ size_t CPartyDef::DetachChar( CChar *pChar )
 		{
 			size_t iQty = m_Chars.GetCharCount();
 			CChar *pPartyMember = NULL;
-			for ( size_t n = 0; n < iQty; n++ )
+			for ( size_t j = 0; j < iQty; ++j )
 			{
-				pPartyMember = m_Chars.GetChar(n).CharFind();
+				pPartyMember = m_Chars.GetChar(j).CharFind();
 				if ( !pPartyMember )
 					continue;
 				pChar->m_pClient->addMapWaypoint(pPartyMember, Remove);
@@ -140,30 +138,28 @@ size_t CPartyDef::DetachChar( CChar *pChar )
 	return i;
 }
 
-bool CPartyDef::SetMaster( CChar *pNewMaster )
+bool CPartyDef::SetMaster(CChar *pChar)
 {
-	if ( !pNewMaster )
-		return false;
-	else if ( !IsInParty(pNewMaster) || IsPartyMaster(pNewMaster) )
+	if ( !pChar || !IsInParty(pChar) || IsPartyMaster(pChar) )
 		return false;
 
-	size_t i = m_Chars.InsertChar(pNewMaster, 0);
+	size_t i = m_Chars.InsertChar(pChar, 0);
 	SendAddList(NULL);
 	return (i == 0);
 }
 
-void CPartyDef::SetLootFlag( CChar *pChar, bool fSet )
+void CPartyDef::SetLootFlag(CChar *pChar, bool fSet)
 {
 	ADDTOCALLSTACK("CPartyDef::SetLootFlag");
 	ASSERT(pChar);
 	if ( IsInParty(pChar) )
 	{
 		pChar->SetKeyNum("PARTY_CANLOOTME", fSet);
-		pChar->SysMessageDefault(fSet ? DEFMSG_PARTY_LOOT_ALLOW : DEFMSG_PARTY_LOOT_BLOCK);
+		pChar->SysMessageDefault(fSet ? DEFMSG_PARTY_LOOT_ALLOW : DEFMSG_PARTY_LOOT_PREVENT);
 	}
 }
 
-bool CPartyDef::GetLootFlag( const CChar *pChar )
+bool CPartyDef::GetLootFlag(const CChar *pChar)
 {
 	ADDTOCALLSTACK("CPartyDef::GetLootFlag");
 	ASSERT(pChar);
@@ -173,16 +169,12 @@ bool CPartyDef::GetLootFlag( const CChar *pChar )
 	return false;
 }
 
-// ---------------------------------------------------------
-void CPartyDef::StatsUpdateAll( CChar *pCharSrc, PacketSend *pPacket )
+void CPartyDef::StatsUpdateAll(CChar *pCharSrc, PacketSend *pPacket)
 {
 	ADDTOCALLSTACK("CPartyDef::StatsUpdateAll");
 	size_t iQty = m_Chars.GetCharCount();
-	if ( iQty <= 0 )
-		return;
-
 	CChar *pChar = NULL;
-	for ( size_t i = 0; i < iQty; i++ )
+	for ( size_t i = 0; i < iQty; ++i )
 	{
 		pChar = m_Chars.GetChar(i).CharFind();
 		if ( !pChar || !pChar->m_pClient || (pChar == pCharSrc) || !pChar->CanSee(pCharSrc) )
@@ -191,34 +183,28 @@ void CPartyDef::StatsUpdateAll( CChar *pCharSrc, PacketSend *pPacket )
 	}
 }
 
-void CPartyDef::SysMessageAll( LPCTSTR pText )
+void CPartyDef::SysMessageAll(LPCTSTR pszMsg)
 {
 	ADDTOCALLSTACK("CPartyDef::SysMessageAll");
-	// SysMessage to all party members.
+	// SysMessage to all party members
 	size_t iQty = m_Chars.GetCharCount();
-	if ( iQty <= 0 )
-		return;
-
 	CChar *pChar = NULL;
-	for ( size_t i = 0; i < iQty; i++ )
+	for ( size_t i = 0; i < iQty; ++i )
 	{
 		pChar = m_Chars.GetChar(i).CharFind();
 		if ( !pChar || !pChar->m_pClient )
 			continue;
-		pChar->m_pClient->SysMessage(pText);
+		pChar->m_pClient->SysMessage(pszMsg);
 	}
 }
 
-void CPartyDef::UpdateWaypointAll( CChar *pCharSrc, MAPWAYPOINT_TYPE type )
+void CPartyDef::UpdateWaypointAll(CChar *pCharSrc, MAPWAYPOINT_TYPE type)
 {
 	ADDTOCALLSTACK("CPartyDef::UpdateWaypointAll");
 	// Send pCharSrc map waypoint location to all party members (enhanced client only)
 	size_t iQty = m_Chars.GetCharCount();
-	if ( iQty <= 0 )
-		return;
-
 	CChar *pChar = NULL;
-	for ( size_t i = 0; i < iQty; i++ )
+	for ( size_t i = 0; i < iQty; ++i )
 	{
 		pChar = m_Chars.GetChar(i).CharFind();
 		if ( !pChar || !pChar->m_pClient || (pChar == pCharSrc) )
@@ -227,8 +213,7 @@ void CPartyDef::UpdateWaypointAll( CChar *pCharSrc, MAPWAYPOINT_TYPE type )
 	}
 }
 
-// ---------------------------------------------------------
-bool CPartyDef::SendMemberMsg( CChar *pCharDest, PacketSend *pPacket )
+bool CPartyDef::SendMemberMsg(CChar *pCharDest, PacketSend *pPacket)
 {
 	ADDTOCALLSTACK("CPartyDef::SendMemberMsg");
 	if ( !pCharDest )
@@ -255,30 +240,27 @@ bool CPartyDef::SendMemberMsg( CChar *pCharDest, PacketSend *pPacket )
 	return true;
 }
 
-void CPartyDef::SendAll( PacketSend *pPacket )
+void CPartyDef::SendAll(PacketSend *pPacket)
 {
 	ADDTOCALLSTACK("CPartyDef::SendAll");
 	// Send this to all party members.
 	size_t iQty = m_Chars.GetCharCount();
-	if ( iQty <= 0 )
-		return;
-
 	CChar *pChar = NULL;
-	for ( size_t i = 0; i < iQty; i++ )
+	for ( size_t i = 0; i < iQty; ++i )
 	{
 		pChar = m_Chars.GetChar(i).CharFind();
 		if ( !pChar )
 			continue;
+
 		if ( !SendMemberMsg(pChar, pPacket) )
 		{
-			iQty--;
-			i--;
+			--iQty;
+			--i;
 		}
 	}
 }
 
-// ---------------------------------------------------------
-bool CPartyDef::SendAddList( CChar *pCharDest )
+bool CPartyDef::SendAddList(CChar *pCharDest)
 {
 	ADDTOCALLSTACK("CPartyDef::SendAddList");
 
@@ -286,7 +268,7 @@ bool CPartyDef::SendAddList( CChar *pCharDest )
 		return false;
 
 	PacketPartyList cmd(&m_Chars);
-	if (pCharDest)
+	if ( pCharDest )
 		SendMemberMsg(pCharDest, &cmd);
 	else
 		SendAll(&cmd);
@@ -294,53 +276,35 @@ bool CPartyDef::SendAddList( CChar *pCharDest )
 	return true;
 }
 
-bool CPartyDef::SendRemoveList( CChar *pCharRemove, bool bFor )
+bool CPartyDef::SendRemoveList(CChar *pCharRemove)
 {
 	ADDTOCALLSTACK("CPartyDef::SendRemoveList");
-
-	if ( bFor )
-	{
-		PacketPartyRemoveMember cmd(pCharRemove, NULL);
-		SendMemberMsg(pCharRemove, &cmd);
-	}
-	else
-	{
-		if ( m_Chars.GetCharCount() <= 0 )
-			return false;
-
-		PacketPartyRemoveMember cmd(pCharRemove, &m_Chars);
-		SendAll(&cmd);
-	}
-
+	PacketPartyRemoveMember cmd(pCharRemove, NULL);
+	SendMemberMsg(pCharRemove, &cmd);
 	return true;
 }
 
-// ---------------------------------------------------------
-bool CPartyDef::MessageEvent( CGrayUID uidDst, CGrayUID uidSrc, const NCHAR *pText, int ilenmsg )
+bool CPartyDef::MessageEvent(CChar *pCharDest, CChar *pCharSrc, const NCHAR *pszMsg, int iMsgLen)
 {
 	ADDTOCALLSTACK("CPartyDef::MessageEvent");
-	UNREFERENCED_PARAMETER(ilenmsg);
-	if ( pText == NULL )
-		return false;
-	if ( uidDst && !IsInParty(uidDst.CharFind()) )
+	UNREFERENCED_PARAMETER(iMsgLen);
+	if ( !pszMsg || (pCharDest && !IsInParty(pCharDest)) )
 		return false;
 
-	CChar *pFrom = uidSrc.CharFind();
-	CChar *pTo = NULL;
-	if ( uidDst )
-		pTo = uidDst.CharFind();
+	if ( !pCharSrc )
+		return false;
 
-	TCHAR *szText = Str_GetTemp();
-	CvtNUNICODEToSystem(szText, MAX_TALK_BUFFER, pText, MAX_TALK_BUFFER);
+	TCHAR *pszText = Str_GetTemp();
+	CvtNUNICODEToSystem(pszText, MAX_TALK_BUFFER, pszMsg, MAX_TALK_BUFFER);
 
 	if ( !m_pSpeechFunction.IsEmpty() )
 	{
 		TRIGRET_TYPE tr = TRIGRET_RET_FALSE;
 		CScriptTriggerArgs Args;
-		Args.m_iN1 = uidSrc;
-		Args.m_iN2 = uidDst;
-		Args.m_s1 = szText;
-		Args.m_s1_raw = szText;
+		Args.m_iN1 = pCharSrc->GetUID();
+		Args.m_iN2 = pCharDest->GetUID();
+		Args.m_s1 = pszText;
+		Args.m_s1_raw = pszText;
 
 		if ( r_Call(m_pSpeechFunction, &g_Serv, &Args, NULL, &tr) )
 		{
@@ -350,22 +314,19 @@ bool CPartyDef::MessageEvent( CGrayUID uidDst, CGrayUID uidSrc, const NCHAR *pTe
 	}
 
 	if ( g_Log.IsLoggedMask(LOGM_PLAYER_SPEAK) )
-		g_Log.Event(LOGM_PLAYER_SPEAK, "%lx:'%s' Says '%s' in party to '%s'\n", pFrom->m_pClient->GetSocketID(), pFrom->GetName(), szText, pTo ? pTo->GetName() : "all");
+		g_Log.Event(LOGM_PLAYER_SPEAK, "%lx:'%s' Says '%s' in party to '%s'\n", pCharSrc->m_pClient->GetSocketID(), pCharSrc->GetName(), pszText, pCharDest ? pCharDest->GetName() : "all");
 
-	sprintf(szText, g_Cfg.GetDefaultMsg(DEFMSG_PARTY_MSG), pText);
-	PacketPartyChat cmd(pFrom, pText);
+	PacketPartyChat cmd(pCharSrc, pszMsg);
 
-	if ( pTo )
-		SendMemberMsg(pTo, &cmd);
+	if ( pCharDest )
+		SendMemberMsg(pCharDest, &cmd);
 	else
 		SendAll(&cmd);
 
 	return true;
 }
 
-// ---------------------------------------------------------
-
-void CPartyDef::AcceptMember( CChar *pChar )
+void CPartyDef::AcceptMember(CChar *pChar)
 {
 	ADDTOCALLSTACK("CPartyDef::AcceptMember");
 	// This person has accepted to be part of the party.
@@ -376,86 +337,74 @@ void CPartyDef::AcceptMember( CChar *pChar )
 	SendAddList(NULL);
 }
 
-bool CPartyDef::RemoveMember( CGrayUID uidRemove, CGrayUID uidCommand )
+bool CPartyDef::RemoveMember(CChar *pChar, CChar *pCharSrc)
 {
 	ADDTOCALLSTACK("CPartyDef::RemoveMember");
-	// ARGS:
-	//  uidRemove = Who is being removed.
-	//  uidCommand = who removed this person (only the master or self can remove)
-	//
 	// NOTE: remove of the master will cause the party to disband.
 
-	if ( m_Chars.GetCharCount() <= 0 )
+	if ( !pChar || (m_Chars.GetCharCount() <= 0) )
 		return false;
 
-	CGrayUID uidMaster = GetMaster();
-	if ( (uidRemove != uidCommand) && (uidCommand != uidMaster) )
+	CChar *pCharMaster = FindMaster();
+	if ( (pCharSrc != pChar) && (pCharSrc != pCharMaster) )
 		return false;
 
-	CChar *pCharRemove = uidRemove.CharFind();
-	if ( !pCharRemove )
+	if ( !pChar || !IsInParty(pChar) )
 		return false;
-	if ( !IsInParty(pCharRemove) )
-		return false;
-	if ( uidRemove == uidMaster )
-		return Disband(uidMaster);
 
-	CChar *pSrc = uidCommand.CharFind();
-	if ( pSrc && IsTrigUsed(TRIGGER_PARTYREMOVE) )
+	if ( pChar == pCharMaster )
+		return Disband();
+
+	if ( pCharSrc && IsTrigUsed(TRIGGER_PARTYREMOVE) )
 	{
-		CScriptTriggerArgs args;
-		if ( pCharRemove->OnTrigger(CTRIG_PartyRemove, pSrc, &args) == TRIGRET_RET_TRUE )
+		CScriptTriggerArgs Args;
+		if ( pChar->OnTrigger(CTRIG_PartyRemove, pCharSrc, &Args) == TRIGRET_RET_TRUE )
 			return false;
 	}
 	if ( IsTrigUsed(TRIGGER_PARTYLEAVE) )
 	{
-		if ( pCharRemove->OnTrigger(CTRIG_PartyLeave, pCharRemove, 0) == TRIGRET_RET_TRUE )
+		if ( pChar->OnTrigger(CTRIG_PartyLeave, pChar, 0) == TRIGRET_RET_TRUE )
 			return false;
 	}
 
 	// Remove it from the party
-	SendRemoveList(pCharRemove, true);
-	DetachChar(pCharRemove);
-	pCharRemove->SysMessageDefault(DEFMSG_PARTY_LEAVE_2);
+	SendRemoveList(pChar);
+	DetachChar(pChar);
+	pChar->SysMessageDefault(DEFMSG_PARTY_REMOVED);
 
 	TCHAR *pszMsg = Str_GetTemp();
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_PARTY_LEAVE_1), pCharRemove->GetName());
+	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_PARTY_TARG_REMOVE_SUCCESS), pChar->GetName());
 	SysMessageAll(pszMsg);
 
 	if ( m_Chars.GetCharCount() <= 1 )
 	{
 		// Disband the party
-		SysMessageAll(g_Cfg.GetDefaultMsg(DEFMSG_PARTY_LEAVE_LAST_PERSON));
-		return Disband(uidMaster);
+		SysMessageAll(g_Cfg.GetDefaultMsg(DEFMSG_PARTY_LAST_PERSON_LEFT));
+		return Disband();
 	}
 
 	return true;
 }
 
-bool CPartyDef::Disband( CGrayUID uidMaster )
+bool CPartyDef::Disband()
 {
 	ADDTOCALLSTACK("CPartyDef::Disband");
 	// Make sure i am the master.
 	if ( m_Chars.GetCharCount() <= 0 )
 		return false;
-	if ( GetMaster() != uidMaster )
-		return false;
 
-	CChar *pMaster = GetMaster().CharFind();
-	if ( pMaster && IsTrigUsed(TRIGGER_PARTYDISBAND) )
+	CChar *pCharMaster = FindMaster();
+	if ( pCharMaster && IsTrigUsed(TRIGGER_PARTYDISBAND) )
 	{
-		CScriptTriggerArgs args;
-		if ( pMaster->OnTrigger(CTRIG_PartyDisband, pMaster, &args) == TRIGRET_RET_TRUE )
+		CScriptTriggerArgs Args;
+		if ( pCharMaster->OnTrigger(CTRIG_PartyDisband, pCharMaster, &Args) == TRIGRET_RET_TRUE )
 			return false;
 	}
 
 	SysMessageAll(g_Cfg.GetDefaultMsg(DEFMSG_PARTY_DISBANDED));
 
-	CChar *pSrc = uidMaster.CharFind();
-	size_t iQty = m_Chars.GetCharCount();
-	ASSERT(iQty > 0);
 	CChar *pChar = NULL;
-	for ( size_t i = 0; i < iQty; i++ )
+	for ( int i = m_Chars.GetCharCount() - 1; i >= 0; --i )
 	{
 		pChar = m_Chars.GetChar(i).CharFind();
 		if ( !pChar )
@@ -463,12 +412,12 @@ bool CPartyDef::Disband( CGrayUID uidMaster )
 
 		if ( IsTrigUsed(TRIGGER_PARTYREMOVE) )
 		{
-			CScriptTriggerArgs args;
-			args.m_iN1 = 1;
-			pChar->OnTrigger(CTRIG_PartyRemove, pSrc, &args);
+			CScriptTriggerArgs Args;
+			Args.m_iN1 = 1;
+			pChar->OnTrigger(CTRIG_PartyRemove, pCharMaster, &Args);
 		}
 
-		SendRemoveList(pChar, true);
+		SendRemoveList(pChar);
 		DetachChar(pChar);
 	}
 
@@ -476,15 +425,13 @@ bool CPartyDef::Disband( CGrayUID uidMaster )
 	return true;
 }
 
-// ---------------------------------------------------------
-bool CPartyDef::DeclineEvent( CChar *pCharDecline, CGrayUID uidInviter )	// static
+bool CPartyDef::DeclineEvent(CChar *pCharDecline, CChar *pCharInviter)	// static
 {
 	ADDTOCALLSTACK("CPartyDef::DeclineEvent");
 	// This should happen after a timeout as well.
 	// "You notify %s that you do not wish to join the party"
 
-	CChar *pCharInviter = uidInviter.CharFind();
-	if ( !pCharInviter || !pCharDecline || uidInviter == pCharDecline->GetUID() )
+	if ( !pCharInviter || !pCharDecline )
 		return false;
 
 	CVarDefCont *pVar = pCharInviter->GetTagDefs()->GetKey("PARTY_LASTINVITE");
@@ -492,24 +439,22 @@ bool CPartyDef::DeclineEvent( CChar *pCharDecline, CGrayUID uidInviter )	// stat
 		return false;
 
 	pCharInviter->DeleteKey("PARTY_LASTINVITE");
-	pCharInviter->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_PARTY_DECLINE_1), pCharDecline->GetName());
-	pCharDecline->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_PARTY_DECLINE_2), pCharInviter->GetName());
+	pCharInviter->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_PARTY_DECLINE), pCharDecline->GetName());
+	pCharDecline->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_PARTY_DECLINE_NOTIFY));
 	return true;
 }
 
-bool CPartyDef::AcceptEvent( CChar *pCharAccept, CGrayUID uidInviter, bool bForced )	// static
+bool CPartyDef::AcceptEvent(CChar *pCharAccept, CChar *pCharInviter, bool fForced)	// static
 {
 	ADDTOCALLSTACK("CPartyDef::AcceptEvent");
 	// We are accepting the invite to join a party
 	// No security checks if bForced -> true !!!
 	// Party master is only one that can add ! GetChar(0)
 
-	CChar *pCharInviter = uidInviter.CharFind();
 	if ( !pCharInviter || !pCharInviter->m_pClient || !pCharAccept || !pCharAccept->m_pClient || (pCharInviter == pCharAccept) )
 		return false;
 
-	CPartyDef *pParty = pCharInviter->m_pParty;
-	if ( !bForced )
+	if ( !fForced )
 	{
 		CVarDefCont *pVar = pCharInviter->GetTagDefs()->GetKey("PARTY_LASTINVITE");
 		if ( !pVar || (static_cast<CGrayUID>(pVar->GetValNum()) != pCharAccept->GetUID()) )
@@ -520,16 +465,18 @@ bool CPartyDef::AcceptEvent( CChar *pCharAccept, CGrayUID uidInviter, bool bForc
 			return false;
 	}
 
+	CPartyDef *pParty = pCharInviter->m_pParty;
+
 	if ( pCharAccept->m_pParty )	// already in a party
 	{
-		if ( pParty == pCharAccept->m_pParty )	// already in this party
-			return true;
-
-		if ( bForced )
+		if ( pCharAccept->m_pParty == pParty )	// already in this party
 		{
-			pCharAccept->m_pParty->RemoveMember(pCharAccept->GetUID(), pCharAccept->GetUID());
-			pCharAccept->m_pParty = NULL;
+			pCharInviter->SysMessageDefault(DEFMSG_PARTY_ALREADY_YOUR);
+			return true;
 		}
+
+		if ( fForced )
+			pCharAccept->m_pParty->RemoveMember(pCharAccept);
 		else
 			return false;
 	}
@@ -548,7 +495,7 @@ bool CPartyDef::AcceptEvent( CChar *pCharAccept, CGrayUID uidInviter, bool bForc
 	else
 	{
 		// Add to existing party
-		if ( pParty->IsPartyFull() || (!bForced && !pParty->IsPartyMaster(pCharInviter)) )
+		if ( pParty->IsPartyFull() || (!fForced && !pParty->IsPartyMaster(pCharInviter)) )
 			return false;
 
 		pParty->SysMessageAll(pszMsg);	// tell everyone already in the party about this
@@ -559,17 +506,15 @@ bool CPartyDef::AcceptEvent( CChar *pCharAccept, CGrayUID uidInviter, bool bForc
 	return true;
 }
 
-// ---------------------------------------------------------
-
 enum PDV_TYPE
 {
-	#define ADD(a,b) PDV_##a,
-	#include "../tables/CParty_functions.tbl"
-	#undef ADD
+#define ADD(a,b) PDV_##a,
+#include "../tables/CParty_functions.tbl"
+#undef ADD
 	PDV_QTY
 };
 
-LPCTSTR const CPartyDef::sm_szVerbKeys[PDV_QTY+1] =
+LPCTSTR const CPartyDef::sm_szVerbKeys[PDV_QTY + 1] =
 {
 	#define ADD(a,b) b,
 	#include "../tables/CParty_functions.tbl"
@@ -579,13 +524,13 @@ LPCTSTR const CPartyDef::sm_szVerbKeys[PDV_QTY+1] =
 
 enum PDC_TYPE
 {
-	#define ADD(a,b) PDC_##a,
-	#include "../tables/CParty_props.tbl"
-	#undef ADD
+#define ADD(a,b) PDC_##a,
+#include "../tables/CParty_props.tbl"
+#undef ADD
 	PDC_QTY
 };
 
-LPCTSTR const CPartyDef::sm_szLoadKeys[PDC_QTY+1] =
+LPCTSTR const CPartyDef::sm_szLoadKeys[PDC_QTY + 1] =
 {
 	#define ADD(a,b) b,
 	#include "../tables/CParty_props.tbl"
@@ -593,28 +538,28 @@ LPCTSTR const CPartyDef::sm_szLoadKeys[PDC_QTY+1] =
 	NULL
 };
 
-bool CPartyDef::r_GetRef( LPCTSTR &pszKey, CScriptObj *&pRef )
+bool CPartyDef::r_GetRef(LPCTSTR &pszKey, CScriptObj *&pRef)
 {
 	ADDTOCALLSTACK("CPartyDef::r_GetRef");
 	if ( !strnicmp("MASTER.", pszKey, 7) )
 	{
 		pszKey += 7;
-		CChar *pMaster = GetMaster().CharFind();
-		if ( pMaster )
+		CChar *pCharMaster = FindMaster();
+		if ( pCharMaster )
 		{
-			pRef = pMaster;
+			pRef = pCharMaster;
 			return true;
 		}
 	}
 	else if ( !strnicmp("MEMBER.", pszKey, 7) )
 	{
 		pszKey += 7;
-		size_t nNumber = Exp_GetVal(pszKey);
+		size_t i = static_cast<size_t>(Exp_GetLLVal(pszKey));
 		SKIP_SEPARATORS(pszKey);
-		if ( !m_Chars.IsValidIndex(nNumber) )
+		if ( !m_Chars.IsValidIndex(i) )
 			return false;
 
-		CChar *pMember = m_Chars.GetChar(nNumber).CharFind();
+		CChar *pMember = m_Chars.GetChar(i).CharFind();
 		if ( pMember )
 		{
 			pRef = pMember;
@@ -624,8 +569,8 @@ bool CPartyDef::r_GetRef( LPCTSTR &pszKey, CScriptObj *&pRef )
 	return false;
 }
 
-bool CPartyDef::r_LoadVal( CScript &s )
-{ 
+bool CPartyDef::r_LoadVal(CScript &s)
+{
 	ADDTOCALLSTACK("CPartyDef::r_LoadVal");
 	EXC_TRY("LoadVal");
 	LPCTSTR pszKey = s.GetKey();
@@ -635,31 +580,31 @@ bool CPartyDef::r_LoadVal( CScript &s )
 	{
 		case PDC_SPEECHFILTER:
 		{
-			if ( !s.HasArgs() )
-				m_pSpeechFunction.Empty();
-			else
+			if ( s.HasArgs() )
 			{
 				LPCTSTR pszArg = s.GetArgStr();
 				CResourceLink *m_pTestEvent = dynamic_cast<CResourceLink *>(g_Cfg.ResourceGetDefByName(RES_FUNCTION, pszArg));
-
 				if ( !m_pTestEvent )
 					return false;
 
 				m_pSpeechFunction.Format("%s", pszArg);
 			}
-
-		} break;
-
+			else
+				m_pSpeechFunction.Empty();
+			break;
+		}
 		case PDC_TAG0:
 		case PDC_TAG:
 		{
 			bool fQuoted = false;
-			pszKey = pszKey + ((index == PDC_TAG0) ? 5 : 4);
+			pszKey += (index == PDC_TAG0) ? 5 : 4;
 			m_TagDefs.SetStr(pszKey, fQuoted, s.GetArgStr(&fQuoted), (index == PDC_TAG0));
-		} break;
-		
+			break;
+		}
 		default:
+		{
 			return false;
+		}
 	}
 	return true;
 	EXC_CATCH;
@@ -670,7 +615,7 @@ bool CPartyDef::r_LoadVal( CScript &s )
 	return false;
 }
 
-bool CPartyDef::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc )
+bool CPartyDef::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 {
 	ADDTOCALLSTACK("CPartyDef::r_WriteVal");
 	EXC_TRY("WriteVal");
@@ -678,7 +623,7 @@ bool CPartyDef::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc )
 	CScriptObj *pRef;
 	if ( r_GetRef(pszKey, pRef) )
 	{
-		if ( pRef == NULL )		// good command but bad link.
+		if ( !pRef )		// good command but bad link.
 		{
 			sVal = "0";
 			return true;
@@ -704,41 +649,43 @@ bool CPartyDef::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc )
 			GETNONWHITESPACE(pszKey);
 			if ( pszKey[0] != '\0' )
 			{
-				CGrayUID uidToCheck = static_cast<CGrayUID>(Exp_GetVal(pszKey));
-				CChar *pCharToCheck = uidToCheck.CharFind();
-
-				sVal.FormatVal(pCharToCheck && (pCharToCheck->m_pParty == this));
+				CChar *pChar = static_cast<CGrayUID>(Exp_GetLLVal(pszKey)).CharFind();
+				sVal.FormatVal(pChar && (pChar->m_pParty == this));
 			}
 			else
 				return false;
-		} break;
-
+			break;
+		}
 		case PDC_MEMBERS:
+		{
 			sVal.FormatVal(m_Chars.GetCharCount());
 			break;
-
+		}
 		case PDC_SPEECHFILTER:
+		{
 			sVal = m_pSpeechFunction.IsEmpty() ? "" : m_pSpeechFunction;
 			break;
-
+		}
 		case PDC_TAG0:
+		{
 			fZero = true;
-			pszKey++;
+			++pszKey;
+		}
 		case PDC_TAG:
 		{
 			if ( pszKey[3] != '.' )
 				return false;
 			pszKey += 4;
 			sVal = m_TagDefs.GetKeyStr(pszKey, fZero);
-		} break;
-
+			break;
+		}
 		case PDC_TAGAT:
 		{
 			pszKey += 5;	// eat the 'TAGAT'
 			if ( *pszKey == '.' )	// do we have an argument?
 			{
 				SKIP_SEPARATORS(pszKey);
-				size_t iQty = static_cast<size_t>(Exp_GetVal(pszKey));
+				size_t iQty = static_cast<size_t>(Exp_GetLLVal(pszKey));
 				if ( iQty >= m_TagDefs.GetCount() )
 					return false;	// trying to get non-existant tag
 
@@ -765,13 +712,15 @@ bool CPartyDef::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc )
 			}
 			return false;
 		}
-
 		case PDC_TAGCOUNT:
+		{
 			sVal.FormatVal(m_TagDefs.GetCount());
 			break;
-
+		}
 		default:
+		{
 			return false;
+		}
 	}
 
 	return true;
@@ -783,7 +732,7 @@ bool CPartyDef::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc )
 	return false;
 }
 
-bool CPartyDef::r_Verb( CScript &s, CTextConsole *pSrc )
+bool CPartyDef::r_Verb(CScript &s, CTextConsole *pSrc)
 {
 	ADDTOCALLSTACK("CPartyDef::r_Verb");
 	EXC_TRY("Verb");
@@ -802,142 +751,139 @@ bool CPartyDef::r_Verb( CScript &s, CTextConsole *pSrc )
 		}
 	}
 
-	int iIndex = FindTableSorted(pszKey, sm_szVerbKeys, COUNTOF(sm_szVerbKeys) - 1);
-	switch ( iIndex )
+	int index = FindTableSorted(pszKey, sm_szVerbKeys, COUNTOF(sm_szVerbKeys) - 1);
+	switch ( index )
 	{
 		case PDV_ADDMEMBER:
 		case PDV_ADDMEMBERFORCED:
 		{
-			bool bForced = (iIndex == PDV_ADDMEMBERFORCED);
-			CGrayUID toAdd = static_cast<CGrayUID>(s.GetArgVal());
-			CChar *pCharAdd = toAdd.CharFind();
-			CChar *pCharMaster = GetMaster().CharFind();
+			CGrayUID uid = static_cast<CGrayUID>(s.GetArgVal());
+			CChar *pCharAdd = uid.CharFind();
 			if ( !pCharAdd || IsInParty(pCharAdd) )
 				return false;
 
-			if ( pCharMaster && !bForced )
-				pCharMaster->SetKeyNum("PARTY_LASTINVITE", (long long)toAdd);
-			
-			return CPartyDef::AcceptEvent(pCharAdd, GetMaster(), bForced);
-		} break;
+			bool fForced = (index == PDV_ADDMEMBERFORCED);
+			CChar *pCharMaster = FindMaster();
+			if ( pCharMaster && !fForced )
+				pCharMaster->SetKeyNum("PARTY_LASTINVITE", static_cast<INT64>(uid));
 
+			return CPartyDef::AcceptEvent(pCharAdd, pCharMaster, fForced);
+		}
 		case PDV_CLEARTAGS:
 		{
 			LPCTSTR pszArg = s.GetArgStr();
 			SKIP_SEPARATORS(pszArg);
 			m_TagDefs.ClearKeys(pszArg);
-		} break;
-
-		case PDV_CREATE:
-			return true;
-
-		case PDV_DISBAND:
-			return Disband(GetMaster());
-
-		case PDV_MESSAGE:
 			break;
-
+		}
+		case PDV_CREATE:
+		{
+			return true;
+		}
+		case PDV_DISBAND:
+		{
+			return Disband();
+		}
+		case PDV_MESSAGE:
+		{
+			break;
+		}
 		case PDV_REMOVEMEMBER:
 		{
-			CGrayUID toRemove;
+			CGrayUID uid;
 			LPCTSTR pszArg = s.GetArgStr();
 			if ( *pszArg == '@' )
 			{
-				pszArg++;
-				size_t nMember = Exp_GetVal(pszArg);
-				if ( !m_Chars.IsValidIndex(nMember) )
+				++pszArg;
+				size_t i = static_cast<size_t>(Exp_GetLLVal(pszArg));
+				if ( !m_Chars.IsValidIndex(i) )
 					return false;
 
-				toRemove = m_Chars.GetChar(nMember);
+				uid = m_Chars.GetChar(i);
 			}
 			else
-				toRemove = static_cast<CGrayUID>(s.GetArgVal());
+				uid = static_cast<CGrayUID>(s.GetArgVal());
 
-			if ( toRemove )
-				return RemoveMember(toRemove, GetMaster());
-
-			return false;
-		} break;
-
+			return RemoveMember(uid.CharFind());
+		}
 		case PDV_SETMASTER:
 		{
-			CGrayUID newMaster;
+			CGrayUID uid;
 			LPCTSTR pszArg = s.GetArgStr();
 			if ( *pszArg == '@' )
 			{
-				pszArg++;
-				size_t nMember = Exp_GetVal(pszArg);
-				if ( nMember == 0 || !m_Chars.IsValidIndex(nMember) )
+				++pszArg;
+				size_t i = static_cast<size_t>(Exp_GetLLVal(pszArg));
+				if ( i == 0 || !m_Chars.IsValidIndex(i) )
 					return false;
 
-				newMaster = m_Chars.GetChar(nMember);
+				uid = m_Chars.GetChar(i);
 			}
 			else
-				newMaster = static_cast<CGrayUID>(s.GetArgVal());
+				uid = static_cast<CGrayUID>(s.GetArgVal());
 
-			if ( newMaster )
-				return SetMaster(newMaster.CharFind());
-
-			return false;
-		} break;
-
+			return SetMaster(uid.CharFind());
+		}
 		case PDV_SYSMESSAGE:
 		{
-			CGrayUID toSysmessage;
+			CGrayUID uid;
 			LPCTSTR pszArg = s.GetArgStr();
-			TCHAR *pUid = Str_GetTemp();
-			size_t x = 0;
+			TCHAR *pszUID = Str_GetTemp();
+			size_t iLen = 0;
 
 			if ( *pszArg == '@' )
 			{
-				pszArg++;
+				++pszArg;
 				if ( *pszArg != '@' )
 				{
-					LPCTSTR __pszArg = pszArg;
+					LPCTSTR pszArgBackup = pszArg;
 					while ( *pszArg != ' ' )
 					{
-						pszArg++;
-						x++;
+						++pszArg;
+						++iLen;
 					}
-					strcpylen(pUid, __pszArg, ++x);
+					strcpylen(pszUID, pszArgBackup, ++iLen);
 
-					size_t nMember = Exp_GetVal(pUid);
-					if ( !m_Chars.IsValidIndex(nMember) )
+					size_t i = static_cast<size_t>(Exp_GetLLVal(pszUID));
+					if ( !m_Chars.IsValidIndex(i) )
 						return false;
 
-					toSysmessage = m_Chars.GetChar(nMember);
+					uid = m_Chars.GetChar(i);
 				}
 			}
 			else
 			{
-				LPCTSTR __pszArg = pszArg;
+				LPCTSTR pszArgBackup = pszArg;
 				while ( *pszArg != ' ' )
 				{
-					pszArg++;
-					x++;
+					++pszArg;
+					++iLen;
 				}
-				strcpylen(pUid, __pszArg, ++x);
+				strcpylen(pszUID, pszArgBackup, ++iLen);
 
-				toSysmessage = static_cast<CGrayUID>(Exp_GetVal(pUid));
+				uid = static_cast<CGrayUID>(Exp_GetLLVal(pszUID));
 			}
 
 			SKIP_SEPARATORS(pszArg);
-
-			if ( toSysmessage )
+			if ( uid )
 			{
-				CChar *pSend = toSysmessage.CharFind();
-				pSend->SysMessage(pszArg);
+				CChar *pSend = uid.CharFind();
+				if ( pSend )
+					pSend->SysMessage(pszArg);
 			}
 			else
 				SysMessageAll(pszArg);
-		} break;
-
+			break;
+		}
 		case PDV_TAGLIST:
+		{
 			m_TagDefs.DumpKeys(pSrc, "TAG.");
 			break;
-
+		}
 		default:
+		{
 			return false;
+		}
 	}
 	return true;
 	EXC_CATCH;
@@ -948,9 +894,9 @@ bool CPartyDef::r_Verb( CScript &s, CTextConsole *pSrc )
 	return false;
 }
 
-bool CPartyDef::r_Load( CScript &s )
-{ 
+bool CPartyDef::r_Load(CScript &s)
+{
 	ADDTOCALLSTACK("CPartyDef::r_Load");
 	UNREFERENCED_PARAMETER(s);
-	return false; 
+	return false;
 }

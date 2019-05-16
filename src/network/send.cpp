@@ -3615,7 +3615,7 @@ PacketPartyRemoveMember::PacketPartyRemoveMember(const CChar* member, const CCha
  *
  *
  ***************************************************************************/
-PacketPartyChat::PacketPartyChat(const CChar* source, const NCHAR* text) : PacketParty(PARTYMSG_Msg, 11, PRI_NORMAL)
+PacketPartyChat::PacketPartyChat(const CChar* source, const NCHAR* text) : PacketParty(PARTYMSG_MsgAll, 11, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketPartyChat::PacketPartyChat");
 
@@ -3631,7 +3631,7 @@ PacketPartyChat::PacketPartyChat(const CChar* source, const NCHAR* text) : Packe
  *
  *
  ***************************************************************************/
-PacketPartyInvite::PacketPartyInvite(const CClient* target, const CChar* inviter) : PacketParty(PARTYMSG_NotoInvited, 10, PRI_NORMAL)
+PacketPartyInvite::PacketPartyInvite(const CClient* target, const CChar* inviter) : PacketParty(PARTYMSG_Invite, 10, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketPartyInvite::PacketPartyInvite");
 

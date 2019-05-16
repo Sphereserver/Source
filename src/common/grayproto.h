@@ -317,10 +317,10 @@ enum PARTYMSG_TYPE
 	PARTYMSG_Add				= 0x1,	// client <-> server
 	PARTYMSG_Remove				= 0x2,	// client <-> server
 	PARTYMSG_MsgMember			= 0x3,	// client  -> server
-	PARTYMSG_Msg				= 0x4,	// client <-> server
+	PARTYMSG_MsgAll				= 0x4,	// client <-> server
 	PARTYMSG_Disband			= 0x5,	// client  -> server
-	PARTYMSG_Option				= 0x6,	// client  -> server
-	PARTYMSG_NotoInvited		= 0x7,	// client <-  server
+	PARTYMSG_ToggleLooting		= 0x6,	// client  -> server
+	PARTYMSG_Invite				= 0x7,	// client <-  server
 	PARTYMSG_Accept				= 0x8,	// client  -> server
 	PARTYMSG_Decline			= 0x9	// client  -> server
 };

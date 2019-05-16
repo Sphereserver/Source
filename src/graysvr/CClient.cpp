@@ -635,12 +635,14 @@ bool CClient::r_GetRef(LPCTSTR &pszKey, CScriptObj *&pRef)
 						pszKey += 7;
 
 					SKIP_SEPARATORS(pszKey);
-					CChar *pChar = dynamic_cast<CChar *>(static_cast<CGrayUID>(Exp_GetSingle(pszKey)).CharFind());
+					CChar *pChar = static_cast<CGrayUID>(Exp_GetLLSingle(pszKey)).CharFind();
 					if ( !pChar || !pChar->m_pClient )
 						return false;
-					CPartyDef::AcceptEvent(pChar, m_pChar->GetUID(), true);
+
+					CPartyDef::AcceptEvent(pChar, m_pChar, true);
 					if ( !m_pChar->m_pParty )
 						return false;
+
 					pszKey = pszKeyOld;	// restoring back to real pszKey, so we don't get errors for giving an uid instead of PDV_CREATE
 				}
 				pRef = m_pChar->m_pParty;

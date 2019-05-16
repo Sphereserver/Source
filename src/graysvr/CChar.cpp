@@ -327,7 +327,7 @@ CChar::~CChar()
 	Guild_Resign(MEMORY_TOWN);
 
 	if ( m_pParty )
-		m_pParty->RemoveMember(GetUID(), GetUID());
+		m_pParty->RemoveMember(this);
 
 	NPC_PetClearOwners(false);	// clear follower slots on pet owner
 	DeleteAll();				// remove me early so virtuals will work
@@ -355,7 +355,7 @@ void CChar::ClientDetach()
 
 	// Disband the party if I'm the master
 	if ( m_pParty && m_pParty->IsPartyMaster(this) )
-		m_pParty->Disband(GetUID());
+		m_pParty->Disband();
 
 	// If this char is on a IT_SHIP then stop the ship
 	if ( m_pArea && m_pArea->IsFlag(REGION_FLAG_SHIP) )
@@ -403,7 +403,7 @@ void CChar::SetDisconnected()
 	}
 
 	if ( m_pParty )
-		m_pParty->RemoveMember(GetUID(), GetUID());
+		m_pParty->RemoveMember(this);
 
 	if ( IsDisconnected() )
 		return;

@@ -1627,7 +1627,7 @@ bool CClient::OnTarg_Use_Item(CObjBase *pObjTarg, CPointMap &pt, ITEMID_TYPE id)
 				SysMessageDefault(DEFMSG_ITEMUSE_ORE_TOOFAR);
 				return false;
 			}
-			else if ( !m_pChar->CanTouch(pItemTarg) )
+			else if ( !pItemTarg || !m_pChar->CanTouch(pItemTarg) )
 			{
 				SysMessageDefault(DEFMSG_ITEMUSE_TOOFAR);
 				return false;
@@ -1791,7 +1791,7 @@ bool CClient::OnTarg_Use_Item(CObjBase *pObjTarg, CPointMap &pt, ITEMID_TYPE id)
 					}
 					case IT_LOG:
 					{
-						if ( !m_pChar->CanUse(pItemTarg, true) )
+						if ( !pItemTarg || !m_pChar->CanUse(pItemTarg, true) )
 						{
 							SysMessageDefault(DEFMSG_ITEMUSE_LOG_UNABLE);
 							return false;
@@ -1823,7 +1823,7 @@ bool CClient::OnTarg_Use_Item(CObjBase *pObjTarg, CPointMap &pt, ITEMID_TYPE id)
 					case IT_FISH:
 					{
 						// Carve up fish parts
-						if ( !m_pChar->CanUse(pItemTarg, true) )
+						if ( !pItemTarg || !m_pChar->CanUse(pItemTarg, true) )
 						{
 							SysMessageDefault(DEFMSG_ITEMUSE_FISH_UNABLE);
 							return false;
@@ -1845,7 +1845,7 @@ bool CClient::OnTarg_Use_Item(CObjBase *pObjTarg, CPointMap &pt, ITEMID_TYPE id)
 					case IT_REAGENT_RAW:
 					{
 						// Turn the fruit into seed
-						if ( !m_pChar->CanUse(pItemTarg, true) )
+						if ( !pItemTarg || !m_pChar->CanUse(pItemTarg, true) )
 							return false;
 						RESOURCE_ID defaultseed = g_Cfg.ResourceGetIDType(RES_ITEMDEF, "DEFAULTSEED");
 						pItemTarg->SetDispID(static_cast<ITEMID_TYPE>(defaultseed.GetResIndex()));
@@ -2277,21 +2277,21 @@ bool CClient::OnTarg_Party_Add(CChar *pChar)
 {
 	ADDTOCALLSTACK("CClient::OnTarg_Party_Add");
 	// CLIMODE_TARG_PARTY_ADD
-	// Invite this person to join our party. PARTYMSG_Add
+	// Invite this char to the party. PARTYMSG_Add
 
 	if ( !pChar )
 	{
-		SysMessageDefault(DEFMSG_PARTY_SELECT);
+		SysMessageDefault(DEFMSG_PARTY_TARG_ADD_ITEM);
 		return false;
 	}
 	if ( pChar == m_pChar )
 	{
-		SysMessageDefault(DEFMSG_PARTY_NO_SELF_ADD);
+		SysMessageDefault(DEFMSG_PARTY_TARG_ADD_SELF);
 		return false;
 	}
 	if ( !pChar->m_pClient )
 	{
-		SysMessageDefault(DEFMSG_PARTY_NONPCADD);
+		SysMessageDefault(DEFMSG_PARTY_TARG_ADD_NPC);
 		return false;
 	}
 
@@ -2299,19 +2299,19 @@ bool CClient::OnTarg_Party_Add(CChar *pChar)
 	{
 		if ( !m_pChar->m_pParty->IsPartyMaster(m_pChar) )
 		{
-			SysMessageDefault(DEFMSG_PARTY_NOTLEADER);
+			SysMessageDefault(DEFMSG_PARTY_TARG_ADD_PERMISSION);
 			return false;
 		}
 		if ( m_pChar->m_pParty->IsPartyFull() )
 		{
-			SysMessageDefault(DEFMSG_PARTY_IS_FULL);
+			SysMessageDefault(DEFMSG_PARTY_TARG_ADD_FULL);
 			return false;
 		}
 	}
 
-	if ( IsPriv(PRIV_GM) && (pChar->m_pClient->GetPrivLevel() < GetPrivLevel()) )
+	if ( IsPriv(PRIV_GM) && (GetPrivLevel() >= pChar->m_pClient->GetPrivLevel()) )
 	{
-		CPartyDef::AcceptEvent(pChar, m_pChar->GetUID(), true);
+		CPartyDef::AcceptEvent(pChar, m_pChar, true);
 		return true;
 	}
 
@@ -2319,26 +2319,26 @@ bool CClient::OnTarg_Party_Add(CChar *pChar)
 	{
 		if ( m_pChar->m_pParty == pChar->m_pParty )
 		{
-			SysMessageDefault(DEFMSG_PARTY_ALREADY_IN_THIS);
+			SysMessageDefault(DEFMSG_PARTY_ALREADY_YOUR);
 			return true;
 		}
 		else
 		{
-			SysMessageDefault(DEFMSG_PARTY_ALREADY_IN);
+			SysMessageDefault(DEFMSG_PARTY_ALREADY_OTHER);
 			return false;
 		}
 	}
 
 	if ( pChar->GetKeyNum("PARTY_AUTODECLINEINVITE") )
 	{
-		SysMessageDefault(DEFMSG_PARTY_AUTODECLINE);
+		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_PARTY_DECLINE), pChar->GetName());
 		return false;
 	}
 
 	CVarDefCont *pTagInvitetime = m_pChar->m_TagDefs.GetKey("PARTY_LASTINVITETIME");
-	if ( pTagInvitetime && (g_World.GetCurrentTime().GetTimeRaw() < static_cast<UINT64>(pTagInvitetime->GetValNum())) )
+	if ( pTagInvitetime && (pTagInvitetime->GetValNum() + (5 * TICK_PER_SEC) > g_World.GetCurrentTime().GetTimeRaw()) )
 	{
-		SysMessageDefault(DEFMSG_PARTY_ADD_TOO_FAST);
+		SysMessageDefault(DEFMSG_PARTY_TARG_ADD_WAIT);
 		return false;
 	}
 
@@ -2349,14 +2349,26 @@ bool CClient::OnTarg_Party_Add(CChar *pChar)
 			return false;
 	}
 
-	m_pChar->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_PARTY_INVITE), pChar->GetName());
-	pChar->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_PARTY_INVITE_TARG), m_pChar->GetName());
+	m_pChar->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_PARTY_TARG_ADD_SUCCESS));
+	pChar->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_PARTY_INVITED_PROMPT), m_pChar->GetName());
 
-	m_pChar->SetKeyNum("PARTY_LASTINVITE", static_cast<DWORD>(pChar->GetUID()));
-	m_pChar->SetKeyNum("PARTY_LASTINVITETIME", g_World.GetCurrentTime().GetTimeRaw() + (Calc_GetRandVal2(2, 5) * TICK_PER_SEC));
+	m_pChar->SetKeyNum("PARTY_LASTINVITE", pChar->GetUID());
+	m_pChar->SetKeyNum("PARTY_LASTINVITETIME", g_World.GetCurrentTime().GetTimeRaw());
 
 	new PacketPartyInvite(pChar->m_pClient, m_pChar);
 	return true;
+}
+
+bool CClient::OnTarg_Party_Remove(CChar *pChar)
+{
+	ADDTOCALLSTACK("CClient::OnTarg_Party_Remove");
+	// CLIMODE_TARG_PARTY_REMOVE
+	// Remove this char from the party. PARTYMSG_Remove
+
+	if ( !pChar || !pChar->m_pParty || !m_pChar || !m_pChar->m_pParty || !m_pChar->m_pParty->IsPartyMaster(m_pChar) )
+		return false;
+
+	return m_pChar->m_pParty->RemoveMember(pChar, m_pChar);
 }
 
 bool CClient::OnTarg_GlobalChat_Add(CChar *pChar)

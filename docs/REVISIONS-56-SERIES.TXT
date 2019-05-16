@@ -1492,3 +1492,9 @@ Changed: Disabling LogMask flag 'LOGM_INIT' on sphere.ini now will make console 
 [sphere.ini]: Added new RestAPIPublicIP setting to set server public IP on ServIP automatically at server startup
 	-This should be useful when server local IP is behind NAT router/firewall and external IP should be set on ServIP manually, now this will set it automatically
 	-API URL is customizable
+
+15-05-2019, Coruja
+Changed: Many internal improvements on party system
+	-Added support for client shortcut /rem (used to remove members from party)
+	-Fixed messages with length > 32 characters not showing correctly
+[sphere_msgs.scp]: Updated 'party_*' messages

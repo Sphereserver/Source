@@ -2732,7 +2732,7 @@ bool PacketExtendedCommand::onReceive(NetState* net)
 		return false;
 
 	WORD packetLength = readInt16();
-	if (packetLength > 32)
+	if (packetLength > MAX_TALK_BUFFER)
 		return false;
 
 	EXTDATA_TYPE type = static_cast<EXTDATA_TYPE>(readInt16());
@@ -2805,87 +2805,96 @@ bool PacketPartyMessage::onReceive(NetState* net)
 	if (!character)
 		return false;
 
-	PARTYMSG_TYPE code = static_cast<PARTYMSG_TYPE>(readByte());
-	switch (code)
+	PARTYMSG_TYPE action = static_cast<PARTYMSG_TYPE>(readByte());
+	switch ( action )
 	{
 		case PARTYMSG_Add:
 		{
-			// request to add a new member
-			client->addTarget(CLIMODE_TARG_PARTY_ADD, g_Cfg.GetDefaultMsg(DEFMSG_PARTY_TARG_WHO), false, false);
-			break;
-		}
-		case PARTYMSG_Disband:
-		{
-			if (!character->m_pParty)
+			if ( character->m_pParty && !character->m_pParty->IsPartyMaster(character) )
+			{
+				client->SysMessageDefault(DEFMSG_PARTY_TARG_ADD_PERMISSION);
 				return false;
+			}
 
-			character->m_pParty->Disband(character->GetUID());
-			break;
+			client->addTarget(CLIMODE_TARG_PARTY_ADD, g_Cfg.GetDefaultMsg(DEFMSG_PARTY_TARG_ADD), false, false);
+			return true;
 		}
 		case PARTYMSG_Remove:
 		{
-			// request to remove this member of the party
-			if (!character->m_pParty)
+			if ( !character->m_pParty )
+			{
+				client->SysMessageDefault(DEFMSG_PARTY_NOTINPARTY);
 				return false;
+			}
 
-			CGrayUID serial(readInt32());
-			character->m_pParty->RemoveMember(serial, character->GetUID());
-			break;
+			CGrayUID uid = static_cast<CGrayUID>(readInt32());
+			if ( uid )
+				return character->m_pParty->RemoveMember(uid.CharFind(), character);
+
+			client->addTarget(CLIMODE_TARG_PARTY_REMOVE, g_Cfg.GetDefaultMsg(DEFMSG_PARTY_TARG_REMOVE), false, false);
+			return true;
 		}
 		case PARTYMSG_MsgMember:
 		{
-			// message a specific member of my party
-			if (!character->m_pParty)
+			if ( !character->m_pParty )
+			{
+				client->SysMessageDefault(DEFMSG_PARTY_NOTINPARTY);
 				return false;
+			}
 
-			CGrayUID serial(readInt32());
+			CGrayUID uid = static_cast<CGrayUID>(readInt32());
 			NCHAR text[MAX_TALK_BUFFER];
 			int length = readStringNullUNICODE(reinterpret_cast<WCHAR *>(text), MAX_TALK_BUFFER);
-			character->m_pParty->MessageEvent(serial, character->GetUID(), text, length);
-			break;
+			return character->m_pParty->MessageEvent(uid.CharFind(), character, text, length);
 		}
-		case PARTYMSG_Msg:
+		case PARTYMSG_MsgAll:
 		{
-			// send message to the whole party
-			if (!character->m_pParty)
+			if ( !character->m_pParty )
+			{
+				client->SysMessageDefault(DEFMSG_PARTY_NOTINPARTY);
 				return false;
+			}
 
 			NCHAR text[MAX_TALK_BUFFER];
 			int length = readStringNullUNICODE(reinterpret_cast<WCHAR *>(text), MAX_TALK_BUFFER);
-			character->m_pParty->MessageEvent(static_cast<CGrayUID>(UID_CLEAR), character->GetUID(), text, length);
-			break;
+			return character->m_pParty->MessageEvent(NULL, character, text, length);
 		}
-		case PARTYMSG_Option:
+		case PARTYMSG_Disband:
 		{
-			// set the loot flag
-			if (!character->m_pParty)
+			if ( !character->m_pParty )
+			{
+				client->SysMessageDefault(DEFMSG_PARTY_NOTINPARTY);
+				return false;
+			}
+			else if ( !character->m_pParty->IsPartyMaster(character) )
+				return false;
+
+			return character->m_pParty->Disband();
+		}
+		case PARTYMSG_ToggleLooting:
+		{
+			if ( !character->m_pParty )
 				return false;
 
 			character->m_pParty->SetLootFlag(character, readBool());
 			character->NotoSave_Update();
-			break;
+			return true;
 		}
 		case PARTYMSG_Accept:
 		{
-			// we accept or decline the offer of an invite
-			CGrayUID serial(readInt32());
-			CPartyDef::AcceptEvent(character, serial);
-			break;
+			CChar *pCharInviter = static_cast<CGrayUID>(readInt32()).CharFind();
+			return CPartyDef::AcceptEvent(character, pCharInviter);
 		}
 		case PARTYMSG_Decline:
 		{
-			CGrayUID serial(readInt32());
-			CPartyDef::DeclineEvent(character, serial);
-			break;
+			CChar *pCharInviter = static_cast<CGrayUID>(readInt32()).CharFind();
+			return CPartyDef::DeclineEvent(character, pCharInviter);
 		}
 		default:
 		{
-			client->SysMessagef("Unknown party system msg %d", code);
-			break;
+			return false;
 		}
 	}
-
-	return true;
 }
 
 

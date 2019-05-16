@@ -93,6 +93,7 @@ enum CLIMODE_TYPE	// What mode is the client to server connection in? (waiting f
 	CLIMODE_TARG_STONE_RECRUIT,		// recruit members for a stone
 	CLIMODE_TARG_STONE_RECRUITFULL,	// recruit/make a member and set abbrev show
 	CLIMODE_TARG_PARTY_ADD,
+	CLIMODE_TARG_PARTY_REMOVE,
 	CLIMODE_TARG_GLOBALCHAT_ADD,
 
 	CLIMODE_TARG_QTY
@@ -527,6 +528,7 @@ private:
 	bool OnTarg_Use_Deed(CItem *pDeed, CPointMap &pt);
 	bool OnTarg_Use_Item(CObjBase *pObjTarg, CPointMap &pt, ITEMID_TYPE id);
 	bool OnTarg_Party_Add(CChar *pChar);
+	bool OnTarg_Party_Remove(CChar *pChar);
 	bool OnTarg_GlobalChat_Add(CChar *pChar);
 	CItem *OnTarg_Use_Multi(const CItemBase *pItemDef, CPointMap &pt, DWORD dwAttr, HUE_TYPE wHue);
 
@@ -1017,7 +1019,7 @@ class CPartyDef : public CGObListRec, public CScriptObj
 {
 	// List of characters in party
 public:
-	CPartyDef(CChar *pCharInvite, CChar *pCharAccept);
+	CPartyDef(CChar *pCharInviter, CChar *pCharAccept);
 
 	static const char *m_sClassName;
 	static LPCTSTR const sm_szVerbKeys[];
@@ -1064,8 +1066,8 @@ private:
 	size_t DetachChar(CChar *pChar);
 
 public:
-	static bool AcceptEvent(CChar *pCharAccept, CGrayUID uidInviter, bool bForced = false);
-	static bool DeclineEvent(CChar *pCharDecline, CGrayUID uidInviter);
+	static bool AcceptEvent(CChar *pCharAccept, CChar *pCharInviter, bool fForced = false);
+	static bool DeclineEvent(CChar *pCharDecline, CChar *pCharInviter);
 
 	bool IsPartyFull() const
 	{
@@ -1084,32 +1086,30 @@ public:
 	{
 		return static_cast<LPCTSTR>(m_sName);
 	}
-	CGrayUID GetMaster() const
+	CChar *FindMaster() const
 	{
-		return m_Chars.GetChar(0);
+		return m_Chars.GetChar(0).CharFind();
 	}
 
 	// Functions sent to all party members
 	void StatsUpdateAll(CChar *pCharSrc, PacketSend *pPacket);
-	void SysMessageAll(LPCTSTR pszText);
+	void SysMessageAll(LPCTSTR pszMsg);
 	void UpdateWaypointAll(CChar *pCharSrc, MAPWAYPOINT_TYPE type);
 
 	// List sending wrappers
-	bool SendRemoveList(CChar *pCharRemove, bool bFor);
+	bool SendRemoveList(CChar *pCharRemove);
 	bool SendAddList(CChar *pCharDest);
 
 	// Party message sending wrappers
-	bool MessageEvent(CGrayUID uidDst, CGrayUID uidSrc, const NCHAR *pText, int ilenmsg);
+	bool MessageEvent(CChar *pCharDest, CChar *pCharSrc, const NCHAR *pszMsg, int iMsgLen);
 
 	// Commands
-	bool Disband(CGrayUID uidMaster);
-	bool RemoveMember(CGrayUID uidRemove, CGrayUID uidCommand);
+	bool Disband();
+	bool RemoveMember(CChar *pChar, CChar *pCharSrc = NULL);
 	void AcceptMember(CChar *pChar);
 	void SetLootFlag(CChar *pChar, bool fSet);
 	bool GetLootFlag(const CChar *pChar);
-	bool SetMaster(CChar *pNewMaster);
-
-	// -------------------------------
+	bool SetMaster(CChar *pChar);
 
 	bool r_GetRef(LPCTSTR &pszKey, CScriptObj *&pRef);
 	bool r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc);

@@ -2064,6 +2064,7 @@ void CClient::Event_Target(CLIMODE_TYPE context, CGrayUID uid, CPointMap pt, BYT
 		case CLIMODE_TARG_STONE_RECRUIT:	OnTarg_Stone_Recruit(uid.CharFind());		break;
 		case CLIMODE_TARG_STONE_RECRUITFULL:OnTarg_Stone_Recruit(uid.CharFind(), true);	break;
 		case CLIMODE_TARG_PARTY_ADD:		OnTarg_Party_Add(uid.CharFind());			break;
+		case CLIMODE_TARG_PARTY_REMOVE:		OnTarg_Party_Remove(uid.CharFind());		break;
 		case CLIMODE_TARG_GLOBALCHAT_ADD:	OnTarg_GlobalChat_Add(uid.CharFind());		break;
 
 		default:																		break;
@@ -2217,15 +2218,11 @@ void CClient::Event_AOSPopupMenuRequest(CGrayUID uid) //construct packet after a
 		{
 			if ( m_NetState->isClientVersion(MINCLIVER_NEWCONTEXTMENU) )
 			{
-				if ( !m_pChar->m_pParty && !pChar->m_pParty )
+				bool fPartyMaster = (m_pChar->m_pParty && m_pChar->m_pParty->IsPartyMaster(m_pChar));
+				if ( !pChar->m_pParty && (!m_pChar->m_pParty || fPartyMaster) )
 					m_pPopupPacket->addOption(POPUP_PARTY_ADD, 197);
-				else if ( m_pChar->m_pParty && m_pChar->m_pParty->IsPartyMaster(m_pChar) )
-				{
-					if ( !pChar->m_pParty )
-						m_pPopupPacket->addOption(POPUP_PARTY_ADD, 197);
-					else if ( pChar->m_pParty == m_pChar->m_pParty )
-						m_pPopupPacket->addOption(POPUP_PARTY_REMOVE, 198);
-				}
+				else if ( fPartyMaster && (pChar->m_pParty == m_pChar->m_pParty) )
+					m_pPopupPacket->addOption(POPUP_PARTY_REMOVE, 198);
 			}
 			if ( m_NetState->isClientVersion(MINCLIVER_TOL) && (m_pChar->GetDist(pChar) <= 2) )
 				m_pPopupPacket->addOption(POPUP_TRADE_OPEN, 1077728);
@@ -2365,8 +2362,7 @@ void CClient::Event_AOSPopupMenuSelect(CGrayUID uid, WORD EntryTag)	//do somethi
 			OnTarg_Party_Add(pChar);
 			return;
 		case POPUP_PARTY_REMOVE:
-			if ( m_pChar->m_pParty )
-				m_pChar->m_pParty->RemoveMember(pChar->GetUID(), m_pChar->GetUID());
+			OnTarg_Party_Remove(pChar);
 			return;
 		case POPUP_TRADE_ALLOW:
 			if ( m_pChar->m_pPlayer )
