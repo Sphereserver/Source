@@ -103,6 +103,8 @@ PacketCombatDamage::PacketCombatDamage(const CClient* target, WORD damage, CGray
 PacketHealthBarInfo::PacketHealthBarInfo(const CClient *target, CObjBase *object) : PacketSend(XCMD_Status, 7, g_Cfg.m_fUsePacketPriorities? PRI_LOW : PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketHealthBarInfo::PacketHealthBarInfo");
+	if ( !object )
+		return;
 
 	const CChar *character = target->GetChar();
 	const CChar *objectChar = dynamic_cast<const CChar *>(object);

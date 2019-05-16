@@ -2336,7 +2336,7 @@ bool CClient::OnTarg_Party_Add(CChar *pChar)
 	}
 
 	CVarDefCont *pTagInvitetime = m_pChar->m_TagDefs.GetKey("PARTY_LASTINVITETIME");
-	if ( pTagInvitetime && (pTagInvitetime->GetValNum() + (5 * TICK_PER_SEC) > g_World.GetCurrentTime().GetTimeRaw()) )
+	if ( pTagInvitetime && (static_cast<UINT64>(pTagInvitetime->GetValNum()) + (5 * TICK_PER_SEC) > g_World.GetCurrentTime().GetTimeRaw()) )
 	{
 		SysMessageDefault(DEFMSG_PARTY_TARG_ADD_WAIT);
 		return false;
@@ -2349,7 +2349,7 @@ bool CClient::OnTarg_Party_Add(CChar *pChar)
 			return false;
 	}
 
-	m_pChar->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_PARTY_TARG_ADD_SUCCESS));
+	m_pChar->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_PARTY_TARG_ADD_SUCCESS));
 	pChar->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_PARTY_INVITED_PROMPT), m_pChar->GetName());
 
 	m_pChar->SetKeyNum("PARTY_LASTINVITE", pChar->GetUID());

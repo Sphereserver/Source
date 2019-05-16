@@ -35,7 +35,7 @@ void CChar::Stat_SetMod(STAT_TYPE stat, int iVal)
 		if ( (stat >= STAT_STR) && (stat <= STAT_DEX) )
 		{
 			CScriptTriggerArgs args;
-			args.m_iN1 = stat + 8;		// shift by 8 to indicate modSTR, modINT, modDEX
+			args.m_iN1 = static_cast<INT64>(stat) + 8;		// shift by 8 to indicate modSTR, modINT, modDEX
 			args.m_iN2 = iStatVal;
 			args.m_iN3 = iVal;
 			if ( OnTrigger(CTRIG_StatChange, this, &args) == TRIGRET_RET_TRUE )
@@ -125,7 +125,7 @@ void CChar::Stat_SetMax(STAT_TYPE stat, int iVal)
 			if ( (stat >= STAT_STR) && (stat <= STAT_FOOD) )		// only STR, DEX, INT, FOOD fire MaxHits, MaxMana, MaxStam, MaxFood for @StatChange
 			{
 				CScriptTriggerArgs args;
-				args.m_iN1 = stat + 4;		// shift by 4 to indicate MaxHits, etc..
+				args.m_iN1 = static_cast<INT64>(stat) + 4;		// shift by 4 to indicate MaxHits, etc..
 				args.m_iN2 = Stat_GetMax(stat);
 				args.m_iN3 = iVal;
 				if ( OnTrigger(CTRIG_StatChange, this, &args) == TRIGRET_RET_TRUE )
@@ -252,7 +252,7 @@ void CChar::Stat_SetBase(STAT_TYPE stat, int iVal)
 
 			if ( (stat != STAT_FOOD) && (m_Stat[stat].m_max < 1) ) // MaxFood cannot depend on something, otherwise if the Stat depends on STR, INT, DEX, fire MaxHits, MaxMana, MaxStam
 			{
-				args.m_iN1 = stat + 4; // Shift by 4 to indicate MaxHits, MaxMana, MaxStam
+				args.m_iN1 = static_cast<INT64>(stat) + 4; // Shift by 4 to indicate MaxHits, MaxMana, MaxStam
 				args.m_iN2 = iStatVal;
 				args.m_iN3 = iVal;
 				if ( OnTrigger(CTRIG_StatChange, this, &args) == TRIGRET_RET_TRUE )
@@ -691,8 +691,8 @@ void CChar::Skill_Experience(SKILL_TYPE skill, int iDifficulty)
 	if ( wSkillLevelFixed < iSkillMax )	// are we in position to gain skill ?
 	{
 		// slightly more chance of decay than gain
-		int iRoll = Calc_GetRandVal(1000);
-		if ( (iRoll * 3) <= (iChance * 4) )
+		INT64 iRoll = Calc_GetRandVal(1000);
+		if ( iRoll * 3 <= iChance * 4 )
 			Skill_Decay();
 
 		if ( iDifficulty > 0 )
@@ -1228,7 +1228,7 @@ bool CChar::Skill_MakeItem_Success()
 		// minimum quality is 1, maximum quality is 200.  100 is average.
 
 		// How much variance? This is the difference in quality levels from what I can normally make.
-		int iVariance = 2 - static_cast<int>(log10(static_cast<double>(Calc_GetRandVal(250) + 1)));	// this should result in a value between 0 and 2
+		int iVariance = 2 - static_cast<int>(log10(static_cast<double>(Calc_GetRandVal(250)) + 1));	// this should result in a value between 0 and 2
 
 		// Determine if lower or higher quality
 		if ( !Calc_GetRandVal(2) )

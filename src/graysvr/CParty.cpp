@@ -302,7 +302,7 @@ bool CPartyDef::MessageEvent(CChar *pCharDest, CChar *pCharSrc, const NCHAR *psz
 		TRIGRET_TYPE tr = TRIGRET_RET_FALSE;
 		CScriptTriggerArgs Args;
 		Args.m_iN1 = pCharSrc->GetUID();
-		Args.m_iN2 = pCharDest->GetUID();
+		Args.m_iN2 = pCharDest ? pCharDest->GetUID() : UID_CLEAR;
 		Args.m_s1 = pszText;
 		Args.m_s1_raw = pszText;
 
@@ -440,7 +440,7 @@ bool CPartyDef::DeclineEvent(CChar *pCharDecline, CChar *pCharInviter)	// static
 
 	pCharInviter->DeleteKey("PARTY_LASTINVITE");
 	pCharInviter->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_PARTY_DECLINE), pCharDecline->GetName());
-	pCharDecline->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_PARTY_DECLINE_NOTIFY));
+	pCharDecline->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_PARTY_DECLINE_NOTIFY));
 	return true;
 }
 

@@ -943,7 +943,7 @@ bool PacketCharStatusReq::onReceive(NetState* net)
 	if ( !client->GetChar() )
 		return false;
 
-	skip(4);	// 0xedededed
+	skip(4);	// 0xEDEDEDED
 	BYTE requestType = readByte();
 	CGrayUID targetSerial = static_cast<CGrayUID>(readInt32());
 
@@ -1260,7 +1260,7 @@ bool PacketBookPageEdit::onReceive(NetState* net)
 
 	WORD page = readInt16();
 	WORD lineCount = readInt16();
-	if ((lineCount == 0xFFFF) || (getLength() <= 0x0D))
+	if ((lineCount == 0xFFFF) || (getLength() <= 13))
 	{
 		client->addBookPage(book, page, 1); // just a request for a page
 		return true;
@@ -1462,7 +1462,7 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 		case BBOARDF_REQ_HEAD:
 		{
 			// request for message header and/or body
-			if (getLength() != 0xC)
+			if (getLength() != 12)
 			{
 				DEBUG_ERR(("%lx:BBoard feed back message bad length %" FMTSIZE_T "\n", net->id(), getLength()));
 				return true;
@@ -1478,7 +1478,7 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 		case BBOARDF_NEW_MSG:
 		{
 			// submit a message
-			if (getLength() < 0xC)
+			if (getLength() < 12)
 				return true;
 
 			if (!character->CanTouch(board))
@@ -2321,9 +2321,9 @@ bool PacketSpeakReqUNICODE::onReceive(NetState* net)
 	if (packetLength >= MAX_TALK_BUFFER)
 		return false;
 
-	if (mode & 0xc0) // text contains keywords
+	if (mode & TALKMODE_ENCODED) // text contains keywords
 	{
-		mode = static_cast<TALKMODE_TYPE>(mode & ~0xc0);
+		mode = static_cast<TALKMODE_TYPE>(mode & ~TALKMODE_ENCODED);
 
 		size_t count = (readInt16() & 0xFFF0) >> 4;
 		if (count > 50) // malformed check
@@ -4652,10 +4652,7 @@ bool PacketCrashReport::onReceive(NetState* net)
 	skip(1); // zero
 	DWORD errorOffset = readInt32();
 
-	g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "%lx:Client crashed at %d,%d,%d,%d: 0x%08lX %s @ 0x%08lX (%s, %d.%d.%d.%d)\n", net->id(),
-					x, y, z, map,
-					errorCode, description, errorOffset, executable,
-					versionMaj, versionMin, versionRev, versionPat);
+	g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "%lx:Client crashed at %hu,%hu,%hhu,%hhu: 0x%08lX %s @ 0x%08lX (%s, %hhu.%hhu.%hhu.%hhu)\n", net->id(), x, y, z, map, errorCode, description, errorOffset, executable, versionMaj, versionMin, versionRev, versionPat);
 	return true;
 }
 
@@ -4727,8 +4724,7 @@ bool PacketGlobalChatReq::onReceive(NetState *net)
 			client->addGlobalChatStatusToggle();
 			return true;
 		default:
-			DEBUG_ERR(("%lx:Unknown global chat action 0%hhx\n", net->id(), action));
-			return true;
+			return false;
 	}
 }
 
