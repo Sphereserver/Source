@@ -419,7 +419,7 @@ void CGrayMapBlock::Load(int bx, int by)
 				MapAddress pMapAddress = g_Install.m_UopMapAddress[mapNumber][i];
 				if ( (dwBlockIndex <= pMapAddress.dwLastBlock) && (dwBlockIndex >= pMapAddress.dwFirstBlock) )
 				{
-					dwFileOffset = static_cast<DWORD>(pMapAddress.qwAdress + ((dwBlockIndex - pMapAddress.dwFirstBlock) * 196));
+					dwFileOffset = static_cast<DWORD>(pMapAddress.qwAddress) + ((dwBlockIndex - pMapAddress.dwFirstBlock) * 196);
 					break;
 				}
 			}

@@ -10,7 +10,7 @@ class MapAddress
 public:
 	DWORD dwFirstBlock;
 	DWORD dwLastBlock;
-	INT64 qwAdress;
+	INT64 qwAddress;
 };
 
 ///////////////////////////////////////////////////////////

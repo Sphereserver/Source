@@ -237,7 +237,7 @@ VERFILE_TYPE CGrayInstall::OpenFiles(DWORD dwMask)
 											m_Maps[index].Read(&dwCompressedSize, sizeof(DWORD));
 
 											MapAddress pMapAddress;
-											pMapAddress.qwAdress = ((static_cast<INT64>(dwHashHi) << 32) + dwHashLo) + dwHeaderLength;
+											pMapAddress.qwAddress = ((static_cast<INT64>(dwHashHi) << 32) + dwHashLo) + dwHeaderLength;
 
 											m_Maps[index].Seek(sizeof(DWORD), SEEK_CUR);
 											m_Maps[index].Read(&dwHashLo, sizeof(DWORD));

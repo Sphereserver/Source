@@ -210,11 +210,6 @@ bool CServer::GetPublicIP()
 
 	CGSocket sock;
 	sock.Create();
-	if ( sock.Bind(sockAddr) == SOCKET_ERROR )
-	{
-		sock.Close();
-		return false;
-	}
 
 	if ( sock.Connect(sockAddr) == SOCKET_ERROR )
 	{

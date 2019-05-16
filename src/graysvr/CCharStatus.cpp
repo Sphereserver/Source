@@ -1052,8 +1052,8 @@ bool CChar::CanSeeLOS_Adv(const CPointMap &ptDst, CPointMap *pptBlock, int iMaxD
 	signed short dy = ptDst.m_y - ptSrc.m_y;
 	signed char dz = ptDst.m_z - ptSrc.m_z;
 
-	double dist2d = sqrt(static_cast<double>(dx * dx + dy * dy));
-	double dist3d = dz ? sqrt(static_cast<double>(dist2d * dist2d + dz * dz)) : dist2d;
+	double dist2d = sqrt((static_cast<double>(dx) * static_cast<double>(dx)) + (static_cast<double>(dy) * static_cast<double>(dy)));
+	double dist3d = dz ? sqrt((dist2d * dist2d) + (static_cast<double>(dz) * static_cast<double>(dz))) : dist2d;
 
 	if ( APPROX(dist2d) > static_cast<double>(iMaxDist) )
 	{

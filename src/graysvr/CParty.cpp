@@ -302,7 +302,7 @@ bool CPartyDef::MessageEvent(CChar *pCharDest, CChar *pCharSrc, const NCHAR *psz
 		TRIGRET_TYPE tr = TRIGRET_RET_FALSE;
 		CScriptTriggerArgs Args;
 		Args.m_iN1 = pCharSrc->GetUID();
-		Args.m_iN2 = pCharDest ? pCharDest->GetUID() : UID_CLEAR;
+		Args.m_iN2 = pCharDest ? pCharDest->GetUID() : static_cast<CGrayUID>(UID_CLEAR);
 		Args.m_s1 = pszText;
 		Args.m_s1_raw = pszText;
 

@@ -236,6 +236,7 @@ bool CScript::Open(LPCTSTR pszFilename, UINT uFlags)
 	{
 		TCHAR szTemp[_MAX_PATH];
 		strncpy(szTemp, GetFilePath(), sizeof(szTemp) - 1);
+		szTemp[sizeof(szTemp) - 1] = '\0';
 		strcat(szTemp, SPHERE_SCRIPT);
 		SetFilePath(szTemp);
 		uFlags |= OF_TEXT;
