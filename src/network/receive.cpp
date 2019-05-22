@@ -617,10 +617,10 @@ bool PacketSpeakReq::onReceive(NetState* net)
 		return false;
 
 	packetLength -= getPosition();
-	if (packetLength >= MAX_TALK_BUFFER)
+	if (packetLength > MAX_TALK_BUFFER / 2)
 		return false;
 
-	TCHAR text[MAX_TALK_BUFFER];
+	TCHAR text[MAX_TALK_BUFFER / 2];
 	readStringASCII(text, minimum(COUNTOF(text), packetLength));
 
 	client->Event_Talk(text, hue, mode, false);
@@ -804,8 +804,8 @@ bool PacketTextCommand::onReceive(NetState* net)
 		return false;
 
 	EXTCMD_TYPE type = static_cast<EXTCMD_TYPE>(readByte());
-	TCHAR name[MAX_TALK_BUFFER];
-	readStringNullASCII(name, MAX_TALK_BUFFER-1);
+	TCHAR name[MAX_NAME_SIZE];
+	readStringNullASCII(name, MAX_NAME_SIZE - 1);
 
 	client->Event_ExtCmd(type, name);
 	return true;
@@ -2031,21 +2031,21 @@ bool PacketPromptResponse::onReceive(NetState* net)
 	ADDTOCALLSTACK("PacketPromptResponse::onReceive");
 
 	size_t packetLength = readInt16();
-	DWORD context1 = readInt32();
-	DWORD context2 = readInt32();
+	CGrayUID uidChar = static_cast<CGrayUID>(readInt32());
+	CGrayUID uidPrompt = static_cast<CGrayUID>(readInt32());
 	DWORD type = readInt32();
 
 	if (packetLength <= getPosition())
 		return false;
 
 	packetLength -= getPosition();
-	if (packetLength >= MAX_TALK_BUFFER)
+	if (packetLength > (MAX_TALK_BUFFER + 2) / 2)
 		return false;
 
 	TCHAR* text = Str_GetTemp();
 	readStringASCII(text, packetLength, false);
 
-	net->m_client->Event_PromptResp(text, packetLength, context1, context2, type);
+	net->m_client->Event_PromptResp(text, packetLength, uidChar, uidPrompt, type);
 	return true;
 }
 
@@ -2318,7 +2318,7 @@ bool PacketSpeakReqUNICODE::onReceive(NetState* net)
 		return false;
 
 	packetLength -= getPosition();
-	if (packetLength >= MAX_TALK_BUFFER)
+	if (packetLength > MAX_TALK_BUFFER + 2)
 		return false;
 
 	if (mode & TALKMODE_ENCODED) // text contains keywords
@@ -2339,13 +2339,13 @@ bool PacketSpeakReqUNICODE::onReceive(NetState* net)
 			return true;
 
 		skip(static_cast<long>(toskip));
-		TCHAR text[MAX_TALK_BUFFER];
+		TCHAR text[MAX_TALK_BUFFER + 2];
 		readStringNullASCII(text, COUNTOF(text));
 		client->Event_Talk(text, hue, mode, true);
 	}
 	else
 	{
-		NCHAR text[MAX_TALK_BUFFER];
+		NCHAR text[MAX_TALK_BUFFER + 2];
 		readStringUNICODE(reinterpret_cast<WCHAR *>(text), (packetLength / sizeof(WCHAR)) - 1, false);
 
 		client->Event_TalkUNICODE(text, static_cast<int>(packetLength), hue, mode, font, language);
@@ -3613,8 +3613,8 @@ bool PacketPromptResponseUnicode::onReceive(NetState* net)
 	ADDTOCALLSTACK("PacketPromptResponseUnicode::onReceive");
 
 	size_t length = readInt16();
-	DWORD context1 = readInt32();
-	DWORD context2 = readInt32();
+	CGrayUID uidChar = static_cast<CGrayUID>(readInt32());
+	CGrayUID uidPrompt = static_cast<CGrayUID>(readInt32());
 	DWORD type = readInt32();
 
 	TCHAR language[4];
@@ -3624,10 +3624,13 @@ bool PacketPromptResponseUnicode::onReceive(NetState* net)
 		return false;
 
 	length -= getPosition();
+	if ( length > MAX_TALK_BUFFER + 2 )
+		return false;
+
 	TCHAR *text = Str_GetTemp();
 	readStringUNICODE(text, THREAD_STRING_LENGTH, (length / sizeof(WCHAR)) - 1);
 
-	net->m_client->Event_PromptResp(text, length, context1, context2, type);
+	net->m_client->Event_PromptResp(text, length, uidChar, uidPrompt, type);
 	return true;
 }
 
@@ -4342,17 +4345,15 @@ bool PacketBugReport::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketBugReport::onReceive");
 
-	WORD packetLength = readInt16(); // packet length
-	if (packetLength < 10)
-		return false;
+	WORD packetLength = readInt16();
 
 	TCHAR language[4];
 	readStringASCII(language, COUNTOF(language));
 
 	BUGREPORT_TYPE type = static_cast<BUGREPORT_TYPE>(readInt16());
 
-	TCHAR text[MAX_TALK_BUFFER];
-	int textLength = readStringNullNUNICODE(text, MAX_TALK_BUFFER, MAX_TALK_BUFFER-1);
+	TCHAR text[1001];
+	int textLength = readStringNullNUNICODE(text, 1001, 1000);
 
 	net->m_client->Event_BugReport(text, textLength, type, CLanguageID(language));
 	return true;

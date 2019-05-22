@@ -787,7 +787,7 @@ bool CServer::OnConsoleCmd(CGString &sText, CTextConsole *pSrc)
 			bool fSave = ((iLen > 1) && (sText[1] == '#'));
 			if ( g_Cfg.m_fSecure && !fSave )
 			{
-				pSrc->SysMessage("NOTE: Secure mode prevents keyboard exit\n");
+				pSrc->SysMessage("Secure mode prevents keyboard exit. Use 'S' to disable secure mode first\n");
 				fRet = false;
 			}
 			else
@@ -822,21 +822,15 @@ longcommand:
 				return false;
 			}
 
-			FILE *fileStrip, *fileScript;
-			char *x;
-			char *y = Str_GetTemp();
-			char *z = Str_GetTemp();
+			TCHAR szFileStrip[_MAX_PATH];
+			strncpy(szFileStrip, g_Cfg.m_sStripPath, _MAX_PATH - 1);
+			szFileStrip[_MAX_PATH - 1] = '\0';
+			strcat(szFileStrip, "sphere_strip" SPHERE_SCRIPT);
 
-			strncpy(z, g_Cfg.m_sStripPath, THREAD_STRING_LENGTH - 1);
-			z[THREAD_STRING_LENGTH - 1] = '\0';
-
-			strcat(z, "sphere_strip" SPHERE_SCRIPT);
-			pSrc->SysMessagef("StripPath is %s\n", z);
-
-			fileStrip = fopen(z, "w");
-			if ( !fileStrip )
+			FILE *pFileStrip = fopen(szFileStrip, "w");
+			if ( !pFileStrip )
 			{
-				pSrc->SysMessagef("Can't open file '%s' for writing\n", z);
+				pSrc->SysMessagef("Can't open file '%s' for writing\n", szFileStrip);
 				return false;
 			}
 
@@ -844,21 +838,26 @@ longcommand:
 			CResourceScript *script;
 			while ( (script = g_Cfg.GetResourceFile(i++)) != NULL )
 			{
-				strncpy(z, script->GetFilePath(), THREAD_STRING_LENGTH - 1);
-				z[THREAD_STRING_LENGTH - 1] = '\0';
+				TCHAR szFileScript[_MAX_PATH];
+				strncpy(szFileScript, script->GetFilePath(), _MAX_PATH - 1);
+				szFileScript[_MAX_PATH - 1] = '\0';
 
-				fileScript = fopen(z, "r");
-				if ( !fileScript )
+				FILE *pFileScript = fopen(szFileScript, "r");
+				if ( !pFileScript )
 				{
-					pSrc->SysMessagef("Can't open file '%s' for reading\n", z);
+					pSrc->SysMessagef("Can't read file '%s'\n", szFileScript);
 					continue;
 				}
 
-				while ( !feof(fileScript) )
+				char *x;
+				char *y = Str_GetTemp();
+				char *z = Str_GetTemp();
+
+				while ( !feof(pFileScript) )
 				{
-					z[0] = 0;
-					y[0] = 0;
-					fgets(y, SCRIPT_MAX_LINE_LEN, fileScript);
+					z[0] = '\0';
+					y[0] = '\0';
+					fgets(y, SCRIPT_MAX_LINE_LEN, pFileScript);
 
 					x = y;
 					GETNONWHITESPACE(x);
@@ -872,13 +871,13 @@ longcommand:
 						!strnicmp(z, "CATEGORY", 8) || !strnicmp(z, "SUBSECTION", 10) || !strnicmp(z, "DESCRIPTION", 11) || !strnicmp(z, "COLOR", 5) ||
 						!strnicmp(z, "GROUP", 5) || !strnicmp(z, "P=", 2) || !strnicmp(z, "RECT=", 5) || !strnicmp(z, "ON=@", 4) )
 					{
-						fputs(y, fileStrip);
+						fputs(y, pFileStrip);
 					}
 				}
-				fclose(fileScript);
+				fclose(pFileScript);
 			}
-			fclose(fileStrip);
-			pSrc->SysMessagef("Scripts have just been stripped\n");
+			fclose(pFileStrip);
+			pSrc->SysMessagef("Scripts have been stripped to '%s'\n", szFileStrip);
 			return true;
 		}
 

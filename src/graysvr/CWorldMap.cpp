@@ -101,7 +101,7 @@ CItem *CWorld::CheckNaturalResource(const CPointMap &pt, IT_TYPE type, bool fTes
 	pResBit->SetAttr(ATTR_INVIS|ATTR_MOVE_NEVER);
 	pResBit->SetAmount(wAmount);
 	pResBit->m_itResource.m_rid_res = pOreDef->GetResourceID();
-	pResBit->MoveToDecay(pt, pOreDef->m_iRegenerateTime.GetRandom() * TICK_PER_SEC);
+	pResBit->MoveToDecay(pt, static_cast<INT64>(pOreDef->m_iRegenerateTime.GetRandom()) * TICK_PER_SEC);
 
 	EXC_SET("resource found");
 	if ( pCharSrc )

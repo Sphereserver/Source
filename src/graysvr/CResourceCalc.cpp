@@ -53,7 +53,7 @@ int CResource::Calc_CombatAttackSpeed(CChar *pChar, CItem *pWeapon)
 				return iSwingSpeed;
 			}
 
-			int iSwingSpeed = IMULDIV(100 - pChar->Stat_GetAdjusted(STAT_DEX), 40, 100);	// base speed is just the char DEX range (0 ~ 40)
+			int iSwingSpeed = IMULDIV(100 - static_cast<LONGLONG>(pChar->Stat_GetAdjusted(STAT_DEX)), 40, 100);	// base speed is just the char DEX range (0 ~ 40)
 			if ( iSwingSpeed < 5 )
 				iSwingSpeed = 5;
 			else

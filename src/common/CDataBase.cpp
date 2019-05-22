@@ -45,11 +45,12 @@ void CDataBase::Connect()
 
 	// If user define server port using hostname:port format, split values into different variables
 	const char *pszArgs = strchr(host, ':');
-	if ( pszArgs != NULL )
+	if ( pszArgs )
 	{
 		char *pszHost = Str_GetTemp();
-		strncpy(pszHost, host, HOSTNAME_LENGTH);
-		*(strchr(pszHost, ':')) = 0;
+		strncpy(pszHost, host, HOSTNAME_LENGTH - 1);
+		pszHost[HOSTNAME_LENGTH - 1] = '\0';
+		*(strchr(pszHost, ':')) = '\0';
 		port = ATOI(pszArgs + 1);
 		host = pszHost;
 	}

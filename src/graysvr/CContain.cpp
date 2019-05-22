@@ -699,8 +699,8 @@ void CItemContainer::Trade_Status(bool fCheck)
 			pChar1->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_TRADE_RECEIVED_GOLD), pPartner->m_itEqTradeWindow.m_iGold, pChar2->GetName());
 		}
 
-		UINT64 uGold1 = m_itEqTradeWindow.m_iGold + static_cast<UINT64>(m_itEqTradeWindow.m_iPlatinum * 1000000000);
-		UINT64 uGold2 = pPartner->m_itEqTradeWindow.m_iGold + static_cast<UINT64>(pPartner->m_itEqTradeWindow.m_iPlatinum * 1000000000);
+		UINT64 uGold1 = static_cast<UINT64>(m_itEqTradeWindow.m_iGold) + static_cast<UINT64>(m_itEqTradeWindow.m_iPlatinum) * 1000000000;
+		UINT64 uGold2 = static_cast<UINT64>(pPartner->m_itEqTradeWindow.m_iGold) + static_cast<UINT64>(pPartner->m_itEqTradeWindow.m_iPlatinum) * 1000000000;
 		pChar1->m_virtualGold += uGold2 - uGold1;
 		pChar2->m_virtualGold += uGold1 - uGold2;
 	}
@@ -728,7 +728,7 @@ void CItemContainer::Trade_UpdateGold(DWORD dwPlatinum, DWORD dwGold)
 
 	// To prevent cheating, check if the char really have these gold/platinum values
 	UINT64 uMax = pChar1->m_virtualGold;
-	if ( dwGold + static_cast<UINT64>(dwPlatinum * 1000000000) > uMax )
+	if ( static_cast<UINT64>(dwGold) + static_cast<UINT64>(dwPlatinum) * 1000000000 > uMax )
 	{
 		dwGold = static_cast<DWORD>(uMax % 1000000000);
 		dwPlatinum = static_cast<DWORD>(uMax / 1000000000);

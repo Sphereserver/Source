@@ -1331,7 +1331,7 @@ void CClient::Event_ToolTip(CGrayUID uid)
 }
 
 // Client replied the addPrompt sent by server
-void CClient::Event_PromptResp(LPCTSTR pszText, size_t len, DWORD context1, DWORD context2, DWORD type, bool bNoStrip)
+void CClient::Event_PromptResp(LPCTSTR pszText, size_t iTextLen, CGrayUID uidChar, CGrayUID uidPrompt, DWORD dwType)
 {
 	ADDTOCALLSTACK("CClient::Event_PromptResp");
 	if ( !m_pChar )
@@ -1342,21 +1342,16 @@ void CClient::Event_PromptResp(LPCTSTR pszText, size_t len, DWORD context1, DWOR
 	CLIMODE_TYPE promptMode = m_Prompt_Mode;
 	m_Prompt_Mode = CLIMODE_NORMAL;
 
-	if ( m_Prompt_Uid != context1 )
+	if ( m_Prompt_Uid != uidChar )
 		return;
 
 	TCHAR szText[MAX_TALK_BUFFER];
-	if ( len <= 0 )		// cancel
+	if ( iTextLen <= 0 )		// cancel
 		szText[0] = '\0';
+	else if ( promptMode == CLIMODE_PROMPT_SCRIPT_VERB )
+		iTextLen = Str_GetBare(szText, pszText, COUNTOF(szText), "|~=[]{|}~");
 	else
-	{
-		if ( bNoStrip )		// Str_GetBare will eat unicode characters
-			len = strcpylen(szText, pszText, COUNTOF(szText));
-		else if ( promptMode == CLIMODE_PROMPT_SCRIPT_VERB )
-			len = Str_GetBare(szText, pszText, COUNTOF(szText), "|~=[]{|}~");
-		else
-			len = Str_GetBare(szText, pszText, COUNTOF(szText), "|~,=[]{|}~");
-	}
+		iTextLen = Str_GetBare(szText, pszText, COUNTOF(szText), "|~,=[]{|}~");
 
 	LPCTSTR pszPrefix = "";
 
@@ -1382,9 +1377,9 @@ void CClient::Event_PromptResp(LPCTSTR pszText, size_t len, DWORD context1, DWOR
 		case CLIMODE_PROMPT_VENDOR_PRICE:
 		{
 			// Setting the vendor price for an item.
-			if ( (type == 0) || (szText[0] == '\0') )	// cancel
+			if ( (dwType == 0) || (szText[0] == '\0') )	// cancel
 				return;
-			CChar *pCharVendor = static_cast<CGrayUID>(context2).CharFind();
+			CChar *pCharVendor = uidPrompt.CharFind();
 			if ( pCharVendor )
 				pCharVendor->NPC_SetVendorPrice(m_Prompt_Uid.ItemFind(), ATOI(szText));
 			return;
@@ -1423,7 +1418,7 @@ void CClient::Event_PromptResp(LPCTSTR pszText, size_t len, DWORD context1, DWOR
 	}
 
 	CItem *pItem = m_Prompt_Uid.ItemFind();
-	if ( !pItem || (type == 0) || (szText[0] == '\0') )
+	if ( !pItem || (dwType == 0) || (szText[0] == '\0') )
 	{
 		SysMessageDefault(DEFMSG_MSG_RENAME_CANCEL);
 		return;
@@ -2490,8 +2485,6 @@ void CClient::Event_ExtCmd(EXTCMD_TYPE type, TCHAR *pszName)
 				m_pChar->UpdateAnimate(ANIM_BOW);
 			else if ( !strcmpi(ppArgs[0], "salute") )
 				m_pChar->UpdateAnimate(ANIM_SALUTE);
-			else
-				DEBUG_ERR(("%lx:Event_ExtCmd Animate unk '%s'\n", GetSocketID(), ppArgs[0]));
 			return;
 		}
 
@@ -2503,12 +2496,7 @@ void CClient::Event_ExtCmd(EXTCMD_TYPE type, TCHAR *pszName)
 
 		case EXTCMD_AUTOTARG:	// bizarre new autotarget mode. "target x y z"
 		{
-			CGrayUID uid = ATOI(ppArgs[0]);
-			CObjBase *pObj = uid.ObjFind();
-			if ( pObj )
-				DEBUG_ERR(("%lx:Event_ExtCmd AutoTarg '%s' '%s'\n", GetSocketID(), pObj->GetName(), ppArgs[1]));
-			else
-				DEBUG_ERR(("%lx:Event_ExtCmd AutoTarg unk '%s' '%s'\n", GetSocketID(), ppArgs[0], ppArgs[1]));
+			//CObjBase *pObj = static_cast<CGrayUID>(ATOI(ppArgs[0])).ObjFind();
 			return;
 		}
 
@@ -2577,12 +2565,6 @@ void CClient::Event_ExtCmd(EXTCMD_TYPE type, TCHAR *pszName)
 			CScriptTriggerArgs Args(m_pChar);
 			Args.m_iN1 = iVirtueID;
 			m_pChar->OnTrigger(CTRIG_UserVirtueInvoke, m_pChar, &Args);
-			return;
-		}
-
-		default:
-		{
-			DEBUG_ERR(("%lx:Event_ExtCmd unk %d, '%s'\n", GetSocketID(), type, pszName));
 			return;
 		}
 	}

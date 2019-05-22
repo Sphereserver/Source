@@ -188,7 +188,7 @@ void AbstractThread::terminate(bool ended)
 			if (wasCurrentThread == false)
 			{
 #ifdef _WIN32
-				TerminateThread(m_handle, 0);
+				ExitThread(0);
 				CloseHandle(m_handle);
 #else
 				pthread_cancel(m_handle); // IBM say it so

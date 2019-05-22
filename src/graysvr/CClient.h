@@ -572,7 +572,7 @@ public:
 	void Event_Item_Pickup(CGrayUID uid, int amount);
 	void Event_MailMsg(CGrayUID uid1, CGrayUID uid2);
 	void Event_Profile(BYTE fWriteMode, CGrayUID uid, LPCTSTR pszProfile, int iProfileLen);
-	void Event_PromptResp(LPCTSTR pszText, size_t len, DWORD context1, DWORD context2, DWORD type, bool bNoStrip = false);
+	void Event_PromptResp(LPCTSTR pszText, size_t iTextLen, CGrayUID uidChar, CGrayUID uidPrompt, DWORD dwType);
 	void Event_PromptResp_GMPage(LPCTSTR pszReason);
 	void Event_SetName(CGrayUID uid, const char *pszCharName);
 	void Event_SingleClick(CGrayUID uid);

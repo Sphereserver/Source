@@ -1491,6 +1491,8 @@ bool CChar::NPC_FightMagery(CChar *pChar)
 	CObjBase *pSrc = this;
 	CObjBase *pTarg = pChar;
 	int iRandSpell = Calc_GetRandVal2(0, iSpellCount - 1);		// spells are stored on a zero-based vector
+	int iSkill = SKILL_MAGERY;
+	int iSkillReq = 0;
 
 	CItem *pWand = LayerFind(LAYER_HAND1);
 	if ( pWand && pWand->IsType(IT_WAND) )
@@ -1511,7 +1513,6 @@ bool CChar::NPC_FightMagery(CChar *pChar)
 		ItemBounce(pWand);
 	}
 
-	int iSkill, iSkillReq;
 	for ( ; iRandSpell < iSpellCount; ++iRandSpell )
 	{
 		SPELL_TYPE spell = m_pNPC->Spells_GetAt(static_cast<size_t>(iRandSpell));
@@ -2300,7 +2301,7 @@ void CChar::NPC_Act_Idle()
 
 	// Just stand here for a bit
 	Skill_Start(SKILL_NONE);
-	SetTimeout(Calc_GetRandVal2(1, 20) * TICK_PER_SEC);
+	SetTimeout(static_cast<INT64>(Calc_GetRandVal2(1, 20)) * TICK_PER_SEC);
 }
 
 bool CChar::NPC_OnReceiveItem(CChar *pCharSrc, CItem *pItem)

@@ -432,7 +432,7 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 			if ( !IsDigit(*pszArgs) )
 				break;
 			iVal *= 10;
-			iVal += *pszArgs - '0';
+			iVal += static_cast<INT64>(*pszArgs) - '0';
 		}
 		return iVal;
 	}

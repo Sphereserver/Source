@@ -1962,12 +1962,9 @@ void CWorld::SpeakUNICODE(const CObjBaseTemplate *pSrc, const NCHAR *pszText, HU
 		return;
 
 	bool fSpeakAsGhost = false;
-	NCHAR szTextGhost[MAX_TALK_BUFFER];
-	szTextGhost[0] = '\0';
-	NCHAR szTextGhostNamed[MAX_TALK_BUFFER];
-	szTextGhostNamed[0] = '\0';
-	NCHAR szTextNamed[MAX_TALK_BUFFER];
-	szTextNamed[0] = '\0';
+	NCHAR szTextGhost[MAX_TALK_BUFFER] = {};
+	NCHAR szTextGhostNamed[MAX_TALK_BUFFER] = {};
+	NCHAR szTextNamed[MAX_TALK_BUFFER] = {};
 
 	if ( pSrc )
 	{

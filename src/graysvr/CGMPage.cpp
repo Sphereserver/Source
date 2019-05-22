@@ -138,7 +138,7 @@ bool CGMPage::r_LoadVal(CScript &s)
 			m_sReason = s.GetArgStr();
 			break;
 		case GC_TIME:
-			m_time = CServTime::GetCurrentTime() - (s.GetArgVal() * TICK_PER_SEC);
+			m_time = CServTime::GetCurrentTime() - (s.GetArgLLVal() * TICK_PER_SEC);
 			break;
 		default:
 			return CScriptObj::r_LoadVal(s);
