@@ -612,7 +612,7 @@ bool CClient::Dialog_Setup( CLIMODE_TYPE mode, RESOURCE_ID_BASE rid, int iPage, 
 }
 
 
-void CClient::addGumpInpVal( bool fCancel, INPVAL_STYLE style, DWORD iMaxLength, LPCTSTR pszText1, LPCTSTR pszText2, CObjBase * pObj )
+void CClient::addGumpInpVal( bool fCancel, INPVAL_TYPE type, DWORD iMaxLength, LPCTSTR pszText1, LPCTSTR pszText2, CObjBase * pObj )
 {
 	ADDTOCALLSTACK("CClient::addGumpInpVal");
 	// CLIMODE_INPVAL
@@ -626,7 +626,7 @@ void CClient::addGumpInpVal( bool fCancel, INPVAL_STYLE style, DWORD iMaxLength,
 	if ( !pObj )
 		return;
 
-	new PacketGumpValueInput(this, fCancel, style, iMaxLength, pszText1, pszText2, pObj);
+	new PacketGumpValueInput(this, fCancel, type, iMaxLength, pszText1, pszText2, pObj);
 
 	//m_Targ_Text = verb
 	m_Targ_UID = pObj->GetUID();
@@ -728,7 +728,7 @@ bool CClient::Dialog_Close(CObjBase *pObj, DWORD rid, DWORD dwButtonID)
 			if ( (itGumpFound != m_mapOpenedGumps.end()) && ((*itGumpFound).second > 0) )
 			{
 				PacketGumpDialogRet packet;
-				packet.writeByte(XCMD_GumpDialogRet);
+				packet.writeByte(PACKET_GumpDialogRet);
 				packet.writeInt16(27);
 				packet.writeInt32(pObj->GetUID());
 				packet.writeInt32(context);

@@ -1465,8 +1465,7 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 			g_World.Save(s.GetArgVal() != 0);
 			break;
 		case CV_SCROLL:
-			// put a scroll up.
-			addScrollResource(s.GetArgStr(), SCROLL_TYPE_UPDATES);
+			addScrollResource(s.GetArgStr(), SCROLL_Updates);
 			break;
 		case CV_SENDPACKET:
 			SendPacket(s.GetArgStr());

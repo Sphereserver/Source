@@ -314,14 +314,14 @@ public:
 	{
 		m_Light = LIGHT_BRIGHT;	// set based on time later
 		m_Season = SEASON_Summer;
-		m_Weather = WEATHER_DRY;
+		m_Weather = WEATHER_Clear;
 	}
 	void SetInvalid()
 	{
 		// We changed location by teleport etc. Force a resync of all this
 		m_Light = UCHAR_MAX;	// set based on time later
-		m_Season = SEASON_QTY;
-		m_Weather = WEATHER_DEFAULT;
+		m_Season = SEASON_Summer;
+		m_Weather = WEATHER_Default;
 	}
 };
 
@@ -706,7 +706,7 @@ public:
 	void addItemName(const CItem *pItem);
 
 	bool addKick(CTextConsole *pSrc, bool fBlock = true);
-	void addWeather(WEATHER_TYPE weather = WEATHER_DEFAULT);
+	void addWeather(WEATHER_TYPE weather = WEATHER_Default);
 	void addLight();
 	void addMusic(MIDI_TYPE id);
 	void addArrowQuest(WORD x, WORD y, DWORD id);
@@ -762,14 +762,14 @@ public:
 	void addBondedStatus(const CChar *pChar, bool fGhost);
 	void addSkillWindow(SKILL_TYPE skill, bool fFromInfo = false);
 	void addBulletinBoard(const CItemContainer *pBoard);
-	bool addBBoardMessage(const CItemContainer *pBoard, BBOARDF_TYPE flag, CGrayUID uidMsg);
+	bool addBBoardMessage(const CItemContainer *pBoard, BULLETINBOARD_TYPE action, CGrayUID uidMsg);
 
 	void addToolTip(const CObjBase *pObj, LPCTSTR pszText);
 	void addDrawMap(CItemMap *pMap);
 	void addMapMode(CItemMap *pMap, MAPCMD_TYPE iType, bool fEdit = false);
 
 	void addGumpTextDisp(const CObjBase *pObj, GUMP_TYPE gump, LPCTSTR pszName, LPCTSTR pszText);
-	void addGumpInpVal(bool fCancel, INPVAL_STYLE style, DWORD iMaxLength, LPCTSTR pszText1, LPCTSTR pszText2, CObjBase *pObj);
+	void addGumpInpVal(bool fCancel, INPVAL_TYPE type, DWORD iMaxLength, LPCTSTR pszText1, LPCTSTR pszText2, CObjBase *pObj);
 
 	void addItemMenu(CLIMODE_TYPE mode, const CMenuItem *item, size_t count, CObjBase *pObj = NULL);
 	void addGumpDialog(CLIMODE_TYPE mode, const CGString *psControls, size_t iControls, const CGString *psText, size_t iTexts, DWORD x, DWORD y, CObjBase *pObj = NULL, DWORD rid = 0);

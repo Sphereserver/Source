@@ -619,7 +619,7 @@ void CItemContainer::Trade_Status(bool fCheck)
 	if ( !fCheck )
 		pPartner->m_itEqTradeWindow.m_bCheck = 0;
 
-	PacketTradeAction cmd(SECURE_TRADE_CHANGE);
+	PacketTradeAction cmd(SECURETRADE_Accept);
 	cmd.prepareReadyChange(this, pPartner);
 	cmd.send(pChar1->m_pClient);
 
@@ -738,7 +738,7 @@ void CItemContainer::Trade_UpdateGold(DWORD dwPlatinum, DWORD dwGold)
 	m_itEqTradeWindow.m_iGold = dwGold;
 	m_itEqTradeWindow.m_iPlatinum = dwPlatinum;
 
-	PacketTradeAction cmd(SECURE_TRADE_UPDATEGOLD);
+	PacketTradeAction cmd(SECURETRADE_UpdateGold);
 	cmd.prepareUpdateGold(this, dwGold, dwPlatinum);
 	if ( fUpdateChar1 )
 		cmd.send(pChar1->m_pClient);
@@ -759,7 +759,7 @@ void CItemContainer::Trade_Delete()
 	if ( pChar->m_pClient )
 	{
 		// Send the cancel trade message
-		PacketTradeAction cmd(SECURE_TRADE_CLOSE);
+		PacketTradeAction cmd(SECURETRADE_Close);
 		cmd.prepareClose(this);
 		cmd.send(pChar->m_pClient);
 	}

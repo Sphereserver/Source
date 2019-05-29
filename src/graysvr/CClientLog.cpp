@@ -192,7 +192,7 @@ bool CClient::addRelay(const CServerDef *pServ)
 bool CClient::Login_Relay(WORD wRelay)
 {
 	ADDTOCALLSTACK("CClient::Login_Relay");
-	// Client wants to be relayed to another server (XCMD_ServerSelect)
+	// Client wants to be relayed to another server (PACKET_ServerSelect)
 
 	// Sometimes we get an extra 0x80 ???
 	if ( wRelay >= 0x80 )
@@ -222,7 +222,7 @@ bool CClient::Login_Relay(WORD wRelay)
 BYTE CClient::Login_ServerList(const char *pszAccount, const char *pszPassword)
 {
 	ADDTOCALLSTACK("CClient::Login_ServerList");
-	// XCMD_ServersReq
+	// PACKET_ServersReq
 	// Initial login (Login on "loginserver", new format)
 	// If the messages are garbled, make sure they are terminated to correct length
 
@@ -730,7 +730,7 @@ bool CClient::xProcessClientSetup(CEvent *pEvent, size_t iLen)
 
 	switch ( pEvent->Default.m_Cmd )
 	{
-		case XCMD_ServersReq:
+		case PACKET_ServersReq:
 		{
 			if ( iLen < sizeof(pEvent->ServersReq) )
 				return false;
@@ -747,7 +747,7 @@ bool CClient::xProcessClientSetup(CEvent *pEvent, size_t iLen)
 					// On login proccess, the client will connect on IP only to request the servers list, and after select an server,
 					// it will disconnect from this IP and connect again now on server IP to request the account character list. But
 					// on the 2nd connection the client doesn't report its version to server again, so we must use tags to temporarily
-					// store the client version on XCMD_ServersReq and restore it on XCMD_CharListReq
+					// store the client version on PACKET_ServersReq and restore it on PACKET_CharListReq
 					if ( m_Crypt.GetClientVer() )
 						pAccount->m_TagDefs.SetNum("ClientVersion", m_Crypt.GetClientVer());
 					if ( m_NetState->getReportedVersion() )
@@ -761,7 +761,7 @@ bool CClient::xProcessClientSetup(CEvent *pEvent, size_t iLen)
 			break;
 		}
 
-		case XCMD_CharListReq:
+		case PACKET_CharListReq:
 		{
 			if ( iLen < sizeof(pEvent->CharListReq) )
 				return false;

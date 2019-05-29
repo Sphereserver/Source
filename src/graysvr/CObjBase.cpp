@@ -2039,7 +2039,7 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 
 			CGString sPrompt;
 			sPrompt.Format("%s (# = default)", static_cast<LPCTSTR>(ppArgs[0]));
-			pClientSrc->addGumpInpVal(true, INPVAL_STYLE_TEXTEDIT, iMaxLength, sPrompt, sOrgValue, this);
+			pClientSrc->addGumpInpVal(true, INPVAL_Text, iMaxLength, sPrompt, sOrgValue, this);
 			break;
 		}
 		case OV_MENU:

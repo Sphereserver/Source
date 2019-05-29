@@ -980,16 +980,7 @@ size_t Packet::readStringNullNUNICODE(char* buffer, size_t bufferSize, size_t ma
 
 void Packet::dump(AbstractString& output) const
 {
-	// macro to hide password bytes in release mode
-#ifndef _DEBUG
-#	define PROTECT_BYTE(_b_)  if ((m_buffer[0] == XCMD_ServersReq && idx >= 32 && idx <= 61) || \
-						       (m_buffer[0] == XCMD_CharListReq && idx >= 36 && idx <= 65)) _b_ = '*'
-#else
-#	define PROTECT_BYTE(_b_)
-#endif
-
 	TemporaryString z;
-
 	sprintf(z, "Packet len=%" FMTSIZE_T " id=0x%02x [%s]\n", m_length, m_buffer[0], CGTime::GetCurrentTime().Format(NULL));
 	output.append(z);
 	output.append("        0  1  2  3  4  5  6  7   8  9  A  B  C  D  E  F\n");
@@ -1011,7 +1002,10 @@ void Packet::dump(AbstractString& output) const
 		for (size_t j = 0; j < 16; j++)
 		{
 			BYTE c = m_buffer[idx++];
-			PROTECT_BYTE(c);
+
+			// Hide password bytes in these packets
+			if ( ((m_buffer[0] == PACKET_ServersReq) && (idx >= 32) && (idx <= 62)) || ((m_buffer[0] == PACKET_CharDelete) && (idx >= 2) && (idx <= 32)) || ((m_buffer[0] == PACKET_CharListReq) && (idx >= 37) && (idx <= 67)) )
+				c = '*';
 
 			sprintf(z, "%02hhx", c);
 			strncat(bytes, z, sizeof(bytes) - 1);
@@ -1045,7 +1039,10 @@ void Packet::dump(AbstractString& output) const
 			if (j < rem)
 			{
 				BYTE c = m_buffer[idx++];
-				PROTECT_BYTE(c);
+
+				// Hide password bytes in these packets
+				if ( ((m_buffer[0] == PACKET_ServersReq) && (idx >= 32) && (idx <= 62)) || ((m_buffer[0] == PACKET_CharDelete) && (idx >= 2) && (idx <= 32)) || ((m_buffer[0] == PACKET_CharListReq) && (idx >= 37) && (idx <= 67)) )
+					c = '*';
 
 				sprintf(z, "%02hhx", c);
 				strncat(bytes, z, sizeof(bytes) - 1);
@@ -1071,7 +1068,6 @@ void Packet::dump(AbstractString& output) const
 		output.append(chars);
 		output.append("\n");
 	}
-#undef PROTECT_BYTE
 }
 
 size_t Packet::checkLength(NetState* client, Packet* packet)

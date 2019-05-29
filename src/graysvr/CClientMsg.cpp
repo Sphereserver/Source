@@ -648,7 +648,7 @@ void CClient::addWeather(WEATHER_TYPE weather)
 	if ( g_Cfg.m_fNoWeather )
 		return;
 
-	if ( weather == WEATHER_DEFAULT )
+	if ( weather == WEATHER_Default )
 		weather = m_pChar->GetTopSector()->GetWeather();
 
 	if ( m_Env.m_Weather == weather )
@@ -2318,7 +2318,7 @@ void CClient::addBulletinBoard(const CItemContainer *pBoard)
 	addContents(pBoard);
 }
 
-bool CClient::addBBoardMessage(const CItemContainer *pBoard, BBOARDF_TYPE flag, CGrayUID uidMsg)
+bool CClient::addBBoardMessage(const CItemContainer *pBoard, BULLETINBOARD_TYPE action, CGrayUID uidMsg)
 {
 	ADDTOCALLSTACK("CClient::addBBoardMessage");
 	ASSERT(pBoard);
@@ -2334,7 +2334,7 @@ bool CClient::addBBoardMessage(const CItemContainer *pBoard, BBOARDF_TYPE flag, 
 		return false;
 	}
 
-	new PacketBulletinBoard(this, flag, pBoard, pMsgItem);
+	new PacketBulletinBoard(this, action, pBoard, pMsgItem);
 	return true;
 }
 

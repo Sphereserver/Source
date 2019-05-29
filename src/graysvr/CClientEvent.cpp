@@ -115,7 +115,7 @@ void CClient::Event_Tips(WORD i)
 		i = 1;
 	}
 
-	addScrollScript(s, SCROLL_TYPE_TIPS, i + 1);
+	addScrollScript(s, SCROLL_Tips, i + 1);
 }
 
 // Client changed book title/author info
@@ -714,7 +714,7 @@ bool CClient::Event_Walk(BYTE rawdir, BYTE sequence)
 			addPlayerSee(ptOld);				// What new stuff do I now see ?
 
 			if ( m_pChar->m_pParty && ((m_iWalkStepCount % 10) == 0) )	// Send map waypoint location to party members at each 10 steps taken (enhanced clients only)
-				m_pChar->m_pParty->UpdateWaypointAll(m_pChar, PartyMember);
+				m_pChar->m_pParty->UpdateWaypointAll(m_pChar, MAPWAYPOINT_PartyMember);
 		}
 
 		m_timeLastEventWalk = CServTime::GetCurrentTime();
@@ -1976,7 +1976,6 @@ void CClient::Event_SingleClick(CGrayUID uid)
 void CClient::Event_Target(CLIMODE_TYPE context, CGrayUID uid, CPointMap pt, BYTE flags, ITEMID_TYPE id)
 {
 	ADDTOCALLSTACK("CClient::Event_Target");
-	// XCMD_Target
 	// If player clicks on something with the targetting cursor
 	// Assume addTarget was called before this.
 	// NOTE: Make sure they can actually validly trarget this item !
@@ -2459,7 +2458,7 @@ void CClient::Event_ExtCmd(EXTCMD_TYPE type, TCHAR *pszName)
 
 	switch ( type )
 	{
-		case EXTCMD_OPEN_SPELLBOOK:	// open spell book if we have one.
+		case EXTCMD_OpenSpellbook:
 		{
 			CItem *pBook = NULL;
 			switch ( ATOI(ppArgs[0]) )
@@ -2479,7 +2478,7 @@ void CClient::Event_ExtCmd(EXTCMD_TYPE type, TCHAR *pszName)
 			return;
 		}
 
-		case EXTCMD_ANIMATE:
+		case EXTCMD_Gesture:
 		{
 			if ( !strcmpi(ppArgs[0], "bow") )
 				m_pChar->UpdateAnimate(ANIM_BOW);
@@ -2488,20 +2487,20 @@ void CClient::Event_ExtCmd(EXTCMD_TYPE type, TCHAR *pszName)
 			return;
 		}
 
-		case EXTCMD_SKILL:
+		case EXTCMD_UseSkill:
 		{
 			Event_Skill_Use(static_cast<SKILL_TYPE>(ATOI(ppArgs[0])));
 			return;
 		}
 
-		case EXTCMD_AUTOTARG:	// bizarre new autotarget mode. "target x y z"
+		case EXTCMD_ScrollCast:		// obsolete
 		{
 			//CObjBase *pObj = static_cast<CGrayUID>(ATOI(ppArgs[0])).ObjFind();
 			return;
 		}
 
-		case EXTCMD_CAST_BOOK:	// cast spell from book.
-		case EXTCMD_CAST_MACRO:	// macro spell.
+		case EXTCMD_CastSpellBook:
+		case EXTCMD_CastSpell:
 		{
 			SPELL_TYPE spell = static_cast<SPELL_TYPE>(ATOI(ppArgs[0]));
 			CSpellDef *pSpellDef = g_Cfg.GetSpellDef(spell);
@@ -2526,7 +2525,7 @@ void CClient::Event_ExtCmd(EXTCMD_TYPE type, TCHAR *pszName)
 			return;
 		}
 
-		case EXTCMD_DOOR_AUTO:	// open door macro
+		case EXTCMD_OpenDoor:
 		{
 			CPointMap pt = m_pChar->GetTopPoint();
 			signed char iCharZ = pt.m_z;
@@ -2556,7 +2555,7 @@ void CClient::Event_ExtCmd(EXTCMD_TYPE type, TCHAR *pszName)
 			return;
 		}
 
-		case EXTCMD_INVOKE_VIRTUE:
+		case EXTCMD_InvokeVirtue:
 		{
 			if ( !IsTrigUsed(TRIGGER_USERVIRTUEINVOKE) )
 				return;

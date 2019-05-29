@@ -92,7 +92,7 @@ CPartyDef::CPartyDef(CChar *pCharInviter, CChar *pCharAccept)
 	AcceptMember(pCharInviter);
 	AcceptMember(pCharAccept);
 	SendAddList(NULL);		// send full list to all
-	UpdateWaypointAll(pCharInviter, PartyMember);
+	UpdateWaypointAll(pCharInviter, MAPWAYPOINT_PartyMember);
 	m_sName.Format("Party_0%lx", static_cast<DWORD>(pCharInviter->GetUID()));
 }
 
@@ -103,7 +103,7 @@ size_t CPartyDef::AttachChar(CChar *pChar)
 	//  index of the char in the group. BadIndex = not in group.
 	size_t i = m_Chars.AttachChar(pChar);
 	pChar->NotoSave_Update();
-	UpdateWaypointAll(pChar, PartyMember);
+	UpdateWaypointAll(pChar, MAPWAYPOINT_PartyMember);
 	return i;
 }
 
@@ -125,10 +125,10 @@ size_t CPartyDef::DetachChar(CChar *pChar)
 				pPartyMember = m_Chars.GetChar(j).CharFind();
 				if ( !pPartyMember )
 					continue;
-				pChar->m_pClient->addMapWaypoint(pPartyMember, Remove);
+				pChar->m_pClient->addMapWaypoint(pPartyMember, MAPWAYPOINT_Remove);
 			}
 		}
-		UpdateWaypointAll(pChar, Remove);
+		UpdateWaypointAll(pChar, MAPWAYPOINT_Remove);
 
 		pChar->m_pParty = NULL;
 		pChar->DeleteKey("PARTY_LASTINVITE");

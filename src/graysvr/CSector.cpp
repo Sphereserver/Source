@@ -145,7 +145,7 @@ bool CSector::r_LoadVal(CScript &s)
 			SetSeason(s.HasArgs() ? static_cast<SEASON_TYPE>(s.GetArgVal()) : SEASON_Summer);
 			return true;
 		case SC_WEATHER:
-			SetWeather(s.HasArgs() ? static_cast<WEATHER_TYPE>(s.GetArgVal()) : WEATHER_DRY);
+			SetWeather(s.HasArgs() ? static_cast<WEATHER_TYPE>(s.GetArgVal()) : WEATHER_Clear);
 			return true;
 	}
 	EXC_CATCH;
@@ -193,14 +193,14 @@ bool CSector::r_Verb(CScript &s, CTextConsole *pSrc)
 			v_AllItems(s, pSrc);
 			break;
 		case SEV_DRY:
-			SetWeather(WEATHER_DRY);
+			SetWeather(WEATHER_Clear);
 			break;
 		case SEV_LIGHT:
 			if ( g_Cfg.m_bAllowLightOverride )
 				SetLight((s.HasArgs()) ? s.GetArgVal() : -1);
 			break;
 		case SEV_RAIN:
-			SetWeather(s.HasArgs() ? static_cast<WEATHER_TYPE>(s.GetArgVal()) : WEATHER_RAIN);
+			SetWeather(s.HasArgs() ? static_cast<WEATHER_TYPE>(s.GetArgVal()) : WEATHER_Rain);
 			break;
 		case SEV_RESPAWN:
 			if ( toupper(s.GetArgRaw()[0]) == 'A' )
@@ -218,7 +218,7 @@ bool CSector::r_Verb(CScript &s, CTextConsole *pSrc)
 			SetSeason(static_cast<SEASON_TYPE>(s.GetArgVal()));
 			break;
 		case SEV_SNOW:
-			SetWeather(WEATHER_SNOW);
+			SetWeather(WEATHER_Snow);
 			break;
 		default:
 			return CScriptObj::r_Verb(s, pSrc);
@@ -575,16 +575,16 @@ WEATHER_TYPE CSector::GetWeatherCalc() const
 {
 	ADDTOCALLSTACK("CSector::GetWeatherCalc");
 	if ( g_Cfg.m_fNoWeather || IsInDungeon() )
-		return WEATHER_DRY;
+		return WEATHER_Clear;
 
 	int iPercentRoll = Calc_GetRandVal(100);
 	if ( GetRainChance() > iPercentRoll )
-		return (GetColdChance() > Calc_GetRandVal(100)) ? WEATHER_SNOW : WEATHER_RAIN;
+		return (GetColdChance() > Calc_GetRandVal(100)) ? WEATHER_Snow : WEATHER_Rain;
 
 	if ( GetRainChance() > iPercentRoll / 2 )
-		return WEATHER_CLOUDY;
+		return WEATHER_Cloudy;
 
-	return WEATHER_DRY;
+	return WEATHER_Clear;
 }
 
 void CSector::SetWeather(WEATHER_TYPE weather)
@@ -594,7 +594,7 @@ void CSector::SetWeather(WEATHER_TYPE weather)
 		return;
 
 	// Clients doesn't change from snow to rain, so it must be dry first
-	bool fDryFirst = ((m_Env.m_Weather == WEATHER_RAIN) && (weather == WEATHER_RAIN));
+	bool fDryFirst = ((m_Env.m_Weather == WEATHER_Rain) && (weather == WEATHER_Rain));
 
 	m_Env.m_Weather = weather;
 
@@ -603,7 +603,7 @@ void CSector::SetWeather(WEATHER_TYPE weather)
 		if ( pChar->m_pClient )
 		{
 			if ( fDryFirst )
-				pChar->m_pClient->addWeather(WEATHER_DRY);
+				pChar->m_pClient->addWeather(WEATHER_Clear);
 			pChar->m_pClient->addWeather(weather);
 		}
 
@@ -865,7 +865,7 @@ void CSector::OnTick(int iPulseCount)
 			iRegionPeriodic = 2;
 			switch ( GetWeather() )
 			{
-				case WEATHER_RAIN:
+				case WEATHER_Rain:
 				{
 					int iVal = Calc_GetRandVal(30);
 					if ( iVal < 5 )
@@ -885,7 +885,7 @@ void CSector::OnTick(int iPulseCount)
 					}
 					break;
 				}
-				case WEATHER_SNOW:
+				case WEATHER_Snow:
 				{
 					if ( !Calc_GetRandVal(5) )
 					{

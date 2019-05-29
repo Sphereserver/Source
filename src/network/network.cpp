@@ -580,122 +580,121 @@ PacketManager::~PacketManager(void)
 void PacketManager::registerStandardPackets(void)
 {
 	ADDTOCALLSTACK("PacketManager::registerStandardPackets");
+	// Standard packets
+	registerPacket(PACKET_Create, new PacketCreate());							// create character
+	registerPacket(PACKET_WalkRequest, new PacketMovementReq());				// movement request
+	registerPacket(PACKET_Talk, new PacketSpeakReq());							// speak
+	registerPacket(PACKET_Attack, new PacketAttackReq());						// begin attack
+	registerPacket(PACKET_DClick, new PacketDoubleClick());						// double click object
+	registerPacket(PACKET_ItemPickupReq, new PacketItemPickupReq());			// pick up item
+	registerPacket(PACKET_ItemDropReq, new PacketItemDropReq());				// drop item
+	registerPacket(PACKET_Click, new PacketSingleClick());						// single click object
+	registerPacket(PACKET_ExtCmd, new PacketTextCommand());						// extended text command
+	registerPacket(PACKET_ItemEquipReq, new PacketItemEquipReq());				// equip item
+	registerPacket(PACKET_WalkAck, new PacketResynchronize());					//
+	registerPacket(PACKET_DeathMenu, new PacketDeathStatus());					//
+	registerPacket(PACKET_CharStatReq, new PacketCharStatusReq());				// status request
+	registerPacket(PACKET_Skill, new PacketSkillLockChange());					// change skill lock
+	registerPacket(PACKET_VendorBuy, new PacketVendorBuyReq());					// buy items from vendor
+	registerPacket(PACKET_StaticUpdate, new PacketStaticUpdate());				// UltimaLive Packet
+	registerPacket(PACKET_MapEdit, new PacketMapEdit());						// edit map pins
+	registerPacket(PACKET_CharPlay, new PacketCharPlay());						// select character
+	registerPacket(PACKET_BookPage, new PacketBookPageEdit());					// edit book content
+	registerPacket(PACKET_Options, new PacketUnknown());						// unused options packet
+	registerPacket(PACKET_Target, new PacketTarget());							// target an object
+	registerPacket(PACKET_SecureTrade, new PacketSecureTradeReq());				// secure trade action
+	registerPacket(PACKET_BBoard, new PacketBulletinBoardReq());				// bulletin board action
+	registerPacket(PACKET_War, new PacketWarModeReq());							// toggle war mode
+	registerPacket(PACKET_Ping, new PacketPingReq());							// ping request
+	registerPacket(PACKET_CharName, new PacketCharRename());					// change character name
+	registerPacket(PACKET_MenuChoice, new PacketMenuChoice());					// select menu item
+	registerPacket(PACKET_ServersReq, new PacketServersReq());					// request server list
+	registerPacket(PACKET_CharDelete, new PacketCharDelete());					// delete character
+	registerPacket(PACKET_CreateNew, new PacketCreateNew());					// create character (KR/SA)
+	registerPacket(PACKET_CharListReq, new PacketCharListReq());				// request character list
+	registerPacket(PACKET_BookOpen, new PacketBookHeaderEdit());				// edit book
+	registerPacket(PACKET_DyeVat, new PacketDyeObject());						// colour selection dialog
+	registerPacket(PACKET_AllNames3D, new PacketAllNamesReq());					// all names macro (ctrl+shift)
+	registerPacket(PACKET_Prompt, new PacketPromptResponse());					// prompt response
+	registerPacket(PACKET_HelpPage, new PacketHelpPageReq());					// GM help page request
+	registerPacket(PACKET_VendorSell, new PacketVendorSellReq());				// sell items to vendor
+	registerPacket(PACKET_ServerSelect, new PacketServerSelect());				// select server
+	registerPacket(PACKET_Spy, new PacketSystemInfo());							//
+	registerPacket(PACKET_Scroll, new PacketUnknown(5));						// scroll closed
+	registerPacket(PACKET_TipReq, new PacketTipReq());							// request tip of the day
+	registerPacket(PACKET_GumpInpValRet, new PacketGumpValueInputResponse());	// text input dialog
+	registerPacket(PACKET_TalkUNICODE, new PacketSpeakReqUNICODE());			// speech (unicode)
+	registerPacket(PACKET_GumpDialogRet, new PacketGumpDialogRet());			// dialog response (button press)
+	registerPacket(PACKET_ChatText, new PacketChatCommand());					// chat command
+	registerPacket(PACKET_Chat, new PacketChatButton());						// chat button
+	registerPacket(PACKET_ToolTipReq, new PacketToolTipReq());					// popup help request
+	registerPacket(PACKET_CharProfile, new PacketProfileReq());					// profile read/write request
+	registerPacket(PACKET_MailMsg, new PacketMailMessage());					//
+	registerPacket(PACKET_ClientVersion, new PacketClientVersion());			// client version
+	registerPacket(PACKET_ExtendedData, new PacketExtendedCommand());			//
+	registerPacket(PACKET_PromptUNICODE, new PacketPromptResponseUnicode());	// prompt response (unicode)
+	registerPacket(PACKET_ViewRange, new PacketViewRange());					//
+	registerPacket(PACKET_ConfigFile, new PacketUnknown());						//
+	registerPacket(PACKET_LogoutStatus, new PacketLogout());					//
+	registerPacket(PACKET_AOSBookPage, new PacketBookHeaderEditNew());			// edit book
+	registerPacket(PACKET_AOSTooltip, new PacketAOSTooltipReq());				// request tooltip data
+	registerPacket(PACKET_EncodedData, new PacketEncodedCommand());				//
+	registerPacket(PACKET_Spy2, new PacketHardwareInfo());						// client hardware info
+	registerPacket(PACKET_BugReport, new PacketBugReport());					// bug report
+	registerPacket(PACKET_KRClientType, new PacketClientType());				// report client type (2d/kr/sa)
+	registerPacket(PACKET_HighlightUIRemove, new PacketRemoveUIHighlight());	//
+	registerPacket(PACKET_UseHotbar, new PacketUseHotbar());					//
+	registerPacket(PACKET_MacroEquipItem, new PacketEquipItemMacro());			// equip item(s) macro (KR)
+	registerPacket(PACKET_MacroUnEquipItem, new PacketUnEquipItemMacro());		// unequip item(s) macro (KR)
+	registerPacket(PACKET_WalkRequestNew, new PacketMovementReqNew());			// new movement request (KR/SA)
+	registerPacket(PACKET_TimeSyncRequest, new PacketTimeSyncRequest());		// time sync request (KR/SA)
+	registerPacket(PACKET_CrashReport, new PacketCrashReport());				//
+	registerPacket(PACKET_CreateHS, new PacketCreateHS());						// create character (HS)
+	registerPacket(PACKET_UltimaStoreButton, new PacketUltimaStoreButton());	// ultima store button (SA)
+	registerPacket(PACKET_GlobalChat, new PacketGlobalChatReq());				//
 
-	// standard packets
-	registerPacket(XCMD_Create, new PacketCreate());							// create character
-	registerPacket(XCMD_WalkRequest, new PacketMovementReq());					// movement request
-	registerPacket(XCMD_Talk, new PacketSpeakReq());							// speak
-	registerPacket(XCMD_Attack, new PacketAttackReq());							// begin attack
-	registerPacket(XCMD_DClick, new PacketDoubleClick());						// double click object
-	registerPacket(XCMD_ItemPickupReq, new PacketItemPickupReq());				// pick up item
-	registerPacket(XCMD_ItemDropReq, new PacketItemDropReq());					// drop item
-	registerPacket(XCMD_Click, new PacketSingleClick());						// single click object
-	registerPacket(XCMD_ExtCmd, new PacketTextCommand());						// extended text command
-	registerPacket(XCMD_ItemEquipReq, new PacketItemEquipReq());				// equip item
-	registerPacket(XCMD_WalkAck, new PacketResynchronize());					//
-	registerPacket(XCMD_DeathMenu, new PacketDeathStatus());					//
-	registerPacket(XCMD_CharStatReq, new PacketCharStatusReq());				// status request
-	registerPacket(XCMD_Skill, new PacketSkillLockChange());					// change skill lock
-	registerPacket(XCMD_VendorBuy, new PacketVendorBuyReq());					// buy items from vendor
-	registerPacket(XCMD_StaticUpdate, new PacketStaticUpdate());				// UltimaLive Packet
-	registerPacket(XCMD_MapEdit, new PacketMapEdit());							// edit map pins
-	registerPacket(XCMD_CharPlay, new PacketCharPlay());						// select character
-	registerPacket(XCMD_BookPage, new PacketBookPageEdit());					// edit book content
-	registerPacket(XCMD_Options, new PacketUnknown());							// unused options packet
-	registerPacket(XCMD_Target, new PacketTarget());							// target an object
-	registerPacket(XCMD_SecureTrade, new PacketSecureTradeReq());				// secure trade action
-	registerPacket(XCMD_BBoard, new PacketBulletinBoardReq());					// bulletin board action
-	registerPacket(XCMD_War, new PacketWarModeReq());							// toggle war mode
-	registerPacket(XCMD_Ping, new PacketPingReq());								// ping request
-	registerPacket(XCMD_CharName, new PacketCharRename());						// change character name
-	registerPacket(XCMD_MenuChoice, new PacketMenuChoice());					// select menu item
-	registerPacket(XCMD_ServersReq, new PacketServersReq());					// request server list
-	registerPacket(XCMD_CharDelete, new PacketCharDelete());					// delete character
-	registerPacket(XCMD_CreateNew, new PacketCreateNew());						// create character (KR/SA)
-	registerPacket(XCMD_CharListReq, new PacketCharListReq());					// request character list
-	registerPacket(XCMD_BookOpen, new PacketBookHeaderEdit());					// edit book
-	registerPacket(XCMD_DyeVat, new PacketDyeObject());							// colour selection dialog
-	registerPacket(XCMD_AllNames3D, new PacketAllNamesReq());					// all names macro (ctrl+shift)
-	registerPacket(XCMD_Prompt, new PacketPromptResponse());					// prompt response
-	registerPacket(XCMD_HelpPage, new PacketHelpPageReq());						// GM help page request
-	registerPacket(XCMD_VendorSell, new PacketVendorSellReq());					// sell items to vendor
-	registerPacket(XCMD_ServerSelect, new PacketServerSelect());				// select server
-	registerPacket(XCMD_Spy, new PacketSystemInfo());							//
-	registerPacket(XCMD_Scroll, new PacketUnknown(5));							// scroll closed
-	registerPacket(XCMD_TipReq, new PacketTipReq());							// request tip of the day
-	registerPacket(XCMD_GumpInpValRet, new PacketGumpValueInputResponse());		// text input dialog
-	registerPacket(XCMD_TalkUNICODE, new PacketSpeakReqUNICODE());				// speech (unicode)
-	registerPacket(XCMD_GumpDialogRet, new PacketGumpDialogRet());				// dialog response (button press)
-	registerPacket(XCMD_ChatText, new PacketChatCommand());						// chat command
-	registerPacket(XCMD_Chat, new PacketChatButton());							// chat button
-	registerPacket(XCMD_ToolTipReq, new PacketToolTipReq());					// popup help request
-	registerPacket(XCMD_CharProfile, new PacketProfileReq());					// profile read/write request
-	registerPacket(XCMD_MailMsg, new PacketMailMessage());						//
-	registerPacket(XCMD_ClientVersion, new PacketClientVersion());				// client version
-	registerPacket(XCMD_ExtData, new PacketExtendedCommand());					//
-	registerPacket(XCMD_PromptUNICODE, new PacketPromptResponseUnicode());		// prompt response (unicode)
-	registerPacket(XCMD_ViewRange, new PacketViewRange());						//
-	registerPacket(XCMD_ConfigFile, new PacketUnknown());						//
-	registerPacket(XCMD_LogoutStatus, new PacketLogout());						//
-	registerPacket(XCMD_AOSBookPage, new PacketBookHeaderEditNew());			// edit book
-	registerPacket(XCMD_AOSTooltip, new PacketAOSTooltipReq());					// request tooltip data
-	registerPacket(XCMD_ExtAosData, new PacketEncodedCommand());				//
-	registerPacket(XCMD_Spy2, new PacketHardwareInfo());						// client hardware info
-	registerPacket(XCMD_BugReport, new PacketBugReport());						// bug report
-	registerPacket(XCMD_KRClientType, new PacketClientType());					// report client type (2d/kr/sa)
-	registerPacket(XCMD_HighlightUIRemove, new PacketRemoveUIHighlight());		//
-	registerPacket(XCMD_UseHotbar, new PacketUseHotbar());						//
-	registerPacket(XCMD_MacroEquipItem, new PacketEquipItemMacro());			// equip item(s) macro (KR)
-	registerPacket(XCMD_MacroUnEquipItem, new PacketUnEquipItemMacro());		// unequip item(s) macro (KR)
-	registerPacket(XCMD_WalkRequestNew, new PacketMovementReqNew());			// new movement request (KR/SA)
-	registerPacket(XCMD_TimeSyncRequest, new PacketTimeSyncRequest());			// time sync request (KR/SA)
-	registerPacket(XCMD_CrashReport, new PacketCrashReport());					//
-	registerPacket(XCMD_CreateHS, new PacketCreateHS());						// create character (HS)
-	registerPacket(XCMD_UltimaStoreButton, new PacketUltimaStoreButton());		// ultima store button (SA)
-	registerPacket(XCMD_GlobalChat, new PacketGlobalChatReq());					//
+	// Extended packets (0xBF)
+	registerExtended(PACKETEXT_ScreenSize, new PacketScreenSize());				// client screen size
+	registerExtended(PACKETEXT_Party_Msg, new PacketPartyMessage());			// party command
+	registerExtended(PACKETEXT_QuestArrow_Click, new PacketArrowClick());		// click quest arrow
+	registerExtended(PACKETEXT_Wrestle_Disarm, new PacketWrestleDisarm());		// wrestling disarm macro (obsolete, removed since AOS)
+	registerExtended(PACKETEXT_Wrestle_Stun, new PacketWrestleStun());			// wrestling stun macro (obsolete, removed since AOS)
+	registerExtended(PACKETEXT_Language, new PacketLanguage());					// client language
+	registerExtended(PACKETEXT_StatusClose, new PacketStatusClose());			// status window closed
+	registerExtended(PACKETEXT_AnimationReq, new PacketAnimationReq());			// play animation
+	registerExtended(PACKETEXT_ClientInfo, new PacketClientInfo());				// client information
+	registerExtended(PACKETEXT_OldAOSTooltipInfo, new PacketAosTooltipInfo());	//
+	registerExtended(PACKETEXT_Popup_Request, new PacketPopupReq());			// request popup menu
+	registerExtended(PACKETEXT_Popup_Select, new PacketPopupSelect());			// select popup option
+	registerExtended(PACKETEXT_StatLock, new PacketChangeStatLock());			// change stat lock
+	registerExtended(PACKETEXT_CastSpell, new PacketSpellSelect());				//
+	registerExtended(PACKETEXT_HouseDesignReq, new PacketHouseDesignReq());		// house design request
+	registerExtended(PACKETEXT_AntiCheat, new PacketAntiCheat());				// anti-cheat / unknown (sent by SE clients, every second or so)
+	registerExtended(PACKETEXT_BandageMacro, new PacketBandageMacro());			//
+	registerExtended(PACKETEXT_TargetedSpell, new PacketTargetedSpell());		// use targeted skill
+	registerExtended(PACKETEXT_TargetedSkill, new PacketTargetedSkill());		// use targeted skill
+	registerExtended(PACKETEXT_TargetedResource, new PacketTargetedResource());	//
+	registerExtended(PACKETEXT_GargoyleFly, new PacketGargoyleFly());			// gargoyle flying action
+	registerExtended(PACKETEXT_WheelBoatMove, new PacketWheelBoatMove());		// wheel boat movement
 
-	// extended packets (0xBF)
-	registerExtended(EXTDATA_ScreenSize, new PacketScreenSize());				// client screen size
-	registerExtended(EXTDATA_Party_Msg, new PacketPartyMessage());				// party command
-	registerExtended(EXTDATA_QuestArrow_Click, new PacketArrowClick());			// click quest arrow
-	registerExtended(EXTDATA_Wrestle_Disarm, new PacketWrestleDisarm());		// wrestling disarm macro (obsolete, removed since AOS)
-	registerExtended(EXTDATA_Wrestle_Stun, new PacketWrestleStun());			// wrestling stun macro (obsolete, removed since AOS)
-	registerExtended(EXTDATA_Language, new PacketLanguage());					// client language
-	registerExtended(EXTDATA_StatusClose, new PacketStatusClose());				// status window closed
-	registerExtended(EXTDATA_AnimationReq, new PacketAnimationReq());			// play animation
-	registerExtended(EXTDATA_ClientInfo, new PacketClientInfo());				// client information
-	registerExtended(EXTDATA_OldAOSTooltipInfo, new PacketAosTooltipInfo());	//
-	registerExtended(EXTDATA_Popup_Request, new PacketPopupReq());				// request popup menu
-	registerExtended(EXTDATA_Popup_Select, new PacketPopupSelect());			// select popup option
-	registerExtended(EXTDATA_StatLock, new PacketChangeStatLock());				// change stat lock
-	registerExtended(EXTDATA_CastSpell, new PacketSpellSelect());				//
-	registerExtended(EXTDATA_HouseDesignReq, new PacketHouseDesignReq());		// house design request
-	registerExtended(EXTDATA_AntiCheat, new PacketAntiCheat());					// anti-cheat / unknown (sent by SE clients, every second or so)
-	registerExtended(EXTDATA_BandageMacro, new PacketBandageMacro());			//
-	registerExtended(EXTDATA_TargetedSpell, new PacketTargetedSpell());		    // use targeted skill
-	registerExtended(EXTDATA_TargetedSkill, new PacketTargetedSkill());		    // use targeted skill
-	registerExtended(EXTDATA_TargetedResource, new PacketTargetedResource());	//
-	registerExtended(EXTDATA_GargoyleFly, new PacketGargoyleFly());				// gargoyle flying action
-	registerExtended(EXTDATA_WheelBoatMove, new PacketWheelBoatMove());			// wheel boat movement
-
-	// encoded packets (0xD7)
-	registerEncoded(EXTAOS_HouseDesign_Backup, new PacketHouseDesignBackup());			// house design - backup
-	registerEncoded(EXTAOS_HouseDesign_Restore, new PacketHouseDesignRestore());		// house design - restore
-	registerEncoded(EXTAOS_HouseDesign_Commit, new PacketHouseDesignCommit());			// house design - commit
-	registerEncoded(EXTAOS_HouseDesign_RemItem, new PacketHouseDesignDestroyItem());	// house design - remove item
-	registerEncoded(EXTAOS_HouseDesign_AddItem, new PacketHouseDesignPlaceItem());		// house design - place item
-	registerEncoded(EXTAOS_HouseDesign_Exit, new PacketHouseDesignExit());				// house design - exit designer
-	registerEncoded(EXTAOS_HouseDesign_AddStair, new PacketHouseDesignPlaceStair());	// house design - place stairs
-	registerEncoded(EXTAOS_HouseDesign_Sync, new PacketHouseDesignSync());				// house design - synchronise
-	registerEncoded(EXTAOS_HouseDesign_Clear, new PacketHouseDesignClear());			// house design - clear
-	registerEncoded(EXTAOS_HouseDesign_Switch, new PacketHouseDesignSwitch());			// house design - change floor
-	registerEncoded(EXTAOS_HouseDesign_AddRoof, new PacketHouseDesignPlaceRoof());		// house design - place roof
-	registerEncoded(EXTAOS_HouseDesign_RemRoof, new PacketHouseDesignDestroyRoof());	// house design - remove roof
-	registerEncoded(EXTAOS_CombatAbility, new PacketSpecialMove());						//
-	registerEncoded(EXTAOS_HouseDesign_Revert, new PacketHouseDesignRevert());			// house design - revert
-	registerEncoded(EXTAOS_EquipLastWeapon, new PacketEquipLastWeapon());		//
-	registerEncoded(EXTAOS_GuildButton, new PacketGuildButton());				// guild button press
-	registerEncoded(EXTAOS_QuestButton, new PacketQuestButton());				// quest button press
+	// Encoded packets (0xD7)
+	registerEncoded(PACKETENC_HouseDesign_Backup, new PacketHouseDesignBackup());		// house design - backup
+	registerEncoded(PACKETENC_HouseDesign_Restore, new PacketHouseDesignRestore());		// house design - restore
+	registerEncoded(PACKETENC_HouseDesign_Commit, new PacketHouseDesignCommit());		// house design - commit
+	registerEncoded(PACKETENC_HouseDesign_RemItem, new PacketHouseDesignDestroyItem());	// house design - remove item
+	registerEncoded(PACKETENC_HouseDesign_AddItem, new PacketHouseDesignPlaceItem());	// house design - place item
+	registerEncoded(PACKETENC_HouseDesign_Exit, new PacketHouseDesignExit());			// house design - exit designer
+	registerEncoded(PACKETENC_HouseDesign_AddStair, new PacketHouseDesignPlaceStair());	// house design - place stairs
+	registerEncoded(PACKETENC_HouseDesign_Sync, new PacketHouseDesignSync());			// house design - synchronise
+	registerEncoded(PACKETENC_HouseDesign_Clear, new PacketHouseDesignClear());			// house design - clear
+	registerEncoded(PACKETENC_HouseDesign_Switch, new PacketHouseDesignSwitch());		// house design - change floor
+	registerEncoded(PACKETENC_HouseDesign_AddRoof, new PacketHouseDesignPlaceRoof());	// house design - place roof
+	registerEncoded(PACKETENC_HouseDesign_RemRoof, new PacketHouseDesignDestroyRoof());	// house design - remove roof
+	registerEncoded(PACKETENC_CombatAbility, new PacketSpecialMove());					//
+	registerEncoded(PACKETENC_HouseDesign_Revert, new PacketHouseDesignRevert());		// house design - revert
+	registerEncoded(PACKETENC_EquipLastWeapon, new PacketEquipLastWeapon());			//
+	registerEncoded(PACKETENC_GuildButton, new PacketGuildButton());					// guild button press
+	registerEncoded(PACKETENC_QuestButton, new PacketQuestButton());					// quest button press
 }
 
 void PacketManager::registerPacket(unsigned int id, Packet* handler)
@@ -1051,7 +1050,7 @@ void NetworkIn::tick(void)
 					EXC_SET("game client seed");
 					DWORD seed(0);
 					size_t iSeedLen(0);
-					if (client->m_newseed || (buffer[0] == XCMD_NewSeed && received >= NETWORK_SEEDLEN_NEW))
+					if (client->m_newseed || ((buffer[0] == PACKET_NewSeed) && (received >= NETWORK_SEEDLEN_NEW)))
 					{
 						DEBUGNETWORK(("%lx:Receiving new client login handshake.\n", client->id()));
 
@@ -1107,7 +1106,7 @@ void NetworkIn::tick(void)
 				}
 				else
 				{
-					if (*buffer == XCMD_NewSeed)
+					if (*buffer == PACKET_NewSeed)
 					{
 						// Game client
 						client->m_newseed = true;
@@ -1169,7 +1168,7 @@ void NetworkIn::tick(void)
 				case CONNECT_CRYPT:
 					if (received >= 5)
 					{
-						if (*buffer == XCMD_EncryptionReply && client->isClientKR())
+						if ((*buffer == PACKET_EncryptionReply) && client->isClientKR())
 						{
 							EXC_SET("encryption reply");
 
@@ -3388,7 +3387,7 @@ bool NetworkInput::processOtherClientData(NetState* state, Packet* buffer)
 			CEvent evt;
 			memcpy(&evt, buffer->getRemainingData(), buffer->getRemainingLength());
 
-			if (evt.Default.m_Cmd == XCMD_EncryptionReply && state->isClientKR())
+			if ((evt.Default.m_Cmd == PACKET_EncryptionReply) && state->isClientKR())
 			{
 				EXC_SET("encryption reply");
 
@@ -3467,7 +3466,7 @@ bool NetworkInput::processUnknownClientData(NetState* state, Packet* buffer)
 		}
 
 		// check for new seed (sometimes it's received on its own)
-		else if (buffer->getRemainingLength() == 1 && buffer->getRemainingData()[0] == XCMD_NewSeed)
+		else if ((buffer->getRemainingLength() == 1) && (buffer->getRemainingData()[0] == PACKET_NewSeed))
 		{
 			state->m_newseed = true;
 			buffer->skip(1);
@@ -3491,7 +3490,7 @@ bool NetworkInput::processUnknownClientData(NetState* state, Packet* buffer)
 		DWORD seed = 0;
 
 		DEBUGNETWORK(("%lx:Client connected with a seed length of %" FMTSIZE_T " ([0]=0x%x)\n", state->id(), buffer->getRemainingLength(), static_cast<int>(buffer->getRemainingData()[0])));
-		if (state->m_newseed || (buffer->getRemainingData()[0] == XCMD_NewSeed && buffer->getRemainingLength() >= NETWORK_SEEDLEN_NEW))
+		if (state->m_newseed || ((buffer->getRemainingData()[0] == PACKET_NewSeed) && (buffer->getRemainingLength() >= NETWORK_SEEDLEN_NEW)))
 		{
 			DEBUGNETWORK(("%lx:Receiving new client login handshake.\n", state->id()));
 
@@ -3518,7 +3517,7 @@ bool NetworkInput::processUnknownClientData(NetState* state, Packet* buffer)
 				DEBUGNETWORK(("%lx:Not enough data received to be a valid handshake (%" FMTSIZE_T ").\n", state->id(), buffer->getRemainingLength()));
 			}
 		}
-		else if(buffer->getRemainingData()[0] == XCMD_UOGRequest && buffer->getRemainingLength() == 8)
+		else if ((buffer->getRemainingData()[0] == PACKET_UOGRequest) && (buffer->getRemainingLength() == 8))
 		{
 			DEBUGNETWORK(("%lx:Receiving new UOG status request.\n", state->id()));
 			buffer->skip(7);

@@ -127,358 +127,289 @@ public:
 	}
 };
 
-enum XCMD_TYPE	// XCMD_* messages are unique in both directions.
+#define SEEDLENGTH_OLD		sizeof(DWORD)
+#define SEEDLENGTH_NEW		(1 + sizeof(DWORD) * 5)
+#define MAX_TALK_BUFFER		256		// client speech is limited to 128 chars and journal is limited to 256 chars
+
+enum PACKET_TYPE
 {
-	//	0x00
-	XCMD_Create			= 0x00,
-	XCMD_WalkRequest	= 0x02,
-	XCMD_Talk			= 0x03,
-	XCMD_Attack			= 0x05,
-	XCMD_DClick			= 0x06,
-	XCMD_ItemPickupReq	= 0x07,
-	XCMD_ItemDropReq	= 0x08,
-	XCMD_Click			= 0x09,
-	XCMD_DamagePacket	= 0x0b,
-	//	0x10
-	XCMD_Status			= 0x11,
-	XCMD_ExtCmd			= 0x12,
-	XCMD_ItemEquipReq	= 0x13,
-	XCMD_HealthBarColorNew	= 0x16,
-	XCMD_HealthBarColor	= 0x17,
-	XCMD_WorldItem		= 0x1a,
-	XCMD_Start			= 0x1b,
-	XCMD_Speak			= 0x1c,
-	XCMD_Remove			= 0x1d,
-	//	0x20
-	XCMD_PlayerUpdate	= 0x20,
-	XCMD_WalkReject		= 0x21,
-	XCMD_WalkAck		= 0x22,
-	XCMD_DragAnim		= 0x23,
-	XCMD_ContOpen		= 0x24,
-	XCMD_ContAdd		= 0x25,
-	XCMD_Kick			= 0x26,
-	XCMD_DragCancel		= 0x27,
-	XCMD_DropRejected	= 0x28,
-	XCMD_DropAccepted	= 0x29,
-	XCMD_DeathMenu		= 0x2c,
-	XCMD_ItemEquip		= 0x2e,
-	XCMD_Fight			= 0x2f,
-	//	0x30
-	XCMD_CharStatReq	= 0x34,
-	XCMD_Skill			= 0x3a,
-	XCMD_VendorBuy		= 0x3b,
-	XCMD_Content		= 0x3c,
-	XCMD_StaticUpdate	= 0x3f,
-	//	0x40
-	XCMD_LightPoint		= 0x4e,
-	XCMD_Light			= 0x4f,
-	//	0x50
-	XCMD_IdleWarning	= 0x53,
-	XCMD_Sound			= 0x54,
-	XCMD_LoginComplete	= 0x55,
-	XCMD_MapEdit		= 0x56,
-	XCMD_Time			= 0x5b,
-	XCMD_CharPlay		= 0x5d,
-	//	0x60
-	XCMD_Weather		= 0x65,
-	XCMD_BookPage		= 0x66,
-	XCMD_Options		= 0x69,
-	XCMD_Target			= 0x6c,
-	XCMD_PlayMusic		= 0x6d,
-	XCMD_CharAction		= 0x6e,
-	XCMD_SecureTrade	= 0x6f,
-	//	0x70
-	XCMD_Effect			= 0x70,
-	XCMD_BBoard			= 0x71,
-	XCMD_War			= 0x72,
-	XCMD_Ping			= 0x73,
-	XCMD_VendOpenBuy	= 0x74,
-	XCMD_CharName		= 0x75,
-	XCMD_ZoneChange		= 0x76,
-	XCMD_CharMove		= 0x77,
-	XCMD_Char			= 0x78,
-	XCMD_MenuItems		= 0x7c,
-	XCMD_MenuChoice		= 0x7d,
-	XCMD_UOGRequest		= 0x7F,
-	//	0x80
-	XCMD_ServersReq		= 0x80,
-	XCMD_CharList3		= 0x81,
-	XCMD_LogBad			= 0x82,
-	XCMD_CharDelete		= 0x83,
-	XCMD_DeleteBad		= 0x85,
-	XCMD_CharList2		= 0x86,
-	XCMD_PaperDoll		= 0x88,
-	XCMD_CorpEquip		= 0x89,
-	XCMD_GumpTextDisp	= 0x8b,
-	XCMD_Relay			= 0x8c,
-	XCMD_CreateNew		= 0x8d,
-	//	0x90
-	XCMD_MapDisplay		= 0x90,
-	XCMD_CharListReq	= 0x91,
-	XCMD_BookOpen		= 0x93,
-	XCMD_DyeVat			= 0x95,
-	XCMD_AllNames3D		= 0x98,
-	XCMD_TargetMulti	= 0x99,
-	XCMD_Prompt			= 0x9a,
-	XCMD_HelpPage		= 0x9b,
-	XCMD_VendOpenSell	= 0x9e,
-	XCMD_VendorSell		= 0x9f,
-	//	0xA0
-	XCMD_ServerSelect	= 0xa0,
-	XCMD_StatChngStr	= 0xa1,
-	XCMD_StatChngInt	= 0xa2,
-	XCMD_StatChngDex	= 0xa3,
-	XCMD_Spy			= 0xa4,
-	XCMD_Web			= 0xa5,
-	XCMD_Scroll			= 0xa6,
-	XCMD_TipReq			= 0xa7,
-	XCMD_ServerList		= 0xa8,
-	XCMD_CharList		= 0xa9,
-	XCMD_AttackOK		= 0xaa,
-	XCMD_GumpInpVal		= 0xab,
-	XCMD_GumpInpValRet	= 0xac,
-	XCMD_TalkUNICODE	= 0xad,
-	XCMD_SpeakUNICODE	= 0xae,
-	XCMD_CharDeath		= 0xaf,
-	//	0xB0
-	XCMD_GumpDialog		= 0xb0,
-	XCMD_GumpDialogRet	= 0xb1,
-	XCMD_ChatReq		= 0xb2,
-	XCMD_ChatText		= 0xb3,
-	XCMD_Chat			= 0xb5,
-	XCMD_ToolTipReq		= 0xb6,
-	XCMD_ToolTip		= 0xb7,
-	XCMD_CharProfile	= 0xb8,
-	XCMD_Features		= 0xb9,
-	XCMD_Arrow			= 0xba,
-	XCMD_MailMsg		= 0xbb,
-	XCMD_Season			= 0xbc,
-	XCMD_ClientVersion	= 0xbd,
-	XCMD_ExtData		= 0xbf,
-	//	0xC0
-	XCMD_EffectEx		= 0xc0,
-	XCMD_SpeakLocalized	= 0xc1,
-	XCMD_PromptUNICODE	= 0xc2,
-	XCMD_Semivisible	= 0xc4,
-	XCMD_EffectParticle	= 0xc7,
-	XCMD_ViewRange		= 0xc8,
-	XCMD_GQCount		= 0xcb,
-	XCMD_SpeakLocalizedEx	= 0xcc,
-	//	0xD0
-	XCMD_ConfigFile		= 0xd0,
-	XCMD_LogoutStatus	= 0xd1,
-	XCMD_CharMove2		= 0xd2,
-	XCMD_DrawChar2		= 0xd3,
-	XCMD_AOSBookPage	= 0xd4,
-	XCMD_AOSTooltip		= 0xd6,
-	XCMD_ExtAosData		= 0xd7,
-	XCMD_AOSCustomHouse	= 0xd8,
-	XCMD_Spy2			= 0xd9,
-	XCMD_Majong			= 0xda,
-	XCMD_CharTransferLog	= 0xdb,
-	XCMD_AOSTooltipInfo	= 0xdc,
-	XCMD_CompressedGumpDialog	= 0xdd,
-	XCMD_BuffPacket		= 0xdf,
-	//	0xE0
-	XCMD_BugReport				= 0xe0,
-	XCMD_KRClientType			= 0xe1,
-	XCMD_NewAnimUpdate			= 0xe2,
-	XCMD_EncryptionReq			= 0xe3,
-	XCMD_EncryptionReply		= 0xe4,
-	XCMD_WaypointShow			= 0xe5,
-	XCMD_WaypointHide			= 0xe6,
-	XCMD_HighlightUIContinue	= 0xe7,
-	XCMD_HighlightUIRemove		= 0xe8,
-	XCMD_HighlightUIToggle		= 0xe9,
-	XCMD_ToggleHotbar			= 0xea,
-	XCMD_UseHotbar				= 0xeb,
-	XCMD_MacroEquipItem			= 0xec,
-	XCMD_MacroUnEquipItem		= 0xed,
-	XCMD_NewSeed				= 0xef,
-	//	0xF0
-	XCMD_WalkRequestNew		= 0xf0,
-	XCMD_TimeSyncRequest	= 0xf1,
-	XCMD_TimeSyncResponse	= 0xf2,
-	XCMD_WorldObj			= 0xf3,
-	XCMD_CrashReport		= 0xf4,
-	XCMD_MapDisplayNew		= 0xf5,
-	XCMD_MoveShip			= 0xf6,
-	XCMD_WorldObjCont		= 0xf7,
-	XCMD_CreateHS			= 0xf8,
-	XCMD_GlobalChat			= 0xf9,
-	XCMD_UltimaStoreButton	= 0xfa
+	PACKET_Create				= 0x00,
+	PACKET_WalkRequest			= 0x02,
+	PACKET_Talk					= 0x03,
+	PACKET_Attack				= 0x05,
+	PACKET_DClick				= 0x06,
+	PACKET_ItemPickupReq		= 0x07,
+	PACKET_ItemDropReq			= 0x08,
+	PACKET_Click				= 0x09,
+	PACKET_DamagePacket			= 0x0B,
+	PACKET_Status				= 0x11,
+	PACKET_ExtCmd				= 0x12,
+	PACKET_ItemEquipReq			= 0x13,
+	PACKET_HealthBarColorNew	= 0x16,
+	PACKET_HealthBarColor		= 0x17,
+	PACKET_WorldItem			= 0x1A,
+	PACKET_Start				= 0x1B,
+	PACKET_Speak				= 0x1C,
+	PACKET_Remove				= 0x1D,
+	PACKET_PlayerUpdate			= 0x20,
+	PACKET_WalkReject			= 0x21,
+	PACKET_WalkAck				= 0x22,
+	PACKET_DragAnim				= 0x23,
+	PACKET_ContOpen				= 0x24,
+	PACKET_ContAdd				= 0x25,
+	PACKET_Kick					= 0x26,
+	PACKET_DragCancel			= 0x27,
+	PACKET_DropRejected			= 0x28,
+	PACKET_DropAccepted			= 0x29,
+	PACKET_DeathMenu			= 0x2C,
+	PACKET_ItemEquip			= 0x2E,
+	PACKET_Fight				= 0x2F,
+	PACKET_CharStatReq			= 0x34,
+	PACKET_Skill				= 0x3A,
+	PACKET_VendorBuy			= 0x3B,
+	PACKET_Content				= 0x3C,
+	PACKET_StaticUpdate			= 0x3F,
+	PACKET_LightPoint			= 0x4E,
+	PACKET_Light				= 0x4F,
+	PACKET_IdleWarning			= 0x53,
+	PACKET_Sound				= 0x54,
+	PACKET_LoginComplete		= 0x55,
+	PACKET_MapEdit				= 0x56,
+	PACKET_Time					= 0x5B,
+	PACKET_CharPlay				= 0x5D,
+	PACKET_Weather				= 0x65,
+	PACKET_BookPage				= 0x66,
+	PACKET_Options				= 0x69,
+	PACKET_Target				= 0x6C,
+	PACKET_PlayMusic			= 0x6D,
+	PACKET_CharAction			= 0x6E,
+	PACKET_SecureTrade			= 0x6F,
+	PACKET_Effect				= 0x70,
+	PACKET_BBoard				= 0x71,
+	PACKET_War					= 0x72,
+	PACKET_Ping					= 0x73,
+	PACKET_VendOpenBuy			= 0x74,
+	PACKET_CharName				= 0x75,
+	PACKET_ZoneChange			= 0x76,
+	PACKET_CharMove				= 0x77,
+	PACKET_Char					= 0x78,
+	PACKET_MenuItems			= 0x7C,
+	PACKET_MenuChoice			= 0x7D,
+	PACKET_UOGRequest			= 0x7F,
+	PACKET_ServersReq			= 0x80,
+	PACKET_CharList3			= 0x81,
+	PACKET_LogBad				= 0x82,
+	PACKET_CharDelete			= 0x83,
+	PACKET_DeleteBad			= 0x85,
+	PACKET_CharList2			= 0x86,
+	PACKET_PaperDoll			= 0x88,
+	PACKET_CorpEquip			= 0x89,
+	PACKET_GumpTextDisp			= 0x8B,
+	PACKET_Relay				= 0x8C,
+	PACKET_CreateNew			= 0x8D,
+	PACKET_MapDisplay			= 0x90,
+	PACKET_CharListReq			= 0x91,
+	PACKET_BookOpen				= 0x93,
+	PACKET_DyeVat				= 0x95,
+	PACKET_AllNames3D			= 0x98,
+	PACKET_TargetMulti			= 0x99,
+	PACKET_Prompt				= 0x9A,
+	PACKET_HelpPage				= 0x9B,
+	PACKET_VendOpenSell			= 0x9E,
+	PACKET_VendorSell			= 0x9F,
+	PACKET_ServerSelect			= 0xA0,
+	PACKET_StatChngStr			= 0xA1,
+	PACKET_StatChngInt			= 0xA2,
+	PACKET_StatChngDex			= 0xA3,
+	PACKET_Spy					= 0xA4,
+	PACKET_Web					= 0xA5,
+	PACKET_Scroll				= 0xA6,
+	PACKET_TipReq				= 0xA7,
+	PACKET_ServerList			= 0xA8,
+	PACKET_CharList				= 0xA9,
+	PACKET_AttackOK				= 0xAA,
+	PACKET_GumpInpVal			= 0xAB,
+	PACKET_GumpInpValRet		= 0xAC,
+	PACKET_TalkUNICODE			= 0xAD,
+	PACKET_SpeakUNICODE			= 0xAE,
+	PACKET_CharDeath			= 0xAF,
+	PACKET_GumpDialog			= 0xB0,
+	PACKET_GumpDialogRet		= 0xB1,
+	PACKET_ChatReq				= 0xB2,
+	PACKET_ChatText				= 0xB3,
+	PACKET_Chat					= 0xB5,
+	PACKET_ToolTipReq			= 0xB6,
+	PACKET_ToolTip				= 0xB7,
+	PACKET_CharProfile			= 0xB8,
+	PACKET_Features				= 0xB9,
+	PACKET_Arrow				= 0xBA,
+	PACKET_MailMsg				= 0xBB,
+	PACKET_Season				= 0xBC,
+	PACKET_ClientVersion		= 0xBD,
+	PACKET_ExtendedData			= 0xBF,
+	PACKET_EffectEx				= 0xC0,
+	PACKET_SpeakLocalized		= 0xC1,
+	PACKET_PromptUNICODE		= 0xC2,
+	PACKET_Semivisible			= 0xC4,
+	PACKET_EffectParticle		= 0xC7,
+	PACKET_ViewRange			= 0xC8,
+	PACKET_GQCount				= 0xCB,
+	PACKET_SpeakLocalizedEx		= 0xCC,
+	PACKET_ConfigFile			= 0xD0,
+	PACKET_LogoutStatus			= 0xD1,
+	PACKET_CharMove2			= 0xD2,
+	PACKET_DrawChar2			= 0xD3,
+	PACKET_AOSBookPage			= 0xD4,
+	PACKET_AOSTooltip			= 0xD6,
+	PACKET_EncodedData			= 0xD7,
+	PACKET_AOSCustomHouse		= 0xD8,
+	PACKET_Spy2					= 0xD9,
+	PACKET_Majong				= 0xDA,
+	PACKET_CharTransferLog		= 0xDB,
+	PACKET_AOSTooltipInfo		= 0xDC,
+	PACKET_CompressedGumpDialog	= 0xDD,
+	PACKET_BuffPacket			= 0xDF,
+	PACKET_BugReport			= 0xE0,
+	PACKET_KRClientType			= 0xE1,
+	PACKET_NewAnimUpdate		= 0xE2,
+	PACKET_EncryptionReq		= 0xE3,
+	PACKET_EncryptionReply		= 0xE4,
+	PACKET_WaypointShow			= 0xE5,
+	PACKET_WaypointHide			= 0xE6,
+	PACKET_HighlightUIContinue	= 0xE7,
+	PACKET_HighlightUIRemove	= 0xE8,
+	PACKET_HighlightUIToggle	= 0xE9,
+	PACKET_ToggleHotbar			= 0xEA,
+	PACKET_UseHotbar			= 0xEB,
+	PACKET_MacroEquipItem		= 0xEC,
+	PACKET_MacroUnEquipItem		= 0xED,
+	PACKET_NewSeed				= 0xEF,
+	PACKET_WalkRequestNew		= 0xF0,
+	PACKET_TimeSyncRequest		= 0xF1,
+	PACKET_TimeSyncResponse		= 0xF2,
+	PACKET_WorldObj				= 0xF3,
+	PACKET_CrashReport			= 0xF4,
+	PACKET_MapDisplayNew		= 0xF5,
+	PACKET_MoveShip				= 0xF6,
+	PACKET_WorldObjCont			= 0xF7,
+	PACKET_CreateHS				= 0xF8,
+	PACKET_GlobalChat			= 0xF9,
+	PACKET_UltimaStoreButton	= 0xFA
 };
 
-#define SEEDLENGTH_OLD (sizeof( DWORD ))
-#define SEEDLENGTH_NEW (1 + sizeof( DWORD )*5)
+enum PACKETEXT_TYPE		// extended packets used by PACKET_ExtendedData
+{
+	PACKETEXT_Fastwalk_Init		= 0x01,	// client <-  server
+	PACKETEXT_Fastwalk_Add		= 0x02,	// client <-  server
+	PACKETEXT_CloseGump			= 0x04,	// client <-  server
+	PACKETEXT_ScreenSize		= 0x05,	// client  -> server
+	PACKETEXT_Party_Msg			= 0x06,	// client <-> server
+	PACKETEXT_QuestArrow_Click	= 0x07,	// client  -> server
+	PACKETEXT_Map_Change		= 0x08,	// client <-  server
+	PACKETEXT_Wrestle_Disarm	= 0x09,	// client  -> server
+	PACKETEXT_Wrestle_Stun		= 0x0A,	// client  -> server
+	PACKETEXT_Language			= 0x0B,	// client  -> server
+	PACKETEXT_StatusClose		= 0x0C,	// client  -> server
+	PACKETEXT_AnimationReq		= 0x0E,	// client  -> server
+	PACKETEXT_ClientInfo		= 0x0F,	// client  -> server
+	PACKETEXT_OldAOSTooltipInfo	= 0x10,	// client <-> server
+	PACKETEXT_Popup_Request		= 0x13,	// client  -> server
+	PACKETEXT_Popup_Display		= 0x14,	// client <-  server
+	PACKETEXT_Popup_Select		= 0x15,	// client  -> server
+	PACKETEXT_CloseUIWindow		= 0x16,	// client <-  server
+	PACKETEXT_CodexOfWisdom		= 0x17,	// client <-  server
+	PACKETEXT_EnableMapDiffs	= 0x18,	// client <-  server
+	PACKETEXT_ExtendedStats		= 0x19,	// client <-  server
+	PACKETEXT_StatLock			= 0x1A,	// client <-  server
+	PACKETEXT_SpellbookContent	= 0x1B,	// client <-  server
+	PACKETEXT_CastSpell			= 0x1C,	// client  -> server
+	PACKETEXT_HouseDesignVer	= 0x1D,	// client <-  server
+	PACKETEXT_HouseDesignReq	= 0x1E,	// client  -> server
+	PACKETEXT_HouseCustomize	= 0x20,	// client <-  server
+	PACKETEXT_CombatDamage		= 0x22,	// client <-  server
+	PACKETEXT_AntiCheat			= 0x24,	// client  -> server
+	PACKETEXT_SpeedMode			= 0x26,	// client <-  server
+	PACKETEXT_BandageMacro		= 0x2C,	// client  -> server
+	PACKETEXT_TargetedSpell		= 0x2D,	// client  -> server
+	PACKETEXT_TargetedSkill		= 0x2E,	// client  -> server
+	PACKETEXT_TargetedResource	= 0x30,	// client  -> server
+	PACKETEXT_GargoyleFly		= 0x32,	// client  -> server
+	PACKETEXT_WheelBoatMove		= 0x33	// client  -> server
+};
+
+enum PACKETENC_TYPE		// encoded packets used by PACKET_EncodedData
+{
+	PACKETENC_HouseDesign_Backup	= 0x02,	// client  -> server
+	PACKETENC_HouseDesign_Restore	= 0x03,	// client  -> server
+	PACKETENC_HouseDesign_Commit	= 0x04,	// client  -> server
+	PACKETENC_HouseDesign_RemItem	= 0x05,	// client  -> server
+	PACKETENC_HouseDesign_AddItem	= 0x06,	// client  -> server
+	PACKETENC_HouseDesign_Exit		= 0x0C,	// client  -> server
+	PACKETENC_HouseDesign_AddStair	= 0x0D,	// client  -> server
+	PACKETENC_HouseDesign_Sync		= 0x0E,	// client  -> server
+	PACKETENC_HouseDesign_Clear		= 0x10,	// client  -> server
+	PACKETENC_HouseDesign_Switch	= 0x12,	// client  -> server
+	PACKETENC_HouseDesign_AddRoof	= 0x13,	// client  -> server
+	PACKETENC_HouseDesign_RemRoof	= 0x14,	// client  -> server
+	PACKETENC_CombatAbility			= 0x19,	// client  -> server
+	PACKETENC_HouseDesign_Revert	= 0x1A,	// client  -> server
+	PACKETENC_EquipLastWeapon		= 0x1E,	// client  -> server
+	PACKETENC_GuildButton			= 0x28,	// client  -> server
+	PACKETENC_QuestButton			= 0x32	// client  -> server
+};
 
 enum PARTYMSG_TYPE
 {
-	PARTYMSG_Add				= 0x1,	// client <-> server
-	PARTYMSG_Remove				= 0x2,	// client <-> server
-	PARTYMSG_MsgMember			= 0x3,	// client  -> server
-	PARTYMSG_MsgAll				= 0x4,	// client <-> server
-	PARTYMSG_Disband			= 0x5,	// client  -> server
-	PARTYMSG_ToggleLooting		= 0x6,	// client  -> server
-	PARTYMSG_Invite				= 0x7,	// client <-  server
-	PARTYMSG_Accept				= 0x8,	// client  -> server
-	PARTYMSG_Decline			= 0x9	// client  -> server
+	PARTYMSG_Add = 1,			// client <-> server
+	PARTYMSG_Remove,			// client <-> server
+	PARTYMSG_MsgMember,			// client  -> server
+	PARTYMSG_MsgAll,			// client <-> server
+	PARTYMSG_Disband,			// client  -> server
+	PARTYMSG_ToggleLooting,		// client  -> server
+	PARTYMSG_Invite,			// client <-  server
+	PARTYMSG_Accept,			// client  -> server
+	PARTYMSG_Decline			// client  -> server
 };
 
-enum EXTDATA_TYPE
+enum SECURETRADE_TYPE
 {
-	EXTDATA_Fastwalk_Init		= 0x01,	// client <-  server
-	EXTDATA_Fastwalk_Add		= 0x02,	// client <-  server
-	//
-	EXTDATA_CloseGump			= 0x04,	// client <-  server
-	EXTDATA_ScreenSize			= 0x05,	// client  -> server
-	EXTDATA_Party_Msg			= 0x06,	// client <-> server
-	EXTDATA_QuestArrow_Click	= 0x07,	// client  -> server
-	EXTDATA_Map_Change			= 0x08,	// client <-  server
-	EXTDATA_Wrestle_Disarm		= 0x09,	// client  -> server
-	EXTDATA_Wrestle_Stun		= 0x0A,	// client  -> server
-	EXTDATA_Language			= 0x0B,	// client  -> server
-	EXTDATA_StatusClose			= 0x0C,	// client  -> server
-	//
-	EXTDATA_AnimationReq		= 0x0E,	// client  -> server
-	EXTDATA_ClientInfo			= 0x0F,	// client  -> server
-	EXTDATA_OldAOSTooltipInfo	= 0x10,	// client <-> server
-	//
-	//
-	EXTDATA_Popup_Request		= 0x13,	// client  -> server
-	EXTDATA_Popup_Display		= 0x14,	// client <-  server
-	EXTDATA_Popup_Select		= 0x15,	// client  -> server
-	EXTDATA_CloseUIWindow		= 0x16,	// client <-  server
-	EXTDATA_CodexOfWisdom		= 0x17,	// client <-  server
-	EXTDATA_EnableMapDiffs		= 0x18,	// client <-  server
-	EXTDATA_ExtendedStats		= 0x19,	// client <-  server
-	EXTDATA_StatLock			= 0x1A,	// client <-  server
-	EXTDATA_SpellbookContent	= 0x1B,	// client <-  server
-	EXTDATA_CastSpell			= 0x1C,	// client  -> server
-	EXTDATA_HouseDesignVer		= 0x1D,	// client <-  server
-	EXTDATA_HouseDesignReq		= 0x1E,	// client  -> server
-	//
-	EXTDATA_HouseCustomize		= 0x20,	// client <-  server
-	//
-	EXTDATA_CombatDamage		= 0x22,	// client <-  server
-	//
-	EXTDATA_AntiCheat			= 0x24,	// client  -> server
-	//
-	EXTDATA_SpeedMode			= 0x26,	// client <-  server
-	//
-	//
-	//
-	//
-	//
-	EXTDATA_BandageMacro		= 0x2C,	// client  -> server
-	EXTDATA_TargetedSpell		= 0x2D,	// client  -> server
-	EXTDATA_TargetedSkill		= 0x2E,	// client  -> server
-	//
-	EXTDATA_TargetedResource	= 0x30,	// client  -> server
-	//
-	EXTDATA_GargoyleFly			= 0x32,	// client  -> server
-	EXTDATA_WheelBoatMove		= 0x33	// client  -> server
-};
-
-enum EXTAOS_TYPE
-{
-	//
-	EXTAOS_HouseDesign_Backup	= 0x02,	// client  -> server
-    EXTAOS_HouseDesign_Restore	= 0x03,	// client  -> server
-	EXTAOS_HouseDesign_Commit	= 0x04,	// client  -> server
-	EXTAOS_HouseDesign_RemItem	= 0x05,	// client  -> server
-	EXTAOS_HouseDesign_AddItem	= 0x06,	// client  -> server
-	//
-	//
-	//
-	//
-	//
-	EXTAOS_HouseDesign_Exit		= 0x0C,	// client  -> server
-	EXTAOS_HouseDesign_AddStair	= 0x0D,	// client  -> server
-	EXTAOS_HouseDesign_Sync		= 0x0E,	// client  -> server
-	//
-	EXTAOS_HouseDesign_Clear	= 0x10,	// client  -> server
-	//
-	EXTAOS_HouseDesign_Switch	= 0x12,	// client  -> server
-	EXTAOS_HouseDesign_AddRoof	= 0x13,	// client  -> server
-	EXTAOS_HouseDesign_RemRoof	= 0x14,	// client  -> server
-	//
-	//
-	//
-	//
-	EXTAOS_CombatAbility		= 0x19,	// client  -> server
-	EXTAOS_HouseDesign_Revert	= 0x1A,	// client  -> server
-	//
-	//
-	//
-	EXTAOS_EquipLastWeapon		= 0x1E,	// client  -> server
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	EXTAOS_GuildButton			= 0x28,	// client  -> server
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	EXTAOS_QuestButton			= 0x32	// client  -> server
-};
-
-#define MAX_TALK_BUFFER		256	// how many chars can anyone speak all at once? (client speech is limited to 128 chars and journal is limited to 256 chars)
-
-enum SECURE_TRADE_TYPE
-{
-	// SecureTrade Action types.
-	SECURE_TRADE_OPEN = 0,
-	SECURE_TRADE_CLOSE = 1,
-	SECURE_TRADE_CHANGE = 2,
-	SECURE_TRADE_UPDATEGOLD = 3,
-	SECURE_TRADE_UPDATELEDGER = 4
+	SECURETRADE_Open,
+	SECURETRADE_Close,
+	SECURETRADE_Accept,
+	SECURETRADE_UpdateGold,		// TOL clients only
+	SECURETRADE_UpdateLedger	// TOL clients only
 };
 
 enum SEASON_TYPE
 {
-	// The seasons can be:
-	SEASON_Spring = 0,
-	SEASON_Summer,		// 1
-	SEASON_Fall,		// 2
-	SEASON_Winter,		// 3
-	SEASON_Desolate,	// 4 = (Felucca) undead
-	SEASON_Nice,		// 5 = (Trammal) summer ?
-	SEASON_QTY
+	SEASON_Spring,
+	SEASON_Summer,
+	SEASON_Fall,
+	SEASON_Winter,
+	SEASON_Desolate
 };
 
-enum BBOARDF_TYPE	// Bulletin Board Flags. m_flag
+enum BULLETINBOARD_TYPE
 {
-	BBOARDF_NAME = 0,	// board name
-	BBOARDF_MSG_HEAD,	// 1=message header, 
-	BBOARDF_MSG_BODY,	// 2=message body
-	BBOARDF_REQ_FULL,	// 3=request for full msg.
-	BBOARDF_REQ_HEAD,	// 4=request for just head.
-	BBOARDF_NEW_MSG,	// 5=new message, 
-	BBOARDF_DELETE		// 6=Delete
+	BULLETINBOARD_Name,			// client <-  server
+	BULLETINBOARD_MsgTitle,		// client <-  server
+	BULLETINBOARD_MsgFull,		// client <-  server
+	BULLETINBOARD_ReqFull,		// client  -> server
+	BULLETINBOARD_ReqTitle,		// client  -> server
+	BULLETINBOARD_PostMsg,		// client  -> server
+	BULLETINBOARD_DeleteMsg		// client  -> server
 };
 
 enum EXTCMD_TYPE
 {
-	EXTCMD_SKILL			= 0x24,	// skill start. "skill number"
-	EXTCMD_CAST_BOOK		= 0x27,	// cast spell from book. "spell number"
-	EXTCMD_AUTOTARG			= 0x2f,	// bizarre new autotarget mode. "target x y z"
-	EXTCMD_OPEN_SPELLBOOK	= 0x43,	// open spell book if we have one. "book type"
-	EXTCMD_CAST_MACRO		= 0x56,	// macro spell. "spell number"
-	EXTCMD_DOOR_AUTO		= 0x58,	// open door macro
-	EXTCMD_ANIMATE			= 0xc7,	// "bow" or "salute"
-	EXTCMD_INVOKE_VIRTUE	= 0xf4	// invoke virtue
+	EXTCMD_UseSkill			= 0x24,
+	EXTCMD_CastSpellBook	= 0x27,
+	EXTCMD_ScrollCast		= 0x2F,
+	EXTCMD_OpenSpellbook	= 0x43,
+	EXTCMD_CastSpell		= 0x56,
+	EXTCMD_OpenDoor			= 0x58,
+	EXTCMD_Gesture			= 0xC7,
+	EXTCMD_InvokeVirtue		= 0xF4
 };
 
 enum CHATMSG_TYPE	// Chat system messages.
@@ -575,80 +506,80 @@ enum CHATMSG_TYPE	// Chat system messages.
 	CHATCMD_LeftChannel				= 0x3F4		//				x
 };
 
-enum INPVAL_STYLE	// for the various styles for InpVal box.
+enum INPVAL_TYPE
 {
-	INPVAL_STYLE_NOEDIT		= 0,	// No textbox, just a message
-	INPVAL_STYLE_TEXTEDIT	= 1,	// Alphanumeric
-	INPVAL_STYLE_NUMEDIT	= 2		// Numeric
+	INPVAL_Disabled,
+	INPVAL_Text,
+	INPVAL_Numeric
 };
 
 enum MAPCMD_TYPE
 {
-	MAPCMD_AddPin				= 0x1,
-	MAPCMD_InsertPin			= 0x2,
-	MAPCMD_MovePin				= 0x3,
-	MAPCMD_RemovePin			= 0x4,
-	MAPCMD_ClearPins			= 0x5,
-	MAPCMD_ToggleEdit_Request	= 0x6,
-	MAPCMD_ToggleEdit_Reply		= 0x7
+	MAPCMD_AddPin,
+	MAPCMD_InsertPin,
+	MAPCMD_MovePin,
+	MAPCMD_RemovePin,
+	MAPCMD_ClearPins,
+	MAPCMD_ToggleEdit_Request,
+	MAPCMD_ToggleEdit_Reply
 };
 
 enum MAPWAYPOINT_TYPE
 {
-	Remove				= 0x0,
-	Corpse				= 0x1,
-	PartyMember			= 0x2,
-	Unk1				= 0x3,
-	QuestGiver			= 0x4,
-	NewPlayerQuest		= 0x5,
-	Healer				= 0x6,
-	Unk2				= 0x7,
-	Unk3				= 0x8,
-	Unk4				= 0x9,
-	Unk5				= 0xA,
-	Shrine				= 0xB,
-	Moongate			= 0xC,
-	Unk6				= 0xD,
-	GreenDot			= 0xE,
-	GreenDotFlashing	= 0xF
+	MAPWAYPOINT_Remove,
+	MAPWAYPOINT_Corpse,
+	MAPWAYPOINT_PartyMember,
+	MAPWAYPOINT_Unk1,
+	MAPWAYPOINT_QuestGiver,
+	MAPWAYPOINT_NewPlayerQuest,
+	MAPWAYPOINT_Healer,
+	MAPWAYPOINT_Unk2,
+	MAPWAYPOINT_Unk3,
+	MAPWAYPOINT_Unk4,
+	MAPWAYPOINT_Unk5,
+	MAPWAYPOINT_Shrine,
+	MAPWAYPOINT_Moongate,
+	MAPWAYPOINT_Unk6,
+	MAPWAYPOINT_GreenDot,
+	MAPWAYPOINT_GreenDotFlashing
 };
 
 enum WEATHER_TYPE
 {
-	WEATHER_DEFAULT = 0xFE,
-	WEATHER_DRY = 0xFF,
-	WEATHER_RAIN = 0,
-	WEATHER_STORM,
-	WEATHER_SNOW,
-	WEATHER_CLOUDY	// not client supported ? (Storm brewing)
+	WEATHER_Rain,
+	WEATHER_Storm,
+	WEATHER_Snow,
+	WEATHER_Cloudy,
+	WEATHER_Default	= 0xFE,
+	WEATHER_Clear	= 0xFF
 };
 
-enum SCROLL_TYPE	// Client messages for scrolls types.
+enum SCROLL_TYPE
 {
-	SCROLL_TYPE_TIPS = 0,	// type = 0 = TIPS
-	SCROLL_TYPE_NOTICE = 1,
-	SCROLL_TYPE_UPDATES = 2	// type = 2 = UPDATES
+	SCROLL_Tips,
+	SCROLL_Notices,
+	SCROLL_Updates
 };
 
 enum EFFECT_TYPE
 {
-	EFFECT_BOLT,		// Flying bolt
-	EFFECT_LIGHTNING,	// Lightning bolt
-	EFFECT_XYZ,			// Ground-based effect
-	EFFECT_OBJ,			// Object-based effect
-	EFFECT_FADE_SCREEN	// Fade client screen (only available on clients >= 6.0.0.0)
+	EFFECT_BOLT,
+	EFFECT_LIGHTNING,
+	EFFECT_XYZ,
+	EFFECT_OBJ,
+	EFFECT_FADE_SCREEN		// clients >= 6.0.0.0 only
 };
 
 enum NOTO_TYPE
 {
-	NOTO_INVALID = 0,	// 0= not a valid color!!
-	NOTO_GOOD,			// 1= good(blue),
-	NOTO_GUILD_SAME,	// 2= same guild,
-	NOTO_NEUTRAL,		// 3= Neutral,
-	NOTO_CRIMINAL,		// 4= criminal
-	NOTO_GUILD_WAR,		// 5= Waring guilds,
-	NOTO_EVIL,			// 6= evil(red),
-	NOTO_INVUL			// 7= invulnerable
+	NOTO_INVALID,
+	NOTO_GOOD,
+	NOTO_GUILD_SAME,
+	NOTO_NEUTRAL,
+	NOTO_CRIMINAL,
+	NOTO_GUILD_WAR,
+	NOTO_EVIL,
+	NOTO_INVUL
 };
 
 // Client versions (expansions)
@@ -813,29 +744,29 @@ struct CEvent	// event buffer from client to server..
 
 		struct
 		{
-			BYTE m_Cmd;			// XCMD_TYPE, 0 = ?
-			BYTE m_Arg[1];		// unknown size.
+			BYTE m_Cmd;			// PACKET_* (size = unknown)
+			BYTE m_Arg[1];
 		} Default;
 
-		struct // size = 62		// first login to req listing the servers.
+		struct
 		{
-			BYTE m_Cmd;	// 0 = 0x80 = XCMD_ServersReq
+			BYTE m_Cmd;			// PACKET_ServersReq (size = 62)
 			char m_acctname[MAX_ACCOUNT_NAME_SIZE];
 			char m_acctpass[MAX_NAME_SIZE];
 			BYTE m_loginKey;	// 61 = NextLoginKey from uo.cfg
 		} ServersReq;
 
-		struct	// size = 65	// request to list the chars I can play.
+		struct
 		{
-			BYTE m_Cmd;			// 0 = 0x91
-			NDWORD m_Account;	// 1-4 = account id from XCMD_Relay message to log server.
+			BYTE m_Cmd;			// PACKET_CharListReq (size = 65)
+			NDWORD m_Account;	// 1-4 = account id from PACKET_Relay message to log server.
 			char m_acctname[MAX_ACCOUNT_NAME_SIZE];	// This is corrupted or encrypted seperatly ?
 			char m_acctpass[MAX_NAME_SIZE];
 		} CharListReq;
 
-		struct // XCMD_EncryptionReply
+		struct 
 		{
-			BYTE m_Cmd;			// 0 = 0xE4
+			BYTE m_Cmd;			// PACKET_EncryptionReply
 			NWORD m_len;		// 1 - 2 = length
 			NDWORD m_lenUnk1;	// 3 - 6 = length of m_unk1
 			BYTE m_unk1[1];		// 7 - ? = ?
@@ -850,9 +781,9 @@ struct CEvent	// event buffer from client to server..
 // Char mode flags
 #define CHARMODE_FREEZE			0x01
 #define CHARMODE_FEMALE			0x02
-#define CHARMODE_POISON			0x04	// green status bar. (note: see XCMD_HealthBarColor for SA)
+#define CHARMODE_POISON			0x04	// green status bar. (note: see PACKET_HealthBarColor for SA)
 #define CHARMODE_FLYING			0x04	// flying (gargoyles, SA)
-#define CHARMODE_YELLOW			0x08	// yellow status bar. (note: see XCMD_HealthBarColor for SA)
+#define CHARMODE_YELLOW			0x08	// yellow status bar. (note: see PACKET_HealthBarColor for SA)
 #define CHARMODE_IGNOREMOBS		0x10
 #define CHARMODE_WAR			0x40
 #define CHARMODE_INVIS			0x80

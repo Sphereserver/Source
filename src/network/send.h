@@ -643,7 +643,7 @@ public:
 class PacketTradeAction : public PacketSend
 {
 public:
-	PacketTradeAction(SECURE_TRADE_TYPE action);
+	PacketTradeAction(SECURETRADE_TYPE action);
 	void prepareContainerOpen(const CChar *character, const CItem *container1, const CItem *container2);
 	void prepareReadyChange(const CItemContainer *container1, const CItemContainer *container2);
 	void prepareClose(const CItemContainer *container);
@@ -680,7 +680,7 @@ class PacketBulletinBoard : public PacketSend
 {
 public:
 	PacketBulletinBoard(const CClient* target, const CItemContainer* board);
-	PacketBulletinBoard(const CClient* target, BBOARDF_TYPE action, const CItemContainer* board, const CItemMessage* message);
+	PacketBulletinBoard(const CClient* target, BULLETINBOARD_TYPE action, const CItemContainer* board, const CItemMessage* message);
 };
 
 /***************************************************************************
@@ -1132,7 +1132,7 @@ public:
 class PacketGumpValueInput : public PacketSend
 {
 public:
-	PacketGumpValueInput(const CClient* target, bool cancel, INPVAL_STYLE style, DWORD maxLength, LPCTSTR text, LPCTSTR caption, CObjBase* object);
+	PacketGumpValueInput(const CClient* target, bool cancel, INPVAL_TYPE type, DWORD maxLength, LPCTSTR text, LPCTSTR caption, CObjBase* object);
 };
 
 /***************************************************************************
@@ -1281,7 +1281,7 @@ public:
 class PacketExtended : public PacketSend
 {
 public:
-	PacketExtended(EXTDATA_TYPE type, size_t len = 0, Priority priority = PRI_NORMAL);
+	PacketExtended(PACKETEXT_TYPE type, size_t len = 0, Priority priority = PRI_NORMAL);
 };
 
 /***************************************************************************
@@ -1307,7 +1307,7 @@ public:
 class PacketParty : public PacketExtended
 {
 public:
-	PacketParty(PARTYMSG_TYPE type, size_t len = 0, Priority priority = PRI_NORMAL);
+	PacketParty(PARTYMSG_TYPE action, size_t len = 0, Priority priority = PRI_NORMAL);
 };
 
 /***************************************************************************

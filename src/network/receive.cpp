@@ -1374,7 +1374,7 @@ bool PacketSecureTradeReq::onReceive(NetState* net)
 		return false;
 
 	skip(2); // length
-	SECURE_TRADE_TYPE action = static_cast<SECURE_TRADE_TYPE>(readByte());
+	SECURETRADE_TYPE action = static_cast<SECURETRADE_TYPE>(readByte());
 	CGrayUID containerSerial(readInt32());
 
 	CItemContainer* container = dynamic_cast<CItemContainer*>( containerSerial.ItemFind() );
@@ -1385,11 +1385,11 @@ bool PacketSecureTradeReq::onReceive(NetState* net)
 
 	switch ( action )
 	{
-		case SECURE_TRADE_CLOSE:		// cancel trade. send each person cancel messages, move items
+		case SECURETRADE_Close:
 			container->Delete();
 			return true;
 
-		case SECURE_TRADE_CHANGE:		// change check marks. possible conclude trade
+		case SECURETRADE_Accept:
 		{
 			if ( character->GetDist(container) > character->GetSight() )
 			{
@@ -1409,7 +1409,7 @@ bool PacketSecureTradeReq::onReceive(NetState* net)
 			return true;
 		}
 
-		case SECURE_TRADE_UPDATEGOLD:	// update trade window virtual gold
+		case SECURETRADE_UpdateGold:
 			container->Trade_UpdateGold(readInt32(), readInt32());
 			return true;
 		default:
@@ -1442,7 +1442,7 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 		return false;
 
 	skip(2);
-	BBOARDF_TYPE action = static_cast<BBOARDF_TYPE>(readByte());
+	BULLETINBOARD_TYPE action = static_cast<BULLETINBOARD_TYPE>(readByte());
 	CGrayUID boardSerial(readInt32());
 	CGrayUID messageSerial(readInt32());
 
@@ -1458,10 +1458,9 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 
 	switch (action)
 	{
-		case BBOARDF_REQ_FULL:
-		case BBOARDF_REQ_HEAD:
+		case BULLETINBOARD_ReqFull:
+		case BULLETINBOARD_ReqTitle:
 		{
-			// request for message header and/or body
 			if (getLength() != 12)
 			{
 				DEBUG_ERR(("%lx:BBoard feed back message bad length %" FMTSIZE_T "\n", net->id(), getLength()));
@@ -1475,9 +1474,8 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 			}
 			break;
 		}
-		case BBOARDF_NEW_MSG:
+		case BULLETINBOARD_PostMsg:
 		{
-			// submit a message
 			if (getLength() < 12)
 				return true;
 
@@ -1488,10 +1486,7 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 			}
 
 			if (board->GetCount() > 32)
-			{
-				// roll a message off
 				delete board->GetAt(board->GetCount() - 1);
-			}
 
 			size_t lenstr = readByte();
 			TCHAR* str = Str_GetTemp();
@@ -1499,7 +1494,6 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 			if (Str_Check(str))
 				return true;
 
-			// if 
 			CItemMessage* newMessage = dynamic_cast<CItemMessage*>( CItem::CreateBase(ITEMID_BBOARD_MSG) );
 			if (!newMessage)
 			{
@@ -1527,9 +1521,8 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 			board->ContentAdd(newMessage);
 			break;
 		}
-		case BBOARDF_DELETE:
+		case BULLETINBOARD_DeleteMsg:
 		{
-			// remove the message
 			CItemMessage* message = dynamic_cast<CItemMessage*>( messageSerial.ItemFind() );
 			if (!board->IsItemInside(message))
 			{
@@ -1546,9 +1539,6 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 			message->Delete();
 			break;
 		}
-		default:
-			DEBUG_ERR(( "%lx:BBoard unknown flag %d\n", net->id(), action));
-			return true;
 	}
 
 	return true;
@@ -2735,7 +2725,7 @@ bool PacketExtendedCommand::onReceive(NetState* net)
 	if (packetLength > MAX_TALK_BUFFER)
 		return false;
 
-	EXTDATA_TYPE type = static_cast<EXTDATA_TYPE>(readInt16());
+	PACKETEXT_TYPE type = static_cast<PACKETEXT_TYPE>(readInt16());
 	seek();
 
 #ifndef _MTNETWORK
@@ -3780,7 +3770,7 @@ bool PacketEncodedCommand::onReceive(NetState* net)
 	if (character->GetUID() != serial)
 		return false;
 
-	EXTAOS_TYPE type = static_cast<EXTAOS_TYPE>(readInt16());
+	PACKETENC_TYPE type = static_cast<PACKETENC_TYPE>(readInt16());
 	seek();
 
 #ifndef _MTNETWORK
@@ -4345,7 +4335,7 @@ bool PacketBugReport::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketBugReport::onReceive");
 
-	WORD packetLength = readInt16();
+	skip(2);	// length
 
 	TCHAR language[4];
 	readStringASCII(language, COUNTOF(language));

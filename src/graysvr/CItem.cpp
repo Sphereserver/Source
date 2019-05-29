@@ -94,7 +94,7 @@ void CItem::Delete(bool bForce)
 	{
 		CChar *pChar = m_uidLink.CharFind();
 		if ( pChar && pChar->m_pClient )
-			pChar->m_pClient->addMapWaypoint(this, Remove);
+			pChar->m_pClient->addMapWaypoint(this, MAPWAYPOINT_Remove);
 	}
 
 	CObjBase::Delete();
@@ -4006,7 +4006,7 @@ LPCTSTR CItem::Use_SpyGlass( CChar * pUser ) const
 	TCHAR	*pResult = Str_GetTemp();
 
 	// Weather bonus
-	double rWeatherSight = wtWeather == WEATHER_RAIN ? (0.25 * BASE_SIGHT) : 0.0;
+	double rWeatherSight = (wtWeather == WEATHER_Rain) ? 0.25 * BASE_SIGHT : 0.0;
 	// Light level bonus
 	double rLightSight = (1.0 - (static_cast<double>(iLight) / 25.0)) * BASE_SIGHT * 0.25;
 	signed short iVisibility = static_cast<signed short>(BASE_SIGHT + rWeatherSight + rLightSight);
@@ -4057,7 +4057,7 @@ LPCTSTR CItem::Use_SpyGlass( CChar * pUser ) const
 				sSearch.Format("%s %s. ", g_Cfg.GetDefaultMsg(DEFMSG_USE_SPYGLASS_LAND), CPointBase::sm_szDirs[ptCoords.GetDir(ptLand)]);
 			else if (iLight > 3)
 				sSearch = g_Cfg.GetDefaultMsg(DEFMSG_USE_SPYGLASS_DARK);
-			else if (wtWeather == WEATHER_RAIN)
+			else if (wtWeather == WEATHER_Rain)
 				sSearch = g_Cfg.GetDefaultMsg(DEFMSG_USE_SPYGLASS_WEATHER);
 			else
 				sSearch = g_Cfg.GetDefaultMsg(DEFMSG_USE_SPYGLASS_NO_LAND);
@@ -4954,7 +4954,7 @@ bool CItem::OnTick()
 				if ( pSrc && pSrc->m_pPlayer )
 				{
 					if ( pSrc->m_pClient )
-						pSrc->m_pClient->addMapWaypoint(this, Remove);	// remove corpse map waypoint on enhanced clients
+						pSrc->m_pClient->addMapWaypoint(this, MAPWAYPOINT_Remove);	// remove corpse map waypoint on enhanced clients
 
 					SetID(static_cast<ITEMID_TYPE>(Calc_GetRandVal2(ITEMID_SKELETON_1, ITEMID_SKELETON_9)));
 					SetHue(static_cast<HUE_TYPE>(HUE_DEFAULT));

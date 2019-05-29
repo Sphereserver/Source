@@ -2277,7 +2277,7 @@ bool CClient::OnTarg_Party_Add(CChar *pChar)
 {
 	ADDTOCALLSTACK("CClient::OnTarg_Party_Add");
 	// CLIMODE_TARG_PARTY_ADD
-	// Invite this char to the party. PARTYMSG_Add
+	// Invite this char to the party
 
 	if ( !pChar )
 	{
@@ -2363,7 +2363,7 @@ bool CClient::OnTarg_Party_Remove(CChar *pChar)
 {
 	ADDTOCALLSTACK("CClient::OnTarg_Party_Remove");
 	// CLIMODE_TARG_PARTY_REMOVE
-	// Remove this char from the party. PARTYMSG_Remove
+	// Remove this char from the party
 
 	if ( !pChar || !pChar->m_pParty || !m_pChar || !m_pChar->m_pParty || !m_pChar->m_pParty->IsPartyMaster(m_pChar) )
 		return false;
