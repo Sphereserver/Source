@@ -38,19 +38,19 @@ CItemMultiCustom::~CItemMultiCustom()
 
 	if ( m_designMain.m_pPacket )
 	{
-		delete[] m_designMain.m_pPacket;
+		delete m_designMain.m_pPacket;
 		m_designMain.m_pPacket = NULL;
 		m_designMain.m_dwPacketRevision = 0;
 	}
 	if ( m_designWorking.m_pPacket )
 	{
-		delete[] m_designWorking.m_pPacket;
+		delete m_designWorking.m_pPacket;
 		m_designWorking.m_pPacket = NULL;
 		m_designWorking.m_dwPacketRevision = 0;
 	}
 	if ( m_designBackup.m_pPacket )
 	{
-		delete[] m_designBackup.m_pPacket;
+		delete m_designBackup.m_pPacket;
 		m_designBackup.m_pPacket = NULL;
 		m_designBackup.m_dwPacketRevision = 0;
 	}

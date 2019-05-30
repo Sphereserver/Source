@@ -776,7 +776,7 @@ void CGTypedArray<TYPE, ARG_TYPE>::SetCount( size_t nNewCount )
 template<class TYPE>
 void CGPtrTypeArray<TYPE>::DestructElements( TYPE* pElements, size_t nCount )
 {
-	memset(pElements, 0, nCount * sizeof(*pElements));
+	memset(static_cast<void *>(pElements), 0, nCount * sizeof(*pElements));
 }
 
 template<class TYPE>
