@@ -1,6 +1,8 @@
 extraction:
   cpp:
     prepare:
+      - deb http://repo.mysql.com/apt/ubuntu/ cosmic mysql-5.7
+      - apt-get update
       packages:
         - libmysql++-dev:i386
         - gcc-multilib
