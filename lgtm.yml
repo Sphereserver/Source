@@ -1,13 +1,7 @@
 extraction:
   cpp:
-    prepare:
-      command:
-        - deb http://repo.mysql.com/apt/ubuntu/ cosmic mysql-5.7
-        - apt-get update
-      packages:
-        - libmysql++-dev:i386
-        - gcc-multilib
-        - g++-multilib
+    after_prepare:
+      - sudo apt-get install gcc-multilib g++-multilib libmysql++-dev:i386
     index:
       build_command:
         - make NIGHTLY=1
