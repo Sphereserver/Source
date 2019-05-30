@@ -680,7 +680,7 @@ void CGTypedArray<TYPE,ARG_TYPE>::Copy(const CGTypedArray<TYPE, ARG_TYPE> * pArr
 
 	Empty();
 	SetCount(pArray->GetCount());
-	memcpy(GetBasePtr(), pArray->GetBasePtr(), GetCount() * sizeof(TYPE));
+	memcpy(static_cast<void *>(GetBasePtr()), pArray->GetBasePtr(), GetCount() * sizeof(TYPE));
 }
 
 template<class TYPE, class ARG_TYPE>
@@ -719,7 +719,7 @@ void CGTypedArray<TYPE, ARG_TYPE>::SetCount( size_t nNewCount )
 		if ( m_nCount )
 		{
 			// copy the old stuff to the new array.
-			memcpy( pNewData, m_pData, sizeof(TYPE)*m_nCount );
+			memcpy(static_cast<void *>(pNewData), m_pData, sizeof(TYPE) * m_nCount);
 			delete[] reinterpret_cast<BYTE *>(m_pData);	// don't call any destructors.
 		}
 
@@ -755,7 +755,7 @@ void CGTypedArray<TYPE, ARG_TYPE>::SetCount( size_t nNewCount )
 
 		// i have already data inside, so move to the new place
 		if ( m_nCount )
-			memcpy(pNewData, m_pData, sizeof(TYPE) * m_nCount);
+			memcpy(static_cast<void *>(pNewData), m_pData, sizeof(TYPE) * m_nCount);
 		delete[] (BYTE*) m_pData;
 		m_pData = pNewData;
 	}
