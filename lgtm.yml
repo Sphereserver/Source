@@ -1,7 +1,10 @@
 extraction:
   cpp:
-    after_prepare:
-      - apt-get install gcc-multilib g++-multilib libmysql++-dev:i386
+    prepare:
+      packages:
+        - libmysql++-dev
+        - gcc-multilib
+        - g++-multilib
     index:
       build_command:
         - make NIGHTLY=1
