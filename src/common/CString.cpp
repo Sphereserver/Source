@@ -1037,28 +1037,9 @@ MATCH_TYPE Str_Match(LPCTSTR pPattern, LPCTSTR pText)
 		return MATCH_VALID;
 }
 
-
-int Str_RegExMatch(LPCTSTR pPattern, LPCTSTR pText, TCHAR * lastError)
+MATCH_TYPE Str_RegExMatch(LPCTSTR pszPattern, LPCTSTR pszText)
 {
-	try
-	{
-		CRegexp expressionformatch(pPattern, NO_FLAG);
-		MatchResult result = expressionformatch.Match(pText);
-		if (result.IsMatched())
-			return 1;
-
-		return 0;
-	}
-	catch (const std::bad_alloc e)
-	{
-		strcpylen(lastError, e.what(), SCRIPT_MAX_LINE_LEN);
-		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
-		return -1;
-	}
-	catch (...)
-	{
-		strcpylen(lastError, "Unknown", SCRIPT_MAX_LINE_LEN);
-		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
-		return -1;
-	}
+	CRegexp regexp = pszPattern;
+	MatchResult result = regexp.Match(pszText);
+	return result.IsMatched() ? MATCH_VALID : MATCH_INVALID;
 }

@@ -2493,7 +2493,7 @@ void CClient::Event_ExtCmd(EXTCMD_TYPE type, TCHAR *pszName)
 			return;
 		}
 
-		case EXTCMD_ScrollCast:		// obsolete
+		case EXTCMD_UseScroll:		// obsolete
 		{
 			//CObjBase *pObj = static_cast<CGrayUID>(ATOI(ppArgs[0])).ObjFind();
 			return;

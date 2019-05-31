@@ -404,7 +404,7 @@ enum EXTCMD_TYPE
 {
 	EXTCMD_UseSkill			= 0x24,
 	EXTCMD_CastSpellBook	= 0x27,
-	EXTCMD_ScrollCast		= 0x2F,
+	EXTCMD_UseScroll		= 0x2F,
 	EXTCMD_OpenSpellbook	= 0x43,
 	EXTCMD_CastSpell		= 0x56,
 	EXTCMD_OpenDoor			= 0x58,

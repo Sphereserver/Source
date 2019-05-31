@@ -367,12 +367,12 @@ MATCH_TYPE Str_Match(LPCTSTR pPattern, LPCTSTR pText);
 
 /**
 * @brief check if a string matches a regex.
-* @param pPattern regex to match.
-* @param pText text to match against the regex.
-* @param lastError if any error, error description is stored here.
-* @return 1 is regex is matched, 0 if not, -1 if errors.
+* @see MATCH_TYPE
+* @param pszPattern regex to match.
+* @param pszText text to match against the regex.
+* @return a MATCH_TYPE
 */
-int Str_RegExMatch(LPCTSTR pPattern, LPCTSTR pText, TCHAR * lastError);
+MATCH_TYPE Str_RegExMatch(LPCTSTR pszPattern, LPCTSTR pszText);
 
 /**
 * @brief Wrapper to cstring strcpy, but returns the length of the string copied.

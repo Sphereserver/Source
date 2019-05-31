@@ -776,12 +776,7 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 						if ( iCount < 2 )
 							iResult = 0;
 						else
-						{
-							TCHAR *pszLastError = Str_GetTemp();
-							iResult = Str_RegExMatch(ppArgs[0], ppArgs[1], pszLastError);
-							if ( iResult == -1 )
-								DEBUG_ERR(("%s: %s\n", sm_IntrinsicFunctions[index], pszLastError));
-						}
+							iResult = (Str_RegExMatch(ppArgs[0], ppArgs[1]) == MATCH_VALID) ? 1 : 0;
 						break;
 					}
 					case INTRINSIC_TAN:

@@ -1979,12 +1979,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			}
 
 			SKIP_ARGSEP(pszKey);
-			TCHAR *pszLastError = Str_GetTemp();
-			int iResult = Str_RegExMatch(pszKey, pszToMatch, pszLastError);
-			sVal.FormatVal(iResult);
-
-			if ( iResult == -1 )
-				DEBUG_ERR(("%s: %s\n", sm_szLoadKeys[index], pszLastError));
+			sVal.FormatVal((Str_RegExMatch(pszKey, pszToMatch) == MATCH_VALID) ? 1 : 0);
 			return true;
 		}
 		default:

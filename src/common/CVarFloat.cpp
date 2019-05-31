@@ -610,12 +610,7 @@ RealType CVarFloat::GetSingle(LPCTSTR &pszArgs)
 					if ( iCount < 2 )
 						dResult = 0;
 					else
-					{
-						TCHAR *pszLastError = Str_GetTemp();
-						dResult = Str_RegExMatch(ppCmd[0], ppCmd[1], pszLastError);
-						if ( dResult == -1 )
-							DEBUG_ERR(("%s: %s\n", sm_IntrinsicFunctions[index], pszLastError));
-					}
+						dResult = (Str_RegExMatch(ppCmd[0], ppCmd[1]) == MATCH_VALID) ? 1 : 0;
 					break;
 				}
 				case INTRINSIC_TAN:

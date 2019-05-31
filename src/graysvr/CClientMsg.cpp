@@ -1266,12 +1266,20 @@ void CClient::addCharName(const CChar *pChar)
 	{
 		LPCTSTR pszGuildAbbrev = pChar->Guild_Abbrev(MEMORY_GUILD);
 		if ( pszGuildAbbrev )
-			sprintf(pszSuffix, "%s [%s]", pszSuffix, pszGuildAbbrev);
+		{
+			strcat(pszSuffix, " [");
+			strncat(pszSuffix, pszGuildAbbrev, MAX_NAME_SIZE - 1);
+			strcat(pszSuffix, "]");
+		}
 		else
 		{
 			pszGuildAbbrev = pChar->Guild_Abbrev(MEMORY_TOWN);
 			if ( pszGuildAbbrev )
-				sprintf(pszSuffix, "%s [%s]", pszSuffix, pszGuildAbbrev);
+			{
+				strcat(pszSuffix, " [");
+				strncat(pszSuffix, pszGuildAbbrev, MAX_NAME_SIZE - 1);
+				strcat(pszSuffix, "]");
+			}
 		}
 	}
 	else
@@ -1280,7 +1288,10 @@ void CClient::addCharName(const CChar *pChar)
 		{
 			LPCTSTR pszTradeTitle = pChar->GetTradeTitle();
 			if ( pszTradeTitle )
-				sprintf(pszSuffix, "%s %s", pszSuffix, pszTradeTitle);
+			{
+				strcat(pszSuffix, " ");
+				strncat(pszSuffix, pszTradeTitle, MAX_NAME_SIZE - 1);
+			}
 		}
 	}
 
@@ -2512,12 +2523,20 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 					{
 						LPCTSTR pszGuildAbbrev = pChar->Guild_Abbrev(MEMORY_GUILD);
 						if ( pszGuildAbbrev )
-							sprintf(pszSuffix, "%s [%s]", pszSuffix, pszGuildAbbrev);
+						{
+							strcat(pszSuffix, " [");
+							strncat(pszSuffix, pszGuildAbbrev, MAX_NAME_SIZE - 1);
+							strcat(pszSuffix, "]");
+						}
 						else
 						{
 							pszGuildAbbrev = pChar->Guild_Abbrev(MEMORY_TOWN);
 							if ( pszGuildAbbrev )
-								sprintf(pszSuffix, "%s [%s]", pszSuffix, pszGuildAbbrev);
+							{
+								strcat(pszSuffix, " [");
+								strncat(pszSuffix, pszGuildAbbrev, MAX_NAME_SIZE - 1);
+								strcat(pszSuffix, "]");
+							}
 						}
 					}
 					else
@@ -2526,7 +2545,10 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 						{
 							LPCTSTR pszTradeTitle = pChar->GetTradeTitle();
 							if ( pszTradeTitle )
-								sprintf(pszSuffix, "%s %s", pszSuffix, pszTradeTitle);
+							{
+								strcat(pszSuffix, " ");
+								strncat(pszSuffix, pszTradeTitle, MAX_NAME_SIZE - 1);
+							}
 						}
 					}
 

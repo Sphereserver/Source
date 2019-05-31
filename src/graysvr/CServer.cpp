@@ -255,8 +255,7 @@ bool CServer::GetPublicIP()
 	}
 
 	// Check if it's a valid IP address
-	TCHAR *pszLastError = Str_GetTemp();
-	if ( Str_RegExMatch("^([0-9]{1,3}).([0-9]{1,3}).([0-9]{1,3}).([0-9]{1,3})$", pszBuffer, pszLastError) == MATCH_VALID )
+	if ( Str_RegExMatch("^([0-9]{1,3}).([0-9]{1,3}).([0-9]{1,3}).([0-9]{1,3})$", pszBuffer) == MATCH_VALID )
 	{
 		m_ip.SetAddrStr(pszBuffer);
 		return true;
