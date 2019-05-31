@@ -46,6 +46,10 @@ extern KeySetupProc* reKey_86;
 extern DWORD		cdecl TwofishAsmCodeSize();
 #endif
 
+#ifndef _WIN32
+#pragma GCC diagnostic ignored "-Waggressive-loop-optimizations"
+#endif
+
 /*
 +*****************************************************************************
 *			Constants/Macros/Tables
