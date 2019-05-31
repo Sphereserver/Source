@@ -2,9 +2,11 @@ extraction:
   cpp:
     prepare:
       packages:
-        - libmysqlclient20:i386
+        - libmysql++-dev:i386
         - gcc-multilib
         - g++-multilib
+    after_prepare:
+      - apt-cache search mysql
     index:
       build_command:
         - make NIGHTLY=1
