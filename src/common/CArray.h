@@ -595,7 +595,7 @@ void CGTypedArray<TYPE,ARG_TYPE>::InsertAt( size_t nIndex, ARG_TYPE newElement )
 	ASSERT(nIndex != STANDARD_CPLUSPLUS_THIS(BadIndex()));
 
 	SetCount( (nIndex >= m_nCount) ? (nIndex + 1) : (m_nCount + 1) );
-	memmove( &m_pData[nIndex + 1], &m_pData[nIndex], sizeof(TYPE) * (m_nCount - nIndex - 1));
+	memmove(static_cast<void *>(&m_pData[nIndex + 1]), &m_pData[nIndex], sizeof(TYPE) * (m_nCount - nIndex - 1));
 	m_pData[nIndex] = newElement;
 }
 
@@ -614,7 +614,7 @@ void CGTypedArray<TYPE,ARG_TYPE>::RemoveAt( size_t nIndex )
 		return;
 
 	DestructElements(&m_pData[nIndex], 1);
-	memmove(&m_pData[nIndex], &m_pData[nIndex + 1], sizeof(TYPE) * (m_nCount - nIndex - 1));
+	memmove(static_cast<void *>(&m_pData[nIndex]), &m_pData[nIndex + 1], sizeof(TYPE) * (m_nCount - nIndex - 1));
 	SetCount(m_nCount - 1);
 }
 

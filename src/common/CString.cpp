@@ -89,7 +89,7 @@ void CGString::Empty(bool bTotal)
 			gMemAmount -= m_iMaxLength;
 #endif
 			delete[] m_pchData;
-			m_pchData = '\0';
+			m_pchData = NULL;
 			m_iMaxLength = 0;
 		}
 	}
@@ -563,7 +563,7 @@ size_t Str_ParseCmds(TCHAR * pszCmdLine, TCHAR ** ppCmd, size_t iMax, LPCTSTR ps
 		}
 	}
 	for (size_t j = iQty; j < iMax; j++)
-		ppCmd[j] = '\0';	// terminate if possible
+		ppCmd[j] = NULL;	// terminate if possible
 	return iQty;
 }
 
