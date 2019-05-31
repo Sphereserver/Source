@@ -2,7 +2,7 @@ extraction:
   cpp:
     prepare:
       packages:
-        - libmysql++-dev:i386
+        - libmysqlclient20:i386
         - gcc-multilib
         - g++-multilib
     index:
