@@ -1,13 +1,11 @@
 extraction:
   cpp:
-    prepare:
-      packages:
-        - libmysql++-dev:i386
-        - gcc-multilib
-        - g++-multilib
     after_prepare:
       - sudo dpkg --add-architecture i386
       - sudo apt-get update
+      - sudo apt-get install gcc-multilib
+      - sudo apt-get install g++-multilib
+      - sudo apt-get install libmysql++-dev:i386
     index:
       build_command:
         - make NIGHTLY=1
