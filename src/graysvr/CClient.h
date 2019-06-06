@@ -558,23 +558,23 @@ public:
 	void GetAdjustedItemID(const CChar *pChar, const CItem *pItem, ITEMID_TYPE &id, HUE_TYPE &wHue) const;
 
 	void Event_Attack(CGrayUID uid);
-	void Event_Book_Title(CGrayUID uid, LPCTSTR pszTitle, LPCTSTR pszAuthor);
+	void Event_Book_Title(CItem *pItem, LPCTSTR pszTitle, LPCTSTR pszAuthor);
 	void Event_BugReport(const TCHAR *pszText, int len, BUGREPORT_TYPE type, CLanguageID lang = 0);
+	void Event_CharRename(CChar *pChar, LPCTSTR pszName);
 	void Event_ChatButton(const NCHAR *pszName = NULL);
 	void Event_ChatText(const NCHAR *pszText, int len, CLanguageID lang = 0);
 	void Event_CombatAbilitySelect(DWORD dwAbility);
 	void Event_CombatMode(bool fWar);
 	bool Event_DoubleClick(CGrayUID uid, bool fMacro, bool fTestTouch, bool fScript = false);
 	void Event_ExtCmd(EXTCMD_TYPE type, TCHAR *pszName);
-	void Event_Item_Drop(CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, BYTE gridIndex = 0);
+	void Event_Item_Drop(CItem *pItem, CPointMap pt, CGrayUID uidOn, BYTE gridIndex = 0);
 	void Event_Item_Drop_Fail(CItem *pItem);
 	void Event_Item_Dye(CGrayUID uid, HUE_TYPE wHue);
 	void Event_Item_Pickup(CGrayUID uid, int amount);
-	void Event_MailMsg(CGrayUID uid1, CGrayUID uid2);
-	void Event_Profile(BYTE fWriteMode, CGrayUID uid, LPCTSTR pszProfile, int iProfileLen);
+	void Event_MailMsg(CChar *pChar);
+	void Event_Profile(bool fWrite, CGrayUID uid, LPCTSTR pszProfile);
 	void Event_PromptResp(LPCTSTR pszText, size_t iTextLen, CGrayUID uidChar, CGrayUID uidPrompt, DWORD dwType);
 	void Event_PromptResp_GMPage(LPCTSTR pszReason);
-	void Event_SetName(CGrayUID uid, const char *pszCharName);
 	void Event_SingleClick(CGrayUID uid);
 	void Event_Skill_Use(SKILL_TYPE skill);
 	void Event_Talk(LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, bool bNoStrip = false);
@@ -595,10 +595,10 @@ public:
 	TRIGRET_TYPE Dialog_OnButton(RESOURCE_ID_BASE rid, DWORD dwButtonID, CObjBase *pObj, CDialogResponseArgs *pArgs);
 
 	bool Login_Relay(WORD wRelay);		// relay player to a certain IP
-	BYTE Login_ServerList(const char *pszAccount, const char *pszPassword);		// initial login (Login on "loginserver", new format)
+	BYTE Login_ServerList(LPCTSTR pszAccount, LPCTSTR pszPassword);		// initial login (Login on "loginserver", new format)
 
 	BYTE Setup_FillCharList(Packet *pPacket);	// write character list to packet
-	BYTE Setup_ListReq(const char *pszAccount, const char *pszPassword, bool fTest);	// gameserver login and character listing
+	BYTE Setup_ListReq(LPCTSTR pszAccount, LPCTSTR pszPassword, bool fTest);	// gameserver login and character listing
 	BYTE Setup_Delete(DWORD dwSlot);	// delete character
 	BYTE Setup_Play(DWORD dwSlot);		// after hitting "Play Character" button
 	BYTE Setup_Start(CChar *pChar);		// send character startup stuff to player

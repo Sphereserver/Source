@@ -119,13 +119,13 @@ void CClient::Event_Tips(WORD i)
 }
 
 // Client changed book title/author info
-void CClient::Event_Book_Title(CGrayUID uid, LPCTSTR pszTitle, LPCTSTR pszAuthor)
+void CClient::Event_Book_Title(CItem *pItem, LPCTSTR pszTitle, LPCTSTR pszAuthor)
 {
 	ADDTOCALLSTACK("CClient::Event_Book_Title");
 	if ( !m_pChar )
 		return;
 
-	CItemMessage *pBook = static_cast<CItemMessage *>(uid.ItemFind());
+	CItemMessage *pBook = dynamic_cast<CItemMessage *>(pItem);
 	if ( !m_pChar->CanTouch(pBook) )
 	{
 		SysMessageDefault(DEFMSG_REACH_FAIL);
@@ -222,7 +222,7 @@ void CClient::Event_Item_Drop_Fail(CItem *pItem)
 }
 
 // Client dropped an item somewhere
-void CClient::Event_Item_Drop(CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, BYTE gridIndex)
+void CClient::Event_Item_Drop(CItem *pItem, CPointMap pt, CGrayUID uidOn, BYTE gridIndex)
 {
 	ADDTOCALLSTACK("CClient::Event_Item_Drop");
 	if ( !m_pChar || (GetTargMode() != CLIMODE_DRAG) )
@@ -230,7 +230,6 @@ void CClient::Event_Item_Drop(CGrayUID uidItem, CPointMap pt, CGrayUID uidOn, BY
 
 	ClearTargMode();
 
-	CItem *pItem = uidItem.ItemFind();
 	CObjBase *pObjOn = uidOn.ObjFind();
 	CItemContainer *pContOn = NULL;
 
@@ -1248,10 +1247,9 @@ void CClient::Event_VendorSell(CChar *pVendor, const VendorItem *items, size_t i
 	}
 }
 
-void CClient::Event_Profile(BYTE fWriteMode, CGrayUID uid, LPCTSTR pszProfile, int iProfileLen)
+void CClient::Event_Profile(bool fWrite, CGrayUID uid, LPCTSTR pszProfile)
 {
 	ADDTOCALLSTACK("CClient::Event_Profile");
-	UNREFERENCED_PARAMETER(iProfileLen);
 	if ( !m_pChar )
 		return;
 
@@ -1259,25 +1257,21 @@ void CClient::Event_Profile(BYTE fWriteMode, CGrayUID uid, LPCTSTR pszProfile, i
 	if ( !pChar || !pChar->m_pPlayer )
 		return;
 
-	if ( IsTrigUsed(TRIGGER_PROFILE) )
-	{
-		if ( pChar->OnTrigger(CTRIG_Profile, m_pChar) == TRIGRET_RET_TRUE )
-			return;
-	}
-
-	if ( fWriteMode )
+	if ( fWrite )
 	{
 		// Write profile
-		if ( pChar != m_pChar )
-		{
-			if ( !IsPriv(PRIV_GM) )
-				return;
-			if ( m_pChar->GetPrivLevel() < pChar->GetPrivLevel() )
-				return;
-		}
+		if ( (pChar != m_pChar) && (!IsPriv(PRIV_GM) || (m_pChar->GetPrivLevel() < pChar->GetPrivLevel())) )
+			return;
 
-		if ( pszProfile && !strchr(pszProfile, 0x0A) )
+		if ( pszProfile && !strchr(pszProfile, 0xA) )
+		{
+			if ( IsTrigUsed(TRIGGER_PROFILE) )
+			{
+				if ( pChar->OnTrigger(CTRIG_Profile, m_pChar) == TRIGRET_RET_TRUE )
+					return;
+			}
 			pChar->m_pPlayer->m_sProfile = pszProfile;
+		}
 	}
 	else
 	{
@@ -1286,16 +1280,14 @@ void CClient::Event_Profile(BYTE fWriteMode, CGrayUID uid, LPCTSTR pszProfile, i
 	}
 }
 
-void CClient::Event_MailMsg(CGrayUID uid1, CGrayUID uid2)
+void CClient::Event_MailMsg(CChar *pChar)
 {
 	ADDTOCALLSTACK("CClient::Event_MailMsg");
-	UNREFERENCED_PARAMETER(uid2);
 	// Ultima Messenger button pressed on paperdoll (obsolete, feature removed since client 3.0.6e)
 	// NOTE: No hardcoded behavior, this should be softcoded using @UserMailBag trigger
 	if ( !m_pChar )
 		return;
 
-	CChar *pChar = uid1.CharFind();
 	if ( !pChar )
 	{
 		SysMessageDefault(DEFMSG_MSG_MAILBAG_DROP_1);
@@ -1749,36 +1741,34 @@ void CClient::Event_TalkUNICODE(NWORD *wszText, int iTextLen, HUE_TYPE wHue, TAL
 	}
 }
 
-void CClient::Event_SetName(CGrayUID uid, const char *pszCharName)
+void CClient::Event_CharRename(CChar *pChar, LPCTSTR pszName)
 {
-	ADDTOCALLSTACK("CClient::Event_SetName");
+	ADDTOCALLSTACK("CClient::Event_CharRename");
 	// Set the name in the character status window.
-	CChar *pChar = uid.CharFind();
 	if ( !pChar || !m_pChar )
 		return;
-	if ( Str_CheckName(pszCharName) || !strlen(pszCharName) )
+	if ( Str_CheckName(pszName) || !strlen(pszName) )
 		return;
 
-	// Do we have the right to do this ?
 	if ( (m_pChar == pChar) || !pChar->NPC_IsOwnedBy(m_pChar) )
 		return;
-	if ( FindTableSorted(pszCharName, sm_szCmd_Redirect, COUNTOF(sm_szCmd_Redirect)) >= 0 )
+	if ( FindTableSorted(pszName, sm_szCmd_Redirect, COUNTOF(sm_szCmd_Redirect)) >= 0 )
 		return;
-	if ( FindTableSorted(pszCharName, CCharNPC::sm_szVerbKeys, 14) >= 0 )
+	if ( FindTableSorted(pszName, CCharNPC::sm_szVerbKeys, 14) >= 0 )
 		return;
-	if ( g_Cfg.IsObscene(pszCharName) )
+	if ( g_Cfg.IsObscene(pszName) )
 		return;
 
 	if ( IsTrigUsed(TRIGGER_RENAME) )
 	{
 		CScriptTriggerArgs args;
 		args.m_pO1 = pChar;
-		args.m_s1 = pszCharName;
+		args.m_s1 = pszName;
 		if ( m_pChar->OnTrigger(CTRIG_Rename, this, &args) == TRIGRET_RET_TRUE )
 			return;
 	}
 
-	pChar->SetName(pszCharName);
+	pChar->SetName(pszName);
 }
 
 bool CDialogResponseArgs::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)

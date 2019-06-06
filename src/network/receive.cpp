@@ -125,7 +125,7 @@ bool PacketCreate::onReceive(NetState* net, bool hasExtraSkill)
 	return doCreate(net, charname, isFemale, rtRace, strength, dexterity, intelligence, prof, skill1, skillval1, skill2, skillval2, skill3, skillval3, skill4, skillval4, hue, hairid, hairhue, beardid, beardhue, shirthue, pantshue, ITEMID_NOTHING, startloc, flags);
 }
 
-bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_TYPE rtRace, short wStr, short wDex, short wInt, PROFESSION_TYPE prProf, SKILL_TYPE skSkill1, BYTE iSkillVal1, SKILL_TYPE skSkill2, BYTE iSkillVal2, SKILL_TYPE skSkill3, BYTE iSkillVal3, SKILL_TYPE skSkill4, BYTE iSkillVal4, HUE_TYPE wSkinHue, ITEMID_TYPE idHair, HUE_TYPE wHairHue, ITEMID_TYPE idBeard, HUE_TYPE wBeardHue, HUE_TYPE wShirtHue, HUE_TYPE wPantsHue, ITEMID_TYPE idFace, int iStartLoc, DWORD iFlags)
+bool PacketCreate::doCreate(NetState *net, LPCTSTR pszName, bool fFemale, RACE_TYPE race, BYTE bStr, BYTE bDex, BYTE bInt, PROFESSION_TYPE profession, SKILL_TYPE skill1, BYTE bSkillVal1, SKILL_TYPE skill2, BYTE bSkillVal2, SKILL_TYPE skill3, BYTE bSkillVal3, SKILL_TYPE skill4, BYTE bSkillVal4, HUE_TYPE hueSkin, ITEMID_TYPE idHair, HUE_TYPE hueHair, ITEMID_TYPE idBeard, HUE_TYPE hueBeard, HUE_TYPE hueShirt, HUE_TYPE huePants, ITEMID_TYPE idFace, BYTE bStartLoc, DWORD dwFlags)
 {
 	ADDTOCALLSTACK("PacketCreate::doCreate");
 
@@ -163,78 +163,78 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 	}
 
 	// Validate all info sent by client to prevent exploits
-	if ( !strlen(charname) || g_Cfg.IsObscene(charname) || Str_CheckName(charname) || !strnicmp(charname, "lord ", 5) || !strnicmp(charname, "lady ", 5) || !strnicmp(charname, "counselor ", 10) || !strnicmp(charname, "seer ", 5) || !strnicmp(charname, "gm ", 3) || !strnicmp(charname, "admin ", 6) )
+	if ( !strlen(pszName) || g_Cfg.IsObscene(pszName) || Str_CheckName(pszName) || !strnicmp(pszName, "lord ", 5) || !strnicmp(pszName, "lady ", 5) || !strnicmp(pszName, "counselor ", 10) || !strnicmp(pszName, "seer ", 5) || !strnicmp(pszName, "gm ", 3) || !strnicmp(pszName, "admin ", 6) )
 		goto InvalidInfo;
 
-	if ( (wStr > 60) || (wDex > 60) || (wInt > 60) )
+	if ( (bStr > 60) || (bDex > 60) || (bInt > 60) )
 		goto InvalidInfo;
-	if ( (iSkillVal1 > 50) || (iSkillVal2 > 50) || (iSkillVal3 > 50) || (iSkillVal4 > 50) )
+	if ( (bSkillVal1 > 50) || (bSkillVal2 > 50) || (bSkillVal3 > 50) || (bSkillVal4 > 50) )
 		goto InvalidInfo;
-	if ( skSkill4 != SKILL_NONE )
+	if ( skill4 != SKILL_NONE )
 	{
-		if ( wStr + wDex + wInt > 90 )
+		if ( bStr + bDex + bInt > 90 )
 			goto InvalidInfo;
-		if ( iSkillVal1 + iSkillVal2 + iSkillVal3 + iSkillVal4 > 120 )
+		if ( bSkillVal1 + bSkillVal2 + bSkillVal3 + bSkillVal4 > 120 )
 			goto InvalidInfo;
 	}
 	else
 	{
-		if ( wStr + wDex + wInt > 80 )
+		if ( bStr + bDex + bInt > 80 )
 			goto InvalidInfo;
-		if ( iSkillVal1 + iSkillVal2 + iSkillVal3 > 100 )
+		if ( bSkillVal1 + bSkillVal2 + bSkillVal3 > 100 )
 			goto InvalidInfo;
 	}
 
 	if ( (resdisp < RDS_AOS) || (!(g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_A)) )
 	{
-		if ( (prProf == PROFESSION_NECROMANCER) || (prProf == PROFESSION_PALADIN) )
+		if ( (profession == PROFESSION_NECROMANCER) || (profession == PROFESSION_PALADIN) )
 			goto InvalidInfo;
 	}
 	if ( (resdisp < RDS_SE) || (!(g_Cfg.m_iFeatureSE & FEATURE_SE_UPDATE)) )
 	{
-		if ( (prProf == PROFESSION_SAMURAI) || (prProf == PROFESSION_NINJA) )
+		if ( (profession == PROFESSION_SAMURAI) || (profession == PROFESSION_NINJA) )
 			goto InvalidInfo;
 	}
 	if ( (resdisp < RDS_ML) || (!(g_Cfg.m_iFeatureML & FEATURE_ML_UPDATE)) )
 	{
-		if ( rtRace == RACETYPE_ELF )
+		if ( race == RACETYPE_ELF )
 			goto InvalidInfo;
 	}
 	if ( (resdisp < RDS_SA) || (!(g_Cfg.m_iFeatureSA & FEATURE_SA_UPDATE)) )
 	{
-		if ( rtRace == RACETYPE_GARGOYLE )
+		if ( race == RACETYPE_GARGOYLE )
 			goto InvalidInfo;
 	}
 
-	switch ( rtRace )
+	switch ( race )
 	{
 		default:
 		case RACETYPE_HUMAN:
 		{
-			if ( (wSkinHue < HUE_SKIN_LOW) || (wSkinHue > HUE_SKIN_HIGH) )
+			if ( (hueSkin < HUE_SKIN_LOW) || (hueSkin > HUE_SKIN_HIGH) )
 				goto InvalidInfo;
 
 			if ( idHair )
 			{
 				if ( !(((idHair >= ITEMID_HAIR_SHORT) && (idHair <= ITEMID_HAIR_PONYTAIL)) || ((idHair >= ITEMID_HAIR_MOHAWK) && (idHair <= ITEMID_HAIR_TOPKNOT))) )
 					goto InvalidInfo;
-				if ( bFemale && (idHair == ITEMID_HAIR_RECEDING) )
+				if ( fFemale && (idHair == ITEMID_HAIR_RECEDING) )
 					goto InvalidInfo;
-				if ( !bFemale && (idHair == ITEMID_HAIR_BUNS) )
+				if ( !fFemale && (idHair == ITEMID_HAIR_BUNS) )
 					goto InvalidInfo;
 
-				if ( (wHairHue < HUE_HAIR_LOW) || (wHairHue > HUE_HAIR_HIGH) )
+				if ( (hueHair < HUE_HAIR_LOW) || (hueHair > HUE_HAIR_HIGH) )
 					goto InvalidInfo;
 			}
 
 			if ( idBeard )
 			{
-				if ( bFemale )
+				if ( fFemale )
 					goto InvalidInfo;
 				if ( !(((idBeard >= ITEMID_BEARD_LONG) && (idBeard <= ITEMID_BEARD_MUST)) || ((idBeard >= ITEMID_BEARD_SHORT_MUST) && (idBeard <= ITEMID_BEARD_VANDYKE))) )
 					goto InvalidInfo;
 
-				if ( (wBeardHue < HUE_HAIR_LOW) || (wBeardHue > HUE_HAIR_HIGH) )
+				if ( (hueBeard < HUE_HAIR_LOW) || (hueBeard > HUE_HAIR_HIGH) )
 					goto InvalidInfo;
 			}
 
@@ -248,20 +248,20 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 		case RACETYPE_ELF:
 		{
 			const HUE_TYPE sm_ElfSkinHues[] = { 0xBF, 0x24D, 0x24E, 0x24F, 0x353, 0x361, 0x367, 0x374, 0x375, 0x376, 0x381, 0x382, 0x383, 0x384, 0x385, 0x389, 0x3DE, 0x3E5, 0x3E6, 0x3E8, 0x3E9, 0x430, 0x4A7, 0x4DE, 0x51D, 0x53F, 0x579, 0x76B, 0x76C, 0x76D, 0x835, 0x903 };
-			if ( !isValidHue(wSkinHue, sm_ElfSkinHues, COUNTOF(sm_ElfSkinHues)) )
+			if ( !isValidHue(hueSkin, sm_ElfSkinHues, COUNTOF(sm_ElfSkinHues)) )
 				goto InvalidInfo;
 
 			if ( idHair )
 			{
 				if ( !(((idHair >= ITEMID_HAIR_MID_LONG) && (idHair <= ITEMID_HAIR_MULLET)) || ((idHair >= ITEMID_HAIR_FLOWER) && (idHair <= ITEMID_HAIR_SPIKED))) )
 					goto InvalidInfo;
-				if ( bFemale && ((idHair == ITEMID_HAIR_MID_LONG) || (idHair == ITEMID_HAIR_LONG_ELF)) )
+				if ( fFemale && ((idHair == ITEMID_HAIR_MID_LONG) || (idHair == ITEMID_HAIR_LONG_ELF)) )
 					goto InvalidInfo;
-				if ( !bFemale && ((idHair == ITEMID_HAIR_FLOWER) || (idHair == ITEMID_HAIR_BUNS_ELF)) )
+				if ( !fFemale && ((idHair == ITEMID_HAIR_FLOWER) || (idHair == ITEMID_HAIR_BUNS_ELF)) )
 					goto InvalidInfo;
 
 				const HUE_TYPE sm_ElfHairHues[] = { 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x58, 0x8E, 0x8F, 0x90, 0x91, 0x92, 0x101, 0x159, 0x15A, 0x15B, 0x15C, 0x15D, 0x15E, 0x128, 0x12F, 0x1BD, 0x1E4, 0x1F3, 0x207, 0x211, 0x239, 0x251, 0x26C, 0x2C3, 0x2C9, 0x31D, 0x31E, 0x31F, 0x320, 0x321, 0x322, 0x323, 0x324, 0x325, 0x326, 0x369, 0x386, 0x387, 0x388, 0x389, 0x38A, 0x59D, 0x6B8, 0x725, 0x853 };
-				if ( !isValidHue(wHairHue, sm_ElfHairHues, COUNTOF(sm_ElfHairHues)) )
+				if ( !isValidHue(hueHair, sm_ElfHairHues, COUNTOF(sm_ElfHairHues)) )
 					goto InvalidInfo;
 			}
 
@@ -277,30 +277,30 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 		}
 		case RACETYPE_GARGOYLE:
 		{
-			if ( (wSkinHue < HUE_GARGSKIN_LOW) || (wSkinHue > HUE_GARGSKIN_HIGH) )
+			if ( (hueSkin < HUE_GARGSKIN_LOW) || (hueSkin > HUE_GARGSKIN_HIGH) )
 				goto InvalidInfo;
 
 			if ( idHair )
 			{
-				if ( bFemale && !((idHair == ITEMID_GARG_HORN_FEMALE_1) || (idHair == ITEMID_GARG_HORN_FEMALE_2) || ((idHair >= ITEMID_GARG_HORN_FEMALE_3) && (idHair <= ITEMID_GARG_HORN_FEMALE_5)) || (idHair == ITEMID_GARG_HORN_FEMALE_6) || (idHair == ITEMID_GARG_HORN_FEMALE_7) || (idHair == ITEMID_GARG_HORN_FEMALE_8)) )
+				if ( fFemale && !((idHair == ITEMID_GARG_HORN_FEMALE_1) || (idHair == ITEMID_GARG_HORN_FEMALE_2) || ((idHair >= ITEMID_GARG_HORN_FEMALE_3) && (idHair <= ITEMID_GARG_HORN_FEMALE_5)) || (idHair == ITEMID_GARG_HORN_FEMALE_6) || (idHair == ITEMID_GARG_HORN_FEMALE_7) || (idHair == ITEMID_GARG_HORN_FEMALE_8)) )
 					goto InvalidInfo;
-				if ( !bFemale && !((idHair >= ITEMID_GARG_HORN_1) && (idHair <= ITEMID_GARG_HORN_8)) )
+				if ( !fFemale && !((idHair >= ITEMID_GARG_HORN_1) && (idHair <= ITEMID_GARG_HORN_8)) )
 					goto InvalidInfo;
 
 				const HUE_TYPE sm_GargoyleHornHues[] = { 0x709, 0x70B, 0x70D, 0x70F, 0x711, 0x763, 0x765, 0x768, 0x76B, 0x6F3, 0x6F1, 0x6EF, 0x6E4, 0x6E2, 0x6E0, 0x709, 0x70B, 0x70D };
-				if ( !isValidHue(wHairHue, sm_GargoyleHornHues, COUNTOF(sm_GargoyleHornHues)) )
+				if ( !isValidHue(hueHair, sm_GargoyleHornHues, COUNTOF(sm_GargoyleHornHues)) )
 					goto InvalidInfo;
 			}
 
 			if ( idBeard )
 			{
-				if ( bFemale )
+				if ( fFemale )
 					goto InvalidInfo;
 				if ( !((idBeard >= ITEMID_GARG_HORN_FACIAL_1) && (idBeard <= ITEMID_GARG_HORN_FACIAL_4)) )
 					goto InvalidInfo;
 
 				const HUE_TYPE sm_GargoyleFacialHornHues[] = { 0x709, 0x70B, 0x70D, 0x70F, 0x711, 0x763, 0x765, 0x768, 0x76B, 0x6F3, 0x6F1, 0x6EF, 0x6E4, 0x6E2, 0x6E0, 0x709, 0x70B, 0x70D };
-				if ( !isValidHue(wBeardHue, sm_GargoyleFacialHornHues, COUNTOF(sm_GargoyleFacialHornHues)) )
+				if ( !isValidHue(hueBeard, sm_GargoyleFacialHornHues, COUNTOF(sm_GargoyleFacialHornHues)) )
 					goto InvalidInfo;
 			}
 
@@ -315,9 +315,9 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 
 	if ( !(net->isClientKR() || net->isClientEnhanced()) )
 	{
-		if ( (wShirtHue < HUE_BLUE_LOW) || (wShirtHue > HUE_DYE_HIGH) )
+		if ( (hueShirt < HUE_BLUE_LOW) || (hueShirt > HUE_DYE_HIGH) )
 			goto InvalidInfo;
-		if ( (wPantsHue < HUE_BLUE_LOW) || (wPantsHue > HUE_DYE_HIGH) )
+		if ( (huePants < HUE_BLUE_LOW) || (huePants > HUE_DYE_HIGH) )
 			goto InvalidInfo;
 	}
 
@@ -331,55 +331,59 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 	// Create the character
 	CChar *pChar = CChar::CreateBasic(CREID_MAN);
 	ASSERT(pChar);
-	pChar->SetName(charname);
+	pChar->SetName(pszName);
 	pChar->SetPlayerAccount(account);
-	pChar->SetHue(wSkinHue|HUE_MASK_UNDERWEAR);
+	pChar->SetHue(hueSkin|HUE_MASK_UNDERWEAR);
 
-	switch ( rtRace )
+	switch ( race )
 	{
 		default:
 		case RACETYPE_HUMAN:
-			pChar->SetID(bFemale ? CREID_WOMAN : CREID_MAN);
+			pChar->SetID(fFemale ? CREID_WOMAN : CREID_MAN);
 			break;
 		case RACETYPE_ELF:
-			pChar->SetID(bFemale ? CREID_ELFWOMAN : CREID_ELFMAN);
+			pChar->SetID(fFemale ? CREID_ELFWOMAN : CREID_ELFMAN);
 			break;
 		case RACETYPE_GARGOYLE:
-			pChar->SetID(bFemale ? CREID_GARGWOMAN : CREID_GARGMAN);
+			pChar->SetID(fFemale ? CREID_GARGWOMAN : CREID_GARGMAN);
 			break;
 	}
 
 	// Set starting position
-	if ( g_Cfg.m_StartDefs.IsValidIndex(iStartLoc) )
-		pChar->m_ptHome = g_Cfg.m_StartDefs[iStartLoc]->m_pt;
+	if ( g_Cfg.m_StartDefs.IsValidIndex(bStartLoc) )
+		pChar->m_ptHome = g_Cfg.m_StartDefs[bStartLoc]->m_pt;
 	else
 		pChar->m_ptHome.InitPoint();
 
 	if ( !pChar->m_ptHome.IsValidPoint() )
-		DEBUG_ERR(("Invalid start location '%d' for character!\n", iStartLoc));
+	{
+		g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' can't create new character because server has invalid START location '%hhu'\n", net->id(), account->GetName(), bStartLoc);
+		pChar->Delete();
+		goto InvalidInfo;
+	}
 
 	pChar->SetUnkPoint(pChar->m_ptHome);	// don't put me in the world yet
 
 	// Set stats
-	pChar->Stat_SetBase(STAT_STR, wStr);
-	pChar->Stat_SetBase(STAT_DEX, wDex);
-	pChar->Stat_SetBase(STAT_INT, wInt);
+	pChar->Stat_SetBase(STAT_STR, bStr);
+	pChar->Stat_SetBase(STAT_DEX, bDex);
+	pChar->Stat_SetBase(STAT_INT, bInt);
 	pChar->CreateNewCharCheck();
 
 	// Set skills
-	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; i++ )
+	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; ++i )
 	{
 		if ( g_Cfg.m_SkillIndexDefs.IsValidIndex(i) )
 			pChar->Skill_SetBase(static_cast<SKILL_TYPE>(i), static_cast<WORD>(Calc_GetRandVal(g_Cfg.m_iMaxBaseSkill)));
 	}
-	if ( pChar->IsSkillBase(skSkill1) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skSkill1) )
-		pChar->Skill_SetBase(skSkill1, iSkillVal1 * 10);
-	if ( pChar->IsSkillBase(skSkill2) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skSkill2) )
-		pChar->Skill_SetBase(skSkill2, iSkillVal2 * 10);
-	if ( pChar->IsSkillBase(skSkill3) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skSkill3) )
-		pChar->Skill_SetBase(skSkill3, iSkillVal3 * 10);
-	if ( pChar->IsSkillBase(skSkill4) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skSkill4) )
-		pChar->Skill_SetBase(skSkill4, iSkillVal4 * 10);
+	if ( pChar->IsSkillBase(skill1) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skill1) )
+		pChar->Skill_SetBase(skill1, bSkillVal1 * 10);
+	if ( pChar->IsSkillBase(skill2) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skill2) )
+		pChar->Skill_SetBase(skill2, bSkillVal2 * 10);
+	if ( pChar->IsSkillBase(skill3) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skill3) )
+		pChar->Skill_SetBase(skill3, bSkillVal3 * 10);
+	if ( pChar->IsSkillBase(skill4) && g_Cfg.m_SkillIndexDefs.IsValidIndex(skill4) )
+		pChar->Skill_SetBase(skill4, bSkillVal4 * 10);
 
 	// Create basic resources
 	pChar->GetContainerCreate(LAYER_PACK);
@@ -391,7 +395,7 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 		ASSERT(pHair);
 		if ( pHair->IsType(IT_HAIR) )
 		{
-			pHair->SetHue(wHairHue);
+			pHair->SetHue(hueHair);
 			pHair->SetAttr(ATTR_NEWBIE|ATTR_MOVE_NEVER);
 			pChar->LayerAdd(pHair);
 		}
@@ -404,7 +408,7 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 		ASSERT(pBeard);
 		if ( pBeard->IsType(IT_BEARD) )
 		{
-			pBeard->SetHue(wBeardHue);
+			pBeard->SetHue(hueBeard);
 			pBeard->SetAttr(ATTR_NEWBIE|ATTR_MOVE_NEVER);
 			pChar->LayerAdd(pBeard);
 		}
@@ -415,15 +419,15 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 	{
 		CItem *pFace = CItem::CreateScript(idFace, pChar);
 		ASSERT(pFace);
-		pFace->SetHue(wSkinHue);
+		pFace->SetHue(hueSkin);
 		pFace->SetAttr(ATTR_NEWBIE|ATTR_MOVE_NEVER);
 		pChar->LayerAdd(pFace);
 	}
 
 	// Get starting items for the profession / skills
 	int iProfession = INT_MAX;
-	bool bCreateSkillItems = true;
-	switch ( prProf )
+	bool fCreateSkillItems = true;
+	switch ( profession )
 	{
 		case PROFESSION_ADVANCED:
 			iProfession = RES_NEWBIE_PROF_ADVANCED;
@@ -439,63 +443,63 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 			break;
 		case PROFESSION_NECROMANCER:
 			iProfession = RES_NEWBIE_PROF_NECROMANCER;
-			bCreateSkillItems = false;
+			fCreateSkillItems = false;
 			break;
 		case PROFESSION_PALADIN:
 			iProfession = RES_NEWBIE_PROF_PALADIN;
-			bCreateSkillItems = false;
+			fCreateSkillItems = false;
 			break;
 		case PROFESSION_SAMURAI:
 			iProfession = RES_NEWBIE_PROF_SAMURAI;
-			bCreateSkillItems = false;
+			fCreateSkillItems = false;
 			break;
 		case PROFESSION_NINJA:
 			iProfession = RES_NEWBIE_PROF_NINJA;
-			bCreateSkillItems = false;
+			fCreateSkillItems = false;
 			break;
 	}
 
 	CResourceLock s;
-	if ( g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, bFemale ? RES_NEWBIE_FEMALE_DEFAULT : RES_NEWBIE_MALE_DEFAULT, rtRace)) )
+	if ( g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, fFemale ? RES_NEWBIE_FEMALE_DEFAULT : RES_NEWBIE_MALE_DEFAULT, race)) )
 		pChar->ReadScript(s);
-	else if ( g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, bFemale ? RES_NEWBIE_FEMALE_DEFAULT : RES_NEWBIE_MALE_DEFAULT)) )
+	else if ( g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, fFemale ? RES_NEWBIE_FEMALE_DEFAULT : RES_NEWBIE_MALE_DEFAULT)) )
 		pChar->ReadScript(s);
 
 	CItem *pLayer = pChar->LayerFind(LAYER_SHIRT);
 	if ( pLayer )
-		pLayer->SetHue(wShirtHue);
+		pLayer->SetHue(hueShirt);
 
-	pLayer = bFemale ? pChar->LayerFind(LAYER_SKIRT) : pChar->LayerFind(LAYER_PANTS);
+	pLayer = fFemale ? pChar->LayerFind(LAYER_SKIRT) : pChar->LayerFind(LAYER_PANTS);
 	if ( pLayer )
-		pLayer->SetHue(wPantsHue);
+		pLayer->SetHue(huePants);
 
-	if ( g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, iProfession, rtRace)) )
+	if ( g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, iProfession, race)) )
 		pChar->ReadScript(s);
 	else if ( g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, iProfession)) )
 		pChar->ReadScript(s);
 
-	if ( bCreateSkillItems )
+	if ( fCreateSkillItems )
 	{
-		for ( BYTE i = 1; i < 5; i++ )
+		for ( BYTE i = 1; i < 5; ++i )
 		{
 			int iSkill = INT_MAX;
 			switch ( i )
 			{
 				case 1:
-					iSkill = skSkill1;
+					iSkill = skill1;
 					break;
 				case 2:
-					iSkill = skSkill2;
+					iSkill = skill2;
 					break;
 				case 3:
-					iSkill = skSkill3;
+					iSkill = skill3;
 					break;
 				case 4:
-					iSkill = skSkill4;
+					iSkill = skill4;
 					break;
 			}
 
-			if ( g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, iSkill, rtRace)) )
+			if ( g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, iSkill, race)) )
 				pChar->ReadScript(s);
 			else if ( g_Cfg.ResourceLock(s, RESOURCE_ID(RES_NEWBIE, iSkill)) )
 				pChar->ReadScript(s);
@@ -505,9 +509,9 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 
 	// Call triggers
 	CScriptTriggerArgs createArgs;
-	createArgs.m_iN1 = iFlags;
-	createArgs.m_iN2 = prProf;
-	createArgs.m_iN3 = rtRace;
+	createArgs.m_iN1 = dwFlags;
+	createArgs.m_iN2 = profession;
+	createArgs.m_iN3 = race;
 	createArgs.m_pO1 = client;
 	createArgs.m_s1 = account->GetName();
 
@@ -515,15 +519,14 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 	client->r_Call("f_onchar_create", pChar, &createArgs, NULL, &tr);
 	if ( tr == TRIGRET_RET_TRUE )
 	{
-		client->addLoginErr(PacketLoginError::CreationBlocked);
 		pChar->Delete();
-		return false;
+		goto InvalidInfo;
 	}
 
 	if ( IsTrigUsed(TRIGGER_RENAME) )
 	{
 		CScriptTriggerArgs args;
-		args.m_s1 = charname;
+		args.m_s1 = pszName;
 		args.m_pO1 = pChar;
 		if ( pChar->OnTrigger(CTRIG_Rename, pChar, &args) == TRIGRET_RET_TRUE )
 		{
@@ -540,7 +543,7 @@ bool PacketCreate::doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_
 
 bool PacketCreate::isValidHue(HUE_TYPE hue, const HUE_TYPE sm_Array[], size_t iArraySize)
 {
-	for ( size_t i = 0; i < iArraySize; i++ )
+	for ( size_t i = 0; i < iArraySize; ++i )
 	{
 		if ( sm_Array[i] == hue )
 			return true;
@@ -643,11 +646,11 @@ bool PacketAttackReq::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketAttackReq::onReceive");
 
-	CGrayUID target(readInt32());
+	CGrayUID uid = static_cast<CGrayUID>(readInt32());
 
 	CClient* client = net->m_client;
 	ASSERT(client);
-	client->Event_Attack(target);
+	client->Event_Attack(uid);
 	return true;
 }
 
@@ -667,14 +670,14 @@ bool PacketDoubleClick::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketDoubleClick::onReceive");
 
-	DWORD serial = readInt32();
-
-	CGrayUID target(serial &~ UID_F_RESOURCE);
-	bool macro = (serial & UID_F_RESOURCE) == UID_F_RESOURCE;
-
-	CClient* client = net->m_client;
+	CClient *client = net->m_client;
 	ASSERT(client);
-	client->Event_DoubleClick(target, macro, true);
+	DWORD dwUID = readInt32();
+
+	CGrayUID uid = static_cast<CGrayUID>(dwUID &~ UID_F_RESOURCE);
+	bool fMacro = ((dwUID & UID_F_RESOURCE) == UID_F_RESOURCE);
+
+	client->Event_DoubleClick(uid, fMacro, true);
 	return true;
 }
 
@@ -694,12 +697,12 @@ bool PacketItemPickupReq::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketItemPickupReq::onReceive");
 
-	CGrayUID serial(readInt32());
+	CGrayUID uid = static_cast<CGrayUID>(readInt32());
 	WORD amount = readInt16();
 	
 	CClient* client = net->m_client;
 	ASSERT(client);
-	client->Event_Item_Pickup(serial, amount);
+	client->Event_Item_Pickup(uid, amount);
 	return true;
 }
 
@@ -733,7 +736,7 @@ bool PacketItemDropReq::onReceive(NetState* net)
 	if ( !character )
 		return false;
 
-	CGrayUID serial = readInt32();
+	CItem *pItem = static_cast<CGrayUID>(readInt32()).ItemFind();
 	WORD x = readInt16();
 	WORD y = readInt16();
 	BYTE z = readByte();
@@ -749,10 +752,10 @@ bool PacketItemDropReq::onReceive(NetState* net)
 			grid = 0;
 	}
 
-	CGrayUID container = readInt32();
+	CGrayUID uidContainer = static_cast<CGrayUID>(readInt32());
 	CPointMap pt(x, y, z, character->GetTopMap());
 
-	client->Event_Item_Drop(serial, pt, container, grid);
+	client->Event_Item_Drop(pItem, pt, uidContainer, grid);
 	return true;
 }
 
@@ -772,11 +775,11 @@ bool PacketSingleClick::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketSingleClick::onReceive");
 
-	CGrayUID serial(readInt32());
+	CGrayUID uid = static_cast<CGrayUID>(readInt32());
 
 	CClient* client = net->m_client;
 	ASSERT(client);
-	client->Event_SingleClick(serial);
+	client->Event_SingleClick(uid);
 	return true;
 }
 
@@ -830,16 +833,16 @@ bool PacketItemEquipReq::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 
-	CGrayUID itemSerial(readInt32());
-	LAYER_TYPE itemLayer = static_cast<LAYER_TYPE>(readByte());
-	CGrayUID targetSerial(readInt32());
+	CGrayUID uidItem = static_cast<CGrayUID>(readInt32());
+	LAYER_TYPE layer = static_cast<LAYER_TYPE>(readByte());
+	CGrayUID uidChar = static_cast<CGrayUID>(readInt32());
 
 	CChar* source = client->GetChar();
 	if (!source)
 		return false;
 
 	CItem* item = source->LayerFind(LAYER_DRAGGING);
-	if ( !item || (client->GetTargMode() != CLIMODE_DRAG) || (item->GetUID() != itemSerial) )
+	if ( !item || (client->GetTargMode() != CLIMODE_DRAG) || (item->GetUID() != uidItem) )
 	{
 		// I have no idea why i got here.
 		new PacketDragCancel(client, PacketDragCancel::Other);
@@ -848,9 +851,9 @@ bool PacketItemEquipReq::onReceive(NetState* net)
 
 	client->ClearTargMode(); // done dragging.
 
-	CChar* target = targetSerial.CharFind();
-	bool bCanCarry = (target && target->CanCarry(item));
-	if ( !target || (itemLayer >= LAYER_HORSE) || !target->NPC_IsOwnedBy(source) || !bCanCarry || !target->ItemEquip(item, source) )
+	CChar *pChar = uidChar.CharFind();
+	bool bCanCarry = (pChar && pChar->CanCarry(item));
+	if ( !pChar || (layer >= LAYER_HORSE) || !pChar->NPC_IsOwnedBy(source) || !bCanCarry || !pChar->ItemEquip(item, source) )
 	{
 		client->Event_Item_Drop_Fail(item);		//cannot equip
 		if ( !bCanCarry )
@@ -944,12 +947,14 @@ bool PacketCharStatusReq::onReceive(NetState* net)
 		return false;
 
 	skip(4);	// 0xEDEDEDED
-	BYTE requestType = readByte();
-	CGrayUID targetSerial = static_cast<CGrayUID>(readInt32());
+	BYTE bType = readByte();
 
-	if ( requestType == 4 )
-		client->addHealthBarInfo(targetSerial.ObjFind(), true);
-	else if ( requestType == 5 )
+	if ( bType == 4 )
+	{
+		CObjBase *pObj = static_cast<CGrayUID>(readInt32()).ObjFind();
+		client->addHealthBarInfo(pObj, true);
+	}
+	else if ( bType == 5 )
 		client->addSkillWindow(SKILL_QTY);
 	return true;
 }
@@ -1013,19 +1018,18 @@ bool PacketVendorBuyReq::onReceive(NetState* net)
 		return false;
 
 	WORD packetLength = readInt16();
-	CGrayUID vendorSerial(readInt32());
-	BYTE flags = readByte();
-	if (flags == 0)
+	CChar *pVendor = static_cast<CGrayUID>(readInt32()).CharFind();
+	BYTE bFlags = readByte();
+	if (bFlags == 0)
 		return true;
 
-	CChar* vendor = vendorSerial.CharFind();
-	if (!vendor || !vendor->NPC_IsVendor())
+	if (!pVendor || !pVendor->NPC_IsVendor())
 	{
 		client->Event_VendorBuy_Cheater(0x1);
 		return true;
 	}
 
-	if (!buyer->CanTouch(vendor))
+	if (!buyer->CanTouch(pVendor))
 	{
 		client->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_TOOFAR));
 		return true;
@@ -1036,19 +1040,19 @@ bool PacketVendorBuyReq::onReceive(NetState* net)
 	// combine goods into one list
 	VendorItem items[MAX_ITEMS_CONT];
 	memset(items, 0, sizeof(items));
-	int iConvertFactor = vendor->NPC_GetVendorMarkup();
+	int iConvertFactor = pVendor->NPC_GetVendorMarkup();
 
 	CItemVendable *item = NULL;
 	for ( size_t i = 0; i < itemCount; ++i )
 	{
 		skip(1); // layer
-		CGrayUID serial(readInt32());
+		CGrayUID uidItem = static_cast<CGrayUID>(readInt32());
 		WORD amount = readInt16();
 
-		item = dynamic_cast<CItemVendable*>(serial.ItemFind());
+		item = dynamic_cast<CItemVendable *>(uidItem.ItemFind());
 		if (!item || !item->IsValidSaleItem(true))
 		{
-			vendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_ORDER_CANTFULFILL));
+			pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_ORDER_CANTFULFILL));
 			client->Event_VendorBuy_Cheater(0x2);
 			return true;
 		}
@@ -1057,11 +1061,12 @@ bool PacketVendorBuyReq::onReceive(NetState* net)
 		size_t index;
 		for ( index = 0; index < itemCount; ++index )
 		{
-			if ( items[index].m_serial == serial )
+			if ( items[index].m_serial == uidItem )
 				break;
-			else if ( items[index].m_serial.GetPrivateUID() == UID_CLEAR )
+
+			if ( items[index].m_serial.GetPrivateUID() == UID_CLEAR )
 			{
-				items[index].m_serial = serial;
+				items[index].m_serial = uidItem;
 				items[index].m_price = item->GetVendorPrice(iConvertFactor);
 				break;
 			}
@@ -1070,13 +1075,13 @@ bool PacketVendorBuyReq::onReceive(NetState* net)
 		items[index].m_amount += amount;
 		if (items[index].m_price <= 0)
 		{
-			vendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_ORDER_CANTFULFILL));
+			pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_ORDER_CANTFULFILL));
 			client->Event_VendorBuy_Cheater(0x3);
 			return true;
 		}
 	}
 
-	client->Event_VendorBuy(vendor, items, itemCount);
+	client->Event_VendorBuy(pVendor, items, itemCount);
 	return true;
 }
 
@@ -1119,7 +1124,7 @@ bool PacketMapEdit::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketMapEdit::onReceive");
 
-	CGrayUID mapSerial = readInt32();
+	CItemMap *pMap = dynamic_cast<CItemMap *>(static_cast<CGrayUID>(readInt32()).ItemFind());
 	MAPCMD_TYPE action = static_cast<MAPCMD_TYPE>(readByte());
 	BYTE pin = readByte();
 	WORD x = readInt16();
@@ -1131,14 +1136,13 @@ bool PacketMapEdit::onReceive(NetState* net)
 	if ( !character )
 		return false;
 
-	CItemMap *map = static_cast<CItemMap *>(mapSerial.ItemFind());
-	if ( !map || !character->CanTouch(map) )
+	if ( !pMap || !character->CanTouch(pMap) )
 	{
 		client->SysMessageDefault(DEFMSG_REACH_FAIL);
 		return false;
 	}
 
-	if ( map->m_itMap.m_fPinsGlued && !client->IsPriv(PRIV_GM) )
+	if ( pMap->m_itMap.m_fPinsGlued && !client->IsPriv(PRIV_GM) )
 	{
 		client->SysMessageDefault(DEFMSG_CANT_MAKE);
 		return false;
@@ -1148,49 +1152,52 @@ bool PacketMapEdit::onReceive(NetState* net)
 	{
 		case MAPCMD_AddPin:
 		{
-			if ( map->m_Pins.GetCount() < CItemMap::MAX_PINS )
+			if ( pMap->m_Pins.GetCount() < CItemMap::MAX_PINS )
 			{
 				CMapPinRec mapPin(x, y);
-				map->m_Pins.Add(mapPin);
+				pMap->m_Pins.Add(mapPin);
 			}
-			break;
+			return true;
 		}
 		case MAPCMD_InsertPin:
 		{
-			if ( map->m_Pins.GetCount() < CItemMap::MAX_PINS )
+			if ( pMap->m_Pins.GetCount() < CItemMap::MAX_PINS )
 			{
 				CMapPinRec mapPin(x, y);
-				map->m_Pins.InsertAt(pin, mapPin);
+				pMap->m_Pins.InsertAt(pin, mapPin);
 			}
-			break;
+			return true;
 		}
 		case MAPCMD_MovePin:
 		{
-			if ( pin < map->m_Pins.GetCount() )
+			if ( pin < pMap->m_Pins.GetCount() )
 			{
-				map->m_Pins[pin].m_x = x;
-				map->m_Pins[pin].m_y = y;
+				pMap->m_Pins[pin].m_x = x;
+				pMap->m_Pins[pin].m_y = y;
 			}
-			break;
+			return true;
 		}
 		case MAPCMD_RemovePin:
 		{
-			if ( pin < map->m_Pins.GetCount() )
-				map->m_Pins.RemoveAt(pin);
-			break;
+			if ( pin < pMap->m_Pins.GetCount() )
+				pMap->m_Pins.RemoveAt(pin);
+			return true;
 		}
 		case MAPCMD_ClearPins:
 		{
-			map->m_Pins.RemoveAll();
-			break;
+			pMap->m_Pins.RemoveAll();
+			return true;
 		}
 		case MAPCMD_ToggleEdit_Request:
 		{
-			client->addMapMode(map, MAPCMD_ToggleEdit_Reply, !map->m_fPlotMode);
-			break;
+			client->addMapMode(pMap, MAPCMD_ToggleEdit_Reply, !pMap->m_fPlotMode);
+			return true;
+		}
+		default:
+		{
+			return false;
 		}
 	}
-	return true;
 }
 
 
@@ -1248,13 +1255,12 @@ bool PacketBookPageEdit::onReceive(NetState* net)
 		return false;
 
 	skip(2); // packet length
-	CGrayUID bookSerial(readInt32());
+	CItem *pBook = static_cast<CGrayUID>(readInt32()).ItemFind();
 	WORD pageCount = readInt16();
 
-	CItem* book = bookSerial.ItemFind();
-	if (!character->CanSee(book))
+	if (!character->CanSee(pBook))
 	{
-		client->addObjectRemoveCantSee(bookSerial, "the book");
+		client->addObjectRemoveCantSee(pBook->GetUID(), "the book");
 		return true;
 	}
 
@@ -1262,13 +1268,13 @@ bool PacketBookPageEdit::onReceive(NetState* net)
 	WORD lineCount = readInt16();
 	if ((lineCount == 0xFFFF) || (getLength() <= 13))
 	{
-		client->addBookPage(book, page, 1); // just a request for a page
+		client->addBookPage(pBook, page, 1); // just a request for a page
 		return true;
 	}
 
 	// trying to write to the book
-	CItemMessage* text = dynamic_cast<CItemMessage*>( book );
-	if (!text || (pageCount > text->GetPageCount()) || !book->IsBookWritable())
+	CItemMessage *pMessage = dynamic_cast<CItemMessage *>(pBook);
+	if (!pMessage || (pageCount > pMessage->GetPageCount()) || !pMessage->IsBookWritable())
 		return true;
 
 	skip(-4);
@@ -1276,7 +1282,7 @@ bool PacketBookPageEdit::onReceive(NetState* net)
 	size_t len = 0;
 	TCHAR* content = Str_GetTemp();
 
-	for (int i = 0; i < pageCount; i++)
+	for (WORD i = 0; i < pageCount; ++i)
 	{
 		// read next page to change with line count
 		page = readInt16();
@@ -1287,13 +1293,13 @@ bool PacketBookPageEdit::onReceive(NetState* net)
 		if ((lineCount <= 0) || (lineCount > MAX_BOOK_LINES))
 			return true;
 
-		page--;
+		--page;
 		len = 0;
 
 		// read each line of the page
 		while (lineCount > 0)
 		{
-			len += readStringNullASCII(content + len, SCRIPT_MAX_LINE_LEN-1 - len);
+			len += readStringNullASCII(content + len, (SCRIPT_MAX_LINE_LEN - 1) - len);
 			if (len >= SCRIPT_MAX_LINE_LEN)
 			{
 				len = SCRIPT_MAX_LINE_LEN - 1;
@@ -1301,7 +1307,7 @@ bool PacketBookPageEdit::onReceive(NetState* net)
 			}
 
 			content[len++] = '\t';
-			lineCount--;
+			--lineCount;
 		}
 
 		ASSERT(len > 0);
@@ -1310,7 +1316,7 @@ bool PacketBookPageEdit::onReceive(NetState* net)
 			break;
 
 		// set page content
-		text->SetPageText(page, content);
+		pMessage->SetPageText(page, content);
 	}
 	return true;
 }
@@ -1340,14 +1346,14 @@ bool PacketTarget::onReceive(NetState* net)
 	skip(1); // target type
 	CLIMODE_TYPE context = static_cast<CLIMODE_TYPE>(readInt32());
 	BYTE flags = readByte();
-	CGrayUID targetSerial(readInt32());
+	CGrayUID uid = static_cast<CGrayUID>(readInt32());
 	WORD x = readInt16();
 	WORD y = readInt16();
 	skip(1);
 	BYTE z = readByte();
 	ITEMID_TYPE id = static_cast<ITEMID_TYPE>(readInt16());
 
-	client->Event_Target(context, targetSerial, CPointMap(x, y, z, character->GetTopMap()), flags, id);
+	client->Event_Target(context, uid, CPointMap(x, y, z, character->GetTopMap()), flags, id);
 	return true;
 }
 
@@ -1373,50 +1379,49 @@ bool PacketSecureTradeReq::onReceive(NetState* net)
 	if (!character)
 		return false;
 
-	skip(2); // length
+	skip(2);	// length
 	SECURETRADE_TYPE action = static_cast<SECURETRADE_TYPE>(readByte());
-	CGrayUID containerSerial(readInt32());
+	CItemContainer *pContainer = dynamic_cast<CItemContainer *>(static_cast<CGrayUID>(readInt32()).ItemFind());
 
-	CItemContainer* container = dynamic_cast<CItemContainer*>( containerSerial.ItemFind() );
-	if (!container)
-		return true;
-	else if (character != container->GetParent())
+	if ( !pContainer || (character != pContainer->GetParent()) )
 		return true;
 
 	switch ( action )
 	{
 		case SECURETRADE_Close:
-			container->Delete();
+		{
+			pContainer->Delete();
 			return true;
-
+		}
 		case SECURETRADE_Accept:
 		{
-			if ( character->GetDist(container) > character->GetSight() )
+			if ( character->GetDist(pContainer) > character->GetSight() )
 			{
 				client->SysMessageDefault(DEFMSG_MSG_TRADE_TOOFAR);
-				return true;
+				return false;
 			}
 
-			UINT64 iWaitTime = container->m_itEqTradeWindow.m_iWaitTime;
+			UINT64 iWaitTime = pContainer->m_itEqTradeWindow.m_iWaitTime;
 			UINT64 iTimestamp = g_World.GetCurrentTime().GetTimeRaw();
 			if ( iWaitTime > iTimestamp )
 			{
 				client->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_TRADE_WAIT), (iWaitTime - iTimestamp) / TICK_PER_SEC);
-				return true;
+				return false;
 			}
 
-			container->Trade_Status(readInt32() != 0);
+			pContainer->Trade_Status(readInt32() != 0);
 			return true;
 		}
-
 		case SECURETRADE_UpdateGold:
-			container->Trade_UpdateGold(readInt32(), readInt32());
+		{
+			pContainer->Trade_UpdateGold(readInt32(), readInt32());
 			return true;
+		}
 		default:
-			return true;
+		{
+			return false;
+		}
 	}
-
-	return true;
 }
 
 
@@ -1443,13 +1448,13 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 
 	skip(2);
 	BULLETINBOARD_TYPE action = static_cast<BULLETINBOARD_TYPE>(readByte());
-	CGrayUID boardSerial(readInt32());
-	CGrayUID messageSerial(readInt32());
+	CGrayUID uidBulletinBoard = static_cast<CGrayUID>(readInt32());
+	CGrayUID uidMessage = static_cast<CGrayUID>(readInt32());
 
-	CItemContainer* board = dynamic_cast<CItemContainer*>( boardSerial.ItemFind() );
+	CItemContainer *board = dynamic_cast<CItemContainer *>(uidBulletinBoard.ItemFind());
 	if (!character->CanSee(board))
 	{
-		client->addObjectRemoveCantSee(boardSerial, "the board");
+		client->addObjectRemoveCantSee(uidBulletinBoard, "the board");
 		return true;
 	}
 
@@ -1466,13 +1471,13 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 				DEBUG_ERR(("%lx:BBoard feed back message bad length %" FMTSIZE_T "\n", net->id(), getLength()));
 				return true;
 			}
-			if (!client->addBBoardMessage(board, action, messageSerial))
+			if (!client->addBBoardMessage(board, action, uidMessage))
 			{
 				// sanity check fails
-				client->addObjectRemoveCantSee(messageSerial, "the message");
+				client->addObjectRemoveCantSee(uidMessage, "the message");
 				return true;
 			}
-			break;
+			return true;
 		}
 		case BULLETINBOARD_PostMsg:
 		{
@@ -1519,11 +1524,11 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 			}
 
 			board->ContentAdd(newMessage);
-			break;
+			return true;
 		}
 		case BULLETINBOARD_DeleteMsg:
 		{
-			CItemMessage* message = dynamic_cast<CItemMessage*>( messageSerial.ItemFind() );
+			CItemMessage *message = dynamic_cast<CItemMessage *>(uidMessage.ItemFind());
 			if (!board->IsItemInside(message))
 			{
 				client->SysMessageDefault(DEFMSG_ITEMUSE_BBOARD_COR);
@@ -1537,11 +1542,13 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 			}
 
 			message->Delete();
-			break;
+			return true;
+		}
+		default:
+		{
+			return false;
 		}
 	}
-
-	return true;
 }
 
 
@@ -1603,11 +1610,11 @@ bool PacketCharRename::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketCharRename::onReceive");
 
-	CGrayUID serial(readInt32());
-	TCHAR* name = Str_GetTemp();
-	readStringASCII(name, MAX_NAME_SIZE);
+	CChar *pChar = static_cast<CGrayUID>(readInt32()).CharFind();
+	TCHAR *pszName = Str_GetTemp();
+	readStringASCII(pszName, MAX_NAME_SIZE);
 
-	net->m_client->Event_SetName(serial, name);
+	net->m_client->Event_CharRename(pChar, pszName);
 	return true;
 }
 
@@ -1630,11 +1637,11 @@ bool PacketMenuChoice::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 
-	CGrayUID serial(readInt32());
+	CGrayUID uid = static_cast<CGrayUID>(readInt32());
 	WORD context = readInt16();
 	WORD select = readInt16();
 
-	if ((context != client->GetTargMode()) || (serial != client->m_tmMenu.m_UID))
+	if ((context != client->GetTargMode()) || (uid != client->m_tmMenu.m_UID))
 	{
 		client->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MENU_UNEXPECTED));
 		return true;
@@ -1646,35 +1653,27 @@ bool PacketMenuChoice::onReceive(NetState* net)
 	{
 		case CLIMODE_MENU:
 			// a generic menu from script
-			client->Menu_OnSelect(client->m_tmMenu.m_ResourceID, select, serial.ObjFind());
+			client->Menu_OnSelect(client->m_tmMenu.m_ResourceID, select, uid.ObjFind());
 			return true;
-
 		case CLIMODE_MENU_SKILL:
 			// some skill menu got us here
-			if (select >= COUNTOF(client->m_tmMenu.m_Item))
-				return true;
-
-			client->Cmd_Skill_Menu(client->m_tmMenu.m_ResourceID, (select) ? client->m_tmMenu.m_Item[select] : 0 );
+			if ( select < COUNTOF(client->m_tmMenu.m_Item) )
+				client->Cmd_Skill_Menu(client->m_tmMenu.m_ResourceID, (select) ? client->m_tmMenu.m_Item[select] : 0);
 			return true;
-
 		case CLIMODE_MENU_SKILL_TRACK_SETUP:
 			// pretracking menu got us here
 			client->Cmd_Skill_Tracking(select, false);
 			return true;
-
 		case CLIMODE_MENU_SKILL_TRACK:
 			// tracking menu got us here. start tracking the selected creature
 			client->Cmd_Skill_Tracking(select, true);
 			return true;
-
 		case CLIMODE_MENU_EDIT:
 			// m_Targ_Text = what are we doing to it
-			client->Cmd_EditItem(serial.ObjFind(), select);
+			client->Cmd_EditItem(uid.ObjFind(), select);
 			return true;
-
 		default:
-			DEBUG_ERR(("%lx:Unknown Targetting mode for menu %d\n", net->id(), context));
-			return true;
+			return false;
 	}
 }
 
@@ -1878,11 +1877,6 @@ bool PacketCreateNew::onReceive(NetState* net)
 			skill4 = SKILL_STEALTH;
 			skillval4 = 30;
 			break;
-		case PROFESSION_ADVANCED:
-			break;
-		default:
-			g_Log.Event(LOGL_ERROR, "%lx:Invalid profession '%d' selected on character creation screen\n", net->id(), profession);
-			break;
 	}
 
 	return doCreate(net, charname, sex > 0, race, strength, dexterity, intelligence, profession, skill1, skillval1, skill2, skillval2, skill3, skillval3, skill4, skillval4, hue, hairid, hairhue, beardid, beardhue, HUE_DEFAULT, HUE_DEFAULT, faceid, 0, flags);
@@ -1930,7 +1924,7 @@ bool PacketBookHeaderEdit::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketBookHeaderEdit::onReceive");
 
-	CGrayUID bookSerial(readInt32());
+	CItem *pItem = static_cast<CGrayUID>(readInt32()).ItemFind();
 	skip(1); // writable
 	skip(1); // unknown
 	skip(2); // pages
@@ -1941,7 +1935,7 @@ bool PacketBookHeaderEdit::onReceive(NetState* net)
 	TCHAR author[MAX_NAME_SIZE];
 	readStringASCII(author, COUNTOF(author));
 
-	net->m_client->Event_Book_Title(bookSerial, title, author);
+	net->m_client->Event_Book_Title(pItem, title, author);
 	return true;
 }
 
@@ -1961,11 +1955,11 @@ bool PacketDyeObject::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketDyeObject::onReceive");
 
-	CGrayUID serial(readInt32());
+	CGrayUID uid = static_cast<CGrayUID>(readInt32());
 	skip(2); // item id
 	HUE_TYPE hue = static_cast<HUE_TYPE>(readInt16());
 
-	net->m_client->Event_Item_Dye(serial, hue);
+	net->m_client->Event_Item_Dye(uid, hue);
 	return true;
 }
 
@@ -2089,17 +2083,16 @@ bool PacketVendorSellReq::onReceive(NetState* net)
 		return false;
 
 	skip(2); // length
-	CGrayUID vendorSerial(readInt32());
+	CChar *pVendor = static_cast<CGrayUID>(readInt32()).CharFind();
 	size_t itemCount = readInt16();
 
-	CChar* vendor = vendorSerial.CharFind();
-	if (!vendor || !vendor->NPC_IsVendor())
+	if (!pVendor || !pVendor->NPC_IsVendor())
 	{
 		client->Event_VendorSell_Cheater(0x1);
 		return true;
 	}
 	
-	if (!seller->CanTouch(vendor))
+	if (!seller->CanTouch(pVendor))
 	{
 		client->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_TOOFAR));
 		return true;
@@ -2107,14 +2100,14 @@ bool PacketVendorSellReq::onReceive(NetState* net)
 
 	if (itemCount < 1)
 	{
-		client->addVendorClose(vendor);
+		client->addVendorClose(pVendor);
 		return true;
 	}
 	else if (itemCount >= MAX_ITEMS_CONT)
 	{
 		TCHAR *pszText = Str_GetTemp();
 		sprintf(pszText, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_SELL_LIMIT), MAX_ITEMS_CONT);
-		vendor->Speak(pszText);
+		pVendor->Speak(pszText);
 		return true;
 	}
 
@@ -2127,7 +2120,7 @@ bool PacketVendorSellReq::onReceive(NetState* net)
 		items[i].m_amount = readInt16();
 	}
 
-	client->Event_VendorSell(vendor, items, itemCount);
+	client->Event_VendorSell(pVendor, items, itemCount);
 	return true;
 }
 
@@ -2196,9 +2189,9 @@ bool PacketTipReq::onReceive(NetState* net)
 	bool forward = readBool();	// 0=previous, 1=next
 
 	if (forward)
-		index++;
+		++index;
 	else
-		index--;
+		--index;
 
 	CClient* client = net->m_client;
 	ASSERT(client);
@@ -2226,7 +2219,7 @@ bool PacketGumpValueInputResponse::onReceive(NetState* net)
 	ASSERT(client);
 
 	skip(2); // length
-	CGrayUID uid(readInt32());
+	CGrayUID uid = static_cast<CGrayUID>(readInt32());
 	readInt16(); // context
 	BYTE action = readByte();
 	WORD textLength = readInt16();
@@ -2323,7 +2316,7 @@ bool PacketSpeakReqUNICODE::onReceive(NetState* net)
 		count = (count + 1) * 12;
 		size_t toskip = count / 8;
 		if ((count % 8) > 0)
-			toskip++;
+			++toskip;
 
 		if (toskip > packetLength)
 			return true;
@@ -2367,20 +2360,15 @@ bool PacketGumpDialogRet::onReceive(NetState* net)
 		return false;
 
 	skip(2); // length
-	CGrayUID serial(readInt32());
+	CObjBase *pObj = static_cast<CGrayUID>(readInt32()).ObjFind();
 	DWORD context = readInt32();
 	DWORD button = readInt32();
 	DWORD checkCount = readInt32();
 	if ( checkCount > MAX_TALK_BUFFER )
 		return false;
 
-	// relying on the context given by the gump might be a security problem, much like
-	// relying on the uid returned.
-	// maybe keep a memory for each gump?
-	CObjBase* object = serial.ObjFind();
-
 	// Check client internal dialogs first (they must be handled separately because packets can be a bit different on these dialogs)
-	if (character == object)
+	if (pObj == character)
 	{
 		if (context == CLIMODE_DIALOG_VIRTUE)
 		{
@@ -2408,22 +2396,6 @@ bool PacketGumpDialogRet::onReceive(NetState* net)
 		}
 	}
 
-#ifdef _DEBUG
-	{
-		const CResourceDef* resource = g_Cfg.ResourceGetDef(RESOURCE_ID(RES_DIALOG, context));
-		if (resource)
-		{
-			const CDialogDef* dialog = dynamic_cast<const CDialogDef*>(resource);
-			if (dialog)
-				g_Log.Event(LOGL_EVENT, "Gump: %lu (%s), Uid: 0x%lx, Button: %lu.\n", context, dialog->GetName(), static_cast<DWORD>(serial), button);
-			else
-				g_Log.Event(LOGL_EVENT, "Gump: %lu (%s), Uid: 0x%lx, Button: %lu.\n", context, "undef", static_cast<DWORD>(serial), button);
-		}
-		else
-			g_Log.Event(LOGL_EVENT, "Gump: %lu (%s), Uid: 0x%lx, Button: %lu.\n", context, "undef", static_cast<DWORD>(serial), button);
-	}
-#endif
-
 	// sanity check
 	CClient::OpenedGumpsMap_t::iterator itGumpFound = client->m_mapOpenedGumps.find(static_cast<int>(context));
 	if ((itGumpFound == client->m_mapOpenedGumps.end()) || ((*itGumpFound).second <= 0))
@@ -2438,7 +2410,7 @@ bool PacketGumpDialogRet::onReceive(NetState* net)
 	CDialogResponseArgs resp;
 
 	// store the returned checked boxes' ids for possible later use
-	for (DWORD i = 0; i < checkCount; i++)
+	for (DWORD i = 0; i < checkCount; ++i)
 		resp.m_CheckArray.Add(readInt32());
 
 
@@ -2447,7 +2419,7 @@ bool PacketGumpDialogRet::onReceive(NetState* net)
 		return false;
 
 	TCHAR* text = Str_GetTemp();
-	for (DWORD i = 0; i < textCount; i++)
+	for (DWORD i = 0; i < textCount; ++i)
 	{
 		WORD id = readInt16();
 		WORD length = readInt16();
@@ -2474,7 +2446,7 @@ bool PacketGumpDialogRet::onReceive(NetState* net)
 	//
 	// Call the scripted response. Lose all the checks and text.
 	//
-	client->Dialog_OnButton( rid, button, object, &resp );
+	client->Dialog_OnButton(rid, button, pObj, &resp);
 	return true;
 }
 
@@ -2574,8 +2546,8 @@ bool PacketToolTipReq::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 
-	CGrayUID serial(readInt32());
-	client->Event_ToolTip(serial);
+	CGrayUID uid = static_cast<CGrayUID>(readInt32());
+	client->Event_ToolTip(uid);
 	return true;
 }
 
@@ -2595,26 +2567,23 @@ bool PacketProfileReq::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketProfileReq::onReceive");
 
-	CClient* client = net->m_client;
-	ASSERT(client);
+	CClient *pClient = net->m_client;
+	ASSERT(pClient);
 
 	WORD packetLength = readInt16();
-	bool write = readBool();
-	CGrayUID serial(readInt32());
-	WORD textLength(0);
-	TCHAR* text = NULL;
+	bool fWrite = readBool();
+	CGrayUID uid = static_cast<CGrayUID>(readInt32());
+	TCHAR *pszProfile = NULL;
 
-	if (write && (packetLength > 12))
+	if ( fWrite )
 	{
-		skip(1); // unknown
-		skip(1); // unknown-return code?
-
-		textLength = readInt16();
-		text = Str_GetTemp();
-		readStringNUNICODE(text, THREAD_STRING_LENGTH, textLength+1, false);
+		skip(2);
+		WORD textLength = readInt16();
+		pszProfile = Str_GetTemp();
+		readStringNUNICODE(pszProfile, SCRIPT_MAX_LINE_LEN - 16, textLength + 1, false);
 	}
 
-	client->Event_Profile(write, serial, text, textLength);
+	pClient->Event_Profile(fWrite, uid, pszProfile);
 	return true;
 }
 
@@ -2637,10 +2606,10 @@ bool PacketMailMessage::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 
-	CGrayUID serial1(readInt32());
-	CGrayUID serial2(readInt32());
+	CChar *pChar = static_cast<CGrayUID>(readInt32()).CharFind();
+	skip(4);	// char UID (sender)
 
-	client->Event_MailMsg(serial1, serial2);
+	client->Event_MailMsg(pChar);
 	return true;
 }
 
@@ -2817,9 +2786,9 @@ bool PacketPartyMessage::onReceive(NetState* net)
 				return false;
 			}
 
-			CGrayUID uid = static_cast<CGrayUID>(readInt32());
-			if ( uid )
-				return character->m_pParty->RemoveMember(uid.CharFind(), character);
+			CChar *pTarg = static_cast<CGrayUID>(readInt32()).CharFind();
+			if ( pTarg )
+				return character->m_pParty->RemoveMember(pTarg, character);
 
 			client->addTarget(CLIMODE_TARG_PARTY_REMOVE, g_Cfg.GetDefaultMsg(DEFMSG_PARTY_TARG_REMOVE), false, false);
 			return true;
@@ -2832,10 +2801,10 @@ bool PacketPartyMessage::onReceive(NetState* net)
 				return false;
 			}
 
-			CGrayUID uid = static_cast<CGrayUID>(readInt32());
+			CChar *pTarg = static_cast<CGrayUID>(readInt32()).CharFind();
 			NCHAR text[MAX_TALK_BUFFER];
 			int length = readStringNullUNICODE(reinterpret_cast<WCHAR *>(text), MAX_TALK_BUFFER);
-			return character->m_pParty->MessageEvent(uid.CharFind(), character, text, length);
+			return character->m_pParty->MessageEvent(pTarg, character, text, length);
 		}
 		case PARTYMSG_MsgAll:
 		{
@@ -3054,7 +3023,7 @@ bool PacketAnimationReq::onReceive(NetState* net)
 
 	ANIM_TYPE anim = static_cast<ANIM_TYPE>(readInt32());
 	bool ok = false;
-	for (size_t i = 0; !ok && (i < COUNTOF(validAnimations)); i++)
+	for (size_t i = 0; !ok && (i < COUNTOF(validAnimations)); ++i)
 		ok = (anim == validAnimations[i]);
 
 	if (!ok)
@@ -3130,11 +3099,11 @@ bool PacketPopupReq::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketPopupReq::onReceive");
 
-	CGrayUID serial = static_cast<CGrayUID>(readInt32());
+	CGrayUID uid = static_cast<CGrayUID>(readInt32());
 
 	CClient *client = net->m_client;
 	ASSERT(client);
-	client->Event_AOSPopupMenuRequest(serial);
+	client->Event_AOSPopupMenuRequest(uid);
 	return true;
 }
 
@@ -3154,12 +3123,12 @@ bool PacketPopupSelect::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketPopupSelect::onReceive");
 
-	CGrayUID serial = static_cast<CGrayUID>(readInt32());
+	CGrayUID uid = static_cast<CGrayUID>(readInt32());
 	WORD tag = readInt16();
 
 	CClient *client = net->m_client;
 	ASSERT(client);
-	client->Event_AOSPopupMenuSelect(serial, tag);
+	client->Event_AOSPopupMenuSelect(uid, tag);
 	return true;
 }
 
@@ -3194,7 +3163,7 @@ bool PacketChangeStatLock::onReceive(NetState* net)
 		return false;
 
 	// translate UO stat to Sphere stat
-	STAT_TYPE stat(STAT_NONE);
+	STAT_TYPE stat = STAT_NONE;
 	switch (code)
 	{
 		case 0:
@@ -3551,7 +3520,7 @@ bool PacketWheelBoatMove::onReceive(NetState *net)
 	if ( !character )
 		return false;
 
-	skip(4);	//DWORD serial = readInt32();				// player serial
+	skip(4);	// char UID
 	DIR_TYPE facing = static_cast<DIR_TYPE>(readByte());	// boat facing direction
 	DIR_TYPE moving = static_cast<DIR_TYPE>(readByte());	// boat moving direction
 	BYTE speed = readByte();								// boat moving speed (0 = stop, 1 = slow, 2 = fast) - values are NOT the same as packet 0xF6
@@ -3686,7 +3655,7 @@ bool PacketBookHeaderEditNew::onReceive(NetState* net)
 	ADDTOCALLSTACK("PacketBookHeaderEditNew::onReceive");
 
 	skip(2); // length
-	CGrayUID bookSerial(readInt32());
+	CItem *pItem = static_cast<CGrayUID>(readInt32()).ItemFind();
 	skip(1); // unknown
 	skip(1); // writable
 	skip(2); // pages
@@ -3700,7 +3669,7 @@ bool PacketBookHeaderEditNew::onReceive(NetState* net)
 	size_t authorLength = readInt16();
 	readStringASCII(author, minimum(authorLength, COUNTOF(author)));
 
-	net->m_client->Event_Book_Title(bookSerial, title, author);
+	net->m_client->Event_Book_Title(pItem, title, author);
 	return true;
 }
 
@@ -3766,10 +3735,7 @@ bool PacketEncodedCommand::onReceive(NetState* net)
 	if (packetLength > 33)
 		return false;
 
-	CGrayUID serial(readInt32());
-	if (character->GetUID() != serial)
-		return false;
-
+	skip(4);	// char UID
 	PACKETENC_TYPE type = static_cast<PACKETENC_TYPE>(readInt16());
 	seek();
 
@@ -4454,7 +4420,7 @@ bool PacketEquipItemMacro::onReceive(NetState* net)
 		itemCount = 3;
 
 	CItem* item = NULL;
-	for (BYTE i = 0; i < itemCount; i++)
+	for (BYTE i = 0; i < itemCount; ++i)
 	{
 		item = static_cast<CGrayUID>(readInt32()).ItemFind();
 		if (!item)
@@ -4498,8 +4464,8 @@ bool PacketUnEquipItemMacro::onReceive(NetState* net)
 		itemCount = 3;
 
 	LAYER_TYPE layer;
-	CItem* item;
-	for (BYTE i = 0; i < itemCount; i++)
+	CItem* item = NULL;
+	for (BYTE i = 0; i < itemCount; ++i)
 	{
 		layer = static_cast<LAYER_TYPE>(readInt16());
 
@@ -4577,7 +4543,7 @@ bool PacketMovementReqNew::onReceive(NetState* net)
 			break;
 		}
 
-		steps--;
+		--steps;
 	}
 	return true;
 }

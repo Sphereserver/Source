@@ -219,7 +219,7 @@ bool CClient::Login_Relay(WORD wRelay)
 	return addRelay(pServ);
 }
 
-BYTE CClient::Login_ServerList(const char *pszAccount, const char *pszPassword)
+BYTE CClient::Login_ServerList(LPCTSTR pszAccount, LPCTSTR pszPassword)
 {
 	ADDTOCALLSTACK("CClient::Login_ServerList");
 	// PACKET_ServersReq

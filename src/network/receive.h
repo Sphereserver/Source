@@ -33,7 +33,7 @@ public:
 
 protected:
 	bool onReceive(NetState* net, bool hasExtraSkill);
-	bool doCreate(NetState* net, LPCTSTR charname, bool bFemale, RACE_TYPE rtRace, short wStr, short wDex, short wInt, PROFESSION_TYPE prProf, SKILL_TYPE skSkill1, BYTE iSkillVal1, SKILL_TYPE skSkill2, BYTE iSkillVal2, SKILL_TYPE skSkill3, BYTE iSkillVal3, SKILL_TYPE skSkill4, BYTE iSkillVal4, HUE_TYPE wSkinHue, ITEMID_TYPE idHair, HUE_TYPE wHairHue, ITEMID_TYPE idBeard, HUE_TYPE wBeardHue, HUE_TYPE wShirtHue, HUE_TYPE wPantsHue, ITEMID_TYPE idFace, int iStartLoc, DWORD iFlags);
+	bool doCreate(NetState *net, LPCTSTR pszName, bool fFemale, RACE_TYPE race, BYTE bStr, BYTE bDex, BYTE bInt, PROFESSION_TYPE profession, SKILL_TYPE skill1, BYTE bSkillVal1, SKILL_TYPE skill2, BYTE bSkillVal2, SKILL_TYPE skill3, BYTE bSkillVal3, SKILL_TYPE skill4, BYTE bSkillVal4, HUE_TYPE hueSkin, ITEMID_TYPE idHair, HUE_TYPE hueHair, ITEMID_TYPE idBeard, HUE_TYPE hueBeard, HUE_TYPE hueShirt, HUE_TYPE huePants, ITEMID_TYPE idFace, BYTE bStartLoc, DWORD dwFlags);
 	bool isValidHue(HUE_TYPE hue, const HUE_TYPE sm_Array[], size_t iArraySize);
 };
 

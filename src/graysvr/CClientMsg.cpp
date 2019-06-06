@@ -3618,7 +3618,7 @@ BYTE CClient::LogIn(CAccount *pAccount, CGString &sMsg)
 	return PacketLoginError::Success;
 }
 
-BYTE CClient::Setup_ListReq(const char *pszAccount, const char *pszPassword, bool fTest)
+BYTE CClient::Setup_ListReq(LPCTSTR pszAccount, LPCTSTR pszPassword, bool fTest)
 {
 	ADDTOCALLSTACK("CClient::Setup_ListReq");
 	// XCMD_CharListReq
