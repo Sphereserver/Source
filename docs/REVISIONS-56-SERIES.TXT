@@ -1498,3 +1498,7 @@ Changed: Many internal improvements on party system
 	-Added support for client shortcut /rem (used to remove members from party)
 	-Fixed messages with length > 32 characters not showing correctly
 [sphere_msgs.scp]: Updated 'party_*' messages
+
+06-06-2019, Coruja
+Fixed: Function REGION.RECT returning wrong value.
+[multis_houses_contest.scp]: Added new contest keeps from publish 105

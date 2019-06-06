@@ -518,11 +518,10 @@ bool CRegionBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pS
 			break;
 		case RC_RECT:
 			{
-				size_t iQty = m_Rects.GetCount();
 				pszKey += 4;
 				if ( *pszKey == '\0' )
 				{
-					sVal.FormatVal( static_cast<long>(iQty));
+					sVal.FormatVal(static_cast<long>(m_Rects.GetCount() + 1));
 					return true;
 				}
 				SKIP_SEPARATORS( pszKey );
