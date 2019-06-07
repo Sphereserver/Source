@@ -1,5 +1,8 @@
 extraction:
   cpp:
+    prepare:
+      packages:
+        - libmysqlclient18:i386
     index:
       build_command:
         - make NIGHTLY=1
