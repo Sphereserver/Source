@@ -2570,20 +2570,25 @@ bool PacketProfileReq::onReceive(NetState* net)
 	CClient *pClient = net->m_client;
 	ASSERT(pClient);
 
-	WORD packetLength = readInt16();
+	skip(2);	// length
 	bool fWrite = readBool();
-	CGrayUID uid = static_cast<CGrayUID>(readInt32());
-	TCHAR *pszProfile = NULL;
+	CChar *pChar = static_cast<CGrayUID>(readInt32()).CharFind();
+	TCHAR *pszText = NULL;
 
 	if ( fWrite )
 	{
 		skip(2);
-		WORD textLength = readInt16();
-		pszProfile = Str_GetTemp();
-		readStringNUNICODE(pszProfile, SCRIPT_MAX_LINE_LEN - 16, textLength + 1, false);
+		WORD wTextLen = readInt16();
+
+		size_t iMaxLen = SCRIPT_MAX_LINE_LEN - 16;
+		if ( wTextLen >= iMaxLen )
+			wTextLen = iMaxLen - 1;
+
+		pszText = Str_GetTemp();
+		readStringNUNICODE(pszText, iMaxLen, wTextLen + 1, false);
 	}
 
-	pClient->Event_Profile(fWrite, uid, pszProfile);
+	pClient->Event_Profile(fWrite, pChar, pszText);
 	return true;
 }
 

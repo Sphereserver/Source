@@ -566,13 +566,13 @@ public:
 	void Event_CombatAbilitySelect(DWORD dwAbility);
 	void Event_CombatMode(bool fWar);
 	bool Event_DoubleClick(CGrayUID uid, bool fMacro, bool fTestTouch, bool fScript = false);
-	void Event_ExtCmd(EXTCMD_TYPE type, TCHAR *pszName);
+	void Event_ExtCmd(EXTCMD_TYPE type, TCHAR *pszArgs);
 	void Event_Item_Drop(CItem *pItem, CPointMap pt, CGrayUID uidOn, BYTE gridIndex = 0);
 	void Event_Item_Drop_Fail(CItem *pItem);
 	void Event_Item_Dye(CGrayUID uid, HUE_TYPE wHue);
 	void Event_Item_Pickup(CGrayUID uid, int amount);
 	void Event_MailMsg(CChar *pChar);
-	void Event_Profile(bool fWrite, CGrayUID uid, LPCTSTR pszProfile);
+	void Event_Profile(bool fWrite, CChar *pChar, TCHAR *pszText);
 	void Event_PromptResp(LPCTSTR pszText, size_t iTextLen, CGrayUID uidChar, CGrayUID uidPrompt, DWORD dwType);
 	void Event_PromptResp_GMPage(LPCTSTR pszReason);
 	void Event_SingleClick(CGrayUID uid);

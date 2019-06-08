@@ -3076,11 +3076,11 @@ PacketCharacterList::PacketCharacterList(CClient* target) : PacketSend(PACKET_Ch
  *
  *
  ***************************************************************************/
-PacketAttack::PacketAttack(const CClient* target, CGrayUID serial) : PacketSend(PACKET_AttackOK, 5, PRI_NORMAL)
+PacketAttack::PacketAttack(const CClient* target, CGrayUID uid) : PacketSend(PACKET_AttackOK, 5, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketAttack::PacketAttack");
 
-	writeInt32(serial);
+	writeInt32(uid);
 
 	push(target);
 }

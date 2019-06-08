@@ -1247,37 +1247,29 @@ void CClient::Event_VendorSell(CChar *pVendor, const VendorItem *items, size_t i
 	}
 }
 
-void CClient::Event_Profile(bool fWrite, CGrayUID uid, LPCTSTR pszProfile)
+void CClient::Event_Profile(bool fWrite, CChar *pChar, TCHAR *pszText)
 {
 	ADDTOCALLSTACK("CClient::Event_Profile");
-	if ( !m_pChar )
-		return;
-
-	CChar *pChar = uid.CharFind();
-	if ( !pChar || !pChar->m_pPlayer )
+	if ( !m_pChar || !pChar || !pChar->m_pPlayer )
 		return;
 
 	if ( fWrite )
 	{
-		// Write profile
-		if ( (pChar != m_pChar) && (!IsPriv(PRIV_GM) || (m_pChar->GetPrivLevel() < pChar->GetPrivLevel())) )
+		if ( ((pChar != m_pChar) && (!IsPriv(PRIV_GM) || (m_pChar->GetPrivLevel() < pChar->GetPrivLevel()))) )
 			return;
+		pszText = Str_TrimWhitespace(pszText);
+	}
 
-		if ( pszProfile && !strchr(pszProfile, 0xA) )
-		{
-			if ( IsTrigUsed(TRIGGER_PROFILE) )
-			{
-				if ( pChar->OnTrigger(CTRIG_Profile, m_pChar) == TRIGRET_RET_TRUE )
-					return;
-			}
-			pChar->m_pPlayer->m_sProfile = pszProfile;
-		}
-	}
-	else
+	if ( IsTrigUsed(TRIGGER_PROFILE) )
 	{
-		// Read profile
-		new PacketProfile(this, pChar);
+		if ( pChar->OnTrigger(CTRIG_Profile, m_pChar) == TRIGRET_RET_TRUE )
+			return;
 	}
+
+	if ( fWrite )
+		pChar->m_pPlayer->m_sProfile = pszText;
+	else
+		new PacketProfile(this, pChar);
 }
 
 void CClient::Event_MailMsg(CChar *pChar)
@@ -2428,7 +2420,7 @@ void CClient::Event_UseToolbar(BYTE bType, DWORD dwArg)
 
 //----------------------------------------------------------------------
 
-void CClient::Event_ExtCmd(EXTCMD_TYPE type, TCHAR *pszName)
+void CClient::Event_ExtCmd(EXTCMD_TYPE type, TCHAR *pszArgs)
 {
 	ADDTOCALLSTACK("CClient::Event_ExtCmd");
 	if ( !m_pChar )
@@ -2436,15 +2428,15 @@ void CClient::Event_ExtCmd(EXTCMD_TYPE type, TCHAR *pszName)
 
 	if ( IsTrigUsed(TRIGGER_USEREXTCMD) )
 	{
-		CScriptTriggerArgs Args(pszName);
+		CScriptTriggerArgs Args(pszArgs);
 		Args.m_iN1 = type;
 		if ( m_pChar->OnTrigger(CTRIG_UserExtCmd, m_pChar, &Args) == TRIGRET_RET_TRUE )
 			return;
-		strcpy(pszName, Args.m_s1);
+		strcpy(pszArgs, Args.m_s1);
 	}
 
 	TCHAR *ppArgs[2];
-	Str_ParseCmds(pszName, ppArgs, COUNTOF(ppArgs), " ");
+	Str_ParseCmds(pszArgs, ppArgs, COUNTOF(ppArgs), " ");
 
 	switch ( type )
 	{

@@ -1119,7 +1119,7 @@ public:
 class PacketAttack : public PacketSend
 {
 public:
-	PacketAttack(const CClient* target, CGrayUID serial);
+	PacketAttack(const CClient* target, CGrayUID uid);
 };
 
 /***************************************************************************
