@@ -11,7 +11,25 @@ CCrypt::CCrypt()
 
 	m_fInit = false;
 	m_fRelayPacket = false;
-	SetClientVerEnum(0);
+	m_dwClientVersion = 0;
+	m_EncryptionType = ENC_NONE;
+	m_ConnectType = CONNECT_NONE;
+	m_MasterLo = 0;
+	m_MasterHi = 0;
+	m_CryptMaskLo = 0;
+	m_CryptMaskHi = 0;
+	m_Seed = 0;
+
+	// Blowfish
+	m_gameTable = CRYPT_GAMETABLE_START;;
+	m_gameBlockPos = 0;
+	m_gameStreamPos = 0;
+
+	// Twofish
+	memset(&tf_key, 0, sizeof(keyInstance));
+	memset(&tf_cipher, 0, sizeof(cipherInstance));
+	tf_position = 0;
+	md5_position = 0;
 }
 
 bool CCrypt::Init(DWORD dwIP, BYTE *pbEvent, size_t iLen, bool fClientKR)

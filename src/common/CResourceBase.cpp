@@ -74,7 +74,7 @@ CResourceScript *CResourceBase::FindResourceFile(LPCTSTR pszPath)
 	// Just match the titles (not the whole path)
 
 	LPCTSTR pszTitle = CScript::GetFilesTitle(pszPath);
-	for ( size_t i = 0; ; i++ )
+	for ( size_t i = 0; ; ++i )
 	{
 		CResourceScript *pResFile = GetResourceFile(i);
 		if ( !pResFile )
@@ -174,7 +174,7 @@ void CResourceBase::LoadResourcesOpen(CScript *pScript)
 	while ( pScript->FindNextSection() )
 	{
 		LoadResourceSection(pScript);
-		iSections++;
+		++iSections;
 	}
 
 	if ( !iSections )
@@ -255,12 +255,12 @@ LPCTSTR CResourceBase::ResourceGetName(RESOURCE_ID_BASE rid) const
 	if ( pResourceDef )
 		return pResourceDef->GetResourceName();
 
-	TCHAR *pszTmp = Str_GetTemp();
+	TCHAR *pszTemp = Str_GetTemp();
 	if ( rid.IsValidUID() )
-		sprintf(pszTmp, "0%x", rid.GetResIndex());
+		sprintf(pszTemp, "0%x", rid.GetResIndex());
 	else
-		sprintf(pszTmp, "%ld", static_cast<long>(rid.GetPrivateUID()));
-	return pszTmp;
+		sprintf(pszTemp, "%lu", rid.GetPrivateUID());
+	return pszTemp;
 }
 
 RESOURCE_ID CResourceBase::ResourceGetID(RES_TYPE restype, LPCTSTR &pszName)
@@ -332,7 +332,7 @@ bool CResourceDef::SetResourceName(LPCTSTR pszName)
 	// This is the global def for this item
 	ASSERT(pszName);
 
-	for ( size_t i = 0; pszName[i]; i++ )
+	for ( size_t i = 0; pszName[i]; ++i )
 	{
 		if ( i >= EXPRESSION_MAX_KEY_LEN )
 		{
@@ -354,9 +354,9 @@ bool CResourceDef::SetResourceName(LPCTSTR pszName)
 			return true;
 
 		if ( RES_GET_INDEX(pVarKey->GetValNum()) == GetResourceID().GetResIndex() )
-			DEBUG_WARN(("The DEFNAME=%s has a strange type mismatch? 0%llx!=0%lx\n", pszName, pVarKey->GetValNum(), GetResourceID().GetPrivateUID()));
+			DEBUG_WARN(("DEFNAME=%s has a strange type mismatch (0%llx != 0%lx)\n", pszName, pVarKey->GetValNum(), GetResourceID().GetPrivateUID()));
 		else
-			DEBUG_WARN(("The DEFNAME=%s already exists! 0%llx!=0%x\n", pszName, RES_GET_INDEX(pVarKey->GetValNum()), GetResourceID().GetResIndex()));
+			DEBUG_WARN(("DEFNAME=%s already exists (0%llx != 0%x)\n", pszName, RES_GET_INDEX(pVarKey->GetValNum()), GetResourceID().GetResIndex()));
 
 		iVarNum = g_Exp.m_VarDefs.SetNum(pszName, GetResourceID().GetPrivateUID());
 	}
@@ -376,9 +376,9 @@ LPCTSTR CResourceDef::GetResourceName() const
 	if ( m_pDefName )
 		return m_pDefName->GetKey();
 
-	TemporaryString pszTmp;
-	sprintf(pszTmp, "0%x", GetResourceID().GetResIndex());
-	return pszTmp;
+	TemporaryString pszTemp;
+	sprintf(pszTemp, "0%x", GetResourceID().GetResIndex());
+	return pszTemp;
 }
 
 bool CResourceDef::MakeResourceName()
@@ -395,7 +395,7 @@ bool CResourceDef::MakeResourceName()
 
 	TCHAR *pszDef = pszTemp + 2;
 	TCHAR ch;
-	for ( ; *pszName; pszName++ )
+	for ( ; *pszName; ++pszName )
 	{
 		ch = *pszName;
 		if ( (ch == ' ') || (ch == '\t') || (ch == '-') )
@@ -407,7 +407,7 @@ bool CResourceDef::MakeResourceName()
 		if ( (ch == '_') && (*(pszDef - 1) == '_') )
 			continue;
 		*pszDef = ch;
-		pszDef++;
+		++pszDef;
 	}
 	*pszDef = '_';
 	*(++pszDef) = '\0';
@@ -417,7 +417,7 @@ bool CResourceDef::MakeResourceName()
 	size_t iLen = strlen(pszTemp);
 	int iVar = 1;
 
-	for ( size_t i = 0; i < iMax; i++ )
+	for ( size_t i = 0; i < iMax; ++i )
 	{
 		// Is this a similar key?
 		pszKey = g_Exp.m_VarDefs.GetAt(i)->GetKey();
@@ -427,7 +427,7 @@ bool CResourceDef::MakeResourceName()
 		// Skip underscores
 		pszKey = pszKey + iLen;
 		while ( *pszKey == '_' )
-			pszKey++;
+			++pszKey;
 
 		// Is this is subsequent key with a number? Get the highest (plus one)
 		if ( IsStrNumericDec(pszKey) )
@@ -437,11 +437,11 @@ bool CResourceDef::MakeResourceName()
 				iVar = iVarThis + 1;
 		}
 		else
-			iVar++;
+			++iVar;
 	}
 
 	// Add an extra _, hopefully won't conflict with named areas
-	sprintf(pszDef, "_%i", iVar);
+	sprintf(pszDef, "_%d", iVar);
 	SetResourceName(pszTemp);
 	// Assign name
 	return true;
@@ -470,7 +470,7 @@ bool CRegionBase::MakeRegionName()
 	strcpy(pszTemp, "a_");
 
 	TCHAR ch;
-	for ( ; *pszName; pszName++ )
+	for ( ; *pszName; ++pszName )
 	{
 		if ( !strnicmp(" of ", pszName, 4) || !strnicmp(" in ", pszName, 4) )
 		{
@@ -493,7 +493,7 @@ bool CRegionBase::MakeRegionName()
 		if ( (ch == '_') && (*(pszDef - 1) == '_') )
 			continue;
 		*pszDef = static_cast<TCHAR>(tolower(ch));
-		pszDef++;
+		++pszDef;
 	}
 	*pszDef = '_';
 	*(++pszDef) = '\0';
@@ -503,7 +503,7 @@ bool CRegionBase::MakeRegionName()
 	size_t iLen = strlen(pszTemp);
 	int iVar = 1;
 
-	for ( size_t i = 0; i < iMax; i++ )
+	for ( size_t i = 0; i < iMax; ++i )
 	{
 		CRegionBase *pRegion = g_Cfg.m_RegionDefs.GetAt(i);
 		if ( !pRegion )
@@ -520,7 +520,7 @@ bool CRegionBase::MakeRegionName()
 		// Skip underscores
 		pszKey = pszKey + iLen;
 		while ( *pszKey == '_' )
-			pszKey++;
+			++pszKey;
 
 		// Is this is subsequent key with a number? Get the highest (plus one)
 		if ( IsStrNumericDec(pszKey) )
@@ -530,11 +530,11 @@ bool CRegionBase::MakeRegionName()
 				iVar = iVarThis + 1;
 		}
 		else
-			iVar++;
+			++iVar;
 	}
 
 	// Only one, no need for the extra "_"
-	sprintf(pszDef, "%i", iVar);
+	sprintf(pszDef, "%d", iVar);
 	SetResourceName(pszTemp);
 	// Assign name
 	return true;
@@ -598,7 +598,7 @@ bool CResourceScript::Open(LPCTSTR pszFileName, UINT uFlags)
 			g_Cfg.LoadResourcesOpen(this);
 	}
 
-	m_iOpenCount++;
+	++m_iOpenCount;
 	ASSERT(IsFileOpen());
 	return true;
 }
@@ -618,7 +618,7 @@ void CResourceScript::Close()
 	if ( !IsFileOpen() )
 		return;
 
-	m_iOpenCount--;
+	--m_iOpenCount;
 	if ( !m_iOpenCount )
 	{
 		m_timeLastAccess = CServTime::GetCurrentTime();
@@ -851,7 +851,7 @@ void CResourceLink::SetTrigger(int i)
 	ADDTOCALLSTACK("CResourceLink::SetTrigger");
 	if ( i >= 0 )
 	{
-		for ( int j = 0; j < MAX_TRIGGERS_ARRAY; j++ )
+		for ( int j = 0; j < MAX_TRIGGERS_ARRAY; ++j )
 		{
 			if ( i < 32 )
 			{
@@ -871,7 +871,7 @@ bool CResourceLink::HasTrigger(int i) const
 	if ( i < XTRIG_UNKNOWN )
 		i = XTRIG_UNKNOWN;
 
-	for ( int j = 0; j < MAX_TRIGGERS_ARRAY; j++ )
+	for ( int j = 0; j < MAX_TRIGGERS_ARRAY; ++j )
 	{
 		if ( i < 32 )
 		{
@@ -894,6 +894,7 @@ bool CResourceLink::ResourceLock(CResourceLock &s)
 		return false;
 
 	// Give several tries to lock the script while multithreading
+	EXC_TRY("ResourceLock");
 	ASSERT(m_pScript);
 	int iRet = s.OpenLock(m_pScript, m_Context);
 	if ( !iRet )
@@ -903,6 +904,7 @@ bool CResourceLink::ResourceLock(CResourceLock &s)
 
 	// ret = -2 or -3
 	DEBUG_ERR(("ResourceLock '%s':%ld id=%s FAILED\n", static_cast<LPCTSTR>(s.GetFilePath()), m_Context.m_lOffset, GetResourceName()));
+	EXC_CATCH;
 	return false;
 }
 
@@ -963,13 +965,13 @@ bool CResourceRefArray::r_LoadVal(CScript &s, RES_TYPE restype)
 	size_t iArgCount = Str_ParseCmds(pszCmd, pszBlocks, COUNTOF(pszBlocks));
 	bool fRet = false;
 
-	for ( size_t i = 0; i < iArgCount; i++ )
+	for ( size_t i = 0; i < iArgCount; ++i )
 	{
 		pszCmd = pszBlocks[i];
 		if ( pszCmd[0] == '-' )
 		{
 			// Remove a frag or all frags
-			pszCmd++;
+			++pszCmd;
 			if ( (pszCmd[0] == '0') || (pszCmd[0] == '*') )
 			{
 				RemoveAll();
@@ -991,7 +993,7 @@ bool CResourceRefArray::r_LoadVal(CScript &s, RES_TYPE restype)
 		{
 			// Add a single knowledge fragment or appropriate group item
 			if ( pszCmd[0] == '+' )
-				pszCmd++;
+				++pszCmd;
 
 			CResourceLink *pResourceLink = dynamic_cast<CResourceLink *>(g_Cfg.ResourceGetDefByName(restype, pszCmd));
 			if ( !pResourceLink )
@@ -1045,7 +1047,7 @@ void CResourceRefArray::WriteResourceRefList(CGString &sVal) const
 	TemporaryString tsVal;
 	TCHAR *pszVal = static_cast<TCHAR *>(tsVal);
 	size_t len = 0;
-	for ( size_t i = 0; i < GetCount(); i++ )
+	for ( size_t i = 0; i < GetCount(); ++i )
 	{
 		if ( i > 0 )
 			pszVal[len++] = ',';
@@ -1075,7 +1077,7 @@ size_t CResourceRefArray::FindResourceID(RESOURCE_ID_BASE rid) const
 {
 	ADDTOCALLSTACK("CResourceRefArray::FindResourceID");
 	size_t iQty = GetCount();
-	for ( size_t i = 0; i < iQty; i++ )
+	for ( size_t i = 0; i < iQty; ++i )
 	{
 		RESOURCE_ID ridtest = GetAt(i).GetRef()->GetResourceID();
 		if ( ridtest == rid )
@@ -1096,7 +1098,7 @@ size_t CResourceRefArray::FindResourceName(RES_TYPE restype, LPCTSTR pszKey) con
 void CResourceRefArray::r_Write(CScript &s, LPCTSTR pszKey) const
 {
 	ADDTOCALLSTACK_INTENSIVE("CResourceRefArray::r_Write");
-	for ( size_t i = 0; i < GetCount(); i++ )
+	for ( size_t i = 0; i < GetCount(); ++i )
 		s.WriteKey(pszKey, GetResourceName(i));
 }
 
@@ -1206,7 +1208,7 @@ void CResourceQtyArray::setNoMergeOnLoad()
 size_t CResourceQtyArray::FindResourceType(RES_TYPE restype) const
 {
 	ADDTOCALLSTACK("CResourceQtyArray::FindResourceType");
-	for ( size_t i = 0; i < GetCount(); i++ )
+	for ( size_t i = 0; i < GetCount(); ++i )
 	{
 		RESOURCE_ID ridtest = GetAt(i).GetResourceID();
 		if ( ridtest.GetResType() == restype )
@@ -1218,7 +1220,7 @@ size_t CResourceQtyArray::FindResourceType(RES_TYPE restype) const
 size_t CResourceQtyArray::FindResourceID(RESOURCE_ID_BASE rid) const
 {
 	ADDTOCALLSTACK("CResourceQtyArray::FindResourceID");
-	for ( size_t i = 0; i < GetCount(); i++ )
+	for ( size_t i = 0; i < GetCount(); ++i )
 	{
 		RESOURCE_ID ridtest = GetAt(i).GetResourceID();
 		if ( ridtest == rid )
@@ -1233,7 +1235,7 @@ size_t CResourceQtyArray::FindResourceMatch(CObjBase *pObj) const
 	// Is there a more vague match in the array?
 	// Use to find intersection with this pObj raw material and BaseResource creation elements
 
-	for ( size_t i = 0; i < GetCount(); i++ )
+	for ( size_t i = 0; i < GetCount(); ++i )
 	{
 		RESOURCE_ID ridtest = GetAt(i).GetResourceID();
 		if ( pObj->IsResourceMatch(ridtest, 0) )
@@ -1248,7 +1250,7 @@ bool CResourceQtyArray::IsResourceMatchAll(CChar *pChar) const
 	// Check all required skills and non-consumable items
 	ASSERT(pChar);
 
-	for ( size_t i = 0; i < GetCount(); i++ )
+	for ( size_t i = 0; i < GetCount(); ++i )
 	{
 		if ( !pChar->IsResourceMatch(GetAt(i).GetResourceID(), static_cast<DWORD>(GetAt(i).GetResQty())) )
 			return false;
@@ -1271,7 +1273,7 @@ size_t CResourceQtyArray::Load(LPCTSTR pszCmds)
 		if ( (*pszCmds == '0') && ((pszCmds[1] == '\0') || (pszCmds[1] == ',')) )
 		{
 			RemoveAll();	// clear any previous stuff
-			pszCmds++;
+			++pszCmds;
 		}
 		else
 		{
@@ -1287,13 +1289,13 @@ size_t CResourceQtyArray::Load(LPCTSTR pszCmds)
 					SetAt(i, res);
 				else
 					Add(res);
-				iValid++;
+				++iValid;
 			}
 		}
 		if ( *pszCmds != ',' )
 			break;
 
-		pszCmds++;
+		++pszCmds;
 	}
 	return iValid;
 }
@@ -1305,7 +1307,7 @@ void CResourceQtyArray::WriteKeys(TCHAR *pszArgs, size_t index, bool fQtyOnly, b
 	if ( (index > 0) && (index < max) )
 		max = index;
 
-	for ( size_t i = (index > 0 ? index - 1 : 0); i < max; i++ )
+	for ( size_t i = (index > 0 ? index - 1 : 0); i < max; ++i )
 	{
 		if ( (i > 0) && (index == 0) )
 			pszArgs += sprintf(pszArgs, ",");
@@ -1321,7 +1323,7 @@ void CResourceQtyArray::WriteNames(TCHAR *pszArgs, size_t index) const
 	if ( (index > 0) && (index < max) )
 		max = index;
 
-	for ( size_t i = (index > 0) ? index - 1 : 0; i < max; i++ )
+	for ( size_t i = (index > 0) ? index - 1 : 0; i < max; ++i )
 	{
 		if ( (i > 0) && (index == 0) )
 			pszArgs += sprintf(pszArgs, ", ");
@@ -1345,9 +1347,9 @@ bool CResourceQtyArray::operator==(const CResourceQtyArray &array) const
 	if ( GetCount() != array.GetCount() )
 		return false;
 
-	for ( size_t i = 0; i < GetCount(); i++ )
+	for ( size_t i = 0; i < GetCount(); ++i )
 	{
-		for ( size_t j = 0; ; j++ )
+		for ( size_t j = 0; ; ++j )
 		{
 			if ( j >= array.GetCount() )
 				return false;

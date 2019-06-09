@@ -915,6 +915,7 @@ ANIM_TYPE CChar::GenerateAnimate(ANIM_TYPE action, bool fTranslate, bool fBackwa
 						case 1: return ANIM_MON_BlockRight;
 						case 2: return ANIM_MON_BlockLeft;
 					}
+					break;
 				case ANIM_ATTACK_1H_SLASH:
 				case ANIM_ATTACK_1H_PIERCE:
 				case ANIM_ATTACK_1H_BASH:

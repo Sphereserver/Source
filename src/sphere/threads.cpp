@@ -532,7 +532,6 @@ TemporaryStringStorage *AbstractSphereThread::allocateStringBuffer()
 		{
 			// but the best is to throw an exception to give better formed information for end users
 			// rather than access violations
-			DEBUG_WARN(( "Thread temporary string buffer is full.\n" ));
 			throw CException(LOGL_FATAL, 0, "Thread temporary string buffer is full");
 		}
 	}
