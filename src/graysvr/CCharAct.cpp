@@ -883,7 +883,7 @@ ANIM_TYPE CChar::GenerateAnimate(ANIM_TYPE action, bool fTranslate, bool fBackwa
 					return ANIM_ANI_SLEEP;
 			}
 
-			while ( (action != ANIM_WALK_UNARM) && !(pCharDef->m_Anims & (1 << action)) )
+			while ( (action != ANIM_WALK_UNARM) && !(pCharDef->m_Anims & (static_cast<DWORD>(1) << action)) )
 			{
 				// This anim is not supported, try to use one that is
 				switch ( action )
@@ -937,7 +937,7 @@ ANIM_TYPE CChar::GenerateAnimate(ANIM_TYPE action, bool fTranslate, bool fBackwa
 
 			// Available actions depend HEAVILY on creature type
 			// Monsters don't have all anims in common, so translate these
-			while ( (action != ANIM_WALK_UNARM) && !(pCharDef->m_Anims & (1 << action)) )
+			while ( (action != ANIM_WALK_UNARM) && !(pCharDef->m_Anims & (static_cast<DWORD>(1) << action)) )
 			{
 				switch ( action )
 				{
@@ -951,7 +951,7 @@ ANIM_TYPE CChar::GenerateAnimate(ANIM_TYPE action, bool fTranslate, bool fBackwa
 					case ANIM_MON_BlockLeft:
 						return ANIM_MON_GETHIT;
 					case ANIM_MON_GETHIT:
-						return (pCharDef->m_Anims & (1 << ANIM_MON_Cast2)) ? ANIM_MON_Cast2 : ANIM_WALK_UNARM;
+						return (pCharDef->m_Anims & (static_cast<DWORD>(1) << ANIM_MON_Cast2)) ? ANIM_MON_Cast2 : ANIM_WALK_UNARM;
 					case ANIM_MON_Stomp:
 						return ANIM_MON_PILLAGE;
 					case ANIM_MON_AttackBow:
