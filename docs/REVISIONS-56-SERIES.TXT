@@ -1501,4 +1501,9 @@ Changed: Many internal improvements on party system
 
 06-06-2019, Coruja
 Fixed: Function REGION.RECT returning wrong value.
-[multis_houses_contest.scp]: Added new contest keeps from publish 105
+[items/multis/multis_houses_contest.scp]: Added new contest keeps from publish 105
+
+12-06-2019, Coruja
+[items/sphere_item_quests.scp]: Added The Shattered Obelisk caravans and Rising Tide items
+[items/sphere_item_veteran_rewards.scp]: Added some missing veteran rewards
+[sphereCrypt.ini]: Added crypt key for classic client 7.0.76 and enhanced client 4.0.76
