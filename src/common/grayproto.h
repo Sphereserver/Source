@@ -294,7 +294,8 @@ enum PACKET_TYPE
 	PACKET_WorldObjCont			= 0xF7,
 	PACKET_CreateHS				= 0xF8,
 	PACKET_GlobalChat			= 0xF9,
-	PACKET_UltimaStoreButton	= 0xFA
+	PACKET_UltimaStoreButton	= 0xFA,
+	PACKET_QTY
 };
 
 enum PACKETEXT_TYPE		// extended packets used by PACKET_ExtendedData
@@ -334,7 +335,8 @@ enum PACKETEXT_TYPE		// extended packets used by PACKET_ExtendedData
 	PACKETEXT_TargetedSkill		= 0x2E,	// client  -> server
 	PACKETEXT_TargetedResource	= 0x30,	// client  -> server
 	PACKETEXT_GargoyleFly		= 0x32,	// client  -> server
-	PACKETEXT_WheelBoatMove		= 0x33	// client  -> server
+	PACKETEXT_WheelBoatMove		= 0x33,	// client  -> server
+	PACKETEXT_QTY
 };
 
 enum PACKETENC_TYPE		// encoded packets used by PACKET_EncodedData
@@ -355,7 +357,8 @@ enum PACKETENC_TYPE		// encoded packets used by PACKET_EncodedData
 	PACKETENC_HouseDesign_Revert	= 0x1A,	// client  -> server
 	PACKETENC_EquipLastWeapon		= 0x1E,	// client  -> server
 	PACKETENC_GuildButton			= 0x28,	// client  -> server
-	PACKETENC_QuestButton			= 0x32	// client  -> server
+	PACKETENC_QuestButton			= 0x32,	// client  -> server
+	PACKETENC_QTY
 };
 
 enum PARTYMSG_TYPE

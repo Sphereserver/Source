@@ -1640,21 +1640,22 @@ struct CUOItemTypeRec	// size = 37 (tiledata.mul)
 	BYTE m_weight;		// 255 = unmovable.
 	BYTE m_layer;		// LAYER_TYPE for UFLAG1_EQUIP, UFLAG3_EQUIP2 or light index for UFLAG3_LIGHT
 	DWORD m_dwUnk6;		// ? qty in the case of UFLAG2_STACKABLE, Spell icons use this as well.
-	DWORD m_dwAnim;		// equipable items animation index. (50000 = male offset, 60000=female) Gump base as well
-	WORD m_wUnk14;		// ?
+	WORD m_wAnim;		// equipable items animation index. (50000 = male offset, 60000=female) Gump base as well
+	WORD m_wHue;
+	WORD m_wLight;
 	BYTE m_height;		// z height but may not be blocking. ex.UFLAG2_WINDOW
 	char m_name[20];	// sometimes legit not to have a name
 } PACK_NEEDED;
 
 struct CUOItemTypeRec2	// size = 41 (tiledata.mul, High Seas+)
 {
-	DWORD m_flags;
-	DWORD m_dwUnk5;		// ? new in HS
+	UINT64 m_flags;
 	BYTE m_weight;		// 255 = unmovable.
 	BYTE m_layer;		// LAYER_TYPE for UFLAG1_EQUIP, UFLAG3_EQUIP2 or light index for UFLAG3_LIGHT
 	DWORD m_dwUnk11;	// ? qty in the case of UFLAG2_STACKABLE, Spell icons use this as well.
-	DWORD m_dwAnim;		// equipable items animation index. (50000 = male offset, 60000=female) Gump base as well
-	WORD m_wUnk19;		// ?
+	WORD m_wAnim;		// equipable items animation index. (50000 = male offset, 60000=female) Gump base as well
+	WORD m_wHue;
+	WORD m_wLight;
 	BYTE m_height;		// z height but may not be blocking. ex.UFLAG2_WINDOW
 	char m_name[20];	// sometimes legit not to have a name
 } PACK_NEEDED;

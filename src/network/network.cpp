@@ -342,7 +342,7 @@ bool NetState::hasPendingData(void) const
 		return false;
 
 	// check packet queues (only count high priority+ for closed states)
-	for (int i = (isClosing() ? NETWORK_DISCONNECTPRI : PacketSend::PRI_IDLE); i < PacketSend::PRI_QTY; i++)
+	for (int i = (isClosing() ? PacketSend::PRI_HIGHEST : PacketSend::PRI_IDLE); i < PacketSend::PRI_QTY; ++i)
 	{
 		if (m_outgoing.queue[i].empty() == false)
 			return true;
@@ -368,7 +368,7 @@ bool NetState::canReceive(PacketSend* packet) const
 	if (isInUse() == false || m_socket.IsOpen() == false || packet == NULL)
 		return false;
 
-	if (isClosing() && packet->getPriority() < NETWORK_DISCONNECTPRI)
+	if (isClosing() && packet->getPriority() < PacketSend::PRI_HIGHEST)
 		return false;
 
 	if (packet->getTarget()->m_client == NULL)

@@ -4,13 +4,11 @@
 
 #include <deque>
 #include "packet.h"
-#include "../common/os_common.h"
 #include "../sphere/containers.h"
 
-#define NETWORK_PACKETCOUNT 0x100	// number of unique packets
-#define NETWORK_BUFFERSIZE 0xF000	// size of receive buffer
-#define NETWORK_SEEDLEN_OLD (sizeof( DWORD ))
-#define NETWORK_SEEDLEN_NEW (1 + (sizeof( DWORD ) * 5))
+#define NETWORK_BUFFERSIZE		0xF000		// size of receive buffer
+#define NETWORK_SEEDLEN_OLD		sizeof(DWORD)
+#define NETWORK_SEEDLEN_NEW		(1 + (sizeof(DWORD) * 5))
 
 #define NETWORK_MAXPACKETS		g_Cfg.m_iNetMaxPacketsPerTick	// max packets to send per tick (per queue)
 #define NETWORK_MAXPACKETLEN	g_Cfg.m_iNetMaxLengthPerTick	// max packet length to send per tick (per queue)
@@ -23,8 +21,6 @@
 	#define MTNETWORK_INPUT		// handle input in multithreaded mode
 	#define MTNETWORK_OUTPUT	// handle output in multithreaded mode
 #endif
-
-#define NETWORK_DISCONNECTPRI	PacketSend::PRI_HIGHEST			// packet priorty to continue sending before closing sockets
 
 #ifdef _DEBUG
 	#define DEBUGNETWORK(_x_)		if ( g_Cfg.m_wDebugFlags & DEBUGF_NETWORK ) { g_pLog->EventDebug _x_; }
@@ -260,9 +256,9 @@ public:
 class PacketManager
 {
 private:
-	Packet* m_handlers[NETWORK_PACKETCOUNT];	// standard packet handlers
-	Packet* m_extended[NETWORK_PACKETCOUNT];	// extended packeet handlers (0xbf)
-	Packet* m_encoded[NETWORK_PACKETCOUNT];		// encoded packet handlers (0xd7)
+	Packet *m_handlers[PACKET_QTY];			// standard packet handlers
+	Packet *m_extended[PACKETEXT_QTY];		// extended packet handlers (0xBF)
+	Packet *m_encoded[PACKETENC_QTY];		// encoded packet handlers (0xD7)
 
 public:
 	static const char* m_sClassName;

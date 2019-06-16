@@ -156,7 +156,7 @@ CGrayItemInfo::CGrayItemInfo( ITEMID_TYPE id )
 		m_flags = 0;
 		m_weight = 0xFF;
 		m_layer = LAYER_NONE;
-		m_dwAnim = 0;
+		m_wAnim = 0;
 		m_height = 0;
 		strcpy(m_name, (id <= ITEMID_GALLEON_BRIT2_W) ? "ship" : "structure");
 		return;
@@ -213,11 +213,11 @@ CGrayItemInfo::CGrayItemInfo( ITEMID_TYPE id )
 			m_flags = record.m_flags;
 			m_weight = record.m_weight;
 			m_layer = record.m_layer;
-			m_dwAnim = record.m_dwAnim;
+			m_wAnim = record.m_wAnim;
+			m_wHue = record.m_wHue;
+			m_wLight = record.m_wLight;
 			m_height = record.m_height;
-			m_wUnk19 = record.m_wUnk14;
 			m_dwUnk11 = record.m_dwUnk6;
-			m_dwUnk5 = 0;
 			strcpylen(m_name, record.m_name, COUNTOF(m_name));
 			break;
 		}

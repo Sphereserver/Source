@@ -233,7 +233,7 @@ private:
 	IT_TYPE m_type;
 	WORD m_weight;				// weight in WEIGHT_UNITS (USHRT_MAX=not movable). Defaults from .mul files
 	BYTE m_layer;
-	DWORD m_dwFlags;			// UFLAG_* from CUOItemTypeRec/CUOItemTypeRec2
+	UINT64 m_uiFlags;			// UFLAG_* from CUOItemTypeRec/CUOItemTypeRec2
 	BYTE m_speed;
 
 public:
@@ -510,9 +510,9 @@ public:
 		return static_cast<ITEMID_TYPE>(m_dwDispIndex);
 	}
 
-	DWORD GetTFlags() const
+	UINT64 GetTFlags() const
 	{
-		return m_dwFlags;
+		return m_uiFlags;
 	}
 
 	IT_TYPE GetType() const
@@ -612,10 +612,14 @@ class CItemBaseDupe : public CResourceDef
 public:
 	static const char *m_sClassName;
 
-	CItemBaseDupe(ITEMID_TYPE id, CItemBase *pMasterItem) : CResourceDef(RESOURCE_ID(RES_ITEMDEF, id)), m_MasterItem(pMasterItem), m_Can(0), m_dwFlags(0), m_Height(0)
+	CItemBaseDupe(ITEMID_TYPE id, CItemBase *pMasterItem) : CResourceDef(RESOURCE_ID(RES_ITEMDEF, id))
 	{
 		ASSERT(pMasterItem);
 		ASSERT(pMasterItem->GetResourceID().GetResIndex() != id);
+		m_MasterItem = pMasterItem;
+		m_Can = 0;
+		m_uiFlags = 0;
+		m_Height = 0;
 	}
 	virtual	~CItemBaseDupe() { }
 
@@ -624,7 +628,7 @@ public:
 	DWORD m_Can;
 
 private:
-	DWORD m_dwFlags;	// UFLAG_* from CUOItemTypeRec/CUOItemTypeRec2
+	UINT64 m_uiFlags;		// UFLAG_* from CUOItemTypeRec/CUOItemTypeRec2
 	height_t m_Height;
 
 public:
@@ -645,13 +649,13 @@ public:
 
 	static CItemBaseDupe *GetDupeRef(ITEMID_TYPE id);
 
-	DWORD GetTFlags() const
+	UINT64 GetTFlags() const
 	{
-		return m_dwFlags;
+		return m_uiFlags;
 	}
-	void SetTFlags(DWORD dwFlags)
+	void SetTFlags(UINT64 uiFlags)
 	{
-		m_dwFlags = dwFlags;
+		m_uiFlags = uiFlags;
 	}
 
 	height_t GetHeight() const

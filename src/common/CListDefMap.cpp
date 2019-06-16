@@ -65,10 +65,10 @@ inline LPCTSTR CListDefContNum::GetValStr() const
 	return pszTmp;
 }
 
-bool CListDefContNum::r_LoadVal( CScript & s )
+bool CListDefContNum::r_LoadVal(CScript &s)
 {
-	SetValNum( s.GetArgVal() );
-	return( true );
+	SetValNum(s.GetArgLLVal());
+	return true;
 }
 
 bool CListDefContNum::r_WriteVal( LPCTSTR pKey, CGString & sVal, CTextConsole * pSrc = NULL )

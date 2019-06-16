@@ -966,13 +966,13 @@ bool CResource::r_LoadVal(CScript &s)
 				m_iClientsMax = FD_SETSIZE - 1;
 			break;
 		case RC_COLORHIDDEN:
-			m_iColorHidden = static_cast<HUE_TYPE>(s.GetArgVal());
+			m_iColorHidden = static_cast<HUE_TYPE>(s.GetArgLLVal());
 			break;
 		case RC_COLORINVIS:
-			m_iColorInvis = static_cast<HUE_TYPE>(s.GetArgVal());
+			m_iColorInvis = static_cast<HUE_TYPE>(s.GetArgLLVal());
 			break;
 		case RC_COLORINVISSPELL:
-			m_iColorInvisSpell = static_cast<HUE_TYPE>(s.GetArgVal());
+			m_iColorInvisSpell = static_cast<HUE_TYPE>(s.GetArgLLVal());
 			break;
 		case RC_CORPSENPCDECAY:
 			m_iDecay_CorpseNPC = s.GetArgVal() * 60 * TICK_PER_SEC;
@@ -1011,7 +1011,7 @@ bool CResource::r_LoadVal(CScript &s)
 			g_Log.OpenLog(s.GetArgStr());
 			break;
 		case RC_LOGMASK:
-			g_Log.SetLogMask(s.GetArgVal());
+			g_Log.SetLogMask(static_cast<DWORD>(s.GetArgLLVal()));
 			break;
 		case RC_MULFILES:
 			g_Install.SetPreferPath(CGFile::GetMergedFileName(s.GetArgStr(), ""));
@@ -1020,7 +1020,7 @@ bool CResource::r_LoadVal(CScript &s)
 			m_iMapCacheTime = s.GetArgVal() * TICK_PER_SEC;
 			break;
 		case RC_MAXCHARSPERACCOUNT:
-			m_iMaxCharsPerAccount = static_cast<BYTE>(s.GetArgVal());
+			m_iMaxCharsPerAccount = static_cast<BYTE>(s.GetArgLLVal());
 			if ( m_iMaxCharsPerAccount > MAX_CHARS_PER_ACCT )
 				m_iMaxCharsPerAccount = MAX_CHARS_PER_ACCT;
 			break;
@@ -1093,7 +1093,7 @@ bool CResource::r_LoadVal(CScript &s)
 			m_iPacketDeathAnimation = (s.GetArgVal() > 0);
 			break;
 		case RC_SKILLPRACTICEMAX:
-			m_iSkillPracticeMax = static_cast<WORD>(s.GetArgVal());
+			m_iSkillPracticeMax = static_cast<WORD>(s.GetArgLLVal());
 			break;
 		case RC_SAVEPERIOD:
 			m_iSavePeriod = s.GetArgVal() * 60 * TICK_PER_SEC;
@@ -2086,14 +2086,14 @@ bool CResource::LoadResourceSection(CScript *pScript)
 		restype = RES_AREA;
 		fNewStyleDef = true;
 		if ( g_Serv.m_fResyncPause )
-			g_Serv.m_fResyncMultiRegions = true;
+			g_Serv.m_fReloadMultis = true;
 	}
 	else if ( !strnicmp(pszSection, "ROOMDEF", 7) )
 	{
 		restype = RES_ROOM;
 		fNewStyleDef = true;
 		if ( g_Serv.m_fResyncPause )
-			g_Serv.m_fResyncMultiRegions = true;
+			g_Serv.m_fReloadMultis = true;
 	}
 	else if ( !strnicmp(pszSection, "GLOBALS", 7) )
 		restype = RES_WORLDVARS;
@@ -3555,7 +3555,7 @@ bool CResource::Load(bool fResync)
 	}
 
 	if ( m_StartDefs.GetCount() <= 0 )
-		g_Log.Event(LOGL_ERROR, "No START locations specified. Clients will not be able to create new characters\n");
+		g_Log.Event(LOGL_ERROR, "Map template [STARTS] not found on scripts, clients will not be able to create new characters\n");
 
 	// Make region DEFNAMEs
 	size_t iMax = g_Cfg.m_RegionDefs.GetCount();
@@ -3567,10 +3567,10 @@ bool CResource::Load(bool fResync)
 		pRegion->MakeRegionName();
 	}
 
-	if ( fResync && g_Serv.m_fResyncMultiRegions )
+	if ( fResync && g_Serv.m_fReloadMultis )
 	{
-		g_World.ResyncMultiRegions();
-		g_Serv.m_fResyncMultiRegions = false;
+		g_World.ReloadMultis();
+		g_Serv.m_fReloadMultis = false;
 	}
 
 	m_iEventsItemLink.Empty();

@@ -1794,9 +1794,9 @@ void CWorld::Restock()
 	g_Serv.SetServerMode(SERVMODE_Run);
 }
 
-void CWorld::ResyncMultiRegions()
+void CWorld::ReloadMultis()
 {
-	ADDTOCALLSTACK("CWorld::ResyncMultiRegions");
+	ADDTOCALLSTACK("CWorld::ReloadMultis");
 	// Loop through all multi items on world to reload the multi region.
 	// This must be called after server resync, when dynamic regions from multis
 	// already placed on world got replaced by static regions loaded from scripts

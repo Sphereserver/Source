@@ -1124,7 +1124,7 @@ bool CChar::CanSeeLOS_Adv(const CPointMap &ptDst, CPointMap *pptBlock, int iMaxD
 	CItemBase *pItemDef = NULL;
 	CItemBaseDupe *pDupeDef = NULL;
 
-	DWORD dwTFlags = 0;
+	UINT64 uiTFlags = 0;
 	height_t iHeight = 0;
 	WORD wTerrainId = 0;
 	bool fPath = true;
@@ -1242,7 +1242,7 @@ bool CChar::CanSeeLOS_Adv(const CPointMap &ptDst, CPointMap *pptBlock, int iMaxD
 						continue;
 
 					pItemDef = CItemBase::FindItemBase(pStatic->GetDispID());
-					dwTFlags = 0;
+					uiTFlags = 0;
 					iHeight = 0;
 					fNullTerrain = false;
 
@@ -1259,7 +1259,7 @@ bool CChar::CanSeeLOS_Adv(const CPointMap &ptDst, CPointMap *pptBlock, int iMaxD
 							break;
 						}
 
-						dwTFlags = pItemDef->GetTFlags();
+						uiTFlags = pItemDef->GetTFlags();
 						iHeight = pItemDef->GetHeight();
 
 						if ( pItemDef->GetID() != pStatic->GetDispID() )	// not a parent item
@@ -1268,13 +1268,13 @@ bool CChar::CanSeeLOS_Adv(const CPointMap &ptDst, CPointMap *pptBlock, int iMaxD
 							pDupeDef = CItemBaseDupe::GetDupeRef(pStatic->GetDispID());
 							if ( pDupeDef )
 							{
-								dwTFlags = pDupeDef->GetTFlags();
+								uiTFlags = pDupeDef->GetTFlags();
 								iHeight = pDupeDef->GetHeight();
 							}
 							else
 							{
 								g_Log.EventDebug("Failed to get non-parent reference (static) (DispID 0%x) (X:%hd Y:%hd Z:%hhd)\n", pStatic->GetDispID(), ptNow.m_x, ptNow.m_y, pStatic->m_z);
-								dwTFlags = pItemDef->GetTFlags();
+								uiTFlags = pItemDef->GetTFlags();
 								iHeight = pItemDef->GetHeight();
 							}
 						}
@@ -1283,14 +1283,14 @@ bool CChar::CanSeeLOS_Adv(const CPointMap &ptDst, CPointMap *pptBlock, int iMaxD
 							WARNLOS(("Parent item (STATIC)\n"));
 						}
 
-						iHeight = (dwTFlags & UFLAG2_CLIMBABLE) ? iHeight / 2 : iHeight;
+						iHeight = (uiTFlags & UFLAG2_CLIMBABLE) ? iHeight / 2 : iHeight;
 
-						if ( ((dwTFlags & (UFLAG1_WALL|UFLAG1_BLOCK|UFLAG2_PLATFORM)) || (pItemDef->m_Can & CAN_I_BLOCKLOS)) && !((dwTFlags & UFLAG2_WINDOW) && (wFlags & LOS_NB_WINDOWS)) )
+						if ( ((uiTFlags & (UFLAG1_WALL|UFLAG1_BLOCK|UFLAG2_PLATFORM)) || (pItemDef->m_Can & CAN_I_BLOCKLOS)) && !((uiTFlags & UFLAG2_WINDOW) && (wFlags & LOS_NB_WINDOWS)) )
 						{
 							WARNLOS(("pStatic 0%x %hhu,%hhu,%hhd - %hhu\n", pStatic->GetDispID(), pStatic->m_x, pStatic->m_y, pStatic->m_z, iHeight));
 							min_z = pStatic->m_z;
 							max_z = minimum(iHeight + min_z, UO_SIZE_Z);
-							WARNLOS(("dwTFlags(0%lx)\n", dwTFlags));
+							WARNLOS(("uiTFlags(0%lx)\n", uiTFlags));
 
 							WARNLOS(("pStatic 0%x Z check: %hhd,%hhd (now: %hhd) (dest: %hhd)\n", pStatic->GetDispID(), min_z, max_z, ptNow.m_z, ptDst.m_z));
 							if ( (min_z <= ptNow.m_z) && (max_z >= ptNow.m_z) )
@@ -1332,7 +1332,7 @@ bool CChar::CanSeeLOS_Adv(const CPointMap &ptDst, CPointMap *pptBlock, int iMaxD
 						continue;
 
 					pItemDef = CItemBase::FindItemBase(pItem->GetDispID());
-					dwTFlags = 0;
+					uiTFlags = 0;
 					iHeight = 0;
 					fNullTerrain = false;
 
@@ -1350,7 +1350,7 @@ bool CChar::CanSeeLOS_Adv(const CPointMap &ptDst, CPointMap *pptBlock, int iMaxD
 							//return CanSeeLOS_New_Failed(pptBlock, ptNow);
 						}
 
-						dwTFlags = pItemDef->GetTFlags();
+						uiTFlags = pItemDef->GetTFlags();
 						iHeight = pItemDef->GetHeight();
 
 						if ( pItemDef->GetID() != pItem->GetDispID() )	// not a parent item
@@ -1360,12 +1360,12 @@ bool CChar::CanSeeLOS_Adv(const CPointMap &ptDst, CPointMap *pptBlock, int iMaxD
 							if ( !pDupeDef )
 							{
 								g_Log.EventDebug("Failed to get non-parent reference (dynamic) (DispID 0%x) (X:%hd Y:%hd Z:%hhd)\n", pItem->GetDispID(), ptNow.m_x, ptNow.m_y, pItem->GetTopZ());
-								dwTFlags = pItemDef->GetTFlags();
+								uiTFlags = pItemDef->GetTFlags();
 								iHeight = pItemDef->GetHeight();
 							}
 							else
 							{
-								dwTFlags = pDupeDef->GetTFlags();
+								uiTFlags = pDupeDef->GetTFlags();
 								iHeight = pDupeDef->GetHeight();
 							}
 						}
@@ -1374,14 +1374,14 @@ bool CChar::CanSeeLOS_Adv(const CPointMap &ptDst, CPointMap *pptBlock, int iMaxD
 							WARNLOS(("Parent item (dynamic)\n"));
 						}
 
-						iHeight = (dwTFlags & UFLAG2_CLIMBABLE) ? iHeight / 2 : iHeight;
+						iHeight = (uiTFlags & UFLAG2_CLIMBABLE) ? iHeight / 2 : iHeight;
 
-						if ( ((dwTFlags & (UFLAG1_WALL|UFLAG1_BLOCK|UFLAG2_PLATFORM)) || (pItemDef->m_Can & CAN_I_BLOCKLOS)) && !((dwTFlags & UFLAG2_WINDOW) && (wFlags & LOS_NB_WINDOWS)) )
+						if ( ((uiTFlags & (UFLAG1_WALL|UFLAG1_BLOCK|UFLAG2_PLATFORM)) || (pItemDef->m_Can & CAN_I_BLOCKLOS)) && !((uiTFlags & UFLAG2_WINDOW) && (wFlags & LOS_NB_WINDOWS)) )
 						{
 							WARNLOS(("pItem 0%lx(0%x) %hd,%hd,%hhd - %hhu\n", static_cast<DWORD>(pItem->GetUID()), pItem->GetDispID(), pItem->GetTopPoint().m_x, pItem->GetTopPoint().m_y, pItem->GetTopPoint().m_z, iHeight));
 							min_z = pItem->GetTopZ();
 							max_z = minimum(iHeight + min_z, UO_SIZE_Z);
-							WARNLOS(("dwTFlags(0%lx)\n", dwTFlags));
+							WARNLOS(("uiTFlags(0%lx)\n", uiTFlags));
 
 							WARNLOS(("pItem 0%lx(0%x) Z check: %hhd,%hhd (now: %hhd) (dest: %hhd)\n", static_cast<DWORD>(pItem->GetUID()), pItem->GetDispID(), min_z, max_z, ptNow.m_z, ptDst.m_z));
 							if ( (min_z <= ptNow.m_z) && (max_z >= ptNow.m_z) )
@@ -1436,7 +1436,7 @@ bool CChar::CanSeeLOS_Adv(const CPointMap &ptDst, CPointMap *pptBlock, int iMaxD
 								continue;
 
 							pItemDef = CItemBase::FindItemBase(pMultiItem->GetDispID());
-							dwTFlags = 0;
+							uiTFlags = 0;
 							iHeight = 0;
 							fNullTerrain = false;
 
@@ -1454,7 +1454,7 @@ bool CChar::CanSeeLOS_Adv(const CPointMap &ptDst, CPointMap *pptBlock, int iMaxD
 									//return CanSeeLOS_New_Failed(pptBlock, ptNow);
 								}
 
-								dwTFlags = pItemDef->GetTFlags();
+								uiTFlags = pItemDef->GetTFlags();
 								iHeight = pItemDef->GetHeight();
 
 								if ( pItemDef->GetID() != pMultiItem->GetDispID() )		// not a parent item
@@ -1464,12 +1464,12 @@ bool CChar::CanSeeLOS_Adv(const CPointMap &ptDst, CPointMap *pptBlock, int iMaxD
 									if ( !pDupeDef )
 									{
 										g_Log.EventDebug("Failed to get non-parent reference (multi) (DispID 0%x) (X:%hd Y:%hd Z:%hhd)\n", pMultiItem->GetDispID(), ptNow.m_x, ptNow.m_y, static_cast<signed char>(pMultiItem->m_dz) + pItem->GetTopPoint().m_z);
-										dwTFlags = pItemDef->GetTFlags();
+										uiTFlags = pItemDef->GetTFlags();
 										iHeight = pItemDef->GetHeight();
 									}
 									else
 									{
-										dwTFlags = pDupeDef->GetTFlags();
+										uiTFlags = pDupeDef->GetTFlags();
 										iHeight = pDupeDef->GetHeight();
 									}
 								}
@@ -1478,14 +1478,14 @@ bool CChar::CanSeeLOS_Adv(const CPointMap &ptDst, CPointMap *pptBlock, int iMaxD
 									WARNLOS(("Parent item (multi)\n"));
 								}
 
-								iHeight = (dwTFlags & UFLAG2_CLIMBABLE) ? iHeight / 2 : iHeight;
+								iHeight = (uiTFlags & UFLAG2_CLIMBABLE) ? iHeight / 2 : iHeight;
 
-								if ( ((dwTFlags & (UFLAG1_WALL|UFLAG1_BLOCK|UFLAG2_PLATFORM)) || (pItemDef->m_Can & CAN_I_BLOCKLOS)) && !((dwTFlags & UFLAG2_WINDOW) && (wFlags & LOS_NB_WINDOWS)) )
+								if ( ((uiTFlags & (UFLAG1_WALL|UFLAG1_BLOCK|UFLAG2_PLATFORM)) || (pItemDef->m_Can & CAN_I_BLOCKLOS)) && !((uiTFlags & UFLAG2_WINDOW) && (wFlags & LOS_NB_WINDOWS)) )
 								{
 									WARNLOS(("pMultiItem 0%x %hd,%hd,%hd - %hhu\n", pMultiItem->GetDispID(), pMultiItem->m_dx, pMultiItem->m_dy, pMultiItem->m_dz, iHeight));
 									min_z = static_cast<signed char>(pMultiItem->m_dz) + pItem->GetTopPoint().m_z;
 									max_z = minimum(iHeight + min_z, UO_SIZE_Z);
-									WARNLOS(("dwTFlags(0%lx)\n", dwTFlags));
+									WARNLOS(("uiTFlags(0%lx)\n", uiTFlags));
 
 									if ( (min_z <= ptNow.m_z) && (max_z >= ptNow.m_z) )
 									{

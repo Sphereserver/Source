@@ -158,17 +158,11 @@ void AbstractThread::start()
 #ifdef _WIN32
 	m_handle = reinterpret_cast<spherethread_t>(_beginthreadex(NULL, 0, &runner, this, 0, NULL));
 #else
-	pthread_attr_t threadAttr;
-	pthread_attr_init(&threadAttr);
-	pthread_attr_setdetachstate(&threadAttr, PTHREAD_CREATE_DETACHED);
-	int result = pthread_create( &m_handle, &threadAttr, &runner, this );
-	pthread_attr_destroy(&threadAttr);
-
-	if (result != 0)
-	{
-		m_handle = 0;
-		throw CException(LOGL_FATAL, 0, "Unable to spawn a new thread");
-	}
+	pthread_attr_t attr;
+	pthread_attr_init(&attr);
+	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+	pthread_create(&m_handle, &attr, &runner, this);
+	pthread_attr_destroy(&attr);
 #endif
 	
 	m_terminateEvent.reset();

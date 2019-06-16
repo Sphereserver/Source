@@ -8,7 +8,7 @@ CItemBase::CItemBase(ITEMID_TYPE id) : CBaseBaseDef(RESOURCE_ID(RES_ITEMDEF, id)
 	m_type = IT_NORMAL;
 	m_weight = 0;
 	m_layer = LAYER_NONE;
-	m_dwFlags = 0;
+	m_uiFlags = 0;
 	m_speed = 0;
 	m_iSkill = SKILL_NONE;
 	m_CanUse = CAN_U_ALL;
@@ -60,7 +60,7 @@ CItemBase::CItemBase(ITEMID_TYPE id) : CBaseBaseDef(RESOURCE_ID(RES_ITEMDEF, id)
 	else
 		tiledata.m_weight = UCHAR_MAX;
 
-	m_dwFlags = tiledata.m_flags;
+	m_uiFlags = tiledata.m_flags;
 	m_type = GetTypeBase(id, tiledata);
 
 	TCHAR szName[sizeof(tiledata.m_name) + 1];
@@ -198,7 +198,7 @@ void CItemBase::SetTypeName(LPCTSTR pszName)
 	ASSERT(pszName);
 	if ( !strcmp(pszName, GetTypeName()) )
 		return;
-	m_dwFlags |= UFLAG2_ZERO1;	// we override the name
+	m_uiFlags |= UFLAG2_ZERO1;	// we override the name
 	CBaseBaseDef::SetTypeName(pszName);
 }
 
@@ -207,11 +207,11 @@ LPCTSTR CItemBase::GetArticleAndSpace() const
 	ADDTOCALLSTACK("CItemBase::GetArticleAndSpace");
 	if ( IsSetOF(OF_NoPrefix) )
 		return "";
-	if ( m_dwFlags & UFLAG2_ZERO1 )	// name has been changed from tiledata.mul
+	if ( m_uiFlags & UFLAG2_ZERO1 )	// name has been changed from tiledata.mul
 		return Str_GetArticleAndSpace(GetTypeName());
-	if ( m_dwFlags & UFLAG2_AN )
+	if ( m_uiFlags & UFLAG2_AN )
 		return "an ";
-	if ( m_dwFlags & UFLAG2_A )
+	if ( m_uiFlags & UFLAG2_A )
 		return "a ";
 	return "";
 }
@@ -460,7 +460,7 @@ bool CItemBase::GetItemData(ITEMID_TYPE id, CUOItemTypeRec2 *pTiledata)	// stati
 	}
 
 	// Unused tiledata I guess. Don't create it
-	if ( !pTiledata->m_flags && !pTiledata->m_weight && !pTiledata->m_layer && !pTiledata->m_dwUnk11 && !pTiledata->m_dwAnim && !pTiledata->m_wUnk19 && !pTiledata->m_height && !pTiledata->m_name[0] )
+	if ( !pTiledata->m_flags && !pTiledata->m_weight && !pTiledata->m_layer && !pTiledata->m_dwUnk11 && !pTiledata->m_wAnim && !pTiledata->m_wLight && !pTiledata->m_height && !pTiledata->m_name[0] )
 		return ((id == ITEMID_BBOARD_MSG) || IsID_GamePiece(id) || IsID_Track(id));		// what are the exceptions to the rule?
 
 	return true;
@@ -1130,7 +1130,7 @@ bool CItemBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatHex(m_ttNormal.m_tData4);
 			break;
 		case IBC_TFLAGS:
-			sVal.FormatHex(GetTFlags());
+			sVal.FormatLLHex(GetTFlags());
 			break;
 		case IBC_TWOHANDS:
 			if ( !IsTypeEquippable() )

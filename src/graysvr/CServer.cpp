@@ -17,8 +17,8 @@ CServer::CServer() : CServerDef(SPHERE_TITLE, CSocketAddressIP(SOCKET_LOCAL_ADDR
 	SetServerMode(SERVMODE_Loading);
 	m_iExitFlag = 0;
 
+	m_fReloadMultis = false;
 	m_fResyncPause = false;
-	m_fResyncMultiRegions = false;
 	m_fResyncRequested = NULL;
 
 	m_iAdminClients = 0;
@@ -1472,7 +1472,7 @@ bool CServer::r_Verb(CScript &s, CTextConsole *pSrc)
 		}
 		case SV_SHUTDOWN:
 		{
-			Shutdown(s.HasArgs() ? s.GetArgVal() : 15);
+			Shutdown(s.HasArgs() ? s.GetArgLLVal() : 15);
 			break;
 		}
 		case SV_UNBLOCKIP:
