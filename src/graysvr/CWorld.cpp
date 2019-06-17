@@ -1906,7 +1906,6 @@ void CWorld::Speak(const CObjBaseTemplate *pSrc, LPCTSTR pszText, HUE_TYPE wHue,
 	if ( !pszText )
 		return;
 
-	EXC_TRY("Speak");
 	bool fSpeakAsGhost = false;
 	CGString sTextGhost;
 
@@ -1950,7 +1949,6 @@ void CWorld::Speak(const CObjBaseTemplate *pSrc, LPCTSTR pszText, HUE_TYPE wHue,
 
 		pClient->addBarkParse(sSpeak, pSrc, wHue, mode, font);
 	}
-	EXC_CATCH;
 }
 
 #define SPEAKFLAG_NONE		0x0

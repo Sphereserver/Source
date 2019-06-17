@@ -22,8 +22,6 @@ extern "C"
 
 ///////////////////////////////////////////////////////////
 
-#define CException CGrayError
-
 class CGrayError
 {
 	// we can throw this structure to produce an error.

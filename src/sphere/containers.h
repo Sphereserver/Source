@@ -75,7 +75,7 @@ public:
 	void pop(void)
 	{
 		if (empty())
-			throw CException(LOGL_ERROR, 0, "No elements to read from queue.");
+			throw CGrayError(LOGL_ERROR, 0, "No elements to read from queue.");
 
 		iterator next = m_head;
 		++next;
@@ -97,7 +97,7 @@ public:
 		}
 
 		// this should never happen
-		throw CException(LOGL_ERROR, 0, "No elements to read from queue.");
+		throw CGrayError(LOGL_ERROR, 0, "No elements to read from queue.");
 	}
 };
 

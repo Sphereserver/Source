@@ -551,7 +551,51 @@ void Main::onStart()
 
 void Main::tick()
 {
-	Sphere_OnTick();
+	// Give the world (CMainTask) a single tick
+#ifdef EXCEPTIONS_DEBUG
+	const char *m_sClassName = "Sphere";
+#endif
+	EXC_TRY("Tick");
+
+#ifdef _WIN32
+	EXC_SET("service");
+	g_Service.OnTick();
+#endif
+
+	EXC_SET("shipstimers");
+	g_Serv.ShipTimers_Tick();
+
+	EXC_SET("world");
+	g_World.OnTick();
+
+	// Process incoming data
+	EXC_SET("network-in");
+#ifndef _MTNETWORK
+	g_NetworkIn.tick();
+#else
+	g_NetworkManager.processAllInput();
+#endif
+
+	EXC_SET("server");
+	g_Serv.OnTick();
+
+	// Push outgoing data
+#ifndef _MTNETWORK
+	if ( !g_NetworkOut.isActive() )
+	{
+		EXC_SET("network-out");
+		g_NetworkOut.tick();
+	}
+#else
+
+	EXC_SET("network-tick");
+	g_NetworkManager.tick();
+
+	EXC_SET("network-out");
+	g_NetworkManager.processAllOutput();
+#endif
+
+	EXC_CATCH;
 }
 
 bool Main::shouldExit()
@@ -720,52 +764,6 @@ void Sphere_ExitServer()
 	g_Log.Close();
 }
 
-int Sphere_OnTick()
-{
-	// Give the world (CMainTask) a single tick. RETURN: 0 = everything is fine.
-#ifdef EXCEPTIONS_DEBUG
-	const char *m_sClassName = "Sphere";
-#endif
-	EXC_TRY("Tick");
-#ifdef _WIN32
-	EXC_SET("service");
-	g_Service.OnTick();
-#endif
-	EXC_SET("ships_tick");
-	g_Serv.ShipTimers_Tick();
-
-	EXC_SET("world");
-	g_World.OnTick();
-
-	// process incoming data
-	EXC_SET("network-in");
-#ifndef _MTNETWORK
-	g_NetworkIn.tick();
-#else
-	g_NetworkManager.processAllInput();
-#endif
-
-	EXC_SET("server");
-	g_Serv.OnTick();
-
-	// push outgoing data
-#ifndef _MTNETWORK
-	if (g_NetworkOut.isActive() == false)
-	{
-		EXC_SET("network-out");
-		g_NetworkOut.tick();
-	}
-#else
-	EXC_SET("network-tick");
-	g_NetworkManager.tick();
-
-	EXC_SET("network-out");
-	g_NetworkManager.processAllOutput();
-#endif
-
-	EXC_CATCH;
-	return g_Serv.m_iExitFlag;
-}
 void CServer::ShipTimers_Tick()
 {
 	ADDTOCALLSTACK("CServer::ShipTimers_Tick");
@@ -1182,6 +1180,10 @@ int _cdecl main( int argc, char * argv[] )
 	g_Serv.m_iExitFlag = Sphere_InitServer( argc, argv );
 	if ( ! g_Serv.m_iExitFlag )
 	{
+#ifdef EXCEPTIONS_DEBUG
+		const char *m_sClassName = "Sphere";
+#endif
+		EXC_TRY("Main");
 		WritePidFile();
 
 		// Start the ping server, this can only be ran in a separate thread
@@ -1193,15 +1195,13 @@ int _cdecl main( int argc, char * argv[] )
 			g_NetworkEvent.start();
 #endif
 
-#ifndef _MTNETWORK
-		g_NetworkIn.onStart();
-#else
+#ifdef _MTNETWORK
 		g_NetworkManager.start();
+#else
+		g_NetworkIn.onStart();
 #endif
 			
-		bool shouldRunInThread = ( g_Cfg.m_iFreezeRestartTime > 0 );
-
-		if( shouldRunInThread )
+		if ( g_Cfg.m_iFreezeRestartTime > 0 )
 		{
 			g_Main.start();
 			Sphere_MainMonitorLoop();
@@ -1213,6 +1213,7 @@ int _cdecl main( int argc, char * argv[] )
 				g_Main.tick();
 			}
 		}
+		EXC_CATCH;
 	}
 
 #ifdef _WIN32

@@ -70,7 +70,7 @@ void ThreadHolder::pop(IThread *thread)
 {
 	init();
 	if( m_threadCount <= 0 )
-		throw CException(LOGL_ERROR, 0, "Trying to dequeue thread while no threads are active");
+		throw CGrayError(LOGL_ERROR, 0, "Trying to dequeue thread while no threads are active");
 
 	SimpleThreadLock lock(m_mutex);
 	spherethreadlist_t::iterator it = std::find(m_threads.begin(), m_threads.end(), thread);
@@ -81,7 +81,7 @@ void ThreadHolder::pop(IThread *thread)
 		return;
 	}
 
-	throw CException(LOGL_ERROR, 0, "Unable to dequeue a thread (not registered)");
+	throw CGrayError(LOGL_ERROR, 0, "Unable to dequeue a thread (not registered)");
 }
 
 IThread * ThreadHolder::getThreadAt(size_t at)
@@ -125,7 +125,7 @@ AbstractThread::AbstractThread(const char *name, IThread::Priority priority)
 #ifdef _WIN32
 		if( CoInitializeEx(NULL, COINIT_MULTITHREADED) != S_OK )
 		{
-			throw CException(LOGL_FATAL, 0, "OLE is not available, threading model unimplementable");
+			throw CGrayError(LOGL_FATAL, 0, "OLE is not available, threading model unimplementable");
 		}
 #endif
 		AbstractThread::m_threadsAvailable++;
@@ -159,10 +159,26 @@ void AbstractThread::start()
 	m_handle = reinterpret_cast<spherethread_t>(_beginthreadex(NULL, 0, &runner, this, 0, NULL));
 #else
 	pthread_attr_t attr;
-	pthread_attr_init(&attr);
-	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
-	pthread_create(&m_handle, &attr, &runner, this);
-	pthread_attr_destroy(&attr);
+	if ( pthread_attr_init(&attr) != 0 )
+	{
+		m_handle = 0;
+		throw CException(LOGL_FATAL, 0, "Unable to init thread attributes");
+	}
+	if ( pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED) != 0 )
+	{
+		m_handle = 0;
+		throw CException(LOGL_FATAL, 0, "Unable to set thread detach state");
+	}
+	if ( pthread_create(&m_handle, &attr, &runner, this) != 0 )
+	{
+		m_handle = 0;
+		throw CException(LOGL_FATAL, 0, "Unable to create thread");
+	}
+	if ( pthread_attr_destroy(&attr) != 0 )
+	{
+		m_handle = 0;
+		throw CException(LOGL_FATAL, 0, "Unable to destroy thread attributes");
+	}
 #endif
 	
 	m_terminateEvent.reset();
@@ -237,7 +253,7 @@ void AbstractThread::run()
 			// be in tick() but we cannot guarantee it to be called there
 			CurrentProfileData.Start(PROFILE_IDLE);
 		}
-		catch( const CException& e )
+		catch ( const CGrayError &e )
 		{
 			gotException = true;
 			g_Log.CatchEvent(&e, "%s::tick", getName());
@@ -526,7 +542,7 @@ TemporaryStringStorage *AbstractSphereThread::allocateStringBuffer()
 		{
 			// but the best is to throw an exception to give better formed information for end users
 			// rather than access violations
-			throw CException(LOGL_FATAL, 0, "Thread temporary string buffer is full");
+			throw CGrayError(LOGL_FATAL, 0, "Thread temporary string buffer is full");
 		}
 	}
 }

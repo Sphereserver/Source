@@ -894,7 +894,6 @@ bool CResourceLink::ResourceLock(CResourceLock &s)
 		return false;
 
 	// Give several tries to lock the script while multithreading
-	EXC_TRY("ResourceLock");
 	ASSERT(m_pScript);
 	int iRet = s.OpenLock(m_pScript, m_Context);
 	if ( !iRet )
@@ -904,7 +903,6 @@ bool CResourceLink::ResourceLock(CResourceLock &s)
 
 	// ret = -2 or -3
 	DEBUG_ERR(("ResourceLock '%s':%ld id=%s FAILED\n", static_cast<LPCTSTR>(s.GetFilePath()), m_Context.m_lOffset, GetResourceName()));
-	EXC_CATCH;
 	return false;
 }
 
