@@ -24,11 +24,10 @@ extern "C"
 
 class CGrayError
 {
-	// we can throw this structure to produce an error.
-	// similar to CFileException and CException
+	// Throw this structure to produce an error
 public:
 	CGrayError(LOGL_TYPE eSev, DWORD hErr, LPCTSTR pszDescription);
-	CGrayError(const CGrayError &e);	// copy contstructor needed.
+	CGrayError(const CGrayError &e);	// copy constructor needed
 	virtual ~CGrayError() { };
 
 public:

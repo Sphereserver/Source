@@ -164,7 +164,6 @@ int CGrayError::GetSystemErrorMessage(DWORD dwError, LPTSTR lpszError, DWORD dwM
 bool CGrayError::GetErrorMessage(LPTSTR lpszError) const
 {
 #ifdef _WIN32
-	// Compatible with CException and CFileException
 	if ( m_hError )
 	{
 		// Return the message defined by the system for the error code

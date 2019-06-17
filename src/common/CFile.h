@@ -35,7 +35,6 @@
 #define NOFILE_HANDLE		((HANDLE)-1)
 
 class CGrayError;
-#define CFileException CGrayError
 
 class CFile
 {
@@ -65,7 +64,7 @@ public:
 	virtual bool SetFilePath(LPCTSTR pszPath);
 	LPCTSTR GetFileTitle() const;
 
-	virtual bool Open(LPCTSTR pszFileName = NULL, UINT uMode = OF_READ|OF_SHARE_DENY_NONE, CFileException *e = NULL);
+	virtual bool Open(LPCTSTR pszFileName = NULL, UINT uMode = OF_READ|OF_SHARE_DENY_NONE);
 	virtual void Close();
 
 	void SeekToBegin()

@@ -29,9 +29,8 @@ LPCTSTR CFile::GetFileTitle() const
 	return CGFile::GetFilesTitle(GetFilePath());
 }
 
-bool CFile::Open(LPCTSTR pszFileName, UINT uMode, CFileException *e)
+bool CFile::Open(LPCTSTR pszFileName, UINT uMode)
 {
-	UNREFERENCED_PARAMETER(e);
 	ASSERT(m_hFile == NOFILE_HANDLE);
 	SetFilePath(pszFileName);
 

@@ -162,22 +162,22 @@ void AbstractThread::start()
 	if ( pthread_attr_init(&attr) != 0 )
 	{
 		m_handle = 0;
-		throw CException(LOGL_FATAL, 0, "Unable to init thread attributes");
+		throw CGrayError(LOGL_FATAL, 0, "Unable to init thread attributes");
 	}
 	if ( pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED) != 0 )
 	{
 		m_handle = 0;
-		throw CException(LOGL_FATAL, 0, "Unable to set thread detach state");
+		throw CGrayError(LOGL_FATAL, 0, "Unable to set thread detach state");
 	}
 	if ( pthread_create(&m_handle, &attr, &runner, this) != 0 )
 	{
 		m_handle = 0;
-		throw CException(LOGL_FATAL, 0, "Unable to create thread");
+		throw CGrayError(LOGL_FATAL, 0, "Unable to create thread");
 	}
 	if ( pthread_attr_destroy(&attr) != 0 )
 	{
 		m_handle = 0;
-		throw CException(LOGL_FATAL, 0, "Unable to destroy thread attributes");
+		throw CGrayError(LOGL_FATAL, 0, "Unable to destroy thread attributes");
 	}
 #endif
 	
