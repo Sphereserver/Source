@@ -234,13 +234,13 @@ void NetState::init(SOCKET socket, CSocketAddress addr)
 	m_peerAddress = addr;
 	m_socket.SetSocket(socket);
 	if ( m_socket.SetNonBlocking() == SOCKET_ERROR )
-		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to set listen socket nonblocking mode\n");
+		g_Log.Event(LOGL_FATAL, "Unable to set listen socket nonblocking mode\n");
 
 	// disable NAGLE algorythm for data compression/coalescing.
 	// Send as fast as we can. we handle packing ourselves.
 	BOOL nbool = true;
 	if ( m_socket.SetSockOpt(TCP_NODELAY, &nbool, sizeof(BOOL), IPPROTO_TCP) == SOCKET_ERROR )
-		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to set listen socket option TCP_NODELAY\n");
+		g_Log.Event(LOGL_FATAL, "Unable to set listen socket option TCP_NODELAY\n");
 
 	g_Serv.StatInc(SERV_STAT_CLIENTS);
 	CClient* client = new CClient(this);
@@ -2475,7 +2475,7 @@ void NetworkManager::createNetworkThreads(size_t count)
 	if (count > maxThreads)
 	{
 		count = maxThreads;
-		g_Log.Event(LOGL_WARN|LOGM_INIT, "Too many network threads requested. Reducing number to %" FMTSIZE_T ".\n", count);
+		g_Log.Event(LOGL_WARN, "Too many network threads requested. Reducing number to %" FMTSIZE_T ".\n", count);
 	}
 
 	ASSERT(m_threads.empty());

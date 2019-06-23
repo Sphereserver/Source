@@ -112,7 +112,7 @@ void CNTService::ServiceStartMain(DWORD dwArgc, LPTSTR *lpszArgv)
 	m_hStatusHandle = RegisterServiceCtrlHandler(pszMsg, service_ctrl);
 	if ( !m_hStatusHandle )	// Not much we can do about this.
 	{
-		g_Log.Event(LOGL_FATAL|LOGM_INIT, "RegisterServiceCtrlHandler failed\n");
+		g_Log.Event(LOGL_FATAL, "RegisterServiceCtrlHandler failed\n");
 		return;
 	}
 

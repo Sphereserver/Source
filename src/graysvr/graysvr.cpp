@@ -289,7 +289,7 @@ void CMapList::Init()
 		m_pMapDiffCollection = new CMapDiffCollection();
 }
 
-bool WritePidFile(int iMode = 0)
+bool WritePidFile(int iMode)
 {
 	LPCTSTR	file = SPHERE_FILE ".pid";
 	FILE	*pidFile;
@@ -694,7 +694,7 @@ int Sphere_InitServer( int argc, char *argv[] )
 		}
 	}
 
-	g_Log.Event(LOGL_EVENT, "Startup complete (Items=%lu, Chars=%lu, Accounts=%lu)\n", g_Serv.StatGet(SERV_STAT_ITEMS), g_Serv.StatGet(SERV_STAT_CHARS), g_Serv.StatGet(SERV_STAT_ACCOUNTS));
+	g_Log.Event(LOGL_EVENT, "\nStartup complete (Items=%lu, Chars=%lu, Accounts=%lu)\n", g_Serv.StatGet(SERV_STAT_ITEMS), g_Serv.StatGet(SERV_STAT_CHARS), g_Serv.StatGet(SERV_STAT_ACCOUNTS));
 #ifdef _WIN32
 	g_Log.Event(LOGL_EVENT, "Use '?' to view available console commands\n\n");
 #else
@@ -760,7 +760,7 @@ void Sphere_ExitServer()
 		default:	Reason = "Server shutdown complete";			break;
 	}
 
-	g_Log.Event(LOGM_INIT|LOGL_FATAL, "Server terminated: %s (code %d)\n", Reason, g_Serv.m_iExitFlag);
+	g_Log.Event(LOGL_FATAL, "Server terminated: %s (code %d)\n", Reason, g_Serv.m_iExitFlag);
 	g_Log.Close();
 }
 
@@ -1172,6 +1172,11 @@ int Sphere_MainEntryPoint( int argc, char *argv[] )
 int _cdecl main( int argc, char * argv[] )
 #endif
 {
+#ifdef EXCEPTIONS_DEBUG
+	const char *m_sClassName = "Sphere";
+#endif
+	EXC_TRY("Main");
+
 #ifndef _WIN32
 	// Initialize nonblocking IO and disable readline on linux
 	g_UnixTerminal.prepare();
@@ -1180,11 +1185,7 @@ int _cdecl main( int argc, char * argv[] )
 	g_Serv.m_iExitFlag = Sphere_InitServer( argc, argv );
 	if ( ! g_Serv.m_iExitFlag )
 	{
-#ifdef EXCEPTIONS_DEBUG
-		const char *m_sClassName = "Sphere";
-#endif
-		EXC_TRY("Main");
-		WritePidFile();
+		WritePidFile(0);
 
 		// Start the ping server, this can only be ran in a separate thread
 		if ( IsSetEF( EF_UsePingServer ) )
@@ -1213,16 +1214,16 @@ int _cdecl main( int argc, char * argv[] )
 				g_Main.tick();
 			}
 		}
-		EXC_CATCH;
 	}
 
 #ifdef _WIN32
 	NTWindow_DeleteIcon();
 #endif
-
 	Sphere_ExitServer();
-	WritePidFile(true);
-	return( g_Serv.m_iExitFlag );
+	WritePidFile(1);
+
+	EXC_CATCH;
+	return g_Serv.m_iExitFlag;
 }
 
 #include "../tables/classnames.tbl"

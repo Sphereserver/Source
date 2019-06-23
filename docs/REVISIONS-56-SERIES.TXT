@@ -1507,3 +1507,6 @@ Fixed: Function REGION.RECT returning wrong value.
 [items/sphere_item_quests.scp]: Added The Shattered Obelisk caravans and Rising Tide items
 [items/sphere_item_veteran_rewards.scp]: Added some missing veteran rewards
 [sphereCrypt.ini]: Added crypt key for classic client 7.0.76 and enhanced client 4.0.76
+
+23-06-2019, Coruja
+Fixed: Console startup errors not showing correctly when LogMask flag 'LOGM_INIT' is disabled on sphere.ini.

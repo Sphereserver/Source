@@ -94,12 +94,12 @@ bool CServer::SocketsInit()
 		int iRetWSA = WSAStartup(MAKEWORD(2, 2), &wsaData);
 		if ( iRetWSA != 0 )
 		{
-			g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to initialize WinSock (code %d)\n", iRetWSA);
+			g_Log.Event(LOGL_FATAL, "Unable to initialize WinSock (code %d)\n", iRetWSA);
 			return false;
 		}
 		else if ( (LOBYTE(wsaData.wVersion) != 2) || (HIBYTE(wsaData.wVersion) != 2) )
 		{
-			g_Log.Event(LOGL_FATAL|LOGM_INIT, "WinSock 2.2 is not supported\n", iRetWSA);
+			g_Log.Event(LOGL_FATAL, "WinSock 2.2 is not supported\n", iRetWSA);
 			WSACleanup();
 			return false;
 		}
@@ -108,7 +108,7 @@ bool CServer::SocketsInit()
 
 	if ( !m_SocketMain.Create() )
 	{
-		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to create listen socket\n");
+		g_Log.Event(LOGL_FATAL, "Unable to create listen socket\n");
 		return false;
 	}
 
@@ -116,20 +116,20 @@ bool CServer::SocketsInit()
 	lVal.l_onoff = 0;
 	lVal.l_linger = 10;
 	if ( m_SocketMain.SetSockOpt(SO_LINGER, reinterpret_cast<const void *>(&lVal), sizeof(lVal)) == SOCKET_ERROR )
-		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to set listen socket option SO_LINGER\n");
+		g_Log.Event(LOGL_FATAL, "Unable to set listen socket option SO_LINGER\n");
 	if ( m_SocketMain.SetNonBlocking() == SOCKET_ERROR )
-		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to set listen socket non-blocking mode\n");
+		g_Log.Event(LOGL_FATAL, "Unable to set listen socket non-blocking mode\n");
 #ifndef _WIN32
 	int iEnable = 1;
 	if ( m_SocketMain.SetSockOpt(SO_REUSEADDR, reinterpret_cast<const void *>(&iEnable), sizeof(iEnable)) == SOCKET_ERROR )
-		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to set listen socket option SO_REUSEADDR\n");
+		g_Log.Event(LOGL_FATAL, "Unable to set listen socket option SO_REUSEADDR\n");
 #endif
 
 	// Bind socket to specific IP/port
 	CSocketAddress SockAddr = m_ip;
 	if ( m_SocketMain.Bind(SockAddr) == SOCKET_ERROR )
 	{
-		g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to bind listen socket %s port %hu\n", SockAddr.GetAddrStr(), SockAddr.GetPort());
+		g_Log.Event(LOGL_FATAL, "Unable to bind listen socket %s port %hu\n", SockAddr.GetAddrStr(), SockAddr.GetPort());
 		return false;
 	}
 	m_SocketMain.Listen();
@@ -152,7 +152,7 @@ bool CServer::SocketsInit()
 			strncpy(szName, pHost->h_name, sizeof(szName) - 1);
 	}
 
-	g_Log.Event(LOGM_INIT, "\nServer started on hostname '%s'\n", szName);
+	g_Log.Event(LOGL_EVENT, "\nServer started on hostname '%s'\n", szName);
 	if ( !iRet && pHost && pHost->h_addr )
 	{
 		for ( size_t i = 0; pHost->h_addr_list[i] != NULL; ++i )
@@ -161,16 +161,16 @@ bool CServer::SocketsInit()
 			ip.SetAddrIP(*reinterpret_cast<DWORD *>(pHost->h_addr_list[i]));	// 0.1.2.3
 			if ( !m_ip.IsLocalAddr() && !m_ip.IsSameIP(ip) )
 				continue;
-			g_Log.Event(LOGM_INIT, "Monitoring local IP %s:%d (TCP) - Main server\n", ip.GetAddrStr(), m_ip.GetPort());
+			g_Log.Event(LOGL_EVENT, "Monitoring local IP %s:%d (TCP) - Main server\n", ip.GetAddrStr(), m_ip.GetPort());
 			if ( IsSetEF(EF_UsePingServer) )
-				g_Log.Event(LOGM_INIT, "Monitoring local IP %s:%d (UDP) - Ping server\n", ip.GetAddrStr(), PINGSERVER_PORT);
+				g_Log.Event(LOGL_EVENT, "Monitoring local IP %s:%d (UDP) - Ping server\n", ip.GetAddrStr(), PINGSERVER_PORT);
 		}
 	}
 	if ( GetPublicIP() )
 	{
-		g_Log.Event(LOGM_INIT, "Monitoring public IP %s:%d (TCP) - Main server\n", m_ip.GetAddrStr(), m_ip.GetPort());
+		g_Log.Event(LOGL_EVENT, "Monitoring public IP %s:%d (TCP) - Main server\n", m_ip.GetAddrStr(), m_ip.GetPort());
 		if ( IsSetEF(EF_UsePingServer) )
-			g_Log.Event(LOGM_INIT, "Monitoring public IP %s:%d (UDP) - Ping server\n", m_ip.GetAddrStr(), PINGSERVER_PORT);
+			g_Log.Event(LOGL_EVENT, "Monitoring public IP %s:%d (UDP) - Ping server\n", m_ip.GetAddrStr(), PINGSERVER_PORT);
 	}
 	return true;
 }
@@ -557,7 +557,7 @@ bool CServer::CommandLine(int argc, TCHAR *argv[])
 			case 'Q':
 				return false;
 			default:
-				g_Log.Event(LOGM_INIT|LOGL_CRIT, "Don't recognize command line data '%s'\n", static_cast<LPCTSTR>(argv[argn]));
+				g_Log.Event(LOGL_CRIT, "Don't recognize command line data '%s'\n", static_cast<LPCTSTR>(argv[argn]));
 				break;
 		}
 	}

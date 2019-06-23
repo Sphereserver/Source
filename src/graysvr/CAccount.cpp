@@ -127,7 +127,7 @@ bool CAccounts::Account_LoadAll(bool fChanges, bool fClearChanges)
 	sprintf(pszFilename, "%s" SPHERE_FILE "%s", static_cast<LPCTSTR>(g_Cfg.m_sAcctBaseDir), fChanges ? "acct" : "accu");
 
 	if ( !fChanges )
-		g_Log.Event(LOGM_INIT, "Loading %s%s\n", pszFilename, SPHERE_SCRIPT);
+		g_Log.Event(LOGL_EVENT, "Loading %s%s\n", pszFilename, SPHERE_SCRIPT);
 
 	CScript s;
 	if ( !s.Open(pszFilename, OF_READ|OF_TEXT|OF_DEFAULTMODE|(fChanges ? OF_NONCRIT : 0)) )
@@ -138,7 +138,7 @@ bool CAccounts::Account_LoadAll(bool fChanges, bool fClearChanges)
 				return true;
 			if ( Account_SaveAll() )	// auto-create account files
 				return true;
-			g_Log.Event(LOGL_FATAL|LOGM_INIT, "Can't open account file '%s'\n", static_cast<LPCTSTR>(s.GetFilePath()));
+			g_Log.Event(LOGL_FATAL, "Can't open account file '%s'\n", static_cast<LPCTSTR>(s.GetFilePath()));
 			return false;
 		}
 	}
@@ -149,7 +149,7 @@ bool CAccounts::Account_LoadAll(bool fChanges, bool fClearChanges)
 		ASSERT(fChanges);
 		s.Close();
 		if ( !s.Open(NULL, OF_WRITE|OF_TEXT|OF_DEFAULTMODE) )
-			g_Log.Event(LOGL_FATAL|LOGM_INIT, "Can't open account file '%s'\n", static_cast<LPCTSTR>(s.GetFilePath()));
+			g_Log.Event(LOGL_FATAL, "Can't open account file '%s'\n", static_cast<LPCTSTR>(s.GetFilePath()));
 		else
 			s.WriteString("// " SPHERE_TITLE " accounts update file.\n"
 						  "// Account changes should be made here and will be applied on next worldsave.\n"

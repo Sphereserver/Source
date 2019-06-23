@@ -2125,7 +2125,7 @@ bool CResource::LoadResourceSection(CScript *pScript)
 
 		if ( !pVarNum )
 		{
-			g_Log.Event(LOGL_WARN|LOGM_INIT, "Resource '%s' not found\n", pszDef);
+			g_Log.Event(LOGL_WARN, "Resource '%s' not found\n", pszDef);
 			return false;
 		}
 
@@ -2139,7 +2139,7 @@ bool CResource::LoadResourceSection(CScript *pScript)
 
 		if ( !pRes )
 		{
-			g_Log.Event(LOGL_WARN|LOGM_INIT, "Resource '%s' not found\n", pszDef);
+			g_Log.Event(LOGL_WARN, "Resource '%s' not found\n", pszDef);
 			return false;
 		}
 
@@ -2149,7 +2149,7 @@ bool CResource::LoadResourceSection(CScript *pScript)
 
 	if ( restype < 0 )
 	{
-		g_Log.Event(LOGL_WARN|LOGM_INIT, "Unknown section '%s' in '%s'\n", pScript->GetKey(), static_cast<LPCTSTR>(pScript->GetFileTitle()));
+		g_Log.Event(LOGL_WARN, "Unknown section '%s' in '%s'\n", pScript->GetKey(), static_cast<LPCTSTR>(pScript->GetFileTitle()));
 		return false;
 	}
 	else
@@ -2251,7 +2251,7 @@ bool CResource::LoadResourceSection(CScript *pScript)
 						}
 					}
 					if ( i == DEFMSG_QTY )
-						g_Log.Event(LOGM_INIT|LOGL_ERROR, "Unknown message '%s'\n", pszKey);
+						g_Log.Event(LOGL_ERROR, "Unknown message '%s'\n", pszKey);
 					continue;
 				}
 				else
@@ -2297,7 +2297,7 @@ bool CResource::LoadResourceSection(CScript *pScript)
 		{
 			if ( !pScript->ReadKey() )
 			{
-				g_Log.Event(LOGM_INIT|LOGL_ERROR, "NOTOTITLES section is missing the list of karma levels\n");
+				g_Log.Event(LOGL_ERROR, "NOTOTITLES section is missing the list of karma levels\n");
 				return false;
 			}
 
@@ -2313,7 +2313,7 @@ bool CResource::LoadResourceSection(CScript *pScript)
 
 			if ( !pScript->ReadKey() )
 			{
-				g_Log.Event(LOGM_INIT|LOGL_ERROR, "NOTOTITLES section is missing the list of fame levels\n");
+				g_Log.Event(LOGL_ERROR, "NOTOTITLES section is missing the list of fame levels\n");
 				return false;
 			}
 
@@ -2337,7 +2337,7 @@ bool CResource::LoadResourceSection(CScript *pScript)
 			}
 
 			if ( m_NotoTitles.GetCount() != ((m_NotoKarmaLevels.GetCount() + 1) * (m_NotoFameLevels.GetCount() + 1)) )
-				g_Log.Event(LOGM_INIT|LOGL_WARN, "Expected %" FMTSIZE_T " titles in NOTOTITLES section but found %" FMTSIZE_T "\n", (m_NotoKarmaLevels.GetCount() + 1) * (m_NotoFameLevels.GetCount() + 1), m_NotoTitles.GetCount());
+				g_Log.Event(LOGL_WARN, "Expected %" FMTSIZE_T " titles in NOTOTITLES section but found %" FMTSIZE_T "\n", (m_NotoKarmaLevels.GetCount() + 1) * (m_NotoFameLevels.GetCount() + 1), m_NotoTitles.GetCount());
 			return true;
 		}
 		case RES_OBSCENE:
@@ -2850,7 +2850,7 @@ bool CResource::LoadResourceSection(CScript *pScript)
 		{
 			if ( !rid.IsValidUID() )
 			{
-				g_Log.Event(LOGL_ERROR|LOGM_INIT, "Undefined char type '%s'\n", static_cast<LPCTSTR>(pScript->GetArgStr()));
+				g_Log.Event(LOGL_ERROR, "Undefined char type '%s'\n", static_cast<LPCTSTR>(pScript->GetArgStr()));
 				return false;
 			}
 			return CChar::CreateBasic(static_cast<CREID_TYPE>(rid.GetResIndex()))->r_Load(*pScript);
@@ -2860,7 +2860,7 @@ bool CResource::LoadResourceSection(CScript *pScript)
 		{
 			if ( !rid.IsValidUID() )
 			{
-				g_Log.Event(LOGL_ERROR|LOGM_INIT, "Undefined item type '%s'\n", static_cast<LPCTSTR>(pScript->GetArgStr()));
+				g_Log.Event(LOGL_ERROR, "Undefined item type '%s'\n", static_cast<LPCTSTR>(pScript->GetArgStr()));
 				return false;
 			}
 			return CItem::CreateBase(static_cast<ITEMID_TYPE>(rid.GetResIndex()))->r_Load(*pScript);
@@ -3392,7 +3392,7 @@ bool CResource::LoadCryptIni()
 	ADDTOCALLSTACK("CResource::LoadCryptIni");
 	if ( !OpenResourceFind(m_scpCryptIni, SPHERE_FILE "Crypt.ini", false) )
 	{
-		g_Log.Event(LOGL_WARN|LOGM_INIT, "File " SPHERE_FILE "Crypt.ini is corrupt or missing\n");
+		g_Log.Event(LOGL_WARN, "File " SPHERE_FILE "Crypt.ini is corrupt or missing\n");
 		return false;
 	}
 
@@ -3461,17 +3461,17 @@ bool CResource::Load(bool fResync)
 		CGString sMulPath = g_Install.GetMulFilesPath();
 		if ( sMulPath.IsEmpty() )
 		{
-			g_Log.Event(LOGL_FATAL|LOGM_INIT, "Unable to find Ultima Online MUL files automatically, please set the 'MulFiles' path manually on " SPHERE_FILE ".ini\n");
+			g_Log.Event(LOGL_FATAL, "Unable to find Ultima Online MUL files automatically, please set the 'MulFiles' path manually on " SPHERE_FILE ".ini\n");
 			return false;
 		}
-		g_Log.Event(LOGM_INIT, "Loading MUL files from path: '%s'\n", static_cast<LPCTSTR>(sMulPath));
+		g_Log.Event(LOGL_EVENT, "Loading MUL files from path: '%s'\n", static_cast<LPCTSTR>(sMulPath));
 	}
 
 	// Open MUL files
 	VERFILE_TYPE i = g_Install.OpenFiles((1 << VERFILE_MULTIIDX)|(1 << VERFILE_MULTI)|(1 << VERFILE_VERDATA)|(1 << VERFILE_MAP)|(1 << VERFILE_STAIDX)|(1 << VERFILE_STATICS)|(1 << VERFILE_TILEDATA));
 	if ( i != VERFILE_QTY )
 	{
-		g_Log.Event(LOGL_FATAL|LOGM_INIT, "MUL file '%s' is corrupt or missing\n", g_Install.GetBaseFileName(i));
+		g_Log.Event(LOGL_FATAL, "MUL file '%s' is corrupt or missing\n", g_Install.GetBaseFileName(i));
 		return false;
 	}
 
@@ -3482,14 +3482,14 @@ bool CResource::Load(bool fResync)
 	}
 	catch ( const CGrayError &e )
 	{
-		g_Log.Event(LOGL_FATAL|LOGM_INIT, "File " SPHERE_FILE ".ini is corrupt or missing\n");
+		g_Log.Event(LOGL_FATAL, "File " SPHERE_FILE ".ini is corrupt or missing\n");
 		g_Log.CatchEvent(&e, "g_VerData.Load");
 		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 		return false;
 	}
 	catch ( ... )
 	{
-		g_Log.Event(LOGL_FATAL|LOGM_INIT, "File " SPHERE_FILE ".ini is corrupt or missing\n");
+		g_Log.Event(LOGL_FATAL, "File " SPHERE_FILE ".ini is corrupt or missing\n");
 		g_Log.CatchEvent(NULL, "g_VerData.Load");
 		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 		return false;
@@ -3504,7 +3504,7 @@ bool CResource::Load(bool fResync)
 	{
 		if ( !OpenResourceFind(m_scpTables, SPHERE_FILE "tables") )
 		{
-			g_Log.Event(LOGL_FATAL|LOGM_INIT, "File " SPHERE_FILE "tables." SPHERE_SCRIPT " is corrupt or missing\n");
+			g_Log.Event(LOGL_FATAL, "File " SPHERE_FILE "tables." SPHERE_SCRIPT " is corrupt or missing\n");
 			return false;
 		}
 

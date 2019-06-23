@@ -366,7 +366,7 @@ int CTimedFunctionHandler::Load(const char *pszName, bool fQuoted, const char *p
 		if ( IsDigit(pszVal[0]) )
 			m_iCurTick = ATOI(pszVal);
 		else
-			g_Log.Event(LOGM_INIT|LOGL_ERROR, "Invalid NextTick line in save file: %s=%s\n", pszName, pszVal);
+			g_Log.Event(LOGL_ERROR, "Invalid NextTick line in save file: %s=%s\n", pszName, pszVal);
 	}
 	else if ( !strcmpi(pszName, "TimerFNumbers") )
 	{
@@ -394,10 +394,10 @@ int CTimedFunctionHandler::Load(const char *pszName, bool fQuoted, const char *p
 					tf = NULL;
 				}
 				else
-					g_Log.Event(LOGM_INIT|LOGL_ERROR, "Invalid Timerf in %sdata.scp. Each TimerFCall and TimerFNumbers pair must be in that order\n", SPHERE_FILE);
+					g_Log.Event(LOGL_ERROR, "Invalid Timerf in %sdata.scp. Each TimerFCall and TimerFNumbers pair must be in that order\n", SPHERE_FILE);
 			}
 			else
-				g_Log.Event(LOGM_INIT|LOGL_ERROR, "Invalid Timerf line in %sdata.scp: %s=%s\n", SPHERE_FILE, pszName, pszVal);
+				g_Log.Event(LOGL_ERROR, "Invalid Timerf line in %sdata.scp: %s=%s\n", SPHERE_FILE, pszName, pszVal);
 		}
 	}
 	else if ( !strcmpi(pszName, "TimerFCall") )
@@ -411,7 +411,7 @@ int CTimedFunctionHandler::Load(const char *pszName, bool fQuoted, const char *p
 		strncpy(tf->funcname, pszVal, sizeof(tf->funcname) - 1);
 
 		if ( !fNew )
-			g_Log.Event(LOGM_INIT|LOGL_ERROR, "Invalid Timerf in %sdata.scp. Each TimerFCall and TimerFNumbers pair must be in that order\n", SPHERE_FILE);
+			g_Log.Event(LOGL_ERROR, "Invalid Timerf in %sdata.scp. Each TimerFCall and TimerFNumbers pair must be in that order\n", SPHERE_FILE);
 	}
 	return 0;
 }
@@ -1486,7 +1486,7 @@ bool CWorld::LoadFile(LPCTSTR pszFileName)
 	ADDTOCALLSTACK("CWorld::LoadFile");
 	// Load files
 
-	g_Log.Event(LOGM_INIT, "Loading %s%s\n", static_cast<LPCTSTR>(pszFileName), SPHERE_SCRIPT);
+	g_Log.Event(LOGL_EVENT, "Loading %s%s\n", static_cast<LPCTSTR>(pszFileName), SPHERE_SCRIPT);
 
 	CScript s;
 	if ( !s.Open(pszFileName, OF_READ|OF_TEXT|OF_DEFAULTMODE) )
@@ -1530,7 +1530,7 @@ bool CWorld::LoadFile(LPCTSTR pszFileName)
 	}
 	else
 	{
-		g_Log.Event(LOGM_INIT|LOGL_CRIT, "File is corrupt, no [EOF] marker found\n");
+		g_Log.Event(LOGL_CRIT, "File is corrupt, no [EOF] marker found\n");
 		return false;
 	}
 }

@@ -1394,7 +1394,7 @@ bool CScriptObj::r_LoadVal(CScript &s)
 					return true;
 				}
 			}
-			g_Log.Event(LOGM_INIT|LOGL_ERROR, "Unknown message '%s'\n", pszKey);
+			g_Log.Event(LOGL_ERROR, "Unknown message '%s'\n", pszKey);
 			return false;
 		}
 	}

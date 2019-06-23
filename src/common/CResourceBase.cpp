@@ -189,7 +189,7 @@ bool CResourceBase::LoadResources(CResourceScript *pScript)
 		return false;
 	if ( !pScript->Open() )
 	{
-		g_Log.Event(LOGL_CRIT|LOGM_INIT, "[RESOURCES] '%s' not found...\n", static_cast<LPCTSTR>(pScript->GetFilePath()));
+		g_Log.Event(LOGL_CRIT, "[RESOURCES] '%s' not found...\n", static_cast<LPCTSTR>(pScript->GetFilePath()));
 		return false;
 	}
 
