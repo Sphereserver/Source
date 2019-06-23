@@ -259,8 +259,7 @@ bool CServerDef::r_LoadVal( CScript & s )
 		case SC_AGE:
 			break;
 		case SC_CLIENTVERSION:
-			m_sClientVersion = s.GetArgRaw();
-			// m_ClientVersion.SetClientVer( s.GetArgRaw());
+			m_ClientVersion.SetClientVer(s.GetArgRaw());
 			break;
 		case SC_CREATE:
 			m_timeCreate = CServTime::GetCurrentTime() - ( s.GetArgLLVal() * TICK_PER_SEC );

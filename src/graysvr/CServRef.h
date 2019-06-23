@@ -50,7 +50,6 @@ private:
 public:
 	static const char *m_sClassName;
 	CSocketAddress m_ip;	// socket and port.
-	CGString m_sClientVersion;
 	CCrypt m_ClientVersion;
 
 	// Breakdown the string. or filled in locally.
@@ -112,11 +111,6 @@ public:
 	bool IsConnected() const
 	{
 		return( m_timeLastValid.IsTimeValid() );
-	}
-
-	void SetCryptVersion(void)
-	{
-		m_ClientVersion.SetClientVer(m_sClientVersion.GetPtr());
 	}
 };
 

@@ -322,13 +322,6 @@ bool CServer::Load()
 {
 	EXC_TRY("Load");
 
-	EXC_SET("loading ini");
-	if ( !g_Cfg.LoadIni(false) )
-		return false;
-
-	EXC_SET("log write");
-	g_Log.WriteString("\n");
-
 #if defined(__GITREVISION__) && defined(__GITHASH__)
 	g_Log.Event(LOGL_EVENT, "%s\nCompiled: %s (%s) [build %d / Git hash %s]\n\n", g_szServerDescription, g_szServerBuildDate, g_szServerBuildTime, __GITREVISION__, __GITHASH__);
 #else
@@ -354,23 +347,22 @@ bool CServer::Load()
 					"Use it at your own risk.\n\n");
 #endif
 
-#ifndef _WIN32
-	EXC_SET("setting signals");
-	SetSignals(g_Cfg.m_fSecure);
-#endif
-
 	EXC_SET("loading scripts");
 	TriglistInit();
 	if ( !g_Cfg.Load(false) )
 		return false;
 
-	EXC_SET("finalizing");
 #ifdef _WIN32
+	EXC_SET("setting console title");
 	TCHAR *pszTemp = Str_GetTemp();
 	sprintf(pszTemp, SPHERE_TITLE " V" SPHERE_VERSION " - %s", GetName());
 	SetConsoleTitle(pszTemp);
+#else
+	EXC_SET("setting signals");
+	SetSignals(g_Cfg.m_fSecure);
 #endif
 
+	g_Log.Event(LOGL_EVENT, "\n");
 	return true;
 	EXC_CATCH;
 	return false;

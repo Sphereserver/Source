@@ -3452,11 +3452,18 @@ bool CResource::Load(bool fResync)
 
 	if ( fResync )
 	{
+		m_scpCryptIni.ReSync();
+		m_scpCryptIni.CloseForce();
+
 		m_scpIni.ReSync();
 		m_scpIni.CloseForce();
 	}
 	else
 	{
+		g_Cfg.LoadCryptIni();
+		if ( !g_Cfg.LoadIni(false) )
+			return false;
+
 		g_Install.FindInstall();
 		CGString sMulPath = g_Install.GetMulFilesPath();
 		if ( sMulPath.IsEmpty() )
@@ -3614,20 +3621,6 @@ bool CResource::Load(bool fResync)
 	long lTotal, lUsed;
 	Triglist(lTotal, lUsed);
 	g_Log.Event(LOGL_EVENT, "Done loading scripts (%ld of %ld triggers used)\n", lUsed, lTotal);
-
-	// Load client crypt keys from sphereCrypt.ini
-	if ( fResync )
-	{
-		m_scpCryptIni.ReSync();
-		m_scpCryptIni.CloseForce();
-	}
-	else
-	{
-		LoadCryptIni();
-		g_Log.Event(LOGM_INIT, "\n");
-	}
-	g_Serv.SetCryptVersion();
-
 	return true;
 }
 
