@@ -402,10 +402,11 @@ public:
 	bool m_UseNewChatSystem;		// is this client compatible with new SA+ chat system?
 
 	CServTime m_timeLogin;					// world clock of login time ("LASTCONNECTTIME")
-	CServTime m_timeLastEvent;				// last time we got event from client
-	CServTime m_timeLastEventItemPickup;	// last time we had picked up an item (used by fastloot prevention)
-	CServTime m_timeLastEventWalk;			// last time we got a walk event from client (only used to handle STATF_Fly char flag)
-	UINT64 m_timeNextEventWalk;				// fastwalk prevention: only allow more walk requests after this timer
+	CServTime m_timeLastEvent;				// last time client sent an event
+	CServTime m_timeLastEventItemPickup;	// last time client sent item pickup request (used to prevent fastloot)
+	CServTime m_timeLastEventWarMode;		// last time client sent warmode request (used to prevent excessive warmode requests)
+	CServTime m_timeLastEventWalk;			// last time client sent walk request (used to handle STATF_Fly char flag)
+	UINT64 m_timeNextEventWalk;				// next time client can send walk request (used to prevent fastwalk)
 
 	// GM stuff
 	CGMPage *m_pGMPage;			// current GM page being handled by this client

@@ -37,6 +37,7 @@ CClient::CClient(NetState *state)
 	m_timeLogin.Init();
 	m_timeLastEvent = CServTime::GetCurrentTime();
 	m_timeLastEventItemPickup = CServTime::GetCurrentTime();
+	m_timeLastEventWarMode = CServTime::GetCurrentTime();
 	m_timeLastEventWalk = CServTime::GetCurrentTime();
 	m_timeNextEventWalk = 0;
 

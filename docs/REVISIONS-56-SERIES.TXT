@@ -1513,3 +1513,5 @@ Fixed: Console startup errors not showing correctly when LogMask flag 'LOGM_INIT
 Fixed: Server resync resetting SERV.CLIENTVERSION to '0.0.0'.
 Fixed: Bonded NPCs not being removed when it dies without have an owner.
 Fixed: NPCs not immediately following the new owner after get transferred.
+Fixed: Ghost players not showing/hiding when toggle warmode.
+Added: New delay on client 'toggle warmode' macro to avoid excessive requests.

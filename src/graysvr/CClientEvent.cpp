@@ -766,6 +766,12 @@ void CClient::Event_CombatMode(bool fWar)
 	if ( !m_pChar )
 		return;
 
+	if ( -g_World.GetTimeDiff(m_timeLastEventWarMode) < 1 )
+	{
+		SysMessageDefault(DEFMSG_SKILLWAIT_3);
+		return;
+	}
+
 	bool bCleanSkill = true;
 	if ( IsTrigUsed(TRIGGER_USERWARMODE) )
 	{
@@ -776,14 +782,17 @@ void CClient::Event_CombatMode(bool fWar)
 		if ( m_pChar->OnTrigger(CTRIG_UserWarmode, m_pChar, &Args) == TRIGRET_RET_TRUE )
 			return;
 
-		if ( Args.m_iN2 == 0 )
-		{
-			bCleanSkill = false;
-			DEBUG_WARN(("UserWarMode - Setting fCleanSkill to false\n"));
-		}
+		if ( Args.m_iN1 == 0 )
+			fWar = false;
 
-		if ( (Args.m_iN3 != 0) && (Args.m_iN3 < 3) )
-			fWar = (Args.m_iN3 != 1);
+		if ( Args.m_iN2 == 0 )
+			bCleanSkill = false;
+
+		if ( Args.m_iN3 == 1 )
+		{
+			m_pChar->m_lastAttackers.clear();
+			m_pChar->Memory_ClearTypes(MEMORY_FIGHT);
+		}
 	}
 
 	m_pChar->StatFlag_Mod(STATF_War, fWar);
@@ -792,13 +801,11 @@ void CClient::Event_CombatMode(bool fWar)
 		m_pChar->StatFlag_Mod(STATF_Insubstantial, !fWar);	// manifest the ghost
 
 	if ( bCleanSkill )
-	{
 		m_pChar->Skill_Fail(true);
-		DEBUG_WARN(("UserWarMode - Cleaning Skill Action\n"));
-	}
 
 	addPlayerWarMode();
-	m_pChar->Update(false, this);
+	m_pChar->Update(m_pChar->IsStatFlag(STATF_DEAD), this);
+	m_timeLastEventWarMode = CServTime::GetCurrentTime();
 }
 
 bool CClient::Event_Command(LPCTSTR pszCommand, TALKMODE_TYPE mode)
