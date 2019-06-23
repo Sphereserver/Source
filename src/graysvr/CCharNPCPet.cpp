@@ -548,6 +548,7 @@ bool CChar::NPC_PetSetOwner(CChar *pChar, bool fResendTooltip)
 		pSpawn->DelObj(GetUID());
 
 	Memory_AddObjTypes(pChar, MEMORY_IPET);
+	m_Act_Targ = pChar->GetUID();
 	NPC_Act_Follow();
 
 	if ( NPC_IsVendor() )

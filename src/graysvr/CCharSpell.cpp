@@ -406,23 +406,15 @@ bool CChar::Spell_Resurrection(CItemCorpse *pCorpse, CChar *pCharSrc, bool fNoFa
 		iHits = static_cast<int>(Args.m_iN1);
 	}
 
-	SetID(m_prev_id);
-	SetHue(m_prev_Hue);
 	StatFlag_Clear(STATF_DEAD|STATF_Insubstantial);
 	Stat_SetVal(STAT_STR, maximum(iHits, 1));
+	SetHue(m_prev_Hue);
+	SetID(m_prev_id);
 
 	if ( m_pNPC && m_pNPC->m_bonded )
-		m_Can &= ~CAN_C_GHOST;
-
-	ClientIterator it;
-	for ( CClient* pClient = it.next(); pClient != NULL; pClient = it.next() )
 	{
-		if ( !pClient->CanSee(this) )
-			continue;
-
-		pClient->addChar(this);
-		if ( m_pNPC )
-			pClient->addBondedStatus(this, false);
+		m_Can &= ~CAN_C_GHOST;
+		Update();
 	}
 
 	if ( m_pClient )

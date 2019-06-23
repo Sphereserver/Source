@@ -2618,8 +2618,8 @@ bool CChar::Death()
 
 	Reveal();
 	SoundChar(CRESND_DIE);
-	StatFlag_Set(STATF_DEAD);
-	StatFlag_Clear(STATF_Stone|STATF_Freeze|STATF_Hidden|STATF_Sleeping|STATF_Hovering);
+	StatFlag_Set(STATF_Insubstantial|STATF_DEAD);
+	StatFlag_Clear(STATF_Hidden|STATF_Hovering|STATF_Stone|STATF_War|STATF_Sleeping|STATF_Freeze);
 	SetPoisonCure(0, true);
 	Skill_Cleanup();
 	Spell_Dispel(100);		// get rid of all spell effects (moved here to prevent double @Destroy trigger)
@@ -2645,7 +2645,7 @@ bool CChar::Death()
 
 	if ( m_pNPC )
 	{
-		if ( m_pNPC->m_bonded )
+		if ( m_pNPC->m_bonded && NPC_PetGetOwner() )
 		{
 			m_Can |= CAN_C_GHOST;
 			Update();
@@ -2681,10 +2681,6 @@ bool CChar::Death()
 				pszGhostName = (pCharDefPrev && pCharDefPrev->IsFemale()) ? "c_ghost_woman" : "c_ghost_man";
 				break;
 		}
-		ASSERT(pszGhostName != NULL);
-
-		StatFlag_Set(STATF_Insubstantial);
-		StatFlag_Clear(STATF_War);
 
 		++m_pPlayer->m_wDeaths;
 		SetHue(HUE_DEFAULT);	// get all pale
