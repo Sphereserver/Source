@@ -534,7 +534,7 @@ BYTE CChar::GetModeFlag(const CClient *pViewer) const
 	if ( IsStatFlag(STATF_War) )
 		bMode |= CHARMODE_WAR;
 
-	DWORD dwFlags = STATF_Sleeping;
+	DWORD dwFlags = 0;
 	if ( !g_Cfg.m_iColorInvis )		// this is needed for Serv.ColorInvis to work, proper flags must be set
 		dwFlags |= STATF_Insubstantial;
 	if ( !g_Cfg.m_iColorHidden )
@@ -552,7 +552,7 @@ BYTE CChar::GetLightLevel() const
 	ADDTOCALLSTACK("CChar::GetLightLevel");
 	// Get personal light level
 
-	if ( IsStatFlag(STATF_DEAD|STATF_Sleeping|STATF_NightSight) || IsPriv(PRIV_DEBUG) )
+	if ( IsStatFlag(STATF_DEAD|STATF_NightSight) || IsPriv(PRIV_DEBUG) )
 		return LIGHT_BRIGHT;
 	if ( (g_Cfg.m_iRacialFlags & RACIALF_ELF_NIGHTSIGHT) && IsElf() )		// elves always have nightsight enabled (Night Sight racial trait)
 		return LIGHT_BRIGHT;
@@ -1588,7 +1588,7 @@ bool CChar::CanTouch(const CObjBase *pObj) const
 			case IT_SHIP_SIDE:
 			case IT_SHIP_SIDE_LOCKED:
 			case IT_ROPE:
-				if ( IsStatFlag(STATF_Sleeping|STATF_Freeze|STATF_Stone) )
+				if ( IsStatFlag(STATF_Freeze|STATF_Stone) )
 					break;
 				return (iDist <= g_Cfg.m_iMaxShipPlankTeleport);
 
@@ -1596,7 +1596,7 @@ bool CChar::CanTouch(const CObjBase *pObj) const
 				break;
 		}
 
-		if ( !fDeathImmune && IsStatFlag(STATF_DEAD|STATF_Sleeping|STATF_Freeze|STATF_Stone) )
+		if ( !fDeathImmune && IsStatFlag(STATF_DEAD|STATF_Freeze|STATF_Stone) )
 			return false;
 	}
 
@@ -1784,7 +1784,7 @@ bool CChar::CanMove(CItem *pItem, bool fMsg) const
 	if ( !pItem->IsMovable() )
 		return false;
 
-	if ( IsStatFlag(STATF_DEAD|STATF_Freeze|STATF_Sleeping|STATF_Insubstantial|STATF_Stone) )
+	if ( IsStatFlag(STATF_DEAD|STATF_Freeze|STATF_Insubstantial|STATF_Stone) )
 	{
 		if ( fMsg )
 			SysMessageDefault(DEFMSG_CANTMOVE_DEAD);
@@ -1817,17 +1817,7 @@ bool CChar::CanMove(CItem *pItem, bool fMsg) const
 		if ( pItem->IsAttr(ATTR_NEWBIE|ATTR_CURSED|ATTR_BLESSED) )
 		{
 			const CObjBaseTemplate *pObjTop = pItem->GetTopLevelObj();
-			if ( pObjTop->IsItem() )
-			{
-				const CItemCorpse *pCorpse = dynamic_cast<const CItemCorpse *>(pObjTop);
-				if ( pCorpse )
-				{
-					CChar *pChar = pCorpse->IsCorpseSleeping();
-					if ( pChar && (pChar != this) )
-						return false;
-				}
-			}
-			else if ( pObjTop->IsChar() && (pObjTop != this) )
+			if ( pObjTop->IsChar() && (pObjTop != this) )
 			{
 				if ( pItem->IsAttr(ATTR_NEWBIE|ATTR_BLESSED) && g_Cfg.m_bAllowNewbTransfer )
 				{

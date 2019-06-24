@@ -326,7 +326,6 @@ private:
 	#define STATF_DEAD			0x00000002
 	#define STATF_Freeze		0x00000004	// Paralyzed (spell)
 	#define STATF_Invisible		0x00000008	// Invisible (spell)
-	#define STATF_Sleeping		0x00000010	// You look like a corpse ?
 	#define STATF_War			0x00000020	// War mode on ?
 	#define STATF_Reactive		0x00000040	// have reactive armor on
 	#define STATF_Poisoned		0x00000080	// Poison level is in the poison object
@@ -1134,7 +1133,6 @@ private:
 	int Skill_Fighting(SKTRIG_TYPE stage);
 	int Skill_Musicianship(SKTRIG_TYPE stage);
 
-	int Skill_Act_Napping(SKTRIG_TYPE stage);
 	int Skill_Act_Throwing(SKTRIG_TYPE stage);
 	int Skill_Act_Breath(SKTRIG_TYPE stage);
 	int Skill_Act_Training(SKTRIG_TYPE stage);
@@ -1287,7 +1285,7 @@ public:
 	CItemCorpse *MakeCorpse(bool fFrontFall);
 	bool RaiseCorpse(CItemCorpse *pCorpse);
 	bool Death();
-	bool Reveal(DWORD dwFlags = (STATF_Invisible|STATF_Hidden|STATF_Sleeping));
+	bool Reveal(DWORD dwFlags = (STATF_Invisible|STATF_Hidden));
 	void Jail(CTextConsole *pSrc, bool fSet, int iCell);
 	void EatAnim(LPCTSTR pszName, int iQty);
 
@@ -1308,8 +1306,6 @@ public:
 	void ToggleFlying();
 	void DropAll(CItemContainer *pDest = NULL, DWORD dwAttr = 0);
 	void UnEquipAllItems(CItemContainer *pDest = NULL, bool fLeaveHands = false);
-	void Wake();
-	void SleepStart(bool fFrontFall);
 
 	void Guild_Resign(MEMORY_TYPE MemType);
 	CItemStone *Guild_Find(MEMORY_TYPE MemType) const;

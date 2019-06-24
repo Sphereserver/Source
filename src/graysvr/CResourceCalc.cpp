@@ -134,7 +134,7 @@ int CResource::Calc_CombatChanceToHit(CChar *pChar, CChar *pCharTarg)
 		case 0:
 		{
 			// Sphere custom formula
-			if ( pCharTarg->IsStatFlag(STATF_Sleeping|STATF_Freeze) )
+			if ( pCharTarg->IsStatFlag(STATF_Freeze) )
 				return Calc_GetRandVal(10);
 
 			WORD wSkillVal = pChar->Skill_GetAdjusted(skillAttacker);

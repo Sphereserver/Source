@@ -2882,31 +2882,6 @@ bool CChar::r_Verb(CScript &s, CTextConsole *pSrc)	// execute command from scrip
 
 	switch ( index )
 	{
-		case CHV_AFK:
-		{
-			bool fAFK = (Skill_GetActive() == NPCACT_Napping);
-			bool fMode;
-			if ( s.HasArgs() )
-				fMode = (s.GetArgVal() != 0);
-			else
-				fMode = !fAFK;
-
-			if ( fMode != fAFK )
-			{
-				if ( fMode )
-				{
-					SysMessageDefault(DEFMSG_CMDAFK_ENTER);
-					m_Act_p = GetTopPoint();
-					Skill_Start(NPCACT_Napping);
-				}
-				else
-				{
-					SysMessageDefault(DEFMSG_CMDAFK_LEAVE);
-					Skill_Start(SKILL_NONE);
-				}
-			}
-			break;
-		}
 		case CHV_ALLSKILLS:
 		{
 			WORD wVal = static_cast<WORD>(s.GetArgVal());
@@ -3310,9 +3285,6 @@ bool CChar::r_Verb(CScript &s, CTextConsole *pSrc)	// execute command from scrip
 			}
 			return true;
 		}
-		case CHV_SLEEP:
-			SleepStart(s.GetArgVal() != 0);
-			break;
 		case CHV_SUICIDE:
 		{
 			m_lastAttackers.clear();	// clear the list of people who get credit for your death

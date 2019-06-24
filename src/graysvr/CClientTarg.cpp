@@ -988,12 +988,6 @@ int CClient::OnSkill_Forensics(CGrayUID uid, int iSkillLevel, bool fTest)
 	CChar *pCharKiller = pCorpse->m_itCorpse.m_uidKiller.CharFind();
 	LPCTSTR pszName = pCharKiller ? pCharKiller->GetName() : NULL;
 
-	if ( pCorpse->IsCorpseSleeping() )
-	{
-		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_FORENSICS_ALIVE), pszName ? pszName : "It");
-		return 1;
-	}
-
 	TCHAR *pszTemp = Str_GetTemp();
 	if ( pCorpse->m_itCorpse.m_carved )
 	{

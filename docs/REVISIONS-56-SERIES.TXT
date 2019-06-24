@@ -1515,3 +1515,10 @@ Fixed: Bonded NPCs not being removed when it dies without have an owner.
 Fixed: NPCs not immediately following the new owner after get transferred.
 Fixed: Ghost players not showing/hiding when toggle warmode.
 Added: New delay on client 'toggle warmode' macro to avoid excessive requests.
+
+24-06-2019, Coruja
+Removed: Obsolete functions SLEEP (it was causing PvP/PvM exploits) and AFK (it was breaking char actions)
+[sphere_defs.scp]: Removed char flag 'statf_sleeping'
+[sphere_dialog.scp]: Updated function GetCharActionName
+[sphere_msgs.scp]: Removed messages 'cmdafk_enter', 'cmdafk_leave', 'forensics_alive', 'msg_cantsleep', 'msg_stepon_body', 'charinfo_sleeping', 'charinfo_afk', 'skillact_napping'
+[spheretables.scp]: Removed function SLEEP and updated RESOURCES list

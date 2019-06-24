@@ -2137,51 +2137,45 @@ PacketCharacter::PacketCharacter(CClient* target, const CChar* character) : Pack
 	writeByte(static_cast<BYTE>(character->Noto_GetFlag(target->GetChar(), target->m_NetState->isClientVersion(MINCLIVER_AOS), true)));
 
 	bool isNewMobilePacket = target->m_NetState->isClientVersion(MINCLIVER_NEWMOBINCOMING);
+	bool isLayerSent[LAYER_HORSE + 1];
+	memset(isLayerSent, 0, sizeof(isLayerSent));
 
-	if (!character->IsStatFlag(STATF_Sleeping))
+	for ( CItem *pItem = character->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
-		bool isLayerSent[LAYER_HORSE + 1];
-		memset(isLayerSent, 0, sizeof(isLayerSent));
+		LAYER_TYPE layer = pItem->GetEquipLayer();
+		if ( !CItemBase::IsVisibleLayer(layer) )
+			continue;
+		if ( (viewer != character) && !viewer->CanSeeItem(pItem) )
+			continue;
 
-		for (CItem* item = character->GetContentHead(); item != NULL; item = item->GetNext())
+		// Prevent same layer to being sent twice
+		if ( isLayerSent[layer] )
+			continue;
+
+		isLayerSent[layer] = true;
+
+		ITEMID_TYPE itemid;
+		target->GetAdjustedItemID(character, pItem, itemid, hue);
+		target->addAOSTooltip(pItem);
+
+		writeInt32(pItem->GetUID());
+
+		if ( isNewMobilePacket )
 		{
-			LAYER_TYPE layer = item->GetEquipLayer();
-			if (!CItemBase::IsVisibleLayer(layer))
-				continue;
-			if (!viewer->CanSeeItem(item) && (viewer != character))
-				continue;
-
-			// prevent same layer being sent twice
-			ASSERT(layer <= LAYER_HORSE);
-			if (isLayerSent[layer])
-				continue;
-
-			isLayerSent[layer] = true;
-
-			target->addAOSTooltip(item);
-
-			ITEMID_TYPE itemid;
-			target->GetAdjustedItemID(character, item, itemid, hue);
-
-			writeInt32(item->GetUID());
-
-			if (isNewMobilePacket)
-			{
-				writeInt16(static_cast<WORD>(itemid));
-				writeByte(static_cast<BYTE>(layer));
-				writeInt16(static_cast<WORD>(hue));
-			}
-			else if (hue != 0)
-			{
-				writeInt16(static_cast<WORD>(itemid | 0x8000));
-				writeByte(static_cast<BYTE>(layer));
-				writeInt16(static_cast<WORD>(hue));
-			}
-			else
-			{
-				writeInt16(static_cast<WORD>(itemid));
-				writeByte(static_cast<BYTE>(layer));
-			}
+			writeInt16(static_cast<WORD>(itemid));
+			writeByte(static_cast<BYTE>(layer));
+			writeInt16(static_cast<WORD>(hue));
+		}
+		else if ( hue != 0 )
+		{
+			writeInt16(static_cast<WORD>(itemid|0x8000));
+			writeByte(static_cast<BYTE>(layer));
+			writeInt16(static_cast<WORD>(hue));
+		}
+		else
+		{
+			writeInt16(static_cast<WORD>(itemid));
+			writeByte(static_cast<BYTE>(layer));
 		}
 	}
 

@@ -1320,8 +1320,6 @@ void CClient::addCharName(const CChar *pChar)
 			strcat(pszName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_FROZEN));
 		if ( pChar->IsStatFlag(STATF_Insubstantial|STATF_Invisible|STATF_Hidden) )
 			strcat(pszName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_HIDDEN));
-		if ( pChar->IsStatFlag(STATF_Sleeping) )
-			strcat(pszName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_SLEEPING));
 		if ( pChar->IsStatFlag(STATF_Hallucinating) )
 			strcat(pszName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_HALLU));
 
@@ -1333,8 +1331,6 @@ void CClient::addCharName(const CChar *pChar)
 				sprintf(pszName + strlen(pszName), " [0%lx]", static_cast<DWORD>(pChar->GetUID()));
 		}
 	}
-	if ( !fAllShow && (pChar->Skill_GetActive() == NPCACT_Napping) )
-		strcat(pszName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_AFK));
 	if ( pChar->GetPrivLevel() <= PLEVEL_Guest )
 		strcat(pszName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_GUEST));
 	if ( pChar->IsPriv(PRIV_JAILED) )

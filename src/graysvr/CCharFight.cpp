@@ -2057,7 +2057,7 @@ int CChar::Fight_CalcDamage(const CItem *pWeapon, bool fNoRandom, bool fGetMax) 
 			{
 				// Sphere custom formula
 				if ( !iStatBonus )
-					iStatBonus = static_cast<STAT_TYPE>(STAT_STR);
+					iStatBonus = STAT_STR;
 				if ( !iStatBonusPercent )
 					iStatBonusPercent = 10;
 				iDmgBonus += Stat_GetAdjusted(iStatBonus) * iStatBonusPercent / 100;
@@ -2081,7 +2081,7 @@ int CChar::Fight_CalcDamage(const CItem *pWeapon, bool fNoRandom, bool fGetMax) 
 				}
 
 				if ( !iStatBonus )
-					iStatBonus = static_cast<STAT_TYPE>(STAT_STR);
+					iStatBonus = STAT_STR;
 				if ( !iStatBonusPercent )
 					iStatBonusPercent = 20;
 				iDmgBonus += Stat_GetAdjusted(iStatBonus) * iStatBonusPercent / 100;
@@ -2110,7 +2110,7 @@ int CChar::Fight_CalcDamage(const CItem *pWeapon, bool fNoRandom, bool fGetMax) 
 					iDmgBonus += 5;
 
 				if ( !iStatBonus )
-					iStatBonus = static_cast<STAT_TYPE>(STAT_STR);
+					iStatBonus = STAT_STR;
 				if ( !iStatBonusPercent )
 					iStatBonusPercent = 30;
 				iDmgBonus += Stat_GetAdjusted(iStatBonus) * iStatBonusPercent / 100;
@@ -2567,7 +2567,7 @@ WAR_SWING_TYPE CChar::Fight_Hit(CChar *pCharTarg)
 	}
 
 	// Very basic check on possibility to hit
-	if ( IsStatFlag(STATF_DEAD|STATF_Sleeping|STATF_Freeze|STATF_Stone) || !pCharTarg->Fight_IsAttackable() )
+	if ( IsStatFlag(STATF_DEAD|STATF_Freeze|STATF_Stone) || !pCharTarg->Fight_IsAttackable() )
 		return WAR_SWING_INVALID;
 	if ( pCharTarg->m_pArea && pCharTarg->m_pArea->IsFlag(REGION_FLAG_SAFE) )
 		return WAR_SWING_INVALID;

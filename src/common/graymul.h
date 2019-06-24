@@ -818,9 +818,8 @@ enum SKILL_TYPE	// List of skill numbers (things that can be done at a given tim
 	NPCACT_RIDDEN,				// 111 = Being ridden or shrunk as figurine.
 	NPCACT_THROWING,			// 112 = Throwing a stone at m_Fight_Targ.
 	NPCACT_TRAINING,			// 113 = using a training dummy etc.
-	NPCACT_Napping,				// 114 = just snoozong a little bit, but not sleeping.
-	NPCACT_FOOD,				// 115 = Searching for food
-	NPCACT_RUNTO,				// 116 = Run to a location x,y.
+	NPCACT_FOOD,				// 114 = Searching for food
+	NPCACT_RUNTO,				// 115 = Run to a location x,y.
 	NPCACT_QTY
 };
 

@@ -742,7 +742,7 @@ int CChar::NPC_WalkToPoint(bool fRun)
 			bool fClearedWay = false;
 
 			// Check if char can move objects placed on the way
-			if ( (NPC_GetAiFlags() & NPC_AI_MOVEOBSTACLES) && pCharDef->Can(CAN_C_USEHANDS) && !IsStatFlag(STATF_DEAD|STATF_Freeze|STATF_Sleeping|STATF_Stone) )
+			if ( (NPC_GetAiFlags() & NPC_AI_MOVEOBSTACLES) && pCharDef->Can(CAN_C_USEHANDS) && !IsStatFlag(STATF_DEAD|STATF_Freeze|STATF_Stone) )
 			{
 				int iInt = Stat_GetAdjusted(STAT_INT);
 				if ( iInt > iRand )
@@ -2194,7 +2194,6 @@ bool CChar::NPC_Act_Food()
 				case NPCACT_LOOKING:
 				case NPCACT_FLEE:
 				case NPCACT_GO_HOME:
-				case NPCACT_Napping:
 				{
 					CPointMap pt = pClosestFood->GetTopPoint();
 					if ( CanMoveWalkTo(pt) )

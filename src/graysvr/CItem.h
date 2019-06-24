@@ -310,7 +310,7 @@ public:
 		struct
 		{
 			DWORD m_carved;				// more1 = Corpse is already carved? (0=not carved, 1=carved)
-			CGrayUIDBase m_uidKiller;	// more2 = Who killed this corpse, carved or looted it last. sleep=self
+			CGrayUIDBase m_uidKiller;	// more2 = Who killed this corpse, carved or looted it last
 			CREID_TYPE m_BaseID;		// morex,morey = The true type of the creature who's corpse this is
 			DIR_TYPE m_facing_dir;		// morez = Corpse dir (0x80 = on face)
 			// m_amount = the body type
@@ -1234,8 +1234,6 @@ private:
 	CItemCorpse &operator=(const CItemCorpse &other);
 
 public:
-	CChar *IsCorpseSleeping() const;
-
 	int GetWeight(WORD wAmount = 0) const
 	{
 		UNREFERENCED_PARAMETER(wAmount);

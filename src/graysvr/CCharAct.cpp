@@ -1923,9 +1923,6 @@ bool CChar::Reveal(DWORD dwFlags)
 	if ( m_pClient && m_pClient->m_pHouseDesign )	// don't reveal while in house design mode
 		return false;
 
-	if ( (dwFlags & STATF_Sleeping) && IsStatFlag(STATF_Sleeping) )
-		Wake();
-
 	if ( (dwFlags & STATF_Invisible) && IsStatFlag(STATF_Invisible) )
 	{
 		CItem *pSpell = LayerFind(LAYER_SPELL_Invis);
@@ -1951,7 +1948,7 @@ bool CChar::Reveal(DWORD dwFlags)
 			m_pClient->removeBuff(BI_INVISIBILITY);
 	}
 
-	if ( IsStatFlag(STATF_Invisible|STATF_Hidden|STATF_Insubstantial|STATF_Sleeping) )
+	if ( IsStatFlag(STATF_Invisible|STATF_Hidden|STATF_Insubstantial) )
 		return false;
 
 	m_StepStealth = 0;
@@ -2410,49 +2407,7 @@ bool CChar::SetPoison(int iSkill, int iTicks, CChar *pCharSrc)
 	return true;
 }
 
-// Char is not sleeping anymore
-void CChar::Wake()
-{
-	ADDTOCALLSTACK("CChar::Wake");
-	if ( !IsStatFlag(STATF_Sleeping) )
-		return;
-
-	CItemCorpse *pCorpse = FindMyCorpse(true);
-	if ( pCorpse )
-	{
-		RaiseCorpse(pCorpse);
-		StatFlag_Clear(STATF_Sleeping);
-		Update(false);
-	}
-
-	// The sleeping corpse is gone, so the char will die
-	Death();
-}
-
-// Char is sleeping
-void CChar::SleepStart(bool fFrontFall)
-{
-	ADDTOCALLSTACK("CChar::SleepStart");
-	if ( IsStatFlag(STATF_DEAD|STATF_Sleeping|STATF_Polymorph|STATF_Hovering) )
-		return;
-
-	CItemCorpse *pCorpse = MakeCorpse(fFrontFall);
-	if ( !pCorpse )
-	{
-		SysMessageDefault(DEFMSG_MSG_CANTSLEEP);
-		return;
-	}
-
-	// Play death animation (fall on ground)
-	UpdateCanSee(new PacketDeath(this, pCorpse, fFrontFall), m_pClient);
-
-	SetID(m_prev_id);
-	StatFlag_Set(STATF_Sleeping);
-	StatFlag_Clear(STATF_Hidden);
-	Update(false);
-}
-
-// Create the char corpse when I die (STATF_DEAD) or fall asleep (STATF_Sleeping)
+// Create char corpse when it dies
 CItemCorpse *CChar::MakeCorpse(bool fFrontFall)
 {
 	ADDTOCALLSTACK("CChar::MakeCorpse");
@@ -2475,42 +2430,29 @@ CItemCorpse *CChar::MakeCorpse(bool fFrontFall)
 
 	pCorpse->SetName(pszName);
 	pCorpse->SetHue(GetHue());
-	pCorpse->SetCorpseType(GetDispID());
 	pCorpse->SetAttr(ATTR_MOVE_NEVER);
-	pCorpse->m_itCorpse.m_BaseID = m_prev_id;	// id the corpse type here
-	pCorpse->m_itCorpse.m_facing_dir = m_dirFace;
+	pCorpse->SetCorpseType(GetDispID());
+	pCorpse->SetTimeStamp(CServTime::GetCurrentTime().GetTimeRaw());	// death timestamp
 	pCorpse->m_uidLink = GetUID();
 	pCorpse->m_ModMaxWeight = g_Cfg.Calc_MaxCarryWeight(this);		// set corpse maxweight to prevent weight exploit when someone place many items on an player corpse just to make this player get stuck on resurrect
 
-	if ( fFrontFall )
-		pCorpse->m_itCorpse.m_facing_dir = static_cast<DIR_TYPE>(m_dirFace|0x80);
+	if ( m_pNPC && (m_pNPC->m_bonded || IsStatFlag(STATF_Conjured)) )
+		pCorpse->m_itCorpse.m_carved = 1;	// corpse of bonded/summoned creatures can't be carved
 
-	int iDecayTimer = -1;	// never decay
-	if ( IsStatFlag(STATF_DEAD) )
-	{
-		iDecayTimer = m_pPlayer ? g_Cfg.m_iDecay_CorpsePlayer : g_Cfg.m_iDecay_CorpseNPC;
-		pCorpse->SetTimeStamp(CServTime::GetCurrentTime().GetTimeRaw());	// death time
+	CChar *pKiller = Attacker_GetLowestElapsed();
+	if ( pKiller )
+		pCorpse->m_itCorpse.m_uidKiller = pKiller->GetUID();
+	else
+		pCorpse->m_itCorpse.m_uidKiller.InitUID();
 
-		CChar *pKiller = Attacker_GetLowestElapsed();
-		if ( pKiller )
-			pCorpse->m_itCorpse.m_uidKiller = pKiller->GetUID();
-		else
-			pCorpse->m_itCorpse.m_uidKiller.InitUID();
-	}
-	else	// sleeping (not dead)
-	{
-		pCorpse->SetTimeStamp(0);
-		pCorpse->m_itCorpse.m_uidKiller = GetUID();
-	}
-
-	if ( (m_pNPC && m_pNPC->m_bonded) || IsStatFlag(STATF_Conjured|STATF_Sleeping) )
-		pCorpse->m_itCorpse.m_carved = 1;	// corpse of bonded/summoned/sleeping creatures can't be carved
+	pCorpse->m_itCorpse.m_BaseID = m_prev_id;
+	pCorpse->m_itCorpse.m_facing_dir = fFrontFall ? static_cast<DIR_TYPE>(m_dirFace|0x80) : m_dirFace;
 
 	// Move char contents to the corpse on ground
 	if ( !(wFlags & DEATH_NOLOOTDROP) )	
 		DropAll(pCorpse);
 
-	pCorpse->MoveToDecay(GetTopPoint(), iDecayTimer);
+	pCorpse->MoveToDecay(GetTopPoint(), m_pPlayer ? g_Cfg.m_iDecay_CorpsePlayer : g_Cfg.m_iDecay_CorpseNPC);
 	return pCorpse;
 }
 
@@ -2619,7 +2561,7 @@ bool CChar::Death()
 	Reveal();
 	SoundChar(CRESND_DIE);
 	StatFlag_Set(STATF_Insubstantial|STATF_DEAD);
-	StatFlag_Clear(STATF_Hidden|STATF_Hovering|STATF_Stone|STATF_War|STATF_Sleeping|STATF_Freeze);
+	StatFlag_Clear(STATF_Hidden|STATF_Hovering|STATF_Stone|STATF_War|STATF_Freeze);
 	SetPoisonCure(0, true);
 	Skill_Cleanup();
 	Spell_Dispel(100);		// get rid of all spell effects (moved here to prevent double @Destroy trigger)
@@ -2777,8 +2719,6 @@ void CChar::ToggleFlying()
 		StatFlag_Set(STATF_Hovering);
 		if ( m_pClient )
 			m_pClient->addBuff(BI_GARGOYLEFLY, 1112193, 1112567);
-		if ( IsStatFlag(STATF_Sleeping) )
-			Wake();
 
 		// Float char up to the hover Z
 		CPointMap ptHover = g_World.FindItemTypeNearby(GetTopPoint(), IT_HOVEROVER, 0);
@@ -2866,7 +2806,7 @@ CRegionBase *CChar::CanMoveWalkTo(CPointBase &ptDst, bool fCheckChars, bool fChe
 
 	EXC_SET("Creature bumping");
 	int iStamReq = 0;
-	if ( fCheckChars && !IsStatFlag(STATF_DEAD|STATF_Sleeping|STATF_Insubstantial) )
+	if ( fCheckChars && !IsStatFlag(STATF_DEAD|STATF_Insubstantial) )
 	{
 		CItem *pPoly = LayerFind(LAYER_SPELL_Polymorph);
 		CWorldSearch AreaChars(ptDst);
@@ -2914,7 +2854,7 @@ CRegionBase *CChar::CanMoveWalkTo(CPointBase &ptDst, bool fCheckChars, bool fChe
 					SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_HIDING_STUMBLE), pChar->GetName());
 			}
 			else if ( iRet != TRIGRET_RET_FALSE )
-				SysMessagef(g_Cfg.GetDefaultMsg(pChar->IsStatFlag(STATF_Sleeping) ? DEFMSG_MSG_STEPON_BODY : DEFMSG_MSG_PUSH), pChar->GetName());
+				SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_PUSH), pChar->GetName());
 
 			break;
 		}
@@ -2947,7 +2887,7 @@ void CChar::CheckRevealOnMove()
 {
 	ADDTOCALLSTACK("CChar::CheckRevealOnMove");
 
-	if ( !IsStatFlag(STATF_Invisible|STATF_Hidden|STATF_Sleeping) )
+	if ( !IsStatFlag(STATF_Invisible|STATF_Hidden) )
 		return;
 
 	if ( IsTrigUsed(TRIGGER_STEPSTEALTH) )
@@ -3646,7 +3586,7 @@ void CChar::OnTickFood(int iVal, int iHitsHungerLoss)
 	int iFoodLevel = Food_GetLevelPercent();
 	if ( iFoodLevel > 40 )
 		return;
-	if ( (iHitsHungerLoss <= 0) || IsStatFlag(STATF_Sleeping|STATF_Stone) )
+	if ( (iHitsHungerLoss <= 0) || IsStatFlag(STATF_Stone) )
 		return;
 
 	bool fPet = IsStatFlag(STATF_Pet);

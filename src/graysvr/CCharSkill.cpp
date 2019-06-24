@@ -1047,7 +1047,6 @@ LPCTSTR CChar::Skill_GetName(bool fUse) const
 		case NPCACT_RIDDEN:			return g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_RIDDEN);
 		case NPCACT_THROWING:		return g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_THROWING);
 		case NPCACT_TRAINING:		return g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_TRAINING);
-		case NPCACT_Napping:		return g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_NAPPING);
 		case NPCACT_FOOD:			return g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_SEARCHINGFOOD);
 		case NPCACT_RUNTO:			return g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_RUNNINGTO);
 		default:					return g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_IDLING);
@@ -3041,31 +3040,6 @@ int CChar::Skill_Information(SKTRIG_TYPE stage)
 	return -SKTRIG_QTY;
 }
 
-int CChar::Skill_Act_Napping(SKTRIG_TYPE stage)
-{
-	ADDTOCALLSTACK("CChar::Skill_Act_Napping");
-	// NPCACT_Napping:
-	// we are taking a small nap. keep napping til we wake. (or move)
-	// AFK command
-
-	if ( stage == SKTRIG_START )
-	{
-		SetTimeout(2 * TICK_PER_SEC);
-		return 0;
-	}
-
-	if ( stage == SKTRIG_STROKE )
-	{
-		if ( m_Act_p != GetTopPoint() )
-			return -SKTRIG_QTY;	// we moved.
-		SetTimeout(8 * TICK_PER_SEC);
-		Speak("z", HUE_WHITE, TALKMODE_WHISPER);
-		return -SKTRIG_STROKE;	// Stay in the skill till we hit.
-	}
-
-	return -SKTRIG_QTY;	// something odd
-}
-
 int CChar::Skill_Act_Breath(SKTRIG_TYPE stage)
 {
 	ADDTOCALLSTACK("CChar::Skill_Act_Breath");
@@ -3493,9 +3467,6 @@ int CChar::Skill_Stage(SKTRIG_TYPE stage)
 			return Skill_Act_Throwing(stage);
 		case NPCACT_TRAINING:
 			return Skill_Act_Training(stage);
-		case NPCACT_Napping:
-			return Skill_Act_Napping(stage);
-
 		default:
 			if ( !IsSkillBase(Skill_GetActive()) )
 			{
@@ -3724,7 +3695,7 @@ bool CChar::Skill_Wait(SKILL_TYPE skilltry)
 		}
 	}
 
-	if ( IsStatFlag(STATF_DEAD|STATF_Sleeping|STATF_Freeze|STATF_Stone) )
+	if ( IsStatFlag(STATF_DEAD|STATF_Freeze|STATF_Stone) )
 	{
 		SysMessageDefault(DEFMSG_SKILLWAIT_1);
 		return true;
