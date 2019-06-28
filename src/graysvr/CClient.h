@@ -706,7 +706,7 @@ public:
 	void addCharName(const CChar *pChar);
 	void addItemName(const CItem *pItem);
 
-	bool addKick(CTextConsole *pSrc, bool fBlock = true);
+	void addKick(CTextConsole *pSrc, bool fBlock = true);
 	void addWeather(WEATHER_TYPE weather = WEATHER_Default);
 	void addLight();
 	void addMusic(MIDI_TYPE id);

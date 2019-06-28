@@ -543,9 +543,8 @@ bool CChar::Player_OnVerb( CScript &s, CTextConsole * pSrc )
 		return false;
 
 	LPCTSTR pszKey = s.GetKey();
-	int cpVerb = FindTableSorted( pszKey, CCharPlayer::sm_szVerbKeys, COUNTOF(CCharPlayer::sm_szVerbKeys)-1 );
-
-	if ( cpVerb <= -1 )
+	int index = FindTableSorted(pszKey, CCharPlayer::sm_szVerbKeys, COUNTOF(CCharPlayer::sm_szVerbKeys) - 1);
+	if ( index < 0 )
 	{
 		if ( ( !strnicmp(pszKey, "GUILD", 5) ) || ( !strnicmp(pszKey, "TOWN", 4) ) )
 		{
@@ -565,21 +564,20 @@ bool CChar::Player_OnVerb( CScript &s, CTextConsole * pSrc )
 		}
 	}
 
-	switch ( cpVerb )
+	switch ( index )
 	{
-		case CPV_KICK: // "KICK" = kick and block the account
-			return (m_pClient && m_pClient->addKick(pSrc));
-
-		case CPV_PASSWORD:	// "PASSWORD"
+		case CPV_KICK:
 		{
-			// Set/Clear the password
-			if ( pSrc != this )
+			if ( m_pClient )
+				m_pClient->addKick(pSrc);
+			return true;
+		}
+		case CPV_PASSWORD:
+		{
+			if ( (pSrc != this) && ((pSrc->GetPrivLevel() <= GetPrivLevel()) || (pSrc->GetPrivLevel() < PLEVEL_Admin)) )
 			{
-				if ( pSrc->GetPrivLevel() <= GetPrivLevel() || pSrc->GetPrivLevel() < PLEVEL_Admin )
-				{
-					pSrc->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_PRIV));
-					return false;
-				}
+				pSrc->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_PRIV));
+				return true;
 			}
 
 			CAccount *pAccount = m_pPlayer->m_pAccount;
@@ -590,27 +588,23 @@ bool CChar::Player_OnVerb( CScript &s, CTextConsole * pSrc )
 				pAccount->ClearPassword();
 				SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_PASSCLEAR));
 				SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_PASSCLEAR_RELOG));
-				g_Log.Event(LOGM_ACCOUNTS|LOGL_EVENT, "Account '%s', password cleared\n", pAccount->GetName());
+				g_Log.Event(LOGM_ACCOUNTS, "Account '%s' cleared password\n", pAccount->GetName());
 			}
 			else
 			{
 				if ( pAccount->SetPassword(s.GetArgStr()) )
 				{
 					SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_ACCEPTPASS));
-					g_Log.Event(LOGM_ACCOUNTS|LOGL_EVENT, "Account '%s', password set to '%s'\n", pAccount->GetName(), s.GetArgStr());
-					return true;
+					g_Log.Event(LOGM_ACCOUNTS, "Account '%s' changed password\n", pAccount->GetName());
 				}
-
-				SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_INVALIDPASS));
+				else
+					SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_INVALIDPASS));
 			}
-			break;
+			return true;
 		}
-
 		default:
 			return false;
 	}
-
-	return true;
 }
 
 //////////////////////////

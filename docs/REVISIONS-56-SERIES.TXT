@@ -1522,3 +1522,8 @@ Removed: Obsolete functions SLEEP (it was causing PvP/PvM exploits) and AFK (it 
 [sphere_dialog.scp]: Updated function GetCharActionName
 [sphere_msgs.scp]: Removed messages 'cmdafk_enter', 'cmdafk_leave', 'forensics_alive', 'msg_cantsleep', 'msg_stepon_body', 'charinfo_sleeping', 'charinfo_afk', 'skillact_napping'
 [spheretables.scp]: Removed function SLEEP and updated RESOURCES list
+
+28-06-2019, Coruja
+Fixed: Function DISCONNECT showing console error when called on chars already disconnected.
+Fixed: Function KILL showing on console that the char was killed 'by accident' instead the killer name.
+Changed: For security purposes, account properties FIRSTCONNECTDATE/LASTCONNECTDATE, FIRSTIP/LASTIP, LASTCHARUID, LASTCONNECTTIME, TOTALCONNECTTIME now are read-only.

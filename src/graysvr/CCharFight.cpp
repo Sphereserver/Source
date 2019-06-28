@@ -2153,7 +2153,7 @@ void CChar::Fight_Clear()
 	}
 }
 
-bool CChar::Fight_Attack(const CChar *pCharTarg, bool fToldByMaster)
+bool CChar::Fight_Attack(CChar *pCharTarg, bool fToldByMaster)
 {
 	ADDTOCALLSTACK("CChar::Fight_Attack");
 	// We want to attack some one
@@ -2162,23 +2162,22 @@ bool CChar::Fight_Attack(const CChar *pCharTarg, bool fToldByMaster)
 	// RETURN:
 	//  true = new attack is accepted
 
-	if ( !pCharTarg || (pCharTarg == this) || !pCharTarg->Fight_IsAttackable() || IsStatFlag(STATF_DEAD) )
+	if ( !pCharTarg || (pCharTarg == this) || (m_pNPC && !pCharTarg->Fight_IsAttackable()) || IsStatFlag(STATF_DEAD) )
 	{
 		// Not a valid target
 		Attacker_Delete(const_cast<CChar *>(pCharTarg), true);
 		return false;
 	}
 
-	CChar *pTarget = const_cast<CChar *>(pCharTarg);
 	if ( pCharTarg->m_pPlayer && (GetPrivLevel() <= PLEVEL_Guest) && (pCharTarg->GetPrivLevel() > PLEVEL_Guest) )
 	{
 		SysMessageDefault(DEFMSG_MSG_GUEST);
-		Attacker_Delete(pTarget);
+		Attacker_Delete(pCharTarg);
 		return false;
 	}
 
 	if ( g_Cfg.m_fAttackingIsACrime && (pCharTarg->Noto_GetFlag(this) == NOTO_GOOD) )
-		CheckCrimeSeen(SKILL_NONE, pTarget, NULL, NULL);
+		CheckCrimeSeen(SKILL_NONE, pCharTarg, NULL, NULL);
 
 	INT64 iThreat = fToldByMaster ? LLONG_MAX : 0;
 
@@ -2186,12 +2185,12 @@ bool CChar::Fight_Attack(const CChar *pCharTarg, bool fToldByMaster)
 	{
 		CScriptTriggerArgs Args;
 		Args.m_iN1 = iThreat;
-		if ( OnTrigger(CTRIG_Attack, pTarget, &Args) == TRIGRET_RET_TRUE )
+		if ( OnTrigger(CTRIG_Attack, pCharTarg, &Args) == TRIGRET_RET_TRUE )
 			return false;
 		iThreat = Args.m_iN1;
 	}
 
-	if ( !Attacker_Add(pTarget, iThreat) )
+	if ( !Attacker_Add(pCharTarg, iThreat) )
 		return false;
 
 	// I'm attacking (or defending)
@@ -2220,9 +2219,9 @@ bool CChar::Fight_Attack(const CChar *pCharTarg, bool fToldByMaster)
 		return true;
 
 	if ( m_pNPC && !fToldByMaster )
-		pTarget = NPC_FightFindBestTarget();
+		pCharTarg = NPC_FightFindBestTarget();
 
-	m_Fight_Targ = pTarget ? pTarget->GetUID() : static_cast<CGrayUID>(UID_UNUSED);
+	m_Fight_Targ = pCharTarg ? pCharTarg->GetUID() : static_cast<CGrayUID>(UID_UNUSED);
 	Skill_Start(skillWeapon);
 	return true;
 }

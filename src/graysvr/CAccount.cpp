@@ -761,7 +761,9 @@ bool CAccount::Kick(CTextConsole *pSrc, bool fBlock)
 		pSrc->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_BLOCK), GetName());
 	}
 
-	g_Log.Event(LOGL_EVENT|LOGM_GM_CMDS, g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_KICK), GetName(), fBlock ? "BLOCK" : "DISCONNECT", pSrc->GetName());
+	TCHAR *pszMsg = Str_GetTemp();
+	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_KICK), GetName(), fBlock ? "BLOCK" : "DISCONNECT", pSrc->GetName());
+	g_Log.Event(LOGM_GM_CMDS|LOGM_NOCONTEXT, "%s\n", pszMsg);
 	return true;
 }
 
@@ -934,12 +936,6 @@ bool CAccount::r_LoadVal(CScript &s)
 		case AC_CHATNAME:
 			m_sChatName = s.GetArgStr();
 			break;
-		case AC_FIRSTCONNECTDATE:
-			m_dateFirstConnect.Read(s.GetArgStr());
-			break;
-		case AC_FIRSTIP:
-			m_First_IP.SetAddrStr(s.GetArgStr());
-			break;
 		case AC_GUEST:
 			if ( !s.HasArgs() || s.GetArgVal() )
 				SetPrivLevel(PLEVEL_Guest);
@@ -954,18 +950,6 @@ bool CAccount::r_LoadVal(CScript &s)
 			break;
 		case AC_LANG:
 			m_lang.Set(s.GetArgStr());
-			break;
-		case AC_LASTCHARUID:
-			m_uidLastChar = static_cast<CGrayUID>(s.GetArgVal());
-			break;
-		case AC_LASTCONNECTDATE:
-			m_dateLastConnect.Read(s.GetArgStr());
-			break;
-		case AC_LASTCONNECTTIME:
-			m_Last_Connect_Time = s.GetArgLLVal();
-			break;
-		case AC_LASTIP:
-			m_Last_IP.SetAddrStr(s.GetArgStr());
 			break;
 		case AC_MAXCHARS:
 			SetMaxChars(static_cast<BYTE>(s.GetArgVal()));
@@ -1000,9 +984,6 @@ bool CAccount::r_LoadVal(CScript &s)
 			m_TagDefs.SetStr(s.GetKey() + 4, fQuoted, s.GetArgStr(&fQuoted));
 			return true;
 		}
-		case AC_TOTALCONNECTTIME:
-			m_Total_Connect_Time = s.GetArgLLVal();
-			break;
 		default:
 			return false;
 	}

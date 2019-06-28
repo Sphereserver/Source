@@ -2974,8 +2974,9 @@ bool CChar::r_Verb(CScript &s, CTextConsole *pSrc)	// execute command from scrip
 		case CHV_DISCONNECT:
 		{
 			if ( m_pClient )
-				return m_pClient->addKick(pSrc, false);
-			SetDisconnected();
+				m_pClient->addKick(pSrc, false);
+			else
+				SetDisconnected();
 			break;
 		}
 		case CHV_DROP:
@@ -3106,9 +3107,7 @@ bool CChar::r_Verb(CScript &s, CTextConsole *pSrc)	// execute command from scrip
 		case CHV_KILL:
 		{
 			Effect(EFFECT_LIGHTNING, ITEMID_NOTHING, pCharSrc);
-			OnTakeDamage(10000, pCharSrc, DAMAGE_GOD);
-			Stat_SetVal(STAT_STR, 0);
-			g_Log.Event(LOGL_EVENT|LOGM_KILLS|LOGM_GM_CMDS, "'%s' was killed by '%s'\n", GetName(), pSrc->GetName());
+			OnTakeDamage(Stat_GetVal(STAT_STR), pCharSrc, DAMAGE_GOD);
 			break;
 		}
 		case CHV_MAKEITEM:

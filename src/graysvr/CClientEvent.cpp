@@ -766,7 +766,7 @@ void CClient::Event_CombatMode(bool fWar)
 	if ( !m_pChar )
 		return;
 
-	if ( -g_World.GetTimeDiff(m_timeLastEventWarMode) < 1 )
+	if ( fWar && (-g_World.GetTimeDiff(m_timeLastEventWarMode) < 1) )
 	{
 		SysMessageDefault(DEFMSG_SKILLWAIT_3);
 		return;

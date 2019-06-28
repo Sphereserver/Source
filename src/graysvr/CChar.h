@@ -326,6 +326,7 @@ private:
 	#define STATF_DEAD			0x00000002
 	#define STATF_Freeze		0x00000004	// Paralyzed (spell)
 	#define STATF_Invisible		0x00000008	// Invisible (spell)
+	//							0x00000010
 	#define STATF_War			0x00000020	// War mode on ?
 	#define STATF_Reactive		0x00000040	// have reactive armor on
 	#define STATF_Poisoned		0x00000080	// Poison level is in the poison object
@@ -1221,7 +1222,7 @@ public:
 	void Memory_Fight_Start(CChar *pTarg);
 	bool Memory_Fight_OnTick(CItemMemory *pMemory);
 
-	bool Fight_Attack(const CChar *pCharTarg, bool fToldByMaster = false);
+	bool Fight_Attack(CChar *pCharTarg, bool fToldByMaster = false);
 	void Fight_Clear();
 	void Fight_HitTry();
 	WAR_SWING_TYPE Fight_Hit(CChar *pCharTarg);

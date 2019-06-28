@@ -690,17 +690,18 @@ void CClient::addMusic(MIDI_TYPE id)
 	new PacketPlayMusic(this, id);
 }
 
-bool CClient::addKick(CTextConsole *pSrc, bool fBlock)
+void CClient::addKick(CTextConsole *pSrc, bool fBlock)
 {
 	ADDTOCALLSTACK("CClient::addKick");
 	ASSERT(pSrc);
 	if ( !m_pAccount )
 	{
 		m_NetState->markReadClosed();
-		return true;
+		return;
 	}
+
 	if ( !m_pAccount->Kick(pSrc, fBlock) )
-		return false;
+		return;
 
 	SysMessagef("You have been %sed by '%s'", fBlock ? "BLOCK" : "DISCONNECT", pSrc->GetName());
 
@@ -708,7 +709,6 @@ bool CClient::addKick(CTextConsole *pSrc, bool fBlock)
 		new PacketKick(this);
 
 	m_NetState->markReadClosed();
-	return true;
 }
 
 void CClient::addSound(SOUND_TYPE id, const CObjBaseTemplate *pSrc, BYTE bRepeat)
