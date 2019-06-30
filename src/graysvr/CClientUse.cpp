@@ -22,9 +22,9 @@ bool CClient::Cmd_Use_Item(CItem *pItem, bool fTestTouch, bool fScript)
 			if ( pContainer )
 			{
 				// Protect from ,snoop - disallow picking from not opened containers
-				bool bIsInOpenedContainer = false;
+				bool fInsideOpenedContainer = false;
 				if ( pContainer->GetType() == IT_EQ_TRADE_WINDOW )
-					bIsInOpenedContainer = true;
+					fInsideOpenedContainer = true;
 				else
 				{
 					CClient::OpenedContainerMap_t::iterator itContainerFound = m_openedContainers.find(pContainer->GetUID().GetPrivateUID());
@@ -42,21 +42,21 @@ bool CClient::Cmd_Use_Item(CItem *pItem, bool fTestTouch, bool fScript)
 							if ( pObjTop->IsChar() )
 							{
 								// probably a pickup check from pack if pCharTop != this?
-								bIsInOpenedContainer = true;
+								fInsideOpenedContainer = true;
 							}
 							else
 							{
 								const CItem *pItemTop = static_cast<const CItem *>(pObjTop);
 								if ( pItemTop && (pItemTop->IsType(IT_SHIP_HOLD) || pItemTop->IsType(IT_SHIP_HOLD_LOCK)) && (pItemTop->GetTopPoint().GetRegion(REGION_TYPE_MULTI) == m_pChar->GetTopPoint().GetRegion(REGION_TYPE_MULTI)) )
-									bIsInOpenedContainer = true;
+									fInsideOpenedContainer = true;
 								else if ( ptOpenedContainerPosition.GetDist(pObjTop->GetTopPoint()) <= 3 )
-									bIsInOpenedContainer = true;
+									fInsideOpenedContainer = true;
 							}
 						}
 					}
 				}
 
-				if ( !bIsInOpenedContainer )
+				if ( !fInsideOpenedContainer )
 				{
 					SysMessageDefault(DEFMSG_REACH_UNABLE);
 					return false;
@@ -82,16 +82,16 @@ bool CClient::Cmd_Use_Item(CItem *pItem, bool fTestTouch, bool fScript)
 	}
 
 	CItemBase *pItemDef = pItem->Item_GetDef();
-	bool bIsEquipped = pItem->IsItemEquipped();
-	if ( pItemDef->IsTypeEquippable() && !bIsEquipped && pItemDef->GetEquipLayer() )
+	bool fEquipped = pItem->IsItemEquipped();
+	if ( pItemDef->IsTypeEquippable() && !fEquipped && pItemDef->GetEquipLayer() )
 	{
-		bool bMustEquip = true;
+		bool fMustEquip = true;
 		if ( pItem->IsTypeSpellbook() )
-			bMustEquip = false;
+			fMustEquip = false;
 		else if ( (pItem->IsType(IT_LIGHT_OUT) || pItem->IsType(IT_LIGHT_LIT)) && !pItem->IsItemInContainer() )
-			bMustEquip = false;
+			fMustEquip = false;
 
-		if ( bMustEquip )
+		if ( fMustEquip )
 		{
 			if ( !m_pChar->CanMove(pItem) )
 				return false;
@@ -143,7 +143,7 @@ bool CClient::Cmd_Use_Item(CItem *pItem, bool fTestTouch, bool fScript)
 		}
 
 		case IT_FISH_POLE:
-			if ( bIsEquipped || !IsSetOF(OF_NoDClickTarget) )
+			if ( fEquipped || !IsSetOF(OF_NoDClickTarget) )
 			{
 				const CSkillDef *pSkillDef = g_Cfg.GetSkillDef(SKILL_FISHING);
 				addTarget(CLIMODE_TARG_USE_ITEM, pSkillDef ? pSkillDef->m_sTargetPrompt.GetPtr() : NULL, true);
@@ -402,7 +402,7 @@ bool CClient::Cmd_Use_Item(CItem *pItem, bool fTestTouch, bool fScript)
 			return true;
 
 		case IT_WEAPON_MACE_PICK:
-			if ( bIsEquipped || !IsSetOF(OF_NoDClickTarget) )
+			if ( fEquipped || !IsSetOF(OF_NoDClickTarget) )
 			{
 				// Mine at the location
 				TCHAR *pszTemp = Str_GetTemp();
@@ -417,12 +417,12 @@ bool CClient::Cmd_Use_Item(CItem *pItem, bool fTestTouch, bool fScript)
 		case IT_WEAPON_MACE_SHARP:
 		case IT_WEAPON_MACE_STAFF:
 		case IT_WEAPON_MACE_SMITH:
-			if ( bIsEquipped || !IsSetOF(OF_NoDClickTarget) )
+			if ( fEquipped || !IsSetOF(OF_NoDClickTarget) )
 				addTarget(CLIMODE_TARG_USE_ITEM, g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_WEAPON_PROMT), false, true);
 			return true;
 
 		case IT_WEAPON_MACE_CROOK:
-			if ( bIsEquipped || !IsSetOF(OF_NoDClickTarget) )
+			if ( fEquipped || !IsSetOF(OF_NoDClickTarget) )
 				addTarget(CLIMODE_TARG_USE_ITEM, g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_CROOK_PROMT), false, true);
 			return true;
 
@@ -598,14 +598,14 @@ void CClient::Cmd_EditItem(CObjBase *pObj, int iSelect)
 	CMenuItem item[minimum(COUNTOF(m_tmMenu.m_Item), MAX_MENU_ITEMS)];	// Most as we want to display at one time.
 	item[0].m_sText.Format("Contents of %s", pObj->GetName());
 
-	size_t count = 0;
+	size_t iCount = 0;
 	for ( CItem *pItem = pContainer->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
-		++count;
-		m_tmMenu.m_Item[count] = pItem->GetUID();
-		item[count].m_sText = pItem->GetName();
-		item[count].m_id = static_cast<WORD>(pItem->GetDispID());
-		item[count].m_color = 0;
+		++iCount;
+		m_tmMenu.m_Item[iCount] = pItem->GetUID();
+		item[iCount].m_sText = pItem->GetName();
+		item[iCount].m_id = static_cast<WORD>(pItem->GetDispID());
+		item[iCount].m_color = 0;
 
 		if ( !pItem->IsType(IT_EQ_MEMORY_OBJ) )
 		{
@@ -613,16 +613,16 @@ void CClient::Cmd_EditItem(CObjBase *pObj, int iSelect)
 			if ( wHue != 0 )
 			{
 				wHue = (wHue == 1 ? 0x7FF : wHue - 1);
-				item[count].m_color = wHue;
+				item[iCount].m_color = wHue;
 			}
 		}
 
-		if ( count >= (COUNTOF(item) - 1) )
+		if ( iCount >= (COUNTOF(item) - 1) )
 			break;
 	}
 
-	ASSERT(count < COUNTOF(item));
-	addItemMenu(CLIMODE_MENU_EDIT, item, count, pObj);
+	ASSERT(iCount < COUNTOF(item));
+	addItemMenu(CLIMODE_MENU_EDIT, item, iCount, pObj);
 }
 
 bool CClient::Cmd_Skill_Menu(RESOURCE_ID_BASE rid, int iSelect)
@@ -969,11 +969,11 @@ bool CClient::Cmd_Skill_Magery(SPELL_TYPE iSpell, CObjBase *pSrc)
 		if ( !pSpellDef->m_sTargetPrompt.IsEmpty() )
 			pPrompt = pSpellDef->m_sTargetPrompt;
 
-		int SpellTimeout = static_cast<int>(m_pChar->GetDefNum("SPELLTIMEOUT"));
-		if ( !SpellTimeout )
-			SpellTimeout = g_Cfg.m_iSpellTimeout * TICK_PER_SEC;
+		int iTimeout = static_cast<int>(m_pChar->GetDefNum("SPELLTIMEOUT"));
+		if ( !iTimeout )
+			iTimeout = g_Cfg.m_iSpellTimeout * TICK_PER_SEC;
 
-		addTarget(CLIMODE_TARG_SKILL_MAGERY, pPrompt, pSpellDef->IsSpellType(SPELLFLAG_TARG_XYZ), pSpellDef->IsSpellType(SPELLFLAG_HARM), SpellTimeout);
+		addTarget(CLIMODE_TARG_SKILL_MAGERY, pPrompt, pSpellDef->IsSpellType(SPELLFLAG_TARG_XYZ), pSpellDef->IsSpellType(SPELLFLAG_HARM), iTimeout);
 		return true;
 	}
 
@@ -999,7 +999,7 @@ bool CClient::Cmd_Skill_Magery(SPELL_TYPE iSpell, CObjBase *pSrc)
 	}
 }
 
-bool CClient::Cmd_Skill_Tracking(WORD wTrackType, bool bExec)
+bool CClient::Cmd_Skill_Tracking(WORD wTrackType, bool fExec)
 {
 	ADDTOCALLSTACK("CClient::Cmd_Skill_Tracking");
 	// look around for stuff.
@@ -1036,7 +1036,7 @@ bool CClient::Cmd_Skill_Tracking(WORD wTrackType, bool bExec)
 		if ( wTrackType >= COUNTOF(m_tmMenu.m_Item) )
 			return false;
 
-		if ( bExec )
+		if ( fExec )
 		{
 			// Tracking menu got us here. Start tracking the selected creature.
 			m_pChar->SetTimeout(1 * TICK_PER_SEC);
@@ -1059,7 +1059,7 @@ bool CClient::Cmd_Skill_Tracking(WORD wTrackType, bool bExec)
 
 		NPCBRAIN_TYPE track_type = sm_Track_Brain[wTrackType];
 		CMenuItem item[minimum(MAX_MENU_ITEMS, COUNTOF(m_tmMenu.m_Item))];
-		size_t count = 0;
+		size_t iCount = 0;
 
 		item[0].m_sText = g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_SKILLMENU_TITLE);
 		m_tmMenu.m_Item[0] = wTrackType;
@@ -1085,22 +1085,20 @@ bool CClient::Cmd_Skill_Tracking(WORD wTrackType, bool bExec)
 					continue;
 
 				// Check action difficulty when trying to track players
-				WORD tracking = m_pChar->Skill_GetBase(SKILL_TRACKING);
-				WORD detectHidden = m_pChar->Skill_GetBase(SKILL_DETECTINGHIDDEN);
+				WORD wTrackingSkill = m_pChar->Skill_GetBase(SKILL_TRACKING);
+				WORD wDetectHiddenSkill = m_pChar->Skill_GetBase(SKILL_DETECTINGHIDDEN);
 				if ( (g_Cfg.m_iRacialFlags & RACIALF_ELF_DIFFTRACK) && pChar->IsElf() )
-					tracking /= 2;			// elves are more difficult to track (Difficult to Track racial trait)
+					wTrackingSkill /= 2;			// elves are more difficult to track (Difficult to Track racial trait)
 
-				WORD hiding = pChar->Skill_GetBase(SKILL_HIDING);
-				WORD stealth = pChar->Skill_GetBase(SKILL_STEALTH);
-				WORD divisor = maximum(hiding + stealth, 1);
+				WORD wDivisor = maximum(pChar->Skill_GetBase(SKILL_HIDING) + pChar->Skill_GetBase(SKILL_STEALTH), 1);
 
-				int chance;
+				int iChance;
 				if ( g_Cfg.m_iFeatureSE & FEATURE_SE_UPDATE )
-					chance = 50 * (tracking * 2 + detectHidden) / divisor;
+					iChance = 50 * (wTrackingSkill * 2 + wDetectHiddenSkill) / wDivisor;
 				else
-					chance = 50 * (tracking + detectHidden + 10 * Calc_GetRandVal(20)) / divisor;
+					iChance = 50 * (wTrackingSkill + wDetectHiddenSkill + 10 * Calc_GetRandVal(20)) / wDivisor;
 
-				if ( Calc_GetRandVal(100) > chance )
+				if ( Calc_GetRandVal(100) > iChance )
 					continue;
 			}
 
@@ -1108,22 +1106,22 @@ bool CClient::Cmd_Skill_Tracking(WORD wTrackType, bool bExec)
 			if ( !pCharDef )
 				continue;
 
-			++count;
-			item[count].m_id = static_cast<WORD>(pCharDef->m_trackID);
-			item[count].m_color = 0;
-			item[count].m_sText = pChar->GetName();
-			m_tmMenu.m_Item[count] = pChar->GetUID();
+			++iCount;
+			item[iCount].m_id = static_cast<WORD>(pCharDef->m_trackID);
+			item[iCount].m_color = 0;
+			item[iCount].m_sText = pChar->GetName();
+			m_tmMenu.m_Item[iCount] = pChar->GetUID();
 
-			if ( count >= COUNTOF(item) - 1 )
+			if ( iCount >= COUNTOF(item) - 1 )
 				break;
 		}
 
 		// Some credit for trying
-		if ( count > 0 )
+		if ( iCount > 0 )
 		{
 			m_pChar->Skill_UseQuick(SKILL_TRACKING, 20 + Calc_GetRandVal(30));
-			ASSERT(count < COUNTOF(item));
-			addItemMenu(CLIMODE_MENU_SKILL_TRACK, item, count);
+			ASSERT(iCount < COUNTOF(item));
+			addItemMenu(CLIMODE_MENU_SKILL_TRACK, item, iCount);
 			return true;
 		}
 		else

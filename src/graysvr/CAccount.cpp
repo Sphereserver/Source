@@ -24,7 +24,7 @@ void CAccounts::Account_Add(CAccount *pAccount)
 		g_Serv.r_Call("f_onaccount_create", &g_Serv, &Args, NULL, &tr);
 		if ( tr == TRIGRET_RET_TRUE )
 		{
-			g_Log.Event(LOGL_EVENT|LOGM_ACCOUNTS, "Account '%s': creation blocked via script\n", pAccount->GetName());
+			g_Log.Event(LOGL_EVENT|LOGM_ACCOUNTS, "Account '%s' creation blocked by script\n", pAccount->GetName());
 			Account_Delete(pAccount);
 			return;
 		}
@@ -663,16 +663,16 @@ static LPCTSTR const sm_szPrivLevels[PLEVEL_QTY + 1] =
 PLEVEL_TYPE CAccount::GetPrivLevelText(LPCTSTR pszFlags)	// static
 {
 	ADDTOCALLSTACK("CAccount::GetPrivLevelText");
-	int plevel = FindTable(pszFlags, sm_szPrivLevels, COUNTOF(sm_szPrivLevels) - 1);
-	if ( plevel >= 0 )
-		return static_cast<PLEVEL_TYPE>(plevel);
+	int iPlevel = FindTable(pszFlags, sm_szPrivLevels, COUNTOF(sm_szPrivLevels) - 1);
+	if ( iPlevel >= 0 )
+		return static_cast<PLEVEL_TYPE>(iPlevel);
 
-	plevel = Exp_GetVal(pszFlags);
-	if ( plevel < PLEVEL_Guest )
+	iPlevel = Exp_GetVal(pszFlags);
+	if ( iPlevel < PLEVEL_Guest )
 		return PLEVEL_Guest;
-	if ( plevel > PLEVEL_Owner )
+	if ( iPlevel > PLEVEL_Owner )
 		return PLEVEL_Owner;
-	return static_cast<PLEVEL_TYPE>(plevel);
+	return static_cast<PLEVEL_TYPE>(iPlevel);
 }
 
 bool CAccount::SetAutoResDisp(CClient *pClient)
@@ -740,6 +740,8 @@ void CAccount::OnLogout(bool fWasChar)
 			m_Last_Connect_Time = 0;
 		m_Total_Connect_Time += m_Last_Connect_Time;
 	}
+
+	m_pClient = NULL;
 }
 
 bool CAccount::Kick(CTextConsole *pSrc, bool fBlock)
@@ -760,6 +762,8 @@ bool CAccount::Kick(CTextConsole *pSrc, bool fBlock)
 	TCHAR *pszMsg = Str_GetTemp();
 	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_KICK), GetName(), fBlock ? "BLOCK" : "DISCONNECT", pSrc->GetName());
 	g_Log.Event(LOGM_GM_CMDS|LOGM_NOCONTEXT, "%s\n", pszMsg);
+	if ( pSrc != &g_Serv )
+		pSrc->SysMessage(pszMsg);
 	return true;
 }
 
@@ -1140,14 +1144,14 @@ bool CAccount::r_Verb(CScript &s, CTextConsole *pSrc)
 					m_pClient->CharDisconnect();
 					m_pClient->m_NetState->markReadClosed();
 				}
-				sprintf(pszMsg, "Account '%s' deleted\n", pszAccount);
+				sprintf(pszMsg, "Account '%s' deleted", pszAccount);
 			}
 			else
 			{
-				sprintf(pszMsg, "Account '%s' deletion blocked via script\n", pszAccount);
+				sprintf(pszMsg, "Account '%s' deletion blocked by script", pszAccount);
 			}
 
-			g_Log.Event(LOGM_ACCOUNTS, pszMsg);
+			g_Log.Event(LOGM_ACCOUNTS, "%s\n", pszMsg);
 			if ( pSrc != &g_Serv )
 				pSrc->SysMessage(pszMsg);
 			return true;

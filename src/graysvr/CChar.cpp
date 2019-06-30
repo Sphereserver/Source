@@ -1438,26 +1438,26 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				}
 				if ( m_lastAttackers.size() )
 				{
-					size_t attackerIndex;
+					size_t index;
 					if ( !strnicmp(pszKey, "MAX", 3) )
 					{
 						pszKey += 3;
-						attackerIndex = Attacker_GetID(Attacker_GetHighestDam());
+						index = Attacker_GetID(Attacker_GetHighestDam());
 					}
 					else if ( !strnicmp(pszKey, "LAST", 4) )
 					{
 						pszKey += 4;
-						attackerIndex = Attacker_GetID(Attacker_GetLowestElapsed());
+						index = Attacker_GetID(Attacker_GetLowestElapsed());
 					}
 					else
 					{
-						attackerIndex = Exp_GetVal(pszKey);
+						index = Exp_GetVal(pszKey);
 					}
 
 					SKIP_SEPARATORS(pszKey);
-					if ( attackerIndex < m_lastAttackers.size() )
+					if ( index < m_lastAttackers.size() )
 					{
-						LastAttackers &refAttacker = m_lastAttackers.at(attackerIndex);
+						LastAttackers &refAttacker = m_lastAttackers.at(index);
 						if ( !strnicmp(pszKey, "UID", 3) || (*pszKey == '\0') )
 						{
 							sVal.FormatHex(refAttacker.charUID);
@@ -1522,11 +1522,11 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				}
 				if ( m_notoSaves.size() )
 				{
-					size_t notoIndex = Exp_GetVal(pszKey);
+					size_t index = Exp_GetVal(pszKey);
 					SKIP_SEPARATORS(pszKey);
-					if ( notoIndex < m_notoSaves.size() )
+					if ( index < m_notoSaves.size() )
 					{
-						NotoSaves refNoto = m_notoSaves.at(notoIndex);
+						NotoSaves refNoto = m_notoSaves.at(index);
 						if ( !strnicmp(pszKey, "UID", 3) || (*pszKey == '\0') )
 						{
 							sVal.FormatHex(refNoto.charUID);
@@ -2267,7 +2267,7 @@ bool CChar::r_LoadVal(CScript &s)
 			if ( strlen(pszKey) > 8 )
 			{
 				pszKey += 8;
-				int attackerIndex = m_lastAttackers.size();
+				int index = m_lastAttackers.size();
 				if ( *pszKey == '.' )
 				{
 					++pszKey;
@@ -2302,31 +2302,31 @@ bool CChar::r_LoadVal(CScript &s)
 						return true;
 					}
 
-					attackerIndex = Exp_GetVal(pszKey);
-					if ( attackerIndex < 0 )
+					index = Exp_GetVal(pszKey);
+					if ( index < 0 )
 						return false;
 
 					SKIP_SEPARATORS(pszKey);
-					if ( attackerIndex < static_cast<int>(m_lastAttackers.size()) )
+					if ( index < static_cast<int>(m_lastAttackers.size()) )
 					{
 						if ( !strnicmp(pszKey, "ELAPSED", 7) )
 						{
-							Attacker_SetElapsed(attackerIndex, s.GetArgLLVal());
+							Attacker_SetElapsed(index, s.GetArgLLVal());
 							return true;
 						}
 						else if ( !strnicmp(pszKey, "DAM", 3) )
 						{
-							Attacker_SetDamage(attackerIndex, s.GetArgLLVal());
+							Attacker_SetDamage(index, s.GetArgLLVal());
 							return true;
 						}
 						else if ( !strnicmp(pszKey, "THREAT", 6) )
 						{
-							Attacker_SetThreat(attackerIndex, s.GetArgLLVal());
+							Attacker_SetThreat(index, s.GetArgLLVal());
 							return true;
 						}
 						else if ( !strnicmp(pszKey, "DELETE", 6) )
 						{
-							Attacker_Delete(attackerIndex, false, ATTACKER_CLEAR_SCRIPT);
+							Attacker_Delete(index, false, ATTACKER_CLEAR_SCRIPT);
 							return true;
 						}
 					}
@@ -3225,18 +3225,6 @@ bool CChar::r_Verb(CScript &s, CTextConsole *pSrc)	// execute command from scrip
 			NPC_PetRelease();
 			break;
 		case CHV_REMOVE:	// remove this char from the world instantly
-		{
-			if ( m_pPlayer )
-			{
-				if ( (s.GetArgRaw()[0] != '1') || (pSrc->GetPrivLevel() < PLEVEL_Admin) )
-				{
-					pSrc->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_CMD_REMOVE_PLAYER));
-					return false;
-				}
-			}
-			Delete();
-			break;
-		}
 		case CHV_DESTROY:	// remove this char from the world and bypass trigger return value
 		{
 			if ( m_pPlayer )
@@ -3247,7 +3235,7 @@ bool CChar::r_Verb(CScript &s, CTextConsole *pSrc)	// execute command from scrip
 					return false;
 				}
 			}
-			Delete(true);
+			Delete((index == CHV_DESTROY));
 			break;
 		}
 		case CHV_RESURRECT:

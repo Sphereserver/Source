@@ -58,10 +58,10 @@ void CClient::Event_ChatButton(const NCHAR *pszName)
 }
 
 // Client sent a text on chat
-void CClient::Event_ChatText(const NCHAR *pszText, int len, CLanguageID lang)
+void CClient::Event_ChatText(const NCHAR *pszText, int iTextLen, CLanguageID lang)
 {
 	ADDTOCALLSTACK("CClient::Event_ChatText");
-	g_Serv.m_Chats.Action(this, pszText, len, lang);
+	g_Serv.m_Chats.Action(this, pszText, iTextLen, lang);
 }
 
 // Client selected an item hue
@@ -100,22 +100,22 @@ void CClient::Event_Item_Dye(CGrayUID uid, HUE_TYPE wHue)
 }
 
 // Tip of the day window
-void CClient::Event_Tips(WORD i)
+void CClient::Event_Tips(DWORD dwIndex)
 {
 	ADDTOCALLSTACK("CClient::Event_Tips");
-	if ( i == 0 )
-		i = 1;
+	if ( dwIndex == 0 )
+		dwIndex = 1;
 
 	CResourceLock s;
-	if ( !g_Cfg.ResourceLock(s, RESOURCE_ID(RES_TIP, i)) )
+	if ( !g_Cfg.ResourceLock(s, RESOURCE_ID(RES_TIP, dwIndex)) )
 	{
 		// Requested tip was not found, default to tip 1 if possible
-		if ( (i == 1) || !g_Cfg.ResourceLock(s, RESOURCE_ID(RES_TIP, 1)) )
+		if ( (dwIndex == 1) || !g_Cfg.ResourceLock(s, RESOURCE_ID(RES_TIP, 1)) )
 			return;
-		i = 1;
+		dwIndex = 1;
 	}
 
-	addScrollScript(s, SCROLL_Tips, i + 1);
+	addScrollScript(s, SCROLL_Tips, dwIndex + 1);
 }
 
 // Client changed book title/author info
@@ -141,7 +141,7 @@ void CClient::Event_Book_Title(CItem *pItem, LPCTSTR pszTitle, LPCTSTR pszAuthor
 }
 
 // Client picked up an item
-void CClient::Event_Item_Pickup(CGrayUID uid, int amount)
+void CClient::Event_Item_Pickup(CGrayUID uid, int iAmount)
 {
 	ADDTOCALLSTACK("CClient::Event_Item_Pickup");
 	EXC_TRY("CClient::Event_Item_Pickup");
@@ -177,8 +177,8 @@ void CClient::Event_Item_Pickup(CGrayUID uid, int amount)
 	m_Targ_p = pItem->GetTopPoint();
 
 	EXC_SET("ItemPickup");
-	amount = m_pChar->ItemPickup(pItem, static_cast<WORD>(amount));
-	if ( amount < 0 )
+	iAmount = m_pChar->ItemPickup(pItem, static_cast<WORD>(iAmount));
+	if ( iAmount < 0 )
 	{
 		EXC_SET("ItemPickup - addItemDragCancel(0)");
 		new PacketDragCancel(this, PacketDragCancel::CannotLift);
@@ -471,8 +471,8 @@ void CClient::Event_Skill_Use(SKILL_TYPE skill)
 	SetTargMode();
 	m_Targ_UID.InitUID();	// this is a start point for targ more
 
-	bool bCheckCrime = false;
-	bool bDoTargeting = false;
+	bool fCheckCrime = false;
+	bool fDoTargeting = false;
 
 	if ( g_Cfg.IsSkillFlag(skill, SKF_SCRIPTED) )
 	{
@@ -480,7 +480,7 @@ void CClient::Event_Skill_Use(SKILL_TYPE skill)
 		if ( pSkillDef && !pSkillDef->m_sTargetPrompt.IsEmpty() )
 		{
 			m_tmSkillTarg.m_Skill = skill;
-			addTarget(CLIMODE_TARG_SKILL, pSkillDef->m_sTargetPrompt.GetPtr(), false, bCheckCrime);
+			addTarget(CLIMODE_TARG_SKILL, pSkillDef->m_sTargetPrompt.GetPtr(), false, fCheckCrime);
 			return;
 		}
 		else
@@ -500,16 +500,16 @@ void CClient::Event_Skill_Use(SKILL_TYPE skill)
 		case SKILL_BEGGING:
 		case SKILL_TAMING:
 		case SKILL_REMOVETRAP:
-			bCheckCrime = false;
-			bDoTargeting = true;
+			fCheckCrime = false;
+			fDoTargeting = true;
 			break;
 
 		case SKILL_STEALING:
 		case SKILL_ENTICEMENT:
 		case SKILL_PROVOCATION:
 		case SKILL_POISONING:
-			bCheckCrime = true;
-			bDoTargeting = true;
+			fCheckCrime = true;
+			fDoTargeting = true;
 			break;
 
 		case SKILL_STEALTH:
@@ -537,7 +537,7 @@ void CClient::Event_Skill_Use(SKILL_TYPE skill)
 			break;
 	}
 
-	if ( bDoTargeting )
+	if ( fDoTargeting )
 	{
 		const CSkillDef *pSkillDef = g_Cfg.GetSkillDef(skill);
 		if ( !pSkillDef || pSkillDef->m_sTargetPrompt.IsEmpty() )
@@ -547,7 +547,7 @@ void CClient::Event_Skill_Use(SKILL_TYPE skill)
 		}
 
 		m_tmSkillTarg.m_Skill = skill;
-		addTarget(CLIMODE_TARG_SKILL, pSkillDef->m_sTargetPrompt.GetPtr(), false, bCheckCrime);
+		addTarget(CLIMODE_TARG_SKILL, pSkillDef->m_sTargetPrompt.GetPtr(), false, fCheckCrime);
 		return;
 	}
 }
@@ -689,8 +689,8 @@ bool CClient::Event_Walk(BYTE rawdir, BYTE sequence)
 		}
 
 		// Check if I stepped on any item/teleport
-		TRIGRET_TYPE iRet = m_pChar->CheckLocation();
-		if ( iRet == TRIGRET_RET_FALSE )
+		TRIGRET_TYPE tr = m_pChar->CheckLocation();
+		if ( tr == TRIGRET_RET_FALSE )
 		{
 			if ( m_pChar->GetTopPoint() == pt )	// check if position still the same, because the movement can't be rejected if the char already got moved/teleported
 			{
@@ -706,7 +706,7 @@ bool CClient::Event_Walk(BYTE rawdir, BYTE sequence)
 		// Set running flag if I'm running
 		m_pChar->StatFlag_Mod(STATF_Fly, (rawdir & 0x80) ? true : false);
 
-		if ( iRet == TRIGRET_RET_TRUE )
+		if ( tr == TRIGRET_RET_TRUE )
 		{
 			new PacketMovementAck(this, sequence);
 			m_pChar->UpdateMove(ptOld, this);	// Who now sees me ?
@@ -717,7 +717,7 @@ bool CClient::Event_Walk(BYTE rawdir, BYTE sequence)
 		}
 
 		m_timeLastEventWalk = CServTime::GetCurrentTime();
-		m_iWalkStepCount++;					// Increase step count to use on walk buffer checks
+		++m_iWalkStepCount;					// Increase step count to use on walk buffer checks
 	}
 	else
 	{
@@ -772,7 +772,7 @@ void CClient::Event_CombatMode(bool fWar)
 		return;
 	}
 
-	bool bCleanSkill = true;
+	bool fCleanSkill = true;
 	if ( IsTrigUsed(TRIGGER_USERWARMODE) )
 	{
 		CScriptTriggerArgs Args;
@@ -786,7 +786,7 @@ void CClient::Event_CombatMode(bool fWar)
 			fWar = false;
 
 		if ( Args.m_iN2 == 0 )
-			bCleanSkill = false;
+			fCleanSkill = false;
 
 		if ( Args.m_iN3 == 1 )
 		{
@@ -800,7 +800,7 @@ void CClient::Event_CombatMode(bool fWar)
 	if ( m_pChar->IsStatFlag(STATF_DEAD) )
 		m_pChar->StatFlag_Mod(STATF_Insubstantial, !fWar);	// manifest the ghost
 
-	if ( bCleanSkill )
+	if ( fCleanSkill )
 		m_pChar->Skill_Fail(true);
 
 	addPlayerWarMode();
@@ -825,35 +825,37 @@ bool CClient::Event_Command(LPCTSTR pszCommand, TALKMODE_TYPE mode)
 
 	pszCommand += 1;
 	GETNONWHITESPACE(pszCommand);
-	bool bAllowCommand = g_Cfg.CanUsePrivVerb(this, pszCommand, this);
-	bool bAllowSay = true;
+	bool fAllowCommand = g_Cfg.CanUsePrivVerb(this, pszCommand, this);
+	bool fAllowSay = true;
 
-	if ( !bAllowCommand )
-		bAllowSay = (GetPrivLevel() <= PLEVEL_Player);
+	if ( !fAllowCommand )
+		fAllowSay = (GetPrivLevel() <= PLEVEL_Player);
 
 	// Filter on commands is active - so trigger it
 	if ( !g_Cfg.m_sCommandTrigger.IsEmpty() )
 	{
 		CScriptTriggerArgs Args(pszCommand);
-		Args.m_iN1 = bAllowCommand;
-		Args.m_iN2 = bAllowSay;
-		enum TRIGRET_TYPE tr;
+		Args.m_iN1 = fAllowCommand;
+		Args.m_iN2 = fAllowSay;
+		TRIGRET_TYPE tr;
 
 		//	Call the filtering function
 		if ( m_pChar->r_Call(g_Cfg.m_sCommandTrigger, m_pChar, &Args, NULL, &tr) )
+		{
 			if ( tr == TRIGRET_RET_TRUE )
 				return (Args.m_iN2 != 0);
+		}
 
-		bAllowCommand = (Args.m_iN1 != 0);
-		bAllowSay = (Args.m_iN2 != 0);
+		fAllowCommand = (Args.m_iN1 != 0);
+		fAllowSay = (Args.m_iN2 != 0);
 	}
 
-	if ( !bAllowCommand && !bAllowSay )
+	if ( !fAllowCommand && !fAllowSay )
 		SysMessageDefault(DEFMSG_MSG_ACC_PRIV);
 
-	if ( bAllowCommand )
+	if ( fAllowCommand )
 	{
-		bAllowSay = false;
+		fAllowSay = false;
 
 		// Assume you don't mean yourself
 		if ( FindTableHeadSorted(pszCommand, sm_szCmd_Redirect, COUNTOF(sm_szCmd_Redirect)) >= 0 )
@@ -870,9 +872,9 @@ bool CClient::Event_Command(LPCTSTR pszCommand, TALKMODE_TYPE mode)
 	}
 
 	if ( GetPrivLevel() >= g_Cfg.m_iCommandLog )
-		g_Log.Event(LOGM_GM_CMDS, "%lx:'%s' commands '%s'=%d\n", GetSocketID(), GetName(), pszCommand, bAllowCommand);
+		g_Log.Event(LOGM_GM_CMDS, "%lx:'%s' commands '%s'=%d\n", GetSocketID(), GetName(), pszCommand, fAllowCommand);
 
-	return !bAllowSay;
+	return !fAllowSay;
 }
 
 // Client is attacking someone
@@ -904,28 +906,28 @@ void CClient::Event_VendorBuy_Cheater(int iCode)
 }
 
 // Client is buying items from an vendor
-void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t itemCount)
+void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t iItemCount)
 {
 	ADDTOCALLSTACK("CClient::Event_VendorBuy");
 	if ( !m_pChar || !pVendor )
 		return;
-	if ( !items || (itemCount <= 0) )
+	if ( !items || (iItemCount <= 0) )
 	{
 		addVendorClose(pVendor);
 		return;
 	}
 
-	bool bPlayerVendor = pVendor->IsStatFlag(STATF_Pet);
+	bool fPlayerVendor = pVendor->IsStatFlag(STATF_Pet);
 	pVendor->GetContainerCreate(LAYER_VENDOR_STOCK);
 	CItemContainer *pPack = m_pChar->GetContainerCreate(LAYER_PACK);
 
 	CItemVendable *pItem = NULL;
-	WORD amount = 0;
-	DWORD costtotal = 0;
+	WORD wAmount = 0;
+	DWORD dwCostTotal = 0;
 	short iFollowerSlots = 0;
 
 	// Check if there's something that can block the action
-	for ( size_t i = 0; i < itemCount; ++i )
+	for ( size_t i = 0; i < iItemCount; ++i )
 	{
 		if ( !items[i].m_serial.IsValidUID() )
 			continue;
@@ -972,10 +974,10 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 			}
 		}
 
-		costtotal += items[i].m_amount * items[i].m_price;
+		dwCostTotal += items[i].m_amount * items[i].m_price;
 	}
 
-	if ( costtotal > ULONG_MAX / 4 )
+	if ( dwCostTotal > ULONG_MAX / 4 )
 	{
 		pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_ORDER_CANTFULFILL));
 		Event_VendorBuy_Cheater(0x4);
@@ -988,12 +990,12 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 	}
 
 	// Check if buyer have enough gold
-	bool bBoss = pVendor->NPC_IsOwnedBy(m_pChar);
-	if ( !bBoss )
+	bool fOwner = pVendor->NPC_IsOwnedBy(m_pChar);
+	if ( !fOwner )
 	{
 		if ( g_Cfg.m_iFeatureTOL & FEATURE_TOL_VIRTUALGOLD )
 		{
-			if ( m_pChar->m_virtualGold < costtotal )
+			if ( m_pChar->m_virtualGold < dwCostTotal )
 			{
 				pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_BUY_CANTAFFORD_BANK));
 				return;
@@ -1001,11 +1003,11 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 		}
 		else
 		{
-			DWORD iGold = m_pChar->GetContainerCreate(LAYER_PACK)->ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), costtotal, true);
-			if ( !g_Cfg.m_fPayFromPackOnly && iGold )
-				iGold = m_pChar->ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), costtotal, true);
+			DWORD dwGold = m_pChar->GetContainerCreate(LAYER_PACK)->ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), dwCostTotal, true);
+			if ( !g_Cfg.m_fPayFromPackOnly && dwGold )
+				dwGold = m_pChar->ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), dwCostTotal, true);
 
-			if ( iGold )
+			if ( dwGold )
 			{
 				pVendor->Speak(g_Cfg.GetDefaultMsg(g_Cfg.m_fPayFromPackOnly ? DEFMSG_NPC_VENDOR_BUY_CANTAFFORD : DEFMSG_NPC_VENDOR_BUY_CANTAFFORD_BANK));
 				return;
@@ -1014,7 +1016,7 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 	}
 
 	// Move bought items to backpack
-	for ( size_t i = 0; i < itemCount; ++i )
+	for ( size_t i = 0; i < iItemCount; ++i )
 	{
 		if ( !items[i].m_serial.IsValidUID() )
 			continue;
@@ -1023,26 +1025,26 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 		if ( !pItem )
 			continue;
 
-		amount = items[i].m_amount;
+		wAmount = items[i].m_amount;
 
 		if ( IsTrigUsed(TRIGGER_BUY) || IsTrigUsed(TRIGGER_ITEMBUY) )
 		{
-			CScriptTriggerArgs Args(amount, static_cast<INT64>(amount) * items[i].m_price, pVendor);
-			Args.m_VarsLocal.SetNum("TOTALCOST", costtotal);
+			CScriptTriggerArgs Args(wAmount, static_cast<INT64>(wAmount) * items[i].m_price, pVendor);
+			Args.m_VarsLocal.SetNum("TOTALCOST", dwCostTotal);
 			if ( pItem->OnTrigger(ITRIG_Buy, GetChar(), &Args) == TRIGRET_RET_TRUE )
 				continue;
 		}
 
-		if ( !bPlayerVendor )		// NPC vendors
+		if ( !fPlayerVendor )		// NPC vendors
 		{
-			pItem->SetAmount(pItem->GetAmount() - amount);
+			pItem->SetAmount(pItem->GetAmount() - wAmount);
 
 			switch ( pItem->GetType() )
 			{
 				case IT_FIGURINE:
 				{
 					// Pets must be created on ground instead place the figurine on backpack
-					for ( int f = 0; f < amount; f++ )
+					for ( int j = 0; j < wAmount; ++j )
 						m_pChar->Use_Figurine(pItem);
 					goto do_consume;
 				}
@@ -1057,9 +1059,9 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 				}
 			}
 
-			if ( (amount > 1) && !pItem->Item_GetDef()->IsStackableType() )
+			if ( (wAmount > 1) && !pItem->Item_GetDef()->IsStackableType() )
 			{
-				while ( amount-- )
+				while ( wAmount-- )
 				{
 					CItem *pItemNew = CItem::CreateDupeItem(pItem);
 					pItemNew->SetAmount(1);
@@ -1073,7 +1075,7 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 			else
 			{
 				CItem *pItemNew = CItem::CreateDupeItem(pItem);
-				pItemNew->SetAmount(amount);
+				pItemNew->SetAmount(wAmount);
 				pItemNew->m_TagDefs.SetNum("NOSAVE", 0, true);
 				if ( !pPack->CanContainerHold(pItemNew, m_pChar) || !m_pChar->CanCarry(pItemNew) )
 					m_pChar->ItemDrop(pItemNew, m_pChar->GetTopPoint());
@@ -1083,7 +1085,7 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 		}
 		else						// Player vendors
 		{
-			if ( pItem->GetAmount() <= amount )		// buy the whole item
+			if ( pItem->GetAmount() <= wAmount )		// buy the whole item
 			{
 				if ( !pPack->CanContainerHold(pItem, m_pChar) || !m_pChar->CanCarry(pItem) )
 					m_pChar->ItemDrop(pItem, m_pChar->GetTopPoint());
@@ -1094,11 +1096,11 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 			}
 			else
 			{
-				pItem->SetAmount(pItem->GetAmount() - amount);
+				pItem->SetAmount(pItem->GetAmount() - wAmount);
 
 				CItem *pItemNew = CItem::CreateDupeItem(pItem);
 				pItemNew->m_TagDefs.SetNum("NOSAVE", 0, true);
-				pItemNew->SetAmount(amount);
+				pItemNew->SetAmount(wAmount);
 				if ( !pPack->CanContainerHold(pItemNew, m_pChar) || !m_pChar->CanCarry(pItemNew) )
 					m_pChar->ItemDrop(pItemNew, m_pChar->GetTopPoint());
 				else
@@ -1111,24 +1113,24 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t it
 	}
 
 	// Consume gold
-	if ( bBoss )
+	if ( fOwner )
 		pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_BUY_CHARGE));
 	else
 	{
 		TCHAR *pszText = Str_GetTemp();
 		if ( g_Cfg.m_iFeatureTOL & FEATURE_TOL_VIRTUALGOLD )
 		{
-			m_pChar->m_virtualGold -= costtotal;
-			sprintf(pszText, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_BUY_BANK), static_cast<int>(costtotal));
+			m_pChar->m_virtualGold -= dwCostTotal;
+			sprintf(pszText, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_BUY_BANK), static_cast<int>(dwCostTotal));
 		}
 		else
 		{
-			DWORD iGold = m_pChar->GetContainerCreate(LAYER_PACK)->ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), costtotal);
-			if ( !g_Cfg.m_fPayFromPackOnly && iGold )
-				m_pChar->ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), iGold);
-			sprintf(pszText, g_Cfg.GetDefaultMsg(g_Cfg.m_fPayFromPackOnly ? DEFMSG_NPC_VENDOR_BUY : DEFMSG_NPC_VENDOR_BUY_BANK), static_cast<int>(costtotal));
+			DWORD dwGold = m_pChar->GetContainerCreate(LAYER_PACK)->ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), dwCostTotal);
+			if ( !g_Cfg.m_fPayFromPackOnly && dwGold )
+				m_pChar->ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), dwGold);
+			sprintf(pszText, g_Cfg.GetDefaultMsg(g_Cfg.m_fPayFromPackOnly ? DEFMSG_NPC_VENDOR_BUY : DEFMSG_NPC_VENDOR_BUY_BANK), static_cast<int>(dwCostTotal));
 		}
-		pVendor->GetContainerCreate(LAYER_BANKBOX)->m_itEqBankBox.m_Check_Amount += costtotal;
+		pVendor->GetContainerCreate(LAYER_BANKBOX)->m_itEqBankBox.m_Check_Amount += dwCostTotal;
 		pVendor->Speak(pszText);
 	}
 
@@ -1150,20 +1152,20 @@ void CClient::Event_VendorSell_Cheater(int iCode)
 }
 
 // Client is selling items to an vendor
-void CClient::Event_VendorSell(CChar *pVendor, const VendorItem *items, size_t itemCount)
+void CClient::Event_VendorSell(CChar *pVendor, const VendorItem *items, size_t iItemCount)
 {
 	ADDTOCALLSTACK("CClient::Event_VendorSell");
-	if ( !m_pChar || !pVendor || !items || (itemCount <= 0) )
+	if ( !m_pChar || !pVendor || !items || (iItemCount <= 0) )
 		return;
 
 	CItemContainer *pBank = pVendor->GetContainerCreate(LAYER_BANKBOX);
 	CItemContainer *pContBuy = pVendor->GetContainerCreate(LAYER_VENDOR_BUYS);
 	CItemContainer *pContExtra = pVendor->GetContainerCreate(LAYER_VENDOR_EXTRA);
 	int iConvertFactor = -pVendor->NPC_GetVendorMarkup();
-	DWORD iGold = 0;
-	bool bShortfall = false;
+	DWORD dwGold = 0;
+	bool fShortfall = false;
 
-	for ( size_t i = 0; i < itemCount; ++i )
+	for ( size_t i = 0; i < iItemCount; ++i )
 	{
 		CItemVendable *pItem = dynamic_cast<CItemVendable *>(items[i].m_serial.ItemFind());
 		if ( !pItem || !pItem->IsValidSaleItem(true) )
@@ -1183,33 +1185,33 @@ void CClient::Event_VendorSell(CChar *pVendor, const VendorItem *items, size_t i
 			continue;
 
 		// Now how much did i say i wanted to sell?
-		WORD amount = items[i].m_amount;
-		if ( pItem->GetAmount() < amount )	// selling more than I have?
-			amount = pItem->GetAmount();
+		WORD wAmount = items[i].m_amount;
+		if ( pItem->GetAmount() < wAmount )	// selling more than I have?
+			wAmount = pItem->GetAmount();
 
-		DWORD lPrice = pItemSell->GetVendorPrice(iConvertFactor) * amount;
+		DWORD dwPrice = pItemSell->GetVendorPrice(iConvertFactor) * wAmount;
 
 		if ( IsTrigUsed(TRIGGER_SELL) || IsTrigUsed(TRIGGER_ITEMSELL) )
 		{
-			CScriptTriggerArgs Args(amount, lPrice, pVendor);
+			CScriptTriggerArgs Args(wAmount, dwPrice, pVendor);
 			if ( pItem->OnTrigger(ITRIG_Sell, GetChar(), &Args) == TRIGRET_RET_TRUE )
 				continue;
 		}
 
 		// Can vendor afford this ?
-		if ( lPrice > pBank->m_itEqBankBox.m_Check_Amount )
+		if ( dwPrice > pBank->m_itEqBankBox.m_Check_Amount )
 		{
-			bShortfall = true;
+			fShortfall = true;
 			break;
 		}
-		pBank->m_itEqBankBox.m_Check_Amount -= lPrice;
+		pBank->m_itEqBankBox.m_Check_Amount -= dwPrice;
 
 		// give them the appropriate amount of gold.
-		iGold += lPrice;
+		dwGold += dwPrice;
 
 		// Take the items from player.
 		// Put items in vendor inventory.
-		if ( amount >= pItem->GetAmount() )
+		if ( wAmount >= pItem->GetAmount() )
 		{
 			pItem->RemoveFromView();
 			if ( pVendor->IsStatFlag(STATF_Pet) && pContExtra )
@@ -1222,26 +1224,26 @@ void CClient::Event_VendorSell(CChar *pVendor, const VendorItem *items, size_t i
 			if ( pVendor->IsStatFlag(STATF_Pet) && pContExtra )
 			{
 				CItem *pItemNew = CItem::CreateDupeItem(pItem);
-				pItemNew->SetAmount(amount);
+				pItemNew->SetAmount(wAmount);
 				pContExtra->ContentAdd(pItemNew);
 			}
-			pItem->SetAmountUpdate(pItem->GetAmount() - amount);
+			pItem->SetAmountUpdate(pItem->GetAmount() - wAmount);
 		}
 	}
 
-	if ( iGold )
+	if ( dwGold )
 	{
 		TCHAR *pszText = Str_GetTemp();
-		sprintf(pszText, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_SELL), static_cast<int>(iGold));
+		sprintf(pszText, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_SELL), static_cast<int>(dwGold));
 		pVendor->Speak(pszText);
 
-		if ( bShortfall )
+		if ( fShortfall )
 			pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_SELL_CANTAFFORD));
 
 		if ( g_Cfg.m_iFeatureTOL & FEATURE_TOL_VIRTUALGOLD )
-			m_pChar->m_virtualGold += iGold;
+			m_pChar->m_virtualGold += dwGold;
 		else
-			m_pChar->AddGoldToPack(iGold, NULL, false);
+			m_pChar->AddGoldToPack(dwGold, NULL, false);
 
 		addVendorClose(pVendor);
 		addSound(SOUND_DROP_GOLD1);
@@ -1249,7 +1251,7 @@ void CClient::Event_VendorSell(CChar *pVendor, const VendorItem *items, size_t i
 	}
 	else
 	{
-		if ( bShortfall )
+		if ( fShortfall )
 			pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_SELL_CANTAFFORD));
 	}
 }
@@ -1502,7 +1504,7 @@ void CClient::Event_Talk_Common(TCHAR *szText)
 	CChar *pCharAlt = NULL;
 	size_t i = 0;
 	int iAltDist = UO_MAP_VIEW_SIGHT;
-	bool bGhostSpeak = m_pChar->IsSpeakAsGhost();
+	bool fGhostSpeak = m_pChar->IsSpeakAsGhost();
 
 	CWorldSearch AreaChars(m_pChar->GetTopPoint(), UO_MAP_VIEW_SIGHT);
 	for (;;)
@@ -1519,31 +1521,31 @@ void CClient::Event_Talk_Common(TCHAR *szText)
 
 		if ( pChar == m_pChar )
 			continue;
-		if ( bGhostSpeak && !pChar->CanUnderstandGhost() )
+		if ( fGhostSpeak && !pChar->CanUnderstandGhost() )
 			continue;
 
-		bool bNamed = false;
+		bool fNamed = false;
 		if ( !strnicmp(szText, "ALL ", 4) )
 			i = 4;
 		else
 		{
 			// Named the char specifically ?
 			i = pChar->NPC_OnHearName(szText);
-			bNamed = true;
+			fNamed = true;
 		}
 
 		if ( i > 0 )
 		{
 			while ( ISWHITESPACE(szText[i]) )
-				i++;
+				++i;
 
-			if ( pChar->NPC_OnHearPetCmd(szText + i, m_pChar, !bNamed) )
+			if ( pChar->NPC_OnHearPetCmd(szText + i, m_pChar, !fNamed) )
 			{
-				if ( bNamed || (GetTargMode() == CLIMODE_TARG_PET_CMD) )
+				if ( fNamed || (GetTargMode() == CLIMODE_TARG_PET_CMD) )
 					return;
 				continue;	// the command might apply to others pets
 			}
-			if ( bNamed )
+			if ( fNamed )
 				break;
 		}
 
@@ -1582,7 +1584,7 @@ void CClient::Event_Talk_Common(TCHAR *szText)
 }
 
 // Client sent ASCII speech text
-void CClient::Event_Talk(LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, bool bNoStrip)
+void CClient::Event_Talk(LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, bool fNoStrip)
 {
 	ADDTOCALLSTACK("CClient::Event_Talk");
 	if ( !m_pChar || !m_pAccount )
@@ -1599,24 +1601,24 @@ void CClient::Event_Talk(LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, boo
 
 	// Rip out the unprintables first
 	TCHAR szText[MAX_TALK_BUFFER];
-	size_t len;
+	size_t iLen;
 
-	if ( bNoStrip )
+	if ( fNoStrip )
 	{
 		// The characters in Unicode speech don't need to be filtered
 		strncpy(szText, pszText, MAX_TALK_BUFFER - 1);
 		szText[MAX_TALK_BUFFER - 1] = '\0';
-		len = strlen(szText);
+		iLen = strlen(szText);
 	}
 	else
 	{
 		TCHAR szTextG[MAX_TALK_BUFFER];
 		strncpy(szTextG, pszText, MAX_TALK_BUFFER - 1);
 		szTextG[MAX_TALK_BUFFER - 1] = '\0';
-		len = Str_GetBare(szText, szTextG, sizeof(szText) - 1);
+		iLen = Str_GetBare(szText, szTextG, sizeof(szText) - 1);
 	}
 
-	if ( len <= 0 )
+	if ( iLen <= 0 )
 		return;
 
 	pszText = szText;
@@ -1624,40 +1626,40 @@ void CClient::Event_Talk(LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, boo
 
 	if ( !Event_Command(pszText, mode) )
 	{
-		bool bCancelSpeech = false;
+		bool fCancelSpeech = false;
 		TCHAR z[MAX_TALK_BUFFER];
 
 		if ( m_pChar->OnTriggerSpeech(false, pszText, m_pChar, mode, wHue) )
-			bCancelSpeech = true;
+			fCancelSpeech = true;
 
 		if ( g_Log.IsLoggedMask(LOGM_PLAYER_SPEAK) )
-			g_Log.Event(LOGM_PLAYER_SPEAK, "%lx:'%s' Says '%s' mode=%d%s\n", GetSocketID(), m_pChar->GetName(), pszText, mode, bCancelSpeech ? " (muted)" : "");
+			g_Log.Event(LOGM_PLAYER_SPEAK, "%lx:'%s' Says '%s' mode=%d%s\n", GetSocketID(), m_pChar->GetName(), pszText, mode, fCancelSpeech ? " (muted)" : "");
 
-		if ( bCancelSpeech )
+		if ( fCancelSpeech )
 			return;
-		if ( mode == 13 || mode == 14 )		// guild/alliance mode will not pass this
+		if ( (mode == TALKMODE_GUILD) || (mode == TALKMODE_ALLIANCE) )		// guild/alliance mode will not pass this
 			return;
 
 		strcpy(z, pszText);
 
 		if ( g_Cfg.m_fSuppressCapitals )
 		{
-			int chars = strlen(z);
-			int capitals = 0;
+			int iChars = strlen(z);
+			int iCapitals = 0;
 			int i = 0;
-			for ( i = 0; i < chars; i++ )
+			for ( i = 0; i < iChars; ++i )
 				if ( (z[i] >= 'A') && (z[i] <= 'Z') )
-					capitals++;
+					++iCapitals;
 
-			if ( (chars > 5) && (((capitals * 100) / chars) > 75) )		// 75% of chars are in capital letters. lowercase it
+			if ( (iChars > 5) && (((iCapitals * 100) / iChars) > 75) )		// 75% of chars are in capital letters. lowercase it
 			{
-				for ( i = 1; i < chars; i++ )				// instead of the 1st char
+				for ( i = 1; i < iChars; ++i )				// instead of the 1st char
 					if ( (z[i] >= 'A') && (z[i] <= 'Z') )
 						z[i] += 0x20;
 			}
 		}
 
-		if ( len <= 128 )	// from this point max 128 chars
+		if ( iLen <= 128 )	// from this point max 128 chars
 		{
 			m_pChar->SpeakUTF8(z, wHue, mode, m_pChar->m_fonttype, m_pAccount->m_lang);
 			Event_Talk_Common(static_cast<TCHAR *>(z));
@@ -1673,13 +1675,9 @@ void CClient::Event_TalkUNICODE(NWORD *wszText, int iTextLen, HUE_TYPE wHue, TAL
 	// ENU = English
 	// FRC = French
 	// mode == TALKMODE_SYSTEM if coming from player talking.
-	if ( !m_pChar || !m_pAccount )
+	if ( !m_pChar || !m_pAccount || (iTextLen <= 0) )
 		return;
-	if ( iTextLen <= 0 )
-		return;
-	if ( mode < 0 || mode > 14 ) // less or greater is an exploit
-		return;
-	if ( mode == 1 || mode == 3 || mode == 4 || mode == 5 || mode == 6 || mode == 7 || mode == 10 || mode == 11 || mode == 12 )	// these modes are server->client only
+	if ( !((mode == TALKMODE_SYSTEM) || (mode == TALKMODE_EMOTE) || (mode == TALKMODE_WHISPER) || (mode == TALKMODE_YELL) || (mode == TALKMODE_GUILD) || (mode == TALKMODE_ALLIANCE)) )
 		return;
 
 	if ( (wHue < HUE_BLUE_LOW) || (wHue > HUE_DYE_HIGH) )
@@ -1701,34 +1699,34 @@ void CClient::Event_TalkUNICODE(NWORD *wszText, int iTextLen, HUE_TYPE wHue, TAL
 
 	if ( !Event_Command(pszText, mode) )
 	{
-		bool bCancelSpeech = false;
+		bool fCancelSpeech = false;
 		if ( m_pChar->OnTriggerSpeech(false, pszText, m_pChar, mode, wHue) )
-			bCancelSpeech = true;
+			fCancelSpeech = true;
 
 		if ( g_Log.IsLoggedMask(LOGM_PLAYER_SPEAK) )
-			g_Log.Event(LOGM_PLAYER_SPEAK, "%lx:'%s' Says UNICODE '%s' '%s' mode=%d%s\n", GetSocketID(), m_pChar->GetName(), m_pAccount->m_lang.GetStr(), pszText, mode, bCancelSpeech ? " (muted)" : "");
+			g_Log.Event(LOGM_PLAYER_SPEAK, "%lx:'%s' Says UNICODE '%s' '%s' mode=%d%s\n", GetSocketID(), m_pChar->GetName(), m_pAccount->m_lang.GetStr(), pszText, mode, fCancelSpeech ? " (muted)" : "");
 
-		if ( bCancelSpeech )
+		if ( fCancelSpeech )
 			return;
-		if ( mode == 13 || mode == 14 )	// guild/alliance mode will not pass this
+		if ( (mode == TALKMODE_GUILD) || (mode == TALKMODE_ALLIANCE) )		// guild/alliance mode will not pass this
 			return;
 
 		if ( g_Cfg.m_fSuppressCapitals )
 		{
-			size_t chars = strlen(szText);
-			size_t capitals = 0;
+			size_t iChars = strlen(szText);
+			size_t iCapitals = 0;
 			size_t i = 0;
-			for ( i = 0; i < chars; i++ )
+			for ( i = 0; i < iChars; ++i )
 				if ( (szText[i] >= 'A') && (szText[i] <= 'Z') )
-					capitals++;
+					++iCapitals;
 
-			if ( (chars > 5) && (((capitals * 100) / chars) > 75) )		// 75% of chars are in capital letters. lowercase it
+			if ( (iChars > 5) && (((iCapitals * 100) / iChars) > 75) )		// 75% of chars are in capital letters. lowercase it
 			{
-				for ( i = 1; i < chars; i++ )				// instead of the 1st char
+				for ( i = 1; i < iChars; ++i )				// instead of the 1st char
 					if ( (szText[i] >= 'A') && (szText[i] <= 'Z') )
 						szText[i] += 0x20;
 
-				iLen = CvtSystemToNUNICODE(wszText, iTextLen, szText, chars);
+				iLen = CvtSystemToNUNICODE(wszText, iTextLen, szText, iChars);
 			}
 		}
 
@@ -1760,10 +1758,10 @@ void CClient::Event_CharRename(CChar *pChar, LPCTSTR pszName)
 
 	if ( IsTrigUsed(TRIGGER_RENAME) )
 	{
-		CScriptTriggerArgs args;
-		args.m_pO1 = pChar;
-		args.m_s1 = pszName;
-		if ( m_pChar->OnTrigger(CTRIG_Rename, this, &args) == TRIGRET_RET_TRUE )
+		CScriptTriggerArgs Args;
+		Args.m_pO1 = pChar;
+		Args.m_s1 = pszName;
+		if ( m_pChar->OnTrigger(CTRIG_Rename, this, &Args) == TRIGRET_RET_TRUE )
 			return;
 	}
 
@@ -1795,11 +1793,11 @@ bool CDialogResponseArgs::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsol
 			return true;
 		}
 
-		DWORD iNum = static_cast<DWORD>(Exp_GetSingle(pszKey));
+		DWORD dwNum = static_cast<DWORD>(Exp_GetLLSingle(pszKey));
 		SKIP_SEPARATORS(pszKey);
-		for ( size_t i = 0; i < iQty; i++ )
+		for ( size_t i = 0; i < iQty; ++i )
 		{
-			if ( iNum == m_CheckArray[i] )
+			if ( dwNum == m_CheckArray[i] )
 			{
 				sVal = "1";
 				return true;
@@ -1820,11 +1818,11 @@ bool CDialogResponseArgs::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsol
 			return true;
 		}
 
-		WORD iNum = static_cast<WORD>(Exp_GetSingle(pszKey));
+		WORD wNum = static_cast<WORD>(Exp_GetSingle(pszKey));
 		SKIP_SEPARATORS(pszKey);
-		for ( size_t i = 0; i < iQty; i++ )
+		for ( size_t i = 0; i < iQty; ++i )
 		{
-			if ( iNum == m_TextArray[i]->m_ID )
+			if ( wNum == m_TextArray[i]->m_ID )
 			{
 				sVal = m_TextArray[i]->m_sText;
 				return true;
@@ -1973,12 +1971,12 @@ void CClient::Event_Target(CLIMODE_TYPE context, CGrayUID uid, CPointMap pt, BYT
 
 	if ( context != GetTargMode() )		// unexpected context
 	{
-		if ( (context != 0) && ((pt.m_x != -1) || (uid.GetPrivateUID() != 0)) )
+		if ( (context != 0) && ((pt.m_x != -1) || (uid.GetPrivateUID() != UID_CLEAR)) )
 			SysMessageDefault(DEFMSG_MSG_TARG_UNEXPECTED);
 		return;
 	}
 
-	if ( (pt.m_x == -1) && (uid.GetPrivateUID() == 0) )		// cancelled
+	if ( (pt.m_x == -1) && (uid.GetPrivateUID() == UID_CLEAR) )		// cancelled
 	{
 		SetTargMode();
 		return;
@@ -2071,7 +2069,7 @@ void CClient::Event_AOSPopupMenuRequest(CGrayUID uid) //construct packet after a
 	m_pPopupPacket = new PacketDisplayPopup(this, uid);
 
 	CScriptTriggerArgs Args;
-	bool bPreparePacket = false;
+	bool fPreparePacket = false;
 	CItem *pItem = uid.ItemFind();
 	CChar *pChar = uid.CharFind();
 
@@ -2081,7 +2079,7 @@ void CClient::Event_AOSPopupMenuRequest(CGrayUID uid) //construct packet after a
 		{
 			Args.m_iN1 = 1;
 			pItem->OnTrigger(ITRIG_ContextMenuRequest, GetChar(), &Args);
-			bPreparePacket = true;		// there's no hardcoded stuff for items
+			fPreparePacket = true;		// there's no hardcoded stuff for items
 		}
 		else
 		{
@@ -2095,9 +2093,8 @@ void CClient::Event_AOSPopupMenuRequest(CGrayUID uid) //construct packet after a
 		if ( IsTrigUsed(TRIGGER_CONTEXTMENUREQUEST) )
 		{
 			Args.m_iN1 = 1;
-			TRIGRET_TYPE iRet = pChar->OnTrigger(CTRIG_ContextMenuRequest, GetChar(), &Args);
-			if ( iRet == TRIGRET_RET_TRUE )
-				bPreparePacket = true;
+			if ( pChar->OnTrigger(CTRIG_ContextMenuRequest, GetChar(), &Args) == TRIGRET_RET_TRUE )
+				fPreparePacket = true;
 		}
 	}
 	else
@@ -2107,7 +2104,7 @@ void CClient::Event_AOSPopupMenuRequest(CGrayUID uid) //construct packet after a
 		return;
 	}
 
-	if ( pChar && !bPreparePacket )
+	if ( pChar && !fPreparePacket )
 	{
 
 		if ( pChar->IsPlayableCharacter() )
@@ -2230,10 +2227,10 @@ void CClient::Event_AOSPopupMenuRequest(CGrayUID uid) //construct packet after a
 	m_pPopupPacket = NULL;
 }
 
-void CClient::Event_AOSPopupMenuSelect(CGrayUID uid, WORD EntryTag)	//do something after a player selected something from a pop-up menu
+void CClient::Event_AOSPopupMenuSelect(CGrayUID uid, WORD wIndex)	//do something after a player selected something from a pop-up menu
 {
 	ADDTOCALLSTACK("CClient::Event_AOSPopupMenuSelect");
-	if ( !m_pChar || !EntryTag )
+	if ( !m_pChar || !wIndex )
 		return;
 
 	CObjBase *pObj = uid.ObjFind();
@@ -2246,7 +2243,7 @@ void CClient::Event_AOSPopupMenuSelect(CGrayUID uid, WORD EntryTag)	//do somethi
 	{
 		if ( IsTrigUsed(TRIGGER_CONTEXTMENUSELECT) || IsTrigUsed(TRIGGER_ITEMCONTEXTMENUSELECT) )
 		{
-			Args.m_iN1 = EntryTag;
+			Args.m_iN1 = wIndex;
 			pItem->OnTrigger(ITRIG_ContextMenuSelect, GetChar(), &Args);
 		}
 		return;		// there's no hardcoded stuff for items
@@ -2258,14 +2255,14 @@ void CClient::Event_AOSPopupMenuSelect(CGrayUID uid, WORD EntryTag)	//do somethi
 
 	if ( IsTrigUsed(TRIGGER_CONTEXTMENUSELECT) )
 	{
-		Args.m_iN1 = EntryTag;
+		Args.m_iN1 = wIndex;
 		if ( pChar->OnTrigger(CTRIG_ContextMenuSelect, GetChar(), &Args) == TRIGRET_RET_TRUE )
 			return;
 	}
 
 	if ( pChar->m_pNPC )
 	{
-		switch ( EntryTag )
+		switch ( wIndex )
 		{
 			case POPUP_OPEN_BANKBOX:
 				pChar->NPC_OnHear("bank", m_pChar);
@@ -2321,19 +2318,19 @@ void CClient::Event_AOSPopupMenuSelect(CGrayUID uid, WORD EntryTag)	//do somethi
 				return;
 		}
 
-		if ( (EntryTag >= POPUP_TRAIN_SKILL) && (EntryTag < POPUP_TRAIN_SKILL + g_Cfg.m_iMaxSkill) )
+		if ( (wIndex >= POPUP_TRAIN_SKILL) && (wIndex < POPUP_TRAIN_SKILL + g_Cfg.m_iMaxSkill) )
 		{
-			if ( EntryTag != POPUP_TRAIN_SKILL + SKILL_SPELLWEAVING )
+			if ( wIndex != POPUP_TRAIN_SKILL + SKILL_SPELLWEAVING )
 			{
 				TCHAR *pszMsg = Str_GetTemp();
-				sprintf(pszMsg, "train %s", g_Cfg.GetSkillKey(static_cast<SKILL_TYPE>(EntryTag - POPUP_TRAIN_SKILL)));
+				sprintf(pszMsg, "train %s", g_Cfg.GetSkillKey(static_cast<SKILL_TYPE>(wIndex - POPUP_TRAIN_SKILL)));
 				pChar->NPC_OnHear(pszMsg, m_pChar);
 				return;
 			}
 		}
 	}
 
-	switch ( EntryTag )
+	switch ( wIndex )
 	{
 		case POPUP_OPEN_PAPERDOLL:
 			addCharPaperdoll(pChar);
@@ -2369,10 +2366,10 @@ void CClient::Event_AOSPopupMenuSelect(CGrayUID uid, WORD EntryTag)	//do somethi
 	}
 }
 
-void CClient::Event_BugReport(const TCHAR *pszText, int len, BUGREPORT_TYPE type, CLanguageID lang)
+void CClient::Event_BugReport(const TCHAR *pszText, int iTextLen, BUGREPORT_TYPE type, CLanguageID lang)
 {
 	ADDTOCALLSTACK("CClient::Event_BugReport");
-	UNREFERENCED_PARAMETER(len);
+	UNREFERENCED_PARAMETER(iTextLen);
 	if ( !m_pChar )
 		return;
 
@@ -2574,13 +2571,13 @@ bool CClient::xPacketFilter(const BYTE *pData, size_t iLen)
 		Args.m_pO1 = this;		// yay for ARGO.SENDPACKET
 		Args.m_VarsLocal.SetNum("CONNECTIONTYPE", GetConnectType());
 
-		size_t bytes = iLen;
-		size_t bytestr = minimum(bytes, SCRIPT_MAX_LINE_LEN);
+		size_t iBytes = iLen;
+		size_t iByteStr = minimum(iBytes, SCRIPT_MAX_LINE_LEN);
 		TCHAR *zBuf = Str_GetTemp();
 
-		Args.m_VarsLocal.SetNum("NUM", bytes);
-		memcpy(zBuf, &(pData[0]), bytestr);
-		zBuf[bytestr] = 0;
+		Args.m_VarsLocal.SetNum("NUM", iBytes);
+		memcpy(zBuf, &(pData[0]), iByteStr);
+		zBuf[iByteStr] = 0;
 		Args.m_VarsLocal.SetStr("STR", true, zBuf, true);
 		if ( m_pAccount )
 		{
@@ -2590,18 +2587,18 @@ bool CClient::xPacketFilter(const BYTE *pData, size_t iLen)
 		}
 
 		// Fill locals [0..X] to the first X bytes of the packet
-		for ( size_t i = 0; i < bytes; ++i )
+		for ( size_t i = 0; i < iBytes; ++i )
 		{
 			sprintf(idx, "%" FMTSIZE_T, i);
 			Args.m_VarsLocal.SetNum(idx, static_cast<int>(pData[i]));
 		}
 
 		// Call the filtering function
-		TRIGRET_TYPE trigReturn;
-		if ( g_Serv.r_Call(g_Serv.m_PacketFilter[pData[0]], &g_Serv, &Args, NULL, &trigReturn) )
+		TRIGRET_TYPE tr;
+		if ( g_Serv.r_Call(g_Serv.m_PacketFilter[pData[0]], &g_Serv, &Args, NULL, &tr) )
 		{
-			if ( trigReturn == TRIGRET_RET_TRUE )
-				return true;	// do not cry about errors
+			if ( tr == TRIGRET_RET_TRUE )
+				return true;
 		}
 	}
 
@@ -2623,13 +2620,13 @@ bool CClient::xOutPacketFilter(const BYTE *pData, size_t iLen)
 		Args.m_pO1 = this;
 		Args.m_VarsLocal.SetNum("CONNECTIONTYPE", GetConnectType());
 
-		size_t bytes = iLen;
-		size_t bytestr = minimum(bytes, SCRIPT_MAX_LINE_LEN);
+		size_t iBytes = iLen;
+		size_t iByteStr = minimum(iBytes, SCRIPT_MAX_LINE_LEN);
 		TCHAR *zBuf = Str_GetTemp();
 
-		Args.m_VarsLocal.SetNum("NUM", bytes);
-		memcpy(zBuf, &(pData[0]), bytestr);
-		zBuf[bytestr] = 0;
+		Args.m_VarsLocal.SetNum("NUM", iBytes);
+		memcpy(zBuf, &(pData[0]), iByteStr);
+		zBuf[iByteStr] = 0;
 		Args.m_VarsLocal.SetStr("STR", true, zBuf, true);
 		if ( m_pAccount )
 		{
@@ -2639,17 +2636,17 @@ bool CClient::xOutPacketFilter(const BYTE *pData, size_t iLen)
 		}
 
 		// Fill locals [0..X] to the first X bytes of the packet
-		for ( size_t i = 0; i < bytes; ++i )
+		for ( size_t i = 0; i < iBytes; ++i )
 		{
 			sprintf(idx, "%" FMTSIZE_T, i);
 			Args.m_VarsLocal.SetNum(idx, static_cast<int>(pData[i]));
 		}
 
 		// Call the filtering function
-		TRIGRET_TYPE trigReturn;
-		if ( g_Serv.r_Call(g_Serv.m_OutPacketFilter[pData[0]], &g_Serv, &Args, NULL, &trigReturn) )
+		TRIGRET_TYPE tr;
+		if ( g_Serv.r_Call(g_Serv.m_OutPacketFilter[pData[0]], &g_Serv, &Args, NULL, &tr) )
 		{
-			if ( trigReturn == TRIGRET_RET_TRUE )
+			if ( tr == TRIGRET_RET_TRUE )
 				return true;
 		}
 	}

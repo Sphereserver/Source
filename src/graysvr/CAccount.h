@@ -75,7 +75,12 @@ private:
 	BYTE m_ResDisp;					// Account resdisp
 	BYTE m_MaxChars;				// Max chars allowed for this account
 
-	typedef struct { UINT64 m_LastTry; UINT64 m_BlockDelay; } TimeTriesStruct_t;
+	typedef struct
+	{
+		UINT64 m_LastTry;
+		UINT64 m_BlockDelay;
+	} TimeTriesStruct_t;
+
 	typedef std::pair<TimeTriesStruct_t, int> BlockLocalTimePair_t;
 	typedef std::map<DWORD, BlockLocalTimePair_t> BlockLocalTime_t;
 	BlockLocalTime_t m_BlockIP;		// Password tries

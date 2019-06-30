@@ -560,10 +560,10 @@ public:
 
 	void Event_Attack(CGrayUID uid);
 	void Event_Book_Title(CItem *pItem, LPCTSTR pszTitle, LPCTSTR pszAuthor);
-	void Event_BugReport(const TCHAR *pszText, int len, BUGREPORT_TYPE type, CLanguageID lang = 0);
+	void Event_BugReport(const TCHAR *pszText, int iTextLen, BUGREPORT_TYPE type, CLanguageID lang = 0);
 	void Event_CharRename(CChar *pChar, LPCTSTR pszName);
 	void Event_ChatButton(const NCHAR *pszName = NULL);
-	void Event_ChatText(const NCHAR *pszText, int len, CLanguageID lang = 0);
+	void Event_ChatText(const NCHAR *pszText, int iTextLen, CLanguageID lang = 0);
 	void Event_CombatAbilitySelect(DWORD dwAbility);
 	void Event_CombatMode(bool fWar);
 	bool Event_DoubleClick(CGrayUID uid, bool fMacro, bool fTestTouch, bool fScript = false);
@@ -571,22 +571,22 @@ public:
 	void Event_Item_Drop(CItem *pItem, CPointMap pt, CGrayUID uidOn, BYTE gridIndex = 0);
 	void Event_Item_Drop_Fail(CItem *pItem);
 	void Event_Item_Dye(CGrayUID uid, HUE_TYPE wHue);
-	void Event_Item_Pickup(CGrayUID uid, int amount);
+	void Event_Item_Pickup(CGrayUID uid, int iAmount);
 	void Event_MailMsg(CChar *pChar);
 	void Event_Profile(bool fWrite, CChar *pChar, TCHAR *pszText);
 	void Event_PromptResp(LPCTSTR pszText, size_t iTextLen, CGrayUID uidChar, CGrayUID uidPrompt, DWORD dwType);
 	void Event_PromptResp_GMPage(LPCTSTR pszReason);
 	void Event_SingleClick(CGrayUID uid);
 	void Event_Skill_Use(SKILL_TYPE skill);
-	void Event_Talk(LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, bool bNoStrip = false);
+	void Event_Talk(LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, bool fNoStrip = false);
 	void Event_TalkUNICODE(NWORD *wszText, int iTextLen, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, LPCTSTR pszLang);
 	void Event_Target(CLIMODE_TYPE context, CGrayUID uid, CPointMap pt, BYTE flags = 0, ITEMID_TYPE id = ITEMID_NOTHING);
-	void Event_Tips(WORD i);
+	void Event_Tips(DWORD dwIndex);
 	void Event_ToolTip(CGrayUID uid);
 	void Event_UseToolbar(BYTE bType, DWORD dwArg);
-	void Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t itemCount);
+	void Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t iItemCount);
 	void Event_VendorBuy_Cheater(int iCode = 0);
-	void Event_VendorSell(CChar *pVendor, const VendorItem *items, size_t itemCount);
+	void Event_VendorSell(CChar *pVendor, const VendorItem *items, size_t iItemCount);
 	void Event_VendorSell_Cheater(int iCode = 0);
 	void Event_VirtueSelect(DWORD dwVirtue, CChar *pCharTarg);
 	bool Event_Walk(BYTE rawdir, BYTE sequence = 0);
@@ -613,7 +613,7 @@ public:
 	bool Cmd_Skill_Menu(RESOURCE_ID_BASE rid, int iSelect = -1);
 	bool Cmd_Skill_Smith(CItem *pIngots);
 	bool Cmd_Skill_Magery(SPELL_TYPE iSpell, CObjBase *pSrc);
-	bool Cmd_Skill_Tracking(WORD wTrackType = USHRT_MAX, bool bExec = false);
+	bool Cmd_Skill_Tracking(WORD wTrackType = USHRT_MAX, bool fExec = false);
 	bool Cmd_Skill_Inscription();
 	bool Cmd_SecureTrade(CChar *pChar, CItem *pItem);
 	bool Cmd_Control(CChar *pChar);
@@ -641,7 +641,7 @@ public:
 	bool xProcessClientSetup(CEvent *pEvent, size_t iLen);
 	bool xPacketFilter(const BYTE *pData, size_t iLen = 0);
 	bool xOutPacketFilter(const BYTE *pData, size_t iLen = 0);
-	bool xCanEncLogin(bool bCheckCliver = false);	// login crypt check
+	bool xCanEncLogin(bool fCheckCliver = false);	// login crypt check
 
 	// Low level push world data to the client
 	bool addRelay(const CServerDef *pServ);
@@ -770,9 +770,9 @@ public:
 	void addMapMode(CItemMap *pMap, MAPCMD_TYPE iType, bool fEdit = false);
 
 	void addGumpTextDisp(const CObjBase *pObj, GUMP_TYPE gump, LPCTSTR pszName, LPCTSTR pszText);
-	void addGumpInpVal(bool fCancel, INPVAL_TYPE type, DWORD iMaxLength, LPCTSTR pszText1, LPCTSTR pszText2, CObjBase *pObj);
+	void addGumpInpVal(bool fCancel, INPVAL_TYPE type, DWORD dwMaxLength, LPCTSTR pszText1, LPCTSTR pszText2, CObjBase *pObj);
 
-	void addItemMenu(CLIMODE_TYPE mode, const CMenuItem *item, size_t count, CObjBase *pObj = NULL);
+	void addItemMenu(CLIMODE_TYPE mode, const CMenuItem *item, size_t iCount, CObjBase *pObj = NULL);
 	void addGumpDialog(CLIMODE_TYPE mode, const CGString *psControls, size_t iControls, const CGString *psText, size_t iTexts, DWORD x, DWORD y, CObjBase *pObj = NULL, DWORD rid = 0);
 
 	bool addGumpDialogProps(CObjBase *pObj);
@@ -823,7 +823,7 @@ private:
 	PacketDisplayPopup *m_pPopupPacket;
 
 public:
-	void Event_AOSPopupMenuSelect(CGrayUID uid, WORD EntryTag);
+	void Event_AOSPopupMenuSelect(CGrayUID uid, WORD wIndex);
 	void Event_AOSPopupMenuRequest(CGrayUID uid);
 
 
@@ -836,10 +836,10 @@ public:
 	void SendPacket(TCHAR *pszKey);
 	void LogOpenedContainer(const CItemContainer *pContainer);
 
-	bool IsPriv(WORD wPrivFlag) const
+	bool IsPriv(WORD wPrivFlags) const
 	{
 		if ( m_pAccount )
-			return m_pAccount->IsPriv(wPrivFlag);
+			return m_pAccount->IsPriv(wPrivFlags);
 		return false;
 	}
 	void SetPrivFlags(WORD wPrivFlags)
