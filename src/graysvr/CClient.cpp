@@ -96,7 +96,7 @@ CClient::~CClient()
 
 	if ( m_pAccount )
 	{
-		m_pAccount->OnLogout(this, fWasChar);
+		m_pAccount->OnLogout(fWasChar);
 		m_pAccount = NULL;
 	}
 

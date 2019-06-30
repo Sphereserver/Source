@@ -3469,7 +3469,7 @@ BYTE CClient::LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg)
 			sprintf(pszTemp, "GUEST%d", i);
 			CAccount *pAccount = g_Accounts.Account_FindCreate(pszTemp, true);
 			ASSERT(pAccount);
-			if ( !pAccount->FindClient() )
+			if ( !pAccount->m_pClient )
 			{
 				pszAccount = pAccount->GetName();
 				break;
@@ -3528,20 +3528,18 @@ BYTE CClient::LogIn(CAccount *pAccount, CGString &sMsg)
 	}
 
 	// Check if account is already in use
-	CClient *pClientPrev = pAccount->FindClient(this);
-	if ( pClientPrev )
+	if ( pAccount->m_pClient && (pAccount->m_pClient != this) )
 	{
 		// Only if it's from a diff IP?
-		ASSERT(pClientPrev != this);
 		bool fInUse = false;
 
 		// Different IP - no reconnect
-		if ( !GetPeer().IsSameIP(pClientPrev->GetPeer()) )
+		if ( !GetPeer().IsSameIP(pAccount->m_pClient->GetPeer()) )
 			fInUse = true;
 		else
 		{
 			// Same IP - allow reconnect if the old char is lingering out
-			CChar *pCharOld = pClientPrev->m_pChar;
+			CChar *pCharOld = pAccount->m_pClient->m_pChar;
 			if ( pCharOld )
 			{
 				CItem *pItem = pCharOld->LayerFind(LAYER_FLAG_ClientLinger);
@@ -3550,12 +3548,12 @@ BYTE CClient::LogIn(CAccount *pAccount, CGString &sMsg)
 			}
 			if ( !fInUse )
 			{
-				if ( IsConnectTypePacket() && pClientPrev->IsConnectTypePacket() )
+				if ( IsConnectTypePacket() && pAccount->m_pClient->IsConnectTypePacket() )
 				{
-					pClientPrev->CharDisconnect();
-					pClientPrev->m_NetState->markReadClosed();
+					pAccount->m_pClient->CharDisconnect();
+					pAccount->m_pClient->m_NetState->markReadClosed();
 				}
-				else if ( GetConnectType() == pClientPrev->GetConnectType() )
+				else if ( GetConnectType() == pAccount->m_pClient->GetConnectType() )
 					fInUse = true;
 			}
 		}

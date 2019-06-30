@@ -46,7 +46,7 @@ void CClient::Event_ChatButton(const NCHAR *pszName)
 		TCHAR szChatName[MAX_NAME_SIZE * 2 + 2];
 		CvtNUNICODEToSystem(szChatName, sizeof(szChatName), pszName, 128);
 
-		if ( !CChat::IsValidName(szChatName, true) || g_Accounts.Account_FindChat(szChatName) )
+		if ( !CChat::IsValidName(szChatName, true) || !g_Accounts.Account_ChatNameAvailable(szChatName) )
 		{
 			addChatSystemMessage(CHATCMD_SetChatName);
 			return;

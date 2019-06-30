@@ -35,11 +35,11 @@ public:
 	bool Account_Load(LPCTSTR pszName, CScript &s, bool fChanges);
 	bool Account_LoadAll(bool fChanges = true, bool fClearChanges = false);
 	bool Account_OnCmd(TCHAR *pszArgs, CTextConsole *pSrc);
+	bool Account_ChatNameAvailable(LPCTSTR pszName);
 
 	CAccount *Account_Get(size_t index);
 	CAccount *Account_Find(LPCTSTR pszName);
 	CAccount *Account_FindCreate(LPCTSTR pszName, bool fCreate = false);
-	CAccount *Account_FindChat(LPCTSTR pszName);
 
 	size_t Account_GetCount() const
 	{
@@ -98,6 +98,8 @@ public:
 
 	CVarDefMap m_BaseDefs;			// New variable storage system
 	CVarDefMap m_TagDefs;			// Tags storage system
+
+	CClient *m_pClient;				// Client currently using this account
 
 public:
 	LPCTSTR GetDefStr(LPCTSTR pszKey, bool fZero = false) const
@@ -186,7 +188,7 @@ public:
 	}
 	void TogPrivFlags(WORD wPrivFlags, LPCTSTR pszArgs)
 	{
-		if ( (pszArgs == NULL) || (pszArgs[0] == '\0') )
+		if ( !pszArgs || (pszArgs[0] == '\0') )
 			m_PrivFlags ^= wPrivFlags;
 		else if ( Exp_GetVal(pszArgs) )
 			m_PrivFlags |= wPrivFlags;
@@ -206,7 +208,7 @@ public:
 	bool SetAutoResDisp(CClient *pClient);
 
 	void OnLogin(CClient *pClient);
-	void OnLogout(CClient *pClient, bool fWasChar = false);
+	void OnLogout(bool fWasChar = false);
 	bool Kick(CTextConsole *pSrc, bool fBlock);
 
 	size_t AttachChar(CChar *pChar);
@@ -214,7 +216,6 @@ public:
 
 	void DeleteChars();
 	bool IsMyAccountChar(const CChar *pChar) const;
-	CClient *FindClient(const CClient *pExclude = NULL) const;
 
 	BYTE GetMaxChars() const
 	{

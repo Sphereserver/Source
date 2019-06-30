@@ -249,8 +249,7 @@ bool CAccounts::Account_OnCmd(TCHAR *pszArgs, CTextConsole *pSrc)
 
 	if ( !ppCmd[1] || !ppCmd[1][0] )
 	{
-		CClient *pClient = pAccount->FindClient();
-		pSrc->SysMessagef("Account '%s': PLEVEL:%d, BLOCK:%d, IP:%s, CONNECTED:%s, ONLINE:%s\n", pAccount->GetName(), pAccount->GetPrivLevel(), static_cast<int>(pAccount->IsPriv(PRIV_BLOCKED)), pAccount->m_Last_IP.GetAddrStr(), pAccount->m_dateLastConnect.Format(NULL), pClient ? (pClient->GetChar() ? pClient->GetChar()->GetName() : "<not logged>") : "no");
+		pSrc->SysMessagef("Account '%s': PLEVEL:%d, BLOCK:%d, IP:%s, CONNECTED:%s, ONLINE:%s\n", pAccount->GetName(), pAccount->GetPrivLevel(), static_cast<int>(pAccount->IsPriv(PRIV_BLOCKED)), pAccount->m_Last_IP.GetAddrStr(), pAccount->m_dateLastConnect.Format(NULL), pAccount->m_pClient ? (pAccount->m_pClient->GetChar() ? pAccount->m_pClient->GetChar()->GetName() : "<not logged>") : "no");
 		return true;
 	}
 	else
@@ -316,16 +315,16 @@ CAccount *CAccounts::Account_FindCreate(LPCTSTR pszName, bool fCreate)
 	return NULL;
 }
 
-CAccount *CAccounts::Account_FindChat(LPCTSTR pszName)
+bool CAccounts::Account_ChatNameAvailable(LPCTSTR pszName)
 {
-	ADDTOCALLSTACK("CAccounts::Account_FindChat");
+	ADDTOCALLSTACK("CAccounts::Account_ChatNameAvailable");
 	for ( size_t i = 0; i < m_Accounts.GetCount(); ++i )
 	{
 		CAccount *pAccount = Account_Get(i);
 		if ( pAccount && (pAccount->m_sChatName.CompareNoCase(pszName) == 0) )
-			return pAccount;
+			return false;
 	}
-	return NULL;
+	return true;
 }
 
 bool CAccounts::Cmd_AddNew(CTextConsole *pSrc, LPCTSTR pszName, LPCTSTR pszPassword, bool fMD5)
@@ -443,6 +442,7 @@ CAccount::CAccount(LPCTSTR pszName)
 	m_MaxChars = 0;
 	m_Total_Connect_Time = 0;
 	m_Last_Connect_Time = 0;
+	m_pClient = NULL;
 
 	g_Accounts.Account_Add(this);
 }
@@ -707,39 +707,35 @@ void CAccount::OnLogin(CClient *pClient)
 	ADDTOCALLSTACK("CAccount::OnLogin");
 	ASSERT(pClient);
 
-	pClient->m_timeLogin = CServTime::GetCurrentTime();
+	m_pClient = pClient;
+	m_pClient->m_timeLogin = CServTime::GetCurrentTime();
 
-	if ( pClient->GetConnectType() == CONNECT_TELNET )
+	if ( m_pClient->GetConnectType() == CONNECT_TELNET )
 		++g_Serv.m_iAdminClients;
 	if ( GetPrivLevel() >= PLEVEL_Counsel )
-		m_PrivFlags |= PRIV_GM_PAGE;
-
-	CGTime datetime = CGTime::GetCurrentTime();		// real world date/time
+		SetPrivFlags(PRIV_GM_PAGE);
 
 	if ( !m_Total_Connect_Time )
 	{
-		m_First_IP = pClient->GetPeer();
-		m_dateFirstConnect = datetime;
+		m_First_IP = m_pClient->GetPeer();
+		m_dateFirstConnect = CGTime::GetCurrentTime();
 	}
 
-	m_Last_IP = pClient->GetPeer();
-	//m_dateLastConnect = datetime;
-	//m_TagDefs.SetStr("LastLogged", false, m_dateLastConnect.Format(NULL));
-
-	g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Login '%s'\n", pClient->GetSocketID(), GetName());
+	m_Last_IP = m_pClient->GetPeer();
+	g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Login '%s'\n", m_pClient->GetSocketID(), GetName());
 }
 
-void CAccount::OnLogout(CClient *pClient, bool fWasChar)
+void CAccount::OnLogout(bool fWasChar)
 {
 	ADDTOCALLSTACK("CAccount::OnLogout");
-	ASSERT(pClient);
+	ASSERT(m_pClient);
 
-	if ( pClient->GetConnectType() == CONNECT_TELNET )
+	if ( m_pClient->GetConnectType() == CONNECT_TELNET )
 		--g_Serv.m_iAdminClients;
 
-	if ( pClient->IsConnectTypePacket() && fWasChar )
+	if ( fWasChar && m_pClient->IsConnectTypePacket() )
 	{
-		m_Last_Connect_Time = -g_World.GetTimeDiff(pClient->m_timeLogin) / (TICK_PER_SEC * 60);
+		m_Last_Connect_Time = -g_World.GetTimeDiff(m_pClient->m_timeLogin) / (TICK_PER_SEC * 60);
 		if ( m_Last_Connect_Time < 0 )
 			m_Last_Connect_Time = 0;
 		m_Total_Connect_Time += m_Last_Connect_Time;
@@ -818,22 +814,6 @@ bool CAccount::IsMyAccountChar(const CChar *pChar) const
 	if ( !pChar || !pChar->m_pPlayer )
 		return false;
 	return (pChar->m_pPlayer->m_pAccount == this);
-}
-
-CClient *CAccount::FindClient(const CClient *pExclude) const
-{
-	ADDTOCALLSTACK("CAccount::FindClient");
-
-	CClient *pClient = NULL;
-	ClientIterator it;
-	for ( pClient = it.next(); pClient != NULL; pClient = it.next() )
-	{
-		if ( pClient == pExclude )
-			continue;
-		if ( pClient->m_pAccount == this )
-			return pClient;
-	}
-	return NULL;
 }
 
 enum AC_TYPE
@@ -1151,20 +1131,25 @@ bool CAccount::r_Verb(CScript &s, CTextConsole *pSrc)
 	{
 		case AV_DELETE:
 		{
-			CClient *pClient = FindClient();
-			if ( pClient )
+			TCHAR *pszMsg = Str_GetTemp();
+			LPCTSTR pszAccount = GetName();
+			if ( g_Accounts.Account_Delete(this) )
 			{
-				pClient->CharDisconnect();
-				pClient->m_NetState->markReadClosed();
+				if ( m_pClient )
+				{
+					m_pClient->CharDisconnect();
+					m_pClient->m_NetState->markReadClosed();
+				}
+				sprintf(pszMsg, "Account '%s' deleted\n", pszAccount);
+			}
+			else
+			{
+				sprintf(pszMsg, "Account '%s' deletion blocked via script\n", pszAccount);
 			}
 
-			LPCTSTR pszAccount = GetName();
-			TCHAR *szMsg = Str_GetTemp();
-			sprintf(szMsg, g_Accounts.Account_Delete(this) ? "Account '%s' deleted\n" : "Account '%s' deletion blocked via script\n", pszAccount);
-
-			g_Log.EventStr(0, szMsg);
+			g_Log.Event(LOGM_ACCOUNTS, pszMsg);
 			if ( pSrc != &g_Serv )
-				pSrc->SysMessage(szMsg);
+				pSrc->SysMessage(pszMsg);
 			return true;
 		}
 		case AV_BLOCK:
@@ -1175,9 +1160,8 @@ bool CAccount::r_Verb(CScript &s, CTextConsole *pSrc)
 			return true;
 		case AV_KICK:
 		{
-			CClient *pClient = FindClient();
-			if ( pClient )
-				pClient->addKick(pSrc, (index == AV_BLOCK));
+			if ( m_pClient )
+				m_pClient->addKick(pSrc, (index == AV_BLOCK));
 			else
 				Kick(pSrc, (index == AV_BLOCK));
 			return true;
