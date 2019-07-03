@@ -725,15 +725,15 @@ void CAccount::OnLogin(CClient *pClient)
 	g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Login '%s'\n", m_pClient->GetSocketID(), GetName());
 }
 
-void CAccount::OnLogout(bool fWasChar)
+void CAccount::OnLogout(CClient *pClient, bool fWasChar)
 {
 	ADDTOCALLSTACK("CAccount::OnLogout");
-	ASSERT(m_pClient);
+	ASSERT(pClient);
 
-	if ( m_pClient->GetConnectType() == CONNECT_TELNET )
+	if ( pClient->GetConnectType() == CONNECT_TELNET )
 		--g_Serv.m_iAdminClients;
 
-	if ( fWasChar && m_pClient->IsConnectTypePacket() )
+	if ( fWasChar && pClient->IsConnectTypePacket() )
 	{
 		m_Last_Connect_Time = -g_World.GetTimeDiff(m_pClient->m_timeLogin) / (TICK_PER_SEC * 60);
 		if ( m_Last_Connect_Time < 0 )
@@ -741,7 +741,8 @@ void CAccount::OnLogout(bool fWasChar)
 		m_Total_Connect_Time += m_Last_Connect_Time;
 	}
 
-	m_pClient = NULL;
+	if ( m_pClient == pClient )
+		m_pClient = NULL;
 }
 
 bool CAccount::Kick(CTextConsole *pSrc, bool fBlock)

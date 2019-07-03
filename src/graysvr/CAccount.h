@@ -213,7 +213,7 @@ public:
 	bool SetAutoResDisp(CClient *pClient);
 
 	void OnLogin(CClient *pClient);
-	void OnLogout(bool fWasChar = false);
+	void OnLogout(CClient *pClient, bool fWasChar = false);
 	bool Kick(CTextConsole *pSrc, bool fBlock);
 
 	size_t AttachChar(CChar *pChar);
