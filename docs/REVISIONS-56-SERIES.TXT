@@ -1527,3 +1527,9 @@ Removed: Obsolete functions SLEEP (it was causing PvP/PvM exploits) and AFK (it 
 Fixed: Function DISCONNECT showing console error when called on chars already disconnected.
 Fixed: Function KILL showing on console that the char was killed 'by accident' instead the killer name.
 Changed: For security purposes, account properties FIRSTCONNECTDATE/LASTCONNECTDATE, FIRSTIP/LASTIP, LASTCHARUID, LASTCONNECTTIME, TOTALCONNECTTIME now are read-only.
+
+04-07-2019, Coruja
+Fixed: Function REGION not working when called on logout chars.
+Fixed: Function CANMOVE returning region flags instead just 0/1.
+Fixed: Function ACTION returning weird number instead -1 when char is not doing any action.
+Removed: Redundant ARGN3 (clear attacker list) on @UserWarMode char trigger (this can be done directly on the trigger using ATTACKER.CLEAR).

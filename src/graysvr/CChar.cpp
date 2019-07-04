@@ -409,7 +409,6 @@ void CChar::SetDisconnected()
 		return;
 
 	RemoveFromView();
-	MoveToRegion(NULL, false);
 
 	CSector *pSector = GetTopSector();
 	if ( pSector )
@@ -1423,8 +1422,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				if ( !strnicmp(pszKey, "ID", 2) )
 				{
 					pszKey += 2;
-					CChar *pChar = static_cast<CGrayUID>(Exp_GetLLSingle(pszKey)).CharFind();
-					sVal.FormatVal(Attacker_GetID(pChar));
+					sVal.FormatVal(Attacker_GetID(static_cast<CGrayUID>(Exp_GetLLSingle(pszKey)).CharFind()));
 					return true;
 				}
 				else if ( !strnicmp(pszKey, "TARGET", 6) )
@@ -1516,8 +1514,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				if ( !strnicmp(pszKey, "ID", 2) )
 				{
 					pszKey += 2;
-					CChar *pChar = static_cast<CGrayUID>(Exp_GetLLSingle(pszKey)).CharFind();
-					sVal.FormatVal(NotoSave_GetID(pChar));
+					sVal.FormatVal(NotoSave_GetID(static_cast<CGrayUID>(Exp_GetLLSingle(pszKey)).CharFind()));
 					return true;
 				}
 				if ( m_notoSaves.size() )
@@ -1820,9 +1817,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			pt.Move(dir);
 
 			DWORD dwBlockFlags = 0;
-			CRegionBase *pArea = CheckValidMove(pt, &dwBlockFlags, dir, NULL);
-
-			sVal.FormatHex(pArea ? pArea->GetResourceID() : 0);
+			sVal.FormatVal(CheckValidMove(pt, &dwBlockFlags, dir, NULL) != NULL);
 			return true;
 		}
 		case CHC_GOLD:
@@ -1976,11 +1971,12 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			return true;
 		case CHC_ACCOUNT:
 		{
-			if ( pszKey[7] == '.' )		// used as a ref
+			if ( m_pPlayer )
 			{
-				if ( m_pPlayer )
+				pszKey += 7;
+				if ( *pszKey == '.' )		// used as a ref
 				{
-					pszKey += 7;
+					++pszKey;
 					SKIP_SEPARATORS(pszKey);
 
 					CScriptObj *pRef = m_pPlayer->m_pAccount;
@@ -1991,9 +1987,8 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 						return false;
 					}
 				}
-			}
-			if ( m_pPlayer )
 				sVal = m_pPlayer->m_pAccount->GetName();
+			}
 			else
 				sVal.Empty();
 			break;
@@ -2024,8 +2019,13 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatHex(m_atUnk.m_Arg3);
 			break;
 		case CHC_ACTION:
-			sVal = g_Cfg.ResourceGetName(RESOURCE_ID(RES_SKILL, Skill_GetActive()));
+		{
+			if ( Skill_GetActive() == SKILL_NONE )
+				sVal.FormatVal(SKILL_NONE);
+			else
+				sVal = g_Cfg.ResourceGetName(RESOURCE_ID(RES_SKILL, Skill_GetActive()));
 			break;
+		}
 		case CHC_BODY:
 			sVal = g_Cfg.ResourceGetName(RESOURCE_ID(RES_CHARDEF, GetDispID()));
 			break;

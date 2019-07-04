@@ -772,27 +772,18 @@ void CClient::Event_CombatMode(bool fWar)
 		return;
 	}
 
-	bool fCleanSkill = true;
+	bool fSkillFail = true;
 	if ( IsTrigUsed(TRIGGER_USERWARMODE) )
 	{
 		CScriptTriggerArgs Args;
-		Args.m_iN1 = m_pChar->IsStatFlag(STATF_War) ? 1 : 0;
+		Args.m_iN1 = m_pChar->IsStatFlag(STATF_War) ? 0 : 1;
 		Args.m_iN2 = 1;
-		Args.m_iN3 = 0;
 		if ( m_pChar->OnTrigger(CTRIG_UserWarmode, m_pChar, &Args) == TRIGRET_RET_TRUE )
 			return;
 
-		if ( Args.m_iN1 == 0 )
-			fWar = false;
-
-		if ( Args.m_iN2 == 0 )
-			fCleanSkill = false;
-
-		if ( Args.m_iN3 == 1 )
-		{
-			m_pChar->m_lastAttackers.clear();
-			m_pChar->Memory_ClearTypes(MEMORY_FIGHT);
-		}
+		fWar = Args.m_iN1 ? true : false;
+		if ( !Args.m_iN2 )
+			fSkillFail = false;
 	}
 
 	m_pChar->StatFlag_Mod(STATF_War, fWar);
@@ -800,7 +791,7 @@ void CClient::Event_CombatMode(bool fWar)
 	if ( m_pChar->IsStatFlag(STATF_DEAD) )
 		m_pChar->StatFlag_Mod(STATF_Insubstantial, !fWar);	// manifest the ghost
 
-	if ( fCleanSkill )
+	if ( fSkillFail )
 		m_pChar->Skill_Fail(true);
 
 	addPlayerWarMode();
