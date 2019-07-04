@@ -903,7 +903,7 @@ bool CAccount::r_LoadVal(CScript &s)
 		case AC_CHARUID:
 			if ( !g_Serv.IsLoading() )
 			{
-				CGrayUID uid(s.GetArgVal());
+				CGrayUID uid = static_cast<CGrayUID>(s.GetArgVal());
 				CChar *pChar = uid.CharFind();
 				if ( !pChar )
 				{
@@ -921,6 +921,20 @@ bool CAccount::r_LoadVal(CScript &s)
 		case AC_CHATNAME:
 			m_sChatName = s.GetArgStr();
 			break;
+		case AC_FIRSTCONNECTDATE:
+			if ( g_Serv.IsLoading() )
+			{
+				m_dateFirstConnect.Read(s.GetArgStr());
+				return true;
+			}
+			return false;
+		case AC_FIRSTIP:
+			if ( g_Serv.IsLoading() )
+			{
+				m_First_IP.SetAddrStr(s.GetArgStr());
+				return true;
+			}
+			return false;
 		case AC_GUEST:
 			if ( !s.HasArgs() || s.GetArgVal() )
 				SetPrivLevel(PLEVEL_Guest);
@@ -936,6 +950,34 @@ bool CAccount::r_LoadVal(CScript &s)
 		case AC_LANG:
 			m_lang.Set(s.GetArgStr());
 			break;
+		case AC_LASTCHARUID:
+			if ( g_Serv.IsLoading() )
+			{
+				m_uidLastChar = static_cast<CGrayUID>(s.GetArgVal());
+				return true;
+			}
+			return false;
+		case AC_LASTCONNECTDATE:
+			if ( g_Serv.IsLoading() )
+			{
+				m_dateLastConnect.Read(s.GetArgStr());
+				return true;
+			}
+			return false;
+		case AC_LASTCONNECTTIME:
+			if ( g_Serv.IsLoading() )
+			{
+				m_Last_Connect_Time = s.GetArgLLVal();
+				return true;
+			}
+			return false;
+		case AC_LASTIP:
+			if ( g_Serv.IsLoading() )
+			{
+				m_Last_IP.SetAddrStr(s.GetArgStr());
+				return true;
+			}
+			return false;
 		case AC_MAXCHARS:
 			SetMaxChars(static_cast<BYTE>(s.GetArgVal()));
 			break;
@@ -969,6 +1011,13 @@ bool CAccount::r_LoadVal(CScript &s)
 			m_TagDefs.SetStr(s.GetKey() + 4, fQuoted, s.GetArgStr(&fQuoted));
 			return true;
 		}
+		case AC_TOTALCONNECTTIME:
+			if ( g_Serv.IsLoading() )
+			{
+				m_Total_Connect_Time = s.GetArgLLVal();
+				return true;
+			}
+			return false;
 		default:
 			return false;
 	}
