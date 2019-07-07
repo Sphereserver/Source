@@ -2634,9 +2634,9 @@ void CChar::NPC_Pathfinding()
 	int iDist = pt.GetDist(m_Act_p);
 	if ( iDist < 2 )					// too close
 		return;
-	if ( iDist >= PATH_SIZE / 2 )		// too far
+	if ( iDist >= MAX_NPC_PATH_STORAGE_SIZE / 2 )		// too far
 		return;
-	if ( (pt.m_x <= PATH_SIZE / 2) || (pt.m_y <= PATH_SIZE / 2) || (pt.m_x >= g_MapList.GetX(pt.m_map) - (PATH_SIZE / 2)) || (pt.m_y >= g_MapList.GetY(pt.m_map) - (PATH_SIZE / 2)) )		// pathfind is buggy near map edges, so don't use it there
+	if ( (pt.m_x <= MAX_NPC_PATH_STORAGE_SIZE / 2) || (pt.m_y <= MAX_NPC_PATH_STORAGE_SIZE / 2) || (pt.m_x >= g_MapList.GetX(pt.m_map) - (MAX_NPC_PATH_STORAGE_SIZE / 2)) || (pt.m_y >= g_MapList.GetY(pt.m_map) - (MAX_NPC_PATH_STORAGE_SIZE / 2)) )		// pathfind is buggy near map edges, so don't use it there
 		return;
 	if ( (Calc_GetRandVal(300) > iInt) && m_pNPC->m_nextX[0] )		// need 300 int at least to pathfind, but always search if this is a first step
 		return;

@@ -439,6 +439,7 @@ CAccount::CAccount(LPCTSTR pszName)
 	m_sName = szName;
 	m_PrivLevel = PLEVEL_Player;
 	m_PrivFlags = 0;
+	m_ResDisp = RDS_NONE;
 	m_MaxChars = 0;
 	m_Total_Connect_Time = 0;
 	m_Last_Connect_Time = 0;

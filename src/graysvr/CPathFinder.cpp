@@ -73,24 +73,16 @@ void CPathFinderPoint::SetParent(CPathFinderPointRef& pt)
 CPathFinder::CPathFinder(CChar *pChar, CPointMap ptTarget)
 {
 	ADDTOCALLSTACK("CPathFinder::CPathFinder");
-	EXC_TRY("CPathFinder Constructor");
-
-	CPointMap pt;
+	CPointMap pt = pChar->GetTopPoint();
+	m_RealX = pt.m_x - (MAX_NPC_PATH_STORAGE_SIZE / 2);
+	m_RealY = pt.m_y - (MAX_NPC_PATH_STORAGE_SIZE / 2);
 
 	m_pChar = pChar;
 	m_Target = ptTarget;
-
-	pt = m_pChar->GetTopPoint();
-	m_RealX = pt.m_x - (PATH_SIZE / 2);
-	m_RealY = pt.m_y - (PATH_SIZE / 2);
 	m_Target.m_x -= m_RealX;
 	m_Target.m_y -= m_RealY;
 
-	EXC_SET("FillMap");
-
 	FillMap();
-
-	EXC_CATCH;
 }
 
 CPathFinder::~CPathFinder()
@@ -221,9 +213,9 @@ void CPathFinder::FillMap()
 	EXC_TRY("FillMap");
 	pt = ptChar = m_pChar->GetTopPoint();
 
-	for ( int x = 0 ; x != PATH_SIZE; ++x )
+	for ( int x = 0 ; x != MAX_NPC_PATH_STORAGE_SIZE; ++x )
 	{
-		for ( int y = 0; y != PATH_SIZE; ++y )
+		for ( int y = 0; y != MAX_NPC_PATH_STORAGE_SIZE; ++y )
 		{
 			if (x == m_Target.m_x && y == m_Target.m_y)
 			{

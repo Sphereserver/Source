@@ -14,8 +14,6 @@
 using std::deque;
 using std::list;
 
-#define PATH_SIZE (UO_MAP_VIEW_SIGHT*2)	// limit NPC view by one screen (both sides)
-
 class CPathFinderPointRef;
 
 class CPathFinderPoint : public CPointMap
@@ -102,7 +100,7 @@ public:
 	void ClearLastPath();
 
 protected:
-	CPathFinderPoint m_Points[PATH_SIZE][PATH_SIZE];
+	CPathFinderPoint m_Points[MAX_NPC_PATH_STORAGE_SIZE][MAX_NPC_PATH_STORAGE_SIZE];
 	std::deque<CPathFinderPointRef> m_Opened;
 	std::deque<CPathFinderPointRef> m_Closed;
 
