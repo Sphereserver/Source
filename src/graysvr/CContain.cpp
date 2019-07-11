@@ -794,11 +794,14 @@ void CItemContainer::Trade_Delete()
 void CItemContainer::OnWeightChange(int iChange)
 {
 	ADDTOCALLSTACK("CItemContainer::OnWeightChange");
-	if ( !iChange || !IsWeighed() )
+	if ( !iChange )
 		return;
 
 	CContainer::OnWeightChange(iChange);
 	UpdatePropertyFlag();
+
+	if ( !IsWeighed() )
+		return;
 
 	// Propagate the weight change to parent container
 	CContainer *pCont = dynamic_cast<CContainer *>(GetParent());
