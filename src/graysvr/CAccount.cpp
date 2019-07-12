@@ -1241,8 +1241,8 @@ bool CAccount::r_GetRef(LPCTSTR &pszKey, CScriptObj *&pRef)
 	if ( !strnicmp(pszKey, "CHAR.", 5) )
 	{
 		pszKey += 5;
-		size_t i = Exp_GetVal(pszKey);
-		if ( m_Chars.IsValidIndex(i) )
+		int i = Exp_GetVal(pszKey);
+		if ( (i >= 0) && m_Chars.IsValidIndex(i) )
 			pRef = m_Chars.GetChar(i).CharFind();
 
 		SKIP_SEPARATORS(pszKey);

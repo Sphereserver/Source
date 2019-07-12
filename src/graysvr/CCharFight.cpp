@@ -1429,6 +1429,19 @@ bool CChar::OnAttackedBy(CChar *pCharSrc, bool fCommandPet, bool fShouldReveal)
 	return true;
 }
 
+enum ARMOR_TYPE
+{
+	ARMOR_HEAD,
+	ARMOR_NECK,
+	ARMOR_BACK,
+	ARMOR_CHEST,
+	ARMOR_ARMS,
+	ARMOR_HANDS,
+	ARMOR_LEGS,
+	ARMOR_FEET,
+	ARMOR_QTY
+};
+
 // Armor layers that can be damaged on combat
 // PS: Hand layers (weapons/shields) are not included here
 static const LAYER_TYPE sm_ArmorDamageLayers[] = { LAYER_SHOES, LAYER_PANTS, LAYER_SHIRT, LAYER_HELM, LAYER_GLOVES, LAYER_COLLAR, LAYER_HALF_APRON, LAYER_CHEST, LAYER_TUNIC, LAYER_ARMS, LAYER_CAPE, LAYER_ROBE, LAYER_SKIRT, LAYER_LEGS };

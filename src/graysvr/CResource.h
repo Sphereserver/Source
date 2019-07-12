@@ -121,34 +121,6 @@ enum TOOLTIPMODE_TYPE
 	TOOLTIPMODE_SENDVERSION		= 0x1		// Send only tooltip version and wait for client to request full tooltip
 };
 
-enum BODYPART_TYPE
-{
-	ARMOR_HEAD,
-	ARMOR_NECK,
-	ARMOR_BACK,
-	ARMOR_CHEST,		// or thorax
-	ARMOR_ARMS,
-	ARMOR_HANDS,
-	ARMOR_LEGS,
-	ARMOR_FEET,
-	ARMOR_QTY,			// All the parts that armor will cover.
-
-	BODYPART_LEGS2,		// Alternate set of legs (spider)
-	BODYPART_TAIL,		// Dragon, Snake, Alligator, etc. (tail attack?)
-	BODYPART_WINGS,		// Dragon, Mongbat, Gargoyle
-	BODYPART_CLAWS,		// can't wear any gloves here!
-	BODYPART_HOOVES,	// No shoes
-	BODYPART_HORNS,		// Bull, Daemon
-
-	BODYPART_STALKS,	// Gazer or Corpser
-	BODYPART_BRANCHES,	// Reaper.
-	BODYPART_TRUNK,		// Reaper.
-	BODYPART_PSEUDOPOD,	// Slime
-	BODYPART_ABDOMEN,	// Spider or insect. asusme throax and chest are the same.
-
-	BODYPART_QTY
-};
-
 #define DAMAGE_GOD			0x00001	// Nothing can block this.
 #define DAMAGE_HIT_BLUNT	0x00002	// Physical hit of some sort.
 #define DAMAGE_MAGIC		0x00004	// Magic blast of some sort. (we can be immune to magic to some extent)

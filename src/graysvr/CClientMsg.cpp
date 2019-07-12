@@ -1234,7 +1234,7 @@ void CClient::addItemName(const CItem *pItem)
 		Args.m_VarsLocal.SetStrNew("ClickMsgText", &szName[0]);
 		Args.m_VarsLocal.SetNumNew("ClickMsgHue", static_cast<INT64>(wHue));
 
-		if ( dynamic_cast<CObjBase *>(const_cast<CItem *>(pItem))->OnTrigger("@AfterClick", m_pChar, &Args) == TRIGRET_RET_TRUE )
+		if ( const_cast<CItem *>(pItem)->OnTrigger(ITRIG_AfterClick, m_pChar, &Args) == TRIGRET_RET_TRUE )
 			return;
 
 		LPCTSTR pszNewStr = Args.m_VarsLocal.GetKeyStr("ClickMsgText");
@@ -1357,7 +1357,7 @@ void CClient::addCharName(const CChar *pChar)
 		Args.m_VarsLocal.SetStrNew("ClickMsgText", pszName);
 		Args.m_VarsLocal.SetNumNew("ClickMsgHue", static_cast<INT64>(wHue));
 
-		if ( dynamic_cast<CObjBase *>(const_cast<CChar *>(pChar))->OnTrigger("@AfterClick", m_pChar, &Args) == TRIGRET_RET_TRUE )
+		if ( const_cast<CChar *>(pChar)->OnTrigger(CTRIG_AfterClick, m_pChar, &Args) == TRIGRET_RET_TRUE )
 			return;
 
 		LPCTSTR pszNewStr = Args.m_VarsLocal.GetKeyStr("ClickMsgText");
@@ -3581,7 +3581,7 @@ BYTE CClient::LogIn(CAccount *pAccount, CGString &sMsg)
 		// Only allow GM connections
 		if ( pAccount->GetPrivLevel() < PLEVEL_GM )
 		{
-			g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' can't connect, server maximum clients reached (only GM accounts allowed)\n", GetSocketID(), pAccount->GetName());
+			g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' can't connect, only GM accounts allowed\n", GetSocketID(), pAccount->GetName());
 			sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_SERV_AO);
 			return PacketLoginError::MaxClients;
 		}

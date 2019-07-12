@@ -1390,7 +1390,7 @@ bool CScriptObj::r_LoadVal(CScript &s)
 				{
 					bool fQuoted = false;
 					TCHAR *pszArgs = s.GetArgStr(&fQuoted);
-					strcpy(g_Exp.sm_szMessages[i], pszArgs);
+					strncpy(g_Exp.sm_szMessages[i], pszArgs, EXPRESSION_MAX_KEY_LEN - 1);
 					return true;
 				}
 			}

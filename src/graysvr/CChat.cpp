@@ -167,7 +167,7 @@ void CChat::Action(CClient *pClient, const NCHAR *pszText, int len, CLanguageID 
 		{
 			// Look for second double quote to separate channel from password
 			size_t i = 1;
-			for ( ; pszMsg[i] != '\0'; i++ )
+			for ( ; pszMsg[i] != '\0'; ++i )
 			{
 				if ( pszMsg[i] == '"' )
 					break;
@@ -175,7 +175,7 @@ void CChat::Action(CClient *pClient, const NCHAR *pszText, int len, CLanguageID 
 			pszMsg[i] = '\0';
 			TCHAR *pszPassword = pszMsg + i + 1;
 			if ( pszPassword[0] == ' ' )	// skip whitespaces
-				pszPassword++;
+				++pszPassword;
 			JoinChannel(pszMsg + 1, pszPassword, pMe);
 			break;
 		}
@@ -183,14 +183,14 @@ void CChat::Action(CClient *pClient, const NCHAR *pszText, int len, CLanguageID 
 		{
 			TCHAR *pszPassword = NULL;
 			size_t iMsgLength = strlen(pszMsg);
-			for ( size_t i = 0; i < iMsgLength; i++ )
+			for ( size_t i = 0; i < iMsgLength; ++i )
 			{
 				if ( pszMsg[i] == '{' )	// there's a password here
 				{
 					pszMsg[i] = 0;
 					pszPassword = pszMsg + i + 1;
 					size_t iPasswordLength = strlen(pszPassword);
-					for ( i = 0; i < iPasswordLength; i++ )
+					for ( i = 0; i < iPasswordLength; ++i )
 					{
 						if ( pszPassword[i] == '}' )
 						{
@@ -219,19 +219,21 @@ void CChat::Action(CClient *pClient, const NCHAR *pszText, int len, CLanguageID 
 				goto NoConference;
 
 			// Split the recipient from the message (look for a space)
-			TCHAR buffer[2048];
-			strcpy(buffer, pszMsg);
-			size_t bufferLength = strlen(buffer);
+			TCHAR szBuffer[MAX_TALK_BUFFER];
+			strncpy(szBuffer, pszMsg, MAX_TALK_BUFFER - 1);
+			szBuffer[MAX_TALK_BUFFER - 1] = '\0';
+
 			size_t i = 0;
-			for ( ; i < bufferLength; i++ )
+			size_t iBufferLength = strlen(szBuffer);
+			for ( ; i < iBufferLength; ++i )
 			{
-				if ( buffer[i] == ' ' )
+				if ( szBuffer[i] == ' ' )
 				{
-					buffer[i] = '\0';
+					szBuffer[i] = '\0';
 					break;
 				}
 			}
-			pChannel->PrivateMessage(pMe, buffer, buffer + i + 1, lang);
+			pChannel->PrivateMessage(pMe, szBuffer, szBuffer + i + 1, lang);
 			break;
 		}
 		case CHATACT_AddIgnore:					// client shortcut: +ignore
@@ -432,8 +434,8 @@ bool CChat::IsValidName(LPCTSTR pszName, bool bPlayer)	//static
 	if ( (strlen(pszName) < 1) || g_Cfg.IsObscene(pszName) || (strcmpi(pszName, "SYSTEM") == 0) )
 		return false;
 
-	size_t length = strlen(pszName);
-	for ( size_t i = 0; i < length; i++ )
+	size_t iNameLength = strlen(pszName);
+	for ( size_t i = 0; i < iNameLength; ++i )
 	{
 		if ( pszName[i] == ' ' )
 		{
@@ -510,7 +512,7 @@ void CChatChannel::RemoveMember(CChatMember *pMember)
 {
 	ADDTOCALLSTACK("CChatChannel::RemoveMember");
 	CClient *pClient = NULL;
-	for ( size_t i = 0; i < m_Members.GetCount(); i++ )
+	for ( size_t i = 0; i < m_Members.GetCount(); ++i )
 	{
 		pClient = m_Members[i]->GetClient();
 		if ( !pClient )		// auto-remove offline clients
@@ -593,7 +595,7 @@ CChatMember *CChatChannel::FindMember(LPCTSTR pszName) const
 bool CChatChannel::IsModerator(LPCTSTR pszMember)
 {
 	ADDTOCALLSTACK("CChatChannel::IsModerator");
-	for ( size_t i = 0; i < m_Moderators.GetCount(); i++ )
+	for ( size_t i = 0; i < m_Moderators.GetCount(); ++i )
 	{
 		if ( m_Moderators[i]->CompareNoCase(pszMember) == 0 )
 			return true;
@@ -605,7 +607,7 @@ void CChatChannel::SetModerator(LPCTSTR pszMember, bool bRemoveAccess)
 {
 	ADDTOCALLSTACK("CChatChannel::SetModerator");
 	// Check if they are already a moderator
-	for ( size_t i = 0; i < m_Moderators.GetCount(); i++ )
+	for ( size_t i = 0; i < m_Moderators.GetCount(); ++i )
 	{
 		if ( m_Moderators[i]->CompareNoCase(pszMember) == 0 )
 		{
@@ -686,7 +688,7 @@ bool CChatChannel::HasVoice(LPCTSTR pszMember)
 	ADDTOCALLSTACK("CChatChannel::HasVoice");
 	if ( !m_bDefaultVoice && !IsModerator(pszMember) )
 		return false;
-	for ( size_t i = 0; i < m_Muted.GetCount(); i++ )
+	for ( size_t i = 0; i < m_Muted.GetCount(); ++i )
 	{
 		if ( m_Muted[i]->CompareNoCase(pszMember) == 0 )
 			return false;
@@ -698,7 +700,7 @@ void CChatChannel::SetVoice(LPCTSTR pszName, bool bRemoveAccess)
 {
 	ADDTOCALLSTACK("CChatChannel::SetVoice");
 	// Check if they have no voice already
-	for ( size_t i = 0; i < m_Muted.GetCount(); i++ )
+	for ( size_t i = 0; i < m_Muted.GetCount(); ++i )
 	{
 		if ( m_Muted[i]->CompareNoCase(pszName) == 0 )
 		{
@@ -913,7 +915,7 @@ size_t CChatChannel::FindMemberIndex(LPCTSTR pszName) const
 	ADDTOCALLSTACK("CChatChannel::FindMemberIndex");
 	if ( pszName != NULL )
 	{
-		for ( size_t i = 0; i < m_Members.GetCount(); i++ )
+		for ( size_t i = 0; i < m_Members.GetCount(); ++i )
 		{
 			if ( strcmpi(m_Members[i]->GetChatName(), pszName) == 0 )
 				return i;
@@ -933,7 +935,7 @@ void CChatChannel::Broadcast(CHATMSG_TYPE iType, LPCTSTR pszName, LPCTSTR pszTex
 	else
 		sName = pszName;
 
-	for ( size_t i = 0; i < m_Members.GetCount(); i++ )
+	for ( size_t i = 0; i < m_Members.GetCount(); ++i )
 	{
 		if ( m_Members[i]->IsIgnoring(pszName) )	// don't receive messages from players being ignored
 		{
@@ -965,7 +967,7 @@ void CChatChannel::SendMember(CChatMember *pMember, CChatMember *pToMember)
 	else
 	{
 		// If no pToMember is specified, send to all members
-		for ( size_t i = 0; i < m_Members.GetCount(); i++ )
+		for ( size_t i = 0; i < m_Members.GetCount(); ++i )
 		{
 			pClient = m_Members[i]->GetClient();
 			if ( pClient && pClient->m_UseNewChatSystem )
@@ -980,7 +982,7 @@ void CChatChannel::SendMember(CChatMember *pMember, CChatMember *pToMember)
 void CChatChannel::FillMembersList(CChatMember *pMember)
 {
 	ADDTOCALLSTACK("CChatChannel::FillMembersList");
-	for ( size_t i = 0; i < m_Members.GetCount(); i++ )
+	for ( size_t i = 0; i < m_Members.GetCount(); ++i )
 	{
 		if ( pMember->IsIgnoring(m_Members[i]->GetChatName()) )
 			continue;
@@ -1134,7 +1136,7 @@ void CChatMember::ToggleIgnore(LPCTSTR pszName)
 void CChatMember::ClearIgnoreList()
 {
 	ADDTOCALLSTACK("CChatMember::ClearIgnoreList");
-	for ( size_t i = 0; i < m_IgnoredMembers.GetCount(); i++ )
+	for ( size_t i = 0; i < m_IgnoredMembers.GetCount(); ++i )
 		m_IgnoredMembers.DeleteAt(i);
 
 	SendChatMsg(CHATMSG_NoLongerIgnoringAnyone);
@@ -1145,7 +1147,7 @@ size_t CChatMember::FindIgnoringIndex(LPCTSTR pszName) const
 	ADDTOCALLSTACK("CChatMember::FindIgnoringIndex");
 	if ( pszName != NULL )
 	{
-		for ( size_t i = 0; i < m_IgnoredMembers.GetCount(); i++ )
+		for ( size_t i = 0; i < m_IgnoredMembers.GetCount(); ++i )
 		{
 			if ( m_IgnoredMembers[i]->CompareNoCase(pszName) == 0 )
 				return i;

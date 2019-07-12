@@ -554,9 +554,9 @@ bool CPartyDef::r_GetRef(LPCTSTR &pszKey, CScriptObj *&pRef)
 	else if ( !strnicmp("MEMBER.", pszKey, 7) )
 	{
 		pszKey += 7;
-		size_t i = static_cast<size_t>(Exp_GetLLVal(pszKey));
+		int i = Exp_GetVal(pszKey);
 		SKIP_SEPARATORS(pszKey);
-		if ( !m_Chars.IsValidIndex(i) )
+		if ( (i < 0) || !m_Chars.IsValidIndex(i) )
 			return false;
 
 		CChar *pMember = m_Chars.GetChar(i).CharFind();
@@ -647,13 +647,8 @@ bool CPartyDef::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		{
 			pszKey += 13;
 			GETNONWHITESPACE(pszKey);
-			if ( pszKey[0] != '\0' )
-			{
-				CChar *pChar = static_cast<CGrayUID>(Exp_GetLLVal(pszKey)).CharFind();
-				sVal.FormatVal(pChar && (pChar->m_pParty == this));
-			}
-			else
-				return false;
+			CChar *pChar = static_cast<CGrayUID>(Exp_GetLLVal(pszKey)).CharFind();
+			sVal.FormatVal(pChar && (pChar->m_pParty == this));
 			break;
 		}
 		case PDC_MEMBERS:
@@ -760,14 +755,15 @@ bool CPartyDef::r_Verb(CScript &s, CTextConsole *pSrc)
 			CGrayUID uid = static_cast<CGrayUID>(s.GetArgVal());
 			CChar *pCharAdd = uid.CharFind();
 			if ( !pCharAdd || IsInParty(pCharAdd) )
-				return false;
+				break;
 
 			bool fForced = (index == PDV_ADDMEMBERFORCED);
 			CChar *pCharMaster = FindMaster();
 			if ( pCharMaster && !fForced )
 				pCharMaster->SetKeyNum("PARTY_LASTINVITE", static_cast<INT64>(uid));
 
-			return CPartyDef::AcceptEvent(pCharAdd, pCharMaster, fForced);
+			CPartyDef::AcceptEvent(pCharAdd, pCharMaster, fForced);
+			break;
 		}
 		case PDV_CLEARTAGS:
 		{
@@ -776,14 +772,12 @@ bool CPartyDef::r_Verb(CScript &s, CTextConsole *pSrc)
 			m_TagDefs.ClearKeys(pszArg);
 			break;
 		}
-		case PDV_CREATE:
-		{
-			return true;
-		}
 		case PDV_DISBAND:
 		{
-			return Disband();
+			Disband();
+			break;
 		}
+		case PDV_CREATE:
 		case PDV_MESSAGE:
 		{
 			break;
@@ -795,16 +789,17 @@ bool CPartyDef::r_Verb(CScript &s, CTextConsole *pSrc)
 			if ( *pszArg == '@' )
 			{
 				++pszArg;
-				size_t i = static_cast<size_t>(Exp_GetLLVal(pszArg));
-				if ( !m_Chars.IsValidIndex(i) )
-					return false;
+				int i = Exp_GetVal(pszArg);
+				if ( (i < 0) || !m_Chars.IsValidIndex(i) )
+					break;
 
 				uid = m_Chars.GetChar(i);
 			}
 			else
 				uid = static_cast<CGrayUID>(s.GetArgVal());
 
-			return RemoveMember(uid.CharFind());
+			RemoveMember(uid.CharFind());
+			break;
 		}
 		case PDV_SETMASTER:
 		{
@@ -813,16 +808,17 @@ bool CPartyDef::r_Verb(CScript &s, CTextConsole *pSrc)
 			if ( *pszArg == '@' )
 			{
 				++pszArg;
-				size_t i = static_cast<size_t>(Exp_GetLLVal(pszArg));
-				if ( i == 0 || !m_Chars.IsValidIndex(i) )
-					return false;
+				int i = Exp_GetVal(pszArg);
+				if ( (i < 0) || !m_Chars.IsValidIndex(i) )
+					break;
 
 				uid = m_Chars.GetChar(i);
 			}
 			else
 				uid = static_cast<CGrayUID>(s.GetArgVal());
 
-			return SetMaster(uid.CharFind());
+			SetMaster(uid.CharFind());
+			break;
 		}
 		case PDV_SYSMESSAGE:
 		{
@@ -844,9 +840,9 @@ bool CPartyDef::r_Verb(CScript &s, CTextConsole *pSrc)
 					}
 					strcpylen(pszUID, pszArgBackup, ++iLen);
 
-					size_t i = static_cast<size_t>(Exp_GetLLVal(pszUID));
-					if ( !m_Chars.IsValidIndex(i) )
-						return false;
+					int i = Exp_GetVal(pszUID);
+					if ( (i < 0) || !m_Chars.IsValidIndex(i) )
+						break;
 
 					uid = m_Chars.GetChar(i);
 				}

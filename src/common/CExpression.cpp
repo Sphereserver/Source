@@ -1,7 +1,7 @@
 #include <cmath>
 #include "../graysvr/graysvr.h"
 
-TCHAR CExpression::sm_szMessages[DEFMSG_QTY][128] =
+TCHAR CExpression::sm_szMessages[DEFMSG_QTY][EXPRESSION_MAX_KEY_LEN] =
 {
 	#define MSG(a,b) b,
 	#include "../tables/defmessages.tbl"

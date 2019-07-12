@@ -333,11 +333,8 @@ bool CResource::r_GetRef(LPCTSTR &pszKey, CScriptObj *&pRef)
 	else if ( (iResType == RES_SPELL) && (*pszKey == '-') )
 	{
 		++pszKey;
-		size_t iOrder = Exp_GetVal(pszKey);
-		if ( m_SpellDefs_Sorted.IsValidIndex(iOrder) )
-			pRef = m_SpellDefs_Sorted[iOrder];
-		else
-			pRef = NULL;
+		int i = Exp_GetVal(pszKey);
+		pRef = ((i >= 0) && m_SpellDefs_Sorted.IsValidIndex(i)) ? m_SpellDefs_Sorted[i] : NULL;
 	}
 	else
 	{
@@ -2246,7 +2243,7 @@ bool CResource::LoadResourceSection(CScript *pScript)
 					{
 						if ( !strcmpi(pszKey, g_Exp.sm_szMsgNames[i]) )
 						{
-							strcpy(g_Exp.sm_szMessages[i], pScript->GetArgStr());
+							strncpy(g_Exp.sm_szMessages[i], pScript->GetArgStr(), EXPRESSION_MAX_KEY_LEN - 1);
 							break;
 						}
 					}
