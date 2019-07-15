@@ -150,6 +150,7 @@ set(graysvr_SRCS
     graysvr/CItemShip.h
     graysvr/CItemSpawn.cpp
     graysvr/CItemStone.cpp
+    graysvr/CItemStone.h
     graysvr/CItemVend.cpp
     graysvr/CLog.cpp
     graysvr/CLog.h

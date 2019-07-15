@@ -300,6 +300,7 @@ if defined GitRev (
     <ClInclude Include="src\graysvr\CItemMulti.h" />
     <ClInclude Include="src\graysvr\CItemMultiCustom.h" />
     <ClInclude Include="src\graysvr\CItemShip.h" />
+    <ClInclude Include="src\graysvr\CItemStone.h" />
     <ClInclude Include="src\graysvr\CLog.h" />
     <ClInclude Include="src\graysvr\CNTService.h" />
     <ClInclude Include="src\graysvr\CNTWindow.h" />

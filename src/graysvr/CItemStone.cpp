@@ -1,347 +1,21 @@
-#include "graysvr.h"	// predef header.
+#include "graysvr.h"	// predef header
 
-//////////
-// -CStoneMember
+///////////////////////////////////////////////////////////
+// CStoneMember
 
-enum STMM_TYPE
+CStoneMember::CStoneMember(CItemStone *pStone, CGrayUID uidLinkTo, STONEPRIV_TYPE priv, LPCTSTR pszTitle, CGrayUID uidLoyalTo, bool fVal1, bool fVal2, int iAccountGold)
 {
-#define ADD(a,b) STMM_##a,
-#include "../tables/CStoneMember_props.tbl"
-#undef ADD
-	STMM_QTY
-};
+	m_priv = priv;
+	m_uidLinkTo = uidLinkTo;
+	m_uidLoyalTo = uidLoyalTo;
+	m_sTitle = pszTitle;
 
-LPCTSTR const CStoneMember::sm_szLoadKeys[STMM_QTY+1] =
-{
-#define ADD(a,b) b,
-#include "../tables/CStoneMember_props.tbl"
-#undef ADD
-	NULL
-};
-
-enum STMMV_TYPE
-{
-#define ADD(a,b) STMMV_##a,
-#include "../tables/CStoneMember_functions.tbl"
-#undef ADD
-	STMMV_QTY
-};
-
-LPCTSTR const CStoneMember::sm_szVerbKeys[STMMV_QTY+1] =
-{
-#define ADD(a,b) b,
-#include "../tables/CStoneMember_functions.tbl"
-#undef ADD
-	NULL
-};
-
-CStoneMember *CStoneMember::GetNext() const
-{
-	ADDTOCALLSTACK("CStoneMember::GetNext");
-	return static_cast<CStoneMember *>(CGObListRec::GetNext());
-}
-
-CGrayUID CStoneMember::GetLinkUID() const { return m_uidLinkTo; }
-
-STONEPRIV_TYPE CStoneMember::GetPriv() const { return m_iPriv; }
-void CStoneMember::SetPriv(STONEPRIV_TYPE iPriv) { m_iPriv = iPriv; }
-bool CStoneMember::IsPrivMaster() const { return m_iPriv == STONEPRIV_MASTER; }
-bool CStoneMember::IsPrivMember() const { return( m_iPriv == STONEPRIV_MASTER || m_iPriv == STONEPRIV_MEMBER ); }
-
-// If the member is really a war flag (STONEPRIV_ENEMY)
-void CStoneMember::SetWeDeclaredWar(bool f)
-{
-	ADDTOCALLSTACK("CStoneMember::SetWeDeclaredWar");
-	m_Enemy.m_fWeDeclared = f;
-}
-bool CStoneMember::GetWeDeclaredWar() const
-{
-	ADDTOCALLSTACK("CStoneMember::GetWeDeclaredWar");
-	return m_Enemy.m_fWeDeclared ? true : false;
-}
-void CStoneMember::SetTheyDeclaredWar(bool f)
-{
-	ADDTOCALLSTACK("CStoneMember::SetTheyDeclaredWar");
-	m_Enemy.m_fTheyDeclared = f;
-}
-bool CStoneMember::GetTheyDeclaredWar() const
-{
-	ADDTOCALLSTACK("CStoneMember::GetTheyDeclaredWar");
-	return m_Enemy.m_fTheyDeclared ? true : false;
-}
-
-// If the member is really a alliance flag (STONEPRIV_ALLY)
-void CStoneMember::SetWeDeclaredAlly(bool f)
-{
-	ADDTOCALLSTACK("CStoneMember::SetWeDeclaredAlly");
-	m_Ally.m_fWeDeclared = f;
-}
-bool CStoneMember::GetWeDeclaredAlly() const
-{
-	ADDTOCALLSTACK("CStoneMember::GetWeDeclaredAlly");
-	return m_Ally.m_fWeDeclared ? true : false;
-}
-void CStoneMember::SetTheyDeclaredAlly(bool f)
-{
-	ADDTOCALLSTACK("CStoneMember::SetTheyDeclaredAlly");
-	m_Ally.m_fTheyDeclared = f;
-}
-bool CStoneMember::GetTheyDeclaredAlly() const
-{
-	ADDTOCALLSTACK("CStoneMember::GetTheyDeclaredAlly");
-	return m_Ally.m_fTheyDeclared ? true : false;
-}
-
-// Member
-bool CStoneMember::IsAbbrevOn() const { return ( m_Member.m_fAbbrev ) ? true : false; }
-void CStoneMember::ToggleAbbrev() { m_Member.m_fAbbrev = !m_Member.m_fAbbrev; }
-void CStoneMember::SetAbbrev(bool mode) { m_Member.m_fAbbrev = mode; }
-
-LPCTSTR CStoneMember::GetTitle() const
-{
-	ADDTOCALLSTACK("CStoneMember::GetTitle");
-	return( m_sTitle );
-}
-void CStoneMember::SetTitle( LPCTSTR pTitle )
-{
-	ADDTOCALLSTACK("CStoneMember::SetTitle");
-	m_sTitle = pTitle;
-}
-
-CGrayUID CStoneMember::GetLoyalToUID() const
-{
-	ADDTOCALLSTACK("CStoneMember::GetLoyalToUID");
-	return( m_uidLoyalTo );
-}
-
-int CStoneMember::GetAccountGold() const
-{
-	ADDTOCALLSTACK("CStoneMember::GetAccountGold");
-	return( m_Member.m_iAccountGold );
-}
-void CStoneMember::SetAccountGold( int iGold )
-{
-	ADDTOCALLSTACK("CStoneMember::SetAccountGold");
-	m_Member.m_iAccountGold = iGold;
-}
-
-bool CStoneMember::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
-{
-	UNREFERENCED_PARAMETER(pszKey);
-	UNREFERENCED_PARAMETER(pRef);
-	return false;
-}
-
-bool CStoneMember::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from script
-{
-	ADDTOCALLSTACK("CStoneMember::r_Verb");
-	EXC_TRY("Verb");
-
-	ASSERT(pSrc);
-	
-	LPCTSTR pszKey = s.GetKey();
-	int index = FindTableSorted( pszKey, sm_szVerbKeys, COUNTOF(sm_szVerbKeys)-1 );
-	if ( index < 0 )
-	{
-		if ( r_LoadVal(s) ) // if it's successful all ok, else go on verb.
-		{
-			return true;
-		}
-	}
-
-	if ( GetLinkUID().IsChar() )
-	{
-		CScriptObj *pRef = GetLinkUID().CharFind();
-		return pRef->r_Verb( s, pSrc );
-	}
-	else if ( GetLinkUID().IsItem() )
-	{
-		CScriptObj *pRef = GetLinkUID().ItemFind();
-		return pRef->r_Verb( s, pSrc );
-	}
-
-	return true;
-	EXC_CATCH;
-
-	EXC_DEBUG_START;
-	EXC_ADD_SCRIPTSRC;
-	EXC_DEBUG_END;
-	return false;
-}
-
-
-bool CStoneMember::r_LoadVal( CScript & s ) // Load an item Script
-{
-	ADDTOCALLSTACK("CStoneMember::r_LoadVal");
-	EXC_TRY("LoadVal");
-
-	STMM_TYPE iIndex = (STMM_TYPE) FindTableSorted( s.GetKey(), sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 );
-
-	if ( GetLinkUID().IsChar() )
-	{
-		switch ( iIndex )
-		{
-			case STMM_ACCOUNTGOLD:
-				SetAccountGold(s.GetArgVal());
-				break;
-
-			case STMM_LOYALTO:
-				{
-					CGrayUID uid = s.GetArgVal();
-					SetLoyalTo(uid.CharFind());
-				}
-				break;
-
-			case STMM_PRIV:
-				SetPriv(static_cast<STONEPRIV_TYPE>(s.GetArgVal()));
-				break;
-
-			case STMM_TITLE:
-				SetTitle(s.GetArgStr());
-				break;
-
-			case STMM_SHOWABBREV:
-				SetAbbrev( s.GetArgVal() ? 1 : 0 );
-				break;
-
-			default:
-				return false;
-		}
-	} 
-	else if ( GetLinkUID().IsItem() )
-	{
-		switch ( iIndex )
-		{
-			case STMM_GUILD_THEYALLIANCE:
-				SetTheyDeclaredAlly(s.GetArgVal() ? true : false);
-				break;
-
-			case STMM_GUILD_THEYWAR:
-				SetTheyDeclaredWar(s.GetArgVal() ? true : false);
-				break;
-
-			case STMM_GUILD_WEALLIANCE:
-				SetWeDeclaredAlly(s.GetArgVal() ? true : false);
-				break;
-
-			case STMM_GUILD_WEWAR:
-				SetWeDeclaredWar(s.GetArgVal() ? true : false);
-				break;
-
-			default:
-				return false;
-		}
-	}
-
-
-	return true;
-	EXC_CATCH;
-
-	EXC_DEBUG_START;
-	EXC_ADD_SCRIPT;
-	EXC_DEBUG_END;
-	return false;
-}
-
-
-bool CStoneMember::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
-{
-	ADDTOCALLSTACK("CStoneMember::r_WriteVal");
-	EXC_TRY("WriteVal");
-
-	STMM_TYPE iIndex = (STMM_TYPE) FindTableSorted( pszKey, sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 );
-
-	if ( GetLinkUID().IsChar() )
-	{
-		switch ( iIndex )
-		{
-			case STMM_ACCOUNTGOLD:
-				sVal.FormatVal(GetAccountGold());
-				break;
-			case STMM_ISMASTER:
-				sVal.FormatVal(IsPrivMaster());
-				break;
-			case STMM_ISMEMBER:
-				sVal.FormatVal(IsPrivMember());
-				break;
-			case STMM_LOYALTO:
-				sVal.FormatHex(GetLoyalToUID());
-				break;
-			case STMM_PRIV:
-				sVal.FormatVal(GetPriv());
-				break;
-			case STMM_PRIVNAME:
-				sVal = GetPrivName();
-				break;
-			case STMM_TITLE:
-				sVal = GetTitle();
-				break;
-			case STMM_SHOWABBREV:
-				sVal.FormatVal(IsAbbrevOn());
-				break;
-			case STMM_ISCANDIDATE:
-				sVal.FormatVal((GetPriv() == STONEPRIV_CANDIDATE) ? 1 : 0);
-				break;
-			default:
-				{
-					CScriptObj *pRef = GetLinkUID().CharFind();
-					return pRef->r_WriteVal(pszKey,sVal,pSrc);
-				}
-		}
-	}
-	else if ( GetLinkUID().IsItem() )
-	{
-		switch ( iIndex )
-		{
-			case STMM_GUILD_ISALLY:
-				sVal.FormatVal(GetWeDeclaredAlly() && GetTheyDeclaredAlly());
-				break;
-			case STMM_GUILD_ISENEMY:
-				sVal.FormatVal(GetWeDeclaredWar() && GetTheyDeclaredWar());
-				break;
-			case STMM_GUILD_THEYALLIANCE:
-				sVal.FormatVal(GetTheyDeclaredAlly());
-				break;
-			case STMM_GUILD_THEYWAR:
-				sVal.FormatVal(GetTheyDeclaredWar());
-				break;
-			case STMM_GUILD_WEALLIANCE:
-				sVal.FormatVal(GetWeDeclaredAlly());
-				break;
-			case STMM_GUILD_WEWAR:
-				sVal.FormatVal(GetWeDeclaredWar());
-				break;
-			default:
-				{
-					CScriptObj *pRef = GetLinkUID().ItemFind();
-					return pRef->r_WriteVal(pszKey,sVal,pSrc);
-				}
-		}
-	}
-
-	return true;
-	EXC_CATCH;
-
-	EXC_DEBUG_START;
-	EXC_ADD_KEYRET(pSrc);
-	EXC_DEBUG_END;
-	return false;
-}
-
-CStoneMember::CStoneMember( CItemStone * pStone, CGrayUID uid, STONEPRIV_TYPE iType, LPCTSTR pTitle, CGrayUID loyaluid, bool fVal1, bool fVal2, int nAccountGold)
-{
-	m_uidLinkTo = uid;
-	m_sTitle = pTitle;
-	m_iPriv = iType;
-	m_uidLoyalTo = loyaluid;
-
-	// union.
-	if ( iType == STONEPRIV_ENEMY )
+	if ( priv == STONEPRIV_ENEMY )
 	{
 		m_Enemy.m_fTheyDeclared = fVal1;
 		m_Enemy.m_fWeDeclared = fVal2;
 	}
-	else if ( iType == STONEPRIV_ALLY )
+	else if ( priv == STONEPRIV_ALLY )
 	{
 		m_Ally.m_fTheyDeclared = fVal1;
 		m_Ally.m_fWeDeclared = fVal2;
@@ -349,1033 +23,150 @@ CStoneMember::CStoneMember( CItemStone * pStone, CGrayUID uid, STONEPRIV_TYPE iT
 	else
 	{
 		m_Member.m_fAbbrev = fVal1;
-		m_Member.m_iVoteTally = fVal2;		// Temporary space to calculate votes.
+		m_Member.m_iVoteTally = fVal2;
 	}
 
-	m_Member.m_iAccountGold = nAccountGold;
+	m_Member.m_iAccountGold = iAccountGold;
 
-	if ( ! g_Serv.IsLoading() && pStone->GetMemoryType())
+	if ( !g_Serv.IsLoading() && pStone->GetMemoryType() )
 	{
-		CChar * pChar = uid.CharFind();
-		if ( pChar != NULL )
+		CChar *pChar = uidLinkTo.CharFind();
+		if ( pChar )
 		{
 			pChar->Memory_AddObjTypes(pStone, static_cast<WORD>(pStone->GetMemoryType()));
-			if ( pStone->IsTopLevel())
-			{
-				pChar->m_ptHome = pStone->GetTopPoint();	// Our new home.
-			}
+			if ( pStone->IsTopLevel() )
+				pChar->m_ptHome = pStone->GetTopPoint();
 		}
 	}
 
-	pStone->InsertTail( this );
+	pStone->InsertTail(this);
 }
 
 CStoneMember::~CStoneMember()
 {
-	CItemStone * pStone = GetParentStone();
-	if ( ! pStone )
+	CItemStone *pStone = GetParentStone();
+	if ( !pStone )
 		return;
 
 	RemoveSelf();
 
-	if ( m_iPriv == STONEPRIV_ENEMY )
+	if ( m_priv == STONEPRIV_ENEMY )
 	{
-		// same as declaring peace.
-		CItemStone * pStoneEnemy = static_cast<CItemStone *>(GetLinkUID().ItemFind());
-		if ( pStoneEnemy != NULL )
-		{
-			pStoneEnemy->TheyDeclarePeace( pStone, true );
-		}
+		CItemStone *pStoneEnemy = static_cast<CItemStone *>(m_uidLinkTo.ItemFind());
+		if ( pStoneEnemy )
+			pStoneEnemy->TheyDeclarePeace(pStone, true);
 	}
-	else if ( pStone->GetMemoryType())
+	else if ( pStone->GetMemoryType() )
 	{
-		// If we remove a char with good loyalty we may have changed the vote count.
 		pStone->ElectMaster();
 
-		CChar * pChar = GetLinkUID().CharFind();
+		CChar *pChar = m_uidLinkTo.CharFind();
 		if ( pChar )
-			pChar->Memory_ClearTypes(static_cast<WORD>(pStone->GetMemoryType())); 	// Make them forget they were ever in this guild
+			pChar->Memory_ClearTypes(static_cast<WORD>(pStone->GetMemoryType()));
 	}
-}
-
-CItemStone * CStoneMember::GetParentStone() const
-{
-	ADDTOCALLSTACK("CStoneMember::GetParentStone");
-	return dynamic_cast<CItemStone *>(GetParent());
 }
 
 LPCTSTR CStoneMember::GetPrivName() const
 {
 	ADDTOCALLSTACK("CStoneMember::GetPrivName");
-	STONEPRIV_TYPE iPriv = GetPriv();
+	TCHAR *pszTemp = Str_GetTemp();
+	sprintf(pszTemp, "STONECONFIG_PRIVNAME_PRIVID-%d", m_priv);
 
-	TemporaryString sDefname;
-	sprintf(sDefname, "STONECONFIG_PRIVNAME_PRIVID-%d", static_cast<int>(iPriv));
-	
-	CVarDefCont * pResult = g_Exp.m_VarDefs.GetKey(sDefname);
-	if (pResult)
-		return pResult->GetValStr();
-	else
-		pResult = g_Exp.m_VarDefs.GetKey("STONECONFIG_PRIVNAME_PRIVUNK");
+	CVarDefCont *pVar = g_Exp.m_VarDefs.GetKey(pszTemp);
+	if ( pVar )
+		return pVar->GetValStr();
 
-	return ( pResult == NULL ) ? "" : pResult->GetValStr();
+	pVar = g_Exp.m_VarDefs.GetKey("STONECONFIG_PRIVNAME_PRIVUNK");
+	if ( pVar )
+		return pVar->GetValStr();
+
+	return "";
 }
 
-bool CStoneMember::SetLoyalTo( const CChar * pCharLoyal )
+bool CStoneMember::SetLoyalTo(const CChar *pChar)
 {
 	ADDTOCALLSTACK("CStoneMember::SetLoyalTo");
-	CChar * pCharMe = GetLinkUID().CharFind();
-	if ( pCharMe == NULL )	// on shutdown
+	CChar *pCharSrc = m_uidLinkTo.CharFind();
+	if ( !pCharSrc )	// on shutdown
 		return false;
 
-	m_uidLoyalTo = GetLinkUID();	// set to self for default.
-	if ( pCharLoyal == NULL )
+	m_uidLoyalTo = m_uidLinkTo;		// set to self by default
+	if ( !pChar )
 		return true;
 
-	if ( ! IsPrivMember())
+	if ( !IsPrivMember() )
 	{
-		// non members can't vote
-		pCharMe->SysMessage("Candidates aren't elligible to vote.");
+		pCharSrc->SysMessage("Candidates aren't elligible to vote.");
 		return false;
 	}
 
-	CItemStone * pStone = GetParentStone();
+	CItemStone *pStone = GetParentStone();
 	if ( !pStone )
 		return false;
 
-	CStoneMember * pNewLoyalTo = pStone->GetMember(pCharLoyal);
-	if ( pNewLoyalTo == NULL || ! pNewLoyalTo->IsPrivMember())
+	CStoneMember *pMember = pStone->GetMember(pChar);
+	if ( !pMember || !pMember->IsPrivMember() )
 	{
-		// you can't vote for candidates
-		pCharMe->SysMessage( "Can only vote for full members.");
+		pCharSrc->SysMessage("Can only vote for full members.");
 		return false;
 	}
 
-	m_uidLoyalTo = pCharLoyal->GetUID();
-
-	// new vote tally
+	m_uidLoyalTo = pChar->GetUID();
 	pStone->ElectMaster();
-	return( true );
+	return true;
 }
 
-//////////
-// -CItemStone
-
-CItemStone::CItemStone( ITEMID_TYPE id, CItemBase * pItemDef ) : CItem( id, pItemDef )
+CItemStone *CStoneMember::GetParentStone() const
 {
-	m_itStone.m_iAlign = STONEALIGN_STANDARD;
-	g_World.m_Stones.Add( this );
+	ADDTOCALLSTACK("CStoneMember::GetParentStone");
+	return dynamic_cast<CItemStone *>(GetParent());
 }
 
-CItemStone::~CItemStone()
+bool CStoneMember::r_GetRef(LPCTSTR &pszKey, CScriptObj *&pRef)
 {
-	SetAmount(0);	// Tell everyone we are deleting.
-	DeletePrepare();	// Must remove early because virtuals will fail in child destructor.
-
-	// Remove this stone from the links of guilds in the world
-	g_World.m_Stones.RemovePtr( this );
-
-	// all members are deleted automatically.
-	Empty();	// do this manually to preserve the parents type cast
-}
-
-MEMORY_TYPE CItemStone::GetMemoryType() const
-{
-	ADDTOCALLSTACK("CItemStone::GetMemoryType");
-	switch ( GetType() )
-	{
-		case IT_STONE_TOWN: return( MEMORY_TOWN );
-		case IT_STONE_GUILD: return( MEMORY_GUILD );
-		default: return( MEMORY_NONE ); // Houses have no memories.
-	}
-}
-
-LPCTSTR CItemStone::GetCharter(unsigned int iLine) const
-{
-	ASSERT(iLine<COUNTOF(m_sCharter));
-	return(  m_sCharter[iLine] );
-}
-
-void CItemStone::SetCharter( unsigned int iLine, LPCTSTR pCharter )
-{
-	ASSERT(iLine<COUNTOF(m_sCharter));
-	m_sCharter[iLine] = pCharter;
-}
-
-LPCTSTR CItemStone::GetWebPageURL() const
-{
-	return( m_sWebPageURL );
-}
-
-void CItemStone::SetWebPageURL( LPCTSTR pWebPage )
-{
-	m_sWebPageURL = pWebPage;
-}
-
-STONEALIGN_TYPE CItemStone::GetAlignType() const
-{
-	return m_itStone.m_iAlign;
-}
-
-void CItemStone::SetAlignType(STONEALIGN_TYPE iAlign)
-{
-	m_itStone.m_iAlign = iAlign;
-}
-
-LPCTSTR CItemStone::GetAbbrev() const
-{
-	return( m_sAbbrev );
-}
-
-void CItemStone::SetAbbrev( LPCTSTR pAbbrev )
-{
-	m_sAbbrev = pAbbrev;
-}
-
-LPCTSTR CItemStone::GetTypeName() const
-{
-	ADDTOCALLSTACK("CItemStone::GetTypeName");
-	CVarDefCont * pResult = NULL;
-	switch ( GetType() )
-	{
-		case IT_STONE_GUILD:
-			pResult = g_Exp.m_VarDefs.GetKey("STONECONFIG_TYPENAME_GUILD");
-			break;
-		case IT_STONE_TOWN:
-			pResult = g_Exp.m_VarDefs.GetKey("STONECONFIG_TYPENAME_TOWN");
-			break;
-		default:
-			break;
-	}
-
-	if ( pResult == NULL )
-		pResult = g_Exp.m_VarDefs.GetKey("STONECONFIG_TYPENAME_UNK");
-
-	return ( pResult == NULL ) ? "" : pResult->GetValStr();
-}
-
-void CItemStone::r_Write( CScript & s )
-{
-	ADDTOCALLSTACK_INTENSIVE("CItemStone::r_Write");
-	CItem::r_Write( s );
-	s.WriteKeyVal("ALIGN", GetAlignType());
-	if ( !m_sAbbrev.IsEmpty() )
-		s.WriteKey("ABBREV", m_sAbbrev);
-
-	TemporaryString pszTemp;
-	for ( unsigned int i = 0; i < COUNTOF(m_sCharter); i++ )
-	{
-		if ( !m_sCharter[i].IsEmpty() )
-		{
-			sprintf(pszTemp, "CHARTER%u", i);
-			s.WriteKey(pszTemp, m_sCharter[i]);
-		}
-	}
-
-	if ( !m_sWebPageURL.IsEmpty() )
-		s.WriteKey("WEBPAGE", GetWebPageURL());
-
-	// s.WriteKey( "//", "uid,title,priv,loyaluid,abbr&theydecl,wedecl");
-
-	CStoneMember *pMember = static_cast<CStoneMember *>(GetHead());
-	for ( ; pMember != NULL; pMember = pMember->GetNext())
-	{
-		if (pMember->GetLinkUID().IsValidUID()) // To protect against characters that were deleted!
-		{
-			s.WriteKeyFormat("MEMBER",
-				"0%lx,%s,%i,0%lx,%i,%i,%i",
-				static_cast<DWORD>(pMember->GetLinkUID() | (pMember->GetLinkUID().IsItem() ? UID_F_ITEM : 0)),
-				pMember->GetTitle(),
-				pMember->GetPriv(),
-				static_cast<DWORD>(pMember->GetLoyalToUID()),
-				pMember->m_UnDef.m_Val1,
-				pMember->m_UnDef.m_Val2,
-				pMember->GetAccountGold());
-		}
-	}
-}
-
-LPCTSTR CItemStone::GetAlignName() const
-{
-	ADDTOCALLSTACK("CItemStone::GetAlignName");
-	int iAlign = GetAlignType();
-
-	TemporaryString sDefname;
-	if ( GetType() == IT_STONE_GUILD )
-		sprintf(sDefname, "GUILDCONFIG_ALIGN_%d", iAlign);
-	else if ( GetType() == IT_STONE_TOWN )
-		sprintf(sDefname, "TOWNSCONFIG_ALIGN_%d", iAlign);
-	else
-		return "";
-
-	LPCTSTR sRes = g_Exp.m_VarDefs.GetKeyStr(sDefname);
-	return ( sRes == NULL ) ? "" : sRes;
-}
-
-enum STC_TYPE
-{
-#define ADD(a,b) STC_##a,
-#include "../tables/CItemStone_props.tbl"
-#undef ADD
-	STC_QTY
-};
-
-LPCTSTR const CItemStone::sm_szLoadKeys[STC_QTY+1] =
-{
-#define ADD(a,b) b,
-#include "../tables/CItemStone_props.tbl"
-#undef ADD
-	NULL
-};
-
-enum ISV_TYPE
-{
-#define ADD(a,b) ISV_##a,
-#include "../tables/CItemStone_functions.tbl"
-#undef ADD
-	ISV_QTY
-};
-
-LPCTSTR const CItemStone::sm_szVerbKeys[ISV_QTY+1] =
-{
-#define ADD(a,b) b,
-#include "../tables/CItemStone_functions.tbl"
-#undef ADD
-	NULL
-};
-
-bool CItemStone::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
-{
-	ADDTOCALLSTACK("CItemStone::r_GetRef");
-	if ( !strnicmp("member.", pszKey, 7) )
-	{
-		pszKey = pszKey + 7;
-		if ( !pszKey[0] )
-			return false;
-
-		int nNumber = Exp_GetVal(pszKey);
-		SKIP_SEPARATORS(pszKey);
-
-		CStoneMember *pMember = static_cast<CStoneMember *>(GetHead());
-		for ( int i = 0; pMember != NULL; pMember = pMember->GetNext() )
-		{
-			if ( !pMember->GetLinkUID().IsChar() ) 
-				continue;
-
-			if ( nNumber == i )
-			{
-				pRef = pMember; 
-				return true;
-			}
-
-			i++;
-		}
-	}
-	else if ( !strnicmp("memberfromuid.", pszKey, 14) )
-	{
-		pszKey = pszKey + 14;
-		if ( !pszKey[0] )
-			return false;
-
-		CGrayUID pMemberUid = static_cast<DWORD>(Exp_GetVal(pszKey));
-		SKIP_SEPARATORS(pszKey);
-
-		CChar * pMemberChar = pMemberUid.CharFind();
-		if ( pMemberChar )
-		{
-			CStoneMember * pMemberGuild = GetMember( pMemberChar );
-			if ( pMemberGuild )
-			{
-				pRef = pMemberGuild; 
-				return true;
-			}
-		}
-	}
-	else if ( !strnicmp("guild.", pszKey, 6) )
-	{
-		pszKey = pszKey + 6;
-		if ( !pszKey[0] )
-			return false;
-
-		int nNumber = Exp_GetVal(pszKey);
-		SKIP_SEPARATORS(pszKey);
-
-		CStoneMember *pMember = static_cast<CStoneMember *>(GetHead());
-		for ( int i = 0; pMember != NULL; pMember = pMember->GetNext() )
-		{
-			if ( pMember->GetLinkUID().IsChar() ) 
-				continue;
-
-			if ( nNumber == i )
-			{
-				pRef = pMember;
-				return true;
-			}
-
-			i++;
-		}
-	}
-	else if ( !strnicmp("guildfromuid.", pszKey, 13) )
-	{
-		pszKey = pszKey + 13;
-		if ( !pszKey[0] )
-			return false;
-
-		CGrayUID pGuildUid = static_cast<DWORD>(Exp_GetVal(pszKey));
-		SKIP_SEPARATORS(pszKey);
-
-		CItem * pMemberGuild = pGuildUid.ItemFind();
-		if ( pMemberGuild )
-		{
-			CStoneMember * pGuild = GetMember( pMemberGuild );
-			if ( pGuild )
-			{
-				pRef = pGuild; 
-				return true;
-			}
-		}
-	}
-
-	return CItem::r_GetRef( pszKey, pRef );
-}
-
-bool CItemStone::r_LoadVal( CScript & s ) // Load an item Script
-{
-	ADDTOCALLSTACK("CItemStone::r_LoadVal");
-	EXC_TRY("LoadVal");
-
-	switch ( FindTableSorted( s.GetKey(), sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
-	{
-		case STC_ABBREV: // "ABBREV"
-			m_sAbbrev = s.GetArgStr();
-			return true;
-		case STC_ALIGN: // "ALIGN"
-			SetAlignType(static_cast<STONEALIGN_TYPE>(s.GetArgVal()));
-			return true;
-		case STC_MASTERUID:
-			{
-				if ( s.HasArgs() )
-				{
-					CGrayUID pNewMasterUid = static_cast<DWORD>(s.GetArgVal());
-					CChar * pChar = pNewMasterUid.CharFind();
-					if ( !pChar )
-					{
-						DEBUG_ERR(("MASTERUID called on non char 0%lx uid.\n", static_cast<DWORD>(pNewMasterUid)));
-						return( false );
-					}
-
-					CStoneMember * pNewMaster = GetMember( pChar );
-					if ( !pNewMaster )
-					{
-						DEBUG_ERR(("MASTERUID called on char 0%lx (%s) that is not a valid member of stone with 0x%lx uid.\n", static_cast<DWORD>(pNewMasterUid), pChar->GetName(), static_cast<DWORD>(GetUID())));
-						return( false );
-					}
-
-					CStoneMember * pMaster = GetMasterMember();
-					if ( pMaster )
-					{
-						if ( pMaster->GetLinkUID() == pNewMasterUid )
-							return( true );
-
-						pMaster->SetPriv(STONEPRIV_MEMBER);
-						//pMaster->SetLoyalTo(pChar);
-					}
-
-					//pNewMaster->SetLoyalTo(pChar);
-					pNewMaster->SetPriv(STONEPRIV_MASTER);
-				}
-				else
-				{
-					DEBUG_ERR(( "MASTERUID called without arguments.\n" ));
-					return( false );
-				}
-			}
-			return( true );
-		case STC_MEMBER: // "MEMBER"
-			{
-			TCHAR *Arg_ppCmd[8];		// Maximum parameters in one line
-			size_t Arg_Qty = Str_ParseCmds( s.GetArgStr(), Arg_ppCmd, COUNTOF( Arg_ppCmd ), "," );
-			if (Arg_Qty < 1) // must at least provide the member uid
-				return false;
-
-			new CStoneMember(
-				this,
-				ahextoi(Arg_ppCmd[0]),													// Member's UID
-				Arg_Qty > 2 ? static_cast<STONEPRIV_TYPE>(ATOI(Arg_ppCmd[2])) : STONEPRIV_CANDIDATE,	// Members priv level (use as a type)
-				Arg_Qty > 1 ? Arg_ppCmd[1] : "",										// Title
-				ahextoi(Arg_ppCmd[3]),													// Member is loyal to this
-				Arg_Qty > 4 ? (ATOI( Arg_ppCmd[4] ) != 0) : 0,							// Paperdoll stone abbreviation (also if they declared war)
-				Arg_Qty > 5 ? (ATOI( Arg_ppCmd[5] ) != 0) : 0,							// If we declared war
-				Arg_Qty > 6 ? ATOI( Arg_ppCmd[6] ) : 0);								// AccountGold
-			}
-			return true;
-		case STC_WEBPAGE: // "WEBPAGE"
-			m_sWebPageURL = s.GetArgStr();
-			return true;
-	}
-
-	if ( s.IsKeyHead( sm_szLoadKeys[STC_CHARTER], 7 ))
-	{
-		unsigned int i = ATOI(s.GetKey() + 7);
-		if ( i >= COUNTOF(m_sCharter))
-			return( false );
-		m_sCharter[i] = s.GetArgStr();
-		return( true );
-	}
-	
-	return CItem::r_LoadVal(s);
-	EXC_CATCH;
-
-	EXC_DEBUG_START;
-	EXC_ADD_SCRIPT;
-	EXC_DEBUG_END;
+	UNREFERENCED_PARAMETER(pszKey);
+	UNREFERENCED_PARAMETER(pRef);
 	return false;
 }
 
-bool CItemStone::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
+enum STMMV_TYPE
 {
-	ADDTOCALLSTACK("CItemStone::r_WriteVal");
-	EXC_TRY("WriteVal");
-	CChar * pCharSrc = pSrc->GetChar();
+	#define ADD(a,b) STMMV_##a,
+	#include "../tables/CStoneMember_functions.tbl"
+	#undef ADD
+	STMMV_QTY
+};
 
-	if ( !strnicmp("member.",pszKey,7) )
-	{
-		LPCTSTR pszCmd = pszKey + 7;
-
-		if ( !strnicmp("COUNT",pszCmd,5) )
-		{
-			pszCmd = pszCmd + 5;
-
-			int i = 0;
-			CStoneMember *pMember = static_cast<CStoneMember *>(GetHead());
-
-			if ( *pszCmd )
-			{
-				SKIP_ARGSEP(pszCmd);
-				STONEPRIV_TYPE iPriv = static_cast<STONEPRIV_TYPE>(Exp_GetVal(pszCmd));
-
-				for (; pMember != NULL; pMember = pMember->GetNext())
-				{
-					if ( !pMember->GetLinkUID().IsChar() )
-						continue;
-
-					if ( pMember->GetPriv() != iPriv )
-						continue;
-
-					i++;
-				}
-			}
-			else
-			{
-				for (; pMember != NULL; pMember = pMember->GetNext())
-				{
-					if (!pMember->GetLinkUID().IsChar()) 
-						continue;
-
-					i++;
-				}
-			}
-
-			sVal.FormatVal(i);
-			return true;
-		}
-		int nNumber = Exp_GetVal(pszCmd);
-		SKIP_SEPARATORS(pszCmd);
-
-		CStoneMember *pMember = static_cast<CStoneMember *>(GetHead());
-		sVal.FormatVal(0);
-
-		for ( int i = 0 ; pMember != NULL; pMember = pMember->GetNext() )
-		{
-			if (!pMember->GetLinkUID().IsChar()) 
-				continue;
-				
-			if ( nNumber == i )
-			{
-				if (!pszCmd[0]) 
-					return true;
-
-				return pMember->r_WriteVal(pszCmd, sVal, pSrc);
-			}
-
-			i++;
-		}
-
-		return true;
-	}
-	else if ( !strnicmp("memberfromuid.", pszKey, 14) )
-	{
-		LPCTSTR pszCmd = pszKey + 14;
-		sVal.FormatVal(0);
-
-		if ( !pszCmd[0] )
-			return true;
-
-		CGrayUID pMemberUid = static_cast<DWORD>(Exp_GetVal(pszCmd));
-		SKIP_SEPARATORS(pszCmd);
-
-		CChar * pMemberChar = pMemberUid.CharFind();
-		if ( pMemberChar )
-		{
-			CStoneMember * pMemberGuild = GetMember( pMemberChar );
-			if ( pMemberGuild )
-			{
-				return pMemberGuild->r_WriteVal(pszCmd, sVal, pSrc);
-			}
-		}
-
-		return true;
-	}
-	else if ( !strnicmp("guild.",pszKey,6) )
-	{
-		LPCTSTR pszCmd = pszKey + 6;
-
-		if ( !strnicmp("COUNT",pszCmd,5) )
-		{
-			pszCmd = pszCmd + 5;
-
-			int i = 0;
-			CStoneMember *pMember = static_cast<CStoneMember *>(GetHead());
-
-			if ( *pszCmd )
-			{
-				SKIP_ARGSEP(pszCmd);
-				int iToCheck = Exp_GetVal(pszCmd);
-
-				for (; pMember != NULL; pMember = pMember->GetNext())
-				{
-					if ( pMember->GetLinkUID().IsChar() )
-						continue;
-
-					if ( ( iToCheck == 1 ) && ( pMember->GetWeDeclaredWar() && !pMember->GetTheyDeclaredWar() ) )
-						i++;
-					else if ( ( iToCheck == 2 ) && ( !pMember->GetWeDeclaredWar() && pMember->GetTheyDeclaredWar() ) )
-						i++;
-					else if ( ( iToCheck == 3 ) && ( pMember->GetWeDeclaredWar() && pMember->GetTheyDeclaredWar() ) )
-						i++;
-				}
-			}
-			else
-			{
-				for (; pMember != NULL; pMember = pMember->GetNext())
-				{
-					if (pMember->GetLinkUID().IsChar()) 
-						continue;
-
-					i++;
-				}
-			}
-
-			sVal.FormatVal(i);
-			return true;
-		}
-		int nNumber = Exp_GetVal(pszCmd);
-		SKIP_SEPARATORS(pszCmd);
-
-		CStoneMember *pMember = static_cast<CStoneMember *>(GetHead());
-		sVal.FormatVal(0);
-
-		for ( int i = 0 ; pMember != NULL; pMember = pMember->GetNext() )
-		{
-			if (pMember->GetLinkUID().IsChar()) 
-				continue;
-				
-			if ( nNumber == i )
-			{
-				if (!pszCmd[0]) 
-					return true;
-
-				return pMember->r_WriteVal(pszCmd, sVal, pSrc);
-			}
-
-			i++;
-		}
-
-		return true;
-	}
-	else if ( !strnicmp("guildfromuid.", pszKey, 13) )
-	{
-		LPCTSTR pszCmd = pszKey + 13;
-		sVal.FormatVal(0);
-
-		if ( !pszCmd[0] )
-			return true;
-
-		CGrayUID pGuildUid = static_cast<DWORD>(Exp_GetVal(pszCmd));
-		SKIP_SEPARATORS(pszCmd);
-
-		CItem * pMemberGuild = pGuildUid.ItemFind();
-		if ( pMemberGuild )
-		{
-			CStoneMember * pGuild = GetMember( pMemberGuild );
-			if ( pGuild )
-			{
-				return pGuild->r_WriteVal(pszCmd, sVal, pSrc);
-			}
-		}
-
-		return true;
-	}
-	else if ( !strnicmp(sm_szLoadKeys[STC_CHARTER], pszKey, 7) )
-	{
-		LPCTSTR pszCmd = pszKey + 7;
-		unsigned int i = ATOI(pszCmd);
-		if ( i >= COUNTOF(m_sCharter))
-			sVal = "";
-		else
-			sVal = m_sCharter[i];
-
-		return( true );
-	}
-
-
-	STC_TYPE iIndex = (STC_TYPE) FindTableSorted( pszKey, sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 );
-
-	switch ( iIndex )
-	{
-		case STC_ABBREV: // "ABBREV"
-			sVal = m_sAbbrev;
-			return true;
-		case STC_ALIGN:
-			sVal.FormatVal( GetAlignType());
-			return true;
-		case STC_WEBPAGE: // "WEBPAGE"
-			sVal = GetWebPageURL();
-			return true;
-		case STC_ABBREVIATIONTOGGLE:
-			{
-				CStoneMember * pMember = GetMember(pCharSrc);
-				CVarDefCont * pResult = NULL;
-
-				if ( pMember == NULL )
-				{
-					pResult = g_Exp.m_VarDefs.GetKey("STONECONFIG_VARIOUSNAME_NONMEMBER");
-				}
-				else
-				{
-					pResult = pMember->IsAbbrevOn() ? g_Exp.m_VarDefs.GetKey("STONECONFIG_VARIOUSNAME_ABBREVON") :
-								g_Exp.m_VarDefs.GetKey("STONECONFIG_VARIOUSNAME_ABBREVOFF");
-				}
-
-				sVal = pResult ? pResult->GetValStr() : "";
-			}
-			return true;
-		case STC_ALIGNTYPE:
-			sVal = GetAlignName();
-			return true;
-
-		case STC_LOYALTO:
-			{
-				CStoneMember * pMember = GetMember(pCharSrc);
-				CVarDefCont * pResult = NULL;
-
-				if ( pMember == NULL )
-				{
-					pResult = g_Exp.m_VarDefs.GetKey("STONECONFIG_VARIOUSNAME_NONMEMBER");
-				}
-				else
-				{
-					CChar * pLoyalTo = pMember->GetLoyalToUID().CharFind();
-					if ((pLoyalTo == NULL) || (pLoyalTo == pCharSrc ))
-					{
-						pResult = g_Exp.m_VarDefs.GetKey("STONECONFIG_VARIOUSNAME_YOURSELF");
-					}
-					else
-					{
-						sVal = pLoyalTo->GetName();
-						return true;
-					}
-				}
-
-				sVal = pResult ? pResult->GetValStr() : "";
-			}
-			return( true );
-	
-		case STC_MASTER:
-			{
-				CChar * pMaster = GetMaster();
-				sVal = (pMaster) ? pMaster->GetName() : g_Exp.m_VarDefs.GetKeyStr("STONECONFIG_VARIOUSNAME_PENDVOTE");
-			}
-			return( true );
-	
-		case STC_MASTERGENDERTITLE:
-			{
-				CChar * pMaster = GetMaster();
-				if ( pMaster == NULL )
-					sVal = ""; // If no master (vote pending)
-				else if ( pMaster->Char_GetDef()->IsFemale())
-					sVal = g_Exp.m_VarDefs.GetKeyStr("STONECONFIG_VARIOUSNAME_MASTERGENDERFEMALE");
-				else
-					sVal = g_Exp.m_VarDefs.GetKeyStr("STONECONFIG_VARIOUSNAME_MASTERGENDERMALE");
-			}
-			return( true );
-	
-		case STC_MASTERTITLE:
-			{
-				CStoneMember * pMember = GetMasterMember();
-				sVal = (pMember) ? pMember->GetTitle() : "";
-			}
-			return( true );
-	
-		case STC_MASTERUID:
-			{
-				CChar * pMaster = GetMaster();
-				sVal.FormatHex(pMaster ? static_cast<DWORD>(pMaster->GetUID()) : 0);
-			}
-			return( true );
-			
-		default:
-			return( CItem::r_WriteVal( pszKey, sVal, pSrc ));
-	}
-
-	EXC_CATCH;
-
-	EXC_DEBUG_START;
-	EXC_ADD_KEYRET(pSrc);
-	EXC_DEBUG_END;
-	return false;
-}
-
-bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command from script
+LPCTSTR const CStoneMember::sm_szVerbKeys[STMMV_QTY + 1] =
 {
-	ADDTOCALLSTACK("CItemStone::r_Verb");
+	#define ADD(a,b) b,
+	#include "../tables/CStoneMember_functions.tbl"
+	#undef ADD
+	NULL
+};
+
+bool CStoneMember::r_Verb(CScript &s, CTextConsole *pSrc)	// execute command from script
+{
+	ADDTOCALLSTACK("CStoneMember::r_Verb");
 	EXC_TRY("Verb");
-	// NOTE:: ONLY CALL this from CChar::r_Verb !!!
-	// Little to no security checking here !!!
-
 	ASSERT(pSrc);
 
-	int index = FindTableSorted( s.GetKey(), sm_szVerbKeys, COUNTOF(sm_szVerbKeys)-1 );
+	int index = FindTableSorted(s.GetKey(), sm_szVerbKeys, COUNTOF(sm_szVerbKeys) - 1);
 	if ( index < 0 )
 	{
-		return( CItem::r_Verb( s, pSrc ));
+		if ( r_LoadVal(s) )
+			return true;
 	}
 
-	CChar * pCharSrc = pSrc->GetChar();
-	CStoneMember * pMember = GetMember(pCharSrc);
-
-	switch ( index )
+	if ( m_uidLinkTo.IsChar() )
 	{
-		case ISV_ALLGUILDS:
-			{
-				if ( s.HasArgs() )
-				{
-					TCHAR * pszArgs = s.GetArgRaw();
-					int iFlags = Exp_GetVal(pszArgs);
-					SKIP_ARGSEP(pszArgs);
-
-					if ( iFlags < 0 )
-					{
-						g_Log.EventError("ItemStone::AllGuilds invalid parameter '%i'.\n", iFlags);
-						return false;
-					}
-					else
-					{
-						if ( pszArgs[0] != '\0' )
-						{
-							pMember = static_cast<CStoneMember *>(GetHead());
-							CScript scriptVerb( pszArgs );
-
-							for (; pMember != NULL; pMember = pMember->GetNext())
-							{
-								if ( pMember->GetLinkUID().IsChar() )
-									continue;
-
-								if ( !iFlags )
-								{
-									pMember->r_Verb(scriptVerb, pSrc);
-								}
-								else if ( ( iFlags == 1 ) && ( pMember->GetWeDeclaredWar() && !pMember->GetTheyDeclaredWar() ) )
-								{
-									pMember->r_Verb(scriptVerb, pSrc);
-								}
-								else if ( ( iFlags == 2 ) && ( !pMember->GetWeDeclaredWar() && pMember->GetTheyDeclaredWar() ) )
-								{
-									pMember->r_Verb(scriptVerb, pSrc);
-								}
-								else if ( ( iFlags == 3 ) && ( pMember->GetWeDeclaredWar() && pMember->GetTheyDeclaredWar() ) )
-								{
-									pMember->r_Verb(scriptVerb, pSrc);
-								}
-							}
-						}
-						else
-						{
-							g_Log.EventError("ItemStone::AllGuilds empty args.\n");
-							return false;
-						}
-					}
-				}
-			}
-			break;
-		case ISV_ALLMEMBERS:
-			{
-				if ( s.HasArgs() )
-				{
-					TCHAR * pszArgs = s.GetArgRaw();
-					int iFlags = Exp_GetVal(pszArgs);
-					SKIP_ARGSEP(pszArgs);
-
-					if (( iFlags < -1 ) || ( iFlags > STONEPRIV_ACCEPTED ))
-					{
-						g_Log.EventError("ItemStone::AllMembers invalid parameter '%i'.\n", iFlags);
-						return false;
-					}
-					else
-					{
-						if ( pszArgs[0] != '\0' )
-						{
-							pMember = static_cast<CStoneMember *>(GetHead());
-							CScript scriptVerb( pszArgs );
-
-							for (; pMember != NULL; pMember = pMember->GetNext())
-							{
-								if ( !pMember->GetLinkUID().IsChar() )
-									continue;
-
-								if ( iFlags == -1 )
-								{
-									pMember->r_Verb(scriptVerb, pSrc);
-								}
-								else if ( pMember->GetPriv() == static_cast<STONEPRIV_TYPE>(iFlags) )
-								{
-									pMember->r_Verb(scriptVerb, pSrc);
-								}
-							}
-						}
-						else
-						{
-							g_Log.EventError("ItemStone::AllMembers empty args.\n");
-							return false;
-						}
-					}
-				}
-			}
-			break;
-		case ISV_APPLYTOJOIN:
-			if ( s.HasArgs())
-			{
-				CGrayUID pMemberUid = s.GetArgVal();
-				CChar * pMemberChar = pMemberUid.CharFind();
-				if ( pMemberChar )
-				{
-					AddRecruit( pMemberChar, STONEPRIV_CANDIDATE );
-				}
-			}
-			break;
-		case ISV_CHANGEALIGN:
-			if ( s.HasArgs())
-			{
-				SetAlignType(static_cast<STONEALIGN_TYPE>(s.GetArgVal()));
-				TCHAR *pszMsg = Str_GetTemp();
-				sprintf(pszMsg, "%s is now a %s %s\n", GetName(), GetAlignName(), GetTypeName());
-				Speak(pszMsg);
-			}
-			break;
-		case ISV_DECLAREPEACE:
-			if ( s.HasArgs())
-			{
-				CGrayUID pMemberUid = s.GetArgVal();
-				WeDeclarePeace(pMemberUid);
-			}
-			break;
-		case ISV_DECLAREWAR:
-			if ( s.HasArgs())
-			{
-				CGrayUID pMemberUid = s.GetArgVal();
-				CItem * pEnemyItem = pMemberUid.ItemFind();
-				if ( pEnemyItem )
-				{
-					CItemStone * pNewEnemy = static_cast<CItemStone *>(pEnemyItem);
-					if ( pNewEnemy )
-					{
-						WeDeclareWar(pNewEnemy);
-					}
-				}
-			}
-			break;
-		case ISV_ELECTMASTER:
-			ElectMaster();
-			break;
-		// Need to change FixWeirdness or rewrite how cstonemember guilds are handled.
-		case ISV_INVITEWAR:
-			{
-				if ( s.HasArgs() )
-				{
-					INT64 piCmd[2];
-					size_t iArgQty = Str_ParseCmds( s.GetArgStr(), piCmd, COUNTOF(piCmd));
-					if ( iArgQty == 2 )
-					{
-						CGrayUID pGuildUid = static_cast<unsigned long>(piCmd[0]);
-						bool bWeDeclared = (piCmd[1] != 0);
-						CItem * pEnemyItem = pGuildUid.ItemFind();
-						if ( pEnemyItem && (pEnemyItem->IsType(IT_STONE_GUILD) || pEnemyItem->IsType(IT_STONE_TOWN)) )
-						{
-							CStoneMember * pMemberGuild = GetMember( pEnemyItem );
-							if ( !pMemberGuild )
-								pMemberGuild = new CStoneMember(this, pGuildUid, STONEPRIV_ENEMY);
-
-							if ( bWeDeclared )
-								pMemberGuild->SetWeDeclaredWar(true);
-							else
-								pMemberGuild->SetTheyDeclaredWar(true);
-						}
-					}
-				}
-			} break;
-		case ISV_JOINASMEMBER:
-			if ( s.HasArgs())
-			{
-				CGrayUID pMemberUid = s.GetArgVal();
-				CChar * pMemberChar = pMemberUid.CharFind();
-				if ( pMemberChar )
-				{
-					AddRecruit( pMemberChar, STONEPRIV_MEMBER );
-				}
-			}
-			break;
-		case ISV_RESIGN:
-			if ( s.HasArgs())
-			{
-				CGrayUID pMemberUid = s.GetArgVal();
-				CChar * pMemberChar = pMemberUid.CharFind();
-				if ( pMemberChar )
-				{
-					CStoneMember * pMemberGuild = GetMember( pMemberChar );
-					if ( pMemberGuild )
-					{
-						delete pMemberGuild;
-					}
-				}
-			}
-			else
-			{
-				if ( pMember != NULL )
-					delete pMember;
-			}
-			break;
-		case ISV_TOGGLEABBREVIATION:
-			{
-				CGrayUID pMemberUid = static_cast<CGrayUID>(UID_CLEAR);
-				if ( s.HasArgs() )
-					pMemberUid = s.GetArgVal();
-				else if ( pMember )
-					pMemberUid = pMember->GetLinkUID();
-
-				CChar * pMemberChar = pMemberUid.CharFind();
-				if ( pMemberChar )
-				{
-					CStoneMember * pMemberGuild = GetMember( pMemberChar );
-					if ( pMemberGuild )
-					{
-						pMemberGuild->ToggleAbbrev();
-						pMemberChar->UpdatePropertyFlag();
-					}
-				}
-			}
-			break;
-		default:
-			return( false );
+		CScriptObj *pRef = m_uidLinkTo.CharFind();
+		return pRef->r_Verb(s, pSrc);
+	}
+	else if ( m_uidLinkTo.IsItem() )
+	{
+		CScriptObj *pRef = m_uidLinkTo.ItemFind();
+		return pRef->r_Verb(s, pSrc);
 	}
 	return true;
 	EXC_CATCH;
@@ -1386,201 +177,384 @@ bool CItemStone::r_Verb( CScript & s, CTextConsole * pSrc ) // Execute command f
 	return false;
 }
 
-CStoneMember * CItemStone::GetMasterMember() const
+enum STMM_TYPE
 {
-	ADDTOCALLSTACK("CItemStone::GetMasterMember");
-	CStoneMember *pMember = static_cast<CStoneMember *>(GetHead());
-	for ( ; pMember != NULL; pMember = pMember->GetNext())
+	#define ADD(a,b) STMM_##a,
+	#include "../tables/CStoneMember_props.tbl"
+	#undef ADD
+	STMM_QTY
+};
+
+LPCTSTR const CStoneMember::sm_szLoadKeys[STMM_QTY + 1] =
+{
+	#define ADD(a,b) b,
+	#include "../tables/CStoneMember_props.tbl"
+	#undef ADD
+	NULL
+};
+
+bool CStoneMember::r_LoadVal(CScript &s)
+{
+	ADDTOCALLSTACK("CStoneMember::r_LoadVal");
+	EXC_TRY("LoadVal");
+
+	int index = FindTableSorted(s.GetKey(), sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1);
+	if ( m_uidLinkTo.IsChar() )
 	{
-		if ( pMember->GetPriv() == STONEPRIV_MASTER )
-			return pMember;
+		switch ( index )
+		{
+			case STMM_ACCOUNTGOLD:
+				m_Member.m_iAccountGold = s.GetArgVal();
+				break;
+			case STMM_LOYALTO:
+				SetLoyalTo(static_cast<CGrayUID>(s.GetArgVal()).CharFind());
+				break;
+			case STMM_PRIV:
+				m_priv = static_cast<STONEPRIV_TYPE>(s.GetArgVal());
+				break;
+			case STMM_SHOWABBREV:
+				m_Member.m_fAbbrev = s.GetArgVal() ? true : false;
+				break;
+			case STMM_TITLE:
+				m_sTitle = s.GetArgStr();
+				break;
+			default:
+				return false;
+		}
 	}
-	return NULL;
-}
-
-bool CItemStone::IsPrivMember( const CChar * pChar ) const
-{
-	ADDTOCALLSTACK("CItemStone::IsPrivMember");
-	const CStoneMember * pMember = GetMember(pChar);
-	if ( pMember == NULL )
-		return( false );
-	return( pMember->IsPrivMember());
-}
-
-CChar * CItemStone::GetMaster() const
-{
-	ADDTOCALLSTACK("CItemStone::GetMaster");
-	CStoneMember * pMember = GetMasterMember();
-	if ( pMember == NULL )
-		return( NULL );
-	return pMember->GetLinkUID().CharFind();
-}
-
-CStoneMember * CItemStone::GetMember( const CObjBase * pObj ) const
-{
-	ADDTOCALLSTACK("CItemStone::GetMember");
-	// Get member info for this char/item (if it has member info)
-	if (!pObj)
-		return NULL;
-	CGrayUID otherUID = pObj->GetUID();
-	CStoneMember *pMember = static_cast<CStoneMember *>(GetHead());
-	for ( ; pMember != NULL; pMember = pMember->GetNext())
+	else if ( m_uidLinkTo.IsItem() )
 	{
-		if ( pMember->GetLinkUID() == otherUID )
-			return pMember;
-	}
-	return NULL;
-}
-
-bool CItemStone::NoMembers() const
-{
-	ADDTOCALLSTACK("CItemStone::NoMembers");
-	CStoneMember *pMember = static_cast<CStoneMember *>(GetHead());
-	for ( ; pMember != NULL; pMember = pMember->GetNext())
-	{
-		if ( pMember->IsPrivMember())
-			return false;
+		switch ( index )
+		{
+			case STMM_GUILD_THEYALLIANCE:
+				m_Ally.m_fTheyDeclared = s.GetArgVal() ? true : false;
+				break;
+			case STMM_GUILD_THEYWAR:
+				m_Enemy.m_fTheyDeclared = s.GetArgVal() ? true : false;
+				break;
+			case STMM_GUILD_WEALLIANCE:
+				m_Ally.m_fWeDeclared = s.GetArgVal() ? true : false;
+				break;
+			case STMM_GUILD_WEWAR:
+				m_Enemy.m_fWeDeclared = s.GetArgVal() ? true : false;
+				break;
+			default:
+				return false;
+		}
 	}
 	return true;
+	EXC_CATCH;
+
+	EXC_DEBUG_START;
+	EXC_ADD_SCRIPT;
+	EXC_DEBUG_END;
+	return false;
 }
 
-CStoneMember * CItemStone::AddRecruit(const CChar * pChar, STONEPRIV_TYPE iPriv, bool bFull)
+bool CStoneMember::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
+{
+	ADDTOCALLSTACK("CStoneMember::r_WriteVal");
+	EXC_TRY("WriteVal");
+
+	int index = FindTableSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1);
+	if ( m_uidLinkTo.IsChar() )
+	{
+		switch ( index )
+		{
+			case STMM_ACCOUNTGOLD:
+				sVal.FormatVal(m_Member.m_iAccountGold);
+				break;
+			case STMM_ISCANDIDATE:
+				sVal.FormatVal((m_priv == STONEPRIV_CANDIDATE));
+				break;
+			case STMM_ISMASTER:
+				sVal.FormatVal((m_priv == STONEPRIV_MASTER));
+				break;
+			case STMM_ISMEMBER:
+				sVal.FormatVal(IsPrivMember());
+				break;
+			case STMM_LOYALTO:
+				sVal.FormatHex(m_uidLoyalTo);
+				break;
+			case STMM_PRIV:
+				sVal.FormatVal(m_priv);
+				break;
+			case STMM_PRIVNAME:
+				sVal = GetPrivName();
+				break;
+			case STMM_SHOWABBREV:
+				sVal.FormatVal(IsAbbrevOn());
+				break;
+			case STMM_TITLE:
+				sVal = GetTitle();
+				break;
+			default:
+			{
+				CScriptObj *pRef = m_uidLinkTo.CharFind();
+				return pRef->r_WriteVal(pszKey, sVal, pSrc);
+			}
+		}
+	}
+	else if ( m_uidLinkTo.IsItem() )
+	{
+		switch ( index )
+		{
+			case STMM_GUILD_ISALLY:
+				sVal.FormatVal(m_Ally.m_fWeDeclared && m_Ally.m_fTheyDeclared);
+				break;
+			case STMM_GUILD_ISENEMY:
+				sVal.FormatVal(m_Enemy.m_fWeDeclared && m_Enemy.m_fTheyDeclared);
+				break;
+			case STMM_GUILD_THEYALLIANCE:
+				sVal.FormatVal(m_Ally.m_fTheyDeclared);
+				break;
+			case STMM_GUILD_THEYWAR:
+				sVal.FormatVal(m_Enemy.m_fTheyDeclared);
+				break;
+			case STMM_GUILD_WEALLIANCE:
+				sVal.FormatVal(m_Ally.m_fWeDeclared);
+				break;
+			case STMM_GUILD_WEWAR:
+				sVal.FormatVal(m_Enemy.m_fWeDeclared);
+				break;
+			default:
+			{
+				CScriptObj *pRef = m_uidLinkTo.ItemFind();
+				return pRef->r_WriteVal(pszKey, sVal, pSrc);
+			}
+		}
+	}
+	return true;
+	EXC_CATCH;
+
+	EXC_DEBUG_START;
+	EXC_ADD_KEYRET(pSrc);
+	EXC_DEBUG_END;
+	return false;
+}
+
+///////////////////////////////////////////////////////////
+// CItemStone
+
+CItemStone::CItemStone(ITEMID_TYPE id, CItemBase *pItemDef) : CItem(id, pItemDef)
+{
+	m_itStone.m_align = STONEALIGN_STANDARD;
+	g_World.m_Stones.Add(this);
+}
+
+CItemStone::~CItemStone()
+{
+	SetAmount(0);		// the stone will be removed anyway, so set amount=0 to skip redundant checks
+	DeletePrepare();	// must remove early because virtuals will fail in child destructor
+	g_World.m_Stones.RemovePtr(this);
+	Empty();			// do this manually to preserve parents type cast
+}
+
+MEMORY_TYPE CItemStone::GetMemoryType() const
+{
+	ADDTOCALLSTACK("CItemStone::GetMemoryType");
+	switch ( GetType() )
+	{
+		case IT_STONE_TOWN:
+			return MEMORY_TOWN;
+		case IT_STONE_GUILD:
+			return MEMORY_GUILD;
+		default:
+			return MEMORY_NONE;
+	}
+}
+
+LPCTSTR CItemStone::GetTypeName() const
+{
+	ADDTOCALLSTACK("CItemStone::GetTypeName");
+	TCHAR *pszTemp = Str_GetTemp();
+	switch ( GetType() )
+	{
+		case IT_STONE_GUILD:
+			pszTemp = "STONECONFIG_TYPENAME_GUILD";
+			break;
+		case IT_STONE_TOWN:
+			pszTemp = "STONECONFIG_TYPENAME_TOWN";
+			break;
+		default:
+			pszTemp = "STONECONFIG_TYPENAME_UNK";
+			break;
+	}
+
+	CVarDefCont *pVar = g_Exp.m_VarDefs.GetKey(pszTemp);
+	return pVar ? pVar->GetValStr() : "";
+}
+
+LPCTSTR CItemStone::GetAlignName() const
+{
+	ADDTOCALLSTACK("CItemStone::GetAlignName");
+	TCHAR *pszTemp = Str_GetTemp();
+	switch ( GetType() )
+	{
+		case IT_STONE_GUILD:
+			sprintf(pszTemp, "GUILDCONFIG_ALIGN_%d", m_itStone.m_align);
+			break;
+		case IT_STONE_TOWN:
+			sprintf(pszTemp, "TOWNSCONFIG_ALIGN_%d", m_itStone.m_align);
+			break;
+	}
+
+	CVarDefCont *pVar = g_Exp.m_VarDefs.GetKey(pszTemp);
+	return pVar ? pVar->GetValStr() : "";
+}
+
+CStoneMember *CItemStone::GetMasterMember() const
+{
+	ADDTOCALLSTACK("CItemStone::GetMasterMember");
+	for ( CStoneMember *pMember = static_cast<CStoneMember *>(GetHead()); pMember != NULL; pMember = pMember->GetNext() )
+	{
+		if ( pMember->m_priv == STONEPRIV_MASTER )
+			return pMember;
+	}
+	return NULL;
+}
+
+CChar *CItemStone::GetMaster() const
+{
+	ADDTOCALLSTACK("CItemStone::GetMaster");
+	CStoneMember *pMember = GetMasterMember();
+	return pMember ? pMember->m_uidLinkTo.CharFind() : NULL;
+}
+
+CStoneMember *CItemStone::GetMember(const CObjBase *pObj) const
+{
+	ADDTOCALLSTACK("CItemStone::GetMember");
+	if ( pObj )
+	{
+		CGrayUID uid = pObj->GetUID();
+		for ( CStoneMember *pMember = static_cast<CStoneMember *>(GetHead()); pMember != NULL; pMember = pMember->GetNext() )
+		{
+			if ( pMember->m_uidLinkTo == uid )
+				return pMember;
+		}
+	}
+	return NULL;
+}
+
+CStoneMember *CItemStone::AddRecruit(const CChar *pChar, STONEPRIV_TYPE priv, bool fFull)
 {
 	ADDTOCALLSTACK("CItemStone::AddRecruit");
 	// CLIMODE_TARG_STONE_RECRUIT
-	// Set as member or candidate.
 
 	if ( !pChar || !pChar->m_pPlayer )
 	{
-		Speak( "Only players can be members!");
+		Speak("Only players can be members!");
 		return NULL;
 	}
 
-	TCHAR * z = Str_GetTemp();
-	const CItemStone * pStone = pChar->Guild_Find( GetMemoryType());
-	if ( pStone && pStone != this )
+	TCHAR *pszTemp = Str_GetTemp();
+	const CItemStone *pStone = pChar->Guild_Find(GetMemoryType());
+	if ( pStone && (pStone != this) )
 	{
-		sprintf(z, "%s appears to belong to %s. Must resign previous %s", pChar->GetName(), pStone->GetName(), GetTypeName());
-		Speak(z);
+		sprintf(pszTemp, "%s appears to belong to %s. Must resign previous %s", pChar->GetName(), pStone->GetName(), GetTypeName());
+		Speak(pszTemp);
 		return NULL;
 	}
 
-	if ( IsType(IT_STONE_TOWN) && IsAttr(ATTR_OWNED) && iPriv == STONEPRIV_CANDIDATE )
-	{
-		// instant member.
-		iPriv = STONEPRIV_MEMBER;
-	}
+	if ( IsType(IT_STONE_TOWN) && (priv == STONEPRIV_CANDIDATE) && IsAttr(ATTR_OWNED) )
+		priv = STONEPRIV_MEMBER;
 
-	CStoneMember * pMember = GetMember(pChar);
+	CStoneMember *pMember = GetMember(pChar);
 	if ( pMember )
 	{
-		// I'm already a member of some sort.
-		if ( pMember->GetPriv() == iPriv || iPriv == STONEPRIV_CANDIDATE )
+		if ( (priv == pMember->m_priv) || (priv == STONEPRIV_CANDIDATE) )
 		{
-			sprintf(z, "%s is already %s %s.", pChar->GetName(), pMember->GetPrivName(), GetName());
-			Speak(z);
+			sprintf(pszTemp, "%s is already %s %s.", pChar->GetName(), pMember->GetPrivName(), GetName());
+			Speak(pszTemp);
 			return NULL;
 		}
-
-		pMember->SetPriv( iPriv );
+		pMember->m_priv = priv;
 	}
 	else
 	{
-		pMember = new CStoneMember(this, pChar->GetUID(), iPriv);
-
-		if ( bFull )	// full join means becoming a full member already
+		pMember = new CStoneMember(this, pChar->GetUID(), priv);
+		if ( fFull )
 		{
-			pMember->SetPriv(STONEPRIV_MEMBER);
-			pMember->SetAbbrev(true);
+			pMember->m_priv = STONEPRIV_MEMBER;
+			pMember->m_Member.m_fAbbrev = true;
 		}
 	}
 
-	if ( pMember->IsPrivMember())
+	if ( pMember->IsPrivMember() )
 	{
 		pMember->SetLoyalTo(pChar);
-		ElectMaster();	// just in case this is the first.
+		ElectMaster();
 	}
 
-	sprintf(z, "%s is now %s %s", pChar->GetName(), pMember->GetPrivName(), GetName());
-	Speak(z);
+	sprintf(pszTemp, "%s is now %s %s", pChar->GetName(), pMember->GetPrivName(), GetName());
+	Speak(pszTemp);
 	return pMember;
 }
 
 void CItemStone::ElectMaster()
 {
 	ADDTOCALLSTACK("CItemStone::ElectMaster");
-	// Check who is loyal to who and find the new master.
-	if ( GetAmount() == 0 )
-		return;	// no reason to elect new if the stone is dead.
+	if ( GetAmount() == 0 )		// no reason to proceed if the stone is going to be removed
+		return;
 
-	int iResultCode = FixWeirdness();	// try to eliminate bad members.
+	FixWeirdness();		// try to eliminate bad members
+	/*int iResultCode = FixWeirdness();
 	if ( iResultCode )
 	{
 		// The stone is bad ?
-		// iResultCode
-	}
+	}*/
 
+	CStoneMember *pMaster = NULL;
 	int iCountMembers = 0;
-	CStoneMember * pMaster = NULL;
 
-	// Validate the items and Clear the votes field
-	CStoneMember *pMember = static_cast<CStoneMember *>(GetHead());
-	for ( ; pMember != NULL; pMember = pMember->GetNext())
+	// Reset vote count
+	for ( CStoneMember *pMember = static_cast<CStoneMember *>(GetHead()); pMember != NULL; pMember = pMember->GetNext() )
 	{
-		if ( pMember->GetPriv() == STONEPRIV_MASTER )
-		{
-			pMaster = pMember;	// find current master.
-		}
-		else if ( pMember->GetPriv() != STONEPRIV_MEMBER )
-		{
+		if ( pMember->m_priv == STONEPRIV_MASTER )
+			pMaster = pMember;
+		else if ( pMember->m_priv != STONEPRIV_MEMBER )
 			continue;
-		}
+
 		pMember->m_Member.m_iVoteTally = 0;
-		iCountMembers++;
+		++iCountMembers;
 	}
 
-	// Now tally the votes.
-	pMember = static_cast<CStoneMember *>(GetHead());
-	for ( ; pMember != NULL; pMember = pMember->GetNext())
+	// Count vote of all members
+	for ( CStoneMember *pMember = static_cast<CStoneMember *>(GetHead()); pMember != NULL; pMember = pMember->GetNext() )
 	{
-		if ( ! pMember->IsPrivMember())
+		if ( !pMember->IsPrivMember() )
 			continue;
 
-		CChar * pCharVote = pMember->GetLoyalToUID().CharFind();
-		if ( pCharVote != NULL )
+		CStoneMember *pMemberVote = GetMember(pMember->m_uidLoyalTo.CharFind());
+		if ( pMemberVote )
 		{
-			CStoneMember * pMemberVote = GetMember( pCharVote );
-			if ( pMemberVote != NULL )
-			{
-				pMemberVote->m_Member.m_iVoteTally ++;
-				continue;
-			}
+			++pMemberVote->m_Member.m_iVoteTally;
+			continue;
 		}
 
-		// not valid to vote for. change to self.
 		pMember->SetLoyalTo(NULL);
-		// Assume I voted for myself.
-		pMember->m_Member.m_iVoteTally ++;
+		++pMember->m_Member.m_iVoteTally;
 	}
 
-	// Find who won.
+	// Check who have most votes
 	bool fTie = false;
-	CStoneMember * pMemberHighest = NULL;
-	pMember = static_cast<CStoneMember *>(GetHead());
-	for ( ; pMember != NULL; pMember = pMember->GetNext())
+	CStoneMember *pMemberHighest = NULL;
+	for ( CStoneMember *pMember = static_cast<CStoneMember *>(GetHead()); pMember != NULL; pMember = pMember->GetNext() )
 	{
-		if ( ! pMember->IsPrivMember())
+		if ( !pMember->IsPrivMember() )
 			continue;
-		if ( pMemberHighest == NULL )
+
+		if ( !pMemberHighest )
 		{
 			pMemberHighest = pMember;
 			continue;
 		}
+
 		if ( pMember->m_Member.m_iVoteTally == pMemberHighest->m_Member.m_iVoteTally )
 		{
 			fTie = true;
 		}
-		if ( pMember->m_Member.m_iVoteTally > pMemberHighest->m_Member.m_iVoteTally )
+		else if ( pMember->m_Member.m_iVoteTally > pMemberHighest->m_Member.m_iVoteTally )
 		{
 			fTie = false;
 			pMemberHighest = pMember;
@@ -1588,45 +562,30 @@ void CItemStone::ElectMaster()
 	}
 
 	// In the event of a tie, leave the current master as is
-	if ( ! fTie && pMemberHighest )
+	if ( !fTie && pMemberHighest )
 	{
-		if (pMaster)
-			pMaster->SetPriv(STONEPRIV_MEMBER);
-		pMemberHighest->SetPriv(STONEPRIV_MASTER);
+		if ( pMaster )
+			pMaster->m_priv = STONEPRIV_MEMBER;
+		pMemberHighest->m_priv = STONEPRIV_MASTER;
 	}
 
-	if ( ! iCountMembers )
+	// No more members, declare peace (by force)
+	if ( !iCountMembers )
 	{
-		// No more members, declare peace (by force)
-		pMember = static_cast<CStoneMember *>(GetHead());
-		for (; pMember != NULL; pMember = pMember->GetNext())
+		for ( CStoneMember *pMember = static_cast<CStoneMember *>(GetHead()); pMember != NULL; pMember = pMember->GetNext() )
 		{
-			WeDeclarePeace(pMember->GetLinkUID(), true);
+			WeDeclarePeace(static_cast<CItemStone *>(pMember->m_uidLinkTo.ItemFind()), true);
 		}
 	}
 }
 
-bool CItemStone::IsUniqueName( LPCTSTR pName ) // static
-{
-	ADDTOCALLSTACK("CItemStone::IsUniqueName");
-	for ( size_t i = 0; i < g_World.m_Stones.GetCount(); i++ )
-	{
-		if ( ! strcmpi( pName, g_World.m_Stones[i]->GetName()))
-			return false;
-	}
-	return true;
-}
-
-bool CItemStone::CheckValidMember( CStoneMember * pMember )
+bool CItemStone::CheckValidMember(CStoneMember *pMember)
 {
 	ADDTOCALLSTACK("CItemStone::CheckValidMember");
-	ASSERT(pMember);
-	ASSERT(pMember->GetParent() == this);
+	if ( GetAmount() == 0 )		// no reason to proceed if the stone is going to be removed
+		return true;
 
-	if ( (GetAmount() == 0) || g_Serv.m_iExitFlag )	// no reason to elect new if the stone is dead.
-		return true;	// we are deleting anyhow.
-
-	switch ( pMember->GetPriv() )
+	switch ( pMember->m_priv )
 	{
 		case STONEPRIV_MASTER:
 		case STONEPRIV_MEMBER:
@@ -1635,298 +594,838 @@ bool CItemStone::CheckValidMember( CStoneMember * pMember )
 		{
 			if ( GetMemoryType() )
 			{
-				// Make sure the member has a memory that links them back here.
-				CChar *pChar = pMember->GetLinkUID().CharFind();
-				if ( !pChar )
-					break;
-				if ( pChar->Guild_Find(GetMemoryType()) != this )
+				// Make sure the member has a memory that links them back here
+				CChar *pChar = pMember->m_uidLinkTo.CharFind();
+				if ( !pChar || (pChar->Guild_Find(GetMemoryType()) != this) )
 					break;
 			}
 			return true;
 		}
 		case STONEPRIV_ENEMY:
 		{
-			CItemStone *pEnemyStone = static_cast<CItemStone *>(pMember->GetLinkUID().ItemFind());
-			if ( !pEnemyStone )
+			CItemStone *pStone = static_cast<CItemStone *>(pMember->m_uidLinkTo.ItemFind());
+			if ( !pStone )
 				break;
-			CStoneMember *pEnemyMember = pEnemyStone->GetMember(this);
-			if ( !pEnemyMember )
+
+			CStoneMember *pMember = pStone->GetMember(this);
+			if ( !pMember )
 				break;
-			if ( pMember->GetWeDeclaredWar() && !pEnemyMember->GetTheyDeclaredWar() )
+			if ( pMember->m_Enemy.m_fWeDeclared && !pMember->m_Enemy.m_fTheyDeclared )
 				break;
-			if ( pMember->GetTheyDeclaredWar() && !pEnemyMember->GetWeDeclaredWar() )
+			if ( pMember->m_Enemy.m_fTheyDeclared && !pMember->m_Enemy.m_fWeDeclared )
 				break;
 			return true;
 		}
 		case STONEPRIV_ALLY:
 		{
-			CItemStone *pAllyStone = static_cast<CItemStone *>(pMember->GetLinkUID().ItemFind());
-			if ( !pAllyStone )
+			CItemStone *pStone = static_cast<CItemStone *>(pMember->m_uidLinkTo.ItemFind());
+			if ( !pStone )
 				break;
-			CStoneMember *pAllyMember = pAllyStone->GetMember(this);
-			if ( !pAllyMember )
+
+			CStoneMember *pMember = pStone->GetMember(this);
+			if ( !pMember )
 				break;
-			if ( pMember->GetWeDeclaredAlly() && !pAllyMember->GetTheyDeclaredAlly() )
+			if ( pMember->m_Ally.m_fWeDeclared && !pMember->m_Ally.m_fTheyDeclared )
 				break;
-			if ( pMember->GetTheyDeclaredAlly() && !pAllyMember->GetWeDeclaredAlly() )
+			if ( pMember->m_Ally.m_fTheyDeclared && !pMember->m_Ally.m_fWeDeclared )
 				break;
 			return true;
 		}
-		default:
-			break;
 	}
 
-	// just delete this member. (it is mislinked)
-	DEBUG_ERR(("Stone UID=0%lx has mislinked member uid=0%lx\n", static_cast<DWORD>(GetUID()), static_cast<DWORD>(pMember->GetLinkUID())));
+	DEBUG_ERR(("Stone UID=0%lx has mislinked member UID=0%lx\n", static_cast<DWORD>(GetUID()), static_cast<DWORD>(pMember->m_uidLinkTo)));
 	return false;
 }
 
 int CItemStone::FixWeirdness()
 {
 	ADDTOCALLSTACK("CItemStone::FixWeirdness");
-	// Check all my members. Make sure all wars are reciprocated and members are flaged.
-
 	int iResultCode = CItem::FixWeirdness();
 	if ( iResultCode )
 		return iResultCode;
 
-	bool fChanges = false;
-	CStoneMember *pMember = static_cast<CStoneMember *>(GetHead());
-	while ( pMember != NULL )
+	bool fChanged = false;
+	CStoneMember *pMemberNext = NULL;
+	for ( CStoneMember *pMember = static_cast<CStoneMember *>(GetHead()); pMember != NULL; pMember = pMemberNext )
 	{
-		CStoneMember *pMemberNext = pMember->GetNext();
+		pMemberNext = pMember->GetNext();
 		if ( !CheckValidMember(pMember) )
 		{
-			IT_TYPE oldtype = GetType();
-			SetAmount(0);	// turn off validation for now. we don't want to delete other members.
+			IT_TYPE oldType = GetType();
+			SetAmount(0);	// turn off validation for now
 			delete pMember;
-			SetAmount(1);	// turn off validation for now. we don't want to delete other members.
-			SetType(oldtype);
-			fChanges = true;
+			SetAmount(1);
+			SetType(oldType);
+			fChanged = true;
 		}
-		pMember = pMemberNext;
 	}
 
-	if ( fChanges )
-		ElectMaster();	// May have changed the vote count.
+	if ( fChanged )
+		ElectMaster();
 
 	return 0;
 }
 
-bool CItemStone::IsAlliedWith( const CItemStone * pStone) const
+bool CItemStone::IsAlliedWith(const CItemStone *pStone) const
 {
 	ADDTOCALLSTACK("CItemStone::IsAlliedWith");
-	if ( pStone == NULL )
-		return( false );
+	if ( !pStone )
+		return false;
 
 	CScriptTriggerArgs Args;
 	Args.m_pO1 = const_cast<CItemStone *>(pStone);
-	enum TRIGRET_TYPE tr = TRIGRET_RET_DEFAULT;
-
+	TRIGRET_TYPE tr = TRIGRET_RET_DEFAULT;
 	if ( const_cast<CItemStone *>(this)->r_Call("f_stonesys_internal_isalliedwith", &g_Serv, &Args, NULL, &tr) )
 	{
 		if ( tr == TRIGRET_RET_FALSE )
-		{
 			return false;
-		}
 		else if ( tr == TRIGRET_RET_TRUE )
-		{
-			return true;
-		}
-	}
-
-	// we have declared or they declared.
-	CStoneMember * pAllyMember = GetMember(pStone);
-	if ( pAllyMember ) // Ok, we might be ally
-	{
-		if ( pAllyMember->GetTheyDeclaredAlly() && pAllyMember->GetWeDeclaredAlly() )
 			return true;
 	}
 
-	return false;
+	// Check if both stones declared alliance
+	CStoneMember *pMember = GetMember(pStone);
+	return (pMember && pMember->m_Ally.m_fTheyDeclared && pMember->m_Ally.m_fWeDeclared);
 }
 
-bool CItemStone::IsAtWarWith( const CItemStone * pEnemyStone ) const
+bool CItemStone::IsAtWarWith(const CItemStone *pStone) const
 {
 	ADDTOCALLSTACK("CItemStone::IsAtWarWith");
-	// Boths guild shave declared war on each other.
-
-	if ( pEnemyStone == NULL )
-		return( false );
+	if ( !pStone )
+		return false;
 
 	CScriptTriggerArgs Args;
-	Args.m_pO1 = const_cast<CItemStone *>(pEnemyStone);
-	enum TRIGRET_TYPE tr = TRIGRET_RET_DEFAULT;
-
+	Args.m_pO1 = const_cast<CItemStone *>(pStone);
+	TRIGRET_TYPE tr = TRIGRET_RET_DEFAULT;
 	if ( const_cast<CItemStone *>(this)->r_Call("f_stonesys_internal_isatwarwith", &g_Serv, &Args, NULL, &tr) )
 	{
 		if ( tr == TRIGRET_RET_FALSE )
-		{
 			return false;
-		}
 		else if ( tr == TRIGRET_RET_TRUE )
-		{
-			return true;
-		}
-	}
-
-	// Just based on align type.
-	if ( IsType(IT_STONE_GUILD) && GetAlignType() != STONEALIGN_STANDARD && pEnemyStone->GetAlignType() != STONEALIGN_STANDARD )
-		return (GetAlignType() != pEnemyStone->GetAlignType());
-
-	// we have declared or they declared.
-	CStoneMember * pEnemyMember = GetMember(pEnemyStone);
-	if (pEnemyMember) // Ok, we might be at war
-	{
-		if ( pEnemyMember->GetTheyDeclaredWar() && pEnemyMember->GetWeDeclaredWar() )
 			return true;
 	}
 
-	return false;
+	// Check if stone is of opposite align
+	if ( IsType(IT_STONE_GUILD) && (m_itStone.m_align != STONEALIGN_STANDARD) && (pStone->m_itStone.m_align != STONEALIGN_STANDARD) )
+		return (m_itStone.m_align != pStone->m_itStone.m_align);
 
+	// Check if both stones declared war
+	CStoneMember *pMember = GetMember(pStone);
+	return (pMember && pMember->m_Enemy.m_fTheyDeclared && pMember->m_Enemy.m_fWeDeclared);
 }
 
-void CItemStone::AnnounceWar( const CItemStone * pEnemyStone, bool fWeDeclare, bool fWar )
-{
-	ADDTOCALLSTACK("CItemStone::AnnounceWar");
-	// Announce we are at war or peace.
-
-	ASSERT(pEnemyStone);
-
-	bool fAtWar = IsAtWarWith(pEnemyStone);
-
-	TCHAR *pszTemp = Str_GetTemp();
-	int len = sprintf( pszTemp, (fWar) ? "%s %s declared war on %s." : "%s %s requested peace with %s.",
-		(fWeDeclare) ? "You" : pEnemyStone->GetName(),
-		(fWeDeclare) ? "have" : "has",
-		(fWeDeclare) ? pEnemyStone->GetName() : "You" );
-
-	if ( fAtWar )
-	{
-		sprintf( pszTemp+len, " War is ON!" );
-	}
-	else if ( fWar )
-	{
-		sprintf( pszTemp+len, " War is NOT yet on." );
-	}
-	else
-	{
-		sprintf( pszTemp+len, " War is OFF." );
-	}
-
-	CStoneMember *pMember = static_cast<CStoneMember *>(GetHead());
-	for ( ; pMember != NULL; pMember = pMember->GetNext())
-	{
-		CChar *pChar = pMember->GetLinkUID().CharFind();
-		if ( !pChar )
-			continue;
-		if ( !pChar->m_pClient )
-			continue;
-		pChar->SysMessage(pszTemp);
-	}
-}
-
-bool CItemStone::WeDeclareWar(CItemStone * pEnemyStone)
+bool CItemStone::WeDeclareWar(CItemStone *pStone)
 {
 	ADDTOCALLSTACK("CItemStone::WeDeclareWar");
-	if (!pEnemyStone)
+	if ( !pStone )
 		return false;
 
-	// See if they've already declared war on us
-	CStoneMember * pMember = GetMember(pEnemyStone);
-	if ( pMember )
-	{
-		if ( pMember->GetWeDeclaredWar() )
-			return true;
-	}
-	else // They haven't, make a record of this
-	{
-		pMember = new CStoneMember( this, pEnemyStone->GetUID(), STONEPRIV_ENEMY );
-	}
-	pMember->SetWeDeclaredWar(true);
+	// Declare war to the other stone
+	CStoneMember *pMember = GetMember(pStone);
+	if ( !pMember )
+		pMember = new CStoneMember(this, pStone->GetUID(), STONEPRIV_ENEMY);
 
-	// Now inform the other stone
-	// See if they have already declared war on us
-	CStoneMember * pEnemyMember = pEnemyStone->GetMember(this);
-	if (!pEnemyMember) // Not yet it seems
-		pEnemyMember = new CStoneMember( pEnemyStone, GetUID(), STONEPRIV_ENEMY );
+	if ( pMember->m_Enemy.m_fWeDeclared )
+		return true;
+	pMember->m_Enemy.m_fWeDeclared = true;
 
-	pEnemyMember->SetTheyDeclaredWar(true);
-	return( true );
+	// Inform the other stone that we had declared war with it
+	CStoneMember *pEnemyMember = pStone->GetMember(this);
+	if ( !pEnemyMember ) // Not yet it seems
+		pEnemyMember = new CStoneMember(pStone, GetUID(), STONEPRIV_ENEMY);
+
+	pEnemyMember->m_Enemy.m_fTheyDeclared = true;
+	return true;
 }
 
-void CItemStone::TheyDeclarePeace( CItemStone* pEnemyStone, bool fForcePeace )
+void CItemStone::TheyDeclarePeace(CItemStone *pStone, bool fForcePeace)
 {
 	ADDTOCALLSTACK("CItemStone::TheyDeclarePeace");
-	// Now inform the other stone
-	// Make sure we declared war on them
-	CStoneMember * pEnemyMember = GetMember(pEnemyStone);
-	if ( ! pEnemyMember )
+	CStoneMember *pMember = GetMember(pStone);
+	if ( !pMember )
 		return;
 
-	bool fPrevTheyDeclared = pEnemyMember->GetTheyDeclaredWar();
-
-	if ( !pEnemyMember->GetWeDeclaredWar() || fForcePeace ) // If we're not at war with them, delete this record
-		delete pEnemyMember;
-	else
-		pEnemyMember->SetTheyDeclaredWar(false);
-
-	if ( ! fPrevTheyDeclared )
-		return;
-}
-
-void CItemStone::WeDeclarePeace(CGrayUID uid, bool fForcePeace)
-{
-	ADDTOCALLSTACK("CItemStone::WeDeclarePeace");
-	CItemStone * pEnemyStone = static_cast<CItemStone *>(uid.ItemFind());
-	if (!pEnemyStone)
-		return;
-
-	CStoneMember * pMember = GetMember(pEnemyStone);
-	if ( ! pMember ) // No such member
-		return;
-
-	// Set my flags on the subject.
-	if (!pMember->GetTheyDeclaredWar() || fForcePeace) // If they're not at war with us, delete this record
+	if ( !pMember->m_Enemy.m_fWeDeclared || fForcePeace )
 		delete pMember;
 	else
-		pMember->SetWeDeclaredWar(false);
+		pMember->m_Enemy.m_fTheyDeclared = false;
+}
 
-	pEnemyStone->TheyDeclarePeace( this, fForcePeace );
+void CItemStone::WeDeclarePeace(CItemStone *pStone, bool fForcePeace)
+{
+	ADDTOCALLSTACK("CItemStone::WeDeclarePeace");
+	CStoneMember *pMember = GetMember(pStone);
+	if ( !pMember )
+		return;
+
+	if ( !pMember->m_Enemy.m_fTheyDeclared || fForcePeace )
+		delete pMember;
+	else
+		pMember->m_Enemy.m_fWeDeclared = false;
+
+	pStone->TheyDeclarePeace(this, fForcePeace);
 }
 
 void CItemStone::SetTownName()
 {
 	ADDTOCALLSTACK("CItemStone::SetTownName");
-	// For town stones.
-	if ( ! IsTopLevel())
+	if ( !IsTopLevel() )
 		return;
-	CRegionBase * pArea = GetTopPoint().GetRegion(( IsType(IT_STONE_TOWN)) ? REGION_TYPE_AREA : REGION_TYPE_ROOM );
+
+	CRegionBase *pArea = GetTopPoint().GetRegion((IsType(IT_STONE_TOWN)) ? REGION_TYPE_AREA : REGION_TYPE_ROOM);
 	if ( pArea )
-	{
-		pArea->SetName( GetIndividualName());
-	}
+		pArea->SetName(GetIndividualName());
 }
 
-bool CItemStone::MoveTo(CPointMap pt, bool bForceFix)
+bool CItemStone::MoveTo(CPointMap pt, bool fForceFix)
 {
 	ADDTOCALLSTACK("CItemStone::MoveTo");
-	// Put item on the ground here.
 	if ( IsType(IT_STONE_TOWN) )
-	{
 		SetTownName();
-	}
-	return CItem::MoveTo(pt, bForceFix);
+
+	return CItem::MoveTo(pt, fForceFix);
 }
 
-bool CItemStone::SetName( LPCTSTR pszName )
+bool CItemStone::SetName(LPCTSTR pszName)
 {
 	ADDTOCALLSTACK("CItemStone::SetName");
-	// If this is a town then set the whole regions name.
 	if ( !CItem::SetName(pszName) )
 		return false;
+
 	if ( IsTopLevel() && IsType(IT_STONE_TOWN) )
 		SetTownName();
-
 	return true;
+}
+
+bool CItemStone::r_GetRef(LPCTSTR &pszKey, CScriptObj *&pRef)
+{
+	ADDTOCALLSTACK("CItemStone::r_GetRef");
+	if ( !strnicmp("MEMBER.", pszKey, 7) )
+	{
+		pszKey += 7;
+		if ( !*pszKey )
+			return false;
+
+		int i = 0;
+		int iNumber = Exp_GetVal(pszKey);
+		SKIP_SEPARATORS(pszKey);
+
+		for ( CStoneMember *pMember = static_cast<CStoneMember *>(GetHead()); pMember != NULL; pMember = pMember->GetNext() )
+		{
+			if ( !pMember->m_uidLinkTo.IsChar() )
+				continue;
+
+			if ( iNumber == i )
+			{
+				pRef = pMember;
+				return true;
+			}
+			++i;
+		}
+	}
+	else if ( !strnicmp("MEMBERFROMUID.", pszKey, 14) )
+	{
+		pszKey += 14;
+		if ( !*pszKey )
+			return false;
+
+		CStoneMember *pMember = GetMember(static_cast<CGrayUID>(Exp_GetVal(pszKey)).CharFind());
+		SKIP_SEPARATORS(pszKey);
+		if ( pMember )
+		{
+			pRef = pMember;
+			return true;
+		}
+	}
+	else if ( !strnicmp("GUILD.", pszKey, 6) )
+	{
+		pszKey += 6;
+		if ( !*pszKey )
+			return false;
+
+		int i = 0;
+		int iNumber = Exp_GetVal(pszKey);
+		SKIP_SEPARATORS(pszKey);
+
+		for ( CStoneMember *pMember = static_cast<CStoneMember *>(GetHead()); pMember != NULL; pMember = pMember->GetNext() )
+		{
+			if ( pMember->m_uidLinkTo.IsChar() )
+				continue;
+
+			if ( iNumber == i )
+			{
+				pRef = pMember;
+				return true;
+			}
+			++i;
+		}
+	}
+	else if ( !strnicmp("GUILDFROMUID.", pszKey, 13) )
+	{
+		pszKey += 13;
+		if ( !*pszKey )
+			return false;
+
+		CStoneMember *pMember = GetMember(static_cast<CGrayUID>(Exp_GetVal(pszKey)).ItemFind());
+		SKIP_SEPARATORS(pszKey);
+		if ( pMember )
+		{
+			pRef = pMember;
+			return true;
+		}
+	}
+
+	return CItem::r_GetRef(pszKey, pRef);
+}
+
+enum ISV_TYPE
+{
+	#define ADD(a,b) ISV_##a,
+	#include "../tables/CItemStone_functions.tbl"
+	#undef ADD
+	ISV_QTY
+};
+
+LPCTSTR const CItemStone::sm_szVerbKeys[ISV_QTY + 1] =
+{
+	#define ADD(a,b) b,
+	#include "../tables/CItemStone_functions.tbl"
+	#undef ADD
+	NULL
+};
+
+bool CItemStone::r_Verb(CScript &s, CTextConsole *pSrc)		// execute command from script
+{
+	ADDTOCALLSTACK("CItemStone::r_Verb");
+	// NOTE:: Only call this from CChar::r_Verb
+	// Little to no security checks here
+	EXC_TRY("Verb");
+	ASSERT(pSrc);
+
+	int index = FindTableSorted(s.GetKey(), sm_szVerbKeys, COUNTOF(sm_szVerbKeys) - 1);
+	if ( index < 0 )
+		return CItem::r_Verb(s, pSrc);
+
+	switch ( index )
+	{
+		case ISV_ALLGUILDS:
+		{
+			if ( s.HasArgs() )
+			{
+				TCHAR *pszArgs = s.GetArgRaw();
+				int iFlags = Exp_GetVal(pszArgs);
+				SKIP_ARGSEP(pszArgs);
+				CScript script(pszArgs);
+				for ( CStoneMember *pMember = static_cast<CStoneMember *>(GetHead()); pMember != NULL; pMember = pMember->GetNext() )
+				{
+					if ( !pMember->m_uidLinkTo.IsItem() )
+						continue;
+
+					if ( iFlags == 0 )
+						pMember->r_Verb(script, pSrc);
+					else if ( (iFlags == 1) && pMember->m_Enemy.m_fWeDeclared && !pMember->m_Enemy.m_fTheyDeclared )
+						pMember->r_Verb(script, pSrc);
+					else if ( (iFlags == 2) && !pMember->m_Enemy.m_fWeDeclared && pMember->m_Enemy.m_fTheyDeclared )
+						pMember->r_Verb(script, pSrc);
+					else if ( (iFlags == 3) && pMember->m_Enemy.m_fWeDeclared && pMember->m_Enemy.m_fTheyDeclared )
+						pMember->r_Verb(script, pSrc);
+				}
+			}
+			break;
+		}
+		case ISV_ALLMEMBERS:
+		{
+			if ( s.HasArgs() )
+			{
+				TCHAR *pszArgs = s.GetArgRaw();
+				STONEPRIV_TYPE priv = static_cast<STONEPRIV_TYPE>(Exp_GetVal(pszArgs));
+				SKIP_ARGSEP(pszArgs);
+				CScript script(pszArgs);
+				for ( CStoneMember *pMember = static_cast<CStoneMember *>(GetHead()); pMember != NULL; pMember = pMember->GetNext() )
+				{
+					if ( !pMember->m_uidLinkTo.IsChar() )
+						continue;
+
+					if ( (priv == -1) || (pMember->m_priv == priv) )
+						pMember->r_Verb(script, pSrc);
+				}
+			}
+			break;
+		}
+		case ISV_APPLYTOJOIN:
+		{
+			if ( s.HasArgs() )
+			{
+				CChar *pChar = static_cast<CGrayUID>(s.GetArgVal()).CharFind();
+				if ( pChar )
+					AddRecruit(pChar, STONEPRIV_CANDIDATE);
+			}
+			break;
+		}
+		case ISV_CHANGEALIGN:
+		{
+			if ( s.HasArgs() )
+			{
+				m_itStone.m_align = static_cast<STONEALIGN_TYPE>(s.GetArgVal());
+				TCHAR *pszTemp = Str_GetTemp();
+				sprintf(pszTemp, "%s is now a %s %s\n", GetName(), GetAlignName(), GetTypeName());
+				Speak(pszTemp);
+			}
+			break;
+		}
+		case ISV_DECLAREPEACE:
+		{
+			WeDeclarePeace(static_cast<CItemStone *>(static_cast<CGrayUID>(s.GetArgVal()).ItemFind()));
+			break;
+		}
+		case ISV_DECLAREWAR:
+		{
+			WeDeclareWar(static_cast<CItemStone *>(static_cast<CGrayUID>(s.GetArgVal()).ItemFind()));
+			break;
+		}
+		case ISV_ELECTMASTER:
+		{
+			ElectMaster();
+			break;
+		}
+		case ISV_INVITEWAR:
+		{
+			if ( s.HasArgs() )
+			{
+				INT64 piCmd[2];
+				size_t iArgQty = Str_ParseCmds(s.GetArgStr(), piCmd, COUNTOF(piCmd));
+				if ( iArgQty == 2 )
+				{
+					CGrayUID uidStone = static_cast<CGrayUID>(piCmd[0]);
+					CItem *pStone = uidStone.ItemFind();
+					if ( pStone && (pStone->IsType(IT_STONE_GUILD) || pStone->IsType(IT_STONE_TOWN)) )
+					{
+						CStoneMember *pMember = GetMember(pStone);
+						if ( !pMember )
+							pMember = new CStoneMember(this, uidStone, STONEPRIV_ENEMY);
+
+						if ( piCmd[1] != 0 )
+							pMember->m_Enemy.m_fWeDeclared = true;
+						else
+							pMember->m_Enemy.m_fTheyDeclared = true;
+					}
+				}
+			}
+			break;
+		}
+		case ISV_JOINASMEMBER:
+		{
+			AddRecruit(static_cast<CGrayUID>(s.GetArgVal()).CharFind(), STONEPRIV_MEMBER);
+			break;
+		}
+		case ISV_RESIGN:
+		{
+			CStoneMember *pMember = GetMember(s.HasArgs() ? static_cast<CGrayUID>(s.GetArgVal()).CharFind() : pSrc->GetChar());
+			if ( pMember )
+				delete pMember;
+			break;
+		}
+		case ISV_TOGGLEABBREVIATION:
+		{
+			CStoneMember *pMemberSrc = GetMember(pSrc->GetChar());
+			CGrayUID uidMember = s.HasArgs() ? static_cast<CGrayUID>(s.GetArgVal()) : (pMemberSrc ? pMemberSrc->m_uidLinkTo : static_cast<CGrayUID>(UID_CLEAR));
+			CChar *pChar = uidMember.CharFind();
+
+			CStoneMember *pMember = GetMember(pChar);
+			if ( pMember )
+			{
+				pMember->m_Member.m_fAbbrev = !pMember->m_Member.m_fAbbrev;
+				pChar->UpdatePropertyFlag();
+			}
+			break;
+		}
+		default:
+		{
+			return false;
+		}
+	}
+	return true;
+	EXC_CATCH;
+
+	EXC_DEBUG_START;
+	EXC_ADD_SCRIPTSRC;
+	EXC_DEBUG_END;
+	return false;
+}
+
+void CItemStone::r_Write(CScript &s)
+{
+	ADDTOCALLSTACK_INTENSIVE("CItemStone::r_Write");
+	CItem::r_Write(s);
+	s.WriteKeyVal("ALIGN", m_itStone.m_align);
+
+	if ( !m_sAbbrev.IsEmpty() )
+		s.WriteKey("ABBREV", m_sAbbrev);
+
+	TCHAR *pszTemp = Str_GetTemp();
+	for ( size_t i = 0; i < COUNTOF(m_sCharter); ++i )
+	{
+		if ( !m_sCharter[i].IsEmpty() )
+		{
+			sprintf(pszTemp, "CHARTER%" FMTSIZE_T, i);
+			s.WriteKey(pszTemp, m_sCharter[i]);
+		}
+	}
+
+	if ( !m_sWebPageURL.IsEmpty() )
+		s.WriteKey("WEBPAGE", m_sWebPageURL);
+
+	for ( CStoneMember *pMember = static_cast<CStoneMember *>(GetHead()); pMember != NULL; pMember = pMember->GetNext() )
+	{
+		if ( pMember->m_uidLinkTo.IsValidUID() )
+		{
+			s.WriteKeyFormat("MEMBER",
+				"0%lx,%s,%d,0%lx,%d,%d,%d",
+				static_cast<DWORD>(pMember->m_uidLinkTo | (pMember->m_uidLinkTo.IsItem() ? UID_F_ITEM : 0)),
+				pMember->GetTitle(),
+				pMember->m_priv,
+				static_cast<DWORD>(pMember->m_uidLoyalTo),
+				pMember->m_Unk.m_iVal1,
+				pMember->m_Unk.m_iVal2,
+				pMember->m_Member.m_iAccountGold);
+		}
+	}
+}
+
+enum STC_TYPE
+{
+	#define ADD(a,b) STC_##a,
+	#include "../tables/CItemStone_props.tbl"
+	#undef ADD
+	STC_QTY
+};
+
+LPCTSTR const CItemStone::sm_szLoadKeys[STC_QTY + 1] =
+{
+	#define ADD(a,b) b,
+	#include "../tables/CItemStone_props.tbl"
+	#undef ADD
+	NULL
+};
+
+bool CItemStone::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
+{
+	ADDTOCALLSTACK("CItemStone::r_WriteVal");
+	EXC_TRY("WriteVal");
+
+	if ( !strnicmp("MEMBER.", pszKey, 7) )
+	{
+		LPCTSTR pszCmd = pszKey + 7;
+		if ( !strnicmp("COUNT", pszCmd, 5) )
+		{
+			pszCmd += 5;
+			int i = 0;
+			if ( *pszCmd )
+			{
+				SKIP_ARGSEP(pszCmd);
+				STONEPRIV_TYPE priv = static_cast<STONEPRIV_TYPE>(Exp_GetVal(pszCmd));
+
+				for ( CStoneMember *pMember = static_cast<CStoneMember *>(GetHead()); pMember != NULL; pMember = pMember->GetNext() )
+				{
+					if ( !pMember->m_uidLinkTo.IsChar() )
+						continue;
+					if ( pMember->m_priv != priv )
+						continue;
+					++i;
+				}
+			}
+			else
+			{
+				for ( CStoneMember *pMember = static_cast<CStoneMember *>(GetHead()); pMember != NULL; pMember = pMember->GetNext() )
+				{
+					if ( !pMember->m_uidLinkTo.IsChar() )
+						continue;
+					++i;
+				}
+			}
+			sVal.FormatVal(i);
+			return true;
+		}
+
+		int i = 0;
+		int iNumber = Exp_GetVal(pszCmd);
+		SKIP_SEPARATORS(pszCmd);
+		sVal.FormatVal(0);
+
+		for ( CStoneMember *pMember = static_cast<CStoneMember *>(GetHead()); pMember != NULL; pMember = pMember->GetNext() )
+		{
+			if ( !pMember->m_uidLinkTo.IsChar() )
+				continue;
+
+			if ( iNumber == i )
+			{
+				if ( !pszCmd[0] )
+					return true;
+
+				return pMember->r_WriteVal(pszCmd, sVal, pSrc);
+			}
+			++i;
+		}
+		return true;
+	}
+	else if ( !strnicmp("MEMBERFROMUID.", pszKey, 14) )
+	{
+		LPCTSTR pszCmd = pszKey + 14;
+		CStoneMember *pMember = GetMember(static_cast<CGrayUID>(Exp_GetVal(pszCmd)).CharFind());
+		SKIP_SEPARATORS(pszCmd);
+		if ( pMember )
+			return pMember->r_WriteVal(pszCmd, sVal, pSrc);
+
+		sVal.FormatVal(0);
+		return true;
+	}
+	else if ( !strnicmp("GUILD.", pszKey, 6) )
+	{
+		LPCTSTR pszCmd = pszKey + 6;
+		if ( !strnicmp("COUNT", pszCmd, 5) )
+		{
+			pszCmd += 5;
+			int i = 0;
+			if ( *pszCmd )
+			{
+				SKIP_ARGSEP(pszCmd);
+				int iFlags = Exp_GetVal(pszCmd);
+
+				for ( CStoneMember *pMember = static_cast<CStoneMember *>(GetHead()); pMember != NULL; pMember = pMember->GetNext() )
+				{
+					if ( pMember->m_uidLinkTo.IsChar() )
+						continue;
+
+					if ( (iFlags == 1) && pMember->m_Enemy.m_fWeDeclared && !pMember->m_Enemy.m_fTheyDeclared )
+						++i;
+					else if ( (iFlags == 2) && !pMember->m_Enemy.m_fWeDeclared && pMember->m_Enemy.m_fTheyDeclared )
+						++i;
+					else if ( (iFlags == 3) && pMember->m_Enemy.m_fWeDeclared && pMember->m_Enemy.m_fTheyDeclared )
+						++i;
+				}
+			}
+			else
+			{
+				for ( CStoneMember *pMember = static_cast<CStoneMember *>(GetHead()); pMember != NULL; pMember = pMember->GetNext() )
+				{
+					if ( pMember->m_uidLinkTo.IsChar() )
+						continue;
+					++i;
+				}
+			}
+			sVal.FormatVal(i);
+			return true;
+		}
+
+		int i = 0;
+		int iNumber = Exp_GetVal(pszCmd);
+		SKIP_SEPARATORS(pszCmd);
+		sVal.FormatVal(0);
+
+		for ( CStoneMember *pMember = static_cast<CStoneMember *>(GetHead()); pMember != NULL; pMember = pMember->GetNext() )
+		{
+			if ( pMember->m_uidLinkTo.IsChar() )
+				continue;
+
+			if ( iNumber == i )
+			{
+				if ( !pszCmd[0] )
+					return true;
+
+				return pMember->r_WriteVal(pszCmd, sVal, pSrc);
+			}
+			++i;
+		}
+		return true;
+	}
+	else if ( !strnicmp("GUILDFROMUID.", pszKey, 13) )
+	{
+		LPCTSTR pszCmd = pszKey + 13;
+		CStoneMember *pMember = GetMember(static_cast<CGrayUID>(Exp_GetVal(pszCmd)).ItemFind());
+		SKIP_SEPARATORS(pszCmd);
+		if ( pMember )
+			return pMember->r_WriteVal(pszCmd, sVal, pSrc);
+
+		sVal.FormatVal(0);
+		return true;
+	}
+	else if ( !strnicmp("CHARTER", pszKey, 7) )
+	{
+		size_t i = static_cast<size_t>(ATOI(pszKey + 7));
+		sVal = (i < COUNTOF(m_sCharter)) ? m_sCharter[i] : NULL;
+		return true;
+	}
+
+	int index = FindTableSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1);
+	switch ( index )
+	{
+		case STC_ABBREV:
+		{
+			sVal = m_sAbbrev;
+			return true;
+		}
+		case STC_ALIGN:
+		{
+			sVal.FormatVal(m_itStone.m_align);
+			return true;
+		}
+		case STC_WEBPAGE:
+		{
+			sVal = m_sWebPageURL;
+			return true;
+		}
+		case STC_ABBREVIATIONTOGGLE:
+		{
+			CStoneMember *pMember = GetMember(pSrc->GetChar());
+			CVarDefCont *pVar = NULL;
+			if ( pMember )
+				pVar = pMember->IsAbbrevOn() ? g_Exp.m_VarDefs.GetKey("STONECONFIG_VARIOUSNAME_ABBREVON") : g_Exp.m_VarDefs.GetKey("STONECONFIG_VARIOUSNAME_ABBREVOFF");
+			else
+				pVar = g_Exp.m_VarDefs.GetKey("STONECONFIG_VARIOUSNAME_NONMEMBER");
+
+			sVal = pVar ? pVar->GetValStr() : "";
+			return true;
+		}
+		case STC_ALIGNTYPE:
+		{
+			sVal = GetAlignName();
+			return true;
+		}
+		case STC_LOYALTO:
+		{
+			CStoneMember *pMember = GetMember(pSrc->GetChar());
+			CVarDefCont *pVar = NULL;
+			if ( pMember )
+			{
+				CChar *pChar = pMember->m_uidLoyalTo.CharFind();
+				if ( !pChar || (pChar == pSrc->GetChar()) )
+					pVar = g_Exp.m_VarDefs.GetKey("STONECONFIG_VARIOUSNAME_YOURSELF");
+				else
+				{
+					sVal = pChar->GetName();
+					return true;
+				}
+			}
+			else
+				pVar = g_Exp.m_VarDefs.GetKey("STONECONFIG_VARIOUSNAME_NONMEMBER");
+
+			sVal = pVar ? pVar->GetValStr() : "";
+			return true;
+		}
+		case STC_MASTER:
+		{
+			CChar *pChar = GetMaster();
+			sVal = pChar ? pChar->GetName() : g_Exp.m_VarDefs.GetKeyStr("STONECONFIG_VARIOUSNAME_PENDVOTE");
+			return true;
+		}
+		case STC_MASTERGENDERTITLE:
+		{
+			CChar *pChar = GetMaster();
+			if ( !pChar )
+				sVal = "";
+			else if ( pChar->Char_GetDef()->IsFemale() )
+				sVal = g_Exp.m_VarDefs.GetKeyStr("STONECONFIG_VARIOUSNAME_MASTERGENDERFEMALE");
+			else
+				sVal = g_Exp.m_VarDefs.GetKeyStr("STONECONFIG_VARIOUSNAME_MASTERGENDERMALE");
+			return true;
+		}
+		case STC_MASTERTITLE:
+		{
+			CStoneMember *pMember = GetMasterMember();
+			sVal = pMember ? pMember->GetTitle() : "";
+			return true;
+		}
+		case STC_MASTERUID:
+		{
+			CChar *pChar = GetMaster();
+			sVal.FormatHex(pChar ? static_cast<DWORD>(pChar->GetUID()) : UID_CLEAR);
+			return true;
+		}
+		default:
+		{
+			return CItem::r_WriteVal(pszKey, sVal, pSrc);
+		}
+	}
+	EXC_CATCH;
+
+	EXC_DEBUG_START;
+	EXC_ADD_KEYRET(pSrc);
+	EXC_DEBUG_END;
+	return false;
+}
+
+bool CItemStone::r_LoadVal(CScript &s)
+{
+	ADDTOCALLSTACK("CItemStone::r_LoadVal");
+	EXC_TRY("LoadVal");
+
+	int index = FindTableSorted(s.GetKey(), sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1);
+	switch ( index )
+	{
+		case STC_ABBREV:
+		{
+			m_sAbbrev = s.GetArgStr();
+			return true;
+		}
+		case STC_ALIGN:
+		{
+			m_itStone.m_align = static_cast<STONEALIGN_TYPE>(s.GetArgVal());
+			return true;
+		}
+		case STC_MASTERUID:
+		{
+			CStoneMember *pNewMaster = GetMember(static_cast<CGrayUID>(s.GetArgVal()).CharFind());
+			if ( !pNewMaster )
+				return false;
+
+			CStoneMember *pCurrentMaster = GetMasterMember();
+			if ( pCurrentMaster )
+				pCurrentMaster->m_priv = STONEPRIV_MEMBER;
+
+			pNewMaster->m_priv = STONEPRIV_MASTER;
+			return true;
+		}
+		case STC_MEMBER:
+		{
+			TCHAR *ppArgs[8];
+			size_t iArgQty = Str_ParseCmds(s.GetArgStr(), ppArgs, COUNTOF(ppArgs), ",");
+			if ( iArgQty < 1 )		// must provide at least the member uid
+				return false;
+
+			new CStoneMember(
+				this,
+				ahextoi(ppArgs[0]),
+				(iArgQty > 2) ? static_cast<STONEPRIV_TYPE>(ATOI(ppArgs[2])) : STONEPRIV_CANDIDATE,
+				(iArgQty > 1) ? ppArgs[1] : "",
+				(iArgQty > 3) ? ahextoi(ppArgs[3]) : UID_CLEAR,
+				(iArgQty > 4) ? (ATOI(ppArgs[4]) != 0) : false,
+				(iArgQty > 5) ? (ATOI(ppArgs[5]) != 0) : false,
+				(iArgQty > 6) ? ATOI(ppArgs[6]) : 0);
+			return true;
+		}
+		case STC_WEBPAGE:
+		{
+			m_sWebPageURL = s.GetArgStr();
+			return true;
+		}
+	}
+
+	if ( s.IsKeyHead("CHARTER", 7) )
+	{
+		size_t i = static_cast<size_t>(ATOI(s.GetKey() + 7));
+		if ( i < COUNTOF(m_sCharter) )
+		{
+			m_sCharter[i] = s.GetArgStr();
+			return true;
+		}
+		return false;
+	}
+
+	return CItem::r_LoadVal(s);
+	EXC_CATCH;
+
+	EXC_DEBUG_START;
+	EXC_ADD_SCRIPT;
+	EXC_DEBUG_END;
+	return false;
 }
