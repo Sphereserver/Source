@@ -3801,7 +3801,7 @@ bool CItemTypeDef::r_LoadVal(CScript &s)
 	if ( !strnicmp(pszKey, "TERRAIN", 7) )
 	{
 		LPCTSTR pszArgs = s.GetArgStr();
-		size_t iLo = static_cast<size_t>(Exp_GetLLVal(pszArgs));
+		size_t iLo = Exp_GetVal(pszArgs);
 		GETNONWHITESPACE(pszArgs);
 
 		if ( *pszArgs == ',' )
@@ -3810,12 +3810,7 @@ bool CItemTypeDef::r_LoadVal(CScript &s)
 			GETNONWHITESPACE(pszArgs);
 		}
 
-		size_t iHi;
-		if ( *pszArgs == '\0' )
-			iHi = iLo;
-		else
-			iHi = Exp_GetVal(pszArgs);
-
+		size_t iHi = pszArgs ? Exp_GetVal(pszArgs) : iLo;
 		if ( iLo > iHi )	// swap
 		{
 			size_t iTmp = iHi;

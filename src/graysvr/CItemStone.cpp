@@ -367,21 +367,19 @@ MEMORY_TYPE CItemStone::GetMemoryType() const
 LPCTSTR CItemStone::GetTypeName() const
 {
 	ADDTOCALLSTACK("CItemStone::GetTypeName");
-	TCHAR *pszTemp = Str_GetTemp();
+	CVarDefCont *pVar = NULL;
 	switch ( GetType() )
 	{
 		case IT_STONE_GUILD:
-			pszTemp = "STONECONFIG_TYPENAME_GUILD";
+			pVar = g_Exp.m_VarDefs.GetKey("STONECONFIG_TYPENAME_GUILD");
 			break;
 		case IT_STONE_TOWN:
-			pszTemp = "STONECONFIG_TYPENAME_TOWN";
+			pVar = g_Exp.m_VarDefs.GetKey("STONECONFIG_TYPENAME_TOWN");
 			break;
 		default:
-			pszTemp = "STONECONFIG_TYPENAME_UNK";
+			pVar = g_Exp.m_VarDefs.GetKey("STONECONFIG_TYPENAME_UNK");
 			break;
 	}
-
-	CVarDefCont *pVar = g_Exp.m_VarDefs.GetKey(pszTemp);
 	return pVar ? pVar->GetValStr() : "";
 }
 
@@ -572,8 +570,10 @@ void CItemStone::ElectMaster()
 	// No more members, declare peace (by force)
 	if ( !iCountMembers )
 	{
-		for ( CStoneMember *pMember = static_cast<CStoneMember *>(GetHead()); pMember != NULL; pMember = pMember->GetNext() )
+		CStoneMember *pMemberNext = NULL;
+		for ( CStoneMember *pMember = static_cast<CStoneMember *>(GetHead()); pMember != NULL; pMember = pMemberNext )
 		{
+			pMemberNext = pMember->GetNext();
 			WeDeclarePeace(static_cast<CItemStone *>(pMember->m_uidLinkTo.ItemFind()), true);
 		}
 	}
@@ -1124,7 +1124,6 @@ bool CItemStone::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			{
 				SKIP_ARGSEP(pszCmd);
 				STONEPRIV_TYPE priv = static_cast<STONEPRIV_TYPE>(Exp_GetVal(pszCmd));
-
 				for ( CStoneMember *pMember = static_cast<CStoneMember *>(GetHead()); pMember != NULL; pMember = pMember->GetNext() )
 				{
 					if ( !pMember->m_uidLinkTo.IsChar() )
@@ -1190,7 +1189,6 @@ bool CItemStone::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			{
 				SKIP_ARGSEP(pszCmd);
 				int iFlags = Exp_GetVal(pszCmd);
-
 				for ( CStoneMember *pMember = static_cast<CStoneMember *>(GetHead()); pMember != NULL; pMember = pMember->GetNext() )
 				{
 					if ( pMember->m_uidLinkTo.IsChar() )
