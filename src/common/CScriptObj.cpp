@@ -2295,14 +2295,14 @@ void CScriptTriggerArgs::Init(LPCTSTR pszStr)
 	// Attempt to parse this
 	if ( IsDigit(*pszStr) || ((*pszStr == '-') && IsDigit(*(pszStr + 1))) )
 	{
-		m_iN1 = Exp_GetSingle(pszStr);
+		m_iN1 = Exp_GetLLSingle(pszStr);
 		SKIP_ARGSEP(pszStr);
 		if ( IsDigit(*pszStr) || ((*pszStr == '-') && IsDigit(*(pszStr + 1))) )
 		{
-			m_iN2 = Exp_GetSingle(pszStr);
+			m_iN2 = Exp_GetLLSingle(pszStr);
 			SKIP_ARGSEP(pszStr);
 			if ( IsDigit(*pszStr) || ((*pszStr == '-') && IsDigit(*(pszStr + 1))) )
-				m_iN3 = Exp_GetSingle(pszStr);
+				m_iN3 = Exp_GetLLSingle(pszStr);
 		}
 	}
 
@@ -2591,13 +2591,13 @@ bool CScriptTriggerArgs::r_Verb(CScript &s, CTextConsole *pSrc)
 	{
 		case AGC_N:
 		case AGC_N1:
-			m_iN1 = s.GetArgVal();
+			m_iN1 = s.GetArgLLVal();
 			return true;
 		case AGC_N2:
-			m_iN2 = s.GetArgVal();
+			m_iN2 = s.GetArgLLVal();
 			return true;
 		case AGC_N3:
-			m_iN3 = s.GetArgVal();
+			m_iN3 = s.GetArgLLVal();
 			return true;
 		case AGC_S:
 			Init(s.GetArgStr());

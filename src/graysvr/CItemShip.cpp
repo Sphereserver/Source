@@ -1098,7 +1098,7 @@ dodirmovechange:
 		}
 
 		TCHAR szText[ MAX_TALK_BUFFER ];
-		strcpy( szText, pszSpeak );
+		strncpy(szText, pszSpeak, MAX_TALK_BUFFER - 1);
 		pChar->ParseText( szText, &g_Serv );
 		pTiller->Speak( szText, HUE_TEXT_DEF, TALKMODE_SAY, FONT_NORMAL );
 	}

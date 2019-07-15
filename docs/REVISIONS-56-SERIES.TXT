@@ -1536,3 +1536,6 @@ Removed: Redundant ARGN3 (clear attacker list) on @UserWarMode char trigger (thi
 
 11-07-2019, Coruja
 Fixed: Bank not updating total weight count when managing items.
+
+15-07-2019, Coruja
+Fixed: ARGN value on scripts not accepting numbers > 2147483647.
