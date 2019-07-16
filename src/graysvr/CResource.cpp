@@ -3801,22 +3801,32 @@ bool CItemTypeDef::r_LoadVal(CScript &s)
 	if ( !strnicmp(pszKey, "TERRAIN", 7) )
 	{
 		LPCTSTR pszArgs = s.GetArgStr();
-		size_t iLo = Exp_GetVal(pszArgs);
-		GETNONWHITESPACE(pszArgs);
+		int iVal = Exp_GetVal(pszArgs);
+		if ( iVal < 0 )
+			return false;
+		size_t iLo = static_cast<size_t>(iVal);
 
+		GETNONWHITESPACE(pszArgs);
 		if ( *pszArgs == ',' )
 		{
 			++pszArgs;
 			GETNONWHITESPACE(pszArgs);
 		}
 
-		size_t iHi = pszArgs ? Exp_GetVal(pszArgs) : iLo;
-		if ( iLo > iHi )	// swap
+		if ( pszArgs )
 		{
-			size_t iTmp = iHi;
-			iHi = iLo;
-			iLo = iTmp;
+			iVal = Exp_GetVal(pszArgs);
+			if ( iVal < 0 )
+				return false;
+			
+			if ( iVal < iLo )	// swap
+			{
+				int iTemp = iLo;
+				iLo = iVal;
+				iVal = iTemp;
+			}
 		}
+		size_t iHi = static_cast<size_t>(iVal);
 
 		for ( size_t i = iLo; i <= iHi; ++i )
 			g_World.m_TileTypes.SetAtGrow(i, this);
