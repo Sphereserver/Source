@@ -986,7 +986,7 @@ LPCTSTR const CRegionBase::sm_szTrigName[RTRIG_QTY+1] =	// static
 	"@EXIT",
 	"@REGPERIODIC",
 	"@STEP",
-	NULL,
+	NULL
 };
 
 TRIGRET_TYPE CRegionBase::OnRegionTrigger( CTextConsole * pSrc, RTRIG_TYPE iAction )

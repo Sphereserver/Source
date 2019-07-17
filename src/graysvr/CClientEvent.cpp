@@ -19,7 +19,7 @@ LPCTSTR const CClient::sm_szCmd_Redirect[] =
 	"NUDGEUP",
 	"PRIVSET",
 	"REMOVE",
-	"SHRINK",
+	"SHRINK"
 };
 
 // Client pressed the chat button

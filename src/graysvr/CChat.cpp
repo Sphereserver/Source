@@ -110,7 +110,7 @@ CChatChannel *CChat::FindChannel(LPCTSTR pszChannel) const
 			return pChannel;
 	}
 	return NULL;
-};
+}
 
 void CChat::Action(CClient *pClient, const NCHAR *pszText, int len, CLanguageID lang)
 {

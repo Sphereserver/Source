@@ -615,8 +615,6 @@ int FindTableHeadSorted(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount
 
 	if ( iCount == 0 )
 		return -1;
-	if ( iElemSize <= 0 )
-		iElemSize = sizeof(LPCTSTR);
 
 	int iLow = 0;
 	int iHigh = iCount - 1;
@@ -637,18 +635,18 @@ int FindTableHeadSorted(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount
 	return -1;
 }
 
-int FindTableHead(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount)
+int FindTableHead(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount, size_t iElemSize)
 {
 	for ( size_t i = 0; i < iCount; ++i )
 	{
 		if ( Str_CmpHeadI(pszFind, *ppszTable) == 0 )
 			return i;
-		ppszTable = reinterpret_cast<const LPCTSTR *>(reinterpret_cast<const BYTE *>(ppszTable) + sizeof(LPCTSTR));
+		ppszTable = reinterpret_cast<const LPCTSTR *>(reinterpret_cast<const BYTE *>(ppszTable) + iElemSize);
 	}
 	return -1;
 }
 
-int FindTableSorted(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount)
+int FindTableSorted(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount, size_t iElemSize)
 {
 	// Do a binary search (un-cased) on a sorted table.
 	// RETURN: -1 = not found
@@ -662,7 +660,7 @@ int FindTableSorted(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount)
 	while ( iLow <= iHigh )
 	{
 		int i = (iLow + iHigh) / 2;
-		LPCTSTR pszName = *reinterpret_cast<const LPCTSTR *>(reinterpret_cast<const BYTE *>(ppszTable) + (i * sizeof(LPCTSTR)));
+		LPCTSTR pszName = *reinterpret_cast<const LPCTSTR *>(reinterpret_cast<const BYTE *>(ppszTable) + (i * iElemSize));
 
 		int iCompare = strcmpi(pszFind, pszName);
 		if ( iCompare == 0 )
@@ -675,14 +673,14 @@ int FindTableSorted(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount)
 	return -1;
 }
 
-int FindTable(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount)
+int FindTable(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount, size_t iElemSize)
 {
 	// A non-sorted table.
 	for ( size_t i = 0; i < iCount; ++i )
 	{
 		if ( strcmpi(pszFind, *ppszTable) == 0 )
 			return i;
-		ppszTable = reinterpret_cast<const LPCTSTR *>(reinterpret_cast<const BYTE *>(ppszTable) + sizeof(LPCTSTR));
+		ppszTable = reinterpret_cast<const LPCTSTR *>(reinterpret_cast<const BYTE *>(ppszTable) + iElemSize);
 	}
 	return -1;
 }

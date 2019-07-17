@@ -508,9 +508,9 @@ bool CPartyDef::AcceptEvent(CChar *pCharAccept, CChar *pCharInviter, bool fForce
 
 enum PDV_TYPE
 {
-#define ADD(a,b) PDV_##a,
-#include "../tables/CParty_functions.tbl"
-#undef ADD
+	#define ADD(a,b) PDV_##a,
+	#include "../tables/CParty_functions.tbl"
+	#undef ADD
 	PDV_QTY
 };
 
@@ -524,9 +524,9 @@ LPCTSTR const CPartyDef::sm_szVerbKeys[PDV_QTY + 1] =
 
 enum PDC_TYPE
 {
-#define ADD(a,b) PDC_##a,
-#include "../tables/CParty_props.tbl"
-#undef ADD
+	#define ADD(a,b) PDC_##a,
+	#include "../tables/CParty_props.tbl"
+	#undef ADD
 	PDC_QTY
 };
 

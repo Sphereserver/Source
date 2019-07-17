@@ -343,7 +343,7 @@ LPCTSTR const g_Stat_Name[STAT_QTY] =	// not sorted obviously.
 	"DEX",
 	"FOOD",
 	"KARMA",
-	"FAME",
+	"FAME"
 };
 
 LPCTSTR g_szServerDescription = SPHERE_TITLE " Version " SPHERE_VERSION " " SPHERE_VER_FILEOS_STR " by www.spherecommunity.net";
@@ -447,7 +447,7 @@ LPCTSTR GetTimeMinDesc( int minutes )
  		g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_HOUR_NINE),
  		g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_HOUR_TEN),
  		g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_HOUR_ELEVEN),
- 		g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_HOUR_TWELVE),
+ 		g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_HOUR_TWELVE)
 	};
 
 	LPCTSTR pTail;

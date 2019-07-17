@@ -163,7 +163,7 @@ LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY + 1] =	// static
 	"@UserVirtue",
 	"@UserVirtueInvoke",
 	"@UserWarmode",
-	 NULL,
+	 NULL
 };
 
 

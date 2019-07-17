@@ -23,18 +23,18 @@ LPCTSTR CValStr::FindName( int iVal ) const
 
 const int CElementDef::sm_Lengths[ELEM_QTY] =
 {
-	0,	// ELEM_VOID:
-	-1,	// ELEM_CSTRING,
-	-1, // ELEM_STRING,	// Assume max size of REG_SIZE
+	0,				// ELEM_VOID
+	-1,				// ELEM_CSTRING
+	-1,				// ELEM_STRING (assume max size of REG_SIZE)
 	sizeof(bool),	// ELEM_BOOL
-	sizeof(BYTE), // ELEM_BYTE,		// 1 byte.
-	sizeof(BYTE), // ELEM_MASK_BYTE,	// bits in a BYTE
-	sizeof(WORD), // ELEM_WORD,		// 2 bytes
-	sizeof(WORD), // ELEM_MASK_WORD,	// bits in a WORD
-	sizeof(int),  // ELEM_INT,		// Whatever the int size is. 4 i assume
-	sizeof(int),  // ELEM_MASK_INT,
-	sizeof(DWORD), // ELEM_DWORD,		// 4 bytes.
-	sizeof(DWORD), // ELEM_MASK_DWORD,	// bits in a DWORD
+	sizeof(BYTE),	// ELEM_BYTE (1 byte)
+	sizeof(BYTE),	// ELEM_MASK_BYTE (bits in a BYTE)
+	sizeof(WORD),	// ELEM_WORD (2 bytes)
+	sizeof(WORD),	// ELEM_MASK_WORD (bits in a WORD)
+	sizeof(int),	// ELEM_INT (whatever the int size is, 4 i assume)
+	sizeof(int),	// ELEM_MASK_INT (bits in a int)
+	sizeof(DWORD),	// ELEM_DWORD (4 bytes)
+	sizeof(DWORD)	// ELEM_MASK_DWORD (bits in a DWORD)
 };
 
 bool CElementDef::SetValStr( void * pBase, LPCTSTR pszVal ) const

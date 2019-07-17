@@ -151,7 +151,7 @@ enum E_TRIGGERS
 {
 	#define ADD(a) TRIGGER_##a,
 	#include "../tables/triggers.tbl"
-	TRIGGER_QTY,
+	TRIGGER_QTY
 };
 
 extern bool IsTrigUsed(E_TRIGGERS id);

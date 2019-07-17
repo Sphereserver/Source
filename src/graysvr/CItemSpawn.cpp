@@ -743,7 +743,7 @@ LPCTSTR const CItemMessage::sm_szLoadKeys[CIC_QTY + 1] =	// static
 	"BODY",
 	"PAGES",	// (W)
 	"TITLE",	// same as name
-	NULL,
+	NULL
 };
 
 bool CItemMessage::r_LoadVal(CScript &s)
@@ -822,7 +822,7 @@ LPCTSTR const CItemMessage::sm_szVerbKeys[] =
 {
 	"ERASE",
 	"PAGE",
-	NULL,
+	NULL
 };
 
 bool CItemMessage::r_Verb(CScript &s, CTextConsole *pSrc)
@@ -977,7 +977,7 @@ int CItemMemory::FixWeirdness()
 LPCTSTR const CItemCommCrystal::sm_szLoadKeys[] =
 {
 	"SPEECH",
-	NULL,
+	NULL
 };
 
 void CItemCommCrystal::OnMoveFrom()
@@ -1084,12 +1084,12 @@ void CItemCommCrystal::DupeCopy(const CItem *pItem)
 
 LPCTSTR const CItemScript::sm_szLoadKeys[] =
 {
-	NULL,
+	NULL
 };
 
 LPCTSTR const CItemScript::sm_szVerbKeys[] =
 {
-	NULL,
+	NULL
 };
 
 void CItemScript::r_Write(CScript &s)

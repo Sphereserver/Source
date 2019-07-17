@@ -637,6 +637,7 @@ enum ANIM_TYPE	// not all creatures animate the same for some reason.
 
 	ANIM_QTY = 0x32
 };
+
 enum ANIM_TYPE_NEW	// not all creatures animate the same for some reason. http://img546.imageshack.us/img546/5439/uonewanimstable2.png
 {
 	NANIM_ATTACK		= 0x00,	// 8 SUB ANIMATIONS, VARIATION 0-*
@@ -679,16 +680,14 @@ enum ANIM_TYPE_NEW	// not all creatures animate the same for some reason. http:/
 	NANIM_SPELL_NORMAL	= 0x00,
 	NANIM_SPELL_SUMMON	= 0x01,
 
-	NANIM_SPELL_QTY = 2,
-
+	NANIM_SPELL_QTY = 2
 };
 
 enum CRESND_TYPE	// Placeholders (not real sound IDs): the SoundChar method chooses the best sound for each creature
 {
 	CRESND_RAND = -1,	// pick up randomly CRESND_IDLE or CRESND_NOTICE
 	CRESND_IDLE = 0,	// just random noise. or default "no" response
-	CRESND_NOTICE,			// just random noise. or default "yes" response
-
+	CRESND_NOTICE,		// just random noise. or default "yes" response
 	CRESND_HIT,
 	CRESND_GETHIT,
 	CRESND_DIE
@@ -728,7 +727,7 @@ enum DIR_TYPE	// Walking directions. m_dir
 	DIR_SW,
 	DIR_W,
 	DIR_NW,
-	DIR_QTY,		// Also means "Center"
+	DIR_QTY		// also means "center"
 };
 
 enum SKILL_TYPE	// List of skill numbers (things that can be done at a given time)
@@ -1276,16 +1275,13 @@ enum
 {
 	// Terrain samples
 	TERRAIN_HOLE	= 0x0002,	// "NODRAW" we can pas thru this.
-
 	TERRAIN_WATER1	= 0x00a8,
 	TERRAIN_WATER2	= 0x00a9,
 	TERRAIN_WATER3	= 0x00aa,
 	TERRAIN_WATER4	= 0x00ab,
 	TERRAIN_WATER5	= 0x0136,
 	TERRAIN_WATER6	= 0x0137,
-
 	TERRAIN_NULL	= 0x0244,	// impassible interdungeon
-
 	TERRAIN_QTY		= 0x4000
 };
 

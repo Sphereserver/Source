@@ -539,7 +539,7 @@ LPCTSTR const CSpellDef::sm_szTrigName[SPTRIG_QTY+1] =
 	"@START",
 	"@SUCCESS",
 	"@TARGETCANCEL",
-	NULL,
+	NULL
 };
 
 enum SPC_TYPE
@@ -1130,7 +1130,7 @@ LPCTSTR const CRegionResourceDef::sm_szTrigName[RRTRIG_QTY+1] =	// static
 	"@ResourceFound",
 	"@ResourceGather",
 	"@ResourceTest",
-	NULL,
+	NULL
 };
 
 

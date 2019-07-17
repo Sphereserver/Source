@@ -667,7 +667,7 @@ LPCTSTR const CClient::sm_szLoadKeys[CC_QTY + 1] =	// static
 	#define ADD(a,b) b,
 	#include "../tables/CClient_props.tbl"
 	#undef ADD
-	NULL,
+	NULL
 };
 
 LPCTSTR const CClient::sm_szVerbKeys[CV_QTY + 1] =	// static
@@ -675,7 +675,7 @@ LPCTSTR const CClient::sm_szVerbKeys[CV_QTY + 1] =	// static
 	#define ADD(a,b) b,
 	#include "../tables/CClient_functions.tbl"
 	#undef ADD
-	NULL,
+	NULL
 };
 
 bool CClient::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)

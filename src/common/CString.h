@@ -498,25 +498,28 @@ size_t Str_ParseCmds(TCHAR * pCmdLine, INT64 * piCmd, size_t iMax, LPCTSTR pSep 
 * @param pszFind string we are looking for.
 * @param ppszTable table where we are looking for the string.
 * @param iCount max iterations.
+* @param iElemSize size of elements of the table.
 * @return the index of string if success, -1 otherwise.
 */
-int FindTable(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount);
+int FindTable(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount, size_t iElemSize = sizeof(LPCTSTR));
 /**
 * @brief Look for a string in a table (binary search).
 * @param pszFind string we are looking for.
 * @param ppszTable table where we are looking for the string.
 * @param iCount max iterations.
+* @param iElemSize size of elements of the table.
 * @return the index of string if success, -1 otherwise.
 */
-int FindTableSorted(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount);
+int FindTableSorted(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount, size_t iElemSize = sizeof(LPCTSTR));
 /**
 * @brief Look for a string header in a table (uses Str_CmpHeadI to compare instead of strcmpi).
 * @param pszFind string we are looking for.
 * @param ppszTable table where we are looking for the string.
 * @param iCount max iterations.
+* @param iElemSize size of elements of the table.
 * @return the index of string if success, -1 otherwise.
 */
-int FindTableHead(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount);
+int FindTableHead(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount, size_t iElemSize = sizeof(LPCTSTR));
 /**
 * @brief Look for a string header in a table (binary search, uses Str_CmpHeadI to compare instead of strcmpi).
 * @param pszFind string we are looking for.
@@ -525,7 +528,7 @@ int FindTableHead(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount);
 * @param iElemSize size of elements of the table.
 * @return the index of string if success, -1 otherwise.
 */
-int FindTableHeadSorted(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount, size_t iElemSize = 0);
+int FindTableHeadSorted(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount, size_t iElemSize = sizeof(LPCTSTR));
 
 #define Str_GetTemp static_cast<AbstractSphereThread *>(ThreadHolder::current())->allocateBuffer
 

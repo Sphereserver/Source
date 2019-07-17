@@ -188,7 +188,7 @@ LPCTSTR const CAccounts::sm_szVerbKeys[] =
 	"JAILED",
 	"UNUSED",
 	"UPDATE",
-	NULL,
+	NULL
 };
 
 bool CAccounts::Account_OnCmd(TCHAR *pszArgs, CTextConsole *pSrc)
@@ -881,7 +881,7 @@ LPCTSTR const CAccount::sm_szLoadKeys[AC_QTY + 1] =	// static
 	"TAG0",
 	"TAGCOUNT",
 	"TOTALCONNECTTIME",
-	NULL,
+	NULL
 };
 
 bool CAccount::r_LoadVal(CScript &s)
@@ -1148,7 +1148,7 @@ LPCTSTR const CAccount::sm_szVerbKeys[] =
 	"DELETE",
 	"KICK",
 	"TAGLIST",
-	NULL,
+	NULL
 };
 
 bool CAccount::r_Verb(CScript &s, CTextConsole *pSrc)

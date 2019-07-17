@@ -13,20 +13,20 @@ LPCTSTR CPointBase::sm_szDirs[DIR_QTY+1] =
 	g_Cfg.GetDefaultMsg(DEFMSG_MAP_DIR_5),
 	g_Cfg.GetDefaultMsg(DEFMSG_MAP_DIR_6),
 	g_Cfg.GetDefaultMsg(DEFMSG_MAP_DIR_7),
-	g_Cfg.GetDefaultMsg(DEFMSG_MAP_DIR_8),
+	g_Cfg.GetDefaultMsg(DEFMSG_MAP_DIR_8)
 };
 
 const int CPointBase::sm_Moves[DIR_QTY+1][2] =
 {
-	{  0, -1 }, // DIR_N
-	{  1, -1 }, // DIR_NE
-	{  1,  0 }, // DIR_E
-	{  1,  1 }, // DIR_SE
-	{  0,  1 }, // DIR_S
-	{ -1,  1 }, // DIR_SW
-	{ -1,  0 }, // DIR_W
-	{ -1, -1 }, // DIR_NW
-	{  0,  0 }, // DIR_QTY
+	{  0, -1 },	// DIR_N
+	{  1, -1 },	// DIR_NE
+	{  1,  0 },	// DIR_E
+	{  1,  1 },	// DIR_SE
+	{  0,  1 },	// DIR_S
+	{ -1,  1 },	// DIR_SW
+	{ -1,  0 },	// DIR_W
+	{ -1, -1 },	// DIR_NW
+	{  0,  0 }	// DIR_QTY
 };
 
 

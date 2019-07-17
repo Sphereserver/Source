@@ -43,7 +43,7 @@ LPCTSTR const CItem::sm_szTrigName[ITRIG_QTY+1] =	// static
 	"@TIMER",		// My timer has expired.
 	"@ToolTip",
 	"@UNEQUIP",		// i have been unequipped (or try to unequip)
-	NULL,
+	NULL
 };
 
 /////////////////////////////////////////////////////////////////
@@ -1673,7 +1673,7 @@ WORD CItem::GetMaxAmount()
 
 	CVarDefCont *pMax = GetDefKey("MaxAmount", false);
 	return pMax ? static_cast<WORD>(pMax->GetValNum()) : g_Cfg.m_iItemsMaxAmount;
-};
+}
 
 bool CItem::SetMaxAmount(WORD wAmount)
 {

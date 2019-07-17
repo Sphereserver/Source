@@ -3819,7 +3819,7 @@ bool CItemTypeDef::r_LoadVal(CScript &s)
 			if ( iVal < 0 )
 				return false;
 			
-			if ( iVal < iLo )	// swap
+			if ( static_cast<size_t>(iVal) < iLo )	// swap
 			{
 				int iTemp = iLo;
 				iLo = iVal;
