@@ -610,7 +610,7 @@ LPCTSTR const CClient::sm_szRefKeys[CLIR_QTY + 1] =
 bool CClient::r_GetRef(LPCTSTR &pszKey, CScriptObj *&pRef)
 {
 	ADDTOCALLSTACK("CClient::r_GetRef");
-	int index = FindTableHeadSorted(pszKey, sm_szRefKeys, COUNTOF(sm_szRefKeys) - 1, sizeof(sm_szRefKeys[0]));
+	int index = FindTableHeadSorted(pszKey, sm_szRefKeys, COUNTOF(sm_szRefKeys) - 1);
 	if ( index >= 0 )
 	{
 		pszKey += strlen(sm_szRefKeys[index]);
@@ -711,7 +711,7 @@ bool CClient::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 	else if ( !strnicmp("REPORTEDCLIVER", pszKey, 14) && ((pszKey[14] == '\0') || (pszKey[14] == '.')) )
 		index = CC_REPORTEDCLIVER;
 	else
-		index = FindTableSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1, sizeof(sm_szLoadKeys[0]));
+		index = FindTableSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1);
 
 	switch ( index )
 	{
@@ -841,7 +841,7 @@ bool CClient::r_LoadVal(CScript &s)
 		return true;
 	}
 
-	switch ( FindTableSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1, sizeof(sm_szLoadKeys[0])) )
+	switch ( FindTableSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1) )
 	{
 		case CC_ALLMOVE:
 		{
@@ -976,7 +976,7 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 		return true;
 	}
 
-	int index = FindTableSorted(pszKey, sm_szVerbKeys, COUNTOF(sm_szVerbKeys) - 1, sizeof(sm_szVerbKeys[0]));
+	int index = FindTableSorted(pszKey, sm_szVerbKeys, COUNTOF(sm_szVerbKeys) - 1);
 	switch ( index )
 	{
 		case CV_ADD:
