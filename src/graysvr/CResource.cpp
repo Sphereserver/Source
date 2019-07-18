@@ -888,9 +888,9 @@ bool CResource::r_LoadVal(CScript &s)
 		else if ( s.IsKeyHead("PACKET", 6) )	// PACKETx=<function name to execute upon packet>
 		{
 			int iPacket = ATOI(s.GetKey() + 6);
-			if ( (iPacket < 0) || (iPacket >= 255) )
+			if ( (iPacket < 0) || (iPacket >= PACKET_QTY) )
 			{
-				g_Log.EventError("Packet filtering index %d out of range [0..254]\n", iPacket);
+				g_Log.EventError("Packet filtering index %d out of range [0~%d]\n", iPacket, PACKET_QTY - 1);
 				return false;
 			}
 
@@ -908,9 +908,9 @@ bool CResource::r_LoadVal(CScript &s)
 		else if ( s.IsKeyHead("OUTPACKET", 9) )		// OUTPACKETx=<function name to execute upon packet>
 		{
 			int iPacket = ATOI(s.GetKey() + 9);
-			if ( (iPacket < 0) || (iPacket >= 255) )
+			if ( (iPacket < 0) || (iPacket >= PACKET_QTY) )
 			{
-				g_Log.EventError("Outgoing packet filtering index %d out of range [0..254]\n", iPacket);
+				g_Log.EventError("Outgoing packet filtering index %d out of range [0~%d]\n", iPacket, PACKET_QTY - 1);
 				return false;
 			}
 

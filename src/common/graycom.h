@@ -151,47 +151,33 @@ public:
 	}
 	bool IsResource() const
 	{
-		if ( m_dwInternalVal & UID_F_RESOURCE )
-			return IsValidUID();
-		return false;
+		return (m_dwInternalVal & UID_F_RESOURCE) ? IsValidUID() : false;
 	}
 	bool IsItem() const
 	{
-		if ( (m_dwInternalVal & (UID_F_ITEM|UID_F_RESOURCE)) == UID_F_ITEM )
-			return true;	// might be static in client?
-		return false;
+		return ((m_dwInternalVal & (UID_F_ITEM|UID_F_RESOURCE)) == UID_F_ITEM);
 	}
 	bool IsChar() const
 	{
-		if ( (m_dwInternalVal & (UID_F_ITEM|UID_F_RESOURCE)) == 0 )
-			return IsValidUID();
-		return false;
+		return ((m_dwInternalVal & (UID_F_ITEM|UID_F_RESOURCE)) == 0) ? IsValidUID() : false;
 	}
 
 	bool IsObjDisconnected() const	// not in the game world for some reason
 	{
-		if ( (m_dwInternalVal & (UID_F_RESOURCE|UID_O_DISCONNECT)) == UID_O_DISCONNECT )
-			return true;
-		return false;
+		return ((m_dwInternalVal & (UID_F_RESOURCE|UID_O_DISCONNECT)) == UID_O_DISCONNECT);
 	}
 	bool IsObjTopLevel() const	// on the ground in the world
 	{
-		if ( (m_dwInternalVal & (UID_F_RESOURCE|UID_O_DISCONNECT)) == 0 )
-			return true;	// might be static in client?
-		return false;
+		return ((m_dwInternalVal & (UID_F_RESOURCE|UID_O_DISCONNECT)) == 0);
 	}
 
 	bool IsItemEquipped() const
 	{
-		if ( (m_dwInternalVal & (UID_F_RESOURCE|UID_F_ITEM|UID_O_DISCONNECT)) == (UID_F_ITEM|UID_O_EQUIPPED) )
-			return IsValidUID();
-		return false;
+		return ((m_dwInternalVal & (UID_F_RESOURCE|UID_F_ITEM|UID_O_DISCONNECT)) == (UID_F_ITEM|UID_O_EQUIPPED)) ? IsValidUID() : false;
 	}
 	bool IsItemInContainer() const
 	{
-		if ( (m_dwInternalVal & (UID_F_RESOURCE|UID_F_ITEM|UID_O_DISCONNECT)) == (UID_F_ITEM|UID_O_CONTAINED) )
-			return IsValidUID();
-		return false;
+		return ((m_dwInternalVal & (UID_F_RESOURCE|UID_F_ITEM|UID_O_DISCONNECT)) == (UID_F_ITEM|UID_O_CONTAINED)) ? IsValidUID() : false;
 	}
 
 	void SetObjContainerFlags(DWORD dwFlags = 0)

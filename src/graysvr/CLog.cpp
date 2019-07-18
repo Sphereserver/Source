@@ -108,7 +108,8 @@ int CLog::EventStr( DWORD dwMask, LPCTSTR pszMsg )
 #ifndef _WIN32
 		else
 		{
-			Open(NULL, OF_READWRITE|OF_TEXT|OF_SHARE_DENY_WRITE);	// LINUX needs to close and re-open for each log line !
+			// Linux needs to close and re-open for each log line
+			static_cast<void>(Open(NULL, OF_READWRITE|OF_TEXT|OF_SHARE_DENY_WRITE));
 		}
 #endif
 

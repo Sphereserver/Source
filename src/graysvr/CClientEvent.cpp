@@ -541,10 +541,7 @@ void CClient::Event_Skill_Use(SKILL_TYPE skill)
 	{
 		const CSkillDef *pSkillDef = g_Cfg.GetSkillDef(skill);
 		if ( !pSkillDef || pSkillDef->m_sTargetPrompt.IsEmpty() )
-		{
-			DEBUG_ERR(("%lx: Event_Skill_Use bad skill %d\n", GetSocketID(), skill));
 			return;
-		}
 
 		m_tmSkillTarg.m_Skill = skill;
 		addTarget(CLIMODE_TARG_SKILL, pSkillDef->m_sTargetPrompt.GetPtr(), false, fCheckCrime);
@@ -2061,7 +2058,6 @@ void CClient::Event_AOSPopupMenuRequest(CGrayUID uid) //construct packet after a
 
 	if ( m_pPopupPacket )
 	{
-		DEBUG_ERR(("New popup packet being formed before previous one has been released.\n"));
 		delete m_pPopupPacket;
 		m_pPopupPacket = NULL;
 	}
@@ -2077,7 +2073,7 @@ void CClient::Event_AOSPopupMenuRequest(CGrayUID uid) //construct packet after a
 		if ( IsTrigUsed(TRIGGER_CONTEXTMENUREQUEST) || IsTrigUsed(TRIGGER_ITEMCONTEXTMENUREQUEST) )
 		{
 			Args.m_iN1 = 1;
-			pItem->OnTrigger(ITRIG_ContextMenuRequest, GetChar(), &Args);
+			static_cast<void>(pItem->OnTrigger(ITRIG_ContextMenuRequest, GetChar(), &Args));
 			fPreparePacket = true;		// there's no hardcoded stuff for items
 		}
 		else
@@ -2210,7 +2206,7 @@ void CClient::Event_AOSPopupMenuRequest(CGrayUID uid) //construct packet after a
 		if ( IsTrigUsed(TRIGGER_CONTEXTMENUREQUEST) && (Args.m_iN1 != 1) )
 		{
 			Args.m_iN1 = 2;
-			pChar->OnTrigger(CTRIG_ContextMenuRequest, GetChar(), &Args);
+			static_cast<void>(pChar->OnTrigger(CTRIG_ContextMenuRequest, GetChar(), &Args));
 		}
 	}
 
@@ -2243,7 +2239,7 @@ void CClient::Event_AOSPopupMenuSelect(CGrayUID uid, WORD wIndex)	//do something
 		if ( IsTrigUsed(TRIGGER_CONTEXTMENUSELECT) || IsTrigUsed(TRIGGER_ITEMCONTEXTMENUSELECT) )
 		{
 			Args.m_iN1 = wIndex;
-			pItem->OnTrigger(ITRIG_ContextMenuSelect, GetChar(), &Args);
+			static_cast<void>(pItem->OnTrigger(ITRIG_ContextMenuSelect, GetChar(), &Args));
 		}
 		return;		// there's no hardcoded stuff for items
 	}

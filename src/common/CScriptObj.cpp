@@ -347,7 +347,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop(CScript &s, int iType, CTextConsole *p
 	if ( iType & 0x40 )		// FORINSTANCES
 	{
 		RESOURCE_ID rid;
-		TCHAR *ppArgs[1];
+		TCHAR *ppArgs[2];
 		if ( Str_ParseCmds(s.GetArgStr(), ppArgs, COUNTOF(ppArgs), " \t,") >= 1 )
 			rid = g_Cfg.ResourceGetID(RES_UNKNOWN, const_cast<LPCTSTR &>(static_cast<LPTSTR &>(ppArgs[0])));
 		else
@@ -1079,7 +1079,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerRunVal(CScript &s, TRIGRUN_TYPE trigger, CText
 	ADDTOCALLSTACK("CScriptObj::OnTriggerRunVal");
 
 	CGString sVal;
-	OnTriggerRun(s, trigger, pSrc, pArgs, &sVal);
+	static_cast<void>(OnTriggerRun(s, trigger, pSrc, pArgs, &sVal));
 
 	LPCTSTR pszVal = sVal.GetPtr();
 	if ( pszVal && *pszVal )

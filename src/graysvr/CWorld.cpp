@@ -1548,7 +1548,7 @@ bool CWorld::LoadWorld()
 
 	CGString sStaticsName;
 	sStaticsName.Format("%s" SPHERE_FILE "statics", static_cast<LPCTSTR>(g_Cfg.m_sWorldBaseDir));
-	LoadFile(sStaticsName);		// optional
+	static_cast<void>(LoadFile(sStaticsName));	// optional
 
 	CGString sMultisName;
 	sMultisName.Format("%s" SPHERE_FILE "multis", static_cast<LPCTSTR>(g_Cfg.m_sWorldBaseDir));

@@ -257,7 +257,7 @@ CItem *CItem::CreateScript(ITEMID_TYPE id, CChar *pSrc)		// static
 	{
 		CScriptTriggerArgs Args;
 		Args.m_pO1 = pItem;
-		pSrc->OnTrigger("@ItemCreate", pSrc, &Args);
+		static_cast<void>(pSrc->OnTrigger("@ItemCreate", pSrc, &Args));
 	}
 
 	return pItem;

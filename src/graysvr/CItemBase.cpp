@@ -56,7 +56,7 @@ CItemBase::CItemBase(ITEMID_TYPE id) : CBaseBaseDef(RESOURCE_ID(RES_ITEMDEF, id)
 	CUOItemTypeRec2 tiledata;
 	memset(&tiledata, 0, sizeof(tiledata));
 	if ( id < ITEMID_MULTI )
-		GetItemData(id, &tiledata);
+		static_cast<void>(GetItemData(id, &tiledata));
 	else
 		tiledata.m_weight = UCHAR_MAX;
 

@@ -337,7 +337,7 @@ void CChar::OnRemoveOb(CGObListRec *pObRec)	// override this = called when remov
 	if ( IsTrigUsed(TRIGGER_UNEQUIP) || IsTrigUsed(TRIGGER_ITEMUNEQUIP) )
 	{
 		if ( (layer != LAYER_DRAGGING) && !g_Serv.IsLoading() )
-			pItem->OnTrigger(ITRIG_UNEQUIP, this);
+			static_cast<void>(pItem->OnTrigger(ITRIG_UNEQUIP, this));
 	}
 
 	CContainer::OnRemoveOb(pObRec);
@@ -883,7 +883,7 @@ ANIM_TYPE CChar::GenerateAnimate(ANIM_TYPE action, bool fTranslate, bool fBackwa
 					return ANIM_ANI_SLEEP;
 			}
 
-			while ( (action != ANIM_WALK_UNARM) && !(pCharDef->m_Anims & (static_cast<DWORD>(1) << action)) )
+			while ( (action != ANIM_WALK_UNARM) && !(pCharDef->m_Anims & (static_cast<INT64>(1) << action)) )
 			{
 				// This anim is not supported, try to use one that is
 				switch ( action )
@@ -937,7 +937,7 @@ ANIM_TYPE CChar::GenerateAnimate(ANIM_TYPE action, bool fTranslate, bool fBackwa
 
 			// Available actions depend HEAVILY on creature type
 			// Monsters don't have all anims in common, so translate these
-			while ( (action != ANIM_WALK_UNARM) && !(pCharDef->m_Anims & (static_cast<DWORD>(1) << action)) )
+			while ( (action != ANIM_WALK_UNARM) && !(pCharDef->m_Anims & (static_cast<INT64>(1) << action)) )
 			{
 				switch ( action )
 				{
@@ -951,7 +951,7 @@ ANIM_TYPE CChar::GenerateAnimate(ANIM_TYPE action, bool fTranslate, bool fBackwa
 					case ANIM_MON_BlockLeft:
 						return ANIM_MON_GETHIT;
 					case ANIM_MON_GETHIT:
-						return (pCharDef->m_Anims & (static_cast<DWORD>(1) << ANIM_MON_Cast2)) ? ANIM_MON_Cast2 : ANIM_WALK_UNARM;
+						return (pCharDef->m_Anims & (static_cast<INT64>(1) << ANIM_MON_Cast2)) ? ANIM_MON_Cast2 : ANIM_WALK_UNARM;
 					case ANIM_MON_Stomp:
 						return ANIM_MON_PILLAGE;
 					case ANIM_MON_AttackBow:
@@ -1651,7 +1651,7 @@ bool CChar::ItemBounce(CItem *pItem, bool fDisplayMsg)
 		if ( IsTrigUsed(TRIGGER_DROPON_ITEM) )
 		{
 			CScriptTriggerArgs Args(pPack);
-			pItem->OnTrigger(ITRIG_DROPON_ITEM, this, &Args);
+			static_cast<void>(pItem->OnTrigger(ITRIG_DROPON_ITEM, this, &Args));
 
 			if ( pItem->IsDeleted() )	// the trigger had deleted the item
 				return false;
