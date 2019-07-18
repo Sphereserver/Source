@@ -2477,10 +2477,10 @@ bool PacketChatCommand::onReceive(NetState* net)
 		return false;
 
 	packetLength -= getPosition();
-	if (packetLength >= MAX_TALK_BUFFER)
+	if (packetLength > MAX_TALK_BUFFER + 2)
 		return false;
 
-	NCHAR text[MAX_TALK_BUFFER];
+	NCHAR text[MAX_TALK_BUFFER + 2];
 	readStringUNICODE(reinterpret_cast<WCHAR *>(text), (packetLength / sizeof(WCHAR)) - 1, false);
 
 	client->Event_ChatText(text, static_cast<int>(packetLength), CLanguageID(language));
@@ -2807,8 +2807,8 @@ bool PacketPartyMessage::onReceive(NetState* net)
 			}
 
 			CChar *pTarg = static_cast<CGrayUID>(readInt32()).CharFind();
-			NCHAR text[MAX_TALK_BUFFER];
-			int length = readStringNullUNICODE(reinterpret_cast<WCHAR *>(text), MAX_TALK_BUFFER - 2);
+			NCHAR text[MAX_TALK_BUFFER + 2];
+			int length = readStringNullUNICODE(reinterpret_cast<WCHAR *>(text), MAX_TALK_BUFFER - 1);
 			return character->m_pParty->MessageEvent(pTarg, character, text, length);
 		}
 		case PARTYMSG_MsgAll:
@@ -2819,8 +2819,8 @@ bool PacketPartyMessage::onReceive(NetState* net)
 				return false;
 			}
 
-			NCHAR text[MAX_TALK_BUFFER];
-			int length = readStringNullUNICODE(reinterpret_cast<WCHAR *>(text), MAX_TALK_BUFFER - 2);
+			NCHAR text[MAX_TALK_BUFFER + 2];
+			int length = readStringNullUNICODE(reinterpret_cast<WCHAR *>(text), MAX_TALK_BUFFER - 1);
 			return character->m_pParty->MessageEvent(NULL, character, text, length);
 		}
 		case PARTYMSG_Disband:

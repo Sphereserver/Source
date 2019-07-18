@@ -405,7 +405,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop(CScript &s, int iType, CTextConsole *p
 
 	if ( iType & 0x100 )	// FORTIMERF
 	{
-		TCHAR *ppArgs[1];
+		TCHAR *ppArgs[2];
 		if ( Str_ParseCmds(s.GetArgStr(), ppArgs, COUNTOF(ppArgs), " \t,") >= 1 )
 		{
 			char chFunctionName[1024];
@@ -1354,14 +1354,14 @@ bool CScriptObj::r_LoadVal(CScript &s)
 		return true;
 	}
 
-	int index = FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1);
+	int index = FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1, sizeof(sm_szLoadKeys[0]));
 	if ( index < 0 )
 	{
 		DEBUG_ERR(("Undefined keyword '%s'\n", s.GetKey()));
 		return false;
 	}
 
-	switch ( static_cast<SSC_TYPE>(index) )
+	switch ( index )
 	{
 		case SSC_VAR:
 		{
@@ -1492,7 +1492,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		return pRef->r_WriteVal(pszKey, sVal, pSrc);
 	}
 
-	int index = FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1);
+	int index = FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1, sizeof(sm_szLoadKeys[0]));
 	if ( index < 0 )
 	{
 		if ( (*pszKey == 'd') || (*pszKey == 'D') )
@@ -1546,7 +1546,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 	SKIP_SEPARATORS(pszKey);
 	bool fZero = false;
 
-	switch ( static_cast<SSC_TYPE>(index) )
+	switch ( index )
 	{
 		case SSC_BETWEEN:
 		case SSC_BETWEEN2:
@@ -2587,7 +2587,7 @@ bool CScriptTriggerArgs::r_Verb(CScript &s, CTextConsole *pSrc)
 	else
 		index = FindTableSorted(s.GetKey(), sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1);
 
-	switch ( static_cast<AGC_TYPE>(index) )
+	switch ( index )
 	{
 		case AGC_N:
 		case AGC_N1:
@@ -2604,7 +2604,7 @@ bool CScriptTriggerArgs::r_Verb(CScript &s, CTextConsole *pSrc)
 			return true;
 		case AGC_O:
 		{
-			LPCTSTR pszTemp = s.GetKey() + strlen(sm_szLoadKeys[AGC_O]);
+			LPCTSTR pszTemp = s.GetKey() + 4;
 			if ( *pszTemp == '.' )
 			{
 				++pszTemp;
@@ -2887,12 +2887,12 @@ bool CFileObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		return true;
 	}
 
-	FO_TYPE index = static_cast<FO_TYPE>(FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1));
+	int index = FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1, sizeof(sm_szLoadKeys[0]));
 	switch ( index )
 	{
 		case FO_FILEEXIST:
 		{
-			pszKey += strlen(sm_szLoadKeys[index]);
+			pszKey += 9;
 			GETNONWHITESPACE(pszKey);
 
 			TCHAR *ppCmd = Str_TrimWhitespace(const_cast<TCHAR *>(pszKey));
@@ -2907,7 +2907,7 @@ bool CFileObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		}
 		case FO_FILELINES:
 		{
-			pszKey += strlen(sm_szLoadKeys[index]);
+			pszKey += 9;
 			GETNONWHITESPACE(pszKey);
 
 			TCHAR *ppCmd = Str_TrimWhitespace(const_cast<TCHAR *>(pszKey));
@@ -2947,7 +2947,7 @@ bool CFileObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			break;
 		case FO_OPEN:
 		{
-			pszKey += strlen(sm_szLoadKeys[index]);
+			pszKey += 4;
 			GETNONWHITESPACE(pszKey);
 
 			TCHAR *pszFilename = Str_TrimWhitespace(const_cast<TCHAR *>(pszKey));
@@ -2972,7 +2972,7 @@ bool CFileObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			size_t iRead = 1;
 			if ( index != FO_READCHAR )
 			{
-				pszKey += strlen(sm_szLoadKeys[index]);
+				pszKey += 8;
 				GETNONWHITESPACE(pszKey);
 
 				iRead = Exp_GetVal(pszKey);
@@ -3001,7 +3001,7 @@ bool CFileObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		}
 		case FO_READLINE:
 		{
-			pszKey += strlen(sm_szLoadKeys[index]);
+			pszKey += 8;
 			GETNONWHITESPACE(pszKey);
 
 			TCHAR *pszBuffer = GetReadBuffer();
@@ -3050,7 +3050,7 @@ bool CFileObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		}
 		case FO_SEEK:
 		{
-			pszKey += strlen(sm_szLoadKeys[index]);
+			pszKey += 4;
 			GETNONWHITESPACE(pszKey);
 
 			if ( pszKey[0] == '\0' )
@@ -3088,7 +3088,7 @@ bool CFileObj::r_Verb(CScript &s, CTextConsole *pSrc)
 	if ( index < 0 )
 		return r_LoadVal(s);
 
-	switch ( static_cast<FOV_TYPE>(index) )
+	switch ( index )
 	{
 		case FOV_CLOSE:
 		{
@@ -3324,7 +3324,7 @@ bool CFileObjContainer::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole 
 		return false;
 	}
 
-	int index = FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1);
+	int index = FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1, sizeof(sm_szLoadKeys[0]));
 	if ( index < 0 )
 	{
 		size_t iNumber = static_cast<size_t>(Exp_GetLLVal(pszKey));
@@ -3343,7 +3343,7 @@ bool CFileObjContainer::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole 
 		return false;
 	}
 
-	switch ( static_cast<CFO_TYPE>(index) )
+	switch ( index )
 	{
 		case CFO_OBJECTPOOL:
 			sVal.FormatVal(GetFileNumber());
@@ -3407,7 +3407,7 @@ bool CFileObjContainer::r_Verb(CScript &s, CTextConsole *pSrc)
 		return r_LoadVal(s);
 	}
 
-	switch ( static_cast<CFOV_TYPE>(index) )
+	switch ( index )
 	{
 		case CFOV_CLOSEOBJECT:
 		case CFOV_RESETOBJECT:

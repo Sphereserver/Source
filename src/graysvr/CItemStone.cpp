@@ -748,7 +748,10 @@ void CItemStone::TheyDeclarePeace(CItemStone *pStone, bool fForcePeace)
 		return;
 
 	if ( !pMember->m_Enemy.m_fWeDeclared || fForcePeace )
+	{
 		delete pMember;
+		pMember = NULL;
+	}
 	else
 		pMember->m_Enemy.m_fTheyDeclared = false;
 }
@@ -761,7 +764,10 @@ void CItemStone::WeDeclarePeace(CItemStone *pStone, bool fForcePeace)
 		return;
 
 	if ( !pMember->m_Enemy.m_fTheyDeclared || fForcePeace )
+	{
 		delete pMember;
+		pMember = NULL;
+	}
 	else
 		pMember->m_Enemy.m_fWeDeclared = false;
 
