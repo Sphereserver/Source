@@ -24,16 +24,21 @@ public:
 private:
 	size_t m_iClients;	// how many clients in this sector
 
+public:
+	CServTime m_timeLastClient;		// age the sector based on last client here
+
 protected:
 	void OnRemoveOb(CGObListRec *pObRec);	// override this = called when removed from list
 
 public:
-	CServTime m_timeLastClient;		// age the sector based on last client here
-
-	size_t HasClients() const { return m_iClients; }
 	void AddCharToSector(CChar *pChar);
 	void ClientAttach();
 	void ClientDetach();
+
+	size_t HasClients() const
+	{
+		return m_iClients;
+	}
 
 private:
 	CCharsActiveList(const CCharsActiveList &copy);
@@ -48,12 +53,13 @@ public:
 
 	CItemsList() { };
 
+public:
+	static bool sm_fNotAMove;	// hack flag to prevent items from bouncing around too much
+
 protected:
 	void OnRemoveOb(CGObListRec *pObRec);	// override this = called when removed from list
 
 public:
-	static bool sm_fNotAMove;	// hack flag to prevent items from bouncing around too much
-
 	void AddItemToSector(CItem *pItem);
 
 private:
@@ -81,8 +87,9 @@ private:
 	CObPointSortArray &operator=(const CObPointSortArray &other);
 };
 
-class CSectorBase		// world sector
+class CSectorBase
 {
+	// World sector
 public:
 	static const char *m_sClassName;
 
@@ -117,7 +124,7 @@ public:
 	const CGrayMapBlock *GetMapBlock(const CPointMap &pt);
 	bool IsInDungeon() const;
 	CRegionBase *GetRegion(const CPointBase &pt, BYTE bType) const;
-	size_t GetRegions(const CPointBase &pt, BYTE bType, CRegionLinks &rList) const;
+	size_t GetRegions(const CPointBase &pt, BYTE bType, CRegionLinks &rlinks) const;
 	bool UnLinkRegion(CRegionBase *pRegionOld);
 	bool LinkRegion(CRegionBase *pRegionNew);
 
@@ -127,15 +134,9 @@ public:
 	CPointMap GetBasePoint() const;
 	CRectMap GetRect() const;
 
-	int GetIndex() const { return m_index; }
-	int GetMap() const { return m_map; }
-
-#define SECF_NoSleep	0x1
-#define SECF_InstaSleep	0x2
-
-	bool IsFlagSet(BYTE bFlag) const
+	int GetIndex() const
 	{
-		return (m_bFlags & bFlag);
+		return m_index;
 	}
 
 private:

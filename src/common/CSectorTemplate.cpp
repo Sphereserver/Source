@@ -1,13 +1,12 @@
 #include "../graysvr/graysvr.h"
-#include <algorithm>
 
-////////////////////////////////////////////////////////////////////////
-// -CCharsActiveList
+///////////////////////////////////////////////////////////
+// CCharsActiveList
 
 CCharsActiveList::CCharsActiveList()
 {
-	m_timeLastClient.Init();
 	m_iClients = 0;
+	m_timeLastClient.Init();
 }
 
 void CCharsActiveList::OnRemoveOb(CGObListRec *pObRec)
@@ -37,17 +36,17 @@ void CCharsActiveList::AddCharToSector(CChar *pChar)
 void CCharsActiveList::ClientAttach()
 {
 	ADDTOCALLSTACK("CCharsActiveList::ClientAttach");
-	m_iClients++;
+	++m_iClients;
 }
 
 void CCharsActiveList::ClientDetach()
 {
 	ADDTOCALLSTACK("CCharsActiveList::ClientDetach");
-	m_iClients--;
+	--m_iClients;
 }
 
-//////////////////////////////////////////////////////////////
-// -CItemList
+///////////////////////////////////////////////////////////
+// CItemsList
 
 bool CItemsList::sm_fNotAMove = false;
 
@@ -69,18 +68,18 @@ void CItemsList::AddItemToSector(CItem *pItem)
 {
 	ADDTOCALLSTACK("CItemsList::AddItemToSector");
 	// Add to top level
-	// Either MoveTo() or SetTimeout is being called
+	// Either MoveTo() or SetTimeout() is being called
 	ASSERT(pItem);
 	CGObList::InsertHead(pItem);
 }
 
-//////////////////////////////////////////////////////////////////
-// -CSectorBase
+///////////////////////////////////////////////////////////
+// CSectorBase
 
 CSectorBase::CSectorBase()
 {
-	m_map = 0;
 	m_index = 0;
+	m_map = 0;
 	m_bFlags = 0;
 }
 
@@ -94,12 +93,12 @@ void CSectorBase::Init(int index, int newmap)
 	ADDTOCALLSTACK("CSectorBase::Init");
 	if ( (newmap < 0) || (newmap >= 256) || !g_MapList.m_maps[newmap] )
 	{
-		g_Log.EventError("Trying to initalize a sector %d in unsupported map #%d. Defaulting to 0,0.\n", index, newmap);
+		g_Log.EventError("Trying to initalize a sector %d in unsupported map #%d. Defaulting to 0,0\n", index, newmap);
 	}
 	else if ( (index < 0) || (index >= g_MapList.GetSectorQty(newmap)) )
 	{
 		m_map = newmap;
-		g_Log.EventError("Trying to initalize a sector by sector number %d out-of-range for map #%d. Defaulting to 0,%d.\n", index, newmap, newmap);
+		g_Log.EventError("Trying to initalize a sector by sector number %d out-of-range for map #%d. Defaulting to 0,%d\n", index, newmap, newmap);
 	}
 	else
 	{
@@ -108,7 +107,7 @@ void CSectorBase::Init(int index, int newmap)
 	}
 }
 
-bool CSectorBase::CheckMapBlockTime(const MapBlockCache::value_type &elem) //static
+bool CSectorBase::CheckMapBlockTime(const MapBlockCache::value_type &elem)	// static
 {
 	ADDTOCALLSTACK("CSectorBase::CheckMapBlockTime");
 	return (elem.second->m_CacheTime.GetCacheAge() > m_iMapBlockCacheTime);
@@ -128,32 +127,21 @@ void CSectorBase::CheckMapBlockCache()
 {
 	ADDTOCALLSTACK("CSectorBase::CheckMapBlockCache");
 	// Clean out the sectors map cache if it has not been used recently
-	// iTime == 0 = delete all
 	if ( m_MapBlockCache.empty() )
 		return;
 
 	MapBlockCache::iterator it;
 	for (;;)
 	{
-		EXC_TRY("CheckMapBlockCache_new");
 		it = find_if(m_MapBlockCache.begin(), m_MapBlockCache.end(), CheckMapBlockTime);
 		if ( it == m_MapBlockCache.end() )
 			break;
 
 		if ( (m_iMapBlockCacheTime <= 0) || (it->second->m_CacheTime.GetCacheAge() >= m_iMapBlockCacheTime) )
 		{
-			EXC_SET("CacheTime up - Deleting");
 			delete it->second;
 			m_MapBlockCache.erase(it);
 		}
-
-		EXC_CATCH;
-		EXC_DEBUG_START;
-		CPointMap pt = GetBasePoint();
-		g_Log.EventDebug("m_MapBlockCache.erase(%ld)\n", it->first);
-		g_Log.EventDebug("check time %d, index %ld/%" FMTSIZE_T "\n", m_iMapBlockCacheTime, it->first, m_MapBlockCache.size());
-		g_Log.EventDebug("sector #%d [%hd,%hd,%hhd,%hhu]\n", GetIndex(), pt.m_x, pt.m_y, pt.m_z, pt.m_map);
-		EXC_DEBUG_END;
 	}
 }
 
@@ -169,13 +157,13 @@ const CGrayMapBlock *CSectorBase::GetMapBlock(const CPointMap &pt)
 
 	if ( !pt.IsValidXY() )
 	{
-		g_Log.EventWarn("Attempting to access invalid memory block at %s.\n", pt.WriteUsed());
+		g_Log.EventWarn("Attempting to access invalid memory block at %s\n", pt.WriteUsed());
 		return NULL;
 	}
 
 	CGrayMapBlock *pMapBlock;
 
-	// Find it in cache
+	// Try to find it in cache
 	long lBlock = ptBlock.GetPointSortIndex();
 	MapBlockCache::iterator it = m_MapBlockCache.find(lBlock);
 	if ( it != m_MapBlockCache.end() )
@@ -192,13 +180,13 @@ const CGrayMapBlock *CSectorBase::GetMapBlock(const CPointMap &pt)
 	}
 	catch ( const CGrayError &e )
 	{
-		g_Log.EventError("Exception creating new memory block at %s. (%s)\n", ptBlock.WriteUsed(), e.m_pszDescription);
+		g_Log.EventError("Exception creating new memory block at %s (%s)\n", ptBlock.WriteUsed(), e.m_pszDescription);
 		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 		return NULL;
 	}
 	catch ( ... )
 	{
-		g_Log.EventError("Exception creating new memory block at %s.\n", ptBlock.WriteUsed());
+		g_Log.EventError("Exception creating new memory block at %s\n", ptBlock.WriteUsed());
 		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 		return NULL;
 	}
@@ -211,8 +199,6 @@ const CGrayMapBlock *CSectorBase::GetMapBlock(const CPointMap &pt)
 bool CSectorBase::IsInDungeon() const
 {
 	ADDTOCALLSTACK("CSectorBase::IsInDungeon");
-	// What part of the maps are filled with dungeons
-	// Used for light/weather calcs.
 	CPointMap pt = GetBasePoint();
 	CRegionBase *pRegion = GetRegion(pt, REGION_TYPE_AREA);
 
@@ -230,7 +216,7 @@ CRegionBase *CSectorBase::GetRegion(const CPointBase &pt, BYTE bType) const
 	// REGION_TYPE_MULTI => RES_WORLDITEM = UID linked types in general (CRegionWorld)
 
 	size_t iQty = m_RegionLinks.GetCount();
-	for ( size_t i = 0; i < iQty; i++ )
+	for ( size_t i = 0; i < iQty; ++i )
 	{
 		CRegionBase *pRegion = m_RegionLinks[i];
 		ASSERT(pRegion);
@@ -267,13 +253,13 @@ CRegionBase *CSectorBase::GetRegion(const CPointBase &pt, BYTE bType) const
 	return NULL;
 }
 
-size_t CSectorBase::GetRegions(const CPointBase &pt, BYTE bType, CRegionLinks &rList) const
+size_t CSectorBase::GetRegions(const CPointBase &pt, BYTE bType, CRegionLinks &rlinks) const
 {
 	ADDTOCALLSTACK("CSectorBase::GetRegions");
 	// Get regions list (to cicle through intercepted house regions)
 
 	size_t iQty = m_RegionLinks.GetCount();
-	for ( size_t i = 0; i < iQty; i++ )
+	for ( size_t i = 0; i < iQty; ++i )
 	{
 		CRegionBase *pRegion = m_RegionLinks[i];
 		ASSERT(pRegion);
@@ -305,9 +291,9 @@ size_t CSectorBase::GetRegions(const CPointBase &pt, BYTE bType, CRegionLinks &r
 			continue;
 		if ( !pRegion->IsInside2d(pt) )
 			continue;
-		rList.Add(pRegion);
+		rlinks.Add(pRegion);
 	}
-	return rList.GetCount();
+	return rlinks.GetCount();
 }
 
 bool CSectorBase::UnLinkRegion(CRegionBase *pRegionOld)
@@ -328,22 +314,22 @@ bool CSectorBase::LinkRegion(CRegionBase *pRegionNew)
 	ASSERT(pRegionNew->IsOverlapped(GetRect()));
 
 	size_t iQty = m_RegionLinks.GetCount();
-	for ( size_t i = 0; i < iQty; i++ )
+	for ( size_t i = 0; i < iQty; ++i )
 	{
 		CRegionBase *pRegion = m_RegionLinks[i];
 		ASSERT(pRegion);
 		if ( pRegionNew == pRegion )
 		{
-			DEBUG_ERR(("region already linked!\n"));
+			DEBUG_ERR(("Region already linked\n"));
 			return false;
 		}
 
 		if ( pRegion->IsOverlapped(pRegionNew) )
 		{
-			// NOTE : We should use IsInside() but my version isn't completely accurate for it's FALSE return
+			// NOTE: We should use IsInside() but my version isn't completely accurate for it's FALSE return
 			if ( pRegion->IsEqualRegion(pRegionNew) )
 			{
-				DEBUG_ERR(("Conflicting region!\n"));
+				DEBUG_ERR(("Conflicting region\n"));
 				return false;
 			}
 
@@ -371,27 +357,23 @@ CTeleport *CSectorBase::GetTeleport(const CPointMap &pt) const
 	// Check if there's any teleport on this point
 
 	size_t i = m_Teleports.FindKey(pt.GetPointSortIndex());
-	if ( i == m_Teleports.BadIndex() )
-		return NULL;
-
-	CTeleport *pTeleport = static_cast<CTeleport *>(m_Teleports[i]);
-	if ( pTeleport->m_map != pt.m_map )
-		return NULL;
-	if ( abs(pTeleport->m_z - pt.m_z) > 5 )
-		return NULL;
-
-	return pTeleport;
+	if ( i != m_Teleports.BadIndex() )
+	{
+		CTeleport *pTeleport = static_cast<CTeleport *>(m_Teleports[i]);
+		if ( (pTeleport->m_map == pt.m_map) && (abs(pTeleport->m_z - pt.m_z) <= 5) )
+			return pTeleport;
+	}
+	return NULL;
 }
 
 bool CSectorBase::AddTeleport(CTeleport *pTeleport)
 {
 	ADDTOCALLSTACK("CSectorBase::AddTeleport");
-	// NOTE: can't be 2 teleports on the same place
 
 	size_t i = m_Teleports.FindKey(pTeleport->GetPointSortIndex());
 	if ( i != m_Teleports.BadIndex() )
 	{
-		DEBUG_ERR(("Conflicting teleport %s!\n", pTeleport->WriteUsed()));
+		DEBUG_ERR(("Conflicting teleport %s\n", pTeleport->WriteUsed()));
 		return false;
 	}
 	m_Teleports.AddSortKey(pTeleport, pTeleport->GetPointSortIndex());
@@ -401,7 +383,7 @@ bool CSectorBase::AddTeleport(CTeleport *pTeleport)
 CPointMap CSectorBase::GetBasePoint() const
 {
 	ADDTOCALLSTACK("CSectorBase::GetBasePoint");
-	// What is the coord base of this sector. upper left point
+	// Get base point of the sector (upper left point)
 	ASSERT((m_index >= 0) && (m_index < g_MapList.GetSectorQty(m_map)));
 
 	int iSectorCols = maximum(1, g_MapList.GetSectorCols(m_map));
@@ -413,13 +395,13 @@ CPointMap CSectorBase::GetBasePoint() const
 CRectMap CSectorBase::GetRect() const
 {
 	ADDTOCALLSTACK("CSectorBase::GetRect");
-	// Get a rectangle for the sector
+	// Get rectangle area of the sector
 	CPointMap pt = GetBasePoint();
 	CRectMap rect;
 	rect.m_left = pt.m_x;
 	rect.m_top = pt.m_y;
-	rect.m_right = pt.m_x + g_MapList.GetSectorSize(pt.m_map);	// east
-	rect.m_bottom = pt.m_y + g_MapList.GetSectorSize(pt.m_map);	// south
+	rect.m_right = pt.m_x + g_MapList.GetSectorSize(pt.m_map);
+	rect.m_bottom = pt.m_y + g_MapList.GetSectorSize(pt.m_map);
 	rect.m_map = pt.m_map;
 	return rect;
 }

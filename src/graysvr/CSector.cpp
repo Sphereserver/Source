@@ -738,9 +738,9 @@ bool CSector::MoveDisconnectedCharToSector(CChar *pChar)
 inline bool CSector::IsSectorSleeping() const
 {
 	ADDTOCALLSTACK_INTENSIVE("CSector::IsSectorSleeping");
-	if ( IsFlagSet(SECF_NoSleep) )
+	if ( m_bFlags & 0x1 )	// no sleep
 		return false;
-	if ( IsFlagSet(SECF_InstaSleep) )
+	if ( m_bFlags & 0x2 )	// instant sleep
 		return (m_Chars_Active.HasClients() > 0);
 
 	return (-g_World.GetTimeDiff(GetLastClientTime()) > 10 * 60 * TICK_PER_SEC);
