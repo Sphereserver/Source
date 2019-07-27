@@ -1,4 +1,7 @@
 #include "../graysvr/graysvr.h"
+#ifndef _WIN32
+	#include <algorithm>
+#endif
 
 ///////////////////////////////////////////////////////////
 // CCharsActiveList
