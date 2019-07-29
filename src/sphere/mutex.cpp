@@ -1,14 +1,15 @@
-#define _WIN32_DCOM
+#ifdef _WIN32
+	#define _WIN32_DCOM		// required to initialize OLE
+#endif
 #include "mutex.h"
 
-// *************************
-//		SimpleMutex
-// *************************
+///////////////////////////////////////////////////////////
+// SimpleMutex
 
 SimpleMutex::SimpleMutex()
 {
 #ifdef _WIN32
-	InitializeCriticalSectionAndSpinCount(&m_criticalSection, 0x80000020);
+	static_cast<void>(InitializeCriticalSectionAndSpinCount(&m_criticalSection, 0x80000020));
 #else
 	pthread_mutexattr_init(&m_criticalSectionAttr);
 	pthread_mutexattr_settype(&m_criticalSectionAttr, PTHREAD_MUTEX_RECURSIVE_NP);
@@ -26,7 +27,6 @@ SimpleMutex::~SimpleMutex()
 #endif
 }
 
-//lock
 void SimpleMutex::lock()
 {
 #ifdef _WIN32
@@ -36,7 +36,6 @@ void SimpleMutex::lock()
 #endif
 }
 
-//try lock
 bool SimpleMutex::tryLock()
 {
 #ifdef _WIN32
@@ -46,7 +45,6 @@ bool SimpleMutex::tryLock()
 #endif
 }
 
-//unlock
 void SimpleMutex::unlock()
 {
 #ifdef _WIN32
@@ -56,30 +54,21 @@ void SimpleMutex::unlock()
 #endif
 }
 
-// ****************************
-//		SimpleThreadLock
-// ****************************
+///////////////////////////////////////////////////////////
+// SimpleThreadLock
 
 SimpleThreadLock::SimpleThreadLock(SimpleMutex &mutex) : m_mutex(mutex), m_locked(true)
 {
 	mutex.lock();
 }
 
-//the destructor
 SimpleThreadLock::~SimpleThreadLock()
 {
 	m_mutex.unlock();
 }
 
-//report the state of locking when used as a boolean
-SimpleThreadLock::operator bool() const
-{
-	return m_locked;
-}
-
-// ****************************
-//		ManualThreadLock
-// ****************************
+///////////////////////////////////////////////////////////
+// ManualThreadLock
 
 ManualThreadLock::ManualThreadLock() : m_mutex(NULL), m_locked(false)
 {
@@ -90,7 +79,6 @@ ManualThreadLock::ManualThreadLock(SimpleMutex * mutex) : m_locked(false)
 	setMutex(mutex);
 }
 
-//the destructor
 ManualThreadLock::~ManualThreadLock()
 {
 	if (m_mutex != NULL)
@@ -100,12 +88,6 @@ ManualThreadLock::~ManualThreadLock()
 void ManualThreadLock::setMutex(SimpleMutex * mutex)
 {
 	m_mutex = mutex;
-}
-
-//report the state of locking when used as a boolean
-ManualThreadLock::operator bool() const
-{
-	return m_locked;
 }
 
 void ManualThreadLock::doLock()
@@ -129,9 +111,8 @@ void ManualThreadLock::doUnlock()
 	m_mutex->unlock();
 }
 
-// ****************************
-//		AutoResetEvent
-// ****************************
+///////////////////////////////////////////////////////////
+// AutoResetEvent
 
 AutoResetEvent::AutoResetEvent()
 {
@@ -212,9 +193,8 @@ void AutoResetEvent::signal()
 #endif
 }
 
-// ****************************
-//		ManualResetEvent
-// ****************************
+///////////////////////////////////////////////////////////
+// ManualResetEvent
 
 ManualResetEvent::ManualResetEvent()
 {

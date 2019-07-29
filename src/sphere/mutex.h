@@ -14,10 +14,6 @@ public:
 	SimpleMutex();
 	~SimpleMutex();
 
-private:
-	SimpleMutex(const SimpleMutex& copy);
-	SimpleMutex& operator=(const SimpleMutex& other);
-
 public:
 	void lock();
 	bool tryLock();
@@ -31,6 +27,9 @@ private:
 	pthread_mutexattr_t m_criticalSectionAttr;
 #endif
 
+private:
+	SimpleMutex(const SimpleMutex &copy);
+	SimpleMutex &operator=(const SimpleMutex &other);
 };
 
 class SimpleThreadLock
@@ -40,61 +39,54 @@ public:
 	~SimpleThreadLock();
 
 private:
-	SimpleThreadLock(const SimpleThreadLock& copy);
-	SimpleThreadLock& operator=(const SimpleThreadLock& other);
-
-public:
-	operator bool() const;
-
-private:
 	SimpleMutex &m_mutex;
 	bool m_locked;
+
+public:
+	operator bool() const
+	{
+		// Report the state of locking when used as a boolean
+		return m_locked;
+	}
+
+private:
+	SimpleThreadLock(const SimpleThreadLock &copy);
+	SimpleThreadLock &operator=(const SimpleThreadLock &other);
 };
 
 class ManualThreadLock
 {
 public:
 	ManualThreadLock();
-	explicit ManualThreadLock(SimpleMutex * mutex);
+	explicit ManualThreadLock(SimpleMutex *mutex);
 	~ManualThreadLock();
 
 private:
-	ManualThreadLock(const ManualThreadLock& copy);
-	ManualThreadLock& operator=(const ManualThreadLock& other);
+	SimpleMutex *m_mutex;
+	bool m_locked;
 
 public:
-	void setMutex(SimpleMutex * mutex);
-
-	operator bool() const;
+	void setMutex(SimpleMutex *mutex);
 	void doLock();
 	bool doTryLock();
 	void doUnlock();
 
+	operator bool() const
+	{
+		// Report the state of locking when used as a boolean
+		return m_locked;
+	}
+
 private:
-	SimpleMutex * m_mutex;
-	bool m_locked;
+	ManualThreadLock(const ManualThreadLock &copy);
+	ManualThreadLock &operator=(const ManualThreadLock &other);
 };
 
 class AutoResetEvent
 {
 public:
-#ifdef _WIN32
-	static const unsigned long _infinite = INFINITE;
-#else
-	static const unsigned long _infinite = 0xffffffff;
-#endif
-
-public:
 	AutoResetEvent();
 	~AutoResetEvent();
-
-private:
-	AutoResetEvent(const AutoResetEvent& copy);
-	AutoResetEvent& operator=(const AutoResetEvent& other);
-
-public:
-	void wait(unsigned long timeout = _infinite);
-	void signal();
 
 private:
 #ifdef _WIN32
@@ -105,29 +97,29 @@ private:
 	pthread_condattr_t m_conditionAttr;
 	pthread_cond_t m_condition;
 #endif
+
+public:
+#ifdef _WIN32
+	static const unsigned long _infinite = INFINITE;
+#else
+	static const unsigned long _infinite = 0xFFFFFFFF;
+#endif
+
+
+public:
+	void wait(unsigned long timeout = _infinite);
+	void signal();
+
+private:
+	AutoResetEvent(const AutoResetEvent &copy);
+	AutoResetEvent &operator=(const AutoResetEvent &other);
 };
 
 class ManualResetEvent
 {
 public:
-#ifdef _WIN32
-	static const unsigned long _infinite = INFINITE;
-#else
-	static const unsigned long _infinite = 0xffffffff;
-#endif
-
-public:
 	ManualResetEvent();
 	~ManualResetEvent();
-
-private:
-	ManualResetEvent(const ManualResetEvent& copy);
-	ManualResetEvent& operator=(const ManualResetEvent& other);
-
-public:
-	void wait(unsigned long timeout = _infinite);
-	void reset();
-	void set();
 
 private:
 #ifdef _WIN32
@@ -139,6 +131,22 @@ private:
 	pthread_condattr_t m_conditionAttr;
 	pthread_cond_t m_condition;
 #endif
+
+public:
+#ifdef _WIN32
+	static const unsigned long _infinite = INFINITE;
+#else
+	static const unsigned long _infinite = 0xFFFFFFFF;
+#endif
+
+public:
+	void wait(unsigned long timeout = _infinite);
+	void set();
+	void reset();
+
+private:
+	ManualResetEvent(const ManualResetEvent &copy);
+	ManualResetEvent &operator=(const ManualResetEvent &other);
 };
 
 #endif	// _INC_MUTEX_H

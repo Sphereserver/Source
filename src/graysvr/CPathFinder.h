@@ -3,13 +3,16 @@
 //		pathfinding algorytm based on AStar (A*) algorithm
 //		based on A* Pathfinder (Version 1.71a) by Patrick Lester, pwlester@policyalmanac.org
 //
-#ifndef PATH_FINDER_H
-#define PATH_FINDER_H
+#ifndef _INC_CPATHFINDER_H
+#define _INC_CPATHFINDER_H
+#pragma once
 
 #include "../graysvr/graysvr.h"
-#include <deque>
-#include <list>
-#include <algorithm>
+#ifndef _WIN32
+	#include <deque>
+	#include <list>
+	#include <algorithm>
+#endif
 
 using std::deque;
 using std::list;
@@ -119,6 +122,4 @@ protected:
 	void FillMap();	// prepares map with walkable statuses
 };
 
-
-
-#endif
+#endif	// _INC_CPATHFINDER_H

@@ -1,13 +1,16 @@
-// this thing is somehow required to be able to initialise OLE
-#define _WIN32_DCOM
+#ifdef _WIN32
+	#define _WIN32_DCOM		// required to initialize OLE
+#endif
 
 #include "../common/graycom.h"
 #include "../graysvr/graysvr.h"
 #include "threads.h"
-#if !defined(_WIN32) && !defined(_BSD)
-#include <sys/prctl.h>
+#ifndef _WIN32
+	#include <algorithm>
+	#ifndef _BSD
+		#include <sys/prctl.h>
+	#endif
 #endif
-#include <algorithm>
 
 // number of exceptions after which we restart thread and think that the thread have gone in exceptioning loops
 #define EXCEPTIONS_ALLOWED	10

@@ -1,6 +1,8 @@
-#include <algorithm>
-#include <stdio.h>
 #include "CMD5.h"
+#include <stdio.h>
+#ifndef _WIN32
+	#include <algorithm>
+#endif
 
 CMD5::CMD5()
 {
