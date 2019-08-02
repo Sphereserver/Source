@@ -300,10 +300,10 @@ bool CStoneMember::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc
 		switch ( index )
 		{
 			case STMM_GUILD_ISALLY:
-				sVal.FormatVal(m_Ally.m_fWeDeclared && m_Ally.m_fTheyDeclared);
+				sVal.FormatVal((m_Ally.m_fWeDeclared && m_Ally.m_fTheyDeclared));
 				break;
 			case STMM_GUILD_ISENEMY:
-				sVal.FormatVal(m_Enemy.m_fWeDeclared && m_Enemy.m_fTheyDeclared);
+				sVal.FormatVal((m_Enemy.m_fWeDeclared && m_Enemy.m_fTheyDeclared));
 				break;
 			case STMM_GUILD_THEYALLIANCE:
 				sVal.FormatVal(m_Ally.m_fTheyDeclared);
@@ -502,14 +502,14 @@ void CItemStone::ElectMaster()
 		// The stone is bad ?
 	}*/
 
-	CStoneMember *pMaster = NULL;
+	CStoneMember *pPrevMaster = NULL;
 	int iCountMembers = 0;
 
 	// Reset vote count
 	for ( CStoneMember *pMember = static_cast<CStoneMember *>(GetHead()); pMember != NULL; pMember = pMember->GetNext() )
 	{
 		if ( pMember->m_priv == STONEPRIV_MASTER )
-			pMaster = pMember;
+			pPrevMaster = pMember;
 		else if ( pMember->m_priv != STONEPRIV_MEMBER )
 			continue;
 
@@ -562,21 +562,9 @@ void CItemStone::ElectMaster()
 	// In the event of a tie, leave the current master as is
 	if ( !fTie && pMemberHighest )
 	{
-		if ( pMaster )
-			pMaster->m_priv = STONEPRIV_MEMBER;
+		if ( pPrevMaster )
+			pPrevMaster->m_priv = STONEPRIV_MEMBER;
 		pMemberHighest->m_priv = STONEPRIV_MASTER;
-	}
-
-	// No more members, declare peace (by force)
-	if ( !iCountMembers )
-	{
-		CStoneMember *pMemberNext = NULL;
-		for ( CStoneMember *pMember = static_cast<CStoneMember *>(GetHead()); pMember != NULL; pMember = pMemberNext )
-		{
-			pMemberNext = pMember->GetNext();
-			WeDeclarePeace(static_cast<CItemStone *>(pMember->m_uidLinkTo.ItemFind()), true);
-			pMember = NULL;		// pMember got deleted by the function above, so set it to NULL to make it able to receive the next value on loop
-		}
 	}
 }
 
@@ -954,7 +942,7 @@ bool CItemStone::r_Verb(CScript &s, CTextConsole *pSrc)		// execute command from
 					if ( !pMember->m_uidLinkTo.IsChar() )
 						continue;
 
-					if ( (priv == -1) || (pMember->m_priv == priv) )
+					if ( (priv == -1) || (priv == pMember->m_priv) )
 						pMember->r_Verb(script, pSrc);
 				}
 			}

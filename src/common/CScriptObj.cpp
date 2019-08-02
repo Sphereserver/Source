@@ -1354,7 +1354,7 @@ bool CScriptObj::r_LoadVal(CScript &s)
 		return true;
 	}
 
-	int index = FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1, sizeof(sm_szLoadKeys[0]));
+	int index = FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1);
 	if ( index < 0 )
 	{
 		DEBUG_ERR(("Undefined keyword '%s'\n", s.GetKey()));
@@ -1492,7 +1492,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		return pRef->r_WriteVal(pszKey, sVal, pSrc);
 	}
 
-	int index = FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1, sizeof(sm_szLoadKeys[0]));
+	int index = FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1);
 	if ( index < 0 )
 	{
 		if ( (*pszKey == 'd') || (*pszKey == 'D') )
@@ -2887,7 +2887,7 @@ bool CFileObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		return true;
 	}
 
-	int index = FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1, sizeof(sm_szLoadKeys[0]));
+	int index = FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1);
 	switch ( index )
 	{
 		case FO_FILEEXIST:
@@ -3324,7 +3324,7 @@ bool CFileObjContainer::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole 
 		return false;
 	}
 
-	int index = FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1, sizeof(sm_szLoadKeys[0]));
+	int index = FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1);
 	if ( index < 0 )
 	{
 		size_t iNumber = static_cast<size_t>(Exp_GetLLVal(pszKey));
