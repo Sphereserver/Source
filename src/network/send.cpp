@@ -3257,7 +3257,7 @@ void PacketGumpDialog::writeCompressedControls(const CGString* controls, size_t 
 		if ((error != Z_OK) || (compressLength <= 0))
 		{
 			delete[] compressBuffer;
-			g_Log.EventError("Compress failed with error %d when generating gump. Using old packet.\n", error);
+			g_Log.EventError("Compress failed with error %d when generating gump. Using old packet\n", error);
 			writeStandardControls(controls, controlCount, texts, textCount);
 			return;
 		}
@@ -3288,7 +3288,7 @@ void PacketGumpDialog::writeCompressedControls(const CGString* controls, size_t 
 		if ((error != Z_OK) || (compressLength <= 0))
 		{
 			delete[] compressBuffer;
-			g_Log.EventError("Compress failed with error %d when generating gump. Using old packet.\n", error);
+			g_Log.EventError("Compress failed with error %d when generating gump. Using old packet\n", error);
 			writeStandardControls(controls, controlCount, texts, textCount);
 			return;
 		}
@@ -3826,11 +3826,11 @@ PacketEnableMapDiffs::PacketEnableMapDiffs(const CClient* target) : PacketExtend
 {
 	ADDTOCALLSTACK("PacketEnableMapDiffs::PacketEnableMapDiffs");
 
-	int map = 0;
-	int mapCount = 1;
+	size_t map = 0;
+	size_t mapCount = 1;
 
 	// Find map count
-	for (map = 255; map >= 0; map--)
+	for (map = MAP_QTY - 1; map >= 0; --map)
 	{
 		if (!g_MapList.m_maps[map])
 			continue;
@@ -3841,7 +3841,7 @@ PacketEnableMapDiffs::PacketEnableMapDiffs(const CClient* target) : PacketExtend
 
 	writeInt32(static_cast<DWORD>(mapCount));
 
-	for (map = 0; map < mapCount; map++)
+	for (map = 0; map < mapCount; ++map)
 	{
 		if (g_MapList.m_maps[map] && g_Cfg.m_fUseMapDiffs)
 		{
@@ -4372,14 +4372,14 @@ bool PacketHouseDesign::writeLevelData(BYTE bLevel, WORD wItemCount, BYTE *pbDat
 	{
 		// An error occured with this floor, but we should be able to continue to the next without problems
 		delete[] compressBuffer;
-		g_Log.EventError("Compress failed with error %d when generating house design for floor %hhu on building 0%lx.\n", error, bLevel, static_cast<DWORD>(m_pHouse->GetUID()));
+		g_Log.EventError("Compress failed with error %d when generating house design for floor %hhu on building 0%lx\n", error, bLevel, static_cast<DWORD>(m_pHouse->GetUID()));
 		return false;
 	}
 	else if ( (compressLength <= 0) || (compressLength >= HOUSEDESIGN_LEVELDATA_BUFFER) )
 	{
 		// Too much data, but we should be able to continue to the next floor without problems
 		delete[] compressBuffer;
-		g_Log.EventWarn("Floor %hhu on building 0%lx too large with compressed length of %lu.\n", bLevel, static_cast<DWORD>(m_pHouse->GetUID()), compressLength);
+		g_Log.EventWarn("Floor %hhu on building 0%lx too large with compressed length of %lu\n", bLevel, static_cast<DWORD>(m_pHouse->GetUID()), compressLength);
 		return false;
 	}
 
@@ -4431,14 +4431,14 @@ void PacketHouseDesign::flushStairData(void)
 	{
 		// An error occured with this block, but we should be able to continue to the next without problems
 		delete[] compressBuffer;
-		g_Log.EventError("Compress failed with error %d when generating house design on building 0%lx.\n", error, static_cast<DWORD>(m_pHouse->GetUID()));
+		g_Log.EventError("Compress failed with error %d when generating house design on building 0%lx\n", error, static_cast<DWORD>(m_pHouse->GetUID()));
 		return;
 	}
 	else if ( (compressLength <= 0) || (compressLength >= HOUSEDESIGN_STAIRDATA_BUFFER) )
 	{
 		// Too much data, but we should be able to continue to the next block without problems
 		delete[] compressBuffer;
-		g_Log.EventWarn("Building 0%lx too large with compressed length of %lu.\n", static_cast<DWORD>(m_pHouse->GetUID()), compressLength);
+		g_Log.EventWarn("Building 0%lx too large with compressed length of %lu\n", static_cast<DWORD>(m_pHouse->GetUID()), compressLength);
 		return;
 	}
 

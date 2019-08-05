@@ -956,7 +956,7 @@ void CWorld::Init()
 
 	// Initialize all sectors
 	int iSectors = 0;
-	for ( int iMap = 0; iMap < 256; ++iMap )
+	for ( size_t iMap = 0; iMap < MAP_QTY; ++iMap )
 	{
 		if ( !g_MapList.m_maps[iMap] )
 			continue;
@@ -979,23 +979,25 @@ void CWorld::Init()
 		"Ter Mur"
 	};
 
-	for ( int iMap = 0; iMap < 256; ++iMap )
+	for ( size_t iMap = 0; iMap < MAP_QTY; ++iMap )
 	{
 		if ( !g_MapList.m_maps[iMap] )
 			continue;
 
+		int iSectorQty = g_MapList.GetSectorQty(iMap);
+
 		if ( *pszMaps )
 			strcat(pszMaps, ", ");
-		sprintf(pszMapName, "%d='%s'", iMap, (static_cast<size_t>(iMap) < COUNTOF(sm_szMapNames)) ? sm_szMapNames[iMap] : "[Unnamed]");
+		sprintf(pszMapName, "%" FMTSIZE_T "='%s'", iMap, (iMap < COUNTOF(sm_szMapNames)) ? sm_szMapNames[iMap] : "[Unnamed]");
 		strcat(pszMaps, pszMapName);
 
 		if ( *pszSectors )
 			strcat(pszSectors, ", ");
-		sprintf(pszSectorSize, "%d='%d'", iMap, g_MapList.GetSectorQty(iMap));
+		sprintf(pszSectorSize, "%" FMTSIZE_T "='%d'", iMap, iSectorQty);
 		strcat(pszSectors, pszSectorSize);
 
 		// Initialize sectors
-		for ( int iSector = 0; iSector < g_MapList.GetSectorQty(iMap); ++iSector )
+		for ( int iSector = 0; iSector < iSectorQty; ++iSector )
 		{
 			CSector *pSector = new CSector;
 			pSector->Init(iSector, iMap);
@@ -1432,12 +1434,13 @@ void CWorld::SaveStatics()
 		// Loop through all sectors and save static items
 		CSector *pSector;
 		CItem *pItem, *pNext;
-		for ( int iMap = 0; iMap < 256; ++iMap )
+		for ( size_t iMap = 0; iMap < MAP_QTY; ++iMap )
 		{
 			if ( !g_MapList.m_maps[iMap] )
 				continue;
 
-			for ( int iSector = 0; iSector < g_MapList.GetSectorQty(iMap); ++iSector )
+			int iSectorQty = g_MapList.GetSectorQty(iMap);
+			for ( int iSector = 0; iSector < iSectorQty; ++iSector )
 			{
 				pSector = GetSector(iMap, iSector);
 				if ( !pSector )
@@ -1745,12 +1748,13 @@ void CWorld::RespawnDeadNPCs()
 	// Respawn dead NPCs on all sectors
 
 	g_Serv.SetServerMode(SERVMODE_RestockAll);
-	for ( int iMap = 0; iMap < 256; ++iMap )
+	for ( size_t iMap = 0; iMap < MAP_QTY; ++iMap )
 	{
 		if ( !g_MapList.m_maps[iMap] )
 			continue;
 
-		for ( int iSector = 0; iSector < g_MapList.GetSectorQty(iMap); ++iSector )
+		int iSectorQty = g_MapList.GetSectorQty(iMap);
+		for ( int iSector = 0; iSector < iSectorQty; ++iSector )
 		{
 			CSector *pSector = GetSector(iMap, iSector);
 			if ( pSector )
@@ -1779,12 +1783,13 @@ void CWorld::Restock()
 				pBase->Restock();
 		}
 	}
-	for ( int iMap = 0; iMap < 256; ++iMap )
+	for ( size_t iMap = 0; iMap < MAP_QTY; ++iMap )
 	{
 		if ( !g_MapList.m_maps[iMap] )
 			continue;
 
-		for ( int iSector = 0; iSector < g_MapList.GetSectorQty(iMap); ++iSector )
+		int iSectorQty = g_MapList.GetSectorQty(iMap);
+		for ( int iSector = 0; iSector < iSectorQty; ++iSector )
 		{
 			CSector *pSector = GetSector(iMap, iSector);
 			if ( pSector )
@@ -1805,12 +1810,13 @@ void CWorld::ReloadMultis()
 	CItem *pItem = NULL;
 	CItemMulti *pMulti = NULL;
 
-	for ( int iMap = 0; iMap < 256; ++iMap )
+	for ( size_t iMap = 0; iMap < MAP_QTY; ++iMap )
 	{
 		if ( !g_MapList.m_maps[iMap] )
 			continue;
 
-		for ( int iSector = 0; iSector < g_MapList.GetSectorQty(iMap); ++iSector )
+		int iSectorQty = g_MapList.GetSectorQty(iMap);
+		for ( int iSector = 0; iSector < iSectorQty; ++iSector )
 		{
 			pSector = g_World.GetSector(iMap, iSector);
 			if ( !pSector )
@@ -2126,12 +2132,13 @@ void CWorld::OnTick()
 		m_timeSector = GetCurrentTime() + SECTOR_TICK_PERIOD;	// next tick time
 		++m_Sector_Pulse;
 
-		for ( int iMap = 0; iMap < 256; ++iMap )
+		for ( size_t iMap = 0; iMap < MAP_QTY; ++iMap )
 		{
 			if ( !g_MapList.m_maps[iMap] )
 				continue;
 
-			for ( int iSector = 0; iSector < g_MapList.GetSectorQty(iMap); ++iSector )
+			int iSectorQty = g_MapList.GetSectorQty(iMap);
+			for ( int iSector = 0; iSector < iSectorQty; ++iSector )
 			{
 				EXC_TRYSUB("Tick");
 
@@ -2139,7 +2146,7 @@ void CWorld::OnTick()
 				if ( pSector )
 					pSector->OnTick(m_Sector_Pulse);
 				else
-					g_Log.EventError("Ticking invalid sector %d for map %d\n", iSector, iMap);
+					g_Log.EventError("Ticking invalid sector %d for map %" FMTSIZE_T "\n", iSector, iMap);
 
 				EXC_CATCHSUB("Sector");
 			}
@@ -2201,27 +2208,28 @@ void CWorld::OnTick()
 
 CSector *CWorld::GetSector(int iMap, int iSector)
 {
-	ADDTOCALLSTACK_INTENSIVE("CWorld::GetSector");
+	//ADDTOCALLSTACK_INTENSIVE("CWorld::GetSector");
 	// Get an sector from map
 
-	if ( (iMap < 0) || (iMap >= 256) || !g_MapList.m_maps[iMap] )
+	if ( !g_MapList.IsMapSupported(iMap) )
 		return NULL;
 
-	if ( iSector >= g_MapList.GetSectorQty(iMap) )
+	int iSectorQty = g_MapList.GetSectorQty(iMap);
+	if ( iSector >= iSectorQty )
 	{
 		g_Log.EventError("Invalid sector %d for map %d specified\n", iSector, iMap);
 		return NULL;
 	}
 
 	int iBase = 0;
-	for ( int m = 0; m < 256; ++m )
+	for ( size_t m = 0; m < MAP_QTY; ++m )
 	{
 		if ( !g_MapList.m_maps[m] )
 			continue;
 
 		if ( m == iMap )
 		{
-			if ( iSector > g_MapList.GetSectorQty(iMap) )
+			if ( iSector > iSectorQty )
 				return NULL;
 
 			return m_Sectors[iBase + iSector];

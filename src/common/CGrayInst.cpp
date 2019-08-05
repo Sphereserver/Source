@@ -178,8 +178,8 @@ VERFILE_TYPE CGrayInstall::OpenFiles(DWORD dwMask)
 			case VERFILE_MAP:
 			{
 				// Map file is handled differently
-				TCHAR z[256];
-				for ( int m = 0; m < 256; ++m )
+				TCHAR z[MAP_QTY];
+				for ( size_t m = 0; m < MAP_QTY; ++m )
 				{
 					if ( g_MapList.IsInitialized(m) || (m == 0) )	// need at least a minimum of map0... (Ben)
 					{
@@ -397,7 +397,7 @@ void CGrayInstall::CloseFiles()
 	for ( size_t i = 0; i < VERFILE_QTY; ++i )
 		if ( m_File[i].IsFileOpen() ) m_File[i].Close();
 
-	for ( size_t i = 0; i < 256; ++i )
+	for ( size_t i = 0; i < MAP_QTY; ++i )
 	{
 		if ( m_Maps[i].IsFileOpen() )
 			m_Maps[i].Close();

@@ -756,9 +756,9 @@ size_t CPointBase::Read( TCHAR * pszVal )
 			if ( IsDigit(ppVal[3][0]))
 			{
 				m_map = static_cast<BYTE>(ATOI(ppVal[3]));
-				if ( !g_MapList.m_maps[m_map] )
+				if ( !g_MapList.IsMapSupported(m_map) )
 				{
-					g_Log.EventError("Unsupported map #%hhu specified, auto-fixing to 0\n", m_map);
+					g_Log.EventError("Unsupported map #%hhu specified (defaulting to 0)\n", m_map);
 					m_map = 0;
 				}
 			}
@@ -787,7 +787,7 @@ CSector * CPointBase::GetSector() const
 	}
 	else if ( !IsValidXY() )
 	{
-		g_Log.Event(LOGL_ERROR, "Point(%hd,%hd): trying to get a sector out of map #%hhu bounds (%d,%d). Defaulting to sector 0 of the map\n", m_x, m_y, m_map, g_MapList.GetX(m_map), g_MapList.GetY(m_map));
+		g_Log.Event(LOGL_ERROR, "Point(%hd,%hd): trying to get a sector out of map #%hhu bounds %d,%d (defaulting to sector 0)\n", m_x, m_y, m_map, g_MapList.GetX(m_map), g_MapList.GetY(m_map));
 		return g_World.GetSector(m_map, 0);
 	}
 
@@ -847,9 +847,9 @@ size_t CGRect::Read( LPCTSTR pszVal )
 	{
 		case 5:
 			m_map = ATOI(ppVal[4]);
-			if (( m_map < 0 ) || ( m_map >= 256 ) || !g_MapList.m_maps[m_map] )
+			if ( !g_MapList.IsMapSupported(m_map) )
 			{
-				g_Log.EventError("Unsupported map #%d specified, auto-fixing to 0\n", m_map);
+				g_Log.EventError("Unsupported map #%d specified (defaulting to 0)\n", m_map);
 				m_map = 0;
 			}
 			m_bottom = ATOI(ppVal[3]);
@@ -967,17 +967,15 @@ CSector * CGRect::GetSector( int i ) const	// ge all the sectors that make up th
 	rect.NormalizeRectMax();
 
 	int iWidth = rect.GetWidth() / iSectorSize;
-	ASSERT(iWidth <= g_MapList.GetSectorCols(m_map));
-
 	int iHeight = rect.GetHeight() / iSectorSize;
-	ASSERT(iHeight <= g_MapList.GetSectorRows(m_map));
+	int iSectorCols = g_MapList.GetSectorCols(m_map);
 
-	int iBase = ((rect.m_top / iSectorSize) * g_MapList.GetSectorCols(m_map)) + (rect.m_left / iSectorSize);
+	int iBase = ((rect.m_top / iSectorSize) * iSectorCols) + (rect.m_left / iSectorSize);
 
-	if ( i >= iHeight * iWidth )
+	if ( i >= iWidth * iHeight )
 		return !i ? g_World.GetSector(m_map, iBase) : NULL;
 
-	int iOffset = ((i / iWidth) * g_MapList.GetSectorCols(m_map)) + (i % iWidth);
+	int iOffset = ((i / iWidth) * iSectorCols) + (i % iWidth);
 	return g_World.GetSector(m_map, iBase + iOffset);
 }
 
@@ -986,13 +984,13 @@ CSector * CGRect::GetSector( int i ) const	// ge all the sectors that make up th
 
 void CRectMap::NormalizeRect()
 {
-	ADDTOCALLSTACK("CRectMap::NormalizeRect");
+	//ADDTOCALLSTACK("CRectMap::NormalizeRect");
 	CGRect::NormalizeRect();
 	NormalizeRectMax();
 }
 
 void CRectMap::NormalizeRectMax()
 {
-	ADDTOCALLSTACK("CRectMap::NormalizeRectMax");
-	CGRect::NormalizeRectMax( g_MapList.GetX(m_map), g_MapList.GetY(m_map));
+	//ADDTOCALLSTACK("CRectMap::NormalizeRectMax");
+	CGRect::NormalizeRectMax(g_MapList.GetX(m_map), g_MapList.GetY(m_map));
 }

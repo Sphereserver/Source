@@ -1421,6 +1421,7 @@ public:
 
 // Map definition.
 
+#define MAP_QTY				256
 #define UO_BLOCK_SIZE		8		// Base width/height size of a block.
 #define UO_BLOCK_ALIGN(i) 	((i) &~ 7 )
 #define UO_BLOCK_OFFSET(i)	((i) & 7 )	// i%UO_BLOCK_SIZE
@@ -1434,16 +1435,16 @@ class CMapDiffCollection;
 extern class CMapList
 {
 public:
-	int m_sizex[256];
-	int m_sizey[256];
-	int m_sectorsize[256];
-	bool m_maps[256];			// list of supported maps
-	int m_mapnum[256];			// real map number (0 for 0 and 1, 2 for 2, and so on) - file name
-	int m_mapid[256];			// map id used by the client
+	int m_sizex[MAP_QTY];
+	int m_sizey[MAP_QTY];
+	int m_sectorsize[MAP_QTY];
+	bool m_maps[MAP_QTY];			// list of supported maps
+	int m_mapnum[MAP_QTY];			// real map number (0 for 0 and 1, 2 for 2, and so on) - file name
+	int m_mapid[MAP_QTY];			// map id used by the client
 	CMapDiffCollection * m_pMapDiffCollection;
 
 protected:
-	bool m_mapsinitalized[256];
+	bool m_mapsinitalized[MAP_QTY];
 	bool DetectMapSize(int map);
 
 public:
@@ -1459,65 +1460,52 @@ public:
 
 	void Init();
 
-	bool IsMapSupported(int map)
+	bool IsMapSupported(int map) const
 	{
-		if ( (map < 0) || (map > 255) )
+		if ( (map < 0) || (map >= MAP_QTY) )
 			return false;
 		return m_maps[map];
 	}
 
-	int GetX(int map)
+	int GetX(int map) const
 	{
-		if ( (map < 0) || (map > 255) )
+		if ( (map < 0) || (map >= MAP_QTY) )
 			return 0;
 		return m_sizex[map];
 	}
-	int GetY(int map)
+	int GetY(int map) const
 	{
-		if ( (map < 0) || (map > 255) )
+		if ( (map < 0) || (map >= MAP_QTY) )
 			return 0;
 		return m_sizey[map];
 	}
 
-	int GetCenterX(int map)
+	int GetSectorSize(int map) const
 	{
-		if ( (map < 0) || (map > 255) )
-			return 0;
-		return m_sizex[map] / 2;
-	}
-	int GetCenterY(int map)
-	{
-		if ( (map < 0) || (map > 255) )
-			return 0;
-		return m_sizey[map] / 2;
-	}
-
-	int GetSectorSize(int map)
-	{
-		if ( (map < 0) || (map > 255) )
+		if ( (map < 0) || (map >= MAP_QTY) )
 			return 0;
 		return m_sectorsize[map];
 	}
-	int GetSectorCols(int map)
+	int GetSectorCols(int map) const
 	{
-		if ( (map < 0) || (map > 255) || (m_sectorsize[map] <= 0) )
+		if ( (map < 0) || (map >= MAP_QTY) || (m_sectorsize[map] <= 0) )
 			return 0;
 		return m_sizex[map] / m_sectorsize[map];
 	}
-	int GetSectorRows(int map)
+	int GetSectorRows(int map) const
 	{
-		if ( (map < 0) || (map > 255) || (m_sectorsize[map] <= 0) )
+		if ( (map < 0) || (map >= MAP_QTY) || (m_sectorsize[map] <= 0) )
 			return 0;
 		return m_sizey[map] / m_sectorsize[map];
 	}
-	int GetSectorQty(int map)
+	int GetSectorQty(int map) const
 	{
-		if ( (map < 0) || (map > 255) || (m_sectorsize[map] <= 0) )
+		if ( (map < 0) || (map >= MAP_QTY) || (m_sectorsize[map] <= 0) )
 			return 0;
 		return (m_sizex[map] / m_sectorsize[map]) * (m_sizey[map] / m_sectorsize[map]);
 	}
 
-	bool IsInitialized(int map)
+	bool IsInitialized(int map) const
 	{
 		return m_mapsinitalized[map];
 	}

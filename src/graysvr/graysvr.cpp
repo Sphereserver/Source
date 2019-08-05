@@ -134,9 +134,9 @@ bool CMapList::Load(int map, int maxx, int maxy, int sectorsize, int realmapnum,
 
 bool CMapList::Load(int map, char *args)
 {
-	if (( map < 0 ) || ( map > 255 ))
+	if ( (map < 0) || (map >= MAP_QTY) )
 	{
-		g_Log.EventError("Invalid map #%d couldn't be initialized.\n", map);
+		g_Log.EventError("Can't initialize invalid map #%d\n", map);
 		return false;
 	}
 	else if ( !m_mapsinitalized[map] )	// disable double intialization
@@ -162,7 +162,7 @@ bool CMapList::Load(int map, char *args)
 			{
 				if (( maxx < 8 ) || ( maxx % 8 ))
 				{
-					g_Log.EventError("MAP%d: X coord must be multiple of 8 (%d is invalid, %d is still effective).\n", map, maxx, m_sizex[map]);
+					g_Log.EventError("MAP%d: X coord must be multiple of 8 (%d is invalid, %d is still effective)\n", map, maxx, m_sizex[map]);
 				}
 				else m_sizex[map] = maxx;
 			}
@@ -170,21 +170,18 @@ bool CMapList::Load(int map, char *args)
 			{
 				if (( maxy < 8 ) || ( maxy % 8 ))
 				{
-					g_Log.EventError("MAP%d: Y coord must be multiple of 8 (%d is invalid, %d is still effective).\n", map, maxy, m_sizey[map]);
+					g_Log.EventError("MAP%d: Y coord must be multiple of 8 (%d is invalid, %d is still effective)\n", map, maxy, m_sizey[map]);
 				}
 				else m_sizey[map] = maxy;
 			}
 			if ( sectorsize > 0 )
 			{
-				if (( sectorsize < 8 ) || ( sectorsize % 8 ))
-				{
-					g_Log.EventError("MAP%d: Sector size must be multiple of 8 (%d is invalid, %d is still effective).\n", map, sectorsize, m_sectorsize[map]);
-				}
-				else if (( m_sizex[map]%sectorsize ) || ( m_sizey[map]%sectorsize ))
-				{
-					g_Log.EventError("MAP%d: Map dimensions [%d,%d] must be multiple of sector size (%d is invalid, %d is still effective).\n", map, m_sizex[map], m_sizey[map], sectorsize, m_sectorsize[map]);
-				}
-				else m_sectorsize[map] = sectorsize;
+				if ( (sectorsize < 8) || (sectorsize % 8) )
+					g_Log.EventError("MAP%d: Sector size must be multiple of 8 (%d is invalid, %d is still effective)\n", map, sectorsize, m_sectorsize[map]);
+				else if ( (m_sizex[map] % sectorsize) || (m_sizey[map] % sectorsize) )
+					g_Log.EventError("MAP%d: Map dimensions [%d,%d] must be multiple of sector size (%d is invalid, %d is still effective)\n", map, m_sizex[map], m_sizey[map], sectorsize, m_sectorsize[map]);
+				else
+					m_sectorsize[map] = sectorsize;
 			}
 			if ( realmapnum >= 0 )
 				m_mapnum[map] = realmapnum;
@@ -264,7 +261,7 @@ bool CMapList::DetectMapSize(int map)
 			break;
 
 		default:
-			DEBUG_ERR(("Unknown map index %d with file size of %lu bytes. Please specify the correct size manually.\n", index, g_Install.m_Maps[index].GetLength()));
+			DEBUG_ERR(("Unknown map index %d with file size of %lu bytes. Please specify the correct size manually\n", index, g_Install.m_Maps[index].GetLength()));
 			break;
 	}
 
@@ -273,7 +270,7 @@ bool CMapList::DetectMapSize(int map)
 
 void CMapList::Init()
 {
-	for ( int i = 0; i < 256; i++ )
+	for ( size_t i = 0; i < MAP_QTY; ++i )
 	{
 		if ( m_maps[i] )	// map marked as available. check whatever it's possible
 		{
@@ -1163,7 +1160,7 @@ void defragSphere(char *path)
 		ouf.Close();
 	}
 	free(uids);
-	g_Log.Event(LOGL_EVENT,	"Defragmentation complete.\n");
+	g_Log.Event(LOGL_EVENT,	"Defragmentation complete\n");
 }
 
 #ifdef _WIN32

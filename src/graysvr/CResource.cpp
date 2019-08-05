@@ -852,9 +852,8 @@ bool CResource::r_LoadVal(CScript &s)
 						if ( pszArgs && *pszArgs )
 						{
 							CScript scp(pszArgs);
-							int iSectors = g_MapList.GetSectorQty(iMap);
-
-							for ( int i = 0; i < iSectors; ++i )
+							int iSectorQty = g_MapList.GetSectorQty(iMap);
+							for ( int i = 0; i < iSectorQty; ++i )
 								g_World.GetSector(iMap, i)->r_Verb(scp, &g_Serv);
 						}
 						return true;
@@ -1282,9 +1281,9 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			else if ( !strcmpi(pszCmd, "BOUND.Y") )
 				sVal.FormatVal(g_MapList.GetY(iMap));
 			else if ( !strcmpi(pszCmd, "CENTER.X") )
-				sVal.FormatVal(g_MapList.GetCenterX(iMap));
+				sVal.FormatVal(g_MapList.GetX(iMap) / 2);
 			else if ( !strcmpi(pszCmd, "CENTER.Y") )
-				sVal.FormatVal(g_MapList.GetCenterY(iMap));
+				sVal.FormatVal(g_MapList.GetY(iMap) / 2);
 			else if ( !strcmpi(pszCmd, "SECTOR.SIZE") )
 				sVal.FormatVal(g_MapList.GetSectorSize(iMap));
 			else if ( !strcmpi(pszCmd, "SECTOR.ROWS") )
@@ -3508,7 +3507,7 @@ bool CResource::Load(bool fResync)
 	{
 		if ( !OpenResourceFind(m_scpTables, SPHERE_FILE "tables") )
 		{
-			g_Log.Event(LOGL_FATAL, "File " SPHERE_FILE "tables." SPHERE_SCRIPT " is corrupt or missing\n");
+			g_Log.Event(LOGL_FATAL, "File " SPHERE_FILE "tables" SPHERE_SCRIPT " is corrupt or missing\n");
 			return false;
 		}
 

@@ -1060,7 +1060,7 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 		case CV_ADDCLILOC:
 		{
 			// Add cliloc in @ClientTooltip trigger
-			TCHAR *ppArgs[256];
+			TCHAR *ppArgs[16];
 			size_t iArgQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), ",");
 			DWORD dwClilocId = static_cast<DWORD>(Exp_GetLLVal(ppArgs[0]));
 
@@ -1082,19 +1082,14 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 		}
 		case CV_ADDCONTEXTENTRY:
 		{
-			TCHAR *ppArgs[20];
-			if ( Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), ",") > 4 )
-			{
-				DEBUG_ERR(("%s: too much arguments\n", sm_szVerbKeys[index]));
-				return true;
-			}
+			// Add context menu entry in @[Item/Char]ContextMenuRequest trigger
 			if ( !m_pPopupPacket )
-			{
-				DEBUG_ERR(("%s: function not called under @[Item/Char]ContextMenuRequest trigger\n", sm_szVerbKeys[index]));
 				return true;
-			}
 
-			for ( int i = 0; i < 4; ++i )
+			TCHAR *ppArgs[4];
+			size_t iArgQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), ",");
+
+			for ( size_t i = 0; i < iArgQty; ++i )
 			{
 				if ( (i > 1) && IsStrEmpty(ppArgs[i]) )
 					continue;
@@ -1129,12 +1124,13 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 			CItem *pItem = NULL;
 			CSector *pSector = NULL;
 			CResourceDef *pSpawnDef = NULL;
-			for ( int m = 0; (m < 256) && !fFound; ++m )
+			for ( size_t m = 0; (m < MAP_QTY) && !fFound; ++m )
 			{
 				if ( !g_MapList.m_maps[m] )
 					continue;
 
-				for ( int s = 0; (s < g_MapList.GetSectorQty(m)) && !fFound; ++s )
+				int iSectorQty = g_MapList.GetSectorQty(m);
+				for ( int s = 0; (s < iSectorQty) && !fFound; ++s )
 				{
 					pSector = g_World.GetSector(m, s);
 					if ( !pSector )
@@ -1585,7 +1581,7 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 		case CV_SMSGL:
 		case CV_SYSMESSAGELOC:
 		{
-			TCHAR *ppArgs[256];
+			TCHAR *ppArgs[16];
 			size_t iArgQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), ",");
 			if ( iArgQty > 1 )
 			{
@@ -1610,7 +1606,7 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 		case CV_SMSGLEX:
 		case CV_SYSMESSAGELOCEX:
 		{
-			TCHAR *ppArgs[256];
+			TCHAR *ppArgs[16];
 			size_t iArgQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), ",");
 			if ( iArgQty > 2 )
 			{

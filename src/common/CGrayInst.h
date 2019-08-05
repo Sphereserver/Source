@@ -28,21 +28,21 @@ public:
 	};
 
 public:
-	VERFILE_FORMAT m_FileFormat[VERFILE_QTY];	// File format versions
-	bool m_IsMultiUopFormat;					// True when multi file is MultiCollection.uop instead multi.mul (STILL INCOMPLETE)
-	bool m_IsMapUopFormat[256];					// True when map file is map[x]LegacyMUL.uop instead map[x].mul
-	MapAddress m_UopMapAddress[256][256];		// For UOP parsing (note: might need to be ajusted later if format changes)
+	VERFILE_FORMAT m_FileFormat[VERFILE_QTY];		// File format versions
+	bool m_IsMultiUopFormat;						// True when multi file is MultiCollection.uop instead multi.mul (STILL INCOMPLETE)
+	bool m_IsMapUopFormat[MAP_QTY];					// True when map file is map[x]LegacyMUL.uop instead map[x].mul
+	MapAddress m_UopMapAddress[MAP_QTY][MAP_QTY];	// For UOP parsing (note: might need to be ajusted later if format changes)
 
-	CGFile m_File[VERFILE_QTY];	// List of files to access
-	CGFile m_Maps[256];			// mapX.mul
-	CGFile m_Mapdif[256];		// mapdifX.mul
-	CGFile m_Mapdifl[256];		// mapdiflX.mul
-	CGFile m_Statics[256];		// staticsX.mul
-	CGFile m_Staidx[256];		// staidxX.mul
-	CGFile m_Stadif[256];		// stadifX.mul
-	CGFile m_Stadifi[256];		// stadifiX.mul
-	CGFile m_Stadifl[256];		// stadiflX.mul
-	CCSVFile m_CsvFiles[8];		// doors.txt, stairs.txt, roof.txt, misc.txt, teleprts.txt, floors.txt, walls.txt
+	CGFile m_File[VERFILE_QTY];		// List of files to access
+	CGFile m_Maps[MAP_QTY];			// mapX.mul
+	CGFile m_Mapdif[MAP_QTY];		// mapdifX.mul
+	CGFile m_Mapdifl[MAP_QTY];		// mapdiflX.mul
+	CGFile m_Statics[MAP_QTY];		// staticsX.mul
+	CGFile m_Staidx[MAP_QTY];		// staidxX.mul
+	CGFile m_Stadif[MAP_QTY];		// stadifX.mul
+	CGFile m_Stadifi[MAP_QTY];		// stadifiX.mul
+	CGFile m_Stadifl[MAP_QTY];		// stadiflX.mul
+	CCSVFile m_CsvFiles[8];			// doors.txt, stairs.txt, roof.txt, misc.txt, teleprts.txt, floors.txt, walls.txt
 
 private:
 	CGString m_sPreferPath;		// Prefer path in which to choose the files (look here first)

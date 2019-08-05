@@ -194,7 +194,7 @@ class CMapDiffCollection
 private:
 	bool m_bLoaded;
 
-	CMapDiffBlockArray m_pMapDiffBlocks[256];
+	CMapDiffBlockArray m_pMapDiffBlocks[MAP_QTY];
 	CMapDiffBlock *GetNewBlock(DWORD dwBlockId, int map);
 	void LoadMapDiffs();
 

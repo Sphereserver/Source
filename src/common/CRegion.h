@@ -354,8 +354,8 @@ public:
 			m_right = m_left;
 			m_left = wtmp;
 		}
-		if (( m_map < 0 ) || ( m_map >= 256 )) m_map = 0;
-		if ( !g_MapList.m_maps[m_map] ) m_map = 0;
+		if ( !g_MapList.IsMapSupported(m_map) )
+			m_map = 0;
 	}
 
 	void SetRect( int left, int top, int right, int bottom, int map )

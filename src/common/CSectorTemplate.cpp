@@ -94,14 +94,14 @@ CSectorBase::~CSectorBase()
 void CSectorBase::Init(int index, int newmap)
 {
 	ADDTOCALLSTACK("CSectorBase::Init");
-	if ( (newmap < 0) || (newmap >= 256) || !g_MapList.m_maps[newmap] )
+	if ( !g_MapList.IsMapSupported(newmap) )
 	{
-		g_Log.EventError("Trying to initalize a sector %d in unsupported map #%d. Defaulting to 0,0\n", index, newmap);
+		g_Log.EventError("Trying to initalize sector %d in unsupported map #%d (defaulting to 0,0)\n", index, newmap);
 	}
 	else if ( (index < 0) || (index >= g_MapList.GetSectorQty(newmap)) )
 	{
 		m_map = newmap;
-		g_Log.EventError("Trying to initalize a sector by sector number %d out-of-range for map #%d. Defaulting to 0,%d\n", index, newmap, newmap);
+		g_Log.EventError("Trying to initalize sector %d out-of-range for map #%d (defaulting to 0,%d)\n", index, newmap, newmap);
 	}
 	else
 	{
@@ -400,11 +400,13 @@ CRectMap CSectorBase::GetRect() const
 	ADDTOCALLSTACK("CSectorBase::GetRect");
 	// Get rectangle area of the sector
 	CPointMap pt = GetBasePoint();
+	int iSectorSize = g_MapList.GetSectorSize(pt.m_map);
+
 	CRectMap rect;
 	rect.m_left = pt.m_x;
 	rect.m_top = pt.m_y;
-	rect.m_right = pt.m_x + g_MapList.GetSectorSize(pt.m_map);
-	rect.m_bottom = pt.m_y + g_MapList.GetSectorSize(pt.m_map);
+	rect.m_right = pt.m_x + iSectorSize;
+	rect.m_bottom = pt.m_y + iSectorSize;
 	rect.m_map = pt.m_map;
 	return rect;
 }
