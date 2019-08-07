@@ -3826,8 +3826,8 @@ PacketEnableMapDiffs::PacketEnableMapDiffs(const CClient* target) : PacketExtend
 {
 	ADDTOCALLSTACK("PacketEnableMapDiffs::PacketEnableMapDiffs");
 
-	size_t map = 0;
-	size_t mapCount = 1;
+	int map = 0;
+	int mapCount = 1;
 
 	// Find map count
 	for (map = MAP_QTY - 1; map >= 0; --map)

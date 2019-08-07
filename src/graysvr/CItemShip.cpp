@@ -522,7 +522,7 @@ bool CItemShip::Ship_Move(DIR_TYPE dir, int iDist)
 	CPointMap ptRight = m_pRegion->GetRegionCorner(GetDirTurn(dir, 1 + (dir % 2)));
 	CPointMap ptTest(ptLeft.m_x, ptLeft.m_y, GetTopZ(), GetTopMap());
 
-	signed short iMapBoundX = (ptBack.m_map <= 1) ? 0x1400 : static_cast<signed short>(g_MapList.GetX(ptBack.m_map));
+	signed short iMapBoundX = (ptBack.m_map <= 1) ? UO_SIZE_X_REAL : static_cast<signed short>(g_MapList.GetX(ptBack.m_map));
 	signed short iMapBoundY = static_cast<signed short>(g_MapList.GetY(ptBack.m_map));
 
 	bool fStopped = false, fTurbulent = false, fMapBoundary = false;

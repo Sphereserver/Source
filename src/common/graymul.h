@@ -1421,10 +1421,10 @@ public:
 
 // Map definition.
 
-#define MAP_QTY				256
-#define UO_BLOCK_SIZE		8		// Base width/height size of a block.
-#define UO_BLOCK_ALIGN(i) 	((i) &~ 7 )
-#define UO_BLOCK_OFFSET(i)	((i) & 7 )	// i%UO_BLOCK_SIZE
+#define MAP_QTY				40
+#define UO_BLOCK_SIZE		8			// Base width/height size of a block
+#define UO_BLOCK_ALIGN(i) 	((i) & ~7)
+#define UO_BLOCK_OFFSET(i)	((i) & 7)	// i % UO_BLOCK_SIZE
 #define UO_SIZE_Z			127
 #define UO_SIZE_MIN_Z		-127
 

@@ -108,18 +108,17 @@ void TriglistPrint()
 
 CMapList::CMapList()
 {
-	memset(m_mapsinitalized, 0, sizeof(m_mapsinitalized));
 	memset(m_sizex, 0, sizeof(m_sizex));
 	memset(m_sizey, 0, sizeof(m_sizey));
+	memset(m_sectorsize, 0, sizeof(m_sectorsize));
 	memset(m_maps, true, sizeof(m_maps));
 	memset(m_mapnum, -1, sizeof(m_mapnum));
 	memset(m_mapid, -1, sizeof(m_mapid));
-	memset(m_sectorsize, 0, sizeof(m_sectorsize));
-
-	for (int i = 0; i < 6; i++)
-		Load(i, 0, 0, 0, i, i);
-
+	memset(m_mapsinitalized, 0, sizeof(m_mapsinitalized));
 	m_pMapDiffCollection = NULL;
+
+	for ( size_t m = 0; m < MAP_QTY; ++m )
+		Load(m, 0, 0, 0, m, m);
 }
 
 bool CMapList::Load(int map, int maxx, int maxy, int sectorsize, int realmapnum, int mapid)

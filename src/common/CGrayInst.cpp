@@ -178,7 +178,7 @@ VERFILE_TYPE CGrayInstall::OpenFiles(DWORD dwMask)
 			case VERFILE_MAP:
 			{
 				// Map file is handled differently
-				TCHAR z[MAP_QTY];
+				TCHAR szFileName[_MAX_PATH];
 				for ( size_t m = 0; m < MAP_QTY; ++m )
 				{
 					if ( g_MapList.IsInitialized(m) || (m == 0) )	// need at least a minimum of map0... (Ben)
@@ -192,15 +192,15 @@ VERFILE_TYPE CGrayInstall::OpenFiles(DWORD dwMask)
 
 						if ( !m_Maps[index].IsFileOpen() )
 						{
-							sprintf(z, "map%d.mul", index);
-							OpenFile(m_Maps[index], z, OF_READ|OF_SHARE_DENY_WRITE);
+							sprintf(szFileName, "map%d.mul", index);
+							OpenFile(m_Maps[index], szFileName, OF_READ|OF_SHARE_DENY_WRITE);
 
 							if ( m_Maps[index].IsFileOpen() )
 								m_IsMapUopFormat[index] = false;
 							else
 							{
-								sprintf(z, "map%dLegacyMUL.uop", index);
-								OpenFile(m_Maps[index], z, OF_READ|OF_SHARE_DENY_WRITE);
+								sprintf(szFileName, "map%dLegacyMUL.uop", index);
+								OpenFile(m_Maps[index], szFileName, OF_READ|OF_SHARE_DENY_WRITE);
 
 								// Should parse uop file here for faster reference later
 								if ( m_Maps[index].IsFileOpen() )
@@ -247,8 +247,8 @@ VERFILE_TYPE CGrayInstall::OpenFiles(DWORD dwMask)
 
 											for ( DWORD x = 0; x < dwLoop; ++x )
 											{
-												sprintf(z, "build/map%dlegacymul/%.8lu.dat", index, x);
-												if ( HashFileName(z) == qwHash )
+												sprintf(szFileName, "build/map%dlegacymul/%.8lu.dat", index, x);
+												if ( HashFileName(szFileName) == qwHash )
 												{
 													pMapAddress.dwFirstBlock = x * 4096;
 													pMapAddress.dwLastBlock = (x * 4096) + (dwCompressedSize / 196) - 1;
@@ -270,40 +270,40 @@ VERFILE_TYPE CGrayInstall::OpenFiles(DWORD dwMask)
 						}
 						if ( !m_Staidx[index].IsFileOpen() )
 						{
-							sprintf(z, "staidx%d.mul", index);
-							OpenFile(m_Staidx[index], z, OF_READ|OF_SHARE_DENY_WRITE);
+							sprintf(szFileName, "staidx%d.mul", index);
+							OpenFile(m_Staidx[index], szFileName, OF_READ|OF_SHARE_DENY_WRITE);
 						}
 						if ( !m_Statics[index].IsFileOpen() )
 						{
-							sprintf(z, "statics%d.mul", index);
-							OpenFile(m_Statics[index], z, OF_READ|OF_SHARE_DENY_WRITE);
+							sprintf(szFileName, "statics%d.mul", index);
+							OpenFile(m_Statics[index], szFileName, OF_READ|OF_SHARE_DENY_WRITE);
 						}
 						if ( g_Cfg.m_fUseMapDiffs )
 						{
 							if ( !m_Mapdif[index].IsFileOpen() )
 							{
-								sprintf(z, "mapdif%d.mul", index);
-								OpenFile(m_Mapdif[index], z, OF_READ|OF_SHARE_DENY_WRITE);
+								sprintf(szFileName, "mapdif%d.mul", index);
+								OpenFile(m_Mapdif[index], szFileName, OF_READ|OF_SHARE_DENY_WRITE);
 							}
 							if ( !m_Mapdifl[index].IsFileOpen() )
 							{
-								sprintf(z, "mapdifl%d.mul", index);
-								OpenFile(m_Mapdifl[index], z, OF_READ|OF_SHARE_DENY_WRITE);
+								sprintf(szFileName, "mapdifl%d.mul", index);
+								OpenFile(m_Mapdifl[index], szFileName, OF_READ|OF_SHARE_DENY_WRITE);
 							}
 							if ( !m_Stadif[index].IsFileOpen() )
 							{
-								sprintf(z, "stadif%d.mul", index);
-								OpenFile(m_Stadif[index], z, OF_READ|OF_SHARE_DENY_WRITE);
+								sprintf(szFileName, "stadif%d.mul", index);
+								OpenFile(m_Stadif[index], szFileName, OF_READ|OF_SHARE_DENY_WRITE);
 							}
 							if ( !m_Stadifi[index].IsFileOpen() )
 							{
-								sprintf(z, "stadifi%d.mul", index);
-								OpenFile(m_Stadifi[index], z, OF_READ|OF_SHARE_DENY_WRITE);
+								sprintf(szFileName, "stadifi%d.mul", index);
+								OpenFile(m_Stadifi[index], szFileName, OF_READ|OF_SHARE_DENY_WRITE);
 							}
 							if ( !m_Stadifl[index].IsFileOpen() )
 							{
-								sprintf(z, "stadifl%d.mul", index);
-								OpenFile(m_Stadifl[index], z, OF_READ|OF_SHARE_DENY_WRITE);
+								sprintf(szFileName, "stadifl%d.mul", index);
+								OpenFile(m_Stadifl[index], szFileName, OF_READ|OF_SHARE_DENY_WRITE);
 							}
 						}
 
@@ -395,7 +395,10 @@ void CGrayInstall::CloseFiles()
 	ADDTOCALLSTACK("CGrayInstall::CloseFiles");
 
 	for ( size_t i = 0; i < VERFILE_QTY; ++i )
-		if ( m_File[i].IsFileOpen() ) m_File[i].Close();
+	{
+		if ( m_File[i].IsFileOpen() )
+			m_File[i].Close();
+	}
 
 	for ( size_t i = 0; i < MAP_QTY; ++i )
 	{

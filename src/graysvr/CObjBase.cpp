@@ -1660,7 +1660,7 @@ bool CObjBase::r_LoadVal(CScript &s)
 			pt.m_map = static_cast<BYTE>(s.GetArgVal());
 
 			// Is the desired mapplane allowed?
-			if ( !g_MapList.m_maps[pt.m_map] )
+			if ( !g_MapList.IsMapSupported(pt.m_map) )
 				return false;
 
 			MoveTo(pt);

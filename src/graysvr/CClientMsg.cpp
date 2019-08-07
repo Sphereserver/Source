@@ -881,7 +881,7 @@ void CClient::addBarkParse(LPCTSTR pszText, const CObjBaseTemplate *pSrc, HUE_TY
 	{
 		case 3:		// extended localized message (with affixed ASCII text)
 		{
-			TCHAR *ppArgs[256];
+			TCHAR *ppArgs[16];
 			size_t iArgQty = Str_ParseCmds(const_cast<TCHAR *>(m_BarkBuffer.GetPtr()), ppArgs, COUNTOF(ppArgs), ",");
 
 			CGString sVal;
@@ -898,7 +898,7 @@ void CClient::addBarkParse(LPCTSTR pszText, const CObjBaseTemplate *pSrc, HUE_TY
 
 		case 2:		// localized
 		{
-			TCHAR *ppArgs[256];
+			TCHAR *ppArgs[16];
 			size_t iArgQty = Str_ParseCmds(const_cast<TCHAR *>(m_BarkBuffer.GetPtr()), ppArgs, COUNTOF(ppArgs), ",");
 
 			CGString sVal;
