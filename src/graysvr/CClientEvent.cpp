@@ -2174,6 +2174,11 @@ void CClient::Event_AOSPopupMenuRequest(CGrayUID uid) //construct packet after a
 		else if ( pChar->m_pPlayer && (pChar == m_pChar) )
 		{
 			m_pPopupPacket->addOption(POPUP_OPEN_BACKPACK, 6145);
+			if ( m_NetState->isClientVersion(MINCLIVER_NEWCONTEXTMENU) && pChar->m_pParty )
+			{
+				m_pPopupPacket->addOption(POPUP_PARTY_LEAVE, pChar->m_pParty->IsPartyMaster(pChar) ? 196 : 195);
+				m_pPopupPacket->addOption(POPUP_PARTY_LOOT, m_pChar->m_pParty->GetLootFlag(m_pChar) ? 199 : 194);
+			}
 			if ( m_NetState->isClientVersion(MINCLIVER_STATUS_V6) )
 			{
 				if ( pChar->m_pPlayer->m_bRefuseTrades )
@@ -2338,6 +2343,14 @@ void CClient::Event_AOSPopupMenuSelect(CGrayUID uid, WORD wIndex)	//do something
 			return;
 		case POPUP_PARTY_REMOVE:
 			OnTarg_Party_Remove(pChar);
+			return;
+		case POPUP_PARTY_LEAVE:
+			if ( m_pChar->m_pParty )
+				m_pChar->m_pParty->RemoveMember(m_pChar, m_pChar);
+			return;
+		case POPUP_PARTY_LOOT:
+			if ( m_pChar->m_pParty )
+				m_pChar->m_pParty->SetLootFlag(m_pChar, !m_pChar->m_pParty->GetLootFlag(m_pChar));
 			return;
 		case POPUP_TRADE_ALLOW:
 			if ( m_pChar->m_pPlayer )

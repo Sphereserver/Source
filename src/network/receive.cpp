@@ -2841,7 +2841,6 @@ bool PacketPartyMessage::onReceive(NetState* net)
 				return false;
 
 			character->m_pParty->SetLootFlag(character, readBool());
-			character->NotoSave_Update();
 			return true;
 		}
 		case PARTYMSG_Accept:

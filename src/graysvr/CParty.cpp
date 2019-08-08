@@ -155,6 +155,7 @@ void CPartyDef::SetLootFlag(CChar *pChar, bool fSet)
 	if ( IsInParty(pChar) )
 	{
 		pChar->SetKeyNum("PARTY_CANLOOTME", fSet);
+		pChar->NotoSave_Update();
 		pChar->SysMessageDefault(fSet ? DEFMSG_PARTY_LOOT_ALLOW : DEFMSG_PARTY_LOOT_PREVENT);
 	}
 }
