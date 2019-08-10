@@ -608,7 +608,7 @@ static int Str_CmpHeadI(LPCTSTR pszFind, LPCTSTR pszTable)
 	}
 }
 
-int FindTableHeadSorted(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount, size_t iElemSize)
+int FindTableHeadSorted(LPCTSTR pszFind, const LPCTSTR *ppszTable, int iCount, size_t iElemSize)
 {
 	// Do a binary search (un-cased) on a sorted table.
 	// RETURN: -1 = not found
@@ -632,9 +632,9 @@ int FindTableHeadSorted(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount
 	return -1;
 }
 
-int FindTableHead(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount)
+int FindTableHead(LPCTSTR pszFind, const LPCTSTR *ppszTable, int iCount)
 {
-	for ( size_t i = 0; i < iCount; ++i )
+	for ( int i = 0; i < iCount; ++i )
 	{
 		if ( Str_CmpHeadI(pszFind, *ppszTable) == 0 )
 			return i;
@@ -643,7 +643,7 @@ int FindTableHead(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount)
 	return -1;
 }
 
-int FindTableSorted(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount)
+int FindTableSorted(LPCTSTR pszFind, const LPCTSTR *ppszTable, int iCount)
 {
 	// Do a binary search (un-cased) on a sorted table.
 	// RETURN: -1 = not found
@@ -667,10 +667,10 @@ int FindTableSorted(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount)
 	return -1;
 }
 
-int FindTable(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount)
+int FindTable(LPCTSTR pszFind, const LPCTSTR *ppszTable, int iCount)
 {
 	// A non-sorted table.
-	for ( size_t i = 0; i < iCount; ++i )
+	for ( int i = 0; i < iCount; ++i )
 	{
 		if ( strcmpi(pszFind, *ppszTable) == 0 )
 			return i;

@@ -2222,18 +2222,13 @@ CSector *CWorld::GetSector(int iMap, int iSector)
 	}
 
 	int iBase = 0;
-	for ( size_t m = 0; m < MAP_QTY; ++m )
+	for ( int m = 0; m < MAP_QTY; ++m )
 	{
 		if ( !g_MapList.m_maps[m] )
 			continue;
-
 		if ( m == iMap )
-		{
-			if ( iSector > iSectorQty )
-				return NULL;
-
 			return m_Sectors[iBase + iSector];
-		}
+
 		iBase += g_MapList.GetSectorQty(m);
 	}
 	return NULL;
