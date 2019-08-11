@@ -138,6 +138,7 @@ enum RESDISPLAY_VERSION
 #include "CItemMultiCustom.h"
 #include "CItemShip.h"
 #include "CItemStone.h"
+#include "CParty.h"
 #include "CChar.h"
 #include "CServRef.h"
 #include "CServer.h"

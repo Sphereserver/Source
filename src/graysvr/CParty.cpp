@@ -346,7 +346,7 @@ bool CPartyDef::RemoveMember(CChar *pChar, CChar *pCharSrc)
 	if ( !pChar || (m_Chars.GetCharCount() <= 0) )
 		return false;
 
-	CChar *pCharMaster = FindMaster();
+	CChar *pCharMaster = GetMaster();
 	if ( (pCharSrc != pChar) && (pCharSrc != pCharMaster) )
 		return false;
 
@@ -394,7 +394,7 @@ bool CPartyDef::Disband()
 	if ( m_Chars.GetCharCount() <= 0 )
 		return false;
 
-	CChar *pCharMaster = FindMaster();
+	CChar *pCharMaster = GetMaster();
 	if ( pCharMaster && IsTrigUsed(TRIGGER_PARTYDISBAND) )
 	{
 		CScriptTriggerArgs Args;
@@ -545,7 +545,7 @@ bool CPartyDef::r_GetRef(LPCTSTR &pszKey, CScriptObj *&pRef)
 	if ( !strnicmp("MASTER.", pszKey, 7) )
 	{
 		pszKey += 7;
-		CChar *pCharMaster = FindMaster();
+		CChar *pCharMaster = GetMaster();
 		if ( pCharMaster )
 		{
 			pRef = pCharMaster;
@@ -759,7 +759,7 @@ bool CPartyDef::r_Verb(CScript &s, CTextConsole *pSrc)
 				break;
 
 			bool fForced = (index == PDV_ADDMEMBERFORCED);
-			CChar *pCharMaster = FindMaster();
+			CChar *pCharMaster = GetMaster();
 			if ( pCharMaster && !fForced )
 				pCharMaster->SetKeyNum("PARTY_LASTINVITE", static_cast<INT64>(uid));
 

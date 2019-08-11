@@ -157,6 +157,7 @@ set(graysvr_SRCS
     graysvr/CObjBase.cpp
     graysvr/CObjBase.h
     graysvr/CParty.cpp
+    graysvr/CParty.h
     graysvr/CPathFinder.cpp
     graysvr/CPathFinder.h
     graysvr/CPingServer.cpp

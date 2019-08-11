@@ -608,6 +608,9 @@
     <ClInclude Include="src\graysvr\CObjBase.h">
       <Filter>graysvr</Filter>
     </ClInclude>
+    <ClInclude Include="src\graysvr\CParty.h">
+      <Filter>graysvr</Filter>
+    </ClInclude>
     <ClInclude Include="src\graysvr\CPathFinder.h">
       <Filter>graysvr</Filter>
     </ClInclude>
