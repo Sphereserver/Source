@@ -1542,3 +1542,6 @@ Fixed: ARGN value on scripts not accepting numbers > 2147483647.
 
 08-08-2019, Coruja
 Added: Missing party context menu options "Leave/Disband the party" and "Party can/cannot loot me" when player click on itself while in a party.
+
+15-08-2019, Coruja
+Added: Support for new feature "Display all public houses contents" on clients >= 7.0.76.46.

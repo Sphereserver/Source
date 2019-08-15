@@ -396,6 +396,7 @@ public:
 	bool m_TooltipEnabled;			// is tooltip feature enabled on this client?
 	bool m_ContainerGridEnabled;	// is container grid feature enabled on this client?
 	bool m_UseNewChatSystem;		// is this client compatible with new SA+ chat system?
+	bool m_UseMultiSight;			// is OSI multi sight enabled on this client?
 
 	CServTime m_timeLogin;					// world clock of login time ("LASTCONNECTTIME")
 	CServTime m_timeLastEvent;				// last time client sent an event

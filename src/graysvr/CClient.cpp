@@ -579,6 +579,7 @@ void CClient::UpdateCharacterListFlags()
 	m_TooltipEnabled = ((m_CharacterListFlags & 0x20) || m_NetState->isClientKR() || m_NetState->isClientEnhanced());
 	m_ContainerGridEnabled = (m_NetState->isClientVersion(MINCLIVER_CONTAINERGRID) || m_NetState->isClientKR() || m_NetState->isClientEnhanced());
 	m_UseNewChatSystem = m_NetState->isClientVersion(MINCLIVER_NEWCHATSYSTEM);
+	m_UseMultiSight = IsSetOF(OF_OSIMultiSight);
 }
 
 ///////////////////////////////////////////////////////////

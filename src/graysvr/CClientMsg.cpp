@@ -1812,7 +1812,6 @@ void CClient::addPlayerSee(const CPointMap &ptOld, bool fIgnoreSelfRegion)
 	//  fIgnoreSelfRegion = ignore objects on same region, used by HS boat mouse movement feature which doesn't need to reload objects inside the boat
 
 	int iViewDist = m_pChar->GetSight();
-	bool fOSIMultiSight = IsSetOF(OF_OSIMultiSight);
 	CRegionBase *pCurrentCharRegion = m_pChar->GetTopPoint().GetRegion(REGION_TYPE_HOUSE);
 
 	// Nearby items on ground
@@ -1840,7 +1839,7 @@ void CClient::addPlayerSee(const CPointMap &ptOld, bool fIgnoreSelfRegion)
 		if ( (iSeeCurrent > iSeeMax) || !m_pChar->CanSee(pItem) )
 			continue;
 
-		if ( fOSIMultiSight )
+		if ( m_UseMultiSight )
 		{
 			if ( (((ptOld.GetRegion(REGION_TYPE_HOUSE) != pCurrentCharRegion) || (ptOld.GetDist(pItem->GetTopPoint()) > iViewDist)) && (pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_HOUSE) == pCurrentCharRegion))		// item is in same house as me
 				|| (((ptOld.GetDist(pItem->GetTopPoint()) > iViewDist) && (m_pChar->GetTopPoint().GetDist(pItem->GetTopPoint()) <= iViewDist))	// item just came into view

@@ -295,6 +295,7 @@ enum PACKET_TYPE
 	PACKET_CreateHS				= 0xF8,
 	PACKET_GlobalChat			= 0xF9,
 	PACKET_UltimaStoreButton	= 0xFA,
+	PACKET_MultiSight			= 0xFB,
 	PACKET_QTY
 };
 

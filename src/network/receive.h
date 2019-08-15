@@ -1530,4 +1530,18 @@ public:
 	virtual bool onReceive(NetState* net);
 };
 
+/***************************************************************************
+*
+*
+*	Packet 0xFB : PacketMultiSight					toggle OSI multi sight
+*
+*
+***************************************************************************/
+class PacketMultiSight : public Packet
+{
+public:
+	PacketMultiSight();
+	virtual bool onReceive(NetState *net);
+};
+
 #endif

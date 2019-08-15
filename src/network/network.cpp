@@ -650,8 +650,9 @@ void PacketManager::registerStandardPackets(void)
 	registerPacket(PACKET_TimeSyncRequest, new PacketTimeSyncRequest());		// time sync request (KR/SA)
 	registerPacket(PACKET_CrashReport, new PacketCrashReport());				//
 	registerPacket(PACKET_CreateHS, new PacketCreateHS());						// create character (HS)
-	registerPacket(PACKET_UltimaStoreButton, new PacketUltimaStoreButton());	// ultima store button (SA)
+	registerPacket(PACKET_UltimaStoreButton, new PacketUltimaStoreButton());	// ultima store button
 	registerPacket(PACKET_GlobalChat, new PacketGlobalChatReq());				//
+	registerPacket(PACKET_MultiSight, new PacketMultiSight());					// toggle OSI multi sight
 
 	// Extended packets (0xBF)
 	registerExtended(PACKETEXT_ScreenSize, new PacketScreenSize());				// client screen size

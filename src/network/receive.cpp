@@ -4715,3 +4715,26 @@ bool PacketUltimaStoreButton::onReceive(NetState *net)
 		character->OnTrigger(CTRIG_UserUltimaStoreButton, character);
 	return true;
 }
+
+
+/***************************************************************************
+*
+*
+*	Packet 0xFB : PacketMultiSight					toggle OSI multi sight
+*
+*
+***************************************************************************/
+PacketMultiSight::PacketMultiSight() : Packet(2)
+{
+}
+
+bool PacketMultiSight::onReceive(NetState *net)
+{
+	ADDTOCALLSTACK("PacketMultiSight::onReceive");
+
+	CClient *client = net->m_client;
+	ASSERT(client);
+
+	client->m_UseMultiSight = !readBool();
+	return true;
+}
