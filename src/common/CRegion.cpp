@@ -437,7 +437,7 @@ bool CRegionBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pS
 	ADDTOCALLSTACK("CRegionBase::r_WriteVal");
 	EXC_TRY("WriteVal");
 	bool fZero = false;
-	int index = FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1);
+	int index = FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1, sizeof(sm_szLoadKeys[0]));
 	if ( index < 0 )
 		return CScriptObj::r_WriteVal(pszKey, sVal, pSrc);
 
@@ -1066,8 +1066,7 @@ bool CRegionWorld::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * p
 	ADDTOCALLSTACK("CRegionWorld::r_WriteVal");
 	EXC_TRY("WriteVal");
 
-	int iCount = COUNTOF(sm_szLoadKeys) - 1;
-	switch ( FindTableHeadSorted(pszKey, sm_szLoadKeys, iCount) )
+	switch ( FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1, sizeof(sm_szLoadKeys[0])) )
 	{
 		case RWC_DEFNAME: // "DEFNAME" = for the speech system.
 			sVal = GetResourceName();
@@ -1115,8 +1114,7 @@ bool CRegionWorld::r_LoadVal( CScript &s )
 	EXC_TRY("LoadVal");
 
 	// Load the values for the region from script.
-	int iCount = COUNTOF(sm_szLoadKeys) - 1;
-	switch ( FindTableHeadSorted(s.GetKey(), sm_szLoadKeys, iCount) )
+	switch ( FindTableHeadSorted(s.GetKey(), sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1, sizeof(sm_szLoadKeys[0])) )
 	{
 		case RWC_DEFNAME: // "DEFNAME" = for the speech system.
 			return SetResourceName( s.GetArgStr());

@@ -33,6 +33,7 @@ CClient::CClient(NetState *state)
 	m_TooltipEnabled = false;
 	m_ContainerGridEnabled = false;
 	m_UseNewChatSystem = false;
+	m_UseMultiSight = IsSetOF(OF_OSIMultiSight);
 
 	m_timeLogin.Init();
 	m_timeLastEvent = CServTime::GetCurrentTime();
@@ -579,7 +580,6 @@ void CClient::UpdateCharacterListFlags()
 	m_TooltipEnabled = ((m_CharacterListFlags & 0x20) || m_NetState->isClientKR() || m_NetState->isClientEnhanced());
 	m_ContainerGridEnabled = (m_NetState->isClientVersion(MINCLIVER_CONTAINERGRID) || m_NetState->isClientKR() || m_NetState->isClientEnhanced());
 	m_UseNewChatSystem = m_NetState->isClientVersion(MINCLIVER_NEWCHATSYSTEM);
-	m_UseMultiSight = IsSetOF(OF_OSIMultiSight);
 }
 
 ///////////////////////////////////////////////////////////

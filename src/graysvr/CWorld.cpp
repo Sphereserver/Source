@@ -1953,7 +1953,7 @@ void CWorld::Speak(const CObjBaseTemplate *pSrc, LPCTSTR pszText, HUE_TYPE wHue,
 		if ( !pClient->m_NetState->isClientEnhanced() && pSrc && !pChar->CanSee(pSrc) )
 			sSpeak.Format("<%s>%s", pSrc->GetName(), pszText);
 
-		pClient->addBarkParse(sSpeak, pSrc, wHue, mode, font);
+		pClient->addBark(sSpeak, pSrc, wHue, mode, font);
 	}
 }
 

@@ -675,7 +675,7 @@ int FindTable(LPCTSTR pszFind, const LPCTSTR *ppszTable, int iCount)
 		if ( strcmpi(pszFind, *ppszTable) == 0 )
 			return i;
 
-		// coverity[access_ptr_in_loop]
+		// coverity[-access_ptr_in_loop]
 		ppszTable = reinterpret_cast<const LPCTSTR *>(reinterpret_cast<const BYTE *>(ppszTable) + sizeof(LPCTSTR));
 	}
 	return -1;

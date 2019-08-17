@@ -4658,7 +4658,7 @@ bool PacketGlobalChatReq::onReceive(NetState *net)
 
 	if ( !(g_Cfg.m_iChatFlags & CHATF_GLOBALCHAT) )
 	{
-		client->SysMessage("Global Chat is currently unavailable.");
+		client->addBarkLocalized(1158387, NULL, HUE_TEXT_DEF, TALKMODE_SYSTEM);		// Global Chat is currently unavailable.
 		return true;
 	}
 
@@ -4679,7 +4679,8 @@ bool PacketGlobalChatReq::onReceive(NetState *net)
 			// TO-DO
 			return true;
 		case PacketGlobalChat::FriendAddTarg:
-			client->addTarget(CLIMODE_TARG_GLOBALCHAT_ADD, "Target player to request as Global Chat friend.");
+			client->addBarkLocalized(1158397, NULL, HUE_TEXT_DEF, TALKMODE_SYSTEM);		// Target player to request as Global Chat friend.
+			client->addTarget(CLIMODE_TARG_GLOBALCHAT_ADD, NULL);
 			return true;
 		case PacketGlobalChat::StatusToggle:
 			client->addGlobalChatStatusToggle();

@@ -717,10 +717,10 @@ public:
 	void addChangeServer();
 	void addPlayerUpdate();
 
-	void addBark(LPCTSTR pszText, const CObjBaseTemplate *pSrc, HUE_TYPE wHue = HUE_DEFAULT, TALKMODE_TYPE mode = TALKMODE_SAY, FONT_TYPE font = FONT_BOLD);
+	void addBark(LPCTSTR pszText, const CObjBaseTemplate *pSrc, HUE_TYPE wHue = HUE_TEXT_DEF, TALKMODE_TYPE mode = TALKMODE_SAY, FONT_TYPE font = FONT_NORMAL);
 	void addBarkUNICODE(const NCHAR *pszText, const CObjBaseTemplate *pSrc, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, CLanguageID lang = 0);
-	void addBarkLocalized(DWORD dwClilocID, const CObjBaseTemplate *pSrc, HUE_TYPE wHue = HUE_DEFAULT, TALKMODE_TYPE mode = TALKMODE_SAY, FONT_TYPE font = FONT_BOLD, LPCTSTR pszArgs = NULL);
-	void addBarkLocalizedEx(DWORD dwClilocID, const CObjBaseTemplate *pSrc, HUE_TYPE wHue = HUE_DEFAULT, TALKMODE_TYPE mode = TALKMODE_SAY, FONT_TYPE font = FONT_BOLD, AFFIX_TYPE affix = AFFIX_APPEND, LPCTSTR pszAffix = NULL, LPCTSTR pszArgs = NULL);
+	void addBarkLocalized(DWORD dwClilocID, const CObjBaseTemplate *pSrc, HUE_TYPE wHue = HUE_TEXT_DEF, TALKMODE_TYPE mode = TALKMODE_SAY, FONT_TYPE font = FONT_NORMAL, LPCTSTR pszArgs = "");
+	void addBarkLocalizedEx(DWORD dwClilocID, const CObjBaseTemplate *pSrc, HUE_TYPE wHue = HUE_TEXT_DEF, TALKMODE_TYPE mode = TALKMODE_SAY, FONT_TYPE font = FONT_NORMAL, AFFIX_TYPE affix = AFFIX_APPEND, LPCTSTR pszAffix = "", LPCTSTR pszArgs = "");
 	void addBarkParse(LPCTSTR pszText, const CObjBaseTemplate *pSrc, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font = FONT_NORMAL, bool fUnicode = false);
 	void addSysMessage(LPCTSTR pszMsg);
 	void addObjMessage(LPCTSTR pszMsg, const CObjBaseTemplate *pSrc, HUE_TYPE wHue = HUE_TEXT_DEF, TALKMODE_TYPE mode = TALKMODE_OBJ);

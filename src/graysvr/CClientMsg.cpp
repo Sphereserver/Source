@@ -2373,7 +2373,7 @@ void CClient::addGlobalChatConnect()
 	sprintf(pszXML, "<iq to=\"%s\" id=\"iq_%.10lu\" type=\"6\" version=\"1\" jid=\"%s\" />", CGlobalChat::GetJID(), static_cast<DWORD>(CGTime::GetCurrentTime().GetTime()), CGlobalChat::GetJID());
 
 	new PacketGlobalChat(this, 0, PacketGlobalChat::Connect, PacketGlobalChat::InfoQuery, pszXML);
-	SysMessage("Global Chat is now connected.");
+	addBarkLocalized(1158413, NULL, HUE_TEXT_DEF, TALKMODE_SYSTEM);	// Global Chat is now connected. 
 }
 
 void CClient::addGlobalChatStatusToggle()
@@ -2383,25 +2383,13 @@ void CClient::addGlobalChatStatusToggle()
 	if ( !m_pChar || !PacketGlobalChat::CanSendTo(m_NetState) )
 		return;
 
-	int iShow;
-	LPCTSTR pszMsg;
-	if ( CGlobalChat::IsVisible() )
-	{
-		iShow = 0;
-		pszMsg = "Global Chat Offline";
-	}
-	else
-	{
-		iShow = 1;
-		pszMsg = "Global Chat Online";
-	}
-
+	int iShow = static_cast<int>(CGlobalChat::IsVisible());
 	TCHAR *pszXML = Str_GetTemp();
 	sprintf(pszXML, "<presence from=\"%s\" id=\"pres_%.10lu\" name=\"%.6s\" show=\"%d\" version=\"1\" />", CGlobalChat::GetJID(), static_cast<DWORD>(CGTime::GetCurrentTime().GetTime()), m_pChar->GetName(), iShow);
 
 	CGlobalChat::SetVisible(static_cast<bool>(iShow));
 	new PacketGlobalChat(this, 0, PacketGlobalChat::Connect, PacketGlobalChat::Presence, pszXML);
-	SysMessage(pszMsg);
+	addBarkLocalized(iShow ? 1158428 : 1158427, NULL, HUE_TEXT_DEF, TALKMODE_SYSTEM);	// Global Chat Online / Global Chat Offline
 
 	// TO-DO: also send the status change to all clients on friend list
 }
@@ -3757,7 +3745,7 @@ BYTE CClient::Setup_Start(CChar *pChar)
 
 	if ( !fNoWelcomeMsg )
 	{
-		addBarkParse(g_szServerDescription, NULL, HUE_YELLOW, TALKMODE_SYSTEM);
+		addBark(g_szServerDescription, NULL, HUE_YELLOW, TALKMODE_SYSTEM);
 
 		CVarDefCont *pVarLastLogged = m_pChar->m_pArea->m_TagDefs.GetKey("LastLogged");
 		if ( pVarLastLogged )
