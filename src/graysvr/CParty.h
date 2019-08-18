@@ -46,7 +46,7 @@ public:
 	bool SendAddList(CChar *pCharDest);
 
 	// Party message sending wrappers
-	bool MessageEvent(CChar *pCharDest, CChar *pCharSrc, const NCHAR *pszMsg, int iMsgLen);
+	bool MessageEvent(CChar *pCharDest, CChar *pCharSrc, const NCHAR *pszMsg);
 
 	// Commands
 	bool Disband();

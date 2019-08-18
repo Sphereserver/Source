@@ -2807,9 +2807,9 @@ bool PacketPartyMessage::onReceive(NetState* net)
 			}
 
 			CChar *pTarg = static_cast<CGrayUID>(readInt32()).CharFind();
-			NCHAR text[MAX_TALK_BUFFER + 2];
-			int length = readStringNullUNICODE(reinterpret_cast<WCHAR *>(text), (MAX_TALK_BUFFER + 2 / sizeof(WCHAR)) - 1);
-			return character->m_pParty->MessageEvent(pTarg, character, text, length);
+			NCHAR text[MAX_TALK_BUFFER + 1];
+			readStringNullUNICODE(reinterpret_cast<WCHAR *>(text), (sizeof(text) / sizeof(WCHAR)) - 1);
+			return character->m_pParty->MessageEvent(pTarg, character, text);
 		}
 		case PARTYMSG_MsgAll:
 		{
@@ -2819,9 +2819,9 @@ bool PacketPartyMessage::onReceive(NetState* net)
 				return false;
 			}
 
-			NCHAR text[MAX_TALK_BUFFER + 2];
-			int length = readStringNullUNICODE(reinterpret_cast<WCHAR *>(text), (MAX_TALK_BUFFER + 2 / sizeof(WCHAR)) - 1);
-			return character->m_pParty->MessageEvent(NULL, character, text, length);
+			NCHAR text[MAX_TALK_BUFFER + 1];
+			readStringNullUNICODE(reinterpret_cast<WCHAR *>(text), (sizeof(text) / sizeof(WCHAR)) - 1);
+			return character->m_pParty->MessageEvent(NULL, character, text);
 		}
 		case PARTYMSG_Disband:
 		{

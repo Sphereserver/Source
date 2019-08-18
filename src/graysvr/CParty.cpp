@@ -285,10 +285,9 @@ bool CPartyDef::SendRemoveList(CChar *pCharRemove)
 	return true;
 }
 
-bool CPartyDef::MessageEvent(CChar *pCharDest, CChar *pCharSrc, const NCHAR *pszMsg, int iMsgLen)
+bool CPartyDef::MessageEvent(CChar *pCharDest, CChar *pCharSrc, const NCHAR *pszMsg)
 {
 	ADDTOCALLSTACK("CPartyDef::MessageEvent");
-	UNREFERENCED_PARAMETER(iMsgLen);
 	if ( !pszMsg || (pCharDest && !IsInParty(pCharDest)) )
 		return false;
 
