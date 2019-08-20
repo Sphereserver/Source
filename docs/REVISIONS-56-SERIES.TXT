@@ -1548,3 +1548,8 @@ Added: Support for new feature "Display all public houses contents" on clients >
 
 20-08-2019, Coruja
 Fixed: HTTP server not working correctly.
+Added: Support for .png images on webpages
+[web/]: Updated folder structure
+	-Added: sphere.png
+	-Removed: sphere404.htm, sphere.gif, sphere_anim.gif
+	-Updated: spherestatusbase.html

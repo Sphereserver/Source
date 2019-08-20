@@ -409,7 +409,8 @@ LPCTSTR const CWebPageDef::sm_szPageExt[] =
 	".jpeg",
 	".jpg",
 	".js",
-	".txt",
+	".png",
+	".txt"
 };
 
 bool CWebPageDef::SetSourceFile( LPCTSTR pszName, CClient * pClient )
@@ -424,6 +425,7 @@ bool CWebPageDef::SetSourceFile( LPCTSTR pszName, CClient * pClient )
 		WEBPAGE_JPG,
 		WEBPAGE_JPG,
 		WEBPAGE_TEXT,
+		WEBPAGE_PNG,
 		WEBPAGE_TEXT
 	};
 
@@ -497,17 +499,18 @@ LPCTSTR const CWebPageDef::sm_szPageType[WEBPAGE_QTY+1] =
 {
 	"text/html",		// WEBPAGE_TEMPLATE
 	"text/html",		// WEBPAGE_TEXT
-	"image/x-xbitmap",	// WEBPAGE_BMP,
-	"image/gif",		// WEBPAGE_GIF,
-	"image/jpeg",		// WEBPAGE_JPG,
-	NULL,				// WEBPAGE_QTY
+	"image/bmp",		// WEBPAGE_BMP
+	"image/gif",		// WEBPAGE_GIF
+	"image/jpeg",		// WEBPAGE_JPG
+	"image/png",		// WEBPAGE_PNG
+	NULL				// WEBPAGE_QTY
 };
 
 LPCTSTR const CWebPageDef::sm_szTrigName[WTRIG_QTY+1] =	// static
 {
 	"@AAAUNUSED",
 	"@Load",
-	NULL,
+	NULL
 };
 
 int CWebPageDef::ServPageRequest( CClient * pClient, LPCTSTR pszURLArgs, CGTime * pdateIfModifiedSince )
