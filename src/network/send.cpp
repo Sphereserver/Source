@@ -65,7 +65,8 @@ PacketWeb::PacketWeb(const CClient * target, const BYTE * data, size_t length) :
 	if (data && (length > 0))
 		setData(data, length);
 
-	push(target);
+	if (target)
+		push(target);
 }
 
 void PacketWeb::setData(const BYTE * data, size_t length)
