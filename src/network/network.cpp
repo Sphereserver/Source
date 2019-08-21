@@ -108,7 +108,7 @@ NetState::~NetState(void)
 void NetState::clear(void)
 {
 	ADDTOCALLSTACK("NetState::clear");
-	DEBUGNETWORK(("%lx:Clearing client state.\n", id()));
+	DEBUGNETWORK(("%lx:Clearing client state\n", id()));
 
 	m_isReadClosed = true;
 	m_isWriteClosed = true;
@@ -230,7 +230,7 @@ void NetState::init(SOCKET socket, CSocketAddress addr)
 
 	clear();
 
-	DEBUGNETWORK(("%lx:Initialising client\n", id()));
+	DEBUGNETWORK(("%lx:Initializing client\n", id()));
 	m_peerAddress = addr;
 	m_socket.SetSocket(socket);
 	if ( m_socket.SetNonBlocking() == SOCKET_ERROR )
@@ -327,7 +327,7 @@ void NetState::detectAsyncMode(void)
 		setAsyncMode(false);
 
 	if (wasAsync != isAsyncMode())
-		DEBUGNETWORK(("%lx:Switching async mode from %s to %s.\n", id(), wasAsync? "1":"0", isAsyncMode()? "1":"0"));*/
+		DEBUGNETWORK(("%lx:Switching async mode from %s to %s\n", id(), wasAsync? "1":"0", isAsyncMode()? "1":"0"));*/
 }
 
 bool NetState::hasPendingData(void) const
@@ -380,26 +380,19 @@ bool NetState::canReceive(PacketSend* packet) const
 void NetState::beginTransaction(long priority)
 {
 	ADDTOCALLSTACK("NetState::beginTransaction");
-	if (m_outgoing.pendingTransaction != NULL)
-	{
-		DEBUGNETWORK(("%lx:New network transaction started whilst a previous is still open.\n", id()));
-	}
+	if ( m_outgoing.pendingTransaction )
+		DEBUGNETWORK(("%lx:New network transaction started whilst a previous is still open\n", id()));
 
 	// ensure previous transaction is committed
 	endTransaction();
-
-	//DEBUGNETWORK(("%lx:Starting a new packet transaction.\n", id()));
-
 	m_outgoing.pendingTransaction = new ExtendedPacketTransaction(this, g_Cfg.m_fUsePacketPriorities? priority : static_cast<long>(PacketSend::PRI_NORMAL));
 }
 
 void NetState::endTransaction(void)
 {
 	ADDTOCALLSTACK("NetState::endTransaction");
-	if (m_outgoing.pendingTransaction == NULL)
+	if ( !m_outgoing.pendingTransaction )
 		return;
-
-	//DEBUGNETWORK(("%lx:Scheduling packet transaction to be sent.\n", id()));
 
 #ifndef _MTNETWORK
 	g_NetworkOut.scheduleOnce(m_outgoing.pendingTransaction);
@@ -1001,7 +994,7 @@ void NetworkIn::tick(void)
 				int iLastEventDiff = -g_World.GetTimeDiff( client->m_client->m_timeLastEvent );
 				if ( g_Cfg.m_iDeadSocketTime && iLastEventDiff > g_Cfg.m_iDeadSocketTime )
 				{
-					g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:Frozen client disconnected.\n", client->m_id);
+					g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:Frozen client disconnected\n", client->m_id);
 					client->markReadClosed();
 				}
 			}
@@ -1053,7 +1046,7 @@ void NetworkIn::tick(void)
 					size_t iSeedLen(0);
 					if (client->m_newseed || ((buffer[0] == PACKET_NewSeed) && (received >= NETWORK_SEEDLEN_NEW)))
 					{
-						DEBUGNETWORK(("%lx:Receiving new client login handshake.\n", client->id()));
+						DEBUGNETWORK(("%lx:Receiving new client login handshake\n", client->id()));
 
 						CEvent *pEvent = static_cast<CEvent*>(buffer);
 
@@ -1075,27 +1068,27 @@ void NetworkIn::tick(void)
 							DEBUG_WARN(("%lx:New Login Handshake Detected. Client Version: %lu.%lu.%lu.%lu\n", client->id(), pEvent->NewSeed.m_Version_Maj, pEvent->NewSeed.m_Version_Min, pEvent->NewSeed.m_Version_Rev, pEvent->NewSeed.m_Version_Pat));
 
 							client->m_reportedVersion = CCrypt::GetVerFromNumber(pEvent->NewSeed.m_Version_Maj, pEvent->NewSeed.m_Version_Min, pEvent->NewSeed.m_Version_Rev, pEvent->NewSeed.m_Version_Pat);
-							seed = (DWORD) pEvent->NewSeed.m_Seed;
+							seed = pEvent->NewSeed.m_Seed;
 						}
 						else
 						{
-							DEBUGNETWORK(("%lx:Not enough data received to be a valid handshake (%" FMTSIZE_T ").\n", client->id(), received));
+							DEBUGNETWORK(("%lx:Not enough data received to be a valid handshake (%" FMTSIZE_T ")\n", client->id(), received));
 						}
 					}
 					else
 					{
 						// assume it's a normal client log in
-						DEBUGNETWORK(("%lx:Receiving old client login handshake.\n", client->id()));
+						DEBUGNETWORK(("%lx:Receiving old client login handshake\n", client->id()));
 
 						seed = ( buffer[0] << 24 ) | ( buffer[1] << 16 ) | ( buffer[2] << 8 ) | buffer[3];
 						iSeedLen = NETWORK_SEEDLEN_OLD;
 					}
 
-					DEBUGNETWORK(("%lx:Client connected with a seed of 0x%lx (new handshake=%d, seed length=%" FMTSIZE_T ", received=%" FMTSIZE_T ", version=%lu).\n", client->id(), seed, client->m_newseed? 1 : 0, iSeedLen, received, client->m_reportedVersion));
+					DEBUGNETWORK(("%lx:Client connected with a seed of 0x%lx (new handshake=%d, seed length=%" FMTSIZE_T ", received=%" FMTSIZE_T ", version=%lu)\n", client->id(), seed, client->m_newseed? 1 : 0, iSeedLen, received, client->m_reportedVersion));
 
 					if ( !seed || iSeedLen > received )
 					{
-						g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:Invalid client detected, disconnecting.\n", client->id());
+						g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:Invalid client detected, disconnecting\n", client->id());
 						client->markReadClosed();
 						continue;
 					}
@@ -1129,7 +1122,7 @@ void NetworkIn::tick(void)
 					// UOKR Client opens connection with 255.255.255.255
 					EXC_SET("KR client seed");
 
-					DEBUG_WARN(("UOKR Client Detected.\n"));
+					DEBUG_WARN(("UOKR Client Detected\n"));
 					client->m_client->SetConnectType(CONNECT_CRYPT);
 					client->m_clientType = CLIENTTYPE_KR;
 					new PacketKREncryption(client->m_client);
@@ -1277,7 +1270,6 @@ void NetworkIn::tick(void)
 			if (handler != NULL)
 			{
 				size_t packetLength = handler->checkLength(client, packet);
-//				DEBUGNETWORK(("Checking length: counted %lu.\n", packetLength));
 
 				//	fall back and delete the packet
 				if (packetLength <= 0)
@@ -1324,7 +1316,7 @@ void NetworkIn::tick(void)
 				// unknown packet.. we could skip 1 byte at a time but this can produce
 				// strange behaviours (it's unlikely that only 1 byte is incorrect), so
 				// it's best to discard everything we have
-				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "%lx:Unknown game packet (0x%x) received.\n", client->id(), packetID);
+				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "%lx:Unknown game packet (0x%x) received\n", client->id(), packetID);
 				packet->skip(len);
 				len = 0;
 			}
@@ -1335,7 +1327,7 @@ void NetworkIn::tick(void)
 		TemporaryString dump;
 		packet->dump(dump);
 
-		g_Log.EventDebug("%lx:Parsing %s", client->id(), (LPCTSTR)dump);
+		g_Log.EventDebug("%lx:Parsing %s", client->id(), static_cast<LPCTSTR>(dump));
 
 		client->m_packetExceptions++;
 		if (client->m_packetExceptions > 10 && client->m_client != NULL)
@@ -1410,14 +1402,14 @@ int NetworkIn::checkForData(fd_set* storage)
 				{
 					if (state->needsFlush() == false)
 					{
-						DEBUGNETWORK(("%lx:Flushing data for client.\n", state->id()));
+						DEBUGNETWORK(("%lx:Flushing data for client\n", state->id()));
 
 						EXC_SET("flush data");
 						g_NetworkOut.flush(state->m_client);
 					}
 					else
 					{
-						DEBUGNETWORK(("%lx:Waiting for data to be flushed.\n", state->id()));
+						DEBUGNETWORK(("%lx:Waiting for data to be flushed\n", state->id()));
 					}
 					continue;
 				}
@@ -1432,7 +1424,7 @@ int NetworkIn::checkForData(fd_set* storage)
 			if (state->isClosed() && state->isSendingAsync() == false)
 			{
 				EXC_SET("clear socket");
-				DEBUGNETWORK(("%lx:Client is being cleared since marked to close.\n", state->id()));
+				DEBUGNETWORK(("%lx:Client is being cleared since marked to close\n", state->id()));
 				state->clear();
 			}
 
@@ -1478,7 +1470,7 @@ void NetworkIn::acceptConnection(void)
 	{
 		EXC_SET("ip history");
 		
-		DEBUGNETWORK(("Retrieving IP history for '%s'.\n", client_addr.GetAddrStr()));
+		DEBUGNETWORK(("Retrieving IP history for '%s'\n", client_addr.GetAddrStr()));
 		HistoryIP& ip = m_ips.getHistoryForIP(client_addr);
 		long maxIp = g_Cfg.m_iConnectingMaxIP;
 		long climaxIp = g_Cfg.m_iClientsMaxIP;
@@ -1495,22 +1487,22 @@ void NetworkIn::acceptConnection(void)
 			)
 		{
 			EXC_SET("rejecting");
-			DEBUGNETWORK(("Closing incoming connection [max ip=%ld, clients max ip=%ld).\n", maxIp, climaxIp));
+			DEBUGNETWORK(("Closing incoming connection [max ip=%ld, clients max ip=%ld)\n", maxIp, climaxIp));
 
 			CLOSESOCKET(h);
 
 			if ( g_Log.GetLogMask() & LOGM_CLIENTS_LOG )
 			{
 				if ( ip.m_blocked )
-					g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected. (Blocked IP)\n", (LPCTSTR)client_addr.GetAddrStr());
+					g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected (Blocked IP)\n", client_addr.GetAddrStr());
 				else if ( maxIp && (ip.m_connecting > maxIp) )
-					g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected. (CONNECTINGMAXIP reached %ld/%ld)\n", (LPCTSTR)client_addr.GetAddrStr(), ip.m_connecting, maxIp);
+					g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected (CONNECTINGMAXIP reached %ld/%ld)\n", client_addr.GetAddrStr(), ip.m_connecting, maxIp);
 				else if ( climaxIp && (ip.m_connected > climaxIp) )
-					g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected. (CLIENTMAXIP reached %ld/%ld)\n", (LPCTSTR)client_addr.GetAddrStr(), ip.m_connected, climaxIp);
+					g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected (CLIENTMAXIP reached %ld/%ld)\n", client_addr.GetAddrStr(), ip.m_connected, climaxIp);
 				else if ( ip.m_pings >= NETHISTORY_MAXPINGS )
-					g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected. (MAXPINGS reached %ld/%ld)\n", (LPCTSTR)client_addr.GetAddrStr(), ip.m_pings, static_cast<long>(NETHISTORY_MAXPINGS));
+					g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected (MAXPINGS reached %ld/%d)\n", client_addr.GetAddrStr(), ip.m_pings, NETHISTORY_MAXPINGS);
 				else
-					g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected.\n", (LPCTSTR)client_addr.GetAddrStr());
+					g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected\n", client_addr.GetAddrStr());
 			}
 		}
 		else
@@ -1520,26 +1512,26 @@ void NetworkIn::acceptConnection(void)
 			if ( slot == -1 )			// we do not have enough empty slots for clients
 			{
 				EXC_SET("no slot ready");
-				DEBUGNETWORK(("Unable to allocate new slot for client, too many clients already.\n"));
+				DEBUGNETWORK(("Unable to allocate new slot for client, too many clients already\n"));
 
 				CLOSESOCKET(h);
 
-				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (CLIENTMAX reached)\n", (LPCTSTR)client_addr.GetAddrStr());
+				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected (CLIENTMAX reached)\n", client_addr.GetAddrStr());
 			}
 			else
 			{
-				DEBUGNETWORK(("%lx:Allocated slot for client (%ld).\n", slot, (long)h));
+				DEBUGNETWORK(("%lx:Allocated slot for client (%ld)\n", slot, (long)h));
 
 				EXC_SET("assigning slot");
 				m_states[slot]->init(h, client_addr);
 
-				DEBUGNETWORK(("%lx:State initialised, registering client instance.\n", slot));
+				DEBUGNETWORK(("%lx:State initialized, registering client instance\n", slot));
 
 				EXC_SET("recording client");
 				if (m_states[slot]->m_client != NULL)
 					m_clients.InsertHead(m_states[slot]->m_client);
 
-				DEBUGNETWORK(("%lx:Client successfully initialised.\n", slot));
+				DEBUGNETWORK(("%lx:Client successfully initialized\n", slot));
 			}
 		}
 	}
@@ -1678,7 +1670,7 @@ void NetworkIn::defragSlots(long fromSlot)
 
 		if (nextUsedSlot != l)
 		{
-			DEBUGNETWORK(("Moving client '%lx' to slot '%lx'.\n", nextUsedSlot, l));
+			DEBUGNETWORK(("Moving client '%lx' to slot '%lx'\n", nextUsedSlot, l));
 
 			// swap states
 			NetState* usedSlot = m_states[nextUsedSlot];
@@ -1859,7 +1851,6 @@ void NetworkOut::scheduleOnce(PacketTransaction* transaction)
 		{
 			if (state->m_outgoing.queue[priority].size() >= maxClientPackets)
 			{
-				//DEBUGNETWORK(("%lx:Packet decreased priority due to overal amount %d overlapping %" FMTSIZE_T ".\n", state->id(), state->m_outgoing.queue[priority].size(), maxClientPackets));
 				transaction->setPriority(priority-1);
 				scheduleOnce(transaction);
 				return;
@@ -1997,10 +1988,7 @@ size_t NetworkOut::proceedQueue(CClient* client, unsigned int priority)
 
 		EXC_SET("check length");
 		if (lengthProcessed > maxLengthToProcess)
-		{
-			//DEBUGNETWORK(("%lx:Packets sending stopped at %" FMTSIZE_T " packet due to overall length %" FMTSIZE_T " overlapping %" FMTSIZE_T ".\n", state->id(), packetsProcessed, lengthProcessed, maxLengthToProcess));
 			break;
-		}
 
 		EXC_CATCH;
 		EXC_DEBUG_START;
@@ -2086,8 +2074,6 @@ void NetworkOut::proceedQueueBytes(CClient* client)
 void NetworkOut::onAsyncSendComplete(NetState* state, bool success)
 {
 	ADDTOCALLSTACK("NetworkOut::onAsyncSendComplete");
-
-	//DEBUGNETWORK(("AsyncSendComplete\n"));
 	ASSERT(state != NULL);
 
 	state->setSendingAsync(false);
@@ -2131,18 +2117,12 @@ void CALLBACK SendCompleted(DWORD dwError, DWORD cbTransferred, LPWSAOVERLAPPED 
 	NetState* state = reinterpret_cast<NetState *>(lpOverlapped->hEvent);
 	if (state == NULL)
 	{
-		DEBUGNETWORK(("Async i/o operation completed without client context.\n"));
+		DEBUGNETWORK(("Async i/o operation completed without client context\n"));
 		return;
 	}
 
 	if (dwError != 0)
-	{
-		DEBUGNETWORK(("%lx:Async i/o operation completed with error code 0x%x, %ld bytes sent.\n", state->id(), dwError, cbTransferred));
-	}
-	//else
-	//{
-	//	DEBUGNETWORK(("%lx:Async i/o operation completed successfully, %ld bytes sent.\n", state->id(), cbTransferred));
-	//}
+		DEBUGNETWORK(("%lx:Async i/o operation completed with error code 0x%x, %ld bytes sent\n", state->id(), dwError, cbTransferred));
 
 	g_NetworkOut.onAsyncSendComplete(state, dwError == 0 && cbTransferred > 0);
 }
@@ -2236,7 +2216,7 @@ bool NetworkOut::sendPacketNow(CClient* client, PacketSend* packet)
 					// WARNING: scheduleOnce is intended to be used by the main
 					// thread, and is likely to cause stability issues when called
 					// from here!
-					DEBUGNETWORK(("%lx:Send failure occurred with a non-critical error. Requeuing packet may affect stability.\n", state->id()));
+					DEBUGNETWORK(("%lx:Send failure occurred with a non-critical error. Requeuing packet may affect stability\n", state->id()));
 					scheduleOnce(packet, true);
 					return true;
 				}
@@ -2410,25 +2390,19 @@ void CALLBACK SendCompleted(DWORD dwError, DWORD cbTransferred, LPWSAOVERLAPPED 
 	NetState* state = reinterpret_cast<NetState*>(lpOverlapped->hEvent);
 	if (state == NULL)
 	{
-		DEBUGNETWORK(("Async i/o operation completed without client context.\n"));
+		DEBUGNETWORK(("Async i/o operation completed without client context\n"));
 		return;
 	}
 
 	NetworkThread* thread = state->getParentThread();
 	if (thread == NULL)
 	{
-		DEBUGNETWORK(("%lx:Async i/o operation completed.\n", state->id()));
+		DEBUGNETWORK(("%lx:Async i/o operation completed\n", state->id()));
 		return;
 	}
 
 	if (dwError != 0)
-	{
-		DEBUGNETWORK(("%lx:Async i/o operation completed with error code 0x%x, %ld bytes sent.\n", state->id(), dwError, cbTransferred));
-	}
-	//else
-	//{
-	//	DEBUGNETWORK(("%lx:Async i/o operation completed successfully, %ld bytes sent.\n", state->id(), cbTransferred));
-	//}
+		DEBUGNETWORK(("%lx:Async i/o operation completed with error code 0x%x, %ld bytes sent\n", state->id(), dwError, cbTransferred));
 
 	thread->onAsyncSendComplete(state, dwError == 0 && cbTransferred > 0);
 }
@@ -2476,7 +2450,7 @@ void NetworkManager::createNetworkThreads(size_t count)
 	if (count > maxThreads)
 	{
 		count = maxThreads;
-		g_Log.Event(LOGL_WARN, "Too many network threads requested. Reducing number to %" FMTSIZE_T ".\n", count);
+		g_Log.Event(LOGL_WARN, "Too many network threads requested. Reducing to %" FMTSIZE_T "\n", maxThreads);
 	}
 
 	ASSERT(m_threads.empty());
@@ -2492,7 +2466,7 @@ NetworkThread* NetworkManager::selectBestThread(void)
 
 	NetworkThread* bestThread = NULL;
 	size_t bestThreadSize = (std::numeric_limits<size_t>::max)();
-	DEBUGNETWORK(("Searching for a suitable thread to handle a new client..\n"));
+	DEBUGNETWORK(("Searching for a suitable thread to handle a new client...\n"));
 
 	// search for quietest thread
 	for (NetworkThreadList::iterator it = m_threads.begin(); it != m_threads.end(); ++it)
@@ -2505,7 +2479,7 @@ NetworkThread* NetworkManager::selectBestThread(void)
 	}
 
 	if ( bestThread )
-		DEBUGNETWORK(("Selected thread #%" FMTSIZE_T ".\n", bestThread->id()));
+		DEBUGNETWORK(("Selected thread #%" FMTSIZE_T "\n", bestThread->id()));
 	return bestThread;
 }
 
@@ -2551,7 +2525,7 @@ void NetworkManager::acceptNewConnection(void)
 	EXC_TRY("acceptNewConnection");
 	CSocketAddress client_addr;
 
-	DEBUGNETWORK(("Receiving new connection.\n"));
+	DEBUGNETWORK(("Receiving new connection\n"));
 
 	// accept socket connection
 	EXC_SET("accept");
@@ -2562,13 +2536,12 @@ void NetworkManager::acceptNewConnection(void)
 	// check ip history
 	EXC_SET("ip history");
 
-	DEBUGNETWORK(("Retrieving IP history for '%s'.\n", client_addr.GetAddrStr()));
+	DEBUGNETWORK(("Retrieving IP history for '%s'\n", client_addr.GetAddrStr()));
 	HistoryIP& ip = m_ips.getHistoryForIP(client_addr);
 	long maxIp = g_Cfg.m_iConnectingMaxIP;
 	long climaxIp = g_Cfg.m_iClientsMaxIP;
 
-	DEBUGNETWORK(("Incoming connection from '%s' [blocked=%d, ttl=%ld, pings=%ld, connecting=%ld, connected=%ld]\n",
-		ip.m_ip.GetAddrStr(), ip.m_blocked, ip.m_ttl, ip.m_pings, ip.m_connecting, ip.m_connected));
+	DEBUGNETWORK(("Incoming connection from '%s' [blocked=%d, ttl=%ld, pings=%ld, connecting=%ld, connected=%ld]\n", ip.m_ip.GetAddrStr(), ip.m_blocked, ip.m_ttl, ip.m_pings, ip.m_connecting, ip.m_connected));
 
 	// check if ip is allowed to connect
 	if ( ip.checkPing() ||									// check for ip ban
@@ -2576,22 +2549,21 @@ void NetworkManager::acceptNewConnection(void)
 			( climaxIp > 0 && ip.m_connected > climaxIp ) )	// check for too many connected
 	{
 		EXC_SET("rejected");
-		DEBUGNETWORK(("Closing incoming connection [max ip=%ld, clients max ip=%ld].\n", maxIp, climaxIp));
-
+		DEBUGNETWORK(("Closing incoming connection [max ip=%ld, clients max ip=%ld]\n", maxIp, climaxIp));
 		CLOSESOCKET(h);
 
 		if ( g_Log.GetLogMask() & LOGM_CLIENTS_LOG )
 		{
 			if ( ip.m_blocked )
-				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected. (Blocked IP)\n", static_cast<LPCTSTR>(client_addr.GetAddrStr()));
+				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected (Blocked IP)\n", static_cast<LPCTSTR>(client_addr.GetAddrStr()));
 			else if ( maxIp && (ip.m_connecting > maxIp) )
-				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected. (CONNECTINGMAXIP reached %ld/%ld)\n", static_cast<LPCTSTR>(client_addr.GetAddrStr()), ip.m_connecting, maxIp);
+				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected (CONNECTINGMAXIP reached %ld/%ld)\n", static_cast<LPCTSTR>(client_addr.GetAddrStr()), ip.m_connecting, maxIp);
 			else if ( climaxIp && (ip.m_connected > climaxIp) )
-				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected. (CLIENTMAXIP reached %ld/%ld)\n", static_cast<LPCTSTR>(client_addr.GetAddrStr()), ip.m_connected, climaxIp);
+				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected (CLIENTMAXIP reached %ld/%ld)\n", static_cast<LPCTSTR>(client_addr.GetAddrStr()), ip.m_connected, climaxIp);
 			else if ( ip.m_pings >= NETHISTORY_MAXPINGS )
-				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected. (MAXPINGS reached %ld/%ld)\n", static_cast<LPCTSTR>(client_addr.GetAddrStr()), ip.m_pings, static_cast<long>(NETHISTORY_MAXPINGS));
+				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected (MAXPINGS reached %ld/%d)\n", static_cast<LPCTSTR>(client_addr.GetAddrStr()), ip.m_pings, NETHISTORY_MAXPINGS);
 			else
-				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected.\n", static_cast<LPCTSTR>(client_addr.GetAddrStr()));
+				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected\n", static_cast<LPCTSTR>(client_addr.GetAddrStr()));
 		}
 		return;
 	}
@@ -2603,30 +2575,30 @@ void NetworkManager::acceptNewConnection(void)
 	{
 		// not enough empty slots
 		EXC_SET("no slot available");
-		DEBUGNETWORK(("Unable to allocate new slot for client, too many clients already connected.\n"));
+		DEBUGNETWORK(("Unable to allocate new slot for client, too many clients already connected\n"));
 		CLOSESOCKET(h);
 
-		g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected. (CLIENTMAX reached)\n", static_cast<LPCTSTR>(client_addr.GetAddrStr()));
+		g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected (CLIENTMAX reached)\n", static_cast<LPCTSTR>(client_addr.GetAddrStr()));
 		return;
 	}
 
-	DEBUGNETWORK(("%lx:Allocated slot for client (%lu).\n", state->id(), static_cast<unsigned long>(h)));
+	DEBUGNETWORK(("%lx:Allocated slot for client (%lu)\n", state->id(), static_cast<unsigned long>(h)));
 
 	// assign slot
 	EXC_SET("assigning slot");
 	state->init(h, client_addr);
 
-	DEBUGNETWORK(("%lx:State initialised, registering client instance.\n", state->id()));
+	DEBUGNETWORK(("%lx:State initialized, registering client instance\n", state->id()));
 
 	EXC_SET("recording client");
 	if (state->m_client)
 		m_clients.InsertHead(state->m_client);
 
 	EXC_SET("assigning thread");
-	DEBUGNETWORK(("%lx:Selecting a thread to assign to.\n", state->id()));
+	DEBUGNETWORK(("%lx:Selecting a thread to assign to\n", state->id()));
 	assignNetworkState(state);
 
-	DEBUGNETWORK(("%lx:Client successfully initialised.\n", state->id()));
+	DEBUGNETWORK(("%lx:Client successfully initialized\n", state->id()));
 
 	EXC_CATCH;
 }
@@ -2683,11 +2655,11 @@ void NetworkManager::start(void)
 		for (NetworkThreadList::iterator it = m_threads.begin(); it != m_threads.end(); ++it)
 			(*it)->start();
 
-		DEBUGNETWORK(("Started %" FMTSIZE_T " network threads.\n", m_threads.size()));
+		DEBUGNETWORK(("Started %" FMTSIZE_T " network threads\n", m_threads.size()));
 	}
 	else
 	{
-		// initialise network threads
+		// Initialize network threads
 		for (NetworkThreadList::iterator it = m_threads.begin(); it != m_threads.end(); ++it)
 			(*it)->onStart();
 	}
@@ -2741,7 +2713,7 @@ void NetworkManager::tick(void)
 				EXC_SET("flush data");
 				if (state->needsFlush() == false)
 				{
-					DEBUGNETWORK(("%lx:Flushing data for client.\n", state->id()));
+					DEBUGNETWORK(("%lx:Flushing data for client\n", state->id()));
 					NetworkThread * thread = state->getParentThread();
 					if (thread != NULL)
 						thread->flush(state);
@@ -2758,7 +2730,7 @@ void NetworkManager::tick(void)
 		if (state->isClosed() && state->isSendingAsync() == false)
 		{
 			EXC_SET("clear socket");
-			DEBUGNETWORK(("%lx:Client is being cleared since marked to close.\n", state->id()));
+			DEBUGNETWORK(("%lx:Client is being cleared since marked to close\n", state->id()));
 			state->clear();
 		}
 	}
@@ -3101,7 +3073,7 @@ void NetworkInput::processData()
 				INT64 iLastEventDiff = -g_World.GetTimeDiff( client->m_timeLastEvent );
 				if ( g_Cfg.m_iDeadSocketTime > 0 && iLastEventDiff > g_Cfg.m_iDeadSocketTime )
 				{
-					g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:Frozen client disconnected.\n", state->id());
+					g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:Frozen client disconnected\n", state->id());
 					state->m_client->addLoginErr( PacketLoginError::Other );		//state->markReadClosed();
 				}
 			}
@@ -3319,7 +3291,7 @@ bool NetworkInput::processGameClientData(NetState* state, Packet* buffer)
 			// unknown packet.. we could skip 1 byte at a time but this can produce
 			// strange behaviours (it's unlikely that only 1 byte is incorrect), so
 			// it's best to just discard everything we have
-			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "%lx:Unknown game packet (0x%x) received.\n", state->id(), packetId);
+			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "%lx:Unknown game packet (0x%x) received\n", state->id(), packetId);
 			packet->skip(static_cast<long>(remainingLength));
 			remainingLength = 0;
 		}
@@ -3493,7 +3465,7 @@ bool NetworkInput::processUnknownClientData(NetState* state, Packet* buffer)
 		DEBUGNETWORK(("%lx:Client connected with a seed length of %" FMTSIZE_T " ([0]=0x%x)\n", state->id(), buffer->getRemainingLength(), static_cast<int>(buffer->getRemainingData()[0])));
 		if (state->m_newseed || ((buffer->getRemainingData()[0] == PACKET_NewSeed) && (buffer->getRemainingLength() >= NETWORK_SEEDLEN_NEW)))
 		{
-			DEBUGNETWORK(("%lx:Receiving new client login handshake.\n", state->id()));
+			DEBUGNETWORK(("%lx:Receiving new client login handshake\n", state->id()));
 
 			if (state->m_newseed == false)
 			{
@@ -3515,12 +3487,12 @@ bool NetworkInput::processUnknownClientData(NetState* state, Packet* buffer)
 			}
 			else
 			{
-				DEBUGNETWORK(("%lx:Not enough data received to be a valid handshake (%" FMTSIZE_T ").\n", state->id(), buffer->getRemainingLength()));
+				DEBUGNETWORK(("%lx:Not enough data received to be a valid handshake (%" FMTSIZE_T ")\n", state->id(), buffer->getRemainingLength()));
 			}
 		}
 		else if ((buffer->getRemainingData()[0] == PACKET_UOGRequest) && (buffer->getRemainingLength() == 8))
 		{
-			DEBUGNETWORK(("%lx:Receiving new UOG status request.\n", state->id()));
+			DEBUGNETWORK(("%lx:Receiving new UOG status request\n", state->id()));
 			buffer->skip(7);
 			buffer->getRemainingData()[0] = 0x7F;
 			return true;
@@ -3528,16 +3500,16 @@ bool NetworkInput::processUnknownClientData(NetState* state, Packet* buffer)
 		else
 		{
 			// assume it's a normal client login
-			DEBUGNETWORK(("%lx:Receiving old client login handshake.\n", state->id()));
+			DEBUGNETWORK(("%lx:Receiving old client login handshake\n", state->id()));
 
 			seed = buffer->readInt32();
 		}
 
-		DEBUGNETWORK(("%lx:Client connected with a seed of 0x%lx (new handshake=%d, version=%lu).\n", state->id(), seed, state->m_newseed ? 1 : 0, state->m_reportedVersion));
+		DEBUGNETWORK(("%lx:Client connected with a seed of 0x%lx (new handshake=%d, version=%lu)\n", state->id(), seed, state->m_newseed ? 1 : 0, state->m_reportedVersion));
 
 		if (seed == 0)
 		{
-			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:Invalid client detected, disconnecting.\n", state->id());
+			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:Invalid client detected, disconnecting\n", state->id());
 			return false;
 		}
 
@@ -3550,7 +3522,7 @@ bool NetworkInput::processUnknownClientData(NetState* state, Packet* buffer)
 			// server to send a packet before continuing
 			EXC_SET("KR client seed");
 
-			DEBUG_WARN(("UO:KR Client Detected.\n"));
+			DEBUG_WARN(("UO:KR Client Detected\n"));
 			client->SetConnectType(CONNECT_CRYPT);
 			state->m_clientType = CLIENTTYPE_KR;
 			new PacketKREncryption(client);
@@ -3817,14 +3789,10 @@ size_t NetworkOutput::processPacketQueue(NetState* state, unsigned int priority)
 		EXC_DEBUG_END;
 	}
 
-	if (packetsProcessed >= maxPacketsToProcess)
-	{
-		DEBUGNETWORK(("Reached maximum packet count limit for this tick (%" FMTSIZE_T "/%" FMTSIZE_T ").\n", packetsProcessed, maxPacketsToProcess));
-	}
-	if (lengthProcessed >= maxLengthToProcess)
-	{
-		DEBUGNETWORK(("Reached maximum packet length limit for this tick (%" FMTSIZE_T "/%" FMTSIZE_T ").\n", lengthProcessed, maxLengthToProcess));
-	}
+	if ( packetsProcessed >= maxPacketsToProcess )
+		DEBUGNETWORK(("Reached maximum packet count limit for this tick (%" FMTSIZE_T "/%" FMTSIZE_T ")\n", packetsProcessed, maxPacketsToProcess));
+	if ( lengthProcessed >= maxLengthToProcess )
+		DEBUGNETWORK(("Reached maximum packet length limit for this tick (%" FMTSIZE_T "/%" FMTSIZE_T ")\n", lengthProcessed, maxLengthToProcess));
 
 	return packetsProcessed;
 }

@@ -881,18 +881,8 @@ ANIM_TYPE CChar::GenerateAnimate(ANIM_TYPE action, bool fTranslate, bool fBackwa
 				case ANIM_BOW:
 				case ANIM_SALUTE:
 					return ANIM_ANI_SLEEP;
-			}
-
-			while ( (action != ANIM_WALK_UNARM) && !(pCharDef->m_Anims & (static_cast<INT64>(1) << action)) )
-			{
-				// This anim is not supported, try to use one that is
-				switch ( action )
-				{
-					case ANIM_ANI_SLEEP:	// all have this
-						return ANIM_ANI_EAT;
-					default:
-						return ANIM_WALK_UNARM;
-				}
+				default:
+					return ANIM_WALK_UNARM;
 			}
 		}
 		else
@@ -915,7 +905,6 @@ ANIM_TYPE CChar::GenerateAnimate(ANIM_TYPE action, bool fTranslate, bool fBackwa
 						case 1: return ANIM_MON_BlockRight;
 						case 2: return ANIM_MON_BlockLeft;
 					}
-					break;
 				case ANIM_ATTACK_1H_SLASH:
 				case ANIM_ATTACK_1H_PIERCE:
 				case ANIM_ATTACK_1H_BASH:

@@ -518,7 +518,7 @@ void CAccount::SetNewPassword(LPCTSTR pszPassword)
 		size_t iLenArray = strlen(szValidChars);
 		size_t iLen = static_cast<size_t>(Calc_GetRandVal2(MAX_ACCOUNT_PASS_ENTRY / 2, MAX_ACCOUNT_PASS_ENTRY - 1));
 
-		TCHAR szPassword[iLen + 1];
+		TCHAR szPassword[MAX_ACCOUNT_PASS_ENTRY];
 		for ( size_t i = 0; i < iLen; ++i )
 			szPassword[i] = szValidChars[Calc_GetRandVal(iLenArray)];
 
