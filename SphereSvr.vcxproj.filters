@@ -632,6 +632,9 @@
     <ClInclude Include="src\graysvr\CUnixTerminal.h">
       <Filter>graysvr</Filter>
     </ClInclude>
+    <ClInclude Include="src\graysvr\CWebPage.h">
+      <Filter>graysvr</Filter>
+    </ClInclude>
     <ClInclude Include="src\graysvr\CWorld.h">
       <Filter>graysvr</Filter>
     </ClInclude>

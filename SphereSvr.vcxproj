@@ -313,6 +313,7 @@ if defined GitRev (
     <ClInclude Include="src\graysvr\CServer.h" />
     <ClInclude Include="src\graysvr\CServRef.h" />
     <ClInclude Include="src\graysvr\CUnixTerminal.h" />
+    <ClInclude Include="src\graysvr\CWebPage.h" />
     <ClInclude Include="src\graysvr\CWorld.h" />
     <ClInclude Include="src\graysvr\graysvr.h" />
     <ClInclude Include="src\common\zlib\crc32.h" />

@@ -143,6 +143,7 @@ enum RESDISPLAY_VERSION
 #include "CServRef.h"
 #include "CServer.h"
 #include "CSector.h"
+#include "CWebPage.h"
 #include "CWorld.h"
 
 ///////////////////////////////////////////////

@@ -579,7 +579,7 @@ bool CClient::OnRxWebPageRequest(BYTE *pRequest, size_t iLen)
 	bool fKeepAlive = false;
 	TCHAR *pszReferer = NULL;
 	size_t iContentLength = 0;
-	CGTime dateIfModifiedSince;
+	CGTime timeLastModified;
 	for ( size_t i = 1; i < iQtyLines; ++i )
 	{
 		TCHAR *pszArgs = Str_TrimWhitespace(ppLines[i]);
@@ -604,7 +604,7 @@ bool CClient::OnRxWebPageRequest(BYTE *pRequest, size_t iLen)
 		{
 			// If-Modified-Since: Fri, 17 Dec 1999 14:59:20 GMT\r\n
 			pszArgs += 18;
-			dateIfModifiedSince.Read(pszArgs);
+			timeLastModified.Read(pszArgs);
 		}
 	}
 
@@ -663,7 +663,7 @@ bool CClient::OnRxWebPageRequest(BYTE *pRequest, size_t iLen)
 
 		if ( pWebPage )
 		{
-			if ( pWebPage->ServPagePost(this, ppRequest[1], ppLines[iQtyLines - 1], iContentLength) )
+			if ( pWebPage->ServPagePost(this, ppLines[iQtyLines - 1], iContentLength) )
 				return fKeepAlive;
 			return false;
 		}
@@ -680,7 +680,7 @@ bool CClient::OnRxWebPageRequest(BYTE *pRequest, size_t iLen)
 			return false;
 
 		g_Log.Event(LOGM_HTTP|LOGL_EVENT, "%lx:HTTP Page Request '%s', alive=%d\n", GetSocketID(), static_cast<LPCTSTR>(szPageName), fKeepAlive);
-		if ( CWebPageDef::ServPage(this, szPageName, &dateIfModifiedSince) )
+		if ( CWebPageDef::ServPage(this, szPageName, &timeLastModified) )
 			return fKeepAlive;
 	}
 	return false;

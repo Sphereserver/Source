@@ -7,6 +7,7 @@
 class CAccount;
 class CClient;
 class CServerDef;
+class CWebPageDef;
 
 typedef CServerDef *CServerRef;
 
@@ -313,88 +314,6 @@ public:
 private:
 	CRegionResourceDef(const CRegionResourceDef &copy);
 	CRegionResourceDef &operator=(const CRegionResourceDef &other);
-};
-
-///////////////////////////////////////////////////////////
-// CWebPageDef
-
-enum WEBPAGE_TYPE
-{
-	WEBPAGE_TEMPLATE,
-	WEBPAGE_TEXT,
-	WEBPAGE_BMP,
-	WEBPAGE_GIF,
-	WEBPAGE_JPG,
-	WEBPAGE_PNG,
-	WEBPAGE_QTY
-};
-
-enum WTRIG_TYPE
-{
-	// XTRIG_UNKNOWN	= some named trigger not on this list.
-	WTRIG_Load = 1,
-	WTRIG_QTY
-};
-
-class CWebPageDef : public CResourceLink
-{
-	// RES_WEBPAGE
-	// This is a single web page we are generating or serving.
-
-public:
-	static const char *m_sClassName;
-	static LPCTSTR const sm_szLoadKeys[];
-	static LPCTSTR const sm_szVerbKeys[];
-	static LPCTSTR const sm_szPageType[];
-	static LPCTSTR const sm_szPageExt[];
-	static LPCTSTR const sm_szTrigName[WTRIG_QTY + 1];
-
-	explicit CWebPageDef(RESOURCE_ID rid);
-	virtual ~CWebPageDef() { };
-
-public:
-	static int sm_iListIndex;
-
-private:
-	WEBPAGE_TYPE m_type;		// What basic format of file is this ? 0=text
-	PLEVEL_TYPE m_privlevel;	// What priv level to see this page ?
-	CServTime m_timeNextUpdate;
-
-	int m_iUpdatePeriod;		// How often to update the web page. 0 = never.
-	int m_iUpdateLog;			// Create a daily log of the page.
-
-	CGString m_sSrcFilePath;	// Source template for the generated web page.
-	CGString m_sDstFilePath;	// Where is the page served from ?
-
-public:
-	virtual bool r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc = NULL);
-	virtual bool r_LoadVal(CScript &s);
-	virtual bool r_Verb(CScript &s, CTextConsole *pSrc);	// some command on this object as a target
-
-	bool WebPageUpdate(bool fNow, LPCTSTR pszDstName, CTextConsole *pSrc);
-	void WebPageLog();
-
-	bool SetSourceFile(LPCTSTR pszName, CClient *pClient);
-	bool IsMatch(LPCTSTR pszMatch) const;
-
-	bool ServPagePost(CClient *pClient, LPCTSTR pszURLArgs, TCHAR *pszPostData, int iContentLength);
-	static bool ServPage(CClient *pClient, TCHAR *pszPage, CGTime *pdateLastMod);
-
-	LPCTSTR GetName() const
-	{
-		return m_sSrcFilePath;
-	}
-	LPCTSTR GetDstName() const
-	{
-		return m_sDstFilePath;
-	}
-
-private:
-	int ServPageRequest(CClient *pClient, LPCTSTR pszURLArgs, CGTime *pdateLastMod);
-
-private:
-	CWebPageDef(const CWebPageDef &copy);
-	CWebPageDef &operator=(const CWebPageDef &other);
 };
 
 ///////////////////////////////////////////////////////////

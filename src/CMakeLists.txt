@@ -173,6 +173,7 @@ set(graysvr_SRCS
     graysvr/CServRef.cpp
     graysvr/CServRef.h
     graysvr/CWebPage.cpp
+    graysvr/CWebPage.h
     graysvr/CWorld.cpp
     graysvr/CWorld.h
     graysvr/CWorldImport.cpp
