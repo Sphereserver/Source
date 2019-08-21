@@ -226,16 +226,16 @@ BYTE CClient::Login_ServerList(LPCTSTR pszAccount, LPCTSTR pszPassword)
 	// Initial login (Login on "loginserver", new format)
 	// If the messages are garbled, make sure they are terminated to correct length
 
-	TCHAR szAccount[MAX_ACCOUNT_NAME_SIZE + 3];
+	TCHAR szAccount[MAX_ACCOUNT_NAME_ENTRY];
 	size_t iLenAccount = Str_GetBare(szAccount, pszAccount, sizeof(szAccount) - 1);
-	if ( iLenAccount > MAX_ACCOUNT_NAME_SIZE )
+	if ( iLenAccount > MAX_ACCOUNT_NAME_ENTRY )
 		return PacketLoginError::BadAccount;
 	if ( iLenAccount != strlen(pszAccount) )
 		return PacketLoginError::BadAccount;
 
-	TCHAR szPassword[MAX_ACCOUNT_NAME_SIZE + 3];
+	TCHAR szPassword[MAX_ACCOUNT_PASS_ENTRY];
 	size_t iLenPassword = Str_GetBare(szPassword, pszPassword, sizeof(szPassword) - 1);
-	if ( iLenPassword > MAX_ACCOUNT_NAME_SIZE )
+	if ( iLenPassword > MAX_ACCOUNT_PASS_ENTRY )
 		return PacketLoginError::BadPassword;
 	if ( iLenPassword != strlen(pszPassword) )
 		return PacketLoginError::BadPassword;

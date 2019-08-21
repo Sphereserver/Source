@@ -1047,8 +1047,8 @@ bool CServer::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 
 		// Extract account name/index to a temporary buffer
 		TCHAR *pszTemp = Str_GetTemp();
-		strncpy(pszTemp, pszKey, MAX_ACCOUNT_NAME_SIZE - 1);
-		pszTemp[MAX_ACCOUNT_NAME_SIZE - 1] = '\0';
+		strncpy(pszTemp, pszKey, MAX_ACCOUNT_NAME_ENTRY - 1);
+		pszTemp[MAX_ACCOUNT_NAME_ENTRY - 1] = '\0';
 
 		TCHAR *pszSplit = strchr(pszTemp, '.');
 		if ( pszSplit )
@@ -1208,8 +1208,8 @@ bool CServer::r_Verb(CScript &s, CTextConsole *pSrc)
 
 			// Extract account name/index to a temporary buffer
 			TCHAR *pszTemp = Str_GetTemp();
-			strncpy(pszTemp, pszKey, MAX_ACCOUNT_NAME_SIZE - 1);
-			pszTemp[MAX_ACCOUNT_NAME_SIZE - 1] = '\0';
+			strncpy(pszTemp, pszKey, MAX_ACCOUNT_NAME_ENTRY - 1);
+			pszTemp[MAX_ACCOUNT_NAME_ENTRY - 1] = '\0';
 
 			TCHAR *pszSplit = strchr(pszTemp, '.');
 			if ( pszSplit )

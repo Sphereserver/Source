@@ -630,9 +630,9 @@ enum NOTO_TYPE
 // Eg: SA enhanced client 4.0.52.0 will report 67.0.52.0 to server, so the real value is 67.0.52.0 - mask = 4.0.52.0
 #define MASK_CLIENTTYPE_EC				63000000	// SA+ enhanced clients starts on version 4.0.0.0
 
-enum TALKMODE_TYPE	// Modes we can talk/bark in.
+enum TALKMODE_TYPE
 {
-	TALKMODE_SYSTEM = 0,		// 0 = Normal system message
+	TALKMODE_SYSTEM,			// 0 = Normal system message
 	TALKMODE_PROMPT,			// 1 = Display as system prompt
 	TALKMODE_EMOTE,				// 2 = *smiles* at object (client shortcut: :+space)
 	TALKMODE_SAY,				// 3 = A chacter speaking.
@@ -652,84 +652,88 @@ enum TALKMODE_TYPE	// Modes we can talk/bark in.
 
 enum SKILLLOCK_TYPE
 {
-	SKILLLOCK_UP = 0,
+	SKILLLOCK_UP,
 	SKILLLOCK_DOWN,
 	SKILLLOCK_LOCK
 };
 
-enum DEATH_MODE_TYPE	// DeathMenu
+enum DEATH_MODE_TYPE
 {
-	DEATH_MODE_MANIFEST = 0,
+	DEATH_MODE_MANIFEST,
 	DEATH_MODE_RES_IMMEDIATE,
 	DEATH_MODE_PLAY_GHOST
 };
 
 enum DELETE_ERR_TYPE
 {
-	DELETE_ERR_BAD_PASS = 0, // 0 That character password is invalid.
-	DELETE_ERR_NOT_EXIST,	// 1 That character does not exist.
-	DELETE_ERR_IN_USE,	// 2 That character is being played right now.
-	DELETE_ERR_NOT_OLD_ENOUGH, // 3 That character is not old enough to delete. The character must be 7 days old before it can be deleted.
-	DELETE_SUCCESS = 255
+	DELETE_ERR_BAD_PASS,
+	DELETE_ERR_NOT_EXIST,
+	DELETE_ERR_IN_USE,
+	DELETE_ERR_NOT_OLD_ENOUGH,
+	DELETE_SUCCESS = 0xFF
 };
 
-enum BUGREPORT_TYPE	// bug report codes
+enum BUGREPORT_TYPE
 {
-	BUGREPORT_ENVIRONMENT	= 0x01,
-	BUGREPORT_WEARABLES		= 0x02,
-	BUGREPORT_COMBAT		= 0x03,
-	BUGREPORT_UI			= 0x04,
-	BUGREPORT_CRASH			= 0x05,
-	BUGREPORT_STUCK			= 0x06,
-	BUGREPORT_ANIMATIONS	= 0x07,
-	BUGREPORT_PERFORMANCE	= 0x08,
-	BUGREPORT_NPCS			= 0x09,
-	BUGREPORT_CREATURES		= 0x0A,
-	BUGREPORT_PETS			= 0x0B,
-	BUGREPORT_HOUSING		= 0x0C,
-	BUGREPORT_LOST_ITEM		= 0x0D,
-	BUGREPORT_EXPLOIT		= 0x0E,
-	BUGREPORT_OTHER			= 0x0F
+	BUGREPORT_ENVIRONMENT = 0x1,
+	BUGREPORT_WEARABLES,
+	BUGREPORT_COMBAT,
+	BUGREPORT_UI,
+	BUGREPORT_CRASH,
+	BUGREPORT_STUCK,
+	BUGREPORT_ANIMATIONS,
+	BUGREPORT_PERFORMANCE,
+	BUGREPORT_NPCS,
+	BUGREPORT_CREATURES,
+	BUGREPORT_PETS,
+	BUGREPORT_HOUSING,
+	BUGREPORT_LOST_ITEM,
+	BUGREPORT_EXPLOIT,
+	BUGREPORT_OTHER
 };
 
-enum PROFESSION_TYPE	// profession ids
+enum PROFESSION_TYPE
 {
-	PROFESSION_ADVANCED		= 0x00,
-	PROFESSION_WARRIOR		= 0x01,
-	PROFESSION_MAGE			= 0x02,
-	PROFESSION_BLACKSMITH	= 0x03,
-	PROFESSION_NECROMANCER	= 0x04,
-	PROFESSION_PALADIN		= 0x05,
-	PROFESSION_SAMURAI		= 0x06,
-	PROFESSION_NINJA		= 0x07
+	PROFESSION_ADVANCED,
+	PROFESSION_WARRIOR,
+	PROFESSION_MAGE,
+	PROFESSION_BLACKSMITH,
+	PROFESSION_NECROMANCER,
+	PROFESSION_PALADIN,
+	PROFESSION_SAMURAI,
+	PROFESSION_NINJA
 };
 
-enum GAMECLIENT_TYPE	// game client type, KR and SA are from the 0xE1 packet, other values are for convenience
+enum GAMECLIENT_TYPE
 {
-	CLIENTTYPE_2D	= 0x0,	// 2D classic client
-	CLIENTTYPE_3D	= 0x1,	// 3D classic client
-	CLIENTTYPE_KR	= 0x2,	// KR client
-	CLIENTTYPE_EC	= 0x3	// Enhanced client
+	CLIENTTYPE_2D,	// 2D classic client
+	CLIENTTYPE_3D,	// 3D classic client
+	CLIENTTYPE_KR,	// KR enhanced client
+	CLIENTTYPE_EC	// SA enhanced client
 };
 
-enum RACE_TYPE		// character race, used in new character creation (0x8D) and status (0x11) packets
+enum RACE_TYPE
 {
-	RACETYPE_UNDEFINED	= 0x0,
-	RACETYPE_HUMAN		= 0x1,
-	RACETYPE_ELF		= 0x2,
-	RACETYPE_GARGOYLE	= 0x3
+	RACETYPE_UNDEFINED,
+	RACETYPE_HUMAN,
+	RACETYPE_ELF,
+	RACETYPE_GARGOYLE
 };
 
 struct CEventCharDef
 {
-	#define MAX_ITEM_NAME_SIZE	256		// imposed by client for protocol
-	#define MAX_NAME_SIZE 30
-	#define ACCOUNT_NAME_VALID_CHAR " !\"#$%&()*,/:;<=>?@[\\]^{|}~"
-	#define MAX_ACCOUNT_NAME_SIZE MAX_NAME_SIZE
-	#define MAX_ACCOUNT_PASSWORD_ENTER 16	// client only allows n chars.
+	#define MAX_NAME_SIZE				30
+	#define MAX_ITEM_NAME_SIZE			256		// imposed by client for protocol
+
+	// Client login screen allow login/password with up to 16 chars, but packets require 30 chars
+	#define MAX_ACCOUNT_NAME_ENTRY		17		// 16 + null terminator
+	#define MAX_ACCOUNT_NAME_SIZE		MAX_NAME_SIZE
+	#define MAX_ACCOUNT_PASS_ENTRY		17		// 16 + null terminator
+	#define MAX_ACCOUNT_PASS_SIZE		MAX_NAME_SIZE
+	#define ACCOUNT_NAME_INVALID_CHARS	" !\"#$%&()*,/:;<=>?@[\\]^{|}~"
 
 	char m_charname[MAX_ACCOUNT_NAME_SIZE];
-	char m_charpass[MAX_NAME_SIZE];	// but the size of the structure is 30 (go figure)
+	char m_charpass[MAX_ACCOUNT_PASS_SIZE];
 };
 
 struct CEvent	// event buffer from client to server..
@@ -756,7 +760,7 @@ struct CEvent	// event buffer from client to server..
 		{
 			BYTE m_Cmd;			// PACKET_ServersReq (size = 62)
 			char m_acctname[MAX_ACCOUNT_NAME_SIZE];
-			char m_acctpass[MAX_NAME_SIZE];
+			char m_acctpass[MAX_ACCOUNT_PASS_SIZE];
 			BYTE m_loginKey;	// 61 = NextLoginKey from uo.cfg
 		} ServersReq;
 
@@ -765,7 +769,7 @@ struct CEvent	// event buffer from client to server..
 			BYTE m_Cmd;			// PACKET_CharListReq (size = 65)
 			NDWORD m_Account;	// 1-4 = account id from PACKET_Relay message to log server.
 			char m_acctname[MAX_ACCOUNT_NAME_SIZE];	// This is corrupted or encrypted seperatly ?
-			char m_acctpass[MAX_NAME_SIZE];
+			char m_acctpass[MAX_ACCOUNT_PASS_SIZE];
 		} CharListReq;
 
 		struct 

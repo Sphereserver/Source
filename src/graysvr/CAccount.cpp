@@ -88,7 +88,7 @@ bool CAccounts::Account_Load(LPCTSTR pszName, CScript &s, bool fChanges)
 	if ( s.HasArgs() && !strcmpi(pszName, "ACCOUNT") )
 		pszName = s.GetArgStr();
 
-	TCHAR szName[MAX_ACCOUNT_NAME_SIZE];
+	TCHAR szName[MAX_ACCOUNT_NAME_ENTRY];
 	if ( !CAccount::NameStrip(szName, pszName) )
 	{
 		if ( !fChanges )
@@ -279,7 +279,7 @@ CAccount *CAccounts::Account_Find(LPCTSTR pszName)
 {
 	ADDTOCALLSTACK("CAccounts::Account_Find");
 
-	TCHAR szName[MAX_ACCOUNT_NAME_SIZE];
+	TCHAR szName[MAX_ACCOUNT_NAME_ENTRY];
 	if ( !CAccount::NameStrip(szName, pszName) )
 		return NULL;
 
@@ -301,7 +301,7 @@ CAccount *CAccounts::Account_FindCreate(LPCTSTR pszName, bool fCreate)
 	// Account not found, check if it should be created
 	if ( fCreate )
 	{
-		TCHAR szName[MAX_ACCOUNT_NAME_SIZE];
+		TCHAR szName[MAX_ACCOUNT_NAME_ENTRY];
 		if ( CAccount::NameStrip(szName, pszName) )
 		{
 			pAccount = new CAccount(szName);
@@ -343,7 +343,7 @@ bool CAccounts::Cmd_AddNew(CTextConsole *pSrc, LPCTSTR pszName, LPCTSTR pszPassw
 		return false;
 	}
 
-	TCHAR szName[MAX_ACCOUNT_NAME_SIZE];
+	TCHAR szName[MAX_ACCOUNT_NAME_ENTRY];
 	if ( !CAccount::NameStrip(szName, pszName) )
 	{
 		g_Log.Event(LOGL_ERROR|LOGM_ACCOUNTS, "Account '%s': bad name\n", pszName);
@@ -432,7 +432,7 @@ CAccount::CAccount(LPCTSTR pszName)
 {
 	g_Serv.StatInc(SERV_STAT_ACCOUNTS);
 
-	TCHAR szName[MAX_ACCOUNT_NAME_SIZE];
+	TCHAR szName[MAX_ACCOUNT_NAME_ENTRY];
 	if ( !CAccount::NameStrip(szName, pszName) )
 		g_Log.Event(LOGL_ERROR|LOGM_ACCOUNTS, "Account '%s': bad name\n", pszName);
 
@@ -458,7 +458,7 @@ bool CAccount::NameStrip(TCHAR *pszNameOut, LPCTSTR pszNameIn)
 {
 	ADDTOCALLSTACK("CAccount::NameStrip");
 
-	if ( Str_GetBare(pszNameOut, pszNameIn, MAX_ACCOUNT_NAME_SIZE, ACCOUNT_NAME_VALID_CHAR) <= 0 )		// check length
+	if ( Str_GetBare(pszNameOut, pszNameIn, MAX_ACCOUNT_NAME_ENTRY, ACCOUNT_NAME_INVALID_CHARS) <= 0 )		// check length
 		return false;
 	if ( IsStrNumeric(pszNameOut) )		// check numeric characters
 		return false;
@@ -516,9 +516,9 @@ void CAccount::SetNewPassword(LPCTSTR pszPassword)
 	{
 		TCHAR szValidChars[] = "ABCDEFGHIJKLMNOPQRSTUVXWYZ0123456789";
 		size_t iLenArray = strlen(szValidChars);
-		size_t iLen = static_cast<size_t>(Calc_GetRandVal2(MAX_ACCOUNT_PASSWORD_ENTER / 2, MAX_ACCOUNT_PASSWORD_ENTER));
+		size_t iLen = static_cast<size_t>(Calc_GetRandVal2(MAX_ACCOUNT_PASS_ENTRY / 2, MAX_ACCOUNT_PASS_ENTRY - 1));
 
-		TCHAR szPassword[MAX_ACCOUNT_PASSWORD_ENTER + 1];
+		TCHAR szPassword[iLen + 1];
 		for ( size_t i = 0; i < iLen; ++i )
 			szPassword[i] = szValidChars[Calc_GetRandVal(iLenArray)];
 
@@ -528,8 +528,8 @@ void CAccount::SetNewPassword(LPCTSTR pszPassword)
 	}
 
 	m_sNewPassword = pszPassword;
-	if ( m_sNewPassword.GetLength() > MAX_ACCOUNT_PASSWORD_ENTER )
-		m_sNewPassword.SetLength(MAX_ACCOUNT_PASSWORD_ENTER);
+	if ( m_sNewPassword.GetLength() > MAX_ACCOUNT_PASS_ENTRY )
+		m_sNewPassword.SetLength(MAX_ACCOUNT_PASS_ENTRY);
 }
 
 bool CAccount::CheckPassword(LPCTSTR pszPassword)

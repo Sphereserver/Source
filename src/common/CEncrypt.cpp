@@ -249,7 +249,7 @@ void CCrypt::LoginCryptStart(DWORD dwIP, BYTE *pbEvent, size_t iLen)
 				if ( pszAccountNameRaw )
 				{
 					// (matex) TODO: What for? We do not really need pszAccountNameCheck here do we?!
-					size_t iAccountNameLen = Str_GetBare(pszAccountNameCheck, pszAccountNameRaw, MAX_ACCOUNT_NAME_SIZE, ACCOUNT_NAME_VALID_CHAR);
+					size_t iAccountNameLen = Str_GetBare(pszAccountNameCheck, pszAccountNameRaw, MAX_ACCOUNT_NAME_SIZE, ACCOUNT_NAME_INVALID_CHARS);
 					if ( iAccountNameLen > 0 )
 						pszAccountNameCheck[iAccountNameLen - 1] = '\0';
 

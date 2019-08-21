@@ -2965,7 +2965,7 @@ void PacketServerList::writeServerEntry(const CServerRef &server, WORD index, bo
 		percentFull = static_cast<BYTE>(minimum(server->StatGet(SERV_STAT_CLIENTS), 100));
 
 	writeInt16(index);
-	writeStringFixedASCII(server->GetName(), MAX_NAME_SIZE + 2);
+	writeStringFixedASCII(server->GetName(), MAX_SERVER_NAME_SIZE);
 	writeByte(percentFull);
 	writeByte(server->m_TimeZone);
 

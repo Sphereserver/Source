@@ -1695,7 +1695,7 @@ bool PacketServersReq::onReceive(NetState* net)
 
 	TCHAR acctname[MAX_ACCOUNT_NAME_SIZE];
 	readStringASCII(acctname, COUNTOF(acctname));
-	TCHAR acctpass[MAX_NAME_SIZE];
+	TCHAR acctpass[MAX_ACCOUNT_PASS_SIZE];
 	readStringASCII(acctpass, COUNTOF(acctpass));
 	skip(1);
 
@@ -1723,7 +1723,7 @@ bool PacketCharDelete::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketCharDelete::onReceive");
 
-	skip(MAX_NAME_SIZE); // charpass
+	skip(MAX_ACCOUNT_PASS_SIZE); // charpass
 	DWORD slot = readInt32();
 	skip(4); // client ip
 
@@ -1901,7 +1901,7 @@ bool PacketCharListReq::onReceive(NetState* net)
 	skip(4);
 	TCHAR acctname[MAX_ACCOUNT_NAME_SIZE];
 	readStringASCII(acctname, COUNTOF(acctname));
-	TCHAR acctpass[MAX_NAME_SIZE];
+	TCHAR acctpass[MAX_ACCOUNT_PASS_SIZE];
 	readStringASCII(acctpass, COUNTOF(acctpass));
 
 	net->m_client->Setup_ListReq(acctname, acctpass, false);

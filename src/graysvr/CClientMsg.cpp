@@ -3414,18 +3414,18 @@ BYTE CClient::LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg)
 	if ( m_pAccount )	// already logged in
 		return PacketLoginError::Success;
 
-	TCHAR szTemp[MAX_NAME_SIZE];
+	TCHAR szTemp[MAX_ACCOUNT_NAME_ENTRY];
 	size_t iLen1 = strlen(pszAccount);
 	size_t iLen2 = strlen(pszPassword);
-	size_t iLen3 = Str_GetBare(szTemp, pszAccount, MAX_NAME_SIZE);
-	if ( (iLen1 == 0) || (iLen1 != iLen3) || (iLen1 > MAX_NAME_SIZE) )	// corrupt message
+	size_t iLen3 = Str_GetBare(szTemp, pszAccount, MAX_ACCOUNT_NAME_ENTRY);
+	if ( (iLen1 == 0) || (iLen1 != iLen3) || (iLen1 > MAX_ACCOUNT_NAME_ENTRY) )	// corrupt message
 	{
 		TCHAR szVersion[128];
 		sMsg.Format(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_WCLI), static_cast<LPCTSTR>(m_Crypt.WriteClientVerString(m_Crypt.GetClientVer(), szVersion)));
 		return PacketLoginError::BadAccount;
 	}
 
-	iLen3 = Str_GetBare(szTemp, pszPassword, MAX_NAME_SIZE);
+	iLen3 = Str_GetBare(szTemp, pszPassword, MAX_ACCOUNT_PASS_ENTRY);
 	if ( iLen2 != iLen3 )	// corrupt message
 	{
 		TCHAR szVersion[128];
@@ -3433,7 +3433,7 @@ BYTE CClient::LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg)
 		return PacketLoginError::BadPassword;
 	}
 
-	TCHAR szName[MAX_ACCOUNT_NAME_SIZE];
+	TCHAR szName[MAX_ACCOUNT_NAME_ENTRY];
 	if ( !CAccount::NameStrip(szName, pszAccount) || Str_Check(pszAccount) )
 		return PacketLoginError::BadAccount;
 	if ( Str_Check(pszPassword) )
