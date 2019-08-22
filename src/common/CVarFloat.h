@@ -9,6 +9,9 @@ struct LexNoCaseLess
 	bool operator()(const CGString &sVal, LPCTSTR pszBeg2) const
 	{
 		LPCTSTR pszBeg1 = sVal.GetPtr();
+		if ( !pszBeg1 || !pszBeg2 )
+			return false;
+
 		LPCTSTR pszEnd1 = pszBeg1;
 		LPCTSTR pszEnd2 = pszBeg2;
 		while ( pszEnd1 )

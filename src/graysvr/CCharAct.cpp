@@ -868,11 +868,10 @@ ANIM_TYPE CChar::GenerateAnimate(ANIM_TYPE action, bool fTranslate, bool fBackwa
 				case ANIM_ATTACK_BOW:
 				case ANIM_ATTACK_XBOW:
 				case ANIM_ATTACK_WRESTLE:
-					switch ( Calc_GetRandVal(2) )
-					{
-						case 0: return ANIM_ANI_ATTACK1;
-						case 1: return ANIM_ANI_ATTACK2;
-					}
+				{
+					static const ANIM_TYPE sm_Anim_Ani_Attack[] = { ANIM_ANI_ATTACK1, ANIM_ANI_ATTACK2 };
+					return sm_Anim_Ani_Attack[Calc_GetRandVal(COUNTOF(sm_Anim_Ani_Attack))];
+				}
 				case ANIM_DIE_BACK:
 					return ANIM_ANI_DIE1;
 				case ANIM_DIE_FORWARD:
@@ -899,12 +898,10 @@ ANIM_TYPE CChar::GenerateAnimate(ANIM_TYPE action, bool fTranslate, bool fBackwa
 				case ANIM_DIE_FORWARD:
 					return ANIM_MON_DIE2;
 				case ANIM_GET_HIT:
-					switch ( Calc_GetRandVal(3) )
-					{
-						case 0: return ANIM_MON_GETHIT;
-						case 1: return ANIM_MON_BlockRight;
-						case 2: return ANIM_MON_BlockLeft;
-					}
+				{
+					static const ANIM_TYPE sm_Anim_Mon_GetHit[] = { ANIM_MON_GETHIT, ANIM_MON_BlockRight, ANIM_MON_BlockLeft };
+					return sm_Anim_Mon_GetHit[Calc_GetRandVal(COUNTOF(sm_Anim_Mon_GetHit))];
+				}
 				case ANIM_ATTACK_1H_SLASH:
 				case ANIM_ATTACK_1H_PIERCE:
 				case ANIM_ATTACK_1H_BASH:
@@ -914,44 +911,12 @@ ANIM_TYPE CChar::GenerateAnimate(ANIM_TYPE action, bool fTranslate, bool fBackwa
 				case ANIM_ATTACK_BOW:
 				case ANIM_ATTACK_XBOW:
 				case ANIM_ATTACK_WRESTLE:
-					switch ( Calc_GetRandVal(3) )
-					{
-						case 0: return ANIM_MON_ATTACK1;
-						case 1: return ANIM_MON_ATTACK2;
-						case 2: return ANIM_MON_ATTACK3;
-					}
+				{
+					static const ANIM_TYPE sm_Anim_Mon_Attack[] = { ANIM_MON_ATTACK1, ANIM_MON_ATTACK2, ANIM_MON_ATTACK3 };
+					return sm_Anim_Mon_Attack[Calc_GetRandVal(COUNTOF(sm_Anim_Mon_Attack))];
+				}
 				default:
 					return ANIM_WALK_UNARM;
-			}
-
-			// Available actions depend HEAVILY on creature type
-			// Monsters don't have all anims in common, so translate these
-			while ( (action != ANIM_WALK_UNARM) && !(pCharDef->m_Anims & (static_cast<INT64>(1) << action)) )
-			{
-				switch ( action )
-				{
-					case ANIM_MON_ATTACK2:			// dolphins and eagles don't have this
-					case ANIM_MON_ATTACK3:
-						return ANIM_MON_ATTACK1;	// all creatures have at least this attack
-					case ANIM_MON_Cast2:			// trolls, spiders and many others don't have this
-						return ANIM_MON_BlockRight;	// birds don't have this
-					case ANIM_MON_BlockRight:
-						return ANIM_MON_BlockLeft;
-					case ANIM_MON_BlockLeft:
-						return ANIM_MON_GETHIT;
-					case ANIM_MON_GETHIT:
-						return (pCharDef->m_Anims & (static_cast<INT64>(1) << ANIM_MON_Cast2)) ? ANIM_MON_Cast2 : ANIM_WALK_UNARM;
-					case ANIM_MON_Stomp:
-						return ANIM_MON_PILLAGE;
-					case ANIM_MON_AttackBow:
-					case ANIM_MON_AttackXBow:
-					case ANIM_MON_PILLAGE:
-						return ANIM_MON_ATTACK3;
-					case ANIM_MON_AttackThrow:
-						return ANIM_MON_AttackXBow;
-					default:
-						return ANIM_WALK_UNARM;
-				}
 			}
 		}
 	}
@@ -1283,7 +1248,7 @@ void CChar::SoundChar(CRESND_TYPE type)
 						if ( pWeapon->Item_GetDef()->GetEquipLayer() == LAYER_HAND2 )	//if not two handed, don't break, just fall through and use same sound as fencing weapons
 							return Sound(Calc_GetRandVal(2) ? static_cast<SOUND_TYPE>(0x236) : static_cast<SOUND_TYPE>(0x237));		//hvyswrd1 : hvyswrd4
 					case IT_WEAPON_FENCE:
-						return Sound(Calc_GetRandVal(2) ? static_cast<SOUND_TYPE>(0x23b) : static_cast<SOUND_TYPE>(0x23c));			//sword1 : sword7
+						return Sound(Calc_GetRandVal(2) ? static_cast<SOUND_TYPE>(0x23B) : static_cast<SOUND_TYPE>(0x23C));			//sword1 : sword7
 					case IT_WEAPON_BOW:
 					case IT_WEAPON_XBOW:
 						return Sound(static_cast<SOUND_TYPE>(0x234));		//xbow
@@ -1325,38 +1290,50 @@ void CChar::SoundChar(CRESND_TYPE type)
 	}
 	else if ( id == SOUND_SPECIAL_HUMAN )	// Special (hardcoded) sound. Try to keep less hardcoded stuff possible, but this is useful
 	{
-		static const SOUND_TYPE sm_Snd_Hit[] =
-		{
-			0x135,	//hit01 (slap)
-			0x137,	//hit03 (hit sand)
-			0x13b	//hit07 (hit slap)
-		};
-		static const SOUND_TYPE sm_Snd_Man_Die[] = { 0x15a, 0x15b, 0x15c, 0x15d };
-		static const SOUND_TYPE sm_Snd_Man_Omf[] = { 0x154, 0x155, 0x156, 0x157, 0x158, 0x159 };
-		static const SOUND_TYPE sm_Snd_Wom_Die[] = { 0x150, 0x151, 0x152, 0x153 };
-		static const SOUND_TYPE sm_Snd_Wom_Omf[] = { 0x14b, 0x14c, 0x14d, 0x14e, 0x14f };
-
 		if ( type == CRESND_HIT )
 		{
 			// Same sound for every race/sex
+			static const SOUND_TYPE sm_Snd_Hit[] = { 0x135, 0x137, 0x13B };
 			id = sm_Snd_Hit[Calc_GetRandVal(COUNTOF(sm_Snd_Hit))];
 		}
 		else if ( pCharDef->IsFemale() )
 		{
 			switch ( type )
 			{
-				case CRESND_GETHIT:	id = sm_Snd_Wom_Omf[Calc_GetRandVal(COUNTOF(sm_Snd_Wom_Omf))];	break;
-				case CRESND_DIE:	id = sm_Snd_Wom_Die[Calc_GetRandVal(COUNTOF(sm_Snd_Wom_Die))];	break;
-				default:	break;
+				case CRESND_GETHIT:
+				{
+					static const SOUND_TYPE sm_Snd_Female_GetHit[] = { 0x14B, 0x14C, 0x14D, 0x14E, 0x14F };
+					id = sm_Snd_Female_GetHit[Calc_GetRandVal(COUNTOF(sm_Snd_Female_GetHit))];
+					break;
+				}
+				case CRESND_DIE:
+				{
+					static const SOUND_TYPE sm_Snd_Female_Die[] = { 0x150, 0x151, 0x152, 0x153 };
+					id = sm_Snd_Female_Die[Calc_GetRandVal(COUNTOF(sm_Snd_Female_Die))];
+					break;
+				}
+				default:
+					break;
 			}
 		}
-		else	// not CRESND_HIT and male character
+		else
 		{
 			switch ( type )
 			{
-				case CRESND_GETHIT:	id = sm_Snd_Man_Omf[Calc_GetRandVal(COUNTOF(sm_Snd_Man_Omf))];	break;
-				case CRESND_DIE:	id = sm_Snd_Man_Die[Calc_GetRandVal(COUNTOF(sm_Snd_Man_Die))];	break;
-				default:	break;
+				case CRESND_GETHIT:
+				{
+					static const SOUND_TYPE sm_Snd_Male_GetHit[] = { 0x154, 0x155, 0x156, 0x157, 0x158, 0x159 };
+					id = sm_Snd_Male_GetHit[Calc_GetRandVal(COUNTOF(sm_Snd_Male_GetHit))];
+					break;
+				}
+				case CRESND_DIE:
+				{
+					static const SOUND_TYPE sm_Snd_Male_Die[] = { 0x15A, 0x15B, 0x15C, 0x15D };
+					id = sm_Snd_Male_Die[Calc_GetRandVal(COUNTOF(sm_Snd_Male_Die))];
+					break;
+				}
+				default:
+					break;
 			}
 		}
 		// No idle/notice sounds for this
@@ -1860,8 +1837,8 @@ bool CChar::ItemEquip(CItem *pItem, CChar *pCharMsg, bool fFromDClick)
 void CChar::EatAnim(LPCTSTR pszName, int iQty)
 {
 	ADDTOCALLSTACK("CChar::EatAnim");
-	static const SOUND_TYPE sm_EatSounds[] = { 0x03a, 0x03b, 0x03c };
-	Sound(sm_EatSounds[Calc_GetRandVal(COUNTOF(sm_EatSounds))]);
+	static const SOUND_TYPE sm_Snd_Eat[] = { 0x3A, 0x3B, 0x3C };
+	Sound(sm_Snd_Eat[Calc_GetRandVal(COUNTOF(sm_Snd_Eat))]);
 
 	if ( !IsStatFlag(STATF_OnHorse) )
 		UpdateAnimate(ANIM_EAT);

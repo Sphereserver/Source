@@ -8,12 +8,10 @@ notifications:
   email: false
 addons:
   apt:
-    sources:
-    - mysql-5.7-trusty
     packages:
-    - libmysql++-dev:i386
     - gcc-multilib
     - g++-multilib
+    - libmysql++-dev:i386
   coverity_scan:
     project:
       name: "Sphereserver/Source"
