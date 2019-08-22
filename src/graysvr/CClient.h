@@ -669,7 +669,7 @@ public:
 	void UpdateStats();
 	void UpdateFeatureFlags();
 	void UpdateCharacterListFlags();
-	bool addDeleteErr(BYTE bCode, DWORD dwSlot);
+	bool addDeleteErr(BYTE bCode);
 	void addSeason(SEASON_TYPE season);
 	void addTime(bool fCurrent = false);
 	void addObjectRemoveCantSee(CGrayUID uid, LPCTSTR pszName = NULL);

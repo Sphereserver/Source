@@ -397,7 +397,7 @@ void CClient::removeBuff(const BUFF_ICONS IconID)
 	new PacketBuff(this, IconID);
 }
 
-bool CClient::addDeleteErr(BYTE bCode, DWORD dwSlot)
+bool CClient::addDeleteErr(BYTE bCode)
 {
 	ADDTOCALLSTACK("CClient::addDeleteErr");
 	if ( bCode == PacketDeleteError::Success )

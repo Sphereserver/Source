@@ -665,7 +665,7 @@ bool CItemShip::Ship_Move(DIR_TYPE dir, int iDist)
 			case DIR_NW:
 			case DIR_SW:
 				ptTest.m_x = ptFore.m_x;
-				for (int y = ptRight.m_y; y <= ptLeft.m_y; ++y )
+				for ( signed short y = ptRight.m_y; y <= ptLeft.m_y; ++y )
 				{
 					ptTest.m_y = y;
 					SPAWNSHIPTRACK(ptTest, 0xE0)

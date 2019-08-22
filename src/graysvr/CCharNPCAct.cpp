@@ -421,7 +421,7 @@ WORD CChar::NPC_GetTrainValue(CChar *pCharSrc, SKILL_TYPE skill)
 		return 0;
 
 	CVarDefCont *pVar = GetKey("OVERRIDE.TRAINSKILLMAXPERCENT", false);
-	WORD wTrainVal = IMULDIV(pVar ? static_cast<WORD>(pVar->GetValNum()) : g_Cfg.m_iTrainSkillPercent, Skill_GetBase(skill), 100);
+	WORD wTrainVal = static_cast<WORD>(IMULDIV(pVar ? pVar->GetValNum() : g_Cfg.m_iTrainSkillPercent, Skill_GetBase(skill), 100));
 
 	pVar = GetKey("OVERRIDE.TRAINSKILLMAX", false);
 	WORD wTrainMax = minimum(pVar ? static_cast<WORD>(pVar->GetValNum()) : g_Cfg.m_iTrainSkillMax, pCharSrc->Skill_GetMax(skill, true));
@@ -474,7 +474,7 @@ bool CChar::NPC_OnTrainPay(CChar *pCharSrc, CItemMemory *pMemory, CItem *pGold)
 			if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(skillCheck) || (pCharSrc->Skill_GetLock(skillCheck) != SKILLLOCK_DOWN) )
 				continue;
 
-			wDecreaseTotal += minimum(pCharSrc->Skill_GetBase(skillCheck), wSkillTotal - wSkillCap);
+			wDecreaseTotal += minimum(pCharSrc->Skill_GetBase(skillCheck), static_cast<WORD>(wSkillTotal - wSkillCap));
 			if ( wDecreaseTotal >= wSkillTotal - wSkillCap )
 				break;
 		}
@@ -563,7 +563,7 @@ bool CChar::NPC_OnTrainHear(CChar *pCharSrc, LPCTSTR pszCmd)
 		}
 
 		CVarDefCont *pVar = GetKey("OVERRIDE.TRAINSKILLCOST", false);
-		WORD wSkillCost = pVar ? pVar->GetValNum() : g_Cfg.m_iTrainSkillCost;
+		WORD wSkillCost = pVar ? static_cast<WORD>(pVar->GetValNum()) : g_Cfg.m_iTrainSkillCost;
 		WORD wTrainCost = wSkillTrain * wSkillCost;
 
 		CItemMemory *pMemory = Memory_AddObjTypes(pCharSrc, MEMORY_SPEAK);

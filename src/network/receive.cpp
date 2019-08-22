@@ -1731,7 +1731,7 @@ bool PacketCharDelete::onReceive(NetState* net)
 	ASSERT(client);
 
 	BYTE err = client->Setup_Delete(slot);
-	client->addDeleteErr(err, slot);
+	client->addDeleteErr(err);
 	new PacketCharacterListUpdate(client);
 	return true;
 }
@@ -2580,12 +2580,12 @@ bool PacketProfileReq::onReceive(NetState* net)
 		skip(2);
 		WORD wTextLen = readInt16();
 
-		size_t iMaxLen = SCRIPT_MAX_LINE_LEN - 16;
-		if ( wTextLen >= iMaxLen )
-			wTextLen = iMaxLen - 1;
+		WORD wMaxLen = SCRIPT_MAX_LINE_LEN - 16;
+		if ( wTextLen >= wMaxLen )
+			wTextLen = wMaxLen - 1;
 
 		pszText = Str_GetTemp();
-		readStringNUNICODE(pszText, iMaxLen, wTextLen + 1, false);
+		readStringNUNICODE(pszText, wMaxLen, wTextLen + 1, false);
 	}
 
 	pClient->Event_Profile(fWrite, pChar, pszText);

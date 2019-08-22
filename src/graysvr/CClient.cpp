@@ -1125,15 +1125,15 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 			CItem *pItem = NULL;
 			CSector *pSector = NULL;
 			CResourceDef *pSpawnDef = NULL;
-			for ( size_t m = 0; (m < MAP_QTY) && !fFound; ++m )
+			for ( size_t iMap = 0; (iMap < MAP_QTY) && !fFound; ++iMap )
 			{
-				if ( !g_MapList.m_maps[m] )
+				if ( !g_MapList.m_maps[iMap] )
 					continue;
 
-				int iSectorQty = g_MapList.GetSectorQty(m);
-				for ( int s = 0; (s < iSectorQty) && !fFound; ++s )
+				int iSectorQty = g_MapList.GetSectorQty(iMap);
+				for ( int iSector = 0; (iSector < iSectorQty) && !fFound; ++iSector )
 				{
-					pSector = g_World.GetSector(m, s);
+					pSector = g_World.GetSector(iMap, iSector);
 					if ( !pSector )
 						continue;
 

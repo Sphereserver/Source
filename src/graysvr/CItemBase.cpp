@@ -712,7 +712,7 @@ DWORD CItemBase::CalculateMakeValue(int iQualityLevel) const
 		if ( !pItemDef )
 			continue;
 
-		dwValue += pItemDef->GetMakeValue(iQualityLevel) * m_BaseResources[i].GetResQty();
+		dwValue += pItemDef->GetMakeValue(iQualityLevel) * static_cast<DWORD>(m_BaseResources[i].GetResQty());
 	}
 
 	// Add some value based on the skill required to craft it

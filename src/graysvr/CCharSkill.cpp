@@ -1206,8 +1206,8 @@ bool CChar::Skill_MakeItem_Success()
 		{
 			for ( WORD i = 1; i < m_atCreate.m_Amount; ++i )
 			{
-				CItem *pItem = CItem::CreateTemplate(m_atCreate.m_ItemID, NULL, this);
-				ItemBounce(pItem);
+				CItem *pItemNew = CItem::CreateTemplate(m_atCreate.m_ItemID, NULL, this);
+				ItemBounce(pItemNew);
 			}
 		}
 	}

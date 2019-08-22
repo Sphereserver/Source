@@ -508,7 +508,6 @@ CPointMap CWorld::FindItemTypeNearby(const CPointMap &pt, IT_TYPE type, int iDis
 				if ( iRegionQty > 0 )
 				{
 					CRegionBase *pRegion = NULL;
-					CItem *pItem = NULL;
 					for ( size_t iRegion = 0; iRegion < iRegionQty; ++iRegion )
 					{
 						pRegion = rlinks.GetAt(iRegion);

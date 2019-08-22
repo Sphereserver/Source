@@ -596,12 +596,12 @@ bool CItemStone::CheckValidMember(CStoneMember *pMember)
 			if ( !pStone )
 				break;
 
-			CStoneMember *pMember = pStone->GetMember(this);
-			if ( !pMember )
+			CStoneMember *pMemberCheck = pStone->GetMember(this);
+			if ( !pMemberCheck )
 				break;
-			if ( pMember->m_Enemy.m_fWeDeclared && !pMember->m_Enemy.m_fTheyDeclared )
+			if ( pMemberCheck->m_Enemy.m_fWeDeclared && !pMemberCheck->m_Enemy.m_fTheyDeclared )
 				break;
-			if ( pMember->m_Enemy.m_fTheyDeclared && !pMember->m_Enemy.m_fWeDeclared )
+			if ( pMemberCheck->m_Enemy.m_fTheyDeclared && !pMemberCheck->m_Enemy.m_fWeDeclared )
 				break;
 			return true;
 		}
@@ -611,12 +611,12 @@ bool CItemStone::CheckValidMember(CStoneMember *pMember)
 			if ( !pStone )
 				break;
 
-			CStoneMember *pMember = pStone->GetMember(this);
-			if ( !pMember )
+			CStoneMember *pMemberCheck = pStone->GetMember(this);
+			if ( !pMemberCheck )
 				break;
-			if ( pMember->m_Ally.m_fWeDeclared && !pMember->m_Ally.m_fTheyDeclared )
+			if ( pMemberCheck->m_Ally.m_fWeDeclared && !pMemberCheck->m_Ally.m_fTheyDeclared )
 				break;
-			if ( pMember->m_Ally.m_fTheyDeclared && !pMember->m_Ally.m_fWeDeclared )
+			if ( pMemberCheck->m_Ally.m_fTheyDeclared && !pMemberCheck->m_Ally.m_fWeDeclared )
 				break;
 			return true;
 		}

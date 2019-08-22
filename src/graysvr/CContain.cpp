@@ -1207,7 +1207,7 @@ bool CItemContainer::CanContainerHold(const CItem *pItem, const CChar *pCharMsg)
 	}
 
 	CVarDefCont *pVar = GetKey("OVERRIDE.MAXITEMS", false);
-	size_t tMaxItemsCont = pVar ? pVar->GetValNum() : MAX_ITEMS_CONT;
+	size_t tMaxItemsCont = pVar ? static_cast<size_t>(pVar->GetValNum()) : MAX_ITEMS_CONT;
 	if ( GetCount() >= tMaxItemsCont )
 	{
 		pCharMsg->SysMessageDefault(DEFMSG_CONT_FULL);
@@ -1237,7 +1237,7 @@ bool CItemContainer::CanContainerHold(const CItem *pItem, const CChar *pCharMsg)
 			// Check if the bankbox will allow this item to be dropped into it
 			const CItemContainer *pContItem = dynamic_cast<const CItemContainer *>(pItem);
 			DWORD dwItemsInContainer = pContItem ? pContItem->ContentCountAll() : 0;
-			DWORD dwBankIMax = pVar ? pVar->GetValNum() : g_Cfg.m_iBankIMax;
+			DWORD dwBankIMax = pVar ? static_cast<DWORD>(pVar->GetValNum()) : g_Cfg.m_iBankIMax;
 
 			if ( ContentCountAll() + dwItemsInContainer > dwBankIMax )
 			{

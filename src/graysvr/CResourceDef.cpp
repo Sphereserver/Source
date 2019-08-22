@@ -126,7 +126,7 @@ int CValueCurveDef::GetLinear( int iSkillPercent ) const
 
 	LONGLONG llLoVal = m_aiValues[iLoIdx];
 	LONGLONG llHiVal = m_aiValues[iLoIdx + 1];
-	return maximum(0, llLoVal + IMULDIV(llHiVal - llLoVal, iSkillPercent, iSegSize));
+	return maximum(0, static_cast<int>(llLoVal + IMULDIV(llHiVal - llLoVal, iSkillPercent, iSegSize)));
 }
 
 int CValueCurveDef::GetRandom( ) const

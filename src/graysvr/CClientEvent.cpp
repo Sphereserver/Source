@@ -2115,7 +2115,7 @@ void CClient::Event_AOSPopupMenuRequest(CGrayUID uid) //construct packet after a
 				m_pPopupPacket->addOption(POPUP_BUY, 6103);
 				m_pPopupPacket->addOption(POPUP_SELL, 6104);
 
-				for ( unsigned int i = 0; i < g_Cfg.m_iMaxSkill; ++i )
+				for ( WORD i = 0; i < g_Cfg.m_iMaxSkill; ++i )
 				{
 					if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(i) )
 						continue;

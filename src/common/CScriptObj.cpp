@@ -1008,9 +1008,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerRun(CScript &s, TRIGRUN_TYPE trigger, CTextCon
 						if ( pRef )
 						{
 							// Locate arguments for the called function
-							TRIGRET_TYPE iRet;
 							TCHAR *z = strchr(pszArgs, ' ');
-
 							if ( z )
 							{
 								*z = 0;
@@ -2964,7 +2962,7 @@ bool CFileObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			break;
 		}
 		case FO_POSITION:
-			sVal.FormatVal(m_pFile->GetPosition());
+			sVal.FormatUVal(m_pFile->GetPosition());
 			break;
 		case FO_READBYTE:
 		case FO_READCHAR:

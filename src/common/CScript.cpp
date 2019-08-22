@@ -74,7 +74,7 @@ long CScriptKey::GetArgRange()
 	ADDTOCALLSTACK("CScriptKey::GetArgRange");
 	ASSERT(m_pszKey);
 	ASSERT(m_pszArg);
-	return Exp_GetRange(m_pszArg);
+	return static_cast<long>(Exp_GetRange(m_pszArg));
 }
 
 ///////////////////////////////////////////////////////////////

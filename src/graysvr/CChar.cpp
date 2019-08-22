@@ -1436,26 +1436,26 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				}
 				if ( m_lastAttackers.size() )
 				{
-					size_t index;
+					size_t id;
 					if ( !strnicmp(pszKey, "MAX", 3) )
 					{
 						pszKey += 3;
-						index = Attacker_GetID(Attacker_GetHighestDam());
+						id = Attacker_GetID(Attacker_GetHighestDam());
 					}
 					else if ( !strnicmp(pszKey, "LAST", 4) )
 					{
 						pszKey += 4;
-						index = Attacker_GetID(Attacker_GetLowestElapsed());
+						id = Attacker_GetID(Attacker_GetLowestElapsed());
 					}
 					else
 					{
-						index = Exp_GetVal(pszKey);
+						id = Exp_GetVal(pszKey);
 					}
 
 					SKIP_SEPARATORS(pszKey);
-					if ( index < m_lastAttackers.size() )
+					if ( id < m_lastAttackers.size() )
 					{
-						LastAttackers &refAttacker = m_lastAttackers.at(index);
+						LastAttackers &refAttacker = m_lastAttackers.at(id);
 						if ( !strnicmp(pszKey, "UID", 3) || (*pszKey == '\0') )
 						{
 							sVal.FormatHex(refAttacker.charUID);
@@ -1519,11 +1519,11 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				}
 				if ( m_notoSaves.size() )
 				{
-					size_t index = Exp_GetVal(pszKey);
+					size_t id = Exp_GetVal(pszKey);
 					SKIP_SEPARATORS(pszKey);
-					if ( index < m_notoSaves.size() )
+					if ( id < m_notoSaves.size() )
 					{
-						NotoSaves refNoto = m_notoSaves.at(index);
+						NotoSaves refNoto = m_notoSaves.at(id);
 						if ( !strnicmp(pszKey, "UID", 3) || (*pszKey == '\0') )
 						{
 							sVal.FormatHex(refNoto.charUID);
@@ -1574,11 +1574,11 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			TCHAR *pszFameAt0 = new TCHAR[pFameAt0->GetLength() + 1];
 			strcpylen(pszFameAt0, pFameAt0->GetPtr());
 
-			size_t index = Str_ParseCmds(pszFameAt0, ppLevel_sep, COUNTOF(ppLevel_sep), ",");
-			if ( index > 0 )
+			size_t iArgQty = Str_ParseCmds(pszFameAt0, ppLevel_sep, COUNTOF(ppLevel_sep), ",");
+			if ( iArgQty > 0 )
 			{
 				int iFame = Stat_GetAdjusted(STAT_FAME);
-				for ( size_t i = index - 1; i > 0; --i )
+				for ( size_t i = iArgQty - 1; i > 0; --i )
 				{
 					if ( !IsStrNumeric(ppLevel_sep[i]) )
 					{
@@ -1664,11 +1664,11 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			TCHAR *pszKarmaAt0 = new TCHAR[pKarmaAt0->GetLength() + 1];
 			strcpylen(pszKarmaAt0, pKarmaAt0->GetPtr());
 
-			size_t index = Str_ParseCmds(pszKarmaAt0, ppLevel_sep, COUNTOF(ppLevel_sep), ",");
-			if ( index > 0 )
+			size_t iArgQty = Str_ParseCmds(pszKarmaAt0, ppLevel_sep, COUNTOF(ppLevel_sep), ",");
+			if ( iArgQty > 0 )
 			{
 				int iKarma = Stat_GetAdjusted(STAT_KARMA);
-				for ( size_t i = index - 1; i > 0; --i )
+				for ( size_t i = iArgQty - 1; i > 0; --i )
 				{
 					if ( (ppLevel_sep[i][0] != '-') && !IsStrNumeric(ppLevel_sep[i]) )
 					{
@@ -2267,7 +2267,7 @@ bool CChar::r_LoadVal(CScript &s)
 			if ( strlen(pszKey) > 8 )
 			{
 				pszKey += 8;
-				int index = m_lastAttackers.size();
+				int id = m_lastAttackers.size();
 				if ( *pszKey == '.' )
 				{
 					++pszKey;
@@ -2302,31 +2302,31 @@ bool CChar::r_LoadVal(CScript &s)
 						return true;
 					}
 
-					index = Exp_GetVal(pszKey);
-					if ( index < 0 )
+					id = Exp_GetVal(pszKey);
+					if ( id < 0 )
 						return false;
 
 					SKIP_SEPARATORS(pszKey);
-					if ( index < static_cast<int>(m_lastAttackers.size()) )
+					if ( id < static_cast<int>(m_lastAttackers.size()) )
 					{
 						if ( !strnicmp(pszKey, "ELAPSED", 7) )
 						{
-							Attacker_SetElapsed(index, s.GetArgLLVal());
+							Attacker_SetElapsed(id, s.GetArgLLVal());
 							return true;
 						}
 						else if ( !strnicmp(pszKey, "DAM", 3) )
 						{
-							Attacker_SetDamage(index, s.GetArgLLVal());
+							Attacker_SetDamage(id, s.GetArgLLVal());
 							return true;
 						}
 						else if ( !strnicmp(pszKey, "THREAT", 6) )
 						{
-							Attacker_SetThreat(index, s.GetArgLLVal());
+							Attacker_SetThreat(id, s.GetArgLLVal());
 							return true;
 						}
 						else if ( !strnicmp(pszKey, "DELETE", 6) )
 						{
-							Attacker_Delete(index, false, ATTACKER_CLEAR_SCRIPT);
+							Attacker_Delete(id, false, ATTACKER_CLEAR_SCRIPT);
 							return true;
 						}
 					}

@@ -716,7 +716,7 @@ bool CClient::xProcessClientSetup(CEvent *pEvent, size_t iLen)
 
 	if ( !xCanEncLogin() )
 	{
-		addLoginErr((m_Crypt.GetEncryptionType() == ENC_NONE) ? PacketLoginError::EncNoCrypt : PacketLoginError::EncCrypt);
+		addLoginErr((m_Crypt.GetEncryptionType() == ENC_NONE) ? static_cast<BYTE>(PacketLoginError::EncNoCrypt) : static_cast<BYTE>(PacketLoginError::EncCrypt));
 		return false;
 	}
 	else if ( (m_Crypt.GetConnectType() == CONNECT_LOGIN) && !xCanEncLogin(true) )

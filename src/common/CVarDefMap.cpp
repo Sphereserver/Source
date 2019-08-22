@@ -128,7 +128,7 @@ LPCTSTR CVarDefContStr::GetValStr() const
 inline INT64 CVarDefContStr::GetValNum() const
 {
 	LPCTSTR pszStr = m_sVal;
-	return( Exp_GetVal(pszStr) );
+	return Exp_GetLLVal(pszStr);
 }
 
 void CVarDefContStr::SetValStr( LPCTSTR pszVal ) 

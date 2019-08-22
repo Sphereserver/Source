@@ -657,15 +657,15 @@ bool CChar::Use_Repair(CItem *pItem)
 
 	SKILL_TYPE skill = static_cast<SKILL_TYPE>(pItemDef->m_SkillMake[i].GetResIndex());
 	WORD wSkillVal = Skill_GetAdjusted(skill);
-	int iDecrease = 0;
+	WORD wDecrease = 0;
 	if ( wSkillVal >= 900 )
-		iDecrease = 1;
+		wDecrease = 1;
 	else if ( wSkillVal >= 700 )
-		iDecrease = 2;
+		wDecrease = 2;
 	else
-		iDecrease = 3;
+		wDecrease = 3;
 
-	if ( pItem->m_itArmor.m_Hits_Max <= iDecrease )
+	if ( pItem->m_itArmor.m_Hits_Max <= wDecrease )
 	{
 		SysMessageDefault(DEFMSG_REPAIR_BREAK);
 		return false;
@@ -691,7 +691,7 @@ bool CChar::Use_Repair(CItem *pItem)
 		UpdateAnimate(Skill_GetAnim(skill));
 
 	int iDifficulty = (1000 - ((((pItem->m_itArmor.m_Hits_Max - pItem->m_itArmor.m_Hits_Cur) * 1250) / pItem->m_itArmor.m_Hits_Max) - 250)) / 10;
-	pItem->m_itArmor.m_Hits_Max -= iDecrease;
+	pItem->m_itArmor.m_Hits_Max -= wDecrease;
 	if ( Skill_UseQuick(skill, iDifficulty, false) )
 	{
 		pItem->m_itArmor.m_Hits_Cur = pItem->m_itArmor.m_Hits_Max;
@@ -701,7 +701,7 @@ bool CChar::Use_Repair(CItem *pItem)
 	}
 	else
 	{
-		pItem->m_itArmor.m_Hits_Cur = maximum(0, pItem->m_itArmor.m_Hits_Cur - iDecrease);
+		pItem->m_itArmor.m_Hits_Cur = maximum(0, pItem->m_itArmor.m_Hits_Cur - wDecrease);
 		pItem->UpdatePropertyFlag();
 		SysMessageDefault(DEFMSG_REPAIR_FAIL);
 		return false;

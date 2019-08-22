@@ -745,7 +745,7 @@ void CItemMultiCustom::SendStructureTo(CClient *pClient)
 		{
 			// Stair items can be sent in any order
 			pComponent = *i;
-			pPacket->writeStairData(pComponent->m_item.GetDispID(), pComponent->m_item.m_dx, pComponent->m_item.m_dy, pComponent->m_item.m_dz);
+			pPacket->writeStairData(pComponent->m_item.GetDispID(), static_cast<BYTE>(pComponent->m_item.m_dx), static_cast<BYTE>(pComponent->m_item.m_dy), static_cast<BYTE>(pComponent->m_item.m_dz));
 		}
 	}
 	pPacket->finalize();
@@ -1194,7 +1194,7 @@ bool CItemMultiCustom::r_LoadVal(CScript &s)
 	return false;
 }
 
-BYTE CItemMultiCustom::GetLevel(signed char z)
+BYTE CItemMultiCustom::GetLevel(signed short z)
 {
 	if ( z >= 67 )
 		return 4;

@@ -86,7 +86,7 @@ public:
 
 	const CGrayMultiCustom *GetMultiItemDefs();
 	const CGRect GetDesignArea();
-	static BYTE GetLevel(signed char z);
+	static BYTE GetLevel(signed short z);
 	static signed char GetLevelZ(BYTE bLevel);
 
 private:

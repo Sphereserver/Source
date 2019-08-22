@@ -740,7 +740,7 @@ void CChar::UpdateStatVal(STAT_TYPE stat, int iChange, int iLimit)
 }
 
 // Get ANIM_TYPE value to use with UpdateAnimate()
-ANIM_TYPE CChar::GenerateAnimate(ANIM_TYPE action, bool fTranslate, bool fBackward, BYTE iAnimLen)
+ANIM_TYPE CChar::GenerateAnimate(ANIM_TYPE action, bool fTranslate)
 {
 	ADDTOCALLSTACK("CChar::UpdateAnimate");
 	if ( (action < ANIM_WALK_UNARM) || (action >= ANIM_QTY) )
@@ -750,7 +750,6 @@ ANIM_TYPE CChar::GenerateAnimate(ANIM_TYPE action, bool fTranslate, bool fBackwa
 
 	// Begin old client animation behaviour
 
-	CCharBase *pCharDef = Char_GetDef();
 	if ( action == ANIM_ATTACK_WEAPON )
 	{
 		CItem *pWeapon = m_uidWeapon.ItemFind();
@@ -937,7 +936,7 @@ bool CChar::UpdateAnimate(ANIM_TYPE action, bool fTranslate, bool fBackward, BYT
 	ANIM_TYPE_NEW subaction = static_cast<ANIM_TYPE_NEW>(-1);
 	BYTE variation = 0;		// seems to have some effect for humans/elfs vs gargoyles
 	if ( fTranslate )
-		action = GenerateAnimate(action, true, fBackward);
+		action = GenerateAnimate(action, true);
 	ANIM_TYPE_NEW action1 = static_cast<ANIM_TYPE_NEW>(action);
 	if ( IsPlayableCharacter() )		// perform these checks only for gargoyles or in enhanced client
 	{

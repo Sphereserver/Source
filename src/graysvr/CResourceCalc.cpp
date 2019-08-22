@@ -149,11 +149,11 @@ int CResource::Calc_CombatChanceToHit(CChar *pChar, CChar *pCharTarg)
 			// its not a very "mobile" weapon, nor is it fast to change position while in
 			// a fight etc. Just use 90% of the statvalue when defending so its easier to
 			// hit than defend == more fun in combat.
-			int iTargetStam = pCharTarg->Stat_GetVal(STAT_DEX);
+			WORD wTargetStam = static_cast<WORD>(pCharTarg->Stat_GetVal(STAT_DEX));
 			if ( g_Cfg.IsSkillFlag(skillTarget, SKF_RANGED) && !g_Cfg.IsSkillFlag(skillAttacker, SKF_RANGED) )
-				wTargetSkill = (wTargetSkill + iTargetStam * 9) / 2;		// the defender uses ranged weapon and the attacker is not. Make just a bit easier to hit.
+				wTargetSkill = (wTargetSkill + wTargetStam * 9) / 2;		// the defender uses ranged weapon and the attacker is not. Make just a bit easier to hit.
 			else
-				wTargetSkill = (wTargetSkill + iTargetStam * 10) / 2;		// the defender is using a nonranged, or they both use bows.
+				wTargetSkill = (wTargetSkill + wTargetStam * 10) / 2;		// the defender is using a nonranged, or they both use bows.
 
 			int iDiff = (wAttackerSkill - wTargetSkill) / 5;
 			iDiff = (wSkillVal - iDiff) / 10;

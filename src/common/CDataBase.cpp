@@ -318,6 +318,7 @@ bool CDataBase::r_LoadVal(CScript &s)
 bool CDataBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 {
 	ADDTOCALLSTACK("CDataBase::r_WriteVal");
+	UNREFERENCED_PARAMETER(pSrc);
 	if ( !g_Cfg.m_bMySql )
 	{
 		sVal.FormatVal(0);
@@ -378,6 +379,7 @@ bool CDataBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 bool CDataBase::r_Verb(CScript &s, CTextConsole *pSrc)
 {
 	ADDTOCALLSTACK("CDataBase::r_Verb");
+	UNREFERENCED_PARAMETER(pSrc);
 	if ( !g_Cfg.m_bMySql )
 		return true;
 
