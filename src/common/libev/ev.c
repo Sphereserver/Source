@@ -1,7 +1,7 @@
 /*
  * libev event processing core, watcher management
  *
- * Copyright (c) 2007,2008,2009,2010,2011,2012,2013 Marc Alexander Lehmann <libev@schmorp.de>
+ * Copyright (c) 2007-2019 Marc Alexander Lehmann <libev@schmorp.de>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without modifica-
@@ -117,6 +117,15 @@
 #  define EV_USE_EPOLL 0
 # endif
    
+# if HAVE_LINUX_AIO_ABI_H
+#  ifndef EV_USE_LINUXAIO
+#   define EV_USE_LINUXAIO EV_FEATURE_BACKENDS
+#  endif
+# else
+#  undef EV_USE_LINUXAIO
+#  define EV_USE_LINUXAIO 0
+# endif
+   
 # if HAVE_KQUEUE && HAVE_SYS_EVENT_H
 #  ifndef EV_USE_KQUEUE
 #   define EV_USE_KQUEUE EV_FEATURE_BACKENDS
@@ -164,6 +173,16 @@
  
 #endif
 
+/* OS X, in its infinite idiocy, actually HARDCODES
+ * a limit of 1024 into their select. Where people have brains,
+ * OS X engineers apparently have a vacuum. Or maybe they were
+ * ordered to have a vacuum, or they do anything for money.
+ * This might help. Or not.
+ * Note that this must be defined early, as other include files
+ * will rely on this define as well.
+ */
+#define _DARWIN_UNLIMITED_SELECT 1
+
 #include <stdlib.h>
 #include <string.h>
 #include <fcntl.h>
@@ -210,14 +229,6 @@
 # endif
 # undef EV_AVOID_STDIO
 #endif
-
-/* OS X, in its infinite idiocy, actually HARDCODES
- * a limit of 1024 into their select. Where people have brains,
- * OS X engineers apparently have a vacuum. Or maybe they were
- * ordered to have a vacuum, or they do anything for money.
- * This might help. Or not.
- */
-#define _DARWIN_UNLIMITED_SELECT 1
 
 /* this block tries to deduce configuration from header-defined symbols and defaults */
 
@@ -315,6 +326,14 @@
 # define EV_USE_PORT 0
 #endif
 
+#ifndef EV_USE_LINUXAIO
+# if __linux /* libev currently assumes linux/aio_abi.h is always available on linux */
+#  define EV_USE_LINUXAIO 1
+# else
+#  define EV_USE_LINUXAIO 0
+# endif
+#endif
+
 #ifndef EV_USE_INOTIFY
 # if __linux && (__GLIBC__ > 2 || (__GLIBC__ == 2 && __GLIBC_MINOR__ >= 4))
 #  define EV_USE_INOTIFY EV_FEATURE_OS
@@ -365,7 +384,7 @@
 # define EV_HEAP_CACHE_AT EV_FEATURE_DATA
 #endif
 
-#ifdef ANDROID
+#ifdef __ANDROID__
 /* supposedly, android doesn't typedef fd_mask */
 # undef EV_USE_SELECT
 # define EV_USE_SELECT 0
@@ -416,6 +435,14 @@
 /* hp-ux has it in sys/time.h, which we unconditionally include above */
 # if !defined _WIN32 && !defined __hpux
 #  include <sys/select.h>
+# endif
+#endif
+
+#if EV_USE_LINUXAIO
+# include <sys/syscall.h>
+# if !SYS_io_getevents || !EV_USE_EPOLL /* ev_linxaio uses ev_poll.c:ev_epoll_create */
+#  undef EV_USE_LINUXAIO
+#  define EV_USE_LINUXAIO 0
 # endif
 #endif
 
@@ -534,7 +561,7 @@ struct signalfd_siginfo
 #define ECB_H
 
 /* 16 bits major, 16 bits minor */
-#define ECB_VERSION 0x00010005
+#define ECB_VERSION 0x00010006
 
 #ifdef _WIN32
   typedef   signed char   int8_t;
@@ -609,6 +636,8 @@ struct signalfd_siginfo
 
 #define ECB_CPP   (__cplusplus+0)
 #define ECB_CPP11 (__cplusplus >= 201103L)
+#define ECB_CPP14 (__cplusplus >= 201402L)
+#define ECB_CPP17 (__cplusplus >= 201703L)
 
 #if ECB_CPP
   #define ECB_C            0
@@ -620,6 +649,7 @@ struct signalfd_siginfo
 
 #define ECB_C99   (ECB_STDC_VERSION >= 199901L)
 #define ECB_C11   (ECB_STDC_VERSION >= 201112L)
+#define ECB_C17   (ECB_STDC_VERSION >= 201710L)
 
 #if ECB_CPP
   #define ECB_EXTERN_C extern "C"
@@ -655,14 +685,15 @@ struct signalfd_siginfo
 
 #ifndef ECB_MEMORY_FENCE
   #if ECB_GCC_VERSION(2,5) || defined __INTEL_COMPILER || (__llvm__ && __GNUC__) || __SUNPRO_C >= 0x5110 || __SUNPRO_CC >= 0x5110
+    #define ECB_MEMORY_FENCE_RELAXED __asm__ __volatile__ ("" : : : "memory")
     #if __i386 || __i386__
       #define ECB_MEMORY_FENCE         __asm__ __volatile__ ("lock; orb $0, -1(%%esp)" : : : "memory")
       #define ECB_MEMORY_FENCE_ACQUIRE __asm__ __volatile__ (""                        : : : "memory")
-      #define ECB_MEMORY_FENCE_RELEASE __asm__ __volatile__ ("")
+      #define ECB_MEMORY_FENCE_RELEASE __asm__ __volatile__ (""                        : : : "memory")
     #elif ECB_GCC_AMD64
       #define ECB_MEMORY_FENCE         __asm__ __volatile__ ("mfence"   : : : "memory")
       #define ECB_MEMORY_FENCE_ACQUIRE __asm__ __volatile__ (""         : : : "memory")
-      #define ECB_MEMORY_FENCE_RELEASE __asm__ __volatile__ ("")
+      #define ECB_MEMORY_FENCE_RELEASE __asm__ __volatile__ (""         : : : "memory")
     #elif __powerpc__ || __ppc__ || __powerpc64__ || __ppc64__
       #define ECB_MEMORY_FENCE         __asm__ __volatile__ ("sync"     : : : "memory")
     #elif defined __ARM_ARCH_2__ \
@@ -714,12 +745,14 @@ struct signalfd_siginfo
     #define ECB_MEMORY_FENCE         __atomic_thread_fence (__ATOMIC_SEQ_CST)
     #define ECB_MEMORY_FENCE_ACQUIRE __atomic_thread_fence (__ATOMIC_ACQUIRE)
     #define ECB_MEMORY_FENCE_RELEASE __atomic_thread_fence (__ATOMIC_RELEASE)
+    #define ECB_MEMORY_FENCE_RELAXED __atomic_thread_fence (__ATOMIC_RELAXED)
 
   #elif ECB_CLANG_EXTENSION(c_atomic)
     /* see comment below (stdatomic.h) about the C11 memory model. */
     #define ECB_MEMORY_FENCE         __c11_atomic_thread_fence (__ATOMIC_SEQ_CST)
     #define ECB_MEMORY_FENCE_ACQUIRE __c11_atomic_thread_fence (__ATOMIC_ACQUIRE)
     #define ECB_MEMORY_FENCE_RELEASE __c11_atomic_thread_fence (__ATOMIC_RELEASE)
+    #define ECB_MEMORY_FENCE_RELAXED __c11_atomic_thread_fence (__ATOMIC_RELAXED)
 
   #elif ECB_GCC_VERSION(4,4) || defined __INTEL_COMPILER || defined __clang__
     #define ECB_MEMORY_FENCE         __sync_synchronize ()
@@ -739,9 +772,10 @@ struct signalfd_siginfo
     #define ECB_MEMORY_FENCE         MemoryBarrier () /* actually just xchg on x86... scary */
   #elif __SUNPRO_C >= 0x5110 || __SUNPRO_CC >= 0x5110
     #include <mbarrier.h>
-    #define ECB_MEMORY_FENCE         __machine_rw_barrier ()
-    #define ECB_MEMORY_FENCE_ACQUIRE __machine_r_barrier  ()
-    #define ECB_MEMORY_FENCE_RELEASE __machine_w_barrier  ()
+    #define ECB_MEMORY_FENCE         __machine_rw_barrier  ()
+    #define ECB_MEMORY_FENCE_ACQUIRE __machine_acq_barrier ()
+    #define ECB_MEMORY_FENCE_RELEASE __machine_rel_barrier ()
+    #define ECB_MEMORY_FENCE_RELAXED __compiler_barrier ()
   #elif __xlC__
     #define ECB_MEMORY_FENCE         __sync ()
   #endif
@@ -752,15 +786,9 @@ struct signalfd_siginfo
     /* we assume that these memory fences work on all variables/all memory accesses, */
     /* not just C11 atomics and atomic accesses */
     #include <stdatomic.h>
-    /* Unfortunately, neither gcc 4.7 nor clang 3.1 generate any instructions for */
-    /* any fence other than seq_cst, which isn't very efficient for us. */
-    /* Why that is, we don't know - either the C11 memory model is quite useless */
-    /* for most usages, or gcc and clang have a bug */
-    /* I *currently* lean towards the latter, and inefficiently implement */
-    /* all three of ecb's fences as a seq_cst fence */
-    /* Update, gcc-4.8 generates mfence for all c++ fences, but nothing */
-    /* for all __atomic_thread_fence's except seq_cst */
     #define ECB_MEMORY_FENCE         atomic_thread_fence (memory_order_seq_cst)
+    #define ECB_MEMORY_FENCE_ACQUIRE atomic_thread_fence (memory_order_acquire)
+    #define ECB_MEMORY_FENCE_RELEASE atomic_thread_fence (memory_order_release)
   #endif
 #endif
 
@@ -788,6 +816,10 @@ struct signalfd_siginfo
 
 #if !defined ECB_MEMORY_FENCE_RELEASE && defined ECB_MEMORY_FENCE
   #define ECB_MEMORY_FENCE_RELEASE ECB_MEMORY_FENCE
+#endif
+
+#if !defined ECB_MEMORY_FENCE_RELAXED && defined ECB_MEMORY_FENCE
+  #define ECB_MEMORY_FENCE_RELAXED ECB_MEMORY_FENCE /* very heavy-handed */
 #endif
 
 /*****************************************************************************/
@@ -1540,8 +1572,7 @@ ecb_binary32_to_binary16 (uint32_t x)
 # define ABSPRI(w) (((W)w)->priority - EV_MINPRI)
 #endif
 
-#define EMPTY       /* required for microsofts broken pseudo-c compiler */
-#define EMPTY2(a,b) /* used to suppress some warnings */
+#define EMPTY /* required for microsofts broken pseudo-c compiler */
 
 typedef ev_watcher *W;
 typedef ev_watcher_list *WL;
@@ -1575,6 +1606,10 @@ static EV_ATOMIC_T have_monotonic; /* did clock_gettime (CLOCK_MONOTONIC) work? 
 #endif
 
 /*****************************************************************************/
+
+#if EV_USE_LINUXAIO
+# include <linux/aio_abi.h> /* probably only needed for aio_context_t */
+#endif
 
 /* define a suitable floor function (only used by periodics atm) */
 
@@ -1677,11 +1712,11 @@ ev_printerr (const char *msg)
 }
 #endif
 
-static void (*syserr_cb)(const char *msg) EV_THROW;
+static void (*syserr_cb)(const char *msg) EV_NOEXCEPT;
 
 ecb_cold
 void
-ev_set_syserr_cb (void (*cb)(const char *msg) EV_THROW) EV_THROW
+ev_set_syserr_cb (void (*cb)(const char *msg) EV_NOEXCEPT) EV_NOEXCEPT
 {
   syserr_cb = cb;
 }
@@ -1710,7 +1745,7 @@ ev_syserr (const char *msg)
 }
 
 static void *
-ev_realloc_emul (void *ptr, long size) EV_THROW
+ev_realloc_emul (void *ptr, long size) EV_NOEXCEPT
 {
   /* some systems, notably openbsd and darwin, fail to properly
    * implement realloc (x, 0) (as required by both ansi c-89 and
@@ -1726,11 +1761,11 @@ ev_realloc_emul (void *ptr, long size) EV_THROW
   return 0;
 }
 
-static void *(*alloc)(void *ptr, long size) EV_THROW = ev_realloc_emul;
+static void *(*alloc)(void *ptr, long size) EV_NOEXCEPT = ev_realloc_emul;
 
 ecb_cold
 void
-ev_set_allocator (void *(*cb)(void *ptr, long size) EV_THROW) EV_THROW
+ev_set_allocator (void *(*cb)(void *ptr, long size) EV_NOEXCEPT) EV_NOEXCEPT
 {
   alloc = cb;
 }
@@ -1767,7 +1802,7 @@ typedef struct
   WL head;
   unsigned char events; /* the events watched for */
   unsigned char reify;  /* flag set when this ANFD needs reification (EV_ANFD_REIFY, EV__IOFDSET) */
-  unsigned char emask;  /* the epoll backend stores the actual kernel mask in here */
+  unsigned char emask;  /* some backends store the actual kernel mask in here */
   unsigned char unused;
 #if EV_USE_EPOLL
   unsigned int egen;    /* generation counter to counter epoll bugs */
@@ -1828,11 +1863,11 @@ typedef struct
   #include "ev_wrap.h"
 
   static struct ev_loop default_loop_struct;
-  struct ev_loop *ev_default_loop_ptr = 0; /* needs to be initialised to make it a definition despite extern */
+  EV_API_DECL struct ev_loop *ev_default_loop_ptr = 0; /* needs to be initialised to make it a definition despite extern */
 
 #else
 
-  ev_tstamp ev_rt_now = 0; /* needs to be initialised to make it a definition despite extern */
+  EV_API_DECL ev_tstamp ev_rt_now = 0; /* needs to be initialised to make it a definition despite extern */
   #define VAR(name,decl) static decl;
     #include "ev_vars.h"
   #undef VAR
@@ -1857,7 +1892,7 @@ typedef struct
 
 #ifndef EV_HAVE_EV_TIME
 ev_tstamp
-ev_time (void) EV_THROW
+ev_time (void) EV_NOEXCEPT
 {
 #if EV_USE_REALTIME
   if (expect_true (have_realtime))
@@ -1891,14 +1926,14 @@ get_clock (void)
 
 #if EV_MULTIPLICITY
 ev_tstamp
-ev_now (EV_P) EV_THROW
+ev_now (EV_P) EV_NOEXCEPT
 {
   return ev_rt_now;
 }
 #endif
 
 void
-ev_sleep (ev_tstamp delay) EV_THROW
+ev_sleep (ev_tstamp delay) EV_NOEXCEPT
 {
   if (delay > 0.)
     {
@@ -1908,6 +1943,8 @@ ev_sleep (ev_tstamp delay) EV_THROW
       EV_TS_SET (ts, delay);
       nanosleep (&ts, 0);
 #elif defined _WIN32
+      /* maybe this should round up, as ms is very low resolution */
+      /* compared to select (µs) or nanosleep (ns) */
       Sleep ((unsigned long)(delay * 1e3));
 #else
       struct timeval tv;
@@ -1956,8 +1993,10 @@ array_realloc (int elem, void *base, int *cur, int cnt)
   return ev_realloc (base, elem * *cur);
 }
 
-#define array_init_zero(base,count)	\
-  memset ((void *)(base), 0, sizeof (*(base)) * (count))
+#define array_needsize_noinit(base,offset,count)
+
+#define array_needsize_zerofill(base,offset,count)	\
+  memset ((void *)(base + offset), 0, sizeof (*(base)) * (count))
 
 #define array_needsize(type,base,cur,cnt,init)			\
   if (expect_false ((cnt) > (cur)))				\
@@ -1965,7 +2004,7 @@ array_realloc (int elem, void *base, int *cur, int cnt)
       ecb_unused int ocur_ = (cur);				\
       (base) = (type *)array_realloc				\
          (sizeof (type), (base), &(cur), (cnt));		\
-      init ((base) + (ocur_), (cur) - ocur_);			\
+      init ((base), ocur_, ((cur) - ocur_));			\
     }
 
 #if 0
@@ -1992,7 +2031,7 @@ pendingcb (EV_P_ ev_prepare *w, int revents)
 
 noinline
 void
-ev_feed_event (EV_P_ void *w, int revents) EV_THROW
+ev_feed_event (EV_P_ void *w, int revents) EV_NOEXCEPT
 {
   W w_ = (W)w;
   int pri = ABSPRI (w_);
@@ -2002,7 +2041,7 @@ ev_feed_event (EV_P_ void *w, int revents) EV_THROW
   else
     {
       w_->pending = ++pendingcnt [pri];
-      array_needsize (ANPENDING, pendings [pri], pendingmax [pri], w_->pending, EMPTY2);
+      array_needsize (ANPENDING, pendings [pri], pendingmax [pri], w_->pending, array_needsize_noinit);
       pendings [pri][w_->pending - 1].w      = w_;
       pendings [pri][w_->pending - 1].events = revents;
     }
@@ -2013,7 +2052,7 @@ ev_feed_event (EV_P_ void *w, int revents) EV_THROW
 inline_speed void
 feed_reverse (EV_P_ W w)
 {
-  array_needsize (W, rfeeds, rfeedmax, rfeedcnt + 1, EMPTY2);
+  array_needsize (W, rfeeds, rfeedmax, rfeedcnt + 1, array_needsize_noinit);
   rfeeds [rfeedcnt++] = w;
 }
 
@@ -2063,7 +2102,7 @@ fd_event (EV_P_ int fd, int revents)
 }
 
 void
-ev_feed_fd_event (EV_P_ int fd, int revents) EV_THROW
+ev_feed_fd_event (EV_P_ int fd, int revents) EV_NOEXCEPT
 {
   if (fd >= 0 && fd < anfdmax)
     fd_event_nocheck (EV_A_ fd, revents);
@@ -2110,7 +2149,7 @@ fd_reify (EV_P)
       unsigned char o_events = anfd->events;
       unsigned char o_reify  = anfd->reify;
 
-      anfd->reify  = 0;
+      anfd->reify = 0;
 
       /*if (expect_true (o_reify & EV_ANFD_REIFY)) probably a deoptimisation */
         {
@@ -2141,7 +2180,7 @@ fd_change (EV_P_ int fd, int flags)
   if (expect_true (!reify))
     {
       ++fdchangecnt;
-      array_needsize (int, fdchanges, fdchangemax, fdchangecnt, EMPTY2);
+      array_needsize (int, fdchanges, fdchangemax, fdchangecnt, array_needsize_noinit);
       fdchanges [fdchangecnt - 1] = fd;
     }
 }
@@ -2473,7 +2512,7 @@ evpipe_write (EV_P_ EV_ATOMIC_T *flag)
 #ifdef _WIN32
           WSABUF buf;
           DWORD sent;
-          buf.buf = &buf;
+          buf.buf = (char *)&buf;
           buf.len = 1;
           WSASend (EV_FD_TO_WIN32_HANDLE (evpipe [1]), &buf, 1, &sent, 0, 0, 0);
 #else
@@ -2555,7 +2594,7 @@ pipecb (EV_P_ ev_io *iow, int revents)
 /*****************************************************************************/
 
 void
-ev_feed_signal (int signum) EV_THROW
+ev_feed_signal (int signum) EV_NOEXCEPT
 {
 #if EV_MULTIPLICITY
   EV_P;
@@ -2582,7 +2621,7 @@ ev_sighandler (int signum)
 
 noinline
 void
-ev_feed_signal_event (EV_P_ int signum) EV_THROW
+ev_feed_signal_event (EV_P_ int signum) EV_NOEXCEPT
 {
   WL w;
 
@@ -2701,6 +2740,9 @@ childcb (EV_P_ ev_signal *sw, int revents)
 #if EV_USE_EPOLL
 # include "ev_epoll.c"
 #endif
+#if EV_USE_LINUXAIO
+# include "ev_linuxaio.c"
+#endif
 #if EV_USE_POLL
 # include "ev_poll.c"
 #endif
@@ -2709,13 +2751,13 @@ childcb (EV_P_ ev_signal *sw, int revents)
 #endif
 
 ecb_cold int
-ev_version_major (void) EV_THROW
+ev_version_major (void) EV_NOEXCEPT
 {
   return EV_VERSION_MAJOR;
 }
 
 ecb_cold int
-ev_version_minor (void) EV_THROW
+ev_version_minor (void) EV_NOEXCEPT
 {
   return EV_VERSION_MINOR;
 }
@@ -2734,22 +2776,23 @@ enable_secure (void)
 
 ecb_cold
 unsigned int
-ev_supported_backends (void) EV_THROW
+ev_supported_backends (void) EV_NOEXCEPT
 {
   unsigned int flags = 0;
 
-  if (EV_USE_PORT  ) flags |= EVBACKEND_PORT;
-  if (EV_USE_KQUEUE) flags |= EVBACKEND_KQUEUE;
-  if (EV_USE_EPOLL ) flags |= EVBACKEND_EPOLL;
-  if (EV_USE_POLL  ) flags |= EVBACKEND_POLL;
-  if (EV_USE_SELECT) flags |= EVBACKEND_SELECT;
+  if (EV_USE_PORT    ) flags |= EVBACKEND_PORT;
+  if (EV_USE_KQUEUE  ) flags |= EVBACKEND_KQUEUE;
+  if (EV_USE_EPOLL   ) flags |= EVBACKEND_EPOLL;
+  if (EV_USE_LINUXAIO) flags |= EVBACKEND_LINUXAIO;
+  if (EV_USE_POLL    ) flags |= EVBACKEND_POLL;
+  if (EV_USE_SELECT  ) flags |= EVBACKEND_SELECT;
   
   return flags;
 }
 
 ecb_cold
 unsigned int
-ev_recommended_backends (void) EV_THROW
+ev_recommended_backends (void) EV_NOEXCEPT
 {
   unsigned int flags = ev_supported_backends ();
 
@@ -2767,12 +2810,17 @@ ev_recommended_backends (void) EV_THROW
   flags &= ~EVBACKEND_POLL;   /* poll return value is unusable (http://forums.freebsd.org/archive/index.php/t-10270.html) */
 #endif
 
+  /* TODO: linuxaio is very experimental */
+#if !EV_RECOMMEND_LINUXAIO
+  flags &= ~EVBACKEND_LINUXAIO;
+#endif
+
   return flags;
 }
 
 ecb_cold
 unsigned int
-ev_embeddable_backends (void) EV_THROW
+ev_embeddable_backends (void) EV_NOEXCEPT
 {
   int flags = EVBACKEND_EPOLL | EVBACKEND_KQUEUE | EVBACKEND_PORT;
 
@@ -2784,56 +2832,56 @@ ev_embeddable_backends (void) EV_THROW
 }
 
 unsigned int
-ev_backend (EV_P) EV_THROW
+ev_backend (EV_P) EV_NOEXCEPT
 {
   return backend;
 }
 
 #if EV_FEATURE_API
 unsigned int
-ev_iteration (EV_P) EV_THROW
+ev_iteration (EV_P) EV_NOEXCEPT
 {
   return loop_count;
 }
 
 unsigned int
-ev_depth (EV_P) EV_THROW
+ev_depth (EV_P) EV_NOEXCEPT
 {
   return loop_depth;
 }
 
 void
-ev_set_io_collect_interval (EV_P_ ev_tstamp interval) EV_THROW
+ev_set_io_collect_interval (EV_P_ ev_tstamp interval) EV_NOEXCEPT
 {
   io_blocktime = interval;
 }
 
 void
-ev_set_timeout_collect_interval (EV_P_ ev_tstamp interval) EV_THROW
+ev_set_timeout_collect_interval (EV_P_ ev_tstamp interval) EV_NOEXCEPT
 {
   timeout_blocktime = interval;
 }
 
 void
-ev_set_userdata (EV_P_ void *data) EV_THROW
+ev_set_userdata (EV_P_ void *data) EV_NOEXCEPT
 {
   userdata = data;
 }
 
 void *
-ev_userdata (EV_P) EV_THROW
+ev_userdata (EV_P) EV_NOEXCEPT
 {
   return userdata;
 }
 
 void
-ev_set_invoke_pending_cb (EV_P_ ev_loop_callback invoke_pending_cb) EV_THROW
+ev_set_invoke_pending_cb (EV_P_ ev_loop_callback invoke_pending_cb) EV_NOEXCEPT
 {
   invoke_cb = invoke_pending_cb;
 }
 
 void
-ev_set_loop_release_cb (EV_P_ void (*release)(EV_P) EV_THROW, void (*acquire)(EV_P) EV_THROW) EV_THROW
+ev_set_loop_release_cb (EV_P_ void (*release)(EV_P) EV_NOEXCEPT, void (*acquire)(EV_P) EV_NOEXCEPT) EV_NOEXCEPT
 {
   release_cb = release;
   acquire_cb = acquire;
@@ -2843,7 +2891,7 @@ ev_set_loop_release_cb (EV_P_ void (*release)(EV_P) EV_THROW, void (*acquire)(EV
 /* initialise a loop structure, must be zero-initialised */
 noinline ecb_cold
 static void
-loop_init (EV_P_ unsigned int flags) EV_THROW
+loop_init (EV_P_ unsigned int flags) EV_NOEXCEPT
 {
   if (!backend)
     {
@@ -2911,22 +2959,25 @@ loop_init (EV_P_ unsigned int flags) EV_THROW
         flags |= ev_recommended_backends ();
 
 #if EV_USE_IOCP
-      if (!backend && (flags & EVBACKEND_IOCP  )) backend = iocp_init   (EV_A_ flags);
+      if (!backend && (flags & EVBACKEND_IOCP    )) backend = iocp_init      (EV_A_ flags);
 #endif
 #if EV_USE_PORT
-      if (!backend && (flags & EVBACKEND_PORT  )) backend = port_init   (EV_A_ flags);
+      if (!backend && (flags & EVBACKEND_PORT    )) backend = port_init      (EV_A_ flags);
 #endif
 #if EV_USE_KQUEUE
-      if (!backend && (flags & EVBACKEND_KQUEUE)) backend = kqueue_init (EV_A_ flags);
+      if (!backend && (flags & EVBACKEND_KQUEUE  )) backend = kqueue_init    (EV_A_ flags);
+#endif
+#if EV_USE_LINUXAIO
+      if (!backend && (flags & EVBACKEND_LINUXAIO)) backend = linuxaio_init  (EV_A_ flags);
 #endif
 #if EV_USE_EPOLL
-      if (!backend && (flags & EVBACKEND_EPOLL )) backend = epoll_init  (EV_A_ flags);
+      if (!backend && (flags & EVBACKEND_EPOLL   )) backend = epoll_init     (EV_A_ flags);
 #endif
 #if EV_USE_POLL
-      if (!backend && (flags & EVBACKEND_POLL  )) backend = poll_init   (EV_A_ flags);
+      if (!backend && (flags & EVBACKEND_POLL    )) backend = poll_init      (EV_A_ flags);
 #endif
 #if EV_USE_SELECT
-      if (!backend && (flags & EVBACKEND_SELECT)) backend = select_init (EV_A_ flags);
+      if (!backend && (flags & EVBACKEND_SELECT  )) backend = select_init    (EV_A_ flags);
 #endif
 
       ev_prepare_init (&pending_w, pendingcb);
@@ -2991,22 +3042,25 @@ ev_loop_destroy (EV_P)
     close (backend_fd);
 
 #if EV_USE_IOCP
-  if (backend == EVBACKEND_IOCP  ) iocp_destroy   (EV_A);
+  if (backend == EVBACKEND_IOCP    ) iocp_destroy     (EV_A);
 #endif
 #if EV_USE_PORT
-  if (backend == EVBACKEND_PORT  ) port_destroy   (EV_A);
+  if (backend == EVBACKEND_PORT    ) port_destroy     (EV_A);
 #endif
 #if EV_USE_KQUEUE
-  if (backend == EVBACKEND_KQUEUE) kqueue_destroy (EV_A);
+  if (backend == EVBACKEND_KQUEUE  ) kqueue_destroy   (EV_A);
+#endif
+#if EV_USE_LINUXAIO
+  if (backend == EVBACKEND_LINUXAIO) linuxaio_destroy (EV_A);
 #endif
 #if EV_USE_EPOLL
-  if (backend == EVBACKEND_EPOLL ) epoll_destroy  (EV_A);
+  if (backend == EVBACKEND_EPOLL   ) epoll_destroy    (EV_A);
 #endif
 #if EV_USE_POLL
-  if (backend == EVBACKEND_POLL  ) poll_destroy   (EV_A);
+  if (backend == EVBACKEND_POLL    ) poll_destroy     (EV_A);
 #endif
 #if EV_USE_SELECT
-  if (backend == EVBACKEND_SELECT) select_destroy (EV_A);
+  if (backend == EVBACKEND_SELECT  ) select_destroy   (EV_A);
 #endif
 
   for (i = NUMPRI; i--; )
@@ -3058,13 +3112,16 @@ inline_size void
 loop_fork (EV_P)
 {
 #if EV_USE_PORT
-  if (backend == EVBACKEND_PORT  ) port_fork   (EV_A);
+  if (backend == EVBACKEND_PORT    ) port_fork     (EV_A);
 #endif
 #if EV_USE_KQUEUE
-  if (backend == EVBACKEND_KQUEUE) kqueue_fork (EV_A);
+  if (backend == EVBACKEND_KQUEUE  ) kqueue_fork   (EV_A);
+#endif
+#if EV_USE_LINUXAIO
+  if (backend == EVBACKEND_LINUXAIO) linuxaio_fork (EV_A);
 #endif
 #if EV_USE_EPOLL
-  if (backend == EVBACKEND_EPOLL ) epoll_fork  (EV_A);
+  if (backend == EVBACKEND_EPOLL   ) epoll_fork    (EV_A);
 #endif
 #if EV_USE_INOTIFY
   infy_fork (EV_A);
@@ -3094,7 +3151,7 @@ loop_fork (EV_P)
 
 ecb_cold
 struct ev_loop *
-ev_loop_new (unsigned int flags) EV_THROW
+ev_loop_new (unsigned int flags) EV_NOEXCEPT
 {
   EV_P = (struct ev_loop *)ev_malloc (sizeof (struct ev_loop));
 
@@ -3151,7 +3208,7 @@ array_verify (EV_P_ W *ws, int cnt)
 
 #if EV_FEATURE_API
 void ecb_cold
-ev_verify (EV_P) EV_THROW
+ev_verify (EV_P) EV_NOEXCEPT
 {
 #if EV_VERIFY
   int i;
@@ -3242,7 +3299,7 @@ struct ev_loop *
 #else
 int
 #endif
-ev_default_loop (unsigned int flags) EV_THROW
+ev_default_loop (unsigned int flags) EV_NOEXCEPT
 {
   if (!ev_default_loop_ptr)
     {
@@ -3271,7 +3328,7 @@ ev_default_loop (unsigned int flags) EV_THROW
 }
 
 void
-ev_loop_fork (EV_P) EV_THROW
+ev_loop_fork (EV_P) EV_NOEXCEPT
 {
   postfork = 1;
 }
@@ -3285,7 +3342,7 @@ ev_invoke (EV_P_ void *w, int revents)
 }
 
 unsigned int
-ev_pending_count (EV_P) EV_THROW
+ev_pending_count (EV_P) EV_NOEXCEPT
 {
   int pri;
   unsigned int count = 0;
@@ -3302,10 +3359,11 @@ ev_invoke_pending (EV_P)
 {
   pendingpri = NUMPRI;
 
-  while (pendingpri) /* pendingpri possibly gets modified in the inner loop */
+  do
     {
       --pendingpri;
 
+      /* pendingpri possibly gets modified in the inner loop */
       while (pendingcnt [pendingpri])
         {
           ANPENDING *p = pendings [pendingpri] + --pendingcnt [pendingpri];
@@ -3315,6 +3373,7 @@ ev_invoke_pending (EV_P)
           EV_FREQUENT_CHECK;
         }
     }
+  while (pendingpri);
 }
 
 #if EV_IDLE_ENABLE
@@ -3692,7 +3751,6 @@ ev_run (EV_P_ int flags)
             ev_feed_event (EV_A_ &pipe_w, EV_CUSTOM);
           }
 
-
         /* update ev_rt_now, do magic */
         time_update (EV_A_ waittime + sleeptime);
       }
@@ -3733,37 +3791,37 @@ ev_run (EV_P_ int flags)
 }
 
 void
-ev_break (EV_P_ int how) EV_THROW
+ev_break (EV_P_ int how) EV_NOEXCEPT
 {
   loop_done = how;
 }
 
 void
-ev_ref (EV_P) EV_THROW
+ev_ref (EV_P) EV_NOEXCEPT
 {
   ++activecnt;
 }
 
 void
-ev_unref (EV_P) EV_THROW
+ev_unref (EV_P) EV_NOEXCEPT
 {
   --activecnt;
 }
 
 void
-ev_now_update (EV_P) EV_THROW
+ev_now_update (EV_P) EV_NOEXCEPT
 {
   time_update (EV_A_ 1e100);
 }
 
 void
-ev_suspend (EV_P) EV_THROW
+ev_suspend (EV_P) EV_NOEXCEPT
 {
   ev_now_update (EV_A);
 }
 
 void
-ev_resume (EV_P) EV_THROW
+ev_resume (EV_P) EV_NOEXCEPT
 {
   ev_tstamp mn_prev = mn_now;
 
@@ -3812,7 +3870,7 @@ clear_pending (EV_P_ W w)
 }
 
 int
-ev_clear_pending (EV_P_ void *w) EV_THROW
+ev_clear_pending (EV_P_ void *w) EV_NOEXCEPT
 {
   W w_ = (W)w;
   int pending = w_->pending;
@@ -3856,7 +3914,7 @@ ev_stop (EV_P_ W w)
 
 noinline
 void
-ev_io_start (EV_P_ ev_io *w) EV_THROW
+ev_io_start (EV_P_ ev_io *w) EV_NOEXCEPT
 {
   int fd = w->fd;
 
@@ -3866,10 +3924,13 @@ ev_io_start (EV_P_ ev_io *w) EV_THROW
   assert (("libev: ev_io_start called with negative fd", fd >= 0));
   assert (("libev: ev_io_start called with illegal event mask", !(w->events & ~(EV__IOFDSET | EV_READ | EV_WRITE))));
 
+#if EV_VERIFY >= 2
+  assert (("libev: ev_io_start called on watcher with invalid fd", fd_valid (fd)));
+#endif
   EV_FREQUENT_CHECK;
 
   ev_start (EV_A_ (W)w, 1);
-  array_needsize (ANFD, anfds, anfdmax, fd + 1, array_init_zero);
+  array_needsize (ANFD, anfds, anfdmax, fd + 1, array_needsize_zerofill);
   wlist_add (&anfds[fd].head, (WL)w);
 
   /* common bug, apparently */
@@ -3883,7 +3944,7 @@ ev_io_start (EV_P_ ev_io *w) EV_THROW
 
 noinline
 void
-ev_io_stop (EV_P_ ev_io *w) EV_THROW
+ev_io_stop (EV_P_ ev_io *w) EV_NOEXCEPT
 {
   clear_pending (EV_A_ (W)w);
   if (expect_false (!ev_is_active (w)))
@@ -3891,6 +3952,9 @@ ev_io_stop (EV_P_ ev_io *w) EV_THROW
 
   assert (("libev: ev_io_stop called with illegal fd (must stay constant after start!)", w->fd >= 0 && w->fd < anfdmax));
 
+#if EV_VERIFY >= 2
+  assert (("libev: ev_io_stop called on watcher with invalid fd", fd_valid (w->fd)));
+#endif
   EV_FREQUENT_CHECK;
 
   wlist_del (&anfds[w->fd].head, (WL)w);
@@ -3903,7 +3967,7 @@ ev_io_stop (EV_P_ ev_io *w) EV_THROW
 
 noinline
 void
-ev_timer_start (EV_P_ ev_timer *w) EV_THROW
+ev_timer_start (EV_P_ ev_timer *w) EV_NOEXCEPT
 {
   if (expect_false (ev_is_active (w)))
     return;
@@ -3916,7 +3980,7 @@ ev_timer_start (EV_P_ ev_timer *w) EV_THROW
 
   ++timercnt;
   ev_start (EV_A_ (W)w, timercnt + HEAP0 - 1);
-  array_needsize (ANHE, timers, timermax, ev_active (w) + 1, EMPTY2);
+  array_needsize (ANHE, timers, timermax, ev_active (w) + 1, array_needsize_noinit);
   ANHE_w (timers [ev_active (w)]) = (WT)w;
   ANHE_at_cache (timers [ev_active (w)]);
   upheap (timers, ev_active (w));
@@ -3928,7 +3992,7 @@ ev_timer_start (EV_P_ ev_timer *w) EV_THROW
 
 noinline
 void
-ev_timer_stop (EV_P_ ev_timer *w) EV_THROW
+ev_timer_stop (EV_P_ ev_timer *w) EV_NOEXCEPT
 {
   clear_pending (EV_A_ (W)w);
   if (expect_false (!ev_is_active (w)))
@@ -3959,7 +4023,7 @@ ev_timer_stop (EV_P_ ev_timer *w) EV_THROW
 
 noinline
 void
-ev_timer_again (EV_P_ ev_timer *w) EV_THROW
+ev_timer_again (EV_P_ ev_timer *w) EV_NOEXCEPT
 {
   EV_FREQUENT_CHECK;
 
@@ -3986,7 +4050,7 @@ ev_timer_again (EV_P_ ev_timer *w) EV_THROW
 }
 
 ev_tstamp
-ev_timer_remaining (EV_P_ ev_timer *w) EV_THROW
+ev_timer_remaining (EV_P_ ev_timer *w) EV_NOEXCEPT
 {
   return ev_at (w) - (ev_is_active (w) ? mn_now : 0.);
 }
@@ -3994,7 +4058,7 @@ ev_timer_remaining (EV_P_ ev_timer *w) EV_THROW
 #if EV_PERIODIC_ENABLE
 noinline
 void
-ev_periodic_start (EV_P_ ev_periodic *w) EV_THROW
+ev_periodic_start (EV_P_ ev_periodic *w) EV_NOEXCEPT
 {
   if (expect_false (ev_is_active (w)))
     return;
@@ -4013,7 +4077,7 @@ ev_periodic_start (EV_P_ ev_periodic *w) EV_THROW
 
   ++periodiccnt;
   ev_start (EV_A_ (W)w, periodiccnt + HEAP0 - 1);
-  array_needsize (ANHE, periodics, periodicmax, ev_active (w) + 1, EMPTY2);
+  array_needsize (ANHE, periodics, periodicmax, ev_active (w) + 1, array_needsize_noinit);
   ANHE_w (periodics [ev_active (w)]) = (WT)w;
   ANHE_at_cache (periodics [ev_active (w)]);
   upheap (periodics, ev_active (w));
@@ -4025,7 +4089,7 @@ ev_periodic_start (EV_P_ ev_periodic *w) EV_THROW
 
 noinline
 void
-ev_periodic_stop (EV_P_ ev_periodic *w) EV_THROW
+ev_periodic_stop (EV_P_ ev_periodic *w) EV_NOEXCEPT
 {
   clear_pending (EV_A_ (W)w);
   if (expect_false (!ev_is_active (w)))
@@ -4054,7 +4118,7 @@ ev_periodic_stop (EV_P_ ev_periodic *w) EV_THROW
 
 noinline
 void
-ev_periodic_again (EV_P_ ev_periodic *w) EV_THROW
+ev_periodic_again (EV_P_ ev_periodic *w) EV_NOEXCEPT
 {
   /* TODO: use adjustheap and recalculation */
   ev_periodic_stop (EV_A_ w);
@@ -4070,7 +4134,7 @@ ev_periodic_again (EV_P_ ev_periodic *w) EV_THROW
 
 noinline
 void
-ev_signal_start (EV_P_ ev_signal *w) EV_THROW
+ev_signal_start (EV_P_ ev_signal *w) EV_NOEXCEPT
 {
   if (expect_false (ev_is_active (w)))
     return;
@@ -4153,7 +4217,7 @@ ev_signal_start (EV_P_ ev_signal *w) EV_THROW
 
 noinline
 void
-ev_signal_stop (EV_P_ ev_signal *w) EV_THROW
+ev_signal_stop (EV_P_ ev_signal *w) EV_NOEXCEPT
 {
   clear_pending (EV_A_ (W)w);
   if (expect_false (!ev_is_active (w)))
@@ -4194,7 +4258,7 @@ ev_signal_stop (EV_P_ ev_signal *w) EV_THROW
 #if EV_CHILD_ENABLE
 
 void
-ev_child_start (EV_P_ ev_child *w) EV_THROW
+ev_child_start (EV_P_ ev_child *w) EV_NOEXCEPT
 {
 #if EV_MULTIPLICITY
   assert (("libev: child watchers are only supported in the default loop", loop == ev_default_loop_ptr));
@@ -4211,7 +4275,7 @@ ev_child_start (EV_P_ ev_child *w) EV_THROW
 }
 
 void
-ev_child_stop (EV_P_ ev_child *w) EV_THROW
+ev_child_stop (EV_P_ ev_child *w) EV_NOEXCEPT
 {
   clear_pending (EV_A_ (W)w);
   if (expect_false (!ev_is_active (w)))
@@ -4486,7 +4550,7 @@ infy_fork (EV_P)
 #endif
 
 void
-ev_stat_stat (EV_P_ ev_stat *w) EV_THROW
+ev_stat_stat (EV_P_ ev_stat *w) EV_NOEXCEPT
 {
   if (lstat (w->path, &w->attr) < 0)
     w->attr.st_nlink = 0;
@@ -4536,7 +4600,7 @@ stat_timer_cb (EV_P_ ev_timer *w_, int revents)
 }
 
 void
-ev_stat_start (EV_P_ ev_stat *w) EV_THROW
+ev_stat_start (EV_P_ ev_stat *w) EV_NOEXCEPT
 {
   if (expect_false (ev_is_active (w)))
     return;
@@ -4567,7 +4631,7 @@ ev_stat_start (EV_P_ ev_stat *w) EV_THROW
 }
 
 void
-ev_stat_stop (EV_P_ ev_stat *w) EV_THROW
+ev_stat_stop (EV_P_ ev_stat *w) EV_NOEXCEPT
 {
   clear_pending (EV_A_ (W)w);
   if (expect_false (!ev_is_active (w)))
@@ -4593,7 +4657,7 @@ ev_stat_stop (EV_P_ ev_stat *w) EV_THROW
 
 #if EV_IDLE_ENABLE
 void
-ev_idle_start (EV_P_ ev_idle *w) EV_THROW
+ev_idle_start (EV_P_ ev_idle *w) EV_NOEXCEPT
 {
   if (expect_false (ev_is_active (w)))
     return;
@@ -4608,7 +4672,7 @@ ev_idle_start (EV_P_ ev_idle *w) EV_THROW
     ++idleall;
     ev_start (EV_A_ (W)w, active);
 
-    array_needsize (ev_idle *, idles [ABSPRI (w)], idlemax [ABSPRI (w)], active, EMPTY2);
+    array_needsize (ev_idle *, idles [ABSPRI (w)], idlemax [ABSPRI (w)], active, array_needsize_noinit);
     idles [ABSPRI (w)][active - 1] = w;
   }
 
@@ -4616,7 +4680,7 @@ ev_idle_start (EV_P_ ev_idle *w) EV_THROW
 }
 
 void
-ev_idle_stop (EV_P_ ev_idle *w) EV_THROW
+ev_idle_stop (EV_P_ ev_idle *w) EV_NOEXCEPT
 {
   clear_pending (EV_A_ (W)w);
   if (expect_false (!ev_is_active (w)))
@@ -4640,7 +4704,7 @@ ev_idle_stop (EV_P_ ev_idle *w) EV_THROW
 
 #if EV_PREPARE_ENABLE
 void
-ev_prepare_start (EV_P_ ev_prepare *w) EV_THROW
+ev_prepare_start (EV_P_ ev_prepare *w) EV_NOEXCEPT
 {
   if (expect_false (ev_is_active (w)))
     return;
@@ -4648,14 +4712,14 @@ ev_prepare_start (EV_P_ ev_prepare *w) EV_THROW
   EV_FREQUENT_CHECK;
 
   ev_start (EV_A_ (W)w, ++preparecnt);
-  array_needsize (ev_prepare *, prepares, preparemax, preparecnt, EMPTY2);
+  array_needsize (ev_prepare *, prepares, preparemax, preparecnt, array_needsize_noinit);
   prepares [preparecnt - 1] = w;
 
   EV_FREQUENT_CHECK;
 }
 
 void
-ev_prepare_stop (EV_P_ ev_prepare *w) EV_THROW
+ev_prepare_stop (EV_P_ ev_prepare *w) EV_NOEXCEPT
 {
   clear_pending (EV_A_ (W)w);
   if (expect_false (!ev_is_active (w)))
@@ -4678,7 +4742,7 @@ ev_prepare_stop (EV_P_ ev_prepare *w) EV_THROW
 
 #if EV_CHECK_ENABLE
 void
-ev_check_start (EV_P_ ev_check *w) EV_THROW
+ev_check_start (EV_P_ ev_check *w) EV_NOEXCEPT
 {
   if (expect_false (ev_is_active (w)))
     return;
@@ -4686,14 +4750,14 @@ ev_check_start (EV_P_ ev_check *w) EV_THROW
   EV_FREQUENT_CHECK;
 
   ev_start (EV_A_ (W)w, ++checkcnt);
-  array_needsize (ev_check *, checks, checkmax, checkcnt, EMPTY2);
+  array_needsize (ev_check *, checks, checkmax, checkcnt, array_needsize_noinit);
   checks [checkcnt - 1] = w;
 
   EV_FREQUENT_CHECK;
 }
 
 void
-ev_check_stop (EV_P_ ev_check *w) EV_THROW
+ev_check_stop (EV_P_ ev_check *w) EV_NOEXCEPT
 {
   clear_pending (EV_A_ (W)w);
   if (expect_false (!ev_is_active (w)))
@@ -4717,7 +4781,7 @@ ev_check_stop (EV_P_ ev_check *w) EV_THROW
 #if EV_EMBED_ENABLE
 noinline
 void
-ev_embed_sweep (EV_P_ ev_embed *w) EV_THROW
+ev_embed_sweep (EV_P_ ev_embed *w) EV_NOEXCEPT
 {
   ev_run (w->other, EVRUN_NOWAIT);
 }
@@ -4775,7 +4839,7 @@ embed_idle_cb (EV_P_ ev_idle *idle, int revents)
 #endif
 
 void
-ev_embed_start (EV_P_ ev_embed *w) EV_THROW
+ev_embed_start (EV_P_ ev_embed *w) EV_NOEXCEPT
 {
   if (expect_false (ev_is_active (w)))
     return;
@@ -4806,7 +4870,7 @@ ev_embed_start (EV_P_ ev_embed *w) EV_THROW
 }
 
 void
-ev_embed_stop (EV_P_ ev_embed *w) EV_THROW
+ev_embed_stop (EV_P_ ev_embed *w) EV_NOEXCEPT
 {
   clear_pending (EV_A_ (W)w);
   if (expect_false (!ev_is_active (w)))
@@ -4826,7 +4890,7 @@ ev_embed_stop (EV_P_ ev_embed *w) EV_THROW
 
 #if EV_FORK_ENABLE
 void
-ev_fork_start (EV_P_ ev_fork *w) EV_THROW
+ev_fork_start (EV_P_ ev_fork *w) EV_NOEXCEPT
 {
   if (expect_false (ev_is_active (w)))
     return;
@@ -4834,14 +4898,14 @@ ev_fork_start (EV_P_ ev_fork *w) EV_THROW
   EV_FREQUENT_CHECK;
 
   ev_start (EV_A_ (W)w, ++forkcnt);
-  array_needsize (ev_fork *, forks, forkmax, forkcnt, EMPTY2);
+  array_needsize (ev_fork *, forks, forkmax, forkcnt, array_needsize_noinit);
   forks [forkcnt - 1] = w;
 
   EV_FREQUENT_CHECK;
 }
 
 void
-ev_fork_stop (EV_P_ ev_fork *w) EV_THROW
+ev_fork_stop (EV_P_ ev_fork *w) EV_NOEXCEPT
 {
   clear_pending (EV_A_ (W)w);
   if (expect_false (!ev_is_active (w)))
@@ -4864,7 +4928,7 @@ ev_fork_stop (EV_P_ ev_fork *w) EV_THROW
 
 #if EV_CLEANUP_ENABLE
 void
-ev_cleanup_start (EV_P_ ev_cleanup *w) EV_THROW
+ev_cleanup_start (EV_P_ ev_cleanup *w) EV_NOEXCEPT
 {
   if (expect_false (ev_is_active (w)))
     return;
@@ -4872,7 +4936,7 @@ ev_cleanup_start (EV_P_ ev_cleanup *w) EV_THROW
   EV_FREQUENT_CHECK;
 
   ev_start (EV_A_ (W)w, ++cleanupcnt);
-  array_needsize (ev_cleanup *, cleanups, cleanupmax, cleanupcnt, EMPTY2);
+  array_needsize (ev_cleanup *, cleanups, cleanupmax, cleanupcnt, array_needsize_noinit);
   cleanups [cleanupcnt - 1] = w;
 
   /* cleanup watchers should never keep a refcount on the loop */
@@ -4881,7 +4945,7 @@ ev_cleanup_start (EV_P_ ev_cleanup *w) EV_THROW
 }
 
 void
-ev_cleanup_stop (EV_P_ ev_cleanup *w) EV_THROW
+ev_cleanup_stop (EV_P_ ev_cleanup *w) EV_NOEXCEPT
 {
   clear_pending (EV_A_ (W)w);
   if (expect_false (!ev_is_active (w)))
@@ -4905,7 +4969,7 @@ ev_cleanup_stop (EV_P_ ev_cleanup *w) EV_THROW
 
 #if EV_ASYNC_ENABLE
 void
-ev_async_start (EV_P_ ev_async *w) EV_THROW
+ev_async_start (EV_P_ ev_async *w) EV_NOEXCEPT
 {
   if (expect_false (ev_is_active (w)))
     return;
@@ -4917,14 +4981,14 @@ ev_async_start (EV_P_ ev_async *w) EV_THROW
   EV_FREQUENT_CHECK;
 
   ev_start (EV_A_ (W)w, ++asynccnt);
-  array_needsize (ev_async *, asyncs, asyncmax, asynccnt, EMPTY2);
+  array_needsize (ev_async *, asyncs, asyncmax, asynccnt, array_needsize_noinit);
   asyncs [asynccnt - 1] = w;
 
   EV_FREQUENT_CHECK;
 }
 
 void
-ev_async_stop (EV_P_ ev_async *w) EV_THROW
+ev_async_stop (EV_P_ ev_async *w) EV_NOEXCEPT
 {
   clear_pending (EV_A_ (W)w);
   if (expect_false (!ev_is_active (w)))
@@ -4945,7 +5009,7 @@ ev_async_stop (EV_P_ ev_async *w) EV_THROW
 }
 
 void
-ev_async_send (EV_P_ ev_async *w) EV_THROW
+ev_async_send (EV_P_ ev_async *w) EV_NOEXCEPT
 {
   w->sent = 1;
   evpipe_write (EV_A_ &async_pending);
@@ -4992,15 +5056,9 @@ once_cb_to (EV_P_ ev_timer *w, int revents)
 }
 
 void
-ev_once (EV_P_ int fd, int events, ev_tstamp timeout, void (*cb)(int revents, void *arg), void *arg) EV_THROW
+ev_once (EV_P_ int fd, int events, ev_tstamp timeout, void (*cb)(int revents, void *arg), void *arg) EV_NOEXCEPT
 {
   struct ev_once *once = (struct ev_once *)ev_malloc (sizeof (struct ev_once));
-
-  if (expect_false (!once))
-    {
-      cb (EV_ERROR | EV_READ | EV_WRITE | EV_TIMER, arg);
-      return;
-    }
 
   once->cb  = cb;
   once->arg = arg;
@@ -5025,7 +5083,7 @@ ev_once (EV_P_ int fd, int events, ev_tstamp timeout, void (*cb)(int revents, vo
 #if EV_WALK_ENABLE
 ecb_cold
 void
-ev_walk (EV_P_ int types, void (*cb)(EV_P_ int type, void *w)) EV_THROW
+ev_walk (EV_P_ int types, void (*cb)(EV_P_ int type, void *w)) EV_NOEXCEPT
 {
   int i, j;
   ev_watcher_list *wl, *wn;
