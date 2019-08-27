@@ -14,9 +14,9 @@ struct LexNoCaseLess
 
 		LPCTSTR pszEnd1 = pszBeg1;
 		LPCTSTR pszEnd2 = pszBeg2;
-		while ( pszEnd1 )
+		while ( *pszEnd1 )
 			++pszEnd1;
-		while ( pszEnd2 )
+		while ( *pszEnd2 )
 			++pszEnd2;
 		++pszEnd1;
 		++pszEnd2;
