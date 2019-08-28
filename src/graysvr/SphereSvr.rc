@@ -121,7 +121,7 @@ BEGIN
 	LTEXT		"libev library (v4.27)\nCopyright (C) 2007-2019 Marc Alexander Lehmann", 8, 20, 86, 300, 16
 	LTEXT		"Mersenne Twister random number generator (v1.1)\nCopyright (C) 1997-2002 Makoto Matsumoto, Takuji Nishimura\nCopyright (C) 2000-2009 Richard J. Wagner", 9, 20, 110, 300, 24
 	LTEXT		"MySQL Connector/C (v6.1.11)\nGeneral Public License (GPL) 2000-2017 Oracle", 10, 20, 142, 300, 16
-	LTEXT		"SQLite library (v3.23.1)\nGeneral Public License (GPL) 2000-2018", 11, 20, 166, 300, 16
+	LTEXT		"SQLite library (v3.29.0)\nGeneral Public License (GPL) 2000-2019", 11, 20, 166, 300, 16
 	LTEXT		"Twofish encryption library (v1.0)\nCopyright (C) 1998 Bruce Schneier, Doug Whiting, John Kelsey, Chris Hall, David Wagner", 12, 20, 190, 300, 16
 	LTEXT		"zlib data compression library (v1.2.11)\nCopyright (C) 1995-2017 Jean-loup Gailly, Mark Adler", 13, 20, 214, 300, 16
 	END
