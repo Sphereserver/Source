@@ -684,7 +684,7 @@ void PacketManager::registerStandardPackets(void)
 	registerEncoded(PACKETENC_HouseDesign_Switch, new PacketHouseDesignSwitch());		// house design - change floor
 	registerEncoded(PACKETENC_HouseDesign_AddRoof, new PacketHouseDesignPlaceRoof());	// house design - place roof
 	registerEncoded(PACKETENC_HouseDesign_RemRoof, new PacketHouseDesignDestroyRoof());	// house design - remove roof
-	registerEncoded(PACKETENC_CombatAbility, new PacketSpecialMove());					//
+	registerEncoded(PACKETENC_SpecialMoveSelect, new PacketSpecialMoveSelect());		//
 	registerEncoded(PACKETENC_HouseDesign_Revert, new PacketHouseDesignRevert());		// house design - revert
 	registerEncoded(PACKETENC_EquipLastWeapon, new PacketEquipLastWeapon());			//
 	registerEncoded(PACKETENC_GuildButton, new PacketGuildButton());					// guild button press

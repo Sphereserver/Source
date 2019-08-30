@@ -2914,7 +2914,7 @@ bool PacketWrestleDisarm::onReceive(NetState* net)
 	CClient *pClient = net->m_client;
 	ASSERT(pClient);
 
-	pClient->Event_CombatAbilitySelect(0x5);	// Disarm
+	pClient->Event_SpecialMoveSelect(0x5);	// Disarm
 	return true;
 }
 
@@ -2937,7 +2937,7 @@ bool PacketWrestleStun::onReceive(NetState* net)
 	CClient *pClient = net->m_client;
 	ASSERT(pClient);
 
-	pClient->Event_CombatAbilitySelect(0xB);	// Paralyzing Blow
+	pClient->Event_SpecialMoveSelect(0xB);	// Paralyzing Blow
 	return true;
 }
 
@@ -4132,25 +4132,25 @@ bool PacketHouseDesignDestroyRoof::onReceive(NetState* net)
 /***************************************************************************
  *
  *
- *	Packet 0xD7.0x19 : PacketSpecialMove			perform special move
+ *	Packet 0xD7.0x19 : PacketSpecialMoveSelect		special move selected
  *
  *
  ***************************************************************************/
-PacketSpecialMove::PacketSpecialMove() : Packet(0)
+PacketSpecialMoveSelect::PacketSpecialMoveSelect() : Packet(0)
 {
 }
 
-bool PacketSpecialMove::onReceive(NetState* net)
+bool PacketSpecialMoveSelect::onReceive(NetState* net)
 {
-	ADDTOCALLSTACK("PacketSpecialMove::onReceive");
+	ADDTOCALLSTACK("PacketSpecialMoveSelect::onReceive");
 
 	CClient* client = net->m_client;
 	ASSERT(client);
 
 	skip(1);
-	DWORD ability = readInt32();
+	DWORD dwIndex = readInt32();
 
-	client->Event_CombatAbilitySelect(ability);
+	client->Event_SpecialMoveSelect(dwIndex);
 	return true;
 }
 

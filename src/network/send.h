@@ -1574,6 +1574,25 @@ public:
 /***************************************************************************
  *
  *
+ *	Packet 0xBF.0x21 : PacketSpecialMoveClear			clear special move selected (IDLE)
+ *
+ *
+ ***************************************************************************/
+class PacketSpecialMoveClear : public PacketExtended
+{
+public:
+	PacketSpecialMoveClear(const CClient *target);
+
+	virtual bool canSendTo(const NetState *state) const { return CanSendTo(state); }
+	static bool CanSendTo(const NetState *state)
+	{
+		return state->isClientVersion(MINCLIVER_AOS);
+	}
+};
+
+/***************************************************************************
+ *
+ *
  *	Packet 0xBF.0x22 : PacketCombatDamageOld		[old] sends notification of got damage (NORMAL)
  *
  *

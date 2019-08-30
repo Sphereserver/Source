@@ -4002,6 +4002,22 @@ PacketHouseEndCustomize::PacketHouseEndCustomize(const CClient *target, const CI
 /***************************************************************************
  *
  *
+ *	Packet 0xBF.0x21 : PacketSpecialMoveClear		clear special move selected (IDLE)
+ *
+ *
+ ***************************************************************************/
+
+PacketSpecialMoveClear::PacketSpecialMoveClear(const CClient *target) : PacketExtended(PACKETEXT_SpecialMoveClear, 0, PRI_IDLE)
+{
+	ADDTOCALLSTACK("PacketSpecialMoveClear::PacketSpecialMoveClear");
+
+	push(target);
+}
+
+
+/***************************************************************************
+ *
+ *
  *	Packet 0xBF.0x22 : PacketCombatDamageOld		[old] sends notification of got damage (NORMAL)
  *
  *

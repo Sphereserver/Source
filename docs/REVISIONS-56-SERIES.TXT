@@ -1559,3 +1559,11 @@ Changed: Updated internal Libev libs v4.24 to v4.27.
 
 27-08-2019, Coruja
 Changed: Updated internal SQLite libs v3.23.1 to v3.29.0.
+
+29-08-2019, Coruja
+Added: New function CLEARSPECIALMOVE to make client clear the current special move selected.
+	-Special moves book is only enabled on clients when this feature is enabled on server-side (FeatureAOS setting on sphere.ini)
+	-Special moves engine should be softcoded under @UserSpecialMove char trigger (not included on default scripts pack)
+[sphereCrypt.ini]: Added crypt key for classic client 7.0.77 and enhanced client 4.0.77
+[sphere_admin.scp]: Updated entire admin panel script
+[sphere_dialog.scp]: Added new tab for char flags on dialog 'd_charprop1' and fixed dialog 'd_gmpage_response' not opening correctly

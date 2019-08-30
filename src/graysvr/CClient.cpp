@@ -1230,6 +1230,12 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 				m_TagDefs.ClearKeys();
 			break;
 		}
+		case CV_CLEARSPECIALMOVE:
+		{
+			Event_SpecialMoveSelect(0);
+			addSpecialMoveClear();
+			break;
+		}
 		case CV_CLOSEPAPERDOLL:
 		{
 			const CChar *pChar = s.HasArgs() ? static_cast<CGrayUID>(s.GetArgVal()).CharFind() : m_pChar;

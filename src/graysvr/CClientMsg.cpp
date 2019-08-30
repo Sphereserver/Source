@@ -1413,6 +1413,9 @@ void CClient::addPlayerStart(CChar *pChar)
 	addKRToolbar(m_pChar->m_pPlayer->m_bKrToolbarEnabled);
 	resendBuffs();
 
+	Event_SpecialMoveSelect(0);
+	addSpecialMoveClear();
+
 	if ( g_Cfg.m_iChatFlags & CHATF_GLOBALCHAT )
 	{
 		addGlobalChatConnect();
@@ -1801,6 +1804,14 @@ void CClient::addSkillWindow(SKILL_TYPE skill, bool fFromInfo)
 		return;
 
 	new PacketSkills(this, pChar, skill);
+}
+
+void CClient::addSpecialMoveClear()
+{
+	ADDTOCALLSTACK("CClient::addSpecialMoveClear");
+	// Clear current special move selected
+
+	new PacketSpecialMoveClear(this);
 }
 
 void CClient::addPlayerSee(const CPointMap &ptOld, bool fIgnoreSelfRegion)

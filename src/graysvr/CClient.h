@@ -561,7 +561,6 @@ public:
 	void Event_CharRename(CChar *pChar, LPCTSTR pszName);
 	void Event_ChatButton(const NCHAR *pszName = NULL);
 	void Event_ChatText(const NCHAR *pszText, int iTextLen, CLanguageID lang = 0);
-	void Event_CombatAbilitySelect(DWORD dwAbility);
 	void Event_CombatMode(bool fWar);
 	bool Event_DoubleClick(CGrayUID uid, bool fMacro, bool fTestTouch, bool fScript = false);
 	void Event_ExtCmd(EXTCMD_TYPE type, TCHAR *pszArgs);
@@ -575,6 +574,7 @@ public:
 	void Event_PromptResp_GMPage(LPCTSTR pszReason);
 	void Event_SingleClick(CGrayUID uid);
 	void Event_Skill_Use(SKILL_TYPE skill);
+	void Event_SpecialMoveSelect(DWORD dwIndex);
 	void Event_Talk(LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, bool fNoStrip = false);
 	void Event_TalkUNICODE(NWORD *wszText, int iTextLen, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, LPCTSTR pszLang);
 	void Event_Target(CLIMODE_TYPE context, CGrayUID uid, CPointMap pt, BYTE flags = 0, ITEMID_TYPE id = ITEMID_NOTHING);
@@ -585,7 +585,7 @@ public:
 	void Event_VendorBuy_Cheater(int iCode = 0);
 	void Event_VendorSell(CChar *pVendor, const VendorItem *items, size_t iItemCount);
 	void Event_VendorSell_Cheater(int iCode = 0);
-	void Event_VirtueSelect(DWORD dwVirtue, CChar *pCharTarg);
+	void Event_VirtueSelect(DWORD dwIndex, CChar *pCharTarg);
 	bool Event_Walk(BYTE rawdir, BYTE sequence = 0);
 	bool Event_CheckWalkBuffer();
 
@@ -759,6 +759,7 @@ public:
 	void addHealthBarUpdate(const CChar *pChar);
 	void addBondedStatus(const CChar *pChar, bool fGhost);
 	void addSkillWindow(SKILL_TYPE skill, bool fFromInfo = false);
+	void addSpecialMoveClear();
 	void addBulletinBoard(const CItemContainer *pBoard);
 	bool addBBoardMessage(const CItemContainer *pBoard, BULLETINBOARD_TYPE action, CGrayUID uidMsg);
 

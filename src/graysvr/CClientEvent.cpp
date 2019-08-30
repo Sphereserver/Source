@@ -727,22 +727,22 @@ bool CClient::Event_Walk(BYTE rawdir, BYTE sequence)
 }
 
 // Client selected an combat ability on book
-void CClient::Event_CombatAbilitySelect(DWORD dwAbility)
+void CClient::Event_SpecialMoveSelect(DWORD dwIndex)
 {
-	ADDTOCALLSTACK("CClient::Event_CombatAbilitySelect");
+	ADDTOCALLSTACK("CClient::Event_SpecialMoveSelect");
 	if ( !m_pChar )
 		return;
 
 	if ( IsTrigUsed(TRIGGER_USERSPECIALMOVE) )
 	{
 		CScriptTriggerArgs Args;
-		Args.m_iN1 = dwAbility;
+		Args.m_iN1 = dwIndex;
 		m_pChar->OnTrigger(CTRIG_UserSpecialMove, m_pChar, &Args);
 	}
 }
 
 // Client selected an virtue on gump
-void CClient::Event_VirtueSelect(DWORD dwVirtue, CChar *pCharTarg)
+void CClient::Event_VirtueSelect(DWORD dwIndex, CChar *pCharTarg)
 {
 	ADDTOCALLSTACK("CClient::Event_VirtueSelect");
 	if ( !m_pChar )
@@ -751,7 +751,7 @@ void CClient::Event_VirtueSelect(DWORD dwVirtue, CChar *pCharTarg)
 	if ( IsTrigUsed(TRIGGER_USERVIRTUE) )
 	{
 		CScriptTriggerArgs Args(pCharTarg);
-		Args.m_iN1 = dwVirtue;
+		Args.m_iN1 = dwIndex;
 		m_pChar->OnTrigger(CTRIG_UserVirtue, m_pChar, &Args);
 	}
 }
@@ -2411,8 +2411,8 @@ void CClient::Event_UseToolbar(BYTE bType, DWORD dwArg)
 				Cmd_Skill_Magery(static_cast<SPELL_TYPE>(dwArg), m_pChar);
 			return;
 
-		case 0x2:	// combat ability
-			Event_CombatAbilitySelect(dwArg);
+		case 0x2:	// special move
+			Event_SpecialMoveSelect(dwArg);
 			return;
 
 		case 0x3:	// skill

@@ -1281,14 +1281,14 @@ public:
 /***************************************************************************
  *
  *
- *	Packet 0xD7.0x19 : PacketSpecialMove			perform special move
+ *	Packet 0xD7.0x19 : PacketSpecialMoveSelect		special move selected
  *
  *
  ***************************************************************************/
-class PacketSpecialMove : public Packet
+class PacketSpecialMoveSelect : public Packet
 {
 public:
-	PacketSpecialMove();
+	PacketSpecialMoveSelect();
 	virtual bool onReceive(NetState* net);
 };
 
