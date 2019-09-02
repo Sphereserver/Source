@@ -3817,8 +3817,8 @@ bool CItemTypeDef::r_LoadVal(CScript &s)
 			iVal = Exp_GetVal(pszArgs);
 			if ( iVal < 0 )
 				return false;
-			
-			if ( static_cast<size_t>(iVal) < iLo )	// swap
+
+			if ( (iVal > 0) && (static_cast<size_t>(iVal) < iLo) )	// swap
 			{
 				int iTemp = iLo;
 				iLo = iVal;
