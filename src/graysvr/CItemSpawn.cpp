@@ -332,13 +332,17 @@ void CItemSpawn::KillChildren()
 		CObjBase *pObj = m_obj[i].ObjFind();
 		if ( !pObj )
 			continue;
-		pObj->m_uidSpawnItem.InitUID();
-		pObj->Delete();
+
+		if ( pObj->IsChar() )
+			static_cast<CChar *>(pObj)->Delete(true);
+		else if ( pObj->IsItem() )
+			static_cast<CItem *>(pObj)->Delete(true);
+
 		m_obj[i].InitUID();
-
 	}
-	m_currentSpawned = 0;
 
+	m_currentSpawned = 0;
+	UpdatePropertyFlag();
 	OnTick(false);
 }
 

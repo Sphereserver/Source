@@ -1567,3 +1567,10 @@ Added: New function CLEARSPECIALMOVE to make client clear the current special mo
 [sphereCrypt.ini]: Added crypt key for classic client 7.0.77 and enhanced client 4.0.77
 [sphere_admin.scp]: Updated entire admin panel script
 [sphere_dialog.scp]: Added new tab for char flags on dialog 'd_charprop1' and fixed dialog 'd_gmpage_response' not opening correctly
+
+02-09-2019, Coruja
+Fixed: Function SAY not parsing @args correctly.
+Fixed: Console error when using function LDB.CONNECT to connect on SQLite database.
+Fixed: Trigger @Destroy not being called on spawned chars/items when negate the spawn clicking on the worldgem bit.
+[sphere_admin.scp]: Fixed prev/next page button not working on admin panel dialog, and fixed admin notes dialog storing notes using the player name instead GM name
+[sphere_backward_compatibility.scp]: Updated backward compatibility list
