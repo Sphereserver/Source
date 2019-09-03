@@ -364,6 +364,10 @@ bool CClient::Cmd_Use_Item(CItem *pItem, bool fTestTouch, bool fScript)
 		}
 
 		case IT_ORE:
+			if (g_Cfg.m_iSmeltOreOnDclick)
+			{
+				return m_pChar->Skill_SmeltOre(pItem);
+			}
 			addTarget(CLIMODE_TARG_USE_ITEM, g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_ORE));
 			return true;
 

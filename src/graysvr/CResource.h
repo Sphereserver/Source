@@ -792,6 +792,7 @@ public:
 	int m_iCombatSpeedEra;					// define swing speed formula to use on physical combat
 	WORD m_iSkillPracticeMax;				// max skill level a player can practice on dummies/targets upto
 	bool m_iPacketDeathAnimation;			// packet 02c
+	bool m_iSmeltOreOnDclick;				// smelt ore on dclick like 55i
 
 	// Flags for controlling pvp/pvm behaviour of players
 	int m_iCombatFlags;						// combat flags
