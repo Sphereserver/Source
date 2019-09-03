@@ -520,13 +520,13 @@ enum INPVAL_TYPE
 
 enum MAPCMD_TYPE
 {
-	MAPCMD_AddPin,
-	MAPCMD_InsertPin,
-	MAPCMD_MovePin,
-	MAPCMD_RemovePin,
-	MAPCMD_ClearPins,
-	MAPCMD_ToggleEdit_Request,
-	MAPCMD_ToggleEdit_Reply
+	MAPCMD_AddPin				= 1,
+	MAPCMD_InsertPin			= 2,
+	MAPCMD_MovePin				= 3,
+	MAPCMD_RemovePin			= 4,
+	MAPCMD_ClearPins			= 5,
+	MAPCMD_ToggleEdit_Request	= 6,
+	MAPCMD_ToggleEdit_Reply		= 7
 };
 
 enum MAPWAYPOINT_TYPE
