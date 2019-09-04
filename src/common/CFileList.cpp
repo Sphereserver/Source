@@ -104,8 +104,7 @@ int CFileList::ReadDir( LPCTSTR pszFileDir, bool bShowError )
 		if ( fileinfo->d_name[0] == '.' )
 			continue;
 
-		strncat(szFilename, szFileDir, sizeof(szFilename) - 1);
-		strncat(szFilename, fileinfo->d_name, sizeof(szFilename) - 1);
+		sprintf(szFilename, "%s%s", szFileDir, fileinfo->d_name);
 		len = strlen(szFilename);
 
 		if ( (len > 4) && !strcmpi(&szFilename[len - 4], SPHERE_SCRIPT) )

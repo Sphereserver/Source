@@ -1438,7 +1438,7 @@ bool CChar::Skill_SmeltOre(CItem *pOre)
 
 	UpdateDir(m_Act_p);
 
-	if ( Skill_CheckSuccess(SKILL_MINING, pIngotDef->m_ttIngot.m_iSkillReq / 10) )
+	if ( !Skill_CheckSuccess(SKILL_MINING, pIngotDef->m_ttIngot.m_iSkillReq / 10) )
 	{
 		pOre->ConsumeAmount(maximum(1, (pOre->GetAmount() / 2)));
 		SysMessageDefault(DEFMSG_SMELT_FAIL);

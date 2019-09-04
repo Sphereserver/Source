@@ -1574,3 +1574,7 @@ Fixed: Console error when using function LDB.CONNECT to connect on SQLite databa
 Fixed: Trigger @Destroy not being called on spawned chars/items when negate the spawn clicking on the worldgem bit.
 [sphere_admin.scp]: Fixed prev/next page button not working on admin panel dialog, and fixed admin notes dialog storing notes using the player name instead GM name
 [sphere_backward_compatibility.scp]: Updated backward compatibility list
+
+04-09-2019, Coruja
+Fixed: Linux builds throwing buffer overflow exception when initializing.
+Fixed: Smelting ores on forge always failing the action.
