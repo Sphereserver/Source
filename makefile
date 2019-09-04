@@ -147,8 +147,8 @@ build:	git flags gray
 	@$(CC) $(O_FLAGS) $(C_FLAGS) -o $(EXE) ./src/common/*.o ./src/common/libev/*.o ./src/common/sqlite/*.o ./src/common/twofish/*.o ./src/common/zlib/*.o ./src/graysvr/*.o ./src/network/*.o ./src/sphere/*.o $(INCLUDE_LIBS)
 
 clean:
-	rm -rf ./src/*.o
-
+	rm -rf ./$(EXE)
+	find . -name \*.o -type f -delete
 
 git:
 ifdef GITREVISION
