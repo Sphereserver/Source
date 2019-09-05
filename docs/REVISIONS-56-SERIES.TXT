@@ -1578,4 +1578,7 @@ Fixed: Trigger @Destroy not being called on spawned chars/items when negate the 
 04-09-2019, Coruja
 Fixed: Linux builds throwing buffer overflow exception when initializing.
 Fixed: Smelting ores on forge always failing the action.
-[sphere.ini] : Added SmeltOreOnDclick to work like in 55i with fire effect. Nirad
+[sphere.ini] : Added SmeltOreOnDclick to work like in 55i with fire effect.Nirad
+
+05-09-2019, Coruja
+Fixed: Linux builds not parsing text characters correctly.
