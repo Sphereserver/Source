@@ -25,7 +25,7 @@ typedef long				LONG;				// 32 bits
 typedef long long			LONGLONG, INT64;	// 64 bits
 typedef unsigned long long	ULONGLONG, UINT64;	// 64 bits
 
-typedef wchar_t				WCHAR;
+typedef unsigned short		WCHAR;
 typedef char				TCHAR;
 typedef char				*LPSTR, *LPTSTR;
 typedef const char			*LPCSTR, *LPCTSTR;

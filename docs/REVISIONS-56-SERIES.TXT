@@ -1578,3 +1578,6 @@ Fixed: Trigger @Destroy not being called on spawned chars/items when negate the 
 04-09-2019, Coruja
 Fixed: Linux builds throwing buffer overflow exception when initializing.
 Fixed: Smelting ores on forge always failing the action.
+
+05-09-2019, Coruja
+Fixed: Linux builds not parsing text characters correctly.

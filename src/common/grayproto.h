@@ -365,7 +365,7 @@ enum PACKETENC_TYPE		// encoded packets used by PACKET_EncodedData
 
 enum PARTYMSG_TYPE
 {
-	PARTYMSG_Add = 1,			// client <-> server
+	PARTYMSG_Add = 0x1,			// client <-> server
 	PARTYMSG_Remove,			// client <-> server
 	PARTYMSG_MsgMember,			// client  -> server
 	PARTYMSG_MsgAll,			// client <-> server
@@ -520,13 +520,13 @@ enum INPVAL_TYPE
 
 enum MAPCMD_TYPE
 {
-	MAPCMD_AddPin				= 1,
-	MAPCMD_InsertPin			= 2,
-	MAPCMD_MovePin				= 3,
-	MAPCMD_RemovePin			= 4,
-	MAPCMD_ClearPins			= 5,
-	MAPCMD_ToggleEdit_Request	= 6,
-	MAPCMD_ToggleEdit_Reply		= 7
+	MAPCMD_AddPin = 0x1,
+	MAPCMD_InsertPin,
+	MAPCMD_MovePin,
+	MAPCMD_RemovePin,
+	MAPCMD_ClearPins,
+	MAPCMD_ToggleEdit_Request,
+	MAPCMD_ToggleEdit_Reply
 };
 
 enum MAPWAYPOINT_TYPE
@@ -710,7 +710,7 @@ enum GAMECLIENT_TYPE
 	CLIENTTYPE_2D,	// 2D classic client
 	CLIENTTYPE_3D,	// 3D classic client
 	CLIENTTYPE_KR,	// KR enhanced client
-	CLIENTTYPE_EC	// SA enhanced client
+	CLIENTTYPE_EC	// SA+ enhanced client
 };
 
 enum RACE_TYPE
