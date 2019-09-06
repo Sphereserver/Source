@@ -73,11 +73,11 @@ static int CvtSystemToUNICODE(WCHAR &wChar, LPCTSTR pszInp, int iSizeInBytes)
 	// Convert a UTF8 encoded string to a single unicode char
 	// RETURN: The length < iSizeInBytes
 
-	// Bytes bits representation 
-	// 1 7	0bbbbbbb 
-	// 2 11 110bbbbb 10bbbbbb 
-	// 3 16 1110bbbb 10bbbbbb 10bbbbbb 
-	// 4 21 11110bbb 10bbbbbb 10bbbbbb 10bbbbbb 
+	// Bytes	Bits	Representation 
+	// 1		7		0bbbbbbb
+	// 2		11		110bbbbb 10bbbbbb
+	// 3		16		1110bbbb 10bbbbbb 10bbbbbb
+	// 4		21		11110bbb 10bbbbbb 10bbbbbb 10bbbbbb
 
 	BYTE ch = *pszInp;
 	ASSERT(ch >= 0x80);	// needs special UTF8 decoding
@@ -125,11 +125,11 @@ static int CvtUNICODEToSystem(TCHAR *pszOut, int iSizeOutBytes, WCHAR wChar)
 	// Convert a single unicode char to system string
 	// RETURN: The length < iSizeOutBytes
 
-	// Bytes bits representation 
-	// 1 7	0bbbbbbb 
-	// 2 11 110bbbbb 10bbbbbb 
-	// 3 16 1110bbbb 10bbbbbb 10bbbbbb 
-	// 4 21 11110bbb 10bbbbbb 10bbbbbb 10bbbbbb 
+	// Bytes	Bits	Representation 
+	// 1		7		0bbbbbbb
+	// 2		11		110bbbbb 10bbbbbb
+	// 3		16		1110bbbb 10bbbbbb 10bbbbbb
+	// 4		21		11110bbb 10bbbbbb 10bbbbbb 10bbbbbb
 
 	ASSERT(wChar >= 0x80);	// needs special UTF8 encoding
 
@@ -140,7 +140,11 @@ static int CvtUNICODEToSystem(TCHAR *pszOut, int iSizeOutBytes, WCHAR wChar)
 		iBytes = 2;
 		iStartBits = 5;
 	}
-	else if ( wChar < (1 << 16) )
+	// By default WCHAR have 2 bytes (1 << 11) on Windows and 4 bytes (1 << 21) on Linux.
+	// But Sphere linux build also have WCHAR manually set to 2 bytes (unsigned short) to
+	// match Windows build, so these 2 checks below are never reached and can be disabled
+	// to avoid some static analyzer warnings like "unreachable code", etc
+	/*else if ( wChar < (1 << 16) )
 	{
 		iBytes = 3;
 		iStartBits = 4;
@@ -149,7 +153,7 @@ static int CvtUNICODEToSystem(TCHAR *pszOut, int iSizeOutBytes, WCHAR wChar)
 	{
 		iBytes = 4;
 		iStartBits = 3;
-	}
+	}*/
 	else
 		return -1;	// not valid UNICODE char
 
