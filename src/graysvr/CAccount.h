@@ -29,7 +29,7 @@ public:
 
 public:
 	void Account_Add(CAccount *pAccount);
-	bool Account_Delete(CAccount *pAccount);
+	bool Account_Delete(CAccount *pAccount, bool fTest = false);
 
 	bool Account_SaveAll();
 	bool Account_Load(LPCTSTR pszName, CScript &s, bool fChanges);

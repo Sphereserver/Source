@@ -185,6 +185,7 @@ void CClient::CharDisconnect()
 		m_pChar->SetDisconnected();
 	}
 
+	m_pAccount = NULL;
 	m_pChar = NULL;
 }
 
