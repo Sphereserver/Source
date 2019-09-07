@@ -1622,7 +1622,7 @@ bool CItemContainer::r_Verb(CScript &s, CTextConsole *pSrc)
 			{
 				CChar *pChar = pSrc->GetChar();
 				if ( pChar->m_pClient )
-					pChar->m_pClient->closeContainer(this);
+					pChar->m_pClient->closeUIWindow(PacketCloseUIWindow::Container, this);
 			}
 			return true;
 		}

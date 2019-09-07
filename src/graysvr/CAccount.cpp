@@ -32,18 +32,20 @@ void CAccounts::Account_Add(CAccount *pAccount)
 	m_Accounts.AddSortKey(pAccount, pAccount->GetName());
 }
 
-bool CAccounts::Account_Delete(CAccount *pAccount)
+bool CAccounts::Account_Delete(CAccount *pAccount, bool fTest)
 {
 	ADDTOCALLSTACK("CAccounts::Account_Delete");
 	ASSERT(pAccount);
 
-	CScriptTriggerArgs Args;
-	Args.Init(pAccount->GetName());
-	TRIGRET_TYPE tr = TRIGRET_RET_FALSE;
+	if ( fTest )
+	{
+		CScriptTriggerArgs Args;
+		Args.Init(pAccount->GetName());
+		TRIGRET_TYPE tr = TRIGRET_RET_FALSE;
 
-	g_Serv.r_Call("f_onaccount_delete", &g_Serv, &Args, NULL, &tr);
-	if ( tr == TRIGRET_RET_TRUE )
-		return false;
+		g_Serv.r_Call("f_onaccount_delete", &g_Serv, &Args, NULL, &tr);
+		return (tr != TRIGRET_RET_TRUE);
+	}
 
 	m_Accounts.DeleteOb(pAccount);
 	return true;
@@ -1187,20 +1189,13 @@ bool CAccount::r_Verb(CScript &s, CTextConsole *pSrc)
 		case AV_DELETE:
 		{
 			TCHAR *pszMsg = Str_GetTemp();
-			LPCTSTR pszAccount = GetName();
-			if ( g_Accounts.Account_Delete(this) )
+			if ( g_Accounts.Account_Delete(this, true) )
 			{
-				if ( m_pClient )
-				{
-					m_pClient->CharDisconnect();
-					m_pClient->m_NetState->markReadClosed();
-				}
-				sprintf(pszMsg, "Account '%s' deleted", pszAccount);
+				sprintf(pszMsg, "Account '%s' deleted", GetName());
+				g_Accounts.Account_Delete(this);
 			}
 			else
-			{
-				sprintf(pszMsg, "Account '%s' deletion blocked by script", pszAccount);
-			}
+				sprintf(pszMsg, "Account '%s' deletion blocked by script", GetName());
 
 			g_Log.Event(LOGM_ACCOUNTS, "%s\n", pszMsg);
 			if ( pSrc != &g_Serv )

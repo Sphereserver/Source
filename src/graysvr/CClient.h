@@ -673,8 +673,7 @@ public:
 	void addSeason(SEASON_TYPE season);
 	void addTime(bool fCurrent = false);
 	void addObjectRemoveCantSee(CGrayUID uid, LPCTSTR pszName = NULL);
-	void closeContainer(const CObjBase *pObj);
-	void closeUIWindow(const CChar *pChar, DWORD dwCmd);
+	void closeUIWindow(DWORD dwWindowType, const CObjBase *pObj);
 	void addObjectRemove(CGrayUID uid);
 	void addObjectRemove(const CObjBase *pObj);
 	void addRemoveAll(bool fItems, bool fChars);

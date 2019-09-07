@@ -185,6 +185,7 @@ void CClient::CharDisconnect()
 		m_pChar->SetDisconnected();
 	}
 
+	m_pAccount = NULL;
 	m_pChar = NULL;
 }
 
@@ -956,8 +957,7 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 	// Old ver
 	if ( s.IsKeyHead("SET", 3) && !g_Cfg.m_Functions.ContainsKey(pszKey) )
 	{
-		PLEVEL_TYPE ilevel = g_Cfg.GetPrivCommandLevel("SET");
-		if ( ilevel > GetPrivLevel() )
+		if ( GetPrivLevel() < g_Cfg.GetPrivCommandLevel("SET") )
 			return false;
 
 		ASSERT(m_pChar);
@@ -967,8 +967,7 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 
 	if ( (toupper(pszKey[0]) == 'X') && !g_Cfg.m_Functions.ContainsKey(pszKey) )
 	{
-		PLEVEL_TYPE ilevel = g_Cfg.GetPrivCommandLevel("SET");
-		if ( ilevel > GetPrivLevel() )
+		if ( GetPrivLevel() < g_Cfg.GetPrivCommandLevel("SET") )
 			return false;
 
 		// Target this command verb on some other object.
@@ -1072,11 +1071,6 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 					sVal += "\t";
 				sVal += !strcmp(ppArgs[i], "NULL") ? " " : ppArgs[i];
 			}
-
-#ifdef _DEBUG
-			if ( g_Cfg.m_wDebugFlags & DEBUGF_SCRIPTS )
-				g_Log.EventDebug("SCRIPT: %s(%lu,'%s')\n", sm_szLoadKeys[index], dwClilocId, static_cast<LPCTSTR>(sVal));
-#endif
 
 			m_TooltipData.Add(new CClientTooltip(dwClilocId, sVal));
 			break;
@@ -1240,21 +1234,21 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 		{
 			const CChar *pChar = s.HasArgs() ? static_cast<CGrayUID>(s.GetArgVal()).CharFind() : m_pChar;
 			if ( pChar )
-				closeUIWindow(pChar, 0x1);
+				closeUIWindow(PacketCloseUIWindow::Paperdoll, pChar);
 			break;
 		}
 		case CV_CLOSEPROFILE:
 		{
 			const CChar *pChar = s.HasArgs() ? static_cast<CGrayUID>(s.GetArgVal()).CharFind() : m_pChar;
 			if ( pChar )
-				closeUIWindow(pChar, 0x8);
+				closeUIWindow(PacketCloseUIWindow::Profile, pChar);
 			break;
 		}
 		case CV_CLOSESTATUS:
 		{
 			const CChar *pChar = s.HasArgs() ? static_cast<CGrayUID>(s.GetArgVal()).CharFind() : m_pChar;
 			if ( pChar )
-				closeUIWindow(pChar, 0x2);
+				closeUIWindow(PacketCloseUIWindow::Status, pChar);
 			break;
 		}
 		case CV_CODEXOFWISDOM:
@@ -1507,9 +1501,7 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 				m_tmSkillMagery.m_Spell = SPELL_Summon;
 				m_tmSkillMagery.m_SummonID = static_cast<CREID_TYPE>(g_Cfg.ResourceGetIndexType(RES_CHARDEF, s.GetArgStr()));
 
-				LPCTSTR pszPrompt = g_Cfg.GetDefaultMsg(DEFMSG_SELECT_MAGIC_TARGET);
-				if ( !pSpellDef->m_sTargetPrompt.IsEmpty() )
-					pszPrompt = pSpellDef->m_sTargetPrompt;
+				LPCTSTR pszPrompt = !pSpellDef->m_sTargetPrompt.IsEmpty() ? pSpellDef->m_sTargetPrompt : g_Cfg.GetDefaultMsg(DEFMSG_SELECT_MAGIC_TARGET);
 
 				int iSpellTimeout = static_cast<int>(GetDefNum("SPELLTIMEOUT"));
 				if ( !iSpellTimeout )
@@ -1592,10 +1584,7 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 			size_t iArgQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), ",");
 			if ( iArgQty > 1 )
 			{
-				HUE_TYPE hue = HUE_TEXT_DEF;
-				if ( ATOI(ppArgs[0]) > 0 )
-					hue = static_cast<HUE_TYPE>(Exp_GetLLVal(ppArgs[0]));
-
+				HUE_TYPE hue = (ATOI(ppArgs[0]) > 0) ? static_cast<HUE_TYPE>(Exp_GetLLVal(ppArgs[0])) : HUE_TEXT_DEF;
 				DWORD dwClilocId = static_cast<DWORD>(Exp_GetLLVal(ppArgs[1]));
 
 				CGString sVal;
@@ -1617,15 +1606,9 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 			size_t iArgQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), ",");
 			if ( iArgQty > 2 )
 			{
-				HUE_TYPE hue = HUE_TEXT_DEF;
-				AFFIX_TYPE affix = AFFIX_APPEND;
-				if ( ATOI(ppArgs[0]) > 0 )
-					hue = static_cast<HUE_TYPE>(Exp_GetLLVal(ppArgs[0]));
-
+				HUE_TYPE hue = (ATOI(ppArgs[0]) > 0) ? static_cast<HUE_TYPE>(Exp_GetLLVal(ppArgs[0])) : HUE_TEXT_DEF;
 				DWORD dwClilocId = static_cast<DWORD>(Exp_GetLLVal(ppArgs[1]));
-
-				if ( ppArgs[2] )
-					affix = static_cast<AFFIX_TYPE>(Exp_GetLLVal(ppArgs[2]));
+				AFFIX_TYPE affix = ppArgs[2] ? static_cast<AFFIX_TYPE>(Exp_GetLLVal(ppArgs[2])) : AFFIX_APPEND;
 
 				CGString sVal;
 				for ( size_t i = 4; i < iArgQty; ++i )

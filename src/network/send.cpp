@@ -3769,28 +3769,11 @@ void PacketDisplayPopup::finalise(void)
  *
  *
  ***************************************************************************/
-PacketCloseUIWindow::PacketCloseUIWindow(const CClient* target, const CChar* character, DWORD command) : PacketExtended(PACKETEXT_CloseUIWindow, 13, PRI_NORMAL)
+PacketCloseUIWindow::PacketCloseUIWindow(const CClient *target, WindowType windowtype, const CObjBase *object) : PacketExtended(PACKETEXT_CloseUIWindow, 13, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketCloseUIWindow::PacketCloseUIWindow");
 
-	writeInt32(command);
-	writeInt32(character->GetUID());
-
-	push(target);
-}
-
-/***************************************************************************
- *
- *
- *	Packet 0xBF.0x16.0x0C : PacketCloseContainer		Close Container (NORMAL)
- *
- *
- ***************************************************************************/
-PacketCloseContainer::PacketCloseContainer(const CClient* target, const CObjBase* object) : PacketExtended(PACKETEXT_CloseUIWindow, 13, PRI_NORMAL)
-{
-	ADDTOCALLSTACK("PacketCloseContainer::PacketCloseContainer");
-
-	writeInt32(0x0C);
+	writeInt32(static_cast<DWORD>(windowtype));
 	writeInt32(object->GetUID());
 
 	push(target);
