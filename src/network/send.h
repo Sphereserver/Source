@@ -1433,20 +1433,15 @@ public:
 class PacketCloseUIWindow : public PacketExtended
 {
 public:
-	PacketCloseUIWindow(const CClient* target, const CChar* character, DWORD command);
-};
+	enum WindowType
+	{
+		Paperdoll	= 0x1,
+		Status		= 0x2,
+		Profile		= 0x8,
+		Container	= 0xC
+	};
 
-/***************************************************************************
- *
- *
- *	Packet 0xBF.0x16.0x0C : PacketCloseContainer		Close Container (NORMAL)
- *
- *
- ***************************************************************************/
-class PacketCloseContainer : public PacketExtended
-{
-public:
-	PacketCloseContainer(const CClient* target, const CObjBase* object);
+	PacketCloseUIWindow(const CClient *target, WindowType windowtype, const CObjBase *object);
 };
 
 /***************************************************************************

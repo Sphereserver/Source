@@ -2654,7 +2654,7 @@ void CObjBase::RemoveFromView(CClient *pClientExclude, bool fHardcoded)
 		}
 
 		if ( GetEquipLayer() == LAYER_BANKBOX )
-			pClient->closeContainer(this);
+			pClient->closeUIWindow(PacketCloseUIWindow::Container, this);
 
 		pClient->addObjectRemove(this);
 	}
@@ -2695,7 +2695,7 @@ void CObjBase::ResendOnEquip(bool fAllClients)
 		}
 
 		if ( GetEquipLayer() == LAYER_BANKBOX )
-			pClient->closeContainer(this);
+			pClient->closeUIWindow(PacketCloseUIWindow::Container, this);
 
 		pClient->addObjectRemove(this);
 		pClient->addItem(pItem);

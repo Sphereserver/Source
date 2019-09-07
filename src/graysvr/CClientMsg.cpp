@@ -431,16 +431,10 @@ void CClient::addObjectRemoveCantSee(CGrayUID uid, LPCTSTR pszName)
 	addObjectRemove(uid);
 }
 
-void CClient::closeContainer(const CObjBase *pObj)
-{
-	ADDTOCALLSTACK("CClient::closeContainer");
-	new PacketCloseContainer(this, pObj);
-}
-
-void CClient::closeUIWindow(const CChar *pChar, DWORD dwCmd)
+void CClient::closeUIWindow(DWORD dwWindowType, const CObjBase *pObj)
 {
 	ADDTOCALLSTACK("CClient::closeUIWindow");
-	new PacketCloseUIWindow(this, pChar, dwCmd);
+	new PacketCloseUIWindow(this, static_cast<PacketCloseUIWindow::WindowType>(dwWindowType), pObj);
 }
 
 void CClient::addObjectRemove(CGrayUID uid)
