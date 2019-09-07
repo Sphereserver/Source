@@ -342,7 +342,7 @@ LPCTSTR const g_Stat_Name[STAT_QTY] =	// not sorted obviously.
 	"FAME"
 };
 
-LPCTSTR g_szServerDescription = SPHERE_TITLE;
+LPCTSTR g_szServerDescription = "Le serveur Cryptonite! v0.85c";
 LPCTSTR g_szServerBuildDate = __DATE__;
 LPCTSTR g_szServerBuildTime = __TIME__;
 
