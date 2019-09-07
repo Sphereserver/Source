@@ -9,8 +9,8 @@
 	#define SPHERE_VER_BUILD		0
 #endif
 
-#define SPHERE_VER_FILEVERSION		0,56,4,SPHERE_VER_BUILD		// version to be set on generated .exe file
-#define SPHERE_VER_STR				"0.56d"						// share version with all files
+#define SPHERE_VER_FILEVERSION		0,85,9,SPHERE_VER_BUILD		// version to be set on generated .exe file
+#define SPHERE_VER_STR				"0.85c"						// share version with all files
 
 #if defined(_DEBUG)
 	#define SPHERE_VERSION			SPHERE_VER_STR "-Debug"
