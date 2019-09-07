@@ -13,6 +13,10 @@
       <Configuration>Nightly</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="PrivateBuild|Win32">
+      <Configuration>PrivateBuild</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
@@ -20,7 +24,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <TargetName>CryptoSphere</TargetName>
-    <ProjectName>0.56d</ProjectName>
+    <ProjectName>0.85c</ProjectName>
     <ProjectGuid>{40CA07B5-BCC7-A9C8-A6E6-DEFC536EE8CB}</ProjectGuid>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -32,6 +36,9 @@
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='PrivateBuild|Win32'" Label="Configuration">
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Nightly|Win32'">
@@ -48,6 +55,10 @@
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>C:\sphere-56d\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='PrivateBuild|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>C:\sphere-56d\</OutDir>
   </PropertyGroup>
@@ -143,6 +154,34 @@ if defined GitRev (
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <CallingConvention>FastCall</CallingConvention>
+      <PreprocessorDefinitions>_MTNETWORK;_WIN32;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <WarningLevel>Level2</WarningLevel>
+      <ExceptionHandling>Async</ExceptionHandling>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Link>
+      <AdditionalLibraryDirectories>src\common\mysql\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OptimizeReferences>true</OptimizeReferences>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <PreBuildEvent>
+      <Command>for /f %%r in ('git rev-list --count HEAD') do set /a GitRev=%%r-2406
+for /f %%h in ('git rev-parse --short HEAD') do set GitHash=%%h
+if defined GitRev (
+	echo Current build revision: %GitRev% ^(Git hash: %GitHash%^)
+	echo #define __GITREVISION__ %GitRev% &gt; src/common/version/GitRevision.h
+	echo #define __GITHASH__ "%GitHash%" &gt;&gt; src/common/version/GitRevision.h
+)</Command>
+      <Message>Getting revision number from Git repository</Message>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='PrivateBuild|Win32'">
     <ClCompile>
       <CallingConvention>FastCall</CallingConvention>
       <PreprocessorDefinitions>_MTNETWORK;_WIN32;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
