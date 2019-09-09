@@ -579,18 +579,18 @@ bool CAccount::CheckPassword(LPCTSTR pszPassword)
 	return false;
 }
 
-bool CAccount::CheckPasswordTries(CSocketAddress csaPeerName)
+bool CAccount::CheckPasswordTries(CSocketAddress SockAddr)
 {
 	ADDTOCALLSTACK("CAccount::CheckPasswordTries");
 	bool fReturn = true;
-	DWORD dwCurrentIP = csaPeerName.GetAddrIP();
+	DWORD dwCurrentIP = SockAddr.GetAddrIP();
 	UINT64 uTimeCurrent = CServTime::GetCurrentTime().GetTimeRaw();
 
-	BlockLocalTime_t::iterator itData = m_BlockIP.find(dwCurrentIP);
-	if ( itData != m_BlockIP.end() )
+	PasswordTriesTime_t::iterator itData = m_PasswordTries.find(dwCurrentIP);
+	if ( itData != m_PasswordTries.end() )
 	{
-		BlockLocalTimePair_t itResult = (*itData).second;
-		TimeTriesStruct_t &ttsData = itResult.first;
+		PasswordTriesTimePair_t itResult = (*itData).second;
+		PasswordTriesTimeStruct_t &ttsData = itResult.first;
 
 		if ( ttsData.m_BlockDelay > uTimeCurrent )
 			return false;
@@ -612,17 +612,17 @@ bool CAccount::CheckPasswordTries(CSocketAddress csaPeerName)
 			}
 		}
 		ttsData.m_LastTry = uTimeCurrent;
-		m_BlockIP[dwCurrentIP] = itResult;
+		m_PasswordTries[dwCurrentIP] = itResult;
 	}
 	else
 	{
-		TimeTriesStruct_t ttsData;
+		PasswordTriesTimeStruct_t ttsData;
 		ttsData.m_LastTry = uTimeCurrent;
 		ttsData.m_BlockDelay = 0;
-		m_BlockIP[dwCurrentIP] = std::make_pair(ttsData, 0);
+		m_PasswordTries[dwCurrentIP] = std::make_pair(ttsData, 0);
 	}
 
-	if ( m_BlockIP.size() > 100 )
+	if ( m_PasswordTries.size() > 100 )
 		ClearPasswordTries();
 
 	return fReturn;
@@ -632,17 +632,17 @@ void CAccount::ClearPasswordTries()
 {
 	ADDTOCALLSTACK("CAccount::ClearPasswordTries");
 	UINT64 uTimeCurrent = CServTime::GetCurrentTime().GetTimeRaw();
-	for ( BlockLocalTime_t::iterator itData = m_BlockIP.begin(); itData != m_BlockIP.end(); )
+	for ( PasswordTriesTime_t::iterator itData = m_PasswordTries.begin(); itData != m_PasswordTries.end(); )
 	{
-		BlockLocalTimePair_t itResult = (*itData).second;
+		PasswordTriesTimePair_t itResult = (*itData).second;
 		if ( uTimeCurrent - itResult.first.m_LastTry > 60 * TICK_PER_SEC )
 		{
 #ifdef _WIN32
-			itData = m_BlockIP.erase(itData);
+			itData = m_PasswordTries.erase(itData);
 #else
-			BlockLocalTime_t::iterator itDelete = itData;
+			PasswordTriesTime_t::iterator itDelete = itData;
 			++itData;
-			m_BlockIP.erase(itDelete);
+			m_PasswordTries.erase(itDelete);
 #endif
 		}
 		else

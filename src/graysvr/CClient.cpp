@@ -1501,7 +1501,7 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 				m_tmSkillMagery.m_Spell = SPELL_Summon;
 				m_tmSkillMagery.m_SummonID = static_cast<CREID_TYPE>(g_Cfg.ResourceGetIndexType(RES_CHARDEF, s.GetArgStr()));
 
-				LPCTSTR pszPrompt = !pSpellDef->m_sTargetPrompt.IsEmpty() ? pSpellDef->m_sTargetPrompt : g_Cfg.GetDefaultMsg(DEFMSG_SELECT_MAGIC_TARGET);
+				LPCTSTR pszPrompt = !pSpellDef->m_sTargetPrompt.IsEmpty() ? static_cast<LPCTSTR>(pSpellDef->m_sTargetPrompt) : g_Cfg.GetDefaultMsg(DEFMSG_SELECT_MAGIC_TARGET);
 
 				int iSpellTimeout = static_cast<int>(GetDefNum("SPELLTIMEOUT"));
 				if ( !iSpellTimeout )

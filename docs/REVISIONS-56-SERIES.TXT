@@ -1583,3 +1583,6 @@ Fixed: Smelting ores on forge always failing the action.
 05-09-2019, Coruja
 Fixed: Linux build not parsing text characters correctly.
 Fixed: Linux build crashing when delete online accounts.
+
+09-09-2019, Coruja
+Fixed: Accounts not clearing 'password tries' counter after enter correct password when ClientLoginMaxTries setting is enabled on sphere.ini.
