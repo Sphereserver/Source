@@ -965,15 +965,13 @@ bool CClient::Cmd_Skill_Magery(SPELL_TYPE iSpell, CObjBase *pSrc)
 	// Targeted spells
 	if ( pSpellDef->IsSpellType(SPELLFLAG_TARG_OBJ|SPELLFLAG_TARG_XYZ) )
 	{
-		LPCTSTR pPrompt = g_Cfg.GetDefaultMsg(DEFMSG_SELECT_MAGIC_TARGET);
-		if ( !pSpellDef->m_sTargetPrompt.IsEmpty() )
-			pPrompt = pSpellDef->m_sTargetPrompt;
+		LPCTSTR pszPrompt = !pSpellDef->m_sTargetPrompt.IsEmpty() ? static_cast<LPCTSTR>(pSpellDef->m_sTargetPrompt) : g_Cfg.GetDefaultMsg(DEFMSG_SELECT_MAGIC_TARGET);
 
 		int iTimeout = static_cast<int>(m_pChar->GetDefNum("SPELLTIMEOUT"));
 		if ( !iTimeout )
 			iTimeout = g_Cfg.m_iSpellTimeout * TICK_PER_SEC;
 
-		addTarget(CLIMODE_TARG_SKILL_MAGERY, pPrompt, pSpellDef->IsSpellType(SPELLFLAG_TARG_XYZ), pSpellDef->IsSpellType(SPELLFLAG_HARM), iTimeout);
+		addTarget(CLIMODE_TARG_SKILL_MAGERY, pszPrompt, pSpellDef->IsSpellType(SPELLFLAG_TARG_XYZ), pSpellDef->IsSpellType(SPELLFLAG_HARM), iTimeout);
 		return true;
 	}
 

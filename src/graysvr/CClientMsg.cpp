@@ -3468,13 +3468,10 @@ BYTE CClient::LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg)
 			}
 		}
 	}
-	else
+	else if ( pszPassword[0] == '\0' )
 	{
-		if ( pszPassword[0] == '\0' )
-		{
-			sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_NEEDPASS);
-			return PacketLoginError::BadPassword;
-		}
+		sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_NEEDPASS);
+		return PacketLoginError::BadPassword;
 	}
 
 	bool fAutoCreate = ((g_Serv.m_eAccApp == ACCAPP_Free) || (g_Serv.m_eAccApp == ACCAPP_GuestAuto) || (g_Serv.m_eAccApp == ACCAPP_GuestTrial));
@@ -3502,6 +3499,9 @@ BYTE CClient::LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg)
 			return PacketLoginError::BadPass;
 		}
 	}
+
+	if ( g_Cfg.m_iClientLoginMaxTries )
+		pAccount->m_PasswordTries.clear();
 
 	return LogIn(pAccount, sMsg);
 }

@@ -75,16 +75,6 @@ private:
 	BYTE m_ResDisp;					// Account resdisp
 	BYTE m_MaxChars;				// Max chars allowed for this account
 
-	typedef struct
-	{
-		UINT64 m_LastTry;
-		UINT64 m_BlockDelay;
-	} TimeTriesStruct_t;
-
-	typedef std::pair<TimeTriesStruct_t, int> BlockLocalTimePair_t;
-	typedef std::map<DWORD, BlockLocalTimePair_t> BlockLocalTime_t;
-	BlockLocalTime_t m_BlockIP;		// Password tries
-
 public:
 	INT64 m_Total_Connect_Time;		// Account total connected time (in minutes) "TOTALCONNECTTIME"
 	INT64 m_Last_Connect_Time;		// Time (in minutes) spent online on last connection
@@ -105,6 +95,16 @@ public:
 	CVarDefMap m_TagDefs;			// Tags storage system
 
 	CClient *m_pClient;				// Client currently using this account
+
+	typedef struct
+	{
+		UINT64 m_LastTry;
+		UINT64 m_BlockDelay;
+	} PasswordTriesTimeStruct_t;
+
+	typedef std::pair<PasswordTriesTimeStruct_t, int> PasswordTriesTimePair_t;
+	typedef std::map<DWORD, PasswordTriesTimePair_t> PasswordTriesTime_t;
+	PasswordTriesTime_t m_PasswordTries;		// Password tries counter
 
 public:
 	LPCTSTR GetDefStr(LPCTSTR pszKey, bool fZero = false) const
@@ -156,7 +156,7 @@ public:
 		m_sPassword.Empty();
 	}
 
-	bool CheckPasswordTries(CSocketAddress csaPeerName);
+	bool CheckPasswordTries(CSocketAddress SockAddr);
 	void ClearPasswordTries();
 
 	static PLEVEL_TYPE GetPrivLevelText(LPCTSTR pszFlags);
