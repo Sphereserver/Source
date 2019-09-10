@@ -1350,6 +1350,11 @@ void CClient::Event_PromptResp(LPCTSTR pszText, size_t iTextLen, CGrayUID uidCha
 			pszPrefix = "SS ";
 			break;
 
+		case CLIMODE_PROMPT_NAME_PET:
+			if ( Event_CharRename(uidChar.CharFind(), szText) )
+				SysMessageDefault(DEFMSG_NPC_PET_RENAME_SUCCESS1);
+			return;
+
 		case CLIMODE_PROMPT_GM_PAGE_TEXT:
 			// m_Targ_Text
 			Event_PromptResp_GMPage(szText);
@@ -1734,23 +1739,23 @@ void CClient::Event_TalkUNICODE(NWORD *wszText, int iTextLen, HUE_TYPE wHue, TAL
 	}
 }
 
-void CClient::Event_CharRename(CChar *pChar, LPCTSTR pszName)
+bool CClient::Event_CharRename(CChar *pChar, LPCTSTR pszName)
 {
 	ADDTOCALLSTACK("CClient::Event_CharRename");
 	// Set the name in the character status window.
 	if ( !pChar || !m_pChar )
-		return;
+		return false;
 	if ( Str_CheckName(pszName) || !strlen(pszName) )
-		return;
+		return false;
 
 	if ( (m_pChar == pChar) || !pChar->NPC_IsOwnedBy(m_pChar) )
-		return;
+		return false;
 	if ( FindTableSorted(pszName, sm_szCmd_Redirect, COUNTOF(sm_szCmd_Redirect)) >= 0 )
-		return;
+		return false;
 	if ( FindTableSorted(pszName, CCharNPC::sm_szVerbKeys, 14) >= 0 )
-		return;
+		return false;
 	if ( g_Cfg.IsObscene(pszName) )
-		return;
+		return false;
 
 	if ( IsTrigUsed(TRIGGER_RENAME) )
 	{
@@ -1758,10 +1763,11 @@ void CClient::Event_CharRename(CChar *pChar, LPCTSTR pszName)
 		Args.m_pO1 = pChar;
 		Args.m_s1 = pszName;
 		if ( m_pChar->OnTrigger(CTRIG_Rename, this, &Args) == TRIGRET_RET_TRUE )
-			return;
+			return false;
 	}
 
 	pChar->SetName(pszName);
+	return true;
 }
 
 bool CDialogResponseArgs::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
@@ -2139,18 +2145,24 @@ void CClient::Event_AOSPopupMenuRequest(CGrayUID uid) //construct packet after a
 			else
 			{
 				WORD wFlag = pChar->IsStatFlag(STATF_DEAD) ? POPUPFLAG_DISABLED : 0;
-				if ( pChar->NPC_IsOwnedBy(m_pChar, false) )
+				if ( pChar->NPC_IsOwnedBy(m_pChar) )
 				{
 					CREID_TYPE id = pChar->GetID();
 					bool fBackpack = ((id == CREID_HORSE_PACK) || (id == CREID_LLAMA_PACK) || (id == CREID_GIANT_BEETLE));
 
-					m_pPopupPacket->addOption(POPUP_PETCMD_GUARD, 6107, wFlag);
+					m_pPopupPacket->addOption(POPUP_PETCMD_KILL, 6111, wFlag);
 					m_pPopupPacket->addOption(POPUP_PETCMD_FOLLOW, 6108, POPUPFLAG_COLOR);
+					m_pPopupPacket->addOption(POPUP_PETCMD_GUARD, 6107, wFlag);
+
 					if ( fBackpack )
 						m_pPopupPacket->addOption(POPUP_PETCMD_DROP, 6109, wFlag);
-					m_pPopupPacket->addOption(POPUP_PETCMD_KILL, 6111, wFlag);
+
 					m_pPopupPacket->addOption(POPUP_PETCMD_STOP, 6112);
 					m_pPopupPacket->addOption(POPUP_PETCMD_STAY, 6114);
+
+					if ( m_NetState->isClientVersion(MINCLIVER_NEWDAMAGE) )
+						m_pPopupPacket->addOption(POPUP_PETCMD_RENAME, 1115557);
+
 					if ( !pChar->IsStatFlag(STATF_Conjured) )
 					{
 						m_pPopupPacket->addOption(POPUP_PETCMD_FRIEND_ADD, 6110, wFlag);
@@ -2158,6 +2170,7 @@ void CClient::Event_AOSPopupMenuRequest(CGrayUID uid) //construct packet after a
 						m_pPopupPacket->addOption(POPUP_PETCMD_TRANSFER, 6113);
 					}
 					m_pPopupPacket->addOption(POPUP_PETCMD_RELEASE, 6118);
+
 					if ( fBackpack )
 						m_pPopupPacket->addOption(POPUP_OPEN_BACKPACK, 6145, wFlag);
 				}
@@ -2280,23 +2293,27 @@ void CClient::Event_AOSPopupMenuSelect(CGrayUID uid, WORD wIndex)	//do something
 					m_pChar->Skill_Start(SKILL_TAMING);
 				}
 				return;
-			case POPUP_PETCMD_GUARD:
-				pChar->NPC_OnHearPetCmd("guard", m_pChar);
+			case POPUP_PETCMD_KILL:
+				pChar->NPC_OnHearPetCmd("kill", m_pChar);
 				return;
 			case POPUP_PETCMD_FOLLOW:
 				pChar->NPC_OnHearPetCmd("follow", m_pChar);
 				return;
+			case POPUP_PETCMD_GUARD:
+				pChar->NPC_OnHearPetCmd("guard", m_pChar);
+				return;
 			case POPUP_PETCMD_DROP:
 				pChar->NPC_OnHearPetCmd("drop", m_pChar);
-				return;
-			case POPUP_PETCMD_KILL:
-				pChar->NPC_OnHearPetCmd("kill", m_pChar);
 				return;
 			case POPUP_PETCMD_STOP:
 				pChar->NPC_OnHearPetCmd("stop", m_pChar);
 				return;
 			case POPUP_PETCMD_STAY:
 				pChar->NPC_OnHearPetCmd("stay", m_pChar);
+				return;
+			case POPUP_PETCMD_RENAME:
+				if ( pChar->NPC_IsOwnedBy(m_pChar) )
+					addPromptConsole(CLIMODE_PROMPT_NAME_PET, g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_RENAME_PROMPT), pChar->GetUID());
 				return;
 			case POPUP_PETCMD_FRIEND_ADD:
 				pChar->NPC_OnHearPetCmd("friend", m_pChar);

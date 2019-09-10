@@ -51,10 +51,11 @@ enum CLIMODE_TYPE	// What mode is the client to server connection in? (waiting f
 	CLIMODE_MENU_EDIT,				// edit the contents of a container
 
 	// Prompting for text input ------------------------------------------------------
-	CLIMODE_PROMPT_NAME_RUNE,
 	CLIMODE_PROMPT_NAME_KEY,		// naming a key
-	CLIMODE_PROMPT_NAME_SIGN,		// naming a house sign
+	CLIMODE_PROMPT_NAME_PET,
+	CLIMODE_PROMPT_NAME_RUNE,
 	CLIMODE_PROMPT_NAME_SHIP,
+	CLIMODE_PROMPT_NAME_SIGN,		// naming a house sign
 	CLIMODE_PROMPT_GM_PAGE_TEXT,	// allowed to enter text for GM page
 	CLIMODE_PROMPT_VENDOR_PRICE,	// set item price on vendor
 	CLIMODE_PROMPT_TARG_VERB,		// send message to another player
@@ -558,7 +559,7 @@ public:
 	void Event_Attack(CGrayUID uid);
 	void Event_Book_Title(CItem *pItem, LPCTSTR pszTitle, LPCTSTR pszAuthor);
 	void Event_BugReport(const TCHAR *pszText, int iTextLen, BUGREPORT_TYPE type, CLanguageID lang = 0);
-	void Event_CharRename(CChar *pChar, LPCTSTR pszName);
+	bool Event_CharRename(CChar *pChar, LPCTSTR pszName);
 	void Event_ChatButton(const NCHAR *pszName = NULL);
 	void Event_ChatText(const NCHAR *pszText, int iTextLen, CLanguageID lang = 0);
 	void Event_CombatMode(bool fWar);
@@ -805,18 +806,19 @@ private:
 	#define POPUP_BUY					31
 	#define POPUP_SELL					32
 	#define POPUP_TAME					40
-	#define POPUP_PETCMD_GUARD			41
+	#define POPUP_PETCMD_KILL			41
 	#define POPUP_PETCMD_FOLLOW			42
-	#define POPUP_PETCMD_DROP			43
-	#define POPUP_PETCMD_KILL			44
+	#define POPUP_PETCMD_GUARD			43
+	#define POPUP_PETCMD_DROP			44
 	#define POPUP_PETCMD_STOP			45
 	#define POPUP_PETCMD_STAY			46
-	#define POPUP_PETCMD_FRIEND_ADD		47
-	#define POPUP_PETCMD_FRIEND_REMOVE	48
-	#define POPUP_PETCMD_TRANSFER		49
-	#define POPUP_PETCMD_RELEASE		50
-	#define POPUP_STABLE_PET			51
-	#define POPUP_CLAIM_PETS			52
+	#define POPUP_PETCMD_RENAME			47
+	#define POPUP_PETCMD_FRIEND_ADD		48
+	#define POPUP_PETCMD_FRIEND_REMOVE	49
+	#define POPUP_PETCMD_TRANSFER		50
+	#define POPUP_PETCMD_RELEASE		51
+	#define POPUP_STABLE_PET			52
+	#define POPUP_CLAIM_PETS			53
 	#define POPUP_TRAIN_SKILL			10000
 
 	PacketDisplayPopup *m_pPopupPacket;
