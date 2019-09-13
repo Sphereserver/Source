@@ -1586,3 +1586,5 @@ Fixed: Linux build crashing when delete online accounts.
 
 09-09-2019, Coruja
 Fixed: Accounts not clearing 'password tries' counter after enter correct password when ClientLoginMaxTries setting is enabled on sphere.ini.
+Added: Missing context menu option "Rename" when player click on a owned pet.
+[sphere_msgs.scp]: Added new messages 'npc_pet_rename_prompt', 'npc_pet_rename_success1', 'npc_pet_rename_success2'

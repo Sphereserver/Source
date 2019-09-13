@@ -1611,10 +1611,21 @@ bool PacketCharRename::onReceive(NetState* net)
 	ADDTOCALLSTACK("PacketCharRename::onReceive");
 
 	CChar *pChar = static_cast<CGrayUID>(readInt32()).CharFind();
-	TCHAR *pszName = Str_GetTemp();
-	readStringASCII(pszName, MAX_NAME_SIZE);
+	if ( !pChar )
+		return false;
 
-	net->m_client->Event_CharRename(pChar, pszName);
+	TCHAR szOldName[MAX_NAME_SIZE];
+	strncpy(szOldName, pChar->GetName(), MAX_NAME_SIZE - 1);
+
+	TCHAR szNewName[MAX_NAME_SIZE];
+	readStringASCII(szNewName, MAX_NAME_SIZE);
+
+	CClient *pClient = net->m_client;
+	ASSERT(pClient);
+
+	if ( pClient->Event_CharRename(pChar, szNewName) )
+		pClient->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_RENAME_SUCCESS2), szOldName, szNewName);
+
 	return true;
 }
 
