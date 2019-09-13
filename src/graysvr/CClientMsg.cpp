@@ -3526,10 +3526,10 @@ BYTE CClient::LogIn(CAccount *pAccount, CGString &sMsg)
 		bool fInUse = false;
 
 		// Different IP - no reconnect
-		if ( !GetPeer().IsSameIP(pAccount->m_pClient->GetPeer()) )
+		/*if ( !GetPeer().IsSameIP(pAccount->m_pClient->GetPeer()) )
 			fInUse = true;
 		else
-		{
+		{*/
 			// Same IP - allow reconnect if the old char is lingering out
 			CChar *pCharOld = pAccount->m_pClient->m_pChar;
 			if ( pCharOld )
@@ -3547,7 +3547,7 @@ BYTE CClient::LogIn(CAccount *pAccount, CGString &sMsg)
 				}
 				else if ( GetConnectType() == pAccount->m_pClient->GetConnectType() )
 					fInUse = true;
-			}
+			//}
 		}
 		if ( fInUse )
 		{
