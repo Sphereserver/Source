@@ -3752,7 +3752,8 @@ bool CChar::Skill_Start(SKILL_TYPE skill)
 	if ( !Skill_CanUse(skill) )
 		return false;
 
-	if ( Skill_GetActive() != SKILL_NONE )
+	SKILL_TYPE skillPrev = Skill_GetActive();
+	if ( skillPrev != SKILL_NONE )
 		Skill_Fail(true);		// fail previous skill unfinished. (with NO skill gain!)
 
 	if ( skill != SKILL_NONE )
@@ -3836,6 +3837,11 @@ bool CChar::Skill_Start(SKILL_TYPE skill)
 				if ( iWaitTime != 0 )
 					SetTimeout(iWaitTime);		// How long before complete skill.
 			}
+		}
+		else if ( m_pNPC )
+		{
+			if ( ((skillPrev != NPCACT_GUARD_TARG) && (Skill_GetActive() == NPCACT_GUARD_TARG)) || ((skillPrev == NPCACT_GUARD_TARG) && (Skill_GetActive() != NPCACT_GUARD_TARG)) )
+				UpdatePropertyFlag();
 		}
 
 		if ( IsTimerExpired() )
