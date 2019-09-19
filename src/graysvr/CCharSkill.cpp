@@ -2663,7 +2663,7 @@ int CChar::Skill_Healing(SKTRIG_TYPE stage)
 		return -SKTRIG_QTY;
 	}
 
-	if ( GetDist(pObj) > 2 )
+	if ( GetDist(pObj) > UO_MAP_DIST_INTERACT )
 	{
 		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_HEALING_TOOFAR), pObj->GetName());
 		if ( pChar != this )

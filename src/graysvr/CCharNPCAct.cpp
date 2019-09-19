@@ -1974,7 +1974,7 @@ void CChar::NPC_Act_Looting()
 	if ( !pItem )
 		return;
 
-	if ( GetDist(pItem) > 2 )
+	if ( GetDist(pItem) > UO_MAP_DIST_INTERACT )
 	{
 		// Item is too far to loot, move closer first
 		NPC_WalkToPoint();
@@ -2175,7 +2175,7 @@ bool CChar::NPC_Act_Food()
 	// Check if can eat the food found
 	if ( pClosestFood )
 	{
-		if ( iClosestFood < 2 )
+		if ( iClosestFood < UO_MAP_DIST_INTERACT )
 		{
 			// Food is closer, just eat it
 			EatAnim(pClosestFood->GetName(), static_cast<int>(pClosestFood->ConsumeAmount(wEatAmount)));
@@ -2209,7 +2209,7 @@ bool CChar::NPC_Act_Food()
 	}
 
 	// Check if can eat crops
-	if ( pCrop && (GetDist(pCrop) < 3) )
+	if ( pCrop && (GetDist(pCrop) <= UO_MAP_DIST_INTERACT) )
 	{
 		if ( Use_Item(pCrop) )
 			return true;
