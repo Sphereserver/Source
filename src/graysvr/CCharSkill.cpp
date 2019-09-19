@@ -2011,7 +2011,7 @@ int CChar::Skill_Enticement(SKTRIG_TYPE stage)
 		{
 			if ( pChar->m_pPlayer )
 			{
-				SysMessagef("%s", g_Cfg.GetDefaultMsg(DEFMSG_ENTICEMENT_PLAYER));
+				SysMessageDefault(DEFMSG_ENTICEMENT_PLAYER);
 				return -SKTRIG_ABORT;
 			}
 			else if ( pChar->IsStatFlag(STATF_War) )
@@ -2239,7 +2239,6 @@ int CChar::Skill_Taming(SKTRIG_TYPE stage)
 	ADDTOCALLSTACK("CChar::Skill_Taming");
 	// m_Act_Targ = creature to tame.
 	// Check the min required skill for this creature.
-	// Related to INT ?
 
 	CChar *pChar = m_Act_Targ.CharFind();
 	if ( !pChar )
@@ -2255,7 +2254,12 @@ int CChar::Skill_Taming(SKTRIG_TYPE stage)
 		SysMessageDefault(DEFMSG_TAMING_CANT);
 		return -SKTRIG_QTY;
 	}
-	if ( GetTopDist3D(pChar) > 10 )
+
+	CSkillDef *pSkillDef = g_Cfg.GetSkillDef(SKILL_TAMING);
+	if ( pSkillDef->m_Range <= 0 )
+		pSkillDef->m_Range = 7;
+
+	if ( GetTopDist3D(pChar) > pSkillDef->m_Range )
 	{
 		SysMessageDefault(DEFMSG_TAMING_REACH);
 		return -SKTRIG_QTY;

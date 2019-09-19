@@ -1590,3 +1590,5 @@ Added: Missing context menu option "Rename" when player click on a owned pet.
 
 19-09-2019, Coruja
 Fixed: Pets not showing 'guarding' tooltip correctly.
+Changed: Animal Taming skill range is now softcoded.
+[sphere_skills.scp]: Added RANGE value on Animal Taming skill
