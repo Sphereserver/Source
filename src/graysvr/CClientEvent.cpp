@@ -2057,9 +2057,11 @@ void CClient::Event_Target(CLIMODE_TYPE context, CGrayUID uid, CPointMap pt, BYT
 void CClient::Event_AOSPopupMenuRequest(CGrayUID uid) //construct packet after a client request
 {
 	ADDTOCALLSTACK("CClient::Event_AOSPopupMenuRequest");
+	if ( !m_pChar )
+		return;
 
-	CObjBaseTemplate *pObj = uid.ObjFind();
-	if ( !m_pChar || (!IsSetOF(OF_NoContextMenuLOS) && !m_pChar->CanSeeLOS(pObj)) )
+	int iDist = m_pChar->GetDist(uid.ObjFind());
+	if ( iDist > m_pChar->GetSight() )
 		return;
 
 	if ( m_pPopupPacket )
@@ -2113,75 +2115,84 @@ void CClient::Event_AOSPopupMenuRequest(CGrayUID uid) //construct packet after a
 
 		if ( pChar->m_pNPC )
 		{
+			WORD wFlagDist = (iDist > UO_MAP_VIEW_SIGHT) ? POPUPFLAG_DISABLED : POPUPFLAG_ENABLED;
+
 			if ( pChar->NPC_IsVendor() )
 			{
 				if ( pChar->m_pNPC->m_Brain == NPCBRAIN_BANKER )
-					m_pPopupPacket->addOption(POPUP_OPEN_BANKBOX, 6105);
+					m_pPopupPacket->addOption(POPUP_SPK_OPEN_BANKBOX, 6105, wFlagDist);
 
-				m_pPopupPacket->addOption(POPUP_BUY, 6103);
-				m_pPopupPacket->addOption(POPUP_SELL, 6104);
+				m_pPopupPacket->addOption(POPUP_SPK_BUY, 6103, wFlagDist);
+				m_pPopupPacket->addOption(POPUP_SPK_SELL, 6104, wFlagDist);
 
+				SKILL_TYPE skillCheck;
+				WORD wFlagSkill = POPUPFLAG_ENABLED;
 				for ( WORD i = 0; i < g_Cfg.m_iMaxSkill; ++i )
 				{
 					if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(i) )
 						continue;
 
-					SKILL_TYPE skillCheck = static_cast<SKILL_TYPE>(i);
+					skillCheck = static_cast<SKILL_TYPE>(i);
 					if ( pChar->Skill_GetBase(skillCheck) <= 0 )
 						continue;
 					if ( skillCheck == SKILL_SPELLWEAVING )		// skip this skill, because on OSI it can be trained only on quests so they didn't included the cliloc to use on NPCs
 						continue;
 
-					WORD wFlag = (pChar->NPC_GetTrainValue(m_pChar, skillCheck) <= 0) ? POPUPFLAG_DISABLED : 0;
-					m_pPopupPacket->addOption(POPUP_TRAIN_SKILL + i, 6000 + i, wFlag);
+					if ( wFlagDist != POPUPFLAG_DISABLED )
+						wFlagSkill = (pChar->NPC_GetTrainValue(m_pChar, skillCheck) <= 0) ? POPUPFLAG_DISABLED : POPUPFLAG_ENABLED;
+
+					m_pPopupPacket->addOption(POPUP_SPK_TRAIN_SKILL + i, 6000 + i, wFlagDist|wFlagSkill);
 				}
 
 				if ( pChar->m_pNPC->m_Brain == NPCBRAIN_ANIMAL_TRAINER )
 				{
-					m_pPopupPacket->addOption(POPUP_STABLE_PET, 6126);
-					m_pPopupPacket->addOption(POPUP_CLAIM_PETS, 6127);
+					m_pPopupPacket->addOption(POPUP_SPK_STABLE_PET, 6126, wFlagDist);
+					m_pPopupPacket->addOption(POPUP_SPK_CLAIM_PETS, 6127, wFlagDist);
 				}
 			}
 			else
 			{
-				WORD wFlag = pChar->IsStatFlag(STATF_DEAD) ? POPUPFLAG_DISABLED : 0;
 				if ( pChar->NPC_IsOwnedBy(m_pChar) )
 				{
+					WORD wFlagDead = pChar->IsStatFlag(STATF_DEAD) ? POPUPFLAG_DISABLED : POPUPFLAG_ENABLED;
 					CREID_TYPE id = pChar->GetID();
 					bool fBackpack = ((id == CREID_HORSE_PACK) || (id == CREID_LLAMA_PACK) || (id == CREID_GIANT_BEETLE));
 
-					m_pPopupPacket->addOption(POPUP_PETCMD_KILL, 6111, wFlag);
-					m_pPopupPacket->addOption(POPUP_PETCMD_FOLLOW, 6108, POPUPFLAG_COLOR);
-					m_pPopupPacket->addOption(POPUP_PETCMD_GUARD, 6107, wFlag);
+					m_pPopupPacket->addOption(POPUP_SPK_KILL, 6111, wFlagDist|wFlagDead);
+					m_pPopupPacket->addOption(POPUP_SPK_FOLLOW, 6108, wFlagDist);
+					m_pPopupPacket->addOption(POPUP_SPK_GUARD, 6107, wFlagDist|wFlagDead);
 
 					if ( fBackpack )
-						m_pPopupPacket->addOption(POPUP_PETCMD_DROP, 6109, wFlag);
+						m_pPopupPacket->addOption(POPUP_SPK_DROP, 6109, wFlagDist|wFlagDead);
 
-					m_pPopupPacket->addOption(POPUP_PETCMD_STOP, 6112);
-					m_pPopupPacket->addOption(POPUP_PETCMD_STAY, 6114);
+					m_pPopupPacket->addOption(POPUP_SPK_STOP, 6112, wFlagDist);
+					m_pPopupPacket->addOption(POPUP_SPK_STAY, 6114, wFlagDist);
 
 					if ( m_NetState->isClientVersion(MINCLIVER_NEWDAMAGE) )
-						m_pPopupPacket->addOption(POPUP_PETCMD_RENAME, 1115557);
+						m_pPopupPacket->addOption(POPUP_RENAME, 1115557);
 
 					if ( !pChar->IsStatFlag(STATF_Conjured) )
 					{
-						m_pPopupPacket->addOption(POPUP_PETCMD_FRIEND_ADD, 6110, wFlag);
-						m_pPopupPacket->addOption(POPUP_PETCMD_FRIEND_REMOVE, 6099, wFlag);
-						m_pPopupPacket->addOption(POPUP_PETCMD_TRANSFER, 6113);
+						m_pPopupPacket->addOption(POPUP_SPK_FRIEND_ADD, 6110, wFlagDist|wFlagDead);
+						m_pPopupPacket->addOption(POPUP_SPK_FRIEND_REMOVE, 6099, wFlagDist|wFlagDead);
+						m_pPopupPacket->addOption(POPUP_SPK_TRANSFER, 6113, wFlagDist);
 					}
-					m_pPopupPacket->addOption(POPUP_PETCMD_RELEASE, 6118);
+					m_pPopupPacket->addOption(POPUP_SPK_RELEASE, 6118, wFlagDist);
 
 					if ( fBackpack )
-						m_pPopupPacket->addOption(POPUP_OPEN_BACKPACK, 6145, wFlag);
+						m_pPopupPacket->addOption(POPUP_OPEN_BACKPACK, 6145, wFlagDist|wFlagDead);
 				}
 				else if ( pChar->Memory_FindObjTypes(m_pChar, MEMORY_FRIEND) )
 				{
-					m_pPopupPacket->addOption(POPUP_PETCMD_FOLLOW, 6108, wFlag);
-					m_pPopupPacket->addOption(POPUP_PETCMD_STOP, 6112, wFlag);
-					m_pPopupPacket->addOption(POPUP_PETCMD_STAY, 6114, wFlag);
+					m_pPopupPacket->addOption(POPUP_SPK_FOLLOW, 6108, wFlagDist);
+					m_pPopupPacket->addOption(POPUP_SPK_STOP, 6112, wFlagDist);
+					m_pPopupPacket->addOption(POPUP_SPK_STAY, 6114, wFlagDist);
 				}
 				else if ( !pChar->IsStatFlag(STATF_Pet) && (pChar->Skill_GetBase(SKILL_TAMING) > 0) )
-					m_pPopupPacket->addOption(POPUP_TAME, 6130);
+				{
+					wFlagDist = (iDist > g_Cfg.GetSkillDef(SKILL_TAMING)->m_Range) ? POPUPFLAG_DISABLED : POPUPFLAG_ENABLED;
+					m_pPopupPacket->addOption(POPUP_TAME, 6130, wFlagDist);
+				}
 			}
 		}
 		else if ( pChar->m_pPlayer && (pChar == m_pChar) )
@@ -2217,8 +2228,12 @@ void CClient::Event_AOSPopupMenuRequest(CGrayUID uid) //construct packet after a
 				else if ( fPartyMaster && (pChar->m_pParty == m_pChar->m_pParty) )
 					m_pPopupPacket->addOption(POPUP_PARTY_REMOVE, 198);
 			}
-			if ( m_NetState->isClientVersion(MINCLIVER_TOL) && (m_pChar->GetDist(pChar) <= 2) )
-				m_pPopupPacket->addOption(POPUP_TRADE_OPEN, 1077728);
+
+			if ( m_NetState->isClientVersion(MINCLIVER_TOL) )
+			{
+				WORD wFlagDist = (iDist > UO_MAP_DIST_INTERACT) ? POPUPFLAG_DISABLED : POPUPFLAG_ENABLED;
+				m_pPopupPacket->addOption(POPUP_TRADE_OPEN, 1077728, wFlagDist);
+			}
 		}
 
 		if ( IsTrigUsed(TRIGGER_CONTEXTMENUREQUEST) && (Args.m_iN1 != 1) )
@@ -2246,8 +2261,8 @@ void CClient::Event_AOSPopupMenuSelect(CGrayUID uid, WORD wIndex)	//do something
 	if ( !m_pChar || !wIndex )
 		return;
 
-	CObjBase *pObj = uid.ObjFind();
-	if ( !IsSetOF(OF_NoContextMenuLOS) && !m_pChar->CanSeeLOS(pObj) )
+	int iDist = m_pChar->GetDist(uid.ObjFind());
+	if ( iDist > m_pChar->GetSight() )
 		return;
 
 	CScriptTriggerArgs Args;
@@ -2275,17 +2290,20 @@ void CClient::Event_AOSPopupMenuSelect(CGrayUID uid, WORD wIndex)	//do something
 
 	if ( pChar->m_pNPC )
 	{
+		int iMaxDist = m_pChar->GetSight();
+		if ( wIndex == POPUP_TRADE_OPEN )
+			iMaxDist = UO_MAP_DIST_INTERACT;
+		else if ( ((wIndex >= POPUP_SPK_OPEN_BANKBOX) && (wIndex <= POPUP_SPK_CLAIM_PETS)) || ((wIndex >= POPUP_SPK_TRAIN_SKILL) && (wIndex < POPUP_SPK_TRAIN_SKILL + g_Cfg.m_iMaxSkill)) )
+			iMaxDist = UO_MAP_VIEW_SIGHT;		// NPCs spoken commands can be used only under NPC hear range
+
+		if ( iDist > iMaxDist )
+		{
+			SysMessageDefault(DEFMSG_NPC_VENDOR_TOOFAR);
+			return;
+		}
+
 		switch ( wIndex )
 		{
-			case POPUP_OPEN_BANKBOX:
-				pChar->NPC_OnHear("bank", m_pChar);
-				return;
-			case POPUP_BUY:
-				pChar->NPC_OnHear("buy", m_pChar);
-				return;
-			case POPUP_SELL:
-				pChar->NPC_OnHear("sell", m_pChar);
-				return;
 			case POPUP_TAME:
 				if ( m_pChar->Skill_CanUse(SKILL_TAMING) && !m_pChar->Skill_Wait(SKILL_TAMING) )
 				{
@@ -2293,54 +2311,63 @@ void CClient::Event_AOSPopupMenuSelect(CGrayUID uid, WORD wIndex)	//do something
 					m_pChar->Skill_Start(SKILL_TAMING);
 				}
 				return;
-			case POPUP_PETCMD_KILL:
-				pChar->NPC_OnHearPetCmd("kill", m_pChar);
-				return;
-			case POPUP_PETCMD_FOLLOW:
-				pChar->NPC_OnHearPetCmd("follow", m_pChar);
-				return;
-			case POPUP_PETCMD_GUARD:
-				pChar->NPC_OnHearPetCmd("guard", m_pChar);
-				return;
-			case POPUP_PETCMD_DROP:
-				pChar->NPC_OnHearPetCmd("drop", m_pChar);
-				return;
-			case POPUP_PETCMD_STOP:
-				pChar->NPC_OnHearPetCmd("stop", m_pChar);
-				return;
-			case POPUP_PETCMD_STAY:
-				pChar->NPC_OnHearPetCmd("stay", m_pChar);
-				return;
-			case POPUP_PETCMD_RENAME:
+			case POPUP_RENAME:
 				if ( pChar->NPC_IsOwnedBy(m_pChar) )
 					addPromptConsole(CLIMODE_PROMPT_NAME_PET, g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_RENAME_PROMPT), pChar->GetUID());
 				return;
-			case POPUP_PETCMD_FRIEND_ADD:
+			case POPUP_SPK_OPEN_BANKBOX:
+				pChar->NPC_OnHear("bank", m_pChar);
+				return;
+			case POPUP_SPK_BUY:
+				pChar->NPC_OnHear("buy", m_pChar);
+				return;
+			case POPUP_SPK_SELL:
+				pChar->NPC_OnHear("sell", m_pChar);
+				return;
+			case POPUP_SPK_KILL:
+				pChar->NPC_OnHearPetCmd("kill", m_pChar);
+				return;
+			case POPUP_SPK_FOLLOW:
+				pChar->NPC_OnHearPetCmd("follow", m_pChar);
+				return;
+			case POPUP_SPK_GUARD:
+				pChar->NPC_OnHearPetCmd("guard", m_pChar);
+				return;
+			case POPUP_SPK_DROP:
+				pChar->NPC_OnHearPetCmd("drop", m_pChar);
+				return;
+			case POPUP_SPK_STOP:
+				pChar->NPC_OnHearPetCmd("stop", m_pChar);
+				return;
+			case POPUP_SPK_STAY:
+				pChar->NPC_OnHearPetCmd("stay", m_pChar);
+				return;
+			case POPUP_SPK_FRIEND_ADD:
 				pChar->NPC_OnHearPetCmd("friend", m_pChar);
 				return;
-			case POPUP_PETCMD_FRIEND_REMOVE:
+			case POPUP_SPK_FRIEND_REMOVE:
 				pChar->NPC_OnHearPetCmd("unfriend", m_pChar);
 				return;
-			case POPUP_PETCMD_TRANSFER:
+			case POPUP_SPK_TRANSFER:
 				pChar->NPC_OnHearPetCmd("transfer", m_pChar);
 				return;
-			case POPUP_PETCMD_RELEASE:
+			case POPUP_SPK_RELEASE:
 				pChar->NPC_OnHearPetCmd("release", m_pChar);
 				return;
-			case POPUP_STABLE_PET:
+			case POPUP_SPK_STABLE_PET:
 				pChar->NPC_OnHear("stable", m_pChar);
 				return;
-			case POPUP_CLAIM_PETS:
+			case POPUP_SPK_CLAIM_PETS:
 				pChar->NPC_OnHear("retrieve", m_pChar);
 				return;
 		}
 
-		if ( (wIndex >= POPUP_TRAIN_SKILL) && (wIndex < POPUP_TRAIN_SKILL + g_Cfg.m_iMaxSkill) )
+		if ( (wIndex >= POPUP_SPK_TRAIN_SKILL) && (wIndex < POPUP_SPK_TRAIN_SKILL + g_Cfg.m_iMaxSkill) )
 		{
-			if ( wIndex != POPUP_TRAIN_SKILL + SKILL_SPELLWEAVING )
+			if ( wIndex != POPUP_SPK_TRAIN_SKILL + SKILL_SPELLWEAVING )
 			{
 				TCHAR *pszMsg = Str_GetTemp();
-				sprintf(pszMsg, "train %s", g_Cfg.GetSkillKey(static_cast<SKILL_TYPE>(wIndex - POPUP_TRAIN_SKILL)));
+				sprintf(pszMsg, "train %s", g_Cfg.GetSkillKey(static_cast<SKILL_TYPE>(wIndex - POPUP_SPK_TRAIN_SKILL)));
 				pChar->NPC_OnHear(pszMsg, m_pChar);
 				return;
 			}
