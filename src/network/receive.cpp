@@ -1029,7 +1029,7 @@ bool PacketVendorBuyReq::onReceive(NetState* net)
 		return true;
 	}
 
-	if (!buyer->CanTouch(pVendor))
+	if (buyer->GetDist(pVendor) > UO_MAP_VIEW_SIGHT)
 	{
 		client->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_TOOFAR));
 		return true;
@@ -2103,7 +2103,7 @@ bool PacketVendorSellReq::onReceive(NetState* net)
 		return true;
 	}
 	
-	if (!seller->CanTouch(pVendor))
+	if (seller->GetDist(pVendor) > UO_MAP_VIEW_SIGHT)
 	{
 		client->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_TOOFAR));
 		return true;
