@@ -1223,7 +1223,7 @@ Fixed: PRIVSET / ACCOUNT.PLEVEL functions not clearing previous plevel flags whe
 Fixed: Deeds showing target for non-house multis on wrong Y position.
 Added: New function CODEXOFWISDOM to open client Codex of Wisdom menu at given topic ID.
 	-Syntax: CODEXOFWISDOM TopicID (1~176), [ForceOpen (0/1)]
-[sphereCrypt.ini]: Added crypt key for classic client 7.0.69 ~ 7.0.70 and enhanced client 4.0.69 ~ 4.0.70
+[sphereCrypt.ini]: Added crypt key for classic clients 7.0.69 ~ 7.0.70 and enhanced clients 4.0.69 ~ 4.0.70
 
 09-10-2018, Coruja
 [items/sphere_item_char_icons.scp]: Added char icon 'i_pet_skeletal_cat' and 'i_pet_khal_ankur'
@@ -1588,3 +1588,16 @@ Fixed: Linux build crashing when delete online accounts.
 Fixed: Accounts not clearing 'password tries' counter after enter correct password when ClientLoginMaxTries setting is enabled on sphere.ini.
 Added: Missing context menu option "Rename" when player click on a owned pet.
 [sphere_msgs.scp]: Added new messages 'npc_pet_rename_prompt', 'npc_pet_rename_success1', 'npc_pet_rename_success2'
+
+19-09-2019, Coruja
+Fixed: Pets not showing 'guarding' tooltip correctly.
+Changed: Animal Taming skill range is now softcoded.
+[sphere_skills.scp]: Added RANGE value on Animal Taming skill
+
+20-09-2019, Coruja
+Changed: Vendor BUY/SELL commands will not check LOS anymore.
+Changed: Misc improvements on Context Menu engine.
+	-To improve usability, it will not check LOS anymore
+	-Entries now will gray out automatically based on distance, flags, etc
+[sphere.ini]: Removed OF_NoContextMenuLOS option flag
+[sphereCrypt.ini]: Added crypt key for classic clients 7.0.78 ~ 7.0.79 and enhanced clients 4.0.78 ~ 4.0.79

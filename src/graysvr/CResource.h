@@ -23,7 +23,6 @@ enum OF_TYPE	// option flags
 	OF_FileCommands				= 0x00080,
 	OF_NoItemNaming				= 0x00100,
 	OF_NoHouseMuteSpeech		= 0x00200,
-	OF_NoContextMenuLOS			= 0x00400,
 	OF_MapBoundarySailing		= 0x00800,
 	OF_Flood_Protection			= 0x01000,
 	OF_Buffs					= 0x02000,

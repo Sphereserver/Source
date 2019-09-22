@@ -786,40 +786,41 @@ public:
 	void addAOSTooltip(const CObjBase *pObj, bool fRequested = false, bool fShop = false);
 
 private:
+	#define POPUPFLAG_ENABLED			0x00
 	#define POPUPFLAG_DISABLED			0x01
 	#define POPUPFLAG_ARROW				0x02	// classic clients only
 	#define POPUPFLAG_HIGHLIGHT			0x04	// enhanced clients only
 	#define POPUPFLAG_COLOR				0x20	// classic clients only (< 6.0.0.0)
 
-	#define POPUP_OPEN_PAPERDOLL		11
-	#define POPUP_OPEN_BACKPACK			12
-	#define POPUP_PARTY_ADD				13
-	#define POPUP_PARTY_REMOVE			14
-	#define POPUP_PARTY_LEAVE			15
-	#define POPUP_PARTY_LOOT			16
-	#define POPUP_TRADE_ALLOW			17
-	#define POPUP_TRADE_REFUSE			18
-	#define POPUP_TRADE_OPEN			19
-	#define POPUP_GLOBALCHAT_ALLOW		20
-	#define POPUP_GLOBALCHAT_REFUSE		21
-	#define POPUP_OPEN_BANKBOX			22
-	#define POPUP_BUY					31
-	#define POPUP_SELL					32
-	#define POPUP_TAME					40
-	#define POPUP_PETCMD_KILL			41
-	#define POPUP_PETCMD_FOLLOW			42
-	#define POPUP_PETCMD_GUARD			43
-	#define POPUP_PETCMD_DROP			44
-	#define POPUP_PETCMD_STOP			45
-	#define POPUP_PETCMD_STAY			46
-	#define POPUP_PETCMD_RENAME			47
-	#define POPUP_PETCMD_FRIEND_ADD		48
-	#define POPUP_PETCMD_FRIEND_REMOVE	49
-	#define POPUP_PETCMD_TRANSFER		50
-	#define POPUP_PETCMD_RELEASE		51
-	#define POPUP_STABLE_PET			52
-	#define POPUP_CLAIM_PETS			53
-	#define POPUP_TRAIN_SKILL			10000
+	#define POPUP_OPEN_PAPERDOLL		10
+	#define POPUP_OPEN_BACKPACK			11
+	#define POPUP_PARTY_ADD				12
+	#define POPUP_PARTY_REMOVE			13
+	#define POPUP_PARTY_LEAVE			14
+	#define POPUP_PARTY_LOOT			15
+	#define POPUP_TRADE_ALLOW			16
+	#define POPUP_TRADE_REFUSE			17
+	#define POPUP_TRADE_OPEN			18
+	#define POPUP_GLOBALCHAT_ALLOW		19
+	#define POPUP_GLOBALCHAT_REFUSE		20
+	#define POPUP_TAME					21
+	#define POPUP_RENAME				22
+	#define POPUP_SPK_OPEN_BANKBOX		30
+	#define POPUP_SPK_BUY				31
+	#define POPUP_SPK_SELL				32
+	#define POPUP_SPK_KILL				33
+	#define POPUP_SPK_FOLLOW			34
+	#define POPUP_SPK_GUARD				35
+	#define POPUP_SPK_DROP				36
+	#define POPUP_SPK_STOP				37
+	#define POPUP_SPK_STAY				38
+	#define POPUP_SPK_FRIEND_ADD		39
+	#define POPUP_SPK_FRIEND_REMOVE		40
+	#define POPUP_SPK_TRANSFER			41
+	#define POPUP_SPK_RELEASE			42
+	#define POPUP_SPK_STABLE_PET		43
+	#define POPUP_SPK_CLAIM_PETS		44
+	#define POPUP_SPK_TRAIN_SKILL		10000
 
 	PacketDisplayPopup *m_pPopupPacket;
 

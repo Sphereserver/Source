@@ -1220,7 +1220,7 @@ int CChar::Skill_Stealing(SKTRIG_TYPE stage)
 	bool fGround = false;
 	if ( pCharMark )
 	{
-		if ( GetTopDist3D(pCharMark) > 2 )
+		if ( GetTopDist3D(pCharMark) > UO_MAP_DIST_INTERACT )
 		{
 			SysMessageDefault(DEFMSG_STEALING_MARK);
 			return -SKTRIG_QTY;

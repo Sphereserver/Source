@@ -2024,7 +2024,7 @@ int CChar::Skill_Enticement(SKTRIG_TYPE stage)
 		{
 			if ( pChar->m_pPlayer )
 			{
-				SysMessagef("%s", g_Cfg.GetDefaultMsg(DEFMSG_ENTICEMENT_PLAYER));
+				SysMessageDefault(DEFMSG_ENTICEMENT_PLAYER);
 				return -SKTRIG_ABORT;
 			}
 			else if ( pChar->IsStatFlag(STATF_War) )
@@ -2252,7 +2252,6 @@ int CChar::Skill_Taming(SKTRIG_TYPE stage)
 	ADDTOCALLSTACK("CChar::Skill_Taming");
 	// m_Act_Targ = creature to tame.
 	// Check the min required skill for this creature.
-	// Related to INT ?
 
 	CChar *pChar = m_Act_Targ.CharFind();
 	if ( !pChar )
@@ -2268,7 +2267,12 @@ int CChar::Skill_Taming(SKTRIG_TYPE stage)
 		SysMessageDefault(DEFMSG_TAMING_CANT);
 		return -SKTRIG_QTY;
 	}
-	if ( GetTopDist3D(pChar) > 10 )
+
+	CSkillDef *pSkillDef = g_Cfg.GetSkillDef(SKILL_TAMING);
+	if ( pSkillDef->m_Range <= 0 )
+		pSkillDef->m_Range = 7;
+
+	if ( GetTopDist3D(pChar) > pSkillDef->m_Range )
 	{
 		SysMessageDefault(DEFMSG_TAMING_REACH);
 		return -SKTRIG_QTY;
@@ -2676,7 +2680,7 @@ int CChar::Skill_Healing(SKTRIG_TYPE stage)
 		return -SKTRIG_QTY;
 	}
 
-	if ( GetDist(pObj) > 2 )
+	if ( GetDist(pObj) > UO_MAP_DIST_INTERACT )
 	{
 		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_HEALING_TOOFAR), pObj->GetName());
 		if ( pChar != this )
@@ -3765,7 +3769,8 @@ bool CChar::Skill_Start(SKILL_TYPE skill)
 	if ( !Skill_CanUse(skill) )
 		return false;
 
-	if ( Skill_GetActive() != SKILL_NONE )
+	SKILL_TYPE skillPrev = Skill_GetActive();
+	if ( skillPrev != SKILL_NONE )
 		Skill_Fail(true);		// fail previous skill unfinished. (with NO skill gain!)
 
 	if ( skill != SKILL_NONE )
@@ -3849,6 +3854,11 @@ bool CChar::Skill_Start(SKILL_TYPE skill)
 				if ( iWaitTime != 0 )
 					SetTimeout(iWaitTime);		// How long before complete skill.
 			}
+		}
+		else if ( m_pNPC )
+		{
+			if ( ((skillPrev != NPCACT_GUARD_TARG) && (Skill_GetActive() == NPCACT_GUARD_TARG)) || ((skillPrev == NPCACT_GUARD_TARG) && (Skill_GetActive() != NPCACT_GUARD_TARG)) )
+				UpdatePropertyFlag();
 		}
 
 		if ( IsTimerExpired() )
