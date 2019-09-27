@@ -1600,3 +1600,14 @@ Changed: Misc improvements on Context Menu engine.
 	-Entries now will gray out automatically based on distance, flags, etc
 [sphere.ini]: Removed OF_NoContextMenuLOS option flag
 [sphereCrypt.ini]: Added crypt key for classic clients 7.0.78 ~ 7.0.79 and enhanced clients 4.0.78 ~ 4.0.79
+
+26-09-2019, Coruja
+[items/multis/multis_ships.scp]: Removed duplicated MULTIDEFs
+[items/sphere_item_deco_furniture.scp]: Added missing mailboxes and kitchen set items
+[items/sphere_item_holiday_halloween.scp]: Added publish 106 items
+[items/sphere_item_quests.scp]: Added Forgotten Treasures, Forsaken Foes and The Fellowship items
+[items/sphere_item_resources.scp]: Added publish 106 items
+[systems/sphere_system_aquarium.scp]: Added publish 106 items
+
+27-09-2019, Coruja
+[sphere.ini]: Removed LocalIPAdmin setting for security purposes

@@ -45,7 +45,6 @@ CResource::CResource()
 	m_iClientLingerTime = 10 * 60 * TICK_PER_SEC;
 	m_iMinCharDeleteTime = 7 * 24 * 60 * 60 * TICK_PER_SEC;
 	m_iMaxCharsPerAccount = 5;
-	m_fLocalIPAdmin = true;
 	m_fMd5Passwords = false;
 
 	// Magic
@@ -458,7 +457,6 @@ enum RC_TYPE
 	RC_LEVELSYSTEM,					// m_bLevelSystem
 	RC_LIGHTDAY,					// m_iLightDay
 	RC_LIGHTNIGHT,					// m_iLightNight
-	RC_LOCALIPADMIN,				// m_fLocalIPAdmin
 	RC_LOG,
 	RC_LOGMASK,
 	RC_LOOTINGISACRIME,				// m_fLootingIsACrime
@@ -683,7 +681,6 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY + 1] =
 	{"LEVELSYSTEM",					{ELEM_BOOL,		OFFSETOF(CResource, m_bLevelSystem),					0}},
 	{"LIGHTDAY",					{ELEM_INT,		OFFSETOF(CResource, m_iLightDay),						0}},
 	{"LIGHTNIGHT",					{ELEM_INT,		OFFSETOF(CResource, m_iLightNight),						0}},
-	{"LOCALIPADMIN",				{ELEM_BOOL,		OFFSETOF(CResource, m_fLocalIPAdmin),					0}},
 	{"LOG",							{ELEM_VOID,		0,														0}},
 	{"LOGMASK",						{ELEM_VOID,		0,														0}},
 	{"LOOTINGISACRIME",				{ELEM_BOOL,		OFFSETOF(CResource, m_fLootingIsACrime),				0}},

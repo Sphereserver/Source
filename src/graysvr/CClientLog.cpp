@@ -464,27 +464,6 @@ bool CClient::OnRxPing(const BYTE *pData, size_t iLen)
 			SetConnectType(CONNECT_TELNET);
 			m_zLogin[0] = 0;
 			SysMessagef("%s %s remote admin console\n", g_Cfg.GetDefaultMsg(DEFMSG_CONSOLE_WELCOME_1), g_Serv.GetName());
-
-			if ( g_Cfg.m_fLocalIPAdmin && GetPeer().IsLocalAddr() )		// don't bother logging in if local
-			{
-				CAccount *pAccount = g_Accounts.Account_Find("Administrator");
-				if ( !pAccount )
-					pAccount = g_Accounts.Account_Find("RemoteAdmin");
-
-				if ( pAccount )
-				{
-					CGString sMsg;
-					BYTE bErr = LogIn(pAccount, sMsg);
-					if ( bErr != PacketLoginError::Success )
-					{
-						if ( bErr != PacketLoginError::Invalid )
-							SysMessage(sMsg);
-						return false;
-					}
-					return OnRxConsoleLoginComplete();
-				}
-			}
-
 			SysMessage("Login:\n");
 			return true;
 		}
