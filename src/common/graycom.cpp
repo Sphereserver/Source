@@ -54,8 +54,8 @@
 	{
 		char *pszEnd = str;
 		while ( *pszEnd )
-			pszEnd++;
-		pszEnd--;
+			++pszEnd;
+		--pszEnd;
 
 		char pszTemp;
 		while ( str < pszEnd )
@@ -106,8 +106,7 @@ static int CvtSystemToUNICODE(WCHAR &wChar, LPCTSTR pszInp, int iSizeInBytes)
 		return 0;
 
 	WCHAR wCharTmp = ch & ((1 << iStartBits) - 1);
-	int iInp = 1;
-	for ( ; iInp < iBytes; iInp++ )
+	for ( int iInp = 1; iInp < iBytes; ++iInp )
 	{
 		ch = pszInp[iInp];
 		if ( (ch & 0xC0) != 0x80 )	// bad coding
@@ -133,6 +132,9 @@ static int CvtUNICODEToSystem(TCHAR *pszOut, int iSizeOutBytes, WCHAR wChar)
 
 	ASSERT(wChar >= 0x80);	// needs special UTF8 encoding
 
+	// By default WCHAR have 3 bytes (1 << 16) on Windows and 4 bytes (1 << 21) on Linux.
+	// But Sphere linux build also have WCHAR manually set to 3 bytes (unsigned short) to
+	// match Windows build, so higher values can be safely ignored here.
 	int iBytes;
 	int iStartBits;
 	if ( wChar < (1 << 11) )
@@ -140,28 +142,23 @@ static int CvtUNICODEToSystem(TCHAR *pszOut, int iSizeOutBytes, WCHAR wChar)
 		iBytes = 2;
 		iStartBits = 5;
 	}
-	// By default WCHAR have 2 bytes (1 << 11) on Windows and 4 bytes (1 << 21) on Linux.
-	// But Sphere linux build also have WCHAR manually set to 2 bytes (unsigned short) to
-	// match Windows build, so these 2 checks below are never reached and can be disabled
-	// to avoid some static analyzer warnings like "unreachable code", etc
-	/*else if ( wChar < (1 << 16) )
+	else	//else if ( wChar < (1 << 16) )
 	{
 		iBytes = 3;
 		iStartBits = 4;
 	}
-	else if ( wChar < (1 << 21) )
+	/*else if ( wChar < (1 << 21) )
 	{
 		iBytes = 4;
 		iStartBits = 3;
-	}*/
+	}
 	else
-		return -1;	// not valid UNICODE char
+		return -1;*/	// not valid UNICODE char
 
 	if ( iBytes > iSizeOutBytes )	// not big enough to hold it
 		return 0;
 
-	int iOut = iBytes - 1;
-	for ( ; iOut > 0; iOut-- )
+	for ( int iOut = iBytes - 1; iOut > 0; --iOut )
 	{
 		pszOut[iOut] = 0x80 | (wChar & ((1 << 6) - 1));
 		wChar >>= 6;
@@ -196,7 +193,7 @@ int CvtSystemToNUNICODE(NCHAR *pszOut, int iSizeOutChars, LPCTSTR pszInp, int iS
 		return 0;
 	}
 
-	iSizeOutChars--;
+	--iSizeOutChars;
 	int iOut = 0;
 
 #ifdef _WIN32
@@ -223,7 +220,7 @@ int CvtSystemToNUNICODE(NCHAR *pszOut, int iSizeOutChars, LPCTSTR pszInp, int iS
 		}
 
 		// Flip all the words to network order
-		for ( ; iOut < iOutTmp; iOut++ )
+		for ( ; iOut < iOutTmp; ++iOut )
 			pszOut[iOut] = *(reinterpret_cast<WCHAR *>(&pszOut[iOut]));
 	}
 	else
@@ -251,9 +248,9 @@ int CvtSystemToNUNICODE(NCHAR *pszOut, int iSizeOutChars, LPCTSTR pszInp, int iS
 			else
 			{
 				pszOut[iOut] = ch;
-				iInp++;
+				++iInp;
 			}
-			iOut++;
+			++iOut;
 		}
 	}
 
@@ -279,7 +276,7 @@ int CvtNUNICODEToSystem(TCHAR *pszOut, int iSizeOutBytes, const NCHAR *pszInp, i
 		return 0;
 	}
 
-	iSizeOutBytes--;
+	--iSizeOutBytes;
 	int iOut = 0;
 	int iInp = 0;
 
@@ -289,7 +286,7 @@ int CvtNUNICODEToSystem(TCHAR *pszOut, int iSizeOutBytes, const NCHAR *pszInp, i
 	{
 		// Flip all from network order
 		WCHAR szBuffer[1024 * 8];
-		for ( ; iInp < COUNTOF(szBuffer) - 1 && (iInp < iSizeInChars) && pszInp[iInp]; iInp++ )
+		for ( ; iInp < COUNTOF(szBuffer) - 1 && (iInp < iSizeInChars) && pszInp[iInp]; ++iInp )
 			szBuffer[iInp] = pszInp[iInp];
 
 		szBuffer[iInp] = '\0';
@@ -316,7 +313,7 @@ int CvtNUNICODEToSystem(TCHAR *pszOut, int iSizeOutBytes, const NCHAR *pszInp, i
 #endif
 	{
 		// Just assume its really ASCII
-		for ( ; iInp < iSizeInChars; iInp++ )
+		for ( ; iInp < iSizeInChars; ++iInp )
 		{
 			// Flip all from network order
 			WCHAR wChar = pszInp[iInp];
@@ -336,7 +333,7 @@ int CvtNUNICODEToSystem(TCHAR *pszOut, int iSizeOutBytes, const NCHAR *pszInp, i
 			else
 			{
 				pszOut[iOut] = static_cast<TCHAR>(wChar);
-				iOut++;
+				++iOut;
 			}
 		}
 	}
