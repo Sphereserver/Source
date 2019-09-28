@@ -500,14 +500,12 @@ private:
 private:
 	bool r_GetRef(LPCTSTR &pszKey, CScriptObj *&pRef);
 
-	bool OnRxConsoleLoginComplete();
 	bool OnRxConsole(const BYTE *pData, size_t iLen);
 	bool OnRxAxis(const BYTE *pData, size_t iLen);
 	bool OnRxPing(const BYTE *pData, size_t iLen);
 	bool OnRxWebPageRequest(BYTE *pRequest, size_t iLen);
 
 	BYTE LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg);
-	BYTE LogIn(CAccount *pAccount, CGString &sMsg);
 	bool CanInstantLogOut() const;
 	void Announce(bool fArrive) const;
 

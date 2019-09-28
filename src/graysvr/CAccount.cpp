@@ -744,8 +744,7 @@ void CAccount::OnLogout(CClient *pClient, bool fWasChar)
 		m_Total_Connect_Time += m_Last_Connect_Time;
 	}
 
-	if ( m_pClient == pClient )
-		m_pClient = NULL;
+	m_pClient = NULL;
 }
 
 bool CAccount::Kick(CTextConsole *pSrc, bool fBlock)

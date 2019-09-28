@@ -1610,4 +1610,5 @@ Changed: Misc improvements on Context Menu engine.
 [systems/sphere_system_aquarium.scp]: Added publish 106 items
 
 27-09-2019, Coruja
+Changed: Misc improvements on account connection process.
 [sphere.ini]: Removed LocalIPAdmin setting for security purposes
