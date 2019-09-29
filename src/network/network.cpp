@@ -137,9 +137,7 @@ void NetState::clear(void)
 		m_socket.ClearAsync();
 #endif
 
-
 	m_socket.Close();
-	m_client = NULL;
 
 	// empty queues
 	clearQueues();

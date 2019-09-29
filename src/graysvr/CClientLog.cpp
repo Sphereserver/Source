@@ -252,29 +252,11 @@ BYTE CClient::Login_ServerList(LPCTSTR pszAccount, LPCTSTR pszPassword)
 
 ///////////////////////////////////////////////////////////
 
-bool CClient::OnRxConsoleLoginComplete()
-{
-	ADDTOCALLSTACK("CClient::OnRxConsoleLoginComplete");
-	if ( GetConnectType() != CONNECT_TELNET )
-		return false;
-	if ( !GetPeer().IsValidAddr() )
-		return false;
-
-	if ( GetPrivLevel() < PLEVEL_Admin )
-	{
-		SysMessagef("%s\n", g_Cfg.GetDefaultMsg(DEFMSG_CONSOLE_NO_ADMIN));
-		return false;
-	}
-
-	SysMessagef("%s '%s' ('%s')\n", g_Cfg.GetDefaultMsg(DEFMSG_CONSOLE_WELCOME_2), GetName(), GetPeerStr());
-	return true;
-}
-
 bool CClient::OnRxConsole(const BYTE *pData, size_t iLen)
 {
 	ADDTOCALLSTACK("CClient::OnRxConsole");
 	// A special console version of the client (not game protocol)
-	if ( !iLen || (GetConnectType() != CONNECT_TELNET) )
+	if ( !iLen || (GetConnectType() != CONNECT_TELNET) || !GetPeer().IsValidAddr() )
 		return false;
 
 	if ( IsSetEF(EF_AllowTelnetPacketFilter) )
@@ -296,11 +278,11 @@ bool CClient::OnRxConsole(const BYTE *pData, size_t iLen)
 				if ( !m_zLogin[0] )
 				{
 					if ( m_Targ_Text.GetLength() > sizeof(m_zLogin) - 1 )
-						SysMessage("Login:\n");
+						SysMessage("\nLogin: ");
 					else
 					{
 						strncpy(m_zLogin, m_Targ_Text, sizeof(m_zLogin) - 1);
-						SysMessage("Password:\n");
+						SysMessage("\nPassword: ");
 					}
 					m_Targ_Text.Empty();
 				}
@@ -309,16 +291,18 @@ bool CClient::OnRxConsole(const BYTE *pData, size_t iLen)
 					CAccount *pAccount = g_Accounts.Account_Find(m_zLogin);
 					if ( !pAccount || (pAccount->GetPrivLevel() < PLEVEL_Admin) )
 					{
-						SysMessagef("%s\n", g_Cfg.GetDefaultMsg(DEFMSG_CONSOLE_NOT_PRIV));
+						SysMessagef("\n%s", g_Cfg.GetDefaultMsg(DEFMSG_CONSOLE_NOT_PRIV));
 						m_Targ_Text.Empty();
 						return false;
 					}
+					SysMessage("\n");
 
 					CGString sMsg;
 					if ( LogIn(m_zLogin, m_Targ_Text, sMsg) == PacketLoginError::Success )
 					{
+						g_Log.Event(LOGM_ACCOUNTS, "%lx:Account '%s' connected on remote admin console\n", GetSocketID(), GetName());
 						m_Targ_Text.Empty();
-						return OnRxConsoleLoginComplete();
+						return true;
 					}
 					else if ( !sMsg.IsEmpty() )
 					{
@@ -343,7 +327,7 @@ bool CClient::OnRxConsole(const BYTE *pData, size_t iLen)
 bool CClient::OnRxAxis(const BYTE *pData, size_t iLen)
 {
 	ADDTOCALLSTACK("CClient::OnRxAxis");
-	if ( !iLen || (GetConnectType() != CONNECT_AXIS) )
+	if ( !iLen || (GetConnectType() != CONNECT_AXIS) || !GetPeer().IsValidAddr() )
 		return false;
 
 	while ( iLen-- )
@@ -375,59 +359,52 @@ bool CClient::OnRxAxis(const BYTE *pData, size_t iLen)
 					if ( LogIn(m_zLogin, m_Targ_Text, sMsg) == PacketLoginError::Success )
 					{
 						m_Targ_Text.Empty();
-						if ( GetPrivLevel() < PLEVEL_Counsel )
+
+						CScriptTriggerArgs Args;
+						Args.m_VarsLocal.SetStrNew("Account", GetName());
+						Args.m_VarsLocal.SetStrNew("IP", GetPeer().GetAddrStr());
+
+						TRIGRET_TYPE tr = TRIGRET_RET_DEFAULT;
+						r_Call("f_axis_preload", this, &Args, NULL, &tr);
+						if ( tr == TRIGRET_RET_FALSE )
+							return false;
+						else if ( tr == TRIGRET_RET_TRUE )
 						{
-							SysMessagef("\"MSG:%s\"", g_Cfg.GetDefaultMsg(DEFMSG_AXIS_NOT_PRIV));
+							SysMessagef("\"MSG:%s\"", g_Cfg.GetDefaultMsg(DEFMSG_AXIS_DENIED));
 							return false;
 						}
 
-						if ( GetPeer().IsValidAddr() )
+						time_t dateChange;
+						DWORD dwSize;
+						if ( !CFileList::ReadFileInfo("Axis.db", dateChange, dwSize) )
 						{
-							CScriptTriggerArgs Args;
-							Args.m_VarsLocal.SetStrNew("Account", GetName());
-							Args.m_VarsLocal.SetStrNew("IP", GetPeer().GetAddrStr());
-
-							TRIGRET_TYPE tRet = TRIGRET_RET_DEFAULT;
-							r_Call("f_axis_preload", this, &Args, NULL, &tRet);
-							if ( tRet == TRIGRET_RET_FALSE )
-								return false;
-							if ( tRet == TRIGRET_RET_TRUE )
-							{
-								SysMessagef("\"MSG:%s\"", g_Cfg.GetDefaultMsg(DEFMSG_AXIS_DENIED));
-								return false;
-							}
-
-							time_t dateChange;
-							DWORD dwSize;
-							if ( !CFileList::ReadFileInfo("Axis.db", dateChange, dwSize) )
-							{
-								SysMessagef("\"MSG:%s\"", g_Cfg.GetDefaultMsg(DEFMSG_AXIS_INFO_ERROR));
-								return false;
-							}
-
-							CGFile FileRead;
-							if ( !FileRead.Open("Axis.db", OF_READ|OF_BINARY) )
-							{
-								SysMessagef("\"MSG:%s\"", g_Cfg.GetDefaultMsg(DEFMSG_AXIS_FILE_ERROR));
-								return false;
-							}
-
-							TCHAR szTmp[8 * 1024];
-							PacketWeb packet;
-							for (;;)
-							{
-								size_t iLength = FileRead.Read(szTmp, sizeof(szTmp));
-								if ( iLength <= 0 )
-									break;
-								packet.setData((BYTE *)szTmp, iLength);
-								packet.send(this);
-								dwSize -= iLength;
-								if ( dwSize <= 0 )
-									break;
-							}
-							return true;
+							SysMessagef("\"MSG:%s\"", g_Cfg.GetDefaultMsg(DEFMSG_AXIS_INFO_ERROR));
+							return false;
 						}
-						return false;
+
+						CGFile FileRead;
+						if ( !FileRead.Open("Axis.db", OF_READ|OF_BINARY) )
+						{
+							SysMessagef("\"MSG:%s\"", g_Cfg.GetDefaultMsg(DEFMSG_AXIS_FILE_ERROR));
+							return false;
+						}
+
+						TCHAR szTmp[8 * 1024];
+						PacketWeb packet;
+						for (;;)
+						{
+							size_t iLength = FileRead.Read(szTmp, sizeof(szTmp));
+							if ( iLength <= 0 )
+								break;
+							packet.setData((BYTE *)szTmp, iLength);
+							packet.send(this);
+							dwSize -= iLength;
+							if ( dwSize <= 0 )
+								break;
+						}
+
+						g_Log.Event(LOGM_ACCOUNTS, "%lx:Account '%s' connected on Axis remote profile\n", GetSocketID(), GetName());
+						return true;
 					}
 					else if ( !sMsg.IsEmpty() )
 					{
@@ -463,33 +440,12 @@ bool CClient::OnRxPing(const BYTE *pData, size_t iLen)
 
 			SetConnectType(CONNECT_TELNET);
 			m_zLogin[0] = 0;
-			SysMessagef("%s %s remote admin console\n", g_Cfg.GetDefaultMsg(DEFMSG_CONSOLE_WELCOME_1), g_Serv.GetName());
-
-			if ( g_Cfg.m_fLocalIPAdmin && GetPeer().IsLocalAddr() )		// don't bother logging in if local
-			{
-				CAccount *pAccount = g_Accounts.Account_Find("Administrator");
-				if ( !pAccount )
-					pAccount = g_Accounts.Account_Find("RemoteAdmin");
-
-				if ( pAccount )
-				{
-					CGString sMsg;
-					BYTE bErr = LogIn(pAccount, sMsg);
-					if ( bErr != PacketLoginError::Success )
-					{
-						if ( bErr != PacketLoginError::Invalid )
-							SysMessage(sMsg);
-						return false;
-					}
-					return OnRxConsoleLoginComplete();
-				}
-			}
-
-			SysMessage("Login:\n");
+			SysMessagef("\n%s", g_Cfg.GetDefaultMsg(DEFMSG_CONSOLE_WELCOME_2));
+			SysMessage("\nLogin: ");
 			return true;
 		}
 
-		// Axis connection
+		// Axis remote profile
 		case '@':
 		{
 			if ( (iLen > 1) && ((iLen != 2) || (pData[1] != '\n')) && ((iLen != 3) || (pData[1] != '\r') || (pData[2] != '\n')) && ((iLen != 3) || (pData[1] != '\n') || (pData[2] != '\0')) )
@@ -499,7 +455,7 @@ bool CClient::OnRxPing(const BYTE *pData, size_t iLen)
 			m_zLogin[0] = 0;
 
 			time_t dateChange;
-			DWORD dwSize = 0;
+			DWORD dwSize;
 			CFileList::ReadFileInfo("Axis.db", dateChange, dwSize);
 			SysMessagef("%lu", dwSize);
 			return true;

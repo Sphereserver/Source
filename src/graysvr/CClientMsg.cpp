@@ -3474,6 +3474,7 @@ BYTE CClient::LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg)
 		return PacketLoginError::BadPassword;
 	}
 
+	// Check login
 	bool fAutoCreate = ((g_Serv.m_eAccApp == ACCAPP_Free) || (g_Serv.m_eAccApp == ACCAPP_GuestAuto) || (g_Serv.m_eAccApp == ACCAPP_GuestTrial));
 	CAccount *pAccount = g_Accounts.Account_FindCreate(pszAccount, fAutoCreate);
 	if ( !pAccount )
@@ -3483,35 +3484,28 @@ BYTE CClient::LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg)
 		return PacketLoginError::Invalid;
 	}
 
-	if ( g_Cfg.m_iClientLoginMaxTries && !pAccount->CheckPasswordTries(GetPeer()) )
+	// Check password
+	if ( !fGuestAccount )
 	{
-		g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' exceeded password tries in time lapse\n", GetSocketID(), pAccount->GetName());
-		sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_BADPASS);
-		return PacketLoginError::MaxPassTries;
-	}
+		if ( g_Cfg.m_iClientLoginMaxTries && !pAccount->CheckPasswordTries(GetPeer()) )
+		{
+			g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' exceeded password tries in time lapse\n", GetSocketID(), pAccount->GetName());
+			sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_BADPASS);
+			return PacketLoginError::MaxPassTries;
+		}
 
-	if ( !fGuestAccount && !pAccount->IsPriv(PRIV_BLOCKED) )
-	{
 		if ( !pAccount->CheckPassword(pszPassword) )
 		{
 			g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' inserted bad password\n", GetSocketID(), pAccount->GetName());
 			sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_BADPASS);
 			return PacketLoginError::BadPass;
 		}
+
+		if ( g_Cfg.m_iClientLoginMaxTries )
+			pAccount->m_PasswordTries.clear();
 	}
 
-	if ( g_Cfg.m_iClientLoginMaxTries )
-		pAccount->m_PasswordTries.clear();
-
-	return LogIn(pAccount, sMsg);
-}
-
-BYTE CClient::LogIn(CAccount *pAccount, CGString &sMsg)
-{
-	ADDTOCALLSTACK("CClient::LogIn");
-	if ( !pAccount )
-		return PacketLoginError::Invalid;
-
+	// Check if account is blocked
 	if ( pAccount->IsPriv(PRIV_BLOCKED) )
 	{
 		g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' is blocked\n", GetSocketID(), pAccount->GetName());
@@ -3519,17 +3513,18 @@ BYTE CClient::LogIn(CAccount *pAccount, CGString &sMsg)
 		return PacketLoginError::Blocked;
 	}
 
-	// Check if account is already in use
+	// Check if account is in use
+	CSocketAddress SockAddr = GetPeer();
 	if ( pAccount->m_pClient && (pAccount->m_pClient != this) )
 	{
-		// Only if it's from a diff IP?
 		bool fInUse = false;
-
-		// Different IP - no reconnect
-		/*if ( !GetPeer().IsSameIP(pAccount->m_pClient->GetPeer()) )
+		if ( !SockAddr.IsSameIP(pAccount->m_pClient->GetPeer()) )
+		{
+			// Different IP - no reconnect
 			fInUse = true;
+		}
 		else
-		{*/
+		{
 			// Same IP - allow reconnect if the old char is lingering out
 			CChar *pCharOld = pAccount->m_pClient->m_pChar;
 			if ( pCharOld )
@@ -3547,7 +3542,7 @@ BYTE CClient::LogIn(CAccount *pAccount, CGString &sMsg)
 				}
 				else if ( GetConnectType() == pAccount->m_pClient->GetConnectType() )
 					fInUse = true;
-			//}
+			}
 		}
 		if ( fInUse )
 		{
@@ -3557,36 +3552,34 @@ BYTE CClient::LogIn(CAccount *pAccount, CGString &sMsg)
 		}
 	}
 
+	// Check privileges
 	if ( g_Cfg.m_iClientsMax <= 0 )
 	{
-		// Only allow local connections
-		CSocketAddress SockName = GetPeer();
-		if ( !GetPeer().IsLocalAddr() && (SockName.GetAddrIP() != GetPeer().GetAddrIP()) )
+		if ( !SockAddr.IsLocalAddr() )
 		{
-			g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' can't connect, server maximum clients reached (only local connections allowed)\n", GetSocketID(), pAccount->GetName());
+			g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' can't connect, only local connections allowed\n", GetSocketID(), pAccount->GetName());
 			sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_SERV_LD);
 			return PacketLoginError::MaxClients;
 		}
 	}
-	else if ( g_Cfg.m_iClientsMax == 1 )
+	else if ( pAccount->GetPrivLevel() < PLEVEL_GM )
 	{
-		// Only allow GM connections
-		if ( pAccount->GetPrivLevel() < PLEVEL_GM )
+		if ( g_Cfg.m_iClientsMax == 1 )
 		{
 			g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' can't connect, only GM accounts allowed\n", GetSocketID(), pAccount->GetName());
 			sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_SERV_AO);
 			return PacketLoginError::MaxClients;
 		}
-	}
-	else if ( (g_Serv.StatGet(SERV_STAT_CLIENTS) > g_Cfg.m_iClientsMax) && (pAccount->GetPrivLevel() < PLEVEL_GM) )
-	{
-		g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' can't connect, server maximum clients reached\n", GetSocketID(), pAccount->GetName());
-		sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_SERV_FULL);
-		return PacketLoginError::MaxClients;
+		else if ( g_Serv.StatGet(SERV_STAT_CLIENTS) > g_Cfg.m_iClientsMax )
+		{
+			g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' can't connect, server maximum clients reached\n", GetSocketID(), pAccount->GetName());
+			sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_SERV_FULL);
+			return PacketLoginError::MaxClients;
+		}
 	}
 
-	// Do the scripts allow to login this account?
-	pAccount->m_Last_IP = GetPeer();
+	// Check scripts
+	pAccount->m_Last_IP = SockAddr;
 	CScriptTriggerArgs Args;
 	Args.Init(pAccount->GetName());
 	Args.m_iN1 = GetConnectType();

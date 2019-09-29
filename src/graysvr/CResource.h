@@ -728,7 +728,6 @@ public:
 	int m_iClientLingerTime;				// How long logged out clients linger in seconds.
 	int m_iMinCharDeleteTime;				// How old must a char be ? (minutes)
 	BYTE m_iMaxCharsPerAccount;				// Maximum characters allowed on an account.
-	bool m_fLocalIPAdmin;					// The local ip is the admin ?
 	bool m_fMd5Passwords;					// Should MD5 hashed passwords be used?
 
 	// Magic

@@ -606,42 +606,8 @@ int CItem::FixWeirdness()
 			SetAmount(1);
 	}
 
-	if ( IsMovable() )
-	{
-		if ( IsType(IT_WATER) || Can(CAN_I_WATER) )
-			SetAttr(ATTR_MOVE_NEVER);
-	}
-
 	switch ( GetID() )
 	{
-		case ITEMID_SPELLBOOK2:	// weird client bug with these.
-			SetDispID(ITEMID_SPELLBOOK);
-			break;
-
-		case ITEMID_DEATHSHROUD:	// be on a dead person only.
-		case ITEMID_GM_ROBE:
-		{
-			pChar = dynamic_cast<CChar *>(GetTopLevelObj());
-			if ( !pChar )
-				return 0x2206;	// get rid of it.
-
-			if ( GetID() == ITEMID_DEATHSHROUD )
-			{
-				if ( IsAttr(ATTR_MAGIC) && IsAttr(ATTR_NEWBIE|ATTR_BLESSED) )
-					break;	// special
-				if ( !pChar->IsStatFlag(STATF_DEAD) )
-					return 0x2207;	// get rid of it.
-			}
-			else
-			{
-				// Only GM/counsel can have robe.
-				// Not a GM til read *ACCT.SCP
-				if ( pChar->GetPrivLevel() < PLEVEL_Counsel )
-					return 0x2208;	// get rid of it.
-			}
-			break;
-		}
-
 		case ITEMID_VENDOR_BOX:
 		{
 			if ( !IsItemEquipped() )
@@ -751,24 +717,6 @@ int CItem::FixWeirdness()
 			}
 			break;
 		}
-
-		case IT_CONTAINER_LOCKED:
-		case IT_SHIP_HOLD_LOCK:
-		case IT_DOOR_LOCKED:
-			// Doors and containers must have a lock complexity set.
-			if ( !m_itContainer.m_lock_complexity )
-				m_itContainer.m_lock_complexity = 500 + Calc_GetRandVal(600);
-			break;
-
-		case IT_POTION:
-			if ( m_itPotion.m_skillquality == 0 ) // store bought ?
-				m_itPotion.m_skillquality = Calc_GetRandVal(950);
-			break;
-
-		case IT_MAP_BLANK:
-			if ( m_itNormal.m_more1 || m_itNormal.m_more2 )
-				SetType(IT_MAP);
-			break;
 
 		default:
 			if ( GetType() > IT_QTY )
@@ -1161,7 +1109,7 @@ bool CItem::MoveToCheck(const CPointMap &pt, CChar *pCharMover, bool fForceDecay
 	if ( !fForceDecay )
 	{
 		const CRegionBase *pRegion = pt.GetRegion(REGION_TYPE_MULTI|REGION_TYPE_AREA|REGION_TYPE_ROOM);
-		if ( pRegion && pRegion->IsFlag(REGION_FLAG_NODECAY) )
+		if ( (pRegion && pRegion->IsFlag(REGION_FLAG_NODECAY)) || !IsMovable() )
 			iDecayTime = -1;
 	}
 

@@ -58,15 +58,6 @@ LPCTSTR GetReasonForGarbageCode(int iCode = -1)
 		case 0x2205:
 			return "Mislinked item";
 
-		case 0x2206:
-			return "GM Robe / Deathshroud not on a char";
-
-		case 0x2207:
-			return "Deathshroud not on a dead char";
-
-		case 0x2208:
-			return "GM Robe on a char without privilege";
-
 		case 0x2220:
 			return "Trade window memory not equipped in the correct layer or equipped on disconnected char";
 
