@@ -13,9 +13,6 @@
     <Filter Include="common\mtrand">
       <UniqueIdentifier>{3abdd197-d524-40eb-a5ae-59a6b045e73b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="common\regex">
-      <UniqueIdentifier>{ab7d326a-8bb6-432c-997d-b35b39a8c9e7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="common\crashdump">
       <UniqueIdentifier>{bfcf28bb-2d0c-48a1-a304-037fb69f178b}</UniqueIdentifier>
     </Filter>
@@ -406,9 +403,6 @@
     </ClInclude>
     <ClInclude Include="src\common\twofish\table.h">
       <Filter>common\twofish</Filter>
-    </ClInclude>
-    <ClInclude Include="src\common\regex\deelx.h">
-      <Filter>common\regex</Filter>
     </ClInclude>
     <ClInclude Include="src\common\CArray.h">
       <Filter>common</Filter>
