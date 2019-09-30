@@ -21,7 +21,8 @@ CServer::CServer() : CServerDef(SPHERE_TITLE, CSocketAddressIP(SOCKET_LOCAL_ADDR
 	m_fResyncPause = false;
 	m_fResyncRequested = NULL;
 
-	m_iAdminClients = 0;
+	m_iTelnetClients = 0;
+	m_iGuestClients = 0;
 	m_fConsoleTextReadyFlag = false;
 
 	m_timeShutdown.Init();
@@ -383,17 +384,12 @@ void CServer::SysMessage(LPCTSTR pszMsg) const
 
 void CServer::PrintTelnet(LPCTSTR pszMsg) const
 {
-	if ( !m_iAdminClients )
-		return;
-
 	ClientIterator it;
 	for ( CClient *pClient = it.next(); pClient != NULL; pClient = it.next() )
 	{
-		if ( (pClient->GetConnectType() == CONNECT_TELNET) && pClient->m_pAccount )
-		{
-			if ( !pClient->m_pAccount->IsPriv(PRIV_TELNET_SHORT) )	// this client accepts broadcasts
-				pClient->SysMessage(pszMsg);
-		}
+		if ( (pClient->GetConnectType() != CONNECT_TELNET) || !pClient->m_pAccount || pClient->m_pAccount->IsPriv(PRIV_TELNET_SHORT) )
+			continue;
+		pClient->SysMessage(pszMsg);
 	}
 }
 
@@ -401,7 +397,8 @@ void CServer::PrintStr(LPCTSTR pszMsg) const
 {
 	// Print to all consoles
 	SysMessage(pszMsg);
-	PrintTelnet(pszMsg);
+	if ( m_iTelnetClients )
+		PrintTelnet(pszMsg);
 }
 
 int CServer::PrintPercent(long iCount, long iTotal)
@@ -414,7 +411,8 @@ int CServer::PrintPercent(long iCount, long iTotal)
 	TCHAR *pszTemp = Str_GetTemp();
 	sprintf(pszTemp, "%d%%", iPercent);
 
-	PrintTelnet(pszTemp);
+	if ( m_iTelnetClients )
+		PrintTelnet(pszTemp);
 
 #ifndef _WIN32
 	if ( g_UnixTerminal.isColorEnabled() )
@@ -424,7 +422,8 @@ int CServer::PrintPercent(long iCount, long iTotal)
 		size_t iLen = strlen(pszTemp);
 		while ( iLen > 0 )	// backspace it
 		{
-			PrintTelnet("\x08");
+			if ( m_iTelnetClients )
+				PrintTelnet("\x08");
 #ifndef _WIN32
 			SysMessage("\x08");
 #endif

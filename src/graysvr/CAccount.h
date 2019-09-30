@@ -67,7 +67,6 @@ public:
 private:
 	CGString m_sName;				// Name = no spaces (case independant)
 	CGString m_sPassword;			// Accounts auto-generated but never used should not last long
-	CGString m_sNewPassword;		// The new password will be transfered when they use it
 
 	PLEVEL_TYPE m_PrivLevel;		// Privileges level of the account
 	WORD m_PrivFlags;				// Optional privileges for char (bit-mapped)
@@ -143,12 +142,6 @@ public:
 		return m_sPassword;
 	}
 	bool SetPassword(LPCTSTR pszPassword, bool fMD5 = false);
-
-	LPCTSTR GetNewPassword() const
-	{
-		return m_sNewPassword;
-	}
-	void SetNewPassword(LPCTSTR pszPassword);
 
 	bool CheckPassword(LPCTSTR pszPassword);
 	void ClearPassword()

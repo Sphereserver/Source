@@ -3441,38 +3441,8 @@ BYTE CClient::LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg)
 	TCHAR szName[MAX_ACCOUNT_NAME_ENTRY];
 	if ( !CAccount::NameStrip(szName, pszAccount) || Str_Check(pszAccount) )
 		return PacketLoginError::BadAccount;
-	if ( Str_Check(pszPassword) )
+	if ( (pszPassword[0] == '\0') || Str_Check(pszPassword) )
 		return PacketLoginError::BadPassword;
-
-	bool fGuestAccount = !strnicmp(pszAccount, "GUEST", 5);
-	if ( fGuestAccount )
-	{
-		// Trying to log in as some sort of guest.
-		// Find or create a new guest account.
-		TCHAR *pszTemp = Str_GetTemp();
-		for ( int i = 0; ; ++i )
-		{
-			if ( i >= g_Cfg.m_iGuestsMax )
-			{
-				sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_GUSED);
-				return PacketLoginError::MaxGuests;
-			}
-
-			sprintf(pszTemp, "GUEST%d", i);
-			CAccount *pAccount = g_Accounts.Account_FindCreate(pszTemp, true);
-			ASSERT(pAccount);
-			if ( !pAccount->m_pClient )
-			{
-				pszAccount = pAccount->GetName();
-				break;
-			}
-		}
-	}
-	else if ( pszPassword[0] == '\0' )
-	{
-		sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_NEEDPASS);
-		return PacketLoginError::BadPassword;
-	}
 
 	// Check login
 	bool fAutoCreate = ((g_Serv.m_eAccApp == ACCAPP_Free) || (g_Serv.m_eAccApp == ACCAPP_GuestAuto) || (g_Serv.m_eAccApp == ACCAPP_GuestTrial));
@@ -3485,25 +3455,22 @@ BYTE CClient::LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg)
 	}
 
 	// Check password
-	if ( !fGuestAccount )
+	if ( g_Cfg.m_iClientLoginMaxTries && !pAccount->CheckPasswordTries(GetPeer()) )
 	{
-		if ( g_Cfg.m_iClientLoginMaxTries && !pAccount->CheckPasswordTries(GetPeer()) )
-		{
-			g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' exceeded password tries in time lapse\n", GetSocketID(), pAccount->GetName());
-			sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_BADPASS);
-			return PacketLoginError::MaxPassTries;
-		}
-
-		if ( !pAccount->CheckPassword(pszPassword) )
-		{
-			g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' inserted bad password\n", GetSocketID(), pAccount->GetName());
-			sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_BADPASS);
-			return PacketLoginError::BadPass;
-		}
-
-		if ( g_Cfg.m_iClientLoginMaxTries )
-			pAccount->m_PasswordTries.clear();
+		g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' exceeded password tries in time lapse\n", GetSocketID(), pAccount->GetName());
+		sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_BADPASS);
+		return PacketLoginError::MaxPassTries;
 	}
+
+	if ( !pAccount->CheckPassword(pszPassword) )
+	{
+		g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' inserted bad password\n", GetSocketID(), pAccount->GetName());
+		sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_BADPASS);
+		return PacketLoginError::BadPass;
+	}
+
+	if ( g_Cfg.m_iClientLoginMaxTries )
+		pAccount->m_PasswordTries.clear();
 
 	// Check if account is blocked
 	if ( pAccount->IsPriv(PRIV_BLOCKED) )
@@ -3562,7 +3529,7 @@ BYTE CClient::LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg)
 			return PacketLoginError::MaxClients;
 		}
 	}
-	else if ( pAccount->GetPrivLevel() < PLEVEL_GM )
+	if ( pAccount->GetPrivLevel() < PLEVEL_GM )
 	{
 		if ( g_Cfg.m_iClientsMax == 1 )
 		{
@@ -3575,6 +3542,15 @@ BYTE CClient::LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg)
 			g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' can't connect, server maximum clients reached\n", GetSocketID(), pAccount->GetName());
 			sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_SERV_FULL);
 			return PacketLoginError::MaxClients;
+		}
+	}
+	if ( (pAccount->GetPrivLevel() == PLEVEL_Guest) )
+	{
+		if ( g_Serv.m_iGuestClients >= g_Cfg.m_iGuestsMax )
+		{
+			g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' can't connect, server maximum guest clients reached\n", GetSocketID(), pAccount->GetName());
+			sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_GUSED);
+			return PacketLoginError::MaxGuests;
 		}
 	}
 
