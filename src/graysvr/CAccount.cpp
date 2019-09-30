@@ -510,34 +510,11 @@ bool CAccount::SetPassword(LPCTSTR pszPassword, bool fMD5)
 	return true;
 }
 
-void CAccount::SetNewPassword(LPCTSTR pszPassword)
-{
-	ADDTOCALLSTACK("CAccount::SetNewPassword");
-
-	if ( !pszPassword || !pszPassword[0] )	// no password given, so auto-generate a random password
-	{
-		TCHAR szValidChars[] = "ABCDEFGHIJKLMNOPQRSTUVXWYZ0123456789";
-		size_t iLenArray = strlen(szValidChars);
-		size_t iLen = static_cast<size_t>(Calc_GetRandVal2(MAX_ACCOUNT_PASS_ENTRY / 2, MAX_ACCOUNT_PASS_ENTRY - 1));
-
-		TCHAR szPassword[MAX_ACCOUNT_PASS_ENTRY];
-		for ( size_t i = 0; i < iLen; ++i )
-			szPassword[i] = szValidChars[Calc_GetRandVal(iLenArray)];
-
-		szPassword[iLen] = '\0';
-		m_sNewPassword = szPassword;
-		return;
-	}
-
-	m_sNewPassword = pszPassword;
-	if ( m_sNewPassword.GetLength() > MAX_ACCOUNT_PASS_ENTRY )
-		m_sNewPassword.SetLength(MAX_ACCOUNT_PASS_ENTRY);
-}
-
 bool CAccount::CheckPassword(LPCTSTR pszPassword)
 {
 	ADDTOCALLSTACK("CAccount::CheckPassword");
-	ASSERT(pszPassword);
+	if ( !pszPassword )
+		return false;
 
 	if ( m_sPassword.IsEmpty() )
 	{
@@ -565,18 +542,7 @@ bool CAccount::CheckPassword(LPCTSTR pszPassword)
 	}
 
 	// Check password
-	if ( !strcmpi(pszPassword, GetPassword()) )
-		return true;
-
-	if ( !m_sNewPassword.IsEmpty() && !strcmpi(pszPassword, GetNewPassword()) )
-	{
-		// Using new password, so set it as default
-		SetPassword(m_sNewPassword);
-		m_sNewPassword.Empty();
-		return true;
-	}
-
-	return false;
+	return !strcmpi(pszPassword, GetPassword());
 }
 
 bool CAccount::CheckPasswordTries(CSocketAddress SockAddr)
@@ -842,7 +808,6 @@ enum AC_TYPE
 	AC_MAXCHARS,
 	AC_MD5PASSWORD,
 	AC_NAME,
-	AC_NEWPASSWORD,
 	AC_PASSWORD,
 	AC_PLEVEL,
 	AC_PRIV,
@@ -873,7 +838,6 @@ LPCTSTR const CAccount::sm_szLoadKeys[AC_QTY + 1] =	// static
 	"MAXCHARS",
 	"MD5PASSWORD",
 	"NAME",
-	"NEWPASSWORD",
 	"PASSWORD",
 	"PLEVEL",
 	"PRIV",
@@ -983,9 +947,6 @@ bool CAccount::r_LoadVal(CScript &s)
 		case AC_MAXCHARS:
 			SetMaxChars(static_cast<BYTE>(s.GetArgVal()));
 			break;
-		case AC_NEWPASSWORD:
-			SetNewPassword(s.GetArgStr());
-			break;
 		case AC_PASSWORD:
 			SetPassword(s.GetArgStr(), g_Serv.IsLoading() ? g_Cfg.m_fMd5Passwords : false);
 			break;
@@ -1084,11 +1045,6 @@ bool CAccount::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			break;
 		case AC_MAXCHARS:
 			sVal.FormatVal(GetMaxChars());
-			break;
-		case AC_NEWPASSWORD:
-			if ( (pSrc->GetPrivLevel() < PLEVEL_Admin) || (pSrc->GetPrivLevel() < GetPrivLevel()) )
-				return false;
-			sVal = GetNewPassword();
 			break;
 		case AC_PASSWORD:
 		case AC_MD5PASSWORD:
@@ -1267,8 +1223,6 @@ void CAccount::r_Write(CScript &s)
 		s.WriteKeyVal("BLOCK", 1);
 	if ( !m_sPassword.IsEmpty() )
 		s.WriteKey("PASSWORD", GetPassword());
-	if ( !m_sNewPassword.IsEmpty() )
-		s.WriteKey("NEWPASSWORD", GetNewPassword());
 	if ( m_Total_Connect_Time )
 		s.WriteKeyVal("TOTALCONNECTTIME", m_Total_Connect_Time);
 	if ( m_Last_Connect_Time )
