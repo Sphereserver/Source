@@ -680,8 +680,11 @@ void CAccount::OnLogin(CClient *pClient)
 	m_pClient->m_timeLogin = CServTime::GetCurrentTime();
 
 	if ( m_pClient->GetConnectType() == CONNECT_TELNET )
-		++g_Serv.m_iAdminClients;
-	if ( GetPrivLevel() >= PLEVEL_Counsel )
+		++g_Serv.m_iTelnetClients;
+
+	if ( GetPrivLevel() == PLEVEL_Guest )
+		++g_Serv.m_iGuestClients;
+	else if ( GetPrivLevel() >= PLEVEL_Counsel )
 		SetPrivFlags(PRIV_GM_PAGE);
 
 	if ( !m_Total_Connect_Time )
@@ -700,7 +703,10 @@ void CAccount::OnLogout(CClient *pClient, bool fWasChar)
 	ASSERT(pClient);
 
 	if ( pClient->GetConnectType() == CONNECT_TELNET )
-		--g_Serv.m_iAdminClients;
+		--g_Serv.m_iTelnetClients;
+
+	if ( GetPrivLevel() == PLEVEL_Guest )
+		++g_Serv.m_iGuestClients;
 
 	if ( fWasChar && pClient->IsConnectTypePacket() )
 	{
