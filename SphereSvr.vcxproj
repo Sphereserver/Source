@@ -383,7 +383,6 @@ if defined GitRev (
     <ClInclude Include="src\common\twofish\debug.h" />
     <ClInclude Include="src\common\twofish\platform.h" />
     <ClInclude Include="src\common\twofish\table.h" />
-    <ClInclude Include="src\common\regex\deelx.h" />
     <ClInclude Include="src\common\CArray.h" />
     <ClInclude Include="src\common\CAssoc.h" />
     <ClInclude Include="src\common\CDataBase.h" />

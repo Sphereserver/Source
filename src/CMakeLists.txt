@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.1)
 project(SphereServer)
 
 # Project files
@@ -9,7 +9,6 @@ set(common_SRCS
     common/libev/wrapper_ev.c
     common/libev/wrapper_ev.h
     common/mtrand/mtrand.h
-    common/regex/deelx.h
     common/sqlite/SQLite.cpp
     common/sqlite/SQLite.h
     common/sqlite/sqlite3.c

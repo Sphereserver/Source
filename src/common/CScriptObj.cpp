@@ -1965,21 +1965,6 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatLLVal(iRes);
 			return true;
 		}
-		case SSC_StrRegexNew:
-		{
-			TCHAR *pszToMatch = Str_GetTemp();
-			size_t iLen = Exp_GetVal(pszKey);
-			if ( iLen > 0 )
-			{
-				SKIP_ARGSEP(pszKey);
-				strcpylen(pszToMatch, pszKey, iLen + 1);
-				pszKey += iLen;
-			}
-
-			SKIP_ARGSEP(pszKey);
-			sVal.FormatVal((Str_RegExMatch(pszKey, pszToMatch) == MATCH_VALID) ? 1 : 0);
-			return true;
-		}
 		default:
 			StringFunction(index, pszKey, sVal);
 			return true;

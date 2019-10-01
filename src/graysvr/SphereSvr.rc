@@ -105,7 +105,7 @@ BEGIN
 	LISTBOX		IDC_STAT_CLIENTS, 5, 115, 370, 180, LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
 END
 
-IDR_ABOUT_BOX DIALOGEX 0, 0, 320, 240
+IDR_ABOUT_BOX DIALOGEX 0, 0, 320, 215
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "About Sphere Server"
 FONT 8, "MS Sans Serif", 0, 0, 0x1
@@ -117,13 +117,12 @@ BEGIN
 	CTEXT		"www.spherecommunity.net", IDC_ABOUT_SPHERE_LINK, 220, 16, 90, 8
 	CTEXT		"___________________________________________________________________________", 5, 0, 32, 320, 8
 	LTEXT		"This software makes use of:", 6, 10, 46, 100, 8
-	LTEXT		"DEELX Regular Expression Engine (v1.2)\nCopyright (C) 2006 RegExLab.com", 7, 20, 62, 300, 16
-	LTEXT		"libev library (v4.27)\nCopyright (C) 2007-2019 Marc Alexander Lehmann", 8, 20, 86, 300, 16
-	LTEXT		"Mersenne Twister random number generator (v1.1)\nCopyright (C) 1997-2002 Makoto Matsumoto, Takuji Nishimura\nCopyright (C) 2000-2009 Richard J. Wagner", 9, 20, 110, 300, 24
-	LTEXT		"MySQL Connector/C (v6.1.11)\nGeneral Public License (GPL) 2000-2017 Oracle", 10, 20, 142, 300, 16
-	LTEXT		"SQLite library (v3.29.0)\nGeneral Public License (GPL) 2000-2019", 11, 20, 166, 300, 16
-	LTEXT		"Twofish encryption library (v1.0)\nCopyright (C) 1998 Bruce Schneier, Doug Whiting, John Kelsey, Chris Hall, David Wagner", 12, 20, 190, 300, 16
-	LTEXT		"zlib data compression library (v1.2.11)\nCopyright (C) 1995-2017 Jean-loup Gailly, Mark Adler", 13, 20, 214, 300, 16
+	LTEXT		"libev library (v4.27)\nCopyright (C) 2007-2019 Marc Alexander Lehmann", 8, 20, 62, 300, 16
+	LTEXT		"Mersenne Twister random number generator (v1.1)\nCopyright (C) 1997-2002 Makoto Matsumoto, Takuji Nishimura\nCopyright (C) 2000-2009 Richard J. Wagner", 9, 20, 86, 300, 24
+	LTEXT		"MySQL Connector/C (v6.1.11)\nGeneral Public License (GPL) 2000-2017 Oracle", 10, 20, 118, 300, 16
+	LTEXT		"SQLite library (v3.29.0)\nGeneral Public License (GPL) 2000-2019", 11, 20, 142, 300, 16
+	LTEXT		"Twofish encryption library (v1.0)\nCopyright (C) 1998 Bruce Schneier, Doug Whiting, John Kelsey, Chris Hall, David Wagner", 12, 20, 166, 300, 16
+	LTEXT		"zlib data compression library (v1.2.11)\nCopyright (C) 1995-2017 Jean-loup Gailly, Mark Adler", 13, 20, 190, 300, 16
 	END
 
 /////////////////////////////////////////////////////////////////////////////

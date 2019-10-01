@@ -2,7 +2,7 @@
 * @file CGString.CPP
 */
 
-#include "regex/deelx.h"
+#include <regex>
 #include "graycom.h"
 
 /**
@@ -688,7 +688,7 @@ size_t Str_GetBare(TCHAR * pszOut, LPCTSTR pszInp, size_t iMaxOutSize, LPCTSTR p
 	if (!pszStrip)
 		pszStrip = "{|}~";	// client cant print these.
 
-							//GETNONWHITESPACE( pszInp );	// kill leading white space.
+	//GETNONWHITESPACE(pszInp);		// kill leading whitespace
 
 	size_t j = 0;
 	for (size_t i = 0; ; i++)
@@ -1032,7 +1032,5 @@ MATCH_TYPE Str_Match(LPCTSTR pPattern, LPCTSTR pText)
 
 MATCH_TYPE Str_RegExMatch(LPCTSTR pszPattern, LPCTSTR pszText)
 {
-	CRegexp regexp = pszPattern;
-	MatchResult result = regexp.Match(pszText);
-	return result.IsMatched() ? MATCH_VALID : MATCH_INVALID;
+	return std::regex_match(pszText, std::regex(pszPattern)) ? MATCH_VALID : MATCH_INVALID;
 }
