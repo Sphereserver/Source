@@ -246,23 +246,6 @@ bool IsValidGameObjDef(LPCTSTR pszArgs)
 ///////////////////////////////////////////////////////////
 // Numeric formulas
 
-int Calc_GetLog2(UINT uVal)
-{
-	// This is really log2 + 1
-	int i = 0;
-	for ( ; uVal; ++i )
-	{
-		ASSERT(i < 32);
-		uVal >>= 1;
-	}
-	return i;
-}
-
-inline int Calc_GetRandVal(int iVal)
-{
-	return (iVal > 1) ? Calc_GetRandVal(0, iVal - 1) : 0;
-}
-
 int Calc_GetRandVal(int iMin, int iMax)
 {
 	if ( iMin > iMax )
@@ -276,11 +259,6 @@ int Calc_GetRandVal(int iMin, int iMax)
 	std::mt19937 gen(rd());
 	std::uniform_int_distribution<int> dist(iMin, iMax);
 	return dist(gen);
-}
-
-inline INT64 Calc_GetRandLLVal(INT64 iVal)
-{
-	return (iVal > 1) ? Calc_GetRandLLVal(0, iVal - 1) : 0;
 }
 
 INT64 Calc_GetRandLLVal(INT64 iMin, INT64 iMax)

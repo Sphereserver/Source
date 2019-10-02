@@ -1,5 +1,6 @@
 ﻿#include "graysvr.h"	// predef header
 #include "../network/network.h"
+#include <cmath>
 
 CResource::CResource()
 {
@@ -1322,7 +1323,7 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			LPCTSTR pszCmd = pszKey + 10;
 			if ( !strnicmp(pszCmd, "COUNT", 5) )
 			{
-				sVal.FormatVal(m_Functions.GetCount());
+				sVal.FormatUVal(m_Functions.GetCount());
 				return true;
 			}
 			else if ( m_Functions.ContainsKey(pszCmd) )
@@ -1371,7 +1372,7 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 						++iCount;
 				}
 
-				sVal.FormatVal(iCount);
+				sVal.FormatUVal(iCount);
 				return true;
 			}
 
@@ -1426,7 +1427,7 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 	switch ( index )
 	{
 		case RC_ATTACKERTIMEOUT:
-			sVal.FormatVal(m_iAttackerTimeout / TICK_PER_SEC);
+			sVal.FormatUVal(m_iAttackerTimeout / TICK_PER_SEC);
 			break;
 		case RC_BANKMAXWEIGHT:
 			sVal.FormatVal(m_iBankWMax / WEIGHT_UNITS);
@@ -1484,7 +1485,7 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatVal(m_iGuardLingerTime / (60 * TICK_PER_SEC));
 			break;
 		case RC_HEARALL:
-			sVal.FormatVal(g_Log.GetLogMask() & LOGM_PLAYER_SPEAK);
+			sVal.FormatUVal(g_Log.GetLogMask() & LOGM_PLAYER_SPEAK);
 			break;
 		case RC_HITSUPDATERATE:
 			sVal.FormatVal(m_iHitsUpdateRate / TICK_PER_SEC);
@@ -1502,7 +1503,7 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatVal(m_iMapCacheTime / TICK_PER_SEC);
 			break;
 		case RC_NOTOTIMEOUT:
-			sVal.FormatVal(m_iNotoTimeout / TICK_PER_SEC);
+			sVal.FormatUVal(m_iNotoTimeout / TICK_PER_SEC);
 			break;
 		case RC_MAXFAME:
 			sVal.FormatVal(m_iMaxFame);
@@ -1523,7 +1524,7 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatVal(m_iWoolGrowthTime / (60 * TICK_PER_SEC));
 			break;
 		case RC_PROFILE:
-			sVal.FormatVal(CurrentProfileData.GetActiveWindow());
+			sVal.FormatVal(CurrentProfileData.IsActive());
 			break;
 		case RC_RTICKS:
 		{
@@ -1599,22 +1600,22 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatVal(m_iSavePeriod / (60 * TICK_PER_SEC));
 			break;
 		case RC_SECTORSLEEP:
-			sVal.FormatVal(m_iSectorSleepMask ? (Calc_GetLog2(m_iSectorSleepMask + 1) - 1) : 0);
+			sVal.FormatVal(m_iSectorSleepMask ? static_cast<long>(log2(static_cast<double>(m_iSectorSleepMask) + 1)) : 0);
 			break;
 		case RC_SAVEBACKGROUND:
 			sVal.FormatVal(m_iSaveBackgroundTime / (60 * TICK_PER_SEC));
 			break;
 		case RC_SAVESECTORSPERTICK:
-			sVal.FormatVal(m_iSaveSectorsPerTick);
+			sVal.FormatUVal(m_iSaveSectorsPerTick);
 			break;
 		case RC_SAVESTEPMAXCOMPLEXITY:
-			sVal.FormatVal(m_iSaveStepMaxComplexity);
+			sVal.FormatUVal(m_iSaveStepMaxComplexity);
 			break;
 		case RC_SPELLTIMEOUT:
 			sVal.FormatVal(m_iSpellTimeout / TICK_PER_SEC);
 			break;
 		case RC_GUILDS:
-			sVal.FormatVal(g_World.m_Stones.GetCount());
+			sVal.FormatUVal(g_World.m_Stones.GetCount());
 			return true;
 		case RC_TIMEUP:
 			sVal.FormatLLVal(-g_World.GetTimeDiff(g_World.m_timeStartup) / TICK_PER_SEC);
@@ -1640,7 +1641,7 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatVal(m_iPlayerKarmaNeutral);
 			break;
 		case RC_TOOLTIPCACHE:
-			sVal.FormatVal(m_iTooltipCache / (TICK_PER_SEC));
+			sVal.FormatVal(m_iTooltipCache / TICK_PER_SEC);
 			break;
 		case RC_GUARDSINSTANTKILL:
 			sVal.FormatVal(g_Cfg.m_fGuardsInstantKill);

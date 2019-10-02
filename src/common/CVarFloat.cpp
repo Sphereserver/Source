@@ -654,11 +654,6 @@ RealType CVarFloat::GetSingle(LPCTSTR &pszArgs)
 	return 0;
 }
 
-inline RealType CVarFloat::GetRandVal(RealType dQty)
-{
-	return GetRandVal(0, dQty);
-}
-
 RealType CVarFloat::GetRandVal(RealType dMin, RealType dMax)
 {
 	if ( dMin > dMax )

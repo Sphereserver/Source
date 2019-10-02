@@ -1,5 +1,6 @@
 // CChar is either an NPC or a Player
 #include "graysvr.h"	// predef header.
+#include <cmath>
 
 ///////////////////////////////////////////////////////////
 // Stats
