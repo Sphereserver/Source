@@ -2,8 +2,6 @@
 #define _INC_CWORLD_H
 #pragma once
 
-#include "../common/mtrand/mtrand.h"
-
 ///////////////////////////////////////////////////////////
 // CWorldThread
 
@@ -37,7 +35,6 @@ public:
 	CScript m_FilePlayers;			// players chars
 	CScript m_FileMultis;			// custom multis
 	bool m_fSaveParity;				// the sector has been saved relative to the char entering it?
-	MTRand m_Rand;
 
 public:
 	// Backgound save

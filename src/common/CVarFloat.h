@@ -51,8 +51,8 @@ public:
 
 	static CGString FloatMath(LPCTSTR &pszExpr);
 	static RealType MakeFloatMath(LPCTSTR &pszExpr);
-	static RealType GetRandVal(RealType dQty);
-	static RealType GetRandVal2(RealType dMin, RealType dMax);
+	static inline RealType GetRandVal(RealType dQty);
+	static RealType GetRandVal(RealType dMin, RealType dMax);
 
 private:
 	inline bool Set(LPCTSTR pszName, LPCTSTR pszValue);

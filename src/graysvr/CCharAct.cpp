@@ -1848,7 +1848,7 @@ void CChar::EatAnim(LPCTSTR pszName, int iQty)
 
 	int iHits = 0;
 	int iMana = 0;
-	int iStam = Calc_GetRandVal2(3, 6) + (iQty / 5);
+	int iStam = Calc_GetRandVal(3, 6) + (iQty / 5);
 	int iFood = iQty;
 	int iStatsLimit = 0;
 	if ( IsTrigUsed(TRIGGER_EAT) )
@@ -2303,7 +2303,7 @@ bool CChar::SetPoison(int iSkill, int iTicks, CChar *pCharSrc)
 			if ( (GetDist(pCharSrc) < 3) && (Calc_GetRandVal(10) == 1) )
 			{
 				// Lethal poison
-				pPoison->m_itSpell.m_pattern = static_cast<BYTE>(IMULDIV(Stat_GetMax(STAT_STR), Calc_GetRandVal2(16, 33), 100));
+				pPoison->m_itSpell.m_pattern = static_cast<BYTE>(IMULDIV(Stat_GetMax(STAT_STR), Calc_GetRandVal(16, 33), 100));
 				pPoison->m_itSpell.m_spelllevel = 4;
 				pPoison->m_itSpell.m_spellcharges = 80;		//1 min, 20 sec
 				pPoison->SetTimeout(50);
@@ -2311,7 +2311,7 @@ bool CChar::SetPoison(int iSkill, int iTicks, CChar *pCharSrc)
 			else
 			{
 				// Deadly poison
-				pPoison->m_itSpell.m_pattern = static_cast<BYTE>(IMULDIV(Stat_GetMax(STAT_STR), Calc_GetRandVal2(15, 30), 100));
+				pPoison->m_itSpell.m_pattern = static_cast<BYTE>(IMULDIV(Stat_GetMax(STAT_STR), Calc_GetRandVal(15, 30), 100));
 				pPoison->m_itSpell.m_spelllevel = 3;
 				pPoison->m_itSpell.m_spellcharges = 60;
 				pPoison->SetTimeout(50);
@@ -2320,7 +2320,7 @@ bool CChar::SetPoison(int iSkill, int iTicks, CChar *pCharSrc)
 		else if ( iSkill >= 850 )
 		{
 			// Greater poison
-			pPoison->m_itSpell.m_pattern = static_cast<BYTE>(IMULDIV(Stat_GetMax(STAT_STR), Calc_GetRandVal2(7, 15), 100));
+			pPoison->m_itSpell.m_pattern = static_cast<BYTE>(IMULDIV(Stat_GetMax(STAT_STR), Calc_GetRandVal(7, 15), 100));
 			pPoison->m_itSpell.m_spelllevel = 2;
 			pPoison->m_itSpell.m_spellcharges = 60;
 			pPoison->SetTimeout(40);
@@ -2328,7 +2328,7 @@ bool CChar::SetPoison(int iSkill, int iTicks, CChar *pCharSrc)
 		else if ( iSkill >= 600 )
 		{
 			// Poison
-			pPoison->m_itSpell.m_pattern = static_cast<BYTE>(IMULDIV(Stat_GetMax(STAT_STR), Calc_GetRandVal2(5, 10), 100));
+			pPoison->m_itSpell.m_pattern = static_cast<BYTE>(IMULDIV(Stat_GetMax(STAT_STR), Calc_GetRandVal(5, 10), 100));
 			pPoison->m_itSpell.m_spelllevel = 1;
 			pPoison->m_itSpell.m_spellcharges = 30;
 			pPoison->SetTimeout(30);
@@ -2934,7 +2934,7 @@ TRIGRET_TYPE CChar::CheckLocation(bool fStanding)
 			case IT_FIRE:
 			{
 				int iSkillLevel = pItem->m_itSpell.m_spelllevel;	// heat level (0-1000)
-				iSkillLevel = Calc_GetRandVal2(iSkillLevel / 2, iSkillLevel);
+				iSkillLevel = Calc_GetRandVal(iSkillLevel / 2, iSkillLevel);
 				if ( IsStatFlag(STATF_Fly) )
 					iSkillLevel /= 2;
 

@@ -1,5 +1,5 @@
-#include <cmath>
 #include "../graysvr/graysvr.h"
+#include <random>
 
 TCHAR CExpression::sm_szMessages[DEFMSG_QTY][EXPRESSION_MAX_KEY_LEN] =
 {
@@ -258,17 +258,12 @@ int Calc_GetLog2(UINT uVal)
 	return i;
 }
 
-int Calc_GetRandVal(int iVal)
+inline int Calc_GetRandVal(int iVal)
 {
-	if ( iVal <= 0 )
-		return 0;
-	if ( iVal >= INT_MAX )
-		return IMULDIV(g_World.m_Rand.randInt(), static_cast<DWORD>(iVal), INT_MAX);
-
-	return g_World.m_Rand.randInt() % iVal;
+	return (iVal > 1) ? Calc_GetRandVal(0, iVal - 1) : 0;
 }
 
-int Calc_GetRandVal2(int iMin, int iMax)
+int Calc_GetRandVal(int iMin, int iMax)
 {
 	if ( iMin > iMax )
 	{
@@ -276,20 +271,19 @@ int Calc_GetRandVal2(int iMin, int iMax)
 		iMin = iMax;
 		iMax = iTemp;
 	}
-	return iMin + g_World.m_Rand.randInt() % ((iMax - iMin) + 1);
+
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_int_distribution<int> dist(iMin, iMax);
+	return dist(gen);
 }
 
-INT64 Calc_GetRandLLVal(INT64 iVal)
+inline INT64 Calc_GetRandLLVal(INT64 iVal)
 {
-	if ( iVal <= 0 )
-		return 0;
-	if ( iVal >= LLONG_MAX )
-		return IMULDIV(g_World.m_Rand.genrand64_int64(), static_cast<DWORD>(iVal), LLONG_MAX);
-
-	return g_World.m_Rand.genrand64_int64() % iVal;
+	return (iVal > 1) ? Calc_GetRandLLVal(0, iVal - 1) : 0;
 }
 
-INT64 Calc_GetRandLLVal2(INT64 iMin, INT64 iMax)
+INT64 Calc_GetRandLLVal(INT64 iMin, INT64 iMax)
 {
 	if ( iMin > iMax )
 	{
@@ -297,7 +291,11 @@ INT64 Calc_GetRandLLVal2(INT64 iMin, INT64 iMax)
 		iMin = iMax;
 		iMax = iTemp;
 	}
-	return iMin + g_World.m_Rand.genrand64_int64() % ((iMax - iMin) + 1);
+
+	std::random_device rd;
+	std::mt19937_64 gen(rd());
+	std::uniform_int_distribution<INT64> dist(iMin, iMax);
+	return dist(gen);
 }
 
 int Calc_GetBellCurve(int iMean, int iVariance)
@@ -664,7 +662,7 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 						else if ( iCount < 2 )
 							iResult = Calc_GetRandLLVal(GetVal(ppArgs[0]));
 						else
-							iResult = Calc_GetRandLLVal2(GetVal(ppArgs[0]), GetVal(ppArgs[1]));
+							iResult = Calc_GetRandLLVal(GetVal(ppArgs[0]), GetVal(ppArgs[1]));
 						break;
 					}
 					case INTRINSIC_RANDBELL:
@@ -1093,7 +1091,7 @@ INT64 CExpression::GetRange(LPCTSTR &pszArgs)
 	else if ( iQty == 1 )	// simple value
 		return iVals[0];
 	else if ( iQty == 2 )	// simple range
-		return Calc_GetRandLLVal2(minimum(iVals[0], iVals[1]), maximum(iVals[0], iVals[1]));
+		return Calc_GetRandLLVal(minimum(iVals[0], iVals[1]), maximum(iVals[0], iVals[1]));
 	else	// weighted value
 	{
 		// Get total weight

@@ -1698,10 +1698,10 @@ int CChar::OnTakeDamage(int iDmg, CChar *pSrc, DAMAGE_TYPE uType, int iDmgPhysic
 		else
 		{
 			// pre-AOS armor rating (AR)
-			int iArMax = (pCharDef->m_defense + m_defense) * Calc_GetRandVal2(7, 35) / 100;
+			int iArMax = (pCharDef->m_defense + m_defense) * Calc_GetRandVal(7, 35) / 100;
 			int iArMin = iArMax / 2;
 
-			int iDef = Calc_GetRandVal2(iArMin, (iArMax - iArMin) + 1);
+			int iDef = Calc_GetRandVal(iArMin, (iArMax - iArMin) + 1);
 			if ( uType & DAMAGE_MAGIC )		// magical damage halves effectiveness of defense
 				iDef /= 2;
 
@@ -2138,7 +2138,7 @@ int CChar::Fight_CalcDamage(const CItem *pWeapon, bool fNoRandom, bool fGetMax) 
 	if ( fNoRandom )
 		return fGetMax ? iDmgMax : iDmgMin;
 	else
-		return Calc_GetRandVal2(iDmgMin, iDmgMax);
+		return Calc_GetRandVal(iDmgMin, iDmgMax);
 }
 
 void CChar::Fight_Clear()
@@ -2957,12 +2957,12 @@ WAR_SWING_TYPE CChar::Fight_Hit(CChar *pCharTarg)
 		}
 		if ( iHitLifeLeech > 0 )
 		{
-			UpdateStatVal(STAT_STR, Calc_GetRandVal2(0, (iDmg * iHitLifeLeech * 30) / 10000), Stat_GetMax(STAT_STR));	// leech 0% ~ 30% of damage value
+			UpdateStatVal(STAT_STR, Calc_GetRandVal((iDmg * iHitLifeLeech * 30) / 10000), Stat_GetMax(STAT_STR));	// leech 0% ~ 30% of damage value
 			fLeechSound = true;
 		}
 		if ( m_HitManaLeech > 0 )
 		{
-			UpdateStatVal(STAT_INT, Calc_GetRandVal2(0, (iDmg * m_HitManaLeech * 40) / 10000), Stat_GetMax(STAT_INT));	// leech 0% ~ 40% of damage value
+			UpdateStatVal(STAT_INT, Calc_GetRandVal((iDmg * m_HitManaLeech * 40) / 10000), Stat_GetMax(STAT_INT));	// leech 0% ~ 40% of damage value
 			fLeechSound = true;
 		}
 		if ( m_HitStaminaLeech > Calc_GetRandVal(100) )
@@ -3034,7 +3034,7 @@ WAR_SWING_TYPE CChar::Fight_Hit(CChar *pCharTarg)
 		if ( pCharTarg->m_wBloodHue != static_cast<HUE_TYPE>(-1) )
 		{
 			static const ITEMID_TYPE sm_Blood[] = { ITEMID_BLOOD1, ITEMID_BLOOD2, ITEMID_BLOOD3, ITEMID_BLOOD4, ITEMID_BLOOD5, ITEMID_BLOOD6, ITEMID_BLOOD_SPLAT };
-			int iBloodQty = (g_Cfg.m_iFeatureSE & FEATURE_SE_UPDATE) ? Calc_GetRandVal2(4, 5) : Calc_GetRandVal2(1, 2);
+			int iBloodQty = (g_Cfg.m_iFeatureSE & FEATURE_SE_UPDATE) ? Calc_GetRandVal(4, 5) : Calc_GetRandVal(1, 2);
 
 			for ( int i = 0; i < iBloodQty; ++i )
 			{

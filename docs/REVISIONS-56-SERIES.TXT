@@ -1616,3 +1616,6 @@ Changed: Misc improvements on account connection process.
 30-09-2019, Coruja
 Changed: Removed NEWPASSWORD account function for security purposes. To set/change account password, use PASSWORD or MD5PASSWORD instead.
 Changed: Improved internal regex engine (STRREGEX function).
+
+02-10-2019, Coruja
+Changed: Improved internal random number generator engine (RAND function).

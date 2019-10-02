@@ -2081,7 +2081,7 @@ int CChar::Skill_Provocation(SKTRIG_TYPE stage)
 		case SKTRIG_SUCCESS:
 		{
 			// They are just too good for this.
-			if ( pCharProv->Stat_GetAdjusted(STAT_KARMA) >= Calc_GetRandVal2(1000, 10000) )
+			if ( pCharProv->Stat_GetAdjusted(STAT_KARMA) >= Calc_GetRandVal(1000, 10000) )
 			{
 				pCharProv->Emote(g_Cfg.GetDefaultMsg(DEFMSG_PROVOCATION_EMOTE_1));
 				return -SKTRIG_ABORT;
@@ -2495,7 +2495,7 @@ int CChar::Skill_Herding(SKTRIG_TYPE stage)
 				UpdateAnimate(ANIM_ATTACK_WEAPON);
 
 			int iIntVal = pChar->Stat_GetAdjusted(STAT_INT);
-			return Calc_GetRandVal2(iIntVal / 2, iIntVal);
+			return Calc_GetRandVal(iIntVal / 2, iIntVal);
 		}
 
 		case SKTRIG_FAIL:
@@ -3123,7 +3123,7 @@ int CChar::Skill_Act_Throwing(SKTRIG_TYPE stage)
 
 	if ( stage == SKTRIG_START )
 	{
-		UpdateStatVal(STAT_DEX, -Calc_GetRandVal2(4, 10));
+		UpdateStatVal(STAT_DEX, -Calc_GetRandVal(4, 10));
 		if ( !g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_NOANIM) )
 			UpdateAnimate(ANIM_MON_Stomp);
 

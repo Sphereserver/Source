@@ -273,7 +273,6 @@ if defined GitRev (
     <ClInclude Include="src\common\crashdump\crashdump.h" />
     <ClInclude Include="src\common\CVarFloat.h" />
     <ClInclude Include="src\common\CWindow.h" />
-    <ClInclude Include="src\common\mtrand\mtrand.h" />
     <ClInclude Include="src\common\sqlite\SQLite.h" />
     <ClInclude Include="src\common\sqlite\sqlite3.h" />
     <ClInclude Include="src\common\zlib\gzguts.h" />

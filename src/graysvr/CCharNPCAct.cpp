@@ -1490,7 +1490,7 @@ bool CChar::NPC_FightMagery(CChar *pChar)
 
 	CObjBase *pSrc = this;
 	CObjBase *pTarg = pChar;
-	int iRandSpell = Calc_GetRandVal2(0, iSpellCount - 1);		// spells are stored on a zero-based vector
+	int iRandSpell = Calc_GetRandVal(iSpellCount - 1);		// spells are stored on a zero-based vector
 	int iSkill = SKILL_MAGERY;
 	int iSkillReq = 0;
 
@@ -2300,7 +2300,7 @@ void CChar::NPC_Act_Idle()
 
 	// Just stand here for a bit
 	Skill_Start(SKILL_NONE);
-	SetTimeout(static_cast<INT64>(Calc_GetRandVal2(1, 20)) * TICK_PER_SEC);
+	SetTimeout(static_cast<INT64>(Calc_GetRandVal(1, 20)) * TICK_PER_SEC);
 }
 
 bool CChar::NPC_OnReceiveItem(CChar *pCharSrc, CItem *pItem)
@@ -2594,7 +2594,7 @@ void CChar::NPC_OnTickAction()
 	{
 		// Set timer for next tick
 		INT64 iTimeout = maximum(0, (150 - Stat_GetAdjusted(STAT_DEX)) / 2);
-		SetTimeout(TICK_PER_SEC + Calc_GetRandLLVal2(iTimeout / 2, iTimeout));
+		SetTimeout(TICK_PER_SEC + Calc_GetRandLLVal(iTimeout / 2, iTimeout));
 	}
 
 	// Periodically restock vendors

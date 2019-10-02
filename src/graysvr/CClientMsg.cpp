@@ -649,7 +649,7 @@ void CClient::addWeather(WEATHER_TYPE weather)
 		return;
 
 	m_Env.m_Weather = weather;
-	new PacketWeather(this, weather, static_cast<BYTE>(Calc_GetRandVal2(10, 70)), 0x10);
+	new PacketWeather(this, weather, static_cast<BYTE>(Calc_GetRandVal(10, 70)), 0x10);
 }
 
 void CClient::addLight()
@@ -3441,7 +3441,7 @@ BYTE CClient::LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg)
 	TCHAR szName[MAX_ACCOUNT_NAME_ENTRY];
 	if ( !CAccount::NameStrip(szName, pszAccount) || Str_Check(pszAccount) )
 		return PacketLoginError::BadAccount;
-	if ( (pszPassword[0] == '\0') || Str_Check(pszPassword) )
+	if ( !pszPassword || Str_Check(pszPassword) )
 		return PacketLoginError::BadPassword;
 
 	// Check login

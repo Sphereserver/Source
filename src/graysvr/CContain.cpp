@@ -824,7 +824,7 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 		int iMaxX = (pItemDef->m_ttContainer.m_dwMaxXY & 0xFFFF0000) >> 16;
 		int iMaxY = (pItemDef->m_ttContainer.m_dwMaxXY & 0xFFFF);
 		DEBUG_WARN(("Custom container gump id %d for item 0%x\n", gump, GetDispID()));
-		return CPointMap(static_cast<WORD>(Calc_GetRandVal2(iMinX, iMaxX)), static_cast<WORD>(Calc_GetRandVal2(iMinY, iMaxY)));
+		return CPointMap(static_cast<WORD>(Calc_GetRandVal(iMinX, iMaxX)), static_cast<WORD>(Calc_GetRandVal(iMinY, iMaxY)));
 	}
 
 	static const struct		// we can probably get this from MUL file some place
@@ -924,11 +924,11 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 	{
 		if ( gump != sm_ContainerRect[i].m_gump )
 			continue;
-		return CPointMap(static_cast<WORD>(Calc_GetRandVal2(sm_ContainerRect[i].m_minX, sm_ContainerRect[i].m_maxX)), static_cast<WORD>(Calc_GetRandVal2(sm_ContainerRect[i].m_minY, sm_ContainerRect[i].m_maxY)));
+		return CPointMap(static_cast<WORD>(Calc_GetRandVal(sm_ContainerRect[i].m_minX, sm_ContainerRect[i].m_maxX)), static_cast<WORD>(Calc_GetRandVal(sm_ContainerRect[i].m_minY, sm_ContainerRect[i].m_maxY)));
 	}
 
 	DEBUG_WARN(("Unknown container gump id %d for item 0%x\n", gump, GetDispID()));
-	return CPointMap(static_cast<WORD>(Calc_GetRandVal2(0, 200)), static_cast<WORD>(Calc_GetRandVal2(0, 200)));
+	return CPointMap(static_cast<WORD>(Calc_GetRandVal(0, 200)), static_cast<WORD>(Calc_GetRandVal(0, 200)));
 }
 
 SOUND_TYPE CItemContainer::GetDropSound() const

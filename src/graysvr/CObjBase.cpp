@@ -501,8 +501,8 @@ bool CObjBase::MoveNear(CPointMap pt, WORD wSteps)
 	for ( WORD i = 0; i < 20; ++i )
 	{
 		pt = ptOld;
-		pt.m_x += static_cast<signed short>(Calc_GetRandVal2(-wSteps, wSteps));
-		pt.m_y += static_cast<signed short>(Calc_GetRandVal2(-wSteps, wSteps));
+		pt.m_x += static_cast<signed short>(Calc_GetRandVal(-wSteps, wSteps));
+		pt.m_y += static_cast<signed short>(Calc_GetRandVal(-wSteps, wSteps));
 
 		if ( !MoveTo(pt) )
 			continue;
