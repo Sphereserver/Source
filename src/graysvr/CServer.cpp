@@ -253,13 +253,13 @@ bool CServer::GetPublicIP()
 				--i;
 			}
 		}
-	}
 
-	// Check if it's a valid IP address
-	if ( Str_RegExMatch("^([0-9]{1,3}).([0-9]{1,3}).([0-9]{1,3}).([0-9]{1,3})$", pszBuffer) == MATCH_VALID )
-	{
-		m_ip.SetAddrStr(pszBuffer);
-		return true;
+		// Check if it's a valid IP address
+		if ( Str_RegExMatch("^([0-9]{1,3}).([0-9]{1,3}).([0-9]{1,3}).([0-9]{1,3})$", pszBuffer) == MATCH_VALID )
+		{
+			m_ip.SetAddrStr(pszBuffer);
+			return true;
+		}
 	}
 	DEBUG_ERR(("Failed to get server public IP: REST API 'http://%s' returned a non-IP value. Please check RestAPIPublicIP setting on " SPHERE_FILE ".ini\n", szURL));
 	return false;

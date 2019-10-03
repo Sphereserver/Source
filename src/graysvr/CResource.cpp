@@ -1600,7 +1600,7 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatVal(m_iSavePeriod / (60 * TICK_PER_SEC));
 			break;
 		case RC_SECTORSLEEP:
-			sVal.FormatVal(m_iSectorSleepMask ? static_cast<long>(log2(static_cast<double>(m_iSectorSleepMask) + 1)) : 0);
+			sVal.FormatVal(m_iSectorSleepMask ? static_cast<long>(log(static_cast<double>(m_iSectorSleepMask) + 1) / log(static_cast<double>(2))) : 0);
 			break;
 		case RC_SAVEBACKGROUND:
 			sVal.FormatVal(m_iSaveBackgroundTime / (60 * TICK_PER_SEC));
