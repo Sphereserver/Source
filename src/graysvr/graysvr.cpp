@@ -824,13 +824,6 @@ static void Sphere_MainMonitorLoop()
 	while ( ! g_Serv.m_iExitFlag )
 	{
 		EXC_TRY("MainMonitorLoop");
-
-		if ( g_Cfg.m_iFreezeRestartTime <= 0 )
-		{
-			DEBUG_ERR(("Freeze Restart Time cannot be cleared at run time\n"));
-			g_Cfg.m_iFreezeRestartTime = 10;
-		}
-
 		EXC_SET("Sleep");
 		// only sleep 1 second at a time, to avoid getting stuck here when closing
 		// down with large m_iFreezeRestartTime values set

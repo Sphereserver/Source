@@ -66,7 +66,7 @@ void ThreadHolder::push(IThread *thread)
 
 	SimpleThreadLock lock(m_mutex);
 	m_threads.push_back(thread);
-	m_threadCount++;
+	++m_threadCount;
 }
 
 void ThreadHolder::pop(IThread *thread)
@@ -79,7 +79,7 @@ void ThreadHolder::pop(IThread *thread)
 	spherethreadlist_t::iterator it = std::find(m_threads.begin(), m_threads.end(), thread);
 	if (it != m_threads.end())
 	{
-		m_threadCount--;
+		--m_threadCount;
 		m_threads.erase(it);
 		return;
 	}
@@ -98,7 +98,7 @@ IThread * ThreadHolder::getThreadAt(size_t at)
 		if ( at == 0 )
 			return *it;
 
-		at--;
+		--at;
 	}
 
 	return NULL;
@@ -273,7 +273,7 @@ void AbstractThread::run()
 		{
 			if( lastWasException )
 			{
-				exceptions++;
+				++exceptions;
 			}
 			else
 			{
@@ -505,7 +505,7 @@ char *AbstractSphereThread::allocateBuffer()
 	SimpleThreadLock stlBuffer(g_tmpStringMutex);
 
 	char * buffer = NULL; 
-	g_tmpStringIndex++;
+	++g_tmpStringIndex;
 
 	if( g_tmpStringIndex >= THREAD_TSTRING_STORAGE )
 	{
@@ -554,8 +554,10 @@ void AbstractSphereThread::allocateString(TemporaryString &string)
 {
 	SimpleThreadLock stlBuffer(g_tmpTemporaryStringMutex);
 
+	EXC_TRY("allocateStringBuffer");
 	TemporaryStringStorage * store = allocateStringBuffer();
 	string.init(store->m_buffer, &store->m_state);
+	EXC_CATCH;
 }
 
 bool AbstractSphereThread::shouldExit()
@@ -573,7 +575,7 @@ void AbstractSphereThread::pushStackCall(const char *name)
 	{
 		m_stackInfo[m_stackPos].functionName = name;
 		m_stackInfo[m_stackPos].startTime = GetTickCount64();
-		m_stackPos++;
+		++m_stackPos;
 		m_stackInfo[m_stackPos].startTime = 0;
 	}
 }
@@ -588,7 +590,7 @@ void AbstractSphereThread::printStackTrace()
 	unsigned int threadId = getId();
 
 	g_Log.EventDebug("__ thread (%u) __ |  # | _____________ function _____________ | __ ticks passed from previous function start __\n", threadId);
-	for ( size_t i = 0; i < 0x1000; i++ )
+	for ( size_t i = 0; i < 0x1000; ++i )
 	{
 		if ( m_stackInfo[i].startTime == 0 )
 			break;

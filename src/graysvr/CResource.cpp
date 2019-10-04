@@ -946,19 +946,21 @@ bool CResource::r_LoadVal(CScript &s)
 			m_iClientLingerTime = s.GetArgVal() * TICK_PER_SEC;
 			break;
 		case RC_CLIENTLOGINMAXTRIES:
-			m_iClientLoginMaxTries = s.GetArgVal();
-			if ( m_iClientLoginMaxTries < 0 )
-				m_iClientLoginMaxTries = 0;
+		{
+			int iVal = s.GetArgVal();
+			m_iClientLoginMaxTries = maximum(0, iVal);
 			break;
+		}
 		case RC_CLIENTLOGINTEMPBAN:
 			m_iClientLoginTempBan = s.GetArgVal() * 60 * TICK_PER_SEC;
 			break;
 		case RC_CLIENTMAX:
 		case RC_CLIENTS:
-			m_iClientsMax = s.GetArgVal();
-			if ( m_iClientsMax > FD_SETSIZE - 1 )	// max number we can deal with (compile time thing)
-				m_iClientsMax = FD_SETSIZE - 1;
+		{
+			int iVal = s.GetArgVal();
+			m_iClientsMax = minimum(maximum(0, iVal), FD_SETSIZE - 1);
 			break;
+		}
 		case RC_COLORHIDDEN:
 			m_iColorHidden = static_cast<HUE_TYPE>(s.GetArgLLVal());
 			break;
@@ -987,8 +989,11 @@ bool CResource::r_LoadVal(CScript &s)
 			m_iDecay_Item = s.GetArgVal() * 60 * TICK_PER_SEC;
 			break;
 		case RC_FREEZERESTARTTIME:
-			m_iFreezeRestartTime = s.GetArgVal() * TICK_PER_SEC;
+		{
+			int iVal = s.GetArgVal();
+			m_iFreezeRestartTime = maximum(10, iVal) * TICK_PER_SEC;
 			break;
+		}
 		case RC_GAMEMINUTELENGTH:
 			m_iGameMinuteLength = s.GetArgVal() * TICK_PER_SEC;
 			break;
@@ -1014,28 +1019,32 @@ bool CResource::r_LoadVal(CScript &s)
 			m_iMapCacheTime = s.GetArgVal() * TICK_PER_SEC;
 			break;
 		case RC_MAXCHARSPERACCOUNT:
-			m_iMaxCharsPerAccount = static_cast<BYTE>(s.GetArgLLVal());
-			if ( m_iMaxCharsPerAccount > MAX_CHARS_PER_ACCT )
-				m_iMaxCharsPerAccount = MAX_CHARS_PER_ACCT;
+		{
+			BYTE bVal = static_cast<BYTE>(s.GetArgLLVal());
+			m_iMaxCharsPerAccount = minimum(bVal, MAX_CHARS_PER_ACCT);
 			break;
+		}
 		case RC_MAXFAME:
-			m_iMaxFame = s.GetArgVal();
-			if ( m_iMaxFame < 0 )
-				m_iMaxFame = 0;
+		{
+			int iVal = s.GetArgVal();
+			m_iMaxFame = maximum(0, iVal);
 			break;
+		}
 		case RC_MAXKARMA:
-			m_iMaxKarma = s.GetArgVal();
-			if ( m_iMaxKarma < m_iMinKarma )
-				m_iMaxKarma = m_iMinKarma;
+		{
+			int iVal = s.GetArgVal();
+			m_iMaxKarma = maximum(m_iMinKarma, iVal);
 			break;
+		}
 		case RC_MINCHARDELETETIME:
 			m_iMinCharDeleteTime = s.GetArgVal() * TICK_PER_SEC;
 			break;
 		case RC_MINKARMA:
-			m_iMinKarma = s.GetArgVal();
-			if ( m_iMinKarma > m_iMaxKarma )
-				m_iMinKarma = m_iMaxKarma;
+		{
+			int iVal = s.GetArgVal();
+			m_iMinKarma = minimum(iVal, m_iMaxKarma);
 			break;
+		}
 		case RC_MURDERDECAYTIME:
 			m_iMurderDecayTime = s.GetArgVal() * TICK_PER_SEC;
 			break;
@@ -1058,15 +1067,17 @@ bool CResource::r_LoadVal(CScript &s)
 			break;
 		}
 		case RC_PLAYEREVIL:
-			m_iPlayerKarmaEvil = s.GetArgVal();
-			if ( m_iPlayerKarmaNeutral < m_iPlayerKarmaEvil )
-				m_iPlayerKarmaNeutral = m_iPlayerKarmaEvil;
+		{
+			int iVal = s.GetArgVal();
+			m_iPlayerKarmaEvil = minimum(iVal, m_iPlayerKarmaNeutral);
 			break;
+		}
 		case RC_PLAYERNEUTRAL:
-			m_iPlayerKarmaNeutral = s.GetArgVal();
-			if ( m_iPlayerKarmaEvil > m_iPlayerKarmaNeutral )
-				m_iPlayerKarmaEvil = m_iPlayerKarmaNeutral;
+		{
+			int iVal = s.GetArgVal();
+			m_iPlayerKarmaNeutral = maximum(m_iPlayerKarmaEvil, iVal);
 			break;
+		}
 		case RC_GUARDSINSTANTKILL:
 			m_fGuardsInstantKill = s.GetArgVal() ? true : false;
 			break;
@@ -1097,18 +1108,19 @@ bool CResource::r_LoadVal(CScript &s)
 			break;
 		case RC_SECTORSLEEP:
 		{
-			int iSleep = s.GetArgVal();
-			m_iSectorSleepMask = iSleep ? ((1 << iSleep) - 1) : 0;
+			int iVal = s.GetArgVal();
+			m_iSectorSleepMask = (1 << minimum(maximum(0, iVal), 31)) - 1;
 			break;
 		}
 		case RC_SAVEBACKGROUND:
 			m_iSaveBackgroundTime = s.GetArgVal() * 60 * TICK_PER_SEC;
 			break;
 		case RC_SAVESECTORSPERTICK:
-			m_iSaveSectorsPerTick = s.GetArgVal();
-			if ( m_iSaveSectorsPerTick <= 0 )
-				m_iSaveSectorsPerTick = 1;
+		{
+			int iVal = s.GetArgVal();
+			m_iSaveSectorsPerTick = maximum(1, iVal);
 			break;
+		}
 		case RC_SAVESTEPMAXCOMPLEXITY:
 			m_iSaveStepMaxComplexity = s.GetArgVal();
 			break;
@@ -1135,17 +1147,12 @@ bool CResource::r_LoadVal(CScript &s)
 			if ( g_Serv.IsLoading() )
 				g_Cfg.m_iNetworkThreads = s.GetArgVal();
 			else
-				g_Log.EventError("The value of NetworkThreads cannot be modified after the server has started\n");
+				g_Log.EventError("NetworkThreads setting can't be changed after the server has started\n");
 			break;
 		case RC_NETWORKTHREADPRIORITY:
 		{
-			int iPriority = s.GetArgVal();
-			if ( iPriority < IThread::Idle )
-				iPriority = IThread::Idle;
-			else if ( iPriority > IThread::RealTime )
-				iPriority = IThread::Disabled;
-
-			m_iNetworkThreadPriority = iPriority;
+			int iVal = s.GetArgVal();
+			m_iNetworkThreadPriority = minimum(maximum(IThread::Idle, iVal), IThread::RealTime);
 			break;
 		}
 #endif
