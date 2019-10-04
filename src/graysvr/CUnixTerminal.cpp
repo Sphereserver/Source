@@ -11,16 +11,12 @@ CUnixTerminal g_UnixTerminal;
 
 CUnixTerminal::CUnixTerminal()
 {
-	EXC_TRY("PrepareTerminal");
 	prepare();
-	EXC_CATCH;
 }
 
 CUnixTerminal::~CUnixTerminal()
 {
-	EXC_TRY("RestoreTerminal");
 	restore();
-	EXC_CATCH;
 }
 
 bool CUnixTerminal::isReady()

@@ -2643,16 +2643,8 @@ void CChar::NPC_Pathfinding()
 
 	// Clear saved steps list
 	EXC_SET("clearing last steps");
-#ifdef _WIN32
 	memset(m_pNPC->m_nextX, 0, sizeof(m_pNPC->m_nextX));
 	memset(m_pNPC->m_nextY, 0, sizeof(m_pNPC->m_nextY));
-#else
-	for ( int i = 0; i < MAX_NPC_PATH_STORAGE_SIZE; ++i )
-	{
-		m_pNPC->m_nextX[i] = 0;
-		m_pNPC->m_nextY[i] = 0;
-	}
-#endif
 
 	// Proceed with the pathfinding
 	EXC_SET("filling the map");
