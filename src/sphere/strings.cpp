@@ -216,9 +216,7 @@ TemporaryString::TemporaryString()
 	if( current != NULL )
 	{
 		// allocate from thread context
-		EXC_TRY("AllocateString");
 		current->allocateString(*this);
-		EXC_CATCH;
 	}
 	else
 	{

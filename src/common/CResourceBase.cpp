@@ -895,14 +895,17 @@ bool CResourceLink::ResourceLock(CResourceLock &s)
 
 	// Give several tries to lock the script while multithreading
 	ASSERT(m_pScript);
-	int iRet = s.OpenLock(m_pScript, m_Context);
-	if ( !iRet )
+	if ( s.OpenLock(m_pScript, m_Context) == 0 )
 		return true;
 
 	s.AttachObj(this);
 
-	// ret = -2 or -3
+	// It doesn't make much sense catch exceptions inside error messages, but since GetResourceName() can
+	// throw exception when there's no buffer to allocate the string, this exception must be caught here
+	//const char *m_sClassName = "CResourceLink";
+	EXC_TRY("ErrorMessage");
 	DEBUG_ERR(("ResourceLock '%s':%ld id=%s FAILED\n", static_cast<LPCTSTR>(s.GetFilePath()), m_Context.m_lOffset, GetResourceName()));
+	EXC_CATCH;
 	return false;
 }
 

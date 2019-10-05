@@ -554,10 +554,8 @@ void AbstractSphereThread::allocateString(TemporaryString &string)
 {
 	SimpleThreadLock stlBuffer(g_tmpTemporaryStringMutex);
 
-	EXC_TRY("allocateStringBuffer");
 	TemporaryStringStorage * store = allocateStringBuffer();
 	string.init(store->m_buffer, &store->m_state);
-	EXC_CATCH;
 }
 
 bool AbstractSphereThread::shouldExit()
