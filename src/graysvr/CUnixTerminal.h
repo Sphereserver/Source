@@ -1,30 +1,31 @@
 #ifndef _INC_CUNIXTERMINAL_H
 #define _INC_CUNIXTERMINAL_H
-#ifndef _WIN32
+#pragma once
 
+#ifndef _WIN32
 #ifdef _USECURSES
-#include <curses.h>
-#pragma comment(lib, "ncurses")
+	#include <curses.h>
+	#pragma comment(lib, "ncurses")
 #else
-#include <termios.h>
+	#include <termios.h>
 #endif
 
 class CUnixTerminal
 {
 private:
 #ifdef _USECURSES
-	WINDOW * m_window;
+	WINDOW *m_pWindow;
 #else
-	termios m_original;
+	termios m_terminal;
 #endif
-	TCHAR m_nextChar;
-	bool m_isColorEnabled;
-	bool m_prepared;
+	TCHAR m_szNextChar;
+	bool m_fColorEnabled;
+	bool m_fPrepared;
 
 public:
 	enum COLOR_TYPE
 	{
-		COL_DEFAULT = 0,
+		COL_DEFAULT,
 		COL_RED,
 		COL_GREEN,
 		COL_YELLOW,
@@ -39,27 +40,29 @@ public:
 	CUnixTerminal();
 	~CUnixTerminal();
 
-protected:
-	CUnixTerminal(const CUnixTerminal & copy);
-	CUnixTerminal & operator=(const CUnixTerminal & other);
-
 public:
 	bool isReady();
 	TCHAR read();
-	void prepare();
-	void print(LPCTSTR message);
 	void setColor(COLOR_TYPE color);
-	void setColorEnabled(bool enable);
+	void print(LPCTSTR pszText);
+	void prepare();
+
+	void setColorEnabled(bool fSet)
+	{
+		m_fColorEnabled = fSet;
+	}
+	bool isColorEnabled() const
+	{
+		return m_fColorEnabled;
+	}
 
 private:
 	void prepareColor();
 	void restore();
 
-public:
-	bool isColorEnabled() const
-	{
-		return m_isColorEnabled;
-	}
+protected:
+	CUnixTerminal(const CUnixTerminal &copy);
+	CUnixTerminal &operator=(const CUnixTerminal &other);
 };
 
 extern CUnixTerminal g_UnixTerminal;

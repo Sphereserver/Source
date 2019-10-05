@@ -900,12 +900,7 @@ bool CResourceLink::ResourceLock(CResourceLock &s)
 
 	s.AttachObj(this);
 
-	// It doesn't make much sense catch exceptions inside error messages, but since GetResourceName() can
-	// throw exception when there's no buffer to allocate the string, this exception must be caught here
-	//const char *m_sClassName = "CResourceLink";
-	EXC_TRY("ErrorMessage");
 	DEBUG_ERR(("ResourceLock '%s':%ld id=%s FAILED\n", static_cast<LPCTSTR>(s.GetFilePath()), m_Context.m_lOffset, GetResourceName()));
-	EXC_CATCH;
 	return false;
 }
 
