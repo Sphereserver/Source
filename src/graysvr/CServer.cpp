@@ -66,7 +66,7 @@ void CServer::SetExitFlag(int iFlag)
 void CServer::Shutdown(INT64 iMinutes)
 {
 	ADDTOCALLSTACK("CServer::Shutdown");
-	if ( iMinutes == 0 )
+	if ( iMinutes <= 0 )
 	{
 		if ( m_timeShutdown.IsTimeValid() )
 		{
@@ -75,12 +75,7 @@ void CServer::Shutdown(INT64 iMinutes)
 		}
 		return;
 	}
-
-	if ( iMinutes < 0 )
-		iMinutes = g_World.GetTimeDiff(m_timeShutdown) / (60 * TICK_PER_SEC);
-	else
-		m_timeShutdown = CServTime::GetCurrentTime() + (iMinutes * 60 * TICK_PER_SEC);
-
+	m_timeShutdown = CServTime::GetCurrentTime() + (iMinutes * 60 * TICK_PER_SEC);
 	g_World.Broadcastf(g_Cfg.GetDefaultMsg(DEFMSG_MSG_SERV_SHUTDOWN), iMinutes);
 }
 
@@ -300,9 +295,6 @@ void CServer::OnTick()
 		}
 		m_fResyncRequested = NULL;
 	}
-
-	EXC_SET("SetTime");
-	SetValidTime();
 
 	ProfileTask overheadTask(PROFILE_OVERHEAD);
 
@@ -993,7 +985,7 @@ LPCTSTR CServer::GetStatusString(BYTE bIndex) const
 		case 0x22:	// '"'
 		{
 			// Shown in the INFO page in game
-			sprintf(pszTemp, SPHERE_TITLE ", Name=%s, Age=%lld, Clients=%lu, Items=%lu, Chars=%lu, Mem=%luK\n", GetName(), GetAgeHours() / 24, StatGet(SERV_STAT_CLIENTS), StatGet(SERV_STAT_ITEMS), StatGet(SERV_STAT_CHARS), StatGet(SERV_STAT_MEM));
+			sprintf(pszTemp, SPHERE_TITLE ", Name=%s, Age=%lld, Clients=%lu, Items=%lu, Chars=%lu, Mem=%luK\n", GetName(), GetAge(), StatGet(SERV_STAT_CLIENTS), StatGet(SERV_STAT_ITEMS), StatGet(SERV_STAT_CHARS), StatGet(SERV_STAT_MEM));
 			break;
 		}
 		case 0x24:	// '$'

@@ -1,84 +1,68 @@
 #include "graysvr.h"	// predef header
 
-//	Memory profiling
-#ifdef _WIN32	// (Win32)
-	//	grabbed from platform SDK, psapi.h
-	typedef struct _PROCESS_MEMORY_COUNTERS {
-		DWORD cb;
-		DWORD PageFaultCount;
-		SIZE_T PeakWorkingSetSize;
-		SIZE_T WorkingSetSize;
-		SIZE_T QuotaPeakPagedPoolUsage;
-		SIZE_T QuotaPagedPoolUsage;
-		SIZE_T QuotaPeakNonPagedPoolUsage;
-		SIZE_T QuotaNonPagedPoolUsage;
-		SIZE_T PagefileUsage;
-		SIZE_T PeakPagefileUsage;
-	} PROCESS_MEMORY_COUNTERS, *PPROCESS_MEMORY_COUNTERS;
+// Memory profiling
+#ifdef _WIN32
+	#include <psapi.h>
 
-	//	PSAPI external definitions
-	typedef	BOOL (WINAPI *pGetProcessMemoryInfo)(HANDLE, PPROCESS_MEMORY_COUNTERS, DWORD);
-	HMODULE	m_hmPsapiDll = NULL;
+	typedef	BOOL(WINAPI *pGetProcessMemoryInfo)(HANDLE, PPROCESS_MEMORY_COUNTERS, DWORD);
 	pGetProcessMemoryInfo m_GetProcessMemoryInfo = NULL;
-	PROCESS_MEMORY_COUNTERS	pcnt;
-#else			// (Unix)
+	HMODULE m_hModule = NULL;
+#else
 	#include <sys/resource.h>
 #endif
-	bool	m_bPmemory = true;		// process memory information is available?
+bool m_fProcessInfoAvailable = true;
 
 //////////////////////////////////////////////////////////////////////
 // -CServerDef
 
 CServerDef::CServerDef(LPCTSTR pszName, CSocketAddressIP dwIP) : m_ip(dwIP, SPHERE_DEF_PORT)	// SOCKET_LOCAL_ADDRESS
 {
-	// Statistics.
-	memset( m_dwStat, 0, sizeof( m_dwStat ));	// THIS MUST BE FIRST !
-
-	SetName( pszName );
-	m_timeLastValid.Init();
+	memset(m_dwStat, 0, sizeof(m_dwStat));	// THIS MUST BE FIRST
+	SetName(pszName);
 	m_timeCreate = CServTime::GetCurrentTime();
-
-	// Set default time zone from UTC
-	m_TimeZone = static_cast<signed char>( _timezone / (60 * 60) );	// Greenwich mean time.
+	m_TimeZone = static_cast<signed char>(_timezone / (60 * 60));
 	m_eAccApp = ACCAPP_Unspecified;
 }
 
 DWORD CServerDef::StatGet(SERV_STAT_TYPE i) const
 {
 	ADDTOCALLSTACK("CServerDef::StatGet");
-	ASSERT( i >= 0 && i <= SERV_STAT_QTY );
-	DWORD	d = m_dwStat[i];
+	ASSERT((i >= SERV_STAT_CLIENTS) && (i <= SERV_STAT_QTY));
+
+	DWORD d = m_dwStat[i];
 	EXC_TRY("StatGet");
-	if ( i == SERV_STAT_MEM )	// memory information
+	if ( i == SERV_STAT_MEM )	// memory usage information
 	{
 		d = 0;
-		if ( m_bPmemory )
+		if ( m_fProcessInfoAvailable )
 		{
 #ifdef _WIN32
-			if ( !m_hmPsapiDll )			// try to load psapi.dll if not loaded yet
+			if ( !m_hModule )	// load psapi.dll if not loaded yet
 			{
 				EXC_SET("load process info");
-				m_hmPsapiDll = LoadLibrary(TEXT("psapi.dll"));
-				if (m_hmPsapiDll == NULL)
+				m_hModule = LoadLibrary(TEXT("psapi.dll"));
+				if ( !m_hModule )
 				{
-					m_bPmemory = false;
-					g_Log.EventError(("Unable to load process information PSAPI.DLL library. Memory information will be not available.\n"));
+					m_fProcessInfoAvailable = false;
+					g_Log.EventError(("Unable to load process information API (psapi.dll), memory information will be not available\n"));
 				}
 				else
-				{
-					m_GetProcessMemoryInfo = reinterpret_cast<pGetProcessMemoryInfo>(::GetProcAddress(m_hmPsapiDll,"GetProcessMemoryInfo"));
-				}
+					m_GetProcessMemoryInfo = reinterpret_cast<pGetProcessMemoryInfo>(GetProcAddress(m_hModule, "GetProcessMemoryInfo"));
 			}
 
-			if ( m_GetProcessMemoryInfo ) {
+			if ( m_GetProcessMemoryInfo )
+			{
 				EXC_SET("open process");
 				HANDLE hProcess = GetCurrentProcess();
-				if ( hProcess ) {
+				PROCESS_MEMORY_COUNTERS pmc;
+				if ( hProcess )
+				{
 					ASSERT(hProcess == NOFILE_HANDLE);
 					EXC_SET("get memory info");
-					if ( m_GetProcessMemoryInfo(hProcess, &pcnt, sizeof(pcnt)) ) {
+					if ( m_GetProcessMemoryInfo(hProcess, &pmc, sizeof(pmc)) )
+					{
 						EXC_SET("read memory info");
-						d = pcnt.WorkingSetSize;
+						d = pmc.WorkingSetSize;
 					}
 					CloseHandle(hProcess);
 				}
@@ -87,13 +71,12 @@ DWORD CServerDef::StatGet(SERV_STAT_TYPE i) const
 			struct rusage usage;
 			int res = getrusage(RUSAGE_SELF, &usage);
 
-			if ( res == 0 && usage.ru_idrss )
+			if ( (res == 0) && usage.ru_idrss )
 				d = usage.ru_idrss;
 			else
 			{
 				CFileText inf;
-				TCHAR * buf = Str_GetTemp(), * head;
-
+				TCHAR *buf = Str_GetTemp(), *head;
 				sprintf(buf, "/proc/%d/status", getpid());
 				if ( inf.Open(buf, OF_READ|OF_TEXT) )
 				{
@@ -105,7 +88,7 @@ DWORD CServerDef::StatGet(SERV_STAT_TYPE i) const
 						if ( (head = strstr(buf, "VmSize:")) != NULL )
 						{
 							head += 7;
-							GETNONWHITESPACE(head)
+							GETNONWHITESPACE(head);
 							d = ATOI(head) * 1000;
 							break;
 						}
@@ -116,8 +99,8 @@ DWORD CServerDef::StatGet(SERV_STAT_TYPE i) const
 
 			if ( !d )
 			{
-				g_Log.EventError(("Unable to load process information from getrusage() and procfs. Memory information will be not available.\n"));
-				m_bPmemory = false;
+				g_Log.EventError(("Unable to load process information from getrusage() and procfs, memory information will be not available\n"));
+				m_fProcessInfoAvailable = false;
 			}
 #endif
 
@@ -152,22 +135,9 @@ void CServerDef::SetName(LPCTSTR pszName)
 #endif
 }
 
-void CServerDef::SetValidTime()
-{
-	ADDTOCALLSTACK("CServerDef::SetValidTime");
-	m_timeLastValid = CServTime::GetCurrentTime();
-}
-
-INT64 CServerDef::GetTimeSinceLastValid() const
-{
-	ADDTOCALLSTACK("CServerDef::GetTimeSinceLastValid");
-	return( - g_World.GetTimeDiff( m_timeLastValid ));
-}
-
 enum SC_TYPE
 {
 	SC_ACCAPP,
-	SC_ACCAPPS,
 	SC_ACCOUNTS,
 	SC_ADMINEMAIL,
 	SC_AGE,
@@ -178,8 +148,6 @@ enum SC_TYPE
 	SC_GMPAGES,
 	SC_ITEMS,
 	SC_LANG,
-	SC_LASTVALIDDATE,
-	SC_LASTVALIDTIME,
 	SC_MEM,
 	SC_NAME,
 	SC_RESTAPIPUBLICIP,
@@ -188,15 +156,13 @@ enum SC_TYPE
 	SC_SERVPORT,
 	SC_TIMEZONE,
 	SC_URL,
-	SC_URLLINK,
 	SC_VERSION,
 	SC_QTY
 };
 
-LPCTSTR const CServerDef::sm_szLoadKeys[SC_QTY+1] =	// static
+LPCTSTR const CServerDef::sm_szLoadKeys[SC_QTY + 1] =	// static
 {
 	"ACCAPP",
-	"ACCAPPS",
 	"ACCOUNTS",
 	"ADMINEMAIL",
 	"AGE",
@@ -207,8 +173,6 @@ LPCTSTR const CServerDef::sm_szLoadKeys[SC_QTY+1] =	// static
 	"GMPAGES",
 	"ITEMS",
 	"LANG",
-	"LASTVALIDDATE",
-	"LASTVALIDTIME",
 	"MEM",
 	"NAME",
 	"RESTAPIPUBLICIP",
@@ -217,124 +181,58 @@ LPCTSTR const CServerDef::sm_szLoadKeys[SC_QTY+1] =	// static
 	"SERVPORT",
 	"TIMEZONE",
 	"URL",
-	"URLLINK",
 	"VERSION",
 	NULL
 };
 
-static LPCTSTR const sm_AccAppTable[ ACCAPP_QTY ] =
-{
-	"Closed",		// Closed. Not accepting more.
-	"Unused",
-	"Free",			// Anyone can just log in and create a full account.
-	"GuestAuto",	// You get to be a guest and are automatically sent email with u're new password.
-	"GuestTrial",	// You get to be a guest til u're accepted for full by an Admin.
-	"Unused",
-	"Unspecified",	// Not specified.
-	"Unused",
-	"Unused"
-};
-
-bool CServerDef::r_LoadVal( CScript & s )
+bool CServerDef::r_LoadVal(CScript &s)
 {
 	ADDTOCALLSTACK("CServerDef::r_LoadVal");
 	EXC_TRY("LoadVal");
-	switch ( FindTableSorted( s.GetKey(), sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
+	switch ( FindTableSorted(s.GetKey(), sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1) )
 	{
 		case SC_ACCAPP:
-		case SC_ACCAPPS:
-			// Treat it as a value or a string.
-			if ( IsDigit( s.GetArgStr()[0] ))
-			{
-				m_eAccApp = static_cast<ACCAPP_TYPE>(s.GetArgVal());
-			}
-			else
-			{
-				// Treat it as a string. "Manual","Automatic","Guest"
-				m_eAccApp = static_cast<ACCAPP_TYPE>(FindTable(s.GetArgStr(), sm_AccAppTable, COUNTOF(sm_AccAppTable)));
-			}
-			if ( m_eAccApp < 0 || m_eAccApp >= ACCAPP_QTY )
+			m_eAccApp = static_cast<ACCAPP_TYPE>(s.GetArgLLVal());
+			if ( (m_eAccApp < ACCAPP_Closed) || (m_eAccApp >= ACCAPP_QTY) )
 				m_eAccApp = ACCAPP_Unspecified;
 			break;
-		case SC_AGE:
+		case SC_ADMINEMAIL:
+			m_sEMail = s.GetArgStr();
 			break;
 		case SC_CLIENTVERSION:
 			m_ClientVersion.SetClientVer(s.GetArgRaw());
 			break;
-		case SC_CREATE:
-			m_timeCreate = CServTime::GetCurrentTime() - ( s.GetArgLLVal() * TICK_PER_SEC );
-			break;
-		case SC_ADMINEMAIL:
-			if ( (this != &g_Serv) && !g_Serv.m_sEMail.IsEmpty() && strstr(s.GetArgStr(), g_Serv.m_sEMail) )
-				return false;
-			m_sEMail = s.GetArgStr();
-			break;
 		case SC_LANG:
-			{
-				TCHAR szLang[ 32 ];
-				Str_GetBare( szLang, s.GetArgStr(), sizeof(szLang), "<>/\"\\" );
-				m_sLang = szLang;
-			}
-			break;
-		case SC_LASTVALIDDATE:
-			m_dateLastValid.Read( s.GetArgStr());
-			break;
-		case SC_LASTVALIDTIME:
-			{
-				int iVal = s.GetArgVal() * TICK_PER_SEC;
-				if ( iVal < 0 )
-					m_timeLastValid = CServTime::GetCurrentTime() + iVal;
-				else
-					m_timeLastValid = CServTime::GetCurrentTime() - iVal;
-			}
+			m_sLang = s.GetArgStr();
 			break;
 		case SC_SERVIP:
-			m_ip.SetHostPortStr( s.GetArgStr());
+			m_ip.SetHostPortStr(s.GetArgStr());
 			break;
-
 		case SC_NAME:
 		case SC_SERVNAME:
-			SetName( s.GetArgStr());
+			SetName(s.GetArgStr());
 			break;
 		case SC_RESTAPIPUBLICIP:
 			m_sRestAPIPublicIP = s.GetArgStr();
 			break;
 		case SC_SERVPORT:
-			m_ip.SetPort( static_cast<WORD>(s.GetArgVal()));
-			break;
-
-		case SC_ACCOUNTS:
-			SetStat( SERV_STAT_ACCOUNTS, s.GetArgVal());
-			break;
-
-		case SC_CLIENTS:
-			{
-				int iClients = s.GetArgVal();
-				if ( iClients < 0 )
-					return( false );	// invalid
-				if ( iClients > FD_SETSIZE )	// Number is bugged !
-					return( false );
-				SetStat( SERV_STAT_CLIENTS, iClients );
-			}
-			break;
-		case SC_ITEMS:
-			SetStat( SERV_STAT_ITEMS, s.GetArgVal());
-			break;
-		case SC_CHARS:
-			SetStat( SERV_STAT_CHARS, s.GetArgVal());
+			m_ip.SetPort(static_cast<WORD>(s.GetArgVal()));
 			break;
 		case SC_TIMEZONE:
-			m_TimeZone = static_cast<char>(s.GetArgVal());
+			m_TimeZone = static_cast<signed char>(s.GetArgVal());
 			break;
 		case SC_URL:
-		case SC_URLLINK:
-			// It is a basically valid URL ?
-			if ( (this != &g_Serv) && !g_Serv.m_sURL.IsEmpty() && strstr(s.GetArgStr(), g_Serv.m_sURL) )
-				return false;
 			m_sURL = s.GetArgStr();
 			break;
+		case SC_ACCOUNTS:
+		case SC_AGE:
+		case SC_CHARS:
+		case SC_CLIENTS:
+		case SC_CREATE:
+		case SC_ITEMS:
+			break;	// read-only
 		default:
-			return ( CScriptObj::r_LoadVal(s));
+			return CScriptObj::r_LoadVal(s);
 	}
 	return true;
 	EXC_CATCH;
@@ -345,110 +243,84 @@ bool CServerDef::r_LoadVal( CScript & s )
 	return false;
 }
 
-bool CServerDef::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc )
+bool CServerDef::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 {
 	ADDTOCALLSTACK("CServerDef::r_WriteVal");
 	EXC_TRY("WriteVal");
-	switch ( FindTableSorted( pszKey, sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
+	switch ( FindTableSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1) )
 	{
-	case SC_ACCAPP:
-		sVal.FormatVal( m_eAccApp );
-		break;
-	case SC_ACCAPPS:
-		// enum string
-		ASSERT( m_eAccApp >= 0 && m_eAccApp < ACCAPP_QTY );
-		sVal = sm_AccAppTable[ m_eAccApp ];
-		break;
-	case SC_ADMINEMAIL:
-		sVal = m_sEMail;
-		break;
-	case SC_AGE:
-		// display the age in days.
-		sVal.FormatLLVal( GetAgeHours()/24 );
-		break;
-	case SC_CLIENTVERSION:
+		case SC_ACCAPP:
+			sVal.FormatVal(m_eAccApp);
+			break;
+		case SC_ACCOUNTS:
+			sVal.FormatUVal(StatGet(SERV_STAT_ACCOUNTS));
+			break;
+		case SC_ADMINEMAIL:
+			sVal = m_sEMail;
+			break;
+		case SC_AGE:
+			sVal.FormatLLVal(GetAge());
+			break;
+		case SC_CHARS:
+			sVal.FormatUVal(StatGet(SERV_STAT_CHARS));
+			break;
+		case SC_CLIENTS:
+			sVal.FormatUVal(StatGet(SERV_STAT_CLIENTS));
+			break;
+		case SC_CLIENTVERSION:
 		{
 			TCHAR szVersion[128];
 			sVal = m_ClientVersion.WriteClientVerString(m_ClientVersion.GetClientVer(), szVersion);
-		}
-		break;
-	case SC_CREATE:
-		sVal.FormatLLVal( -( g_World.GetTimeDiff(m_timeCreate) / TICK_PER_SEC ));
-		break;
-	case SC_LANG:
-		sVal = m_sLang;
-		break;
-
-	case SC_LASTVALIDDATE:
-		if ( m_timeLastValid.IsTimeValid() )
-			sVal.FormatLLVal( GetTimeSinceLastValid() / ( TICK_PER_SEC * 60 ));
-		else
-			sVal = "NA";
-		break;
-	case SC_LASTVALIDTIME:
-		// How many seconds ago.
-		sVal.FormatLLVal( m_timeLastValid.IsTimeValid() ? ( GetTimeSinceLastValid() / TICK_PER_SEC ) : -1 );
-		break;
-	case SC_SERVIP:
-		sVal = m_ip.GetAddrStr();
-		break;
-	case SC_NAME:
-	case SC_SERVNAME:
-		sVal = GetName();	// What the name should be. Fill in from ping.
-		break;
-	case SC_RESTAPIPUBLICIP:
-		sVal = m_sRestAPIPublicIP;
-		break;
-	case SC_SERVPORT:
-		sVal.FormatVal( m_ip.GetPort());
-		break;
-	case SC_ACCOUNTS:
-		sVal.FormatVal( StatGet( SERV_STAT_ACCOUNTS ));
-		break;
-	case SC_CLIENTS:
-		sVal.FormatVal( StatGet( SERV_STAT_CLIENTS ));
-		break;
-	case SC_ITEMS:
-		sVal.FormatVal( StatGet( SERV_STAT_ITEMS ));
-		break;
-	case SC_MEM:
-		sVal.FormatVal( StatGet( SERV_STAT_MEM ) );
-		break;
-	case SC_CHARS:
-		sVal.FormatVal( StatGet( SERV_STAT_CHARS ));
-		break;
-	case SC_GMPAGES:
-		sVal.FormatVal(g_World.m_GMPages.GetCount());
-		break;
-	case SC_TIMEZONE:
-		sVal.FormatVal( m_TimeZone );
-		break;
-	case SC_URL:
-		sVal = m_sURL;
-		break;
-	case SC_URLLINK:
-		// try to make a link of it.
-		if ( m_sURL.IsEmpty())
-		{
-			sVal = GetName();
 			break;
 		}
-		sVal.Format("<a href=\"http://%s\">%s</a>", static_cast<LPCTSTR>(m_sURL), GetName());
-		break;
-	case SC_VERSION:
-		sVal = SPHERE_VERSION;
-		break;
-	default:
+		case SC_CREATE:
+			sVal.FormatLLVal(-g_World.GetTimeDiff(m_timeCreate) / TICK_PER_SEC);
+			break;
+		case SC_GMPAGES:
+			sVal.FormatUVal(g_World.m_GMPages.GetCount());
+			break;
+		case SC_ITEMS:
+			sVal.FormatUVal(StatGet(SERV_STAT_ITEMS));
+			break;
+		case SC_LANG:
+			sVal = m_sLang;
+			break;
+		case SC_MEM:
+			sVal.FormatUVal(StatGet(SERV_STAT_MEM));
+			break;
+		case SC_NAME:
+		case SC_SERVNAME:
+			sVal = GetName();
+			break;
+		case SC_RESTAPIPUBLICIP:
+			sVal = m_sRestAPIPublicIP;
+			break;
+		case SC_SERVIP:
+			sVal = m_ip.GetAddrStr();
+			break;
+		case SC_SERVPORT:
+			sVal.FormatUVal(m_ip.GetPort());
+			break;
+		case SC_TIMEZONE:
+			sVal.FormatVal(m_TimeZone);
+			break;
+		case SC_URL:
+			sVal = m_sURL;
+			break;
+		case SC_VERSION:
+			sVal = SPHERE_VERSION;
+			break;
+		default:
 		{
 			LPCTSTR pszArgs = strchr(pszKey, ' ');
-			if (pszArgs != NULL)
+			if ( pszArgs )
 				GETNONWHITESPACE(pszArgs);
 
-			CScriptTriggerArgs Args( pszArgs ? pszArgs : "" );
-			if ( r_Call( pszKey, pSrc, &Args, &sVal ) )
+			CScriptTriggerArgs Args(pszArgs ? pszArgs : "");
+			if ( r_Call(pszKey, pSrc, &Args, &sVal) )
 				return true;
 
-			return( CScriptObj::r_WriteVal( pszKey, sVal, pSrc ));
+			return CScriptObj::r_WriteVal(pszKey, sVal, pSrc);
 		}
 	}
 	return true;
@@ -460,9 +332,9 @@ bool CServerDef::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * pSrc
 	return false;
 }
 
-INT64 CServerDef::GetAgeHours() const
+INT64 CServerDef::GetAge() const
 {
-	ADDTOCALLSTACK("CServerDef::GetAgeHours");
-	// This is just the amount of time it has been listed.
-	return(( - g_World.GetTimeDiff( m_timeCreate )) / ( TICK_PER_SEC * 60 * 60 ));
+	ADDTOCALLSTACK("CServerDef::GetAge");
+	// Get server age (days since m_timeCreate)
+	return -g_World.GetTimeDiff(m_timeCreate) / (TICK_PER_SEC * 60 * 60 * 24);
 }
