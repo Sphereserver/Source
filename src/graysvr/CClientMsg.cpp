@@ -3441,7 +3441,7 @@ BYTE CClient::LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg)
 	TCHAR szName[MAX_ACCOUNT_NAME_ENTRY];
 	if ( !CAccount::NameStrip(szName, pszAccount) || Str_Check(pszAccount) )
 		return PacketLoginError::BadAccount;
-	if ( Str_Check(pszPassword) )
+	if ( (pszPassword[0] == '\0') || Str_Check(pszPassword) )
 		return PacketLoginError::BadPassword;
 
 	// Check login

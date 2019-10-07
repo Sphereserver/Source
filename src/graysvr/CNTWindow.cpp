@@ -25,7 +25,7 @@ bool CNTWindow::CAboutDlg::OnInitDialog()
 #endif
 	SetDlgItemText(IDC_ABOUT_VERSION, z);
 
-	sprintf(z, "Compiled at %s (%s)", g_szServerBuildDate, g_szServerBuildTime);
+	sprintf(z, "Compiled at %s", g_szServerBuildDate);
 	SetDlgItemText(IDC_ABOUT_COMPILER, z);
 	return false;
 }

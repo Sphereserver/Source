@@ -243,7 +243,6 @@ protected:
 
 extern LPCTSTR g_szServerDescription;
 extern LPCTSTR g_szServerBuildDate;
-extern LPCTSTR g_szServerBuildTime;
 extern LPCTSTR const g_Stat_Name[STAT_QTY];
 extern CGStringList g_AutoComplete;
 

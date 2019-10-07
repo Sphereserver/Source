@@ -344,7 +344,6 @@ LPCTSTR const g_Stat_Name[STAT_QTY] =	// not sorted obviously.
 
 LPCTSTR g_szServerDescription = SPHERE_TITLE " Version " SPHERE_VERSION " " SPHERE_VER_FILEOS_STR " by www.spherecommunity.net";
 LPCTSTR g_szServerBuildDate = __DATE__;
-LPCTSTR g_szServerBuildTime = __TIME__;
 
 size_t CObjBase::sm_iCount = 0;	// UID table.
 ULONGLONG llTimeProfileFrequency = 1000;	// time profiler
