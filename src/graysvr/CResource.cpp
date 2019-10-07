@@ -1,5 +1,6 @@
 ﻿#include "graysvr.h"	// predef header
 #include "../network/network.h"
+#include <cmath>
 
 CResource::CResource()
 {
@@ -948,19 +949,21 @@ bool CResource::r_LoadVal(CScript &s)
 			m_iClientLingerTime = s.GetArgVal() * TICK_PER_SEC;
 			break;
 		case RC_CLIENTLOGINMAXTRIES:
-			m_iClientLoginMaxTries = s.GetArgVal();
-			if ( m_iClientLoginMaxTries < 0 )
-				m_iClientLoginMaxTries = 0;
+		{
+			int iVal = s.GetArgVal();
+			m_iClientLoginMaxTries = maximum(0, iVal);
 			break;
+		}
 		case RC_CLIENTLOGINTEMPBAN:
 			m_iClientLoginTempBan = s.GetArgVal() * 60 * TICK_PER_SEC;
 			break;
 		case RC_CLIENTMAX:
 		case RC_CLIENTS:
-			m_iClientsMax = s.GetArgVal();
-			if ( m_iClientsMax > FD_SETSIZE - 1 )	// max number we can deal with (compile time thing)
-				m_iClientsMax = FD_SETSIZE - 1;
+		{
+			int iVal = s.GetArgVal();
+			m_iClientsMax = minimum(maximum(0, iVal), FD_SETSIZE - 1);
 			break;
+		}
 		case RC_COLORHIDDEN:
 			m_iColorHidden = static_cast<HUE_TYPE>(s.GetArgLLVal());
 			break;
@@ -989,8 +992,11 @@ bool CResource::r_LoadVal(CScript &s)
 			m_iDecay_Item = s.GetArgVal() * 60 * TICK_PER_SEC;
 			break;
 		case RC_FREEZERESTARTTIME:
-			m_iFreezeRestartTime = s.GetArgVal() * TICK_PER_SEC;
+		{
+			int iVal = s.GetArgVal();
+			m_iFreezeRestartTime = maximum(10, iVal) * TICK_PER_SEC;
 			break;
+		}
 		case RC_GAMEMINUTELENGTH:
 			m_iGameMinuteLength = s.GetArgVal() * TICK_PER_SEC;
 			break;
@@ -1016,28 +1022,32 @@ bool CResource::r_LoadVal(CScript &s)
 			m_iMapCacheTime = s.GetArgVal() * TICK_PER_SEC;
 			break;
 		case RC_MAXCHARSPERACCOUNT:
-			m_iMaxCharsPerAccount = static_cast<BYTE>(s.GetArgLLVal());
-			if ( m_iMaxCharsPerAccount > MAX_CHARS_PER_ACCT )
-				m_iMaxCharsPerAccount = MAX_CHARS_PER_ACCT;
+		{
+			BYTE bVal = static_cast<BYTE>(s.GetArgLLVal());
+			m_iMaxCharsPerAccount = minimum(bVal, MAX_CHARS_PER_ACCT);
 			break;
+		}
 		case RC_MAXFAME:
-			m_iMaxFame = s.GetArgVal();
-			if ( m_iMaxFame < 0 )
-				m_iMaxFame = 0;
+		{
+			int iVal = s.GetArgVal();
+			m_iMaxFame = maximum(0, iVal);
 			break;
+		}
 		case RC_MAXKARMA:
-			m_iMaxKarma = s.GetArgVal();
-			if ( m_iMaxKarma < m_iMinKarma )
-				m_iMaxKarma = m_iMinKarma;
+		{
+			int iVal = s.GetArgVal();
+			m_iMaxKarma = maximum(m_iMinKarma, iVal);
 			break;
+		}
 		case RC_MINCHARDELETETIME:
 			m_iMinCharDeleteTime = s.GetArgVal() * TICK_PER_SEC;
 			break;
 		case RC_MINKARMA:
-			m_iMinKarma = s.GetArgVal();
-			if ( m_iMinKarma > m_iMaxKarma )
-				m_iMinKarma = m_iMaxKarma;
+		{
+			int iVal = s.GetArgVal();
+			m_iMinKarma = minimum(iVal, m_iMaxKarma);
 			break;
+		}
 		case RC_MURDERDECAYTIME:
 			m_iMurderDecayTime = s.GetArgVal() * TICK_PER_SEC;
 			break;
@@ -1060,15 +1070,17 @@ bool CResource::r_LoadVal(CScript &s)
 			break;
 		}
 		case RC_PLAYEREVIL:
-			m_iPlayerKarmaEvil = s.GetArgVal();
-			if ( m_iPlayerKarmaNeutral < m_iPlayerKarmaEvil )
-				m_iPlayerKarmaNeutral = m_iPlayerKarmaEvil;
+		{
+			int iVal = s.GetArgVal();
+			m_iPlayerKarmaEvil = minimum(iVal, m_iPlayerKarmaNeutral);
 			break;
+		}
 		case RC_PLAYERNEUTRAL:
-			m_iPlayerKarmaNeutral = s.GetArgVal();
-			if ( m_iPlayerKarmaEvil > m_iPlayerKarmaNeutral )
-				m_iPlayerKarmaEvil = m_iPlayerKarmaNeutral;
+		{
+			int iVal = s.GetArgVal();
+			m_iPlayerKarmaNeutral = maximum(m_iPlayerKarmaEvil, iVal);
 			break;
+		}
 		case RC_GUARDSINSTANTKILL:
 			m_fGuardsInstantKill = s.GetArgVal() ? true : false;
 			break;
@@ -1102,18 +1114,19 @@ bool CResource::r_LoadVal(CScript &s)
 			break;
 		case RC_SECTORSLEEP:
 		{
-			int iSleep = s.GetArgVal();
-			m_iSectorSleepMask = iSleep ? ((1 << iSleep) - 1) : 0;
+			int iVal = s.GetArgVal();
+			m_iSectorSleepMask = (1 << minimum(maximum(0, iVal), 31)) - 1;
 			break;
 		}
 		case RC_SAVEBACKGROUND:
 			m_iSaveBackgroundTime = s.GetArgVal() * 60 * TICK_PER_SEC;
 			break;
 		case RC_SAVESECTORSPERTICK:
-			m_iSaveSectorsPerTick = s.GetArgVal();
-			if ( m_iSaveSectorsPerTick <= 0 )
-				m_iSaveSectorsPerTick = 1;
+		{
+			int iVal = s.GetArgVal();
+			m_iSaveSectorsPerTick = maximum(1, iVal);
 			break;
+		}
 		case RC_SAVESTEPMAXCOMPLEXITY:
 			m_iSaveStepMaxComplexity = s.GetArgVal();
 			break;
@@ -1140,17 +1153,12 @@ bool CResource::r_LoadVal(CScript &s)
 			if ( g_Serv.IsLoading() )
 				g_Cfg.m_iNetworkThreads = s.GetArgVal();
 			else
-				g_Log.EventError("The value of NetworkThreads cannot be modified after the server has started\n");
+				g_Log.EventError("NetworkThreads setting can't be changed after the server has started\n");
 			break;
 		case RC_NETWORKTHREADPRIORITY:
 		{
-			int iPriority = s.GetArgVal();
-			if ( iPriority < IThread::Idle )
-				iPriority = IThread::Idle;
-			else if ( iPriority > IThread::RealTime )
-				iPriority = IThread::Disabled;
-
-			m_iNetworkThreadPriority = iPriority;
+			int iVal = s.GetArgVal();
+			m_iNetworkThreadPriority = minimum(maximum(IThread::Idle, iVal), IThread::RealTime);
 			break;
 		}
 #endif
@@ -1328,7 +1336,7 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			LPCTSTR pszCmd = pszKey + 10;
 			if ( !strnicmp(pszCmd, "COUNT", 5) )
 			{
-				sVal.FormatVal(m_Functions.GetCount());
+				sVal.FormatUVal(m_Functions.GetCount());
 				return true;
 			}
 			else if ( m_Functions.ContainsKey(pszCmd) )
@@ -1377,7 +1385,7 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 						++iCount;
 				}
 
-				sVal.FormatVal(iCount);
+				sVal.FormatUVal(iCount);
 				return true;
 			}
 
@@ -1432,7 +1440,7 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 	switch ( index )
 	{
 		case RC_ATTACKERTIMEOUT:
-			sVal.FormatVal(m_iAttackerTimeout / TICK_PER_SEC);
+			sVal.FormatUVal(m_iAttackerTimeout / TICK_PER_SEC);
 			break;
 		case RC_BANKMAXWEIGHT:
 			sVal.FormatVal(m_iBankWMax / WEIGHT_UNITS);
@@ -1490,7 +1498,7 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatVal(m_iGuardLingerTime / (60 * TICK_PER_SEC));
 			break;
 		case RC_HEARALL:
-			sVal.FormatVal(g_Log.GetLogMask() & LOGM_PLAYER_SPEAK);
+			sVal.FormatUVal(g_Log.GetLogMask() & LOGM_PLAYER_SPEAK);
 			break;
 		case RC_HITSUPDATERATE:
 			sVal.FormatVal(m_iHitsUpdateRate / TICK_PER_SEC);
@@ -1508,7 +1516,7 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatVal(m_iMapCacheTime / TICK_PER_SEC);
 			break;
 		case RC_NOTOTIMEOUT:
-			sVal.FormatVal(m_iNotoTimeout / TICK_PER_SEC);
+			sVal.FormatUVal(m_iNotoTimeout / TICK_PER_SEC);
 			break;
 		case RC_MAXFAME:
 			sVal.FormatVal(m_iMaxFame);
@@ -1529,7 +1537,7 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatVal(m_iWoolGrowthTime / (60 * TICK_PER_SEC));
 			break;
 		case RC_PROFILE:
-			sVal.FormatVal(CurrentProfileData.GetActiveWindow());
+			sVal.FormatVal(CurrentProfileData.IsActive());
 			break;
 		case RC_RTICKS:
 		{
@@ -1605,22 +1613,22 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatVal(m_iSavePeriod / (60 * TICK_PER_SEC));
 			break;
 		case RC_SECTORSLEEP:
-			sVal.FormatVal(m_iSectorSleepMask ? (Calc_GetLog2(m_iSectorSleepMask + 1) - 1) : 0);
+			sVal.FormatVal(m_iSectorSleepMask ? static_cast<long>(log(static_cast<double>(m_iSectorSleepMask) + 1) / log(static_cast<double>(2))) : 0);
 			break;
 		case RC_SAVEBACKGROUND:
 			sVal.FormatVal(m_iSaveBackgroundTime / (60 * TICK_PER_SEC));
 			break;
 		case RC_SAVESECTORSPERTICK:
-			sVal.FormatVal(m_iSaveSectorsPerTick);
+			sVal.FormatUVal(m_iSaveSectorsPerTick);
 			break;
 		case RC_SAVESTEPMAXCOMPLEXITY:
-			sVal.FormatVal(m_iSaveStepMaxComplexity);
+			sVal.FormatUVal(m_iSaveStepMaxComplexity);
 			break;
 		case RC_SPELLTIMEOUT:
 			sVal.FormatVal(m_iSpellTimeout / TICK_PER_SEC);
 			break;
 		case RC_GUILDS:
-			sVal.FormatVal(g_World.m_Stones.GetCount());
+			sVal.FormatUVal(g_World.m_Stones.GetCount());
 			return true;
 		case RC_TIMEUP:
 			sVal.FormatLLVal(-g_World.GetTimeDiff(g_World.m_timeStartup) / TICK_PER_SEC);
@@ -1646,7 +1654,7 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatVal(m_iPlayerKarmaNeutral);
 			break;
 		case RC_TOOLTIPCACHE:
-			sVal.FormatVal(m_iTooltipCache / (TICK_PER_SEC));
+			sVal.FormatVal(m_iTooltipCache / TICK_PER_SEC);
 			break;
 		case RC_GUARDSINSTANTKILL:
 			sVal.FormatVal(g_Cfg.m_fGuardsInstantKill);

@@ -152,11 +152,18 @@ extern bool IsValidDef(LPCTSTR pszArgs);
 extern bool IsValidGameObjDef(LPCTSTR pszArgs);
 
 // Numeric formulas
-extern int Calc_GetLog2(UINT uVal);
-extern int Calc_GetRandVal(int iVal);
-extern int Calc_GetRandVal2(int iMin, int iMax);
-extern INT64 Calc_GetRandLLVal(INT64 iVal);
-extern INT64 Calc_GetRandLLVal2(INT64 iMin, INT64 iMax);
+extern int Calc_GetRandVal(int iMin, int iMax);
+extern inline int Calc_GetRandVal(int iVal)
+{
+	return (iVal > 1) ? Calc_GetRandVal(0, iVal - 1) : 0;
+}
+
+extern INT64 Calc_GetRandLLVal(INT64 iMin, INT64 iMax);
+extern inline INT64 Calc_GetRandLLVal(INT64 iVal)
+{
+	return (iVal > 1) ? Calc_GetRandLLVal(0, iVal - 1) : 0;
+}
+
 extern int Calc_GetBellCurve(int iMean, int iVariance);
 extern int Calc_GetSCurve(int iMean, int iVariance);
 

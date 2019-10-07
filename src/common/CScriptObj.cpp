@@ -1533,7 +1533,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			if ( iMin >= iMax )
 				sVal.FormatLLVal(iMin);
 			else
-				sVal.FormatLLVal(Calc_GetRandLLVal2(iMin, iMax));
+				sVal.FormatLLVal(Calc_GetRandLLVal(iMin, iMax));
 			return true;
 		}
 	badcmd:

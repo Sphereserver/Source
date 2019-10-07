@@ -66,7 +66,7 @@ void CServer::SetExitFlag(int iFlag)
 void CServer::Shutdown(INT64 iMinutes)
 {
 	ADDTOCALLSTACK("CServer::Shutdown");
-	if ( iMinutes == 0 )
+	if ( iMinutes <= 0 )
 	{
 		if ( m_timeShutdown.IsTimeValid() )
 		{
@@ -75,12 +75,7 @@ void CServer::Shutdown(INT64 iMinutes)
 		}
 		return;
 	}
-
-	if ( iMinutes < 0 )
-		iMinutes = g_World.GetTimeDiff(m_timeShutdown) / (60 * TICK_PER_SEC);
-	else
-		m_timeShutdown = CServTime::GetCurrentTime() + (iMinutes * 60 * TICK_PER_SEC);
-
+	m_timeShutdown = CServTime::GetCurrentTime() + (iMinutes * 60 * TICK_PER_SEC);
 	g_World.Broadcastf(g_Cfg.GetDefaultMsg(DEFMSG_MSG_SERV_SHUTDOWN), iMinutes);
 }
 
@@ -253,13 +248,13 @@ bool CServer::GetPublicIP()
 				--i;
 			}
 		}
-	}
 
-	// Check if it's a valid IP address
-	if ( Str_RegExMatch("^([0-9]{1,3}).([0-9]{1,3}).([0-9]{1,3}).([0-9]{1,3})$", pszBuffer) == MATCH_VALID )
-	{
-		m_ip.SetAddrStr(pszBuffer);
-		return true;
+		// Check if it's a valid IP address
+		if ( Str_RegExMatch("^([0-9]{1,3}).([0-9]{1,3}).([0-9]{1,3}).([0-9]{1,3})$", pszBuffer) == MATCH_VALID )
+		{
+			m_ip.SetAddrStr(pszBuffer);
+			return true;
+		}
 	}
 	DEBUG_ERR(("Failed to get server public IP: REST API 'http://%s' returned a non-IP value. Please check RestAPIPublicIP setting on " SPHERE_FILE ".ini\n", szURL));
 	return false;
@@ -301,9 +296,6 @@ void CServer::OnTick()
 		m_fResyncRequested = NULL;
 	}
 
-	EXC_SET("SetTime");
-	SetValidTime();
-
 	ProfileTask overheadTask(PROFILE_OVERHEAD);
 
 	if ( m_timeShutdown.IsTimeValid() )
@@ -324,9 +316,9 @@ bool CServer::Load()
 	EXC_TRY("Load");
 
 #if defined(__GITREVISION__) && defined(__GITHASH__)
-	g_Log.Event(LOGL_EVENT, "%s\nCompiled: %s (%s) [build %d / Git hash %s]\n\n", g_szServerDescription, g_szServerBuildDate, g_szServerBuildTime, __GITREVISION__, __GITHASH__);
+	g_Log.Event(LOGL_EVENT, "%s\nCompiled: %s [build %d / Git hash %s]\n\n", g_szServerDescription, g_szServerBuildDate, __GITREVISION__, __GITHASH__);
 #else
-	g_Log.Event(LOGL_EVENT, "%s\nCompiled: %s (%s)\n\n", g_szServerDescription, g_szServerBuildDate, g_szServerBuildTime);
+	g_Log.Event(LOGL_EVENT, "%s\nCompiled: %s\n\n", g_szServerDescription, g_szServerBuildDate);
 #endif
 
 #ifdef _NIGHTLYBUILD
@@ -993,7 +985,7 @@ LPCTSTR CServer::GetStatusString(BYTE bIndex) const
 		case 0x22:	// '"'
 		{
 			// Shown in the INFO page in game
-			sprintf(pszTemp, SPHERE_TITLE ", Name=%s, Age=%lld, Clients=%lu, Items=%lu, Chars=%lu, Mem=%luK\n", GetName(), GetAgeHours() / 24, StatGet(SERV_STAT_CLIENTS), StatGet(SERV_STAT_ITEMS), StatGet(SERV_STAT_CHARS), StatGet(SERV_STAT_MEM));
+			sprintf(pszTemp, SPHERE_TITLE ", Name=%s, Age=%lld, Clients=%lu, Items=%lu, Chars=%lu, Mem=%luK\n", GetName(), GetAge(), StatGet(SERV_STAT_CLIENTS), StatGet(SERV_STAT_ITEMS), StatGet(SERV_STAT_CHARS), StatGet(SERV_STAT_MEM));
 			break;
 		}
 		case 0x24:	// '$'

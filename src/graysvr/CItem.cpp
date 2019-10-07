@@ -4904,7 +4904,7 @@ bool CItem::OnTick()
 					if ( pSrc->m_pClient )
 						pSrc->m_pClient->addMapWaypoint(this, MAPWAYPOINT_Remove);	// remove corpse map waypoint on enhanced clients
 
-					SetID(static_cast<ITEMID_TYPE>(Calc_GetRandVal2(ITEMID_SKELETON_1, ITEMID_SKELETON_9)));
+					SetID(static_cast<ITEMID_TYPE>(Calc_GetRandVal(ITEMID_SKELETON_1, ITEMID_SKELETON_9)));
 					SetHue(static_cast<HUE_TYPE>(HUE_DEFAULT));
 					SetTimeout(static_cast<INT64>(g_Cfg.m_iDecay_CorpsePlayer));
 					m_itCorpse.m_carved = 1;	// the corpse can't be carved anymore

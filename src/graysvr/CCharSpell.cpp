@@ -1179,9 +1179,9 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 			SetName(pCharDef->IsFemale() ? "#NAMES_HUMANFEMALE" : "#NAMES_HUMANMALE");
 
 			if ( IsPlayableCharacter() )
-				SetHue(static_cast<HUE_TYPE>(Calc_GetRandVal2(HUE_SKIN_LOW, HUE_SKIN_HIGH)) | HUE_MASK_UNDERWEAR);
+				SetHue(static_cast<HUE_TYPE>(Calc_GetRandVal(HUE_SKIN_LOW, HUE_SKIN_HIGH)) | HUE_MASK_UNDERWEAR);
 
-			HUE_TYPE RandomHairHue = static_cast<HUE_TYPE>(Calc_GetRandVal2(HUE_HAIR_LOW, HUE_HAIR_HIGH));
+			HUE_TYPE RandomHairHue = static_cast<HUE_TYPE>(Calc_GetRandVal(HUE_HAIR_LOW, HUE_HAIR_HIGH));
 			CItem *pHair = LayerFind(LAYER_HAIR);
 			if ( pHair )
 			{
@@ -1801,7 +1801,7 @@ bool CChar::Spell_Equip_OnTick(CItem *pItem)
 				m_pClient->addChar(this);
 				m_pClient->addPlayerSee(NULL);
 			}
-			pItem->SetTimeout(Calc_GetRandLLVal2(15, 30) * TICK_PER_SEC);
+			pItem->SetTimeout(Calc_GetRandLLVal(15, 30) * TICK_PER_SEC);
 			break;
 		}
 		case SPELL_Poison:
@@ -1822,7 +1822,7 @@ bool CChar::Spell_Equip_OnTick(CItem *pItem)
 				{
 					default:
 					case 0:	//Lesser
-						iDmg = IMULDIV(Stat_GetVal(STAT_STR), Calc_GetRandVal2(4, 7), 100);	// damage is different for lesser: it gets value from current hp
+						iDmg = IMULDIV(Stat_GetVal(STAT_STR), Calc_GetRandVal(4, 7), 100);	// damage is different for lesser: it gets value from current hp
 						pItem->SetTimeout(20);
 						break;
 					case 1:	//Standard
@@ -1902,7 +1902,7 @@ bool CChar::Spell_Equip_OnTick(CItem *pItem)
 		case SPELL_Strangle:
 		{
 			double dStamPenalty = 3 - (static_cast<double>(Stat_GetVal(STAT_DEX) / maximum(1, Stat_GetAdjusted(STAT_DEX))) * 2);
-			int iDmg = static_cast<int>(Calc_GetRandVal2(pItem->m_itSpell.m_spelllevel - 2, pItem->m_itSpell.m_spelllevel + 1) * dStamPenalty);
+			int iDmg = static_cast<int>(Calc_GetRandVal(pItem->m_itSpell.m_spelllevel - 2, pItem->m_itSpell.m_spelllevel + 1) * dStamPenalty);
 			int iRemainingTicks = pItem->m_itSpell.m_spelllevel - pItem->m_itSpell.m_spellcharges;
 
 			OnTakeDamage(maximum(1, iDmg), pItem->m_uidLink.CharFind(), DAMAGE_MAGIC|DAMAGE_POISON|DAMAGE_NODISTURB|DAMAGE_NOREVEAL|DAMAGE_NOUNPARALYZE, 0, 0, 0, 100, 0);

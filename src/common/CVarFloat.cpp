@@ -1,5 +1,5 @@
 #include "../graysvr/graysvr.h"
-#include <cmath>
+#include <random>
 
 typedef double RealType;
 #define VARDEF_FLOAT_MAXBUFFERSIZE 82
@@ -480,14 +480,14 @@ RealType CVarFloat::GetSingle(LPCTSTR &pszArgs)
 					{
 						LPCTSTR pszArg1 = ppCmd[0];
 						RealType dVal1 = MakeFloatMath(pszArg1);
-						if ( iCount >= 2 )
+						if ( iCount < 2 )
+							dResult = GetRandVal(dVal1);
+						else
 						{
 							LPCTSTR pszArg2 = ppCmd[1];
 							RealType dVal2 = MakeFloatMath(pszArg2);
-							dResult = GetRandVal2(dVal1, dVal2);
+							dResult = GetRandVal(dVal1, dVal2);
 						}
-						else
-							dResult = GetRandVal(dVal1);
 					}
 					break;
 				}
@@ -654,26 +654,19 @@ RealType CVarFloat::GetSingle(LPCTSTR &pszArgs)
 	return 0;
 }
 
-RealType CVarFloat::GetRandVal(RealType dQty)
+RealType CVarFloat::GetRandVal(RealType dMin, RealType dMax)
 {
-	ADDTOCALLSTACK("CVarFloat::GetRandVal");
-	if ( dQty <= 0 )
-		return 0;
-	if ( dQty >= INT_MAX )
-		return static_cast<RealType>(IMULDIV(g_World.m_Rand.randDblExc(), dQty, INT_MAX));
-	return g_World.m_Rand.randDblExc(dQty);
-}
-
-RealType CVarFloat::GetRandVal2(RealType dMin, RealType dMax)
-{
-	ADDTOCALLSTACK("CVarFloat::GetRandVal2");
 	if ( dMin > dMax )
 	{
 		RealType tmp = dMin;
 		dMin = dMax;
 		dMax = tmp;
 	}
-	return (dMin + g_World.m_Rand.randDblExc(dMax));	// these weird numbers are taken from mtrand.h (cause calling that function from here spits out some weird external errors)
+
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_real_distribution<RealType> dist(dMin, dMax);
+	return dist(gen);
 }
 
 ///////////////////////////////////////////////////////////

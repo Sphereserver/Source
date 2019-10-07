@@ -649,7 +649,7 @@ void CClient::addWeather(WEATHER_TYPE weather)
 		return;
 
 	m_Env.m_Weather = weather;
-	new PacketWeather(this, weather, static_cast<BYTE>(Calc_GetRandVal2(10, 70)), 0x10);
+	new PacketWeather(this, weather, static_cast<BYTE>(Calc_GetRandVal(10, 70)), 0x10);
 }
 
 void CClient::addLight()

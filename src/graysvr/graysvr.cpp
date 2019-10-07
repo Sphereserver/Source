@@ -344,7 +344,6 @@ LPCTSTR const g_Stat_Name[STAT_QTY] =	// not sorted obviously.
 
 LPCTSTR g_szServerDescription = "Le serveur Cryptonite! v0.85c";
 LPCTSTR g_szServerBuildDate = __DATE__;
-LPCTSTR g_szServerBuildTime = __TIME__;
 
 size_t CObjBase::sm_iCount = 0;	// UID table.
 ULONGLONG llTimeProfileFrequency = 1000;	// time profiler
@@ -825,13 +824,6 @@ static void Sphere_MainMonitorLoop()
 	while ( ! g_Serv.m_iExitFlag )
 	{
 		EXC_TRY("MainMonitorLoop");
-
-		if ( g_Cfg.m_iFreezeRestartTime <= 0 )
-		{
-			DEBUG_ERR(("Freeze Restart Time cannot be cleared at run time\n"));
-			g_Cfg.m_iFreezeRestartTime = 10;
-		}
-
 		EXC_SET("Sleep");
 		// only sleep 1 second at a time, to avoid getting stuck here when closing
 		// down with large m_iFreezeRestartTime values set

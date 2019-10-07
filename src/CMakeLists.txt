@@ -8,7 +8,6 @@ set(common_SRCS
     common/crashdump/mingwdbghelp.h
     common/libev/wrapper_ev.c
     common/libev/wrapper_ev.h
-    common/mtrand/mtrand.h
     common/sqlite/SQLite.cpp
     common/sqlite/SQLite.h
     common/sqlite/sqlite3.c
