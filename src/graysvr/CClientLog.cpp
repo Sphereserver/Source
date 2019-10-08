@@ -224,26 +224,11 @@ BYTE CClient::Login_ServerList(LPCTSTR pszAccount, LPCTSTR pszPassword)
 	ADDTOCALLSTACK("CClient::Login_ServerList");
 	// PACKET_ServersReq
 	// Initial login (Login on "loginserver", new format)
-	// If the messages are garbled, make sure they are terminated to correct length
-
-	TCHAR szAccount[MAX_ACCOUNT_NAME_ENTRY];
-	size_t iLenAccount = Str_GetBare(szAccount, pszAccount, sizeof(szAccount) - 1);
-	if ( iLenAccount > MAX_ACCOUNT_NAME_ENTRY )
-		return PacketLoginError::BadAccount;
-	if ( iLenAccount != strlen(pszAccount) )
-		return PacketLoginError::BadAccount;
-
-	TCHAR szPassword[MAX_ACCOUNT_PASS_ENTRY];
-	size_t iLenPassword = Str_GetBare(szPassword, pszPassword, sizeof(szPassword) - 1);
-	if ( iLenPassword > MAX_ACCOUNT_PASS_ENTRY )
-		return PacketLoginError::BadPassword;
-	if ( iLenPassword != strlen(pszPassword) )
-		return PacketLoginError::BadPassword;
 
 	CGString sMsg;
-	BYTE bErr = LogIn(pszAccount, pszPassword, sMsg);
-	if ( bErr != PacketLoginError::Success )
-		return bErr;
+	BYTE bResult = LogIn(pszAccount, pszPassword, sMsg);
+	if ( bResult != PacketLoginError::Success )
+		return bResult;
 
 	m_Targ_Mode = CLIMODE_SETUP_SERVERS;
 	new PacketServerList(this);

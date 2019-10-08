@@ -3419,32 +3419,15 @@ BYTE CClient::LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg)
 	if ( m_pAccount )	// already logged in
 		return PacketLoginError::Success;
 
-	TCHAR szTemp[MAX_ACCOUNT_NAME_ENTRY];
-	size_t iLen1 = strlen(pszAccount);
-	size_t iLen2 = strlen(pszPassword);
-	size_t iLen3 = Str_GetBare(szTemp, pszAccount, MAX_ACCOUNT_NAME_ENTRY);
-	if ( (iLen1 == 0) || (iLen1 != iLen3) || (iLen1 > MAX_ACCOUNT_NAME_ENTRY) )	// corrupt message
-	{
-		TCHAR szVersion[128];
-		sMsg.Format(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_WCLI), static_cast<LPCTSTR>(m_Crypt.WriteClientVerString(m_Crypt.GetClientVer(), szVersion)));
-		return PacketLoginError::BadAccount;
-	}
-
-	iLen3 = Str_GetBare(szTemp, pszPassword, MAX_ACCOUNT_PASS_ENTRY);
-	if ( iLen2 != iLen3 )	// corrupt message
-	{
-		TCHAR szVersion[128];
-		sMsg.Format(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_WCLI), static_cast<LPCTSTR>(m_Crypt.WriteClientVerString(m_Crypt.GetClientVer(), szVersion)));
-		return PacketLoginError::BadPassword;
-	}
-
-	TCHAR szName[MAX_ACCOUNT_NAME_ENTRY];
-	if ( !CAccount::NameStrip(szName, pszAccount) || Str_Check(pszAccount) )
-		return PacketLoginError::BadAccount;
-	if ( (pszPassword[0] == '\0') || Str_Check(pszPassword) )
-		return PacketLoginError::BadPassword;
-
 	// Check login
+	TCHAR szAccount[MAX_ACCOUNT_NAME_ENTRY];
+	size_t iLenAccount = strlen(pszAccount);
+	if ( (iLenAccount == 0) || (iLenAccount >= MAX_ACCOUNT_NAME_ENTRY) || Str_Check(pszAccount) || (Str_GetBare(szAccount, pszAccount, sizeof(szAccount)) != strlen(pszAccount)) )
+	{
+		sMsg.Format(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_UNK), pszAccount);
+		return PacketLoginError::BadAccount;
+	}
+
 	bool fAutoCreate = ((g_Serv.m_eAccApp == ACCAPP_Free) || (g_Serv.m_eAccApp == ACCAPP_GuestAuto) || (g_Serv.m_eAccApp == ACCAPP_GuestTrial));
 	CAccount *pAccount = g_Accounts.Account_FindCreate(pszAccount, fAutoCreate);
 	if ( !pAccount )
@@ -3457,15 +3440,17 @@ BYTE CClient::LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg)
 	// Check password
 	if ( g_Cfg.m_iClientLoginMaxTries && !pAccount->CheckPasswordTries(GetPeer()) )
 	{
-		g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' exceeded password tries in time lapse\n", GetSocketID(), pAccount->GetName());
-		sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_BADPASS);
+		g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' exceeded password tries\n", GetSocketID(), pAccount->GetName());
+		sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_INVALIDPASS);
 		return PacketLoginError::MaxPassTries;
 	}
 
-	if ( !pAccount->CheckPassword(pszPassword) )
+	TCHAR szPassword[MAX_ACCOUNT_PASS_ENTRY];
+	size_t iLenPassword = strlen(pszPassword);
+	if ( (iLenPassword == 0) || (iLenPassword >= MAX_ACCOUNT_NAME_ENTRY) || Str_Check(pszPassword) || (Str_GetBare(szPassword, pszPassword, sizeof(szPassword)) != strlen(pszPassword)) || !pAccount->CheckPassword(pszPassword) )
 	{
 		g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' inserted bad password\n", GetSocketID(), pAccount->GetName());
-		sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_BADPASS);
+		sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_INVALIDPASS);
 		return PacketLoginError::BadPass;
 	}
 
