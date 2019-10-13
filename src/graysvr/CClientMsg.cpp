@@ -630,7 +630,7 @@ void CClient::addSeason(SEASON_TYPE season)
 	new PacketSeason(this, season, true);
 
 	// Client resets light level on season change, so resend light here too
-	m_Env.m_Light = UCHAR_MAX;
+	m_Env.m_Light = BYTE_MAX;
 	addLight();
 }
 
@@ -658,11 +658,11 @@ void CClient::addLight()
 	// NOTE: This could just be a flash of light.
 
 	ASSERT(m_pChar);
-	BYTE bLight = UCHAR_MAX;
+	BYTE bLight = BYTE_MAX;
 
 	if ( m_pChar->m_LocalLight )
 		bLight = m_pChar->m_LocalLight;
-	if ( bLight == UCHAR_MAX )
+	if ( bLight == BYTE_MAX )
 		bLight = m_pChar->GetLightLevel();
 
 	if ( m_Env.m_Light == bLight )
@@ -1176,7 +1176,7 @@ void CClient::addItemName(const CItem *pItem)
 	{
 		const CItemVendable *pVendItem = dynamic_cast<const CItemVendable *>(pItem);
 		if ( pVendItem )
-			len += sprintf(szName + len, " (%lu gp)", pVendItem->GetBasePrice());
+			len += sprintf(szName + len, " (%" FMTDWORD " gp)", pVendItem->GetBasePrice());
 	}
 
 	HUE_TYPE wHue = HUE_TEXT_DEF;
@@ -2547,7 +2547,7 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 
 					m_TooltipData.InsertAt(0, t = new CClientTooltip(1050045)); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
 					if ( dwClilocName )
-						t->FormatArgs("%s\t%lu\t%s", pszPrefix, dwClilocName, pszSuffix);
+						t->FormatArgs("%s\t%" FMTDWORD "\t%s", pszPrefix, dwClilocName, pszSuffix);
 					else
 						t->FormatArgs("%s\t%s\t%s", pszPrefix, pObj->GetName(), pszSuffix);
 
@@ -3225,7 +3225,7 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 						{
 							const CResourceDef *pSpawnItemDef = g_Cfg.ResourceGetDef(pItem->m_itSpawnItem.m_ItemID);
 							m_TooltipData.Add(t = new CClientTooltip(1060658)); // ~1_val~: ~2_val~
-							t->FormatArgs("Item\t%lu %s", maximum(1, pItem->m_itSpawnItem.m_pile), pSpawnItemDef ? pSpawnItemDef->GetResourceName() : "none");
+							t->FormatArgs("Item\t%" FMTDWORD " %s", maximum(1, pItem->m_itSpawnItem.m_pile), pSpawnItemDef ? pSpawnItemDef->GetResourceName() : "none");
 							m_TooltipData.Add(t = new CClientTooltip(1061169)); // range ~1_val~
 							t->FormatArgs("%hhu", pItem->m_itSpawnItem.m_DistMax);
 							m_TooltipData.Add(t = new CClientTooltip(1074247)); // Live Creatures: ~1_NUM~ / ~2_MAX~

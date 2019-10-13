@@ -249,11 +249,11 @@ CChar *CChar::Spell_Summon(CREID_TYPE id, CPointMap ptTarg)
 		if ( IsSetMagicFlags(MAGICF_SUMMONWALKCHECK) )	// check if the target location is valid
 		{
 			CCharBase *pSummonDef = CCharBase::FindCharBase(id);
-			DWORD dwCan = ULONG_MAX;
+			DWORD dwCan = DWORD_MAX;
 			if ( pSummonDef )
 				dwCan = pSummonDef->m_Can & CAN_C_MOVEMASK;
 
-			if ( dwCan != ULONG_MAX )
+			if ( dwCan != DWORD_MAX )
 			{
 				DWORD dwBlockFlags = 0;
 				g_World.GetHeightPoint2(ptTarg, dwBlockFlags, true);

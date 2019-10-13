@@ -2032,12 +2032,12 @@ CRegionBase *CChar::CheckValidMove(CPointBase &ptDst, DWORD *pdwBlockFlags, DIR_
 	{
 		dwBlockFlags |= CAN_I_ROOF;		// we are covered by something
 
-		WARNWALK(("block.m_Top.m_z(%hhd) > ptDst.m_z(%hhd) + m_zClimbHeight(%hhu) + (block.m_Top.m_dwTile(0x%lx) > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT / 2)(%hhu)\n", block.m_Top.m_z, ptDst.m_z, m_zClimbHeight, block.m_Top.m_dwTile, ptDst.m_z - (m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT / 2))));
+		WARNWALK(("block.m_Top.m_z(%hhd) > ptDst.m_z(%hhd) + m_zClimbHeight(%hhu) + (block.m_Top.m_dwTile(0x%" FMTDWORDH ") > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT / 2)(%hhu)\n", block.m_Top.m_z, ptDst.m_z, m_zClimbHeight, block.m_Top.m_dwTile, ptDst.m_z - (m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT / 2))));
 		if ( block.m_Top.m_z < block.m_Bottom.m_z + (m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? iCharHeight : iCharHeight / 2)) )
 			dwBlockFlags |= CAN_I_BLOCK;	// we can't fit under this
 	}
 
-	if ( (dwCan != ULONG_MAX) && (dwBlockFlags != 0x0) )
+	if ( (dwCan != DWORD_MAX) && (dwBlockFlags != 0x0) )
 	{
 		WARNWALK(("BottomItemID(0%lx) TopItemID(0%lx)\n", block.m_Bottom.m_dwTile - TERRAIN_QTY, block.m_Top.m_dwTile - TERRAIN_QTY));
 		CCharBase *pCharDef = Char_GetDef();

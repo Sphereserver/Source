@@ -174,7 +174,7 @@ bool CClient::addRelay(const CServerDef *pServ)
 		m_pAccount->m_TagDefs.SetNum("CustomerID", dwCustomerId);
 	}
 
-	DEBUG_MSG(("%lx:Login_Relay to server %s with AuthID %lu\n", GetSocketID(), ipAddr.GetAddrStr(), dwCustomerId));
+	DEBUG_MSG(("%lx:Login_Relay to server %s with AuthID %" FMTDWORD "\n", GetSocketID(), ipAddr.GetAddrStr(), dwCustomerId));
 
 	EXC_SET("server relay packet");
 	new PacketServerRelay(this, dwAddr, pServ->m_ip.GetPort(), dwCustomerId);
@@ -442,7 +442,7 @@ bool CClient::OnRxPing(const BYTE *pData, size_t iLen)
 			time_t dateChange;
 			DWORD dwSize;
 			CFileList::ReadFileInfo("Axis.db", dateChange, dwSize);
-			SysMessagef("%lu", dwSize);
+			SysMessagef("%" FMTDWORD, dwSize);
 			return true;
 		}
 
@@ -747,7 +747,7 @@ bool CClient::xProcessClientSetup(CEvent *pEvent, size_t iLen)
 			{
 				if ( pAccount )
 				{
-					DEBUG_MSG(("%lx:xProcessClientSetup for %s, with AuthId %lu and CliVersion %lu / CliVersionReported %lu\n", GetSocketID(), pAccount->GetName(), dwCustomerID, m_Crypt.GetClientVer(), m_NetState->getReportedVersion()));
+					DEBUG_MSG(("%lx:xProcessClientSetup for %s, with AuthId %" FMTDWORD " and CliVersion %" FMTDWORD " / CliVersionReported %" FMTDWORD "\n", GetSocketID(), pAccount->GetName(), dwCustomerID, m_Crypt.GetClientVer(), m_NetState->getReportedVersion()));
 
 					if ( (dwCustomerID != 0) && (dwCustomerID == pEvent->CharListReq.m_Account) )
 					{

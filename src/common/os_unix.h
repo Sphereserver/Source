@@ -16,8 +16,13 @@
 
 // Port some Windows stuff to Linux
 typedef unsigned char		BYTE;				// 8 bits
+#define BYTE_MAX			UCHAR_MAX
+
 typedef unsigned short		WORD;				// 16 bits
-typedef unsigned long		DWORD;				// 32 bits
+#define WORD_MAX			USHRT_MAX
+
+typedef unsigned int		DWORD;				// 32 bits
+#define DWORD_MAX			UINT_MAX
 
 typedef int					INT32;				// 32 bits
 typedef unsigned int		UINT32, UINT;		// 32 bits

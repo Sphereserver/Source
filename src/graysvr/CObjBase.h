@@ -91,12 +91,12 @@ public:
 	BYTE RangeL() const
 	{
 		CVarDefCont *pRange = GetDefKey("RANGE", true);
-		return static_cast<BYTE>((pRange ? pRange->GetValNum() : 0) & UCHAR_MAX);
+		return static_cast<BYTE>((pRange ? pRange->GetValNum() : 0) & BYTE_MAX);
 	}
 	BYTE RangeH() const
 	{
 		CVarDefCont *pRange = GetDefKey("RANGE", true);
-		return static_cast<BYTE>(((pRange ? pRange->GetValNum() : 0) >> 8) & UCHAR_MAX);
+		return static_cast<BYTE>(((pRange ? pRange->GetValNum() : 0) >> 8) & BYTE_MAX);
 	}
 
 	CVarDefMap *GetTagDefs()

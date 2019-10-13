@@ -521,7 +521,7 @@ int CWebPageDef::ServPageRequest(CClient *pClient, LPCTSTR pszURLArgs, CGTime *p
 	else
 		iLen += sprintf(szTemp + iLen, "Last-Modified: %s\r\n", CGTime(timeFileLastModified).FormatGmt(NULL));
 
-	iLen += sprintf(szTemp + iLen, "Content-Length: %lu\r\n\r\n", dwSize);
+	iLen += sprintf(szTemp + iLen, "Content-Length: %" FMTDWORD "\r\n\r\n", dwSize);
 
 	PacketWeb packet;
 	packet.setData(reinterpret_cast<const BYTE *>(szTemp), iLen);
@@ -602,7 +602,7 @@ bool CWebPageDef::ServPagePost(CClient *pClient, TCHAR *pszContent, int iContent
 		return false;
 
 	CDialogResponseArgs resp;
-	DWORD dwButtonID = ULONG_MAX;
+	DWORD dwButtonID = DWORD_MAX;
 
 	for ( size_t i = 0; i < iArgQty; ++i )
 	{

@@ -259,7 +259,7 @@ LPCTSTR CResourceBase::ResourceGetName(RESOURCE_ID_BASE rid) const
 	if ( rid.IsValidUID() )
 		sprintf(pszTemp, "0%x", rid.GetResIndex());
 	else
-		sprintf(pszTemp, "%lu", rid.GetPrivateUID());
+		sprintf(pszTemp, "%" FMTDWORD, rid.GetPrivateUID());
 	return pszTemp;
 }
 

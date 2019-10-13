@@ -912,7 +912,7 @@ bool CItem::IsStackable( const CItem * pItem ) const
 		return false;
 
 	// total should not add up to > 64K !!!
-	/*if ( pItem->GetAmount() > ( USHRT_MAX - GetAmount()))
+	/*if ( pItem->GetAmount() > WORD_MAX - GetAmount() )
 		return false;*/
 
 	return true;
@@ -1649,7 +1649,7 @@ void CItem::WriteUOX( CScript & s, int index )
 	ADDTOCALLSTACK("CItem::WriteUOX");
 	s.Printf( "SECTION WORLDITEM %d\n", index );
 	s.Printf( "{\n" );
-	s.Printf( "SERIAL %lu\n", static_cast<DWORD>(GetUID()));
+	s.Printf( "SERIAL %" FMTDWORD "\n", static_cast<DWORD>(GetUID()));
 	s.Printf( "NAME %s\n", GetName());
 	s.Printf( "ID %d\n", GetDispID());
 	s.Printf( "X %hd\n", GetTopPoint().m_x );
@@ -2568,7 +2568,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_MORE2:
 			m_itNormal.m_more2 = s.GetArgVal();
 			if ( IsType(IT_SPAWN_ITEM) )
-				m_itSpawnItem.m_pile = minimum(USHRT_MAX, m_itNormal.m_more2);
+				m_itSpawnItem.m_pile = minimum(WORD_MAX, m_itNormal.m_more2);
 			return true;
 		case IC_MORE2h:
 			m_itNormal.m_more2 = MAKEDWORD( LOWORD(m_itNormal.m_more2), s.GetArgVal());
@@ -4286,7 +4286,7 @@ void CItem::SetTrapState( IT_TYPE state, ITEMID_TYPE id, int iTimeSec )
 	{
 		iTimeSec = 3*TICK_PER_SEC;
 	}
-	else if ( iTimeSec > 0 && iTimeSec < USHRT_MAX )
+	else if ( (iTimeSec > 0) && (iTimeSec < WORD_MAX) )
 	{
 		iTimeSec *= TICK_PER_SEC;
 	}

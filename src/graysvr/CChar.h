@@ -742,7 +742,7 @@ public:
 				return true;
 
 			TCHAR *uid = Str_GetTemp();
-			sprintf(uid, "SeenBy_0%lx", static_cast<DWORD>(GetUID()));
+			sprintf(uid, "SeenBy_0%" FMTDWORDH, static_cast<DWORD>(GetUID()));
 			if ( !pItem->m_TagDefs.GetKeyNum(uid) )
 				return false;
 		}
@@ -911,7 +911,7 @@ public:
 	{
 		// What flags can block us?
 		if ( !fIgnoreGM && IsPriv(PRIV_GM|PRIV_ALLMOVE) )	// nothing can blocks us
-			return ULONG_MAX;
+			return DWORD_MAX;
 
 		DWORD dwCan = m_Can;
 		CCharBase *pCharDef = Char_GetDef();

@@ -985,7 +985,7 @@ LPCTSTR CServer::GetStatusString(BYTE bIndex) const
 		case 0x22:	// '"'
 		{
 			// Shown in the INFO page in game
-			sprintf(pszTemp, SPHERE_TITLE ", Name=%s, Age=%lld, Clients=%lu, Items=%lu, Chars=%lu, Mem=%luK\n", GetName(), GetAge(), StatGet(SERV_STAT_CLIENTS), StatGet(SERV_STAT_ITEMS), StatGet(SERV_STAT_CHARS), StatGet(SERV_STAT_MEM));
+			sprintf(pszTemp, SPHERE_TITLE ", Name=%s, Age=%lld, Clients=%" FMTDWORD ", Items=%" FMTDWORD ", Chars=%" FMTDWORD ", Mem=%" FMTDWORD "K\n", GetName(), GetAge(), StatGet(SERV_STAT_CLIENTS), StatGet(SERV_STAT_ITEMS), StatGet(SERV_STAT_CHARS), StatGet(SERV_STAT_MEM));
 			break;
 		}
 		case 0x24:	// '$'
@@ -997,7 +997,7 @@ LPCTSTR CServer::GetStatusString(BYTE bIndex) const
 		case 0x25:	// '%'
 		{
 			// ConnectUO status string
-			sprintf(pszTemp, SPHERE_TITLE " Items=%lu, Mobiles=%lu, Clients=%lu, Mem=%luK", StatGet(SERV_STAT_ITEMS), StatGet(SERV_STAT_CHARS), StatGet(SERV_STAT_CLIENTS), StatGet(SERV_STAT_MEM));
+			sprintf(pszTemp, SPHERE_TITLE " Items=%" FMTDWORD ", Mobiles=%" FMTDWORD ", Clients=%" FMTDWORD ", Mem=%" FMTDWORD "K", StatGet(SERV_STAT_ITEMS), StatGet(SERV_STAT_CHARS), StatGet(SERV_STAT_CLIENTS), StatGet(SERV_STAT_MEM));
 			break;
 		}
 	}
@@ -1595,7 +1595,7 @@ void CServer::ProfileDump(CTextConsole *pSrc, bool fDump)
 			ULONGLONG divby = llTimeProfileFrequency / 1000;
 
 			if ( ft )
-				ft->Printf("Scripts: called %lu times and took %llu.%04llu ms (%llu.%04llu ms average). Reporting with highest average\n",
+				ft->Printf("Scripts: called %" FMTDWORD " times and took %llu.%04llu ms (%llu.%04llu ms average). Reporting with highest average\n",
 					g_profiler.called,
 					g_profiler.total / divby,
 					((g_profiler.total * 10000) / divby) % 10000,
@@ -1603,7 +1603,7 @@ void CServer::ProfileDump(CTextConsole *pSrc, bool fDump)
 					((average * 10000) / divby) % 10000
 				);
 			else
-				pSrc->SysMessagef("Scripts: called %lu times and took %llu.%04llu ms (%llu.%04llu ms average). Reporting with highest average\n",
+				pSrc->SysMessagef("Scripts: called %" FMTDWORD " times and took %llu.%04llu ms (%llu.%04llu ms average). Reporting with highest average\n",
 					g_profiler.called,
 					g_profiler.total / divby,
 					((g_profiler.total * 10000) / divby) % 10000,

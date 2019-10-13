@@ -946,7 +946,7 @@ public:
 private:
 	static LPCTSTR const sm_szLoadKeys[];
 	static LPCTSTR const sm_szVerbKeys[];
-	CGrayUID m_obj[UCHAR_MAX];	// store UID of created objects
+	CGrayUID m_obj[BYTE_MAX];	// store UID of created objects
 
 public:
 	/* I don't want to inherit SetAmount, GetAmount and m_iAmount from the parent CItem class. I need to redefine them for CItemSpawn class

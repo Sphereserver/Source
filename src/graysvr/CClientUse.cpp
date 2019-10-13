@@ -1003,7 +1003,7 @@ bool CClient::Cmd_Skill_Tracking(WORD wTrackType, bool fExec)
 	// look around for stuff.
 
 	ASSERT(m_pChar);
-	if ( wTrackType == USHRT_MAX )
+	if ( wTrackType == WORD_MAX )
 	{
 		// Unlike others skills, Tracking is used during menu setup
 		m_pChar->Skill_Cleanup();	// clean up current skill

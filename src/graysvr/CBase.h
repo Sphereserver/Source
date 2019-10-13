@@ -208,11 +208,11 @@ public:
 
 	BYTE GetRangeL() const
 	{
-		return static_cast<BYTE>(GetDefNum("RANGE") & UCHAR_MAX);
+		return static_cast<BYTE>(GetDefNum("RANGE") & BYTE_MAX);
 	}
 	BYTE GetRangeH() const
 	{
-		return static_cast<BYTE>((GetDefNum("RANGE") >> 8) & UCHAR_MAX);
+		return static_cast<BYTE>((GetDefNum("RANGE") >> 8) & BYTE_MAX);
 	}
 
 	height_t GetHeight() const

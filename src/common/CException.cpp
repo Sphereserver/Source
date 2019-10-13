@@ -172,18 +172,18 @@ bool CGrayError::GetErrorMessage(LPTSTR lpszError) const
 		if ( nChars )
 		{
 			if ( m_hError & 0x80000000 )
-				sprintf(lpszError, "Error Pri=%d, Code=0x%lx(%s), Desc='%s'", m_eSeverity, m_hError, szCode, m_pszDescription);
+				sprintf(lpszError, "Error Pri=%d, Code=0x%" FMTDWORDH "(%s), Desc='%s'", m_eSeverity, m_hError, szCode, m_pszDescription);
 			else
-				sprintf(lpszError, "Error Pri=%d, Code=%lu(%s), Desc='%s'", m_eSeverity, m_hError, szCode, m_pszDescription);
+				sprintf(lpszError, "Error Pri=%d, Code=%" FMTDWORD "(%s), Desc='%s'", m_eSeverity, m_hError, szCode, m_pszDescription);
 			return true;
 		}
 	}
 #endif
 
 	if ( m_hError & 0x80000000 )
-		sprintf(lpszError, "Error Pri=%d, Code=0x%lx, Desc='%s'", m_eSeverity, m_hError, m_pszDescription);
+		sprintf(lpszError, "Error Pri=%d, Code=0x%" FMTDWORDH ", Desc='%s'", m_eSeverity, m_hError, m_pszDescription);
 	else
-		sprintf(lpszError, "Error Pri=%d, Code=%lu, Desc='%s'", m_eSeverity, m_hError, m_pszDescription);
+		sprintf(lpszError, "Error Pri=%d, Code=%" FMTDWORD ", Desc='%s'", m_eSeverity, m_hError, m_pszDescription);
 	return true;
 }
 
@@ -234,11 +234,11 @@ bool CGrayException::GetErrorMessage(LPTSTR lpszError) const
 		case STATUS_INTEGER_DIVIDE_BY_ZERO:	pszMsg = "Integer: Divide by Zero";	break;
 		case STATUS_STACK_OVERFLOW:			pszMsg = "Stack Overflow";			break;
 		default:
-			sprintf(lpszError, "code=0x%lx, (0x%lx)", m_hError, m_dwAddress);
+			sprintf(lpszError, "code=0x%" FMTDWORDH ", (0x%" FMTDWORDH ")", m_hError, m_dwAddress);
 			return true;
 	}
 
-	sprintf(lpszError, "\"%s\" (0x%lx)", pszMsg, m_dwAddress);
+	sprintf(lpszError, "\"%s\" (0x%" FMTDWORDH ")", pszMsg, m_dwAddress);
 	return true;
 }
 

@@ -133,7 +133,7 @@ void CItemSpawn::GenerateItem(CResourceDef *pDef)
 	if ( !pItem )
 		return;
 
-	WORD wAmountPile = static_cast<WORD>(minimum(USHRT_MAX, m_itSpawnItem.m_pile));
+	WORD wAmountPile = static_cast<WORD>(minimum(WORD_MAX, m_itSpawnItem.m_pile));
 	if ( wAmountPile > 1 )
 	{
 		CItemBase *pItemDef = pItem->Item_GetDef();
@@ -407,7 +407,7 @@ bool CItemSpawn::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 	{
 		pszKey += 3;
 		int i = Exp_GetVal(pszKey);
-		if ( (i >= 0) && (i <= UCHAR_MAX - 1) )
+		if ( (i >= 0) && (i <= BYTE_MAX - 1) )
 		{
 			CObjBase *pObj = m_obj[i].ObjFind();
 			if ( pObj )

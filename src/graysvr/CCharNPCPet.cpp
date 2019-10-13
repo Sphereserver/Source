@@ -680,7 +680,7 @@ bool CChar::NPC_OnHirePay(CChar *pCharSrc, CItemMemory *pMemory, CItem *pGold)
 			return false;
 		}
 
-		ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), ULONG_MAX, false, 0);		// put all my loot cash away
+		ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), DWORD_MAX, false, 0);		// put all my loot cash away
 		ContentAttrMod(ATTR_OWNED, true);		// mark all my stuff ATTR_OWNED - i won't give it away
 		NPC_PetSetOwner(pCharSrc);
 	}

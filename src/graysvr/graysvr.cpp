@@ -260,7 +260,7 @@ bool CMapList::DetectMapSize(int map)
 			break;
 
 		default:
-			DEBUG_ERR(("Unknown map index %d with file size of %lu bytes. Please specify the correct size manually\n", index, g_Install.m_Maps[index].GetLength()));
+			DEBUG_ERR(("Unknown map index %d with file size of %" FMTDWORD " bytes. Please specify the correct size manually\n", index, g_Install.m_Maps[index].GetLength()));
 			break;
 	}
 
@@ -689,7 +689,7 @@ int Sphere_InitServer( int argc, char *argv[] )
 		}
 	}
 
-	g_Log.Event(LOGL_EVENT, "\nStartup complete (Items=%lu, Chars=%lu, Accounts=%lu)\n", g_Serv.StatGet(SERV_STAT_ITEMS), g_Serv.StatGet(SERV_STAT_CHARS), g_Serv.StatGet(SERV_STAT_ACCOUNTS));
+	g_Log.Event(LOGL_EVENT, "\nStartup complete (Items=%" FMTDWORD ", Chars=%" FMTDWORD ", Accounts=%" FMTDWORD ")\n", g_Serv.StatGet(SERV_STAT_ITEMS), g_Serv.StatGet(SERV_STAT_CHARS), g_Serv.StatGet(SERV_STAT_ACCOUNTS));
 #ifdef _WIN32
 	g_Log.Event(LOGL_EVENT, "Use '?' to view available console commands\n\n");
 #else
@@ -939,7 +939,7 @@ void defragSphere(char *path)
 			{
 				dBytesRead -= mb10;
 				dTotalMb += 10;
-				g_Log.Event(LOGL_EVENT, "Total read %lu Mb\n", dTotalMb);
+				g_Log.Event(LOGL_EVENT, "Total read %" FMTDWORD " Mb\n", dTotalMb);
 			}
 			if (( buf[0] == 'S' ) && ( strstr(buf, "SERIAL=") == buf ))
 			{
@@ -966,7 +966,7 @@ void defragSphere(char *path)
 		return;
 	}
 
-	g_Log.Event(LOGL_EVENT, "Found %lu UIDs (latest: 0%lx)\n", uid, uids[dTotalUIDs - 1]);
+	g_Log.Event(LOGL_EVENT, "Found %" FMTDWORD " UIDs (latest: 0%lx)\n", uid, uids[dTotalUIDs - 1]);
 	g_Log.Event(LOGL_EVENT, "Quick-sorting UIDs array...\n");
 	dword_q_sort(uids, 0, dTotalUIDs - 1);
 
@@ -1012,7 +1012,7 @@ void defragSphere(char *path)
 			{
 				dBytesRead -= mb5;
 				dTotalMb += 5;
-				g_Log.Event(LOGL_EVENT, "Total processed %lu Mb\n", dTotalMb);
+				g_Log.Event(LOGL_EVENT, "Total processed %" FMTDWORD " Mb\n", dTotalMb);
 			}
 			p = buf;
 
@@ -1112,7 +1112,7 @@ void defragSphere(char *path)
 
 						if ( dStep == 1 )
 						{
-							uid = ULONG_MAX;
+							uid = DWORD_MAX;
 							break; // did not find the UID
 						}
 					}
@@ -1123,7 +1123,7 @@ void defragSphere(char *path)
 				{
 					if ( !uids[d] )	// end of array
 					{
-						uid = ULONG_MAX;
+						uid = DWORD_MAX;
 						break;
 					}
 					else if ( uids[d] == uid )
@@ -1135,7 +1135,7 @@ void defragSphere(char *path)
 
 				//	replace UID by the new one since it has been found
 				*p1 = c;
-				if ( uid != ULONG_MAX )
+				if ( uid != DWORD_MAX )
 				{
 					*p = 0;
 					strncpy(z, p1, sizeof(z) - 1);

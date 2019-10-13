@@ -38,7 +38,7 @@ bool CCrypt::Init(DWORD dwIP, BYTE *pbEvent, size_t iLen, bool fClientKR)
 	bool fReturn = true;
 
 #ifdef DEBUG_CRYPT_MSGS
-	DEBUG_ERR(("Initializing seed 0x%lx\n", dwIP));
+	DEBUG_ERR(("Initializing seed 0x%" FMTDWORDH "\n", dwIP));
 #endif
 
 	if ( iLen == 62 )	// SERVER_Login 1.26.0
@@ -223,7 +223,7 @@ void CCrypt::LoginCryptStart(DWORD dwIP, BYTE *pbEvent, size_t iLen)
 		Decrypt(bRaw, pbEvent, iLen);
 
 #ifdef DEBUG_CRYPT_MSGS
-		DEBUG_ERR(("LoginCrypt %" FMTSIZE_T " (%lu) type %hhx-%hhx\n", i, GetClientVer(), bRaw[0], pbEvent[0]));
+		DEBUG_ERR(("LoginCrypt %" FMTSIZE_T " (%" FMTDWORD ") type %hhx-%hhx\n", i, GetClientVer(), bRaw[0], pbEvent[0]));
 #endif
 		bool fValid = ((bRaw[0] == 0x80) && (bRaw[30] == 0x0) && (bRaw[60] == 0x0));
 		if ( fValid )
@@ -296,7 +296,7 @@ void CCrypt::GameCryptStart(DWORD dwIP, BYTE *pbEvent, size_t iLen)
 		Decrypt(bRaw, pbEvent, iLen);
 
 #ifdef DEBUG_CRYPT_MSGS
-		DEBUG_ERR(("GameCrypt %" FMTSIZE_T " (%lu) type %hhx-%hhx\n", i, GetClientVer(), bRaw[0], pbEvent[0]));
+		DEBUG_ERR(("GameCrypt %" FMTSIZE_T " (%" FMTDWORD ") type %hhx-%hhx\n", i, GetClientVer(), bRaw[0], pbEvent[0]));
 #endif
 
 		if ( (bRaw[0] == 0x91) && (bRaw[34] == 0x0) && (bRaw[64] == 0x0) )
@@ -398,7 +398,7 @@ bool CCrypt::SetClientVer(LPCTSTR pszVer)
 	DWORD dwVer = GetVerFromString(pszVer);
 	if ( !SetClientVerEnum(dwVer) )
 	{
-		DEBUG_ERR(("Unsupported client version '%s'/'%lu'\n", pszVer, dwVer));
+		DEBUG_ERR(("Unsupported client version '%s'/'%" FMTDWORD "'\n", pszVer, dwVer));
 		return false;
 	}
 	return true;
@@ -476,11 +476,11 @@ TCHAR *CCrypt::WriteClientVerString(DWORD dwVer, TCHAR *pszOutput)
 	ADDTOCALLSTACK("CCrypt::WriteClientVerString");
 	if ( dwVer >= MINCLIVER_NEWVERSIONING )
 	{
-		sprintf(pszOutput, "%lu.%lu.%lu.%lu", dwVer / 1000000, (dwVer / 10000) % 100, (dwVer % 10000) / 100, dwVer % 100);
+		sprintf(pszOutput, "%" FMTDWORD ".%" FMTDWORD ".%" FMTDWORD ".%" FMTDWORD, dwVer / 1000000, (dwVer / 10000) % 100, (dwVer % 10000) / 100, dwVer % 100);
 	}
 	else
 	{
-		int iVer = sprintf(pszOutput, "%lu.%lu.%lu", dwVer / 1000000, (dwVer / 10000) % 100, (dwVer % 10000) / 100);
+		int iVer = sprintf(pszOutput, "%" FMTDWORD ".%" FMTDWORD ".%" FMTDWORD, dwVer / 1000000, (dwVer / 10000) % 100, (dwVer % 10000) / 100);
 		int iPatch = static_cast<int>(dwVer % 100);
 		if ( iPatch )
 		{

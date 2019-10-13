@@ -1811,7 +1811,7 @@ bool CResource::SetKRDialogMap(DWORD rid, DWORD dwKRDialogID)
 		if ( it->second == dwKRDialogID )	// already linked to this KR dialog
 			return true;
 
-		g_Log.Event(LOGL_WARN, "Dialog '%s' is already linked to KR dialog '%lu'\n", ResourceGetName(RESOURCE_ID(RES_DIALOG, rid)), it->second);
+		g_Log.Event(LOGL_WARN, "Dialog '%s' is already linked to KR dialog '%" FMTDWORD "'\n", ResourceGetName(RESOURCE_ID(RES_DIALOG, rid)), it->second);
 	}
 
 	for ( it = m_mapKRGumps.begin(); it != m_mapKRGumps.end(); ++it )
@@ -1819,7 +1819,7 @@ bool CResource::SetKRDialogMap(DWORD rid, DWORD dwKRDialogID)
 		if ( it->second != dwKRDialogID )
 			continue;
 
-		DEBUG_ERR(("KR Dialog '%lu' is already linked to dialog '%s'\n", dwKRDialogID, ResourceGetName(RESOURCE_ID(RES_DIALOG, it->first))));
+		DEBUG_ERR(("KR Dialog '%" FMTDWORD "' is already linked to dialog '%s'\n", dwKRDialogID, ResourceGetName(RESOURCE_ID(RES_DIALOG, it->first))));
 		return false;
 	}
 

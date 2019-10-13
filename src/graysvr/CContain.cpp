@@ -274,7 +274,7 @@ DWORD CContainer::ContentCount(RESOURCE_ID_BASE rid, DWORD dwArg)
 {
 	ADDTOCALLSTACK("CContainer::ContentCount");
 	// Calculate total (gold or other items) in this recursed container
-	return ULONG_MAX - ContentConsume(rid, ULONG_MAX, true, dwArg);
+	return DWORD_MAX - ContentConsume(rid, DWORD_MAX, true, dwArg);
 }
 
 void CContainer::ContentAttrMod(DWORD dwAttr, bool fSet)
@@ -409,7 +409,7 @@ DWORD CContainer::ResourceConsume(const CResourceQtyArray *pResources, DWORD dwR
 		dwReplicationQty = ResourceConsume(pResources, dwReplicationQty, true, dwArg);
 	}
 
-	DWORD dwQtyMin = ULONG_MAX;
+	DWORD dwQtyMin = DWORD_MAX;
 	for ( size_t i = 0; i < pResources->GetCount(); ++i )
 	{
 		DWORD dwResQty = static_cast<DWORD>(pResources->GetAt(i).GetResQty());
@@ -433,7 +433,7 @@ DWORD CContainer::ResourceConsume(const CResourceQtyArray *pResources, DWORD dwR
 			dwQtyMin = dwQtyCur;
 	}
 
-	if ( dwQtyMin == ULONG_MAX )	// it has no resources, so I guess we can make it from nothing?
+	if ( dwQtyMin == DWORD_MAX )	// it has no resources, so I guess we can make it from nothing?
 		return dwReplicationQty;
 
 	return dwQtyMin;
@@ -1007,7 +1007,7 @@ void CItemContainer::ContentAdd(CItem *pItem, CPointMap pt, BYTE gridIndex)
 
 	// Try drop it on given container grid index (if not available, drop it on next free index)
 	bool fGridAvailable;
-	for ( size_t i = 0; i < UCHAR_MAX; ++i )
+	for ( size_t i = 0; i < BYTE_MAX; ++i )
 	{
 		fGridAvailable = true;
 		for ( CItem *pTry = GetContentHead(); pTry != NULL; pTry = pTry->GetNext() )

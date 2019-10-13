@@ -121,7 +121,7 @@ void NetState::clear(void)
 		CAccount *account = client->m_pAccount;
 
 		g_Serv.StatDec(SERV_STAT_CLIENTS);
-		g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:Client disconnected [Total:%lu] ('%s', acct='%s')\n", m_id, g_Serv.StatGet(SERV_STAT_CLIENTS), m_peerAddress.GetAddrStr(), account ? account->GetName() : "<NA>");
+		g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:Client disconnected [Total:%" FMTDWORD "] ('%s', acct='%s')\n", m_id, g_Serv.StatGet(SERV_STAT_CLIENTS), m_peerAddress.GetAddrStr(), account ? account->GetName() : "<NA>");
 		
 #if !defined(_WIN32) || defined(_LIBEV)
 		if (m_socket.IsOpen() && g_Cfg.m_fUseAsyncNetwork != 0)
@@ -1063,7 +1063,7 @@ void NetworkIn::tick(void)
 
 						if (received >= iSeedLen)
 						{
-							DEBUG_WARN(("%lx:New Login Handshake Detected. Client Version: %lu.%lu.%lu.%lu\n", client->id(), pEvent->NewSeed.m_Version_Maj, pEvent->NewSeed.m_Version_Min, pEvent->NewSeed.m_Version_Rev, pEvent->NewSeed.m_Version_Pat));
+							DEBUG_WARN(("%lx:New Login Handshake Detected. Client Version: %" FMTDWORD ".%" FMTDWORD ".%" FMTDWORD ".%" FMTDWORD "\n", client->id(), pEvent->NewSeed.m_Version_Maj, pEvent->NewSeed.m_Version_Min, pEvent->NewSeed.m_Version_Rev, pEvent->NewSeed.m_Version_Pat));
 
 							client->m_reportedVersion = CCrypt::GetVerFromNumber(pEvent->NewSeed.m_Version_Maj, pEvent->NewSeed.m_Version_Min, pEvent->NewSeed.m_Version_Rev, pEvent->NewSeed.m_Version_Pat);
 							seed = pEvent->NewSeed.m_Seed;
@@ -1082,7 +1082,7 @@ void NetworkIn::tick(void)
 						iSeedLen = NETWORK_SEEDLEN_OLD;
 					}
 
-					DEBUGNETWORK(("%lx:Client connected with a seed of 0x%lx (new handshake=%d, seed length=%" FMTSIZE_T ", received=%" FMTSIZE_T ", version=%lu)\n", client->id(), seed, client->m_newseed? 1 : 0, iSeedLen, received, client->m_reportedVersion));
+					DEBUGNETWORK(("%lx:Client connected with a seed of 0x" FMTDWORDH " (new handshake=%d, seed length=%" FMTSIZE_T ", received=%" FMTSIZE_T ", version=%" FMTDWORD ")\n", client->id(), seed, client->m_newseed? 1 : 0, iSeedLen, received, client->m_reportedVersion));
 
 					if ( !seed || iSeedLen > received )
 					{
@@ -2331,7 +2331,7 @@ size_t NetworkOut::sendBytesNow(CClient* client, const BYTE* data, DWORD length)
 
 	EXC_CATCH;
 	EXC_DEBUG_START;
-	g_Log.EventDebug("id='%lx', packet '0x%x', length '%lu'\n", state->id(), *data, length);
+	g_Log.EventDebug("id='%lx', packet '0x%x', length '%" FMTDWORD "'\n", state->id(), *data, length);
 	EXC_DEBUG_END;
 	return INT_MIN;
 }
@@ -3480,7 +3480,7 @@ bool NetworkInput::processUnknownClientData(NetState* state, Packet* buffer)
 				DWORD versionRevision = buffer->readInt32();
 				DWORD versionPatch = buffer->readInt32();
 
-				DEBUG_WARN(("%lx:New Login Handshake Detected. Client Version: %lu.%lu.%lu.%lu\n", state->id(), versionMajor, versionMinor, versionRevision, versionPatch));
+				DEBUG_WARN(("%lx:New Login Handshake Detected. Client Version: %" FMTDWORD ".%" FMTDWORD ".%" FMTDWORD ".%" FMTDWORD "\n", state->id(), versionMajor, versionMinor, versionRevision, versionPatch));
 				state->m_reportedVersion = CCrypt::GetVerFromNumber(versionMajor, versionMinor, versionRevision, versionPatch);
 			}
 			else
@@ -3503,7 +3503,7 @@ bool NetworkInput::processUnknownClientData(NetState* state, Packet* buffer)
 			seed = buffer->readInt32();
 		}
 
-		DEBUGNETWORK(("%lx:Client connected with a seed of 0x%lx (new handshake=%d, version=%lu)\n", state->id(), seed, state->m_newseed ? 1 : 0, state->m_reportedVersion));
+		DEBUGNETWORK(("%lx:Client connected with a seed of 0x" FMTDWORDH " (new handshake=%d, version=%" FMTDWORD ")\n", state->id(), seed, state->m_newseed ? 1 : 0, state->m_reportedVersion));
 
 		if (seed == 0)
 		{

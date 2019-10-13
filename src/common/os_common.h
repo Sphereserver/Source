@@ -36,6 +36,8 @@
 
 #ifdef _WIN32
 	typedef void		THREAD_ENTRY_RET;
+	#define FMTDWORD	"lu"	// Windows uses '%lu' to format dec DWORD (unsigned long)
+	#define FMTDWORDH	"lx"	// Windows uses '%lx' to format hex DWORD (unsigned long)
 	#define FMTSIZE_T	"Iu"	// Windows uses '%Iu' to format 'size_t'
 
 	#define strcmpi		_strcmpi
@@ -54,6 +56,8 @@
 	#endif
 #else
 	typedef void		*THREAD_ENTRY_RET;
+	#define FMTDWORD	"u"		// Linux uses '%u' to format dec DWORD (unsigned long)
+	#define FMTDWORDH	"x"		// Linux uses '%x' to format hex DWORD (unsigned int)
 	#define FMTSIZE_T	"zu"	// Linux uses '%zu' to format 'size_t'
 
 	#define strcmpi		strcasecmp

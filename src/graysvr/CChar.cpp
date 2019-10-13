@@ -521,7 +521,7 @@ signed char CChar::GetFixZ(CPointMap pt, DWORD dwBlockFlags)
 		if ( block.m_Top.m_z < pt.m_z + m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? GetHeightMount() : GetHeightMount() / 2) )
 			dwBlockFlags |= CAN_I_BLOCK;	// can't fit under this
 	}
-	if ( (dwCan != ULONG_MAX) && (dwBlockFlags != 0x0) )
+	if ( (dwCan != DWORD_MAX) && (dwBlockFlags != 0x0) )
 	{
 
 		if ( (dwBlockFlags & CAN_I_DOOR) && Can(CAN_C_GHOST) )
@@ -1848,7 +1848,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				sVal.FormatHex(dwBlockFlags);
 			}
 			else
-				sVal.FormatHex(ULONG_MAX);
+				sVal.FormatHex(DWORD_MAX);
 			return true;
 		}
 		case CHC_DISPIDDEC:

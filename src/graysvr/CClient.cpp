@@ -71,7 +71,7 @@ CClient::CClient(NetState *state)
 	++history.m_connecting;
 	++history.m_connected;
 
-	g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Client connected [Total:%lu] ('%s' %ld/%ld)\n", GetSocketID(), g_Serv.StatGet(SERV_STAT_CLIENTS), GetPeerStr(), history.m_connecting, history.m_connected);
+	g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Client connected [Total:%" FMTDWORD "] ('%s' %ld/%ld)\n", GetSocketID(), g_Serv.StatGet(SERV_STAT_CLIENTS), GetPeerStr(), history.m_connecting, history.m_connected);
 }
 
 CClient::~CClient()
@@ -1028,7 +1028,7 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 				}
 				iArgs[i] = Exp_GetVal(ppArgs[i]);
 			}
-			if ( (iArgs[0] < 0) || (iArgs[0] > USHRT_MAX) )
+			if ( (iArgs[0] < 0) || (iArgs[0] > WORD_MAX) )
 			{
 				DEBUG_ERR(("%s: invalid icon '%d'\n", sm_szVerbKeys[index], iArgs[0]));
 				break;
@@ -1049,7 +1049,7 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 		case CV_REMOVEBUFF:
 		{
 			BUFF_ICONS IconId = static_cast<BUFF_ICONS>(s.GetArgVal());
-			if ( (IconId < 0) || (IconId > USHRT_MAX) )
+			if ( (IconId < 0) || (IconId > WORD_MAX) )
 			{
 				DEBUG_ERR(("%s: invalid icon '%d'\n", sm_szVerbKeys[index], IconId));
 				break;
