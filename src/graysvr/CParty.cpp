@@ -93,7 +93,7 @@ CPartyDef::CPartyDef(CChar *pCharInviter, CChar *pCharAccept)
 	AcceptMember(pCharAccept);
 	SendAddList(NULL);		// send full list to all
 	UpdateWaypointAll(pCharInviter, MAPWAYPOINT_PartyMember);
-	m_sName.Format("Party_0%lx", static_cast<DWORD>(pCharInviter->GetUID()));
+	m_sName.Format("Party_0%" FMTDWORDH, static_cast<DWORD>(pCharInviter->GetUID()));
 }
 
 size_t CPartyDef::AttachChar(CChar *pChar)

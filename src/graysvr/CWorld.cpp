@@ -125,7 +125,7 @@ LPCTSTR GetReasonForGarbageCode(int iCode = -1)
 void ReportGarbageCollection(CObjBase *pObj, int iResultCode)
 {
 	ASSERT(pObj);
-	DEBUG_ERR(("UID=0%lx, id=0%hx '%s', Invalid code=%0x (%s)\n", static_cast<DWORD>(pObj->GetUID()), pObj->GetBaseID(), pObj->GetName(), iResultCode, GetReasonForGarbageCode(iResultCode)));
+	DEBUG_ERR(("UID=0%" FMTDWORDH ", id=0%hx '%s', Invalid code=%0x (%s)\n", static_cast<DWORD>(pObj->GetUID()), pObj->GetBaseID(), pObj->GetName(), iResultCode, GetReasonForGarbageCode(iResultCode)));
 }
 
 ///////////////////////////////////////////////////////////
@@ -640,7 +640,7 @@ successalloc:
 	if ( pObjPrv )
 	{
 		// Don't use Delete() here, because the UID will still be assigned until async cleanup time
-		DEBUG_ERR(("UID conflict delete 0%lx, '%s'\n", dwIndex, pObjPrv->GetName()));
+		DEBUG_ERR(("UID conflict delete 0%" FMTDWORDH ", '%s'\n", dwIndex, pObjPrv->GetName()));
 		delete pObjPrv;
 	}
 	m_UIDs[dwIndex] = pObj;
@@ -675,7 +675,7 @@ int CWorldThread::FixObjTry(CObjBase *pObj, DWORD uid)
 	{
 		if ( (pObj->GetUID() & UID_O_INDEX_MASK) != uid )
 		{
-			DEBUG_ERR(("UID 0%lx, '%s', Mislinked\n", uid, pObj->GetName()));
+			DEBUG_ERR(("UID 0%" FMTDWORDH ", '%s', Mislinked\n", uid, pObj->GetName()));
 			return 0x7101;
 		}
 	}
@@ -725,12 +725,12 @@ int CWorldThread::FixObj(CObjBase *pObj, DWORD uid)
 	}
 	catch ( const CGrayError &e )
 	{
-		g_Log.CatchEvent(&e, "UID=0%lx, Asserted cleanup", uid);
+		g_Log.CatchEvent(&e, "UID=0%" FMTDWORDH ", Asserted cleanup", uid);
 		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 	}
 	catch ( ... )
 	{
-		g_Log.CatchEvent(NULL, "UID=0%lx, Asserted cleanup", uid);
+		g_Log.CatchEvent(NULL, "UID=0%" FMTDWORDH ", Asserted cleanup", uid);
 		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 	}
 	return iResultCode;
@@ -765,7 +765,7 @@ void CWorldThread::GarbageCollection_New()
 		pGMPageNext = pGMPage->GetNext();
 		if ( !pGMPage->m_uidChar.CharFind() )
 		{
-			DEBUG_ERR(("GC: Deleted GM Page linked to invalid char uid=0%lx\n", static_cast<DWORD>(pGMPage->m_uidChar)));
+			DEBUG_ERR(("GC: Deleted GM Page linked to invalid char uid=0%" FMTDWORDH "\n", static_cast<DWORD>(pGMPage->m_uidChar)));
 			delete pGMPage;
 		}
 		else if ( !g_Accounts.Account_Find(pGMPage->m_sAccount) )

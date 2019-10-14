@@ -966,7 +966,7 @@ void defragSphere(char *path)
 		return;
 	}
 
-	g_Log.Event(LOGL_EVENT, "Found %" FMTDWORD " UIDs (latest: 0%lx)\n", uid, uids[dTotalUIDs - 1]);
+	g_Log.Event(LOGL_EVENT, "Found %" FMTDWORD " UIDs (latest: 0%" FMTDWORDH ")\n", uid, uids[dTotalUIDs - 1]);
 	g_Log.Event(LOGL_EVENT, "Quick-sorting UIDs array...\n");
 	dword_q_sort(uids, 0, dTotalUIDs - 1);
 
@@ -1139,7 +1139,7 @@ void defragSphere(char *path)
 				{
 					*p = 0;
 					strncpy(z, p1, sizeof(z) - 1);
-					sprintf(z1, "0%lx", uid);
+					sprintf(z1, "0%" FMTDWORDH, uid);
 					strcat(buf, z1);
 					strcat(buf, z);
 				}

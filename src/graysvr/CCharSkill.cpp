@@ -3747,7 +3747,7 @@ bool CChar::Skill_Start(SKILL_TYPE skill)
 	{
 		if ( (skill != SKILL_NONE) && !IsSkillBase(skill) && !IsSkillNPC(skill) )
 		{
-			DEBUG_ERR(("UID:0%lx Bad Skill %d for '%s'\n", static_cast<DWORD>(GetUID()), skill, GetName()));
+			DEBUG_ERR(("Char '%s' (UID=0%" FMTDWORDH ") is trying to use bad skill %d\n", GetName(), static_cast<DWORD>(GetUID()), skill));
 			return false;
 		}
 		m_Act_SkillCurrent = skill;

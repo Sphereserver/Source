@@ -2431,7 +2431,7 @@ bool CChar::Spell_TargCheck()
 	const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
 	if ( !pSpellDef )
 	{
-		DEBUG_ERR(("Bad Spell %d, uid 0%0lx\n", m_atMagery.m_Spell, static_cast<DWORD>(GetUID())));
+		DEBUG_ERR(("Char '%s' (UID=0%" FMTDWORDH ") is trying to use bad spell %d\n", GetName(), static_cast<DWORD>(GetUID()), m_atMagery.m_Spell));
 		return false;
 	}
 

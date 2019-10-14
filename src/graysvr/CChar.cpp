@@ -2842,7 +2842,7 @@ bool CChar::r_Load(CScript &s)	// load a character from script
 	int iResultCode = CObjBase::IsWeird();
 	if ( iResultCode )
 	{
-		DEBUG_ERR(("Char 0%lx Invalid, id='%s', code=0%x\n", static_cast<DWORD>(GetUID()), GetResourceName(), iResultCode));
+		DEBUG_ERR(("Char 0%" FMTDWORDH " Invalid, id='%s', code=0%x\n", static_cast<DWORD>(GetUID()), GetResourceName(), iResultCode));
 		Delete();
 	}
 	return true;

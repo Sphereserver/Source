@@ -777,7 +777,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerRun(CScript &s, TRIGRUN_TYPE trigger, CTextCon
 				CGrayUID uid = static_cast<CGrayUID>(Exp_GetLLVal(pszTempPoint));
 				if ( !uid.IsValidUID() )
 				{
-					DEBUG_ERR(("%s called on invalid uid '0%lx'\n", sm_szScriptKeys[index], uid.GetObjUID()));
+					DEBUG_ERR(("%s called on invalid uid '0%" FMTDWORDH "'\n", sm_szScriptKeys[index], uid.GetObjUID()));
 					iRet = OnTriggerRun(s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, psResult);
 					break;
 				}
@@ -785,7 +785,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerRun(CScript &s, TRIGRUN_TYPE trigger, CTextCon
 				CContainer *pCont = dynamic_cast<CContainer *>(uid.ObjFind());
 				if ( !pCont )
 				{
-					DEBUG_ERR(("%s called on non-container uid '0%lx'\n", sm_szScriptKeys[index], uid.GetObjUID()));
+					DEBUG_ERR(("%s called on non-container uid '0%" FMTDWORDH "'\n", sm_szScriptKeys[index], uid.GetObjUID()));
 					iRet = OnTriggerRun(s, TRIGRUN_SECTION_FALSE, pSrc, pArgs, psResult);
 					break;
 				}

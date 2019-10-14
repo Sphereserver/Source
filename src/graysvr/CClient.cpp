@@ -1142,7 +1142,7 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 								CPointMap pt = pItem->GetTopPoint();
 								m_pChar->Spell_Teleport(pt, true, false);
 								m_pChar->m_Act_Targ = pItem->GetUID();
-								SysMessagef("Bad spawn (0%lx, id=%s). Set as ACT", static_cast<DWORD>(pItem->GetUID()), g_Cfg.ResourceGetName(rid));
+								SysMessagef("Bad spawn '%s' (UID=0%" FMTDWORDH ") set as ACT", g_Cfg.ResourceGetName(rid), static_cast<DWORD>(pItem->GetUID()));
 								fFound = true;
 							}
 						}

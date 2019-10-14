@@ -1496,7 +1496,7 @@ bool CServer::r_Verb(CScript &s, CTextConsole *pSrc)
 
 	EXC_DEBUG_START;
 	EXC_ADD_SCRIPTSRC;
-	g_Log.EventDebug("source '%s' char '%s' uid '0%lx'\n", (pSrc && pSrc->GetName()) ? pSrc->GetName() : "", (pSrc && pSrc->GetChar()) ? pSrc->GetChar()->GetName() : "", (pSrc && pSrc->GetChar()) ? static_cast<DWORD>(pSrc->GetChar()->GetUID()) : 0);
+	g_Log.EventDebug("source '%s' char '%s' uid '0%" FMTDWORDH "'\n", (pSrc && pSrc->GetName()) ? pSrc->GetName() : "", (pSrc && pSrc->GetChar()) ? pSrc->GetChar()->GetName() : "", (pSrc && pSrc->GetChar()) ? static_cast<DWORD>(pSrc->GetChar()->GetUID()) : 0);
 	EXC_DEBUG_END;
 	return false;
 }
@@ -1617,7 +1617,7 @@ void CServer::ProfileDump(CTextConsole *pSrc, bool fDump)
 				if ( pFunction->average > average )
 				{
 					if ( ft )
-						ft->Printf("FUNCTION '%-30s' called %6lu times (%6llu.%04llu min, %6llu.%04llu avg, %6llu.%04llu max) [total: %6llu.%04llu ms]\n",
+						ft->Printf("FUNCTION '%-30s' called %6" FMTDWORD " times (%6llu.%04llu min, %6llu.%04llu avg, %6llu.%04llu max) [total: %6llu.%04llu ms]\n",
 							pFunction->name,
 							pFunction->called,
 							pFunction->min / divby,
@@ -1630,7 +1630,7 @@ void CServer::ProfileDump(CTextConsole *pSrc, bool fDump)
 							((pFunction->total * 10000) / divby) % 10000
 						);
 					else
-						pSrc->SysMessagef("FUNCTION '%-30s' called %6lu times (%6llu.%04llu min, %6llu.%04llu avg, %6llu.%04llu max) [total: %6llu.%04llu ms]\n",
+						pSrc->SysMessagef("FUNCTION '%-30s' called %6" FMTDWORD " times (%6llu.%04llu min, %6llu.%04llu avg, %6llu.%04llu max) [total: %6llu.%04llu ms]\n",
 							pFunction->name,
 							pFunction->called,
 							pFunction->min / divby,
@@ -1651,7 +1651,7 @@ void CServer::ProfileDump(CTextConsole *pSrc, bool fDump)
 				if ( pTrigger->average > average )
 				{
 					if ( ft )
-						ft->Printf("TRIGGER '%-25s' called %6lu times (%6llu.%04llu min, %6llu.%04llu avg, %6llu.%04llu max), total: %6llu.%04llu ms\n",
+						ft->Printf("TRIGGER '%-25s' called %6" FMTDWORD " times (%6llu.%04llu min, %6llu.%04llu avg, %6llu.%04llu max), total: %6llu.%04llu ms\n",
 							pTrigger->name,
 							pTrigger->called,
 							pTrigger->min / divby,
@@ -1664,7 +1664,7 @@ void CServer::ProfileDump(CTextConsole *pSrc, bool fDump)
 							((pTrigger->total * 10000) / divby) % 10000
 						);
 					else
-						pSrc->SysMessagef("TRIGGER '%-25s' called %6lu times (%6llu.%04llu min, %6llu.%04llu avg, %6llu.%04llu max), total: %6llu.%04llu ms\n",
+						pSrc->SysMessagef("TRIGGER '%-25s' called %6" FMTDWORD " times (%6llu.%04llu min, %6llu.%04llu avg, %6llu.%04llu max), total: %6llu.%04llu ms\n",
 							pTrigger->name,
 							pTrigger->called,
 							pTrigger->min / divby,

@@ -60,7 +60,7 @@ bool CChar::SetPlayerAccount(CAccount *pAccount)
 		if ( m_pPlayer->m_pAccount == pAccount )
 			return true;
 
-		DEBUG_ERR(("Char '%s' (UID=0%lx) can't override account '%s' with '%s'\n", GetName(), static_cast<DWORD>(GetUID()), m_pPlayer->m_pAccount->GetName(), pAccount->GetName()));
+		DEBUG_ERR(("Char '%s' (UID=0%" FMTDWORDH ") can't override account '%s' with '%s'\n", GetName(), static_cast<DWORD>(GetUID()), m_pPlayer->m_pAccount->GetName(), pAccount->GetName()));
 		return false;
 	}
 
@@ -80,7 +80,7 @@ bool CChar::SetPlayerAccount(LPCTSTR pszAccName)
 	CAccount *pAccount = g_Accounts.Account_FindCreate(pszAccName, (g_Serv.m_eAccApp == ACCAPP_Free));
 	if ( !pAccount )
 	{
-		DEBUG_ERR(("Char '%s' (UID=0%lx) can't find account '%s'\n", GetName(), static_cast<DWORD>(GetUID()), pszAccName));
+		DEBUG_ERR(("Char '%s' (UID=0%" FMTDWORDH ") can't find account '%s'\n", GetName(), static_cast<DWORD>(GetUID()), pszAccName));
 		return false;
 	}
 	return SetPlayerAccount(pAccount);

@@ -178,7 +178,7 @@ void CItemMultiCustom::AddItem(CClient *pClient, ITEMID_TYPE id, signed short x,
 	CItemBase *pItemBase = CItemBase::FindItemBase(id);
 	if ( !pItemBase )
 	{
-		g_Log.EventWarn("Char UID=0%lx is trying to add unscripted item 0%x on multi UID=0%lx using house customization menu\n", pChar ? static_cast<DWORD>(pChar->GetUID()) : 0, id, static_cast<DWORD>(GetUID()));
+		g_Log.EventWarn("Char UID=0%" FMTDWORDH " is trying to add unscripted item 0%x on multi UID=0%" FMTDWORDH " using house customization menu\n", pChar ? static_cast<DWORD>(pChar->GetUID()) : 0, id, static_cast<DWORD>(GetUID()));
 		SendStructureTo(pClient);
 		return;
 	}
@@ -190,7 +190,7 @@ void CItemMultiCustom::AddItem(CClient *pClient, ITEMID_TYPE id, signed short x,
 	{
 		if ( !IsValidItem(id, pClient, false) )
 		{
-			g_Log.EventWarn("Char UID=0%lx is trying to add invalid item 0%x on multi UID=0%lx using house customization menu\n", pChar ? static_cast<DWORD>(pChar->GetUID()) : 0, id, static_cast<DWORD>(GetUID()));
+			g_Log.EventWarn("Char UID=0%" FMTDWORDH " is trying to add invalid item 0%x on multi UID=0%" FMTDWORDH " using house customization menu\n", pChar ? static_cast<DWORD>(pChar->GetUID()) : 0, id, static_cast<DWORD>(GetUID()));
 			SendStructureTo(pClient);
 			return;
 		}
@@ -211,7 +211,7 @@ void CItemMultiCustom::AddItem(CClient *pClient, ITEMID_TYPE id, signed short x,
 				}
 				else
 				{
-					g_Log.EventWarn("Char UID=0%lx is trying to add item 0%x at invalid location on multi UID=0%lx using house customization menu\n", pChar ? static_cast<DWORD>(pChar->GetUID()) : 0, id, static_cast<DWORD>(GetUID()));
+					g_Log.EventWarn("Char UID=0%" FMTDWORDH " is trying to add item 0%x at invalid location on multi UID=0%" FMTDWORDH " using house customization menu\n", pChar ? static_cast<DWORD>(pChar->GetUID()) : 0, id, static_cast<DWORD>(GetUID()));
 					SendStructureTo(pClient);
 					return;
 				}
@@ -347,14 +347,14 @@ void CItemMultiCustom::AddStairs(CClient *pClient, ITEMID_TYPE id, signed short 
 	const CGrayMulti *pMulti = g_Cfg.GetMultiItemDefs(id);
 	if ( !pMulti )
 	{
-		g_Log.EventWarn("Char UID=0%lx is trying to add unscripted stairs 0%x on multi UID=0%lx using house customization menu\n", pChar ? static_cast<DWORD>(pChar->GetUID()) : 0, id, static_cast<DWORD>(GetUID()));
+		g_Log.EventWarn("Char UID=0%" FMTDWORDH " is trying to add unscripted stairs 0%x on multi UID=0%" FMTDWORDH " using house customization menu\n", pChar ? static_cast<DWORD>(pChar->GetUID()) : 0, id, static_cast<DWORD>(GetUID()));
 		SendStructureTo(pClient);
 		return;
 	}
 
 	if ( !IsValidItem(id, pClient, true) )
 	{
-		g_Log.EventWarn("Char UID=0%lx is trying to add invalid stairs 0%x on multi UID=0%lx using house customization menu\n", pChar ? static_cast<DWORD>(pChar->GetUID()) : 0, id, static_cast<DWORD>(GetUID()));
+		g_Log.EventWarn("Char UID=0%" FMTDWORDH " is trying to add invalid stairs 0%x on multi UID=0%" FMTDWORDH " using house customization menu\n", pChar ? static_cast<DWORD>(pChar->GetUID()) : 0, id, static_cast<DWORD>(GetUID()));
 		SendStructureTo(pClient);
 		return;
 	}
@@ -390,21 +390,21 @@ void CItemMultiCustom::AddRoof(CClient *pClient, ITEMID_TYPE id, signed short x,
 	CItemBase *pItemBase = CItemBase::FindItemBase(id);
 	if ( !pItemBase )
 	{
-		g_Log.EventWarn("Char UID=0%lx is trying to add unscripted roof 0%x on multi UID=0%lx using house customization menu\n", pChar ? static_cast<DWORD>(pChar->GetUID()) : 0, id, static_cast<DWORD>(GetUID()));
+		g_Log.EventWarn("Char UID=0%" FMTDWORDH " is trying to add unscripted roof 0%x on multi UID=0%" FMTDWORDH " using house customization menu\n", pChar ? static_cast<DWORD>(pChar->GetUID()) : 0, id, static_cast<DWORD>(GetUID()));
 		SendStructureTo(pClient);
 		return;
 	}
 
 	if ( (pItemBase->GetTFlags() & UFLAG4_ROOF) == 0 )
 	{
-		g_Log.EventWarn("Char UID=0%lx is trying to add invalid roof 0%x on multi UID=0%lx using house customization menu\n", pChar ? static_cast<DWORD>(pChar->GetUID()) : 0, id, static_cast<DWORD>(GetUID()));
+		g_Log.EventWarn("Char UID=0%" FMTDWORDH " is trying to add invalid roof 0%x on multi UID=0%" FMTDWORDH " using house customization menu\n", pChar ? static_cast<DWORD>(pChar->GetUID()) : 0, id, static_cast<DWORD>(GetUID()));
 		SendStructureTo(pClient);
 		return;
 	}
 
 	if ( (z < -3) || (z > 12) || ((z % 3) != 0) )
 	{
-		g_Log.EventWarn("Char UID=0%lx is trying to add roof 0%x at invalid height on multi UID=0%lx using house customization menu\n", pChar ? static_cast<DWORD>(pChar->GetUID()) : 0, id, static_cast<DWORD>(GetUID()));
+		g_Log.EventWarn("Char UID=0%" FMTDWORDH " is trying to add roof 0%x at invalid height on multi UID=0%" FMTDWORDH " using house customization menu\n", pChar ? static_cast<DWORD>(pChar->GetUID()) : 0, id, static_cast<DWORD>(GetUID()));
 		SendStructureTo(pClient);
 		return;
 	}
@@ -607,7 +607,7 @@ void CItemMultiCustom::CommitChanges(CClient *pClient)
 	if ( m_pRegion && !m_pRegion->IsInside(rect) )
 	{
 		// Items outside the region won't be noticed in LOS/movement checks, so the region boundaries need to be stretched to fit all components
-		g_Log.EventWarn("Char UID=0%lx is trying to commit an invalid design on multi UID=0%lx using house customization menu\n", pChar ? static_cast<DWORD>(pChar->GetUID()) : 0, static_cast<DWORD>(GetUID()));
+		g_Log.EventWarn("Char UID=0%" FMTDWORDH " is trying to commit an invalid design on multi UID=0%" FMTDWORDH " using house customization menu\n", pChar ? static_cast<DWORD>(pChar->GetUID()) : 0, static_cast<DWORD>(GetUID()));
 
 		const CGRect rectBackground = m_pRegion->GetRegionRect(0);
 		rect.UnionRect(rectBackground);
@@ -849,7 +849,7 @@ const CGRect CItemMultiCustom::GetDesignArea()
 			const CPointMap pt = GetTopPoint();
 			m_rectDesignArea.OffsetRect(-pt.m_x, -pt.m_y);
 
-			g_Log.EventWarn("Multi UID=0%lx doesn't have an proper MULTIDEF set\n", static_cast<DWORD>(GetUID()));
+			g_Log.EventWarn("Multi UID=0%" FMTDWORDH " doesn't have an proper MULTIDEF set\n", static_cast<DWORD>(GetUID()));
 		}
 	}
 

@@ -1220,7 +1220,7 @@ void CClient::addItemName(const CItem *pItem)
 		}
 	}
 	if ( IsPriv(PRIV_DEBUG) )
-		len += sprintf(szName + len, " [0%lx]", static_cast<DWORD>(pItem->GetUID()));
+		len += sprintf(szName + len, " [0%" FMTDWORDH "]", static_cast<DWORD>(pItem->GetUID()));
 
 	if ( IsTrigUsed(TRIGGER_AFTERCLICK) || IsTrigUsed(TRIGGER_ITEMAFTERCLICK) )
 	{
@@ -1322,7 +1322,7 @@ void CClient::addCharName(const CChar *pChar)
 			if ( pChar->IsStatFlag(STATF_Spawned) )
 				strcat(pszName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_SPAWN));
 			if ( IsPriv(PRIV_DEBUG) )
-				sprintf(pszName + strlen(pszName), " [0%lx]", static_cast<DWORD>(pChar->GetUID()));
+				sprintf(pszName + strlen(pszName), " [0%" FMTDWORDH "]", static_cast<DWORD>(pChar->GetUID()));
 		}
 	}
 	if ( pChar->GetPrivLevel() <= PLEVEL_Guest )
@@ -2370,12 +2370,12 @@ void CClient::addGlobalChatConnect()
 
 	// Set Jabber ID (syntax: CharName_CharUID@ServerID)
 	TCHAR *pszJID = Str_GetTemp();
-	sprintf(pszJID, "%.6s_%.7lu@%.2hhu", m_pChar->GetName(), static_cast<DWORD>(m_pChar->GetUID()), 0);
+	sprintf(pszJID, "%.6s_%.7" FMTDWORD "@%.2hhu", m_pChar->GetName(), static_cast<DWORD>(m_pChar->GetUID()), 0);
 	CGlobalChat::SetJID(pszJID);
 
 	// Send xml to client
 	TCHAR *pszXML = Str_GetTemp();
-	sprintf(pszXML, "<iq to=\"%s\" id=\"iq_%.10lu\" type=\"6\" version=\"1\" jid=\"%s\" />", CGlobalChat::GetJID(), static_cast<DWORD>(CGTime::GetCurrentTime().GetTime()), CGlobalChat::GetJID());
+	sprintf(pszXML, "<iq to=\"%s\" id=\"iq_%.10" FMTDWORD "\" type=\"6\" version=\"1\" jid=\"%s\" />", CGlobalChat::GetJID(), static_cast<DWORD>(CGTime::GetCurrentTime().GetTime()), CGlobalChat::GetJID());
 
 	new PacketGlobalChat(this, 0, PacketGlobalChat::Connect, PacketGlobalChat::InfoQuery, pszXML);
 	addBarkLocalized(1158413, NULL, HUE_TEXT_DEF, TALKMODE_SYSTEM);	// Global Chat is now connected. 
@@ -2390,7 +2390,7 @@ void CClient::addGlobalChatStatusToggle()
 
 	int iShow = static_cast<int>(CGlobalChat::IsVisible());
 	TCHAR *pszXML = Str_GetTemp();
-	sprintf(pszXML, "<presence from=\"%s\" id=\"pres_%.10lu\" name=\"%.6s\" show=\"%d\" version=\"1\" />", CGlobalChat::GetJID(), static_cast<DWORD>(CGTime::GetCurrentTime().GetTime()), m_pChar->GetName(), iShow);
+	sprintf(pszXML, "<presence from=\"%s\" id=\"pres_%.10" FMTDWORD "\" name=\"%.6s\" show=\"%d\" version=\"1\" />", CGlobalChat::GetJID(), static_cast<DWORD>(CGTime::GetCurrentTime().GetTime()), m_pChar->GetName(), iShow);
 
 	CGlobalChat::SetVisible(static_cast<bool>(iShow));
 	new PacketGlobalChat(this, 0, PacketGlobalChat::Connect, PacketGlobalChat::Presence, pszXML);
@@ -3634,7 +3634,7 @@ BYTE CClient::Setup_Delete(DWORD dwSlot)
 	if ( !pChar->IsDeleted() )
 		return PacketDeleteError::InvalidRequest;
 
-	g_Log.Event(LOGM_ACCOUNTS|LOGL_EVENT, "%lx:Account '%s' deleted char '%s' [0%lx] on client character selection menu\n", GetSocketID(), m_pAccount->GetName(), pszName, static_cast<DWORD>(uid));
+	g_Log.Event(LOGM_ACCOUNTS|LOGL_EVENT, "%lx:Account '%s' deleted char '%s' [0%" FMTDWORDH "] on client character selection menu\n", GetSocketID(), m_pAccount->GetName(), pszName, static_cast<DWORD>(uid));
 	return PacketDeleteError::Success;
 }
 

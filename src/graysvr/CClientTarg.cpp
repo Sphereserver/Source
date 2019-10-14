@@ -21,7 +21,7 @@ bool CClient::OnTarg_Obj_Set(CObjBase *pObj)
 
 	// Parse the command.
 	TCHAR *pszLogMsg = Str_GetTemp();
-	sprintf(pszLogMsg, "%lx:'%s' commands uid=0%lx (%s) to '%s'", m_NetState->id(), GetName(), static_cast<DWORD>(pObj->GetUID()), pObj->GetName(), static_cast<LPCTSTR>(m_Targ_Text));
+	sprintf(pszLogMsg, "%lx:'%s' commands UID=0%" FMTDWORDH " (%s) to '%s'", m_NetState->id(), GetName(), static_cast<DWORD>(pObj->GetUID()), pObj->GetName(), static_cast<LPCTSTR>(m_Targ_Text));
 
 	// Check priv level for the new verb.
 	if ( !g_Cfg.CanUsePrivVerb(pObj, m_Targ_Text, this) )

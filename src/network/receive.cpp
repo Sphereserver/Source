@@ -536,7 +536,7 @@ bool PacketCreate::doCreate(NetState *net, LPCTSTR pszName, bool fFemale, RACE_T
 		}
 	}
 
-	g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' created new char '%s' [0%lx]\n", net->id(), account->GetName(), pChar->GetName(), static_cast<DWORD>(pChar->GetUID()));
+	g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' created new char '%s' [0%" FMTDWORDH "]\n", net->id(), account->GetName(), pChar->GetName(), static_cast<DWORD>(pChar->GetUID()));
 	client->Setup_Start(pChar);
 	return true;
 }
@@ -2267,7 +2267,7 @@ bool PacketGumpValueInputResponse::onReceive(NetState* net)
 		// m_Prop_UID = object we are after
 
 		TCHAR *pszLogMsg = Str_GetTemp();
-		sprintf(pszLogMsg, "%lx:'%s' tweak uid=0%lx (%s) to '%s %s'", net->id(), client->GetName(), static_cast<DWORD>(object->GetUID()), object->GetName(), static_cast<LPCTSTR>(client->m_Targ_Text), static_cast<LPCTSTR>(text));
+		sprintf(pszLogMsg, "%lx:'%s' tweak UID=0%" FMTDWORDH " (%s) to '%s %s'", net->id(), client->GetName(), static_cast<DWORD>(object->GetUID()), object->GetName(), static_cast<LPCTSTR>(client->m_Targ_Text), static_cast<LPCTSTR>(text));
 
 		CScript script(client->m_Targ_Text, text);
 		bool fRet = object->r_Verb(script, client->GetChar());
@@ -4624,7 +4624,7 @@ bool PacketCrashReport::onReceive(NetState* net)
 	skip(1); // zero
 	DWORD errorOffset = readInt32();
 
-	g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "%lx:Client crashed at %hu,%hu,%hhu,%hhu: 0x%08lX %s @ 0x%08lX (%s, %hhu.%hhu.%hhu.%hhu)\n", net->id(), x, y, z, map, errorCode, description, errorOffset, executable, versionMaj, versionMin, versionRev, versionPat);
+	g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "%lx:Client crashed at %hu,%hu,%hhu,%hhu: 0x%08" FMTDWORDH " %s @ 0x%08" FMTDWORDH " (%s, %hhu.%hhu.%hhu.%hhu)\n", net->id(), x, y, z, map, errorCode, description, errorOffset, executable, versionMaj, versionMin, versionRev, versionPat);
 	return true;
 }
 

@@ -879,12 +879,12 @@ bool CAccount::r_LoadVal(CScript &s)
 				CChar *pChar = uid.CharFind();
 				if ( !pChar )
 				{
-					DEBUG_ERR(("Invalid CHARUID 0%lx for account '%s'\n", static_cast<DWORD>(uid), GetName()));
+					DEBUG_ERR(("Invalid CHARUID 0%" FMTDWORDH " for account '%s'\n", static_cast<DWORD>(uid), GetName()));
 					return false;
 				}
 				if ( !IsMyAccountChar(pChar) )
 				{
-					DEBUG_ERR(("CHARUID 0%lx (%s) not attached to account '%s'\n", static_cast<DWORD>(uid), pChar->GetName(), GetName()));
+					DEBUG_ERR(("CHARUID 0%" FMTDWORDH " (%s) not attached to account '%s'\n", static_cast<DWORD>(uid), pChar->GetName(), GetName()));
 					return false;
 				}
 				AttachChar(pChar);

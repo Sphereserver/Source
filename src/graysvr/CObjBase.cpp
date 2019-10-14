@@ -303,12 +303,12 @@ void CObjBase::r_WriteSafe(CScript &s)
 	}
 	catch ( const CGrayError &e )
 	{
-		g_Log.CatchEvent(&e, "Write Object 0%lx", uid);
+		g_Log.CatchEvent(&e, "Write Object 0%" FMTDWORDH, uid);
 		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 	}
 	catch ( ... )	// catch all
 	{
-		g_Log.CatchEvent(NULL, "Write Object 0%lx", uid);
+		g_Log.CatchEvent(NULL, "Write Object 0%" FMTDWORDH, uid);
 		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 	}
 }
@@ -2467,7 +2467,7 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 			CScript script(pszVerb);
 			if ( !r_Verb(script, pSrc) )
 			{
-				DEBUG_ERR(("Can't try %s object %s (0%lx)\n", pszVerb, GetName(), static_cast<DWORD>(GetUID())));
+				DEBUG_ERR(("Can't try %s object %s (0%" FMTDWORDH ")\n", pszVerb, GetName(), static_cast<DWORD>(GetUID())));
 				return false;
 			}
 			return true;
@@ -2495,9 +2495,9 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 			if ( !pNewSrc )
 			{
 				if ( index == OV_TRYSRC )
-					DEBUG_ERR(("Can't trysrc %s object %s (0%lx): invalid src uid 0%lx\n", pszVerb, GetName(), static_cast<DWORD>(GetUID()), static_cast<DWORD>(uidNewSrc)));
+					DEBUG_ERR(("Can't trysrc %s object %s (0%" FMTDWORDH "): invalid src UID=0%" FMTDWORDH "\n", pszVerb, GetName(), static_cast<DWORD>(GetUID()), static_cast<DWORD>(uidNewSrc)));
 				else
-					DEBUG_ERR(("Can't trysrv %s object %s (0%lx)\n", pszVerb, GetName(), static_cast<DWORD>(GetUID())));
+					DEBUG_ERR(("Can't trysrv %s object %s (0%" FMTDWORDH ")\n", pszVerb, GetName(), static_cast<DWORD>(GetUID())));
 				return false;
 			}
 
@@ -2505,9 +2505,9 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 			if ( !r_Verb(script, pNewSrc) )
 			{
 				if ( index == OV_TRYSRC )
-					DEBUG_ERR(("Can't trysrc %s object %s (0%lx) with src %s (0%lx)\n", pszVerb, GetName(), static_cast<DWORD>(GetUID()), pNewSrc->GetName(), static_cast<DWORD>(uidNewSrc)));
+					DEBUG_ERR(("Can't trysrc %s object %s (0%" FMTDWORDH ") with src %s (0%" FMTDWORDH ")\n", pszVerb, GetName(), static_cast<DWORD>(GetUID()), pNewSrc->GetName(), static_cast<DWORD>(uidNewSrc)));
 				else
-					DEBUG_ERR(("Can't trysrv %s object %s (0%lx)\n", pszVerb, GetName(), static_cast<DWORD>(GetUID())));
+					DEBUG_ERR(("Can't trysrv %s object %s (0%" FMTDWORDH ")\n", pszVerb, GetName(), static_cast<DWORD>(GetUID())));
 				return false;
 			}
 			return true;

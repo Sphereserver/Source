@@ -354,7 +354,7 @@ bool CResourceDef::SetResourceName(LPCTSTR pszName)
 			return true;
 
 		if ( RES_GET_INDEX(pVarKey->GetValNum()) == GetResourceID().GetResIndex() )
-			DEBUG_WARN(("DEFNAME=%s has a strange type mismatch (0%llx != 0%lx)\n", pszName, pVarKey->GetValNum(), GetResourceID().GetPrivateUID()));
+			DEBUG_WARN(("DEFNAME=%s has a strange type mismatch (0%llx != 0%" FMTDWORDH ")\n", pszName, pVarKey->GetValNum(), GetResourceID().GetPrivateUID()));
 		else
 			DEBUG_WARN(("DEFNAME=%s already exists (0%llx != 0%x)\n", pszName, RES_GET_INDEX(pVarKey->GetValNum()), GetResourceID().GetResIndex()));
 

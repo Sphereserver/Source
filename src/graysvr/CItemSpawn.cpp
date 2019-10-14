@@ -183,7 +183,7 @@ void CItemSpawn::GenerateChar(CResourceDef *pDef)
 		// If this fails, try placing the char over the spawn
 		if ( !pChar->MoveTo(pt) )
 		{
-			DEBUG_ERR(("Spawn UID:0%lx is unable to move the created character to world\n", static_cast<DWORD>(GetUID())));
+			DEBUG_ERR(("Spawn UID=0%" FMTDWORDH " is unable to move the created character to world\n", static_cast<DWORD>(GetUID())));
 			pChar->Delete();
 			return;
 		}
@@ -311,7 +311,7 @@ void CItemSpawn::OnTick(bool fExec)
 	if ( !pDef )
 	{
 		RESOURCE_ID_BASE rid = IsType(IT_SPAWN_ITEM) ? m_itSpawnItem.m_ItemID : m_itSpawnChar.m_CharID;
-		DEBUG_ERR(("Bad Spawn point uid=0%lx, id=%s\n", static_cast<DWORD>(GetUID()), g_Cfg.ResourceGetName(rid)));
+		DEBUG_ERR(("Bad Spawn point UID=0%" FMTDWORDH ", id=%s\n", static_cast<DWORD>(GetUID()), g_Cfg.ResourceGetName(rid)));
 		return;
 	}
 

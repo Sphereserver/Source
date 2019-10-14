@@ -4372,14 +4372,14 @@ bool PacketHouseDesign::writeLevelData(BYTE bLevel, WORD wItemCount, BYTE *pbDat
 	{
 		// An error occured with this floor, but we should be able to continue to the next without problems
 		delete[] compressBuffer;
-		g_Log.EventError("Compress failed with error %d when generating house design for floor %hhu on building 0%lx\n", error, bLevel, static_cast<DWORD>(m_pHouse->GetUID()));
+		g_Log.EventError("Compress failed with error %d when generating house design for floor %hhu on building UID=0%" FMTDWORDH "\n", error, bLevel, static_cast<DWORD>(m_pHouse->GetUID()));
 		return false;
 	}
 	else if ( (compressLength <= 0) || (compressLength >= HOUSEDESIGN_LEVELDATA_BUFFER) )
 	{
 		// Too much data, but we should be able to continue to the next floor without problems
 		delete[] compressBuffer;
-		g_Log.EventWarn("Floor %hhu on building 0%lx too large with compressed length of %lu\n", bLevel, static_cast<DWORD>(m_pHouse->GetUID()), compressLength);
+		g_Log.EventWarn("Floor %hhu on building UID=0%" FMTDWORDH " too large with compressed length of %lu\n", bLevel, static_cast<DWORD>(m_pHouse->GetUID()), compressLength);
 		return false;
 	}
 
@@ -4431,14 +4431,14 @@ void PacketHouseDesign::flushStairData(void)
 	{
 		// An error occured with this block, but we should be able to continue to the next without problems
 		delete[] compressBuffer;
-		g_Log.EventError("Compress failed with error %d when generating house design on building 0%lx\n", error, static_cast<DWORD>(m_pHouse->GetUID()));
+		g_Log.EventError("Compress failed with error %d when generating house design on building UID=0%" FMTDWORDH "\n", error, static_cast<DWORD>(m_pHouse->GetUID()));
 		return;
 	}
 	else if ( (compressLength <= 0) || (compressLength >= HOUSEDESIGN_STAIRDATA_BUFFER) )
 	{
 		// Too much data, but we should be able to continue to the next block without problems
 		delete[] compressBuffer;
-		g_Log.EventWarn("Building 0%lx too large with compressed length of %lu\n", static_cast<DWORD>(m_pHouse->GetUID()), compressLength);
+		g_Log.EventWarn("Building UID=0%" FMTDWORDH " too large with compressed length of %lu\n", static_cast<DWORD>(m_pHouse->GetUID()), compressLength);
 		return;
 	}
 

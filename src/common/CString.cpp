@@ -259,7 +259,7 @@ void CGString::FormatHex(DWORD dwVal)
 	// If dwVal is negative we MUST hexformat it as 64 bit int or reinterpreting it in a script might completely mess up
 	if (dwVal > static_cast<DWORD>(INT_MIN))	// if negative (remember two's complement)
 		return FormatLLHex(dwVal);
-	Format("0%lx", dwVal);
+	Format("0%" FMTDWORDH, dwVal);
 }
 
 void CGString::FormatLLHex(unsigned long long dwVal)

@@ -1296,7 +1296,7 @@ bool CClient::Cmd_SecureTrade(CChar *pChar, CItem *pItem)
 	CItemContainer *pCont2 = dynamic_cast<CItemContainer *>(pItem2);
 	if ( !pCont1 || !pCont2 )
 	{
-		DEBUG_ERR(("Can't create trade window on char '%s' [0%lx]: Itemdef 0%x is not a container type\n", m_pChar->GetName(), static_cast<DWORD>(m_pChar->GetUID()), ITEMID_Bulletin1));
+		DEBUG_ERR(("Can't create trade window on char '%s' [0%" FMTDWORDH "]: Itemdef 0%x is not a container type\n", m_pChar->GetName(), static_cast<DWORD>(m_pChar->GetUID()), ITEMID_Bulletin1));
 		pItem1->Delete();
 		pItem2->Delete();
 		return false;

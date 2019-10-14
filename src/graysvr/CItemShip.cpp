@@ -247,7 +247,7 @@ bool CItemShip::Ship_MoveDelta(CPointBase ptDelta, bool fMapBoundary)
 
 		if ( !pt.IsValidPoint() )
 		{
-			DEBUG_ERR(("Ship uid=0%lx out of bounds\n", static_cast<DWORD>(GetUID())));
+			DEBUG_ERR(("Ship UID=0%" FMTDWORDH " out of bounds\n", static_cast<DWORD>(GetUID())));
 			continue;
 		}
 		pObj->MoveTo(pt);

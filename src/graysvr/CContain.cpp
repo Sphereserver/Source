@@ -1044,13 +1044,13 @@ void CItemContainer::ContentAdd(CItem *pItem, CPointMap pt, BYTE gridIndex)
 		{
 			if ( !IsItemEquipped() )
 			{
-				DEBUG_ERR(("Un-equipped vendor box uid=0%lx is bad\n", GetUID().GetObjUID()));
+				DEBUG_ERR(("Un-equipped vendor box UID=0%" FMTDWORDH " is bad\n", GetUID().GetObjUID()));
 				break;
 			}
 			CItemVendable *pItemVend = static_cast<CItemVendable *>(pItem);
 			if ( !pItemVend )
 			{
-				DEBUG_ERR(("Vendor uid=0%lx selling non-vendable item '%s'\n", GetParentObj()->GetUID().GetObjUID(), pItem->GetResourceName()));
+				DEBUG_ERR(("Vendor UID=0%" FMTDWORDH " selling non-vendable item '%s'\n", GetParentObj()->GetUID().GetObjUID(), pItem->GetResourceName()));
 				pItem->Delete();
 				break;
 			}
@@ -1063,7 +1063,7 @@ void CItemContainer::ContentAdd(CItem *pItem, CPointMap pt, BYTE gridIndex)
 			// Can only place IT_GAME_PIECE inside here
 			if ( pItem->IsType(IT_GAME_PIECE) )
 				break;
-			g_Log.Event(LOGL_WARN, "Game board contains invalid item: %s uid=0%lx, board: %s uid=0%lx\n", pItem->GetResourceName(), pItem->GetUID().GetObjUID(), GetResourceName(), GetUID().GetObjUID());
+			g_Log.Event(LOGL_WARN, "Game board contains invalid item: %s UID=0%" FMTDWORDH ", board: %s UID=0%" FMTDWORDH "\n", pItem->GetResourceName(), pItem->GetUID().GetObjUID(), GetResourceName(), GetUID().GetObjUID());
 			pItem->Delete();
 			break;
 		}

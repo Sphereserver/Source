@@ -247,7 +247,7 @@ VERFILE_TYPE CGrayInstall::OpenFiles(DWORD dwMask)
 
 											for ( DWORD x = 0; x < dwLoop; ++x )
 											{
-												sprintf(szFileName, "build/map%dlegacymul/%.8lu.dat", index, x);
+												sprintf(szFileName, "build/map%dlegacymul/%.8" FMTDWORD ".dat", index, x);
 												if ( HashFileName(szFileName) == qwHash )
 												{
 													pMapAddress.dwFirstBlock = x * 4096;
