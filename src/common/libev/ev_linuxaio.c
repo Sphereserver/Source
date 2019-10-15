@@ -88,6 +88,10 @@
 #include <poll.h>
 #include <linux/aio_abi.h>
 
+#if (__GNUC__ >= 7) && (__GNUC_MINOR__ >= 1)
+	#pragma GCC diagnostic ignored "-Wdangling-else"
+#endif
+
 /*****************************************************************************/
 /* syscall wrapdadoop - this section has the raw api/abi definitions */
 

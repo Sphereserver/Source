@@ -2073,7 +2073,7 @@ bool CClient::OnTarg_Use_Item(CObjBase *pObjTarg, CPointMap &pt, ITEMID_TYPE id)
 				wUsed = static_cast<WORD>(pItemUse->ConsumeAmount(wNeed));
 			}
 
-			if ( wHave + wUsed < COUNTOF(sm_Txt_LoomUse) - 1 )
+			if ( static_cast<size_t>(wHave + wUsed) < COUNTOF(sm_Txt_LoomUse) - 1 )
 			{
 				pItemTarg->m_itLoom.m_ClothQty += wUsed;
 				SysMessage(sm_Txt_LoomUse[pItemTarg->m_itLoom.m_ClothQty]);
