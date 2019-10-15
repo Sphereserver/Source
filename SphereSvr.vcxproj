@@ -388,15 +388,9 @@ if defined GitRev (
     <None Include="src\tables\CStoneMember_props.tbl" />
     <None Include="src\tables\defmessages.tbl" />
     <None Include="src\tables\triggers.tbl" />
+    <Text Include="changelog.txt" />
     <Text Include="src\sphere.ini" />
     <Text Include="src\sphereCrypt.ini" />
-    <Text Include="docs\REVISIONS-51-54-SERIES.TXT" />
-    <Text Include="docs\REVISIONS-55-SERIES.TXT" />
-    <Text Include="docs\REVISIONS-56a-Pre_release.TXT" />
-    <Text Include="docs\REVISIONS-56b-Pre_release.TXT" />
-    <Text Include="docs\REVISIONS-56c-Pre_release.TXT" />
-    <Text Include="docs\REVISIONS-56-Pre_release.TXT" />
-    <Text Include="docs\REVISIONS-56-SERIES.TXT" />
     <ResourceCompile Include="src\graysvr\SphereSvr.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
