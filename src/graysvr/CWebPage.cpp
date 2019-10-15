@@ -491,7 +491,7 @@ int CWebPageDef::ServPageRequest(CClient *pClient, LPCTSTR pszURLArgs, CGTime *p
 		sprintf(pszTemp,
 			"HTTP/1.1 304 Not Modified\r\n"
 			"Date: %s\r\n"
-			"Server: " SPHERE_TITLE " V" SPHERE_VERSION "\r\n"
+			"Server: " SPHERE_TITLE_VER "\r\n"
 			"Content-Length: 0\r\n"
 			"\r\n",
 			timeCurrent.FormatGmt(NULL)
@@ -509,7 +509,7 @@ int CWebPageDef::ServPageRequest(CClient *pClient, LPCTSTR pszURLArgs, CGTime *p
 	size_t iLen = sprintf(szTemp,
 		"HTTP/1.1 200 OK\r\n"
 		"Date: %s\r\n"
-		"Server: " SPHERE_TITLE " V" SPHERE_VERSION "\r\n"
+		"Server: " SPHERE_TITLE_VER "\r\n"
 		"Accept-Ranges: bytes\r\n"
 		"Content-Type: %s\r\n",
 		timeCurrent.FormatGmt(NULL),
@@ -730,7 +730,7 @@ bool CWebPageDef::ServPage(CClient *pClient, TCHAR *pszPageName, CGTime *pTimeLa
 	sHeader.Format(
 		"HTTP/1.1 %d %s\r\n"
 		"Date: %s\r\n"
-		"Server: " SPHERE_TITLE " V" SPHERE_VERSION "\r\n"
+		"Server: " SPHERE_TITLE_VER "\r\n"
 		"Content-Type: text/html\r\n"
 		"Content-Length: %" FMTSIZE_T "\r\n"
 		"Connection: close\r\n"

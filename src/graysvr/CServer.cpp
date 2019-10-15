@@ -216,7 +216,7 @@ bool CServer::GetPublicIP()
 
 	// Send HTTP request
 	TCHAR *pszHeader = Str_GetTemp();
-	sprintf(pszHeader, "GET %s HTTP/1.1\r\nHost: %s\r\nUser-Agent: " SPHERE_TITLE " V" SPHERE_VERSION "\r\nConnection: Close\r\n\r\n", pszPath ? pszPath : "/", pszDomain);
+	sprintf(pszHeader, "GET %s HTTP/1.1\r\nHost: %s\r\nUser-Agent: " SPHERE_TITLE_VER "\r\nConnection: Close\r\n\r\n", pszPath ? pszPath : "/", pszDomain);
 	if ( sock.Send(pszHeader, strlen(pszHeader)) == SOCKET_ERROR )
 	{
 		sock.Close();
@@ -316,9 +316,9 @@ bool CServer::Load()
 	EXC_TRY("Load");
 
 #if defined(__GITREVISION__) && defined(__GITHASH__)
-	g_Log.Event(LOGL_EVENT, "%s\nCompiled: %s [build %d / Git hash %s]\n\n", g_szServerDescription, g_szServerBuildDate, __GITREVISION__, __GITHASH__);
+	g_Log.Event(LOGL_EVENT, "%s by %s\nCompiled at %s (build %d / Git hash %s)\n\n", SPHERE_TITLE_VER, SPHERE_WEBSITE, g_szCompiledDate, __GITREVISION__, __GITHASH__);
 #else
-	g_Log.Event(LOGL_EVENT, "%s\nCompiled: %s\n\n", g_szServerDescription, g_szServerBuildDate);
+	g_Log.Event(LOGL_EVENT, "%s by %s\nCompiled at %s\n\n", SPHERE_TITLE_VER, SPHERE_WEBSITE, g_szCompiledDate);
 #endif
 
 #ifdef _NIGHTLYBUILD
@@ -348,7 +348,7 @@ bool CServer::Load()
 #ifdef _WIN32
 	EXC_SET("setting console title");
 	TCHAR *pszTemp = Str_GetTemp();
-	sprintf(pszTemp, SPHERE_TITLE " V" SPHERE_VERSION " - %s", GetName());
+	sprintf(pszTemp, SPHERE_TITLE_VER " - %s", GetName());
 	SetConsoleTitle(pszTemp);
 #else
 	EXC_SET("setting signals");
@@ -979,7 +979,7 @@ LPCTSTR CServer::GetStatusString(BYTE bIndex) const
 		{
 			// Typical (first time) poll response
 			TCHAR szVersion[128];
-			sprintf(pszTemp, SPHERE_TITLE ", Name=%s, Port=%hu, Ver=" SPHERE_VERSION ", TZ=%hhd, Email=%s, URL=%s, Lang=%s, CliVer=%s\n", GetName(), m_ip.GetPort(), m_TimeZone, static_cast<LPCTSTR>(m_sEMail), static_cast<LPCTSTR>(m_sURL), static_cast<LPCTSTR>(m_sLang), m_ClientVersion.WriteClientVerString(m_ClientVersion.GetClientVer(), szVersion));
+			sprintf(pszTemp, SPHERE_TITLE ", Name=%s, Port=%hu, Ver=" SPHERE_VER_STR_FULL ", TZ=%hhd, Email=%s, URL=%s, Lang=%s, CliVer=%s\n", GetName(), m_ip.GetPort(), m_TimeZone, static_cast<LPCTSTR>(m_sEMail), static_cast<LPCTSTR>(m_sURL), static_cast<LPCTSTR>(m_sLang), m_ClientVersion.WriteClientVerString(m_ClientVersion.GetClientVer(), szVersion));
 			break;
 		}
 		case 0x22:	// '"'

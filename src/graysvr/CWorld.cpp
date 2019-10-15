@@ -1089,7 +1089,7 @@ bool CWorld::SaveStage()
 				uComplexity += (pSector->GetCharComplexity() + pSector->GetInactiveChars()) * 100 + pSector->GetItemComplexity();
 			}
 
-			size_t iDynamicStage = m_iSaveStage + 1;
+			size_t iDynamicStage = static_cast<size_t>(m_iSaveStage) + 1;
 			if ( uComplexity <= g_Cfg.m_iSaveStepMaxComplexity )
 			{
 				size_t iSectorsCount = 1;
@@ -1614,7 +1614,7 @@ void CWorld::r_Write(CScript &s)
 	ADDTOCALLSTACK("CWorld::r_Write");
 	// Write file header
 	s.WriteKey("TITLE", SPHERE_TITLE " World Script");
-	s.WriteKey("VERSION", SPHERE_VERSION);
+	s.WriteKey("VERSION", SPHERE_VER_STR_FULL);
 	s.WriteKeyVal("PREVBUILD", SPHERE_VER_BUILD);
 	s.WriteKeyVal("TIME", GetCurrentTime().GetTimeRaw());
 	s.WriteKeyVal("SAVECOUNT", m_iSaveCountID);
@@ -1685,7 +1685,7 @@ bool CWorld::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal = SPHERE_TITLE " World Script";
 			break;
 		case WC_VERSION:
-			sVal = SPHERE_VERSION;
+			sVal = SPHERE_VER_STR_FULL;
 			break;
 		default:
 			return false;

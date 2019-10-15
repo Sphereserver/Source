@@ -9,8 +9,6 @@
 	#include "os_unix.h"
 #endif
 
-#define SPHERE_DEF_PORT		2593
-#define SPHERE_TITLE		"Sphere"
 #define SPHERE_FILE			"sphere"	// file name prefix
 #define SPHERE_SCRIPT		".scp"		// file name extension
 

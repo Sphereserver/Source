@@ -1637,7 +1637,7 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 			addTarget(CLIMODE_TARG_TILE, "Pick 1st corner:", true);
 			break;
 		case CV_VERSION:
-			SysMessage(g_szServerDescription);
+			SysMessage(SPHERE_TITLE_VER);
 			break;
 		case CV_WEBLINK:
 			addWebLaunch(s.GetArgStr());

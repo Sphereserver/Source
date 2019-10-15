@@ -3704,7 +3704,7 @@ BYTE CClient::Setup_Start(CChar *pChar)
 
 	if ( !fNoWelcomeMsg )
 	{
-		addBark(g_szServerDescription, NULL, HUE_YELLOW, TALKMODE_SYSTEM);
+		addBark(SPHERE_TITLE_VER " by " SPHERE_WEBSITE, NULL, HUE_YELLOW, TALKMODE_SYSTEM);
 
 		CVarDefCont *pVarLastLogged = m_pChar->m_pArea->m_TagDefs.GetKey("LastLogged");
 		if ( pVarLastLogged )

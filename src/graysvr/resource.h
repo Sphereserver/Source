@@ -2,11 +2,7 @@
 // Microsoft Developer Studio generated include file.
 // Used by SphereSvr.rc
 //
-
-#ifndef IDC_STATIC
- #define IDC_STATIC					0
-#endif
-
+#define IDC_STATIC					0
 #define IDR_MAINFRAME				100
 #define IDR_ABOUT_BOX				101
 #define IDM_POP_TRAY				102
@@ -20,7 +16,7 @@
 #define IDM_EXIT					582
 #define IDC_ABOUT_VERSION			1117
 #define IDC_ABOUT_COMPILER			1118
-#define IDC_ABOUT_SPHERE_LINK		1119
+#define IDC_ABOUT_WEBSITE			1119
 #define IDM_RESYNC_PAUSE			32784
 
 // Next default values for new objects

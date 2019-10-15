@@ -1443,7 +1443,7 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 #ifdef __GITREVISION__
 			sVal.FormatVal(__GITREVISION__);
 #else
-			sVal = g_szServerBuildDate;
+			sVal = g_szCompiledDate;
 #endif
 			break;
 		case RC_CHATFLAGS:
@@ -1631,7 +1631,7 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatVal(m_iTimerCall / (60 * TICK_PER_SEC));
 			break;
 		case RC_VERSION:
-			sVal = g_szServerDescription;
+			sVal = SPHERE_TITLE_VER;
 			break;
 		case RC_EXPERIMENTAL:
 			sVal.FormatHex(g_Cfg.m_iExperimental);
@@ -1973,7 +1973,7 @@ CPointMap CResource::GetRegionPoint(LPCTSTR pszCmd) const
 	GETNONWHITESPACE(pszCmd);
 	if ( (pszCmd[0] == '-') && !strchr(pszCmd, ',') )	// Get location from start list.
 	{
-		size_t i = -ATOI(pszCmd) - 1;
+		size_t i = abs(ATOI(pszCmd)) - 1;
 		if ( !m_StartDefs.IsValidIndex(i) )
 		{
 			if ( m_StartDefs.GetCount() <= 0 )
