@@ -684,19 +684,9 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			SKIP_SEPARATORS(pszArgs);
 		}
 
-		CScriptTriggerArgs Args(pszArgs != NULL ? pszArgs : "");
+		CScriptTriggerArgs Args(pszArgs ? pszArgs : "");
 		if ( r_Call(pszKey, pSrc, &Args, &sVal) )
 			return true;
-
-		// Just try to default to something reasonable ?
-		// Even though we have not really specified it correctly !
-
-		// WORLD. ?
-		if ( g_World.r_WriteVal(pszKey, sVal, pSrc) )
-			return true;
-
-
-		// TYPEDEF. ?
 		if ( Base_GetDef()->r_WriteVal(pszKey, sVal, pSrc) )
 			return true;
 

@@ -355,7 +355,6 @@ bool CAccounts::Cmd_AddNew(CTextConsole *pSrc, LPCTSTR pszName, LPCTSTR pszPassw
 	pAccount = new CAccount(szName);
 	ASSERT(pAccount);
 	pAccount->SetPassword(pszPassword, fMD5);
-	pAccount->m_dateFirstConnect = pAccount->m_dateLastConnect = CGTime::GetCurrentTime();
 	return true;
 }
 
