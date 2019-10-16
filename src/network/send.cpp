@@ -338,11 +338,7 @@ PacketHealthBarUpdateNew::PacketHealthBarUpdateNew(const CClient* target, const 
 bool PacketHealthBarUpdateNew::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketHealthBarUpdateNew::onSend");
-#ifndef _MTNETWORK
-	if (g_NetworkOut.isActive())
-#else
 	if (g_NetworkManager.isOutputThreaded())
-#endif
 		return true;
 
 	return client->CanSee(m_character.CharFind());
@@ -368,11 +364,7 @@ PacketHealthBarUpdate::PacketHealthBarUpdate(const CClient* target, const CChar*
 bool PacketHealthBarUpdate::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketHealthBarUpdate::onSend");
-#ifndef _MTNETWORK
-	if (g_NetworkOut.isActive())
-#else
 	if (g_NetworkManager.isOutputThreaded())
-#endif
 		return true;
 
 	return client->CanSee(m_character.CharFind());
@@ -518,11 +510,7 @@ void PacketWorldItem::adjustItemData(const CClient* target, CItem* item, ITEMID_
 bool PacketWorldItem::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketWorldItem::onSend");
-#ifndef _MTNETWORK
-	if (g_NetworkOut.isActive())
-#else
 	if (g_NetworkManager.isOutputThreaded())
-#endif
 		return true;
 
 	return client->CanSee(m_item.ItemFind());
@@ -799,11 +787,7 @@ PacketContainerOpen::PacketContainerOpen(const CClient* target, const CObjBase* 
 bool PacketContainerOpen::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketContainerOpen::onSend");
-#ifndef _MTNETWORK
-	if (g_NetworkOut.isActive())
-#else
 	if (g_NetworkManager.isOutputThreaded())
-#endif
 		return true;
 
 	return client->CanSee(m_container.ObjFind());
@@ -895,11 +879,7 @@ void PacketItemContainer::completeForTarget(const CClient* target, const CItem* 
 bool PacketItemContainer::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketItemContainer::onSend");
-#ifndef _MTNETWORK
-	if (g_NetworkOut.isActive())
-#else
 	if (g_NetworkManager.isOutputThreaded())
-#endif
 		return true;
 
 	return client->CanSee(m_item.ItemFind());
@@ -1281,12 +1261,7 @@ PacketItemContents::PacketItemContents(const CClient* target, const CItemContain
 bool PacketItemContents::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketItemContents::onSend");
-
-#ifndef _MTNETWORK
-	if (g_NetworkOut.isActive())
-#else
 	if (g_NetworkManager.isOutputThreaded())
-#endif
 		return true;
 
 	return client->CanSee(m_container.ItemFind());
@@ -2188,11 +2163,7 @@ PacketCharacter::PacketCharacter(CClient* target, const CChar* character) : Pack
 bool PacketCharacter::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketCharacter::onSend");
-#ifndef _MTNETWORK
-	if (g_NetworkOut.isActive())
-#else
 	if (g_NetworkManager.isOutputThreaded())
-#endif
 		return true;
 
 	return client->CanSee(m_character.CharFind());
@@ -2407,12 +2378,7 @@ PacketCorpseEquipment::PacketCorpseEquipment(CClient* target, const CItemContain
 bool PacketCorpseEquipment::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketCorpseEquipment::onSend");
-
-#ifndef _MTNETWORK
-	if (g_NetworkOut.isActive())
-#else
 	if (g_NetworkManager.isOutputThreaded())
-#endif
 		return true;
 
 	return client->CanSee(m_corpse.ItemFind());
@@ -3675,11 +3641,7 @@ PacketPropertyListVersionOld::PacketPropertyListVersionOld(const CClient* target
 bool PacketPropertyListVersionOld::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketPropertyListVersionOld::onSend");
-#ifndef _MTNETWORK
-	if (g_NetworkOut.isActive())
-#else
 	if (g_NetworkManager.isOutputThreaded())
-#endif
 		return true;
 
 	const CChar* character = client->GetChar();
@@ -4281,11 +4243,7 @@ PacketPropertyList::PacketPropertyList(const CClient* target, const PacketProper
 bool PacketPropertyList::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketPropertyList::onSend");
-#ifndef _MTNETWORK
-	if (g_NetworkOut.isActive())
-#else
 	if (g_NetworkManager.isOutputThreaded())
-#endif
 		return true;
 
 	const CChar* character = client->GetChar();
@@ -4494,11 +4452,7 @@ PacketPropertyListVersion::PacketPropertyListVersion(const CClient* target, cons
 bool PacketPropertyListVersion::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketPropertyList::onSend");
-#ifndef _MTNETWORK
-	if (g_NetworkOut.isActive())
-#else
 	if (g_NetworkManager.isOutputThreaded())
-#endif
 		return true;
 
 	const CChar* character = client->GetChar();

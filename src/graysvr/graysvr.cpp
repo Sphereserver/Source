@@ -521,17 +521,6 @@ Main::Main()
 	m_profile.EnableProfile(PROFILE_MAP);
 	m_profile.EnableProfile(PROFILE_NPC_AI);
 	m_profile.EnableProfile(PROFILE_SCRIPTS);
-#ifndef _MTNETWORK
-	//m_profile.EnableProfile(PROFILE_DATA_TX);
-	m_profile.EnableProfile(PROFILE_DATA_RX);
-#else
-#ifndef MTNETWORK_INPUT
-	m_profile.EnableProfile(PROFILE_DATA_RX);
-#endif
-#ifndef MTNETWORK_OUTPUT
-	m_profile.EnableProfile(PROFILE_DATA_TX);
-#endif
-#endif
 }
 
 void Main::onStart()
@@ -563,30 +552,17 @@ void Main::tick()
 
 	// Process incoming data
 	EXC_SET("network-in");
-#ifndef _MTNETWORK
-	g_NetworkIn.tick();
-#else
 	g_NetworkManager.processAllInput();
-#endif
 
 	EXC_SET("server");
 	g_Serv.OnTick();
 
 	// Push outgoing data
-#ifndef _MTNETWORK
-	if ( !g_NetworkOut.isActive() )
-	{
-		EXC_SET("network-out");
-		g_NetworkOut.tick();
-	}
-#else
-
 	EXC_SET("network-tick");
 	g_NetworkManager.tick();
 
 	EXC_SET("network-out");
 	g_NetworkManager.processAllOutput();
-#endif
 
 	EXC_CATCH;
 }
@@ -717,11 +693,7 @@ void Sphere_ExitServer()
 
 	g_Serv.SetServerMode(SERVMODE_Exiting);
 
-#ifndef _MTNETWORK
-	g_NetworkOut.waitForClose();
-#else
 	g_NetworkManager.stop();
-#endif
 	g_Main.waitForClose();
 	g_PingServer.waitForClose();
 	g_asyncHdb.waitForClose();
@@ -1182,12 +1154,7 @@ int _cdecl main( int argc, char * argv[] )
 			g_NetworkEvent.start();
 #endif
 
-#ifdef _MTNETWORK
 		g_NetworkManager.start();
-#else
-		g_NetworkIn.onStart();
-#endif
-			
 		if ( g_Cfg.m_iFreezeRestartTime > 0 )
 		{
 			g_Main.start();

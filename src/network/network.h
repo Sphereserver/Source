@@ -17,11 +17,6 @@
 #define NETHISTORY_MAXPINGS		g_Cfg.m_iNetMaxPings			// max 'pings' before blocking an ip
 #define NETHISTORY_PINGDECAY	60								// time to decay 1 'ping'
 
-#ifdef _MTNETWORK
-	#define MTNETWORK_INPUT		// handle input in multithreaded mode
-	#define MTNETWORK_OUTPUT	// handle output in multithreaded mode
-#endif
-
 #ifdef _DEBUG
 	#define DEBUGNETWORK(_x_)		if ( g_Cfg.m_wDebugFlags & DEBUGF_NETWORK ) { g_pLog->EventDebug _x_; }
 #else
@@ -29,15 +24,11 @@
 #endif
 
 class CClient;
-struct CSocketAddress;
-#ifndef _MTNETWORK
-class NetworkIn;
-#else
 class NetworkManager;
 class NetworkThread;
 class NetworkInput;
 class NetworkOutput;
-#endif
+struct CSocketAddress;
 struct HistoryIP;
 typedef std::deque<HistoryIP> IPHistoryList;
 
@@ -59,9 +50,7 @@ protected:
 	long m_id; // net id
 	CGSocket m_socket; // socket
 	CSocketAddress m_peerAddress; // client address
-#ifdef _MTNETWORK
 	NetworkThread* m_parent;
-#endif
 
 	volatile bool m_isInUse; // is currently in use
 	volatile bool m_isReadClosed; // is closed by read thread
@@ -100,10 +89,8 @@ protected:
 	struct
 	{
 		Packet* buffer; // received data
-#ifdef _MTNETWORK
 		PacketQueue rawPackets; // raw data packets
 		Packet* rawBuffer; // received data
-#endif
 	} m_incoming; // incoming data
 
 	int m_packetExceptions; // number of packet exceptions
@@ -171,10 +158,6 @@ public:
 	void beginTransaction(long priority); // begin a transaction for grouping packets
 	void endTransaction(void); // end transaction
 	
-#ifndef _MTNETWORK
-	friend class NetworkIn;
-	friend class NetworkOut;
-#else
 	friend class NetworkManager;
 	friend class NetworkThread;
 	friend class NetworkInput;
@@ -183,7 +166,7 @@ public:
 public:
 	void setParentThread(NetworkThread* parent) { m_parent = parent; }
 	NetworkThread* getParentThread(void) const { return m_parent; }
-#endif
+
 	friend class CClient;
 	friend class ClientIterator;
 	friend class SafeClientIterator;
@@ -296,19 +279,11 @@ public:
 class ClientIterator
 {
 protected:
-#ifndef _MTNETWORK
-	const NetworkIn* m_network;			// network to iterate
-#else
 	const NetworkManager* m_network;	// network manager to iterate
-#endif
 	CClient* m_nextClient;
 
 public:
-#ifndef _MTNETWORK
-	explicit ClientIterator(const NetworkIn* network = NULL);
-#else
 	explicit ClientIterator(const NetworkManager* network = NULL);
-#endif
 	~ClientIterator(void);
 
 private:
@@ -318,138 +293,6 @@ private:
 public:
 	CClient* next(bool includeClosing = false); // finds next client
 };
-
-#ifndef _MTNETWORK
-/***************************************************************************
- *
- *
- *	class SafeClientIterator		Works as client iterator getting the clients in a thread-safe way
- *
- *
- ***************************************************************************/
-class SafeClientIterator
-{
-protected:
-	const NetworkIn* m_network;
-	int m_id;
-	int m_max;
-
-public:
-	explicit SafeClientIterator(const NetworkIn* network = NULL);
-	~SafeClientIterator(void);
-
-private:
-	SafeClientIterator(const SafeClientIterator& copy);
-	SafeClientIterator& operator=(const SafeClientIterator& other);
-
-public:
-	CClient* next(bool includeClosing = false); // finds next client
-};
-
-
-/***************************************************************************
- *
- *
- *	class NetworkIn				Networking thread used for receiving client data
- *
- *
- ***************************************************************************/
-class NetworkIn : public AbstractSphereThread
-{
-private:
-	long m_lastGivenSlot;		// last slot taken by client
-	PacketManager m_packets;	// packet handlers
-	IPHistoryManager m_ips;		// ip history
-
-	BYTE* m_buffer;			// receive buffer
-	BYTE* m_decryptBuffer;	// receive buffer for decryption
-
-protected:
-	NetState** m_states;	// client state pool
-	long m_stateCount;		// client state count
-	CGObList m_clients;		// current list of clients (CClient)
-
-public:
-	static const char* m_sClassName;
-
-	NetworkIn(void);
-	virtual ~NetworkIn(void);
-
-private:
-	NetworkIn(const NetworkIn& copy);
-	NetworkIn& operator=(const NetworkIn& other);
-
-public:
-	virtual void onStart(void);
-	virtual void tick(void);
-	
-	const PacketManager& getPacketManager(void) const { return m_packets; }	// get packet manager
-	IPHistoryManager& getIPHistoryManager(void) { return m_ips; }			// get ip history manager
-
-	void acceptConnection(void); // accepts a new connection
-
-protected:
-	int checkForData(fd_set* storage); // executes network state request for new packets
-	long getStateSlot(long startFrom = -1); // finds suitable random slot for client to take
-	void periodic(void); // performs periodic actions
-	void defragSlots(long fromSlot = 0); // moves used network slots to front
-
-	friend class ClientIterator;
-	friend class SafeClientIterator;
-};
-
-
-/***************************************************************************
- *
- *
- *	class NetworkOut			Networking thread used for queued sending outgoing packets
- *
- *
- ***************************************************************************/
-class NetworkOut : public AbstractSphereThread
-{
-private:
-	BYTE* m_encryptBuffer; // buffer for encryption
-
-public:
-	static const char* m_sClassName;
-
-	NetworkOut(void);
-	virtual ~NetworkOut(void);
-
-private:
-	NetworkOut(const NetworkOut& copy);
-	NetworkOut& operator=(const NetworkOut& other);
-
-public:
-	virtual void tick(void);
-
-	void schedule(const PacketSend* packet, bool appendTransaction); // schedule this packet to be sent
-	void scheduleOnce(PacketSend* packet, bool appendTransaction); // schedule this packet to be sent MOVING it to the list
-	void scheduleOnce(PacketTransaction* transaction); // schedule a transaction to be sent
-
-	void flushAll(void); // forces immediate send of all packets for all clients
-	void flush(CClient* client); // forces immediate send of all packets
-
-protected:
-	size_t proceedQueue(CClient* client, unsigned int priority); // send next set of packets with the specified priority (returns number of packets sent)
-	size_t proceedQueueAsync(CClient* client); // send next set of asynchronous packets (returns number of packets sent, 1 max)
-	void proceedQueueBytes(CClient* client); // send next set of bytes
-	void proceedFlush(void); // flush data to pending sockets
-	bool sendPacket(CClient* client, PacketSend* packet); // send packet to a client
-	bool sendPacketNow(CClient* client, PacketSend* packet); // send packet to a client now
-	size_t sendBytesNow(CClient* client, const BYTE* data, DWORD length); // send bytes to a client (returns number of bytes sent, < 0 for failure)
-
-public:
-	void onAsyncSendComplete(NetState* state, bool success); // handle completion of async send
-
-	friend class SimplePacketTransaction;
-	friend class ExtendedPacketTransaction;
-};
-
-extern NetworkIn g_NetworkIn;
-extern NetworkOut g_NetworkOut;
-#else
 
 class NetworkManager;
 class NetworkThread;
@@ -593,20 +436,12 @@ public:
 	bool isThreaded(void) const { return m_isThreaded; } // are threads active
 	inline bool isInputThreaded(void) const // is network input handled by thread
 	{
-#ifdef MTNETWORK_INPUT
 		return m_isThreaded;
-#else
-		return false; // threaded input not supported
-#endif
 	}
 
 	inline bool isOutputThreaded(void) const // is network output handled by thread
 	{
-#ifdef MTNETWORK_OUTPUT
 		return m_isThreaded;
-#else
-		return false; // threaded output not supported
-#endif
 	}
 
 private:
@@ -742,7 +577,5 @@ public:
 
 // todo: eliminate globals!
 extern NetworkManager g_NetworkManager;
-
-#endif
 
 #endif	// _INC_NETWORK_H

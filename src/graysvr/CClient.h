@@ -966,13 +966,8 @@ public:
 		m_BaseDefs.DeleteKey(pszKey);
 	}
 
-#ifndef _MTNETWORK
-	friend class NetworkIn;
-	friend class NetworkOut;
-#else
 	friend class NetworkInput;
 	friend class NetworkOutput;
-#endif
 	friend class PacketServerRelay;
 
 private:

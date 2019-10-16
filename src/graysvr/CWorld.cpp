@@ -1208,13 +1208,8 @@ bool CWorld::SaveForce()
 	// Save world state
 
 	Broadcast(g_Cfg.GetDefaultMsg(DEFMSG_SERVER_WORLDSAVE));
-#ifdef _MTNETWORK
 	if ( !g_NetworkManager.isOutputThreaded() )
 		g_NetworkManager.flushAllClients();
-#else
-	if ( !g_NetworkOut.isActive() )
-		g_NetworkOut.flushAll();
-#endif
 
 	g_Serv.SetServerMode(SERVMODE_Saving);
 	bool fSaved = true;
@@ -1350,20 +1345,12 @@ bool CWorld::Save(bool fForceImmediate)
 		// Fushing before the server should fix #2306
 		// The scripts fills the clients buffer and the server flush the data during the save.
 		// Should we flush only non threaded output or force it to flush on any conditions?
-#ifdef _MTNETWORK
 		if ( !g_NetworkManager.isOutputThreaded() )
-#else
-		if ( !g_NetworkOut.isActive() )
-#endif
 		{
 #ifdef _DEBUG 
 			g_Log.EventDebug("Flushing %" FMTDWORD " clients output data...\n", g_Serv.StatGet(SERV_STAT_CLIENTS));
 #endif
-#ifdef _MTNETWORK
 			g_NetworkManager.flushAllClients();
-#else
-			g_NetworkOut.flushAll();
-#endif
 #ifdef _DEBUG
 			g_Log.EventDebug("Done flushing clients output data\n");
 #endif
@@ -1414,13 +1401,8 @@ void CWorld::SaveStatics()
 		r_Write(m_FileStatics);
 
 		Broadcast(g_Cfg.GetDefaultMsg(DEFMSG_SERVER_WORLDSTATICSAVE));
-#ifdef _MTNETWORK
 		if ( !g_NetworkManager.isOutputThreaded() )
 			g_NetworkManager.flushAllClients();
-#else
-		if ( !g_NetworkOut.isActive() )
-			g_NetworkOut.flushAll();
-#endif
 
 		// Loop through all sectors and save static items
 		CSector *pSector;

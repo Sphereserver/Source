@@ -1166,17 +1166,10 @@ void PacketSend::send(const CClient *client, bool appendTransaction)
 		target(client);
 	
 	// check target is set and can receive this packet
-	if (m_target == NULL || canSendTo(m_target) == false)
+	if ( !m_target || !canSendTo(m_target) || (sync() > NETWORK_MAXPACKETLEN) )
 		return;
 
-	if (sync() > NETWORK_MAXPACKETLEN)
-		return;
-
-#ifndef _MTNETWORK
-	g_NetworkOut.schedule(this, appendTransaction);
-#else
 	m_target->getParentThread()->queuePacket(this->clone(), appendTransaction);
-#endif
 }
 
 void PacketSend::push(const CClient *client, bool appendTransaction)
@@ -1203,11 +1196,7 @@ void PacketSend::push(const CClient *client, bool appendTransaction)
 		return;
 	}
 
-#ifndef _MTNETWORK
-	g_NetworkOut.scheduleOnce(this, appendTransaction);
-#else
 	m_target->getParentThread()->queuePacket(this, appendTransaction);
-#endif
 }
 
 void PacketSend::target(const CClient* client)

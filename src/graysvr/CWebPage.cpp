@@ -485,7 +485,7 @@ int CWebPageDef::ServPageRequest(CClient *pClient, LPCTSTR pszURLArgs, CGTime *p
 	if ( !CFileList::ReadFileInfo(pszName, timeFileLastModified, dwSize) )
 		return 500;		// Internal server error
 
-	if ( !fGenerate && (!pTimeLastModified || (pTimeLastModified->IsTimeValid() && (pTimeLastModified->GetTime() > timeFileLastModified))) )
+	if ( !fGenerate && pTimeLastModified->IsTimeValid() && (pTimeLastModified->GetTime() <= timeFileLastModified) )
 	{
 		TCHAR *pszTemp = Str_GetTemp();
 		sprintf(pszTemp,

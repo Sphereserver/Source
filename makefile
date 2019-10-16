@@ -14,7 +14,7 @@ ifdef DBG
 	DEBUG_DEFS	= -D_DEBUG #-DTHREAD_TRACK_CALLSTACK -D_TESTEXCEPTION -DDEBUG_CRYPT_MSGS
 	DEBUG_FLAGS	= -ggdb3
 endif
-DEFINES	= -D_MTNETWORK $(NIGHTLY_DEFS) $(DEBUG_DEFS)
+DEFINES	= $(NIGHTLY_DEFS) $(DEBUG_DEFS)
 
 ifneq ($(shell git rev-parse --git-dir),)
 	GITREVISION	= $(shell expr $(shell git rev-list --count HEAD) - 2406)

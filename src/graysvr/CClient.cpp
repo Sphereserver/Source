@@ -63,11 +63,7 @@ CClient::CClient(NetState *state)
 	m_pHouseDesign = NULL;
 
 	// Update IP history
-#ifdef _MTNETWORK
 	HistoryIP &history = g_NetworkManager.getIPHistoryManager().getHistoryForIP(GetPeer());
-#else
-	HistoryIP &history = g_NetworkIn.getIPHistoryManager().getHistoryForIP(GetPeer());
-#endif
 	++history.m_connecting;
 	++history.m_connected;
 
@@ -77,11 +73,7 @@ CClient::CClient(NetState *state)
 CClient::~CClient()
 {
 	// Update IP history
-#ifdef _MTNETWORK
 	HistoryIP &history = g_NetworkManager.getIPHistoryManager().getHistoryForIP(GetPeer());
-#else
-	HistoryIP &history = g_NetworkIn.getIPHistoryManager().getHistoryForIP(GetPeer());
-#endif
 	if ( GetConnectType() != CONNECT_GAME )
 		--history.m_connecting;
 	--history.m_connected;
@@ -1450,11 +1442,7 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 			addTarget(CLIMODE_TARG_REPAIR, g_Cfg.GetDefaultMsg(DEFMSG_SELECT_ITEM_REPAIR));
 			break;
 		case CV_FLUSH:
-#ifndef _MTNETWORK
-			g_NetworkOut.flush(this);
-#else
 			g_NetworkManager.flush(m_NetState);
-#endif
 			break;
 		case CV_RESEND:
 			addReSync();

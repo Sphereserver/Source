@@ -226,10 +226,8 @@ CResource::CResource()
 	m_bMySql = false;
 
 	// Network settings
-#ifdef _MTNETWORK
 	m_iNetworkThreads = 0;
 	m_iNetworkThreadPriority = IThread::Disabled;
-#endif
 	m_fUseAsyncNetwork = 0;
 	m_iNetMaxPings = 15;
 	m_iNetHistoryTTL = 300;
@@ -496,10 +494,8 @@ enum RC_TYPE
 	RC_MYSQLPASS,					// m_sMySqlPassword
 	RC_MYSQLUSER,					// m_sMySqlUser
 	RC_NETTTL,						// m_iNetHistoryTTL
-#ifdef _MTNETWORK
 	RC_NETWORKTHREADPRIORITY,		// m_iNetworkThreadPriority
 	RC_NETWORKTHREADS,				// m_iNetworkThreads
-#endif
 	RC_NORESROBE,					// m_fNoResRobe
 	RC_NOTOTIMEOUT,					// m_iNotoTimeout
 	RC_NOWEATHER,					// m_fNoWeather
@@ -720,10 +716,8 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY + 1] =
 	{"MYSQLPASSWORD",				{ELEM_CSTRING,	OFFSETOF(CResource, m_sMySqlPass),						0}},
 	{"MYSQLUSER",					{ELEM_CSTRING,	OFFSETOF(CResource, m_sMySqlUser),						0}},
 	{"NETTTL",						{ELEM_INT,		OFFSETOF(CResource, m_iNetHistoryTTL),					0}},
-#ifdef _MTNETWORK
 	{"NETWORKTHREADPRIORITY",		{ELEM_INT,		OFFSETOF(CResource, m_iNetworkThreadPriority),			0}},
 	{"NETWORKTHREADS",				{ELEM_INT,		OFFSETOF(CResource, m_iNetworkThreads),					0}},
-#endif
 	{"NORESROBE",					{ELEM_BOOL,		OFFSETOF(CResource, m_fNoResRobe),						0}},
 	{"NOTOTIMEOUT",					{ELEM_INT,		OFFSETOF(CResource, m_iNotoTimeout),					0}},
 	{"NOWEATHER",					{ELEM_BOOL,		OFFSETOF(CResource, m_fNoWeather),						0}},
@@ -1142,7 +1136,6 @@ bool CResource::r_LoadVal(CScript &s)
 		case RC_TOOLTIPCACHE:
 			m_iTooltipCache = s.GetArgVal() * TICK_PER_SEC;
 			break;
-#ifdef _MTNETWORK
 		case RC_NETWORKTHREADS:
 			if ( g_Serv.IsLoading() )
 				g_Cfg.m_iNetworkThreads = s.GetArgVal();
@@ -1155,7 +1148,6 @@ bool CResource::r_LoadVal(CScript &s)
 			m_iNetworkThreadPriority = minimum(maximum(IThread::Idle, iVal), IThread::RealTime);
 			break;
 		}
-#endif
 		case RC_WALKBUFFER:
 			m_iWalkBuffer = s.GetArgVal() * TICK_PER_SEC;
 			break;
@@ -2219,11 +2211,7 @@ bool CResource::LoadResourceSection(CScript *pScript)
 			while ( pScript->ReadKeyParse() )
 			{
 				strncpy(szIP, pScript->GetKey(), sizeof(szIP) - 1);
-#ifndef _MTNETWORK
-				HistoryIP &history = g_NetworkIn.getIPHistoryManager().getHistoryForIP(szIP);
-#else
 				HistoryIP &history = g_NetworkManager.getIPHistoryManager().getHistoryForIP(szIP);
-#endif
 				history.setBlocked(true);
 			}
 			return true;

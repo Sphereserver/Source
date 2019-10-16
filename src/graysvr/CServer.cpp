@@ -1291,13 +1291,9 @@ bool CServer::r_Verb(CScript &s, CTextConsole *pSrc)
 				return true;
 			}
 
-#ifdef _MTNETWORK
 			HistoryIP &history = g_NetworkManager.getIPHistoryManager().getHistoryForIP(ppArgs[0]);
-#else
-			HistoryIP &history = g_NetworkIn.getIPHistoryManager().getHistoryForIP(ppArgs[0]);
-#endif
-
 			INT64 iTimeout = (iQty >= 2) ? Exp_GetLLVal(ppArgs[1]) : -1;
+
 			if ( iTimeout >= 0 )
 				pSrc->SysMessagef("IP blocked for %lld seconds\n", iTimeout);
 			else
@@ -1460,11 +1456,7 @@ bool CServer::r_Verb(CScript &s, CTextConsole *pSrc)
 		}
 		case SV_UNBLOCKIP:
 		{
-#ifdef _MTNETWORK
 			HistoryIP &history = g_NetworkManager.getIPHistoryManager().getHistoryForIP(s.GetArgRaw());
-#else
-			HistoryIP &history = g_NetworkIn.getIPHistoryManager().getHistoryForIP(s.GetArgRaw());
-#endif
 			pSrc->SysMessagef("IP%s unblocked\n", history.m_blocked ? "" : " already");
 			history.setBlocked(false);
 			break;
