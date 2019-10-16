@@ -6,10 +6,11 @@
 #undef FD_SETSIZE
 #define FD_SETSIZE 1024	// for max of n users ! default = 64
 
-#include <WinSock2.h>
-#include <windows.h>
+#include <io.h>
 #include <process.h>
 #include <time.h>
+#include <WinSock2.h>
+#include <windows.h>
 
 extern bool NTWindow_Init(HINSTANCE hInstance, LPTSTR lpCmdLinel, int nCmdShow);
 extern void NTWindow_Exit();

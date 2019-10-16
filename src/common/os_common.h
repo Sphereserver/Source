@@ -42,15 +42,15 @@
 	#define strnicmp	_strnicmp
 
 	#ifndef STDFUNC_FILENO
-		#define STDFUNC_FILENO	_fileno
+		#define STDFUNC_FILENO(a)	_get_osfhandle(_fileno(a))
 	#endif
 
 	#ifndef STDFUNC_GETPID
-		#define STDFUNC_GETPID	_getpid
+		#define STDFUNC_GETPID		_getpid
 	#endif
 
 	#ifndef STDFUNC_UNLINK
-		#define STDFUNC_UNLINK	_unlink
+		#define STDFUNC_UNLINK		_unlink
 	#endif
 #else
 	typedef void		*THREAD_ENTRY_RET;
@@ -62,15 +62,15 @@
 	#define strnicmp	strncasecmp
 
 	#ifndef STDFUNC_FILENO
-		#define STDFUNC_FILENO	fileno
+		#define STDFUNC_FILENO		fileno
 	#endif
 
 	#ifndef STDFUNC_GETPID
-		#define STDFUNC_GETPID	getpid
+		#define STDFUNC_GETPID		getpid
 	#endif
 
 	#ifndef STDFUNC_UNLINK
-		#define STDFUNC_UNLINK	unlink
+		#define STDFUNC_UNLINK		unlink
 	#endif
 #endif
 

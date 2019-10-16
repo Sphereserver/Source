@@ -3,6 +3,7 @@
 #pragma once
 
 #ifndef _WIN32
+#include <cstdint>
 #include <stdio.h>
 #include <stdarg.h>
 #include <string.h>
@@ -22,7 +23,9 @@ typedef unsigned short		WORD;				// 16 bits
 #define WORD_MAX			USHRT_MAX
 
 typedef unsigned int		DWORD;				// 32 bits
+typedef uintptr_t			DWORD_PTR, ULONG_PTR;
 #define DWORD_MAX			UINT_MAX
+#define DWORD_PTR_MAX		UINTPTR_MAX
 
 typedef int					INT32;				// 32 bits
 typedef unsigned int		UINT32, UINT;		// 32 bits

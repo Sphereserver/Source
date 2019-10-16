@@ -41,7 +41,7 @@ public:
 	bool IsSaving() const;
 
 	// UID managenent
-	#define UID_PLACE_HOLDER	reinterpret_cast<CObjBase *>(UID_UNUSED)
+	#define UID_PLACE_HOLDER	reinterpret_cast<CObjBase *>(DWORD_PTR_MAX)
 	CObjBase *FindUID(DWORD dwIndex) const;
 	DWORD GetUIDCount() const;
 	void FreeUID(DWORD dwIndex);

@@ -26,9 +26,8 @@ void Assert_CheckFail(LPCTSTR pszExp, LPCTSTR pszFile, long lLine)
 					CrashDump::StartCrashDump(GetCurrentProcessId(), GetCurrentThreadId(), pData);
 		#endif
 				// WIN32 gets an exception.
-				DWORD dwCodeStart = (DWORD)(BYTE *)&globalstartsymbol;	// sync up to my MAP file
-
-				DWORD dwAddr = (DWORD)(pData->ExceptionRecord->ExceptionAddress);
+				DWORD dwCodeStart = (DWORD_PTR)&globalstartsymbol;		// sync up to MAP file
+				DWORD dwAddr = (DWORD_PTR)pData->ExceptionRecord->ExceptionAddress;
 				dwAddr -= dwCodeStart;
 
 				throw CGrayException(id, dwAddr);
