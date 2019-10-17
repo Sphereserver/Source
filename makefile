@@ -8,13 +8,13 @@ O_WARNING_FLAGS		= -Wall -Wno-maybe-uninitialized -Wno-switch -Wno-unknown-pragm
 CO_WARNING_FLAGS	= -Wall -Wno-maybe-uninitialized -Wno-switch -Wno-unknown-pragmas -Wno-unused-result -Wno-implicit-function-declaration
 
 ifdef NIGHTLY
-	NIGHTLY_DEFS	= -D_NIGHTLYBUILD #-DTHREAD_TRACK_CALLSTACK
+	NIGHTLY_DEFS	= -D_NIGHTLYBUILD
 endif
 ifdef DBG
-	DEBUG_DEFS	= -D_DEBUG #-DTHREAD_TRACK_CALLSTACK -D_TESTEXCEPTION -DDEBUG_CRYPT_MSGS
+	DEBUG_DEFS	= -D_DEBUG
 	DEBUG_FLAGS	= -ggdb3
 endif
-DEFINES	= $(NIGHTLY_DEFS) $(DEBUG_DEFS)
+DEFINES	= $(NIGHTLY_DEFS) $(DEBUG_DEFS) -DTHREAD_TRACK_CALLSTACK
 
 ifneq ($(shell git rev-parse --git-dir),)
 	GITREVISION	= $(shell expr $(shell git rev-list --count HEAD) - 2406)
