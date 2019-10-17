@@ -151,7 +151,7 @@ bool CAccounts::Account_LoadAll(bool fChanges, bool fClearChanges)
 		ASSERT(fChanges);
 		s.Close();
 		if ( !s.Open(NULL, OF_WRITE|OF_TEXT|OF_DEFAULTMODE) )
-			g_Log.Event(LOGL_FATAL, "Can't open account file '%s'\n", static_cast<LPCTSTR>(s.GetFilePath()));
+			g_Log.Event(LOGL_ERROR, "Can't open account file '%s'\n", static_cast<LPCTSTR>(s.GetFilePath()));
 		else
 			s.WriteString("// " SPHERE_TITLE " accounts update file.\n"
 						  "// Account changes should be made here and will be applied on next worldsave.\n"

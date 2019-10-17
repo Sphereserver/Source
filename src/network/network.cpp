@@ -217,13 +217,13 @@ void NetState::init(SOCKET socket, CSocketAddress addr)
 	m_peerAddress = addr;
 	m_socket.SetSocket(socket);
 	if ( m_socket.SetNonBlocking() == SOCKET_ERROR )
-		g_Log.Event(LOGL_FATAL, "Unable to set listen socket nonblocking mode\n");
+		g_Log.Event(LOGL_CRIT, "Unable to set listen socket nonblocking mode\n");
 
 	// disable NAGLE algorythm for data compression/coalescing.
 	// Send as fast as we can. we handle packing ourselves.
 	BOOL nbool = true;
 	if ( m_socket.SetSockOpt(TCP_NODELAY, &nbool, sizeof(BOOL), IPPROTO_TCP) == SOCKET_ERROR )
-		g_Log.Event(LOGL_FATAL, "Unable to set listen socket option TCP_NODELAY\n");
+		g_Log.Event(LOGL_CRIT, "Unable to set listen socket option TCP_NODELAY\n");
 
 	g_Serv.StatInc(SERV_STAT_CLIENTS);
 	CClient* client = new CClient(this);

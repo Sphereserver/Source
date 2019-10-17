@@ -564,7 +564,7 @@ bool CClient::OnRxWebPageRequest(BYTE *pRequest, size_t iLen)
 		if ( !fKeepAlive )
 		{
 			if ( m_NetState->m_socket.SetNonBlocking(false) == SOCKET_ERROR )
-				g_Log.Event(LOGL_FATAL, "Unable to unset listen socket nonblocking mode\n");
+				g_Log.Event(LOGL_ERROR, "Unable to unset listen socket nonblocking mode\n");
 		}
 	}
 

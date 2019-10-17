@@ -21,7 +21,7 @@ AbstractString::~AbstractString()
 	destroy();
 }
 
-void AbstractString::ensureLength(int newLength)
+void AbstractString::ensureLength(size_t newLength)
 {
 	// child class implements this
 	UNREFERENCED_PARAMETER(newLength);
@@ -32,12 +32,12 @@ void AbstractString::destroy()
 	// child class implements this
 }
 
-int AbstractString::length()
+size_t AbstractString::length()
 {
 	return m_length;
 }
 
-int AbstractString::realLength()
+size_t AbstractString::realLength()
 {
 	return m_realLength;
 }
@@ -52,12 +52,12 @@ const char *AbstractString::toBuffer()
 	return m_buf;
 }
 
-char AbstractString::charAt(int index)
+char AbstractString::charAt(size_t index)
 {
 	return m_buf[index];
 }
 
-void AbstractString::setAt(int index, char c)
+void AbstractString::setAt(size_t index, char c)
 {
 	m_buf[index] = c;
 }
@@ -70,12 +70,10 @@ void AbstractString::append(const char *s)
 
 void AbstractString::replace(char what, char toWhat)
 {
-	for( int i = 0; i < m_length; i++ )
+	for ( size_t i = 0; i < m_length; ++i )
 	{
 		if( m_buf[i] == what )
-		{
 			m_buf[i] = toWhat;
-		}
 	}
 }
 
@@ -106,7 +104,7 @@ bool AbstractString::startsWith(const char *s)
 
 bool AbstractString::startsWithHead(const char *s)
 {
-	for( int i = 0; ; i++ )
+	for( size_t i = 0; ; ++i )
 	{
 		char ch1 = static_cast<unsigned char>(tolower(m_buf[0]));
 		char ch2 = static_cast<unsigned char>(tolower(s[0]));
@@ -177,7 +175,7 @@ void String::destroy()
 	}
 }
 
-void String::ensureLength(int newLength)
+void String::ensureLength(size_t newLength)
 {
 	if( newLength >= m_realLength )
 	{
@@ -187,7 +185,7 @@ void String::ensureLength(int newLength)
 
 		if( newBuf == NULL )
 		{
-			throw CGrayError(LOGL_FATAL, 0, "Run out of memory while allocating memory for string");
+			throw CGrayError(LOGL_CRIT, 0, "Run out of memory while allocating memory for string");
 		}
 
 		if( m_buf != NULL )
@@ -206,7 +204,7 @@ void String::ensureLength(int newLength)
  * TemporaryString
 */
 
-int TemporaryString::m_tempPosition = 0;
+size_t TemporaryString::m_tempPosition = 0;
 char TemporaryString::m_tempStrings[MAX_TEMP_LINES_NO_CONTEXT][THREAD_STRING_LENGTH];
 
 TemporaryString::TemporaryString()
@@ -271,7 +269,7 @@ void TemporaryString::destroy()
 	}
 }
 
-void TemporaryString::ensureLength(int newLength)
+void TemporaryString::ensureLength(size_t newLength)
 {
 	if( m_useHeap )
 	{
@@ -292,7 +290,7 @@ void TemporaryString::ensureLength(int newLength)
 			m_realLength = newLength + newLength/5;
 			char *newBuf = new char[m_realLength+1];
 			if ( newBuf == NULL )
-				throw CGrayError(LOGL_FATAL, 0, "Run out of memory while allocating memory for string");
+				throw CGrayError(LOGL_CRIT, 0, "Run out of memory while allocating memory for string");
 
 			strncpy(newBuf, m_buf, m_length);
 			newBuf[m_length] = '\0';

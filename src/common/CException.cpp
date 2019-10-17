@@ -73,7 +73,7 @@ void Assert_CheckFail(LPCTSTR pszExp, LPCTSTR pszFile, long lLine)
 
 	void _cdecl Signal_Break(int sig = 0)
 	{
-		g_Log.Event(LOGL_FATAL, "Secure mode prevents keyboard exit. Use 'S' to disable secure mode first\n");
+		g_Log.Event(LOGL_EVENT, "Secure mode prevents keyboard exit. Use 'S' to disable secure mode first\n");
 
 		if ( sig )
 		{

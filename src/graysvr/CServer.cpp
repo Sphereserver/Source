@@ -112,13 +112,13 @@ bool CServer::SocketsInit()
 	lVal.l_onoff = 0;
 	lVal.l_linger = 10;
 	if ( m_SocketMain.SetSockOpt(SO_LINGER, reinterpret_cast<const void *>(&lVal), sizeof(lVal)) == SOCKET_ERROR )
-		g_Log.Event(LOGL_FATAL, "Unable to set listen socket option SO_LINGER\n");
+		g_Log.Event(LOGL_CRIT, "Unable to set listen socket option SO_LINGER\n");
 	if ( m_SocketMain.SetNonBlocking() == SOCKET_ERROR )
-		g_Log.Event(LOGL_FATAL, "Unable to set listen socket non-blocking mode\n");
+		g_Log.Event(LOGL_CRIT, "Unable to set listen socket non-blocking mode\n");
 #ifndef _WIN32
 	int iEnable = 1;
 	if ( m_SocketMain.SetSockOpt(SO_REUSEADDR, reinterpret_cast<const void *>(&iEnable), sizeof(iEnable)) == SOCKET_ERROR )
-		g_Log.Event(LOGL_FATAL, "Unable to set listen socket option SO_REUSEADDR\n");
+		g_Log.Event(LOGL_CRIT, "Unable to set listen socket option SO_REUSEADDR\n");
 #endif
 
 	// Bind socket to specific IP/port
@@ -782,7 +782,7 @@ bool CServer::OnConsoleCmd(CGString &sText, CTextConsole *pSrc)
 					g_World.Save(true);
 					g_World.SaveStatics();
 				}
-				g_Log.Event(LOGL_FATAL, "Shutdown initialized\n");
+				g_Log.Event(LOGL_WARN, "Shutdown initialized\n");
 				SetExitFlag(1);
 			}
 			break;
