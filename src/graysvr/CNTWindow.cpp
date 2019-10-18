@@ -25,7 +25,7 @@ bool CNTWindow::CAboutDlg::OnInitDialog()
 	sprintf(pszBuild, "Compiled at %s", g_szCompiledDate);
 #endif
 
-	SetDlgItemText(IDC_ABOUT_VERSION, SPHERE_TITLE_VER);
+	SetDlgItemText(IDC_ABOUT_VERSION, SPHERE_TITLE_VER " (" SPHERE_VER_ARCH ")");
 	SetDlgItemText(IDC_ABOUT_WEBSITE, SPHERE_WEBSITE);
 	SetDlgItemText(IDC_ABOUT_COMPILER, pszBuild);
 	return false;

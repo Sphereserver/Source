@@ -38,4 +38,6 @@
 	#define SPHERE_VER_FILEOS		VOS_UNKNOWN
 #endif
 
+#define SPHERE_VER_ARCH				"32 bits"
+
 #endif	// _INC_GRAYVER_H
