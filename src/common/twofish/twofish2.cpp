@@ -150,7 +150,7 @@ const char* modeString = MOD_STRING;
 
 
 /* macro(s) for debugging help */
-#define		CHECK_TABLE		0		/* nonzero --> compare against "slow" table */
+#define		CHECK_TABLE		1		/* nonzero --> compare against "slow" table */
 #define		VALIDATE_PARMS	0		/* disable for full speed */
 
 #include	"debug.h"				/* debug display macros */
@@ -560,184 +560,48 @@ void Xor256(void* dst, void* src, BYTE b)
 *	be generated on-the-fly	using f32()
 *
 -****************************************************************************/
-int reKey(keyInstance* key)
+int reKey(keyInstance *key)
 {
-	int i, j, k64Cnt, keyLen;
-	int subkeyCnt;
-	DWORD A = 0, B = 0, q;
-	DWORD sKey[MAX_KEY_BITS / 64], k32e[MAX_KEY_BITS / 64], k32o[MAX_KEY_BITS / 64];
-	BYTE L0[256], L1[256];	/* small local 8-bit permutations */
+	int		i, k64Cnt;
+	int		keyLen = key->keyLen;
+	int		subkeyCnt = ROUND_SUBKEYS + 2 * key->numRounds;
+	DWORD	A, B;
+	DWORD	k32e[MAX_KEY_BITS / 64], k32o[MAX_KEY_BITS / 64]; /* even/odd key dwords */
 
 #if VALIDATE_PARMS
 #if ALIGN32
-	if (((int)key) & 3)
+	if ( (((int)key) & 3) || (((int)key->key32) & 3) )
 		return BAD_ALIGN32;
-	if ((key->keyLen % 64) || (key->keyLen < MIN_KEY_BITS))
+#endif
+	if ( (key->keyLen % 64) || (key->keyLen < MIN_KEY_BITS) )
+		return BAD_KEY_INSTANCE;
+	if ( subkeyCnt > TOTAL_SUBKEYS )
 		return BAD_KEY_INSTANCE;
 #endif
-#endif
 
-	if (needToBuildMDS)			/* do this one time only */
-		BuildMDS();
-
-#define	F32(res,x,k32)	\
-		{															\
-	DWORD t=x;													\
-	switch (k64Cnt & 3)											\
-			{														\
-		case 0:  /* same as 4 */								\
-					b0(t)   = p8(04)[b0(t)] ^ b0(k32[3]);		\
-					b1(t)   = p8(14)[b1(t)] ^ b1(k32[3]);		\
-					b2(t)   = p8(24)[b2(t)] ^ b2(k32[3]);		\
-					b3(t)   = p8(34)[b3(t)] ^ b3(k32[3]);		\
-				 /* fall thru, having pre-processed t */		\
-		case 3:		b0(t)   = p8(03)[b0(t)] ^ b0(k32[2]);		\
-					b1(t)   = p8(13)[b1(t)] ^ b1(k32[2]);		\
-					b2(t)   = p8(23)[b2(t)] ^ b2(k32[2]);		\
-					b3(t)   = p8(33)[b3(t)] ^ b3(k32[2]);		\
-				 /* fall thru, having pre-processed t */		\
-		case 2:	 /* 128-bit keys (optimize for this case) */	\
-			res=	MDStab[0][p8(01)[p8(02)[b0(t)] ^ b0(k32[1])] ^ b0(k32[0])] ^	\
-					MDStab[1][p8(11)[p8(12)[b1(t)] ^ b1(k32[1])] ^ b1(k32[0])] ^	\
-					MDStab[2][p8(21)[p8(22)[b2(t)] ^ b2(k32[1])] ^ b2(k32[0])] ^	\
-					MDStab[3][p8(31)[p8(32)[b3(t)] ^ b3(k32[1])] ^ b3(k32[0])] ;	\
-			}														\
-		}
-
-
-#if !CHECK_TABLE
-#if defined(USE_ASM)				/* only do this if not using assember */
-	if (!(useAsm & 4))
-#endif
-#endif
-	{
-		subkeyCnt = ROUND_SUBKEYS + 2 * key->numRounds;
-		keyLen = key->keyLen;
-		k64Cnt = (keyLen + 63) / 64;			/* number of 64-bit key words */
-		for (i = 0, j = k64Cnt - 1; i < k64Cnt; i++, j--)
-		{
-			/* split into even/odd key dwords */
-			k32e[i] = key->key32[2 * i];
-			k32o[i] = key->key32[2 * i + 1];
-			/* compute S-box keys using (12,8) Reed-Solomon code over GF(256) */
-			sKey[j] = key->sboxKeys[j] = RS_MDS_Encode(k32e[i], k32o[i]);	/* reverse order */
-		}
+	k64Cnt = (keyLen + 63) / 64;		/* round up to next multiple of 64 bits */
+	for ( i = 0; i < k64Cnt; i++ )
+	{						/* split into even/odd key dwords */
+		k32e[i] = key->key32[2 * i];
+		k32o[i] = key->key32[2 * i + 1];
+		/* compute S-box keys using (12,8) Reed-Solomon code over GF(256) */
+		key->sboxKeys[k64Cnt - 1 - i] = RS_MDS_Encode(k32e[i], k32o[i]); /* reverse order */
 	}
 
-#ifdef USE_ASM
-	if (useAsm & 4)
+	for ( i = 0; i < subkeyCnt / 2; i++ )					/* compute round subkeys for PHT */
 	{
-#if defined(COMPILE_KEY) && defined(USE_ASM)
-		key->keySig = VALID_SIG;			/* show that we are initialized */
-		key->codeSize = sizeof(key->compiledCode);	/* set size */
-#endif
-		reKey_86(key);
+		A = f32(i * SK_STEP, k32e, keyLen);	/* A uses even key dwords */
+		B = f32(i * SK_STEP + SK_BUMP, k32o, keyLen);	/* B uses odd  key dwords */
+		B = ROL(B, 8);
+		key->subKeys[2 * i] = A + B;			/* combine with a PHT */
+		key->subKeys[2 * i + 1] = ROL(A + 2 * B, SK_ROTL);
 	}
-	else
-#endif
-	{
-		for (i = q = 0; i < subkeyCnt / 2; i++, q += SK_STEP)
-		{
-			/* compute round subkeys for PHT */
-			F32(A, q, k32e);		/* A uses even key dwords */
-			F32(B, q + SK_BUMP, k32o);		/* B uses odd  key dwords */
-			B = ROL(B, 8);
-			key->subKeys[2 * i] = A + B;	/* combine with a PHT */
-			B = A + 2 * B;
-			key->subKeys[2 * i + 1] = ROL(B, SK_ROTL);
-		}
-#if !defined(ZERO_KEY)
-		switch (keyLen)	/* case out key length for speed in generating S-boxes */
-		{
-		case 128:
-#if defined(FULL_KEY) || defined(PART_KEY)
-#if BIG_TAB
-#define	one128(N,J)	sbSet(N,i,J,L0[i+J])
-#define	sb128(N) {						\
-			BYTE *qq=bigTab[N][b##N(sKey[1])];	\
-			Xor256(L0,qq,b##N(sKey[0]));		\
-			for (i=0;i<256;i+=2) { one128(N,0); one128(N,1); } }
-#else
-#define	one128(N,J)	sbSet(N,i,J,p8(N##1)[L0[i+J]]^k0)
-#define	sb128(N) {					\
-			Xor256(L0,p8(N##2),b##N(sKey[1]));	\
-					{ register DWORD k0=b##N(sKey[0]);	\
-			for (i=0;i<256;i+=2) { one128(N,0); one128(N,1); } } }
-#endif
-#elif defined(MIN_KEY)
-#define	sb128(N) Xor256(_sBox8_(N),p8(N##2),b##N(sKey[1]))
-#endif
-			sb128(0); sb128(1); sb128(2); sb128(3);
-			break;
-		case 192:
-#if defined(FULL_KEY) || defined(PART_KEY)
-#define one192(N,J) sbSet(N,i,J,p8(N##1)[p8(N##2)[L0[i+J]]^k1]^k0)
-#define	sb192(N) {						\
-			Xor256(L0,p8(N##3),b##N(sKey[2]));	\
-					{ register DWORD k0=b##N(sKey[0]);	\
-			  register DWORD k1=b##N(sKey[1]);	\
-			  for (i=0;i<256;i+=2) { one192(N,0); one192(N,1); } } }
-#elif defined(MIN_KEY)
-#define one192(N,J) sbSet(N,i,J,p8(N##2)[L0[i+J]]^k1)
-#define	sb192(N) {						\
-			Xor256(L0,p8(N##3),b##N(sKey[2]));	\
-					{ register DWORD k1=b##N(sKey[1]);	\
-			  for (i=0;i<256;i+=2) { one192(N,0); one192(N,1); } } }
-#endif
-			sb192(0); sb192(1); sb192(2); sb192(3);
-			break;
-		case 256:
-#if defined(FULL_KEY) || defined(PART_KEY)
-#define one256(N,J) sbSet(N,i,J,p8(N##1)[p8(N##2)[L0[i+J]]^k1]^k0)
-#define	sb256(N) {										\
-			Xor256(L1,p8(N##4),b##N(sKey[3]));					\
-			for (i=0;i<256;i+=2) {L0[i  ]=p8(N##3)[L1[i]];		\
-								  L0[i+1]=p8(N##3)[L1[i+1]]; }	\
-			Xor256(L0,L0,b##N(sKey[2]));						\
-					{ register DWORD k0=b##N(sKey[0]);					\
-			  register DWORD k1=b##N(sKey[1]);					\
-			  for (i=0;i<256;i+=2) { one256(N,0); one256(N,1); } } }
-#elif defined(MIN_KEY)
-#define one256(N,J) sbSet(N,i,J,p8(N##2)[L0[i+J]]^k1)
-#define	sb256(N) {										\
-			Xor256(L1,p8(N##4),b##N(sKey[3]));					\
-			for (i=0;i<256;i+=2) {L0[i  ]=p8(N##3)[L1[i]];		\
-								  L0[i+1]=p8(N##3)[L1[i+1]]; }	\
-			Xor256(L0,L0,b##N(sKey[2]));						\
-					{ register DWORD k1=b##N(sKey[1]);					\
-			  for (i=0;i<256;i+=2) { one256(N,0); one256(N,1); } } }
-#endif
-			sb256(0); sb256(1);	sb256(2); sb256(3);
-			break;
-		}
-#endif
-	}
-
-#if CHECK_TABLE						/* sanity check  vs. pedagogical code*/
-	{
-		GetSboxKey;
-		for (i = 0; i < subkeyCnt / 2; i++)
-		{
-			A = f32(i * SK_STEP, k32e, keyLen);	/* A uses even key dwords */
-			B = f32(i * SK_STEP + SK_BUMP, k32o, keyLen);	/* B uses odd  key dwords */
-			B = ROL(B, 8);
-			assert(key->subKeys[2 * i] == A + B);
-			assert(key->subKeys[2 * i + 1] == ROL(A + 2 * B, SK_ROTL));
-		}
-#if !defined(ZERO_KEY)			/* any S-boxes to check? */
-		for (i = q = 0; i < 256; i++, q += 0x01010101)
-			assert(f32(q, key->sboxKeys, keyLen) == Fe32_(q, 0));
-#endif
-	}
-#endif /* CHECK_TABLE */
 
 	DebugDumpKey(key);
 
-	if (key->direction == DIR_ENCRYPT)
-		ReverseRoundSubkeys(key, DIR_ENCRYPT);	/* reverse the round subkey order */
-
 	return TRUE;
 }
+
 /*
 +*****************************************************************************
 *

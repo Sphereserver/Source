@@ -890,7 +890,7 @@ void CCrypt::InitTwofish()
 	makeKey(&tf_key, DIR_DECRYPT, 0x80, NULL);
 	cipherInit(&tf_cipher, MODE_ECB, NULL);
 
-	DWORD dwIP = UNPACKDWORD(reinterpret_cast<BYTE *>(&m_Seed));
+	DWORD dwIP = UNPACKDWORD(&m_Seed);
 	tf_key.key32[0] = tf_key.key32[1] = tf_key.key32[2] = tf_key.key32[3] = dwIP; //0x7f000001;
 	reKey(&tf_key);
 
