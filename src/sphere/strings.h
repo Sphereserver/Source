@@ -15,14 +15,14 @@ private:
 
 public:
 	// information
-	int length();
-	int realLength();
+	size_t length();
+	size_t realLength();
 	bool isEmpty();
 	const char *toBuffer();
 
 	// character operations
-	char charAt(int index);
-	void setAt(int index, char c);
+	char charAt(size_t index);
+	void setAt(size_t index, char c);
 
 	// modification
 	void append(const char *s);
@@ -48,14 +48,14 @@ public:
 
 protected:
 	// not implemented, should take care that newLength should fit in the buffer
-	virtual void ensureLength(int newLength);
+	virtual void ensureLength(size_t newLength);
 	// not implemented, should free up occupied resources
 	virtual void destroy();
 
 protected:
 	char	*m_buf;
-	int		m_length;
-	int		m_realLength;
+	size_t	m_length;
+	size_t	m_realLength;
 };
 
 // Common string implementation, implementing AbstractString and working on heap
@@ -70,7 +70,7 @@ private:
 	String& operator=(const String& other);
 
 protected:
-	void ensureLength(int newLength);
+	void ensureLength(size_t newLength);
 	void destroy();
 };
 
@@ -96,7 +96,7 @@ public:
 	void init(char *buffer, char *state);
 
 protected:
-	void ensureLength(int newLength);
+	void ensureLength(size_t newLength);
 	void destroy();
 
 private:
@@ -105,7 +105,7 @@ private:
 
 	// static buffer to allow similar operations for non-threaded environment
 	// NOTE: this buffer have no protection against overrun, so beware
-	static int m_tempPosition;
+	static size_t m_tempPosition;
 	static char m_tempStrings[MAX_TEMP_LINES_NO_CONTEXT][THREAD_STRING_LENGTH];
 };
 

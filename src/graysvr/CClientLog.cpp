@@ -24,11 +24,7 @@ void CClient::SetConnectType(CONNECT_TYPE iType)
 	m_iConnectType = iType;
 	if ( iType == CONNECT_GAME )
 	{
-#ifndef _MTNETWORK
-		HistoryIP &history = g_NetworkIn.getIPHistoryManager().getHistoryForIP(GetPeer());
-#else
 		HistoryIP &history = g_NetworkManager.getIPHistoryManager().getHistoryForIP(GetPeer());
-#endif
 		--history.m_connecting;
 	}
 }
@@ -174,7 +170,7 @@ bool CClient::addRelay(const CServerDef *pServ)
 		m_pAccount->m_TagDefs.SetNum("CustomerID", dwCustomerId);
 	}
 
-	DEBUG_MSG(("%lx:Login_Relay to server %s with AuthID %lu\n", GetSocketID(), ipAddr.GetAddrStr(), dwCustomerId));
+	DEBUG_MSG(("%lx:Login_Relay to server %s with AuthID %" FMTDWORD "\n", GetSocketID(), ipAddr.GetAddrStr(), dwCustomerId));
 
 	EXC_SET("server relay packet");
 	new PacketServerRelay(this, dwAddr, pServ->m_ip.GetPort(), dwCustomerId);
@@ -224,26 +220,11 @@ BYTE CClient::Login_ServerList(LPCTSTR pszAccount, LPCTSTR pszPassword)
 	ADDTOCALLSTACK("CClient::Login_ServerList");
 	// PACKET_ServersReq
 	// Initial login (Login on "loginserver", new format)
-	// If the messages are garbled, make sure they are terminated to correct length
-
-	TCHAR szAccount[MAX_ACCOUNT_NAME_ENTRY];
-	size_t iLenAccount = Str_GetBare(szAccount, pszAccount, sizeof(szAccount) - 1);
-	if ( iLenAccount > MAX_ACCOUNT_NAME_ENTRY )
-		return PacketLoginError::BadAccount;
-	if ( iLenAccount != strlen(pszAccount) )
-		return PacketLoginError::BadAccount;
-
-	TCHAR szPassword[MAX_ACCOUNT_PASS_ENTRY];
-	size_t iLenPassword = Str_GetBare(szPassword, pszPassword, sizeof(szPassword) - 1);
-	if ( iLenPassword > MAX_ACCOUNT_PASS_ENTRY )
-		return PacketLoginError::BadPassword;
-	if ( iLenPassword != strlen(pszPassword) )
-		return PacketLoginError::BadPassword;
 
 	CGString sMsg;
-	BYTE bErr = LogIn(pszAccount, pszPassword, sMsg);
-	if ( bErr != PacketLoginError::Success )
-		return bErr;
+	BYTE bResult = LogIn(pszAccount, pszPassword, sMsg);
+	if ( bResult != PacketLoginError::Success )
+		return bResult;
 
 	m_Targ_Mode = CLIMODE_SETUP_SERVERS;
 	new PacketServerList(this);
@@ -457,7 +438,7 @@ bool CClient::OnRxPing(const BYTE *pData, size_t iLen)
 			time_t dateChange;
 			DWORD dwSize;
 			CFileList::ReadFileInfo("Axis.db", dateChange, dwSize);
-			SysMessagef("%lu", dwSize);
+			SysMessagef("%" FMTDWORD, dwSize);
 			return true;
 		}
 
@@ -583,7 +564,7 @@ bool CClient::OnRxWebPageRequest(BYTE *pRequest, size_t iLen)
 		if ( !fKeepAlive )
 		{
 			if ( m_NetState->m_socket.SetNonBlocking(false) == SOCKET_ERROR )
-				g_Log.Event(LOGL_FATAL, "Unable to unset listen socket nonblocking mode\n");
+				g_Log.Event(LOGL_ERROR, "Unable to unset listen socket nonblocking mode\n");
 		}
 	}
 
@@ -762,7 +743,7 @@ bool CClient::xProcessClientSetup(CEvent *pEvent, size_t iLen)
 			{
 				if ( pAccount )
 				{
-					DEBUG_MSG(("%lx:xProcessClientSetup for %s, with AuthId %lu and CliVersion %lu / CliVersionReported %lu\n", GetSocketID(), pAccount->GetName(), dwCustomerID, m_Crypt.GetClientVer(), m_NetState->getReportedVersion()));
+					DEBUG_MSG(("%lx:xProcessClientSetup for %s, with AuthId %" FMTDWORD " and CliVersion %" FMTDWORD " / CliVersionReported %" FMTDWORD "\n", GetSocketID(), pAccount->GetName(), dwCustomerID, m_Crypt.GetClientVer(), m_NetState->getReportedVersion()));
 
 					if ( (dwCustomerID != 0) && (dwCustomerID == pEvent->CharListReq.m_Account) )
 					{

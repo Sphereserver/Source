@@ -76,8 +76,13 @@ Typedef'ed data storage elements. Add any algorithm specific
 parameters at the bottom of the structs as appropriate.
 */
 
-#define BYTE unsigned char
-#define DWORD unsigned long
+#ifdef _WIN32
+	#include "intsafe.h"	// load BYTE/DWORD typedefs from here
+#else
+	#include "../os_unix.h"	// load BYTE/DWORD typedefs from here
+#endif
+//#define BYTE unsigned char
+//#define DWORD unsigned long
 typedef DWORD fullSbox[4][256];
 
 /* The structure for key information */

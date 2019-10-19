@@ -227,10 +227,8 @@ CResource::CResource()
 	m_bMySql = false;
 
 	// Network settings
-#ifdef _MTNETWORK
 	m_iNetworkThreads = 0;
 	m_iNetworkThreadPriority = IThread::Disabled;
-#endif
 	m_fUseAsyncNetwork = 0;
 	m_iNetMaxPings = 15;
 	m_iNetHistoryTTL = 300;
@@ -497,10 +495,8 @@ enum RC_TYPE
 	RC_MYSQLPASS,					// m_sMySqlPassword
 	RC_MYSQLUSER,					// m_sMySqlUser
 	RC_NETTTL,						// m_iNetHistoryTTL
-#ifdef _MTNETWORK
 	RC_NETWORKTHREADPRIORITY,		// m_iNetworkThreadPriority
 	RC_NETWORKTHREADS,				// m_iNetworkThreads
-#endif
 	RC_NORESROBE,					// m_fNoResRobe
 	RC_NOTOTIMEOUT,					// m_iNotoTimeout
 	RC_NOWEATHER,					// m_fNoWeather
@@ -722,10 +718,8 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY + 1] =
 	{"MYSQLPASSWORD",				{ELEM_CSTRING,	OFFSETOF(CResource, m_sMySqlPass),						0}},
 	{"MYSQLUSER",					{ELEM_CSTRING,	OFFSETOF(CResource, m_sMySqlUser),						0}},
 	{"NETTTL",						{ELEM_INT,		OFFSETOF(CResource, m_iNetHistoryTTL),					0}},
-#ifdef _MTNETWORK
 	{"NETWORKTHREADPRIORITY",		{ELEM_INT,		OFFSETOF(CResource, m_iNetworkThreadPriority),			0}},
 	{"NETWORKTHREADS",				{ELEM_INT,		OFFSETOF(CResource, m_iNetworkThreads),					0}},
-#endif
 	{"NORESROBE",					{ELEM_BOOL,		OFFSETOF(CResource, m_fNoResRobe),						0}},
 	{"NOTOTIMEOUT",					{ELEM_INT,		OFFSETOF(CResource, m_iNotoTimeout),					0}},
 	{"NOWEATHER",					{ELEM_BOOL,		OFFSETOF(CResource, m_fNoWeather),						0}},
@@ -1148,7 +1142,6 @@ bool CResource::r_LoadVal(CScript &s)
 		case RC_TOOLTIPCACHE:
 			m_iTooltipCache = s.GetArgVal() * TICK_PER_SEC;
 			break;
-#ifdef _MTNETWORK
 		case RC_NETWORKTHREADS:
 			if ( g_Serv.IsLoading() )
 				g_Cfg.m_iNetworkThreads = s.GetArgVal();
@@ -1161,7 +1154,6 @@ bool CResource::r_LoadVal(CScript &s)
 			m_iNetworkThreadPriority = minimum(maximum(IThread::Idle, iVal), IThread::RealTime);
 			break;
 		}
-#endif
 		case RC_WALKBUFFER:
 			m_iWalkBuffer = s.GetArgVal() * TICK_PER_SEC;
 			break;
@@ -1449,7 +1441,7 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 #ifdef __GITREVISION__
 			sVal.FormatVal(__GITREVISION__);
 #else
-			sVal = g_szServerBuildDate;
+			sVal = g_szCompiledDate;
 #endif
 			break;
 		case RC_CHATFLAGS:
@@ -1637,7 +1629,7 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatVal(m_iTimerCall / (60 * TICK_PER_SEC));
 			break;
 		case RC_VERSION:
-			sVal = g_szServerDescription;
+			sVal = SPHERE_TITLE_VER;
 			break;
 		case RC_EXPERIMENTAL:
 			sVal.FormatHex(g_Cfg.m_iExperimental);
@@ -1817,7 +1809,7 @@ bool CResource::SetKRDialogMap(DWORD rid, DWORD dwKRDialogID)
 		if ( it->second == dwKRDialogID )	// already linked to this KR dialog
 			return true;
 
-		g_Log.Event(LOGL_WARN, "Dialog '%s' is already linked to KR dialog '%lu'\n", ResourceGetName(RESOURCE_ID(RES_DIALOG, rid)), it->second);
+		g_Log.Event(LOGL_WARN, "Dialog '%s' is already linked to KR dialog '%" FMTDWORD "'\n", ResourceGetName(RESOURCE_ID(RES_DIALOG, rid)), it->second);
 	}
 
 	for ( it = m_mapKRGumps.begin(); it != m_mapKRGumps.end(); ++it )
@@ -1825,7 +1817,7 @@ bool CResource::SetKRDialogMap(DWORD rid, DWORD dwKRDialogID)
 		if ( it->second != dwKRDialogID )
 			continue;
 
-		DEBUG_ERR(("KR Dialog '%lu' is already linked to dialog '%s'\n", dwKRDialogID, ResourceGetName(RESOURCE_ID(RES_DIALOG, it->first))));
+		DEBUG_ERR(("KR Dialog '%" FMTDWORD "' is already linked to dialog '%s'\n", dwKRDialogID, ResourceGetName(RESOURCE_ID(RES_DIALOG, it->first))));
 		return false;
 	}
 
@@ -1979,7 +1971,7 @@ CPointMap CResource::GetRegionPoint(LPCTSTR pszCmd) const
 	GETNONWHITESPACE(pszCmd);
 	if ( (pszCmd[0] == '-') && !strchr(pszCmd, ',') )	// Get location from start list.
 	{
-		size_t i = -ATOI(pszCmd) - 1;
+		size_t i = abs(ATOI(pszCmd)) - 1;
 		if ( !m_StartDefs.IsValidIndex(i) )
 		{
 			if ( m_StartDefs.GetCount() <= 0 )
@@ -2225,11 +2217,7 @@ bool CResource::LoadResourceSection(CScript *pScript)
 			while ( pScript->ReadKeyParse() )
 			{
 				strncpy(szIP, pScript->GetKey(), sizeof(szIP) - 1);
-#ifndef _MTNETWORK
-				HistoryIP &history = g_NetworkIn.getIPHistoryManager().getHistoryForIP(szIP);
-#else
 				HistoryIP &history = g_NetworkManager.getIPHistoryManager().getHistoryForIP(szIP);
-#endif
 				history.setBlocked(true);
 			}
 			return true;

@@ -22,7 +22,7 @@ enum NPCBRAIN_TYPE
 	NPCBRAIN_QTY
 };
 
-// Number of steps to remember for pathfinding (default to 24 steps, will have 24*4 extra bytes per char)
+// Number of steps to remember for pathfinding (default to 28 steps, will have 28*4 extra bytes per char)
 #define MAX_NPC_PATH_STORAGE_SIZE	(UO_MAP_VIEW_SIGHT * 2)
 
 struct CCharNPC
@@ -742,7 +742,7 @@ public:
 				return true;
 
 			TCHAR *uid = Str_GetTemp();
-			sprintf(uid, "SeenBy_0%lx", static_cast<DWORD>(GetUID()));
+			sprintf(uid, "SeenBy_0%" FMTDWORDH, static_cast<DWORD>(GetUID()));
 			if ( !pItem->m_TagDefs.GetKeyNum(uid) )
 				return false;
 		}
@@ -911,7 +911,7 @@ public:
 	{
 		// What flags can block us?
 		if ( !fIgnoreGM && IsPriv(PRIV_GM|PRIV_ALLMOVE) )	// nothing can blocks us
-			return ULONG_MAX;
+			return DWORD_MAX;
 
 		DWORD dwCan = m_Can;
 		CCharBase *pCharDef = Char_GetDef();

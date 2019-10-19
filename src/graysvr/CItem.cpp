@@ -316,7 +316,7 @@ CItem * CItem::CreateHeader( TCHAR * pszArg, CObjBase * pCont, bool fDupeCheck, 
 		// Is the item movable ?
 		if ( !pItem->IsMovable() && pCont && pCont->IsItem() )
 		{
-			DEBUG_ERR(("Script Error: 0%x item is not movable type, cont=0%lx\n", id, static_cast<DWORD>(pCont->GetUID())));
+			DEBUG_ERR(("Script Error: 0%x item is not movable type, cont UID=0%" FMTDWORDH "\n", id, static_cast<DWORD>(pCont->GetUID())));
 			pItem->Delete();
 			return( NULL );
 		}
@@ -591,7 +591,7 @@ int CItem::FixWeirdness()
 			if ( m_type == IT_EQ_MEMORY_OBJ || m_type == IT_SPELL )
 				return 0;	// get rid of it.	(this is not an ERROR per se)
 
-			DEBUG_ERR(("Item '%s' has bad link to 0%lx\n", GetName(), static_cast<DWORD>(m_uidLink)));
+			DEBUG_ERR(("Item '%s' has bad link to 0%" FMTDWORDH "\n", GetName(), static_cast<DWORD>(m_uidLink)));
 			m_uidLink.InitUID();
 			return 0x2205;	// get rid of it.
 		}
@@ -701,7 +701,7 @@ int CItem::FixWeirdness()
 			// blank unlinked keys.
 			if ( m_itKey.m_lockUID && !IsValidUID() )
 			{
-				DEBUG_ERR(("Key '%s' has bad link to 0%lx, blanked out\n", GetName(), static_cast<DWORD>(m_itKey.m_lockUID)));
+				DEBUG_ERR(("Key '%s' has bad link to 0%" FMTDWORDH ", blanked out\n", GetName(), static_cast<DWORD>(m_itKey.m_lockUID)));
 				m_itKey.m_lockUID.ClearUID();
 			}
 			break;
@@ -912,7 +912,7 @@ bool CItem::IsStackable( const CItem * pItem ) const
 		return false;
 
 	// total should not add up to > 64K !!!
-	/*if ( pItem->GetAmount() > ( USHRT_MAX - GetAmount()))
+	/*if ( pItem->GetAmount() > WORD_MAX - GetAmount() )
 		return false;*/
 
 	return true;
@@ -1536,7 +1536,7 @@ bool CItem::SetBaseID( ITEMID_TYPE id )
 	CItemBase * pItemDef = CItemBase::FindItemBase( id );
 	if ( pItemDef == NULL )
 	{
-		DEBUG_ERR(("SetBaseID 0%x invalid item uid=0%lx\n", id, static_cast<DWORD>(GetUID())));
+		DEBUG_ERR(("SetBaseID 0%x invalid item uid=0%" FMTDWORDH "\n", id, static_cast<DWORD>(GetUID())));
 		return false;
 	}
 	SetBase( pItemDef );	// set new m_type etc
@@ -1649,7 +1649,7 @@ void CItem::WriteUOX( CScript & s, int index )
 	ADDTOCALLSTACK("CItem::WriteUOX");
 	s.Printf( "SECTION WORLDITEM %d\n", index );
 	s.Printf( "{\n" );
-	s.Printf( "SERIAL %lu\n", static_cast<DWORD>(GetUID()));
+	s.Printf( "SERIAL %" FMTDWORD "\n", static_cast<DWORD>(GetUID()));
 	s.Printf( "NAME %s\n", GetName());
 	s.Printf( "ID %d\n", GetDispID());
 	s.Printf( "X %hd\n", GetTopPoint().m_x );
@@ -1868,7 +1868,7 @@ bool CItem::LoadSetContainer( CGrayUID uid, LAYER_TYPE layer )
 	CObjBase * pObjCont = uid.ObjFind();
 	if ( pObjCont == NULL )
 	{
-		DEBUG_ERR(("Invalid container 0%lx\n", static_cast<DWORD>(uid)));
+		DEBUG_ERR(("Invalid container 0%" FMTDWORDH "\n", static_cast<DWORD>(uid)));
 		return( false );	// not valid object.
 	}
 
@@ -1903,7 +1903,7 @@ bool CItem::LoadSetContainer( CGrayUID uid, LAYER_TYPE layer )
 		}
 	}
 
-	DEBUG_ERR(("Non container uid=0%lx,id=0%hx\n", static_cast<DWORD>(uid), pObjCont->GetBaseID()));
+	DEBUG_ERR(("Non container uid=0%" FMTDWORDH ", id=0%hx\n", static_cast<DWORD>(uid), pObjCont->GetBaseID()));
 	return( false );	// not a container.
 }
 
@@ -2568,7 +2568,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 		case IC_MORE2:
 			m_itNormal.m_more2 = s.GetArgVal();
 			if ( IsType(IT_SPAWN_ITEM) )
-				m_itSpawnItem.m_pile = minimum(USHRT_MAX, m_itNormal.m_more2);
+				m_itSpawnItem.m_pile = minimum(WORD_MAX, m_itNormal.m_more2);
 			return true;
 		case IC_MORE2h:
 			m_itNormal.m_more2 = MAKEDWORD( LOWORD(m_itNormal.m_more2), s.GetArgVal());
@@ -2670,7 +2670,7 @@ bool CItem::r_Load( CScript & s ) // Load an item from script
 	int iResultCode = CObjBase::IsWeird();
 	if ( iResultCode )
 	{
-		DEBUG_ERR(("Item 0%lx Invalid, id='%s', code=0%x\n", static_cast<DWORD>(GetUID()), GetResourceName(), iResultCode));
+		DEBUG_ERR(("Item 0%" FMTDWORDH " Invalid, id='%s', code=0%x\n", static_cast<DWORD>(GetUID()), GetResourceName(), iResultCode));
 		Delete();
 	}
 
@@ -2917,9 +2917,9 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 			if ( pResourceLink == NULL )
 			{
 				if ( pChar )
-					DEBUG_ERR(( "0%lx '%s' has unhandled [TYPEDEF %d] for 0%lx '%s'\n", static_cast<DWORD>(GetUID()), GetName(), GetType(), static_cast<DWORD>(pChar->GetUID()), pChar->GetName()));
+					DEBUG_ERR(( "0%" FMTDWORDH " '%s' has unhandled [TYPEDEF %d] for 0%" FMTDWORDH " '%s'\n", static_cast<DWORD>(GetUID()), GetName(), GetType(), static_cast<DWORD>(pChar->GetUID()), pChar->GetName()));
 				else
-					DEBUG_ERR(( "0%lx '%s' has unhandled [TYPEDEF %d]\n", static_cast<DWORD>(GetUID()), GetName(), GetType() ));
+					DEBUG_ERR(( "0%" FMTDWORDH " '%s' has unhandled [TYPEDEF %d]\n", static_cast<DWORD>(GetUID()), GetName(), GetType() ));
 
 				m_type = Item_GetDef()->GetType();
 				iRet = TRIGRET_RET_DEFAULT;
@@ -2962,7 +2962,7 @@ stopandret:
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("trigger '%s' action '%d' char '0%lx' [0%lx]\n", pszTrigName, iAction, (pSrc && pSrc->GetChar()) ? static_cast<DWORD>(pSrc->GetChar()->GetUID()) : 0, static_cast<DWORD>(GetUID()));
+	g_Log.EventDebug("trigger '%s' action '%d' char '0%" FMTDWORDH "' [0%" FMTDWORDH "]\n", pszTrigName, iAction, (pSrc && pSrc->GetChar()) ? static_cast<DWORD>(pSrc->GetChar()->GetUID()) : 0, static_cast<DWORD>(GetUID()));
 	EXC_DEBUG_END;
 	return iRet;
 }
@@ -3072,9 +3072,9 @@ TRIGRET_TYPE CItem::OnTriggerCreate( CTextConsole * pSrc, CScriptTriggerArgs * p
 			if ( pResourceLink == NULL )
 			{
 				if ( pChar )
-					DEBUG_ERR(( "0%lx '%s' has unhandled [TYPEDEF %d] for 0%lx '%s'\n", static_cast<DWORD>(GetUID()), GetName(), GetType(), static_cast<DWORD>(pChar->GetUID()), pChar->GetName()));
+					DEBUG_ERR(( "0%" FMTDWORDH " '%s' has unhandled [TYPEDEF %d] for 0%" FMTDWORDH " '%s'\n", static_cast<DWORD>(GetUID()), GetName(), GetType(), static_cast<DWORD>(pChar->GetUID()), pChar->GetName()));
 				else
-					DEBUG_ERR(( "0%lx '%s' has unhandled [TYPEDEF %d]\n", static_cast<DWORD>(GetUID()), GetName(), GetType() ));
+					DEBUG_ERR(( "0%" FMTDWORDH " '%s' has unhandled [TYPEDEF %d]\n", static_cast<DWORD>(GetUID()), GetName(), GetType() ));
 
 				m_type = Item_GetDef()->GetType();
 				return( TRIGRET_RET_DEFAULT );
@@ -3098,7 +3098,7 @@ TRIGRET_TYPE CItem::OnTriggerCreate( CTextConsole * pSrc, CScriptTriggerArgs * p
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("trigger '%s' action '%d' char '0%lx' [0%lx]\n", pszTrigName, iAction, (pSrc && pSrc->GetChar()) ? static_cast<DWORD>(pSrc->GetChar()->GetUID()) : 0, static_cast<DWORD>(GetUID()));
+	g_Log.EventDebug("trigger '%s' action '%d' char '0%" FMTDWORDH "' [0%" FMTDWORDH "]\n", pszTrigName, iAction, (pSrc && pSrc->GetChar()) ? static_cast<DWORD>(pSrc->GetChar()->GetUID()) : 0, static_cast<DWORD>(GetUID()));
 	EXC_DEBUG_END;
 	return iRet;
 }
@@ -4286,7 +4286,7 @@ void CItem::SetTrapState( IT_TYPE state, ITEMID_TYPE id, int iTimeSec )
 	{
 		iTimeSec = 3*TICK_PER_SEC;
 	}
-	else if ( iTimeSec > 0 && iTimeSec < USHRT_MAX )
+	else if ( (iTimeSec > 0) && (iTimeSec < WORD_MAX) )
 	{
 		iTimeSec *= TICK_PER_SEC;
 	}
@@ -5077,7 +5077,7 @@ bool CItem::OnTick()
 		return false;
 
 	EXC_SET("default behaviour4");
-	DEBUG_ERR(("Timer expired without DECAY flag '%s' (UID=0%lx)?\n", GetName(), static_cast<DWORD>(GetUID())));
+	DEBUG_ERR(("Timer expired without DECAY flag '%s' (UID=0%" FMTDWORDH ")?\n", GetName(), static_cast<DWORD>(GetUID())));
 	
 #ifndef _WIN32
 	}
@@ -5085,13 +5085,13 @@ bool CItem::OnTick()
 	catch ( const CGrayError& e )
 	{
 		EXC_CATCH_EXCEPTION(&e);
-		g_Log.EventError("'%s' item [0%lx] - CGrayError\n", GetName(), static_cast<DWORD>(GetUID()));
+		g_Log.EventError("'%s' item [0%" FMTDWORDH "] - CGrayError\n", GetName(), static_cast<DWORD>(GetUID()));
 		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 	}
 	catch (...)
 	{
 		EXC_CATCH_EXCEPTION(NULL);
-		g_Log.EventError("'%s' item [0%lx] - ...\n", GetName(), static_cast<DWORD>(GetUID()));
+		g_Log.EventError("'%s' item [0%" FMTDWORDH "] - ...\n", GetName(), static_cast<DWORD>(GetUID()));
 		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 	}
 #endif
@@ -5099,7 +5099,7 @@ bool CItem::OnTick()
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("'%s' item [0%lx]\n", GetName(), static_cast<DWORD>(GetUID()));
+	g_Log.EventDebug("'%s' item [0%" FMTDWORDH "]\n", GetName(), static_cast<DWORD>(GetUID()));
 	EXC_DEBUG_END;
 #endif
 

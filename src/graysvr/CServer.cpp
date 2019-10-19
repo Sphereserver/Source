@@ -112,13 +112,13 @@ bool CServer::SocketsInit()
 	lVal.l_onoff = 0;
 	lVal.l_linger = 10;
 	if ( m_SocketMain.SetSockOpt(SO_LINGER, reinterpret_cast<const void *>(&lVal), sizeof(lVal)) == SOCKET_ERROR )
-		g_Log.Event(LOGL_FATAL, "Unable to set listen socket option SO_LINGER\n");
+		g_Log.Event(LOGL_CRIT, "Unable to set listen socket option SO_LINGER\n");
 	if ( m_SocketMain.SetNonBlocking() == SOCKET_ERROR )
-		g_Log.Event(LOGL_FATAL, "Unable to set listen socket non-blocking mode\n");
+		g_Log.Event(LOGL_CRIT, "Unable to set listen socket non-blocking mode\n");
 #ifndef _WIN32
 	int iEnable = 1;
 	if ( m_SocketMain.SetSockOpt(SO_REUSEADDR, reinterpret_cast<const void *>(&iEnable), sizeof(iEnable)) == SOCKET_ERROR )
-		g_Log.Event(LOGL_FATAL, "Unable to set listen socket option SO_REUSEADDR\n");
+		g_Log.Event(LOGL_CRIT, "Unable to set listen socket option SO_REUSEADDR\n");
 #endif
 
 	// Bind socket to specific IP/port
@@ -216,7 +216,7 @@ bool CServer::GetPublicIP()
 
 	// Send HTTP request
 	TCHAR *pszHeader = Str_GetTemp();
-	sprintf(pszHeader, "GET %s HTTP/1.1\r\nHost: %s\r\nUser-Agent: " SPHERE_TITLE " V" SPHERE_VERSION "\r\nConnection: Close\r\n\r\n", pszPath ? pszPath : "/", pszDomain);
+	sprintf(pszHeader, "GET %s HTTP/1.1\r\nHost: %s\r\nUser-Agent: " SPHERE_TITLE_VER "\r\nConnection: Close\r\n\r\n", pszPath ? pszPath : "/", pszDomain);
 	if ( sock.Send(pszHeader, strlen(pszHeader)) == SOCKET_ERROR )
 	{
 		sock.Close();
@@ -316,9 +316,9 @@ bool CServer::Load()
 	EXC_TRY("Load");
 
 #if defined(__GITREVISION__) && defined(__GITHASH__)
-	g_Log.Event(LOGL_EVENT, "%s\nCompiled: %s [build %d / Git hash %s]\n\n", g_szServerDescription, g_szServerBuildDate, __GITREVISION__, __GITHASH__);
+	g_Log.Event(LOGL_EVENT, "%s (%s) by %s\nCompiled at %s (build %d / Git hash %s)\n\n", SPHERE_TITLE_VER, SPHERE_VER_ARCH, SPHERE_WEBSITE, g_szCompiledDate, __GITREVISION__, __GITHASH__);
 #else
-	g_Log.Event(LOGL_EVENT, "%s\nCompiled: %s\n\n", g_szServerDescription, g_szServerBuildDate);
+	g_Log.Event(LOGL_EVENT, "%s (%s) by %s\nCompiled at %s\n\n", SPHERE_TITLE_VER, SPHERE_VER_ARCH, SPHERE_WEBSITE, g_szCompiledDate);
 #endif
 
 #ifdef _NIGHTLYBUILD
@@ -348,7 +348,7 @@ bool CServer::Load()
 #ifdef _WIN32
 	EXC_SET("setting console title");
 	TCHAR *pszTemp = Str_GetTemp();
-	sprintf(pszTemp, SPHERE_TITLE " V" SPHERE_VERSION " - %s", GetName());
+	sprintf(pszTemp, SPHERE_TITLE_VER " - %s", GetName());
 	SetConsoleTitle(pszTemp);
 #else
 	EXC_SET("setting signals");
@@ -782,7 +782,7 @@ bool CServer::OnConsoleCmd(CGString &sText, CTextConsole *pSrc)
 					g_World.Save(true);
 					g_World.SaveStatics();
 				}
-				g_Log.Event(LOGL_FATAL, "Shutdown initialized\n");
+				g_Log.Event(LOGL_WARN, "Shutdown initialized\n");
 				SetExitFlag(1);
 			}
 			break;
@@ -979,13 +979,13 @@ LPCTSTR CServer::GetStatusString(BYTE bIndex) const
 		{
 			// Typical (first time) poll response
 			TCHAR szVersion[128];
-			sprintf(pszTemp, SPHERE_TITLE ", Name=%s, Port=%hu, Ver=" SPHERE_VERSION ", TZ=%hhd, Email=%s, URL=%s, Lang=%s, CliVer=%s\n", GetName(), m_ip.GetPort(), m_TimeZone, static_cast<LPCTSTR>(m_sEMail), static_cast<LPCTSTR>(m_sURL), static_cast<LPCTSTR>(m_sLang), m_ClientVersion.WriteClientVerString(m_ClientVersion.GetClientVer(), szVersion));
+			sprintf(pszTemp, SPHERE_TITLE ", Name=%s, Port=%hu, Ver=" SPHERE_VER_STR_FULL ", TZ=%hhd, Email=%s, URL=%s, Lang=%s, CliVer=%s\n", GetName(), m_ip.GetPort(), m_TimeZone, static_cast<LPCTSTR>(m_sEMail), static_cast<LPCTSTR>(m_sURL), static_cast<LPCTSTR>(m_sLang), m_ClientVersion.WriteClientVerString(m_ClientVersion.GetClientVer(), szVersion));
 			break;
 		}
 		case 0x22:	// '"'
 		{
 			// Shown in the INFO page in game
-			sprintf(pszTemp, SPHERE_TITLE ", Name=%s, Age=%lld, Clients=%lu, Items=%lu, Chars=%lu, Mem=%luK\n", GetName(), GetAge(), StatGet(SERV_STAT_CLIENTS), StatGet(SERV_STAT_ITEMS), StatGet(SERV_STAT_CHARS), StatGet(SERV_STAT_MEM));
+			sprintf(pszTemp, SPHERE_TITLE ", Name=%s, Age=%lld, Clients=%" FMTDWORD ", Items=%" FMTDWORD ", Chars=%" FMTDWORD ", Mem=%" FMTDWORD "K\n", GetName(), GetAge(), StatGet(SERV_STAT_CLIENTS), StatGet(SERV_STAT_ITEMS), StatGet(SERV_STAT_CHARS), StatGet(SERV_STAT_MEM));
 			break;
 		}
 		case 0x24:	// '$'
@@ -997,7 +997,7 @@ LPCTSTR CServer::GetStatusString(BYTE bIndex) const
 		case 0x25:	// '%'
 		{
 			// ConnectUO status string
-			sprintf(pszTemp, SPHERE_TITLE " Items=%lu, Mobiles=%lu, Clients=%lu, Mem=%luK", StatGet(SERV_STAT_ITEMS), StatGet(SERV_STAT_CHARS), StatGet(SERV_STAT_CLIENTS), StatGet(SERV_STAT_MEM));
+			sprintf(pszTemp, SPHERE_TITLE " Items=%" FMTDWORD ", Mobiles=%" FMTDWORD ", Clients=%" FMTDWORD ", Mem=%" FMTDWORD "K", StatGet(SERV_STAT_ITEMS), StatGet(SERV_STAT_CHARS), StatGet(SERV_STAT_CLIENTS), StatGet(SERV_STAT_MEM));
 			break;
 		}
 	}
@@ -1291,13 +1291,9 @@ bool CServer::r_Verb(CScript &s, CTextConsole *pSrc)
 				return true;
 			}
 
-#ifdef _MTNETWORK
 			HistoryIP &history = g_NetworkManager.getIPHistoryManager().getHistoryForIP(ppArgs[0]);
-#else
-			HistoryIP &history = g_NetworkIn.getIPHistoryManager().getHistoryForIP(ppArgs[0]);
-#endif
-
 			INT64 iTimeout = (iQty >= 2) ? Exp_GetLLVal(ppArgs[1]) : -1;
+
 			if ( iTimeout >= 0 )
 				pSrc->SysMessagef("IP blocked for %lld seconds\n", iTimeout);
 			else
@@ -1460,11 +1456,7 @@ bool CServer::r_Verb(CScript &s, CTextConsole *pSrc)
 		}
 		case SV_UNBLOCKIP:
 		{
-#ifdef _MTNETWORK
 			HistoryIP &history = g_NetworkManager.getIPHistoryManager().getHistoryForIP(s.GetArgRaw());
-#else
-			HistoryIP &history = g_NetworkIn.getIPHistoryManager().getHistoryForIP(s.GetArgRaw());
-#endif
 			pSrc->SysMessagef("IP%s unblocked\n", history.m_blocked ? "" : " already");
 			history.setBlocked(false);
 			break;
@@ -1496,7 +1488,7 @@ bool CServer::r_Verb(CScript &s, CTextConsole *pSrc)
 
 	EXC_DEBUG_START;
 	EXC_ADD_SCRIPTSRC;
-	g_Log.EventDebug("source '%s' char '%s' uid '0%lx'\n", (pSrc && pSrc->GetName()) ? pSrc->GetName() : "", (pSrc && pSrc->GetChar()) ? pSrc->GetChar()->GetName() : "", (pSrc && pSrc->GetChar()) ? static_cast<DWORD>(pSrc->GetChar()->GetUID()) : 0);
+	g_Log.EventDebug("source '%s' char '%s' uid '0%" FMTDWORDH "'\n", (pSrc && pSrc->GetName()) ? pSrc->GetName() : "", (pSrc && pSrc->GetChar()) ? pSrc->GetChar()->GetName() : "", (pSrc && pSrc->GetChar()) ? static_cast<DWORD>(pSrc->GetChar()->GetUID()) : 0);
 	EXC_DEBUG_END;
 	return false;
 }
@@ -1595,7 +1587,7 @@ void CServer::ProfileDump(CTextConsole *pSrc, bool fDump)
 			ULONGLONG divby = llTimeProfileFrequency / 1000;
 
 			if ( ft )
-				ft->Printf("Scripts: called %lu times and took %llu.%04llu ms (%llu.%04llu ms average). Reporting with highest average\n",
+				ft->Printf("Scripts: called %" FMTDWORD " times and took %llu.%04llu ms (%llu.%04llu ms average). Reporting with highest average\n",
 					g_profiler.called,
 					g_profiler.total / divby,
 					((g_profiler.total * 10000) / divby) % 10000,
@@ -1603,7 +1595,7 @@ void CServer::ProfileDump(CTextConsole *pSrc, bool fDump)
 					((average * 10000) / divby) % 10000
 				);
 			else
-				pSrc->SysMessagef("Scripts: called %lu times and took %llu.%04llu ms (%llu.%04llu ms average). Reporting with highest average\n",
+				pSrc->SysMessagef("Scripts: called %" FMTDWORD " times and took %llu.%04llu ms (%llu.%04llu ms average). Reporting with highest average\n",
 					g_profiler.called,
 					g_profiler.total / divby,
 					((g_profiler.total * 10000) / divby) % 10000,
@@ -1617,7 +1609,7 @@ void CServer::ProfileDump(CTextConsole *pSrc, bool fDump)
 				if ( pFunction->average > average )
 				{
 					if ( ft )
-						ft->Printf("FUNCTION '%-30s' called %6lu times (%6llu.%04llu min, %6llu.%04llu avg, %6llu.%04llu max) [total: %6llu.%04llu ms]\n",
+						ft->Printf("FUNCTION '%-30s' called %6" FMTDWORD " times (%6llu.%04llu min, %6llu.%04llu avg, %6llu.%04llu max) [total: %6llu.%04llu ms]\n",
 							pFunction->name,
 							pFunction->called,
 							pFunction->min / divby,
@@ -1630,7 +1622,7 @@ void CServer::ProfileDump(CTextConsole *pSrc, bool fDump)
 							((pFunction->total * 10000) / divby) % 10000
 						);
 					else
-						pSrc->SysMessagef("FUNCTION '%-30s' called %6lu times (%6llu.%04llu min, %6llu.%04llu avg, %6llu.%04llu max) [total: %6llu.%04llu ms]\n",
+						pSrc->SysMessagef("FUNCTION '%-30s' called %6" FMTDWORD " times (%6llu.%04llu min, %6llu.%04llu avg, %6llu.%04llu max) [total: %6llu.%04llu ms]\n",
 							pFunction->name,
 							pFunction->called,
 							pFunction->min / divby,
@@ -1651,7 +1643,7 @@ void CServer::ProfileDump(CTextConsole *pSrc, bool fDump)
 				if ( pTrigger->average > average )
 				{
 					if ( ft )
-						ft->Printf("TRIGGER '%-25s' called %6lu times (%6llu.%04llu min, %6llu.%04llu avg, %6llu.%04llu max), total: %6llu.%04llu ms\n",
+						ft->Printf("TRIGGER '%-25s' called %6" FMTDWORD " times (%6llu.%04llu min, %6llu.%04llu avg, %6llu.%04llu max), total: %6llu.%04llu ms\n",
 							pTrigger->name,
 							pTrigger->called,
 							pTrigger->min / divby,
@@ -1664,7 +1656,7 @@ void CServer::ProfileDump(CTextConsole *pSrc, bool fDump)
 							((pTrigger->total * 10000) / divby) % 10000
 						);
 					else
-						pSrc->SysMessagef("TRIGGER '%-25s' called %6lu times (%6llu.%04llu min, %6llu.%04llu avg, %6llu.%04llu max), total: %6llu.%04llu ms\n",
+						pSrc->SysMessagef("TRIGGER '%-25s' called %6" FMTDWORD " times (%6llu.%04llu min, %6llu.%04llu avg, %6llu.%04llu max), total: %6llu.%04llu ms\n",
 							pTrigger->name,
 							pTrigger->called,
 							pTrigger->min / divby,

@@ -133,7 +133,7 @@ void CItemSpawn::GenerateItem(CResourceDef *pDef)
 	if ( !pItem )
 		return;
 
-	WORD wAmountPile = static_cast<WORD>(minimum(USHRT_MAX, m_itSpawnItem.m_pile));
+	WORD wAmountPile = static_cast<WORD>(minimum(WORD_MAX, m_itSpawnItem.m_pile));
 	if ( wAmountPile > 1 )
 	{
 		CItemBase *pItemDef = pItem->Item_GetDef();
@@ -183,7 +183,7 @@ void CItemSpawn::GenerateChar(CResourceDef *pDef)
 		// If this fails, try placing the char over the spawn
 		if ( !pChar->MoveTo(pt) )
 		{
-			DEBUG_ERR(("Spawn UID:0%lx is unable to move the created character to world\n", static_cast<DWORD>(GetUID())));
+			DEBUG_ERR(("Spawn UID=0%" FMTDWORDH " is unable to move the created character to world\n", static_cast<DWORD>(GetUID())));
 			pChar->Delete();
 			return;
 		}
@@ -311,7 +311,7 @@ void CItemSpawn::OnTick(bool fExec)
 	if ( !pDef )
 	{
 		RESOURCE_ID_BASE rid = IsType(IT_SPAWN_ITEM) ? m_itSpawnItem.m_ItemID : m_itSpawnChar.m_CharID;
-		DEBUG_ERR(("Bad Spawn point uid=0%lx, id=%s\n", static_cast<DWORD>(GetUID()), g_Cfg.ResourceGetName(rid)));
+		DEBUG_ERR(("Bad Spawn point UID=0%" FMTDWORDH ", id=%s\n", static_cast<DWORD>(GetUID()), g_Cfg.ResourceGetName(rid)));
 		return;
 	}
 
@@ -407,7 +407,7 @@ bool CItemSpawn::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 	{
 		pszKey += 3;
 		int i = Exp_GetVal(pszKey);
-		if ( (i >= 0) && (i <= UCHAR_MAX - 1) )
+		if ( (i >= 0) && (i <= BYTE_MAX - 1) )
 		{
 			CObjBase *pObj = m_obj[i].ObjFind();
 			if ( pObj )

@@ -18,15 +18,16 @@ CNTApp theApp;
 
 bool CNTWindow::CAboutDlg::OnInitDialog()
 {
-	char *z = Str_GetTemp();
-	sprintf(z, "%s %s", SPHERE_TITLE, SPHERE_VERSION);
+	char *pszBuild = Str_GetTemp();
 #if defined(__GITREVISION__) && defined(__GITHASH__)
-	sprintf(z, "%s (build %d / Git hash %s)", z, __GITREVISION__, __GITHASH__);
+	sprintf(pszBuild, "Compiled at %s (Build %d / Git hash %s)", g_szCompiledDate, __GITREVISION__, __GITHASH__);
+#else
+	sprintf(pszBuild, "Compiled at %s", g_szCompiledDate);
 #endif
-	SetDlgItemText(IDC_ABOUT_VERSION, z);
 
-	sprintf(z, "Compiled at %s", g_szServerBuildDate);
-	SetDlgItemText(IDC_ABOUT_COMPILER, z);
+	SetDlgItemText(IDC_ABOUT_VERSION, SPHERE_TITLE_VER " (" SPHERE_VER_ARCH ")");
+	SetDlgItemText(IDC_ABOUT_WEBSITE, SPHERE_WEBSITE);
+	SetDlgItemText(IDC_ABOUT_COMPILER, pszBuild);
 	return false;
 }
 
@@ -417,7 +418,7 @@ bool CNTWindow::OnCommand( WORD wNotifyCode, INT_PTR wID, HWND hwndCtl )
 				CDialogBase::DialogProc,
 				reinterpret_cast<LPARAM>(static_cast <CDialogBase*>(&theApp.m_wndStatus)) );
 		}
-		theApp.m_wndStatus.CentralizeWindow(theApp.m_wndMain.m_hWnd);
+		theApp.m_wndStatus.SetIcon(theApp.LoadIcon(IDR_MAINFRAME));
 		theApp.m_wndStatus.ShowWindow(SW_NORMAL);
 		theApp.m_wndStatus.SetForegroundWindow();
 		break;
@@ -431,7 +432,7 @@ bool CNTWindow::OnCommand( WORD wNotifyCode, INT_PTR wID, HWND hwndCtl )
 				CDialogBase::DialogProc,
 				reinterpret_cast<LPARAM>(static_cast <CDialogBase*>(&theApp.m_wndAbout)) );
 		}
-		theApp.m_wndAbout.CentralizeWindow(theApp.m_wndMain.m_hWnd);
+		theApp.m_wndAbout.SetIcon(theApp.LoadIcon(IDR_MAINFRAME));
 		theApp.m_wndAbout.ShowWindow(SW_NORMAL);
 		theApp.m_wndAbout.SetForegroundWindow();
 		break;
@@ -736,7 +737,7 @@ LRESULT WINAPI CNTWindow::WindowProc( HWND hWnd, UINT message, WPARAM wParam, LP
 
 bool NTWindow_Init(HINSTANCE hInstance, LPTSTR lpCmdLine, int nCmdShow)
 {
-	theApp.InitInstance(SPHERE_TITLE "Server V" SPHERE_VERSION, hInstance, lpCmdLine);
+	theApp.InitInstance(SPHERE_TITLE "Server V" SPHERE_VER_STR_FULL, hInstance, lpCmdLine);
 
 	//	read target window name from the arguments
 	char	className[32] = SPHERE_TITLE "Svr";
@@ -755,7 +756,7 @@ bool NTWindow_Init(HINSTANCE hInstance, LPTSTR lpCmdLine, int nCmdShow)
 
 	theApp.m_wndMain.m_hWnd = ::CreateWindow(
 		className,
-		SPHERE_TITLE " V" SPHERE_VERSION, // window name
+		SPHERE_TITLE_VER, // window name
 		WS_OVERLAPPEDWINDOW,   // window style
 		CW_USEDEFAULT,  // horizontal position of window
 		CW_USEDEFAULT,  // vertical position of window

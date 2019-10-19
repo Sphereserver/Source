@@ -231,7 +231,7 @@ private:
 	CGTypedArray<ITEMID_TYPE, ITEMID_TYPE> m_flip_id;
 	CValueRangeDef m_values;
 	IT_TYPE m_type;
-	WORD m_weight;				// weight in WEIGHT_UNITS (USHRT_MAX=not movable). Defaults from .mul files
+	WORD m_weight;				// weight in WEIGHT_UNITS (WORD_MAX=not movable). Defaults from .mul files
 	BYTE m_layer;
 	UINT64 m_uiFlags;			// UFLAG_* from CUOItemTypeRec/CUOItemTypeRec2
 	BYTE m_speed;
@@ -547,7 +547,7 @@ public:
 
 	bool IsMovable() const
 	{
-		return (m_weight != USHRT_MAX);
+		return (m_weight != WORD_MAX);
 	}
 
 	static bool IsValidDispID(ITEMID_TYPE id)

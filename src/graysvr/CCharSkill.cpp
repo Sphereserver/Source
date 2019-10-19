@@ -25,10 +25,10 @@ void CChar::Stat_SetMod(STAT_TYPE stat, int iVal)
 	ADDTOCALLSTACK("CChar::Stat_SetMod");
 	if ( (stat < STAT_STR) || (stat >= STAT_QTY) )
 		return;
-	if ( iVal > USHRT_MAX )
-		iVal = USHRT_MAX;
-	else if ( iVal < -USHRT_MAX )
-		iVal = -USHRT_MAX;
+	if ( iVal > WORD_MAX )
+		iVal = WORD_MAX;
+	else if ( iVal < -WORD_MAX )
+		iVal = -WORD_MAX;
 
 	int iStatVal = Stat_GetMod(stat);
 	if ( IsTrigUsed(TRIGGER_STATCHANGE) && !IsTriggerActive("CREATE") )
@@ -84,10 +84,10 @@ void CChar::Stat_SetVal(STAT_TYPE stat, int iVal)
 	ADDTOCALLSTACK("CChar::Stat_SetVal");
 	if ( (stat < STAT_STR) || (stat >= STAT_QTY) )
 		return;
-	if ( iVal > USHRT_MAX )
-		iVal = USHRT_MAX;
-	else if ( iVal < -USHRT_MAX )
-		iVal = -USHRT_MAX;
+	if ( iVal > WORD_MAX )
+		iVal = WORD_MAX;
+	else if ( iVal < -WORD_MAX )
+		iVal = -WORD_MAX;
 
 	if ( stat >= STAT_BASE_QTY )	// food must trigger @StatChange, redirect to base value
 	{
@@ -112,10 +112,10 @@ void CChar::Stat_SetMax(STAT_TYPE stat, int iVal)
 	ADDTOCALLSTACK("CChar::Stat_SetMax");
 	if ( (stat < STAT_STR) || (stat >= STAT_QTY) )
 		return;
-	if ( iVal > USHRT_MAX )
-		iVal = USHRT_MAX;
-	else if ( iVal < -USHRT_MAX )
-		iVal = -USHRT_MAX;
+	if ( iVal > WORD_MAX )
+		iVal = WORD_MAX;
+	else if ( iVal < -WORD_MAX )
+		iVal = -WORD_MAX;
 
 	if ( g_Cfg.m_iStatFlag && ((g_Cfg.m_iStatFlag & STAT_FLAG_DENYMAX) || (m_pPlayer && (g_Cfg.m_iStatFlag & STAT_FLAG_DENYMAXP)) || (m_pNPC && (g_Cfg.m_iStatFlag & STAT_FLAG_DENYMAXN))) )
 		m_Stat[stat].m_max = 0;
@@ -231,10 +231,10 @@ void CChar::Stat_SetBase(STAT_TYPE stat, int iVal)
 	ADDTOCALLSTACK("CChar::Stat_SetBase");
 	if ( (stat < STAT_STR) || (stat >= STAT_QTY) )
 		return;
-	if ( iVal > USHRT_MAX )
-		iVal = USHRT_MAX;
-	else if ( iVal < -USHRT_MAX )
-		iVal = -USHRT_MAX;
+	if ( iVal > WORD_MAX )
+		iVal = WORD_MAX;
+	else if ( iVal < -WORD_MAX )
+		iVal = -WORD_MAX;
 
 	int iStatVal = Stat_GetBase(stat);
 	if ( IsTrigUsed(TRIGGER_STATCHANGE) && !g_Serv.IsLoading() && !IsTriggerActive("CREATE") )
@@ -3760,7 +3760,7 @@ bool CChar::Skill_Start(SKILL_TYPE skill)
 	{
 		if ( (skill != SKILL_NONE) && !IsSkillBase(skill) && !IsSkillNPC(skill) )
 		{
-			DEBUG_ERR(("UID:0%lx Bad Skill %d for '%s'\n", static_cast<DWORD>(GetUID()), skill, GetName()));
+			DEBUG_ERR(("Char '%s' (UID=0%" FMTDWORDH ") is trying to use bad skill %d\n", GetName(), static_cast<DWORD>(GetUID()), skill));
 			return false;
 		}
 		m_Act_SkillCurrent = skill;

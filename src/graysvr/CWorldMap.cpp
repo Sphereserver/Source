@@ -124,7 +124,7 @@ CItem *CWorld::CheckNaturalResource(const CPointMap &pt, IT_TYPE type, bool fTes
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("point '%hd,%hd,%hhd,%hhu' type '%d' [0%lx]\n", pt.m_x, pt.m_y, pt.m_z, pt.m_map, static_cast<int>(type), pCharSrc ? static_cast<DWORD>(pCharSrc->GetUID()) : 0);
+	g_Log.EventDebug("point '%hd,%hd,%hhd,%hhu' type '%d' [0%" FMTDWORDH "]\n", pt.m_x, pt.m_y, pt.m_z, pt.m_map, static_cast<int>(type), pCharSrc ? static_cast<DWORD>(pCharSrc->GetUID()) : 0);
 	EXC_DEBUG_END;
 	return NULL;
 }
@@ -1043,7 +1043,7 @@ void CWorld::GetHeightPoint(const CPointMap &pt, CGrayMapBlockState &block, bool
 
 void CWorld::GetHeightPoint2(const CPointMap &pt, CGrayMapBlockState &block, bool fHouseCheck)
 {
-	ADDTOCALLSTACK("CWorld::GetHeightPoint2");
+	ADDTOCALLSTACK_INTENSIVE("CWorld::GetHeightPoint2");
 	// Height of statics at/above given coordinates (do gravity here for the z)
 
 	const CGrayMapBlock *pMapBlock = GetMapBlock(pt);
@@ -1183,7 +1183,7 @@ void CWorld::GetHeightPoint2(const CPointMap &pt, CGrayMapBlockState &block, boo
 
 signed char CWorld::GetHeightPoint(const CPointBase &pt, DWORD &dwBlockFlags, bool fHouseCheck)
 {
-	ADDTOCALLSTACK("CWorld::GetHeightPoint");
+	ADDTOCALLSTACK_INTENSIVE("CWorld::GetHeightPoint");
 
 	DWORD dwCan = dwBlockFlags;
 	CGrayMapBlockState block(dwBlockFlags, pt.m_z + (PLAYER_HEIGHT / 2), pt.m_z + PLAYER_HEIGHT);
@@ -1215,7 +1215,7 @@ signed char CWorld::GetHeightPoint(const CPointBase &pt, DWORD &dwBlockFlags, bo
 
 signed char CWorld::GetHeightPoint2(const CPointBase &pt, DWORD &dwBlockFlags, bool fHouseCheck)
 {
-	ADDTOCALLSTACK("CWorld::GetHeightPoint2");
+	ADDTOCALLSTACK_INTENSIVE("CWorld::GetHeightPoint2");
 	// Given our coords at pt including pt.m_z
 	// What is the height that gravity would put me at should i step hear ?
 	// Assume my head height is PLAYER_HEIGHT/2

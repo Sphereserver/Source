@@ -83,7 +83,7 @@ void CChat::JoinChannel(LPCTSTR pszName, LPCTSTR pszPassword, CChatMember *pMemb
 			pMemberClient->addChatSystemMessage(CHATMSG_IncorrectPassword);
 		return;
 	}
-	/*else if ( pNewChannel->m_Members.GetCount() >= UCHAR_MAX )
+	/*else if ( pNewChannel->m_Members.GetCount() >= BYTE_MAX )
 	{
 		pMemberClient->addChatSystemMessage(CHATMSG_ConferenceIsFull, pszName);
 		return;

@@ -1,5 +1,4 @@
-﻿
-10-04-2016, Coruja
+﻿10-04-2016, Coruja
 Changed: Food level won't decrease on GM chars anymore.
 [sphere_msgs.scp]: Removed messages 'npc_text_murd_*'.
 [speech/sphere_speech.scp]: Moved hardcoded speech commands 'I must consider my sins', 'I resign from my guild' and 'I resign from my town' to scripts.
@@ -1578,7 +1577,6 @@ Fixed: Trigger @Destroy not being called on spawned chars/items when negate the 
 04-09-2019, Coruja
 Fixed: Linux build throwing buffer overflow exception when initializing.
 Fixed: Smelting ores on forge always failing the action.
-[sphere.ini] : Added SmeltOreOnDclick to work like in 55i with fire effect. Nirad
 
 05-09-2019, Coruja
 Fixed: Linux build not parsing text characters correctly.
@@ -1620,3 +1618,12 @@ Changed: Improved internal regex engine (STRREGEX function).
 
 02-10-2019, Coruja
 Changed: Improved internal random number generator engine (RAND function).
+
+16-10-2019, Coruja
+Fixed: Accounts being created with FIRSTCONNECTDATE/LASTCONNECTDATE property already set.
+Fixed: Linux build not enabling console text colors on modern terminals.
+Fixed: Linux build not showing console exceptions.
+[sphere_msgs.scp]: Removed unused messages 'msg_acc_badpass', 'msg_acc_needpass', 'msg_acc_wcli', 'console_no_admin', 'console_welcome_1'
+
+19-10-2019, Coruja
+Changed: Updated internal SQLite libs v3.29.0 to v3.30.1.

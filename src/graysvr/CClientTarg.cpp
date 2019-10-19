@@ -21,7 +21,7 @@ bool CClient::OnTarg_Obj_Set(CObjBase *pObj)
 
 	// Parse the command.
 	TCHAR *pszLogMsg = Str_GetTemp();
-	sprintf(pszLogMsg, "%lx:'%s' commands uid=0%lx (%s) to '%s'", m_NetState->id(), GetName(), static_cast<DWORD>(pObj->GetUID()), pObj->GetName(), static_cast<LPCTSTR>(m_Targ_Text));
+	sprintf(pszLogMsg, "%lx:'%s' commands UID=0%" FMTDWORDH " (%s) to '%s'", m_NetState->id(), GetName(), static_cast<DWORD>(pObj->GetUID()), pObj->GetName(), static_cast<LPCTSTR>(m_Targ_Text));
 
 	// Check priv level for the new verb.
 	if ( !g_Cfg.CanUsePrivVerb(pObj, m_Targ_Text, this) )
@@ -2073,7 +2073,7 @@ bool CClient::OnTarg_Use_Item(CObjBase *pObjTarg, CPointMap &pt, ITEMID_TYPE id)
 				wUsed = static_cast<WORD>(pItemUse->ConsumeAmount(wNeed));
 			}
 
-			if ( wHave + wUsed < COUNTOF(sm_Txt_LoomUse) - 1 )
+			if ( wHave + wUsed < static_cast<WORD>(COUNTOF(sm_Txt_LoomUse) - 1) )
 			{
 				pItemTarg->m_itLoom.m_ClothQty += wUsed;
 				SysMessage(sm_Txt_LoomUse[pItemTarg->m_itLoom.m_ClothQty]);

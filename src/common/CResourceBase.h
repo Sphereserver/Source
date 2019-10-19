@@ -153,10 +153,10 @@ struct RESOURCE_ID : public RESOURCE_ID_BASE
 
 // Desguise an id as a pointer
 #ifndef MAKEINTRESOURCE
-#define MAKEINTRESOURCE(id) ((LPCTSTR)((DWORD)((WORD)(id))))
+	#define MAKEINTRESOURCE(i) ((LPCTSTR)((ULONG_PTR)((WORD)(i))))
 #endif
-#define ISINTRESOURCE(p)	(!(((DWORD)p) & 0xFFFFF000))
-#define GETINTRESOURCE(p)	(((DWORD)p) & 0xFFF)
+#define ISINTRESOURCE(i)	(!(((ULONG_PTR)(i)) & 0xFFFFF000))
+#define GETINTRESOURCE(i)	(((ULONG_PTR)(i)) & 0xFFF)
 
 //*********************************************************
 

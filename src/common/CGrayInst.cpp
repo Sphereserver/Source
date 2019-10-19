@@ -19,7 +19,7 @@ bool CGrayInstall::FindInstall()
 	HKEY hKey = NULL;
 	for ( size_t i = 0; i < COUNTOF(m_szKeys); ++i )
 	{
-		lRet = RegOpenKeyEx(HKEY_LOCAL_MACHINE, m_szKeys[i], 0, KEY_READ, &hKey);
+		lRet = RegOpenKeyEx(HKEY_LOCAL_MACHINE, m_szKeys[i], 0, KEY_READ|KEY_WOW64_32KEY, &hKey);
 		if ( lRet == ERROR_SUCCESS )
 			break;
 	}
@@ -247,7 +247,7 @@ VERFILE_TYPE CGrayInstall::OpenFiles(DWORD dwMask)
 
 											for ( DWORD x = 0; x < dwLoop; ++x )
 											{
-												sprintf(szFileName, "build/map%dlegacymul/%.8lu.dat", index, x);
+												sprintf(szFileName, "build/map%dlegacymul/%.8" FMTDWORD ".dat", index, x);
 												if ( HashFileName(szFileName) == qwHash )
 												{
 													pMapAddress.dwFirstBlock = x * 4096;

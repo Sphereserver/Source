@@ -1379,12 +1379,12 @@ bool CChar::CanSeeLOS_Adv(const CPointMap &ptDst, CPointMap *pptBlock, int iMaxD
 
 						if ( ((uiTFlags & (UFLAG1_WALL|UFLAG1_BLOCK|UFLAG2_PLATFORM)) || (pItemDef->m_Can & CAN_I_BLOCKLOS)) && !((uiTFlags & UFLAG2_WINDOW) && (wFlags & LOS_NB_WINDOWS)) )
 						{
-							WARNLOS(("pItem 0%lx(0%x) %hd,%hd,%hhd - %hhu\n", static_cast<DWORD>(pItem->GetUID()), pItem->GetDispID(), pItem->GetTopPoint().m_x, pItem->GetTopPoint().m_y, pItem->GetTopPoint().m_z, iHeight));
+							WARNLOS(("pItem 0%" FMTDWORDH "(0%x) %hd,%hd,%hhd - %hhu\n", static_cast<DWORD>(pItem->GetUID()), pItem->GetDispID(), pItem->GetTopPoint().m_x, pItem->GetTopPoint().m_y, pItem->GetTopPoint().m_z, iHeight));
 							min_z = pItem->GetTopZ();
 							max_z = minimum(iHeight + min_z, UO_SIZE_Z);
 							WARNLOS(("uiTFlags(0%lx)\n", uiTFlags));
 
-							WARNLOS(("pItem 0%lx(0%x) Z check: %hhd,%hhd (now: %hhd) (dest: %hhd)\n", static_cast<DWORD>(pItem->GetUID()), pItem->GetDispID(), min_z, max_z, ptNow.m_z, ptDst.m_z));
+							WARNLOS(("pItem 0%" FMTDWORDH "(0%x) Z check: %hhd,%hhd (now: %hhd) (dest: %hhd)\n", static_cast<DWORD>(pItem->GetUID()), pItem->GetDispID(), min_z, max_z, ptNow.m_z, ptDst.m_z));
 							if ( (min_z <= ptNow.m_z) && (max_z >= ptNow.m_z) )
 							{
 								if ( (ptNow.m_x != ptDst.m_x) || (ptNow.m_y != ptDst.m_y) || (min_z > ptDst.m_z) || (max_z < ptDst.m_z) )
@@ -2004,7 +2004,7 @@ CRegionBase *CChar::CheckValidMove(CPointBase &ptDst, DWORD *pdwBlockFlags, DIR_
 	}
 
 	DWORD dwCan = GetMoveBlockFlags();
-	WARNWALK(("GetMoveBlockFlags()(0%lx)\n", dwCan));
+	WARNWALK(("GetMoveBlockFlags()(0%" FMTDWORDH ")\n", dwCan));
 	if ( !(dwCan & (CAN_C_SWIM|CAN_C_WALK|CAN_C_FLY|CAN_C_RUN|CAN_C_HOVER)) )
 		return NULL;	// cannot move at all, so WTF?
 
@@ -2012,7 +2012,7 @@ CRegionBase *CChar::CheckValidMove(CPointBase &ptDst, DWORD *pdwBlockFlags, DIR_
 	if ( dwCan & CAN_C_WALK )
 	{
 		dwBlockFlags |= CAN_I_CLIMB;		// if we can walk than we can climb (ignore CAN_C_FLY here)
-		WARNWALK(("dwBlockFlags(0%lx) dwCan(0%lx)\n", dwBlockFlags, dwCan));
+		WARNWALK(("dwBlockFlags(0%" FMTDWORDH ") dwCan(0%" FMTDWORDH ")\n", dwBlockFlags, dwCan));
 	}
 
 	height_t iCharHeight = GetHeight();
@@ -2020,7 +2020,7 @@ CRegionBase *CChar::CheckValidMove(CPointBase &ptDst, DWORD *pdwBlockFlags, DIR_
 		iCharHeight += 4;
 
 	CGrayMapBlockState block(dwBlockFlags, ptDst.m_z, ptDst.m_z + m_zClimbHeight + iCharHeight, ptDst.m_z + m_zClimbHeight + 3, iCharHeight);
-	WARNWALK(("\t\tCGrayMapBlockState block(0%lx, %hhd, %hhd, %hhd); ptDst.m_z(%hhd) m_zClimbHeight(%hhu)\n", dwBlockFlags, ptDst.m_z, ptDst.m_z + m_zClimbHeight + iCharHeight, ptDst.m_z + m_zClimbHeight + 2, ptDst.m_z, m_zClimbHeight));
+	WARNWALK(("\t\tCGrayMapBlockState block(0%" FMTDWORDH ", %hhd, %hhd, %hhd); ptDst.m_z(%hhd) m_zClimbHeight(%hhu)\n", dwBlockFlags, ptDst.m_z, ptDst.m_z + m_zClimbHeight + iCharHeight, ptDst.m_z + m_zClimbHeight + 2, ptDst.m_z, m_zClimbHeight));
 
 	if ( !ptDst.IsValidPoint() )
 		return NULL;
@@ -2032,14 +2032,14 @@ CRegionBase *CChar::CheckValidMove(CPointBase &ptDst, DWORD *pdwBlockFlags, DIR_
 	{
 		dwBlockFlags |= CAN_I_ROOF;		// we are covered by something
 
-		WARNWALK(("block.m_Top.m_z(%hhd) > ptDst.m_z(%hhd) + m_zClimbHeight(%hhu) + (block.m_Top.m_dwTile(0x%lx) > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT / 2)(%hhu)\n", block.m_Top.m_z, ptDst.m_z, m_zClimbHeight, block.m_Top.m_dwTile, ptDst.m_z - (m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT / 2))));
+		WARNWALK(("block.m_Top.m_z(%hhd) > ptDst.m_z(%hhd) + m_zClimbHeight(%hhu) + (block.m_Top.m_dwTile(0x%" FMTDWORDH ") > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT / 2)(%hhu)\n", block.m_Top.m_z, ptDst.m_z, m_zClimbHeight, block.m_Top.m_dwTile, ptDst.m_z - (m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? PLAYER_HEIGHT : PLAYER_HEIGHT / 2))));
 		if ( block.m_Top.m_z < block.m_Bottom.m_z + (m_zClimbHeight + (block.m_Top.m_dwTile > TERRAIN_QTY ? iCharHeight : iCharHeight / 2)) )
 			dwBlockFlags |= CAN_I_BLOCK;	// we can't fit under this
 	}
 
-	if ( (dwCan != ULONG_MAX) && (dwBlockFlags != 0x0) )
+	if ( (dwCan != DWORD_MAX) && (dwBlockFlags != 0x0) )
 	{
-		WARNWALK(("BottomItemID(0%lx) TopItemID(0%lx)\n", block.m_Bottom.m_dwTile - TERRAIN_QTY, block.m_Top.m_dwTile - TERRAIN_QTY));
+		WARNWALK(("BottomItemID(0%" FMTDWORDH ") TopItemID(0%" FMTDWORDH ")\n", block.m_Bottom.m_dwTile - TERRAIN_QTY, block.m_Top.m_dwTile - TERRAIN_QTY));
 		CCharBase *pCharDef = Char_GetDef();
 		ASSERT(pCharDef);
 

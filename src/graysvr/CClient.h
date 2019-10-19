@@ -316,7 +316,7 @@ public:
 	void SetInvalid()
 	{
 		// We changed location by teleport etc. Force a resync of all this
-		m_Light = UCHAR_MAX;	// set based on time later
+		m_Light = BYTE_MAX;	// set based on time later
 		m_Season = SEASON_Summer;
 		m_Weather = WEATHER_Default;
 	}
@@ -609,7 +609,7 @@ public:
 	bool Cmd_Skill_Menu(RESOURCE_ID_BASE rid, int iSelect = -1);
 	bool Cmd_Skill_Smith(CItem *pIngots);
 	bool Cmd_Skill_Magery(SPELL_TYPE iSpell, CObjBase *pSrc);
-	bool Cmd_Skill_Tracking(WORD wTrackType = USHRT_MAX, bool fExec = false);
+	bool Cmd_Skill_Tracking(WORD wTrackType = WORD_MAX, bool fExec = false);
 	bool Cmd_Skill_Inscription();
 	bool Cmd_SecureTrade(CChar *pChar, CItem *pItem);
 	bool Cmd_Control(CChar *pChar);
@@ -857,7 +857,7 @@ public:
 	{
 		if ( m_pAccount )
 			return m_pAccount->GetResDisp();
-		return UCHAR_MAX;
+		return BYTE_MAX;
 	}
 	bool SetResDisp(BYTE bResDisp)
 	{
@@ -966,13 +966,8 @@ public:
 		m_BaseDefs.DeleteKey(pszKey);
 	}
 
-#ifndef _MTNETWORK
-	friend class NetworkIn;
-	friend class NetworkOut;
-#else
 	friend class NetworkInput;
 	friend class NetworkOutput;
-#endif
 	friend class PacketServerRelay;
 
 private:

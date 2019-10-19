@@ -9,8 +9,6 @@
 	#include "os_unix.h"
 #endif
 
-#define SPHERE_DEF_PORT		2593
-#define SPHERE_TITLE		"Cryptonite : "
 #define SPHERE_FILE			"sphere"	// file name prefix
 #define SPHERE_SCRIPT		".scp"		// file name extension
 
@@ -36,39 +34,43 @@
 
 #ifdef _WIN32
 	typedef void		THREAD_ENTRY_RET;
+	#define FMTDWORD	"lu"	// Windows uses '%lu' to format dec DWORD (unsigned long)
+	#define FMTDWORDH	"lx"	// Windows uses '%lx' to format hex DWORD (unsigned long)
 	#define FMTSIZE_T	"Iu"	// Windows uses '%Iu' to format 'size_t'
 
 	#define strcmpi		_strcmpi
 	#define strnicmp	_strnicmp
 
 	#ifndef STDFUNC_FILENO
-		#define STDFUNC_FILENO	_fileno
+		#define STDFUNC_FILENO(a)	_get_osfhandle(_fileno(a))
 	#endif
 
 	#ifndef STDFUNC_GETPID
-		#define STDFUNC_GETPID	_getpid
+		#define STDFUNC_GETPID		_getpid
 	#endif
 
 	#ifndef STDFUNC_UNLINK
-		#define STDFUNC_UNLINK	_unlink
+		#define STDFUNC_UNLINK		_unlink
 	#endif
 #else
 	typedef void		*THREAD_ENTRY_RET;
+	#define FMTDWORD	"u"		// Linux uses '%u' to format dec DWORD (unsigned long)
+	#define FMTDWORDH	"x"		// Linux uses '%x' to format hex DWORD (unsigned int)
 	#define FMTSIZE_T	"zu"	// Linux uses '%zu' to format 'size_t'
 
 	#define strcmpi		strcasecmp
 	#define strnicmp	strncasecmp
 
 	#ifndef STDFUNC_FILENO
-		#define STDFUNC_FILENO	fileno
+		#define STDFUNC_FILENO		fileno
 	#endif
 
 	#ifndef STDFUNC_GETPID
-		#define STDFUNC_GETPID	getpid
+		#define STDFUNC_GETPID		getpid
 	#endif
 
 	#ifndef STDFUNC_UNLINK
-		#define STDFUNC_UNLINK	unlink
+		#define STDFUNC_UNLINK		unlink
 	#endif
 #endif
 

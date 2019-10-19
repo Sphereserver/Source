@@ -137,6 +137,20 @@ void CUnixTerminal::prepare()
 	nodelay(m_pWindow, TRUE);		// non-blocking input
 	scrollok(m_pWindow, TRUE);		// allow scrolling
 	refresh();						// draw screen
+
+	// Initialize colors, and map enums to color codes
+	m_fColorEnabled = has_colors();
+	if ( m_fColorEnabled )
+	{
+		start_color();
+		init_pair(COL_RED, COLOR_RED, COLOR_BLACK);
+		init_pair(COL_GREEN, COLOR_GREEN, COLOR_BLACK);
+		init_pair(COL_YELLOW, COLOR_YELLOW, COLOR_BLACK);
+		init_pair(COL_BLUE, COLOR_BLUE, COLOR_BLACK);
+		init_pair(COL_CYAN, COLOR_CYAN, COLOR_BLACK);
+		init_pair(COL_MAGENTA, COLOR_MAGENTA, COLOR_BLACK);
+		init_pair(COL_WHITE, COLOR_WHITE, COLOR_BLACK);
+	}
 #else
 	// Save existing attributes
 	if ( tcgetattr(STDIN_FILENO, &m_terminal) != 0 )
@@ -151,55 +165,11 @@ void CUnixTerminal::prepare()
 		throw CGrayError(LOGL_WARN, 0, "failed to set terminal attributes");
 
 	setbuf(stdin, NULL);
+	m_fColorEnabled = true;		// assume every modern terminal support colors
 #endif
 
-	prepareColor();
 	m_szNextChar = '\0';
 	m_fPrepared = true;
-}
-
-void CUnixTerminal::prepareColor()
-{
-	ADDTOCALLSTACK("CUnixTerminal::prepareColor");
-
-#ifdef _USECURSES
-	m_fColorEnabled = has_colors();
-	if ( m_fColorEnabled )
-	{
-		// Initialize colors, and map enums to color codes
-		start_color();
-		init_pair(COL_RED, COLOR_RED, COLOR_BLACK);
-		init_pair(COL_GREEN, COLOR_GREEN, COLOR_BLACK);
-		init_pair(COL_YELLOW, COLOR_YELLOW, COLOR_BLACK);
-		init_pair(COL_BLUE, COLOR_BLUE, COLOR_BLACK);
-		init_pair(COL_CYAN, COLOR_CYAN, COLOR_BLACK);
-		init_pair(COL_MAGENTA, COLOR_MAGENTA, COLOR_BLACK);
-		init_pair(COL_WHITE, COLOR_WHITE, COLOR_BLACK);
-	}
-#else
-	// Enable colors on supported terminal types
-	m_fColorEnabled = false;
-
-	const char *pszTerminalType = getenv("TERM");
-	if ( pszTerminalType != NULL )
-	{
-		static const char *sm_pszSupportedTerminals[] =
-		{
-			"aixterm", "ansi", "color_xterm", "con132x25", "con132x30", "con132x43", "con132x60", "con80x25", "con80x28",
-			"con80x30", "con80x43", "con80x50", "con80x60", "cons25", "console", "gnome", "hft", "kon", "konsole", "kterm",
-			"linux", "rxvt", "screen", "screen.linux", "vt100-color", "xterm", "xterm-color"
-		};
-
-		for ( size_t i = 0; i < COUNTOF(sm_pszSupportedTerminals); ++i )
-		{
-			if ( strcmp(pszTerminalType, sm_pszSupportedTerminals[i]) == 0 )
-			{
-				m_fColorEnabled = true;
-				break;
-			}
-		}
-	}
-#endif
 }
 
 void CUnixTerminal::restore()

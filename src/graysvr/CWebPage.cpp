@@ -485,13 +485,13 @@ int CWebPageDef::ServPageRequest(CClient *pClient, LPCTSTR pszURLArgs, CGTime *p
 	if ( !CFileList::ReadFileInfo(pszName, timeFileLastModified, dwSize) )
 		return 500;		// Internal server error
 
-	if ( !fGenerate && (!pTimeLastModified || (pTimeLastModified->IsTimeValid() && (pTimeLastModified->GetTime() > timeFileLastModified))) )
+	if ( !fGenerate && pTimeLastModified->IsTimeValid() && (pTimeLastModified->GetTime() <= timeFileLastModified) )
 	{
 		TCHAR *pszTemp = Str_GetTemp();
 		sprintf(pszTemp,
 			"HTTP/1.1 304 Not Modified\r\n"
 			"Date: %s\r\n"
-			"Server: " SPHERE_TITLE " V" SPHERE_VERSION "\r\n"
+			"Server: " SPHERE_TITLE_VER "\r\n"
 			"Content-Length: 0\r\n"
 			"\r\n",
 			timeCurrent.FormatGmt(NULL)
@@ -509,7 +509,7 @@ int CWebPageDef::ServPageRequest(CClient *pClient, LPCTSTR pszURLArgs, CGTime *p
 	size_t iLen = sprintf(szTemp,
 		"HTTP/1.1 200 OK\r\n"
 		"Date: %s\r\n"
-		"Server: " SPHERE_TITLE " V" SPHERE_VERSION "\r\n"
+		"Server: " SPHERE_TITLE_VER "\r\n"
 		"Accept-Ranges: bytes\r\n"
 		"Content-Type: %s\r\n",
 		timeCurrent.FormatGmt(NULL),
@@ -521,7 +521,7 @@ int CWebPageDef::ServPageRequest(CClient *pClient, LPCTSTR pszURLArgs, CGTime *p
 	else
 		iLen += sprintf(szTemp + iLen, "Last-Modified: %s\r\n", CGTime(timeFileLastModified).FormatGmt(NULL));
 
-	iLen += sprintf(szTemp + iLen, "Content-Length: %lu\r\n\r\n", dwSize);
+	iLen += sprintf(szTemp + iLen, "Content-Length: %" FMTDWORD "\r\n\r\n", dwSize);
 
 	PacketWeb packet;
 	packet.setData(reinterpret_cast<const BYTE *>(szTemp), iLen);
@@ -602,7 +602,7 @@ bool CWebPageDef::ServPagePost(CClient *pClient, TCHAR *pszContent, int iContent
 		return false;
 
 	CDialogResponseArgs resp;
-	DWORD dwButtonID = ULONG_MAX;
+	DWORD dwButtonID = DWORD_MAX;
 
 	for ( size_t i = 0; i < iArgQty; ++i )
 	{
@@ -730,7 +730,7 @@ bool CWebPageDef::ServPage(CClient *pClient, TCHAR *pszPageName, CGTime *pTimeLa
 	sHeader.Format(
 		"HTTP/1.1 %d %s\r\n"
 		"Date: %s\r\n"
-		"Server: " SPHERE_TITLE " V" SPHERE_VERSION "\r\n"
+		"Server: " SPHERE_TITLE_VER "\r\n"
 		"Content-Type: text/html\r\n"
 		"Content-Length: %" FMTSIZE_T "\r\n"
 		"Connection: close\r\n"

@@ -630,7 +630,7 @@ void CClient::addSeason(SEASON_TYPE season)
 	new PacketSeason(this, season, true);
 
 	// Client resets light level on season change, so resend light here too
-	m_Env.m_Light = UCHAR_MAX;
+	m_Env.m_Light = BYTE_MAX;
 	addLight();
 }
 
@@ -658,11 +658,11 @@ void CClient::addLight()
 	// NOTE: This could just be a flash of light.
 
 	ASSERT(m_pChar);
-	BYTE bLight = UCHAR_MAX;
+	BYTE bLight = BYTE_MAX;
 
 	if ( m_pChar->m_LocalLight )
 		bLight = m_pChar->m_LocalLight;
-	if ( bLight == UCHAR_MAX )
+	if ( bLight == BYTE_MAX )
 		bLight = m_pChar->GetLightLevel();
 
 	if ( m_Env.m_Light == bLight )
@@ -1176,7 +1176,7 @@ void CClient::addItemName(const CItem *pItem)
 	{
 		const CItemVendable *pVendItem = dynamic_cast<const CItemVendable *>(pItem);
 		if ( pVendItem )
-			len += sprintf(szName + len, " (%lu gp)", pVendItem->GetBasePrice());
+			len += sprintf(szName + len, " (%" FMTDWORD " gp)", pVendItem->GetBasePrice());
 	}
 
 	HUE_TYPE wHue = HUE_TEXT_DEF;
@@ -1220,7 +1220,7 @@ void CClient::addItemName(const CItem *pItem)
 		}
 	}
 	if ( IsPriv(PRIV_DEBUG) )
-		len += sprintf(szName + len, " [0%lx]", static_cast<DWORD>(pItem->GetUID()));
+		len += sprintf(szName + len, " [0%" FMTDWORDH "]", static_cast<DWORD>(pItem->GetUID()));
 
 	if ( IsTrigUsed(TRIGGER_AFTERCLICK) || IsTrigUsed(TRIGGER_ITEMAFTERCLICK) )
 	{
@@ -1322,7 +1322,7 @@ void CClient::addCharName(const CChar *pChar)
 			if ( pChar->IsStatFlag(STATF_Spawned) )
 				strcat(pszName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_SPAWN));
 			if ( IsPriv(PRIV_DEBUG) )
-				sprintf(pszName + strlen(pszName), " [0%lx]", static_cast<DWORD>(pChar->GetUID()));
+				sprintf(pszName + strlen(pszName), " [0%" FMTDWORDH "]", static_cast<DWORD>(pChar->GetUID()));
 		}
 	}
 	if ( pChar->GetPrivLevel() <= PLEVEL_Guest )
@@ -2370,12 +2370,12 @@ void CClient::addGlobalChatConnect()
 
 	// Set Jabber ID (syntax: CharName_CharUID@ServerID)
 	TCHAR *pszJID = Str_GetTemp();
-	sprintf(pszJID, "%.6s_%.7lu@%.2hhu", m_pChar->GetName(), static_cast<DWORD>(m_pChar->GetUID()), 0);
+	sprintf(pszJID, "%.6s_%.7" FMTDWORD "@%.2hhu", m_pChar->GetName(), static_cast<DWORD>(m_pChar->GetUID()), 0);
 	CGlobalChat::SetJID(pszJID);
 
 	// Send xml to client
 	TCHAR *pszXML = Str_GetTemp();
-	sprintf(pszXML, "<iq to=\"%s\" id=\"iq_%.10lu\" type=\"6\" version=\"1\" jid=\"%s\" />", CGlobalChat::GetJID(), static_cast<DWORD>(CGTime::GetCurrentTime().GetTime()), CGlobalChat::GetJID());
+	sprintf(pszXML, "<iq to=\"%s\" id=\"iq_%.10" FMTDWORD "\" type=\"6\" version=\"1\" jid=\"%s\" />", CGlobalChat::GetJID(), static_cast<DWORD>(CGTime::GetCurrentTime().GetTime()), CGlobalChat::GetJID());
 
 	new PacketGlobalChat(this, 0, PacketGlobalChat::Connect, PacketGlobalChat::InfoQuery, pszXML);
 	addBarkLocalized(1158413, NULL, HUE_TEXT_DEF, TALKMODE_SYSTEM);	// Global Chat is now connected. 
@@ -2390,7 +2390,7 @@ void CClient::addGlobalChatStatusToggle()
 
 	int iShow = static_cast<int>(CGlobalChat::IsVisible());
 	TCHAR *pszXML = Str_GetTemp();
-	sprintf(pszXML, "<presence from=\"%s\" id=\"pres_%.10lu\" name=\"%.6s\" show=\"%d\" version=\"1\" />", CGlobalChat::GetJID(), static_cast<DWORD>(CGTime::GetCurrentTime().GetTime()), m_pChar->GetName(), iShow);
+	sprintf(pszXML, "<presence from=\"%s\" id=\"pres_%.10" FMTDWORD "\" name=\"%.6s\" show=\"%d\" version=\"1\" />", CGlobalChat::GetJID(), static_cast<DWORD>(CGTime::GetCurrentTime().GetTime()), m_pChar->GetName(), iShow);
 
 	CGlobalChat::SetVisible(static_cast<bool>(iShow));
 	new PacketGlobalChat(this, 0, PacketGlobalChat::Connect, PacketGlobalChat::Presence, pszXML);
@@ -2547,7 +2547,7 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 
 					m_TooltipData.InsertAt(0, t = new CClientTooltip(1050045)); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
 					if ( dwClilocName )
-						t->FormatArgs("%s\t%lu\t%s", pszPrefix, dwClilocName, pszSuffix);
+						t->FormatArgs("%s\t%" FMTDWORD "\t%s", pszPrefix, dwClilocName, pszSuffix);
 					else
 						t->FormatArgs("%s\t%s\t%s", pszPrefix, pObj->GetName(), pszSuffix);
 
@@ -3225,7 +3225,7 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 						{
 							const CResourceDef *pSpawnItemDef = g_Cfg.ResourceGetDef(pItem->m_itSpawnItem.m_ItemID);
 							m_TooltipData.Add(t = new CClientTooltip(1060658)); // ~1_val~: ~2_val~
-							t->FormatArgs("Item\t%lu %s", maximum(1, pItem->m_itSpawnItem.m_pile), pSpawnItemDef ? pSpawnItemDef->GetResourceName() : "none");
+							t->FormatArgs("Item\t%" FMTDWORD " %s", maximum(1, pItem->m_itSpawnItem.m_pile), pSpawnItemDef ? pSpawnItemDef->GetResourceName() : "none");
 							m_TooltipData.Add(t = new CClientTooltip(1061169)); // range ~1_val~
 							t->FormatArgs("%hhu", pItem->m_itSpawnItem.m_DistMax);
 							m_TooltipData.Add(t = new CClientTooltip(1074247)); // Live Creatures: ~1_NUM~ / ~2_MAX~
@@ -3419,32 +3419,15 @@ BYTE CClient::LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg)
 	if ( m_pAccount )	// already logged in
 		return PacketLoginError::Success;
 
-	TCHAR szTemp[MAX_ACCOUNT_NAME_ENTRY];
-	size_t iLen1 = strlen(pszAccount);
-	size_t iLen2 = strlen(pszPassword);
-	size_t iLen3 = Str_GetBare(szTemp, pszAccount, MAX_ACCOUNT_NAME_ENTRY);
-	if ( (iLen1 == 0) || (iLen1 != iLen3) || (iLen1 > MAX_ACCOUNT_NAME_ENTRY) )	// corrupt message
-	{
-		TCHAR szVersion[128];
-		sMsg.Format(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_WCLI), static_cast<LPCTSTR>(m_Crypt.WriteClientVerString(m_Crypt.GetClientVer(), szVersion)));
-		return PacketLoginError::BadAccount;
-	}
-
-	iLen3 = Str_GetBare(szTemp, pszPassword, MAX_ACCOUNT_PASS_ENTRY);
-	if ( iLen2 != iLen3 )	// corrupt message
-	{
-		TCHAR szVersion[128];
-		sMsg.Format(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_WCLI), static_cast<LPCTSTR>(m_Crypt.WriteClientVerString(m_Crypt.GetClientVer(), szVersion)));
-		return PacketLoginError::BadPassword;
-	}
-
-	TCHAR szName[MAX_ACCOUNT_NAME_ENTRY];
-	if ( !CAccount::NameStrip(szName, pszAccount) || Str_Check(pszAccount) )
-		return PacketLoginError::BadAccount;
-	if ( (pszPassword[0] == '\0') || Str_Check(pszPassword) )
-		return PacketLoginError::BadPassword;
-
 	// Check login
+	TCHAR szAccount[MAX_ACCOUNT_NAME_ENTRY];
+	size_t iLenAccount = pszAccount ? strlen(pszAccount) : 0;
+	if ( (iLenAccount == 0) || (iLenAccount >= MAX_ACCOUNT_NAME_ENTRY) || Str_Check(pszAccount) || (Str_GetBare(szAccount, pszAccount, sizeof(szAccount)) != strlen(pszAccount)) )
+	{
+		sMsg.Format(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_UNK), pszAccount);
+		return PacketLoginError::BadAccount;
+	}
+
 	bool fAutoCreate = ((g_Serv.m_eAccApp == ACCAPP_Free) || (g_Serv.m_eAccApp == ACCAPP_GuestAuto) || (g_Serv.m_eAccApp == ACCAPP_GuestTrial));
 	CAccount *pAccount = g_Accounts.Account_FindCreate(pszAccount, fAutoCreate);
 	if ( !pAccount )
@@ -3457,15 +3440,17 @@ BYTE CClient::LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg)
 	// Check password
 	if ( g_Cfg.m_iClientLoginMaxTries && !pAccount->CheckPasswordTries(GetPeer()) )
 	{
-		g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' exceeded password tries in time lapse\n", GetSocketID(), pAccount->GetName());
-		sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_BADPASS);
+		g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' exceeded password tries\n", GetSocketID(), pAccount->GetName());
+		sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_INVALIDPASS);
 		return PacketLoginError::MaxPassTries;
 	}
 
-	if ( !pAccount->CheckPassword(pszPassword) )
+	TCHAR szPassword[MAX_ACCOUNT_PASS_ENTRY];
+	size_t iLenPassword = pszPassword ? strlen(pszPassword) : 0;
+	if ( (iLenPassword == 0) || (iLenPassword >= MAX_ACCOUNT_NAME_ENTRY) || Str_Check(pszPassword) || (Str_GetBare(szPassword, pszPassword, sizeof(szPassword)) != strlen(pszPassword)) || !pAccount->CheckPassword(pszPassword) )
 	{
 		g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' inserted bad password\n", GetSocketID(), pAccount->GetName());
-		sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_BADPASS);
+		sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_INVALIDPASS);
 		return PacketLoginError::BadPass;
 	}
 
@@ -3649,7 +3634,7 @@ BYTE CClient::Setup_Delete(DWORD dwSlot)
 	if ( !pChar->IsDeleted() )
 		return PacketDeleteError::InvalidRequest;
 
-	g_Log.Event(LOGM_ACCOUNTS|LOGL_EVENT, "%lx:Account '%s' deleted char '%s' [0%lx] on client character selection menu\n", GetSocketID(), m_pAccount->GetName(), pszName, static_cast<DWORD>(uid));
+	g_Log.Event(LOGM_ACCOUNTS|LOGL_EVENT, "%lx:Account '%s' deleted char '%s' [0%" FMTDWORDH "] on client character selection menu\n", GetSocketID(), m_pAccount->GetName(), pszName, static_cast<DWORD>(uid));
 	return PacketDeleteError::Success;
 }
 
@@ -3719,7 +3704,7 @@ BYTE CClient::Setup_Start(CChar *pChar)
 
 	if ( !fNoWelcomeMsg )
 	{
-		addBark(g_szServerDescription, NULL, HUE_YELLOW, TALKMODE_SYSTEM);
+		addBark(SPHERE_TITLE_VER " by " SPHERE_WEBSITE, NULL, HUE_YELLOW, TALKMODE_SYSTEM);
 
 		CVarDefCont *pVarLastLogged = m_pChar->m_pArea->m_TagDefs.GetKey("LastLogged");
 		if ( pVarLastLogged )

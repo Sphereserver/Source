@@ -260,7 +260,7 @@ bool CMapList::DetectMapSize(int map)
 			break;
 
 		default:
-			DEBUG_ERR(("Unknown map index %d with file size of %lu bytes. Please specify the correct size manually\n", index, g_Install.m_Maps[index].GetLength()));
+			DEBUG_ERR(("Unknown map index %d with file size of %" FMTDWORD " bytes. Please specify the correct size manually\n", index, g_Install.m_Maps[index].GetLength()));
 			break;
 	}
 
@@ -342,9 +342,7 @@ LPCTSTR const g_Stat_Name[STAT_QTY] =	// not sorted obviously.
 	"FAME"
 };
 
-LPCTSTR g_szServerDescription = "Le serveur Cryptonite! v0.85c";
-LPCTSTR g_szServerBuildDate = __DATE__;
-
+LPCTSTR g_szCompiledDate = __DATE__;
 size_t CObjBase::sm_iCount = 0;	// UID table.
 ULONGLONG llTimeProfileFrequency = 1000;	// time profiler
 
@@ -523,17 +521,6 @@ Main::Main()
 	m_profile.EnableProfile(PROFILE_MAP);
 	m_profile.EnableProfile(PROFILE_NPC_AI);
 	m_profile.EnableProfile(PROFILE_SCRIPTS);
-#ifndef _MTNETWORK
-	//m_profile.EnableProfile(PROFILE_DATA_TX);
-	m_profile.EnableProfile(PROFILE_DATA_RX);
-#else
-#ifndef MTNETWORK_INPUT
-	m_profile.EnableProfile(PROFILE_DATA_RX);
-#endif
-#ifndef MTNETWORK_OUTPUT
-	m_profile.EnableProfile(PROFILE_DATA_TX);
-#endif
-#endif
 }
 
 void Main::onStart()
@@ -565,30 +552,17 @@ void Main::tick()
 
 	// Process incoming data
 	EXC_SET("network-in");
-#ifndef _MTNETWORK
-	g_NetworkIn.tick();
-#else
 	g_NetworkManager.processAllInput();
-#endif
 
 	EXC_SET("server");
 	g_Serv.OnTick();
 
 	// Push outgoing data
-#ifndef _MTNETWORK
-	if ( !g_NetworkOut.isActive() )
-	{
-		EXC_SET("network-out");
-		g_NetworkOut.tick();
-	}
-#else
-
 	EXC_SET("network-tick");
 	g_NetworkManager.tick();
 
 	EXC_SET("network-out");
 	g_NetworkManager.processAllOutput();
-#endif
 
 	EXC_CATCH;
 }
@@ -649,9 +623,8 @@ int Sphere_InitServer( int argc, char *argv[] )
 	WritePidFile(2);
 
 	EXC_SET("load world");
-	g_World.LoadAll();
-
-
+	if ( !g_World.LoadAll() )
+		return -8;
 
 	EXC_SET("sockets init");
 	if ( !g_Serv.SocketsInit() )
@@ -690,7 +663,7 @@ int Sphere_InitServer( int argc, char *argv[] )
 		}
 	}
 
-	g_Log.Event(LOGL_EVENT, "\nStartup complete (Items=%lu, Chars=%lu, Accounts=%lu)\n", g_Serv.StatGet(SERV_STAT_ITEMS), g_Serv.StatGet(SERV_STAT_CHARS), g_Serv.StatGet(SERV_STAT_ACCOUNTS));
+	g_Log.Event(LOGL_EVENT, "\nStartup complete (Items=%" FMTDWORD ", Chars=%" FMTDWORD ", Accounts=%" FMTDWORD ")\n", g_Serv.StatGet(SERV_STAT_ITEMS), g_Serv.StatGet(SERV_STAT_CHARS), g_Serv.StatGet(SERV_STAT_ACCOUNTS));
 #ifdef _WIN32
 	g_Log.Event(LOGL_EVENT, "Use '?' to view available console commands\n\n");
 #else
@@ -720,11 +693,7 @@ void Sphere_ExitServer()
 
 	g_Serv.SetServerMode(SERVMODE_Exiting);
 
-#ifndef _MTNETWORK
-	g_NetworkOut.waitForClose();
-#else
 	g_NetworkManager.stop();
-#endif
 	g_Main.waitForClose();
 	g_PingServer.waitForClose();
 	g_asyncHdb.waitForClose();
@@ -940,7 +909,7 @@ void defragSphere(char *path)
 			{
 				dBytesRead -= mb10;
 				dTotalMb += 10;
-				g_Log.Event(LOGL_EVENT, "Total read %lu Mb\n", dTotalMb);
+				g_Log.Event(LOGL_EVENT, "Total read %" FMTDWORD " Mb\n", dTotalMb);
 			}
 			if (( buf[0] == 'S' ) && ( strstr(buf, "SERIAL=") == buf ))
 			{
@@ -967,7 +936,7 @@ void defragSphere(char *path)
 		return;
 	}
 
-	g_Log.Event(LOGL_EVENT, "Found %lu UIDs (latest: 0%lx)\n", uid, uids[dTotalUIDs - 1]);
+	g_Log.Event(LOGL_EVENT, "Found %" FMTDWORD " UIDs (latest: 0%" FMTDWORDH ")\n", uid, uids[dTotalUIDs - 1]);
 	g_Log.Event(LOGL_EVENT, "Quick-sorting UIDs array...\n");
 	dword_q_sort(uids, 0, dTotalUIDs - 1);
 
@@ -1013,7 +982,7 @@ void defragSphere(char *path)
 			{
 				dBytesRead -= mb5;
 				dTotalMb += 5;
-				g_Log.Event(LOGL_EVENT, "Total processed %lu Mb\n", dTotalMb);
+				g_Log.Event(LOGL_EVENT, "Total processed %" FMTDWORD " Mb\n", dTotalMb);
 			}
 			p = buf;
 
@@ -1113,7 +1082,7 @@ void defragSphere(char *path)
 
 						if ( dStep == 1 )
 						{
-							uid = ULONG_MAX;
+							uid = DWORD_MAX;
 							break; // did not find the UID
 						}
 					}
@@ -1124,7 +1093,7 @@ void defragSphere(char *path)
 				{
 					if ( !uids[d] )	// end of array
 					{
-						uid = ULONG_MAX;
+						uid = DWORD_MAX;
 						break;
 					}
 					else if ( uids[d] == uid )
@@ -1136,11 +1105,11 @@ void defragSphere(char *path)
 
 				//	replace UID by the new one since it has been found
 				*p1 = c;
-				if ( uid != ULONG_MAX )
+				if ( uid != DWORD_MAX )
 				{
 					*p = 0;
 					strncpy(z, p1, sizeof(z) - 1);
-					sprintf(z1, "0%lx", uid);
+					sprintf(z1, "0%" FMTDWORDH, uid);
 					strcat(buf, z1);
 					strcat(buf, z);
 				}
@@ -1185,12 +1154,7 @@ int _cdecl main( int argc, char * argv[] )
 			g_NetworkEvent.start();
 #endif
 
-#ifdef _MTNETWORK
 		g_NetworkManager.start();
-#else
-		g_NetworkIn.onStart();
-#endif
-			
 		if ( g_Cfg.m_iFreezeRestartTime > 0 )
 		{
 			g_Main.start();

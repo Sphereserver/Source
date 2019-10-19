@@ -58,7 +58,7 @@ CItemBase::CItemBase(ITEMID_TYPE id) : CBaseBaseDef(RESOURCE_ID(RES_ITEMDEF, id)
 	if ( id < ITEMID_MULTI )
 		static_cast<void>(GetItemData(id, &tiledata));
 	else
-		tiledata.m_weight = UCHAR_MAX;
+		tiledata.m_weight = BYTE_MAX;
 
 	m_uiFlags = tiledata.m_flags;
 	m_type = GetTypeBase(id, tiledata);
@@ -77,8 +77,8 @@ CItemBase::CItemBase(ITEMID_TYPE id) : CBaseBaseDef(RESOURCE_ID(RES_ITEMDEF, id)
 	SetHeight(GetItemHeightFlags(tiledata, m_Can));
 	GetItemSpecificFlags(tiledata, m_Can, m_type, id);
 
-	if ( (tiledata.m_weight == UCHAR_MAX) || (tiledata.m_flags & UFLAG1_WATER) )	// not movable
-		m_weight = USHRT_MAX;
+	if ( (tiledata.m_weight == BYTE_MAX) || (tiledata.m_flags & UFLAG1_WATER) )	// not movable
+		m_weight = WORD_MAX;
 	else
 		m_weight = tiledata.m_weight * WEIGHT_UNITS;
 
@@ -94,7 +94,7 @@ CItemBase::CItemBase(ITEMID_TYPE id) : CBaseBaseDef(RESOURCE_ID(RES_ITEMDEF, id)
 
 CItemBase *CItemBase::FindItemBase(ITEMID_TYPE id)	// static
 {
-	ADDTOCALLSTACK("CItemBase::FindItemBase");
+	ADDTOCALLSTACK_INTENSIVE("CItemBase::FindItemBase");
 	if ( id <= ITEMID_NOTHING )
 		return NULL;
 
@@ -1152,9 +1152,9 @@ bool CItemBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		}
 		case IBC_VALUE:
 			if ( m_values.GetRange() )
-				sVal.Format("%lu,%lu", GetMakeValue(0), GetMakeValue(100));
+				sVal.Format("%" FMTDWORD ",%" FMTDWORD, GetMakeValue(0), GetMakeValue(100));
 			else
-				sVal.Format("%lu", GetMakeValue(0));
+				sVal.Format("%" FMTDWORD, GetMakeValue(0));
 			break;
 		case IBC_WEIGHT:
 			sVal.FormatVal(m_weight / WEIGHT_UNITS);

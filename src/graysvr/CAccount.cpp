@@ -151,7 +151,7 @@ bool CAccounts::Account_LoadAll(bool fChanges, bool fClearChanges)
 		ASSERT(fChanges);
 		s.Close();
 		if ( !s.Open(NULL, OF_WRITE|OF_TEXT|OF_DEFAULTMODE) )
-			g_Log.Event(LOGL_FATAL, "Can't open account file '%s'\n", static_cast<LPCTSTR>(s.GetFilePath()));
+			g_Log.Event(LOGL_ERROR, "Can't open account file '%s'\n", static_cast<LPCTSTR>(s.GetFilePath()));
 		else
 			s.WriteString("// " SPHERE_TITLE " accounts update file.\n"
 						  "// Account changes should be made here and will be applied on next worldsave.\n"
@@ -355,7 +355,6 @@ bool CAccounts::Cmd_AddNew(CTextConsole *pSrc, LPCTSTR pszName, LPCTSTR pszPassw
 	pAccount = new CAccount(szName);
 	ASSERT(pAccount);
 	pAccount->SetPassword(pszPassword, fMD5);
-	pAccount->m_dateFirstConnect = pAccount->m_dateLastConnect = CGTime::GetCurrentTime();
 	return true;
 }
 
@@ -879,12 +878,12 @@ bool CAccount::r_LoadVal(CScript &s)
 				CChar *pChar = uid.CharFind();
 				if ( !pChar )
 				{
-					DEBUG_ERR(("Invalid CHARUID 0%lx for account '%s'\n", static_cast<DWORD>(uid), GetName()));
+					DEBUG_ERR(("Invalid CHARUID 0%" FMTDWORDH " for account '%s'\n", static_cast<DWORD>(uid), GetName()));
 					return false;
 				}
 				if ( !IsMyAccountChar(pChar) )
 				{
-					DEBUG_ERR(("CHARUID 0%lx (%s) not attached to account '%s'\n", static_cast<DWORD>(uid), pChar->GetName(), GetName()));
+					DEBUG_ERR(("CHARUID 0%" FMTDWORDH " (%s) not attached to account '%s'\n", static_cast<DWORD>(uid), pChar->GetName(), GetName()));
 					return false;
 				}
 				AttachChar(pChar);

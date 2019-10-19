@@ -218,7 +218,7 @@ NOTO_TYPE CChar::Noto_CalcFlag(const CChar *pCharViewer, bool fAllowInvul) const
 				else
 				{
 					// Too many owners, return the notoriety for however far we got down the chain
-					DEBUG_ERR(("Too many owners (circular ownership?) to continue acquiring notoriety towards %s uid=0%lx\n", pMaster->GetName(), pMaster->GetUID().GetPrivateUID()));
+					DEBUG_ERR(("Too many owners (circular ownership?) to continue acquiring notoriety towards %s UID=0%" FMTDWORDH "\n", pMaster->GetName(), pMaster->GetUID().GetPrivateUID()));
 				}
 			}
 		}

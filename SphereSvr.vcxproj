@@ -68,7 +68,7 @@
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <MinimalRebuild>true</MinimalRebuild>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;_MTNETWORK;_WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <WarningLevel>Level2</WarningLevel>
@@ -101,7 +101,7 @@ if defined GitRev (
     <ClCompile>
       <CallingConvention>FastCall</CallingConvention>
       <MinimalRebuild>true</MinimalRebuild>
-      <PreprocessorDefinitions>_PRIVATEBUILD;_MTNETWORK;_WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_PRIVATEBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level2</WarningLevel>
       <ExceptionHandling>Async</ExceptionHandling>
     </ClCompile>
@@ -128,7 +128,7 @@ if defined GitRev (
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Nightly|Win32'">
     <ClCompile>
       <CallingConvention>FastCall</CallingConvention>
-      <PreprocessorDefinitions>_NIGHTLYBUILD;_MTNETWORK;_WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_NIGHTLYBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level2</WarningLevel>
       <ExceptionHandling>Async</ExceptionHandling>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -156,7 +156,7 @@ if defined GitRev (
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <CallingConvention>FastCall</CallingConvention>
-      <PreprocessorDefinitions>_MTNETWORK;_WIN32;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level2</WarningLevel>
       <ExceptionHandling>Async</ExceptionHandling>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -441,15 +441,9 @@ if defined GitRev (
     <None Include="src\tables\CStoneMember_props.tbl" />
     <None Include="src\tables\defmessages.tbl" />
     <None Include="src\tables\triggers.tbl" />
+    <Text Include="changelog.txt" />
     <Text Include="src\sphere.ini" />
     <Text Include="src\sphereCrypt.ini" />
-    <Text Include="docs\REVISIONS-51-54-SERIES.TXT" />
-    <Text Include="docs\REVISIONS-55-SERIES.TXT" />
-    <Text Include="docs\REVISIONS-56a-Pre_release.TXT" />
-    <Text Include="docs\REVISIONS-56b-Pre_release.TXT" />
-    <Text Include="docs\REVISIONS-56c-Pre_release.TXT" />
-    <Text Include="docs\REVISIONS-56-Pre_release.TXT" />
-    <Text Include="docs\REVISIONS-56-SERIES.TXT" />
     <ResourceCompile Include="src\graysvr\SphereSvr.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

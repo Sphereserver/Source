@@ -63,14 +63,9 @@ ADD(CVarDefContNum,			"CVarDefContNum");
 ADD(CVarDefContStr,			"CVarDefContStr");
 ADD(CVarDefMap,				"CVarDefMap");
 ADD(CVarDefMap::CVarDefContTest, "CVarDefContTest");
-#ifndef _MTNETWORK
-ADD(NetworkIn,				"NetworkIn");
-ADD(NetworkOut,				"NetworkOut");
-#else
 ADD(NetworkInput,			"NetworkInput");
 ADD(NetworkOutput,			"NetworkOutput");
 ADD(NetworkThread,			"NetworkThread");
 ADD(NetworkManager,			"NetworkManager");
-#endif
 
 #undef ADD

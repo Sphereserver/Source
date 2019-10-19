@@ -338,11 +338,7 @@ PacketHealthBarUpdateNew::PacketHealthBarUpdateNew(const CClient* target, const 
 bool PacketHealthBarUpdateNew::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketHealthBarUpdateNew::onSend");
-#ifndef _MTNETWORK
-	if (g_NetworkOut.isActive())
-#else
 	if (g_NetworkManager.isOutputThreaded())
-#endif
 		return true;
 
 	return client->CanSee(m_character.CharFind());
@@ -368,11 +364,7 @@ PacketHealthBarUpdate::PacketHealthBarUpdate(const CClient* target, const CChar*
 bool PacketHealthBarUpdate::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketHealthBarUpdate::onSend");
-#ifndef _MTNETWORK
-	if (g_NetworkOut.isActive())
-#else
 	if (g_NetworkManager.isOutputThreaded())
-#endif
 		return true;
 
 	return client->CanSee(m_character.CharFind());
@@ -518,11 +510,7 @@ void PacketWorldItem::adjustItemData(const CClient* target, CItem* item, ITEMID_
 bool PacketWorldItem::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketWorldItem::onSend");
-#ifndef _MTNETWORK
-	if (g_NetworkOut.isActive())
-#else
 	if (g_NetworkManager.isOutputThreaded())
-#endif
 		return true;
 
 	return client->CanSee(m_item.ItemFind());
@@ -799,11 +787,7 @@ PacketContainerOpen::PacketContainerOpen(const CClient* target, const CObjBase* 
 bool PacketContainerOpen::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketContainerOpen::onSend");
-#ifndef _MTNETWORK
-	if (g_NetworkOut.isActive())
-#else
 	if (g_NetworkManager.isOutputThreaded())
-#endif
 		return true;
 
 	return client->CanSee(m_container.ObjFind());
@@ -895,11 +879,7 @@ void PacketItemContainer::completeForTarget(const CClient* target, const CItem* 
 bool PacketItemContainer::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketItemContainer::onSend");
-#ifndef _MTNETWORK
-	if (g_NetworkOut.isActive())
-#else
 	if (g_NetworkManager.isOutputThreaded())
-#endif
 		return true;
 
 	return client->CanSee(m_item.ItemFind());
@@ -1281,12 +1261,7 @@ PacketItemContents::PacketItemContents(const CClient* target, const CItemContain
 bool PacketItemContents::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketItemContents::onSend");
-
-#ifndef _MTNETWORK
-	if (g_NetworkOut.isActive())
-#else
 	if (g_NetworkManager.isOutputThreaded())
-#endif
 		return true;
 
 	return client->CanSee(m_container.ItemFind());
@@ -1902,8 +1877,8 @@ PacketBulletinBoard::PacketBulletinBoard(const CClient* target, BULLETINBOARD_TY
 		LPCTSTR author = message->m_sAuthor;
 
 		lenstr = strlen(author) + 1;
-		if (lenstr > UCHAR_MAX) 
-			lenstr = UCHAR_MAX;
+		if (lenstr > BYTE_MAX)
+			lenstr = BYTE_MAX;
 
 		writeByte(static_cast<BYTE>(lenstr));
 		writeStringFixedASCII(author, lenstr);
@@ -1911,14 +1886,14 @@ PacketBulletinBoard::PacketBulletinBoard(const CClient* target, BULLETINBOARD_TY
 
 	// message title
 	lenstr = strlen(message->GetName()) + 1;
-	if (lenstr > UCHAR_MAX)
-		lenstr = UCHAR_MAX;
+	if (lenstr > BYTE_MAX)
+		lenstr = BYTE_MAX;
 
 	writeByte(static_cast<BYTE>(lenstr));
 	writeStringFixedASCII(message->GetName(), lenstr);
 
 	// message time
-	sprintf(tempstr, "Day %lu", (g_World.GetGameWorldTime(message->GetTimeStamp()) / (24 * 60)) % 365);
+	sprintf(tempstr, "Day %" FMTDWORD, (g_World.GetGameWorldTime(message->GetTimeStamp()) / (24 * 60)) % 365);
 	lenstr = strlen(tempstr) + 1;
 
 	writeByte(static_cast<BYTE>(lenstr));
@@ -1939,8 +1914,8 @@ PacketBulletinBoard::PacketBulletinBoard(const CClient* target, BULLETINBOARD_TY
 				continue;
 
 			lenstr = strlen(text) + 2;
-			if (lenstr > UCHAR_MAX)
-				lenstr = UCHAR_MAX;
+			if (lenstr > BYTE_MAX)
+				lenstr = BYTE_MAX;
 
 			writeByte(static_cast<BYTE>(lenstr));
 			writeStringFixedASCII(text, lenstr);
@@ -2030,8 +2005,8 @@ PacketVendorBuyList::PacketVendorBuyList(const CClient* target, const CChar *ven
 
 		LPCTSTR name = vendorItem->GetName();
 		size_t len = strlen(name) + 1;
-		if (len > UCHAR_MAX)
-			len = UCHAR_MAX;
+		if (len > BYTE_MAX)
+			len = BYTE_MAX;
 
 		writeInt32(price);
 		writeByte(static_cast<BYTE>(len));
@@ -2188,11 +2163,7 @@ PacketCharacter::PacketCharacter(CClient* target, const CChar* character) : Pack
 bool PacketCharacter::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketCharacter::onSend");
-#ifndef _MTNETWORK
-	if (g_NetworkOut.isActive())
-#else
 	if (g_NetworkManager.isOutputThreaded())
-#endif
 		return true;
 
 	return client->CanSee(m_character.CharFind());
@@ -2215,8 +2186,8 @@ PacketDisplayMenu::PacketDisplayMenu(const CClient* target, CLIMODE_TYPE mode, c
 	writeInt16(static_cast<WORD>(mode));
 
 	size_t len = items[0].m_sText.GetLength();
-	if (len > UCHAR_MAX)
-		len = UCHAR_MAX;
+	if (len > BYTE_MAX)
+		len = BYTE_MAX;
 	writeByte(static_cast<BYTE>(len));
 	writeStringFixedASCII(static_cast<LPCTSTR>(items[0].m_sText), len);
 
@@ -2227,8 +2198,8 @@ PacketDisplayMenu::PacketDisplayMenu(const CClient* target, CLIMODE_TYPE mode, c
 		writeInt16(items[i].m_color);
 
 		len = items[i].m_sText.GetLength();
-		if (len > UCHAR_MAX )
-			len = UCHAR_MAX;
+		if (len > BYTE_MAX )
+			len = BYTE_MAX;
 		writeByte(static_cast<BYTE>(len));
 		writeStringFixedASCII(static_cast<LPCTSTR>(items[i].m_sText), len);
 	}
@@ -2407,12 +2378,7 @@ PacketCorpseEquipment::PacketCorpseEquipment(CClient* target, const CItemContain
 bool PacketCorpseEquipment::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketCorpseEquipment::onSend");
-
-#ifndef _MTNETWORK
-	if (g_NetworkOut.isActive())
-#else
 	if (g_NetworkManager.isOutputThreaded())
-#endif
 		return true;
 
 	return client->CanSee(m_corpse.ItemFind());
@@ -2725,8 +2691,8 @@ PacketVendorSellList::PacketVendorSellList(const CClient* target, const CChar* v
 
 						LPCTSTR name = vendItem->GetName();
 						size_t len = strlen(name) + 1;
-						if (len > UCHAR_MAX)
-							len = UCHAR_MAX;
+						if (len > BYTE_MAX)
+							len = BYTE_MAX;
 
 						writeInt32(vendItem->GetUID());
 						writeInt16(static_cast<WORD>(vendItem->GetDispID()));
@@ -3097,8 +3063,8 @@ PacketGumpValueInput::PacketGumpValueInput(const CClient* target, bool cancel, I
 	writeInt16(CLIMODE_INPVAL);
 
 	size_t len = strlen(text) + 1;
-	if (len > USHRT_MAX)
-		len = USHRT_MAX;
+	if (len > WORD_MAX)
+		len = WORD_MAX;
 
 	writeInt16(static_cast<WORD>(len));
 	writeStringFixedASCII(text, len);
@@ -3116,16 +3082,16 @@ PacketGumpValueInput::PacketGumpValueInput(const CClient* target, bool cancel, I
 			break;
 		case INPVAL_Text:
 			z = Str_GetTemp();
-			len = sprintf(z, "%s (%lu chars max)", caption, maxLength) + 1;
+			len = sprintf(z, "%s (%" FMTDWORD " chars max)", caption, maxLength) + 1;
 			break;
 		case INPVAL_Numeric:
 			z = Str_GetTemp();
-			len = sprintf(z, "%s (0 - %lu)", caption, maxLength) + 1;
+			len = sprintf(z, "%s (0 - %" FMTDWORD ")", caption, maxLength) + 1;
 			break;
 	}
+	if (len > WORD_MAX)
+		len = WORD_MAX;
 
-	if (len > USHRT_MAX)
-		len = USHRT_MAX;
 	writeInt16(static_cast<WORD>(len));
 	writeStringFixedASCII(z, len);
 
@@ -3675,11 +3641,7 @@ PacketPropertyListVersionOld::PacketPropertyListVersionOld(const CClient* target
 bool PacketPropertyListVersionOld::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketPropertyListVersionOld::onSend");
-#ifndef _MTNETWORK
-	if (g_NetworkOut.isActive())
-#else
 	if (g_NetworkManager.isOutputThreaded())
-#endif
 		return true;
 
 	const CChar* character = client->GetChar();
@@ -3718,15 +3680,15 @@ void PacketDisplayPopup::addOption(WORD entryTag, DWORD textId, WORD flags, WORD
 {
 	ADDTOCALLSTACK("PacketDisplayPopup::addOption");
 
-	if (m_popupCount >= UCHAR_MAX)
+	if (m_popupCount >= BYTE_MAX)
 	{
-		DEBUG_ERR(("Bad AddContextEntry usage: Too many entries, max = %d\n", UCHAR_MAX));
+		DEBUG_ERR(("Bad AddContextEntry usage: Too many entries, max = %d\n", BYTE_MAX));
 		return;
 	}
 
 	if (m_newPacketFormat)
 	{
-		if (textId <= USHRT_MAX)
+		if (textId <= WORD_MAX)
 			textId += 3000000;
 		if (flags & POPUPFLAG_COLOR)
 			flags &= ~POPUPFLAG_COLOR;
@@ -4281,11 +4243,7 @@ PacketPropertyList::PacketPropertyList(const CClient* target, const PacketProper
 bool PacketPropertyList::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketPropertyList::onSend");
-#ifndef _MTNETWORK
-	if (g_NetworkOut.isActive())
-#else
 	if (g_NetworkManager.isOutputThreaded())
-#endif
 		return true;
 
 	const CChar* character = client->GetChar();
@@ -4372,14 +4330,14 @@ bool PacketHouseDesign::writeLevelData(BYTE bLevel, WORD wItemCount, BYTE *pbDat
 	{
 		// An error occured with this floor, but we should be able to continue to the next without problems
 		delete[] compressBuffer;
-		g_Log.EventError("Compress failed with error %d when generating house design for floor %hhu on building 0%lx\n", error, bLevel, static_cast<DWORD>(m_pHouse->GetUID()));
+		g_Log.EventError("Compress failed with error %d when generating house design for floor %hhu on building UID=0%" FMTDWORDH "\n", error, bLevel, static_cast<DWORD>(m_pHouse->GetUID()));
 		return false;
 	}
 	else if ( (compressLength <= 0) || (compressLength >= HOUSEDESIGN_LEVELDATA_BUFFER) )
 	{
 		// Too much data, but we should be able to continue to the next floor without problems
 		delete[] compressBuffer;
-		g_Log.EventWarn("Floor %hhu on building 0%lx too large with compressed length of %lu\n", bLevel, static_cast<DWORD>(m_pHouse->GetUID()), compressLength);
+		g_Log.EventWarn("Floor %hhu on building UID=0%" FMTDWORDH " too large with compressed length of %lu\n", bLevel, static_cast<DWORD>(m_pHouse->GetUID()), compressLength);
 		return false;
 	}
 
@@ -4431,14 +4389,14 @@ void PacketHouseDesign::flushStairData(void)
 	{
 		// An error occured with this block, but we should be able to continue to the next without problems
 		delete[] compressBuffer;
-		g_Log.EventError("Compress failed with error %d when generating house design on building 0%lx\n", error, static_cast<DWORD>(m_pHouse->GetUID()));
+		g_Log.EventError("Compress failed with error %d when generating house design on building UID=0%" FMTDWORDH "\n", error, static_cast<DWORD>(m_pHouse->GetUID()));
 		return;
 	}
 	else if ( (compressLength <= 0) || (compressLength >= HOUSEDESIGN_STAIRDATA_BUFFER) )
 	{
 		// Too much data, but we should be able to continue to the next block without problems
 		delete[] compressBuffer;
-		g_Log.EventWarn("Building 0%lx too large with compressed length of %lu\n", static_cast<DWORD>(m_pHouse->GetUID()), compressLength);
+		g_Log.EventWarn("Building UID=0%" FMTDWORDH " too large with compressed length of %lu\n", static_cast<DWORD>(m_pHouse->GetUID()), compressLength);
 		return;
 	}
 
@@ -4494,11 +4452,7 @@ PacketPropertyListVersion::PacketPropertyListVersion(const CClient* target, cons
 bool PacketPropertyListVersion::onSend(const CClient* client)
 {
 	ADDTOCALLSTACK("PacketPropertyList::onSend");
-#ifndef _MTNETWORK
-	if (g_NetworkOut.isActive())
-#else
 	if (g_NetworkManager.isOutputThreaded())
-#endif
 		return true;
 
 	const CChar* character = client->GetChar();

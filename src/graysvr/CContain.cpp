@@ -274,7 +274,7 @@ DWORD CContainer::ContentCount(RESOURCE_ID_BASE rid, DWORD dwArg)
 {
 	ADDTOCALLSTACK("CContainer::ContentCount");
 	// Calculate total (gold or other items) in this recursed container
-	return ULONG_MAX - ContentConsume(rid, ULONG_MAX, true, dwArg);
+	return DWORD_MAX - ContentConsume(rid, DWORD_MAX, true, dwArg);
 }
 
 void CContainer::ContentAttrMod(DWORD dwAttr, bool fSet)
@@ -409,7 +409,7 @@ DWORD CContainer::ResourceConsume(const CResourceQtyArray *pResources, DWORD dwR
 		dwReplicationQty = ResourceConsume(pResources, dwReplicationQty, true, dwArg);
 	}
 
-	DWORD dwQtyMin = ULONG_MAX;
+	DWORD dwQtyMin = DWORD_MAX;
 	for ( size_t i = 0; i < pResources->GetCount(); ++i )
 	{
 		DWORD dwResQty = static_cast<DWORD>(pResources->GetAt(i).GetResQty());
@@ -433,7 +433,7 @@ DWORD CContainer::ResourceConsume(const CResourceQtyArray *pResources, DWORD dwR
 			dwQtyMin = dwQtyCur;
 	}
 
-	if ( dwQtyMin == ULONG_MAX )	// it has no resources, so I guess we can make it from nothing?
+	if ( dwQtyMin == DWORD_MAX )	// it has no resources, so I guess we can make it from nothing?
 		return dwReplicationQty;
 
 	return dwQtyMin;
@@ -1007,7 +1007,7 @@ void CItemContainer::ContentAdd(CItem *pItem, CPointMap pt, BYTE gridIndex)
 
 	// Try drop it on given container grid index (if not available, drop it on next free index)
 	bool fGridAvailable;
-	for ( size_t i = 0; i < UCHAR_MAX; ++i )
+	for ( size_t i = 0; i < BYTE_MAX; ++i )
 	{
 		fGridAvailable = true;
 		for ( CItem *pTry = GetContentHead(); pTry != NULL; pTry = pTry->GetNext() )
@@ -1044,13 +1044,13 @@ void CItemContainer::ContentAdd(CItem *pItem, CPointMap pt, BYTE gridIndex)
 		{
 			if ( !IsItemEquipped() )
 			{
-				DEBUG_ERR(("Un-equipped vendor box uid=0%lx is bad\n", GetUID().GetObjUID()));
+				DEBUG_ERR(("Un-equipped vendor box UID=0%" FMTDWORDH " is bad\n", GetUID().GetObjUID()));
 				break;
 			}
 			CItemVendable *pItemVend = static_cast<CItemVendable *>(pItem);
 			if ( !pItemVend )
 			{
-				DEBUG_ERR(("Vendor uid=0%lx selling non-vendable item '%s'\n", GetParentObj()->GetUID().GetObjUID(), pItem->GetResourceName()));
+				DEBUG_ERR(("Vendor UID=0%" FMTDWORDH " selling non-vendable item '%s'\n", GetParentObj()->GetUID().GetObjUID(), pItem->GetResourceName()));
 				pItem->Delete();
 				break;
 			}
@@ -1063,7 +1063,7 @@ void CItemContainer::ContentAdd(CItem *pItem, CPointMap pt, BYTE gridIndex)
 			// Can only place IT_GAME_PIECE inside here
 			if ( pItem->IsType(IT_GAME_PIECE) )
 				break;
-			g_Log.Event(LOGL_WARN, "Game board contains invalid item: %s uid=0%lx, board: %s uid=0%lx\n", pItem->GetResourceName(), pItem->GetUID().GetObjUID(), GetResourceName(), GetUID().GetObjUID());
+			g_Log.Event(LOGL_WARN, "Game board contains invalid item: %s UID=0%" FMTDWORDH ", board: %s UID=0%" FMTDWORDH "\n", pItem->GetResourceName(), pItem->GetUID().GetObjUID(), GetResourceName(), GetUID().GetObjUID());
 			pItem->Delete();
 			break;
 		}

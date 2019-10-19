@@ -97,7 +97,7 @@ bool CElementDef::GetValStr( const void * pBase, CGString & sVal ) const
 		case ELEM_INT: // signed ?
 		case ELEM_DWORD:
 			memcpy( &dwVal, pValPtr, GetValLength());
-			sVal.Format("%lu", dwVal);
+			sVal.Format("%" FMTDWORD, dwVal);
 			return true;
 		case ELEM_MASK_BYTE:	// bits in a BYTE
 		case ELEM_MASK_WORD:	// bits in a WORD

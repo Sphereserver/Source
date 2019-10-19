@@ -57,7 +57,6 @@ public:
 	}
 
 private:
-	void prepareColor();
 	void restore();
 
 protected:

@@ -63,25 +63,17 @@ CClient::CClient(NetState *state)
 	m_pHouseDesign = NULL;
 
 	// Update IP history
-#ifdef _MTNETWORK
 	HistoryIP &history = g_NetworkManager.getIPHistoryManager().getHistoryForIP(GetPeer());
-#else
-	HistoryIP &history = g_NetworkIn.getIPHistoryManager().getHistoryForIP(GetPeer());
-#endif
 	++history.m_connecting;
 	++history.m_connected;
 
-	g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Client connected [Total:%lu] ('%s' %ld/%ld)\n", GetSocketID(), g_Serv.StatGet(SERV_STAT_CLIENTS), GetPeerStr(), history.m_connecting, history.m_connected);
+	g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Client connected [Total:%" FMTDWORD "] ('%s' %ld/%ld)\n", GetSocketID(), g_Serv.StatGet(SERV_STAT_CLIENTS), GetPeerStr(), history.m_connecting, history.m_connected);
 }
 
 CClient::~CClient()
 {
 	// Update IP history
-#ifdef _MTNETWORK
 	HistoryIP &history = g_NetworkManager.getIPHistoryManager().getHistoryForIP(GetPeer());
-#else
-	HistoryIP &history = g_NetworkIn.getIPHistoryManager().getHistoryForIP(GetPeer());
-#endif
 	if ( GetConnectType() != CONNECT_GAME )
 		--history.m_connecting;
 	--history.m_connected;
@@ -1028,7 +1020,7 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 				}
 				iArgs[i] = Exp_GetVal(ppArgs[i]);
 			}
-			if ( (iArgs[0] < 0) || (iArgs[0] > USHRT_MAX) )
+			if ( (iArgs[0] < 0) || (iArgs[0] > WORD_MAX) )
 			{
 				DEBUG_ERR(("%s: invalid icon '%d'\n", sm_szVerbKeys[index], iArgs[0]));
 				break;
@@ -1049,7 +1041,7 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 		case CV_REMOVEBUFF:
 		{
 			BUFF_ICONS IconId = static_cast<BUFF_ICONS>(s.GetArgVal());
-			if ( (IconId < 0) || (IconId > USHRT_MAX) )
+			if ( (IconId < 0) || (IconId > WORD_MAX) )
 			{
 				DEBUG_ERR(("%s: invalid icon '%d'\n", sm_szVerbKeys[index], IconId));
 				break;
@@ -1142,7 +1134,7 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 								CPointMap pt = pItem->GetTopPoint();
 								m_pChar->Spell_Teleport(pt, true, false);
 								m_pChar->m_Act_Targ = pItem->GetUID();
-								SysMessagef("Bad spawn (0%lx, id=%s). Set as ACT", static_cast<DWORD>(pItem->GetUID()), g_Cfg.ResourceGetName(rid));
+								SysMessagef("Bad spawn '%s' (UID=0%" FMTDWORDH ") set as ACT", g_Cfg.ResourceGetName(rid), static_cast<DWORD>(pItem->GetUID()));
 								fFound = true;
 							}
 						}
@@ -1450,11 +1442,7 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 			addTarget(CLIMODE_TARG_REPAIR, g_Cfg.GetDefaultMsg(DEFMSG_SELECT_ITEM_REPAIR));
 			break;
 		case CV_FLUSH:
-#ifndef _MTNETWORK
-			g_NetworkOut.flush(this);
-#else
 			g_NetworkManager.flush(m_NetState);
-#endif
 			break;
 		case CV_RESEND:
 			addReSync();
@@ -1635,9 +1623,6 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 			m_tmTile.m_ptFirst.InitPoint();	// clear this first
 			m_tmTile.m_Code = CV_TILE;
 			addTarget(CLIMODE_TARG_TILE, "Pick 1st corner:", true);
-			break;
-		case CV_VERSION:
-			SysMessage(g_szServerDescription);
 			break;
 		case CV_WEBLINK:
 			addWebLaunch(s.GetArgStr());

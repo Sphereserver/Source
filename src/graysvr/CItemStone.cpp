@@ -622,7 +622,7 @@ bool CItemStone::CheckValidMember(CStoneMember *pMember)
 		}
 	}
 
-	DEBUG_ERR(("Stone UID=0%lx has mislinked member UID=0%lx\n", static_cast<DWORD>(GetUID()), static_cast<DWORD>(pMember->m_uidLinkTo)));
+	DEBUG_ERR(("Stone UID=0%" FMTDWORDH " has mislinked member UID=0%" FMTDWORDH "\n", static_cast<DWORD>(GetUID()), static_cast<DWORD>(pMember->m_uidLinkTo)));
 	return false;
 }
 
@@ -1076,7 +1076,7 @@ void CItemStone::r_Write(CScript &s)
 		if ( pMember->m_uidLinkTo.IsValidUID() )
 		{
 			s.WriteKeyFormat("MEMBER",
-				"0%lx,%s,%d,0%lx,%d,%d,%d",
+				"0%" FMTDWORDH ",%s,%d,0%" FMTDWORDH ",%d,%d,%d",
 				static_cast<DWORD>(pMember->m_uidLinkTo | (pMember->m_uidLinkTo.IsItem() ? UID_F_ITEM : 0)),
 				pMember->GetTitle(),
 				pMember->m_priv,

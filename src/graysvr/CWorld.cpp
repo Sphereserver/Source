@@ -125,7 +125,7 @@ LPCTSTR GetReasonForGarbageCode(int iCode = -1)
 void ReportGarbageCollection(CObjBase *pObj, int iResultCode)
 {
 	ASSERT(pObj);
-	DEBUG_ERR(("UID=0%lx, id=0%hx '%s', Invalid code=%0x (%s)\n", static_cast<DWORD>(pObj->GetUID()), pObj->GetBaseID(), pObj->GetName(), iResultCode, GetReasonForGarbageCode(iResultCode)));
+	DEBUG_ERR(("UID=0%" FMTDWORDH ", id=0%hx '%s', Invalid code=%0x (%s)\n", static_cast<DWORD>(pObj->GetUID()), pObj->GetBaseID(), pObj->GetName(), iResultCode, GetReasonForGarbageCode(iResultCode)));
 }
 
 ///////////////////////////////////////////////////////////
@@ -420,7 +420,7 @@ void CTimedFunctionHandler::r_Write(CScript &s)
 			if ( tf->uid.IsValidUID() )
 			{
 				s.WriteKeyFormat("TimerFCall", "%s", tf->funcname);
-				s.WriteKeyFormat("TimerFNumbers", "%d,%lu,%d", iTick, tf->uid.GetObjUID(), tf->elapsed);
+				s.WriteKeyFormat("TimerFNumbers", "%d,%" FMTDWORD ",%d", iTick, tf->uid.GetObjUID(), tf->elapsed);
 			}
 		}
 	}
@@ -640,7 +640,7 @@ successalloc:
 	if ( pObjPrv )
 	{
 		// Don't use Delete() here, because the UID will still be assigned until async cleanup time
-		DEBUG_ERR(("UID conflict delete 0%lx, '%s'\n", dwIndex, pObjPrv->GetName()));
+		DEBUG_ERR(("UID conflict delete 0%" FMTDWORDH ", '%s'\n", dwIndex, pObjPrv->GetName()));
 		delete pObjPrv;
 	}
 	m_UIDs[dwIndex] = pObj;
@@ -675,7 +675,7 @@ int CWorldThread::FixObjTry(CObjBase *pObj, DWORD uid)
 	{
 		if ( (pObj->GetUID() & UID_O_INDEX_MASK) != uid )
 		{
-			DEBUG_ERR(("UID 0%lx, '%s', Mislinked\n", uid, pObj->GetName()));
+			DEBUG_ERR(("UID 0%" FMTDWORDH ", '%s', Mislinked\n", uid, pObj->GetName()));
 			return 0x7101;
 		}
 	}
@@ -725,12 +725,12 @@ int CWorldThread::FixObj(CObjBase *pObj, DWORD uid)
 	}
 	catch ( const CGrayError &e )
 	{
-		g_Log.CatchEvent(&e, "UID=0%lx, Asserted cleanup", uid);
+		g_Log.CatchEvent(&e, "UID=0%" FMTDWORDH ", Asserted cleanup", uid);
 		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 	}
 	catch ( ... )
 	{
-		g_Log.CatchEvent(NULL, "UID=0%lx, Asserted cleanup", uid);
+		g_Log.CatchEvent(NULL, "UID=0%" FMTDWORDH ", Asserted cleanup", uid);
 		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 	}
 	return iResultCode;
@@ -765,7 +765,7 @@ void CWorldThread::GarbageCollection_New()
 		pGMPageNext = pGMPage->GetNext();
 		if ( !pGMPage->m_uidChar.CharFind() )
 		{
-			DEBUG_ERR(("GC: Deleted GM Page linked to invalid char uid=0%lx\n", static_cast<DWORD>(pGMPage->m_uidChar)));
+			DEBUG_ERR(("GC: Deleted GM Page linked to invalid char uid=0%" FMTDWORDH "\n", static_cast<DWORD>(pGMPage->m_uidChar)));
 			delete pGMPage;
 		}
 		else if ( !g_Accounts.Account_Find(pGMPage->m_sAccount) )
@@ -1089,7 +1089,7 @@ bool CWorld::SaveStage()
 				uComplexity += (pSector->GetCharComplexity() + pSector->GetInactiveChars()) * 100 + pSector->GetItemComplexity();
 			}
 
-			size_t iDynamicStage = m_iSaveStage + 1;
+			size_t iDynamicStage = static_cast<size_t>(m_iSaveStage) + 1;
 			if ( uComplexity <= g_Cfg.m_iSaveStepMaxComplexity )
 			{
 				size_t iSectorsCount = 1;
@@ -1208,13 +1208,8 @@ bool CWorld::SaveForce()
 	// Save world state
 
 	Broadcast(g_Cfg.GetDefaultMsg(DEFMSG_SERVER_WORLDSAVE));
-#ifdef _MTNETWORK
 	if ( !g_NetworkManager.isOutputThreaded() )
 		g_NetworkManager.flushAllClients();
-#else
-	if ( !g_NetworkOut.isActive() )
-		g_NetworkOut.flushAll();
-#endif
 
 	g_Serv.SetServerMode(SERVMODE_Saving);
 	bool fSaved = true;
@@ -1350,20 +1345,12 @@ bool CWorld::Save(bool fForceImmediate)
 		// Fushing before the server should fix #2306
 		// The scripts fills the clients buffer and the server flush the data during the save.
 		// Should we flush only non threaded output or force it to flush on any conditions?
-#ifdef _MTNETWORK
 		if ( !g_NetworkManager.isOutputThreaded() )
-#else
-		if ( !g_NetworkOut.isActive() )
-#endif
 		{
 #ifdef _DEBUG 
-			g_Log.EventDebug("Flushing %lu clients output data...\n", g_Serv.StatGet(SERV_STAT_CLIENTS));
+			g_Log.EventDebug("Flushing %" FMTDWORD " clients output data...\n", g_Serv.StatGet(SERV_STAT_CLIENTS));
 #endif
-#ifdef _MTNETWORK
 			g_NetworkManager.flushAllClients();
-#else
-			g_NetworkOut.flushAll();
-#endif
 #ifdef _DEBUG
 			g_Log.EventDebug("Done flushing clients output data\n");
 #endif
@@ -1414,13 +1401,8 @@ void CWorld::SaveStatics()
 		r_Write(m_FileStatics);
 
 		Broadcast(g_Cfg.GetDefaultMsg(DEFMSG_SERVER_WORLDSTATICSAVE));
-#ifdef _MTNETWORK
 		if ( !g_NetworkManager.isOutputThreaded() )
 			g_NetworkManager.flushAllClients();
-#else
-		if ( !g_NetworkOut.isActive() )
-			g_NetworkOut.flushAll();
-#endif
 
 		// Loop through all sectors and save static items
 		CSector *pSector;
@@ -1614,7 +1596,7 @@ void CWorld::r_Write(CScript &s)
 	ADDTOCALLSTACK("CWorld::r_Write");
 	// Write file header
 	s.WriteKey("TITLE", SPHERE_TITLE " World Script");
-	s.WriteKey("VERSION", SPHERE_VERSION);
+	s.WriteKey("VERSION", SPHERE_VER_STR_FULL);
 	s.WriteKeyVal("PREVBUILD", SPHERE_VER_BUILD);
 	s.WriteKeyVal("TIME", GetCurrentTime().GetTimeRaw());
 	s.WriteKeyVal("SAVECOUNT", m_iSaveCountID);
@@ -1685,7 +1667,7 @@ bool CWorld::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal = SPHERE_TITLE " World Script";
 			break;
 		case WC_VERSION:
-			sVal = SPHERE_VERSION;
+			sVal = SPHERE_VER_STR_FULL;
 			break;
 		default:
 			return false;

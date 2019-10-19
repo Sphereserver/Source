@@ -84,7 +84,7 @@ bool CItemVendable::IsValidSaleItem(bool fBuyFromVendor) const
 	if ( !IsMovable() )
 	{
 		if ( fBuyFromVendor )
-			DEBUG_ERR(("Vendor uid=0%lx selling unmovable item '%s'\n", static_cast<DWORD>(GetTopLevelObj()->GetUID()), GetResourceName()));
+			DEBUG_ERR(("Vendor UID=0%" FMTDWORDH " selling unmovable item '%s'\n", static_cast<DWORD>(GetTopLevelObj()->GetUID()), GetResourceName()));
 		return false;
 	}
 	if ( !fBuyFromVendor && IsAttr(ATTR_NEWBIE|ATTR_MOVE_NEVER|ATTR_BLESSED) )
@@ -100,12 +100,12 @@ bool CItemVendable::IsValidNPCSaleItem() const
 	ADDTOCALLSTACK("CItemVendable::IsValidNPCSaleItem");
 	if ( (m_price <= 0) && (Item_GetDef()->GetMakeValue(0) <= 0) )
 	{
-		DEBUG_ERR(("Vendor uid=0%lx selling unpriced item '%s'\n", static_cast<DWORD>(GetTopLevelObj()->GetUID()), GetResourceName()));
+		DEBUG_ERR(("Vendor UID=0%" FMTDWORDH " selling unpriced item '%s'\n", static_cast<DWORD>(GetTopLevelObj()->GetUID()), GetResourceName()));
 		return false;
 	}
 	if ( !IsValidSaleItem(true) )
 	{
-		DEBUG_ERR(("Vendor uid=0%lx selling bad item '%s'\n", static_cast<DWORD>(GetTopLevelObj()->GetUID()), GetResourceName()));
+		DEBUG_ERR(("Vendor UID=0%" FMTDWORDH " selling bad item '%s'\n", static_cast<DWORD>(GetTopLevelObj()->GetUID()), GetResourceName()));
 		return false;
 	}
 	return true;

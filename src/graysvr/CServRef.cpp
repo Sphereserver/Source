@@ -12,8 +12,7 @@
 #endif
 bool m_fProcessInfoAvailable = true;
 
-//////////////////////////////////////////////////////////////////////
-// -CServerDef
+#define SPHERE_DEF_PORT		2593
 
 CServerDef::CServerDef(LPCTSTR pszName, CSocketAddressIP dwIP) : m_ip(dwIP, SPHERE_DEF_PORT)	// SOCKET_LOCAL_ADDRESS
 {
@@ -112,7 +111,7 @@ DWORD CServerDef::StatGet(SERV_STAT_TYPE i) const
 
 	EXC_CATCH;
 	EXC_DEBUG_START;
-	g_Log.EventDebug("stat '%d', val '%lu'\n", i, d);
+	g_Log.EventDebug("stat '%d', val '%" FMTDWORD "'\n", i, d);
 	EXC_DEBUG_END;
 	return 0;
 }
@@ -308,7 +307,7 @@ bool CServerDef::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal = m_sURL;
 			break;
 		case SC_VERSION:
-			sVal = SPHERE_VERSION;
+			sVal = SPHERE_VER_STR_FULL;
 			break;
 		default:
 		{

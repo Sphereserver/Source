@@ -161,7 +161,7 @@ void CFile::NotifyIOError(LPCTSTR pszMessage) const
 #else
 	LPSTR pszBuffer = strerror(CGFile::GetLastError());
 #endif
-	DEBUG_ERR(("File I/O '%s' failed on file '%s' (error %lu): %s\n", pszMessage, static_cast<LPCTSTR>(GetFilePath()), CGFile::GetLastError(), pszBuffer));
+	DEBUG_ERR(("File I/O '%s' failed on file '%s' (error %" FMTDWORD "): %s\n", pszMessage, static_cast<LPCTSTR>(GetFilePath()), CGFile::GetLastError(), pszBuffer));
 #ifdef _WIN32
 	LocalFree(pszBuffer);
 #endif

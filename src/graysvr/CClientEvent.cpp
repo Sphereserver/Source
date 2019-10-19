@@ -965,7 +965,7 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t iI
 		dwCostTotal += items[i].m_amount * items[i].m_price;
 	}
 
-	if ( dwCostTotal > ULONG_MAX / 4 )
+	if ( dwCostTotal > DWORD_MAX / 4 )
 	{
 		pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_ORDER_CANTFULFILL));
 		Event_VendorBuy_Cheater(0x4);
@@ -1959,7 +1959,7 @@ void CClient::Event_SingleClick(CGrayUID uid)
 		return;
 	}
 
-	SysMessagef("Bogus item UID=0%lx?", static_cast<DWORD>(uid));
+	SysMessagef("Bogus item UID=0%" FMTDWORDH "?", static_cast<DWORD>(uid));
 }
 
 void CClient::Event_Target(CLIMODE_TYPE context, CGrayUID uid, CPointMap pt, BYTE flags, ITEMID_TYPE id)

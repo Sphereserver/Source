@@ -2031,7 +2031,7 @@ CItem *CChar::Horse_GetMountItem() const
 				{
 					const_cast<CGrayUIDBase &>(m_atRidden.m_FigurineUID) = pItemMount->GetUID();
 					pItem = pItemMount;
-					DEBUG_ERR(("UID=0%lx, id=0%x '%s', Fixed mount item UID=0%lx, id=0%x '%s'\n", static_cast<DWORD>(GetUID()), GetBaseID(), GetName(), static_cast<DWORD>(pItem->GetUID()), pItem->GetBaseID(), pItem->GetName()));
+					DEBUG_ERR(("UID=0%" FMTDWORDH ", id=0%x '%s', Fixed mount item UID=0%" FMTDWORDH ", id=0%x '%s'\n", static_cast<DWORD>(GetUID()), GetBaseID(), GetName(), static_cast<DWORD>(pItem->GetUID()), pItem->GetBaseID(), pItem->GetName()));
 				}
 			}
 		}
@@ -3499,7 +3499,7 @@ stopandret:
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("trigger '%s' action '%d' [0%lx]\n", pszTrigName, iAction, static_cast<DWORD>(GetUID()));
+	g_Log.EventDebug("trigger '%s' action '%d' [0%" FMTDWORDH "]\n", pszTrigName, iAction, static_cast<DWORD>(GetUID()));
 	EXC_DEBUG_END;
 	return iRet;
 }
