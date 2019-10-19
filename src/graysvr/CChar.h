@@ -22,7 +22,7 @@ enum NPCBRAIN_TYPE
 	NPCBRAIN_QTY
 };
 
-// Number of steps to remember for pathfinding (default to 24 steps, will have 24*4 extra bytes per char)
+// Number of steps to remember for pathfinding (default to 28 steps, will have 28*4 extra bytes per char)
 #define MAX_NPC_PATH_STORAGE_SIZE	(UO_MAP_VIEW_SIGHT * 2)
 
 struct CCharNPC

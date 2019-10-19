@@ -48,16 +48,8 @@ IThread *ThreadHolder::current()
 {
 	init();
 
-	IThread * thread = m_currentThread;
-	if (thread == NULL)
-		return DummySphereThread::getInstance();
-
-#ifdef _WIN32
-	ASSERT(thread->getId() == ::GetCurrentThreadId());
-#else
-	ASSERT(thread->getId() == (unsigned)pthread_self());
-#endif
-	return thread;
+	IThread *thread = m_currentThread;
+	return thread ? thread : DummySphereThread::getInstance();
 }
 
 void ThreadHolder::push(IThread *thread)

@@ -94,7 +94,7 @@ CItemBase::CItemBase(ITEMID_TYPE id) : CBaseBaseDef(RESOURCE_ID(RES_ITEMDEF, id)
 
 CItemBase *CItemBase::FindItemBase(ITEMID_TYPE id)	// static
 {
-	ADDTOCALLSTACK("CItemBase::FindItemBase");
+	ADDTOCALLSTACK_INTENSIVE("CItemBase::FindItemBase");
 	if ( id <= ITEMID_NOTHING )
 		return NULL;
 

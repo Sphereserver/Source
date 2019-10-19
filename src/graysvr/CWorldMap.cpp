@@ -1043,7 +1043,7 @@ void CWorld::GetHeightPoint(const CPointMap &pt, CGrayMapBlockState &block, bool
 
 void CWorld::GetHeightPoint2(const CPointMap &pt, CGrayMapBlockState &block, bool fHouseCheck)
 {
-	ADDTOCALLSTACK("CWorld::GetHeightPoint2");
+	ADDTOCALLSTACK_INTENSIVE("CWorld::GetHeightPoint2");
 	// Height of statics at/above given coordinates (do gravity here for the z)
 
 	const CGrayMapBlock *pMapBlock = GetMapBlock(pt);
@@ -1183,7 +1183,7 @@ void CWorld::GetHeightPoint2(const CPointMap &pt, CGrayMapBlockState &block, boo
 
 signed char CWorld::GetHeightPoint(const CPointBase &pt, DWORD &dwBlockFlags, bool fHouseCheck)
 {
-	ADDTOCALLSTACK("CWorld::GetHeightPoint");
+	ADDTOCALLSTACK_INTENSIVE("CWorld::GetHeightPoint");
 
 	DWORD dwCan = dwBlockFlags;
 	CGrayMapBlockState block(dwBlockFlags, pt.m_z + (PLAYER_HEIGHT / 2), pt.m_z + PLAYER_HEIGHT);
@@ -1215,7 +1215,7 @@ signed char CWorld::GetHeightPoint(const CPointBase &pt, DWORD &dwBlockFlags, bo
 
 signed char CWorld::GetHeightPoint2(const CPointBase &pt, DWORD &dwBlockFlags, bool fHouseCheck)
 {
-	ADDTOCALLSTACK("CWorld::GetHeightPoint2");
+	ADDTOCALLSTACK_INTENSIVE("CWorld::GetHeightPoint2");
 	// Given our coords at pt including pt.m_z
 	// What is the height that gravity would put me at should i step hear ?
 	// Assume my head height is PLAYER_HEIGHT/2
