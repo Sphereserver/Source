@@ -1624,3 +1624,6 @@ Fixed: Accounts being created with FIRSTCONNECTDATE/LASTCONNECTDATE property alr
 Fixed: Linux build not enabling console text colors on modern terminals.
 Fixed: Linux build not showing console exceptions.
 [sphere_msgs.scp]: Removed unused messages 'msg_acc_badpass', 'msg_acc_needpass', 'msg_acc_wcli', 'console_no_admin', 'console_welcome_1'
+
+19-10-2019, Coruja
+Changed: Updated internal SQLite libs v3.29.0 to v3.30.1.
