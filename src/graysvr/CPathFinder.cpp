@@ -16,7 +16,7 @@ void CPathFinder::GetChildren(CPathFinderPointRef& Point, std::list<CPathFinderP
 				continue;
 			RealX = x + Point.m_Point->m_x;
 			RealY = y + Point.m_Point->m_y;
-			if ( (RealX < 0) || (RealY < 0) || (RealX >= MAX_NPC_PATH_STORAGE_SIZE) || (RealY >= MAX_NPC_PATH_STORAGE_SIZE) )
+			if ( (RealX < 0) || (RealY < 0) || (RealX - x >= MAX_NPC_PATH_STORAGE_SIZE) || (RealY - y >= MAX_NPC_PATH_STORAGE_SIZE) )
 				continue;
 			if ( m_Points[RealX][RealY].m_Walkable == false )
 				continue;
