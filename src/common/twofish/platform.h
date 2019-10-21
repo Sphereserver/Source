@@ -34,11 +34,11 @@ Notes:
 
 // Change this to compile on a BigEndian machine
 #if !defined(Q_OS_MAC)
-#define LittleEndian 1
+#define LittleEndianCrypt 1
 #endif
 #define ALIGN32 1
 
-#if LittleEndian
+#if LittleEndianCrypt
 #define		Bswap(x)			(x)		/* NOP for little-endian machines */
 #define		ADDR_XOR			0		/* NOP for little-endian machines */
 #else

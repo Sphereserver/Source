@@ -6,6 +6,7 @@
 #undef FD_SETSIZE
 #define FD_SETSIZE 1024	// for max of n users ! default = 64
 
+#include <intsafe.h>
 #include <io.h>
 #include <process.h>
 #include <time.h>
