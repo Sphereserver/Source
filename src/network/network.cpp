@@ -134,7 +134,7 @@ void NetState::clear(void)
 	clearQueues();
 
 	// clean junk queue entries
-	for (size_t i = 0; i < PacketSend::PRI_QTY; i++)
+	for (size_t i = 0; i < PacketSend::PRI_QTY; ++i)
 		m_outgoing.queue[i].clean();
 	m_outgoing.asyncQueue.clean();
 	m_incoming.rawPackets.clean();
@@ -180,7 +180,7 @@ void NetState::clearQueues(void)
 	ADDTOCALLSTACK("NetState::clearQueues");
 
 	// clear packet queues
-	for (size_t i = 0; i < PacketSend::PRI_QTY; i++)
+	for (size_t i = 0; i < PacketSend::PRI_QTY; ++i)
 	{
 		while (m_outgoing.queue[i].empty() == false)
 		{
@@ -497,7 +497,7 @@ HistoryIP& IPHistoryManager::getHistoryForIP(const CSocketAddressIP& ip)
 
 	// create a new entry
 	HistoryIP hist;
-	memset(static_cast<void *>(&hist), 0, sizeof(HistoryIP));
+	memset(static_cast<void *>(&hist), 0, sizeof(hist));
 	hist.m_ip = ip;
 	hist.m_pingDecay = NETHISTORY_PINGDECAY;
 	hist.update();
@@ -1011,15 +1011,15 @@ void NetworkManager::acceptNewConnection(void)
 		if ( g_Log.GetLogMask() & LOGM_CLIENTS_LOG )
 		{
 			if ( ip.m_blocked )
-				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected (Blocked IP)\n", static_cast<LPCTSTR>(client_addr.GetAddrStr()));
+				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected (Blocked IP)\n", client_addr.GetAddrStr());
 			else if ( maxIp && (ip.m_connecting > maxIp) )
-				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected (CONNECTINGMAXIP reached %ld/%ld)\n", static_cast<LPCTSTR>(client_addr.GetAddrStr()), ip.m_connecting, maxIp);
+				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected (CONNECTINGMAXIP reached %ld/%ld)\n", client_addr.GetAddrStr(), ip.m_connecting, maxIp);
 			else if ( climaxIp && (ip.m_connected > climaxIp) )
-				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected (CLIENTMAXIP reached %ld/%ld)\n", static_cast<LPCTSTR>(client_addr.GetAddrStr()), ip.m_connected, climaxIp);
+				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected (CLIENTMAXIP reached %ld/%ld)\n", client_addr.GetAddrStr(), ip.m_connected, climaxIp);
 			else if ( ip.m_pings >= NETHISTORY_MAXPINGS )
-				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected (MAXPINGS reached %ld/%d)\n", static_cast<LPCTSTR>(client_addr.GetAddrStr()), ip.m_pings, NETHISTORY_MAXPINGS);
+				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected (MAXPINGS reached %ld/%d)\n", client_addr.GetAddrStr(), ip.m_pings, NETHISTORY_MAXPINGS);
 			else
-				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected\n", static_cast<LPCTSTR>(client_addr.GetAddrStr()));
+				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected\n", client_addr.GetAddrStr());
 		}
 		return;
 	}
@@ -1034,7 +1034,7 @@ void NetworkManager::acceptNewConnection(void)
 		DEBUGNETWORK(("Unable to allocate new slot for client, too many clients already connected\n"));
 		CLOSESOCKET(h);
 
-		g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected (CLIENTMAX reached)\n", static_cast<LPCTSTR>(client_addr.GetAddrStr()));
+		g_Log.Event(LOGM_CLIENTS_LOG|LOGL_ERROR, "Connection from %s rejected (CLIENTMAX reached)\n", client_addr.GetAddrStr());
 		return;
 	}
 
@@ -1095,8 +1095,8 @@ void NetworkManager::start(void)
 	ASSERT(m_states == NULL);
 	ASSERT(m_stateCount == 0);
 	m_states = new NetState*[g_Cfg.m_iClientsMax];
-	for (size_t l = 0; l < g_Cfg.m_iClientsMax; l++)
-		m_states[l] = new NetState(static_cast<long>(l));
+	for (unsigned int i = 0; i < g_Cfg.m_iClientsMax; ++i)
+		m_states[i] = new NetState(static_cast<long>(i));
 	m_stateCount = g_Cfg.m_iClientsMax;
 
 	DEBUGNETWORK(("Created %" FMTSIZE_T " network slots (system limit of %d clients)\n", m_stateCount, FD_SETSIZE));
@@ -1741,7 +1741,7 @@ bool NetworkInput::processGameClientData(NetState* state, Packet* buffer)
 
 	g_Log.EventDebug("%lx:Parsing %s", state->id(), static_cast<LPCTSTR>(dump));
 
-	state->m_packetExceptions++;
+	++state->m_packetExceptions;
 	if (state->m_packetExceptions > 10)
 	{
 		g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "%lx:Disconnecting client from account '%s' since it is causing exceptions problems\n", state->id(), client && client->m_pAccount ? client->m_pAccount->GetName() : "");
@@ -2021,7 +2021,7 @@ bool NetworkOutput::processOutput()
 		
 	static unsigned char tick = 0;
 	EXC_TRY("NetworkOutput");
-	tick++;
+	++tick;
 
 	// decide which queues need to be processed
 	bool toProcess[PacketSend::PRI_QTY];
@@ -2071,7 +2071,7 @@ bool NetworkOutput::processOutput()
 
 		// process byte queue
 		if (state->isWriteClosed() == false && processByteQueue(state))
-			packetsSent++;
+			++packetsSent;
 	}
 
 	if (packetsSent > 0)
@@ -2142,7 +2142,7 @@ size_t NetworkOutput::flush(NetState* state)
 		packetsSent += processAsyncQueue(state);
 
 	if (state->isWriteClosed() == false && processByteQueue(state))
-		packetsSent++;
+		++packetsSent;
 
 	state->markFlush(false);
 	return packetsSent;
@@ -2204,7 +2204,7 @@ size_t NetworkOutput::processPacketQueue(NetState* state, unsigned int priority)
 
 		EXC_TRY("processPacketQueue");
 		lengthProcessed += packet->getLength();
-		packetsProcessed++;
+		++packetsProcessed;
 
 		EXC_SET("sending");
 		if (sendPacket(state, packet) == false)
@@ -2566,8 +2566,7 @@ void NetworkOutput::QueuePacketTransaction(PacketTransaction* transaction)
 	{
 		while (priority > PacketSend::PRI_IDLE && state->m_outgoing.queue[priority].size() >= maxQueueSize)
 		{
-			priority--;
-			transaction->setPriority(priority);
+			transaction->setPriority(priority--);
 		}
 	}
 

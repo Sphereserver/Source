@@ -686,10 +686,10 @@ void CAccount::OnLogin(CClient *pClient)
 	else if ( GetPrivLevel() >= PLEVEL_Counsel )
 		SetPrivFlags(PRIV_GM_PAGE);
 
-	if ( !m_Total_Connect_Time )
+	if ( !m_dateFirstConnect.IsTimeValid() )
 	{
-		m_First_IP = m_pClient->GetPeer();
 		m_dateFirstConnect = CGTime::GetCurrentTime();
+		m_First_IP = m_pClient->GetPeer();
 	}
 
 	m_Last_IP = m_pClient->GetPeer();
