@@ -3466,37 +3466,10 @@ BYTE CClient::LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg)
 	}
 
 	// Check if account is in use
-	CSocketAddress SockAddr = GetPeer();
-	if ( pAccount->m_pClient && (pAccount->m_pClient != this) )
+	ClientIterator it;
+	for ( CClient *pClient = it.next(); pClient != NULL; pClient = it.next() )
 	{
-		bool fInUse = false;
-		if ( !SockAddr.IsSameIP(pAccount->m_pClient->GetPeer()) )
-		{
-			// Different IP - no reconnect
-			fInUse = true;
-		}
-		else
-		{
-			// Same IP - allow reconnect if the old char is lingering out
-			CChar *pCharOld = pAccount->m_pClient->m_pChar;
-			if ( pCharOld )
-			{
-				CItem *pItem = pCharOld->LayerFind(LAYER_FLAG_ClientLinger);
-				if ( !pItem )
-					fInUse = true;
-			}
-			if ( !fInUse )
-			{
-				if ( IsConnectTypePacket() && pAccount->m_pClient->IsConnectTypePacket() )
-				{
-					pAccount->m_pClient->CharDisconnect();
-					pAccount->m_pClient->m_NetState->markReadClosed();
-				}
-				else if ( GetConnectType() == pAccount->m_pClient->GetConnectType() )
-					fInUse = true;
-			}
-		}
-		if ( fInUse )
+		if ( pClient->m_pAccount == pAccount )
 		{
 			g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' already in use\n", GetSocketID(), pAccount->GetName());
 			sMsg = "Account already in use.";
@@ -3505,6 +3478,7 @@ BYTE CClient::LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg)
 	}
 
 	// Check privileges
+	CSocketAddress SockAddr = GetPeer();
 	if ( g_Cfg.m_iClientsMax <= 0 )
 	{
 		if ( !SockAddr.IsLocalAddr() )
