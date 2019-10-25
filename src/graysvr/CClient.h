@@ -828,7 +828,7 @@ public:
 
 
 	void addShowDamage(CGrayUID uid, int iDamage);
-	void addSpeedMode(BYTE bMode = 0);
+	void addSpeedMode(BYTE bMode);
 	void addVisualRange(BYTE bRange);
 	void addIdleWarning(BYTE bCode);
 	void addKRToolbar(bool fEnable);

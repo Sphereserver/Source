@@ -27,114 +27,128 @@ enum NPCBRAIN_TYPE
 
 struct CCharNPC
 {
-	// This is basically the unique "brains" for any character
 public:
 	CCharNPC(CChar *pChar, NPCBRAIN_TYPE brain);
 
-private:
-	CCharNPC(const CCharNPC &copy);
-	CCharNPC &operator=(const CCharNPC &other);
-
-public:
 	static const char *m_sClassName;
-	// Stuff that is specific to an NPC character instance (not an NPC type see CCharBase for that)
-	// Any NPC AI stuff will go here
+	static LPCTSTR const sm_szLoadKeys[];
 	static LPCTSTR const sm_szVerbKeys[];
 
-	NPCBRAIN_TYPE m_Brain;		// Number of the assigned basic AI block
-	WORD m_Home_Dist_Wander;	// Distance to allow to "wander"
-	BYTE m_Act_Motivation;		// 0-100 (100=very greatly) how bad do i want to do the current action
-	bool m_bonded;				// Bonded pet
+public:
+	NPCBRAIN_TYPE m_Brain;
+	WORD m_Home_Dist_Wander;
+	BYTE m_Act_Motivation;		// How bad do i want to do the current action (0% - 100%)
+	bool m_bonded;
 
-	// We respond to what we here with this
-	CResourceRefArray m_Speech;	// Speech fragment list (other stuff we know)
+	CServTime m_timeRestock;	// When last restock happened in sell/buy container
+	CResourceRefArray m_Speech;
+	CResourceQty m_Need;		// What items might need/desire? (coded as resource scripts, eg: "10 gold, 20 logs" etc)
 
-	CResourceQty m_Need;		// What items might i need/desire? (coded as resource scripts) ex "10 gold,20 logs" etc
-
-	static LPCTSTR const sm_szLoadKeys[];
-
+	// Pathfind stuff
 	WORD m_nextX[MAX_NPC_PATH_STORAGE_SIZE];	// Array of X coords of the next step
 	WORD m_nextY[MAX_NPC_PATH_STORAGE_SIZE];	// Array of Y coords of the next step
 	CPointMap m_nextPt;							// Where the array wants to go (if changed, recount the path)
-	CServTime m_timeRestock;					// When last restock happened in sell/buy container
 
+public:
 	struct Spells {
 		SPELL_TYPE id;
 	};
 	std::vector<Spells> m_spells;	// spells stored in this NPC
 
-	int Spells_GetCount();
+	void Spells_Add(SPELL_TYPE spell);
 	SPELL_TYPE Spells_GetAt(size_t index);
-	bool Spells_Add(SPELL_TYPE spell);
-	int Spells_FindSpell(SPELL_TYPE spell);
+	inline int Spells_GetCount()
+	{
+		return static_cast<int>(m_spells.size());
+	}
 
 public:
+	int GetNpcAiFlags(const CChar *pChar) const;
+
 	void r_WriteChar(CChar *pChar, CScript &s);
 	bool r_WriteVal(CChar *pChar, LPCTSTR pszKey, CGString &sVal);
 	bool r_LoadVal(CChar *pChar, CScript &s);
 
-	int GetNpcAiFlags(const CChar *pChar) const;
+private:
+	CCharNPC(const CCharNPC &copy);
+	CCharNPC &operator=(const CCharNPC &other);
 };
 
 enum SPEEDMODE_TYPE		// m_speedMode
 {
 	SPEEDMODE_DEFAULT,			// Foot: Default speed (140ms)	/ Mount: Default speed (70ms)
-	SPEEDMODE_FAST,				// Foot: Double Speed (70ms)	/ Mount: Default speed (70ms)
-	SPEEDMODE_SLOW,				// Foot: Always Walk (280ms)	/ Mount: Always Walk (140ms)
-	SPEEDMODE_HYBRID,			// Foot: Always Run (140ms)		/ Mount: Always Walk (140ms)
+	SPEEDMODE_FAST,				// Foot: Double speed (70ms)	/ Mount: Default speed (70ms)
+	SPEEDMODE_SLOW,				// Foot: Always walk (280ms)	/ Mount: Always walk (140ms)
+	SPEEDMODE_HYBRID,			// Foot: Always run (140ms)		/ Mount: Always walk (140ms)
 	SPEEDMODE_GMTELEPORT		// GM Teleport (enhanced client only)
 };
 
 struct CCharPlayer
 {
-	// Stuff that is specific to a player character
 public:
 	CCharPlayer(CChar *pChar, CAccount *pAccount);
 	~CCharPlayer();
 
-private:
-	CCharPlayer(const CCharPlayer &copy);
-	CCharPlayer &operator=(const CCharPlayer &other);
-
-	BYTE m_SkillLock[SKILL_QTY];	// List of skills lock state
-	BYTE m_StatLock[STAT_BASE_QTY];	// List of stats lock state
-	CResourceRef m_SkillClass;		// What skill class group we have selected
-
-public:
 	static const char *m_sClassName;
-	CAccount *m_pAccount;	// The account index (for idle players mostly)
+	static LPCTSTR const sm_szLoadKeys[];
 	static LPCTSTR const sm_szVerbKeys[];
 
-	CServTime m_timeLastUsed;	// Time the player char was last used
+public:
+	CAccount *m_pAccount;
+	CServTime m_timeLastUsed;
+	CGString m_sProfile;
+	WORD m_wMurders;
+	WORD m_wDeaths;
+	SPEEDMODE_TYPE m_speedMode;
+	bool m_fRefuseTrades;
+	bool m_fRefuseGlobalChatRequests;
+	bool m_fKRToolbarEnabled;
+	CResourceRefArray m_Speech;
 
-	CGString m_sProfile;	// Limited to SCRIPT_MAX_LINE_LEN-16
-
-	WORD m_wMurders;		// Murder count
-	WORD m_wDeaths;			// Death count
-	BYTE m_speedMode;
-	bool m_bRefuseTrades;
-	bool m_bRefuseGlobalChatRequests;
-	bool m_bKrToolbarEnabled;
-
-	static LPCTSTR const sm_szLoadKeys[];
-
-	CResourceRefArray m_Speech;	// Speech fragment list (other stuff we know)
+private:
+	SKILLLOCK_TYPE m_SkillLock[SKILL_QTY];
+	SKILLLOCK_TYPE m_StatLock[STAT_BASE_QTY];
+	CResourceRef m_SkillClass;
 
 public:
+	bool SetSkillClass(CChar *pChar, RESOURCE_ID rid);
+	CSkillClassDef *GetSkillClass() const;
+
 	SKILL_TYPE Skill_GetLockType(LPCTSTR pszKey) const;
-	SKILLLOCK_TYPE Skill_GetLock(SKILL_TYPE skill) const;
-	void Skill_SetLock(SKILL_TYPE skill, SKILLLOCK_TYPE state);
+	SKILLLOCK_TYPE Skill_GetLock(SKILL_TYPE skill) const
+	{
+		if ( (skill > SKILL_NONE) && (static_cast<size_t>(skill) < COUNTOF(m_SkillLock)) )
+			return m_SkillLock[skill];
+
+		return SKILLLOCK_LOCK;
+	}
+	void Skill_SetLock(SKILL_TYPE skill, SKILLLOCK_TYPE state)
+	{
+		if ( (skill > SKILL_NONE) && (static_cast<size_t>(skill) < COUNTOF(m_SkillLock)) )
+			m_SkillLock[skill] = state;
+	}
 
 	STAT_TYPE Stat_GetLockType(LPCTSTR pszKey) const;
-	SKILLLOCK_TYPE Stat_GetLock(STAT_TYPE stat) const;
-	void Stat_SetLock(STAT_TYPE stat, SKILLLOCK_TYPE state);
+	SKILLLOCK_TYPE Stat_GetLock(STAT_TYPE stat) const
+	{
+		if ( (stat > STAT_NONE) && (static_cast<size_t>(stat) < COUNTOF(m_StatLock)) )
+			return m_StatLock[stat];
+
+		return SKILLLOCK_LOCK;
+	}
+	void Stat_SetLock(STAT_TYPE stat, SKILLLOCK_TYPE state)
+	{
+		if ( (stat > STAT_NONE) && (static_cast<size_t>(stat) < COUNTOF(m_StatLock)) )
+			m_StatLock[stat] = state;
+	}
 
 	void r_WriteChar(CChar *pChar, CScript &s);
 	bool r_WriteVal(CChar *pChar, LPCTSTR pszKey, CGString &sVal);
 	bool r_LoadVal(CChar *pChar, CScript &s);
 
-	bool SetSkillClass(CChar *pChar, RESOURCE_ID rid);
-	CSkillClassDef *GetSkillClass() const;
+private:
+	CCharPlayer(const CCharPlayer &copy);
+	CCharPlayer &operator=(const CCharPlayer &other);
 };
 
 enum WAR_SWING_TYPE		// m_atFight.m_Swing_State

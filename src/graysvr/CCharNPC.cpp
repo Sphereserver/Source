@@ -1,26 +1,12 @@
-// Actions specific to an NPC.
-#include "graysvr.h"	// predef header.
+#include "graysvr.h"	// predef header
 
-enum CNC_TYPE
-{
-	#define ADD(a,b) CNC_##a,
-	#include "../tables/CCharNpc_props.tbl"
-	#undef ADD
-	CNC_QTY
-};
-
-LPCTSTR const CCharNPC::sm_szLoadKeys[CNC_QTY+1] =
-{
-	#define ADD(a,b) b,
-	#include "../tables/CCharNpc_props.tbl"
-	#undef ADD
-	NULL
-};
+///////////////////////////////////////////////////////////
+// CChar
 
 void CChar::ClearNPC()
 {
 	ADDTOCALLSTACK("CChar::ClearNPC");
-	if ( m_pNPC == NULL )
+	if ( !m_pNPC )
 		return;
 
 	delete m_pNPC;
@@ -30,25 +16,14 @@ void CChar::ClearNPC()
 void CChar::ClearPlayer()
 {
 	ADDTOCALLSTACK("CChar::ClearPlayer");
-	if ( m_pPlayer == NULL )
+	if ( !m_pPlayer )
 		return;
 
-	// unlink me from my account.
-	if ( g_Serv.m_iModeCode != SERVMODE_Exiting )
-	{
-		if ( m_pPlayer->m_pAccount )
-			DEBUG_WARN(("Player delete '%s' name '%s'\n", m_pPlayer->m_pAccount->GetName(), GetName()));
-		else
-			DEBUG_WARN(("Player delete from account name '%s'\n", GetName()));
-	}
-
-	// Is this valid ?
-	m_pPlayer->m_pAccount->DetachChar( this );
+	m_pPlayer->m_pAccount->DetachChar(this);
 	delete m_pPlayer;
 	m_pPlayer = NULL;
 }
 
-// Set up the char as a Player.
 bool CChar::SetPlayerAccount(CAccount *pAccount)
 {
 	ADDTOCALLSTACK("CChar::SetPlayerAccount");
@@ -60,8 +35,8 @@ bool CChar::SetPlayerAccount(CAccount *pAccount)
 		if ( m_pPlayer->m_pAccount == pAccount )
 			return true;
 
-		DEBUG_ERR(("Char '%s' (UID=0%" FMTDWORDH ") can't override account '%s' with '%s'\n", GetName(), static_cast<DWORD>(GetUID()), m_pPlayer->m_pAccount->GetName(), pAccount->GetName()));
-		return false;
+		if ( m_pPlayer->m_pAccount )
+			m_pPlayer->m_pAccount->DetachChar(this);
 	}
 
 	if ( m_pNPC )
@@ -72,62 +47,44 @@ bool CChar::SetPlayerAccount(CAccount *pAccount)
 	return true;
 }
 
-
-
 bool CChar::SetPlayerAccount(LPCTSTR pszAccName)
 {
 	ADDTOCALLSTACK("CChar::SetPlayerAccount");
 	CAccount *pAccount = g_Accounts.Account_FindCreate(pszAccName, (g_Serv.m_eAccApp == ACCAPP_Free));
 	if ( !pAccount )
 	{
-		DEBUG_ERR(("Char '%s' (UID=0%" FMTDWORDH ") can't find account '%s'\n", GetName(), static_cast<DWORD>(GetUID()), pszAccName));
+		DEBUG_ERR(("Can't attach char '%s' (UID=0%" FMTDWORDH ") to invalid account '%s'\n", GetName(), static_cast<DWORD>(GetUID()), pszAccName));
 		return false;
 	}
 	return SetPlayerAccount(pAccount);
 }
 
-// Set up the char as an NPC
 bool CChar::SetNPCBrain(NPCBRAIN_TYPE brain)
 {
 	ADDTOCALLSTACK("CChar::SetNPCBrain");
-	if ( m_pPlayer || (brain == NPCBRAIN_NONE) )
+	if ( m_pPlayer )
 		return false;
 
 	if ( m_pNPC )
-		m_pNPC->m_Brain = brain;	// just replace existing brain
+		m_pNPC->m_Brain = brain;
 	else
 		m_pNPC = new CCharNPC(this, brain);
 	return true;
 }
 
-//////////////////////////
-// -CCharPlayer
+///////////////////////////////////////////////////////////
+// CCharPlayer
 
-enum CPC_TYPE	// Player char.
+CCharPlayer::CCharPlayer(CChar *pChar, CAccount *pAccount)
 {
-	#define ADD(a,b) CPC_##a,
-	#include "../tables/CCharPlayer_props.tbl"
-	#undef ADD
-	CPC_QTY
-};
-
-LPCTSTR const CCharPlayer::sm_szLoadKeys[CPC_QTY+1] =
-{
-	#define ADD(a,b) b,
-	#include "../tables/CCharPlayer_props.tbl"
-	#undef ADD
-	NULL
-};
-
-CCharPlayer::CCharPlayer(CChar *pChar, CAccount *pAccount) : m_pAccount(pAccount)
-{
+	m_pAccount = pAccount;
+	m_timeLastUsed.Init();
 	m_wMurders = 0;
 	m_wDeaths = 0;
 	m_speedMode = SPEEDMODE_DEFAULT;
-	m_bRefuseTrades = false;
-	m_bRefuseGlobalChatRequests = false;
-	m_bKrToolbarEnabled = false;
-	m_timeLastUsed.Init();
+	m_fRefuseTrades = false;
+	m_fRefuseGlobalChatRequests = false;
+	m_fKRToolbarEnabled = false;
 
 	memset(m_SkillLock, 0, sizeof(m_SkillLock));
 	memset(m_StatLock, 0, sizeof(m_StatLock));
@@ -139,7 +96,7 @@ CCharPlayer::~CCharPlayer()
 	m_Speech.RemoveAll();
 }
 
-bool CCharPlayer::SetSkillClass( CChar * pChar, RESOURCE_ID rid )
+bool CCharPlayer::SetSkillClass(CChar *pChar, RESOURCE_ID rid)
 {
 	ADDTOCALLSTACK("CCharPlayer::SetSkillClass");
 	CResourceDef *pDef = g_Cfg.ResourceGetDef(rid);
@@ -150,114 +107,94 @@ bool CCharPlayer::SetSkillClass( CChar * pChar, RESOURCE_ID rid )
 	if ( pLink == GetSkillClass() )
 		return true;
 
-	// Remove any previous skillclass from the Events block.
+	// Remove previous skillclass first
 	size_t i = pChar->m_OEvents.FindResourceType(RES_SKILLCLASS);
 	if ( i != pChar->m_OEvents.BadIndex() )
 		pChar->m_OEvents.RemoveAt(i);
 
+	// Set skillclass
 	m_SkillClass.SetRef(pLink);
-
-	// set it as m_Events block as well.
 	pChar->m_OEvents.Add(pLink);
 	return true;
 }
 
-// This should always return NON-NULL.
-CSkillClassDef * CCharPlayer::GetSkillClass() const
+CSkillClassDef *CCharPlayer::GetSkillClass() const
 {
 	ADDTOCALLSTACK("CCharPlayer::GetSkillClass");
-
+	// NOTE: this should always return non-null
 	CResourceLink *pLink = m_SkillClass.GetRef();
-	if ( pLink == NULL )
-		return NULL;
-	return static_cast<CSkillClassDef *>(pLink);
+	return pLink ? static_cast<CSkillClassDef *>(pLink) : NULL;
 }
 
-// only players can have skill locks.
-SKILL_TYPE CCharPlayer::Skill_GetLockType( LPCTSTR pszKey ) const
+SKILL_TYPE CCharPlayer::Skill_GetLockType(LPCTSTR pszKey) const
 {
 	ADDTOCALLSTACK("CCharPlayer::Skill_GetLockType");
+	// Syntax accept 'SKILLLOCK[X]' and 'SKILLLOCK.X' (where X can be skill name or skill index)
 
-	TCHAR szTmpKey[128];
-	strcpylen( szTmpKey, pszKey, COUNTOF(szTmpKey) );
+	TCHAR pszArgs[40];
+	strcpylen(pszArgs, pszKey, COUNTOF(pszArgs));
 
-	TCHAR * ppArgs[3];
-	size_t i = Str_ParseCmds( szTmpKey, ppArgs, COUNTOF(ppArgs), ".[]" );
-	if ( i <= 1 )
-		return( SKILL_NONE );
+	TCHAR *ppArgs[3];
+	size_t iQty = Str_ParseCmds(pszArgs, ppArgs, COUNTOF(ppArgs), ".[]");
+	if ( iQty <= 1 )
+		return SKILL_NONE;
 
-	if ( IsDigit( ppArgs[1][0] ))
-	{
-		i = ATOI( ppArgs[1] );
-	}
-	else
-	{
-		i = g_Cfg.FindSkillKey( ppArgs[1] );
-	}
-	if ( i >= g_Cfg.m_iMaxSkill )
-		return( SKILL_NONE );
-	return static_cast<SKILL_TYPE>(i);
+	iQty = IsDigit(ppArgs[1][0]) ? ATOI(ppArgs[1]) : g_Cfg.FindSkillKey(ppArgs[1]);
+	SKILL_TYPE skill = static_cast<SKILL_TYPE>(iQty);
+	return CChar::IsSkillBase(skill) ? skill : SKILL_NONE;
 }
 
-SKILLLOCK_TYPE CCharPlayer::Skill_GetLock( SKILL_TYPE skill ) const
-{
-	if ( (skill <= SKILL_NONE) || (static_cast<size_t>(skill) >= COUNTOF(m_SkillLock)) )
-		return SKILLLOCK_LOCK;
-
-	return static_cast<SKILLLOCK_TYPE>(m_SkillLock[skill]);
-}
-
-void CCharPlayer::Skill_SetLock( SKILL_TYPE skill, SKILLLOCK_TYPE state )
-{
-	if ( (skill <= SKILL_NONE) || (static_cast<size_t>(skill) >= COUNTOF(m_SkillLock)) )
-		return;
-
-	m_SkillLock[skill] = static_cast<BYTE>(state);
-}
-
-// only players can have stat locks.
-STAT_TYPE CCharPlayer::Stat_GetLockType( LPCTSTR pszKey ) const
+STAT_TYPE CCharPlayer::Stat_GetLockType(LPCTSTR pszKey) const
 {
 	ADDTOCALLSTACK("CCharPlayer::Stat_GetLockType");
+	// Syntax accept 'STATLOCK[X]' and 'STATLOCK.X' (where X can be stat name or stat index)
 
-	TCHAR szTmpKey[128];
-	strcpylen( szTmpKey, pszKey, COUNTOF(szTmpKey) );
+	TCHAR pszArgs[40];
+	strcpylen(pszArgs, pszKey, COUNTOF(pszArgs));
 
-	TCHAR * ppArgs[3];
-	size_t i = Str_ParseCmds( szTmpKey, ppArgs, COUNTOF(ppArgs), ".[]" );
-	if ( i <= 1 )
-		return( STAT_NONE );
+	TCHAR *ppArgs[3];
+	size_t iQty = Str_ParseCmds(pszArgs, ppArgs, COUNTOF(ppArgs), ".[]");
+	if ( iQty <= 1 )
+		return STAT_NONE;
 
-	if ( IsDigit( ppArgs[1][0] ))
-	{
-		i = ATOI( ppArgs[1] );
-	}
-	else
-	{
-		i = g_Cfg.FindStatKey( ppArgs[1] );
-	}
-	if ( i >= STAT_BASE_QTY )
-		return( STAT_NONE );
-	return static_cast<STAT_TYPE>(i);
+	iQty = IsDigit(ppArgs[1][0]) ? ATOI(ppArgs[1]) : g_Cfg.FindStatKey(ppArgs[1]);
+	STAT_TYPE stat = static_cast<STAT_TYPE>(iQty);
+	return ((stat > STAT_NONE) && (stat < STAT_BASE_QTY)) ? stat : STAT_NONE;
 }
 
-SKILLLOCK_TYPE CCharPlayer::Stat_GetLock( STAT_TYPE stat ) const
+enum CPC_TYPE
 {
-	if ( (stat <= STAT_NONE) || (static_cast<size_t>(stat) >= COUNTOF(m_StatLock)) )
-		return SKILLLOCK_LOCK;
+	#define ADD(a,b) CPC_##a,
+	#include "../tables/CCharPlayer_props.tbl"
+	#undef ADD
+	CPC_QTY
+};
 
-	return static_cast<SKILLLOCK_TYPE>(m_StatLock[stat]);
-}
-
-void CCharPlayer::Stat_SetLock( STAT_TYPE stat, SKILLLOCK_TYPE state )
+LPCTSTR const CCharPlayer::sm_szLoadKeys[CPC_QTY + 1] =
 {
-	if ( (stat <= STAT_NONE) || (static_cast<size_t>(stat) >= COUNTOF(m_StatLock)) )
-		return;
+	#define ADD(a,b) b,
+	#include "../tables/CCharPlayer_props.tbl"
+	#undef ADD
+	NULL
+};
 
-	m_StatLock[stat] = static_cast<BYTE>(state);
-}
+enum CNC_TYPE
+{
+	#define ADD(a,b) CNC_##a,
+	#include "../tables/CCharNpc_props.tbl"
+	#undef ADD
+	CNC_QTY
+};
 
-bool CCharPlayer::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
+LPCTSTR const CCharNPC::sm_szLoadKeys[CNC_QTY + 1] =
+{
+	#define ADD(a,b) b,
+	#include "../tables/CCharNpc_props.tbl"
+	#undef ADD
+	NULL
+};
+
+bool CCharPlayer::r_WriteVal(CChar *pChar, LPCTSTR pszKey, CGString &sVal)
 {
 	ADDTOCALLSTACK("CCharPlayer::r_WriteVal");
 	EXC_TRY("WriteVal");
@@ -266,45 +203,40 @@ bool CCharPlayer::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 		return false;
 
 	if ( !strnicmp(pszKey, "SKILLCLASS.", 11) )
-	{
 		return GetSkillClass()->r_WriteVal(pszKey + 11, sVal, pChar);
-	}
-	else if ( ( !strnicmp(pszKey, "GUILD", 5) ) || ( !strnicmp(pszKey, "TOWN", 4) ) )
+
+	if ( !strnicmp(pszKey, "GUILD", 5) || !strnicmp(pszKey, "TOWN", 4) )
 	{
-		bool bIsGuild = !strnicmp(pszKey, "GUILD", 5);
-		pszKey += bIsGuild ? 5 : 4;
-		if ( *pszKey == 0 )
+		bool fGuild = !strnicmp(pszKey, "GUILD", 5);
+		pszKey += fGuild ? 5 : 4;
+		CItemStone *pStone = pChar->Guild_Find(fGuild ? MEMORY_GUILD : MEMORY_TOWN);
+		if ( *pszKey == '\0' )
 		{
-			CItemStone *pMyGuild = pChar->Guild_Find(bIsGuild ? MEMORY_GUILD : MEMORY_TOWN);
-			if ( pMyGuild ) sVal.FormatHex((DWORD)pMyGuild->GetUID());
-			else sVal.FormatVal(0);
+			if ( pStone )
+				sVal.FormatHex(static_cast<DWORD>(pStone->GetUID()));
+			else
+				sVal.FormatVal(0);
 			return true;
 		}
 		else if ( *pszKey == '.' )
 		{
-			pszKey += 1;
-			CItemStone *pMyGuild = pChar->Guild_Find(bIsGuild ? MEMORY_GUILD : MEMORY_TOWN);
-			if ( pMyGuild ) return pMyGuild->r_WriteVal(pszKey, sVal, pChar);
+			++pszKey;
+			if ( pStone )
+				return pStone->r_WriteVal(pszKey, sVal, pChar);
 		}
 		return false;
 	}
 
-	switch ( FindTableHeadSorted( pszKey, sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
+	switch ( FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1) )
 	{
 		case CPC_ACCOUNT:
 			sVal = m_pAccount->GetName();
-			return( true );
+			return true;
 		case CPC_DEATHS:
-			sVal.FormatVal( m_wDeaths );
-			return( true );
+			sVal.FormatUVal(m_wDeaths);
+			return true;
 		case CPC_DSPEECH:
-			m_Speech.WriteResourceRefList( sVal );
-			return( true );
-		case CPC_KILLS:
-			sVal.FormatVal( m_wMurders );
-			return( true );
-		case CPC_KRTOOLBARSTATUS:
-			sVal.FormatVal( m_bKrToolbarEnabled );
+			m_Speech.WriteResourceRefList(sVal);
 			return true;
 		case CPC_ISDSPEECH:
 			if ( pszKey[9] != '.' )
@@ -312,47 +244,47 @@ bool CCharPlayer::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 			pszKey += 10;
 			sVal.FormatVal(m_Speech.ContainsResourceName(RES_SPEECH, pszKey));
 			return true;
+		case CPC_KILLS:
+			sVal.FormatUVal(m_wMurders);
+			return true;
+		case CPC_KRTOOLBARSTATUS:
+			sVal.FormatVal(m_fKRToolbarEnabled);
+			return true;
 		case CPC_LASTUSED:
-			sVal.FormatLLVal( - g_World.GetTimeDiff( m_timeLastUsed ) / TICK_PER_SEC );
-			return( true );
+			sVal.FormatLLVal(-g_World.GetTimeDiff(m_timeLastUsed) / TICK_PER_SEC);
+			return true;
 		case CPC_PROFILE:
-			{
-				TCHAR szLine[SCRIPT_MAX_LINE_LEN-16];
-				Str_MakeUnFiltered( szLine, m_sProfile, sizeof(szLine));
-				sVal = szLine;
-			}
-			return( true );
+		{
+			TCHAR szProfile[SCRIPT_MAX_LINE_LEN - 16];
+			Str_MakeUnFiltered(szProfile, m_sProfile, sizeof(szProfile));
+			sVal = szProfile;
+			return true;
+		}
 		case CPC_REFUSEGLOBALCHATREQUESTS:
-			sVal.FormatVal(m_bRefuseGlobalChatRequests);
+			sVal.FormatVal(m_fRefuseGlobalChatRequests);
 			return true;
 		case CPC_REFUSETRADES:
-			sVal.FormatVal(m_bRefuseTrades);
+			sVal.FormatVal(m_fRefuseTrades);
 			return true;
 		case CPC_SKILLCLASS:
 			sVal = GetSkillClass()->GetResourceName();
-			return( true );
+			return true;
 		case CPC_SKILLLOCK:
-			{
-				// "SkillLock[alchemy]"
-				SKILL_TYPE skill = Skill_GetLockType( pszKey );
-				sVal.FormatVal( Skill_GetLock( skill ));
-			} return( true );
+			sVal.FormatVal(Skill_GetLock(Skill_GetLockType(pszKey)));
+			return true;
 		case CPC_SPEEDMODE:
-			sVal.FormatVal( m_speedMode );
-			return( true );
+			sVal.FormatVal(m_speedMode);
+			return true;
 		case CPC_STATLOCK:
-			{
-				// "StatLock[str]"
-				STAT_TYPE stat = Stat_GetLockType( pszKey );
-				sVal.FormatVal( Stat_GetLock( stat ));
-			} return( true );
+			sVal.FormatVal(Stat_GetLock(Stat_GetLockType(pszKey)));
+			return true;
 		default:
-			if ( FindTableSorted( pszKey, CCharNPC::sm_szLoadKeys, COUNTOF( CCharNPC::sm_szLoadKeys )-1 ) >= 0 )
+			if ( FindTableSorted(pszKey, CCharNPC::sm_szLoadKeys, COUNTOF(CCharNPC::sm_szLoadKeys) - 1) >= 0 )
 			{
 				sVal = "0";
-				return( true );
+				return true;
 			}
-			return( false );
+			return false;
 	}
 	EXC_CATCH;
 
@@ -362,40 +294,41 @@ bool CCharPlayer::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 	return false;
 }
 
-bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
+bool CCharPlayer::r_LoadVal(CChar *pChar, CScript &s)
 {
 	ADDTOCALLSTACK("CCharPlayer::r_LoadVal");
 	EXC_TRY("LoadVal");
-	
+
 	LPCTSTR pszKey = s.GetKey();
 	if ( !strnicmp(pszKey, "GUILD", 5) || !strnicmp(pszKey, "TOWN", 4) )
 	{
-		bool bIsGuild = !strnicmp(pszKey, "GUILD", 5);
-		pszKey += bIsGuild ? 5 : 4;
+		bool fGuild = !strnicmp(pszKey, "GUILD", 5);
+		pszKey += fGuild ? 5 : 4;
 		if ( *pszKey == '.' )
 		{
-			pszKey += 1;
-			CItemStone *pMyGuild = pChar->Guild_Find(bIsGuild ? MEMORY_GUILD : MEMORY_TOWN);
-			if ( pMyGuild ) return pMyGuild->r_SetVal(pszKey, s.GetArgRaw());
+			++pszKey;
+			CItemStone *pStone = pChar->Guild_Find(fGuild ? MEMORY_GUILD : MEMORY_TOWN);
+			if ( pStone )
+				return pStone->r_SetVal(pszKey, s.GetArgRaw());
 		}
 		return false;
 	}
 
-	switch ( FindTableHeadSorted( s.GetKey(), sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
+	switch ( FindTableHeadSorted(s.GetKey(), sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1) )
 	{
 		case CPC_DEATHS:
 			m_wDeaths = static_cast<WORD>(s.GetArgVal());
 			return true;
 		case CPC_DSPEECH:
-			return( m_Speech.r_LoadVal( s, RES_SPEECH ));
+			return m_Speech.r_LoadVal(s, RES_SPEECH);
 		case CPC_KILLS:
 			m_wMurders = static_cast<WORD>(s.GetArgVal());
 			pChar->NotoSave_Update();
 			return true;
 		case CPC_KRTOOLBARSTATUS:
-			m_bKrToolbarEnabled = ( s.GetArgVal() != 0 );
+			m_fKRToolbarEnabled = (s.GetArgVal() > 0);
 			if ( pChar->m_pClient )
-				pChar->m_pClient->addKRToolbar( m_bKrToolbarEnabled );
+				pChar->m_pClient->addKRToolbar(m_fKRToolbarEnabled);
 			return true;
 		case CPC_LASTUSED:
 			m_timeLastUsed = CServTime::GetCurrentTime() - (s.GetArgLLVal() * TICK_PER_SEC);
@@ -404,50 +337,51 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 			m_sProfile = Str_MakeFiltered(s.GetArgStr());
 			return true;
 		case CPC_REFUSEGLOBALCHATREQUESTS:
-			m_bRefuseGlobalChatRequests = (s.GetArgVal() != 0);
+			m_fRefuseGlobalChatRequests = (s.GetArgVal() > 0);
 			return true;
 		case CPC_REFUSETRADES:
-			m_bRefuseTrades = (s.GetArgVal() != 0);
+			m_fRefuseTrades = (s.GetArgVal() > 0);
 			return true;
 		case CPC_SKILLCLASS:
-			return SetSkillClass( pChar, g_Cfg.ResourceGetIDType( RES_SKILLCLASS, s.GetArgStr()));
+			return SetSkillClass(pChar, g_Cfg.ResourceGetIDType(RES_SKILLCLASS, s.GetArgStr()));
 		case CPC_SKILLLOCK:
-			{
-				SKILL_TYPE skill = Skill_GetLockType(s.GetKey());
-				long flag = s.GetArgVal();
-				if ( (flag < SKILLLOCK_UP) || (flag > SKILLLOCK_LOCK) )
-					return false;
-				Skill_SetLock(skill, static_cast<SKILLLOCK_TYPE>(flag));
-				if ( pChar->m_pClient )
-					pChar->m_pClient->addSkillWindow(skill);
-			} return true;
-		case CPC_SPEEDMODE:
-			{
-				long lVal = s.GetArgVal();
-				if ( (lVal < SPEEDMODE_DEFAULT) || (lVal > SPEEDMODE_GMTELEPORT) || ((lVal == SPEEDMODE_GMTELEPORT) && !pChar->IsPriv(PRIV_GM)) )
-					return false;
-				m_speedMode = static_cast<BYTE>(lVal);
-				if ( pChar->m_pClient )
-					pChar->m_pClient->addSpeedMode(m_speedMode);
-			} return true;
-		case CPC_STATLOCK:
-			{
-				STAT_TYPE stat = Stat_GetLockType(s.GetKey());
-				long flag = s.GetArgVal();
-				if ( (flag < SKILLLOCK_UP) || (flag > SKILLLOCK_LOCK) )
-					return false;
-				Stat_SetLock(stat, static_cast<SKILLLOCK_TYPE>(flag));
-				if ( pChar->m_pClient )
-					pChar->m_pClient->addHealthBarInfo(pChar);
-			} return true;
+		{
+			SKILL_TYPE skill = Skill_GetLockType(s.GetKey());
+			SKILLLOCK_TYPE state = static_cast<SKILLLOCK_TYPE>(s.GetArgVal());
+			if ( (state < SKILLLOCK_UP) || (state > SKILLLOCK_LOCK) )
+				return false;
 
+			Skill_SetLock(skill, state);
+			if ( pChar->m_pClient )
+				pChar->m_pClient->addSkillWindow(skill);
+			return true;
+		}
+		case CPC_SPEEDMODE:
+		{
+			SPEEDMODE_TYPE mode = static_cast<SPEEDMODE_TYPE>(s.GetArgVal());
+			if ( (mode < SPEEDMODE_DEFAULT) || (mode > SPEEDMODE_GMTELEPORT) || ((mode == SPEEDMODE_GMTELEPORT) && !pChar->IsPriv(PRIV_GM)) )
+				return false;
+
+			m_speedMode = mode;
+			if ( pChar->m_pClient )
+				pChar->m_pClient->addSpeedMode(m_speedMode);
+			return true;
+		}
+		case CPC_STATLOCK:
+		{
+			STAT_TYPE stat = Stat_GetLockType(s.GetKey());
+			SKILLLOCK_TYPE state = static_cast<SKILLLOCK_TYPE>(s.GetArgVal());
+			if ( (state < SKILLLOCK_UP) || (state > SKILLLOCK_LOCK) )
+				return false;
+
+			Stat_SetLock(stat, state);
+			if ( pChar->m_pClient )
+				pChar->m_pClient->addHealthBarInfo(pChar);
+			return true;
+		}
 		default:
-			// Just ignore any NPC type stuff.
-			if ( FindTableSorted( s.GetKey(), CCharNPC::sm_szLoadKeys, COUNTOF( CCharNPC::sm_szLoadKeys )-1 ) >= 0 )
-			{
-				return( true );
-			}
-			return( false );
+			// Just ignore any NPC type stuff
+			return (FindTableSorted(s.GetKey(), CCharNPC::sm_szLoadKeys, COUNTOF(CCharNPC::sm_szLoadKeys) - 1) >= 0) ? true : false;
 	}
 	EXC_CATCH;
 
@@ -457,7 +391,7 @@ bool CCharPlayer::r_LoadVal( CChar * pChar, CScript &s )
 	return false;
 }
 
-void CCharPlayer::r_WriteChar( CChar * pChar, CScript & s ) 
+void CCharPlayer::r_WriteChar(CChar *pChar, CScript &s)
 {
 	ADDTOCALLSTACK("CCharPlayer::r_WriteChar");
 	UNREFERENCED_PARAMETER(pChar);
@@ -466,60 +400,63 @@ void CCharPlayer::r_WriteChar( CChar * pChar, CScript & s )
 	s.WriteKey("ACCOUNT", m_pAccount->GetName());
 
 	if ( m_wDeaths )
-		s.WriteKeyVal( "DEATHS", m_wDeaths );
+		s.WriteKeyVal("DEATHS", m_wDeaths);
 	if ( m_wMurders )
-		s.WriteKeyVal( "KILLS", m_wMurders );
+		s.WriteKeyVal("KILLS", m_wMurders);
 	if ( GetSkillClass()->GetResourceID().GetResIndex() )
-		s.WriteKey( "SKILLCLASS", GetSkillClass()->GetResourceName());
+		s.WriteKey("SKILLCLASS", GetSkillClass()->GetResourceName());
 	if ( m_speedMode )
 		s.WriteKeyVal("SPEEDMODE", m_speedMode);
-	if ( m_bRefuseTrades )
-		s.WriteKeyVal("REFUSETRADES", m_bRefuseTrades);
-	if ( m_bRefuseGlobalChatRequests )
-		s.WriteKeyVal("REFUSEGLOBALCHATREQUESTS", m_bRefuseGlobalChatRequests);
-	if ( (m_pAccount->GetResDisp() >= RDS_KR) && m_bKrToolbarEnabled )
-		s.WriteKeyVal("KRTOOLBARSTATUS", m_bKrToolbarEnabled);
+	if ( m_fRefuseTrades )
+		s.WriteKeyVal("REFUSETRADES", m_fRefuseTrades);
+	if ( m_fRefuseGlobalChatRequests )
+		s.WriteKeyVal("REFUSEGLOBALCHATREQUESTS", m_fRefuseGlobalChatRequests);
+	if ( m_fKRToolbarEnabled )
+		s.WriteKeyVal("KRTOOLBARSTATUS", m_fKRToolbarEnabled);
 
 	EXC_SET("saving dynamic speech");
 	if ( m_Speech.GetCount() > 0 )
 	{
 		CGString sVal;
-		m_Speech.WriteResourceRefList( sVal );
+		m_Speech.WriteResourceRefList(sVal);
 		s.WriteKey("DSPEECH", sVal);
 	}
 
 	EXC_SET("saving profile");
-	if ( ! m_sProfile.IsEmpty())
+	if ( !m_sProfile.IsEmpty() )
 	{
-		TCHAR szLine[SCRIPT_MAX_LINE_LEN-16];
-		Str_MakeUnFiltered( szLine, m_sProfile, sizeof(szLine));
-		s.WriteKey( "PROFILE", szLine );
+		TCHAR szProfile[SCRIPT_MAX_LINE_LEN - 16];
+		Str_MakeUnFiltered(szProfile, m_sProfile, sizeof(szProfile));
+		s.WriteKey("PROFILE", szProfile);
 	}
 
 	EXC_SET("saving stats locks");
-	for ( size_t i = 0; i < STAT_BASE_QTY; ++i )
+	size_t iMaxStat = COUNTOF(m_StatLock);
+	for ( size_t i = 0; i < iMaxStat; ++i )
 	{
 		if ( !m_StatLock[i] )
 			continue;
-		TCHAR szTemp[30];
-		sprintf(szTemp, "StatLock[%" FMTSIZE_T "]", i);
+
+		TCHAR szTemp[15];
+		sprintf(szTemp, "STATLOCK[%" FMTSIZE_T "]", i);
 		s.WriteKeyVal(szTemp, m_StatLock[i]);
 	}
 
 	EXC_SET("saving skill locks");
-	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; ++i )
+	size_t iMaxSkill = COUNTOF(m_SkillLock);
+	for ( size_t i = 0; i < iMaxSkill; ++i )
 	{
-		ASSERT(i < COUNTOF(m_SkillLock));
 		if ( !m_SkillLock[i] )
 			continue;
-		TCHAR szTemp[30];
-		sprintf(szTemp, "SkillLock[%" FMTSIZE_T "]", i);
+
+		TCHAR szTemp[15];
+		sprintf(szTemp, "SKILLLOCK[%" FMTSIZE_T "]", i);
 		s.WriteKeyVal(szTemp, m_SkillLock[i]);
 	}
 	EXC_CATCH;
 }
 
-enum CPV_TYPE	// Player char.
+enum CPV_TYPE
 {
 	#define ADD(a,b) CPV_##a,
 	#include "../tables/CCharPlayer_functions.tbl"
@@ -527,7 +464,7 @@ enum CPV_TYPE	// Player char.
 	CPV_QTY
 };
 
-LPCTSTR const CCharPlayer::sm_szVerbKeys[CPV_QTY+1] =
+LPCTSTR const CCharPlayer::sm_szVerbKeys[CPV_QTY + 1] =
 {
 	#define ADD(a,b) b,
 	#include "../tables/CCharPlayer_functions.tbl"
@@ -535,8 +472,7 @@ LPCTSTR const CCharPlayer::sm_szVerbKeys[CPV_QTY+1] =
 	NULL
 };
 
-// Execute command from script
-bool CChar::Player_OnVerb( CScript &s, CTextConsole * pSrc ) 
+bool CChar::Player_OnVerb(CScript &s, CTextConsole *pSrc)	// execute command from script
 {
 	ADDTOCALLSTACK("CChar::Player_OnVerb");
 	if ( !m_pPlayer || !pSrc )
@@ -546,18 +482,18 @@ bool CChar::Player_OnVerb( CScript &s, CTextConsole * pSrc )
 	int index = FindTableSorted(pszKey, CCharPlayer::sm_szVerbKeys, COUNTOF(CCharPlayer::sm_szVerbKeys) - 1);
 	if ( index < 0 )
 	{
-		if ( ( !strnicmp(pszKey, "GUILD", 5) ) || ( !strnicmp(pszKey, "TOWN", 4) ) )
+		if ( !strnicmp(pszKey, "GUILD", 5) || !strnicmp(pszKey, "TOWN", 4) )
 		{
-			bool bIsGuild = !strnicmp(pszKey, "GUILD", 5);
-			pszKey += bIsGuild ? 5 : 4;
+			bool fGuild = !strnicmp(pszKey, "GUILD", 5);
+			pszKey += fGuild ? 5 : 4;
 			if ( *pszKey == '.' )
 			{
-				pszKey += 1;
-				CItemStone *pMyGuild = Guild_Find(bIsGuild ? MEMORY_GUILD : MEMORY_TOWN);
-				if ( pMyGuild )
+				++pszKey;
+				CItemStone *pStone = Guild_Find(fGuild ? MEMORY_GUILD : MEMORY_TOWN);
+				if ( pStone )
 				{
-					CScript sToParse(pszKey, s.GetArgRaw());
-					return pMyGuild->r_Verb(sToParse, pSrc);
+					CScript script(pszKey, s.GetArgRaw());
+					return pStone->r_Verb(script, pSrc);
 				}
 			}
 			return false;
@@ -580,26 +516,13 @@ bool CChar::Player_OnVerb( CScript &s, CTextConsole * pSrc )
 				return true;
 			}
 
-			CAccount *pAccount = m_pPlayer->m_pAccount;
-			ASSERT(pAccount);
-
-			if ( !s.HasArgs() )
+			if ( m_pPlayer->m_pAccount->SetPassword(s.GetArgStr()) )
 			{
-				pAccount->ClearPassword();
-				SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_PASSCLEAR));
-				SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_PASSCLEAR_RELOG));
-				g_Log.Event(LOGM_ACCOUNTS, "Account '%s' cleared password\n", pAccount->GetName());
+				SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_ACCEPTPASS));
+				g_Log.Event(LOGM_ACCOUNTS, "Account '%s' changed password\n", m_pPlayer->m_pAccount->GetName());
 			}
 			else
-			{
-				if ( pAccount->SetPassword(s.GetArgStr()) )
-				{
-					SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_ACCEPTPASS));
-					g_Log.Event(LOGM_ACCOUNTS, "Account '%s' changed password\n", pAccount->GetName());
-				}
-				else
-					SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_INVALIDPASS));
-			}
+				SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_INVALIDPASS));
 			return true;
 		}
 		default:
@@ -607,42 +530,44 @@ bool CChar::Player_OnVerb( CScript &s, CTextConsole * pSrc )
 	}
 }
 
-//////////////////////////
-// -CCharNPC
+///////////////////////////////////////////////////////////
+// CCharNPC
 
 CCharNPC::CCharNPC(CChar *pChar, NPCBRAIN_TYPE brain)
 {
 	m_Brain = brain;
-	m_Home_Dist_Wander = SHRT_MAX;
+	m_Home_Dist_Wander = WORD_MAX;
 	m_Act_Motivation = 0;
 	m_bonded = false;
-#ifdef _WIN32
+
+	m_timeRestock.Init();
 	memset(m_nextX, 0, sizeof(m_nextX));
 	memset(m_nextY, 0, sizeof(m_nextY));
-#else
-	for ( int i = 0; i < MAX_NPC_PATH_STORAGE_SIZE; ++i )
-	{
-		m_nextX[i] = 0;
-		m_nextY[i] = 0;
-	}
-#endif
-	m_timeRestock.Init();
+
 	pChar->SetSight(UO_MAP_VIEW_SIGHT);
 }
 
-int CCharNPC::Spells_GetCount()
+void CCharNPC::Spells_Add(SPELL_TYPE spell)
 {
-	// Get total of spells this NPC have in its spell list
-	ADDTOCALLSTACK("CCharNPC::Spells_GetAll");
-	if ( m_spells.empty() )
-		return -1;
+	ADDTOCALLSTACK("CCharNPC::Spells_Add");
+	CSpellDef *pSpell = g_Cfg.GetSpellDef(spell);
+	if ( !pSpell )
+		return;
 
-	return m_spells.size();
+	for ( size_t i = 0; i < m_spells.size(); ++i )
+	{
+		Spells refSpell = m_spells.at(i);
+		if ( refSpell.id == spell )		// spell is already added
+			return;
+	}
+
+	Spells refSpell;
+	refSpell.id = spell;
+	m_spells.push_back(refSpell);
 }
 
 SPELL_TYPE CCharNPC::Spells_GetAt(size_t index)
 {
-	// Get the spell this NPC have stored at given index
 	ADDTOCALLSTACK("CCharNPC::Spells_GetAt");
 	if ( m_spells.empty() || (index >= m_spells.size()) )
 		return SPELL_NONE;
@@ -651,107 +576,74 @@ SPELL_TYPE CCharNPC::Spells_GetAt(size_t index)
 	return refSpell.id ? refSpell.id : SPELL_NONE;
 }
 
-bool CCharNPC::Spells_Add(SPELL_TYPE spell)
+int CCharNPC::GetNpcAiFlags(const CChar *pChar) const
 {
-	// Add spell to this NPC spell list
-	ADDTOCALLSTACK("CCharNPC::Spells_Add");
-	if ( Spells_FindSpell(spell) >= 0 )
-		return false;
-
-	CSpellDef *pSpell = g_Cfg.GetSpellDef(spell);
-	if ( !pSpell )
-		return false;
-
-	Spells refSpell;
-	refSpell.id = spell;
-	m_spells.push_back(refSpell);
-	return true;
+	CVarDefCont *pVar = pChar->GetKey("OVERRIDE.NPCAI", true);
+	return pVar ? static_cast<int>(pVar->GetValNum()) : g_Cfg.m_iNpcAi;
 }
 
-int CCharNPC::Spells_FindSpell(SPELL_TYPE spell)
-{
-	// Get the index this NPC have stored the given spell
-	ADDTOCALLSTACK("CCharNPC::Spells_FindSpell");
-	for ( size_t i = 0; i < m_spells.size(); ++i )
-	{
-		Spells refSpell = m_spells.at(i);
-		if ( refSpell.id == spell )
-			return i;
-	}
-	return -1;
-}
-
-bool CCharNPC::r_LoadVal( CChar * pChar, CScript &s )
+bool CCharNPC::r_LoadVal(CChar *pChar, CScript &s)
 {
 	EXC_TRY("LoadVal");
-	switch ( FindTableSorted( s.GetKey(), sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
+	switch ( FindTableSorted(s.GetKey(), sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1) )
 	{
-	// Set as string
-	case CNC_THROWDAM:
-	case CNC_THROWOBJ:
-	case CNC_THROWRANGE:
+		// Set as string
+		case CNC_THROWDAM:
+		case CNC_THROWOBJ:
+		case CNC_THROWRANGE:
 		{
 			bool fQuoted = false;
-			pChar->SetDefStr(s.GetKey(), s.GetArgStr( &fQuoted ), fQuoted);
+			pChar->SetDefStr(s.GetKey(), s.GetArgStr(&fQuoted), fQuoted);
+			return true;
 		}
-		break;
-	case CNC_BONDED:
-		m_bonded = (s.GetArgVal() > 0);
-		pChar->UpdatePropertyFlag();
-		break;
-	case CNC_ACTPRI:
-		m_Act_Motivation = static_cast<BYTE>(s.GetArgVal());
-		break;
-	case CNC_NPC:
-		m_Brain = static_cast<NPCBRAIN_TYPE>(s.GetArgVal());
-		break;
-	case CNC_HOMEDIST:
-		if ( !pChar->m_ptHome.IsValidPoint() )
-			pChar->m_ptHome = pChar->GetTopPoint();
-		m_Home_Dist_Wander = static_cast<WORD>(s.GetArgVal());
-		break;
-	case CNC_NEED:
-	case CNC_NEEDNAME:
+		case CNC_BONDED:
+			m_bonded = (s.GetArgVal() > 0);
+			pChar->UpdatePropertyFlag();
+			return true;
+		case CNC_ACTPRI:
+			m_Act_Motivation = static_cast<BYTE>(s.GetArgVal());
+			return true;
+		case CNC_NPC:
+			m_Brain = static_cast<NPCBRAIN_TYPE>(s.GetArgVal());
+			return true;
+		case CNC_HOMEDIST:
+			m_Home_Dist_Wander = static_cast<WORD>(s.GetArgVal());
+			return true;
+		case CNC_NEED:
+		case CNC_NEEDNAME:
 		{
-			TCHAR * pTmp = s.GetArgRaw();
-			m_Need.Load(pTmp);
+			TCHAR *pszArgs = s.GetArgRaw();
+			m_Need.Load(pszArgs);
+			return true;
 		}
-		break;
-	case CNC_SPEECH:
-		return( m_Speech.r_LoadVal( s, RES_SPEECH ));
-
-	case CNC_VENDCAP:
+		case CNC_SPEECH:
+			return m_Speech.r_LoadVal(s, RES_SPEECH);
+		case CNC_VENDCAP:
 		{
 			CItemContainer *pBank = pChar->GetContainerCreate(LAYER_BANKBOX);
 			if ( pBank )
-				pBank->m_itEqBankBox.m_Check_Restock = s.GetArgVal();
+				pBank->m_itEqBankBox.m_Check_Restock = static_cast<DWORD>(s.GetArgVal());
+			return true;
 		}
-		break;
-	case CNC_VENDGOLD:
+		case CNC_VENDGOLD:
 		{
 			CItemContainer *pBank = pChar->GetContainerCreate(LAYER_BANKBOX);
 			if ( pBank )
-				pBank->m_itEqBankBox.m_Check_Amount = s.GetArgVal();
+				pBank->m_itEqBankBox.m_Check_Amount = static_cast<DWORD>(s.GetArgVal());
+			return true;
 		}
-		break;
-	case CNC_SPELLADD:
-	{
-		INT64 ppCmd[255];
-		size_t count = Str_ParseCmds(s.GetArgStr(), ppCmd, COUNTOF(ppCmd));
-		if (count < 1)
-			return false;
-		for (size_t i = 0; i < count; i++)
-			Spells_Add(static_cast<SPELL_TYPE>(ppCmd[i]));
-		break;
+		case CNC_SPELLADD:
+		{
+			INT64 piVal[SPELL_MAGERY_QTY];
+			size_t iQty = Str_ParseCmds(s.GetArgStr(), piVal, COUNTOF(piVal));
+			for ( size_t i = 0; i < iQty; ++i )
+				Spells_Add(static_cast<SPELL_TYPE>(piVal[i]));
+			return true;
+		}
+		default:
+			// Just ignore any player type stuff
+			return (FindTableHeadSorted(s.GetKey(), CCharPlayer::sm_szLoadKeys, COUNTOF(CCharPlayer::sm_szLoadKeys) - 1) >= 0) ? true : false;
 	}
-
-	default:
-		// Just ignore any player type stuff.
-		if ( FindTableHeadSorted( s.GetKey(), CCharPlayer::sm_szLoadKeys, COUNTOF( CCharPlayer::sm_szLoadKeys )-1 ) >= 0 )
-			return( true );
-		return(false );
-	}
-	return true;
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
@@ -760,78 +652,77 @@ bool CCharNPC::r_LoadVal( CChar * pChar, CScript &s )
 	return false;
 }
 
-bool CCharNPC::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
+bool CCharNPC::r_WriteVal(CChar *pChar, LPCTSTR pszKey, CGString &sVal)
 {
 	EXC_TRY("WriteVal");
-	switch ( FindTableSorted( pszKey, sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 ))
+	switch ( FindTableSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1) )
 	{
-	
-	//return as string or hex number or NULL if not set
-	//On these ones, check BaseDef too if not found on dynamic
-	case CNC_THROWDAM:
-	case CNC_THROWOBJ:
-	case CNC_THROWRANGE:
-		sVal = pChar->GetDefStr(pszKey, false, true);
-		break;
-	//return as decimal number or 0 if not set
-	//On these ones, check BaseDef if not found on dynamic
-	case CNC_BONDED:
-		sVal.FormatVal( m_bonded );
-		break;
-	case CNC_ACTPRI:
-		sVal.FormatVal( m_Act_Motivation );
-		break;
-	case CNC_NPC:
-		sVal.FormatVal( m_Brain );
-		break;
-	case CNC_HOMEDIST:
-		sVal.FormatVal( m_Home_Dist_Wander );
-		break;
-	case CNC_NEED:
+
+		// Return as string or hex number or NULL if not set
+		// On these ones, check BaseDef too if not found on dynamic
+		case CNC_THROWDAM:
+		case CNC_THROWOBJ:
+		case CNC_THROWRANGE:
+			sVal = pChar->GetDefStr(pszKey, false, true);
+			return true;
+		// Return as decimal number or 0 if not set
+		// On these ones, check BaseDef if not found on dynamic
+		case CNC_BONDED:
+			sVal.FormatVal(m_bonded);
+			return true;
+		case CNC_ACTPRI:
+			sVal.FormatUVal(m_Act_Motivation);
+			return true;
+		case CNC_NPC:
+			sVal.FormatVal(m_Brain);
+			return true;
+		case CNC_HOMEDIST:
+			sVal.FormatUVal(m_Home_Dist_Wander);
+			return true;
+		case CNC_NEED:
 		{
-			TCHAR *pszTmp = Str_GetTemp();
-			m_Need.WriteKey( pszTmp );
-			sVal = pszTmp;
+			TCHAR *pszArgs = Str_GetTemp();
+			m_Need.WriteKey(pszArgs);
+			sVal = pszArgs;
+			return true;
 		}
-		break;
-	case CNC_NEEDNAME:
+		case CNC_NEEDNAME:
 		{
-			TCHAR *pszTmp = Str_GetTemp();
-			m_Need.WriteNameSingle( pszTmp );
-			sVal = pszTmp;
+			TCHAR *pszArgs = Str_GetTemp();
+			m_Need.WriteNameSingle(pszArgs);
+			sVal = pszArgs;
+			return true;
 		}
-		break;
-	case CNC_SPEECH:
-		m_Speech.WriteResourceRefList( sVal );
-		break;
-	case CNC_VENDCAP:
-		{
-			CItemContainer *pBank = pChar->GetContainerCreate(LAYER_BANKBOX);
-			if ( pBank )
-				sVal.FormatVal( pBank->m_itEqBankBox.m_Check_Restock );
-		}
-		break;
-	case CNC_VENDGOLD:
+		case CNC_SPEECH:
+			m_Speech.WriteResourceRefList(sVal);
+			return true;
+		case CNC_VENDCAP:
 		{
 			CItemContainer *pBank = pChar->GetContainerCreate(LAYER_BANKBOX);
 			if ( pBank )
-				sVal.FormatVal( pBank->m_itEqBankBox.m_Check_Amount );
+				sVal.FormatUVal(pBank->m_itEqBankBox.m_Check_Restock);
+			return true;
 		}
-		break;
-	default:
-		if ( FindTableHeadSorted( pszKey, CCharPlayer::sm_szLoadKeys, COUNTOF( CCharPlayer::sm_szLoadKeys )-1 ) >= 0 )
+		case CNC_VENDGOLD:
 		{
-			sVal = "0";
-			return( true );
+			CItemContainer *pBank = pChar->GetContainerCreate(LAYER_BANKBOX);
+			if ( pBank )
+				sVal.FormatUVal(pBank->m_itEqBankBox.m_Check_Amount);
+			return true;
 		}
-		if ( FindTableSorted( pszKey, CClient::sm_szLoadKeys, CC_QTY ) >= 0 )
-		{
-			sVal = "0";
-			return( true );
-		}
-		return(false );
+		default:
+			if ( FindTableHeadSorted(pszKey, CCharPlayer::sm_szLoadKeys, COUNTOF(CCharPlayer::sm_szLoadKeys) - 1) >= 0 )
+			{
+				sVal = "0";
+				return true;
+			}
+			if ( FindTableSorted(pszKey, CClient::sm_szLoadKeys, CC_QTY) >= 0 )
+			{
+				sVal = "0";
+				return true;
+			}
+			return false;
 	}
-	return true;
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
@@ -840,32 +731,26 @@ bool CCharNPC::r_WriteVal( CChar * pChar, LPCTSTR pszKey, CGString & sVal )
 	return false;
 }
 
-void CCharNPC::r_WriteChar( CChar * pChar, CScript & s )
+void CCharNPC::r_WriteChar(CChar *pChar, CScript &s)
 {
 	UNREFERENCED_PARAMETER(pChar);
 
-	// This says we are an NPC.
-	s.WriteKeyVal("NPC", m_Brain );
+	s.WriteKeyVal("NPC", m_Brain);
 
-	if ( m_Home_Dist_Wander < SHRT_MAX )
-		s.WriteKeyVal( "HOMEDIST", m_Home_Dist_Wander );
+	if ( m_Home_Dist_Wander < WORD_MAX )
+		s.WriteKeyVal("HOMEDIST", m_Home_Dist_Wander);
 	if ( m_Act_Motivation )
-		s.WriteKeyHex( "ACTPRI", m_Act_Motivation );
+		s.WriteKeyHex("ACTPRI", m_Act_Motivation);
 
-	m_Speech.r_Write( s, "SPEECH" );
-	if (m_bonded)
+	m_Speech.r_Write(s, "SPEECH");
+
+	if ( m_bonded )
 		s.WriteKeyVal("BONDED", m_bonded);
 
-	if ( m_Need.GetResourceID().IsValidUID())
+	if ( m_Need.GetResourceID().IsValidUID() )
 	{
-		TemporaryString pszTmp;
-		m_Need.WriteKey( pszTmp );
-		s.WriteKey( "NEED", pszTmp );
+		TemporaryString pszArgs;
+		m_Need.WriteKey(pszArgs);
+		s.WriteKey("NEED", pszArgs);
 	}
-}
-
-int CCharNPC::GetNpcAiFlags( const CChar *pChar ) const 
-{
-	CVarDefCont *pVar = pChar->GetKey("OVERRIDE.NPCAI", true);
-	return pVar ? static_cast<int>(pVar->GetValNum()) : g_Cfg.m_iNpcAi;
 }

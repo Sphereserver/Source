@@ -137,17 +137,8 @@ public:
 
 	static bool NameStrip(TCHAR *pszNameOut, LPCTSTR pszNameIn);
 
-	LPCTSTR GetPassword() const
-	{
-		return m_sPassword;
-	}
 	bool SetPassword(LPCTSTR pszPassword, bool fMD5 = false);
-
 	bool CheckPassword(LPCTSTR pszPassword);
-	void ClearPassword()
-	{
-		m_sPassword.Empty();
-	}
 
 	bool CheckPasswordTries(CSocketAddress SockAddr);
 	void ClearPasswordTries();
