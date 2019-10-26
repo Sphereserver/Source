@@ -114,6 +114,7 @@ CResource::CResource()
 	m_iMagicFlags = 0;
 	m_iRacialFlags = 0;
 	m_iRevealFlags = (REVEALF_DETECTINGHIDDEN|REVEALF_LOOTINGSELF|REVEALF_LOOTINGOTHERS|REVEALF_SPEAK|REVEALF_SPELLCAST);
+	m_iCombatArcheryMovementDelay = 10;
 
 	// Criminal/Karma
 	m_fAttackingIsACrime = true;
@@ -394,6 +395,7 @@ enum RC_TYPE
 	RC_COLORNOTOINVUL,				// m_iColorNotoInvul
 	RC_COLORNOTOINVULGAMEMASTER,	// m_iColorNotoInvulGameMaster
 	RC_COLORNOTONEUTRAL,			// m_iColorNotoNeutral
+	RC_COMBATARCHERYMOVEMENTDELAY, // m_iCombatArcheryMovementDelay
 	RC_COMBATDAMAGEERA,				// m_iCombatDamageEra
 	RC_COMBATFLAGS,					// m_iCombatFlags
 	RC_COMBATHITCHANCEERA,			// m_iCombatHitChanceEra
@@ -617,6 +619,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY + 1] =
 	{"COLORNOTOINVUL",				{ELEM_WORD,		OFFSETOF(CResource, m_iColorNotoInvul),					0}},
 	{"COLORNOTOINVULGAMEMASTER",	{ELEM_WORD,		OFFSETOF(CResource, m_iColorNotoInvulGameMaster),		0}},
 	{"COLORNOTONEUTRAL",			{ELEM_WORD,		OFFSETOF(CResource, m_iColorNotoNeutral),				0}},
+	{"COMBATARCHERYMOVEMENTDELAY",	{ELEM_INT,		OFFSETOF(CResource, m_iCombatArcheryMovementDelay),		0}},
 	{"COMBATDAMAGEERA",				{ELEM_BYTE,		OFFSETOF(CResource, m_iCombatDamageEra),				0}},
 	{"COMBATFLAGS",					{ELEM_INT,		OFFSETOF(CResource, m_iCombatFlags),					0}},
 	{"COMBATHITCHANCEERA",			{ELEM_BYTE,		OFFSETOF(CResource, m_iCombatHitChanceEra),				0}},

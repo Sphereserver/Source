@@ -2661,8 +2661,9 @@ WAR_SWING_TYPE CChar::Fight_Hit(CChar *pCharTarg)
 			}
 			else if ( !IsSetCombatFlags(COMBAT_ARCHERYCANMOVE) && !IsStatFlag(STATF_ArcherCanMove) )
 			{
-				// Only start swing 1sec after the char stop moving	(TO-DO: add .ini option to customize this delay -> SE:250ms / AOS:500ms / pre-AOS:1000ms)
-				if ( m_pClient && (-g_World.GetTimeDiff(m_pClient->m_timeLastEventWalk) < TICK_PER_SEC) )
+				// Only start the swing this much tenths of second after the char stopped moving.
+				//(Values changed between expansions. SE:0,25s / AOS:0,5s / pre-AOS:1,0s)
+				if (m_pClient && (-(g_World.GetTimeDiff(m_pClient->m_timeLastEventWalk) / TICK_PER_SEC) < g_Cfg.m_iCombatArcheryMovementDelay))
 					return WAR_SWING_EQUIPPING;
 			}
 
