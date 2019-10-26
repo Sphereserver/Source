@@ -156,8 +156,7 @@ void CTimedFunctionHandler::OnTick()
 		for ( it = m_timedFunctions[iTick].begin(); (it != m_timedFunctions[iTick].end()) && !fEndLoop; )
 		{
 			TimedFunction *tf = *it;
-			tf->elapsed--;
-			if ( tf->elapsed <= 0 )
+			if ( tf->elapsed-- <= 0 )
 			{
 				CScript s(tf->funcname);
 				CObjBase *pObj = tf->uid.ObjFind();
@@ -1462,7 +1461,7 @@ bool CWorld::LoadFile(LPCTSTR pszFileName)
 	ADDTOCALLSTACK("CWorld::LoadFile");
 	// Load files
 
-	g_Log.Event(LOGL_EVENT, "Loading %s%s\n", static_cast<LPCTSTR>(pszFileName), SPHERE_SCRIPT);
+	g_Log.Event(LOGL_EVENT, "Loading %s%s\n", pszFileName, SPHERE_SCRIPT);
 
 	CScript s;
 	if ( !s.Open(pszFileName, OF_READ|OF_TEXT|OF_DEFAULTMODE) )
@@ -2187,8 +2186,7 @@ CSector *CWorld::GetSector(int iMap, int iSector)
 	if ( !g_MapList.IsMapSupported(iMap) )
 		return NULL;
 
-	int iSectorQty = g_MapList.GetSectorQty(iMap);
-	if ( iSector >= iSectorQty )
+	if ( iSector >= g_MapList.GetSectorQty(iMap) )
 	{
 		g_Log.EventError("Invalid sector %d for map %d specified\n", iSector, iMap);
 		return NULL;

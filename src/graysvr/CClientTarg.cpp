@@ -2386,7 +2386,7 @@ bool CClient::OnTarg_GlobalChat_Add(CChar *pChar)
 		SysMessage("Player currently unavailable.");
 		return false;
 	}
-	if ( pChar->m_pPlayer->m_bRefuseGlobalChatRequests )		// TO-DO: also check if pChar is online on global chat -> CGlobalChat::IsVisible()
+	if ( pChar->m_pPlayer->m_fRefuseGlobalChatRequests )		// TO-DO: also check if pChar is online on global chat -> CGlobalChat::IsVisible()
 	{
 		SysMessage("This user is not accepting Global Chat friend requests at this time.");
 		return false;

@@ -2205,14 +2205,14 @@ void CClient::Event_AOSPopupMenuRequest(CGrayUID uid) //construct packet after a
 			}
 			if ( m_NetState->isClientVersion(MINCLIVER_STATUS_V6) )
 			{
-				if ( pChar->m_pPlayer->m_bRefuseTrades )
+				if ( pChar->m_pPlayer->m_fRefuseTrades )
 					m_pPopupPacket->addOption(POPUP_TRADE_ALLOW, 1154112);
 				else
 					m_pPopupPacket->addOption(POPUP_TRADE_REFUSE, 1154113);
 			}
 			if ( m_NetState->isClientVersion(MINCLIVER_GLOBALCHAT) && (g_Cfg.m_iChatFlags & CHATF_GLOBALCHAT) )
 			{
-				if ( pChar->m_pPlayer->m_bRefuseGlobalChatRequests )
+				if ( pChar->m_pPlayer->m_fRefuseGlobalChatRequests )
 					m_pPopupPacket->addOption(POPUP_GLOBALCHAT_ALLOW, 1158415);
 				else
 					m_pPopupPacket->addOption(POPUP_GLOBALCHAT_REFUSE, 1158416);
@@ -2398,22 +2398,22 @@ void CClient::Event_AOSPopupMenuSelect(CGrayUID uid, WORD wIndex)	//do something
 			return;
 		case POPUP_TRADE_ALLOW:
 			if ( m_pChar->m_pPlayer )
-				m_pChar->m_pPlayer->m_bRefuseTrades = false;
+				m_pChar->m_pPlayer->m_fRefuseTrades = false;
 			return;
 		case POPUP_TRADE_REFUSE:
 			if ( m_pChar->m_pPlayer )
-				m_pChar->m_pPlayer->m_bRefuseTrades = true;
+				m_pChar->m_pPlayer->m_fRefuseTrades = true;
 			return;
 		case POPUP_TRADE_OPEN:
 			Cmd_SecureTrade(pChar, NULL);
 			return;
 		case POPUP_GLOBALCHAT_ALLOW:
 			if ( m_pChar->m_pPlayer )
-				m_pChar->m_pPlayer->m_bRefuseGlobalChatRequests = false;
+				m_pChar->m_pPlayer->m_fRefuseGlobalChatRequests = false;
 			return;
 		case POPUP_GLOBALCHAT_REFUSE:
 			if ( m_pChar->m_pPlayer )
-				m_pChar->m_pPlayer->m_bRefuseGlobalChatRequests = true;
+				m_pChar->m_pPlayer->m_fRefuseGlobalChatRequests = true;
 			return;
 	}
 }

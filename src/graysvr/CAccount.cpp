@@ -541,7 +541,7 @@ bool CAccount::CheckPassword(LPCTSTR pszPassword)
 	}
 
 	// Check password
-	return !strcmpi(pszPassword, GetPassword());
+	return !strcmpi(pszPassword, m_sPassword);
 }
 
 bool CAccount::CheckPasswordTries(CSocketAddress SockAddr)
@@ -686,10 +686,10 @@ void CAccount::OnLogin(CClient *pClient)
 	else if ( GetPrivLevel() >= PLEVEL_Counsel )
 		SetPrivFlags(PRIV_GM_PAGE);
 
-	if ( !m_Total_Connect_Time )
+	if ( !m_dateFirstConnect.IsTimeValid() )
 	{
-		m_First_IP = m_pClient->GetPeer();
 		m_dateFirstConnect = CGTime::GetCurrentTime();
+		m_First_IP = m_pClient->GetPeer();
 	}
 
 	m_Last_IP = m_pClient->GetPeer();
@@ -1055,7 +1055,7 @@ bool CAccount::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case AC_MD5PASSWORD:
 			if ( (pSrc->GetPrivLevel() < PLEVEL_Admin) || (pSrc->GetPrivLevel() < GetPrivLevel()) )
 				return false;
-			sVal = GetPassword();
+			sVal = m_sPassword;
 			break;
 		case AC_PLEVEL:
 			sVal.FormatVal(m_PrivLevel);
@@ -1227,7 +1227,7 @@ void CAccount::r_Write(CScript &s)
 	if ( IsPriv(PRIV_BLOCKED) )
 		s.WriteKeyVal("BLOCK", 1);
 	if ( !m_sPassword.IsEmpty() )
-		s.WriteKey("PASSWORD", GetPassword());
+		s.WriteKey("PASSWORD", m_sPassword);
 	if ( m_Total_Connect_Time )
 		s.WriteKeyVal("TOTALCONNECTTIME", m_Total_Connect_Time);
 	if ( m_Last_Connect_Time )

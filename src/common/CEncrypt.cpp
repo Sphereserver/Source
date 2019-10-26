@@ -21,13 +21,13 @@ CCrypt::CCrypt()
 	m_Seed = 0;
 
 	// Blowfish
-	m_gameTable = CRYPT_GAMETABLE_START;;
+	m_gameTable = CRYPT_GAMETABLE_START;
 	m_gameBlockPos = 0;
 	m_gameStreamPos = 0;
 
 	// Twofish
-	memset(&tf_key, 0, sizeof(keyInstance));
-	memset(&tf_cipher, 0, sizeof(cipherInstance));
+	memset(&tf_key, 0, sizeof(tf_key));
+	memset(&tf_cipher, 0, sizeof(tf_cipher));
 	tf_position = 0;
 	md5_position = 0;
 }
@@ -883,8 +883,8 @@ BYTE CCrypt::DecryptBlowfishByte(BYTE bEnc)
 void CCrypt::InitTwofish()
 {
 	ADDTOCALLSTACK("CCrypt::InitTwofish");
-	memset(&tf_key, 0, sizeof(keyInstance));
-	memset(&tf_cipher, 0, sizeof(cipherInstance));
+	memset(&tf_key, 0, sizeof(tf_key));
+	memset(&tf_cipher, 0, sizeof(tf_cipher));
 	tf_position = 0;
 
 	makeKey(&tf_key, DIR_DECRYPT, 0x80, NULL);
@@ -898,7 +898,7 @@ void CCrypt::InitTwofish()
 		tf_cipherTable[i] = static_cast<BYTE>(i);
 
 	BYTE bTempBuff[TFISH_RESET];
-	memset(&bTempBuff, 0, TFISH_RESET);
+	memset(&bTempBuff, 0, sizeof(bTempBuff));
 	blockEncrypt(&tf_cipher, &tf_key, &tf_cipherTable[0], 0x800, &bTempBuff[0]);
 	memcpy(&tf_cipherTable, &bTempBuff, sizeof(tf_cipherTable));
 
@@ -910,7 +910,7 @@ void CCrypt::DecryptTwofish(BYTE *pbOutput, const BYTE *pbInput, size_t iLen)
 {
 	ADDTOCALLSTACK("CCrypt::DecryptTwofish");
 	BYTE bTempBuff[TFISH_RESET];
-	memset(&bTempBuff, 0, TFISH_RESET);
+	memset(&bTempBuff, 0, sizeof(bTempBuff));
 
 	for ( size_t i = 0; i < iLen; ++i )
 	{

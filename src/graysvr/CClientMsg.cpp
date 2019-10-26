@@ -1404,7 +1404,7 @@ void CClient::addPlayerStart(CChar *pChar)
 		m_pChar->m_pParty->SendAddList(NULL);
 
 	addSpeedMode(m_pChar->m_pPlayer->m_speedMode);
-	addKRToolbar(m_pChar->m_pPlayer->m_bKrToolbarEnabled);
+	addKRToolbar(m_pChar->m_pPlayer->m_fKRToolbarEnabled);
 	resendBuffs();
 
 	Event_SpecialMoveSelect(0);
@@ -3422,7 +3422,7 @@ BYTE CClient::LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg)
 	// Check login
 	TCHAR szAccount[MAX_ACCOUNT_NAME_ENTRY];
 	size_t iLenAccount = pszAccount ? strlen(pszAccount) : 0;
-	if ( (iLenAccount == 0) || (iLenAccount >= MAX_ACCOUNT_NAME_ENTRY) || Str_Check(pszAccount) || (Str_GetBare(szAccount, pszAccount, sizeof(szAccount)) != strlen(pszAccount)) )
+	if ( (iLenAccount == 0) || (iLenAccount >= MAX_ACCOUNT_NAME_ENTRY) || Str_Check(pszAccount) || (Str_GetBare(szAccount, pszAccount, sizeof(szAccount)) != iLenAccount) )
 	{
 		sMsg.Format(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_UNK), pszAccount);
 		return PacketLoginError::BadAccount;
@@ -3447,7 +3447,7 @@ BYTE CClient::LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg)
 
 	TCHAR szPassword[MAX_ACCOUNT_PASS_ENTRY];
 	size_t iLenPassword = pszPassword ? strlen(pszPassword) : 0;
-	if ( (iLenPassword == 0) || (iLenPassword >= MAX_ACCOUNT_NAME_ENTRY) || Str_Check(pszPassword) || (Str_GetBare(szPassword, pszPassword, sizeof(szPassword)) != strlen(pszPassword)) || !pAccount->CheckPassword(pszPassword) )
+	if ( (iLenPassword == 0) || (iLenPassword >= MAX_ACCOUNT_NAME_ENTRY) || Str_Check(pszPassword) || (Str_GetBare(szPassword, pszPassword, sizeof(szPassword)) != iLenPassword) || !pAccount->CheckPassword(pszPassword) )
 	{
 		g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' inserted bad password\n", GetSocketID(), pAccount->GetName());
 		sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_INVALIDPASS);
@@ -3466,37 +3466,10 @@ BYTE CClient::LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg)
 	}
 
 	// Check if account is in use
-	CSocketAddress SockAddr = GetPeer();
-	if ( pAccount->m_pClient && (pAccount->m_pClient != this) )
+	ClientIterator it;
+	for ( CClient *pClient = it.next(); pClient != NULL; pClient = it.next() )
 	{
-		bool fInUse = false;
-		if ( !SockAddr.IsSameIP(pAccount->m_pClient->GetPeer()) )
-		{
-			// Different IP - no reconnect
-			fInUse = true;
-		}
-		else
-		{
-			// Same IP - allow reconnect if the old char is lingering out
-			CChar *pCharOld = pAccount->m_pClient->m_pChar;
-			if ( pCharOld )
-			{
-				CItem *pItem = pCharOld->LayerFind(LAYER_FLAG_ClientLinger);
-				if ( !pItem )
-					fInUse = true;
-			}
-			if ( !fInUse )
-			{
-				if ( IsConnectTypePacket() && pAccount->m_pClient->IsConnectTypePacket() )
-				{
-					pAccount->m_pClient->CharDisconnect();
-					pAccount->m_pClient->m_NetState->markReadClosed();
-				}
-				else if ( GetConnectType() == pAccount->m_pClient->GetConnectType() )
-					fInUse = true;
-			}
-		}
-		if ( fInUse )
+		if ( pClient->m_pAccount == pAccount )
 		{
 			g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' already in use\n", GetSocketID(), pAccount->GetName());
 			sMsg = "Account already in use.";
@@ -3505,6 +3478,7 @@ BYTE CClient::LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg)
 	}
 
 	// Check privileges
+	CSocketAddress SockAddr = GetPeer();
 	if ( g_Cfg.m_iClientsMax <= 0 )
 	{
 		if ( !SockAddr.IsLocalAddr() )

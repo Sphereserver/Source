@@ -2621,7 +2621,7 @@ void CChar::NPC_Pathfinding()
 	EXC_TRY("Pathfinding");
 	EXC_SET("pre-checking");
 	int iInt = (NPC_GetAiFlags() & NPC_AI_ALWAYSINT) ? 300 : Stat_GetAdjusted(STAT_INT);
-	if ( iInt < 75 )	// too dumb
+	if ( iInt < 30 )	// too dumb
 		return;
 	if ( m_pNPC->m_nextPt == m_Act_p )	// path to this point is already saved
 		return;

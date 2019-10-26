@@ -1241,7 +1241,7 @@ bool CClient::Cmd_SecureTrade(CChar *pChar, CItem *pItem)
 	if ( !pChar->m_pClient )	// and also offline players
 		return false;
 
-	if ( pChar->m_pPlayer && pChar->m_pPlayer->m_bRefuseTrades )
+	if ( pChar->m_pPlayer && pChar->m_pPlayer->m_fRefuseTrades )
 	{
 		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_TRADE_REFUSE), pChar->GetName());
 		return false;

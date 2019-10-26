@@ -16,7 +16,7 @@ void CPathFinder::GetChildren(CPathFinderPointRef& Point, std::list<CPathFinderP
 				continue;
 			RealX = x + Point.m_Point->m_x;
 			RealY = y + Point.m_Point->m_y;
-			if ( (RealX < 0) || (RealY < 0) || (RealX > MAX_NPC_PATH_STORAGE_SIZE) || (RealY > MAX_NPC_PATH_STORAGE_SIZE) )
+			if ( (RealX < 0) || (RealY < 0) || (RealX - x >= MAX_NPC_PATH_STORAGE_SIZE) || (RealY - y >= MAX_NPC_PATH_STORAGE_SIZE) )
 				continue;
 			if ( m_Points[RealX][RealY].m_Walkable == false )
 				continue;
@@ -98,7 +98,7 @@ int CPathFinder::FindPath() //A* algorithm
 	signed short X = m_pChar->GetTopPoint().m_x - m_RealX;
 	signed short Y = m_pChar->GetTopPoint().m_y - m_RealY;
 
-	if ( (X < 0) || (Y < 0) || (X > MAX_NPC_PATH_STORAGE_SIZE) || (Y > MAX_NPC_PATH_STORAGE_SIZE) )
+	if ( (X < 0) || (Y < 0) || (X >= MAX_NPC_PATH_STORAGE_SIZE) || (Y >= MAX_NPC_PATH_STORAGE_SIZE) )
 	{
 		//Too far away
 		Clear();

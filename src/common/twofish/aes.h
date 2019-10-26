@@ -77,9 +77,9 @@ parameters at the bottom of the structs as appropriate.
 */
 
 #ifdef _WIN32
-	#include "intsafe.h"	// load BYTE/DWORD typedefs from here
+	#include "../os_windows.h"	// load BYTE/DWORD typedefs from here
 #else
-	#include "../os_unix.h"	// load BYTE/DWORD typedefs from here
+	#include "../os_unix.h"		// load BYTE/DWORD typedefs from here
 #endif
 //#define BYTE unsigned char
 //#define DWORD unsigned long
@@ -149,9 +149,8 @@ int reKey(keyInstance* key);	/* do key schedule using modified key.keyDwords */
 #define		TAB_MIN_QUERY		50
 int TableOp(int op);
 
-#ifndef CONST // warning C4005: 'CONST' : macro redefinition \microsoft visual studio\vc98\include\windef.h(138) : see previous definition of 'CONST'
+#undef CONST
 #define		CONST				/* helpful C++ syntax sugar, NOP for ANSI C */
-#endif
 
 #if BLOCK_SIZE == 128			/* optimize block copies */
 #define		Copy1(d,s,N)	((DWORD *)(d))[N] = ((DWORD *)(s))[N]
