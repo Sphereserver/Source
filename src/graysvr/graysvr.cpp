@@ -623,8 +623,7 @@ int Sphere_InitServer( int argc, char *argv[] )
 	WritePidFile(2);
 
 	EXC_SET("load world");
-	if ( !g_World.LoadAll() )
-		return -8;
+	g_World.LoadAll();
 
 	EXC_SET("sockets init");
 	if ( !g_Serv.SocketsInit() )
