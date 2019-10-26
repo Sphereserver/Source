@@ -1631,3 +1631,6 @@ Changed: Updated internal SQLite libs v3.29.0 to v3.30.1.
 24-10-2019, Coruja
 Fixed: Linux build returning "Account already in use" message even when the account is not in use.
 [sphere_msgs.scp]: Removed unused messages 'msg_acc_passclear', 'msg_acc_passclear_relog'
+
+26-10-2019, Coruja
+Fixed: WHILE loop not increasing <LOCAL._WHILE> counter correctly.

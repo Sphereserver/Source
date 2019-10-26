@@ -147,13 +147,13 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop(CScript &s, int iType, CTextConsole *p
 			if ( g_Cfg.m_iMaxLoopTimes && (iLoopsMade >= g_Cfg.m_iMaxLoopTimes) )
 				goto toomanyloops;
 
+			pArgs->m_VarsLocal.SetNum("_WHILE", i++, false);
 			strcpy(pszTemp, sOrig.GetPtr());
 			pszCond = pszTemp;
 			ParseText(pszCond, pSrc, 0, pArgs);
 			if ( !Exp_GetLLVal(pszCond) )
 				break;
 
-			pArgs->m_VarsLocal.SetNum("_WHILE", i, false);
 			TRIGRET_TYPE iRet = OnTriggerRun(s, TRIGRUN_SECTION_TRUE, pSrc, pArgs, psResult);
 			if ( iRet == TRIGRET_BREAK )
 			{
@@ -167,7 +167,6 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop(CScript &s, int iType, CTextConsole *p
 			else
 				EndContext = s.GetContext();
 			s.SeekContext(StartContext);
-			++i;
 		}
 	}
 	else
