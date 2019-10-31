@@ -357,14 +357,6 @@ void CChar::ClientDetach()
 	if ( m_pParty && m_pParty->IsPartyMaster(this) )
 		m_pParty->Disband();
 
-	// If this char is on a IT_SHIP then stop the ship
-	if ( m_pArea && m_pArea->IsFlag(REGION_FLAG_SHIP) )
-	{
-		CItemShip *pShipItem = static_cast<CItemShip *>(m_pArea->GetResourceID().ItemFind());
-		if ( pShipItem )
-			pShipItem->Ship_Stop();
-	}
-
 	CSector *pSector = GetTopSector();
 	if ( pSector )
 		pSector->ClientDetach(this);

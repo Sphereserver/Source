@@ -1851,7 +1851,8 @@ void CClient::addPlayerSee(const CPointMap &ptOld, bool fIgnoreSelfRegion)
 					&& (!pItem->GetTopLevelObj()->GetTopPoint().GetRegion(REGION_TYPE_HOUSE)		// item is not in a house (ships are ok)
 						|| (pItem->m_uidLink.IsValidUID() && pItem->m_uidLink.IsItem() && pItem->m_uidLink.ItemFind()->IsTypeMulti())		// item is linked to a multi
 						|| pItem->IsTypeMulti()		// item is an multi
-						|| pItem->GetKeyNum("ALWAYSSEND", true))) )	// item has ALWAYSSEND tag set
+						|| pItem->Can(CAN_I_BLOCK)	// item can block movement
+						|| pItem->GetKeyNum("ALWAYSSEND", true))) )	// item has TAG.ALWAYSSEND set
 			{
 				++iSeeCurrent;
 				addItem_OnGround(pItem);

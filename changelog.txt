@@ -1597,7 +1597,7 @@ Changed: Vendor BUY/SELL commands will not check LOS anymore.
 Changed: Misc improvements on Context Menu engine.
 	-To improve usability, it will not check LOS anymore
 	-Entries now will gray out automatically based on distance, flags, etc
-[sphere.ini]: Removed OF_NoContextMenuLOS option flag
+[sphere.ini]: Removed OF_NoContextMenuLOS optional flag
 [sphereCrypt.ini]: Added crypt key for classic clients 7.0.78 ~ 7.0.79 and enhanced clients 4.0.78 ~ 4.0.79
 
 26-09-2019, Coruja
@@ -1634,3 +1634,8 @@ Fixed: Linux build returning "Account already in use" message even when the acco
 
 26-10-2019, Coruja
 Fixed: WHILE loop not increasing <LOCAL._WHILE> counter correctly.
+
+31-10-2019, Coruja
+Changed: OF_OSIMultiSight optional feature on sphere.ini now will always show items that have CAN=can_i_block set.
+Changed: Logout inside moving ships will not make it stop anymore.
+Fixed: Ships not moving correctly objects inside it when there's too many objects to move.

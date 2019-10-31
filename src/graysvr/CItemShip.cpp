@@ -7,8 +7,6 @@
 
 /////////////////////////////////////////////////////////////////////////////
 
-#define MAX_MULTI_LIST_OBJS 128
-
 CItemShip::CItemShip( ITEMID_TYPE id, CItemBase * pItemDef ) : CItemMulti( id, pItemDef )
 {
 	m_NextMove.Init();
@@ -154,6 +152,7 @@ bool CItemShip::Ship_SetMoveDir(DIR_TYPE dir, BYTE bSpeed, bool fWheelMove)
 	return true;
 }
 
+#define SHIP_MAX_OBJ_LIST	1024
 
 size_t CItemShip::Ship_ListObjs( CObjBase ** ppObjList )
 {
@@ -174,7 +173,7 @@ size_t CItemShip::Ship_ListObjs( CObjBase ** ppObjList )
 
 	CWorldSearch AreaChar( GetTopPoint(), iMaxDist );
 	AreaChar.SetAllShow( true );
-	while ( iCount < MAX_MULTI_LIST_OBJS )
+	while ( iCount < SHIP_MAX_OBJ_LIST )
 	{
 		CChar * pChar = AreaChar.GetChar();
 		if ( pChar == NULL )
@@ -192,7 +191,7 @@ size_t CItemShip::Ship_ListObjs( CObjBase ** ppObjList )
 	}
 
 	CWorldSearch AreaItem(GetTopPoint(), iMaxDist);
-	while (iCount < MAX_MULTI_LIST_OBJS)
+	while ( iCount < SHIP_MAX_OBJ_LIST )
 	{
 		CItem * pItem = AreaItem.GetItem();
 		if (pItem == NULL)
@@ -231,7 +230,7 @@ bool CItemShip::Ship_MoveDelta(CPointBase ptDelta, bool fMapBoundary)
 		return false;
 
 	// Move the ship and everything on the deck
-	CObjBase *ppObjs[MAX_MULTI_LIST_OBJS + 1];
+	CObjBase *ppObjs[SHIP_MAX_OBJ_LIST + 1];
 	size_t iCount = Ship_ListObjs(ppObjs);
 
 	CObjBase *pObj = NULL;
@@ -409,7 +408,7 @@ bool CItemShip::Ship_Face( DIR_TYPE dir )
 	const CItemBaseMulti *pMultiDefOld = Multi_GetDef(GetID());
 
 	// Reorient everything on the deck
-	CObjBase *ppObjs[MAX_MULTI_LIST_OBJS + 1];
+	CObjBase *ppObjs[SHIP_MAX_OBJ_LIST + 1];
 	size_t iCount = Ship_ListObjs(ppObjs);
 
 	CObjBase *pObj = NULL;
