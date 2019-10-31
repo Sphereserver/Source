@@ -10,7 +10,7 @@ for:
       only:
         - image: Visual Studio 2015
     before_build:
-      - ps: if (!$env:APPVEYOR_PULL_REQUEST_NUMBER) {Update-AppveyorBuild -Version ("0.56.4.{0}" -f ((git rev-list --count HEAD) - 2406))}
+      - ps: if (-not (Test-Path env:APPVEYOR_PULL_REQUEST_NUMBER)) {Update-AppveyorBuild -Version ("0.56.4.{0}" -f ((git rev-list --count HEAD) - 2406))}
     build:
       project: SphereSvr.vcxproj
       verbosity: minimal
