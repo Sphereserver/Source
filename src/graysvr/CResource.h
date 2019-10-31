@@ -785,6 +785,7 @@ public:
 	int m_iArcheryMaxDist;
 	int m_iHitsUpdateRate;					// how often send my hits updates to visible clients
 	int m_iSpeedScaleFactor;				// fight skill delay = m_iSpeedScaleFactor / ( (dex + 100) * Weapon Speed )
+	int m_iCombatArcheryMovementDelay;		// delay (in tenths of second) to start next swing on Archery skill after the char stop moving
 	int m_iCombatDamageEra;					// define damage formula to use on physical combat
 	int m_iCombatHitChanceEra;				// define hit chance formula to use on physical combat
 	int m_iCombatSpeedEra;					// define swing speed formula to use on physical combat

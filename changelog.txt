@@ -1639,3 +1639,4 @@ Fixed: WHILE loop not increasing <LOCAL._WHILE> counter correctly.
 Changed: OF_OSIMultiSight optional feature on sphere.ini now will always show items that have CAN=can_i_block set.
 Changed: Logout inside moving ships will not make it stop anymore.
 Fixed: Ships not moving correctly objects inside it when there's too many objects to move.
+[sphere.ini]: Added new setting CombatArcheryMovementDelay (ported from experimental branch)
