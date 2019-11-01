@@ -7,14 +7,15 @@
 
 //---------------------------PROTOCOL DEFS---------------------------
 
-// All these structures must be BYTE packed.
-#if defined _WIN32 && (!__MINGW32__)
-// Microsoft dependant pragma
-#pragma pack(1)
-#define PACK_NEEDED
+// All these structures must be BYTE packed
+#if defined _WIN32
+	#define PACK_NEEDED
+	#pragma pack(1)
 #else
-// GCC based compiler you can add:
-#define PACK_NEEDED __attribute__ ((packed))
+	#define PACK_NEEDED	__attribute__ ((packed))
+	#if __GNUC__ >= 9
+		#pragma GCC diagnostic ignored "-Waddress-of-packed-member"
+	#endif
 #endif
 
 // Pack/unpack in network order.

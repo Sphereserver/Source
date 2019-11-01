@@ -4,8 +4,8 @@ CODE_GEN_FLAGS		= -fexceptions -fnon-call-exceptions
 GENERAL_FLAGS		= -pipe
 LINKER_FLAGS		= -s
 OPTIMIZATION_FLAGS	= -Os -ffast-math -fno-strict-aliasing -fno-omit-frame-pointer
-O_WARNING_FLAGS		= -Wall -Wno-maybe-uninitialized -Wno-switch -Wno-unknown-pragmas -Wno-unused-result -Wno-invalid-offsetof
-CO_WARNING_FLAGS	= -Wall -Wno-maybe-uninitialized -Wno-switch -Wno-unknown-pragmas -Wno-unused-result -Wno-implicit-function-declaration
+O_WARNING_FLAGS		= -Wall -Wno-maybe-uninitialized -Wno-switch -Wno-unused-result
+CO_WARNING_FLAGS	= -Wall -Wno-implicit-function-declaration -Wno-unknown-pragmas -Wno-unused-result
 
 ifdef NIGHTLY
 	NIGHTLY_DEFS	= -D_NIGHTLYBUILD

@@ -414,7 +414,6 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 	}
 	else if ( !_ISCSYMF(pszArgs[0]) )
 	{
-#pragma region maths
 		// Some sort of math operator?
 		switch ( pszArgs[0] )
 		{
@@ -447,10 +446,8 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 			case '\0':
 				return 0;
 		}
-#pragma endregion maths
 	}
 	else
-#pragma region intrinsics
 	{
 		// Symbol or intrinsinc function?
 		int index = FindTableHeadSorted(pszArgs, sm_IntrinsicFunctions, COUNTOF(sm_IntrinsicFunctions) - 1);
@@ -795,7 +792,6 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 		if ( m_VarDefs.GetParseVal(pszArgs, &llVal) )
 			return llVal;
 	}
-#pragma endregion intrinsics
 
 	// Error of some sort
 	TCHAR szTag[EXPRESSION_MAX_KEY_LEN];

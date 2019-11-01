@@ -6,12 +6,6 @@
 #include "mysql/include/mysql.h"
 #include "mysql/include/errmsg.h"
 
-#ifdef _WIN32
-	#pragma comment(lib, "libmysql")
-#else
-	#pragma comment(lib, "libmysqlclient")
-#endif
-
 class CDataBase : public CScriptObj
 {
 public:
