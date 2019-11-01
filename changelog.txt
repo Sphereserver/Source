@@ -1640,3 +1640,4 @@ Changed: OF_OSIMultiSight optional feature on sphere.ini now will always show it
 Changed: Logout inside moving ships will not make it stop anymore.
 Fixed: Ships not moving correctly objects inside it when there's too many objects to move.
 [sphere.ini]: Added new setting CombatArcheryMovementDelay (ported from experimental branch)
+[sphereCrypt.ini]: Added crypt key for classic client 7.0.80 and enhanced client 4.0.80
