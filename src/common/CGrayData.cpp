@@ -157,8 +157,10 @@ CGrayItemInfo::CGrayItemInfo( ITEMID_TYPE id )
 		m_weight = 0xFF;
 		m_layer = LAYER_NONE;
 		m_wAnim = 0;
+		m_wHue = 0;
+		m_wLight = 0;
 		m_height = 0;
-		strcpy(m_name, (id <= ITEMID_GALLEON_BRIT2_W) ? "ship" : "structure");
+		strcpy(m_name, CItemBase::IsID_Ship(id) ? "ship" : "structure");
 		return;
 	}
 
@@ -213,11 +215,11 @@ CGrayItemInfo::CGrayItemInfo( ITEMID_TYPE id )
 			m_flags = record.m_flags;
 			m_weight = record.m_weight;
 			m_layer = record.m_layer;
+			m_dwUnk11 = record.m_dwUnk6;
 			m_wAnim = record.m_wAnim;
 			m_wHue = record.m_wHue;
 			m_wLight = record.m_wLight;
 			m_height = record.m_height;
-			m_dwUnk11 = record.m_dwUnk6;
 			strcpylen(m_name, record.m_name, COUNTOF(m_name));
 			break;
 		}
@@ -286,7 +288,7 @@ CGrayTerrainInfo::CGrayTerrainInfo( TERRAIN_TYPE id )
 		switch (format)
 		{
 			case VERFORMAT_HIGHSEAS: // high seas format (CUOTerrainTypeRec2)
-				offset = (id == 0? 0 : 4) + (( id / UOTILE_BLOCK_QTY ) * 4 ) + ( id * sizeof( CUOTerrainTypeRec2 ));
+				offset = 4 + (( id / UOTILE_BLOCK_QTY ) * 4 ) + ( id * sizeof( CUOTerrainTypeRec2 ));
 				break;
 
 			case VERFORMAT_ORIGINAL: // original format (CUOTerrainTypeRec)
@@ -349,9 +351,9 @@ size_t CGrayMulti::Load( MULTI_TYPE id )
 
 		if ( g_Install.GetMulFormat(VERFILE_MULTIIDX) == VERFORMAT_HIGHSEAS )
 		{
-			// High Seas multi format (CUOMultiItemRec2)
-			m_iItemQty = index.GetBlockLength() / sizeof(CUOMultiItemRec2);
-			m_pItems = new CUOMultiItemRec2[m_iItemQty];
+			// High Seas multi format (CUOMultiItemRecHS)
+			m_iItemQty = index.GetBlockLength() / sizeof(CUOMultiItemRecHS);
+			m_pItems = new CUOMultiItemRecHS[m_iItemQty];
 			ASSERT(m_pItems);
 
 			ASSERT(m_iItemQty * sizeof(m_pItems[0]) >= index.GetBlockLength());
@@ -362,7 +364,7 @@ size_t CGrayMulti::Load( MULTI_TYPE id )
 		{
 			// Old multi format (CUOMultiItemRec)
 			m_iItemQty = index.GetBlockLength() / sizeof(CUOMultiItemRec);
-			m_pItems = new CUOMultiItemRec2[m_iItemQty];
+			m_pItems = new CUOMultiItemRecHS[m_iItemQty];
 			ASSERT(m_pItems);
 
 			CUOMultiItemRec *pItems = new CUOMultiItemRec[m_iItemQty];

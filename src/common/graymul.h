@@ -1668,7 +1668,7 @@ struct CUOMultiItemRec // (Multi.mul)
 
 } PACK_NEEDED;
 
-struct CUOMultiItemRec2 // (Multi.mul, High Seas+)
+struct CUOMultiItemRecHS // (Multi.mul, High Seas+)
 {
 	// Describe multi's like houses and boats. One single tile.
 	// From Multi.Idx and Multi.mul files

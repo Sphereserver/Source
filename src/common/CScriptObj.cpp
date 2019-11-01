@@ -899,7 +899,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerRun(CScript &s, TRIGRUN_TYPE trigger, CTextCon
 			case SK_IF:
 			{
 				EXC_SET("if statement");
-				bool fTrigger = (s.GetArgVal() != 0);
+				bool fTrigger = (s.GetArgLLVal() != 0);
 				bool fBeenTrue = false;
 				for (;;)
 				{
@@ -916,7 +916,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerRun(CScript &s, TRIGRUN_TYPE trigger, CTextCon
 					else if ( iRet == TRIGRET_ELSEIF )
 					{
 						ParseText(s.GetArgStr(), pSrc, 0, pArgs);
-						fTrigger = (s.GetArgVal() != 0);
+						fTrigger = (s.GetArgLLVal() != 0);
 					}
 				}
 				break;
@@ -1648,7 +1648,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			return true;
 		}
 		case SSC_HVAL:
-			sVal.FormatLLHex(Exp_GetLLVal(pszKey));
+			sVal.FormatULLHex(Exp_GetLLVal(pszKey));
 			return true;
 		case SSC_FEVAL:		// Float EVAL
 			sVal.FormatVal(ATOI(pszKey));
@@ -1795,7 +1795,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case SSC_ASC:
 		{
 			REMOVE_QUOTES(pszKey);
-			sVal.FormatLLHex(*pszKey);
+			sVal.FormatULLHex(*pszKey);
 
 			TCHAR *pszBuffer = Str_GetTemp();
 			strncpy(pszBuffer, sVal, SCRIPT_MAX_LINE_LEN - 1);
@@ -1804,7 +1804,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			{
 				if ( *pszKey == '"' )
 					break;
-				sVal.FormatLLHex(*pszKey);
+				sVal.FormatULLHex(*pszKey);
 				strcat(pszBuffer, " ");
 				strncat(pszBuffer, sVal, SCRIPT_MAX_LINE_LEN - 1);
 			}
@@ -1823,7 +1823,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				return false;
 
 			REMOVE_QUOTES(ppArgs[1]);
-			sVal.FormatLLHex(*ppArgs[1]);
+			sVal.FormatULLHex(*ppArgs[1]);
 
 			TCHAR *pszBuffer = Str_GetTemp();
 			strncpy(pszBuffer, sVal, SCRIPT_MAX_LINE_LEN - 1);
@@ -1835,10 +1835,10 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				if ( *ppArgs[1] )
 				{
 					++ppArgs[1];
-					sVal.FormatLLHex(*ppArgs[1]);
+					sVal.FormatULLHex(*ppArgs[1]);
 				}
 				else
-					sVal.FormatLLHex('\0');
+					sVal.FormatULLHex('\0');
 
 				strcat(pszBuffer, " ");
 				strncat(pszBuffer, sVal, SCRIPT_MAX_LINE_LEN - 1);
@@ -1896,7 +1896,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 					if ( waitpid(child_pid, &status, 0) )
 						break;
 				} while ( !WIFSIGNALED(status) && !WIFEXITED(status) );
-				sVal.FormatLLHex(WEXITSTATUS(status));
+				sVal.FormatULLHex(WEXITSTATUS(status));
 			}
 #endif
 			g_Log.EventDebug("%s: process execution finished\n", sm_szLoadKeys[index]);
@@ -2017,21 +2017,21 @@ bool CScriptObj::r_Verb(CScript &s, CTextConsole *pSrc)
 	{
 		case SSV_OBJ:
 		{
-			g_World.m_uidObj = s.GetArgVal();
+			g_World.m_uidObj = static_cast<CGrayUID>(s.GetArgLLVal());
 			if ( !g_World.m_uidObj.ObjFind() )
 				g_World.m_uidObj = static_cast<CGrayUID>(UID_CLEAR);
 			break;
 		}
 		case SSV_NEW:
 		{
-			g_World.m_uidNew = s.GetArgVal();
+			g_World.m_uidNew = static_cast<CGrayUID>(s.GetArgLLVal());
 			if ( !g_World.m_uidNew.ObjFind() )
 				g_World.m_uidNew = static_cast<CGrayUID>(UID_CLEAR);
 			break;
 		}
 		case SSV_NEWDUPE:
 		{
-			CGrayUID uid = s.GetArgVal();
+			CGrayUID uid = static_cast<CGrayUID>(s.GetArgLLVal());
 			CObjBase *pObj = uid.ObjFind();
 			if ( !pObj )
 			{
@@ -2246,7 +2246,7 @@ CScriptTriggerArgs::CScriptTriggerArgs(LPCTSTR pszStr)
 
 void CScriptTriggerArgs::Init(LPCTSTR pszStr)
 {
-	ADDTOCALLSTACK("CScriptTriggerArgs::Init");
+	ADDTOCALLSTACK_INTENSIVE("CScriptTriggerArgs::Init");
 	m_iN1 = 0;
 	m_iN2 = 0;
 	m_iN3 = 0;
@@ -2537,7 +2537,7 @@ bool CScriptTriggerArgs::r_Verb(CScript &s, CTextConsole *pSrc)
 				pszTemp = pchEnd;
 				if ( !*pszTemp )	// setting REFx to a new object
 				{
-					m_VarObjs.Insert(wNumber, static_cast<CGrayUID>(s.GetArgVal()).ObjFind(), true);
+					m_VarObjs.Insert(wNumber, static_cast<CGrayUID>(s.GetArgLLVal()).ObjFind(), true);
 					pszKey = pszTemp;
 					return true;
 				}

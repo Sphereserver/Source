@@ -258,11 +258,11 @@ void CGString::FormatHex(DWORD dwVal)
 	// In principle, all values in sphere logic are signed.. 
 	// If dwVal is negative we MUST hexformat it as 64 bit int or reinterpreting it in a script might completely mess up
 	if (dwVal > static_cast<DWORD>(INT_MIN))	// if negative (remember two's complement)
-		return FormatLLHex(dwVal);
+		return FormatULLHex(dwVal);
 	Format("0%" FMTDWORDH, dwVal);
 }
 
-void CGString::FormatLLHex(unsigned long long dwVal)
+void CGString::FormatULLHex(unsigned long long dwVal)
 {
 	Format("0%llx", dwVal);
 }

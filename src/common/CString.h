@@ -172,7 +172,7 @@ public:
 	* @see Format()
 	* @param iVal value to print.
 	*/
-	void FormatLLHex(unsigned long long dwVal);
+	void FormatULLHex(unsigned long long dwVal);
 
 	/**
 	* @brief Compares the CGString to string pStr (strcmp wrapper).

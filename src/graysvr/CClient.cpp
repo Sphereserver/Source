@@ -1061,7 +1061,7 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 			{
 				if ( sVal.GetLength() )
 					sVal += "\t";
-				sVal += !strcmp(ppArgs[i], "NULL") ? " " : ppArgs[i];
+				sVal += (*ppArgs[i] == '\0') ? " " : ppArgs[i];
 			}
 
 			m_TooltipData.Add(new CClientTooltip(dwClilocId, sVal));

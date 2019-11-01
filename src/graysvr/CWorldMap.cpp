@@ -215,7 +215,7 @@ CPointMap CWorld::FindTypeNear_Top(const CPointMap &pt, IT_TYPE type, int iDist)
 	{
 		CRegionBase *pRegion = NULL;
 		const CGrayMulti *pMulti = NULL;
-		const CUOMultiItemRec2 *pMultiItem = NULL;
+		const CUOMultiItemRecHS *pMultiItem = NULL;
 		for ( size_t iRegion = 0; iRegion < iRegionQty; ++iRegion )
 		{
 			pRegion = rlinks.GetAt(iRegion);
@@ -525,7 +525,7 @@ CPointMap CWorld::FindItemTypeNearby(const CPointMap &pt, IT_TYPE type, int iDis
 						size_t iItemQty = pMulti->GetItemCount();
 						for ( size_t iItem = 0; iItem < iItemQty; ++iItem )
 						{
-							const CUOMultiItemRec2 *pMultiItem = pMulti->GetItem(iItem);
+							const CUOMultiItemRecHS *pMultiItem = pMulti->GetItem(iItem);
 							if ( !pMultiItem )
 								break;
 							if ( !pMultiItem->m_visible )
@@ -645,7 +645,7 @@ void CWorld::GetFixPoint(const CPointMap &pt, CGrayMapBlockState &block)
 	{
 		CRegionBase *pRegion = NULL;
 		const CGrayMulti *pMulti = NULL;
-		const CUOMultiItemRec2 *pMultiItem = NULL;
+		const CUOMultiItemRecHS *pMultiItem = NULL;
 		for ( size_t iRegion = 0; iRegion < iRegionQty; ++iRegion )
 		{
 			pRegion = rlinks.GetAt(iRegion);
@@ -898,7 +898,7 @@ void CWorld::GetHeightPoint(const CPointMap &pt, CGrayMapBlockState &block, bool
 		{
 			CRegionBase *pRegion = NULL;
 			const CGrayMulti *pMulti = NULL;
-			const CUOMultiItemRec2 *pMultiItem = NULL;
+			const CUOMultiItemRecHS *pMultiItem = NULL;
 			for ( size_t iRegion = 0; iRegion < iRegionQty; ++iRegion )
 			{
 				pRegion = rlinks.GetAt(iRegion);
@@ -1100,7 +1100,7 @@ void CWorld::GetHeightPoint2(const CPointMap &pt, CGrayMapBlockState &block, boo
 				size_t iMultiQty = pMulti->GetItemCount();
 				for ( size_t iMulti = 0; iMulti < iMultiQty; ++iMulti )
 				{
-					const CUOMultiItemRec2 *pMultiItem = pMulti->GetItem(iMulti);
+					const CUOMultiItemRecHS *pMultiItem = pMulti->GetItem(iMulti);
 					if ( !pMultiItem )
 						break;
 					if ( !pMultiItem->m_visible )

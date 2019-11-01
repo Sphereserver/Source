@@ -20,7 +20,7 @@ private:
 public:
 	struct Component
 	{
-		CUOMultiItemRec2 m_item;
+		CUOMultiItemRecHS m_item;
 		int m_iStairID;
 		bool m_fFloor;
 	};

@@ -83,7 +83,7 @@ inline LPCTSTR CVarDefContNum::GetValStr() const
 
 bool CVarDefContNum::r_LoadVal( CScript & s )
 {
-	SetValNum( s.GetArgVal());
+	SetValNum(s.GetArgLLVal());
 	return( true );
 }
 

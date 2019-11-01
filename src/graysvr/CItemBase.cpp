@@ -460,7 +460,7 @@ bool CItemBase::GetItemData(ITEMID_TYPE id, CUOItemTypeRec2 *pTiledata)	// stati
 	}
 
 	// Unused tiledata I guess. Don't create it
-	if ( !pTiledata->m_flags && !pTiledata->m_weight && !pTiledata->m_layer && !pTiledata->m_dwUnk11 && !pTiledata->m_wAnim && !pTiledata->m_wLight && !pTiledata->m_height && !pTiledata->m_name[0] )
+	if ( !pTiledata->m_flags && !pTiledata->m_weight && !pTiledata->m_layer && !pTiledata->m_dwUnk11 && !pTiledata->m_wAnim && !pTiledata->m_wHue && !pTiledata->m_wLight && !pTiledata->m_height && !pTiledata->m_name[0] )
 		return ((id == ITEMID_BBOARD_MSG) || IsID_GamePiece(id) || IsID_Track(id));		// what are the exceptions to the rule?
 
 	return true;
@@ -1130,7 +1130,7 @@ bool CItemBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatHex(m_ttNormal.m_tData4);
 			break;
 		case IBC_TFLAGS:
-			sVal.FormatLLHex(GetTFlags());
+			sVal.FormatULLHex(GetTFlags());
 			break;
 		case IBC_TWOHANDS:
 			if ( !IsTypeEquippable() )
@@ -1840,7 +1840,7 @@ bool CItemBaseMulti::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pS
 				if ( index >= pMulti->GetItemCount() )
 					return false;
 				SKIP_SEPARATORS(pszKey);
-				const CUOMultiItemRec2 *pItem = pMulti->GetItem(index);
+				const CUOMultiItemRecHS *pItem = pMulti->GetItem(index);
 
 				if ( *pszKey == '\0' )
 					sVal.Format("%hu,%hd,%hd,%hd", pItem->m_wTileID, pItem->m_dx, pItem->m_dy, pItem->m_dz);

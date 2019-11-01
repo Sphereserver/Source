@@ -2038,7 +2038,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatVal(IsStatFlag(STATF_EmoteAction));
 			break;
 		case CHC_FLAGS:
-			sVal.FormatLLHex(m_StatFlag);
+			sVal.FormatULLHex(m_StatFlag);
 			break;
 		case CHC_FONT:
 			sVal.FormatVal(m_fonttype);
