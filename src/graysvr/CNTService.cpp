@@ -33,7 +33,7 @@ static LPTSTR GetLastErrorText(LPTSTR lpszBuf, DWORD dwSize)
 	//		destination buffer
 
 	int nChars = CGrayError::GetSystemErrorMessage( GetLastError(), lpszBuf, dwSize );
-	sprintf( lpszBuf+nChars, " (0x" FMTDWORDH ")", GetLastError());
+	sprintf(lpszBuf + nChars, " (0x%" FMTDWORDH ")", GetLastError());
 	return lpszBuf;
 }
 

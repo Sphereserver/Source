@@ -280,8 +280,6 @@ bool CGFile::Open(LPCTSTR pszFileName, UINT uMode, void *pExtra)
 
 	if ( pszFileName )
 		m_strFileName = pszFileName;
-	else
-		pszFileName = GetFilePath();
 
 	if ( m_strFileName.IsEmpty() )
 		return false;
@@ -442,21 +440,18 @@ bool CFileText::IsEOF() const
 	return static_cast<bool>(feof(m_pStream));
 }
 
-size_t CFileText::VPrintf(LPCTSTR pszFormat, va_list args)
+void CFileText::VPrintf(LPCTSTR pszFormat, va_list args)
 {
 	ASSERT(pszFormat);
-	if ( !IsFileOpen() )
-		return -1;
-
-	return static_cast<size_t>(vfprintf(m_pStream, pszFormat, args));
+	if ( IsFileOpen() )
+		vfprintf(m_pStream, pszFormat, args);
 }
 
-size_t _cdecl CFileText::Printf(LPCTSTR pszFormat, ...)
+void _cdecl CFileText::Printf(LPCTSTR pszFormat, ...)
 {
 	ASSERT(pszFormat);
 	va_list vargs;
 	va_start(vargs, pszFormat);
-	size_t iRet = VPrintf(pszFormat, vargs);
+	VPrintf(pszFormat, vargs);
 	va_end(vargs);
-	return iRet;
 }

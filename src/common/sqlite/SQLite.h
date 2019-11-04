@@ -102,7 +102,6 @@ private:
 
 private:
 	size_t ConvertStringToUTF8(LPCTSTR pszIn, char *&pszOut);
-	static void ConvertUTF8ToString(LPCTSTR pszIn, char *&pszOut, size_t len);
 
 public:
 	operator char *();

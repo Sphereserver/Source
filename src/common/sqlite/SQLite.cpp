@@ -359,20 +359,6 @@ size_t UTF8MBSTR::ConvertStringToUTF8(LPCTSTR pszIn, char *&pszOut)
 	return len;
 }
 
-void UTF8MBSTR::ConvertUTF8ToString(LPCTSTR pszIn, char *&pszOut, size_t len)
-{
-	ADDTOCALLSTACK("UTF8MBSTR::ConvertUTF8ToString");
-	wchar_t *wChar = new wchar_t[len];
-	wChar[0] = 0;
-	mbstowcs(wChar, pszIn, len);
-
-	pszOut = new char[len];
-	pszOut[0] = 0;
-	wcstombs(pszOut, wChar, len);
-
-	delete[] wChar;
-}
-
 UTF8MBSTR::operator char *()
 {
 	return m_pszUTF8_MultiByte;

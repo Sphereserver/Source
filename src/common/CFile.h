@@ -199,8 +199,8 @@ public:
 	}
 	bool IsEOF() const;
 
-	size_t VPrintf(LPCTSTR pszFormat, va_list args);
-	size_t _cdecl Printf(LPCTSTR pszFormat, ...) __printfargs(2, 3);
+	void VPrintf(LPCTSTR pszFormat, va_list args);
+	void _cdecl Printf(LPCTSTR pszFormat, ...) __printfargs(2, 3);
 
 private:
 	CFileText(const CFileText &copy);

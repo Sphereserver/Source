@@ -933,6 +933,7 @@ void defragSphere(char *path)
 	if ( dTotalUIDs <= 0 )
 	{
 		g_Log.Event(LOGL_EVENT, "Save files are empty, defragmentation is not needed\n");
+		free(uids);
 		return;
 	}
 

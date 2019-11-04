@@ -438,7 +438,7 @@ bool CChar::NPC_OnTrainPay(CChar *pCharSrc, CItemMemory *pMemory, CItem *pGold)
 		return false;
 
 	SKILL_TYPE skill = static_cast<SKILL_TYPE>(pMemory->m_itEqMemory.m_Skill);
-	if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(skill) || (pCharSrc->Skill_GetLock(skill) != SKILLLOCK_UP) )
+	if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(skill) || g_Cfg.IsSkillFlag(skill, SKF_DISABLED) || (pCharSrc->Skill_GetLock(skill) != SKILLLOCK_UP) )
 	{
 		pCharSrc->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_SKILLRAISE));
 		return false;

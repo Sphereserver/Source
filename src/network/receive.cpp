@@ -43,10 +43,8 @@ bool PacketCreate::onReceive(NetState* net)
 bool PacketCreate::onReceive(NetState* net, bool hasExtraSkill)
 {
 	ADDTOCALLSTACK("PacketCreate::onReceive[1]");
-	TCHAR charname[MAX_NAME_SIZE];
-	SKILL_TYPE skill1 = SKILL_NONE, skill2 = SKILL_NONE, skill3 = SKILL_NONE, skill4 = SKILL_NONE;
-	BYTE skillval1 = 0, skillval2 = 0, skillval3 = 0, skillval4 = 0;
 
+	TCHAR charname[MAX_NAME_SIZE];
 	skip(9); // 4=pattern1, 4=pattern2, 1=kuoc
 	readStringASCII(charname, MAX_NAME_SIZE);
 	skip(2); // 0x00
@@ -58,17 +56,14 @@ bool PacketCreate::onReceive(NetState* net, bool hasExtraSkill)
 	BYTE strength = readByte();
 	BYTE dexterity = readByte();
 	BYTE intelligence = readByte();
-	skill1 = static_cast<SKILL_TYPE>(readByte());
-	skillval1 = readByte();
-	skill2 = static_cast<SKILL_TYPE>(readByte());
-	skillval2 = readByte();
-	skill3 = static_cast<SKILL_TYPE>(readByte());
-	skillval3 = readByte();
-	if (hasExtraSkill)
-	{
-		skill4 = static_cast<SKILL_TYPE>(readByte());
-		skillval4 = readByte();
-	}
+	SKILL_TYPE skill1 = static_cast<SKILL_TYPE>(readByte());
+	BYTE skillval1 = readByte();
+	SKILL_TYPE skill2 = static_cast<SKILL_TYPE>(readByte());
+	BYTE skillval2 = readByte();
+	SKILL_TYPE skill3 = static_cast<SKILL_TYPE>(readByte());
+	BYTE skillval3 = readByte();
+	SKILL_TYPE skill4 = hasExtraSkill ? static_cast<SKILL_TYPE>(readByte()) : SKILL_NONE;
+	BYTE skillval4 = hasExtraSkill ? readByte() : 0;
 	HUE_TYPE hue = static_cast<HUE_TYPE>(readInt16());
 	ITEMID_TYPE hairid = static_cast<ITEMID_TYPE>(readInt16());
 	HUE_TYPE hairhue = static_cast<HUE_TYPE>(readInt16());

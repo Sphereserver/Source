@@ -171,7 +171,6 @@ private:
 	void AddIgnore(LPCTSTR pszName);
 	void RemoveIgnore(LPCTSTR pszName);
 	void ToggleIgnore(LPCTSTR pszName);
-	void ClearIgnoreList();
 	size_t FindIgnoringIndex(LPCTSTR pszName) const;
 
 	CClient *GetClient();

@@ -1329,10 +1329,6 @@ void CClient::Event_PromptResp(LPCTSTR pszText, size_t iTextLen, CGrayUID uidCha
 	TCHAR szText[MAX_TALK_BUFFER];
 	if ( iTextLen <= 0 )		// cancel
 		szText[0] = '\0';
-	else if ( promptMode == CLIMODE_PROMPT_SCRIPT_VERB )
-		iTextLen = Str_GetBare(szText, pszText, COUNTOF(szText), "|~=[]{|}~");
-	else
-		iTextLen = Str_GetBare(szText, pszText, COUNTOF(szText), "|~,=[]{|}~");
 
 	LPCTSTR pszPrefix = "";
 
@@ -2133,7 +2129,7 @@ void CClient::Event_AOSPopupMenuRequest(CGrayUID uid) //construct packet after a
 						continue;
 
 					skillCheck = static_cast<SKILL_TYPE>(i);
-					if ( pChar->Skill_GetBase(skillCheck) <= 0 )
+					if ( g_Cfg.IsSkillFlag(skillCheck, SKF_DISABLED) || pChar->Skill_GetBase(skillCheck) <= 0 )
 						continue;
 					if ( skillCheck == SKILL_SPELLWEAVING )		// skip this skill, because on OSI it can be trained only on quests so they didn't included the cliloc to use on NPCs
 						continue;

@@ -1108,6 +1108,9 @@ void CChatMember::ToggleIgnore(LPCTSTR pszName)
 		m_IgnoredMembers.DeleteAt(i);
 		SendChatMsg(CHATMSG_NoLongerIgnoring, pszName);
 
+		if ( !m_IgnoredMembers.GetCount() )
+			SendChatMsg(CHATMSG_NoLongerIgnoringAnyone);
+
 		// Show member name on members list again
 		if ( m_pChannel )
 		{
@@ -1131,15 +1134,6 @@ void CChatMember::ToggleIgnore(LPCTSTR pszName)
 		m_IgnoredMembers.Add(sName);
 		SendChatMsg(CHATMSG_NowIgnoring, pszName);	// this message will also hide member name on members list
 	}
-}
-
-void CChatMember::ClearIgnoreList()
-{
-	ADDTOCALLSTACK("CChatMember::ClearIgnoreList");
-	for ( size_t i = 0; i < m_IgnoredMembers.GetCount(); ++i )
-		m_IgnoredMembers.DeleteAt(i);
-
-	SendChatMsg(CHATMSG_NoLongerIgnoringAnyone);
 }
 
 size_t CChatMember::FindIgnoringIndex(LPCTSTR pszName) const

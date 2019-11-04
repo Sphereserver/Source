@@ -2890,7 +2890,6 @@ bool CChar::r_Verb(CScript &s, CTextConsole *pSrc)	// execute command from scrip
 			INT64 piCmd[3];		// maximum parameters in one line
 			size_t iArgQty = Str_ParseCmds(s.GetArgRaw(), piCmd, COUNTOF(piCmd));
 			return UpdateAnimate(static_cast<ANIM_TYPE>(piCmd[0]), true, false, (iArgQty > 1) ? static_cast<BYTE>(piCmd[1]) : 1, (iArgQty > 2) ? static_cast<BYTE>(piCmd[2]) : 1);
-			break;
 		}
 		case CHV_ATTACK:
 			Fight_Attack(static_cast<CGrayUID>(s.GetArgVal()).CharFind(), true);

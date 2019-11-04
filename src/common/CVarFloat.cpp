@@ -13,12 +13,6 @@ CVarFloat::~CVarFloat()
 	m_VarMap.clear();
 }
 
-inline bool CVarFloat::Set(LPCTSTR pszName, LPCTSTR pszValue)
-{
-	ADDTOCALLSTACK("CVarFloat::Set");
-	return Insert(pszName, pszValue, true);
-}
-
 bool CVarFloat::Insert(LPCTSTR pszName, LPCTSTR pszValue, bool fForceSet)
 {
 	ADDTOCALLSTACK("CVarFloat::Insert");
@@ -481,7 +475,7 @@ RealType CVarFloat::GetSingle(LPCTSTR &pszArgs)
 						LPCTSTR pszArg1 = ppCmd[0];
 						RealType dVal1 = MakeFloatMath(pszArg1);
 						if ( iCount < 2 )
-							dResult = GetRandVal(dVal1);
+							dResult = GetRandVal(0, dVal1);
 						else
 						{
 							LPCTSTR pszArg2 = ppCmd[1];

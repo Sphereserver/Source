@@ -52,18 +52,11 @@ public:
 	static CGString FloatMath(LPCTSTR &pszExpr);
 	static RealType MakeFloatMath(LPCTSTR &pszExpr);
 
-	static RealType GetRandVal(RealType dMin, RealType dMax);
-	static inline RealType GetRandVal(RealType dQty)
-	{
-		return GetRandVal(0, dQty);
-	}
-
 private:
-	inline bool Set(LPCTSTR pszName, LPCTSTR pszValue);
 	RealType GetVal(LPCTSTR pszName);
-
 	static RealType GetValMath(RealType dVal, LPCTSTR &pszExpr);
 	static RealType GetSingle(LPCTSTR & pszArgs);
+	static RealType GetRandVal(RealType dMin, RealType dMax);
 
 private:
 	CVarFloat(const CVarFloat &copy);
