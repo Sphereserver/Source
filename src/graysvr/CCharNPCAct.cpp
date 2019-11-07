@@ -2651,12 +2651,12 @@ void CChar::NPC_Pathfinding()
 	CPathFinder path(this, m_Act_p);
 
 	EXC_SET("searching the path");
-	if ( path.FindPath() == PATH_NONEXISTENT )
+	if ( !path.FindPath() )
 		return;
 
 	EXC_SET("saving found path");
 	CPointMap ptNext;
-	for ( size_t i = 1; (i != path.LastPathSize()) && (i < MAX_NPC_PATH_STORAGE_SIZE); ++i )	// start on i = 1 because 0 is the current position
+	for ( signed short i = 1; (i != path.LastPathSize()) && (i < MAX_NPC_PATH_STORAGE_SIZE); ++i )	// start on i = 1 because 0 is the current position
 	{
 		ptNext = path.ReadStep(i);
 		m_pNPC->m_nextX[i - 1] = ptNext.m_x;

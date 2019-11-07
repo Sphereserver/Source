@@ -5,30 +5,33 @@ int CPathFinder::Heuristic(CPathFinderPointRef &pt1, CPathFinderPointRef &pt2)
 	return 10 * (abs(pt1.m_Point->m_x - pt2.m_Point->m_x) + abs(pt1.m_Point->m_y - pt2.m_Point->m_y));
 }
 
-void CPathFinder::GetChildren(CPathFinderPointRef& Point, std::list<CPathFinderPointRef>& ChildrenRefList )
+void CPathFinder::GetChildren(CPathFinderPointRef &Point, std::list<CPathFinderPointRef> &ChildrenRefList)
 {
-	int RealX = 0, RealY = 0;
-	for ( int x = -1; x != 2; ++x)
+	ADDTOCALLSTACK("CPathFinder::GetChildren");
+
+	signed short RealX = 0, RealY = 0;
+	for ( signed short x = -1; x != 2; ++x )
 	{
-		for ( int y = -1; y != 2; ++y)
+		for ( signed short y = -1; y != 2; ++y )
 		{
-			if ( x == 0 && y == 0 )
+			if ( (x == 0) && (y == 0) )
 				continue;
-			RealX = x + Point.m_Point->m_x;
-			RealY = y + Point.m_Point->m_y;
-			if ( (RealX < 0) || (RealY < 0) || (RealX - x >= MAX_NPC_PATH_STORAGE_SIZE) || (RealY - y >= MAX_NPC_PATH_STORAGE_SIZE) )
+			RealX = Point.m_Point->m_x + x;
+			RealY = Point.m_Point->m_y + y;
+			if ( (RealX < 0) || (RealY < 0) || (RealX >= MAX_NPC_PATH_STORAGE_SIZE) || (RealY >= MAX_NPC_PATH_STORAGE_SIZE) )
 				continue;
-			if ( m_Points[RealX][RealY].m_Walkable == false )
+			if ( !m_Points[RealX][RealY].m_Walkable )
 				continue;
-			if ( x != 0 && y != 0 ) // Diagonal
+			if ( (x != 0) && (y != 0) )		// diagonal
 			{
-				if ( m_Points[RealX - x][RealY].m_Walkable == false || m_Points[RealX][RealY - y].m_Walkable == false )
+				if ( (RealX - x >= MAX_NPC_PATH_STORAGE_SIZE) || (RealY - y >= MAX_NPC_PATH_STORAGE_SIZE) )
+					continue;
+				if ( !m_Points[RealX - x][RealY].m_Walkable || !m_Points[RealX][RealY - y].m_Walkable )
 					continue;
 			}
 
-
-			CPathFinderPointRef PtRef( m_Points[RealX][RealY] );
-			ChildrenRefList.push_back( PtRef  );
+			CPathFinderPointRef ptRef(m_Points[RealX][RealY]);
+			ChildrenRefList.push_back(ptRef);
 		}
 	}
 }
@@ -90,7 +93,7 @@ CPathFinder::~CPathFinder()
 	ADDTOCALLSTACK("CPathFinderPoint::~CPathFinderPoint");
 }
 
-int CPathFinder::FindPath() //A* algorithm
+bool CPathFinder::FindPath()	// A* algorithm
 {
 	ADDTOCALLSTACK("CPathFinder::FindPath");
 	ASSERT(m_pChar != NULL);
@@ -102,7 +105,7 @@ int CPathFinder::FindPath() //A* algorithm
 	{
 		//Too far away
 		Clear();
-		return PATH_NONEXISTENT;
+		return false;
 	}
 
 	CPathFinderPointRef Start(m_Points[X][Y]); //Start point
@@ -138,7 +141,7 @@ int CPathFinder::FindPath() //A* algorithm
 				m_LastPath.push_front(CPointMap(PathRef.m_Point->m_x + m_RealX, PathRef.m_Point->m_y + m_RealY, 0, PathRef.m_Point->m_map));
 			}
 			Clear();
-			return PATH_FOUND;
+			return true;
 		}
 		else
 		{
@@ -190,7 +193,7 @@ int CPathFinder::FindPath() //A* algorithm
 
 
 	Clear();
-	return PATH_NONEXISTENT;
+	return false;
 }
 
 void CPathFinder::Clear()
@@ -207,47 +210,42 @@ void CPathFinder::Clear()
 void CPathFinder::FillMap()
 {
 	ADDTOCALLSTACK("CPathFinder::FillMap");
+
+	CPointMap pt = m_pChar->GetTopPoint();
 	CRegionBase	*pArea;
-	CPointMap	pt, ptChar;
-
-	EXC_TRY("FillMap");
-	pt = ptChar = m_pChar->GetTopPoint();
-
-	for ( int x = 0 ; x != MAX_NPC_PATH_STORAGE_SIZE; ++x )
+	for ( signed short x = 0; x != MAX_NPC_PATH_STORAGE_SIZE; ++x )
 	{
-		for ( int y = 0; y != MAX_NPC_PATH_STORAGE_SIZE; ++y )
+		for ( signed short y = 0; y != MAX_NPC_PATH_STORAGE_SIZE; ++y )
 		{
-			if (x == m_Target.m_x && y == m_Target.m_y)
+			if ( (m_Target.m_x == x) && (m_Target.m_y == y) )
 			{
-				// always assume that our target position is walkable
-				m_Points[x][y].m_Walkable = PATH_WALKABLE;
+				// Always assume that our target position is walkable
+				m_Points[x][y].m_Walkable = true;
 			}
 			else
 			{
-				pt.m_x = static_cast<signed short>(x) + m_RealX;
-				pt.m_y = static_cast<signed short>(y) + m_RealY;
-					pArea = m_pChar->CanMoveWalkTo(pt, true, true, DIR_QTY, true);
+				pt.m_x = m_RealX + x;
+				pt.m_y = m_RealY + y;
+				pArea = m_pChar->CanMoveWalkTo(pt, true, true, DIR_QTY, true);
 
-				m_Points[x][y].m_Walkable = pArea ? PATH_WALKABLE : PATH_UNWALKABLE;
+				m_Points[x][y].m_Walkable = (pArea != NULL);
 			}
 
 			m_Points[x][y].Set(static_cast<WORD>(x), static_cast<WORD>(y), pt.m_z, pt.m_map);
 		}
 	}
-
-	EXC_CATCH;
 }
 
-CPointMap CPathFinder::ReadStep(size_t Step)
+CPointMap CPathFinder::ReadStep(signed short i)
 {
 	ADDTOCALLSTACK("CPathFinder::ReadStep");
-	return m_LastPath[Step];
+	return m_LastPath[i];
 }
 
-size_t CPathFinder::LastPathSize()
+signed short CPathFinder::LastPathSize()
 {
 	ADDTOCALLSTACK("CPathFinder::LastPathSize");
-	return m_LastPath.size();
+	return static_cast<signed short>(m_LastPath.size());
 }
 
 void CPathFinder::ClearLastPath()

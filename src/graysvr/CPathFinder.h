@@ -80,26 +80,19 @@ public:
 class CPathFinder
 {
 public:
-	static const char *m_sClassName;
-
-	#define PATH_NONEXISTENT 0
-	#define PATH_FOUND 1
-
-
-	#define PATH_WALKABLE 1
-	#define PATH_UNWALKABLE 0
-
 	CPathFinder(CChar *pChar, CPointMap ptTarget);
 	~CPathFinder();
+
+	static const char *m_sClassName;
 
 private:
 	CPathFinder(const CPathFinder& copy);
 	CPathFinder& operator=(const CPathFinder& other);
 
 public:
-	int FindPath();
-	CPointMap ReadStep(size_t Step = 0);
-	size_t LastPathSize();
+	bool FindPath();
+	CPointMap ReadStep(signed short i);
+	signed short LastPathSize();
 	void ClearLastPath();
 
 protected:
