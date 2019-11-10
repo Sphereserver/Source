@@ -281,7 +281,7 @@ bool CClient::OnRxConsole(const BYTE *pData, size_t iLen)
 					CGString sMsg;
 					if ( LogIn(m_zLogin, m_Targ_Text, sMsg) == PacketLoginError::Success )
 					{
-						g_Log.Event(LOGM_ACCOUNTS, "%lx:Account '%s' connected on remote admin console\n", GetSocketID(), GetName());
+						g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' connected on remote admin console\n", GetSocketID(), GetName());
 						m_Targ_Text.Empty();
 						return true;
 					}
@@ -384,7 +384,7 @@ bool CClient::OnRxAxis(const BYTE *pData, size_t iLen)
 								break;
 						}
 
-						g_Log.Event(LOGM_ACCOUNTS, "%lx:Account '%s' connected on Axis remote profile\n", GetSocketID(), GetName());
+						g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' connected on Axis remote profile\n", GetSocketID(), GetName());
 						return true;
 					}
 					else if ( !sMsg.IsEmpty() )
@@ -455,12 +455,12 @@ bool CClient::OnRxPing(const BYTE *pData, size_t iLen)
 
 			if ( !g_Cfg.m_fCUOStatus )
 			{
-				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:CUO status request from %s has been rejected\n", GetSocketID(), GetPeerStr());
+				g_Log.Event(LOGM_CLIENTS_LOG, "%lx:CUO status request from %s has been rejected\n", GetSocketID(), GetPeerStr());
 				return false;
 			}
 
 			SetConnectType(CONNECT_TELNET);
-			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:CUO status request from %s\n", GetSocketID(), GetPeerStr());
+			g_Log.Event(LOGM_CLIENTS_LOG, "%lx:CUO status request from %s\n", GetSocketID(), GetPeerStr());
 			SysMessage(g_Serv.GetStatusString(0x25));
 			SetConnectType(CONNECT_UNK);
 			return false;
@@ -476,19 +476,19 @@ bool CClient::OnRxPing(const BYTE *pData, size_t iLen)
 
 			if ( !g_Cfg.m_fUOGStatus )
 			{
-				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:UOG status request from %s has been rejected\n", GetSocketID(), GetPeerStr());
+				g_Log.Event(LOGM_CLIENTS_LOG, "%lx:UOG status request from %s has been rejected\n", GetSocketID(), GetPeerStr());
 				return false;
 			}
 
 			SetConnectType((pData[0] == 0x7F) ? CONNECT_UOG : CONNECT_TELNET);
-			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:UOG status request from %s\n", GetSocketID(), GetPeerStr());
+			g_Log.Event(LOGM_CLIENTS_LOG, "%lx:UOG status request from %s\n", GetSocketID(), GetPeerStr());
 			SysMessage(g_Serv.GetStatusString(0x22));
 			SetConnectType(CONNECT_UNK);
 			return false;
 		}
 	}
 
-	g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:Unknown/invalid ping data '0x%x' from %s (Len: %" FMTSIZE_T ")\n", GetSocketID(), pData[0], GetPeerStr(), iLen);
+	g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Unknown/invalid ping data '0x%x' from %s (Len: %" FMTSIZE_T ")\n", GetSocketID(), pData[0], GetPeerStr(), iLen);
 	return false;
 }
 
@@ -592,7 +592,7 @@ bool CClient::OnRxWebPageRequest(BYTE *pRequest, size_t iLen)
 		// Content-Length: 29
 		// T1=stuff1&B1=Submit&T2=stuff2
 
-		g_Log.Event(LOGM_HTTP|LOGL_EVENT, "%lx:HTTP Page Post '%s'\n", GetSocketID(), static_cast<LPCTSTR>(ppRequest[1]));
+		g_Log.Event(LOGM_HTTP, "%lx:HTTP page post '%s'\n", GetSocketID(), static_cast<LPCTSTR>(ppRequest[1]));
 
 		CWebPageDef *pWebPage = g_Cfg.FindWebPage(ppRequest[1]);
 		if ( !pWebPage )
@@ -616,7 +616,7 @@ bool CClient::OnRxWebPageRequest(BYTE *pRequest, size_t iLen)
 		if ( !Str_GetBare(szPageName, Str_TrimWhitespace(ppRequest[1]), sizeof(szPageName), "!\"#$%&()*,:;<=>?[]^{|}-+'`") )
 			return false;
 
-		g_Log.Event(LOGM_HTTP|LOGL_EVENT, "%lx:HTTP Page Request '%s', alive=%d\n", GetSocketID(), static_cast<LPCTSTR>(szPageName), fKeepAlive);
+		g_Log.Event(LOGM_HTTP, "%lx:HTTP page request '%s' (alive=%d)\n", GetSocketID(), static_cast<LPCTSTR>(szPageName), fKeepAlive);
 		if ( CWebPageDef::ServPage(this, szPageName, &timeLastModified) )
 			return fKeepAlive;
 	}

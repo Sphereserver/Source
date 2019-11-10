@@ -3609,7 +3609,7 @@ BYTE CClient::Setup_Delete(DWORD dwSlot)
 	if ( !pChar->IsDeleted() )
 		return PacketDeleteError::InvalidRequest;
 
-	g_Log.Event(LOGM_ACCOUNTS|LOGL_EVENT, "%lx:Account '%s' deleted char '%s' [0%" FMTDWORDH "] on client character selection menu\n", GetSocketID(), m_pAccount->GetName(), pszName, static_cast<DWORD>(uid));
+	g_Log.Event(LOGM_ACCOUNTS, "%lx:Account '%s' deleted char '%s' [0%" FMTDWORDH "] on client character selection menu\n", GetSocketID(), m_pAccount->GetName(), pszName, static_cast<DWORD>(uid));
 	return PacketDeleteError::Success;
 }
 

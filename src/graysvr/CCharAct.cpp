@@ -2519,7 +2519,7 @@ bool CChar::Death()
 	if ( !iKillers )
 		iKillStrLen += sprintf(pszKillStr + iKillStrLen, "accident");
 	if ( m_pPlayer )
-		g_Log.Event(LOGL_EVENT|LOGM_KILLS, "%s\n", pszKillStr);
+		g_Log.Event(LOGM_KILLS, "%s\n", pszKillStr);
 	if ( m_pParty )
 		m_pParty->SysMessageAll(pszKillStr);
 

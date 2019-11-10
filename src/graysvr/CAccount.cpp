@@ -24,7 +24,7 @@ void CAccounts::Account_Add(CAccount *pAccount)
 		g_Serv.r_Call("f_onaccount_create", &g_Serv, &Args, NULL, &tr);
 		if ( tr == TRIGRET_RET_TRUE )
 		{
-			g_Log.Event(LOGL_EVENT|LOGM_ACCOUNTS, "Account '%s' creation blocked by script\n", pAccount->GetName());
+			g_Log.Event(LOGM_ACCOUNTS, "Account '%s' creation blocked by script\n", pAccount->GetName());
 			Account_Delete(pAccount);
 			return;
 		}
@@ -501,7 +501,7 @@ bool CAccount::SetPassword(LPCTSTR pszPassword, bool fMD5)
 		char digest[33];
 		CMD5::fastDigest(digest, pszPassword);
 		m_sPassword = digest;
-		g_Log.Event(LOGL_EVENT|LOGM_ACCOUNTS, "Account '%s': plain text password converted to MD5 hash\n", GetName());
+		g_Log.Event(LOGM_ACCOUNTS, "Account '%s': plain text password converted to MD5 hash\n", GetName());
 	}
 	else
 		m_sPassword = pszPassword;
@@ -735,7 +735,7 @@ bool CAccount::Kick(CTextConsole *pSrc, bool fBlock)
 
 	TCHAR *pszMsg = Str_GetTemp();
 	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_KICK), GetName(), fBlock ? "BLOCK" : "DISCONNECT", pSrc->GetName());
-	g_Log.Event(LOGM_GM_CMDS|LOGM_NOCONTEXT, "%s\n", pszMsg);
+	g_Log.Event(LOGM_NOCONTEXT|LOGM_GM_CMDS, "%s\n", pszMsg);
 	if ( pSrc != &g_Serv )
 		pSrc->SysMessage(pszMsg);
 	return true;

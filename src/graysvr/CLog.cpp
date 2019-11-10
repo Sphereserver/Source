@@ -101,7 +101,7 @@ int CLog::EventStr( DWORD dwMask, LPCTSTR pszMsg )
 		CGTime datetime = CGTime::GetCurrentTime();
 		if ( datetime.GetDay() != m_dateStamp.GetDay() )	// it's a new day, open with new day name.
 		{
-			Close();	// LINUX should alrady be closed.
+			Close();	// LINUX should already be closed.
 			OpenLog();
 			Printf("%s", datetime.Format(NULL));
 		}
@@ -118,7 +118,7 @@ int CLog::EventStr( DWORD dwMask, LPCTSTR pszMsg )
 		m_dateStamp = datetime;
 
 		LPCTSTR pszLabel = NULL;
-		switch ( dwMask & 0x7 )
+		switch ( dwMask & LOGL_QTY )
 		{
 			case LOGL_FATAL:
 				pszLabel = "FATAL:";

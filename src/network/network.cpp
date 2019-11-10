@@ -112,7 +112,7 @@ void NetState::clear(void)
 		CAccount *account = client->m_pAccount;
 
 		g_Serv.StatDec(SERV_STAT_CLIENTS);
-		g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:Client disconnected [Total:%" FMTDWORD "] ('%s', acct='%s')\n", m_id, g_Serv.StatGet(SERV_STAT_CLIENTS), m_peerAddress.GetAddrStr(), account ? account->GetName() : "<NA>");
+		g_Log.Event(LOGM_NOCONTEXT|LOGM_CLIENTS_LOG, "%lx:Client disconnected [Total:%" FMTDWORD "] ('%s', acct='%s')\n", m_id, g_Serv.StatGet(SERV_STAT_CLIENTS), m_peerAddress.GetAddrStr(), account ? account->GetName() : "<NA>");
 		
 #if !defined(_WIN32) || defined(_LIBEV)
 		if (m_socket.IsOpen() && g_Cfg.m_fUseAsyncNetwork != 0)
@@ -1510,7 +1510,7 @@ void NetworkInput::processData()
 				INT64 iLastEventDiff = -g_World.GetTimeDiff( client->m_timeLastEvent );
 				if ( g_Cfg.m_iDeadSocketTime > 0 && iLastEventDiff > g_Cfg.m_iDeadSocketTime )
 				{
-					g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:Frozen client disconnected\n", state->id());
+					g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Frozen client disconnected\n", state->id());
 					state->m_client->addLoginErr( PacketLoginError::Other );		//state->markReadClosed();
 				}
 			}
@@ -1831,7 +1831,7 @@ bool NetworkInput::processOtherClientData(NetState* state, Packet* buffer)
 			break;
 
 		default:
-			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:Junk messages with no crypt\n", state->id());
+			g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Junk messages with no crypt\n", state->id());
 			return false;
 	}
 
@@ -1946,7 +1946,7 @@ bool NetworkInput::processUnknownClientData(NetState* state, Packet* buffer)
 
 		if (seed == 0)
 		{
-			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_EVENT, "%lx:Invalid client detected, disconnecting\n", state->id());
+			g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Invalid client detected, disconnecting\n", state->id());
 			return false;
 		}
 
