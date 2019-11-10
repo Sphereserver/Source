@@ -1291,7 +1291,7 @@ bool CChar::CanSeeLOS_Adv(const CPointMap &ptDst, CPointMap *pptBlock, int iMaxD
 							WARNLOS(("pStatic 0%x %hhu,%hhu,%hhd - %hhu\n", pStatic->GetDispID(), pStatic->m_x, pStatic->m_y, pStatic->m_z, iHeight));
 							min_z = pStatic->m_z;
 							max_z = minimum(iHeight + min_z, UO_SIZE_Z);
-							WARNLOS(("uiTFlags(0%lx)\n", uiTFlags));
+							WARNLOS(("uiTFlags(0%llx)\n", uiTFlags));
 
 							WARNLOS(("pStatic 0%x Z check: %hhd,%hhd (now: %hhd) (dest: %hhd)\n", pStatic->GetDispID(), min_z, max_z, ptNow.m_z, ptDst.m_z));
 							if ( (min_z <= ptNow.m_z) && (max_z >= ptNow.m_z) )
@@ -1382,7 +1382,7 @@ bool CChar::CanSeeLOS_Adv(const CPointMap &ptDst, CPointMap *pptBlock, int iMaxD
 							WARNLOS(("pItem 0%" FMTDWORDH "(0%x) %hd,%hd,%hhd - %hhu\n", static_cast<DWORD>(pItem->GetUID()), pItem->GetDispID(), pItem->GetTopPoint().m_x, pItem->GetTopPoint().m_y, pItem->GetTopPoint().m_z, iHeight));
 							min_z = pItem->GetTopZ();
 							max_z = minimum(iHeight + min_z, UO_SIZE_Z);
-							WARNLOS(("uiTFlags(0%lx)\n", uiTFlags));
+							WARNLOS(("uiTFlags(0%llx)\n", uiTFlags));
 
 							WARNLOS(("pItem 0%" FMTDWORDH "(0%x) Z check: %hhd,%hhd (now: %hhd) (dest: %hhd)\n", static_cast<DWORD>(pItem->GetUID()), pItem->GetDispID(), min_z, max_z, ptNow.m_z, ptDst.m_z));
 							if ( (min_z <= ptNow.m_z) && (max_z >= ptNow.m_z) )
@@ -1486,7 +1486,7 @@ bool CChar::CanSeeLOS_Adv(const CPointMap &ptDst, CPointMap *pptBlock, int iMaxD
 									WARNLOS(("pMultiItem 0%x %hd,%hd,%hd - %hhu\n", pMultiItem->GetDispID(), pMultiItem->m_dx, pMultiItem->m_dy, pMultiItem->m_dz, iHeight));
 									min_z = static_cast<signed char>(pMultiItem->m_dz) + pItem->GetTopPoint().m_z;
 									max_z = minimum(iHeight + min_z, UO_SIZE_Z);
-									WARNLOS(("uiTFlags(0%lx)\n", uiTFlags));
+									WARNLOS(("uiTFlags(0%llx)\n", uiTFlags));
 
 									if ( (min_z <= ptNow.m_z) && (max_z >= ptNow.m_z) )
 									{

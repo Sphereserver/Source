@@ -700,7 +700,7 @@ void CChar::Skill_Experience(SKILL_TYPE skill, int iDifficulty)
 		{
 #ifdef _DEBUG
 			if ( IsPriv(PRIV_DETAIL) && (GetPrivLevel() >= PLEVEL_GM) && (g_Cfg.m_wDebugFlags & DEBUGF_ADVANCE_STATS) )
-				SysMessagef("%s=%d.%d Difficult=%d Gain Chance=%lld.%lld%% Roll=%d%%", pSkillDef->GetKey(), wSkillLevel / 10, wSkillLevel % 10, iDifficulty / 10, iChance / 10, iChance % 10, iRoll / 10);
+				SysMessagef("%s=%hu.%hu Difficult=%d Gain Chance=%lld.%lld%% Roll=%lld%%", pSkillDef->GetKey(), wSkillLevel / 10, wSkillLevel % 10, iDifficulty / 10, iChance / 10, iChance % 10, iRoll / 10);
 #endif
 			if ( iRoll <= iChance )
 			{

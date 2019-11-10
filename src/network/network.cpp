@@ -1942,7 +1942,7 @@ bool NetworkInput::processUnknownClientData(NetState* state, Packet* buffer)
 			seed = buffer->readInt32();
 		}
 
-		DEBUGNETWORK(("%lx:Client connected with a seed of 0x" FMTDWORDH " (new handshake=%d, version=%" FMTDWORD ")\n", state->id(), seed, state->m_newseed ? 1 : 0, state->m_reportedVersion));
+		DEBUGNETWORK(("%lx:Client connected with a seed of 0x%" FMTDWORDH " (new handshake=%d, version=%" FMTDWORD ")\n", state->id(), seed, state->m_newseed ? 1 : 0, state->m_reportedVersion));
 
 		if (seed == 0)
 		{
