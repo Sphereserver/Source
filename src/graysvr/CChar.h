@@ -772,7 +772,7 @@ public:
 
 	WORD Food_CanEat(CObjBase *pObj) const;
 	int Food_GetLevelPercent() const;
-	LPCTSTR Food_GetLevelMessage(bool fPet, bool fHappy) const;
+	LPCTSTR Food_GetLevelMessage() const;
 
 public:
 	int Stat_GetAdjusted(STAT_TYPE stat) const;
@@ -1428,14 +1428,17 @@ public:
 
 	static CItemVendable *NPC_FindVendableItem(CItemVendable *pVendItem, CItemContainer *pContBuy);
 
-	bool NPC_IsVendor() const
+	bool NPC_IsAnimal() const
 	{
-		return (m_pNPC && ((m_pNPC->m_Brain == NPCBRAIN_HEALER) || (m_pNPC->m_Brain == NPCBRAIN_BANKER) || (m_pNPC->m_Brain == NPCBRAIN_VENDOR) || (m_pNPC->m_Brain == NPCBRAIN_ANIMAL_TRAINER)));
+		return (m_pNPC && (m_pNPC->m_Brain == NPCBRAIN_ANIMAL));
 	}
-
 	bool NPC_IsMonster() const
 	{
 		return (m_pNPC && ((m_pNPC->m_Brain == NPCBRAIN_MONSTER) || (m_pNPC->m_Brain == NPCBRAIN_BERSERK) || (m_pNPC->m_Brain == NPCBRAIN_DRAGON)));
+	}
+	bool NPC_IsVendor() const
+	{
+		return (m_pNPC && ((m_pNPC->m_Brain == NPCBRAIN_HEALER) || (m_pNPC->m_Brain == NPCBRAIN_BANKER) || (m_pNPC->m_Brain == NPCBRAIN_VENDOR) || (m_pNPC->m_Brain == NPCBRAIN_ANIMAL_TRAINER)));
 	}
 
 	int NPC_GetAiFlags()

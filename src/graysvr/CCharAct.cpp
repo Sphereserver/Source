@@ -3554,8 +3554,7 @@ void CChar::OnTickFood(int iVal, int iHitsHungerLoss)
 	if ( (iHitsHungerLoss <= 0) || IsStatFlag(STATF_Stone) )
 		return;
 
-	bool fPet = IsStatFlag(STATF_Pet);
-	LPCTSTR pszMsgLevel = Food_GetLevelMessage(fPet, false);
+	LPCTSTR pszMsgLevel = Food_GetLevelMessage();
 	SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_HUNGER), pszMsgLevel);
 
 	TCHAR *pszMsg = Str_GetTemp();
@@ -3570,8 +3569,7 @@ void CChar::OnTickFood(int iVal, int iHitsHungerLoss)
 	if ( iFoodLevel <= 0 )
 	{
 		OnTakeDamage(iHitsHungerLoss, this, DAMAGE_FIXED);
-		SoundChar(CRESND_NOTICE);
-		if ( fPet )
+		if ( m_pNPC )
 			NPC_PetDesert();
 	}
 }

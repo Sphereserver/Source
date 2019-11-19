@@ -630,125 +630,157 @@ bool CClient::OnTarg_Tile(CObjBase *pObj, const CPointMap &pt)
 //-----------------------------------------------------------------------
 // Targetted Informational skills
 
-int CClient::OnSkill_AnimalLore(CGrayUID uid, int iSkillLevel, bool fTest)
+int CClient::OnSkill_AnimalLore(CGrayUID uid, bool fTest)
 {
 	ADDTOCALLSTACK("CClient::OnSkill_AnimalLore");
-	UNREFERENCED_PARAMETER(iSkillLevel);
 	// SKILL_ANIMALLORE
 
-	CChar *pChar = uid.CharFind();
-	if ( !pChar )
+	CObjBase *pObj = uid.ObjFind();
+	if ( !pObj )
+		return -SKTRIG_QTY;
+
+	CSkillDef *pSkillDef = g_Cfg.GetSkillDef(SKILL_ANIMALLORE);
+	if ( pSkillDef->m_Range <= 0 )
+		pSkillDef->m_Range = 12;
+
+	if ( m_pChar->GetDist(pObj) > pSkillDef->m_Range )
 	{
-		SysMessageDefault(DEFMSG_NON_ALIVE);
-		return -1;
+		SysMessageDefault(DEFMSG_ANIMALLORE_TOOFAR);
+		return -SKTRIG_QTY;
+	}
+
+	CChar *pChar = dynamic_cast<CChar *>(pObj);
+	if ( !pChar || !pChar->m_pNPC || (!pChar->NPC_IsAnimal() && !pChar->NPC_IsMonster()) )
+	{
+		SysMessageDefault(DEFMSG_ANIMALLORE_NOTANIMAL);
+		return -SKTRIG_QTY;
 	}
 
 	if ( fTest )
+		return Calc_GetRandVal(60);
+
+	LPCTSTR pszLoyaltyRating;
+	if ( pChar->IsStatFlag(STATF_Pet) )
 	{
-		if ( pChar == m_pChar )
-			return 2;
-		if ( m_pChar->IsStatFlag(STATF_OnHorse) )
+		static const LPCTSTR sm_szAnimalLore_LoyaltyRating[] =
 		{
-			CItem *pItem = m_pChar->LayerFind(LAYER_HORSE);
-			if ( pItem && (pItem->m_itFigurine.m_UID == uid) )
-				return 1;
+			g_Cfg.GetDefaultMsg(DEFMSG_ANIMALLORE_LOYALTY_1),
+			g_Cfg.GetDefaultMsg(DEFMSG_ANIMALLORE_LOYALTY_2),
+			g_Cfg.GetDefaultMsg(DEFMSG_ANIMALLORE_LOYALTY_3),
+			g_Cfg.GetDefaultMsg(DEFMSG_ANIMALLORE_LOYALTY_4),
+			g_Cfg.GetDefaultMsg(DEFMSG_ANIMALLORE_LOYALTY_5),
+			g_Cfg.GetDefaultMsg(DEFMSG_ANIMALLORE_LOYALTY_6),
+			g_Cfg.GetDefaultMsg(DEFMSG_ANIMALLORE_LOYALTY_7),
+			g_Cfg.GetDefaultMsg(DEFMSG_ANIMALLORE_LOYALTY_8),
+			g_Cfg.GetDefaultMsg(DEFMSG_ANIMALLORE_LOYALTY_9),
+			g_Cfg.GetDefaultMsg(DEFMSG_ANIMALLORE_LOYALTY_10),
+			g_Cfg.GetDefaultMsg(DEFMSG_ANIMALLORE_LOYALTY_11)
+		};
+
+		int iMax = pChar->Stat_GetMax(STAT_FOOD);
+		if ( iMax )
+		{
+			size_t i = IMULDIV(pChar->Stat_GetVal(STAT_FOOD), COUNTOF(sm_szAnimalLore_LoyaltyRating), iMax);
+			if ( i < 0 )
+				i = 0;
+			else if ( i >= COUNTOF(sm_szAnimalLore_LoyaltyRating) )
+				i = COUNTOF(sm_szAnimalLore_LoyaltyRating) - 1;
+			pszLoyaltyRating = sm_szAnimalLore_LoyaltyRating[i];
 		}
-		return pChar->IsPlayableCharacter() ? Calc_GetRandVal(10) : Calc_GetRandVal(60);
+		else
+			pszLoyaltyRating = sm_szAnimalLore_LoyaltyRating[COUNTOF(sm_szAnimalLore_LoyaltyRating) - 1];
 	}
+	else
+		pszLoyaltyRating = g_Cfg.GetDefaultMsg(DEFMSG_ANIMALLORE_LOYALTY_WILD);
 
 	TCHAR *pszTemp = Str_GetTemp();
-	if ( pChar->IsIndividualName() )
-	{
-		sprintf(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_ANIMALLORE_RESULT), pChar->GetName(), pChar->Char_GetDef()->GetTradeName());
-		addObjMessage(pszTemp, pChar);
-	}
-
-	LPCTSTR pszHe = pChar->GetPronoun();
-	LPCTSTR pszHis = pChar->GetPossessPronoun();
-	CChar *pCharOwner = pChar->NPC_PetGetOwner();
-	if ( pCharOwner )
-		sprintf(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_ANIMALLORE_MASTER), pszHe, (pCharOwner == m_pChar) ? g_Cfg.GetDefaultMsg(DEFMSG_ANIMALLORE_MASTER_YOU) : pCharOwner->GetName());
-	else
-		sprintf(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_ANIMALLORE_FREE), pszHe, pszHis);
+	sprintf(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_ANIMALLORE_LOYALTY_RESULT), pChar->GetPronoun(), pszLoyaltyRating);
 	addObjMessage(pszTemp, pChar);
 
-	LPCTSTR pszText = pChar->IsStatFlag(STATF_Conjured) ? g_Cfg.GetDefaultMsg(DEFMSG_ANIMALLORE_CONJURED) : pChar->Food_GetLevelMessage(pCharOwner ? true : false, true);
-	sprintf(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_ANIMALLORE_FOOD), pszHe, pszText);
-
-	addObjMessage(pszTemp, pChar);
-	return 0;
+	return m_pChar->Skill_GetBase(SKILL_ANIMALLORE);
 }
 
-int CClient::OnSkill_ItemID(CGrayUID uid, int iSkillLevel, bool fTest)
+int CClient::OnSkill_ItemID(CGrayUID uid, bool fTest)
 {
 	ADDTOCALLSTACK("CClient::OnSkill_ItemID");
 	// SKILL_ITEMID
 
 	CObjBase *pObj = uid.ObjFind();
 	if ( !pObj )
-		return -1;
+		return -SKTRIG_QTY;
 
-	if ( pObj->IsChar() )
+	CSkillDef *pSkillDef = g_Cfg.GetSkillDef(SKILL_ITEMID);
+	if ( pSkillDef->m_Range <= 0 )
+		pSkillDef->m_Range = 3;
+
+	if ( m_pChar->GetDist(pObj) > pSkillDef->m_Range )
 	{
-		CChar *pChar = static_cast<CChar *>(pObj);
-		ASSERT(pChar);
-		if ( fTest )
-			return 1;
-
-		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_ITEMID_RESULT), pChar->GetName());
-		return 1;
+		SysMessageDefault(DEFMSG_ITEMID_TOOFAR);
+		return -SKTRIG_QTY;
 	}
 
-	CItem *pItem = static_cast<CItem *>(pObj);
-	ASSERT(pItem);
+	CItem *pItem = dynamic_cast<CItem *>(pObj);
+	if ( !pItem )
+	{
+		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_ITEMID_CHAR), pObj->GetName());
+		return -SKTRIG_QTY;
+	}
 
 	if ( fTest )
-		return Calc_GetRandVal(pItem->IsAttr(ATTR_IDENTIFIED) ? 20 : 60);
-
-	CItemVendable *pItemVend = dynamic_cast<CItemVendable *>(pItem);
-	if ( pItemVend )
-		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_ITEMID_GOLD), static_cast<int>(pItemVend->GetVendorPrice(0) * pItem->GetAmount()), pItemVend->GetNameFull(true));
-	else
-		SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_ITEMID_NOVAL));
-
-	// Whats it made of ?
-	CItemBase *pItemDef = pItem->Item_GetDef();
-	ASSERT(pItemDef);
-
-	if ( (iSkillLevel > 40) && (pItemDef->m_BaseResources.GetCount() > 0) )
-	{
-		TCHAR *pszTemp = Str_GetTemp();
-		strcpy(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_ITEMID_MADEOF));
-
-		pItemDef->m_BaseResources.WriteNames(pszTemp + strlen(pszTemp));
-		SysMessage(pszTemp);
-	}
+		return Calc_GetRandVal(60);
 
 	pItem->SetAttr(ATTR_IDENTIFIED);
-	return iSkillLevel;
+	CItemVendable *pItemVend = dynamic_cast<CItemVendable *>(pItem);
+	SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_ITEMID_VALUE), pItemVend ? static_cast<int>(pItemVend->GetVendorPrice(0) * pItem->GetAmount()) : 0);
+
+	return m_pChar->Skill_GetBase(SKILL_ITEMID);
 }
 
-int CClient::OnSkill_EvalInt(CGrayUID uid, int iSkillLevel, bool fTest)
+static const LPCTSTR sm_szPercentLevel[] =
+{
+	g_Cfg.GetDefaultMsg(DEFMSG_NUMBER_0),
+	g_Cfg.GetDefaultMsg(DEFMSG_NUMBER_10),
+	g_Cfg.GetDefaultMsg(DEFMSG_NUMBER_20),
+	g_Cfg.GetDefaultMsg(DEFMSG_NUMBER_30),
+	g_Cfg.GetDefaultMsg(DEFMSG_NUMBER_40),
+	g_Cfg.GetDefaultMsg(DEFMSG_NUMBER_50),
+	g_Cfg.GetDefaultMsg(DEFMSG_NUMBER_60),
+	g_Cfg.GetDefaultMsg(DEFMSG_NUMBER_70),
+	g_Cfg.GetDefaultMsg(DEFMSG_NUMBER_80),
+	g_Cfg.GetDefaultMsg(DEFMSG_NUMBER_90),
+	g_Cfg.GetDefaultMsg(DEFMSG_NUMBER_100)
+};
+
+int CClient::OnSkill_EvalInt(CGrayUID uid, bool fTest)
 {
 	ADDTOCALLSTACK("CClient::OnSkill_EvalInt");
 	// SKILL_EVALINT
-	// iSkillLevel = 0 to 1000
 
-	CChar *pChar = uid.CharFind();
+	CObjBase *pObj = uid.ObjFind();
+	if ( !pObj )
+		return -SKTRIG_QTY;
+
+	CSkillDef *pSkillDef = g_Cfg.GetSkillDef(SKILL_EVALINT);
+	if ( pSkillDef->m_Range <= 0 )
+		pSkillDef->m_Range = 8;
+
+	if ( m_pChar->GetDist(pObj) > pSkillDef->m_Range )
+	{
+		SysMessageDefault(DEFMSG_REACH_FAIL);
+		return -SKTRIG_QTY;
+	}
+
+	CChar *pChar = dynamic_cast<CChar *>(pObj);
 	if ( !pChar )
 	{
-		SysMessageDefault(DEFMSG_NON_ALIVE);
-		return -1;
+		addObjMessage(g_Cfg.GetDefaultMsg(DEFMSG_EVALINT_TARG_ITEM), pObj);
+		return -SKTRIG_QTY;
 	}
 
 	if ( fTest )
-	{
-		if ( pChar == m_pChar )
-			return 2;
 		return Calc_GetRandVal(60);
-	}
 
-	static LPCTSTR const sm_szIntDesc[] =
+	static const LPCTSTR sm_szEvalInt_IntLevel[] =
 	{
 		g_Cfg.GetDefaultMsg(DEFMSG_EVALINT_INT_1),
 		g_Cfg.GetDefaultMsg(DEFMSG_EVALINT_INT_2),
@@ -759,81 +791,56 @@ int CClient::OnSkill_EvalInt(CGrayUID uid, int iSkillLevel, bool fTest)
 		g_Cfg.GetDefaultMsg(DEFMSG_EVALINT_INT_7),
 		g_Cfg.GetDefaultMsg(DEFMSG_EVALINT_INT_8),
 		g_Cfg.GetDefaultMsg(DEFMSG_EVALINT_INT_9),
-		g_Cfg.GetDefaultMsg(DEFMSG_EVALINT_INT_10)
+		g_Cfg.GetDefaultMsg(DEFMSG_EVALINT_INT_10),
+		g_Cfg.GetDefaultMsg(DEFMSG_EVALINT_INT_11)
 	};
 
-	int iIntVal = pChar->Stat_GetAdjusted(STAT_INT);
-	int iIntEntry = (iIntVal - 1) / 10;
-	if ( iIntEntry < 0 )
-		iIntEntry = 0;
-	if ( static_cast<size_t>(iIntEntry) >= COUNTOF(sm_szIntDesc) )
-		iIntEntry = COUNTOF(sm_szIntDesc) - 1;
+	int iInt = pChar->Stat_GetBase(STAT_INT) / 10;
+	if ( iInt < 0 )
+		iInt = 0;
+	else if ( static_cast<size_t>(iInt) >= COUNTOF(sm_szEvalInt_IntLevel) )
+		iInt = COUNTOF(sm_szEvalInt_IntLevel) - 1;
 
-	SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_EVALINT_RESULT), pChar->GetName(), sm_szIntDesc[iIntEntry]);
+	TCHAR *pszTemp = Str_GetTemp();
+	sprintf(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_EVALINT_INT_RESULT), pChar->GetPronoun(), sm_szEvalInt_IntLevel[iInt]);
+	addObjMessage(pszTemp, pChar);
 
-	if ( iSkillLevel > 400 )
+	WORD wSkill = m_pChar->Skill_GetBase(SKILL_EVALINT);
+	if ( wSkill >= 760 )
 	{
-		static LPCTSTR const sm_szMagicDesc[] =
-		{
-			g_Cfg.GetDefaultMsg(DEFMSG_EVALINT_MAG_1),
-			g_Cfg.GetDefaultMsg(DEFMSG_EVALINT_MAG_2),
-			g_Cfg.GetDefaultMsg(DEFMSG_EVALINT_MAG_3),
-			g_Cfg.GetDefaultMsg(DEFMSG_EVALINT_MAG_4),
-			g_Cfg.GetDefaultMsg(DEFMSG_EVALINT_MAG_5),
-			g_Cfg.GetDefaultMsg(DEFMSG_EVALINT_MAG_6)
-		};
+		int iMana = ((pChar->Stat_GetVal(STAT_INT) * 100) / maximum(pChar->Stat_GetMax(STAT_INT), 1)) / 10;
+		if ( iMana < 0 )
+			iMana = 0;
+		else if ( static_cast<size_t>(iMana) >= COUNTOF(sm_szPercentLevel) )
+			iMana = COUNTOF(sm_szPercentLevel) - 1;
 
-		static LPCTSTR const sm_szManaDesc[] =
-		{
-			g_Cfg.GetDefaultMsg(DEFMSG_EVALINT_MAN_1),
-			g_Cfg.GetDefaultMsg(DEFMSG_EVALINT_MAN_2),
-			g_Cfg.GetDefaultMsg(DEFMSG_EVALINT_MAN_3),
-			g_Cfg.GetDefaultMsg(DEFMSG_EVALINT_MAN_4),
-			g_Cfg.GetDefaultMsg(DEFMSG_EVALINT_MAN_5),
-			g_Cfg.GetDefaultMsg(DEFMSG_EVALINT_MAN_6)
-		};
-
-		int iMagicSkill = maximum(pChar->Skill_GetAdjusted(SKILL_MAGERY), pChar->Skill_GetAdjusted(SKILL_NECROMANCY));
-		int iMagicEntry = iMagicSkill / 200;
-		if ( iMagicEntry < 0 )
-			iMagicEntry = 0;
-		if ( static_cast<size_t>(iMagicEntry) >= COUNTOF(sm_szMagicDesc) )
-			iMagicEntry = COUNTOF(sm_szMagicDesc) - 1;
-
-		int iManaEntry = 0;
-		if ( iIntVal )
-			iManaEntry = IMULDIV(pChar->Stat_GetVal(STAT_INT), COUNTOF(sm_szManaDesc) - 1, iIntVal);
-
-		if ( iManaEntry < 0 )
-			iManaEntry = 0;
-		if ( static_cast<size_t>(iManaEntry) >= COUNTOF(sm_szManaDesc) )
-			iManaEntry = COUNTOF(sm_szManaDesc) - 1;
-
-		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_EVALINT_RESULT_2), sm_szMagicDesc[iMagicEntry], sm_szManaDesc[iManaEntry]);
+		sprintf(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_EVALINT_MANA_RESULT), sm_szPercentLevel[iMana]);
+		addObjMessage(pszTemp, pChar);
 	}
-	return iSkillLevel;
+
+	return wSkill;
 }
 
-static LPCTSTR const sm_szPoisonMessages[] =
-{
-	g_Cfg.GetDefaultMsg(DEFMSG_ARMSLORE_PSN_1),
-	g_Cfg.GetDefaultMsg(DEFMSG_ARMSLORE_PSN_2),
-	g_Cfg.GetDefaultMsg(DEFMSG_ARMSLORE_PSN_3),
-	g_Cfg.GetDefaultMsg(DEFMSG_ARMSLORE_PSN_4),
-	g_Cfg.GetDefaultMsg(DEFMSG_ARMSLORE_PSN_5),
-	g_Cfg.GetDefaultMsg(DEFMSG_ARMSLORE_PSN_6),
-	g_Cfg.GetDefaultMsg(DEFMSG_ARMSLORE_PSN_7),
-	g_Cfg.GetDefaultMsg(DEFMSG_ARMSLORE_PSN_8),
-	g_Cfg.GetDefaultMsg(DEFMSG_ARMSLORE_PSN_9),
-	g_Cfg.GetDefaultMsg(DEFMSG_ARMSLORE_PSN_10)
-};
-
-int CClient::OnSkill_ArmsLore(CGrayUID uid, int iSkillLevel, bool fTest)
+int CClient::OnSkill_ArmsLore(CGrayUID uid, bool fTest)
 {
 	ADDTOCALLSTACK("CClient::OnSkill_ArmsLore");
 	// SKILL_ARMSLORE
 
-	CItem *pItem = uid.ItemFind();
+	CObjBase *pObj = uid.ObjFind();
+	if ( !pObj )
+		return -SKTRIG_QTY;
+
+	CSkillDef *pSkillDef = g_Cfg.GetSkillDef(SKILL_ARMSLORE);
+	if ( pSkillDef->m_Range <= 0 )
+		pSkillDef->m_Range = 3;
+
+	if ( m_pChar->GetDist(pObj) > pSkillDef->m_Range )
+	{
+		SysMessageDefault(DEFMSG_ARMSLORE_TOOFAR);
+		return -SKTRIG_QTY;
+	}
+
+	CItem *pItem = dynamic_cast<CItem *>(pObj);
 	if ( !pItem || !pItem->IsTypeArmorWeapon() )
 	{
 		SysMessageDefault(DEFMSG_ARMSLORE_UNABLE);
@@ -843,77 +850,124 @@ int CClient::OnSkill_ArmsLore(CGrayUID uid, int iSkillLevel, bool fTest)
 	if ( fTest )
 		return Calc_GetRandVal(60);
 
-	TCHAR *pszTemp = Str_GetTemp();
-	size_t len = 0;
+	SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_ARMSLORE_DURABILITY_RESULT), pItem->Armor_GetRepairDesc());
 
-	bool fWeapon = false;
-	int iHitsCur = 0;
-	int iHitsMax = 0;
+	if ( pItem->IsTypeWeapon() )
+	{
+		static const LPCTSTR sm_szArmsLore_DmgLevel[] =
+		{
+			g_Cfg.GetDefaultMsg(DEFMSG_ARMSLORE_WEAPON_DAM_1),
+			g_Cfg.GetDefaultMsg(DEFMSG_ARMSLORE_WEAPON_DAM_2),
+			g_Cfg.GetDefaultMsg(DEFMSG_ARMSLORE_WEAPON_DAM_3),
+			g_Cfg.GetDefaultMsg(DEFMSG_ARMSLORE_WEAPON_DAM_4),
+			g_Cfg.GetDefaultMsg(DEFMSG_ARMSLORE_WEAPON_DAM_5),
+			g_Cfg.GetDefaultMsg(DEFMSG_ARMSLORE_WEAPON_DAM_6),
+			g_Cfg.GetDefaultMsg(DEFMSG_ARMSLORE_WEAPON_DAM_7),
+		};
 
-	if ( pItem->IsTypeArmor() )
-	{
-		iHitsCur = pItem->m_itArmor.m_Hits_Cur;
-		iHitsMax = pItem->m_itArmor.m_Hits_Max;
-		len += sprintf(pszTemp + len, g_Cfg.GetDefaultMsg(DEFMSG_ARMSLORE_DEF), pItem->Armor_GetDefense());
-	}
-	else if ( pItem->IsTypeWeapon() )
-	{
-		fWeapon = true;
-		iHitsCur = pItem->m_itWeapon.m_Hits_Cur;
-		iHitsMax = pItem->m_itWeapon.m_Hits_Max;
-		len += sprintf(pszTemp + len, g_Cfg.GetDefaultMsg(DEFMSG_ARMSLORE_DAM), pItem->Weapon_GetAttack());
+		int iDmg = (pItem->Weapon_GetAttack(false) + pItem->Weapon_GetAttack(true)) / 2;
+		if ( iDmg > 30 )
+			iDmg = 30;
+		iDmg /= 5;
+
+		if ( iDmg < 0 )
+			iDmg = 0;
+		if ( static_cast<size_t>(iDmg) >= COUNTOF(sm_szArmsLore_DmgLevel) )
+			iDmg = COUNTOF(sm_szArmsLore_DmgLevel) - 1;
+
+		LPCTSTR pszHitType;
+		switch ( pItem->GetType() )
+		{
+			case IT_WEAPON_MACE_SMITH:
+			case IT_WEAPON_MACE_SHARP:
+			case IT_WEAPON_MACE_STAFF:
+			case IT_WEAPON_MACE_CROOK:
+			case IT_WEAPON_WHIP:
+				pszHitType = g_Cfg.GetDefaultMsg(DEFMSG_ARMSLORE_WEAPON_HIT_BASH);
+				break;
+			case IT_WEAPON_SWORD:
+			case IT_WEAPON_MACE_PICK:
+			case IT_WEAPON_AXE:
+			case IT_WEAPON_THROWING:
+				pszHitType = g_Cfg.GetDefaultMsg(DEFMSG_ARMSLORE_WEAPON_HIT_SLASH);
+				break;
+			case IT_WEAPON_FENCE:
+				pszHitType = g_Cfg.GetDefaultMsg(DEFMSG_ARMSLORE_WEAPON_HIT_STAB);
+				break;
+			case IT_WEAPON_BOW:
+			case IT_WEAPON_XBOW:
+				pszHitType = g_Cfg.GetDefaultMsg(DEFMSG_ARMSLORE_WEAPON_HIT_SHOT);
+				break;
+			default:
+				pszHitType = g_Cfg.GetDefaultMsg(DEFMSG_ARMSLORE_WEAPON_HIT);
+				break;
+		}
+
+		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_ARMSLORE_WEAPON_RESULT), sm_szArmsLore_DmgLevel[iDmg], pszHitType, g_Cfg.GetDefaultMsg((pItem->Item_GetDef()->GetEquipLayer() == LAYER_HAND2) ? DEFMSG_ARMSLORE_WEAPON_RANGE_LONG : DEFMSG_ARMSLORE_WEAPON_RANGE_SHORT));
+
+		if ( pItem->m_itWeapon.m_poison_skill )
+			SysMessageDefault(DEFMSG_ARMSLORE_WEAPON_POISON);
 	}
 	else
 	{
-		SysMessageDefault(DEFMSG_ARMSLORE_UNABLE);
-		return -SKTRIG_QTY;
+		static const LPCTSTR sm_szArmsLore_ArmorLevel[] =
+		{
+			g_Cfg.GetDefaultMsg(DEFMSG_ARMSLORE_ARMOR_AR_1),
+			g_Cfg.GetDefaultMsg(DEFMSG_ARMSLORE_ARMOR_AR_2),
+			g_Cfg.GetDefaultMsg(DEFMSG_ARMSLORE_ARMOR_AR_3),
+			g_Cfg.GetDefaultMsg(DEFMSG_ARMSLORE_ARMOR_AR_4),
+			g_Cfg.GetDefaultMsg(DEFMSG_ARMSLORE_ARMOR_AR_5),
+			g_Cfg.GetDefaultMsg(DEFMSG_ARMSLORE_ARMOR_AR_6),
+			g_Cfg.GetDefaultMsg(DEFMSG_ARMSLORE_ARMOR_AR_7),
+			g_Cfg.GetDefaultMsg(DEFMSG_ARMSLORE_ARMOR_AR_8)
+		};
+
+		int iArmor = pItem->Armor_GetDefense();
+		if ( iArmor > 35 )
+			iArmor = 35;
+		iArmor /= 5;
+
+		if ( iArmor < 0 )
+			iArmor = 0;
+		if ( static_cast<size_t>(iArmor) >= COUNTOF(sm_szArmsLore_ArmorLevel) )
+			iArmor = COUNTOF(sm_szArmsLore_ArmorLevel) - 1;
+
+		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_ARMSLORE_ARMOR_RESULT), sm_szArmsLore_ArmorLevel[iArmor]);
 	}
 
-	len += sprintf(pszTemp + len, g_Cfg.GetDefaultMsg(DEFMSG_ARMSLORE_REP), pItem->Armor_GetRepairDesc());
-
-	if ( (iHitsCur <= 3) || (iHitsMax <= 3) )
-		len += strcpylen(pszTemp + len, g_Cfg.GetDefaultMsg(DEFMSG_ARMSLORE_REP_0));
-
-	if ( pItem->IsAttr(ATTR_MAGIC) )
-		len += strcpylen(pszTemp + len, g_Cfg.GetDefaultMsg(DEFMSG_ITEM_MAGIC));
-	else if ( pItem->IsAttr(ATTR_NEWBIE|ATTR_MOVE_NEVER) )
-		len += strcpylen(pszTemp + len, g_Cfg.GetDefaultMsg(DEFMSG_ITEM_NEWBIE));
-
-	if ( !pItem->Armor_IsRepairable() )
-		len += strcpylen(pszTemp + len, g_Cfg.GetDefaultMsg(DEFMSG_ITEM_REPAIR));
-
-	if ( fWeapon && pItem->m_itWeapon.m_poison_skill )
-	{
-		size_t iLevel = IMULDIV(pItem->m_itWeapon.m_poison_skill, COUNTOF(sm_szPoisonMessages), 100);
-		if ( iLevel >= COUNTOF(sm_szPoisonMessages) )
-			iLevel = COUNTOF(sm_szPoisonMessages) - 1;
-		len += sprintf(pszTemp + len, " %s", sm_szPoisonMessages[iLevel]);
-	}
-
-	SysMessage(pszTemp);
-	return iSkillLevel;
+	return m_pChar->Skill_GetBase(SKILL_ARMSLORE);
 }
 
-int CClient::OnSkill_Anatomy(CGrayUID uid, int iSkillLevel, bool fTest)
+int CClient::OnSkill_Anatomy(CGrayUID uid, bool fTest)
 {
 	ADDTOCALLSTACK("CClient::OnSkill_Anatomy");
 	// SKILL_ANATOMY
 
-	CChar *pChar = uid.CharFind();
+	CObjBase *pObj = uid.ObjFind();
+	if ( !pObj )
+		return -SKTRIG_QTY;
+
+	CSkillDef *pSkillDef = g_Cfg.GetSkillDef(SKILL_ANATOMY);
+	if ( pSkillDef->m_Range <= 0 )
+		pSkillDef->m_Range = 8;
+
+	if ( m_pChar->GetDist(pObj) > pSkillDef->m_Range )
+	{
+		SysMessageDefault(DEFMSG_ANATOMY_TOOFAR);
+		return -SKTRIG_QTY;
+	}
+
+	CChar *pChar = dynamic_cast<CChar *>(pObj);
 	if ( !pChar )
 	{
-		addObjMessage(g_Cfg.GetDefaultMsg(DEFMSG_NON_ALIVE), pChar);
-		return -1;
+		SysMessageDefault(DEFMSG_ANATOMY_TARG_ITEM);
+		return -SKTRIG_QTY;
 	}
 
 	if ( fTest )
-	{
-		if ( pChar == m_pChar )
-			return 2;
 		return Calc_GetRandVal(60);
-	}
 
-	static LPCTSTR const sm_szStrEval[] =
+	static const LPCTSTR sm_szAnatomy_StrLevel[] =
 	{
 		g_Cfg.GetDefaultMsg(DEFMSG_ANATOMY_STR_1),
 		g_Cfg.GetDefaultMsg(DEFMSG_ANATOMY_STR_2),
@@ -924,17 +978,17 @@ int CClient::OnSkill_Anatomy(CGrayUID uid, int iSkillLevel, bool fTest)
 		g_Cfg.GetDefaultMsg(DEFMSG_ANATOMY_STR_7),
 		g_Cfg.GetDefaultMsg(DEFMSG_ANATOMY_STR_8),
 		g_Cfg.GetDefaultMsg(DEFMSG_ANATOMY_STR_9),
-		g_Cfg.GetDefaultMsg(DEFMSG_ANATOMY_STR_10)
+		g_Cfg.GetDefaultMsg(DEFMSG_ANATOMY_STR_10),
+		g_Cfg.GetDefaultMsg(DEFMSG_ANATOMY_STR_11)
 	};
 
-	int iStrVal = pChar->Stat_GetAdjusted(STAT_STR);
-	int iStrEntry = (iStrVal - 1) / 10;
-	if ( iStrEntry < 0 )
-		iStrEntry = 0;
-	if ( static_cast<size_t>(iStrEntry) >= COUNTOF(sm_szStrEval) )
-		iStrEntry = COUNTOF(sm_szStrEval) - 1;
+	int iStr = pChar->Stat_GetBase(STAT_STR) / 10;
+	if ( iStr < 0 )
+		iStr = 0;
+	else if ( static_cast<size_t>(iStr) >= COUNTOF(sm_szAnatomy_StrLevel) )
+		iStr = COUNTOF(sm_szAnatomy_StrLevel) - 1;
 
-	static LPCTSTR const sm_szDexEval[] =
+	static const LPCTSTR sm_szAnatomy_DexLevel[] =
 	{
 		g_Cfg.GetDefaultMsg(DEFMSG_ANATOMY_DEX_1),
 		g_Cfg.GetDefaultMsg(DEFMSG_ANATOMY_DEX_2),
@@ -945,158 +999,129 @@ int CClient::OnSkill_Anatomy(CGrayUID uid, int iSkillLevel, bool fTest)
 		g_Cfg.GetDefaultMsg(DEFMSG_ANATOMY_DEX_7),
 		g_Cfg.GetDefaultMsg(DEFMSG_ANATOMY_DEX_8),
 		g_Cfg.GetDefaultMsg(DEFMSG_ANATOMY_DEX_9),
-		g_Cfg.GetDefaultMsg(DEFMSG_ANATOMY_DEX_10)
+		g_Cfg.GetDefaultMsg(DEFMSG_ANATOMY_DEX_10),
+		g_Cfg.GetDefaultMsg(DEFMSG_ANATOMY_DEX_11)
 	};
 
-	int iDexVal = pChar->Stat_GetAdjusted(STAT_DEX);
-	int iDexEntry = (iDexVal - 1) / 10;
-	if ( iDexEntry < 0 )
-		iDexEntry = 0;
-	if ( static_cast<size_t>(iDexEntry) >= COUNTOF(sm_szDexEval) )
-		iDexEntry = COUNTOF(sm_szDexEval) - 1;
+	int iDex = pChar->Stat_GetBase(STAT_DEX) / 10;
+	if ( iDex < 0 )
+		iDex = 0;
+	else if ( static_cast<size_t>(iDex) >= COUNTOF(sm_szAnatomy_DexLevel) )
+		iDex = COUNTOF(sm_szAnatomy_DexLevel) - 1;
 
 	TCHAR *pszTemp = Str_GetTemp();
-	sprintf(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_ANATOMY_RESULT), pChar->GetName(), sm_szStrEval[iStrEntry], sm_szDexEval[iDexEntry]);
+	sprintf(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_ANATOMY_RESULT), sm_szAnatomy_StrLevel[iStr], sm_szAnatomy_DexLevel[iDex]);
 	addObjMessage(pszTemp, pChar);
 
-	if ( pChar->IsStatFlag(STATF_Conjured) )
-		addObjMessage(g_Cfg.GetDefaultMsg(DEFMSG_ANATOMY_MAGIC), pChar);
+	WORD wSkill = m_pChar->Skill_GetBase(SKILL_ANATOMY);
+	if ( wSkill >= 650 )
+	{
+		int iStam = ((pChar->Stat_GetVal(STAT_DEX) * 100) / maximum(pChar->Stat_GetMax(STAT_DEX), 1)) / 10;
+		if ( iStam < 0 )
+			iStam = 0;
+		else if ( static_cast<size_t>(iStam) >= COUNTOF(sm_szPercentLevel) )
+			iStam = COUNTOF(sm_szPercentLevel) - 1;
 
-	return iSkillLevel;
+		sprintf(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_ANATOMY_STAM_RESULT), sm_szPercentLevel[iStam]);
+		addObjMessage(pszTemp, pChar);
+	}
+
+	return wSkill;
 }
 
-int CClient::OnSkill_Forensics(CGrayUID uid, int iSkillLevel, bool fTest)
+int CClient::OnSkill_Forensics(CGrayUID uid, bool fTest)
 {
 	ADDTOCALLSTACK("CClient::OnSkill_Forensics");
 	// SKILL_FORENSICS
 
-	CItemCorpse *pCorpse = dynamic_cast<CItemCorpse *>(uid.ItemFind());
-	if ( !pCorpse )
-	{
-		SysMessageDefault(DEFMSG_FORENSICS_CORPSE);
+	CObjBase *pObj = uid.ObjFind();
+	if ( !pObj )
 		return -SKTRIG_QTY;
-	}
-	if ( !m_pChar->CanTouch(pCorpse) )
+
+	CSkillDef *pSkillDef = g_Cfg.GetSkillDef(SKILL_FORENSICS);
+	if ( pSkillDef->m_Range <= 0 )
+		pSkillDef->m_Range = 12;
+
+	if ( m_pChar->GetDist(pObj) > pSkillDef->m_Range )
 	{
-		SysMessageDefault(DEFMSG_FORENSICS_REACH);
-		return -SKTRIG_QTY;
-	}
-
-	if ( fTest )
-		return (pCorpse->m_uidLink == m_pChar->GetUID()) ? 2 : Calc_GetRandVal(60);
-
-	CChar *pCharKiller = pCorpse->m_itCorpse.m_uidKiller.CharFind();
-	LPCTSTR pszName = pCharKiller ? pCharKiller->GetName() : NULL;
-
-	TCHAR *pszTemp = Str_GetTemp();
-	if ( pCorpse->m_itCorpse.m_carved )
-	{
-		size_t len = sprintf(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_FORENSICS_CARVE_1), pCorpse->GetName());
-		if ( pszName )
-			sprintf(pszTemp + len, g_Cfg.GetDefaultMsg(DEFMSG_FORENSICS_CARVE_2), pszName);
-		else
-			strcpy(pszTemp + len, g_Cfg.GetDefaultMsg(DEFMSG_FORENSICS_FAILNAME));
-	}
-	else if ( pCorpse->GetTimeStamp().IsTimeValid() )
-	{
-		size_t len = sprintf(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_FORENSICS_TIMER), pCorpse->GetName(), -g_World.GetTimeDiff(pCorpse->GetTimeStamp()) / TICK_PER_SEC);
-		if ( pszName )
-			sprintf(pszTemp + len, g_Cfg.GetDefaultMsg(DEFMSG_FORENSICS_NAME), pszName);
-		else
-			strcpy(pszTemp + len, g_Cfg.GetDefaultMsg(DEFMSG_FORENSICS_FAILNAME));
-	}
-
-	SysMessage(pszTemp);
-	return iSkillLevel;
-}
-
-int CClient::OnSkill_TasteID(CGrayUID uid, int iSkillLevel, bool fTest)
-{
-	ADDTOCALLSTACK("CClient::OnSkill_TasteID");
-	// SKILL_TASTEID
-
-	CItem *pItem = uid.ItemFind();
-	if ( !pItem )
-	{
-		if ( uid == m_pChar->GetUID() )
-			SysMessageDefault(DEFMSG_TASTEID_SELF);
-		else
-			SysMessageDefault(DEFMSG_TASTEID_CHAR);
+		SysMessageDefault(DEFMSG_REACH_FAIL);
 		return -SKTRIG_QTY;
 	}
 
-	if ( !m_pChar->CanUse(pItem, true) )
+	CItemCorpse *pItemCorpse = dynamic_cast<CItemCorpse *>(pObj);
+	if ( !pItemCorpse )
 	{
-		SysMessageDefault(DEFMSG_TASTEID_UNABLE);
+		SysMessageDefault(DEFMSG_FORENSICS_NOTCORPSE);
 		return -SKTRIG_QTY;
-	}
-
-	DWORD dwPoisonLevel = 0;
-	switch ( pItem->GetType() )
-	{
-		case IT_POTION:
-		{
-			if ( RES_GET_INDEX(pItem->m_itPotion.m_Type) == SPELL_Poison )
-				dwPoisonLevel = pItem->m_itPotion.m_skillquality;
-			break;
-		}
-		case IT_FRUIT:
-		case IT_FOOD:
-		case IT_FOOD_RAW:
-		case IT_MEAT_RAW:
-		{
-			dwPoisonLevel = pItem->m_itFood.m_poison_skill * 10;
-			break;
-		}
-		case IT_WEAPON_MACE_SHARP:
-		case IT_WEAPON_SWORD:		// 13 =
-		case IT_WEAPON_FENCE:		// 14 = can't be used to chop trees. (make kindling)
-		case IT_WEAPON_AXE:
-		{
-			//pItem->m_itWeapon.m_poison_skill = pPoison->m_itPotion.m_skillquality / 10;
-			dwPoisonLevel = pItem->m_itWeapon.m_poison_skill * 10;
-			break;
-		}
-		default:
-		{
-			if ( !fTest )
-				SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_TASTEID_RESULT), pItem->GetNameFull(false));
-			return 1;
-		}
 	}
 
 	if ( fTest )
 		return Calc_GetRandVal(60);
 
-	if ( dwPoisonLevel )
-	{
-		size_t iLevel = IMULDIV(dwPoisonLevel, COUNTOF(sm_szPoisonMessages), 1000);
-		if ( iLevel >= COUNTOF(sm_szPoisonMessages) )
-			iLevel = COUNTOF(sm_szPoisonMessages) - 1;
-		SysMessage(sm_szPoisonMessages[iLevel]);
-	}
-	else
-		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_TASTEID_RESULT), pItem->GetNameFull(false));
+	CChar *pChar = pItemCorpse->m_itCorpse.m_uidKiller.CharFind();
+	LPCTSTR pszName = pChar ? pChar->GetName() : g_Cfg.GetDefaultMsg(DEFMSG_FORENSICS_NOONE);
 
-	return iSkillLevel;
+	if ( pItemCorpse->m_itCorpse.m_carved )
+		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_FORENSICS_CARVEDBY), pszName);
+	else
+	{
+		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_FORENSICS_KILLEDBY), pszName);
+		SysMessageDefault(DEFMSG_FORENSICS_NOTCARVED);
+	}
+
+	return m_pChar->Skill_GetBase(SKILL_FORENSICS);
 }
 
-int CClient::OnSkill_Info(SKILL_TYPE skill, CGrayUID uid, int iSkillLevel, bool fTest)
+int CClient::OnSkill_TasteID(CGrayUID uid, bool fTest)
+{
+	ADDTOCALLSTACK("CClient::OnSkill_TasteID");
+	// SKILL_TASTEID
+
+	CObjBase *pObj = uid.ObjFind();
+	if ( !pObj )
+		return -SKTRIG_QTY;
+
+	CSkillDef *pSkillDef = g_Cfg.GetSkillDef(SKILL_TASTEID);
+	if ( pSkillDef->m_Range <= 0 )
+		pSkillDef->m_Range = 1;
+
+	if ( m_pChar->GetDist(pObj) > pSkillDef->m_Range )
+	{
+		SysMessageDefault(DEFMSG_TASTEID_TOOFAR);
+		return -SKTRIG_QTY;
+	}
+
+	CItem *pItem = dynamic_cast<CItem *>(pObj);
+	if ( !pItem || !m_pChar->Food_CanEat(pItem) )
+	{
+		SysMessageDefault(DEFMSG_TASTEID_TARG_NOFOOD);
+		return -SKTRIG_QTY;
+	}
+
+	if ( fTest )
+		return Calc_GetRandVal(60);
+
+	SysMessageDefault(pItem->m_itFood.m_poison_skill ? DEFMSG_TASTEID_POISON : DEFMSG_TASTEID_NOTHING);
+
+	return m_pChar->Skill_GetBase(SKILL_TASTEID);
+}
+
+int CClient::OnSkill_Info(SKILL_TYPE skill, CGrayUID uid, bool fTest)
 {
 	ADDTOCALLSTACK("CClient::OnSkill_Info");
 	// Skill timer has expired
-	// RETURN: difficulty credit (0 - 100)
+	// RETURN: difficulty credit (0 - 1000)
 	//  < 0 = immediate failure
 
 	switch ( skill )
 	{
-		case SKILL_ANIMALLORE:	return OnSkill_AnimalLore(uid, iSkillLevel, fTest);
-		case SKILL_ARMSLORE:	return OnSkill_ArmsLore(uid, iSkillLevel, fTest);
-		case SKILL_ANATOMY:		return OnSkill_Anatomy(uid, iSkillLevel, fTest);
-		case SKILL_ITEMID:		return OnSkill_ItemID(uid, iSkillLevel, fTest);
-		case SKILL_EVALINT:		return OnSkill_EvalInt(uid, iSkillLevel, fTest);
-		case SKILL_FORENSICS:	return OnSkill_Forensics(uid, iSkillLevel, fTest);
-		case SKILL_TASTEID:		return OnSkill_TasteID(uid, iSkillLevel, fTest);
+		case SKILL_ANIMALLORE:	return OnSkill_AnimalLore(uid, fTest);
+		case SKILL_ARMSLORE:	return OnSkill_ArmsLore(uid, fTest);
+		case SKILL_ANATOMY:		return OnSkill_Anatomy(uid, fTest);
+		case SKILL_ITEMID:		return OnSkill_ItemID(uid, fTest);
+		case SKILL_EVALINT:		return OnSkill_EvalInt(uid, fTest);
+		case SKILL_FORENSICS:	return OnSkill_Forensics(uid, fTest);
+		case SKILL_TASTEID:		return OnSkill_TasteID(uid, fTest);
 		default:				return -SKTRIG_QTY;
 	}
 }
@@ -1885,7 +1910,7 @@ bool CClient::OnTarg_Use_Item(CObjBase *pObjTarg, CPointMap &pt, ITEMID_TYPE id)
 				return false;
 			m_pChar->m_Act_TargPrv = m_Targ_PrvUID;
 			m_pChar->m_Act_Targ = m_Targ_UID;
-			return m_pChar->Skill_Start((pCharTarg->GetNPCBrain(false) == NPCBRAIN_ANIMAL) ? SKILL_VETERINARY : SKILL_HEALING);
+			return m_pChar->Skill_Start(pCharTarg->NPC_IsAnimal() ? SKILL_VETERINARY : SKILL_HEALING);
 		}
 		case IT_SEED:
 		{
@@ -2055,7 +2080,7 @@ bool CClient::OnTarg_Use_Item(CObjBase *pObjTarg, CPointMap &pt, ITEMID_TYPE id)
 
 			pItemTarg->m_itLoom.m_ClothID = pItemUse->GetDispID();
 
-			static LPCTSTR const sm_Txt_LoomUse[] =
+			static const LPCTSTR sm_Txt_LoomUse[] =
 			{
 				g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_BOLT_1),
 				g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_BOLT_2),

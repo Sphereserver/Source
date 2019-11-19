@@ -1641,3 +1641,11 @@ Changed: Logout inside moving ships will not make it stop anymore.
 Fixed: Ships not moving correctly objects inside it when there's too many objects to move.
 [sphere.ini]: Added new setting CombatArcheryMovementDelay (ported from experimental branch)
 [sphereCrypt.ini]: Added crypt key for classic client 7.0.80 and enhanced client 4.0.80
+
+18-11-2019, Coruja
+Changed: Updated all lore skills (Anatomy, Animal Lore, Arms Lore, Eval Int, Forensics Eval, Item ID, Taste ID)
+[sphereCrypt.ini]: Added crypt key for classic client 7.0.81 and enhanced client 4.0.81
+[sphere_msgs.scp]: Updated message list with the following changes
+	-Added: number_*
+	-Removed: msg_pet_*, non_alive, pet_happy_unaffected
+	-Updated: anatomy_*, animallore_*, armslore_*, evalint_*, forensics_*, itemid_*, tasteid_*, pronoun_*

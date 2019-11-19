@@ -2216,7 +2216,7 @@ bool CChar::NPC_Act_Food()
 	}
 
 	// Check if can eat grass
-	if ( GetNPCBrain() == NPCBRAIN_ANIMAL )
+	if ( NPC_IsAnimal() )
 	{
 		RESOURCE_ID_BASE rid = RESOURCE_ID(RES_TYPEDEF, IT_GRASS);
 		if ( Char_GetDef()->m_FoodType.ContainsResourceID(rid) )

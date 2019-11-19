@@ -529,13 +529,13 @@ private:
 	bool OnTarg_GlobalChat_Add(CChar *pChar);
 	CItem *OnTarg_Use_Multi(const CItemBase *pItemDef, CPointMap &pt, DWORD dwAttr, HUE_TYPE wHue);
 
-	int OnSkill_AnimalLore(CGrayUID uid, int iSkillLevel, bool fTest);
-	int OnSkill_Anatomy(CGrayUID uid, int iSkillLevel, bool fTest);
-	int OnSkill_Forensics(CGrayUID uid, int iSkillLevel, bool fTest);
-	int OnSkill_EvalInt(CGrayUID uid, int iSkillLevel, bool fTest);
-	int OnSkill_ArmsLore(CGrayUID uid, int iSkillLevel, bool fTest);
-	int OnSkill_ItemID(CGrayUID uid, int iSkillLevel, bool fTest);
-	int OnSkill_TasteID(CGrayUID uid, int iSkillLevel, bool fTest);
+	int OnSkill_AnimalLore(CGrayUID uid, bool fTest);
+	int OnSkill_Anatomy(CGrayUID uid, bool fTest);
+	int OnSkill_Forensics(CGrayUID uid, bool fTest);
+	int OnSkill_EvalInt(CGrayUID uid, bool fTest);
+	int OnSkill_ArmsLore(CGrayUID uid, bool fTest);
+	int OnSkill_ItemID(CGrayUID uid, bool fTest);
+	int OnSkill_TasteID(CGrayUID uid, bool fTest);
 
 	bool OnTarg_Pet_Command(CObjBase *pObj, const CPointMap &pt);
 	bool OnTarg_Pet_Stable(CChar *pCharPet);
@@ -897,7 +897,7 @@ public:
 	bool Dialog_Close(CObjBase *pObj, DWORD rid, DWORD dwButtonID);
 	void Menu_Setup(RESOURCE_ID_BASE rid, CObjBase *pObj = NULL);
 
-	int OnSkill_Info(SKILL_TYPE skill, CGrayUID uid, int iSkillLevel, bool fTest);
+	int OnSkill_Info(SKILL_TYPE skill, CGrayUID uid, bool fTest);
 
 	bool Cmd_Use_Item(CItem *pItem, bool fTestTouch, bool fScript = false);
 	void Cmd_EditItem(CObjBase *pObj, int iSelect);

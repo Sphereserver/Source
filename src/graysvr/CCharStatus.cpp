@@ -461,49 +461,19 @@ NPCBRAIN_TYPE CChar::GetNPCBrain(bool fGroupTypes) const
 LPCTSTR CChar::GetPronoun() const
 {
 	ADDTOCALLSTACK("CChar::GetPronoun");
-	switch ( GetDispID() )
-	{
-		case CREID_MAN:
-		case CREID_GHOSTMAN:
-		case CREID_ELFMAN:
-		case CREID_ELFGHOSTMAN:
-		case CREID_GARGMAN:
-		case CREID_GARGGHOSTMAN:
-			return g_Cfg.GetDefaultMsg(DEFMSG_PRONOUN_HE);
-		case CREID_WOMAN:
-		case CREID_GHOSTWOMAN:
-		case CREID_ELFWOMAN:
-		case CREID_ELFGHOSTWOMAN:
-		case CREID_GARGWOMAN:
-		case CREID_GARGGHOSTWOMAN:
-			return g_Cfg.GetDefaultMsg(DEFMSG_PRONOUN_SHE);
-		default:
-			return g_Cfg.GetDefaultMsg(DEFMSG_PRONOUN_IT);
-	}
+	if ( IsPlayableCharacter() )
+		return g_Cfg.GetDefaultMsg(Char_GetDef()->IsFemale() ? DEFMSG_PRONOUN_SHE : DEFMSG_PRONOUN_HE);
+	else
+		return g_Cfg.GetDefaultMsg(DEFMSG_PRONOUN_IT);
 }
 
 LPCTSTR CChar::GetPossessPronoun() const
 {
 	ADDTOCALLSTACK("CChar::GetPossessPronoun");
-	switch ( GetDispID() )
-	{
-		case CREID_MAN:
-		case CREID_GHOSTMAN:
-		case CREID_ELFMAN:
-		case CREID_ELFGHOSTMAN:
-		case CREID_GARGMAN:
-		case CREID_GARGGHOSTMAN:
-			return g_Cfg.GetDefaultMsg(DEFMSG_POSSESSPRONOUN_HIS);
-		case CREID_WOMAN:
-		case CREID_GHOSTWOMAN:
-		case CREID_ELFWOMAN:
-		case CREID_ELFGHOSTWOMAN:
-		case CREID_GARGWOMAN:
-		case CREID_GARGGHOSTWOMAN:
-			return g_Cfg.GetDefaultMsg(DEFMSG_POSSESSPRONOUN_HER);
-		default:
-			return g_Cfg.GetDefaultMsg(DEFMSG_POSSESSPRONOUN_ITS);
-	}
+	if ( IsPlayableCharacter() )
+		return g_Cfg.GetDefaultMsg(Char_GetDef()->IsFemale() ? DEFMSG_POSSESSPRONOUN_HER : DEFMSG_POSSESSPRONOUN_HIS);
+	else
+		return g_Cfg.GetDefaultMsg(DEFMSG_POSSESSPRONOUN_ITS);
 }
 
 BYTE CChar::GetModeFlag(const CClient *pViewer) const
@@ -609,52 +579,10 @@ int CChar::Food_GetLevelPercent() const
 	return IMULDIV(Stat_GetVal(STAT_FOOD), 100, iMax);
 }
 
-LPCTSTR CChar::Food_GetLevelMessage(bool fPet, bool fHappy) const
+LPCTSTR CChar::Food_GetLevelMessage() const
 {
 	ADDTOCALLSTACK("CChar::Food_GetLevelMessage");
-	int iMax = Stat_GetMax(STAT_FOOD);
-	if ( !iMax )
-		return g_Cfg.GetDefaultMsg(DEFMSG_PET_HAPPY_UNAFFECTED);
-
-	size_t index = IMULDIV(Stat_GetVal(STAT_FOOD), 8, iMax);
-
-	if ( fPet )
-	{
-		if ( fHappy )
-		{
-			static LPCTSTR const sm_szPetHappyMsg[] =
-			{
-				g_Cfg.GetDefaultMsg(DEFMSG_MSG_PET_FOOD_1),
-				g_Cfg.GetDefaultMsg(DEFMSG_MSG_PET_FOOD_2),
-				g_Cfg.GetDefaultMsg(DEFMSG_MSG_PET_FOOD_3),
-				g_Cfg.GetDefaultMsg(DEFMSG_MSG_PET_FOOD_4),
-				g_Cfg.GetDefaultMsg(DEFMSG_MSG_PET_FOOD_5),
-				g_Cfg.GetDefaultMsg(DEFMSG_MSG_PET_FOOD_6),
-				g_Cfg.GetDefaultMsg(DEFMSG_MSG_PET_FOOD_7),
-				g_Cfg.GetDefaultMsg(DEFMSG_MSG_PET_FOOD_8)
-			};
-			if ( index >= COUNTOF(sm_szPetHappyMsg) - 1 )
-				index = COUNTOF(sm_szPetHappyMsg) - 1;
-			return sm_szPetHappyMsg[index];
-		}
-
-		static LPCTSTR const sm_szPetHungerMsg[] =
-		{
-			g_Cfg.GetDefaultMsg(DEFMSG_MSG_PET_HAPPY_1),
-			g_Cfg.GetDefaultMsg(DEFMSG_MSG_PET_HAPPY_2),
-			g_Cfg.GetDefaultMsg(DEFMSG_MSG_PET_HAPPY_3),
-			g_Cfg.GetDefaultMsg(DEFMSG_MSG_PET_HAPPY_4),
-			g_Cfg.GetDefaultMsg(DEFMSG_MSG_PET_HAPPY_5),
-			g_Cfg.GetDefaultMsg(DEFMSG_MSG_PET_HAPPY_6),
-			g_Cfg.GetDefaultMsg(DEFMSG_MSG_PET_HAPPY_7),
-			g_Cfg.GetDefaultMsg(DEFMSG_MSG_PET_HAPPY_8)
-		};
-		if ( index >= COUNTOF(sm_szPetHungerMsg) - 1 )
-			index = COUNTOF(sm_szPetHungerMsg) - 1;
-		return sm_szPetHungerMsg[index];
-	}
-
-	static LPCTSTR const sm_szFoodLevelMsg[] =
+	static const LPCTSTR sm_szFoodLevelMsg[] =
 	{
 		g_Cfg.GetDefaultMsg(DEFMSG_MSG_FOOD_LVL_1),
 		g_Cfg.GetDefaultMsg(DEFMSG_MSG_FOOD_LVL_2),
@@ -665,9 +593,18 @@ LPCTSTR CChar::Food_GetLevelMessage(bool fPet, bool fHappy) const
 		g_Cfg.GetDefaultMsg(DEFMSG_MSG_FOOD_LVL_7),
 		g_Cfg.GetDefaultMsg(DEFMSG_MSG_FOOD_LVL_8)
 	};
-	if ( index >= (COUNTOF(sm_szFoodLevelMsg) - 1) )
-		index = COUNTOF(sm_szFoodLevelMsg) - 1;
-	return sm_szFoodLevelMsg[index];
+
+	int iMax = Stat_GetMax(STAT_FOOD);
+	if ( iMax )
+	{
+		size_t i = IMULDIV(Stat_GetVal(STAT_FOOD), COUNTOF(sm_szFoodLevelMsg), iMax);
+		if ( i < 0 )
+			i = 0;
+		else if ( i >= COUNTOF(sm_szFoodLevelMsg) )
+			i = COUNTOF(sm_szFoodLevelMsg) - 1;
+		return sm_szFoodLevelMsg[i];
+	}
+	return sm_szFoodLevelMsg[COUNTOF(sm_szFoodLevelMsg) - 1];
 }
 
 WORD CChar::Food_CanEat(CObjBase *pObj) const
@@ -709,7 +646,7 @@ LPCTSTR CChar::GetTradeTitle() const
 		return pszTemp;
 	}
 
-	static INT64 const sm_iSkillTitleVal[] =
+	static const INT64 sm_iSkillTitleVal[] =
 	{
 		g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_NEOPHYTE"),
 		g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_NOVICE"),
@@ -723,7 +660,7 @@ LPCTSTR CChar::GetTradeTitle() const
 		g_Exp.m_VarDefs.GetKeyNum("SKILLTITLE_LEGENDARY")
 	};
 
-	static LPCTSTR const sm_szSkillTitle[] =
+	static const LPCTSTR sm_szSkillTitle[] =
 	{
 		g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_NEOPHYTE),
 		g_Cfg.GetDefaultMsg(DEFMSG_SKILLTITLE_NOVICE),
@@ -1898,7 +1835,7 @@ bool CChar::IsTakeCrime(const CItem *pItem, CChar **ppCharMark) const
 		return false;
 
 	// Pack animal has no owner?
-	if ( (pCharMark->GetNPCBrain(false) == NPCBRAIN_ANIMAL) && !pCharMark->IsStatFlag(STATF_Pet) )
+	if ( pCharMark->NPC_IsAnimal() && !pCharMark->IsStatFlag(STATF_Pet) )
 		return false;
 
 	return true;

@@ -2515,7 +2515,7 @@ int CChar::Skill_Herding(SKTRIG_TYPE stage)
 			}
 			else
 			{
-				if ( !pChar->m_pNPC || (pChar->m_pNPC->m_Brain != NPCBRAIN_ANIMAL) )
+				if ( !pChar->NPC_IsAnimal() )
 				{
 					SysMessagef("%s %s", pChar->GetName(), g_Cfg.GetDefaultMsg(DEFMSG_HERDING_PLAYER));
 					return -SKTRIG_ABORT;
@@ -3018,15 +3018,14 @@ int CChar::Skill_Scripted(SKTRIG_TYPE stage)
 int CChar::Skill_Information(SKTRIG_TYPE stage)
 {
 	ADDTOCALLSTACK("CChar::Skill_Information");
-	// SKILL_ANIMALLORE:
-	// SKILL_ARMSLORE:
-	// SKILL_ANATOMY:
-	// SKILL_ITEMID:
-	// SKILL_EVALINT:
-	// SKILL_FORENSICS:
-	// SKILL_TASTEID:
-	// Difficulty should depend on the target item !!!??
-	// m_Act_Targ = target.
+	// SKILL_ANATOMY
+	// SKILL_ANIMALLORE
+	// SKILL_ITEMID
+	// SKILL_ARMSLORE
+	// SKILL_EVALINT
+	// SKILL_FORENSICS
+	// SKILL_TASTEID
+	// m_Act_Targ = target
 
 	if ( !m_pClient )	// purely informational
 		return -SKTRIG_QTY;
@@ -3034,12 +3033,10 @@ int CChar::Skill_Information(SKTRIG_TYPE stage)
 	if ( (stage == SKTRIG_FAIL) || (stage == SKTRIG_STROKE) )
 		return 0;
 
-	SKILL_TYPE skill = Skill_GetActive();
-	WORD wSkillLevel = Skill_GetAdjusted(skill);
 	if ( stage == SKTRIG_START )
-		return m_pClient->OnSkill_Info(skill, m_Act_Targ, wSkillLevel, true);
+		return m_pClient->OnSkill_Info(Skill_GetActive(), m_Act_Targ, true);
 	if ( stage == SKTRIG_SUCCESS )
-		return m_pClient->OnSkill_Info(skill, m_Act_Targ, wSkillLevel, false);
+		return m_pClient->OnSkill_Info(Skill_GetActive(), m_Act_Targ, false);
 
 	ASSERT(0);
 	return -SKTRIG_QTY;
