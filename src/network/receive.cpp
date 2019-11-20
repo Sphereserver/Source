@@ -2035,7 +2035,7 @@ bool PacketPromptResponse::onReceive(NetState* net)
 	TCHAR* text = Str_GetTemp();
 	readStringASCII(text, packetLength, false);
 
-	net->m_client->Event_PromptResp(text, packetLength, uidChar, uidPrompt, type);
+	net->m_client->Event_PromptResp(text, uidChar, uidPrompt, type);
 	return true;
 }
 
@@ -3595,7 +3595,7 @@ bool PacketPromptResponseUnicode::onReceive(NetState* net)
 	TCHAR *text = Str_GetTemp();
 	readStringUNICODE(text, THREAD_STRING_LENGTH, (length / sizeof(WCHAR)) - 1);
 
-	net->m_client->Event_PromptResp(text, length, uidChar, uidPrompt, type);
+	net->m_client->Event_PromptResp(text, uidChar, uidPrompt, type);
 	return true;
 }
 

@@ -31,8 +31,8 @@ public:
 	CCharNPC(CChar *pChar, NPCBRAIN_TYPE brain);
 
 	static const char *m_sClassName;
-	static LPCTSTR const sm_szLoadKeys[];
-	static LPCTSTR const sm_szVerbKeys[];
+	static const LPCTSTR sm_szLoadKeys[];
+	static const LPCTSTR sm_szVerbKeys[];
 
 public:
 	NPCBRAIN_TYPE m_Brain;
@@ -90,8 +90,8 @@ public:
 	~CCharPlayer();
 
 	static const char *m_sClassName;
-	static LPCTSTR const sm_szLoadKeys[];
-	static LPCTSTR const sm_szVerbKeys[];
+	static const LPCTSTR sm_szLoadKeys[];
+	static const LPCTSTR sm_szVerbKeys[];
 
 public:
 	CAccount *m_pAccount;
@@ -401,10 +401,10 @@ public:
 	CRegionWorld *m_pArea;
 	CRegionBase *m_pRoom;
 
-	static LPCTSTR const sm_szRefKeys[];
-	static LPCTSTR const sm_szLoadKeys[];
-	static LPCTSTR const sm_szVerbKeys[];
-	static LPCTSTR const sm_szTrigName[CTRIG_QTY + 1];
+	static const LPCTSTR sm_szRefKeys[];
+	static const LPCTSTR sm_szLoadKeys[];
+	static const LPCTSTR sm_szVerbKeys[];
+	static const LPCTSTR sm_szTrigName[CTRIG_QTY + 1];
 	static const LAYER_TYPE sm_VendorLayers[3];
 
 	// Combat stuff (not saved)
@@ -1058,7 +1058,7 @@ public:
 		return ((skill >= NPCACT_FOLLOW_TARG) && (skill < NPCACT_QTY));
 	}
 
-	SKILL_TYPE Skill_GetBest(unsigned int uRank = 0) const;
+	SKILL_TYPE Skill_GetBest(size_t uRank = 0) const;
 	SKILL_TYPE Skill_GetActive() const
 	{
 		return m_Act_SkillCurrent;

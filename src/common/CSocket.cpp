@@ -61,53 +61,32 @@ bool CSocketAddressIP::IsLocalAddr() const
 	return( s_addr == 0 || s_addr == SOCKET_LOCAL_ADDRESS );
 }
 
-bool CSocketAddressIP::IsMatchIP( const CSocketAddressIP & ip ) const
-{
-	BYTE		ip1	[4];
-	BYTE		ip2	[4];
-
-	memcpy( ip1, (void*) &ip.s_addr,	4 );
-	memcpy( ip2, (void*) &s_addr,		4 );
-
-	for ( int i = 0; i < 4; i++ )
-	{
-		if ( ip1[i] == 255 || ip2[i] == 255 || ip1[i] == ip2[i] )
-			continue;
-		return false;
-	}
-	return true;
-}
-
 bool CSocketAddressIP::IsSameIP( const CSocketAddressIP & ip ) const
 {
 	return (ip.s_addr == s_addr);
 }
 
-bool CSocketAddressIP::SetHostStruct( const struct hostent * pHost )
+bool CSocketAddressIP::SetHostStr(LPCTSTR pszHostName)
 {
-	// Set the ip from the address name we looked up.
-	if ( pHost == NULL ||
-		pHost->h_addr_list == NULL ||
-		pHost->h_addr == NULL )	// can't resolve the address.
-	{
-		return( false );
-	}
-	SetAddrIP( *((DWORD*)( pHost->h_addr ))); // 0.1.2.3
-	return true;
-}
+	if ( !pszHostName )
+		return false;
 
-bool CSocketAddressIP::SetHostStr( LPCTSTR pszHostName )
-{
-	// try to resolve the host name with DNS for the true ip address.
-	if ( pszHostName[0] == '\0' )
-		return( false );
-	if ( IsDigit( pszHostName[0] ))
+	// Try to resolve IP address
+	if ( IsDigit(pszHostName[0]) )
 	{
-		SetAddrStr( pszHostName ); // 0.1.2.3
-		return( true );
+		SetAddrStr(pszHostName);	// 0.1.2.3
+		return true;
 	}
-	// NOTE: This is a blocking call !!!!
-	return SetHostStruct( gethostbyname( pszHostName ));
+
+	// Try to resolve hostname
+	struct hostent *pHost = gethostbyname(pszHostName);
+	if ( pHost && pHost->h_addr )
+	{
+		SetAddrIP(*reinterpret_cast<DWORD *>(pHost->h_addr));	// 0.1.2.3
+		return true;
+	}
+
+	return false;
 }
 
 //		***		***			***
@@ -317,20 +296,6 @@ int CGSocket::Connect( const CSocketAddress & SockAddr )
 	return( Connect( &SockAddrIn ));
 }
 
-int CGSocket::Connect( const struct in_addr & ip, WORD wPort )
-{
-	CSocketAddress SockAddr( ip.s_addr, wPort );
-	return( Connect( SockAddr ));
-}
-
-int CGSocket::Connect( LPCTSTR pszHostName, WORD wPort )
-{
-	CSocketAddress SockAddr;
-	SockAddr.SetHostStr( pszHostName );
-	SockAddr.SetPort( wPort );
-	return( Connect( SockAddr ));
-}
-
 SOCKET CGSocket::Accept( struct sockaddr_in * pSockAddrIn ) const
 {
 	int len = sizeof(struct sockaddr_in);
@@ -370,37 +335,10 @@ int CGSocket::GetSockName( struct sockaddr_in * pSockAddrIn ) const
 CSocketAddress CGSocket::GetSockName() const
 {
 	struct sockaddr_in SockAddrIn;
-	int iRet = GetSockName( &SockAddrIn );
-	if ( iRet )
-	{
-		return( CSocketAddress( INADDR_BROADCAST, 0 ));	// invalid.
-	}
+	if ( GetSockName(&SockAddrIn) == 0 )
+		return CSocketAddress(SockAddrIn);
 	else
-	{
-		return( CSocketAddress( SockAddrIn ));
-	}
-}
-
-int CGSocket::GetPeerName( struct sockaddr_in * pSockAddrIn ) const
-{
-	// Get the address of the far end.
-	// RETURN: 0 = success
-	int len = sizeof( *pSockAddrIn );
-	return( getpeername( m_hSocket, reinterpret_cast<struct sockaddr *>(pSockAddrIn), reinterpret_cast<socklen_t *>(&len) ));
-}
-
-CSocketAddress CGSocket::GetPeerName( ) const
-{
-	struct sockaddr_in SockAddrIn;
-	int iRet = GetPeerName( &SockAddrIn );
-	if ( iRet )
-	{
-		return( CSocketAddress( INADDR_BROADCAST, 0 ));	// invalid.
-	}
-	else
-	{
-		return( CSocketAddress( SockAddrIn ));
-	}
+		return CSocketAddress(INADDR_BROADCAST, 0);		// invalid		
 }
 
 int CGSocket::SetSockOpt( int nOptionName, const void * optval, int optlen, int nLevel ) const
@@ -415,11 +353,6 @@ int CGSocket::GetSockOpt( int nOptionName, void * optval, int * poptlen, int nLe
 }
 
 #ifdef _WIN32
-	int CGSocket::IOCtlSocket( long icmd, DWORD * pdwArgs )
-	{
-		return ioctlsocket( m_hSocket, icmd, pdwArgs );
-	}
-
 	int CGSocket::SendAsync( LPWSABUF lpBuffers, DWORD dwBufferCount, LPDWORD lpNumberOfBytesSent, DWORD dwFlags, LPWSAOVERLAPPED lpOverlapped, LPWSAOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine ) const
 	{
 		 // RETURN: length sent
@@ -432,17 +365,6 @@ int CGSocket::GetSockOpt( int nOptionName, void * optval, int * poptlen, int nLe
 		CancelIo(reinterpret_cast<HANDLE>(m_hSocket));
 		SleepEx(1, TRUE);
 	}
-
-#else
-	int CGSocket::IOCtlSocket( long icmd, int iVal )	// LINUX ?
-	{
-		return fcntl( m_hSocket, icmd, iVal );
-	}
-
-	int CGSocket::GetIOCtlSocketFlags( void )
-	{
-		return fcntl( m_hSocket, F_GETFL );
-	}
 #endif
 
 int CGSocket::SetNonBlocking(bool bEnable)
@@ -451,7 +373,7 @@ int CGSocket::SetNonBlocking(bool bEnable)
 	u_long ulFlags = static_cast<u_long>(bEnable);
 	return ioctlsocket(m_hSocket, FIONBIO, &ulFlags);
 #else
-	int iFlags = GetIOCtlSocketFlags();
+	int iFlags = fcntl(m_hSocket, F_GETFL);
 	if ( bEnable )
 		iFlags |= O_NONBLOCK;
 	else

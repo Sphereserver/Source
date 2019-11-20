@@ -51,9 +51,6 @@ public:
 	bool IsLocalAddr() const;
 
 	bool IsSameIP( const CSocketAddressIP & ip ) const;
-	bool IsMatchIP( const CSocketAddressIP & ip ) const;
-
-	bool SetHostStruct( const struct hostent * pHost );
 
 	bool SetHostStr( LPCTSTR pszHostName );
 	bool operator==( const CSocketAddressIP & ip ) const;
@@ -121,8 +118,6 @@ public:
 	int Listen( int iMaxBacklogConnections = SOMAXCONN );
 	int Connect( struct sockaddr_in * pSockAddrIn );
 	int Connect( const CSocketAddress & SockAddr );
-	int Connect( const struct in_addr & ip, WORD wPort );
-	int Connect( LPCTSTR pszHostName, WORD wPort );
 	SOCKET Accept( struct sockaddr_in * pSockAddrIn ) const;
 	SOCKET Accept( CSocketAddress & SockAddr ) const;
 	int Send( const void * pData, int len ) const;
@@ -131,18 +126,12 @@ public:
 	int GetSockName( struct sockaddr_in * pSockAddrIn ) const;
 	CSocketAddress GetSockName() const;
 
-	int GetPeerName( struct sockaddr_in * pSockAddrIn ) const;
-	CSocketAddress GetPeerName( ) const;
-
 	int SetSockOpt( int nOptionName, const void* optval, int optlen, int nLevel = SOL_SOCKET ) const;
 	int GetSockOpt( int nOptionName, void* optval, int * poptlen, int nLevel = SOL_SOCKET ) const;
+
 #ifdef _WIN32
-	int IOCtlSocket( long icmd, DWORD * pdwArgs );
 	int SendAsync( LPWSABUF lpBuffers, DWORD dwBufferCount, LPDWORD lpNumberOfBytesSent, DWORD dwFlags, LPWSAOVERLAPPED lpOverlapped, LPWSAOVERLAPPED_COMPLETION_ROUTINE lpCompletionRoutine ) const;
 	void ClearAsync();
-#else
-	int IOCtlSocket( long icmd, int iVal );
-	int GetIOCtlSocketFlags( void );
 #endif
 
 	int SetNonBlocking(bool bEnable = true);

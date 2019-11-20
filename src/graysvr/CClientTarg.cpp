@@ -677,18 +677,19 @@ int CClient::OnSkill_AnimalLore(CGrayUID uid, bool fTest)
 			g_Cfg.GetDefaultMsg(DEFMSG_ANIMALLORE_LOYALTY_11)
 		};
 
+		size_t iQty = COUNTOF(sm_szAnimalLore_LoyaltyRating);
 		int iMax = pChar->Stat_GetMax(STAT_FOOD);
 		if ( iMax )
 		{
-			size_t i = IMULDIV(pChar->Stat_GetVal(STAT_FOOD), COUNTOF(sm_szAnimalLore_LoyaltyRating), iMax);
+			int i = IMULDIV(pChar->Stat_GetVal(STAT_FOOD), iQty, iMax);
 			if ( i < 0 )
 				i = 0;
-			else if ( i >= COUNTOF(sm_szAnimalLore_LoyaltyRating) )
-				i = COUNTOF(sm_szAnimalLore_LoyaltyRating) - 1;
+			else if ( static_cast<size_t>(i) >= iQty )
+				i = iQty - 1;
 			pszLoyaltyRating = sm_szAnimalLore_LoyaltyRating[i];
 		}
 		else
-			pszLoyaltyRating = sm_szAnimalLore_LoyaltyRating[COUNTOF(sm_szAnimalLore_LoyaltyRating) - 1];
+			pszLoyaltyRating = sm_szAnimalLore_LoyaltyRating[iQty - 1];
 	}
 	else
 		pszLoyaltyRating = g_Cfg.GetDefaultMsg(DEFMSG_ANIMALLORE_LOYALTY_WILD);

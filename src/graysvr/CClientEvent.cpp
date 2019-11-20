@@ -5,7 +5,7 @@
 /////////////////////////////////
 // Events from the Client.
 
-LPCTSTR const CClient::sm_szCmd_Redirect[] =
+const LPCTSTR CClient::sm_szCmd_Redirect[] =
 {
 	"BANK",
 	"CONTROL",
@@ -882,7 +882,7 @@ void CClient::Event_Attack(CGrayUID uid)
 void CClient::Event_VendorBuy_Cheater(int iCode)
 {
 	ADDTOCALLSTACK("CClient::Event_VendorBuy_Cheater");
-	static LPCTSTR const sm_BuyPacketCheats[] =
+	static const LPCTSTR sm_BuyPacketCheats[] =
 	{
 		"Other",
 		"Bad vendor UID",
@@ -1130,7 +1130,7 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t iI
 void CClient::Event_VendorSell_Cheater(int iCode)
 {
 	ADDTOCALLSTACK("CClient::Event_VendorSell_Cheater");
-	static LPCTSTR const sm_SellPacketCheats[] =
+	static const LPCTSTR sm_SellPacketCheats[] =
 	{
 		"Other",
 		"Bad vendor UID",
@@ -1312,7 +1312,7 @@ void CClient::Event_ToolTip(CGrayUID uid)
 }
 
 // Client replied the addPrompt sent by server
-void CClient::Event_PromptResp(LPCTSTR pszText, size_t iTextLen, CGrayUID uidChar, CGrayUID uidPrompt, DWORD dwType)
+void CClient::Event_PromptResp(LPCTSTR pszText, CGrayUID uidChar, CGrayUID uidPrompt, DWORD dwType)
 {
 	ADDTOCALLSTACK("CClient::Event_PromptResp");
 	if ( !m_pChar )
@@ -1326,12 +1326,7 @@ void CClient::Event_PromptResp(LPCTSTR pszText, size_t iTextLen, CGrayUID uidCha
 	if ( m_Prompt_Uid != uidChar )
 		return;
 
-	TCHAR szText[MAX_TALK_BUFFER];
-	if ( iTextLen <= 0 )		// cancel
-		szText[0] = '\0';
-
 	LPCTSTR pszPrefix = "";
-
 	switch ( promptMode )
 	{
 		case CLIMODE_PROMPT_NAME_RUNE:
@@ -1347,23 +1342,23 @@ void CClient::Event_PromptResp(LPCTSTR pszText, size_t iTextLen, CGrayUID uidCha
 			break;
 
 		case CLIMODE_PROMPT_NAME_PET:
-			if ( Event_CharRename(uidChar.CharFind(), szText) )
+			if ( Event_CharRename(uidChar.CharFind(), pszText) )
 				SysMessageDefault(DEFMSG_NPC_PET_RENAME_SUCCESS1);
 			return;
 
 		case CLIMODE_PROMPT_GM_PAGE_TEXT:
 			// m_Targ_Text
-			Event_PromptResp_GMPage(szText);
+			Event_PromptResp_GMPage(pszText);
 			return;
 
 		case CLIMODE_PROMPT_VENDOR_PRICE:
 		{
 			// Setting the vendor price for an item.
-			if ( (dwType == 0) || (szText[0] == '\0') )	// cancel
+			if ( !pszText || (dwType == 0) )	// cancel
 				return;
 			CChar *pCharVendor = uidPrompt.CharFind();
 			if ( pCharVendor )
-				pCharVendor->NPC_SetVendorPrice(m_Prompt_Uid.ItemFind(), ATOI(szText));
+				pCharVendor->NPC_SetVendorPrice(m_Prompt_Uid.ItemFind(), ATOI(pszText));
 			return;
 		}
 
@@ -1371,12 +1366,12 @@ void CClient::Event_PromptResp(LPCTSTR pszText, size_t iTextLen, CGrayUID uidCha
 			// Send a msg to the pre-tergetted player. "ETARGVERB"
 			// m_Prompt_Uid = the target.
 			// m_Prompt_Text = the prefix.
-			if ( szText[0] != '\0' )
+			if ( pszText )
 			{
 				CObjBase *pObj = m_Prompt_Uid.ObjFind();
 				if ( pObj )
 				{
-					CScript script(m_Prompt_Text, szText);
+					CScript script(m_Prompt_Text, pszText);
 					pObj->r_Verb(script, this);
 				}
 			}
@@ -1384,7 +1379,7 @@ void CClient::Event_PromptResp(LPCTSTR pszText, size_t iTextLen, CGrayUID uidCha
 
 		case CLIMODE_PROMPT_SCRIPT_VERB:
 		{
-			CScript script(m_Prompt_Text, szText);
+			CScript script(m_Prompt_Text, pszText);
 			if ( m_pChar )
 				m_pChar->r_Verb(script, this);
 			return;
@@ -1400,20 +1395,20 @@ void CClient::Event_PromptResp(LPCTSTR pszText, size_t iTextLen, CGrayUID uidCha
 	}
 
 	CItem *pItem = m_Prompt_Uid.ItemFind();
-	if ( !pItem || (dwType == 0) || (szText[0] == '\0') )
+	if ( !pItem || !pszText || (dwType == 0) )
 	{
 		SysMessageDefault(DEFMSG_MSG_RENAME_CANCEL);
 		return;
 	}
 
-	if ( g_Cfg.IsObscene(szText) )
+	if ( g_Cfg.IsObscene(pszText) )
 	{
 		SysMessageDefault(DEFMSG_MSG_RENAME_OBSCENE);
 		return;
 	}
 
 	CGString sMsg;
-	sMsg.Format("%s%s", pszPrefix, szText);
+	sMsg.Format("%s%s", pszPrefix, pszText);
 	pItem->SetName(sMsg);
 
 	if ( promptMode == CLIMODE_PROMPT_NAME_RUNE )

@@ -569,7 +569,7 @@ public:
 	void Event_Item_Pickup(CGrayUID uid, int iAmount);
 	void Event_MailMsg(CChar *pChar);
 	void Event_Profile(bool fWrite, CChar *pChar, TCHAR *pszText);
-	void Event_PromptResp(LPCTSTR pszText, size_t iTextLen, CGrayUID uidChar, CGrayUID uidPrompt, DWORD dwType);
+	void Event_PromptResp(LPCTSTR pszText, CGrayUID uidChar, CGrayUID uidPrompt, DWORD dwType);
 	void Event_PromptResp_GMPage(LPCTSTR pszReason);
 	void Event_SingleClick(CGrayUID uid);
 	void Event_Skill_Use(SKILL_TYPE skill);

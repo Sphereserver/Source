@@ -21,8 +21,8 @@ public:
 	}
 
 	static const char *m_sClassName;
-	static LPCTSTR const sm_szVerbKeys[];
-	static LPCTSTR const sm_szLoadKeys[];
+	static const LPCTSTR sm_szVerbKeys[];
+	static const LPCTSTR sm_szLoadKeys[];
 
 private:
 	BYTE m_ListenItems;		// items on the ground that can listen (eg: communication crystal)

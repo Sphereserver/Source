@@ -380,7 +380,7 @@ int CChar::Stat_GetLimit(STAT_TYPE stat) const
 ///////////////////////////////////////////////////////////
 // Skills
 
-SKILL_TYPE CChar::Skill_GetBest(unsigned int uRank) const
+SKILL_TYPE CChar::Skill_GetBest(size_t uRank) const
 {
 	ADDTOCALLSTACK("CChar::Skill_GetBest");
 	// Get the top n best skills.
@@ -2315,7 +2315,7 @@ int CChar::Skill_Taming(SKTRIG_TYPE stage)
 		if ( (m_atTaming.m_Stroke_Count <= 0) || IsPriv(PRIV_GM) )
 			return 0;
 
-		static LPCTSTR const sm_szTameSpeak[] =
+		static const LPCTSTR sm_szTameSpeak[] =
 		{
 			g_Cfg.GetDefaultMsg(DEFMSG_TAMING_1),
 			g_Cfg.GetDefaultMsg(DEFMSG_TAMING_2),

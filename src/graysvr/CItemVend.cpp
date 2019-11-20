@@ -50,7 +50,11 @@ DWORD CItemVendable::GetVendorPrice(int iConvertFactor)
 		}
 		dwPrice = pItemDef->GetMakeValue(m_quality);
 	}
-	return dwPrice + IMULDIV(dwPrice, maximum(iConvertFactor, -100), 100);
+
+	if ( iConvertFactor < -100 )
+		iConvertFactor = -100;
+
+	return dwPrice + IMULDIV(dwPrice, iConvertFactor, 100);
 }
 
 void CItemVendable::Restock(bool fSellToPlayers)
@@ -118,7 +122,7 @@ enum IVC_TYPE
 	IVC_QTY
 };
 
-LPCTSTR const CItemVendable::sm_szLoadKeys[IVC_QTY + 1] =
+const LPCTSTR CItemVendable::sm_szLoadKeys[IVC_QTY + 1] =
 {
 	"PRICE",
 	"QUALITY",

@@ -594,17 +594,18 @@ LPCTSTR CChar::Food_GetLevelMessage() const
 		g_Cfg.GetDefaultMsg(DEFMSG_MSG_FOOD_LVL_8)
 	};
 
+	size_t iQty = COUNTOF(sm_szFoodLevelMsg);
 	int iMax = Stat_GetMax(STAT_FOOD);
 	if ( iMax )
 	{
-		size_t i = IMULDIV(Stat_GetVal(STAT_FOOD), COUNTOF(sm_szFoodLevelMsg), iMax);
+		int i = IMULDIV(Stat_GetVal(STAT_FOOD), iQty, iMax);
 		if ( i < 0 )
 			i = 0;
-		else if ( i >= COUNTOF(sm_szFoodLevelMsg) )
-			i = COUNTOF(sm_szFoodLevelMsg) - 1;
+		else if ( static_cast<size_t>(i) >= iQty )
+			i = iQty - 1;
 		return sm_szFoodLevelMsg[i];
 	}
-	return sm_szFoodLevelMsg[COUNTOF(sm_szFoodLevelMsg) - 1];
+	return sm_szFoodLevelMsg[iQty - 1];
 }
 
 WORD CChar::Food_CanEat(CObjBase *pObj) const

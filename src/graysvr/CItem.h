@@ -70,11 +70,11 @@ class CItem : public CObjBase
 	// RES_WORLDITEM
 public:
 	static const char *m_sClassName;
-	static LPCTSTR const sm_szLoadKeys[];
-	static LPCTSTR const sm_szVerbKeys[];
-	static LPCTSTR const sm_szRefKeys[];
-	static LPCTSTR const sm_szTrigName[ITRIG_QTY + 1];
-	static LPCTSTR const sm_szTemplateTable[ITC_QTY + 1];
+	static const LPCTSTR sm_szLoadKeys[];
+	static const LPCTSTR sm_szVerbKeys[];
+	static const LPCTSTR sm_szRefKeys[];
+	static const LPCTSTR sm_szTrigName[ITRIG_QTY + 1];
+	static const LPCTSTR sm_szTemplateTable[ITC_QTY + 1];
 
 	virtual ~CItem();
 
@@ -944,8 +944,8 @@ public:
 	virtual ~CItemSpawn();
 
 private:
-	static LPCTSTR const sm_szLoadKeys[];
-	static LPCTSTR const sm_szVerbKeys[];
+	static const LPCTSTR sm_szLoadKeys[];
+	static const LPCTSTR sm_szVerbKeys[];
 	CGrayUID m_obj[BYTE_MAX];	// store UID of created objects
 
 public:
@@ -991,7 +991,7 @@ class CItemVendable : public CItem
 	// Any item that can be sold and has value
 public:
 	static const char *m_sClassName;
-	static LPCTSTR const sm_szLoadKeys[];
+	static const LPCTSTR sm_szLoadKeys[];
 
 	CItemVendable(ITEMID_TYPE id, CItemBase *pItemDef);
 	virtual ~CItemVendable();
@@ -1108,7 +1108,7 @@ public:
 class CItemContainer : public CItemVendable, public CContainer
 {
 	// This item has other items inside it
-	static LPCTSTR const sm_szVerbKeys[];
+	static const LPCTSTR sm_szVerbKeys[];
 
 public:
 	static const char *m_sClassName;
@@ -1193,8 +1193,8 @@ class CItemScript : public CItemVendable
 	// IT_SCRIPT, IT_EQ_SCRIPT
 public:
 	static const char *m_sClassName;
-	static LPCTSTR const sm_szLoadKeys[];
-	static LPCTSTR const sm_szVerbKeys[];
+	static const LPCTSTR sm_szLoadKeys[];
+	static const LPCTSTR sm_szVerbKeys[];
 
 	CItemScript(ITEMID_TYPE id, CItemBase *pItemDef) : CItemVendable(id, pItemDef)
 	{
@@ -1384,7 +1384,7 @@ private:
 	CItemCommCrystal &operator=(const CItemCommCrystal &other);
 
 protected:
-	static LPCTSTR const sm_szLoadKeys[];
+	static const LPCTSTR sm_szLoadKeys[];
 	CResourceRefArray m_Speech;
 
 public:
@@ -1413,7 +1413,7 @@ class CItemMessage : public CItemVendable
 	// A message for a bboard or book text
 public:
 	static const char *m_sClassName;
-	static LPCTSTR const sm_szLoadKeys[CIC_QTY + 1];
+	static const LPCTSTR sm_szLoadKeys[CIC_QTY + 1];
 
 	CItemMessage(ITEMID_TYPE id, CItemBase *pItemDef) : CItemVendable(id, pItemDef)
 	{
@@ -1429,7 +1429,7 @@ private:
 	CItemMessage &operator=(const CItemMessage &other);
 
 protected:
-	static LPCTSTR const sm_szVerbKeys[];
+	static const LPCTSTR sm_szVerbKeys[];
 
 private:
 	CGObArray<CGString *> m_sBodyLines;		// main body of the text for bboard message or book

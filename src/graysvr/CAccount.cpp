@@ -181,7 +181,7 @@ enum VACS_TYPE
 	VACS_QTY
 };
 
-LPCTSTR const CAccounts::sm_szVerbKeys[] =
+const LPCTSTR CAccounts::sm_szVerbKeys[] =
 {
 	"ADD",
 	"ADDMD5",
@@ -533,15 +533,15 @@ bool CAccount::CheckPassword(LPCTSTR pszPassword)
 	if ( tr == TRIGRET_RET_HALFBAKED )
 		return true;
 
+	// Check password
 	if ( g_Cfg.m_fMd5Passwords )
 	{
 		char digest[33];
 		CMD5::fastDigest(digest, pszPassword);
-		pszPassword = static_cast<LPCTSTR>(digest);
+		return !strcmpi(digest, m_sPassword);
 	}
-
-	// Check password
-	return !strcmpi(pszPassword, m_sPassword);
+	else
+		return !strcmpi(pszPassword, m_sPassword);
 }
 
 bool CAccount::CheckPasswordTries(CSocketAddress SockAddr)
@@ -615,7 +615,7 @@ void CAccount::ClearPasswordTries()
 	}
 }
 
-static LPCTSTR const sm_szPrivLevels[PLEVEL_QTY + 1] =
+static const LPCTSTR sm_szPrivLevels[PLEVEL_QTY + 1] =
 {
 	"Guest",		// 0 = This is just a guest account (cannot PK)
 	"Player",		// 1 = Player or NPC
@@ -824,7 +824,7 @@ enum AC_TYPE
 	AC_QTY
 };
 
-LPCTSTR const CAccount::sm_szLoadKeys[AC_QTY + 1] =	// static
+const LPCTSTR CAccount::sm_szLoadKeys[AC_QTY + 1] =	// static
 {
 	"ACCOUNT",
 	"BLOCK",
@@ -1104,7 +1104,7 @@ enum AV_TYPE
 	AV_TAGLIST
 };
 
-LPCTSTR const CAccount::sm_szVerbKeys[] =
+const LPCTSTR CAccount::sm_szVerbKeys[] =
 {
 	"BLOCK",
 	"DELETE",

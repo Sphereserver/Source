@@ -2,7 +2,7 @@
 #include "graysvr.h"	// predef header.
 #include "../network/network.h"
 
-LPCTSTR const CChar::sm_szTrigName[CTRIG_QTY + 1] =	// static
+const LPCTSTR CChar::sm_szTrigName[CTRIG_QTY + 1] =	// static
 {
 	"@AAAUNUSED",
 	"@AfterClick",
@@ -1243,7 +1243,7 @@ enum CHR_TYPE
 	CHR_QTY
 };
 
-LPCTSTR const CChar::sm_szRefKeys[CHR_QTY + 1] =
+const LPCTSTR CChar::sm_szRefKeys[CHR_QTY + 1] =
 {
 	"ACCOUNT",
 	"ACT",
@@ -1314,7 +1314,7 @@ enum CHC_TYPE
 	CHC_QTY
 };
 
-LPCTSTR const CChar::sm_szLoadKeys[CHC_QTY + 1] =
+const LPCTSTR CChar::sm_szLoadKeys[CHC_QTY + 1] =
 {
 	#define ADD(a,b) b,
 	#include "../tables/CChar_props.tbl"
@@ -1618,11 +1618,11 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case CHC_SKILLBEST:
 		{
 			pszKey += 9;
-			unsigned int uRank = 0;
+			size_t uRank = 0;
 			if ( *pszKey == '.' )
 			{
 				SKIP_SEPARATORS(pszKey);
-				uRank = static_cast<unsigned int>(Exp_GetLLSingle(pszKey));
+				uRank = static_cast<size_t>(Exp_GetLLSingle(pszKey));
 			}
 			sVal.FormatVal(Skill_GetBest(uRank));
 			return true;
@@ -2848,7 +2848,7 @@ enum CHV_TYPE
 	CHV_QTY
 };
 
-LPCTSTR const CChar::sm_szVerbKeys[CHV_QTY + 1] =
+const LPCTSTR CChar::sm_szVerbKeys[CHV_QTY + 1] =
 {
 	#define ADD(a,b) b,
 	#include "../tables/CChar_functions.tbl"
@@ -3516,7 +3516,7 @@ void CChar::ChangeExperience(int iDelta, CChar *pCharDead)
 
 		if ( m_pClient && fShowMsg && iDelta )
 		{
-			static LPCTSTR const sm_szExpDelta[] =
+			static const LPCTSTR sm_szExpDelta[] =
 			{
 				g_Cfg.GetDefaultMsg(DEFMSG_MSG_EXP_CHANGE_1),
 				g_Cfg.GetDefaultMsg(DEFMSG_MSG_EXP_CHANGE_2),

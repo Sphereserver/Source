@@ -30,7 +30,7 @@ enum SC_TYPE
 	SC_QTY
 };
 
-LPCTSTR const CSector::sm_szLoadKeys[SC_QTY + 1] =
+const LPCTSTR CSector::sm_szLoadKeys[SC_QTY + 1] =
 {
 	"CLIENTS",
 	"COLDCHANCE",
@@ -164,7 +164,7 @@ enum SEV_TYPE
 	SEV_QTY
 };
 
-LPCTSTR const CSector::sm_szVerbKeys[SEV_QTY + 1] =
+const LPCTSTR CSector::sm_szVerbKeys[SEV_QTY + 1] =
 {
 	#define ADD(a,b) b,
 	#include "../tables/CSector_functions.tbl"
@@ -556,7 +556,11 @@ void CSector::SetDefaultWeatherChance()
 	ADDTOCALLSTACK("CSector::SetDefaultWeatherChance");
 
 	CPointMap pt = GetBasePoint();
-	BYTE bPercent = static_cast<BYTE>(IMULDIV(pt.m_y, 100, maximum(1, g_MapList.GetY(pt.m_map))));	// 100 = south
+	int iSizeY = g_MapList.GetY(pt.m_map);
+	if ( iSizeY < 1 )
+		iSizeY = 1;
+
+	BYTE bPercent = static_cast<BYTE>(IMULDIV(pt.m_y, 100, iSizeY));	// 0 = north, 50 = middle, 100 = south
 	if ( bPercent < 50 )
 	{
 		// Anywhere north of the Britain moongate is a good candidate for snow
