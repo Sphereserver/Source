@@ -3510,7 +3510,7 @@ BYTE CClient::LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg)
 		{
 			g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' can't connect, server maximum guest clients reached\n", GetSocketID(), pAccount->GetName());
 			sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_GUSED);
-			return PacketLoginError::MaxGuests;
+			return PacketLoginError::MaxClients;
 		}
 	}
 

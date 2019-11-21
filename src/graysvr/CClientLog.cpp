@@ -41,27 +41,25 @@ bool CClient::addLoginErr(BYTE bCode)
 	// Console message to display for each login error code
 	static LPCTSTR const sm_Login_ErrMsg[] =
 	{
-		"Account does not exist",
-		"The account entered is already being used",
-		"This account or IP is blocked",
-		"The password entered is not correct",
-		"Timeout / Wrong encryption / Unknown error",
-		"Invalid client version. See the CLIENTVERSION setting in " SPHERE_FILE ".ini",
-		"Invalid character selected (chosen character does not exist)",
-		"AuthID is not correct. This normally means that the client did not log in via the login server",
-		"The account details entered are invalid (username or password is too short, too long or contains invalid characters). This can sometimes be caused by incorrect/missing encryption keys",
-		"The account details entered are invalid (username or password is too short, too long or contains invalid characters). This can sometimes be caused by incorrect/missing encryption keys",
-		"Encryption error (packet length does not match what was expected)",
-		"Encryption error (unknown encryption or bad login packet)",
-		"Encrypted client not permitted. See the USECRYPT setting in " SPHERE_FILE ".ini",
-		"Unencrypted client not permitted. See the USENOCRYPT setting in " SPHERE_FILE ".ini",
-		"Another character on this account is already ingame",
-		"Account is full. Cannot create a new character",
-		"Character creation blocked",
-		"This IP is blocked",
-		"The maximum number of clients has been reached. See the CLIENTMAX setting in " SPHERE_FILE ".ini",
-		"The maximum number of guests has been reached. See the GUESTSMAX setting in " SPHERE_FILE ".ini",
-		"The maximum number of password tries has been reached"
+		"account doesn't exist",
+		"account already in use",
+		"account is blocked",
+		"wrong password",
+		"timeout / wrong encryption / unknown error",
+		"client version not allowed",
+		"selected character doesn't exist or is not linked to this account",
+		"invalid AuthID",
+		"login or password is too short/long or contains invalid characters, sometimes this is caused by wrong/missing encryption keys",
+		"login or password is too short/long or contains invalid characters, sometimes this is caused by wrong/missing encryption keys",
+		"encryption error: unexpected packet length",
+		"bad login packet",
+		"encrypted client not allowed",
+		"unencrypted client not allowed",
+		"another character on this account is already ingame",
+		"character creation blocked",
+		"IP is blocked",
+		"max number of clients reached",
+		"max number of password tries reached"
 	};
 
 	if ( bCode >= COUNTOF(sm_Login_ErrMsg) )
@@ -85,7 +83,6 @@ bool CClient::addLoginErr(BYTE bCode)
 			case PacketLoginError::Blocked:
 			case PacketLoginError::BlockedIP:
 			case PacketLoginError::MaxClients:
-			case PacketLoginError::MaxGuests:
 				bCode = PacketLoginError::Blocked;
 				break;
 			case PacketLoginError::BadPass:
@@ -663,7 +660,7 @@ bool CClient::xProcessClientSetup(CEvent *pEvent, size_t iLen)
 	}
 
 	m_Crypt.Decrypt(pEvent->m_Raw, evInputBuffer.m_Raw, iLen);
-	BYTE bErr = PacketLoginError::EncUnknown;
+	BYTE bErr = PacketLoginError::BadLogin;
 
 	switch ( pEvent->Default.m_Cmd )
 	{

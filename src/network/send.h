@@ -824,15 +824,13 @@ public:
 		BadAccount,			// bad account name (length, characters)
 		BadPassword,		// bad password (length, characters)
 		BadEncLength,		// bad message length
-		EncUnknown,			// unknown encryption
+		BadLogin,			// bad login packet
 		EncCrypt,			// crypted client not allowed
 		EncNoCrypt,			// non-crypted client not allowed
 		CharIdle,			// character is already ingame
-		TooManyChars,		// account has too many characters
-		CreationBlocked,	// character creation is blocked in this moments.
+		CreationBlocked,	// character creation is blocked in this moments
 		BlockedIP,			// ip is blocked
 		MaxClients,			// max clients reached
-		MaxGuests,			// max guests reached
 		MaxPassTries,		// max password tries reached
 
 		Success	= 0xFF		// no error

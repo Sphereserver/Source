@@ -151,11 +151,7 @@ bool PacketCreate::doCreate(NetState *net, LPCTSTR pszName, bool fFemale, RACE_T
 	size_t iChars = account->m_Chars.GetCharCount();
 	BYTE iMaxChars = account->GetMaxChars();
 	if ( iChars >= iMaxChars )
-	{
-		client->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_MAXCHARS), static_cast<int>(iChars));
-		client->addLoginErr(PacketLoginError::TooManyChars);
-		return false;
-	}
+		goto InvalidInfo;
 
 	// Validate all info sent by client to prevent exploits
 	if ( !strlen(pszName) || g_Cfg.IsObscene(pszName) || Str_CheckName(pszName) || !strnicmp(pszName, "lord ", 5) || !strnicmp(pszName, "lady ", 5) || !strnicmp(pszName, "counselor ", 10) || !strnicmp(pszName, "seer ", 5) || !strnicmp(pszName, "gm ", 3) || !strnicmp(pszName, "admin ", 6) )
