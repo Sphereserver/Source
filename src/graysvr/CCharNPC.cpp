@@ -50,7 +50,7 @@ bool CChar::SetPlayerAccount(CAccount *pAccount)
 bool CChar::SetPlayerAccount(LPCTSTR pszAccName)
 {
 	ADDTOCALLSTACK("CChar::SetPlayerAccount");
-	CAccount *pAccount = g_Accounts.Account_FindCreate(pszAccName, (g_Serv.m_eAccApp == ACCAPP_Free));
+	CAccount *pAccount = g_Accounts.Account_Find(pszAccName);
 	if ( !pAccount )
 	{
 		DEBUG_ERR(("Can't attach char '%s' (UID=0%" FMTDWORDH ") to invalid account '%s'\n", GetName(), static_cast<DWORD>(GetUID()), pszAccName));

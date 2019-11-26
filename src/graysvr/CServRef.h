@@ -12,20 +12,6 @@ enum SERV_STAT_TYPE
 	SERV_STAT_QTY
 };
 
-enum ACCAPP_TYPE
-{
-	ACCAPP_Closed,		// Closed, not accepting more
-	ACCAPP_Unused1,
-	ACCAPP_Free,		// Anyone can just log in and create a full account
-	ACCAPP_GuestAuto,	// You get to be a guest and are automatically sent email with the new password
-	ACCAPP_GuestTrial,	// You get to be a guest till accepted for full account by admin
-	ACCAPP_Unused5,
-	ACCAPP_Unspecified,	// Not specified
-	ACCAPP_Unused7,
-	ACCAPP_Unused8,
-	ACCAPP_QTY
-};
-
 class CServerDef : public CScriptObj
 {
 public:
@@ -46,7 +32,6 @@ public:
 	CGString m_sEMail;				// Server admin email address
 	CGString m_sURL;				// Server URL
 	CGString m_sLang;				// Server language
-	ACCAPP_TYPE m_eAccApp;			// Server account application type
 	CGString m_sRestAPIPublicIP;	// REST API URL used to set server public IP on ServIP automatically at server startup
 
 public:

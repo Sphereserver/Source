@@ -3230,13 +3230,6 @@ bool CChar::OnSpellEffect(SPELL_TYPE spell, CChar *pCharSrc, int iSkillLevel, CI
 			Effect(EFFECT_OBJ, ITEMID_FX_GLOW, this, 10, 16);
 			return false;
 		}
-		else if ( GetPrivLevel() == PLEVEL_Guest )
-		{
-			if ( pCharSrc )
-				pCharSrc->SysMessageDefault(DEFMSG_MSG_ACC_GUESTHIT);
-			Effect(EFFECT_OBJ, ITEMID_FX_GLOW, this, 10, 16);
-			return false;
-		}
 
 		if ( !OnAttackedBy(pCharSrc, false, !pSpellDef->IsSpellType(SPELLFLAG_FIELD)) && !fReflecting )
 			return false;

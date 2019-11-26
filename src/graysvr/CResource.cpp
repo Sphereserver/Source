@@ -42,7 +42,7 @@ CResource::CResource()
 	m_iConnectingMax = 32;
 	m_iConnectingMaxIP = 8;
 
-	m_iGuestsMax = 0;
+	m_fAutoAccountCreation = false;
 	m_iClientLingerTime = 10 * 60 * TICK_PER_SEC;
 	m_iMinCharDeleteTime = 7 * 24 * 60 * 60 * TICK_PER_SEC;
 	m_iMaxCharsPerAccount = 5;
@@ -366,6 +366,7 @@ enum RC_TYPE
 	RC_ARRIVEDEPARTMSG,				// m_iArriveDepartMsg
 	RC_ATTACKERTIMEOUT,				// m_iAttackerTimeout
 	RC_ATTACKINGISACRIME,			// m_fAttackingIsACrime
+	RC_AUTOACCOUNTCREATION,			// m_fAutoAccountCreation
 	RC_AUTONEWBIEKEYS,				// m_fAutoNewbieKeys
 	RC_AUTORESDISP,					// m_bAutoResDisp
 	RC_BACKUPLEVELS,				// m_iSaveBackupLevels
@@ -445,7 +446,6 @@ enum RC_TYPE
 	RC_GUARDLINGER,					// m_iGuardLingerTime
 	RC_GUARDSINSTANTKILL,			// m_fGuardsInstantKill
 	RC_GUARDSONMURDERERS,			// m_fGuardsOnMurderers
-	RC_GUESTSMAX,					// m_iGuestsMax
 	RC_GUILDS,
 	RC_HEARALL,
 	RC_HELPINGCRIMINALSISACRIME,	// m_fHelpingCriminalsIsACrime
@@ -589,6 +589,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY + 1] =
 	{"ARRIVEDEPARTMSG",				{ELEM_INT,		OFFSETOF(CResource, m_iArriveDepartMsg),				0}},
 	{"ATTACKERTIMEOUT",				{ELEM_INT,		OFFSETOF(CResource, m_iAttackerTimeout),				0}},
 	{"ATTACKINGISACRIME",			{ELEM_BOOL,		OFFSETOF(CResource, m_fAttackingIsACrime),				0}},
+	{"AUTOACCOUNTCREATION",			{ELEM_BOOL,		OFFSETOF(CResource, m_fAutoAccountCreation),			0}},
 	{"AUTONEWBIEKEYS",				{ELEM_BOOL,		OFFSETOF(CResource, m_fAutoNewbieKeys),					0}},
 	{"AUTORESDISP",					{ELEM_BOOL,		OFFSETOF(CResource, m_bAutoResDisp),					0}},
 	{"BACKUPLEVELS",				{ELEM_INT,		OFFSETOF(CResource, m_iSaveBackupLevels),				0}},
@@ -668,7 +669,6 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY + 1] =
 	{"GUARDLINGER",					{ELEM_INT,		OFFSETOF(CResource, m_iGuardLingerTime),				0}},
 	{"GUARDSINSTANTKILL",			{ELEM_BOOL,		OFFSETOF(CResource, m_fGuardsInstantKill),				0}},
 	{"GUARDSONMURDERERS",			{ELEM_BOOL,		OFFSETOF(CResource, m_fGuardsOnMurderers),				0}},
-	{"GUESTSMAX",					{ELEM_INT,		OFFSETOF(CResource, m_iGuestsMax),						0}},
 	{"GUILDS",						{ELEM_VOID,		0,														0}},
 	{"HEARALL",						{ELEM_VOID,		0,														0}},
 	{"HELPINGCRIMINALSISACRIME",	{ELEM_BOOL,		OFFSETOF(CResource, m_fHelpingCriminalsIsACrime),		0}},
@@ -1924,14 +1924,8 @@ bool CResource::CanUsePrivVerb(const CScriptObj *pObjTarg, LPCTSTR pszCmd, CText
 	if ( !pSrc->GetChar() )
 	{
 		CClient *pClient = dynamic_cast<CClient *>(pSrc);
-		if ( pClient )
-		{
-			if ( !pClient->m_pAccount )
-			{
-				// Must be a console or web page
-				return !strnicmp(pszCmd, "LOGIN", 5);
-			}
-		}
+		if ( pClient && !pClient->m_pAccount )	// must be a console or web page
+			return !strnicmp(pszCmd, "LOGIN", 5);
 	}
 
 	size_t iSpace = strcspn(pszCmd, " ");	// position of space
@@ -1939,19 +1933,16 @@ bool CResource::CanUsePrivVerb(const CScriptObj *pObjTarg, LPCTSTR pszCmd, CText
 	strncpy(pszMyCmd, pszCmd, iSpace);
 	pszMyCmd[iSpace] = '\0';
 
-	PLEVEL_TYPE iPlevel;
 	TCHAR *pszDot;	// position of dot
 	while ( (pszDot = strchr(pszMyCmd, '.')) != NULL )
 	{
-		iPlevel = GetPrivCommandLevel(pszMyCmd);
-		if ( iPlevel > pSrc->GetPrivLevel() )
+		if ( pSrc->GetPrivLevel() < GetPrivCommandLevel(pszMyCmd) )
 			return false;
 
 		pszMyCmd = pszDot + 1;	// skip dot
 	}
 
-	iPlevel = GetPrivCommandLevel(pszMyCmd);
-	if ( iPlevel > pSrc->GetPrivLevel() )
+	if ( pSrc->GetPrivLevel() < GetPrivCommandLevel(pszMyCmd) )
 		return false;
 
 	return true;
@@ -1968,7 +1959,7 @@ CPointMap CResource::GetRegionPoint(LPCTSTR pszCmd) const
 	GETNONWHITESPACE(pszCmd);
 	if ( (pszCmd[0] == '-') && !strchr(pszCmd, ',') )	// Get location from start list.
 	{
-		size_t i = abs(ATOI(pszCmd)) - 1;
+		size_t i = static_cast<size_t>(abs(ATOI(pszCmd))) - 1;
 		if ( !m_StartDefs.IsValidIndex(i) )
 		{
 			if ( m_StartDefs.GetCount() <= 0 )
@@ -2341,7 +2332,7 @@ bool CResource::LoadResourceSection(CScript *pScript)
 		case RES_PLEVEL:
 		{
 			int iPlevel = rid.GetResIndex();
-			if ( (iPlevel < PLEVEL_Guest) || (iPlevel >= PLEVEL_QTY) )
+			if ( (iPlevel < PLEVEL_Player) || (iPlevel >= PLEVEL_QTY) )
 				return false;
 			while ( pScript->ReadKey() )
 				m_PrivCommands[iPlevel].AddSortString(pScript->GetKey());

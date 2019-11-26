@@ -334,9 +334,7 @@ void CClient::addTargetVerb(LPCTSTR pszCmd, LPCTSTR pszArgs)
 		pszArgs = "";
 	}
 
-	// priv here
-	PLEVEL_TYPE ilevel = g_Cfg.GetPrivCommandLevel(pszCmd);
-	if ( ilevel > GetPrivLevel() )
+	if ( GetPrivLevel() < g_Cfg.GetPrivCommandLevel(pszCmd) )
 		return;
 
 	m_Targ_Text.Format("%s%s%s", pszCmd, (pszArgs[0] && pszCmd[0]) ? " " : "", pszArgs);

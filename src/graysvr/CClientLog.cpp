@@ -82,13 +82,12 @@ void CClient::addSysMessage(LPCTSTR pszMsg)
 	if ( !pszMsg )
 		return;
 
-	if ( IsSetOF(OF_Flood_Protection) && (GetPrivLevel() <= PLEVEL_Player) )
+	if ( IsSetOF(OF_Flood_Protection) && (GetPrivLevel() == PLEVEL_Player) )
 	{
 		if ( !strcmpi(pszMsg, m_zLastMessage) )
 			return;
 
-		if ( strlen(pszMsg) < SCRIPT_MAX_LINE_LEN )
-			strcpy(m_zLastMessage, pszMsg);
+		strncpy(m_zLastMessage, pszMsg, sizeof(m_zLastMessage) - 1);
 	}
 
 	addBarkParse(pszMsg, NULL, HUE_TEXT_DEF, TALKMODE_SYSTEM);

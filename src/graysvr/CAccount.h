@@ -36,19 +36,16 @@ public:
 	bool Account_LoadAll(bool fChanges = true, bool fClearChanges = false);
 	bool Account_OnCmd(TCHAR *pszArgs, CTextConsole *pSrc);
 	bool Account_ChatNameAvailable(LPCTSTR pszName);
+	bool Account_ListUnused(CTextConsole *pSrc, LPCTSTR pszDays, LPCTSTR pszVerb, LPCTSTR pszArgs, WORD wPrivFlags = 0);
+	CAccount *Account_Create(CTextConsole *pSrc, LPCTSTR pszName, LPCTSTR pszPassword, bool fMD5 = false);
 
 	CAccount *Account_Get(size_t index);
 	CAccount *Account_Find(LPCTSTR pszName);
-	CAccount *Account_FindCreate(LPCTSTR pszName, bool fCreate = false);
 
 	size_t Account_GetCount() const
 	{
 		return m_Accounts.GetCount();
 	}
-
-private:
-	bool Cmd_AddNew(CTextConsole *pSrc, LPCTSTR pszName, LPCTSTR pszPassword, bool fMD5 = false);
-	bool Cmd_ListUnused(CTextConsole *pSrc, LPCTSTR pszDays, LPCTSTR pszVerb, LPCTSTR pszArgs, WORD wPrivFlags = 0);
 };
 
 extern CAccounts g_Accounts;

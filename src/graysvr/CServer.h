@@ -32,7 +32,6 @@ public:
 	CTextConsole *m_fResyncRequested;	// A resync pause has been requested by this source
 
 	int m_iTelnetClients;				// Admin clients connected on Telnet console
-	int m_iGuestClients;				// Guest clients connected
 	CGString m_sConsoleText;
 	bool m_fConsoleTextReadyFlag;		// Interlocking flag for moving between tasks
 

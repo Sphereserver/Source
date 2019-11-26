@@ -958,7 +958,7 @@ void CClient::addObjMessage(LPCTSTR pszMsg, const CObjBaseTemplate *pSrc, HUE_TY
 	if ( !pszMsg )
 		return;
 
-	if ( IsSetOF(OF_Flood_Protection) && (GetPrivLevel() <= PLEVEL_Player) )
+	if ( IsSetOF(OF_Flood_Protection) && (GetPrivLevel() == PLEVEL_Player) )
 	{
 		if ( !strcmpi(pszMsg, m_zLastObjMessage) )
 			return;
@@ -1325,8 +1325,6 @@ void CClient::addCharName(const CChar *pChar)
 				sprintf(pszName + strlen(pszName), " [0%" FMTDWORDH "]", static_cast<DWORD>(pChar->GetUID()));
 		}
 	}
-	if ( pChar->GetPrivLevel() <= PLEVEL_Guest )
-		strcat(pszName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_GUEST));
 	if ( pChar->IsPriv(PRIV_JAILED) )
 		strcat(pszName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_JAILED));
 	if ( pChar->IsDisconnected() )
@@ -3425,24 +3423,29 @@ BYTE CClient::LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg)
 	size_t iLenAccount = pszAccount ? strlen(pszAccount) : 0;
 	if ( (iLenAccount == 0) || (iLenAccount >= MAX_ACCOUNT_NAME_ENTRY) || Str_Check(pszAccount) || (Str_GetBare(szAccount, pszAccount, sizeof(szAccount)) != iLenAccount) )
 	{
-		sMsg.Format(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_UNK), pszAccount);
+		sMsg.Format(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_DENIED), pszAccount);
 		return PacketLoginError::InvalidCred;
 	}
 
-	bool fAutoCreate = ((g_Serv.m_eAccApp == ACCAPP_Free) || (g_Serv.m_eAccApp == ACCAPP_GuestAuto) || (g_Serv.m_eAccApp == ACCAPP_GuestTrial));
-	CAccount *pAccount = g_Accounts.Account_FindCreate(pszAccount, fAutoCreate);
+	CAccount *pAccount = g_Accounts.Account_Find(pszAccount);
 	if ( !pAccount )
 	{
-		g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' does not exist\n", GetSocketID(), pszAccount);
-		sMsg.Format(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_UNK), pszAccount);
-		return PacketLoginError::InvalidCred;
+		if ( g_Cfg.m_fAutoAccountCreation )
+			pAccount = g_Accounts.Account_Create(NULL, pszAccount, pszPassword);
+
+		if ( !pAccount )
+		{
+			g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' doesn't exist\n", GetSocketID(), pszAccount);
+			sMsg.Format(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_DENIED), pszAccount);
+			return PacketLoginError::InvalidCred;
+		}
 	}
 
 	// Check password
 	if ( g_Cfg.m_iClientLoginMaxTries && !pAccount->CheckPasswordTries(GetPeer()) )
 	{
 		g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' exceeded password tries\n", GetSocketID(), pAccount->GetName());
-		sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_INVALIDPASS);
+		sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_DENIED);
 		return PacketLoginError::MaxPassTries;
 	}
 
@@ -3451,7 +3454,7 @@ BYTE CClient::LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg)
 	if ( (iLenPassword == 0) || (iLenPassword >= MAX_ACCOUNT_NAME_ENTRY) || Str_Check(pszPassword) || (Str_GetBare(szPassword, pszPassword, sizeof(szPassword)) != iLenPassword) || !pAccount->CheckPassword(pszPassword) )
 	{
 		g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' inserted bad password\n", GetSocketID(), pAccount->GetName());
-		sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_INVALIDPASS);
+		sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_DENIED);
 		return PacketLoginError::InvalidCred;
 	}
 
@@ -3501,15 +3504,6 @@ BYTE CClient::LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg)
 		{
 			g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' can't connect, server maximum clients reached\n", GetSocketID(), pAccount->GetName());
 			sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_SERV_FULL);
-			return PacketLoginError::MaxClients;
-		}
-	}
-	if ( (pAccount->GetPrivLevel() == PLEVEL_Guest) )
-	{
-		if ( g_Serv.m_iGuestClients >= g_Cfg.m_iGuestsMax )
-		{
-			g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' can't connect, server maximum guest clients reached\n", GetSocketID(), pAccount->GetName());
-			sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_GUSED);
 			return PacketLoginError::MaxClients;
 		}
 	}

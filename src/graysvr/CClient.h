@@ -876,7 +876,7 @@ public:
 	{
 		if ( m_pAccount )
 			return m_pAccount->GetPrivLevel();
-		return PLEVEL_Guest;
+		return PLEVEL_Player;
 	}
 	LPCTSTR GetName() const
 	{

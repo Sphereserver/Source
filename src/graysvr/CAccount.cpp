@@ -211,16 +211,18 @@ bool CAccounts::Account_OnCmd(TCHAR *pszArgs, CTextConsole *pSrc)
 	switch ( static_cast<VACS_TYPE>(index) )
 	{
 		case VACS_ADD:
-			return Cmd_AddNew(pSrc, ppCmd[1], ppCmd[2]);
+			return (Account_Create(pSrc, ppCmd[1], ppCmd[2]) != NULL);
 		case VACS_ADDMD5:
-			return Cmd_AddNew(pSrc, ppCmd[1], ppCmd[2], true);
+			return (Account_Create(pSrc, ppCmd[1], ppCmd[2], true) != NULL);
 		case VACS_BLOCKED:
-			return Cmd_ListUnused(pSrc, ppCmd[1], ppCmd[2], ppCmd[3], PRIV_BLOCKED);
+			return Account_ListUnused(pSrc, ppCmd[1], ppCmd[2], ppCmd[3], PRIV_BLOCKED);
 		case VACS_HELP:
-			pSrc->SysMessagef(
+			pSrc->SysMessage(
 				"Available commands:\n"
 				"ACCOUNT ADD [login] [password]\n"
 				"ACCOUNT ADDMD5 [login] [password_hash]\n"
+				"ACCOUNT BLOCKED [days] [command]\n"
+				"ACCOUNT JAILED [days] [command]\n"
 				"ACCOUNT UNUSED [days] [command]\n"
 				"ACCOUNT UPDATE\n"
 				"ACCOUNT [login] BLOCK [0/1]\n"
@@ -232,9 +234,9 @@ bool CAccounts::Account_OnCmd(TCHAR *pszArgs, CTextConsole *pSrc)
 			);
 			return true;
 		case VACS_JAILED:
-			return Cmd_ListUnused(pSrc, ppCmd[1], ppCmd[2], ppCmd[3], PRIV_JAILED);
+			return Account_ListUnused(pSrc, ppCmd[1], ppCmd[2], ppCmd[3], PRIV_JAILED);
 		case VACS_UNUSED:
-			return Cmd_ListUnused(pSrc, ppCmd[1], ppCmd[2], ppCmd[3]);
+			return Account_ListUnused(pSrc, ppCmd[1], ppCmd[2], ppCmd[3]);
 		case VACS_UPDATE:
 			Account_SaveAll();
 			return true;
@@ -292,31 +294,6 @@ CAccount *CAccounts::Account_Find(LPCTSTR pszName)
 	return NULL;
 }
 
-CAccount *CAccounts::Account_FindCreate(LPCTSTR pszName, bool fCreate)
-{
-	ADDTOCALLSTACK("CAccounts::Account_FindCreate");
-
-	CAccount *pAccount = Account_Find(pszName);
-	if ( pAccount )
-		return pAccount;
-
-	// Account not found, check if it should be created
-	if ( fCreate )
-	{
-		TCHAR szName[MAX_ACCOUNT_NAME_ENTRY];
-		if ( CAccount::NameStrip(szName, pszName) )
-		{
-			pAccount = new CAccount(szName);
-			ASSERT(pAccount);
-			if ( (g_Serv.m_eAccApp == ACCAPP_GuestAuto) || (g_Serv.m_eAccApp == ACCAPP_GuestTrial) )
-				pAccount->SetPrivLevel(PLEVEL_Guest);
-			return pAccount;
-		}
-		g_Log.Event(LOGL_ERROR|LOGM_ACCOUNTS, "Account '%s': bad name\n", pszName);
-	}
-	return NULL;
-}
-
 bool CAccounts::Account_ChatNameAvailable(LPCTSTR pszName)
 {
 	ADDTOCALLSTACK("CAccounts::Account_ChatNameAvailable");
@@ -329,38 +306,39 @@ bool CAccounts::Account_ChatNameAvailable(LPCTSTR pszName)
 	return true;
 }
 
-bool CAccounts::Cmd_AddNew(CTextConsole *pSrc, LPCTSTR pszName, LPCTSTR pszPassword, bool fMD5)
+CAccount *CAccounts::Account_Create(CTextConsole *pSrc, LPCTSTR pszName, LPCTSTR pszPassword, bool fMD5)
 {
-	ADDTOCALLSTACK("CAccounts::Cmd_AddNew");
+	ADDTOCALLSTACK("CAccounts::Account_Create");
 	if ( !pszName )
 	{
 		g_Log.Event(LOGL_ERROR|LOGM_ACCOUNTS, "Username is required to add an account\n");
-		return false;
+		return NULL;
 	}
 
 	CAccount *pAccount = Account_Find(pszName);
 	if ( pAccount )
 	{
-		pSrc->SysMessagef("Account '%s' already exists\n", pszName);
-		return false;
+		if ( pSrc )
+			pSrc->SysMessagef("Account '%s' already exists\n", pszName);
+		return NULL;
 	}
 
 	TCHAR szName[MAX_ACCOUNT_NAME_ENTRY];
 	if ( !CAccount::NameStrip(szName, pszName) )
 	{
 		g_Log.Event(LOGL_ERROR|LOGM_ACCOUNTS, "Account '%s': bad name\n", pszName);
-		return false;
+		return NULL;
 	}
 
 	pAccount = new CAccount(szName);
 	ASSERT(pAccount);
 	pAccount->SetPassword(pszPassword, fMD5);
-	return true;
+	return pAccount;
 }
 
-bool CAccounts::Cmd_ListUnused(CTextConsole *pSrc, LPCTSTR pszDays, LPCTSTR pszVerb, LPCTSTR pszArgs, WORD wPrivFlags)
+bool CAccounts::Account_ListUnused(CTextConsole *pSrc, LPCTSTR pszDays, LPCTSTR pszVerb, LPCTSTR pszArgs, WORD wPrivFlags)
 {
-	ADDTOCALLSTACK("CAccounts::Cmd_ListUnused");
+	ADDTOCALLSTACK("CAccounts::Account_ListUnused");
 	if ( !pszVerb )
 	{
 		pszVerb = "SHOW";
@@ -617,7 +595,7 @@ void CAccount::ClearPasswordTries()
 
 static const LPCTSTR sm_szPrivLevels[PLEVEL_QTY + 1] =
 {
-	"Guest",		// 0 = This is just a guest account (cannot PK)
+	"Guest",		// 0 = Guest (UNUSED)
 	"Player",		// 1 = Player or NPC
 	"Counsel",		// 2 = Can travel and give advice
 	"Seer",			// 3 = Can make things and NPC's but not directly bother players
@@ -632,12 +610,12 @@ PLEVEL_TYPE CAccount::GetPrivLevelText(LPCTSTR pszFlags)	// static
 {
 	ADDTOCALLSTACK("CAccount::GetPrivLevelText");
 	int iPlevel = FindTable(pszFlags, sm_szPrivLevels, COUNTOF(sm_szPrivLevels) - 1);
-	if ( iPlevel >= 0 )
+	if ( iPlevel > 0 )
 		return static_cast<PLEVEL_TYPE>(iPlevel);
 
 	iPlevel = Exp_GetVal(pszFlags);
-	if ( iPlevel < PLEVEL_Guest )
-		return PLEVEL_Guest;
+	if ( iPlevel < PLEVEL_Player )
+		return PLEVEL_Player;
 	if ( iPlevel > PLEVEL_Owner )
 		return PLEVEL_Owner;
 	return static_cast<PLEVEL_TYPE>(iPlevel);
@@ -681,9 +659,7 @@ void CAccount::OnLogin(CClient *pClient)
 	if ( m_pClient->GetConnectType() == CONNECT_TELNET )
 		++g_Serv.m_iTelnetClients;
 
-	if ( GetPrivLevel() == PLEVEL_Guest )
-		++g_Serv.m_iGuestClients;
-	else if ( GetPrivLevel() >= PLEVEL_Counsel )
+	if ( GetPrivLevel() >= PLEVEL_Counsel )
 		SetPrivFlags(PRIV_GM_PAGE);
 
 	if ( !m_dateFirstConnect.IsTimeValid() )
@@ -703,9 +679,6 @@ void CAccount::OnLogout(CClient *pClient, bool fWasChar)
 
 	if ( pClient->GetConnectType() == CONNECT_TELNET )
 		--g_Serv.m_iTelnetClients;
-
-	if ( GetPrivLevel() == PLEVEL_Guest )
-		++g_Serv.m_iGuestClients;
 
 	if ( fWasChar && pClient->IsConnectTypePacket() )
 	{
@@ -803,7 +776,6 @@ enum AC_TYPE
 	AC_CHATNAME,
 	AC_FIRSTCONNECTDATE,
 	AC_FIRSTIP,
-	AC_GUEST,
 	AC_JAIL,
 	AC_LANG,
 	AC_LASTCHARUID,
@@ -833,7 +805,6 @@ const LPCTSTR CAccount::sm_szLoadKeys[AC_QTY + 1] =	// static
 	"CHATNAME",
 	"FIRSTCONNECTDATE",
 	"FIRSTIP",
-	"GUEST",
 	"JAIL",
 	"LANG",
 	"LASTCHARUID",
@@ -906,12 +877,6 @@ bool CAccount::r_LoadVal(CScript &s)
 				return true;
 			}
 			return false;
-		case AC_GUEST:
-			if ( !s.HasArgs() || s.GetArgVal() )
-				SetPrivLevel(PLEVEL_Guest);
-			else if ( GetPrivLevel() == PLEVEL_Guest )
-				SetPrivLevel(PLEVEL_Player);
-			break;
 		case AC_JAIL:
 			if ( !s.HasArgs() || s.GetArgVal() )
 				SetPrivFlags(PRIV_JAILED);
@@ -1026,9 +991,6 @@ bool CAccount::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			break;
 		case AC_FIRSTIP:
 			sVal = m_First_IP.GetAddrStr();
-			break;
-		case AC_GUEST:
-			sVal.FormatVal(GetPrivLevel() == PLEVEL_Guest);
 			break;
 		case AC_JAIL:
 			sVal.FormatVal(IsPriv(PRIV_JAILED));

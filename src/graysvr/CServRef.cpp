@@ -20,7 +20,6 @@ CServerDef::CServerDef(LPCTSTR pszName, CSocketAddressIP dwIP) : m_ip(dwIP, SPHE
 	SetName(pszName);
 	m_timeCreate = CServTime::GetCurrentTime();
 	m_TimeZone = static_cast<signed char>(_timezone / (60 * 60));
-	m_eAccApp = ACCAPP_Unspecified;
 }
 
 DWORD CServerDef::StatGet(SERV_STAT_TYPE i) const
@@ -136,7 +135,6 @@ void CServerDef::SetName(LPCTSTR pszName)
 
 enum SC_TYPE
 {
-	SC_ACCAPP,
 	SC_ACCOUNTS,
 	SC_ADMINEMAIL,
 	SC_AGE,
@@ -161,7 +159,6 @@ enum SC_TYPE
 
 LPCTSTR const CServerDef::sm_szLoadKeys[SC_QTY + 1] =	// static
 {
-	"ACCAPP",
 	"ACCOUNTS",
 	"ADMINEMAIL",
 	"AGE",
@@ -190,11 +187,6 @@ bool CServerDef::r_LoadVal(CScript &s)
 	EXC_TRY("LoadVal");
 	switch ( FindTableSorted(s.GetKey(), sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1) )
 	{
-		case SC_ACCAPP:
-			m_eAccApp = static_cast<ACCAPP_TYPE>(s.GetArgLLVal());
-			if ( (m_eAccApp < ACCAPP_Closed) || (m_eAccApp >= ACCAPP_QTY) )
-				m_eAccApp = ACCAPP_Unspecified;
-			break;
 		case SC_ADMINEMAIL:
 			m_sEMail = s.GetArgStr();
 			break;
@@ -248,9 +240,6 @@ bool CServerDef::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 	EXC_TRY("WriteVal");
 	switch ( FindTableSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1) )
 	{
-		case SC_ACCAPP:
-			sVal.FormatVal(m_eAccApp);
-			break;
 		case SC_ACCOUNTS:
 			sVal.FormatUVal(StatGet(SERV_STAT_ACCOUNTS));
 			break;

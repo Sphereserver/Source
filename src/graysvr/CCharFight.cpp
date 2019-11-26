@@ -2182,13 +2182,6 @@ bool CChar::Fight_Attack(CChar *pCharTarg, bool fToldByMaster)
 		return false;
 	}
 
-	if ( pCharTarg->m_pPlayer && (GetPrivLevel() <= PLEVEL_Guest) && (pCharTarg->GetPrivLevel() > PLEVEL_Guest) )
-	{
-		SysMessageDefault(DEFMSG_MSG_GUEST);
-		Attacker_Delete(pCharTarg);
-		return false;
-	}
-
 	if ( g_Cfg.m_fAttackingIsACrime && (pCharTarg->Noto_GetFlag(this) == NOTO_GOOD) )
 		CheckCrimeSeen(SKILL_NONE, pCharTarg, NULL, NULL);
 

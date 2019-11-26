@@ -724,7 +724,7 @@ public:
 	int m_iConnectingMax;					// max clients connecting
 	int m_iConnectingMaxIP;					// max clients connecting
 
-	int m_iGuestsMax;						// Allow guests who have no accounts ?
+	bool m_fAutoAccountCreation;			// Automatically create accounts when client try to login on nonexistent account
 	int m_iClientLingerTime;				// How long logged out clients linger in seconds.
 	int m_iMinCharDeleteTime;				// How old must a char be ? (minutes)
 	BYTE m_iMaxCharsPerAccount;				// Maximum characters allowed on an account.

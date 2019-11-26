@@ -22,7 +22,6 @@ CServer::CServer() : CServerDef(SPHERE_TITLE, CSocketAddressIP(SOCKET_LOCAL_ADDR
 	m_fResyncRequested = NULL;
 
 	m_iTelnetClients = 0;
-	m_iGuestClients = 0;
 	m_fConsoleTextReadyFlag = false;
 
 	m_timeShutdown.Init();

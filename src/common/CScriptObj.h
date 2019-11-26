@@ -31,8 +31,7 @@ enum TRIGRET_TYPE
 
 enum PLEVEL_TYPE
 {
-	PLEVEL_Guest,
-	PLEVEL_Player,
+	PLEVEL_Player = 1,
 	PLEVEL_Counsel,
 	PLEVEL_Seer,
 	PLEVEL_GM,

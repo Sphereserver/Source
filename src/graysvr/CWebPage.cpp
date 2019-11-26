@@ -31,7 +31,7 @@ CWebPageDef::CWebPageDef(RESOURCE_ID rid) : CResourceLink(rid)
 {
 	// Web page m_sWebPageFilePath
 	m_type = WEBPAGE_TEMPLATE;
-	m_privlevel = PLEVEL_Guest;
+	m_privlevel = PLEVEL_Player;
 	m_timeNextUpdate.Init();
 	m_iUpdatePeriod = 2 * 60 * TICK_PER_SEC;
 	m_iUpdateLog = 0;
