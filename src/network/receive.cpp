@@ -143,7 +143,7 @@ bool PacketCreate::doCreate(NetState *net, LPCTSTR pszName, bool fFemale, RACE_T
 	if ( pCharLast && account->IsMyAccountChar(pCharLast) && !pCharLast->IsDisconnected() )
 	{
 		client->addIdleWarning(PacketWarningMessage::CharacterInWorld);
-		client->addLoginErr(PacketLoginError::CharIdle);
+		client->addLoginErr(PacketLoginError::InUse);
 		return false;
 	}
 
@@ -315,7 +315,7 @@ bool PacketCreate::doCreate(NetState *net, LPCTSTR pszName, bool fFemale, RACE_T
 	if ( 0 )
 	{
 	InvalidInfo:
-		client->addLoginErr(PacketLoginError::CreationBlocked);
+		client->addLoginErr(PacketLoginError::BadCharCreation);
 		return false;
 	}
 
@@ -2666,7 +2666,7 @@ bool PacketClientVersion::onReceive(NetState* net)
 		net->m_reportedVersion = version;
 		
 		if ((g_Serv.m_ClientVersion.GetClientVer() != 0) && (g_Serv.m_ClientVersion.GetClientVer() != version))
-			client->addLoginErr(PacketLoginError::BadVersion);
+			client->addLoginErr(PacketLoginError::BadClientVer);
 
 		// Store the value on a temporary tag, it will be needed later
 		if ( client->m_pAccount )

@@ -810,30 +810,26 @@ class PacketLoginError : public PacketSend
 public:
 	enum Reason
 	{
-		Invalid	= 0x00,		// no account
-		InUse	= 0x01,		// already in use
-		Blocked	= 0x02,		// client blocked
-		BadPass	= 0x03,		// incorrect password
-		Other	= 0x04,		// other (e.g. timeout)
+		CantAuth	= 0x0,	// "We were unable to authenticate your login. Usually this means that either a newer client patch is now available, or that the account name or password you provided are incorrect." (UNUSED)
+		InUse		= 0x1,	// "Someone is already using this account."
+		Blocked		= 0x2,	// "Your account has been terminated due to a Terms of Service violation."
+		InvalidCred	= 0x3,	// "Your account credentials are invalid. Check your user ID and password and try again."
+		Other		= 0x4,	// "There is some problem communicating with Origin. Please restart Ultima Online and try again."
 
-		// the error codes below are not sent to or understood by the client,
-		// and should be translated into one of the codes above
-		BadVersion,			// version not permitted
-		BadCharacter,		// invalid character selected
-		BadAuthID,			// incorrect auth id
-		BadAccount,			// bad account name (length, characters)
-		BadPassword,		// bad password (length, characters)
-		BadEncLength,		// bad message length
-		BadLogin,			// bad login packet
-		EncCrypt,			// crypted client not allowed
-		EncNoCrypt,			// non-crypted client not allowed
-		CharIdle,			// character is already ingame
-		CreationBlocked,	// character creation is blocked in this moments
-		BlockedIP,			// ip is blocked
-		MaxClients,			// max clients reached
-		MaxPassTries,		// max password tries reached
+		// Error codes below are only used to detail the error on console log, and
+		// should be translated into one of the codes above before send to client.
+		BadClientVer,		// client version not allowed
+		BadChar,			// selected character doesn't exist or is not linked to this account
+		BadCharCreation,	// client trying to create character with invalid info
+		BadAuthID,			// invalid AuthID
+		UnkCrypt,			// unknown encryption key
+		BlockCrypt,			// encrypted clients are not allowed
+		BlockNoCrypt,		// unencrypted clients are not allowed
+		BlockedIP,			// IP is blocked
+		MaxClients,			// server reached max clients connected
+		MaxPassTries,		// max number of password tries reached
 
-		Success	= 0xFF		// no error
+		Success		= 0xFF	// no error
 	};
 
 	PacketLoginError(const CClient* target, Reason reason);

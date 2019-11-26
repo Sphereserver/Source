@@ -3426,7 +3426,7 @@ BYTE CClient::LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg)
 	if ( (iLenAccount == 0) || (iLenAccount >= MAX_ACCOUNT_NAME_ENTRY) || Str_Check(pszAccount) || (Str_GetBare(szAccount, pszAccount, sizeof(szAccount)) != iLenAccount) )
 	{
 		sMsg.Format(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_UNK), pszAccount);
-		return PacketLoginError::BadAccount;
+		return PacketLoginError::InvalidCred;
 	}
 
 	bool fAutoCreate = ((g_Serv.m_eAccApp == ACCAPP_Free) || (g_Serv.m_eAccApp == ACCAPP_GuestAuto) || (g_Serv.m_eAccApp == ACCAPP_GuestTrial));
@@ -3435,7 +3435,7 @@ BYTE CClient::LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg)
 	{
 		g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' does not exist\n", GetSocketID(), pszAccount);
 		sMsg.Format(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_UNK), pszAccount);
-		return PacketLoginError::Invalid;
+		return PacketLoginError::InvalidCred;
 	}
 
 	// Check password
@@ -3452,7 +3452,7 @@ BYTE CClient::LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg)
 	{
 		g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' inserted bad password\n", GetSocketID(), pAccount->GetName());
 		sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_INVALIDPASS);
-		return PacketLoginError::BadPass;
+		return PacketLoginError::InvalidCred;
 	}
 
 	if ( g_Cfg.m_iClientLoginMaxTries )
@@ -3620,19 +3620,19 @@ BYTE CClient::Setup_Play(DWORD dwSlot)
 	// Mode == CLIMODE_SETUP_CHARLIST
 
 	if ( !m_pAccount )
-		return PacketLoginError::Invalid;
+		return PacketLoginError::InvalidCred;
 	if ( dwSlot >= COUNTOF(m_tmSetupCharList) )
-		return PacketLoginError::BadCharacter;
+		return PacketLoginError::BadChar;
 
 	CChar *pChar = m_tmSetupCharList[dwSlot].CharFind();
 	if ( !m_pAccount->IsMyAccountChar(pChar) )
-		return PacketLoginError::BadCharacter;
+		return PacketLoginError::BadChar;
 
 	CChar *pCharLast = m_pAccount->m_uidLastChar.CharFind();
 	if ( pCharLast && m_pAccount->IsMyAccountChar(pCharLast) && (m_pAccount->GetPrivLevel() <= PLEVEL_GM) && !pCharLast->IsDisconnected() && (pChar->GetUID() != pCharLast->GetUID()) )
 	{
 		addIdleWarning(PacketWarningMessage::CharacterInWorld);
-		return PacketLoginError::CharIdle;
+		return PacketLoginError::InUse;
 	}
 
 	m_pAccount->m_TagDefs.SetStr("LastLogged", false, m_pAccount->m_dateLastConnect.Format(NULL));

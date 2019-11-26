@@ -39,61 +39,36 @@ bool CClient::addLoginErr(BYTE bCode)
 		return true;
 
 	// Console message to display for each login error code
-	static LPCTSTR const sm_Login_ErrMsg[] =
+	static const LPCTSTR sm_szLoginError[] =
 	{
-		"account doesn't exist",
+		"unable to authenticate connection",
 		"account already in use",
 		"account is blocked",
-		"wrong password",
-		"timeout / wrong encryption / unknown error",
+		"wrong login/password",
+		"connection timeout / wrong encryption / unknown error",
 		"client version not allowed",
 		"selected character doesn't exist or is not linked to this account",
+		"client trying to create character with invalid info",
 		"invalid AuthID",
-		"login or password is too short/long or contains invalid characters, sometimes this is caused by wrong/missing encryption keys",
-		"login or password is too short/long or contains invalid characters, sometimes this is caused by wrong/missing encryption keys",
-		"encryption error: unexpected packet length",
-		"bad login packet",
-		"encrypted client not allowed",
-		"unencrypted client not allowed",
-		"another character on this account is already ingame",
-		"character creation blocked",
+		"unknown encryption key",
+		"encrypted clients are not allowed",
+		"unencrypted clients are not allowed",
 		"IP is blocked",
-		"max number of clients reached",
+		"server reached max clients connected",
 		"max number of password tries reached"
 	};
 
-	if ( bCode >= COUNTOF(sm_Login_ErrMsg) )
+	if ( bCode >= COUNTOF(sm_szLoginError) )
 		bCode = PacketLoginError::Other;
 
 	if ( g_Log.GetLogMask() & LOGM_CLIENTS_LOG )
-		g_Log.EventWarn("%lx:Bad Login %d (%s)\n", GetSocketID(), bCode, sm_Login_ErrMsg[bCode]);
+		g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Bad login (%s)\n", GetSocketID(), sm_szLoginError[bCode]);
 
 	if ( m_NetState->m_clientVersion || m_NetState->m_reportedVersion )		// only reply the packet to valid clients
 	{
-		// Translate the code into a value the client will understand
-		switch ( bCode )
-		{
-			case PacketLoginError::Invalid:
-				bCode = PacketLoginError::Invalid;
-				break;
-			case PacketLoginError::InUse:
-			case PacketLoginError::CharIdle:
-				bCode = PacketLoginError::InUse;
-				break;
-			case PacketLoginError::Blocked:
-			case PacketLoginError::BlockedIP:
-			case PacketLoginError::MaxClients:
-				bCode = PacketLoginError::Blocked;
-				break;
-			case PacketLoginError::BadPass:
-			case PacketLoginError::BadAccount:
-			case PacketLoginError::BadPassword:
-				bCode = PacketLoginError::BadPass;
-				break;
-			default:
-				bCode = PacketLoginError::Other;
-				break;
-		}
+		if ( bCode > PacketLoginError::Other )	// translate the code into a value the client will understand
+			bCode = PacketLoginError::Other;
+
 		new PacketLoginError(this, static_cast<PacketLoginError::Reason>(bCode));
 	}
 
@@ -642,7 +617,7 @@ bool CClient::xProcessClientSetup(CEvent *pEvent, size_t iLen)
 		xRecordPacketData(this, (const BYTE *)pEvent, iLen, "client->server");
 #endif
 		DEBUG_MSG(("%lx:Odd login message length %" FMTSIZE_T "\n", GetSocketID(), iLen));
-		addLoginErr(PacketLoginError::BadEncLength);
+		addLoginErr(PacketLoginError::UnkCrypt);
 		return false;
 	}
 
@@ -650,17 +625,17 @@ bool CClient::xProcessClientSetup(CEvent *pEvent, size_t iLen)
 
 	if ( !xCanEncLogin() )
 	{
-		addLoginErr((m_Crypt.GetEncryptionType() == ENC_NONE) ? static_cast<BYTE>(PacketLoginError::EncNoCrypt) : static_cast<BYTE>(PacketLoginError::EncCrypt));
+		addLoginErr((m_Crypt.GetEncryptionType() == ENC_NONE) ? static_cast<BYTE>(PacketLoginError::BlockNoCrypt) : static_cast<BYTE>(PacketLoginError::BlockCrypt));
 		return false;
 	}
 	else if ( (m_Crypt.GetConnectType() == CONNECT_LOGIN) && !xCanEncLogin(true) )
 	{
-		addLoginErr(PacketLoginError::BadVersion);
+		addLoginErr(PacketLoginError::BadClientVer);
 		return false;
 	}
 
 	m_Crypt.Decrypt(pEvent->m_Raw, evInputBuffer.m_Raw, iLen);
-	BYTE bErr = PacketLoginError::BadLogin;
+	BYTE bErr = PacketLoginError::UnkCrypt;
 
 	switch ( pEvent->Default.m_Cmd )
 	{
@@ -690,7 +665,7 @@ bool CClient::xProcessClientSetup(CEvent *pEvent, size_t iLen)
 						new PacketClientVersionReq(this);
 				}
 				else
-					bErr = PacketLoginError::Invalid;
+					bErr = PacketLoginError::InvalidCred;
 			}
 			break;
 		}
@@ -745,13 +720,13 @@ bool CClient::xProcessClientSetup(CEvent *pEvent, size_t iLen)
 					if ( (dwCustomerID != 0) && (dwCustomerID == pEvent->CharListReq.m_Account) )
 					{
 						if ( !xCanEncLogin(true) )
-							bErr = PacketLoginError::BadVersion;
+							bErr = PacketLoginError::BadClientVer;
 					}
 					else
 						bErr = PacketLoginError::BadAuthID;
 				}
 				else
-					bErr = PacketLoginError::Invalid;
+					bErr = PacketLoginError::InvalidCred;
 			}
 			break;
 		}
