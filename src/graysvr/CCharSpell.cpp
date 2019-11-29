@@ -2033,7 +2033,7 @@ void CChar::Spell_Area(CPointMap ptTarg, int iDist, int iSkillLevel)
 	}
 }
 
-void CChar::Spell_Field(CPointMap ptTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, BYTE bFieldWidth, BYTE bFieldGauge, int iSkillLevel, CChar *pCharSrc, int iDuration, HUE_TYPE wColor)
+void CChar::Spell_Field(CPointMap ptTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, int iFieldWidth, int iFieldGauge, int iSkillLevel, CChar *pCharSrc, int iDurationMin, int iDurationMax, HUE_TYPE wColor)
 {
 	ADDTOCALLSTACK("CChar::Spell_Field");
 	// Cast the field spell to here.
@@ -2058,14 +2058,11 @@ void CChar::Spell_Field(CPointMap ptTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, BY
 	int dy = abs(ptTarg.m_y - GetTopPoint().m_y);
 	ITEMID_TYPE id = (dx > dy) ? idNS : idEW;
 
-	int minX = static_cast<int>((bFieldWidth - 1) / 2) - (bFieldWidth - 1);
-	int maxX = minX + (bFieldWidth - 1);
+	int minX = ((iFieldWidth - 1) / 2) - (iFieldWidth - 1);
+	int maxX = minX + (iFieldWidth - 1);
 
-	int minY = static_cast<int>((bFieldGauge - 1) / 2) - (bFieldGauge - 1);
-	int maxY = minY + (bFieldGauge - 1);
-
-	if ( iDuration <= 0 )
-		iDuration = GetSpellDuration(m_atMagery.m_Spell, iSkillLevel, pCharSrc);
+	int minY = ((iFieldGauge - 1) / 2) - (iFieldGauge - 1);
+	int maxY = minY + (iFieldGauge - 1);
 
 	if ( IsSetMagicFlags(MAGICF_NOFIELDSOVERWALLS) )
 	{
@@ -2184,11 +2181,12 @@ void CChar::Spell_Field(CPointMap ptTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, BY
 			pSpell->m_itSpell.m_spell = static_cast<WORD>(m_atMagery.m_Spell);
 			pSpell->m_itSpell.m_spelllevel = static_cast<WORD>(iSkillLevel);
 			pSpell->m_itSpell.m_spellcharges = 1;
-			pSpell->m_uidLink = GetUID();	// link it back to you
+			pSpell->m_uidLink = GetUID();
 			pSpell->SetType(IT_SPELL);
 			pSpell->SetAttr(ATTR_MAGIC);
 			pSpell->SetHue(wColor);
-			pSpell->MoveToDecay(pt, iDuration, true);
+			pSpell->SetKeyNum("ALWAYSSEND", 1);
+			pSpell->MoveToDecay(pt, Calc_GetRandVal(iDurationMin, iDurationMax), true);
 		}
 	}
 }
@@ -2592,9 +2590,13 @@ bool CChar::Spell_CastDone()
 	CObjBase *pObj = m_Act_Targ.ObjFind();	// dont always need a target
 	CREID_TYPE iC1 = static_cast<CREID_TYPE>(Args.m_VarsLocal.GetKeyNum("CreateObject1") & 0xFFFF);
 	BYTE bAreaRadius = static_cast<BYTE>(maximum(0, Args.m_VarsLocal.GetKeyNum("AreaRadius")));
-	int iDuration = maximum(0, static_cast<int>(Args.m_VarsLocal.GetKeyNum("Duration") * TICK_PER_SEC));
 	HUE_TYPE wColor = static_cast<HUE_TYPE>(maximum(0, Args.m_VarsLocal.GetKeyNum("EffectColor")));
 	iSkillLevel = static_cast<int>(Args.m_iN2);
+
+	INT64 piArgs[2];
+	size_t iArgQty = Str_ParseCmds(const_cast<TCHAR *>(Args.m_VarsLocal.GetKeyStr("Duration")), piArgs, COUNTOF(piArgs), ",");
+	int iDurationMin = (iArgQty >= 1) ? piArgs[0] * TICK_PER_SEC : GetSpellDuration(m_atMagery.m_Spell, iSkillLevel, this);
+	int iDurationMax = (iArgQty >= 2) ? piArgs[1] * TICK_PER_SEC : iDurationMin;
 
 	BYTE bFieldWidth = 0;
 	BYTE bFieldGauge = 0;
@@ -2628,7 +2630,7 @@ bool CChar::Spell_CastDone()
 				if ( !bFieldGauge )
 					bFieldGauge = 1;
 
-				Spell_Field(m_Act_p, iT1, iT2, bFieldWidth, bFieldGauge, iSkillLevel, this, iDuration, wColor);
+				Spell_Field(m_Act_p, iT1, iT2, bFieldWidth, bFieldGauge, iSkillLevel, this, iDurationMin, iDurationMax, wColor);
 			}
 		}
 		else if ( pSpellDef->IsSpellType(SPELLFLAG_AREA) )
@@ -2653,7 +2655,7 @@ bool CChar::Spell_CastDone()
 		if ( !bFieldGauge )
 			bFieldGauge = 1;
 
-		Spell_Field(m_Act_p, iT1, iT2, bFieldWidth, bFieldGauge, iSkillLevel, this, iDuration, wColor);
+		Spell_Field(m_Act_p, iT1, iT2, bFieldWidth, bFieldGauge, iSkillLevel, this, iDurationMin, iDurationMax, wColor);
 	}
 	else if ( pSpellDef->IsSpellType(SPELLFLAG_AREA) )
 	{
@@ -3269,7 +3271,12 @@ bool CChar::OnSpellEffect(SPELL_TYPE spell, CChar *pCharSrc, int iSkillLevel, CI
 	fExplode = (Args.m_VarsLocal.GetKeyNum("Explode") > 0);
 	iSound = static_cast<SOUND_TYPE>(Args.m_VarsLocal.GetKeyNum("Sound"));
 	iEffect = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Effect"));
-	iDuration = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Duration"));
+
+	INT64 piArgs[2];
+	size_t iArgQty = Str_ParseCmds(const_cast<TCHAR *>(Args.m_VarsLocal.GetKeyStr("Duration")), piArgs, COUNTOF(piArgs), ",");
+	int iDurationMin = (iArgQty >= 1) ? piArgs[0] * TICK_PER_SEC : 0;
+	int iDurationMax = (iArgQty >= 2) ? piArgs[1] * TICK_PER_SEC : iDurationMin;
+	iDuration = Calc_GetRandVal(iDurationMin, iDurationMax);
 
 	if ( pSpellDef->IsSpellType(SPELLFLAG_DAMAGE) )
 	{

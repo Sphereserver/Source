@@ -1158,7 +1158,7 @@ private:
 	CItem *Spell_Effect_Create(SPELL_TYPE spell, LAYER_TYPE layer, int iSkillLevel, int iDuration, CObjBase *pSrc = NULL, bool fEquip = true);
 	bool Spell_Equip_OnTick(CItem *pItem);
 
-	void Spell_Field(CPointMap ptTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, BYTE bFieldWidth, BYTE bFieldGauge, int iSkillLevel, CChar *pCharSrc = NULL, int iDuration = 0, HUE_TYPE wColor = HUE_DEFAULT);
+	void Spell_Field(CPointMap ptTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, int iFieldWidth, int iFieldGauge, int iSkillLevel, CChar *pCharSrc, int iDurationMin, int iDurationMax, HUE_TYPE wColor);
 	void Spell_Area(CPointMap ptTarg, int iDist, int iSkillLevel);
 	bool Spell_TargCheck_Face();
 	bool Spell_TargCheck();

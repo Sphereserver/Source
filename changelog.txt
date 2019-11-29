@@ -1657,3 +1657,8 @@ Removed: Obsolete 'guest' account priv (plevel 0)
 [sphere.ini]: Removed GuestsMax setting and replaced obsolete AccApp with new AutoAccountCreation
 [sphereCrypt.ini]: Added crypt key for classic client 7.0.82 and enhanced client 4.0.82
 [sphere_msgs.scp]: Removed messages 'msg_acc_gused', 'msg_acc_unk', 'msg_acc_guesthit', 'msg_guest', 'charinfo_guest'
+
+29-11-2019, Coruja
+Fixed: Field spell items not showing to clients outside multis when OF_OSIMultiSight optional feature is enabled on sphere.ini
+Changed: Some changes on spell triggers (@Effect/@Success [spells] / @SpellEffect/@SpellSuccess [chars]) to allow more customization
+	-LOCAL.Duration now accept an 2nd argument to return random values (eg: LOCAL.Duration=60 will return 60, and LOCAL.Duration=60,80 will return a random value between 60,80)
