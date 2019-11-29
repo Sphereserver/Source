@@ -23,6 +23,12 @@ void CChar::Spell_Dispel(int iLevel)
 	}
 }
 
+static const LPCTSTR sm_szPunishMsg[] =
+{
+	g_Cfg.GetDefaultMsg(DEFMSG_SPELL_TELE_JAILED_1),
+	g_Cfg.GetDefaultMsg(DEFMSG_SPELL_TELE_JAILED_2)
+};
+
 bool CChar::Spell_Teleport(CPointMap ptDest, bool fTakePets, bool fCheckAntiMagic, bool fDisplayEffect, ITEMID_TYPE iEffect, SOUND_TYPE iSound)
 {
 	ADDTOCALLSTACK("CChar::Spell_Teleport");
@@ -41,11 +47,6 @@ bool CChar::Spell_Teleport(CPointMap ptDest, bool fTakePets, bool fCheckAntiMagi
 		if ( IsPriv(PRIV_JAILED) )
 		{
 			// Must be /PARDONed to leave jail area
-			static LPCTSTR const sm_szPunishMsg[] =
-			{
-				g_Cfg.GetDefaultMsg(DEFMSG_SPELL_TELE_JAILED_1),
-				g_Cfg.GetDefaultMsg(DEFMSG_SPELL_TELE_JAILED_2)
-			};
 			SysMessage(sm_szPunishMsg[Calc_GetRandVal(COUNTOF(sm_szPunishMsg))]);
 			return false;
 		}
@@ -167,11 +168,6 @@ bool CChar::Spell_CreateGate(CPointMap ptDest, bool fCheckAntiMagic)
 		if ( IsPriv(PRIV_JAILED) )
 		{
 			// Must be /PARDONed to leave jail area
-			static LPCTSTR const sm_szPunishMsg[] =
-			{
-				g_Cfg.GetDefaultMsg(DEFMSG_SPELL_TELE_JAILED_1),
-				g_Cfg.GetDefaultMsg(DEFMSG_SPELL_TELE_JAILED_2)
-			};
 			SysMessage(sm_szPunishMsg[Calc_GetRandVal(COUNTOF(sm_szPunishMsg))]);
 			return false;
 		}
@@ -1796,8 +1792,8 @@ bool CChar::Spell_Equip_OnTick(CItem *pItem)
 
 			if ( m_pClient )
 			{
-				static const SOUND_TYPE sm_sounds[] = { 0x243, 0x244 };
-				m_pClient->addSound(sm_sounds[Calc_GetRandVal(COUNTOF(sm_sounds))]);
+				static const SOUND_TYPE sm_HallucinationSounds[] = { 0x243, 0x244 };
+				m_pClient->addSound(sm_HallucinationSounds[Calc_GetRandVal(COUNTOF(sm_HallucinationSounds))]);
 				m_pClient->addChar(this);
 				m_pClient->addPlayerSee(NULL);
 			}
@@ -1839,7 +1835,7 @@ bool CChar::Spell_Equip_OnTick(CItem *pItem)
 						break;
 				}
 
-				static LPCTSTR const sm_szPoisonMsg[] =
+				static const LPCTSTR sm_szPoisonOSIMsg[] =
 				{
 					g_Cfg.GetDefaultMsg(DEFMSG_SPELL_OSIPOISON_LESSER),
 					g_Cfg.GetDefaultMsg(DEFMSG_SPELL_OSIPOISON_STANDARD),
@@ -1847,7 +1843,7 @@ bool CChar::Spell_Equip_OnTick(CItem *pItem)
 					g_Cfg.GetDefaultMsg(DEFMSG_SPELL_OSIPOISON_DEADLY),
 					g_Cfg.GetDefaultMsg(DEFMSG_SPELL_OSIPOISON_LETHAL)
 				};
-				static LPCTSTR const sm_szPoisonMsg_Other[] =
+				static const LPCTSTR sm_szPoisonOSIMsg_Other[] =
 				{
 					g_Cfg.GetDefaultMsg(DEFMSG_SPELL_OSIPOISON_LESSER1),
 					g_Cfg.GetDefaultMsg(DEFMSG_SPELL_OSIPOISON_STANDARD1),
@@ -1855,8 +1851,8 @@ bool CChar::Spell_Equip_OnTick(CItem *pItem)
 					g_Cfg.GetDefaultMsg(DEFMSG_SPELL_OSIPOISON_DEADLY1),
 					g_Cfg.GetDefaultMsg(DEFMSG_SPELL_OSIPOISON_LETHAL1)
 				};
-				Emote(NULL, sm_szPoisonMsg_Other[iLevel], m_pClient);
-				SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_SPELL_YOUFEEL), sm_szPoisonMsg[iLevel]);
+				Emote(NULL, sm_szPoisonOSIMsg_Other[iLevel], m_pClient);
+				SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_SPELL_YOUFEEL), sm_szPoisonOSIMsg[iLevel]);
 			}
 			else
 			{
@@ -1875,7 +1871,7 @@ bool CChar::Spell_Equip_OnTick(CItem *pItem)
 				iDmg = IMULDIV(Stat_GetMax(STAT_STR), static_cast<LONGLONG>(iLevel) * 2, 100);
 				pItem->SetTimeout((5 + Calc_GetRandLLVal(4)) * TICK_PER_SEC);
 
-				static LPCTSTR const sm_szPoisonMsg[] =
+				static const LPCTSTR sm_szPoisonMsg[] =
 				{
 					g_Cfg.GetDefaultMsg(DEFMSG_SPELL_POISON_1),
 					g_Cfg.GetDefaultMsg(DEFMSG_SPELL_POISON_2),
@@ -2551,11 +2547,9 @@ bool CChar::Spell_CastDone()
 	CScriptTriggerArgs Args(spell, iSkillLevel, pObjSrc);
 	Args.m_VarsLocal.SetNum("Duration", GetSpellDuration(spell, iSkillLevel, this) / TICK_PER_SEC, true);
 
-	bool fFieldSpell = pSpellDef->IsSpellType(SPELLFLAG_FIELD);
 	ITEMID_TYPE iT1 = ITEMID_NOTHING;
 	ITEMID_TYPE iT2 = ITEMID_NOTHING;
-
-	if ( fFieldSpell )
+	if ( pSpellDef->IsSpellType(SPELLFLAG_FIELD) )
 	{
 		switch ( spell )	// Only setting ids and locals for field spells
 		{
@@ -2587,29 +2581,46 @@ bool CChar::Spell_CastDone()
 	if ( !Spell_CanCast(spell, false, pObjSrc, true) )
 		return false;
 
-	CObjBase *pObj = m_Act_Targ.ObjFind();	// dont always need a target
-	CREID_TYPE iC1 = static_cast<CREID_TYPE>(Args.m_VarsLocal.GetKeyNum("CreateObject1") & 0xFFFF);
-	BYTE bAreaRadius = static_cast<BYTE>(maximum(0, Args.m_VarsLocal.GetKeyNum("AreaRadius")));
-	HUE_TYPE wColor = static_cast<HUE_TYPE>(maximum(0, Args.m_VarsLocal.GetKeyNum("EffectColor")));
-	iSkillLevel = static_cast<int>(Args.m_iN2);
-
-	INT64 piArgs[2];
-	size_t iArgQty = Str_ParseCmds(const_cast<TCHAR *>(Args.m_VarsLocal.GetKeyStr("Duration")), piArgs, COUNTOF(piArgs), ",");
-	int iDurationMin = (iArgQty >= 1) ? piArgs[0] * TICK_PER_SEC : GetSpellDuration(m_atMagery.m_Spell, iSkillLevel, this);
-	int iDurationMax = (iArgQty >= 2) ? piArgs[1] * TICK_PER_SEC : iDurationMin;
-
-	BYTE bFieldWidth = 0;
-	BYTE bFieldGauge = 0;
-
-	if ( fFieldSpell )
+	int iAreaRadius = 0;
+	if ( pSpellDef->IsSpellType(SPELLFLAG_AREA) )
 	{
-		// Setting new IDs as another variables to pass as different arguments to the field function
+		iAreaRadius = static_cast<int>(Args.m_VarsLocal.GetKeyNum("AreaRadius"));
+		if ( iAreaRadius <= 0 )
+			iAreaRadius = 4;
+	}
+
+	CREID_TYPE iC1 = CREID_INVALID;
+	if ( pSpellDef->IsSpellType(SPELLFLAG_SUMMON) )
+		iC1 = static_cast<CREID_TYPE>(Args.m_VarsLocal.GetKeyNum("CreateObject1") & 0xFFFF);
+
+	int iFieldWidth = 0;
+	int iFieldGauge = 0;
+	int iDurationMin = 0;
+	int iDurationMax = 0;
+	HUE_TYPE wColor = HUE_DEFAULT;
+	if ( pSpellDef->IsSpellType(SPELLFLAG_FIELD) )
+	{
 		iT1 = static_cast<ITEMID_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject1")));
 		iT2 = static_cast<ITEMID_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject2")));
 
-		bFieldWidth = static_cast<BYTE>(maximum(0, Args.m_VarsLocal.GetKeyNum("FieldWidth")));
-		bFieldGauge = static_cast<BYTE>(maximum(0, Args.m_VarsLocal.GetKeyNum("FieldGauge")));
+		iFieldWidth = static_cast<int>(Args.m_VarsLocal.GetKeyNum("FieldWidth"));
+		if ( iFieldWidth < 1 )
+			iFieldWidth = 3;
+
+		iFieldGauge = static_cast<int>(Args.m_VarsLocal.GetKeyNum("FieldGauge"));
+		if ( iFieldGauge < 1 )
+			iFieldGauge = 1;
+
+		INT64 piArgs[2];
+		size_t iArgQty = Str_ParseCmds(const_cast<TCHAR *>(Args.m_VarsLocal.GetKeyStr("Duration")), piArgs, COUNTOF(piArgs), ",");
+		iDurationMin = (iArgQty >= 1) ? piArgs[0] * TICK_PER_SEC : GetSpellDuration(m_atMagery.m_Spell, iSkillLevel, this);
+		iDurationMax = (iArgQty >= 2) ? piArgs[1] * TICK_PER_SEC : iDurationMin;
+
+		wColor = static_cast<HUE_TYPE>(Args.m_VarsLocal.GetKeyNum("EffectColor"));
 	}
+
+	CObjBase *pObj = m_Act_Targ.ObjFind();	// don't always need a target
+	iSkillLevel = static_cast<int>(Args.m_iN2);
 
 	if ( pSpellDef->IsSpellType(SPELLFLAG_SCRIPTED) )
 	{
@@ -2621,66 +2632,51 @@ bool CChar::Spell_CastDone()
 				Spell_Summon(m_atMagery.m_SummonID, m_Act_p);
 			}
 		}
-		else if ( fFieldSpell )
+		else if ( pSpellDef->IsSpellType(SPELLFLAG_FIELD) )
 		{
 			if ( iT1 && iT2 )
-			{
-				if ( !bFieldWidth )
-					bFieldWidth = 3;
-				if ( !bFieldGauge )
-					bFieldGauge = 1;
-
-				Spell_Field(m_Act_p, iT1, iT2, bFieldWidth, bFieldGauge, iSkillLevel, this, iDurationMin, iDurationMax, wColor);
-			}
+				Spell_Field(m_Act_p, iT1, iT2, iFieldWidth, iFieldGauge, iSkillLevel, this, iDurationMin, iDurationMax, wColor);
 		}
 		else if ( pSpellDef->IsSpellType(SPELLFLAG_AREA) )
 		{
-			if ( !bAreaRadius )
-				bAreaRadius = 4;
-
 			if ( !pSpellDef->IsSpellType(SPELLFLAG_TARG_OBJ|SPELLFLAG_TARG_XYZ) )
-				Spell_Area(GetTopPoint(), bAreaRadius, iSkillLevel);
+				Spell_Area(GetTopPoint(), iAreaRadius, iSkillLevel);
 			else
-				Spell_Area(m_Act_p, bAreaRadius, iSkillLevel);
+				Spell_Area(m_Act_p, iAreaRadius, iSkillLevel);
 		}
 		else if ( pSpellDef->IsSpellType(SPELLFLAG_POLY) )
 			return false;
 		else if ( pObj )
 			pObj->OnSpellEffect(spell, this, iSkillLevel, dynamic_cast<CItem *>(pObjSrc));
 	}
-	else if ( fFieldSpell )
+	else if ( pSpellDef->IsSpellType(SPELLFLAG_FIELD) )
 	{
-		if ( !bFieldWidth )
-			bFieldWidth = 3;
-		if ( !bFieldGauge )
-			bFieldGauge = 1;
-
-		Spell_Field(m_Act_p, iT1, iT2, bFieldWidth, bFieldGauge, iSkillLevel, this, iDurationMin, iDurationMax, wColor);
+		Spell_Field(m_Act_p, iT1, iT2, iFieldWidth, iFieldGauge, iSkillLevel, this, iDurationMin, iDurationMax, wColor);
 	}
 	else if ( pSpellDef->IsSpellType(SPELLFLAG_AREA) )
 	{
-		if ( !bAreaRadius )
+		if ( !iAreaRadius )
 		{
 			switch ( spell )
 			{
-				case SPELL_Arch_Cure:		bAreaRadius = 2;						break;
-				case SPELL_Arch_Prot:		bAreaRadius = 3;						break;
-				case SPELL_Mass_Curse:		bAreaRadius = 2;						break;
-				case SPELL_Reveal:			bAreaRadius = 1 + (iSkillLevel / 200);	break;
-				case SPELL_Chain_Lightning: bAreaRadius = 2;						break;
-				case SPELL_Mass_Dispel:		bAreaRadius = 8;						break;
-				case SPELL_Meteor_Swarm:	bAreaRadius = 2;						break;
-				case SPELL_Earthquake:		bAreaRadius = 1 + (iSkillLevel / 150);	break;
-				case SPELL_Poison_Strike:	bAreaRadius = 2;						break;
-				case SPELL_Wither:			bAreaRadius = 4;						break;
-				default:					bAreaRadius = 4;						break;
+				case SPELL_Arch_Cure:		iAreaRadius = 2;						break;
+				case SPELL_Arch_Prot:		iAreaRadius = 3;						break;
+				case SPELL_Mass_Curse:		iAreaRadius = 2;						break;
+				case SPELL_Reveal:			iAreaRadius = 1 + (iSkillLevel / 200);	break;
+				case SPELL_Chain_Lightning: iAreaRadius = 2;						break;
+				case SPELL_Mass_Dispel:		iAreaRadius = 8;						break;
+				case SPELL_Meteor_Swarm:	iAreaRadius = 2;						break;
+				case SPELL_Earthquake:		iAreaRadius = 1 + (iSkillLevel / 150);	break;
+				case SPELL_Poison_Strike:	iAreaRadius = 2;						break;
+				case SPELL_Wither:			iAreaRadius = 4;						break;
+				default:					iAreaRadius = 4;						break;
 			}
 		}
 
 		if ( !pSpellDef->IsSpellType(SPELLFLAG_TARG_OBJ|SPELLFLAG_TARG_XYZ) )
-			Spell_Area(GetTopPoint(), bAreaRadius, iSkillLevel);
+			Spell_Area(GetTopPoint(), iAreaRadius, iSkillLevel);
 		else
-			Spell_Area(m_Act_p, bAreaRadius, iSkillLevel);
+			Spell_Area(m_Act_p, iAreaRadius, iSkillLevel);
 	}
 	else if ( pSpellDef->IsSpellType(SPELLFLAG_SUMMON) )
 	{
@@ -2952,8 +2948,8 @@ void CChar::Spell_CastFail()
 			return;
 	}
 
-	HUE_TYPE wColor = static_cast<HUE_TYPE>(maximum(0, Args.m_VarsLocal.GetKeyNum("EffectColor")));
-	DWORD dwRender = static_cast<DWORD>(maximum(0, Args.m_VarsLocal.GetKeyNum("EffectRender")));
+	HUE_TYPE wColor = static_cast<HUE_TYPE>(Args.m_VarsLocal.GetKeyNum("EffectColor"));
+	DWORD dwRender = static_cast<DWORD>(Args.m_VarsLocal.GetKeyNum("EffectRender"));
 
 	iT1 = static_cast<ITEMID_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject1")));
 	if ( iT1 != ITEMID_NOTHING )
@@ -3266,8 +3262,8 @@ bool CChar::OnSpellEffect(SPELL_TYPE spell, CChar *pCharSrc, int iSkillLevel, CI
 		return true;
 
 	ITEMID_TYPE iEffectID = static_cast<ITEMID_TYPE>(RES_GET_INDEX(Args.m_VarsLocal.GetKeyNum("CreateObject1")));
-	HUE_TYPE wColor = static_cast<HUE_TYPE>(maximum(0, Args.m_VarsLocal.GetKeyNum("EffectColor")));
-	DWORD dwRender = static_cast<DWORD>(maximum(0, Args.m_VarsLocal.GetKeyNum("EffectRender")));
+	HUE_TYPE wColor = static_cast<HUE_TYPE>(Args.m_VarsLocal.GetKeyNum("EffectColor"));
+	DWORD dwRender = static_cast<DWORD>(Args.m_VarsLocal.GetKeyNum("EffectRender"));
 	fExplode = (Args.m_VarsLocal.GetKeyNum("Explode") > 0);
 	iSound = static_cast<SOUND_TYPE>(Args.m_VarsLocal.GetKeyNum("Sound"));
 	iEffect = static_cast<int>(Args.m_VarsLocal.GetKeyNum("Effect"));
