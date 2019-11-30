@@ -11,7 +11,7 @@ addons:
     packages:
     - gcc-multilib
     - g++-multilib
-    - libmysql++-dev:i386
+    - libmysqlclient-dev:i386
   coverity_scan:
     project:
       name: "Sphereserver/Source"
