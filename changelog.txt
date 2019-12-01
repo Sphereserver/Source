@@ -1662,3 +1662,6 @@ Removed: Obsolete 'guest' account priv (plevel 0)
 Fixed: Field spell items not showing to clients outside multis when OF_OSIMultiSight optional feature is enabled on sphere.ini
 Changed: Some changes on spell triggers (@Effect/@Success [spells] / @SpellEffect/@SpellSuccess [chars]) to allow more customization
 	-LOCAL.Duration now accept an 2nd argument to return random values (eg: LOCAL.Duration=60 will return 60, and LOCAL.Duration=60,80 will return a random value between 60,80)
+
+01-12-2019, Coruja
+Fixed: Chars with STATF_Stone flag can't cast spells anymore.

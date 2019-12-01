@@ -440,16 +440,16 @@ SKILL_TYPE CChar::Skill_GetMagicRandom(WORD wMinValue)
 bool CChar::Skill_CanUse(SKILL_TYPE skill)
 {
 	ADDTOCALLSTACK("CChar::Skill_CanUse");
-	if ( g_Cfg.IsSkillFlag(skill, SKF_DISABLED) )	// skill disabled
+	if ( g_Cfg.IsSkillFlag(skill, SKF_DISABLED) )
 	{
 		SysMessageDefault(DEFMSG_SKILL_NOSKILL);
 		return false;
 	}
-
-	if ( IsStatFlag(STATF_Ridden) )		// ridden mounts can't use skills
+	else if ( IsStatFlag(STATF_Ridden|STATF_Stone|STATF_DEAD) )
+	{
+		SysMessageDefault(DEFMSG_SKILLWAIT_1);
 		return false;
-
-	// Expansion checks? different flags for NPCs/Players?
+	}
 	return true;
 }
 

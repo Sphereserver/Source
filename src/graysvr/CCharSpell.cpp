@@ -2313,7 +2313,7 @@ bool CChar::Spell_CanCast(SPELL_TYPE &spell, bool fTest, CObjBase *pSrc, bool fF
 
 		if ( m_pPlayer )
 		{
-			if ( IsStatFlag(STATF_DEAD) || !pSpellDef->m_SkillReq.IsResourceMatchAll(this) )
+			if ( !pSpellDef->m_SkillReq.IsResourceMatchAll(this) )
 			{
 				if ( fFailMsg )
 					SysMessageDefault(DEFMSG_SPELL_TRY_DEAD);
