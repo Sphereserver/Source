@@ -780,7 +780,7 @@ public:
 	void Stat_SetBase(STAT_TYPE stat, int iVal);
 	int Stat_GetBase(STAT_TYPE stat) const;
 
-	void Stat_AddMod(STAT_TYPE stat, int iVal);
+	void Stat_SpellEffect(STAT_TYPE stat, int iVal);
 	void Stat_SetMod(STAT_TYPE stat, int iVal);
 	int Stat_GetMod(STAT_TYPE stat) const;
 

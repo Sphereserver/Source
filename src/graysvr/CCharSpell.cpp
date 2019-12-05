@@ -561,8 +561,8 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 			}
 			if ( (spell == SPELL_Polymorph) && IsSetMagicFlags(MAGICF_POLYMORPHSTATS) )
 			{
-				Stat_AddMod(STAT_STR, -pSpell->m_itSpell.m_PolyStr);
-				Stat_AddMod(STAT_DEX, -pSpell->m_itSpell.m_PolyDex);
+				Stat_SpellEffect(STAT_STR, -pSpell->m_itSpell.m_PolyStr);
+				Stat_SpellEffect(STAT_DEX, -pSpell->m_itSpell.m_PolyDex);
 				Stat_SetVal(STAT_STR, minimum(Stat_GetVal(STAT_STR), Stat_GetMax(STAT_STR)));
 				Stat_SetVal(STAT_DEX, minimum(Stat_GetVal(STAT_DEX), Stat_GetMax(STAT_DEX)));
 			}
@@ -704,7 +704,7 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 	{
 		case SPELL_Clumsy:
 		{
-			Stat_AddMod(STAT_DEX, wStatEffect);
+			Stat_SpellEffect(STAT_DEX, +wStatEffect);
 			if ( m_pClient )
 				m_pClient->removeBuff(BI_CLUMSY);
 			return;
@@ -729,14 +729,14 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 		}
 		case SPELL_Feeblemind:
 		{
-			Stat_AddMod(STAT_INT, wStatEffect);
+			Stat_SpellEffect(STAT_INT, +wStatEffect);
 			if ( m_pClient )
 				m_pClient->removeBuff(BI_FEEBLEMIND);
 			return;
 		}
 		case SPELL_Weaken:
 		{
-			Stat_AddMod(STAT_STR, wStatEffect);
+			Stat_SpellEffect(STAT_STR, +wStatEffect);
 			if ( m_pClient )
 				m_pClient->removeBuff(BI_WEAKEN);
 			return;
@@ -752,7 +752,7 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 				m_ResEnergyMax += 10;
 			}
 			for ( int i = STAT_STR; i < STAT_BASE_QTY; ++i )
-				Stat_AddMod(static_cast<STAT_TYPE>(i), wStatEffect);
+				Stat_SpellEffect(static_cast<STAT_TYPE>(i), +wStatEffect);
 			if ( m_pClient )
 			{
 				if ( spell == SPELL_Curse )
@@ -764,21 +764,21 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 		}
 		case SPELL_Agility:
 		{
-			Stat_AddMod(STAT_DEX, -wStatEffect);
+			Stat_SpellEffect(STAT_DEX, -wStatEffect);
 			if ( m_pClient )
 				m_pClient->removeBuff(BI_AGILITY);
 			return;
 		}
 		case SPELL_Cunning:
 		{
-			Stat_AddMod(STAT_INT, -wStatEffect);
+			Stat_SpellEffect(STAT_INT, -wStatEffect);
 			if ( m_pClient )
 				m_pClient->removeBuff(BI_CUNNING);
 			return;
 		}
 		case SPELL_Strength:
 		{
-			Stat_AddMod(STAT_STR, -wStatEffect);
+			Stat_SpellEffect(STAT_STR, -wStatEffect);
 			if ( m_pClient )
 				m_pClient->removeBuff(BI_STRENGTH);
 			return;
@@ -786,7 +786,7 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 		case SPELL_Bless:
 		{
 			for ( int i = STAT_STR; i < STAT_BASE_QTY; ++i )
-				Stat_AddMod(static_cast<STAT_TYPE>(i), -wStatEffect);
+				Stat_SpellEffect(static_cast<STAT_TYPE>(i), -wStatEffect);
 			if ( m_pClient )
 				m_pClient->removeBuff(BI_BLESS);
 			return;
@@ -1130,7 +1130,7 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 						iChange = -g_Cfg.m_iMaxPolyStats;
 					if ( iChange + Stat_GetBase(STAT_STR) < 0 )
 						iChange = -Stat_GetBase(STAT_STR);
-					Stat_AddMod(STAT_STR, iChange);
+					Stat_SpellEffect(STAT_STR, +iChange);
 					pSpell->m_itSpell.m_PolyStr = iChange;
 				}
 				if ( pCharDef->m_Dex )
@@ -1142,7 +1142,7 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 						iChange = -g_Cfg.m_iMaxPolyStats;
 					if ( iChange + Stat_GetBase(STAT_DEX) < 0 )
 						iChange = -Stat_GetBase(STAT_DEX);
-					Stat_AddMod(STAT_DEX, iChange);
+					Stat_SpellEffect(STAT_DEX, +iChange);
 					pSpell->m_itSpell.m_PolyDex = iChange;
 				}
 			}
@@ -1456,7 +1456,7 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 				wStatEffect = 8 + (pCaster->Skill_GetBase(SKILL_EVALINT) / 100) - (Skill_GetBase(SKILL_MAGICRESISTANCE) / 100);
 				pSpell->m_itSpell.m_spelllevel = wStatEffect;
 			}
-			Stat_AddMod(STAT_DEX, -wStatEffect);
+			Stat_SpellEffect(STAT_DEX, -wStatEffect);
 			if ( m_pClient && IsSetOF(OF_Buffs) )
 			{
 				ITOA(wStatEffect, szNumBuff[0], 10);
@@ -1490,7 +1490,7 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 				wStatEffect = 8 + (pCaster->Skill_GetBase(SKILL_EVALINT) / 100) - (Skill_GetBase(SKILL_MAGICRESISTANCE) / 100);
 				pSpell->m_itSpell.m_spelllevel = wStatEffect;
 			}
-			Stat_AddMod(STAT_INT, -wStatEffect);
+			Stat_SpellEffect(STAT_INT, -wStatEffect);
 			if ( m_pClient && IsSetOF(OF_Buffs) )
 			{
 				ITOA(wStatEffect, szNumBuff[0], 10);
@@ -1506,7 +1506,7 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 				wStatEffect = 8 + (pCaster->Skill_GetBase(SKILL_EVALINT) / 100) - (Skill_GetBase(SKILL_MAGICRESISTANCE) / 100);
 				pSpell->m_itSpell.m_spelllevel = wStatEffect;
 			}
-			Stat_AddMod(STAT_STR, -wStatEffect);
+			Stat_SpellEffect(STAT_STR, -wStatEffect);
 			if ( m_pClient && IsSetOF(OF_Buffs) )
 			{
 				ITOA(wStatEffect, szNumBuff[0], 10);
@@ -1531,7 +1531,7 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 				m_ResEnergyMax -= 10;
 			}
 			for ( int i = STAT_STR; i < STAT_BASE_QTY; ++i )
-				Stat_AddMod(static_cast<STAT_TYPE>(i), -wStatEffect);
+				Stat_SpellEffect(static_cast<STAT_TYPE>(i), -wStatEffect);
 
 			if ( m_pClient && IsSetOF(OF_Buffs) )
 			{
@@ -1567,7 +1567,7 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 				wStatEffect = 1 + (pCaster->Skill_GetBase(SKILL_EVALINT) / 100);
 				pSpell->m_itSpell.m_spelllevel = wStatEffect;
 			}
-			Stat_AddMod(STAT_DEX, +wStatEffect);
+			Stat_SpellEffect(STAT_DEX, +wStatEffect);
 			if ( m_pClient && IsSetOF(OF_Buffs) )
 			{
 				ITOA(wStatEffect, szNumBuff[0], 10);
@@ -1583,7 +1583,7 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 				wStatEffect = 1 + (pCaster->Skill_GetBase(SKILL_EVALINT) / 100);
 				pSpell->m_itSpell.m_spelllevel = wStatEffect;
 			}
-			Stat_AddMod(STAT_INT, +wStatEffect);
+			Stat_SpellEffect(STAT_INT, +wStatEffect);
 			if ( m_pClient && IsSetOF(OF_Buffs) )
 			{
 				ITOA(wStatEffect, szNumBuff[0], 10);
@@ -1599,7 +1599,7 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 				wStatEffect = 1 + (pCaster->Skill_GetBase(SKILL_EVALINT) / 100);
 				pSpell->m_itSpell.m_spelllevel = wStatEffect;
 			}
-			Stat_AddMod(STAT_STR, +wStatEffect);
+			Stat_SpellEffect(STAT_STR, +wStatEffect);
 			if ( m_pClient && IsSetOF(OF_Buffs) )
 			{
 				ITOA(wStatEffect, szNumBuff[0], 10);
@@ -1616,7 +1616,7 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 				pSpell->m_itSpell.m_spelllevel = wStatEffect;
 			}
 			for ( int i = STAT_STR; i < STAT_BASE_QTY; ++i )
-				Stat_AddMod(static_cast<STAT_TYPE>(i), wStatEffect);
+				Stat_SpellEffect(static_cast<STAT_TYPE>(i), +wStatEffect);
 
 			if ( m_pClient && IsSetOF(OF_Buffs) )
 			{

@@ -5,17 +5,22 @@
 ///////////////////////////////////////////////////////////
 // Stats
 
-void CChar::Stat_AddMod(STAT_TYPE stat, int iVal)
+void CChar::Stat_SpellEffect(STAT_TYPE stat, int iVal)
 {
-	ADDTOCALLSTACK("CChar::Stat_AddMod");
+	ADDTOCALLSTACK("CChar::Stat_SpellEffect");
 	if ( (stat < STAT_STR) || (stat >= STAT_QTY) )
 		return;
 
+	m_Stat[stat].m_max = Stat_GetMax(stat) + iVal;
 	m_Stat[stat].m_mod += iVal;
 
-	int iMaxValue = Stat_GetMax(stat);		// make sure the current value is not higher than new max value
-	if ( m_Stat[stat].m_val > iMaxValue )
-		m_Stat[stat].m_val = iMaxValue;
+	// Make sure the current value is not higher than new max value
+	if ( m_Stat[stat].m_val > m_Stat[stat].m_max )
+		m_Stat[stat].m_val = m_Stat[stat].m_max;
+
+	// Clear MAX* property if it's not needed anymore
+	if ( m_Stat[stat].m_max == Stat_GetAdjusted(stat) )
+		m_Stat[stat].m_max = 0;
 
 	UpdateStatsFlag();
 }
@@ -63,7 +68,8 @@ void CChar::Stat_SetMod(STAT_TYPE stat, int iVal)
 		}
 	}
 
-	int iMaxValue = Stat_GetMax(stat);		// make sure the current value is not higher than new max value
+	// Make sure the current value is not higher than new max value
+	int iMaxValue = Stat_GetMax(stat);
 	if ( m_Stat[stat].m_val > iMaxValue )
 		m_Stat[stat].m_val = iMaxValue;
 
@@ -131,15 +137,21 @@ void CChar::Stat_SetMax(STAT_TYPE stat, int iVal)
 				args.m_iN3 = iVal;
 				if ( OnTrigger(CTRIG_StatChange, this, &args) == TRIGRET_RET_TRUE )
 					return;
-				// do not restore argn1 to i, bad things will happen! leave it untouched. (matex)
+
+				// Do not restore 'm_iN1' to 'stat', bad things will happen! leave it untouched. (matex)
 				iVal = static_cast<int>(args.m_iN3);
 			}
 		}
 		m_Stat[stat].m_max = iVal;
 
-		int iMaxValue = Stat_GetMax(stat);		// make sure the current value is not higher than new max value
+		// Make sure the current value is not higher than new max value
+		int iMaxValue = Stat_GetMax(stat);
 		if ( m_Stat[stat].m_val > iMaxValue )
 			m_Stat[stat].m_val = iMaxValue;
+
+		// Clear MAX* property if it's not needed anymore
+		if ( m_Stat[stat].m_max == Stat_GetAdjusted(stat) )
+			m_Stat[stat].m_max = 0;
 
 		switch ( stat )
 		{
@@ -248,7 +260,8 @@ void CChar::Stat_SetBase(STAT_TYPE stat, int iVal)
 			args.m_iN3 = iVal;
 			if ( OnTrigger(CTRIG_StatChange, this, &args) == TRIGRET_RET_TRUE )
 				return;
-			// do not restore argn1 to i, bad things will happen! leave i untouched. (matex)
+
+			// Do not restore 'm_iN1' to 'stat', bad things will happen! leave it untouched. (matex)
 			iVal = static_cast<int>(args.m_iN3);
 
 			if ( (stat != STAT_FOOD) && (m_Stat[stat].m_max < 1) ) // MaxFood cannot depend on something, otherwise if the Stat depends on STR, INT, DEX, fire MaxHits, MaxMana, MaxStam
@@ -258,7 +271,8 @@ void CChar::Stat_SetBase(STAT_TYPE stat, int iVal)
 				args.m_iN3 = iVal;
 				if ( OnTrigger(CTRIG_StatChange, this, &args) == TRIGRET_RET_TRUE )
 					return;
-				// do not restore argn1 to i, bad things will happen! leave i untouched. (matex)
+
+				// Do not restore 'm_iN1' to 'stat', bad things will happen! leave it untouched. (matex)
 				iVal = static_cast<int>(args.m_iN3);
 			}
 		}
@@ -315,7 +329,8 @@ void CChar::Stat_SetBase(STAT_TYPE stat, int iVal)
 		}
 	}
 
-	int iMaxValue = Stat_GetMax(stat);		// make sure the current value is not higher than new max value
+	// Make sure the current value is not higher than new max value
+	int iMaxValue = Stat_GetMax(stat);
 	if ( m_Stat[stat].m_val > iMaxValue )
 		m_Stat[stat].m_val = iMaxValue;
 

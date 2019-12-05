@@ -1665,3 +1665,7 @@ Changed: Some changes on spell triggers (@Effect/@Success [spells] / @SpellEffec
 
 01-12-2019, Coruja
 Fixed: Chars with STATF_Stone flag can't cast spells anymore.
+
+05-12-2019, Coruja
+Fixed: Stat spells not working correctly when custom MAXHITS/MAXMANA/MAXSTAM value is set on char before apply spell effect.
+[sphereCrypt.ini]: Added crypt key for classic client 7.0.83 and enhanced client 4.0.83
