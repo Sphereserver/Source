@@ -229,9 +229,9 @@ LAYER_TYPE CChar::CanEquipLayer(CItem *pItem, LAYER_TYPE layer, CChar *pCharMsg,
 		{
 			if ( m_pClient )
 			{
-				SysMessagef("%s %s.", g_Cfg.GetDefaultMsg(DEFMSG_EQUIP_NOT_STRONG_ENOUGH), pItem->GetName());
-				if ( pCharMsg && (pCharMsg != this) )
-					pCharMsg->SysMessagef("%s %s.", g_Cfg.GetDefaultMsg(DEFMSG_EQUIP_NOT_STRONG_ENOUGH), pItem->GetName());
+				if ( !pCharMsg )
+					pCharMsg = this;
+				pCharMsg->SysMessagef("%s %s.", g_Cfg.GetDefaultMsg(DEFMSG_EQUIP_NOT_STRONG_ENOUGH), pItem->GetName());
 			}
 			return LAYER_NONE;
 		}

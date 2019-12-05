@@ -776,9 +776,9 @@ void CChar::Skill_Experience(SKILL_TYPE skill, int iDifficulty)
 	}
 }
 
-bool CChar::Stats_Regen(INT64 iTimeDiff)
+bool CChar::Stat_Regen(INT64 iTimeDiff)
 {
-	ADDTOCALLSTACK("CChar::Stats_Regen");
+	ADDTOCALLSTACK("CChar::Stat_Regen");
 	// Calling regens in all stats and checking REGEN%s/REGEN%sVAL where %s is hits/stam... to check values/delays
 	// Food decay called here too.
 	// calling @RegenStat for each stat if proceed.
@@ -791,17 +791,17 @@ bool CChar::Stats_Regen(INT64 iTimeDiff)
 		if ( g_Cfg.m_iRegenRate[i] <= 0 )
 			continue;
 
-		WORD wRate = Stats_GetRegenVal(i, true);
-		if ( wRate <= 0 )
+		int iRate = Stat_GetRegenVal(i, true);
+		if ( iRate <= 0 )
 			continue;
 
 		m_Stat[i].m_regen += static_cast<WORD>(iTimeDiff);
-		if ( m_Stat[i].m_regen < wRate )
+		if ( m_Stat[i].m_regen < static_cast<WORD>(iRate) )
 			continue;
 
 		m_Stat[i].m_regen = 0;
 
-		int iMod = Stats_GetRegenVal(i, false);
+		int iMod = Stat_GetRegenVal(i, false);
 		if ( (i == STAT_STR) && (g_Cfg.m_iRacialFlags & RACIALF_HUMAN_TOUGH) && IsHuman() )
 			iMod += 2;		// humans always have +2 hitpoint regeneration (Tough racial trait)
 
@@ -835,12 +835,12 @@ bool CChar::Stats_Regen(INT64 iTimeDiff)
 	return true;
 }
 
-WORD CChar::Stats_GetRegenVal(STAT_TYPE stat, bool fGetTicks)
+int CChar::Stat_GetRegenVal(STAT_TYPE stat, bool fGetTicks)
 {
-	ADDTOCALLSTACK("CChar::Stats_GetRegenVal");
-	// Return regen rates and regen val for the given stat.
-	// fGetTicks = true returns the regen ticks
-	// fGetTicks = false returns the values of regeneration.
+	ADDTOCALLSTACK("CChar::Stat_GetRegenVal");
+	// Return regen rate (when fGetTicks = true) or regen val (when fGetTicks = false) for the given stat
+	if ( (stat < STAT_STR) || (stat >= STAT_BASE_QTY) )
+		return 0;
 
 	LPCTSTR pszStat = NULL;
 	switch ( stat )
@@ -857,33 +857,26 @@ WORD CChar::Stats_GetRegenVal(STAT_TYPE stat, bool fGetTicks)
 		case STAT_FOOD:
 			pszStat = "FOOD";
 			break;
-		default:
-			break;
 	}
 
-	if ( stat <= STAT_FOOD )
+	char chRegen[14];
+	if ( fGetTicks )
 	{
-		char chRegen[14];
-		if ( fGetTicks )
-		{
-			sprintf(chRegen, "REGEN%s", pszStat);
-			WORD wRate = static_cast<WORD>(maximum(0, GetDefNum(chRegen)));
-			if ( wRate )
-				return wRate * TICK_PER_SEC;
-
-			return static_cast<WORD>(maximum(0, g_Cfg.m_iRegenRate[stat]));
-		}
-		else
-		{
-			sprintf(chRegen, "REGENVAL%s", pszStat);
-			return static_cast<WORD>(maximum(1, GetDefNum(chRegen)));
-		}
+		sprintf(chRegen, "REGEN%s", pszStat);
+		CVarDefCont *pVar = GetDefKey(chRegen, false);
+		return pVar ? static_cast<int>(pVar->GetValNum()) * TICK_PER_SEC : g_Cfg.m_iRegenRate[stat];
 	}
-	return 0;
+	else
+	{
+		sprintf(chRegen, "REGENVAL%s", pszStat);
+		CVarDefCont *pVar = GetDefKey(chRegen, false);
+		return pVar ? static_cast<int>(pVar->GetValNum()) : 1;
+	}
 }
 
 bool CChar::Stat_Decrease(STAT_TYPE stat, SKILL_TYPE skill)
 {
+	ADDTOCALLSTACK("CChar::Stat_Decrease");
 	// Stat to decrease
 	// Skill = is this being called from Skill_Gain? if so we check this skill's bonuses.
 	if ( !m_pPlayer )

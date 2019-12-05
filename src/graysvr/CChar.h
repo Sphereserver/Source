@@ -775,40 +775,39 @@ public:
 	LPCTSTR Food_GetLevelMessage() const;
 
 public:
-	int Stat_GetAdjusted(STAT_TYPE stat) const;
+	void Stat_SetVal(STAT_TYPE stat, int iVal);
+	int Stat_GetVal(STAT_TYPE stat) const;
 
 	void Stat_SetBase(STAT_TYPE stat, int iVal);
 	int Stat_GetBase(STAT_TYPE stat) const;
 
-	void Stat_SpellEffect(STAT_TYPE stat, int iVal);
 	void Stat_SetMod(STAT_TYPE stat, int iVal);
 	int Stat_GetMod(STAT_TYPE stat) const;
-
-	void Stat_SetVal(STAT_TYPE stat, int iVal);
-	int Stat_GetVal(STAT_TYPE stat) const;
 
 	void Stat_SetMax(STAT_TYPE stat, int iVal);
 	int Stat_GetMax(STAT_TYPE stat) const;
 
-	int Stat_GetSum() const;
+	int Stat_GetAdjusted(STAT_TYPE stat) const;
 	int Stat_GetLimit(STAT_TYPE stat) const;
+	int Stat_GetSum() const;
 
+	void Stat_SpellEffect(STAT_TYPE stat, int iVal);
 	bool Stat_Decrease(STAT_TYPE stat, SKILL_TYPE skill);
-	bool Stats_Regen(INT64 iTimeDiff);
-	WORD Stats_GetRegenVal(STAT_TYPE stat, bool fGetTicks);
 
-	SKILLLOCK_TYPE Stat_GetLock(STAT_TYPE stat)
-	{
-		if ( m_pPlayer )
-			return m_pPlayer->Stat_GetLock(stat);
-		return SKILLLOCK_UP;
-	};
+	bool Stat_Regen(INT64 iTimeDiff);
+	int Stat_GetRegenVal(STAT_TYPE stat, bool fGetTicks);
 
 	void Stat_SetLock(STAT_TYPE stat, SKILLLOCK_TYPE state)
 	{
 		if ( m_pPlayer )
 			return m_pPlayer->Stat_SetLock(stat, state);
-	};
+	}
+	SKILLLOCK_TYPE Stat_GetLock(STAT_TYPE stat)
+	{
+		if ( m_pPlayer )
+			return m_pPlayer->Stat_GetLock(stat);
+		return SKILLLOCK_UP;
+	}
 
 private:
 	// Location and movement

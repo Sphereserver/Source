@@ -38,7 +38,7 @@ enum HUE_CODE
 	HUE_BLUE_NAVY			= 0x3,
 	HUE_RED_DARK			= 0x20,
 	HUE_RED					= 0x22,
-	HUE_YELLOW				= 0x35,
+	HUE_YELLOW				= 0x37,
 	HUE_GRAY				= 0x387,
 	HUE_TEXT_DEF			= 0x3B2,	// light gray color
 	HUE_DYE_HIGH			= 0x3E9,	// highest dyeable color

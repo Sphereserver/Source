@@ -3638,7 +3638,7 @@ bool CChar::OnTick()
 			CheckLocation(true);
 
 			EXC_SET("regen stats");
-			Stats_Regen(iTimeDiff);
+			Stat_Regen(iTimeDiff);
 		}
 
 		if ( m_pClient && m_pClient->m_Targ_Timeout.IsTimeValid() && (g_World.GetTimeDiff(m_pClient->m_Targ_Timeout) <= 0) )
