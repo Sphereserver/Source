@@ -382,7 +382,6 @@ enum RC_TYPE
 	RC_CLIENTLOGINTEMPBAN,			// m_iClientLoginTempBan
 	RC_CLIENTMAX,					// m_iClientsMax
 	RC_CLIENTMAXIP,					// m_iClientsMaxIP
-	RC_CLIENTS,
 	RC_COLORHIDDEN,					// m_iColorHidden
 	RC_COLORINVIS,					// m_iColorInvis
 	RC_COLORINVISSPELL,				// m_iColorInvisSpell
@@ -605,7 +604,6 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY + 1] =
 	{"CLIENTLOGINTEMPBAN",			{ELEM_INT,		OFFSETOF(CResource, m_iClientLoginTempBan),				0}},
 	{"CLIENTMAX",					{ELEM_INT,		OFFSETOF(CResource, m_iClientsMax),						0}},
 	{"CLIENTMAXIP",					{ELEM_INT,		OFFSETOF(CResource, m_iClientsMaxIP),					0}},
-	{"CLIENTS",						{ELEM_VOID,		0,														0}},
 	{"COLORHIDDEN",					{ELEM_VOID,		OFFSETOF(CResource, m_iColorHidden),					0}},
 	{"COLORINVIS",					{ELEM_VOID,		OFFSETOF(CResource, m_iColorInvis),						0}},
 	{"COLORINVISSPELL",				{ELEM_VOID,		OFFSETOF(CResource, m_iColorInvisSpell),				0}},
@@ -952,7 +950,6 @@ bool CResource::r_LoadVal(CScript &s)
 			m_iClientLoginTempBan = s.GetArgVal() * 60 * TICK_PER_SEC;
 			break;
 		case RC_CLIENTMAX:
-		case RC_CLIENTS:
 		{
 			int iVal = s.GetArgVal();
 			m_iClientsMax = minimum(maximum(0, iVal), FD_SETSIZE - 1);
@@ -980,8 +977,11 @@ bool CResource::r_LoadVal(CScript &s)
 			m_sStripPath = CGFile::GetMergedFileName(s.GetArgStr(), "");
 			break;
 		case RC_DEADSOCKETTIME:
-			m_iDeadSocketTime = s.GetArgVal() * 60 * TICK_PER_SEC;
+		{
+			int iVal = s.GetArgVal();
+			m_iDeadSocketTime = maximum(1, iVal) * 60 * TICK_PER_SEC;
 			break;
+		}
 		case RC_DECAYTIMER:
 			m_iDecay_Item = s.GetArgVal() * 60 * TICK_PER_SEC;
 			break;
@@ -1634,8 +1634,6 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case RC_OPTIONFLAGS:
 			sVal.FormatHex(g_Cfg.m_iOptionFlags);
 			break;
-		case RC_CLIENTS:	// this is handled by CServerDef as SV_CLIENTS
-			return false;
 		case RC_PLAYEREVIL:
 			sVal.FormatVal(m_iPlayerKarmaEvil);
 			break;

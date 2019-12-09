@@ -45,7 +45,7 @@ bool CClient::addLoginErr(BYTE bCode)
 		"account already in use",
 		"account is blocked",
 		"wrong login/password",
-		"connection timeout / wrong encryption / unknown error",
+		"wrong encryption / unknown error",
 		"client version not allowed",
 		"selected character doesn't exist or is not linked to this account",
 		"client trying to create character with invalid info",
@@ -61,8 +61,7 @@ bool CClient::addLoginErr(BYTE bCode)
 	if ( bCode >= COUNTOF(sm_szLoginError) )
 		bCode = PacketLoginError::Other;
 
-	if ( g_Log.GetLogMask() & LOGM_CLIENTS_LOG )
-		g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Bad login (%s)\n", GetSocketID(), sm_szLoginError[bCode]);
+	g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Bad login (%s)\n", GetSocketID(), sm_szLoginError[bCode]);
 
 	if ( m_NetState->m_clientVersion || m_NetState->m_reportedVersion )		// only reply the packet to valid clients
 	{

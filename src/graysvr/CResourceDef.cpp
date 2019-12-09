@@ -75,90 +75,85 @@ bool CValueCurveDef::Load( TCHAR * pszDef )
 	return( true );
 }
 
-int CValueCurveDef::GetLinear( int iSkillPercent ) const
+int CValueCurveDef::GetLinear(int iSkillPercent) const
 {
 	ADDTOCALLSTACK("CValueCurveDef::GetLinear");
-	//
 	// ARGS:
-	//  iSkillPercent = 0 - 1000 = 0 to 100.0 percent
-	//  m_Rate[3] = the 3 advance rate control numbers, 100,50,0 skill levels
-	//		Acts as line segments.
+	//  iSkillPercent = 0 - 1000 (0% to 100.0%)
+	//  m_aiValues[] = value interval array (eg: 100,50,0)
 	// RETURN:
-	//  raw chance value.
+	//  raw chance value
 
-	size_t iSegSize;
 	size_t iLoIdx;
+	LONGLONG llSegSize;
 
 	size_t iQty = m_aiValues.GetCount();
-	switch (iQty)
+	switch ( iQty )
 	{
-	case 0:
-		return( 0 );	// no values defined !
-	case 1:
-		return( m_aiValues[0] );
-	case 2:
-		iLoIdx = 0;
-		iSegSize = 1000;
-		break;
-	case 3:
-		// Do this the fastest.
-		if ( iSkillPercent >= 500 )
-		{
-			iLoIdx = 1;
-			iSkillPercent -= 500;
-		}
-		else
-		{
+		case 0:
+			return 0;
+		case 1:
+			return m_aiValues[0];
+		case 2:
 			iLoIdx = 0;
-		}
-		iSegSize = 500;
-		break;
-	default:
-		// More
-		iLoIdx = IMULDIV( iSkillPercent, iQty, 1000 );
-		iQty--;
-		if ( iLoIdx >= iQty )
-			iLoIdx = iQty - 1;
-		iSegSize = 1000 / iQty;
-		iSkillPercent -= ( iLoIdx * iSegSize );
-		break;
+			llSegSize = 1000;
+			break;
+		case 3:
+			// Do this the fastest
+			if ( iSkillPercent >= 500 )
+			{
+				iLoIdx = 1;
+				iSkillPercent -= 500;
+			}
+			else
+			{
+				iLoIdx = 0;
+			}
+			llSegSize = 500;
+			break;
+		default:
+			// More
+			iLoIdx = IMULDIV(iSkillPercent, iQty, 1000);
+			--iQty;
+			if ( iLoIdx >= iQty )
+				iLoIdx = iQty - 1;
+			llSegSize = 1000 / iQty;
+			iSkillPercent -= iLoIdx * llSegSize;
+			break;
 	}
 
 	LONGLONG llLoVal = m_aiValues[iLoIdx];
 	LONGLONG llHiVal = m_aiValues[iLoIdx + 1];
-	return maximum(0, static_cast<int>(llLoVal + IMULDIV(llHiVal - llLoVal, iSkillPercent, iSegSize)));
+	LONGLONG llVal = llLoVal + IMULDIV(llHiVal - llLoVal, iSkillPercent, llSegSize);
+	return static_cast<int>(maximum(0, llVal));
 }
 
-int CValueCurveDef::GetRandom( ) const
+int CValueCurveDef::GetRandom() const
 {
 	ADDTOCALLSTACK("CValueCurveDef::GetRandom");
-	return GetLinear( Calc_GetRandVal( 1000 ) );
+	return GetLinear(Calc_GetRandVal(1000));
 }
 
-
-int CValueCurveDef::GetRandomLinear( int iSkillPercent  ) const
+int CValueCurveDef::GetRandomLinear(int iSkillPercent) const
 {
 	ADDTOCALLSTACK("CValueCurveDef::GetRandomLinear");
-	return ( GetLinear( iSkillPercent ) + GetRandom() ) / 2;
+	return (GetLinear(iSkillPercent) + GetRandom()) / 2;
 }
 
-int CValueCurveDef::GetChancePercent( int iSkillPercent ) const
+int CValueCurveDef::GetChancePercent(int iSkillPercent) const
 {
 	ADDTOCALLSTACK("CValueCurveDef::GetChancePercent");
 	// ARGS:
-	//  iSkillPercent = 0 - 1000 = 0 to 100.0 percent
-	//
-	//  m_Rate[3] = the 3 advance rate control numbers, 0,50,100 skill levels
-	//   (How many uses for a gain of .1 (div by 100))
+	//  iSkillPercent = 0 - 1000 (0% to 100.0%)
+	//  m_aiValues[] = value interval array (eg: 0,50,100) - how many skill uses for a 0.1 gain (div by 100)
 	// RETURN:
-	//  percent chance of success * 10 = 0 - 1000.
+	//  Chance of success * 10 (0 to 1000)
 
-	// How many uses for a gain of .1 (div by 100)
-	int iChance = GetLinear( iSkillPercent );
+	int iChance = GetLinear(iSkillPercent);
 	if ( iChance <= 0 )
-		return 0; // less than no chance ?
-	// Express uses as a percentage * 10.
-	return( 100000 / iChance );
+		return 0;
+
+	return 100000 / iChance;
 }
 
 //*******************************************

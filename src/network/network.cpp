@@ -1008,19 +1008,14 @@ void NetworkManager::acceptNewConnection(void)
 		DEBUGNETWORK(("Closing incoming connection [max ip=%ld, clients max ip=%ld]\n", maxIp, climaxIp));
 		CLOSESOCKET(h);
 
-		if ( g_Log.GetLogMask() & LOGM_CLIENTS_LOG )
-		{
-			if ( ip.m_blocked )
-				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected (Blocked IP)\n", client_addr.GetAddrStr());
-			else if ( maxIp && (ip.m_connecting > maxIp) )
-				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected (CONNECTINGMAXIP reached %ld/%ld)\n", client_addr.GetAddrStr(), ip.m_connecting, maxIp);
-			else if ( climaxIp && (ip.m_connected > climaxIp) )
-				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected (CLIENTMAXIP reached %ld/%ld)\n", client_addr.GetAddrStr(), ip.m_connected, climaxIp);
-			else if ( ip.m_pings >= NETHISTORY_MAXPINGS )
-				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected (MAXPINGS reached %ld/%d)\n", client_addr.GetAddrStr(), ip.m_pings, NETHISTORY_MAXPINGS);
-			else
-				g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected\n", client_addr.GetAddrStr());
-		}
+		if ( ip.m_blocked )
+			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected (IP is blocked)\n", client_addr.GetAddrStr());
+		else if ( ip.m_pings >= NETHISTORY_MAXPINGS )
+			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected (MAXPINGS reached %ld/%d)\n", client_addr.GetAddrStr(), ip.m_pings, NETHISTORY_MAXPINGS);
+		else if ( (maxIp > 0) && (ip.m_connecting > maxIp) )
+			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected (CONNECTINGMAXIP reached %ld/%ld)\n", client_addr.GetAddrStr(), ip.m_connecting, maxIp);
+		else if ( (climaxIp > 0) && (ip.m_connected > climaxIp) )
+			g_Log.Event(LOGM_CLIENTS_LOG|LOGL_WARN, "Connection from %s rejected (CLIENTMAXIP reached %ld/%ld)\n", client_addr.GetAddrStr(), ip.m_connected, climaxIp);
 		return;
 	}
 
@@ -1507,11 +1502,12 @@ void NetworkInput::processData()
 			{
 				// check for timeout
 				EXC_SET("check frozen");
-				INT64 iLastEventDiff = -g_World.GetTimeDiff( client->m_timeLastEvent );
-				if ( g_Cfg.m_iDeadSocketTime > 0 && iLastEventDiff > g_Cfg.m_iDeadSocketTime )
+				if ( -g_World.GetTimeDiff(client->m_timeLastEvent) > g_Cfg.m_iDeadSocketTime )
 				{
 					g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Frozen client disconnected\n", state->id());
-					state->m_client->addLoginErr( PacketLoginError::Other );		//state->markReadClosed();
+					if ( state->m_clientVersion || state->m_reportedVersion )		// only reply the packet to valid clients
+						new PacketLoginError(client, PacketLoginError::Other);
+					state->markReadClosed();
 				}
 			}
 

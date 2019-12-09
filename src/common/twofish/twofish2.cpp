@@ -19,6 +19,15 @@ Notes:
 *	Tab size is set to 4 characters in this file
 
 ***************************************************************************/
+
+#ifndef _WIN32
+// Sphere linux build is compiled using GCC optimization flag -Os, but for
+// some unknown reason this optimization level could break twofish, making
+// Sphere crash. So use less optimization here (flag -O1 instead -Os)
+#pragma GCC optimize ("O1")
+#pragma GCC diagnostic ignored "-Waggressive-loop-optimizations"
+#endif
+
 #include	"aes.h"
 #include	"table.h"
 
@@ -558,17 +567,6 @@ void Xor256(void* dst, void* src, BYTE b)
 *
 -****************************************************************************/
 
-#ifndef _WIN32
-// Sphere linux build is compiled using GCC optimization flag -Os, but for some
-// unknown reason this optimization level will break this function making Sphere
-// crash, so use less optimization on this function (flag -O1 instead -Os)
-#pragma GCC push_options
-#pragma GCC optimize ("O1")
-
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Waggressive-loop-optimizations"
-#endif
-
 int reKey(keyInstance* key)
 {
 	int i, j, k64Cnt, keyLen;
@@ -669,12 +667,12 @@ int reKey(keyInstance* key)
 #else
 #define	one128(N,J)	sbSet(N,i,J,p8(N##1)[L0[i+J]]^k0)
 #define	sb128(N) {					\
-			Xor256(L0,(void *)p8(N##2),b##N(sKey[1]));	\
+			Xor256(L0,p8(N##2),b##N(sKey[1]));	\
 					{ register DWORD k0=b##N(sKey[0]);	\
 			for (i=0;i<256;i+=2) { one128(N,0); one128(N,1); } } }
 #endif
 #elif defined(MIN_KEY)
-#define	sb128(N) Xor256(_sBox8_(N),(void *)p8(N##2),b##N(sKey[1]))
+#define	sb128(N) Xor256(_sBox8_(N),p8(N##2),b##N(sKey[1]))
 #endif
 			sb128(0); sb128(1); sb128(2); sb128(3);
 			break;
@@ -682,14 +680,14 @@ int reKey(keyInstance* key)
 #if defined(FULL_KEY) || defined(PART_KEY)
 #define one192(N,J) sbSet(N,i,J,p8(N##1)[p8(N##2)[L0[i+J]]^k1]^k0)
 #define	sb192(N) {						\
-			Xor256(L0,(void *)p8(N##3),b##N(sKey[2]));	\
+			Xor256(L0,p8(N##3),b##N(sKey[2]));	\
 					{ register DWORD k0=b##N(sKey[0]);	\
 			  register DWORD k1=b##N(sKey[1]);	\
 			  for (i=0;i<256;i+=2) { one192(N,0); one192(N,1); } } }
 #elif defined(MIN_KEY)
 #define one192(N,J) sbSet(N,i,J,p8(N##2)[L0[i+J]]^k1)
 #define	sb192(N) {						\
-			Xor256(L0,(void *)p8(N##3),b##N(sKey[2]));	\
+			Xor256(L0,p8(N##3),b##N(sKey[2]));	\
 					{ register DWORD k1=b##N(sKey[1]);	\
 			  for (i=0;i<256;i+=2) { one192(N,0); one192(N,1); } } }
 #endif
@@ -699,7 +697,7 @@ int reKey(keyInstance* key)
 #if defined(FULL_KEY) || defined(PART_KEY)
 #define one256(N,J) sbSet(N,i,J,p8(N##1)[p8(N##2)[L0[i+J]]^k1]^k0)
 #define	sb256(N) {										\
-			Xor256(L1,(void *)p8(N##4),b##N(sKey[3]));					\
+			Xor256(L1,p8(N##4),b##N(sKey[3]));					\
 			for (i=0;i<256;i+=2) {L0[i  ]=p8(N##3)[L1[i]];		\
 								  L0[i+1]=p8(N##3)[L1[i+1]]; }	\
 			Xor256(L0,L0,b##N(sKey[2]));						\
@@ -709,7 +707,7 @@ int reKey(keyInstance* key)
 #elif defined(MIN_KEY)
 #define one256(N,J) sbSet(N,i,J,p8(N##2)[L0[i+J]]^k1)
 #define	sb256(N) {										\
-			Xor256(L1,(void *)p8(N##4),b##N(sKey[3]));					\
+			Xor256(L1,p8(N##4),b##N(sKey[3]));					\
 			for (i=0;i<256;i+=2) {L0[i  ]=p8(N##3)[L1[i]];		\
 								  L0[i+1]=p8(N##3)[L1[i+1]]; }	\
 			Xor256(L0,L0,b##N(sKey[2]));						\
@@ -747,11 +745,6 @@ int reKey(keyInstance* key)
 
 	return TRUE;
 }
-
-#ifndef _WIN32
-#pragma GCC pop_options
-#pragma GCC diagnostic pop
-#endif
 
 /*
 +*****************************************************************************

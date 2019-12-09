@@ -221,7 +221,7 @@ bool CServerDef::r_LoadVal(CScript &s)
 		case SC_CLIENTS:
 		case SC_CREATE:
 		case SC_ITEMS:
-			break;	// read-only
+			return false;	// read-only
 		default:
 			return CScriptObj::r_LoadVal(s);
 	}

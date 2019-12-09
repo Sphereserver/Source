@@ -839,7 +839,7 @@ int CChar::Stat_GetRegenVal(STAT_TYPE stat, bool fGetTicks)
 {
 	ADDTOCALLSTACK("CChar::Stat_GetRegenVal");
 	// Return regen rate (when fGetTicks = true) or regen val (when fGetTicks = false) for the given stat
-	if ( (stat < STAT_STR) || (stat >= STAT_BASE_QTY) )
+	if ( (stat < STAT_STR) || (stat > STAT_FOOD) )
 		return 0;
 
 	LPCTSTR pszStat = NULL;
