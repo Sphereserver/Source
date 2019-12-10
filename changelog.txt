@@ -1669,3 +1669,10 @@ Fixed: Chars with STATF_Stone flag can't cast spells anymore.
 05-12-2019, Coruja
 Fixed: Stat spells not working correctly when custom MAXHITS/MAXMANA/MAXSTAM value is set on char before apply spell effect.
 [sphereCrypt.ini]: Added crypt key for classic client 7.0.83 and enhanced client 4.0.83
+
+10-12-2019, Coruja
+Added: Support for new 'picinpic' dialog element os client >= 7.0.80.0.
+	-This is used to add sprites pictures on dialogs
+	-Syntax: picinpic x y gump spritex spritey width height
+	-Eg: picinpic 0 0 09d3b 150 150 30 30 (add background area on 0,0 to 30,30 and add sprite 150,150 from gump 09d3b inside it)
+[sphere_dialog.scp]: Added 'picinpic' docs/comments
