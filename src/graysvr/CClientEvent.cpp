@@ -141,7 +141,7 @@ void CClient::Event_Book_Title(CItem *pItem, LPCTSTR pszTitle, LPCTSTR pszAuthor
 }
 
 // Client picked up an item
-void CClient::Event_Item_Pickup(CGrayUID uid, int iAmount)
+void CClient::Event_Item_Pickup(CGrayUID uid, WORD wAmount)
 {
 	ADDTOCALLSTACK("CClient::Event_Item_Pickup");
 	EXC_TRY("CClient::Event_Item_Pickup");
@@ -177,16 +177,15 @@ void CClient::Event_Item_Pickup(CGrayUID uid, int iAmount)
 	m_Targ_p = pItem->GetTopPoint();
 
 	EXC_SET("ItemPickup");
-	iAmount = m_pChar->ItemPickup(pItem, static_cast<WORD>(iAmount));
-	if ( iAmount < 0 )
+	if ( !m_pChar->ItemPickup(pItem, wAmount) )
 	{
 		EXC_SET("ItemPickup - addItemDragCancel(0)");
 		new PacketDragCancel(this, PacketDragCancel::CannotLift);
 		return;
 	}
 
-	SOUND_TYPE iSnd = static_cast<SOUND_TYPE>(pItem->GetDefNum("PICKUPSOUND", true));
-	addSound(iSnd ? iSnd : SOUND_USE_CLOTH);
+	CVarDefCont *pVar = pItem->GetDefKey("PICKUPSOUND", true);
+	addSound(pVar ? static_cast<SOUND_TYPE>(pVar->GetValNum()) : SOUND_USE_CLOTH);
 
 	EXC_SET("TargMode");
 	SetTargMode(CLIMODE_DRAG);
@@ -1848,7 +1847,7 @@ bool CClient::Event_DoubleClick(CGrayUID uid, bool fMacro, bool fTestTouch, bool
 	CObjBase *pObj = uid.ObjFind();
 	if ( !pObj || (fTestTouch && !m_pChar->CanSee(pObj) && !(pObj->m_Can & CAN_I_FORCEDC)) )
 	{
-		addObjectRemoveCantSee(uid, "the target");
+		addObjectRemoveMsg(uid);
 		return false;
 	}
 
@@ -1926,7 +1925,7 @@ void CClient::Event_SingleClick(CGrayUID uid)
 	if ( !m_pChar->CanSee(pObj) )
 	{
 		// ALLNAMES makes this happen as we are running thru an area,
-		// so display no msg. Do not use addObjectRemoveCantSee()
+		// so display no msg. Do not use addObjectRemoveMsg()
 		addObjectRemove(uid);
 		return;
 	}
@@ -1986,7 +1985,7 @@ void CClient::Event_Target(CLIMODE_TYPE context, CGrayUID uid, CPointMap pt, BYT
 	{
 		if ( uid.IsValidUID() && !pTarget )
 		{
-			addObjectRemoveCantSee(uid, "the target");
+			addObjectRemoveMsg(uid);
 			return;
 		}
 	}
@@ -1996,7 +1995,7 @@ void CClient::Event_Target(CLIMODE_TYPE context, CGrayUID uid, CPointMap pt, BYT
 		{
 			if ( !m_pChar->CanSee(pTarget) )
 			{
-				addObjectRemoveCantSee(uid, "the target");
+				addObjectRemoveMsg(uid);
 				return;
 			}
 		}

@@ -825,7 +825,7 @@ bool PacketItemEquipReq::onReceive(NetState* net)
 	ASSERT(client);
 
 	CGrayUID uidItem = static_cast<CGrayUID>(readInt32());
-	LAYER_TYPE layer = static_cast<LAYER_TYPE>(readByte());
+	skip(1);	// layer
 	CGrayUID uidChar = static_cast<CGrayUID>(readInt32());
 
 	CChar* source = client->GetChar();
@@ -843,13 +843,11 @@ bool PacketItemEquipReq::onReceive(NetState* net)
 	client->ClearTargMode(); // done dragging.
 
 	CChar *pChar = uidChar.CharFind();
-	bool bCanCarry = (pChar && pChar->CanCarry(item));
-	if ( !pChar || (layer >= LAYER_HORSE) || !pChar->NPC_IsOwnedBy(source) || !bCanCarry || !pChar->ItemEquip(item, source) )
-	{
-		client->Event_Item_Drop_Fail(item);		//cannot equip
-		if ( !bCanCarry )
-			client->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_HEAVY));
-	}
+	if ( !pChar || !pChar->NPC_IsOwnedBy(source) || !source->ItemPickup(item) )
+		return true;
+
+	if ( !pChar->ItemEquip(item, source) )
+		client->Event_Item_Drop_Fail(item);
 
 	return true;
 }
@@ -1091,11 +1089,9 @@ PacketStaticUpdate::PacketStaticUpdate() : Packet(0)
 bool PacketStaticUpdate::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketStaticUpdate::onReceive");
-	/*skip(12);
-    BYTE UlCmd = readByte();*/
-	TemporaryString dump;
-	this->dump(dump);
-	g_Log.EventDebug("%lx:Parsing %s", net->id(), static_cast<LPCTSTR>(dump));
+	UNREFERENCED_PARAMETER(net);
+
+	// Ignore this packet
 	return true;
 }
 
@@ -1249,11 +1245,8 @@ bool PacketBookPageEdit::onReceive(NetState* net)
 	CItem *pBook = static_cast<CGrayUID>(readInt32()).ItemFind();
 	WORD pageCount = readInt16();
 
-	if (!character->CanSee(pBook))
-	{
-		client->addObjectRemoveCantSee(pBook->GetUID(), "the book");
+	if ( !character->CanTouch(pBook) )
 		return true;
-	}
 
 	WORD page = readInt16();
 	WORD lineCount = readInt16();
@@ -1443,9 +1436,9 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 	CGrayUID uidMessage = static_cast<CGrayUID>(readInt32());
 
 	CItemContainer *board = dynamic_cast<CItemContainer *>(uidBulletinBoard.ItemFind());
-	if (!character->CanSee(board))
+	if ( !board || !character->CanTouch(board) )
 	{
-		client->addObjectRemoveCantSee(uidBulletinBoard, "the board");
+		character->SysMessageDefault(DEFMSG_ITEMUSE_BBOARD_REACH);
 		return true;
 	}
 
@@ -1457,29 +1450,14 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 		case BULLETINBOARD_ReqFull:
 		case BULLETINBOARD_ReqTitle:
 		{
-			if (getLength() != 12)
-			{
-				DEBUG_ERR(("%lx:BBoard feed back message bad length %" FMTSIZE_T "\n", net->id(), getLength()));
-				return true;
-			}
-			if (!client->addBBoardMessage(board, action, uidMessage))
-			{
-				// sanity check fails
-				client->addObjectRemoveCantSee(uidMessage, "the message");
-				return true;
-			}
+			if ( getLength() == 12 )
+				client->addBBoardMessage(board, action, uidMessage);
 			return true;
 		}
 		case BULLETINBOARD_PostMsg:
 		{
 			if (getLength() < 12)
 				return true;
-
-			if (!character->CanTouch(board))
-			{
-				character->SysMessageDefault(DEFMSG_ITEMUSE_BBOARD_REACH);
-				return true;
-			}
 
 			if (board->GetCount() > 32)
 				delete board->GetAt(board->GetCount() - 1);
@@ -1490,12 +1468,16 @@ bool PacketBulletinBoardReq::onReceive(NetState* net)
 			if (Str_Check(str))
 				return true;
 
-			CItemMessage* newMessage = dynamic_cast<CItemMessage*>( CItem::CreateBase(ITEMID_BBOARD_MSG) );
-			if (!newMessage)
+			CItemBase *pItemDef = CItemBase::FindItemBase(ITEMID_BBOARD_MSG);
+			if ( !pItemDef )
 			{
-				DEBUG_ERR(("%lx:BBoard can't create message item\n", net->id()));
+				DEBUG_ERR(("%lx:BBoard can't post new message because itemdef 0%x is missing on scripts\n", net->id(), ITEMID_BBOARD_MSG));
 				return true;
 			}
+
+			CItemMessage* newMessage = dynamic_cast<CItemMessage*>( CItem::CreateBase(ITEMID_BBOARD_MSG) );
+			if (!newMessage)
+				return true;
 
 			newMessage->SetAttr(ATTR_MOVE_NEVER);
 			newMessage->SetName(str);
@@ -4201,10 +4183,12 @@ bool PacketEquipLastWeapon::onReceive(NetState* net)
 		return true;
 
 	CItem *pWeapon = character->m_uidWeaponLast.ItemFind();
-	if ( character->ItemPickup(pWeapon, 1) == -1 )
+	if ( !character->ItemPickup(pWeapon) )
 		return true;
 
-	character->ItemEquip(pWeapon);
+	if ( !character->ItemEquip(pWeapon) )
+		client->Event_Item_Drop_Fail(pWeapon);
+
 	return true;
 }
 
@@ -4425,10 +4409,11 @@ bool PacketEquipItemMacro::onReceive(NetState* net)
 			continue;
 		if ((item->GetTopLevelObj() != character) || item->IsItemEquipped())
 			continue;
-		if (character->ItemPickup(item, item->GetAmount()) == -1)
+		if ( !character->ItemPickup(item) )
 			continue;
 
-		character->ItemEquip(item);
+		if ( !character->ItemEquip(item) )
+			client->Event_Item_Drop_Fail(item);
 	}
 
 	return true;
@@ -4461,16 +4446,13 @@ bool PacketUnEquipItemMacro::onReceive(NetState* net)
 	if ( itemCount > 3 )	// prevent packet exploit sending fake values just to create heavy loops and overload server CPU
 		itemCount = 3;
 
-	LAYER_TYPE layer;
 	CItem* item = NULL;
 	for (BYTE i = 0; i < itemCount; ++i)
 	{
-		layer = static_cast<LAYER_TYPE>(readInt16());
-
-		item = character->LayerFind(layer);
+		item = character->LayerFind(static_cast<LAYER_TYPE>(readInt16()));
 		if (!item)
 			continue;
-		if (character->ItemPickup(item, item->GetAmount()) == -1)
+		if ( !character->ItemPickup(item) )
 			continue;
 
 		character->ItemBounce(item);

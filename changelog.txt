@@ -1671,8 +1671,15 @@ Fixed: Stat spells not working correctly when custom MAXHITS/MAXMANA/MAXSTAM val
 [sphereCrypt.ini]: Added crypt key for classic client 7.0.83 and enhanced client 4.0.83
 
 10-12-2019, Coruja
-Added: Support for new 'picinpic' dialog element os client >= 7.0.80.0.
+Added: Support for new 'picinpic' dialog element on clients >= 7.0.80.0.
 	-This is used to add sprites pictures on dialogs
 	-Syntax: picinpic x y gump spritex spritey width height
 	-Eg: picinpic 0 0 09d3b 150 150 30 30 (add background area on 0,0 to 30,30 and add sprite 150,150 from gump 09d3b inside it)
 [sphere_dialog.scp]: Added 'picinpic' docs/comments
+[items/multis/multis_houses_contest.scp]: Added new houses from publish 106/107
+[items/sphere_item_holiday_christmas.scp]: Added new items from publish 107
+[items/sphere_item_holiday_other.scp]: Added new items from publish 105
+[items/sphere_item_holiday_valentines.scp]: Added new items from publish 107
+[items/sphere_item_quests.scp]: Added Jolly Roger items
+[items/sphere_item_vice_virtue.scp]: Added new items from publish 107
+[systems/sphere_system_treasure_maps.scp]: Fixed treasure maps sometimes getting decoded to unreachable destination

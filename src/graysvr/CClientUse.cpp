@@ -247,11 +247,11 @@ bool CClient::Cmd_Use_Item(CItem *pItem, bool fTestTouch, bool fScript)
 			if ( RES_GET_INDEX(pItem->m_itPotion.m_Type) == SPELL_Explosion )
 			{
 				// Throw explosion potion
-				if ( m_pChar->ItemPickup(pItem, 1) == -1 )	// put the potion in our hand
+				if ( !m_pChar->ItemPickup(pItem) )
 					return false;
 
 				pItem->m_itPotion.m_tick = 4;		// countdown to explode
-				pItem->m_itPotion.m_ignited = 1;	// ignite it
+				pItem->m_itPotion.m_ignited = 1;
 				pItem->m_uidLink = m_pChar->GetUID();
 				pItem->SetTimeout(TICK_PER_SEC);
 				m_tmUseItem.m_pParent = pItem->GetParent();

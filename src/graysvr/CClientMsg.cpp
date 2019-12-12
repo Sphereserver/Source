@@ -421,16 +421,6 @@ void CClient::addTime(bool fCurrent)
 		new PacketGameTime(this);
 }
 
-void CClient::addObjectRemoveCantSee(CGrayUID uid, LPCTSTR pszName)
-{
-	ADDTOCALLSTACK("CClient::addObjectRemoveCantSee");
-	// Seems this object got out of sync some how.
-	if ( !pszName )
-		pszName = "it";
-	SysMessagef("You can't see %s", pszName);
-	addObjectRemove(uid);
-}
-
 void CClient::closeUIWindow(DWORD dwWindowType, const CObjBase *pObj)
 {
 	ADDTOCALLSTACK("CClient::closeUIWindow");
@@ -447,6 +437,14 @@ void CClient::addObjectRemove(const CObjBase *pObj)
 {
 	ADDTOCALLSTACK("CClient::addObjectRemove");
 	addObjectRemove(pObj->GetUID());
+}
+
+void CClient::addObjectRemoveMsg(CGrayUID uid)
+{
+	ADDTOCALLSTACK("CClient::addObjectRemoveMsg");
+	// Seems this object got out of sync somehow, so remove it from client screen
+	SysMessage("You can't see the target");
+	addObjectRemove(uid);
 }
 
 void CClient::addRemoveAll(bool fItems, bool fChars)

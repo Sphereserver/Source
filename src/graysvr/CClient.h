@@ -566,7 +566,7 @@ public:
 	void Event_Item_Drop(CItem *pItem, CPointMap pt, CGrayUID uidOn, BYTE gridIndex = 0);
 	void Event_Item_Drop_Fail(CItem *pItem);
 	void Event_Item_Dye(CGrayUID uid, HUE_TYPE wHue);
-	void Event_Item_Pickup(CGrayUID uid, int iAmount);
+	void Event_Item_Pickup(CGrayUID uid, WORD wAmount);
 	void Event_MailMsg(CChar *pChar);
 	void Event_Profile(bool fWrite, CChar *pChar, TCHAR *pszText);
 	void Event_PromptResp(LPCTSTR pszText, CGrayUID uidChar, CGrayUID uidPrompt, DWORD dwType);
@@ -671,10 +671,10 @@ public:
 	bool addDeleteErr(BYTE bCode);
 	void addSeason(SEASON_TYPE season);
 	void addTime(bool fCurrent = false);
-	void addObjectRemoveCantSee(CGrayUID uid, LPCTSTR pszName = NULL);
 	void closeUIWindow(DWORD dwWindowType, const CObjBase *pObj);
 	void addObjectRemove(CGrayUID uid);
 	void addObjectRemove(const CObjBase *pObj);
+	void addObjectRemoveMsg(CGrayUID uid);
 	void addRemoveAll(bool fItems, bool fChars);
 
 	void addItem_OnGround(CItem *pItem);

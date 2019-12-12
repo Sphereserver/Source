@@ -1366,26 +1366,24 @@ void CChar::SoundChar(CRESND_TYPE type)
 	Sound(id);
 }
 
-// Char is picking up an item
-// The item now will be "up in the air" (LAYER_DRAGGING)
-// RETURN:
-//  Amount we can pick up (-1 = can't pick this up)
-int CChar::ItemPickup(CItem *pItem, WORD wAmount)
+bool CChar::ItemPickup(CItem *pItem, WORD wAmount)
 {
 	ADDTOCALLSTACK("CChar::ItemPickup");
+	// Char is picking up an item
+	// If pickup succeed, item will be placed "up in the air" (LAYER_DRAGGING)
 	if ( !pItem )
-		return -1;
+		return false;
 
 	if ( pItem->GetParent() == this )
 	{
 		if ( pItem->GetEquipLayer() == LAYER_HORSE )
-			return -1;
+			return false;
 		if ( pItem->GetEquipLayer() == LAYER_DRAGGING )
-			return pItem->GetAmount();
+			return true;
 	}
 
 	if ( !CanTouch(pItem) || !CanMove(pItem, true) )
-		return -1;
+		return false;
 
 	const CObjBaseTemplate *pObjTop = pItem->GetTopLevelObj();
 
@@ -1396,7 +1394,7 @@ int CChar::ItemPickup(CItem *pItem, WORD wAmount)
 		{
 			// Don't allow taking items from the bank unless we opened it here
 			if ( pItemCont->IsType(IT_EQ_BANK_BOX) && (pItemCont->m_itEqBankBox.m_ptOpen != GetTopPoint()) )
-				return -1;
+				return false;
 
 			// Check sub containers too
 			CChar *pCharTop = dynamic_cast<CChar *>(const_cast<CObjBaseTemplate *>(pObjTop));
@@ -1404,7 +1402,7 @@ int CChar::ItemPickup(CItem *pItem, WORD wAmount)
 			{
 				CItemContainer *pBank = pCharTop->GetContainerCreate(LAYER_BANKBOX);
 				if ( pBank->IsItemInside(pItemCont) && (pBank->m_itEqBankBox.m_ptOpen != GetTopPoint()) )
-					return -1;
+					return false;
 			}
 
 			// Don't allow pick items from containers not opened (protection against ,snoop)
@@ -1438,7 +1436,7 @@ int CChar::ItemPickup(CItem *pItem, WORD wAmount)
 			}
 
 			if ( !isInOpenedContainer )
-				return -1;
+				return false;
 		}
 	}
 
@@ -1446,7 +1444,7 @@ int CChar::ItemPickup(CItem *pItem, WORD wAmount)
 	if ( (pChar != this) && pItem->IsAttr(ATTR_OWNED) && (pItem->m_uidLink != GetUID()) && !IsPriv(PRIV_ALLMOVE|PRIV_GM) )
 	{
 		SysMessageDefault(DEFMSG_MSG_STEAL);
-		return -1;
+		return false;
 	}
 
 	const CItemCorpse *pCorpse = dynamic_cast<const CItemCorpse *>(pObjTop);
@@ -1467,19 +1465,16 @@ int CChar::ItemPickup(CItem *pItem, WORD wAmount)
 
 	WORD wAmountMax = pItem->GetAmount();
 	if ( wAmountMax <= 0 )
-		return -1;
+		return false;
 
-	if ( !pItem->Item_GetDef()->IsStackableType() )
+	if ( !wAmount || !pItem->Item_GetDef()->IsStackableType() )
 		wAmount = wAmountMax;	// it's not stackable, so we must pick up the entire amount
 	else
 		wAmount = maximum(1, minimum(wAmount, wAmountMax));
 
-	//int iItemWeight = (wAmount == wAmountMax) ? pItem->GetWeight() : pItem->Item_GetDef()->GetWeight() * wAmount;
-	int iItemWeight = pItem->GetWeight(wAmount);
-
 	// Is it too heavy to even drag?
 	bool fDrop = false;
-	if ( GetWeightLoadPercent(GetTotalWeight() + iItemWeight) > 300 )
+	if ( GetWeightLoadPercent(GetTotalWeight() + pItem->GetWeight(wAmount)) > 300 )
 	{
 		SysMessageDefault(DEFMSG_MSG_HEAVY);
 		if ( (pChar == this) && (pItem->GetParent() == GetContainer(LAYER_PACK)) )
@@ -1500,7 +1495,7 @@ int CChar::ItemPickup(CItem *pItem, WORD wAmount)
 		if ( !fCanTake )
 		{
 			SysMessageDefault(DEFMSG_MSG_STEAL);
-			return -1;
+			return false;
 		}
 		trigger = pItem->IsItemEquipped() ? ITRIG_UNEQUIP : ITRIG_PICKUP_PACK;
 	}
@@ -1511,7 +1506,7 @@ int CChar::ItemPickup(CItem *pItem, WORD wAmount)
 	{
 		// Bug with taking static/movenever items -or- catching the spell effects
 		if ( !IsPriv(PRIV_ALLMOVE|PRIV_GM) && (pItem->IsAttr(ATTR_STATIC|ATTR_MOVE_NEVER) || pItem->IsType(IT_SPELL)) )
-			return -1;
+			return false;
 	}
 
 	if ( trigger != ITRIG_UNEQUIP )		// unequip is done later
@@ -1520,7 +1515,7 @@ int CChar::ItemPickup(CItem *pItem, WORD wAmount)
 		{
 			CScriptTriggerArgs Args(wAmount);
 			if ( pItem->OnTrigger(trigger, this, &Args) == TRIGRET_RET_TRUE )
-				return -1;
+				return false;
 		}
 		if ( (trigger == ITRIG_PICKUP_PACK) && (IsTrigUsed(TRIGGER_PICKUP_SELF) || IsTrigUsed(TRIGGER_ITEMPICKUP_SELF)) )
 		{
@@ -1529,7 +1524,7 @@ int CChar::ItemPickup(CItem *pItem, WORD wAmount)
 			{
 				CScriptTriggerArgs Args1(pItem);
 				if ( pContItem->OnTrigger(ITRIG_PICKUP_SELF, this, &Args1) == TRIGRET_RET_TRUE )
-					return -1;
+					return false;
 			}
 		}
 	}
@@ -1547,7 +1542,7 @@ int CChar::ItemPickup(CItem *pItem, WORD wAmount)
 			{
 				CScriptTriggerArgs Args2(pItemNew);
 				if ( pItem->OnTrigger(ITRIG_PICKUP_STACK, this, &Args2) == TRIGRET_RET_TRUE )
-					return -1;
+					return false;
 			}
 
 		}
@@ -1580,7 +1575,7 @@ int CChar::ItemPickup(CItem *pItem, WORD wAmount)
 	if ( fDrop )
 	{
 		ItemDrop(pItem, GetTopPoint());
-		return -1;
+		return false;
 	}
 
 	CItemSpawn *pSpawn = static_cast<CItemSpawn *>(pItem->m_uidSpawnItem.ItemFind());
@@ -1596,7 +1591,7 @@ int CChar::ItemPickup(CItem *pItem, WORD wAmount)
 	// Pick it up
 	pItem->SetDecayTime(-1);
 	LayerAdd(pItem, LAYER_DRAGGING);
-	return wAmount;
+	return true;
 }
 
 // Bounce an item into backpack
