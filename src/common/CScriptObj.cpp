@@ -1992,7 +1992,7 @@ bool CScriptObj::r_Verb(CScript &s, CTextConsole *pSrc)
 		{
 			if ( !pRef )
 				return true;
-			CScript script(pszKey, s.GetArgStr());
+			CScript script(pszKey, s.GetArgRaw());
 			return pRef->r_Verb(script, pSrc);
 		}
 		// else just fall through. as they seem to be setting the pointer !?
@@ -2008,7 +2008,7 @@ bool CScriptObj::r_Verb(CScript &s, CTextConsole *pSrc)
 			if ( !pRef )
 				return false;
 		}
-		CScript script(pszKey, s.GetArgStr());
+		CScript script(pszKey, s.GetArgRaw());
 		return pRef->r_Verb(script, pSrc);
 	}
 
@@ -2517,7 +2517,7 @@ bool CScriptTriggerArgs::r_Verb(CScript &s, CTextConsole *pSrc)
 	int index = -1;
 
 	if ( !strnicmp("FLOAT.", pszKey, 6) )
-		return m_VarsFloat.Insert(pszKey + 6, s.GetArgStr(), true);
+		return m_VarsFloat.Insert(pszKey + 6, s.GetArgRaw(), true);
 	else if ( !strnicmp("LOCAL.", pszKey, 6) )
 	{
 		bool fQuoted = false;
@@ -2548,7 +2548,7 @@ bool CScriptTriggerArgs::r_Verb(CScript &s, CTextConsole *pSrc)
 					if ( !pObj )
 						return false;
 
-					CScript script(pszKey, s.GetArgStr());
+					CScript script(pszKey, s.GetArgRaw());
 					return pObj->r_Verb(script, pSrc);
 				}
 			}
@@ -2582,7 +2582,7 @@ bool CScriptTriggerArgs::r_Verb(CScript &s, CTextConsole *pSrc)
 			m_iN3 = s.GetArgLLVal();
 			return true;
 		case AGC_S:
-			Init(s.GetArgStr());
+			Init(s.GetArgRaw());
 			return true;
 		case AGC_O:
 		{
@@ -2593,7 +2593,7 @@ bool CScriptTriggerArgs::r_Verb(CScript &s, CTextConsole *pSrc)
 				if ( !m_pO1 )
 					return false;
 
-				CScript script(pszTemp, s.GetArgStr());
+				CScript script(pszTemp, s.GetArgRaw());
 				return m_pO1->r_Verb(script, pSrc);
 			}
 			return false;
@@ -2601,8 +2601,8 @@ bool CScriptTriggerArgs::r_Verb(CScript &s, CTextConsole *pSrc)
 		case AGC_TRY:
 		case AGC_TRYSRV:
 		{
-			CScript try_script(s.GetArgStr());
-			if ( r_Verb(try_script, pSrc) )
+			CScript script(s.GetArgRaw());
+			if ( r_Verb(script, pSrc) )
 				return true;
 		}
 		default:

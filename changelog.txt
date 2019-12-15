@@ -1683,3 +1683,6 @@ Added: Support for new 'picinpic' dialog element on clients >= 7.0.80.0.
 [items/sphere_item_quests.scp]: Added Jolly Roger items
 [items/sphere_item_vice_virtue.scp]: Added new items from publish 107
 [systems/sphere_system_treasure_maps.scp]: Fixed treasure maps sometimes getting decoded to unreachable destination
+
+15-12-2019, Coruja
+Fixed: Scripts not parsing " " quotes as string correctly.
