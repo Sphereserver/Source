@@ -32,11 +32,11 @@ void CClient::SetConnectType(CONNECT_TYPE iType)
 ///////////////////////////////////////////////////////////
 // Push world display data to this client only
 
-bool CClient::addLoginErr(BYTE bCode)
+void CClient::addLoginErr(BYTE bCode)
 {
 	ADDTOCALLSTACK("CClient::addLoginErr");
 	if ( bCode == PacketLoginError::Success )
-		return true;
+		return;
 
 	// Console message to display for each login error code
 	static const LPCTSTR sm_szLoginError[] =
@@ -72,7 +72,6 @@ bool CClient::addLoginErr(BYTE bCode)
 	}
 
 	m_NetState->markReadClosed();
-	return false;
 }
 
 void CClient::addSysMessage(LPCTSTR pszMsg)
@@ -106,12 +105,12 @@ void CClient::addWebLaunch(LPCTSTR pszURL)
 ///////////////////////////////////////////////////////////
 // Login server
 
-bool CClient::addRelay(const CServerDef *pServ)
+void CClient::addRelay(const CServerDef *pServ)
 {
 	ADDTOCALLSTACK("CClient::addRelay");
 	// Tell the client to play on this server
 	if ( !pServ )
-		return false;
+		return;
 
 	EXC_TRY("addRelay");
 	CSocketAddressIP ipAddr = pServ->m_ip;
@@ -146,16 +145,15 @@ bool CClient::addRelay(const CServerDef *pServ)
 	new PacketServerRelay(this, dwAddr, pServ->m_ip.GetPort(), dwCustomerId);
 
 	m_Targ_Mode = CLIMODE_SETUP_RELAY;
-	return true;
+	return;
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
 	g_Log.EventDebug("account '%s'\n", m_pAccount ? m_pAccount->GetName() : "");
 	EXC_DEBUG_END;
-	return false;
 }
 
-bool CClient::Login_Relay(WORD wRelay)
+void CClient::Login_Relay(WORD wRelay)
 {
 	ADDTOCALLSTACK("CClient::Login_Relay");
 	// Client wants to be relayed to another server (PACKET_ServerSelect)
@@ -178,11 +176,11 @@ bool CClient::Login_Relay(WORD wRelay)
 		if ( !pServ )
 		{
 			DEBUG_ERR(("%lx:Login_Relay Bad index %hu\n", GetSocketID(), wRelay));
-			return false;
+			return;
 		}
 	}
 
-	return addRelay(pServ);
+	addRelay(pServ);
 }
 
 BYTE CClient::Login_ServerList(LPCTSTR pszAccount, LPCTSTR pszPassword)
@@ -593,7 +591,7 @@ bool CClient::OnRxWebPageRequest(BYTE *pRequest, size_t iLen)
 	return false;
 }
 
-bool CClient::xProcessClientSetup(CEvent *pEvent, size_t iLen)
+void CClient::xProcessClientSetup(CEvent *pEvent, size_t iLen)
 {
 	ADDTOCALLSTACK("CClient::xProcessClientSetup");
 	// If this is a login, try to process the data and get client version
@@ -615,22 +613,15 @@ bool CClient::xProcessClientSetup(CEvent *pEvent, size_t iLen)
 		xRecordPacketData(this, (const BYTE *)pEvent, iLen, "client->server");
 #endif
 		DEBUG_MSG(("%lx:Odd login message length %" FMTSIZE_T "\n", GetSocketID(), iLen));
-		addLoginErr(PacketLoginError::UnkCrypt);
-		return false;
+		return addLoginErr(PacketLoginError::UnkCrypt);
 	}
 
 	SetConnectType(m_Crypt.GetConnectType());
 
 	if ( !xCanEncLogin() )
-	{
-		addLoginErr((m_Crypt.GetEncryptionType() == ENC_NONE) ? static_cast<BYTE>(PacketLoginError::BlockNoCrypt) : static_cast<BYTE>(PacketLoginError::BlockCrypt));
-		return false;
-	}
+		return addLoginErr((m_Crypt.GetEncryptionType() == ENC_NONE) ? static_cast<BYTE>(PacketLoginError::BlockNoCrypt) : static_cast<BYTE>(PacketLoginError::BlockCrypt));
 	else if ( (m_Crypt.GetConnectType() == CONNECT_LOGIN) && !xCanEncLogin(true) )
-	{
-		addLoginErr(PacketLoginError::BadClientVer);
-		return false;
-	}
+		return addLoginErr(PacketLoginError::BadClientVer);
 
 	m_Crypt.Decrypt(pEvent->m_Raw, evInputBuffer.m_Raw, iLen);
 	BYTE bErr = PacketLoginError::UnkCrypt;
@@ -640,7 +631,7 @@ bool CClient::xProcessClientSetup(CEvent *pEvent, size_t iLen)
 		case PACKET_ServersReq:
 		{
 			if ( iLen < sizeof(pEvent->ServersReq) )
-				return false;
+				return;
 
 			bErr = Login_ServerList(pEvent->ServersReq.m_acctname, pEvent->ServersReq.m_acctpass);
 			if ( bErr == PacketLoginError::Success )
@@ -671,7 +662,7 @@ bool CClient::xProcessClientSetup(CEvent *pEvent, size_t iLen)
 		case PACKET_CharListReq:
 		{
 			if ( iLen < sizeof(pEvent->CharListReq) )
-				return false;
+				return;
 
 			TCHAR szAccount[MAX_ACCOUNT_NAME_SIZE + 3];
 			Str_GetBare(szAccount, pEvent->CharListReq.m_acctname, sizeof(szAccount) - 1);
@@ -741,8 +732,6 @@ bool CClient::xProcessClientSetup(CEvent *pEvent, size_t iLen)
 
 	if ( bErr != PacketLoginError::Success )
 		addLoginErr(bErr);
-
-	return (bErr == PacketLoginError::Success);
 }
 
 bool CClient::xCanEncLogin(bool fCheckCliver)

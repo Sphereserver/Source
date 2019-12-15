@@ -397,14 +397,10 @@ void CClient::removeBuff(const BUFF_ICONS IconID)
 	new PacketBuff(this, IconID);
 }
 
-bool CClient::addDeleteErr(BYTE bCode)
+void CClient::addDeleteErr(BYTE bCode)
 {
 	ADDTOCALLSTACK("CClient::addDeleteErr");
-	if ( bCode == PacketDeleteError::Success )
-		return true;
-
 	new PacketDeleteError(this, static_cast<PacketDeleteError::Reason>(bCode));
-	return false;
 }
 
 void CClient::addTime(bool fCurrent)
@@ -2326,24 +2322,21 @@ void CClient::addBulletinBoard(const CItemContainer *pBoard)
 	addContents(pBoard);
 }
 
-bool CClient::addBBoardMessage(const CItemContainer *pBoard, BULLETINBOARD_TYPE action, CGrayUID uidMsg)
+void CClient::addBBoardMessage(const CItemContainer *pBoard, BULLETINBOARD_TYPE action, CGrayUID uidMsg)
 {
 	ADDTOCALLSTACK("CClient::addBBoardMessage");
-	ASSERT(pBoard);
+	if ( !pBoard )
+		return;
 
 	CItemMessage *pMsgItem = dynamic_cast<CItemMessage *>(uidMsg.ItemFind());
 	if ( !pBoard->IsItemInside(pMsgItem) )
-		return false;
+		return;
 
 	// Check if author is properly linked
 	if ( !pMsgItem->m_sAuthor.IsEmpty() && !pMsgItem->m_uidLink.CharFind() )
-	{
-		pMsgItem->Delete();
-		return false;
-	}
+		return pMsgItem->Delete();
 
 	new PacketBulletinBoard(this, action, pBoard, pMsgItem);
-	return true;
 }
 
 void CClient::addLoginComplete()

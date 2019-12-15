@@ -5,7 +5,7 @@
 ////////////////////////////////////////////////////////
 // Targetted GM functions.
 
-bool CClient::OnTarg_Obj_Set(CObjBase *pObj)
+void CClient::OnTarg_Obj_Set(CObjBase *pObj)
 {
 	ADDTOCALLSTACK("CClient::OnTarg_Obj_Set");
 	// CLIMODE_TARG_OBJ_SET
@@ -16,7 +16,7 @@ bool CClient::OnTarg_Obj_Set(CObjBase *pObj)
 	if ( !pObj )
 	{
 		SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_TARG_UNEXPECTED));
-		return false;
+		return;
 	}
 
 	// Parse the command.
@@ -28,14 +28,14 @@ bool CClient::OnTarg_Obj_Set(CObjBase *pObj)
 	{
 		SysMessageDefault(DEFMSG_MSG_ACC_PRIV);
 		g_Log.Event(LOGM_GM_CMDS, "%s=0\n", pszLogMsg);
-		return false;
+		return;
 	}
 
 	CScript sCmd(m_Targ_Text);
 	if ( sCmd.IsKey("COLOR") && !sCmd.HasArgs() )	// ".xCOLOR" command without arguments should open dye gump
 	{
 		addDyeOption(pObj);
-		return true;
+		return;
 	}
 
 	bool fRet = pObj->r_Verb(sCmd, this);
@@ -43,10 +43,9 @@ bool CClient::OnTarg_Obj_Set(CObjBase *pObj)
 		SysMessageDefault(DEFMSG_MSG_ERR_INVSET);
 	if ( GetPrivLevel() >= g_Cfg.m_iCommandLog )
 		g_Log.Event(LOGM_GM_CMDS, "%s=%d\n", pszLogMsg, fRet);
-	return fRet;
 }
 
-bool CClient::OnTarg_Obj_Function(CObjBase *pObj, const CPointMap &pt, ITEMID_TYPE id)
+void CClient::OnTarg_Obj_Function(CObjBase *pObj, const CPointMap &pt, ITEMID_TYPE id)
 {
 	ADDTOCALLSTACK("CClient::OnTarg_Obj_Function");
 	m_Targ_p = pt;
@@ -61,10 +60,9 @@ bool CClient::OnTarg_Obj_Function(CObjBase *pObj, const CPointMap &pt, ITEMID_TY
 	Args.m_pO1 = pObj;
 	CGString sVal;
 	m_pChar->r_Call(static_cast<LPCTSTR>(m_Targ_Text), this, &Args, &sVal);
-	return true;
 }
 
-bool CClient::OnTarg_Obj_Info(CObjBase *pObj, const CPointMap &pt, ITEMID_TYPE id)
+void CClient::OnTarg_Obj_Info(CObjBase *pObj, const CPointMap &pt, ITEMID_TYPE id)
 {
 	ADDTOCALLSTACK("CClient::OnTarg_Obj_Info");
 	// CLIMODE_TARG_OBJ_INFO "INFO"
@@ -73,35 +71,33 @@ bool CClient::OnTarg_Obj_Info(CObjBase *pObj, const CPointMap &pt, ITEMID_TYPE i
 	{
 		SetTargMode();
 		addGumpDialogProps(pObj);
+		return;
+	}
+
+	TCHAR *pszTemp = Str_GetTemp();
+	size_t len = 0;
+	if ( id )
+	{
+		len = sprintf(pszTemp, "[Static z=%hhd, 0%x=", pt.m_z, id);
+
+		// static items have no uid's but we can still use them.
+		CItemBase *pItemDef = CItemBase::FindItemBase(id);
+		if ( pItemDef )
+			len += sprintf(pszTemp + len, "%s->%s], ", pItemDef->GetResourceName(), g_Cfg.ResourceGetName(RESOURCE_ID(RES_TYPEDEF, pItemDef->GetType())));
+		else
+			len += sprintf(pszTemp + len, "NON scripted], ");
 	}
 	else
 	{
-		TCHAR *pszTemp = Str_GetTemp();
-		size_t len = 0;
-		if ( id )
-		{
-			len = sprintf(pszTemp, "[Static z=%hhd, 0%x=", pt.m_z, id);
-
-			// static items have no uid's but we can still use them.
-			CItemBase *pItemDef = CItemBase::FindItemBase(id);
-			if ( pItemDef )
-				len += sprintf(pszTemp + len, "%s->%s], ", pItemDef->GetResourceName(), g_Cfg.ResourceGetName(RESOURCE_ID(RES_TYPEDEF, pItemDef->GetType())));
-			else
-				len += sprintf(pszTemp + len, "NON scripted], ");
-		}
-		else
-		{
-			// tile info for location.
-			len = strcpylen(pszTemp, "[No static tile], ");
-		}
-
-		const CUOMapMeter *pMeter = g_World.GetMapMeter(pt);
-		if ( pMeter )
-			len += sprintf(pszTemp + len, "TERRAIN=0%hx TYPE=%s", pMeter->m_wTerrainIndex, g_World.GetTerrainItemTypeDef(pMeter->m_wTerrainIndex)->GetResourceName());
-
-		SysMessage(pszTemp);
+		// tile info for location.
+		len = strcpylen(pszTemp, "[No static tile], ");
 	}
-	return true;
+
+	const CUOMapMeter *pMeter = g_World.GetMapMeter(pt);
+	if ( pMeter )
+		len += sprintf(pszTemp + len, "TERRAIN=0%hx TYPE=%s", pMeter->m_wTerrainIndex, g_World.GetTerrainItemTypeDef(pMeter->m_wTerrainIndex)->GetResourceName());
+
+	SysMessage(pszTemp);
 }
 
 bool CClient::Cmd_Control(CChar *pChar2)
@@ -205,7 +201,7 @@ bool CClient::Cmd_Control(CChar *pChar2)
 	return true;
 }
 
-bool CClient::OnTarg_UnExtract(CObjBase *pObj, const CPointMap &pt)
+void CClient::OnTarg_UnExtract(CObjBase *pObj, const CPointMap &pt)
 {
 	ADDTOCALLSTACK("CClient::OnTarg_UnExtract");
 	UNREFERENCED_PARAMETER(pObj);
@@ -215,33 +211,33 @@ bool CClient::OnTarg_UnExtract(CObjBase *pObj, const CPointMap &pt)
 	// Break a multi out of the multi.txt files and turn it into items.
 
 	if ( !pt.GetRegion(REGION_TYPE_AREA) )
-		return false;
+		return;
 
 	CScript s;	// It is not really a valid script type file.
 	if ( !g_Cfg.OpenResourceFind(s, m_Targ_Text) )
-		return false;
+		return;
 
 	TCHAR *pszTemp = Str_GetTemp();
 	sprintf(pszTemp, "%d template id", m_tmTile.m_id);
 	if ( !s.FindTextHeader(pszTemp) )
-		return false;
+		return;
 	if ( !s.ReadKey() )
-		return false; // throw this one away
+		return;		// throw this one away
 	if ( !s.ReadKeyParse() )
-		return false; // this has the item count
+		return;		// this has the item count
 
-	int iItemCount = ATOI(s.GetKey()); // item count
+	int iItemCount = ATOI(s.GetKey());	// item count
 	while ( iItemCount > 0 )
 	{
 		if ( !s.ReadKeyParse() )
-			return false; // this has the item count
+			return;		// this has the item count
 
 		INT64 piCmd[4];		// Maximum parameters in one line
 		Str_ParseCmds(s.GetArgStr(), piCmd, COUNTOF(piCmd));
 
 		CItem *pItem = CItem::CreateTemplate(static_cast<ITEMID_TYPE>(ATOI(s.GetKey())), NULL, m_pChar);
 		if ( !pItem )
-			return false;
+			return;
 
 		CPointMap ptOffset(static_cast<signed short>(piCmd[0]), static_cast<signed short>(piCmd[1]), static_cast<signed char>(piCmd[2]));
 		ptOffset += pt;
@@ -249,10 +245,9 @@ bool CClient::OnTarg_UnExtract(CObjBase *pObj, const CPointMap &pt)
 		pItem->MoveToUpdate(ptOffset);
 		--iItemCount;
 	}
-	return true;
 }
 
-bool CClient::OnTarg_Char_Add(CObjBase *pObj, const CPointMap &pt)
+void CClient::OnTarg_Char_Add(CObjBase *pObj, const CPointMap &pt)
 {
 	ADDTOCALLSTACK("CClient::OnTarg_Char_Add");
 	// CLIMODE_TARG_ADDCHAR
@@ -261,13 +256,13 @@ bool CClient::OnTarg_Char_Add(CObjBase *pObj, const CPointMap &pt)
 	ASSERT(m_pChar);
 
 	if ( !pt.GetRegion(REGION_TYPE_AREA) || (pObj && pObj->IsItemInContainer()) )
-		return false;
+		return;
 
 	for ( WORD i = 0; i < m_tmAdd.m_amount; ++i )
 	{
 		CChar *pChar = CChar::CreateBasic(static_cast<CREID_TYPE>(m_tmAdd.m_id));
 		if ( !pChar )
-			return false;
+			return;
 
 		pChar->NPC_LoadScript(true);
 		pChar->MoveToChar(pt);
@@ -277,10 +272,9 @@ bool CClient::OnTarg_Char_Add(CObjBase *pObj, const CPointMap &pt)
 		pChar->SoundChar(CRESND_GETHIT);
 		m_pChar->m_Act_Targ = pChar->GetUID();		// for last target stuff (trigger stuff)
 	}
-	return true;
 }
 
-bool CClient::OnTarg_Item_Add(CObjBase *pObj, CPointMap &pt)
+void CClient::OnTarg_Item_Add(CObjBase *pObj, CPointMap &pt)
 {
 	ADDTOCALLSTACK("CClient::OnTarg_Item_Add");
 	// CLIMODE_TARG_ADDITEM
@@ -289,26 +283,25 @@ bool CClient::OnTarg_Item_Add(CObjBase *pObj, CPointMap &pt)
 	ASSERT(m_pChar);
 
 	if ( !pt.GetRegion(REGION_TYPE_AREA) || (pObj && pObj->IsItemInContainer()) )
-		return false;
+		return;
 
 	CItem *pItem = CItem::CreateTemplate(static_cast<ITEMID_TYPE>(m_tmAdd.m_id), NULL, m_pChar);
 	if ( !pItem )
-		return false;
+		return;
 
 	if ( pItem->IsTypeMulti() )
 	{
-		CItem *pMulti = OnTarg_Use_Multi(pItem->Item_GetDef(), pt, pItem->m_Attr, pItem->GetHue());
+		OnTarg_Use_Multi(pItem->Item_GetDef(), pt, pItem->m_Attr, pItem->GetHue());
 		pItem->Delete();
-		return pMulti ? true : false;
+		return;
 	}
 
 	pItem->SetAmount(m_tmAdd.m_amount);
 	pItem->MoveToCheck(pt, m_pChar);
 	m_pChar->m_Act_Targ = pItem->GetUID();		// for last target stuff (trigger stuff) and to make AxisII able to initialize placed spawn items.
-	return true;
 }
 
-bool CClient::OnTarg_Item_Link(CObjBase *pObj2)
+void CClient::OnTarg_Item_Link(CObjBase *pObj2)
 {
 	ADDTOCALLSTACK("CClient::OnTarg_Item_Link");
 	// CLIMODE_LINK
@@ -316,7 +309,7 @@ bool CClient::OnTarg_Item_Link(CObjBase *pObj2)
 	if ( !pObj2 )
 	{
 		SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MSG_TARG_DYNAMIC));
-		return false;
+		return;
 	}
 
 	CItem *pItem2 = dynamic_cast<CItem *>(pObj2);
@@ -333,14 +326,14 @@ bool CClient::OnTarg_Item_Link(CObjBase *pObj2)
 			m_Targ_UID = pObj2->GetUID();
 			addTarget(CLIMODE_TARG_LINK, g_Cfg.GetDefaultMsg(DEFMSG_MSG_TARG_LINK2));
 		}
-		return true;
+		return;
 	}
 
 	if ( pItem2 == pItem1 )
 	{
 		// Break any existing links.
 		SysMessageDefault(DEFMSG_MSG_TARG_LINK_SAME);
-		return false;
+		return;
 	}
 
 	if ( pItem2 && (pItem1->IsType(IT_KEY) || pItem2->IsType(IT_KEY)) )
@@ -368,7 +361,6 @@ bool CClient::OnTarg_Item_Link(CObjBase *pObj2)
 	}
 
 	SysMessageDefault(DEFMSG_MSG_TARG_LINKS);
-	return true;
 }
 
 int CClient::Cmd_Extract(CScript *pScript, CRectMap &rect, signed char &zLowest)
@@ -444,7 +436,7 @@ int CClient::Cmd_Extract(CScript *pScript, CRectMap &rect, signed char &zLowest)
 	return iCount;
 }
 
-bool CClient::OnTarg_Tile(CObjBase *pObj, const CPointMap &pt)
+void CClient::OnTarg_Tile(CObjBase *pObj, const CPointMap &pt)
 {
 	ADDTOCALLSTACK("CClient::OnTarg_Tile");
 	// CLIMODE_TARG_TILE
@@ -452,20 +444,20 @@ bool CClient::OnTarg_Tile(CObjBase *pObj, const CPointMap &pt)
 	ASSERT(m_pChar);
 
 	if ( !pt.IsValidPoint() || (pObj && !pObj->IsTopLevel()) )
-		return false;
+		return;
 
 	if ( !m_tmTile.m_ptFirst.IsValidPoint() )
 	{
 		m_tmTile.m_ptFirst = pt;
 		addTarget(CLIMODE_TARG_TILE, g_Cfg.GetDefaultMsg(DEFMSG_MSG_TARG_PC), true);
-		return true;
+		return;
 	}
 
 	if ( (pt == m_tmTile.m_ptFirst) && (m_tmTile.m_Code != CV_EXTRACT) )	// extract can work with one square
 	{
 		SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_TILE_SAME_POINT));
 		addTarget(CLIMODE_TARG_TILE, g_Cfg.GetDefaultMsg(DEFMSG_MSG_TARG_PC), true);
-		return true;
+		return;
 	}
 
 	CRectMap rect;
@@ -490,7 +482,7 @@ bool CClient::OnTarg_Tile(CObjBase *pObj, const CPointMap &pt)
 			{
 				CScript s;
 				if ( !s.Open(m_Targ_Text, OF_WRITE|OF_TEXT|OF_DEFAULTMODE) )
-					return false;
+					return;
 
 				// Write a header for this multi in XXX format (I have no idea what most of this means)
 				s.Printf("6 version\n");
@@ -624,7 +616,6 @@ bool CClient::OnTarg_Tile(CObjBase *pObj, const CPointMap &pt)
 			break;
 		}
 	}
-	return true;
 }
 
 //-----------------------------------------------------------------------
@@ -1130,14 +1121,14 @@ int CClient::OnSkill_Info(SKILL_TYPE skill, CGrayUID uid, bool fTest)
 ////////////////////////////////////////
 // Targeted skills and actions.
 
-bool CClient::OnTarg_Skill(CObjBase *pObj)
+void CClient::OnTarg_Skill(CObjBase *pObj)
 {
 	ADDTOCALLSTACK("CClient::OnTarg_Skill");
 	// Targetted skill now has it's target.
 	// Response to CLIMODE_TARG_SKILL from Event_Skill_Use() select button from skill window
 
 	if ( !pObj )
-		return false;
+		return;
 
 	SetTargMode();	// just make sure last targ mode is gone
 	m_Targ_UID = pObj->GetUID();	// keep for 'last target' info
@@ -1148,9 +1139,9 @@ bool CClient::OnTarg_Skill(CObjBase *pObj)
 		if ( pSkillDef && !pSkillDef->m_sTargetPrompt.IsEmpty() )
 		{
 			m_pChar->m_Act_Targ = m_Targ_UID;
-			return m_pChar->Skill_Start(m_tmSkillTarg.m_Skill);
+			m_pChar->Skill_Start(m_tmSkillTarg.m_Skill);
 		}
-		return true;
+		return;
 	}
 
 	switch ( m_tmSkillTarg.m_Skill )
@@ -1173,33 +1164,32 @@ bool CClient::OnTarg_Skill(CObjBase *pObj)
 		case SKILL_TASTEID:
 		{
 			m_pChar->m_Act_Targ = m_Targ_UID;
-			return m_pChar->Skill_Start(m_tmSkillTarg.m_Skill);
+			m_pChar->Skill_Start(m_tmSkillTarg.m_Skill);
 		}
 		case SKILL_PROVOCATION:
 		{
 			if ( !pObj->IsChar() )
 			{
 				SysMessageDefault(DEFMSG_PROVOKE_UNABLE);
-				return false;
+				return;
 			}
 			addTarget(CLIMODE_TARG_SKILL_PROVOKE, g_Cfg.GetDefaultMsg(DEFMSG_PROVOKE_SELECT), false, true);
-			break;
+			return;
 		}
 		case SKILL_POISONING:
 		{
 			addTarget(CLIMODE_TARG_SKILL_POISON, g_Cfg.GetDefaultMsg(DEFMSG_POISONING_SELECT_1), false, true);
-			break;
+			return;
 		}
 		default:
 		{
 			// Not a targetted skill
-			break;
+			return;
 		}
 	}
-	return true;
 }
 
-bool CClient::OnTarg_Skill_Provoke(CObjBase *pObj)
+void CClient::OnTarg_Skill_Provoke(CObjBase *pObj)
 {
 	ADDTOCALLSTACK("CClient::OnTarg_Skill_Provoke");
 	// CLIMODE_TARG_SKILL_PROVOKE
@@ -1207,26 +1197,28 @@ bool CClient::OnTarg_Skill_Provoke(CObjBase *pObj)
 	if ( !pObj || !pObj->IsChar() )
 	{
 		SysMessageDefault(DEFMSG_PROVOKE_UNABLE);
-		return false;
+		return;
 	}
+
 	m_pChar->m_Act_TargPrv = m_Targ_UID;		// provoke him
 	m_pChar->m_Act_Targ = pObj->GetUID();		// against him
-	return m_pChar->Skill_Start(SKILL_PROVOCATION);
+	m_pChar->Skill_Start(SKILL_PROVOCATION);
 }
 
-bool CClient::OnTarg_Skill_Poison(CObjBase *pObj)
+void CClient::OnTarg_Skill_Poison(CObjBase *pObj)
 {
 	ADDTOCALLSTACK("CClient::OnTarg_Skill_Poison");
 	// CLIMODE_TARG_SKILL_POISON
 
 	if ( !pObj )
-		return false;
+		return;
+
 	m_pChar->m_Act_TargPrv = m_Targ_UID;		// poison this
 	m_pChar->m_Act_Targ = pObj->GetUID();		// with this poison
-	return m_pChar->Skill_Start(SKILL_POISONING);
+	m_pChar->Skill_Start(SKILL_POISONING);
 }
 
-bool CClient::OnTarg_Skill_Herd_Dest(CObjBase *pObj, const CPointMap &pt)
+void CClient::OnTarg_Skill_Herd_Dest(CObjBase *pObj, const CPointMap &pt)
 {
 	ADDTOCALLSTACK("CClient::OnTarg_Skill_Herd_Dest");
 	UNREFERENCED_PARAMETER(pObj);
@@ -1235,10 +1227,10 @@ bool CClient::OnTarg_Skill_Herd_Dest(CObjBase *pObj, const CPointMap &pt)
 	m_pChar->m_Act_p = pt;
 	m_pChar->m_Act_Targ = m_Targ_UID;			// herd this
 	m_pChar->m_Act_TargPrv = m_Targ_PrvUID;		// with this crook
-	return m_pChar->Skill_Start(SKILL_HERDING);
+	m_pChar->Skill_Start(SKILL_HERDING);
 }
 
-bool CClient::OnTarg_Skill_Magery(CObjBase *pObj, const CPointMap &pt)
+void CClient::OnTarg_Skill_Magery(CObjBase *pObj, const CPointMap &pt)
 {
 	ADDTOCALLSTACK("CClient::OnTarg_Skill_Magery");
 	// The client player has targeted a spell.
@@ -1246,20 +1238,20 @@ bool CClient::OnTarg_Skill_Magery(CObjBase *pObj, const CPointMap &pt)
 
 	const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(m_tmSkillMagery.m_Spell);
 	if ( !pSpellDef )
-		return false;
+		return;
 
 	if ( pObj )
 	{
 		if ( !pSpellDef->IsSpellType(SPELLFLAG_TARG_OBJ) )
 		{
 			SysMessageDefault(DEFMSG_MAGERY_4);
-			return true;
+			return;
 		}
 
 		if ( pObj->IsItem() && !pSpellDef->IsSpellType(SPELLFLAG_TARG_ITEM) )
 		{
 			SysMessageDefault(DEFMSG_MAGERY_1);
-			return true;
+			return;
 		}
 
 		if ( pObj->IsChar() )
@@ -1267,25 +1259,25 @@ bool CClient::OnTarg_Skill_Magery(CObjBase *pObj, const CPointMap &pt)
 			if ( !pSpellDef->IsSpellType(SPELLFLAG_TARG_CHAR) )
 			{
 				SysMessageDefault(DEFMSG_MAGERY_2);
-				return true;
+				return;
 			}
 			CChar *pChar = static_cast<CChar *>(pObj);
 			if ( pSpellDef->IsSpellType(SPELLFLAG_TARG_NO_PLAYER) && pChar->m_pPlayer )
 			{
 				SysMessageDefault(DEFMSG_MAGERY_7);
-				return true;
+				return;
 			}
 			if ( pSpellDef->IsSpellType(SPELLFLAG_TARG_NO_NPC) && pChar->m_pNPC )
 			{
 				SysMessageDefault(DEFMSG_MAGERY_8);
-				return true;
+				return;
 			}
 		}
 
 		if ( pSpellDef->IsSpellType(SPELLFLAG_TARG_NOSELF) && (pObj == m_pChar) && !IsPriv(PRIV_GM) )
 		{
 			SysMessageDefault(DEFMSG_MAGERY_3);
-			return true;
+			return;
 		}
 	}
 
@@ -1302,19 +1294,20 @@ bool CClient::OnTarg_Skill_Magery(CObjBase *pObj, const CPointMap &pt)
 		if ( g_Cfg.IsSkillFlag(m_pChar->m_Act_SkillCurrent, SKF_MAGIC) )
 		{
 			SysMessageDefault(DEFMSG_MAGERY_5);
-			return false;
+			return;
 		}
-		return m_pChar->Spell_CastDone();
+		m_pChar->Spell_CastDone();
+		return;
 	}
 
 	int skill;
 	if ( !pSpellDef->GetPrimarySkill(&skill, NULL) )
-		return false;
+		return;
 
-	return m_pChar->Skill_Start(static_cast<SKILL_TYPE>(skill));
+	m_pChar->Skill_Start(static_cast<SKILL_TYPE>(skill));
 }
 
-bool CClient::OnTarg_Pet_Command(CObjBase *pObj, const CPointMap &pt)
+void CClient::OnTarg_Pet_Command(CObjBase *pObj, const CPointMap &pt)
 {
 	ADDTOCALLSTACK("CClient::OnTarg_Pet_Command");
 	// CLIMODE_TARG_PET_CMD
@@ -1340,18 +1333,15 @@ bool CClient::OnTarg_Pet_Command(CObjBase *pObj, const CPointMap &pt)
 				continue;
 			pCharPet->NPC_OnHearPetCmdTarg(m_tmPetCmd.m_iCmd, GetChar(), pObj, pt, m_Targ_Text);
 		}
-		return true;
+		return;
 	}
-	else
-	{
-		CChar *pCharPet = m_Targ_UID.CharFind();
-		if ( !pCharPet )
-			return false;
-		return pCharPet->NPC_OnHearPetCmdTarg(m_tmPetCmd.m_iCmd, GetChar(), pObj, pt, m_Targ_Text);
-	}
+
+	CChar *pCharPet = m_Targ_UID.CharFind();
+	if ( pCharPet )
+		pCharPet->NPC_OnHearPetCmdTarg(m_tmPetCmd.m_iCmd, GetChar(), pObj, pt, m_Targ_Text);
 }
 
-bool CClient::OnTarg_Pet_Stable(CChar *pCharPet)
+void CClient::OnTarg_Pet_Stable(CChar *pCharPet)
 {
 	ADDTOCALLSTACK("CClient::OnTarg_Pet_Stable");
 	// CLIMODE_PET_STABLE
@@ -1360,34 +1350,34 @@ bool CClient::OnTarg_Pet_Stable(CChar *pCharPet)
 
 	CChar *pCharMaster = m_Targ_PrvUID.CharFind();
 	if ( !pCharMaster )
-		return false;
+		return;
 
 	if ( !pCharPet || pCharPet->m_pPlayer || (pCharMaster == pCharPet) )
 	{
 		pCharMaster->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_STABLEMASTER_TARG_FAIL));
-		return false;
+		return;
 	}
 	if ( !pCharMaster->CanSeeLOS(pCharPet) )
 	{
 		pCharMaster->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_STABLEMASTER_TARG_LOS));
-		return false;
+		return;
 	}
 	if ( !pCharPet->NPC_IsOwnedBy(m_pChar) )
 	{
 		pCharMaster->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_STABLEMASTER_TARG_OWNER));
-		return false;
+		return;
 	}
 	if ( pCharPet->IsStatFlag(STATF_Conjured) )
 	{
 		pCharMaster->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_STABLEMASTER_TARG_SUMMON));
-		return false;
+		return;
 	}
 
 	CItemContainer *pPetPack = pCharPet->GetContainer(LAYER_PACK);
 	if ( pPetPack && !pPetPack->IsEmpty() )
 	{
 		pCharMaster->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_STABLEMASTER_TARG_UNLOAD));
-		return false;
+		return;
 	}
 
 	// Shrink the pet and put it in the bank box of the stable master
@@ -1395,7 +1385,7 @@ bool CClient::OnTarg_Pet_Stable(CChar *pCharPet)
 	if ( !pPetItem )
 	{
 		pCharMaster->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_STABLEMASTER_TARG_FAIL));
-		return false;
+		return;
 	}
 
 	if ( IsSetOF(OF_PetSlots) )
@@ -1403,7 +1393,6 @@ bool CClient::OnTarg_Pet_Stable(CChar *pCharPet)
 
 	pCharMaster->GetContainerCreate(LAYER_BANKBOX)->ContentAdd(pPetItem);
 	pCharMaster->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_STABLEMASTER_TARG_SUCCESS));
-	return true;
 }
 
 //-----------------------------------------------------------------------
@@ -2282,18 +2271,17 @@ bool CClient::OnTarg_Use_Item(CObjBase *pObjTarg, CPointMap &pt, ITEMID_TYPE id)
 	return false;
 }
 
-bool CClient::OnTarg_Stone_Recruit(CChar *pChar, bool fFull)
+void CClient::OnTarg_Stone_Recruit(CChar *pChar, bool fFull)
 {
 	ADDTOCALLSTACK("CClient::OnTarg_Stone_Recruit");
 	// CLIMODE_TARG_STONE_RECRUIT / CLIMODE_TARG_STONE_RECRUITFULL
 
 	CItemStone *pStone = dynamic_cast<CItemStone *>(m_Targ_UID.ItemFind());
-	if ( !pStone )
-		return false;
-	return (pStone->AddRecruit(pChar, STONEPRIV_CANDIDATE, fFull) != NULL);
+	if ( pStone )
+		pStone->AddRecruit(pChar, STONEPRIV_CANDIDATE, fFull);
 }
 
-bool CClient::OnTarg_Party_Add(CChar *pChar)
+void CClient::OnTarg_Party_Add(CChar *pChar)
 {
 	ADDTOCALLSTACK("CClient::OnTarg_Party_Add");
 	// CLIMODE_TARG_PARTY_ADD
@@ -2302,17 +2290,17 @@ bool CClient::OnTarg_Party_Add(CChar *pChar)
 	if ( !pChar )
 	{
 		SysMessageDefault(DEFMSG_PARTY_TARG_ADD_ITEM);
-		return false;
+		return;
 	}
 	if ( pChar == m_pChar )
 	{
 		SysMessageDefault(DEFMSG_PARTY_TARG_ADD_SELF);
-		return false;
+		return;
 	}
 	if ( !pChar->m_pClient )
 	{
 		SysMessageDefault(DEFMSG_PARTY_TARG_ADD_NPC);
-		return false;
+		return;
 	}
 
 	if ( m_pChar->m_pParty )
@@ -2320,19 +2308,19 @@ bool CClient::OnTarg_Party_Add(CChar *pChar)
 		if ( !m_pChar->m_pParty->IsPartyMaster(m_pChar) )
 		{
 			SysMessageDefault(DEFMSG_PARTY_TARG_ADD_PERMISSION);
-			return false;
+			return;
 		}
 		if ( m_pChar->m_pParty->IsPartyFull() )
 		{
 			SysMessageDefault(DEFMSG_PARTY_TARG_ADD_FULL);
-			return false;
+			return;
 		}
 	}
 
 	if ( IsPriv(PRIV_GM) && (GetPrivLevel() >= pChar->m_pClient->GetPrivLevel()) )
 	{
 		CPartyDef::AcceptEvent(pChar, m_pChar, true);
-		return true;
+		return;
 	}
 
 	if ( pChar->m_pParty )
@@ -2340,33 +2328,33 @@ bool CClient::OnTarg_Party_Add(CChar *pChar)
 		if ( m_pChar->m_pParty == pChar->m_pParty )
 		{
 			SysMessageDefault(DEFMSG_PARTY_ALREADY_YOUR);
-			return true;
+			return;
 		}
 		else
 		{
 			SysMessageDefault(DEFMSG_PARTY_ALREADY_OTHER);
-			return false;
+			return;
 		}
 	}
 
 	if ( pChar->GetKeyNum("PARTY_AUTODECLINEINVITE") )
 	{
 		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_PARTY_DECLINE), pChar->GetName());
-		return false;
+		return;
 	}
 
 	CVarDefCont *pTagInvitetime = m_pChar->m_TagDefs.GetKey("PARTY_LASTINVITETIME");
 	if ( pTagInvitetime && (static_cast<UINT64>(pTagInvitetime->GetValNum()) + (5 * TICK_PER_SEC) > g_World.GetCurrentTime().GetTimeRaw()) )
 	{
 		SysMessageDefault(DEFMSG_PARTY_TARG_ADD_WAIT);
-		return false;
+		return;
 	}
 
 	if ( IsTrigUsed(TRIGGER_PARTYINVITE) )
 	{
 		CScriptTriggerArgs args;
 		if ( pChar->OnTrigger(CTRIG_PartyInvite, m_pChar, &args) == TRIGRET_RET_TRUE )
-			return false;
+			return;
 	}
 
 	m_pChar->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_PARTY_TARG_ADD_SUCCESS));
@@ -2376,22 +2364,21 @@ bool CClient::OnTarg_Party_Add(CChar *pChar)
 	m_pChar->SetKeyNum("PARTY_LASTINVITETIME", g_World.GetCurrentTime().GetTimeRaw());
 
 	new PacketPartyInvite(pChar->m_pClient, m_pChar);
-	return true;
 }
 
-bool CClient::OnTarg_Party_Remove(CChar *pChar)
+void CClient::OnTarg_Party_Remove(CChar *pChar)
 {
 	ADDTOCALLSTACK("CClient::OnTarg_Party_Remove");
 	// CLIMODE_TARG_PARTY_REMOVE
 	// Remove this char from the party
 
 	if ( !pChar || !pChar->m_pParty || !m_pChar || !m_pChar->m_pParty || !m_pChar->m_pParty->IsPartyMaster(m_pChar) )
-		return false;
+		return;
 
-	return m_pChar->m_pParty->RemoveMember(pChar, m_pChar);
+	m_pChar->m_pParty->RemoveMember(pChar, m_pChar);
 }
 
-bool CClient::OnTarg_GlobalChat_Add(CChar *pChar)
+void CClient::OnTarg_GlobalChat_Add(CChar *pChar)
 {
 	ADDTOCALLSTACK("CClient::OnTarg_GlobalChat_Add");
 	// CLIMODE_TARG_GLOBALCHAT_ADD
@@ -2400,43 +2387,42 @@ bool CClient::OnTarg_GlobalChat_Add(CChar *pChar)
 	if ( !CGlobalChat::IsVisible() )
 	{
 		SysMessage("You must enable Global Chat to request a friend.");
-		return false;
+		return;
 	}
 	if ( !pChar || !pChar->m_pPlayer || (pChar == m_pChar) )
 	{
 		SysMessage("Invalid target.");
-		return false;
+		return;
 	}
 	if ( !pChar->m_pClient )
 	{
 		SysMessage("Player currently unavailable.");
-		return false;
+		return;
 	}
 	if ( pChar->m_pPlayer->m_fRefuseGlobalChatRequests )		// TO-DO: also check if pChar is online on global chat -> CGlobalChat::IsVisible()
 	{
 		SysMessage("This user is not accepting Global Chat friend requests at this time.");
-		return false;
+		return;
 	}
 	/*if ( iFriendsCount >= 50 )		// TO-DO
 	{
 		SysMessage("You have reached your global chat friend limit.");
-		return false;
+		return;
 	}*/
 
 	if ( IsPriv(PRIV_GM) && (pChar->m_pClient->GetPrivLevel() < GetPrivLevel()) )
 	{
 		// TO-DO: auto-accept the request without send 'friend request' dialog
-		return true;
+		return;
 	}
 
 	CVarDefCont *pTagInviteTime = m_pChar->m_TagDefs.GetKey("GLOBALCHAT_LASTINVITETIME");
 	if ( pTagInviteTime && (g_World.GetCurrentTime().GetTimeRaw() < static_cast<UINT64>(pTagInviteTime->GetValNum())) )
 	{
 		SysMessage("You are unable to add new friends at this time. Please try again in a moment.");
-		return false;
+		return;
 	}
 	m_pChar->SetKeyNum("GLOBALCHAT_LASTINVITETIME", g_World.GetCurrentTime().GetTimeRaw() + (30 * TICK_PER_SEC));
 
 	// TO-DO: send 'friend request' dialog
-	return true;
 }

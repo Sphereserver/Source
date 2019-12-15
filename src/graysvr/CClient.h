@@ -510,23 +510,23 @@ private:
 	void Announce(bool fArrive) const;
 
 	// GM stuff
-	bool OnTarg_Obj_Set(CObjBase *pObj);
-	bool OnTarg_Obj_Info(CObjBase *pObj, const CPointMap &pt, ITEMID_TYPE id);
-	bool OnTarg_Obj_Function(CObjBase *pObj, const CPointMap &pt, ITEMID_TYPE id);
+	void OnTarg_Obj_Set(CObjBase *pObj);
+	void OnTarg_Obj_Info(CObjBase *pObj, const CPointMap &pt, ITEMID_TYPE id);
+	void OnTarg_Obj_Function(CObjBase *pObj, const CPointMap &pt, ITEMID_TYPE id);
 
-	bool OnTarg_UnExtract(CObjBase *pObj, const CPointMap &pt);
-	bool OnTarg_Stone_Recruit(CChar *pChar, bool fFull = false);
-	bool OnTarg_Char_Add(CObjBase *pObj, const CPointMap &pt);
-	bool OnTarg_Item_Add(CObjBase *pObj, CPointMap &pt);
-	bool OnTarg_Item_Link(CObjBase *pObj);
-	bool OnTarg_Tile(CObjBase *pObj, const CPointMap &pt);
+	void OnTarg_UnExtract(CObjBase *pObj, const CPointMap &pt);
+	void OnTarg_Stone_Recruit(CChar *pChar, bool fFull = false);
+	void OnTarg_Char_Add(CObjBase *pObj, const CPointMap &pt);
+	void OnTarg_Item_Add(CObjBase *pObj, CPointMap &pt);
+	void OnTarg_Item_Link(CObjBase *pObj);
+	void OnTarg_Tile(CObjBase *pObj, const CPointMap &pt);
 
 	// Player stuff
 	bool OnTarg_Use_Deed(CItem *pDeed, CPointMap &pt);
 	bool OnTarg_Use_Item(CObjBase *pObjTarg, CPointMap &pt, ITEMID_TYPE id);
-	bool OnTarg_Party_Add(CChar *pChar);
-	bool OnTarg_Party_Remove(CChar *pChar);
-	bool OnTarg_GlobalChat_Add(CChar *pChar);
+	void OnTarg_Party_Add(CChar *pChar);
+	void OnTarg_Party_Remove(CChar *pChar);
+	void OnTarg_GlobalChat_Add(CChar *pChar);
 	CItem *OnTarg_Use_Multi(const CItemBase *pItemDef, CPointMap &pt, DWORD dwAttr, HUE_TYPE wHue);
 
 	int OnSkill_AnimalLore(CGrayUID uid, bool fTest);
@@ -537,19 +537,19 @@ private:
 	int OnSkill_ItemID(CGrayUID uid, bool fTest);
 	int OnSkill_TasteID(CGrayUID uid, bool fTest);
 
-	bool OnTarg_Pet_Command(CObjBase *pObj, const CPointMap &pt);
-	bool OnTarg_Pet_Stable(CChar *pCharPet);
+	void OnTarg_Pet_Command(CObjBase *pObj, const CPointMap &pt);
+	void OnTarg_Pet_Stable(CChar *pCharPet);
 
 	// Commands from client
 	void Event_Talk_Common(TCHAR *szText);	// PC speech
 	bool Event_Command(LPCTSTR pszCommand, TALKMODE_TYPE mode = TALKMODE_SYSTEM);	// client entered a '/' command like /ADD
 
 public:
-	bool OnTarg_Skill(CObjBase *pObj);
-	bool OnTarg_Skill_Provoke(CObjBase *pObj);
-	bool OnTarg_Skill_Poison(CObjBase *pObj);
-	bool OnTarg_Skill_Herd_Dest(CObjBase *pObj, const CPointMap &pt);
-	bool OnTarg_Skill_Magery(CObjBase *pObj, const CPointMap &pt);
+	void OnTarg_Skill(CObjBase *pObj);
+	void OnTarg_Skill_Provoke(CObjBase *pObj);
+	void OnTarg_Skill_Poison(CObjBase *pObj);
+	void OnTarg_Skill_Herd_Dest(CObjBase *pObj, const CPointMap &pt);
+	void OnTarg_Skill_Magery(CObjBase *pObj, const CPointMap &pt);
 
 	void GetAdjustedCharID(const CChar *pChar, CREID_TYPE &id, HUE_TYPE &wHue) const;
 	void GetAdjustedItemID(const CChar *pChar, const CItem *pItem, ITEMID_TYPE &id, HUE_TYPE &wHue) const;
@@ -591,7 +591,7 @@ public:
 	TRIGRET_TYPE Menu_OnSelect(RESOURCE_ID_BASE rid, int iSelect, CObjBase *pObj);
 	TRIGRET_TYPE Dialog_OnButton(RESOURCE_ID_BASE rid, DWORD dwButtonID, CObjBase *pObj, CDialogResponseArgs *pArgs);
 
-	bool Login_Relay(WORD wRelay);		// relay player to a certain IP
+	void Login_Relay(WORD wRelay);		// relay player to a certain IP
 	BYTE Login_ServerList(LPCTSTR pszAccount, LPCTSTR pszPassword);		// initial login (Login on "loginserver", new format)
 
 	BYTE Setup_FillCharList(Packet *pPacket);	// write character list to packet
@@ -634,14 +634,14 @@ public:
 	// Low level message traffic
 	static size_t xCompress(BYTE *pOutput, const BYTE *pInput, size_t iInputLen);
 
-	bool xProcessClientSetup(CEvent *pEvent, size_t iLen);
+	void xProcessClientSetup(CEvent *pEvent, size_t iLen);
 	bool xPacketFilter(const BYTE *pData, size_t iLen = 0);
 	bool xOutPacketFilter(const BYTE *pData, size_t iLen = 0);
 	bool xCanEncLogin(bool fCheckCliver = false);	// login crypt check
 
 	// Low level push world data to the client
-	bool addRelay(const CServerDef *pServ);
-	bool addLoginErr(BYTE bCode);
+	void addRelay(const CServerDef *pServ);
+	void addLoginErr(BYTE bCode);
 
 	#define SF_UPDATE_HITS		0x1
 	#define SF_UPDATE_MANA		0x2
@@ -668,7 +668,7 @@ public:
 	void UpdateStats();
 	void UpdateFeatureFlags();
 	void UpdateCharacterListFlags();
-	bool addDeleteErr(BYTE bCode);
+	void addDeleteErr(BYTE bCode);
 	void addSeason(SEASON_TYPE season);
 	void addTime(bool fCurrent = false);
 	void closeUIWindow(DWORD dwWindowType, const CObjBase *pObj);
@@ -759,7 +759,7 @@ public:
 	void addSkillWindow(SKILL_TYPE skill, bool fFromInfo = false);
 	void addSpecialMoveClear();
 	void addBulletinBoard(const CItemContainer *pBoard);
-	bool addBBoardMessage(const CItemContainer *pBoard, BULLETINBOARD_TYPE action, CGrayUID uidMsg);
+	void addBBoardMessage(const CItemContainer *pBoard, BULLETINBOARD_TYPE action, CGrayUID uidMsg);
 
 	void addToolTip(const CObjBase *pObj, LPCTSTR pszText);
 	void addDrawMap(CItemMap *pMap);
@@ -771,7 +771,7 @@ public:
 	void addItemMenu(CLIMODE_TYPE mode, const CMenuItem *item, size_t iCount, CObjBase *pObj = NULL);
 	void addGumpDialog(CLIMODE_TYPE mode, const CGString *psControls, size_t iControls, const CGString *psText, size_t iTexts, DWORD x, DWORD y, CObjBase *pObj = NULL, DWORD rid = 0);
 
-	bool addGumpDialogProps(CObjBase *pObj);
+	void addGumpDialogProps(CObjBase *pObj);
 
 	void addLoginComplete();
 	void addChatSystemMessage(CHATMSG_TYPE type, LPCTSTR pszName1 = NULL, LPCTSTR pszName2 = NULL, CLanguageID lang = 0);
@@ -859,11 +859,10 @@ public:
 			return m_pAccount->GetResDisp();
 		return BYTE_MAX;
 	}
-	bool SetResDisp(BYTE bResDisp)
+	void SetResDisp(BYTE bResDisp)
 	{
 		if ( m_pAccount )
-			return m_pAccount->SetResDisp(bResDisp);
-		return false;
+			m_pAccount->SetResDisp(bResDisp);
 	}
 
 	void SetScreenSize(WORD x, WORD y)
@@ -893,7 +892,7 @@ public:
 	bool CanSee(const CObjBaseTemplate *pObj) const;
 	bool CanHear(const CObjBaseTemplate *pSrc, TALKMODE_TYPE mode) const;
 
-	bool Dialog_Setup(CLIMODE_TYPE mode, RESOURCE_ID_BASE rid, int iPage, CObjBase *pObj, LPCTSTR pszArgs = "");
+	void Dialog_Setup(CLIMODE_TYPE mode, RESOURCE_ID_BASE rid, int iPage, CObjBase *pObj, LPCTSTR pszArgs = "");
 	bool Dialog_Close(CObjBase *pObj, DWORD rid, DWORD dwButtonID);
 	void Menu_Setup(RESOURCE_ID_BASE rid, CObjBase *pObj = NULL);
 

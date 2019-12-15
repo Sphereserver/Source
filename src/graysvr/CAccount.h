@@ -186,12 +186,11 @@ public:
 	{
 		return m_ResDisp;
 	}
-	bool SetResDisp(BYTE bResDisp)
+	void SetResDisp(BYTE bResDisp)
 	{
 		m_ResDisp = bResDisp;
-		return true;
 	}
-	bool SetAutoResDisp(CClient *pClient);
+	void SetAutoResDisp(CClient *pClient);
 
 	void OnLogin(CClient *pClient);
 	void OnLogout(CClient *pClient, bool fWasChar = false);

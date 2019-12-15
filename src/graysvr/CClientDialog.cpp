@@ -593,23 +593,22 @@ bool CDialogDef::GumpSetup( int iPage, CClient * pClient, CObjBase * pObjSrc, LP
 	return true;
 }
 
-
-bool CClient::Dialog_Setup( CLIMODE_TYPE mode, RESOURCE_ID_BASE rid, int iPage, CObjBase * pObj, LPCTSTR Arguments )
+void CClient::Dialog_Setup( CLIMODE_TYPE mode, RESOURCE_ID_BASE rid, int iPage, CObjBase * pObj, LPCTSTR Arguments )
 {
 	ADDTOCALLSTACK("CClient::Dialog_Setup");
 	if ( !pObj )
-		return false;
+		return;
 
 	CResourceDef *pRes = g_Cfg.ResourceGetDef(rid);
 	CDialogDef *pDlg = dynamic_cast<CDialogDef *>(pRes);
 	if ( !pDlg )
 	{
 		DEBUG_ERR(("Invalid RES_DIALOG\n"));
-		return false;
+		return;
 	}
 
 	if ( !pDlg->GumpSetup(iPage, this, pObj, Arguments) )
-		return false;
+		return;
 
 	// Now pack it up to send,
 	// m_tmGumpDialog.m_ResourceID = rid;
@@ -624,7 +623,6 @@ bool CClient::Dialog_Setup( CLIMODE_TYPE mode, RESOURCE_ID_BASE rid, int iPage, 
 	}
 
 	addGumpDialog(mode, pDlg->m_sControls, pDlg->m_iControls, pDlg->m_sText, pDlg->m_iTexts, pDlg->m_x, pDlg->m_y, pObj, context);
-	return true;
 }
 
 
@@ -672,20 +670,19 @@ void CClient::addGumpDialog(CLIMODE_TYPE mode, const CGString *psControls, size_
 		++m_mapOpenedGumps[context];
 }
 
-bool CClient::addGumpDialogProps(CObjBase *pObj)
+void CClient::addGumpDialogProps(CObjBase *pObj)
 {
 	ADDTOCALLSTACK("CClient::addGumpDialogProps");
 	// Open object properties dialog
 	if ( !pObj )
-		return false;
+		return;
 
 	RESOURCE_ID rid = g_Cfg.ResourceGetIDType(RES_DIALOG, pObj->IsItem() ? "d_ITEMPROP1" : "d_CHARPROP1");
 	if ( !rid.IsValidUID() )
-		return false;
+		return;
 
 	m_Prop_UID = m_Targ_UID = pObj->GetUID();
 	Dialog_Setup(CLIMODE_DIALOG, rid, 0, pObj);
-	return true;
 }
 
 TRIGRET_TYPE CClient::Dialog_OnButton(RESOURCE_ID_BASE rid, DWORD dwButtonID, CObjBase *pObj, CDialogResponseArgs *pArgs)

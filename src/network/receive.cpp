@@ -1214,8 +1214,7 @@ bool PacketCharPlay::onReceive(NetState* net)
 	DWORD slot = readInt32();
 	skip(4);	// IP
 
-	BYTE err = client->Setup_Play(slot);
-	client->addLoginErr(err);
+	client->addLoginErr(client->Setup_Play(slot));
 	return true;
 }
 
@@ -1686,8 +1685,7 @@ bool PacketServersReq::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 
-	BYTE lErr = client->Login_ServerList(acctname, acctpass);
-	client->addLoginErr(lErr);
+	client->addLoginErr(client->Login_ServerList(acctname, acctpass));
 	return true;
 }
 
@@ -1714,8 +1712,10 @@ bool PacketCharDelete::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 
-	BYTE err = client->Setup_Delete(slot);
-	client->addDeleteErr(err);
+	BYTE bCode = client->Setup_Delete(slot);
+	if ( bCode != PacketDeleteError::Success )
+		client->addDeleteErr(bCode);
+
 	new PacketCharacterListUpdate(client);
 	return true;
 }

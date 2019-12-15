@@ -621,31 +621,32 @@ PLEVEL_TYPE CAccount::GetPrivLevelText(LPCTSTR pszFlags)	// static
 	return static_cast<PLEVEL_TYPE>(iPlevel);
 }
 
-bool CAccount::SetAutoResDisp(CClient *pClient)
+void CAccount::SetAutoResDisp(CClient *pClient)
 {
 	ADDTOCALLSTACK("CAccount::SetAutoResDisp");
 	// Set account RESDISP automatically based on player's client version
 	if ( !pClient )
-		return false;
+		return;
 
+	BYTE bResDisp = RDS_NONE;
 	if ( pClient->m_NetState->isClientVersion(MINCLIVER_TOL) )
-		return SetResDisp(RDS_TOL);
+		bResDisp = RDS_TOL;
 	else if ( pClient->m_NetState->isClientVersion(MINCLIVER_HS) )
-		return SetResDisp(RDS_HS);
+		bResDisp = RDS_HS;
 	else if ( pClient->m_NetState->isClientVersion(MINCLIVER_SA) )
-		return SetResDisp(RDS_SA);
+		bResDisp = RDS_SA;
 	else if ( pClient->m_NetState->isClientVersion(MINCLIVER_ML) )
-		return SetResDisp(RDS_ML);
+		bResDisp = RDS_ML;
 	else if ( pClient->m_NetState->isClientVersion(MINCLIVER_SE) )
-		return SetResDisp(RDS_SE);
+		bResDisp = RDS_SE;
 	else if ( pClient->m_NetState->isClientVersion(MINCLIVER_AOS) )
-		return SetResDisp(RDS_AOS);
+		bResDisp = RDS_AOS;
 	else if ( pClient->m_NetState->isClientVersion(MINCLIVER_LBR) )
-		return SetResDisp(RDS_LBR);
+		bResDisp = RDS_LBR;
 	else if ( pClient->m_NetState->isClientVersion(MINCLIVER_T2A) )
-		return SetResDisp(RDS_T2A);
-	else
-		return SetResDisp(RDS_NONE);
+		bResDisp = RDS_T2A;
+
+	SetResDisp(bResDisp);
 }
 
 void CAccount::OnLogin(CClient *pClient)
