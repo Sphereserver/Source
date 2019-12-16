@@ -41,7 +41,7 @@ void CChar::Stat_SetMod(STAT_TYPE stat, int iVal)
 		if ( (stat >= STAT_STR) && (stat <= STAT_DEX) )
 		{
 			CScriptTriggerArgs args;
-			args.m_iN1 = static_cast<INT64>(stat) + 8;		// shift by 8 to indicate modSTR, modINT, modDEX
+			args.m_iN1 = static_cast<INT64>(stat) + 8;		// shift by 8 to indicate MOD*
 			args.m_iN2 = iStatVal;
 			args.m_iN3 = iVal;
 			if ( OnTrigger(CTRIG_StatChange, this, &args) == TRIGRET_RET_TRUE )
@@ -55,7 +55,7 @@ void CChar::Stat_SetMod(STAT_TYPE stat, int iVal)
 
 	if ( (stat == STAT_STR) && (iVal < iStatVal) )
 	{
-		// ModSTR is being decreased, so check if the char still have enough STR to use current equipped items
+		// ModSTR got decreased, so check if the char still have enough STR to use current equipped items
 		CItem *pItemNext = NULL;
 		for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItemNext )
 		{
@@ -132,7 +132,7 @@ void CChar::Stat_SetMax(STAT_TYPE stat, int iVal)
 			if ( (stat >= STAT_STR) && (stat <= STAT_FOOD) )		// only STR, DEX, INT, FOOD fire MaxHits, MaxMana, MaxStam, MaxFood for @StatChange
 			{
 				CScriptTriggerArgs args;
-				args.m_iN1 = static_cast<INT64>(stat) + 4;		// shift by 4 to indicate MaxHits, etc..
+				args.m_iN1 = static_cast<INT64>(stat) + 4;		// shift by 4 to indicate MAX*
 				args.m_iN2 = Stat_GetMax(stat);
 				args.m_iN3 = iVal;
 				if ( OnTrigger(CTRIG_StatChange, this, &args) == TRIGRET_RET_TRUE )
@@ -266,7 +266,7 @@ void CChar::Stat_SetBase(STAT_TYPE stat, int iVal)
 
 			if ( (stat != STAT_FOOD) && (m_Stat[stat].m_max < 1) ) // MaxFood cannot depend on something, otherwise if the Stat depends on STR, INT, DEX, fire MaxHits, MaxMana, MaxStam
 			{
-				args.m_iN1 = static_cast<INT64>(stat) + 4; // Shift by 4 to indicate MaxHits, MaxMana, MaxStam
+				args.m_iN1 = stat;
 				args.m_iN2 = iStatVal;
 				args.m_iN3 = iVal;
 				if ( OnTrigger(CTRIG_StatChange, this, &args) == TRIGRET_RET_TRUE )
@@ -277,46 +277,27 @@ void CChar::Stat_SetBase(STAT_TYPE stat, int iVal)
 			}
 		}
 	}
-	switch ( stat )
+
+	if ( stat == STAT_KARMA )
 	{
-		case STAT_STR:
-		{
-			CCharBase *pCharDef = Char_GetDef();
-			if ( pCharDef && !pCharDef->m_Str )
-				pCharDef->m_Str = iVal;
-			break;
-		}
-		case STAT_INT:
-		{
-			CCharBase *pCharDef = Char_GetDef();
-			if ( pCharDef && !pCharDef->m_Int )
-				pCharDef->m_Int = iVal;
-			break;
-		}
-		case STAT_DEX:
-		{
-			CCharBase *pCharDef = Char_GetDef();
-			if ( pCharDef && !pCharDef->m_Dex )
-				pCharDef->m_Dex = iVal;
-			break;
-		}
-		case STAT_FOOD:
-			break;
-		case STAT_KARMA:
-			iVal = maximum(g_Cfg.m_iMinKarma, minimum(g_Cfg.m_iMaxKarma, iVal));
-			break;
-		case STAT_FAME:
-			iVal = maximum(0, minimum(g_Cfg.m_iMaxFame, iVal));
-			break;
-		default:
-			throw CGrayError(LOGL_CRIT, 0, "Stat_SetBase: index out of range");
+		if ( iVal < g_Cfg.m_iMinKarma )
+			iVal = g_Cfg.m_iMinKarma;
+		else if ( iVal > g_Cfg.m_iMaxKarma )
+			iVal = g_Cfg.m_iMaxKarma;
+	}
+	else if ( stat == STAT_FAME )
+	{
+		if ( iVal < 0 )
+			iVal = 0;
+		else if ( iVal > g_Cfg.m_iMaxFame )
+			iVal = g_Cfg.m_iMaxFame;
 	}
 
 	m_Stat[stat].m_base = iVal;
 
 	if ( (stat == STAT_STR) && (iVal < iStatVal) )
 	{
-		// STR is being decreased, so check if the char still have enough STR to use current equipped items
+		// STR got decreased, so check if the char still have enough STR to use current equipped items
 		CItem *pItemNext = NULL;
 		for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItemNext )
 		{

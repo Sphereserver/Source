@@ -385,15 +385,18 @@ void CClient::Event_Item_Drop(CItem *pItem, CPointMap pt, CGrayUID uidOn, BYTE g
 				{
 					if ( pItemOn->IsTypeSpellbook() )
 					{
-						if ( pItemOn->AddSpellbookScroll(pItem) )
+						if ( pItem->IsType(IT_SCROLL) && pItemOn->AddSpellbookSpell(static_cast<SPELL_TYPE>(pItem->m_itSpell.m_spell), true) )
 						{
-							SysMessageDefault(DEFMSG_CANT_ADD_SPELLBOOK);
-							return Event_Item_Drop_Fail(pItem);
+							pItem->ConsumeAmount(1);
+							pItemOn->UpdatePropertyFlag();
 						}
+						else
+							SysMessageDefault(DEFMSG_CANT_ADD_SPELLBOOK);
 
-						addSound(SOUND_USE_CLOTH, pItemOn);
 						if ( pItem )	// bounce remaining scrolls amount on backpack
 							Event_Item_Drop_Fail(pItem);
+
+						addSound(pItem->GetDropSound(pObjOn));
 						return;
 					}
 				}

@@ -1690,8 +1690,8 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 				wMagicResist = minimum(Skill_GetBase(SKILL_MAGICRESISTANCE), 350 - (Skill_GetBase(SKILL_INSCRIPTION) / 20));
 
 				pSpell->m_itSpell.m_spelllevel = wStatEffect;
-				pSpell->m_itSpell.m_PolyStr = static_cast<int>(wPhysicalResist);
-				pSpell->m_itSpell.m_PolyDex = static_cast<int>(wMagicResist);
+				pSpell->m_itSpell.m_PolyStr = wPhysicalResist;
+				pSpell->m_itSpell.m_PolyDex = wMagicResist;
 
 				m_ResPhysical -= wPhysicalResist;
 				m_FasterCasting -= 2;

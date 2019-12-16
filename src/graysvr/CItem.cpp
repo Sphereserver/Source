@@ -1038,9 +1038,10 @@ SOUND_TYPE CItem::GetDropSound(const CObjBase *pObjOn) const
 {
 	ADDTOCALLSTACK("CItem::GetDropSound");
 	// Try get drop sound from item
-	SOUND_TYPE iSnd = static_cast<SOUND_TYPE>(GetDefNum("DROPSOUND", true));
-	if ( iSnd )
-		return iSnd;
+
+	CVarDefCont *pVar = GetDefKey("DROPSOUND", true);
+	if ( pVar )
+		return static_cast<SOUND_TYPE>(pVar->GetValNum());
 
 	if ( IsType(IT_GOLD) || IsType(IT_COIN) )
 	{
@@ -1059,7 +1060,7 @@ SOUND_TYPE CItem::GetDropSound(const CObjBase *pObjOn) const
 		const CItemContainer *pCont = dynamic_cast<const CItemContainer *>(pObjOn);
 		if ( pCont )
 		{
-			iSnd = pCont->GetDropSound();
+			SOUND_TYPE iSnd = pCont->GetDropSound();
 			if ( iSnd )
 				return iSnd;
 		}
@@ -2042,7 +2043,7 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 			{
 				if ( !IsTypeSpellbook() )
 					return false;
-				sVal.FormatLLVal(GetSpellcountInBook());
+				sVal.FormatUVal(GetSpellcountInBook());
 			}
 			break;
 		case IC_ADDSPELL:
@@ -2338,35 +2339,34 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 				return false;
 			break;
 		case IC_ADDCIRCLE:
+		{
+			if ( !IsTypeSpellbook() )
+				return false;
+
+			INT64 piVal[2];
+			size_t iQty = Str_ParseCmds(s.GetArgStr(), piVal, COUNTOF(piVal), " ,\t");
+			if ( iQty < 1 )
+				return false;
+
+			bool fIncludeLower = (iQty > 1) ? (piVal[1] != 0) : false;
+			for ( int iCircle = piVal[0]; iCircle > 0; --iCircle )
 			{
-				TCHAR	*ppVal[2];
-				size_t amount = Str_ParseCmds(s.GetArgStr(), ppVal, COUNTOF(ppVal), " ,\t");
-				bool includeLower = 0;
-				int addCircle = 0;
+				for ( int iSpell = 1; iSpell < 9; ++iSpell )
+					AddSpellbookSpell(static_cast<SPELL_TYPE>(RES_GET_INDEX(((iCircle - 1) * 8) + iSpell)), false);
 
-				if ( amount <= 0 ) return false;
-				if ( amount > 1 ) includeLower = (ATOI(ppVal[1]) != 0);
-
-				for ( addCircle = ATOI(ppVal[0]); addCircle; addCircle-- )
-				{
-					for ( int i = 1; i < 9; i++ )
-					{
-						AddSpellbookSpell(static_cast<SPELL_TYPE>(RES_GET_INDEX(((addCircle - 1) * 8) + i)), false);
-					}
-
-					if ( includeLower == false )
-						break;
-				}
-				return true;
+				if ( !fIncludeLower )
+					break;
 			}
+			break;
+		}
 		case IC_ADDSPELL:
-			// Add this spell to the i_spellbook.
-			{
-				SPELL_TYPE spell = static_cast<SPELL_TYPE>(RES_GET_INDEX(s.GetArgVal()));
-				if (AddSpellbookSpell(spell, false))
-					return(false);
-				return(true);
-			}
+		{
+			if ( !IsTypeSpellbook() )
+				return false;
+
+			AddSpellbookSpell(static_cast<SPELL_TYPE>(RES_GET_INDEX(s.GetArgVal())), false);
+			break;
+		}
 		case IC_AMOUNT:
 			SetAmountUpdate(static_cast<WORD>(s.GetArgVal()));
 			return true;
@@ -3303,21 +3303,6 @@ DWORD CItem::ConsumeAmount( DWORD dwQty, bool fTest )
 	return dwQtyMax;
 }
 
-SPELL_TYPE CItem::GetScrollSpell() const
-{
-	ADDTOCALLSTACK("CItem::GetScrollSpell");
-	// Given a scroll type. what spell is this ?
-	for (size_t i = SPELL_Clumsy; i < g_Cfg.m_SpellDefs.GetCount(); i++)
-	{
-		const CSpellDef * pSpellDef = g_Cfg.GetSpellDef(static_cast<SPELL_TYPE>(i));
-		if ( pSpellDef == NULL || pSpellDef->m_idScroll == ITEMID_NOTHING )
-			continue;
-		if ( GetID() == pSpellDef->m_idScroll )
-			return static_cast<SPELL_TYPE>(i);
-	}
-	return( SPELL_NONE );
-}
-
 bool CItem::IsSpellInBook( SPELL_TYPE spell ) const
 {
 	ADDTOCALLSTACK("CItem::IsSpellInBook");
@@ -3333,78 +3318,60 @@ bool CItem::IsSpellInBook( SPELL_TYPE spell ) const
 		return ((m_itSpellbook.m_spells1 & (1 << i)) != 0);
 	else if ( i < 64 )
 		return ((m_itSpellbook.m_spells2 & (1 << (i-32))) != 0);
-	//else if ( i < 96 )
-	//	return ((m_itSpellbook.m_spells2 & (1 << (i-64))) != 0);	//not used anymore?
 	else
 		return false;
 }
 
-int CItem::GetSpellcountInBook() const
+BYTE CItem::GetSpellcountInBook() const
 {
 	ADDTOCALLSTACK("CItem::GetSpellcountInBook");
-	// -1 = can't count
-	// n = number of spells
-
-	if ( !IsTypeSpellbook() )
-		return -1;
 
 	CItemBase *pItemDef = Item_GetDef();
-	if ( !pItemDef )
-		return -1;
+	if ( !pItemDef || !IsTypeSpellbook() )
+		return 0;
 
-	DWORD min = pItemDef->m_ttSpellbook.m_Offset + 1;
-	DWORD max = pItemDef->m_ttSpellbook.m_Offset + pItemDef->m_ttSpellbook.m_MaxSpells;
+	DWORD dwMin = pItemDef->m_ttSpellbook.m_Offset + 1;
+	DWORD dwMax = pItemDef->m_ttSpellbook.m_Offset + pItemDef->m_ttSpellbook.m_MaxSpells;
 
-	int count = 0;
-	for ( DWORD i = min; i <= max; i++ )
+	int iCount = 0;
+	for ( DWORD i = dwMin; i <= dwMax; ++i )
 	{
 		if ( IsSpellInBook(static_cast<SPELL_TYPE>(i)) )
-			count++;
+			++iCount;
 	}
-
-	return count;
+	return iCount;
 }
 
-int CItem::AddSpellbookSpell( SPELL_TYPE spell, bool fUpdate )
+bool CItem::AddSpellbookSpell(SPELL_TYPE spell, bool fUpdate)
 {
 	ADDTOCALLSTACK("CItem::AddSpellbookSpell");
-	// Add  this scroll to the spellbook.
-	// 0 = added.
-	// 1 = already here.
-	// 2 = not a scroll i know about.
-	// 3 = not a valid spellbook
+	// Add spell to the spellbook
 
-	if ( !IsTypeSpellbook() )
-		return 3;
 	const CItemBase *pBookDef = Item_GetDef();
 	if ( !pBookDef )
-		return 3;
-	if ( spell <= static_cast<SPELL_TYPE>(pBookDef->m_ttSpellbook.m_Offset) )
-		return 3;
+		return false;
+
 	const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(spell);
 	if ( !pSpellDef )
-		return 2;
+		return false;
+	if ( spell <= static_cast<SPELL_TYPE>(pBookDef->m_ttSpellbook.m_Offset) )
+		return false;
 	if ( IsSpellInBook(spell) )
-		return 1;
+		return false;
 
 	// Add spell to spellbook bitmask
 	int i = spell - (pBookDef->m_ttSpellbook.m_Offset + 1);
 	if ( i < 32 )
 		m_itSpellbook.m_spells1 |= (1 << i);
 	else if ( i < 64 )
-		m_itSpellbook.m_spells2 |= (1 << (i-32));
-	//else if ( i < 96 )
-	//	m_itSpellbook.m_spells3 |= (1 << (i-64));	//not used anymore?
+		m_itSpellbook.m_spells2 |= (1 << (i - 32));
 	else
-		return 3;
+		return false;
 
-	if ( GetTopLevelObj()->IsChar() )
-	{
-		// Intercepting the spell's addition here for NPCs, they store the spells on vector <Spells>m_spells for better access from their AI
-		CCharNPC *pNPC = static_cast<CObjBase *>(GetTopLevelObj())->GetUID().CharFind()->m_pNPC;
-		if ( pNPC )
-			pNPC->Spells_Add(spell);
-	}
+	// NPCs should also store the spell as char property for faster AI reading
+	CChar *pChar = dynamic_cast<CChar *>(GetTopLevelObj());
+	if ( pChar && pChar->m_pNPC )
+		pChar->m_pNPC->Spells_Add(spell);
 
 	if ( fUpdate )
 	{
@@ -3420,25 +3387,7 @@ int CItem::AddSpellbookSpell( SPELL_TYPE spell, bool fUpdate )
 			cmd.send(pClient);
 		}
 	}
-
-	UpdatePropertyFlag();
-	return 0;
-}
-
-int CItem::AddSpellbookScroll( CItem * pItem )
-{
-	ADDTOCALLSTACK("CItem::AddSpellbookScroll");
-	// Add  this scroll to the spellbook.
-	// 0 = added.
-	// 1 = already here.
-	// 2 = not a scroll i know about.
-
-	ASSERT(pItem);
-	int iRet = AddSpellbookSpell( pItem->GetScrollSpell(), true );
-	if ( iRet )
-		return( iRet );
-	pItem->ConsumeAmount(1);	// we only need 1 scroll.
-	return( 0 );
+	return true;
 }
 
 void CItem::Flip()
@@ -3505,13 +3454,6 @@ bool CItem::Use_Portculis()
 	MoveToUpdate(pt);
 	Sound(iSnd);
 	return true;
-}
-
-SOUND_TYPE CItem::Use_Music( bool fWell ) const
-{
-	ADDTOCALLSTACK("CItem::Use_Music");
-	const CItemBase * pItemDef = Item_GetDef();
-	return( static_cast<SOUND_TYPE>(fWell ? ( pItemDef->m_ttMusical.m_iSoundGood ) : ( pItemDef->m_ttMusical.m_iSoundBad )));
 }
 
 bool CItem::Use_DoorNew(bool fJustOpen)
@@ -3845,9 +3787,7 @@ SOUND_TYPE CItem::Weapon_GetSoundHit() const
 	// Get weapon hit sound
 
 	CVarDefCont *pVar = GetDefKey("AMMOSOUNDHIT", true);
-	if ( pVar )
-		return static_cast<SOUND_TYPE>(pVar->GetValNum());
-	return SOUND_NONE;
+	return pVar ? static_cast<SOUND_TYPE>(pVar->GetValNum()) : SOUND_NONE;
 }
 
 SOUND_TYPE CItem::Weapon_GetSoundMiss() const
@@ -3856,9 +3796,7 @@ SOUND_TYPE CItem::Weapon_GetSoundMiss() const
 	// Get weapon miss sound
 
 	CVarDefCont *pVar = GetDefKey("AMMOSOUNDMISS", true);
-	if ( pVar )
-		return static_cast<SOUND_TYPE>(pVar->GetValNum());
-	return SOUND_NONE;
+	return pVar ? static_cast<SOUND_TYPE>(pVar->GetValNum()) : SOUND_NONE;
 }
 
 void CItem::Weapon_GetRangedAmmoAnim(ITEMID_TYPE &id, DWORD &dwHue, DWORD &dwRender)
@@ -4130,13 +4068,6 @@ LPCTSTR CItem::Use_SpyGlass( CChar * pUser ) const
 		strncat(pResult, sSearch, MAX_TALK_BUFFER - 1);
 	}
 	return pResult;
-}
-
-LPCTSTR CItem::Use_Sextant(CPointMap ptCoords) const
-{
-	ADDTOCALLSTACK("CItem::Use_Sextant");
-	// IT_SEXTANT
-	return g_Cfg.Calc_MaptoSextant(ptCoords);
 }
 
 bool CItem::Use_Light()

@@ -289,13 +289,13 @@ CChar::CChar(CREID_TYPE id) : CObjBase(false)
 
 	for ( size_t i = 0; i < STAT_QTY; ++i )
 	{
-		Stat_SetBase(static_cast<STAT_TYPE>(i), 0);
-		Stat_SetMod(static_cast<STAT_TYPE>(i), 0);
-		Stat_SetVal(static_cast<STAT_TYPE>(i), 0);
-		Stat_SetMax(static_cast<STAT_TYPE>(i), 0);
+		m_Stat[i].m_base = 0;
+		m_Stat[i].m_mod = 0;
+		m_Stat[i].m_val = 0;
+		m_Stat[i].m_max = 0;
 		m_Stat[i].m_regen = 0;
 	}
-	Stat_SetVal(STAT_FOOD, Stat_GetMax(STAT_FOOD));
+	m_Stat[STAT_FOOD].m_base = Stat_GetMax(STAT_FOOD);
 
 	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; ++i )
 		m_Skill[i] = 0;

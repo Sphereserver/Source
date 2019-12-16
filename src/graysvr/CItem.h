@@ -235,8 +235,8 @@ public:
 		// IT_LAVA
 		struct
 		{
-			int m_PolyStr;				// more1l = polymorph effect of this (on strength)
-			int m_PolyDex;				// more1h = polymorph effect of this (on dex)
+			WORD m_PolyStr;				// more1l = polymorph effect of this (on strength)
+			WORD m_PolyDex;				// more1h = polymorph effect of this (on dex)
 			int m_spellcharges;			// more2 = not sure how used here
 			WORD m_spell;				// morex = SPELL_TYPE = The magic spell cast on this (daemons breath)(boots of strength) etc
 			WORD m_spelllevel;			// morey = 0-1000=level of the spell
@@ -860,17 +860,13 @@ public:
 
 	void ConvertBolttoCloth();
 
-	SPELL_TYPE GetScrollSpell() const;
 	bool IsSpellInBook(SPELL_TYPE spell) const;
-	int GetSpellcountInBook() const;
-	int AddSpellbookScroll(CItem *pItem);
-	int AddSpellbookSpell(SPELL_TYPE spell, bool fUpdate);
+	BYTE GetSpellcountInBook() const;
+	bool AddSpellbookSpell(SPELL_TYPE spell, bool fUpdate);
 
 	bool Use_Door(bool fJustOpen);
 	bool Use_DoorNew(bool fJustOpen);
 	bool Use_Portculis();
-
-	SOUND_TYPE Use_Music(bool fWell) const;
 
 	bool SetMagicLock(CChar *pCharSrc, int iSkillLevel);
 	void SetSwitchState();
@@ -879,7 +875,6 @@ public:
 	bool Use_Light();
 	int Use_LockPick(CChar *pCharSrc, bool fTest, bool fFail);
 	LPCTSTR Use_SpyGlass(CChar *pUser) const;
-	LPCTSTR Use_Sextant(CPointMap ptCoords) const;
 
 	bool IsBookWritable() const
 	{

@@ -606,8 +606,9 @@ int CChar::Use_PlayMusic(CItem *pItem, int iDifficultyToPlay)
 		}
 	}
 
+	const CItemBase *pItemDef = pItem->Item_GetDef();
 	bool fSuccess = Skill_UseQuick(SKILL_MUSICIANSHIP, iDifficultyToPlay, (Skill_GetActive() != SKILL_MUSICIANSHIP));
-	Sound(pItem->Use_Music(fSuccess));
+	Sound(fSuccess ? static_cast<SOUND_TYPE>(pItemDef->m_ttMusical.m_iSoundGood) : static_cast<SOUND_TYPE>(pItemDef->m_ttMusical.m_iSoundBad));
 	if ( fSuccess )
 		return iDifficultyToPlay;	// success
 
@@ -1565,7 +1566,7 @@ int CChar::Do_Use_Item(CItem *pItem, bool fLink)
 			else
 			{
 				TCHAR *pszMsg = Str_GetTemp();
-				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SEXTANT), m_pArea->GetName(), pItem->Use_Sextant(GetTopPoint()));
+				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SEXTANT), m_pArea->GetName(), g_Cfg.Calc_MaptoSextant(GetTopPoint()));
 				ObjMessage(pszMsg, this);
 			}
 			return true;

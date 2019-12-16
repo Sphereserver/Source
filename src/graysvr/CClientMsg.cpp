@@ -3191,7 +3191,7 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 						case IT_SPELLBOOK_MASTERY:
 						{
 							m_TooltipData.Add(t = new CClientTooltip(1042886)); // ~1_NUMBERS_OF_SPELLS~ Spells
-							t->FormatArgs("%d", pItem->GetSpellcountInBook());
+							t->FormatArgs("%hhu", pItem->GetSpellcountInBook());
 							break;
 						}
 
