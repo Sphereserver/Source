@@ -36,7 +36,6 @@ CResource::CResource()
 
 	// Account
 	m_iDeadSocketTime = 5 * 60 * TICK_PER_SEC;
-	m_iArriveDepartMsg = 1;
 	m_iClientsMax = FD_SETSIZE - 1;
 	m_iClientsMaxIP = 16;
 	m_iConnectingMax = 32;
@@ -76,7 +75,6 @@ CResource::CResource()
 	m_fVendorTradeTitle = true;
 	m_fFlipDroppedItems = true;
 	m_iItemsMaxAmount = 60000;
-	m_fCanUndressPets = true;
 	m_fMonsterFight = false;
 	m_fMonsterFear = false;
 	m_iBankIMax = 1000;
@@ -249,7 +247,6 @@ CResource::CResource()
 	m_bAllowLightOverride = true;
 	m_sZeroPoint = "1323,1624,0";
 	m_bAllowBuySellAgent = false;
-	m_bAllowNewbTransfer = false;
 
 	m_NPCNoFameTitle = true;
 
@@ -360,10 +357,8 @@ enum RC_TYPE
 	RC_ADVANCEDLOS,					// m_iAdvancedLos
 	RC_ALLOWBUYSELLAGENT,			// m_bAllowBuySellAgent
 	RC_ALLOWLIGHTOVERRIDE,			// m_bAllowLightOverride
-	RC_ALLOWNEWBTRANSFER,			// m_bAllowNewbTransfer
 	RC_ARCHERYMAXDIST,				// m_iArcheryMaxDist
 	RC_ARCHERYMINDIST,				// m_iArcheryMinDist
-	RC_ARRIVEDEPARTMSG,				// m_iArriveDepartMsg
 	RC_ATTACKERTIMEOUT,				// m_iAttackerTimeout
 	RC_ATTACKINGISACRIME,			// m_fAttackingIsACrime
 	RC_AUTOACCOUNTCREATION,			// m_fAutoAccountCreation
@@ -373,7 +368,6 @@ enum RC_TYPE
 	RC_BANKMAXITEMS,				// m_iBankIMax
 	RC_BANKMAXWEIGHT,				// m_iBankWMax
 	RC_BUILD,
-	RC_CANUNDRESSPETS,				// m_fCanUndressPets
 	RC_CHARTAGS,					// m_fCharTags
 	RC_CHATFLAGS,					// m_iChatFlags
 	RC_CHATSTATICCHANNELS,			// m_sChatStaticChannels
@@ -582,10 +576,8 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY + 1] =
 	{"ADVANCEDLOS",					{ELEM_INT,		OFFSETOF(CResource, m_iAdvancedLos),					0}},
 	{"ALLOWBUYSELLAGENT",			{ELEM_BOOL,		OFFSETOF(CResource, m_bAllowBuySellAgent),				0}},
 	{"ALLOWLIGHTOVERRIDE",			{ELEM_BOOL,		OFFSETOF(CResource, m_bAllowLightOverride),				0}},
-	{"ALLOWNEWBTRANSFER",			{ELEM_BOOL,		OFFSETOF(CResource, m_bAllowNewbTransfer),				0}},
 	{"ARCHERYMAXDIST",				{ELEM_INT,		OFFSETOF(CResource, m_iArcheryMaxDist),					0}},
 	{"ARCHERYMINDIST",				{ELEM_INT,		OFFSETOF(CResource, m_iArcheryMinDist),					0}},
-	{"ARRIVEDEPARTMSG",				{ELEM_INT,		OFFSETOF(CResource, m_iArriveDepartMsg),				0}},
 	{"ATTACKERTIMEOUT",				{ELEM_INT,		OFFSETOF(CResource, m_iAttackerTimeout),				0}},
 	{"ATTACKINGISACRIME",			{ELEM_BOOL,		OFFSETOF(CResource, m_fAttackingIsACrime),				0}},
 	{"AUTOACCOUNTCREATION",			{ELEM_BOOL,		OFFSETOF(CResource, m_fAutoAccountCreation),			0}},
@@ -595,7 +587,6 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY + 1] =
 	{"BANKMAXITEMS",				{ELEM_DWORD,	OFFSETOF(CResource, m_iBankIMax),						0}},
 	{"BANKMAXWEIGHT",				{ELEM_INT,		OFFSETOF(CResource, m_iBankWMax),						0}},
 	{"BUILD",						{ELEM_VOID,		0,														0}},
-	{"CANUNDRESSPETS",				{ELEM_BOOL,		OFFSETOF(CResource, m_fCanUndressPets),					0}},
 	{"CHARTAGS",					{ELEM_BOOL,		OFFSETOF(CResource, m_fCharTags),						0}},
 	{"CHATFLAGS",					{ELEM_INT,		OFFSETOF(CResource, m_iChatFlags),						0}},
 	{"CHATSTATICCHANNELS",			{ELEM_CSTRING,	OFFSETOF(CResource, m_sChatStaticChannels),				0}},

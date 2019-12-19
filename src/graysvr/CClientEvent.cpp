@@ -288,11 +288,7 @@ void CClient::Event_Item_Drop(CItem *pItem, CPointMap pt, CGrayUID uidOn, BYTE g
 				return Event_Item_Drop_Fail(pItem);
 
 			if ( pCharTop->m_pNPC )
-			{
 				pItem->ClrAttr(ATTR_OWNED);
-				if ( !g_Cfg.m_bAllowNewbTransfer )
-					pItem->ClrAttr(ATTR_NEWBIE|ATTR_BLESSED|ATTR_INSURED);
-			}
 
 			CItemContainer *pBankBox = pCharTop->GetContainerCreate(LAYER_BANKBOX);
 			if ( pBankBox->IsItemInside(pContOn) )

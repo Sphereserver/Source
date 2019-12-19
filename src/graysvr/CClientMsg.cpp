@@ -3648,10 +3648,9 @@ BYTE CClient::Setup_Start(CChar *pChar)
 	ASSERT(m_pChar);
 
 	bool fNoWelcomeMsg = false;
-	bool fNoRegionMsg = false;
 	if ( IsTrigUsed(TRIGGER_LOGIN) )
 	{
-		CScriptTriggerArgs Args(fNoWelcomeMsg, fNoRegionMsg);
+		CScriptTriggerArgs Args(fNoWelcomeMsg);
 		if ( pChar->OnTrigger(CTRIG_LogIn, pChar, &Args) == TRIGRET_RET_TRUE )
 		{
 			m_pChar->ClientDetach();
@@ -3659,7 +3658,6 @@ BYTE CClient::Setup_Start(CChar *pChar)
 			return PacketLoginError::Blocked;
 		}
 		fNoWelcomeMsg = (Args.m_iN1 != 0);
-		fNoRegionMsg = (Args.m_iN2 != 0);
 	}
 
 	if ( !fNoWelcomeMsg )
@@ -3670,13 +3668,8 @@ BYTE CClient::Setup_Start(CChar *pChar)
 		if ( pVarLastLogged )
 			SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_LOGIN_LASTLOGGED), pVarLastLogged->GetValStr());
 	}
-	if ( !fNoRegionMsg && m_pChar->m_pArea && m_pChar->m_pArea->IsGuarded() && !m_pChar->m_pArea->IsFlag(REGION_FLAG_ANNOUNCE) )
-	{
-		CVarDefCont *pVarGuardOwner = m_pChar->m_pArea->m_TagDefs.GetKey("GuardOwner");
-		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_GUARDS_1), pVarGuardOwner ? pVarGuardOwner->GetValStr() : g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_GUARD_ART));
-		if ( m_pChar->m_pArea->m_TagDefs.GetKeyNum("RED") != 0 )
-			SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_REDDEF), g_Cfg.GetDefaultMsg(DEFMSG_MSG_REGION_REDENTER));
-	}
+
+	m_pAccount->m_TagDefs.DeleteKey("LastLogged");
 
 	if ( IsPriv(PRIV_GM_PAGE) && (g_World.m_GMPages.GetCount() > 0) )
 		SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_GMPAGE_PENDING), static_cast<int>(g_World.m_GMPages.GetCount()), g_Cfg.m_cCommandPrefix);
@@ -3684,8 +3677,17 @@ BYTE CClient::Setup_Start(CChar *pChar)
 	if ( g_Serv.m_timeShutdown.IsTimeValid() )
 		addBarkParse(g_Cfg.GetDefaultMsg(DEFMSG_MSG_SERV_SHUTDOWN_SOON), NULL, HUE_RED, TALKMODE_SYSTEM);
 
-	m_pAccount->m_TagDefs.DeleteKey("LastLogged");
-	Announce(true);		// announce you to the world
+	CItem *pMurderMemory = pChar->LayerFind(LAYER_FLAG_Murders);
+	if ( pMurderMemory )
+	{
+		// Murder decay timer should only count when player is online, so activate the timer when it connect
+		pMurderMemory->SetTimeout(static_cast<INT64>(pMurderMemory->m_itEqMurderCount.m_Decay_Balance) * TICK_PER_SEC);
+	}
+	else
+	{
+		// If there's no murder memory found, check if a new memory should be created
+		pChar->Noto_Murder();
+	}
 
 	// Don't login on the water, bring us to nearest shore (unless I can swim)
 	if ( !IsPriv(PRIV_GM) && !m_pChar->Char_GetDef()->Can(CAN_C_SWIM) && m_pChar->IsSwimming() )

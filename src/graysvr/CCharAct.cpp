@@ -1442,10 +1442,7 @@ bool CChar::ItemPickup(CItem *pItem, WORD wAmount)
 
 	const CChar *pChar = dynamic_cast<const CChar *>(pObjTop);
 	if ( (pChar != this) && pItem->IsAttr(ATTR_OWNED) && (pItem->m_uidLink != GetUID()) && !IsPriv(PRIV_ALLMOVE|PRIV_GM) )
-	{
-		SysMessageDefault(DEFMSG_MSG_STEAL);
 		return false;
-	}
 
 	const CItemCorpse *pCorpse = dynamic_cast<const CItemCorpse *>(pObjTop);
 	if ( pCorpse )
@@ -1487,16 +1484,14 @@ bool CChar::ItemPickup(CItem *pItem, WORD wAmount)
 		bool fCanTake = false;
 		if ( pChar == this )	// we can always take our own items
 			fCanTake = true;
-		else if ( (pItem->GetParentObj() != pChar) || g_Cfg.m_fCanUndressPets )		// our owners can take items from us (with CanUndressPets=true, they can undress us too)
+		else if ( pItem->GetParentObj() != pChar )		// our owners can take items from us
 			fCanTake = pChar->NPC_IsOwnedBy(this);
 		else
-			fCanTake = IsPriv(PRIV_GM) && GetPrivLevel() > pChar->GetPrivLevel();	// higher priv players can take items and undress us
+			fCanTake = (IsPriv(PRIV_GM) && (GetPrivLevel() > pChar->GetPrivLevel()));	// higher priv players can take items and undress us
 
 		if ( !fCanTake )
-		{
-			SysMessageDefault(DEFMSG_MSG_STEAL);
 			return false;
-		}
+
 		trigger = pItem->IsItemEquipped() ? ITRIG_UNEQUIP : ITRIG_PICKUP_PACK;
 	}
 	else
@@ -2828,8 +2823,7 @@ CRegionBase *CChar::CanMoveWalkTo(CPointBase &ptDst, bool fCheckChars, bool fChe
 			iWeightLoadPercent += pVal ? static_cast<int>(pVal->GetValNum()) : g_Cfg.m_iStamRunningPenalty;
 
 		pVal = GetKey("OVERRIDE.STAMINALOSSATWEIGHT", true);
-		int iChanceForStamLoss = Calc_GetSCurve(iWeightLoadPercent - (pVal ? static_cast<int>(pVal->GetValNum()) : g_Cfg.m_iStaminaLossAtWeight), 10);
-		if ( iChanceForStamLoss > Calc_GetRandVal(1000) )
+		if ( Calc_GetSCurve(iWeightLoadPercent - (pVal ? static_cast<int>(pVal->GetValNum()) : g_Cfg.m_iStaminaLossAtWeight), 10) > Calc_GetRandVal(1000) )
 			iStamReq += 1;
 
 		if ( iStamReq )

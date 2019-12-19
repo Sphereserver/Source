@@ -103,23 +103,6 @@ CClient::~CClient()
 		g_Log.EventError("Client being deleted without being safely removed from the network system\n");
 }
 
-bool CClient::CanInstantLogOut() const
-{
-	ADDTOCALLSTACK("CClient::CanInstantLogOut");
-	if ( g_Serv.IsLoading() )
-		return true;
-	if ( !g_Cfg.m_iClientLingerTime || IsPriv(PRIV_GM) )
-		return true;
-	if ( !m_pChar || m_pChar->IsStatFlag(STATF_DEAD) )
-		return true;
-	if ( !m_pChar->m_pArea || m_pChar->m_pArea->IsFlag(REGION_FLAG_INSTA_LOGOUT) )
-		return true;
-	if ( m_pChar->m_pRoom && m_pChar->m_pRoom->IsFlag(REGION_FLAG_INSTA_LOGOUT) )
-		return true;
-
-	return false;
-}
-
 void CClient::CharDisconnect()
 {
 	ADDTOCALLSTACK("CClient::CharDisconnect");
@@ -128,52 +111,52 @@ void CClient::CharDisconnect()
 	if ( !m_pChar )
 		return;
 
-	Announce(false);
-	bool fCanInstaLogOut = CanInstantLogOut();
-	int iLingerTime = g_Cfg.m_iClientLingerTime;
+	CItem *pMurderMemory = m_pChar->LayerFind(LAYER_FLAG_Murders);
+	if ( pMurderMemory )
+	{
+		// Murder decay timer should only count when player is online, so stop the timer when it disconnect
+		pMurderMemory->m_itEqMurderCount.m_Decay_Balance = static_cast<DWORD>(pMurderMemory->GetTimerAdjusted());
+		pMurderMemory->SetTimeout(-1);
+	}
 
-	// We are not a client anymore
 	if ( m_bChatActive )
 		g_Serv.m_Chats.QuitChat(this);
 
 	if ( m_pHouseDesign )
 		m_pHouseDesign->EndCustomize(true);
 
+	INT64 iLingerTime = g_Cfg.m_iClientLingerTime;
+	if ( g_Serv.IsLoading() || IsPriv(PRIV_GM) || m_pChar->IsStatFlag(STATF_DEAD) || (m_pChar->m_pArea && m_pChar->m_pArea->IsFlag(REGION_FLAG_INSTA_LOGOUT)) || (m_pChar->m_pRoom && m_pChar->m_pRoom->IsFlag(REGION_FLAG_INSTA_LOGOUT)) )
+		iLingerTime = 0;
+
 	if ( IsTrigUsed(TRIGGER_LOGOUT) )
 	{
-		CScriptTriggerArgs Args(iLingerTime, fCanInstaLogOut);
+		CScriptTriggerArgs Args(iLingerTime);
 		m_pChar->OnTrigger(CTRIG_LogOut, m_pChar, &Args);
-		iLingerTime = static_cast<int>(Args.m_iN1);
-		fCanInstaLogOut = (Args.m_iN2 != 0);
+		iLingerTime = Args.m_iN1;
 	}
 
-	m_pChar->ClientDetach();	// we are not a client any more.
-
-	if ( iLingerTime <= 0 )
-		fCanInstaLogOut = true;
-
-	// Gump memory cleanup, we don't want them on logged out players
+	m_pChar->ClientDetach();
 	m_mapOpenedGumps.clear();
 
-	// Layer dragging, moving it to backpack
+	// Move dragging item to backpack
 	CItem *pItemDragging = m_pChar->LayerFind(LAYER_DRAGGING);
 	if ( pItemDragging )
 		m_pChar->ItemBounce(pItemDragging);
 
-	// log out immediately ? (test before ClientDetach())
-	if ( !fCanInstaLogOut )
+	if ( iLingerTime > 0 )
 	{
-		// become an NPC for a little while
-		CItem *pItemChange = CItem::CreateBase(ITEMID_RHAND_POINT_W);
-		ASSERT(pItemChange);
-		pItemChange->SetName("Client Linger");
-		pItemChange->SetType(IT_EQ_CLIENT_LINGER);
-		pItemChange->SetTimeout(iLingerTime);
-		m_pChar->LayerAdd(pItemChange, LAYER_FLAG_ClientLinger);
+		// Keep the char lingering for some time before remove it from world
+		CItem *pLingerMemory = CItem::CreateBase(ITEMID_RHAND_POINT_W);
+		ASSERT(pLingerMemory);
+		pLingerMemory->SetName("Client Linger");
+		pLingerMemory->SetType(IT_EQ_CLIENT_LINGER);
+		pLingerMemory->SetTimeout(iLingerTime);
+		m_pChar->LayerAdd(pLingerMemory, LAYER_FLAG_ClientLinger);
 	}
 	else
 	{
-		// remove me from other clients screens now.
+		// Instantly remove the char from world
 		m_pChar->SetDisconnected();
 	}
 
@@ -217,59 +200,6 @@ void CClient::SysMessage(LPCTSTR pszMsg) const	// system message (in lower left 
 			new PacketTelnet(this, pszMsg, true);
 			return;
 		}
-	}
-}
-
-void CClient::Announce(bool fArrive) const
-{
-	ADDTOCALLSTACK("CClient::Announce");
-	if ( !m_pAccount || !m_pChar || !m_pChar->m_pPlayer )
-		return;
-
-	// We have logged in or disconnected.
-	// Annouce my arrival or departure.
-	TCHAR *pszMsg = Str_GetTemp();
-	if ( (g_Cfg.m_iArriveDepartMsg == 2) && (GetPrivLevel() > PLEVEL_Player) )		// notify of GMs
-	{
-		LPCTSTR pszTitle = m_pChar->Noto_GetFameTitle();
-		sprintf(pszMsg, "@231 STAFF: %s%s logged %s.", pszTitle, m_pChar->GetName(), fArrive ? "in" : "out");
-	}
-	else if ( g_Cfg.m_iArriveDepartMsg == 1 )		// notify of players
-	{
-		const CRegionBase *pRegion = m_pChar->GetTopPoint().GetRegion(REGION_TYPE_AREA);
-		sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MSG_ARRDEP_1), m_pChar->GetName(), g_Cfg.GetDefaultMsg(fArrive ? DEFMSG_MSG_ARRDEP_2 : DEFMSG_MSG_ARRDEP_3), pRegion ? pRegion->GetName() : g_Serv.GetName());
-	}
-	if ( pszMsg )
-	{
-		ClientIterator it;
-		for ( CClient *pClient = it.next(); pClient != NULL; pClient = it.next() )
-		{
-			if ( (pClient == this) || (GetPrivLevel() > pClient->GetPrivLevel()) )
-				continue;
-			pClient->SysMessage(pszMsg);
-		}
-	}
-
-	// Check murder decay timer
-	CItem *pMurders = m_pChar->LayerFind(LAYER_FLAG_Murders);
-	if ( pMurders )
-	{
-		if ( fArrive )
-		{
-			// On client login, set active timer on murder memory
-			pMurders->SetTimeout(static_cast<INT64>(pMurders->m_itEqMurderCount.m_Decay_Balance) * TICK_PER_SEC);
-		}
-		else
-		{
-			// Or make it inactive on logout
-			pMurders->m_itEqMurderCount.m_Decay_Balance = static_cast<DWORD>(pMurders->GetTimerAdjusted());
-			pMurders->SetTimeout(-1);
-		}
-	}
-	else if ( fArrive )
-	{
-		// If there's no murder memory found, check if we need a new memory
-		m_pChar->Noto_Murder();
 	}
 }
 

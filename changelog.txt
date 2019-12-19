@@ -1686,3 +1686,8 @@ Added: Support for new 'picinpic' dialog element on clients >= 7.0.80.0.
 
 15-12-2019, Coruja
 Fixed: Scripts not parsing " " quotes as string correctly.
+
+19-12-2019, Coruja
+[sphere.ini]: Removed ArriveDepartMsg, AllowNewbTransfer and CanUndressPets settings
+	-These behaviors can be softcoded and don't need to be hardcoded
+[sphere_msgs.scp]: Removed messages 'msg_arrdep_*' and 'msg_steal'

@@ -2316,7 +2316,7 @@ PacketPaperdoll::PacketPaperdoll(const CClient* target, const CChar* character) 
 		flags |= target->m_NetState->isClientVersion(MINCLIVER_AOS) ? 0x1 : 0x40;
 	if (target->m_NetState->isClientVersion(MINCLIVER_AOS))
 	{
-		if (character == target->GetChar() || (g_Cfg.m_fCanUndressPets ? character->NPC_IsOwnedBy(target->GetChar()) : (target->IsPriv(PRIV_GM) && (target->GetPrivLevel() > character->GetPrivLevel()))))
+		if ((character == target->GetChar()) || character->NPC_IsOwnedBy(target->GetChar()))
 			flags |= 0x2;
 	}
 

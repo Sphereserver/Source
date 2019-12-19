@@ -506,8 +506,6 @@ private:
 	bool OnRxWebPageRequest(BYTE *pRequest, size_t iLen);
 
 	BYTE LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg);
-	bool CanInstantLogOut() const;
-	void Announce(bool fArrive) const;
 
 	// GM stuff
 	void OnTarg_Obj_Set(CObjBase *pObj);

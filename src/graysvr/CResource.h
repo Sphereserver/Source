@@ -718,7 +718,6 @@ public:
 
 	// Account
 	int m_iDeadSocketTime;
-	int m_iArriveDepartMsg;					// General switch to turn on/off arrival/depart messages.
 	unsigned int m_iClientsMax;				// Maximum (FD_SETSIZE) open connections to server
 	int m_iClientsMaxIP;					// Maximum (FD_SETSIZE) open connections to server per IP
 	int m_iConnectingMax;					// max clients connecting
@@ -758,7 +757,6 @@ public:
 	bool m_fVendorTradeTitle;				// Show job title on vendor names.
 	bool m_fFlipDroppedItems;				// Flip dropped items.
 	WORD m_iItemsMaxAmount;					// Max amount allowed for stackable items.
-	bool m_fCanUndressPets;					// Can players undress their pets?
 	bool m_fMonsterFight;					// Will creatures fight amoung themselves.
 	bool m_fMonsterFear;					// will they run away if hurt ?
 	DWORD m_iBankIMax;						// Maximum number of items allowed in bank.
@@ -974,7 +972,6 @@ public:
 	bool m_bAllowLightOverride;
 	CGString m_sZeroPoint;
 	bool m_bAllowBuySellAgent;
-	bool m_bAllowNewbTransfer;
 
 	bool m_NPCNoFameTitle;
 

@@ -1758,12 +1758,6 @@ bool CChar::CanMove(CItem *pItem, bool fMsg) const
 			const CObjBaseTemplate *pObjTop = pItem->GetTopLevelObj();
 			if ( pObjTop->IsChar() && (pObjTop != this) )
 			{
-				if ( pItem->IsAttr(ATTR_NEWBIE|ATTR_BLESSED) && g_Cfg.m_bAllowNewbTransfer )
-				{
-					const CChar *pPet = dynamic_cast<const CChar *>(pObjTop);
-					if ( pPet && (pPet->NPC_PetGetOwner() != this) )
-						return false;
-				}
 				if ( !pItem->IsItemEquipped() || (pItem->GetEquipLayer() != LAYER_DRAGGING) )
 					return false;
 			}
