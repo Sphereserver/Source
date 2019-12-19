@@ -51,13 +51,10 @@ Even using 64bit OS, Sphere must be compiled/executed in 32bit mode to work prop
 
 * Ubuntu 19.10 or later:
   ```
-  # Default package repository dropped support for MySQL 5.7, so it must be installed manually using:
-  sudo apt-get install libstdc++6:i386
-  sudo apt-get install zlib1g-dev:i386
-  wget http://launchpadlibrarian.net/434347852/libmysqlclient20_5.7.27-0ubuntu2_i386.deb
-  wget http://launchpadlibrarian.net/434347836/libmysqlclient-dev_5.7.27-0ubuntu2_i386.deb
-  sudo dpkg -i libmysqlclient20_5.7.27-0ubuntu2_i386.deb
-  sudo dpkg -i libmysqlclient-dev_5.7.27-0ubuntu2_i386.deb
+  # Default package repository dropped support for MySQL 5.7, so add it back and install using:
+  sudo add-apt-repository 'deb http://repo.mysql.com/apt/ubuntu/ disco mysql-5.7'
+  sudo apt-get update --allow-insecure-repositories
+  sudo apt-get install libmysqlclient-dev:i386=5.7*
   ```
 
 #### Install required packages
