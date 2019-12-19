@@ -300,9 +300,6 @@
     <ClCompile Include="src\graysvr\CLog.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="src\graysvr\CNTService.cpp">
-      <Filter>graysvr</Filter>
-    </ClCompile>
     <ClCompile Include="src\graysvr\CNTWindow.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
@@ -585,9 +582,6 @@
       <Filter>graysvr</Filter>
     </ClInclude>
     <ClInclude Include="src\graysvr\CLog.h">
-      <Filter>graysvr</Filter>
-    </ClInclude>
-    <ClInclude Include="src\graysvr\CNTService.h">
       <Filter>graysvr</Filter>
     </ClInclude>
     <ClInclude Include="src\graysvr\CNTWindow.h">

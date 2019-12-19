@@ -675,8 +675,7 @@ public:
 public:
 	CServTime m_timePeriodic;				// When to perform the next periodic update
 
-	// Begin INI file options.
-	bool m_fUseNTService;
+	// Begin INI file options
 	int m_fUseHTTP;
 	bool m_fUseAuthID;
 	int m_iMapCacheTime;					// Time in sec to keep unused map data.
@@ -853,7 +852,6 @@ public:
 	int m_iWalkRegen;
 
 	int m_iCommandLog;
-	bool m_fTelnetLog;
 
 	bool m_fUsecrypt;
 	bool m_fUsenocrypt;

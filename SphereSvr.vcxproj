@@ -260,7 +260,6 @@ if defined GitRev (
     <ClCompile Include="src\graysvr\CItemStone.cpp" />
     <ClCompile Include="src\graysvr\CItemVend.cpp" />
     <ClCompile Include="src\graysvr\CLog.cpp" />
-    <ClCompile Include="src\graysvr\CNTService.cpp" />
     <ClCompile Include="src\graysvr\CNTWindow.cpp" />
     <ClCompile Include="src\graysvr\CObjBase.cpp" />
     <ClCompile Include="src\graysvr\CParty.cpp" />
@@ -313,7 +312,6 @@ if defined GitRev (
     <ClInclude Include="src\graysvr\CItemShip.h" />
     <ClInclude Include="src\graysvr\CItemStone.h" />
     <ClInclude Include="src\graysvr\CLog.h" />
-    <ClInclude Include="src\graysvr\CNTService.h" />
     <ClInclude Include="src\graysvr\CNTWindow.h" />
     <ClInclude Include="src\graysvr\CObjBase.h" />
     <ClInclude Include="src\graysvr\CParty.h" />

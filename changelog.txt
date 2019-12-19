@@ -1688,6 +1688,9 @@ Added: Support for new 'picinpic' dialog element on clients >= 7.0.80.0.
 Fixed: Scripts not parsing " " quotes as string correctly.
 
 19-12-2019, Coruja
-[sphere.ini]: Removed ArriveDepartMsg, AllowNewbTransfer and CanUndressPets settings
-	-These behaviors can be softcoded and don't need to be hardcoded
+[sphere.ini]: Removed ArriveDepartMsg, AllowNewbTransfer, CanUndressPets, NTService and TelnetLog settings
+	-Region arrive/depart messages can be softcoded and don't need to be hardcoded
+	-Pets now can receive newbie items and be undressed by default (this can also be softcoded and doesn't require hardcoded settings)
+	-Dropped support for Windows NT service to avoid performance loss (it's not recommended run a high priority game server as a low priority background service)
+	-For safety purposes now all telnet console commands are logged by default
 [sphere_msgs.scp]: Removed messages 'msg_arrdep_*' and 'msg_steal'

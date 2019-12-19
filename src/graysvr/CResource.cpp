@@ -6,7 +6,6 @@ CResource::CResource()
 {
 	m_timePeriodic.Init();
 
-	m_fUseNTService = false;
 	m_fUseHTTP = 2;
 	m_fUseAuthID = true;
 	m_iMapCacheTime = 2 * 60 * TICK_PER_SEC;
@@ -153,7 +152,6 @@ CResource::CResource()
 	m_iWalkRegen = 25;
 
 	m_iCommandLog = 0;
-	m_fTelnetLog = true;
 
 	m_fUsecrypt = true;
 	m_fUsenocrypt = false;
@@ -500,7 +498,6 @@ enum RC_TYPE
 	RC_NPCTRAINCOST,				// m_iTrainSkillCost
 	RC_NPCTRAINMAX,					// m_iTrainSkillMax
 	RC_NPCTRAINPERCENT,				// m_iTrainSkillPercent
-	RC_NTSERVICE,					// m_fUseNTService
 	RC_OPTIONFLAGS,					// m_iOptionFlags
 	RC_OVERSKILLMULTIPLY,			// m_iOverSkillMultiply
 	RC_PACKETDEATHANIMATION,		// m_iPacketDeathAnimation
@@ -540,7 +537,6 @@ enum RC_TYPE
 	RC_TELEPORTSOUNDNPC,			// m_iSpell_Teleport_Sound_NPC
 	RC_TELEPORTSOUNDPLAYERS,		// m_iSpell_Teleport_Sound_Players
 	RC_TELEPORTSOUNDSTAFF,			// m_iSpell_Teleport_Sound_Staff
-	RC_TELNETLOG,					// m_fTelnetLog
 	RC_TIMERCALL,					// m_iTimerCall
 	RC_TIMEUP,
 	RC_TOOLTIPCACHE,				// m_iTooltipCache
@@ -719,7 +715,6 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY + 1] =
 	{"NPCTRAINCOST",				{ELEM_WORD,		OFFSETOF(CResource, m_iTrainSkillCost),					0}},
 	{"NPCTRAINMAX",					{ELEM_WORD,		OFFSETOF(CResource, m_iTrainSkillMax),					0}},
 	{"NPCTRAINPERCENT",				{ELEM_INT,		OFFSETOF(CResource, m_iTrainSkillPercent),				0}},
-	{"NTSERVICE",					{ELEM_BOOL,		OFFSETOF(CResource, m_fUseNTService),					0}},
 	{"OPTIONFLAGS",					{ELEM_INT,		OFFSETOF(CResource, m_iOptionFlags),					0}},
 	{"OVERSKILLMULTIPLY",			{ELEM_INT,		OFFSETOF(CResource, m_iOverSkillMultiply),				0}},
 	{"PACKETDEATHANIMATION",		{ELEM_BOOL,		OFFSETOF(CResource, m_iPacketDeathAnimation),			0}},
@@ -759,7 +754,6 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY + 1] =
 	{"TELEPORTSOUNDNPC",			{ELEM_INT,		OFFSETOF(CResource, m_iSpell_Teleport_Sound_NPC),		0}},
 	{"TELEPORTSOUNDPLAYERS",		{ELEM_INT,		OFFSETOF(CResource, m_iSpell_Teleport_Sound_Players),	0}},
 	{"TELEPORTSOUNDSTAFF",			{ELEM_INT,		OFFSETOF(CResource, m_iSpell_Teleport_Sound_Staff),		0}},
-	{"TELNETLOG",					{ELEM_BOOL,		OFFSETOF(CResource, m_fTelnetLog),						0}},
 	{"TIMERCALL",					{ELEM_INT,		OFFSETOF(CResource, m_iTimerCall),						0}},
 	{"TIMEUP",						{ELEM_VOID,		0,														0}},
 	{"TOOLTIPCACHE",				{ELEM_INT,		OFFSETOF(CResource, m_iTooltipCache),					0}},

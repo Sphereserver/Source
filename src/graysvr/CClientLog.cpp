@@ -265,7 +265,7 @@ bool CClient::OnRxConsole(const BYTE *pData, size_t iLen)
 			else
 			{
 				iRet = g_Serv.OnConsoleCmd(m_Targ_Text, this);
-				if ( g_Cfg.m_fTelnetLog && (GetPrivLevel() >= g_Cfg.m_iCommandLog) )
+				if ( GetPrivLevel() >= g_Cfg.m_iCommandLog )
 					g_Log.Event(LOGM_GM_CMDS, "%lx:'%s' commands '%s'=%d\n", GetSocketID(), GetName(), static_cast<LPCTSTR>(m_Targ_Text), iRet);
 			}
 		}

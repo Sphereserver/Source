@@ -2,9 +2,7 @@
 #include "CPingServer.h"
 #include "../network/network.h"
 #include "../sphere/asyncdb.h"
-#ifdef _WIN32
-	#include "CNTService.h"
-#else
+#ifndef _WIN32
 	#include "CUnixTerminal.h"
 #endif
 
@@ -538,11 +536,6 @@ void Main::tick()
 	const char *m_sClassName = "Sphere";
 #endif
 	EXC_TRY("Tick");
-
-#ifdef _WIN32
-	EXC_SET("service");
-	g_Service.OnTick();
-#endif
 
 	EXC_SET("shipstimers");
 	g_Serv.ShipTimers_Tick();
@@ -1126,6 +1119,21 @@ void defragSphere(char *path)
 }
 
 #ifdef _WIN32
+int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+{
+	UNREFERENCED_PARAMETER(hPrevInstance);
+
+	TCHAR *argv[32];
+	argv[0] = NULL;
+	int argc = Str_ParseCmds(lpCmdLine, &argv[1], COUNTOF(argv) - 1, " \t") + 1;
+
+	NTWindow_Init(hInstance, lpCmdLine, nCmdShow);
+	int iRet = Sphere_MainEntryPoint(argc, argv);
+	NTWindow_Exit();
+	TerminateProcess(GetCurrentProcess(), iRet);
+	return iRet;
+}
+
 int Sphere_MainEntryPoint( int argc, char *argv[] )
 #else
 int _cdecl main( int argc, char * argv[] )

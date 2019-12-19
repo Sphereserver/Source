@@ -3,7 +3,6 @@
 #include "../graysvr/CPingServer.h"
 
 #ifdef _WIN32
-	#include "CNTService.h"
 	#include "../common/crashdump/crashdump.h"
 #else
 	#include "CUnixTerminal.h"
@@ -426,7 +425,6 @@ int CServer::PrintPercent(long iCount, long iTotal)
 
 #ifdef _WIN32
 	NTWindow_SetWindowTitle(pszTemp);
-	g_Service.OnTick();
 #endif
 	return iPercent;
 }
