@@ -1694,3 +1694,6 @@ Fixed: Scripts not parsing " " quotes as string correctly.
 	-Dropped support for Windows NT service to avoid performance loss (it's not recommended run a high priority game server as a low priority background service)
 	-For safety purposes now all telnet console commands are logged by default
 [sphere_msgs.scp]: Removed messages 'msg_arrdep_*' and 'msg_steal'
+
+21-12-2019, Coruja
+Fixed: MulFiles setting on sphere.ini not working correctly.

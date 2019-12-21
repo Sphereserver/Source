@@ -995,7 +995,7 @@ bool CResource::r_LoadVal(CScript &s)
 			g_Log.SetLogMask(static_cast<DWORD>(s.GetArgLLVal()));
 			break;
 		case RC_MULFILES:
-			g_Install.SetPreferPath(CGFile::GetMergedFileName(s.GetArgStr(), ""));
+			g_Install.SetMulPath(CGFile::GetMergedFileName(s.GetArgStr(), ""));
 			break;
 		case RC_MAPCACHETIME:
 			m_iMapCacheTime = s.GetArgVal() * TICK_PER_SEC;
@@ -1484,7 +1484,7 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatHex(g_Log.GetLogMask());
 			break;
 		case RC_MULFILES:
-			sVal = g_Install.GetPreferPath(NULL);
+			sVal = g_Install.GetMulPath();
 			break;
 		case RC_MAPCACHETIME:
 			sVal.FormatVal(m_iMapCacheTime / TICK_PER_SEC);
@@ -3358,7 +3358,7 @@ bool CResource::LoadCryptIni()
 	ADDTOCALLSTACK("CResource::LoadCryptIni");
 	if ( !OpenResourceFind(m_scpCryptIni, SPHERE_FILE "Crypt.ini", false) )
 	{
-		g_Log.Event(LOGL_WARN, "File " SPHERE_FILE "Crypt.ini is corrupt or missing\n");
+		g_Log.Event(LOGL_WARN, "File '" SPHERE_FILE "Crypt.ini' not found\n");
 		return false;
 	}
 
@@ -3426,12 +3426,20 @@ bool CResource::Load(bool fResync)
 	}
 	else
 	{
-		g_Cfg.LoadCryptIni();
 		if ( !g_Cfg.LoadIni(false) )
 			return false;
 
-		g_Install.FindInstall();
-		CGString sMulPath = g_Install.GetMulFilesPath();
+		g_Cfg.LoadCryptIni();
+
+		CGString sMulPath = g_Install.GetMulPath();
+#ifdef _WIN32
+		if ( sMulPath.IsEmpty() )
+		{
+			// Try get UO install path from Windows registry
+			g_Install.FindInstall();
+			sMulPath = g_Install.GetMulPath();
+		}
+#endif
 		if ( sMulPath.IsEmpty() )
 		{
 			g_Log.Event(LOGL_FATAL, "Unable to find Ultima Online MUL files automatically, please set the 'MulFiles' path manually on " SPHERE_FILE ".ini\n");
@@ -3444,7 +3452,7 @@ bool CResource::Load(bool fResync)
 	VERFILE_TYPE i = g_Install.OpenFiles((1 << VERFILE_MULTIIDX)|(1 << VERFILE_MULTI)|(1 << VERFILE_VERDATA)|(1 << VERFILE_MAP)|(1 << VERFILE_STAIDX)|(1 << VERFILE_STATICS)|(1 << VERFILE_TILEDATA));
 	if ( i != VERFILE_QTY )
 	{
-		g_Log.Event(LOGL_FATAL, "MUL file '%s' is corrupt or missing\n", g_Install.GetBaseFileName(i));
+		g_Log.Event(LOGL_FATAL, "MUL file '%s' not found\n", g_Install.GetBaseFileName(i));
 		return false;
 	}
 
@@ -3455,14 +3463,14 @@ bool CResource::Load(bool fResync)
 	}
 	catch ( const CGrayError &e )
 	{
-		g_Log.Event(LOGL_FATAL, "File " SPHERE_FILE ".ini is corrupt or missing\n");
+		g_Log.Event(LOGL_FATAL, "File '" SPHERE_FILE ".ini' not found\n");
 		g_Log.CatchEvent(&e, "g_VerData.Load");
 		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 		return false;
 	}
 	catch ( ... )
 	{
-		g_Log.Event(LOGL_FATAL, "File " SPHERE_FILE ".ini is corrupt or missing\n");
+		g_Log.Event(LOGL_FATAL, "File '" SPHERE_FILE ".ini' not found\n");
 		g_Log.CatchEvent(NULL, "g_VerData.Load");
 		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 		return false;
@@ -3477,7 +3485,7 @@ bool CResource::Load(bool fResync)
 	{
 		if ( !OpenResourceFind(m_scpTables, SPHERE_FILE "tables") )
 		{
-			g_Log.Event(LOGL_FATAL, "File " SPHERE_FILE "tables" SPHERE_SCRIPT " is corrupt or missing\n");
+			g_Log.Event(LOGL_FATAL, "File '" SPHERE_FILE "tables" SPHERE_SCRIPT "' not found\n");
 			return false;
 		}
 
@@ -3594,10 +3602,8 @@ LPCTSTR CResource::GetDefaultMsg(long lKeyNum)
 {
 	ADDTOCALLSTACK("CResource::GetDefaultMsg");
 	if ( (lKeyNum < 0) || (lKeyNum >= DEFMSG_QTY) )
-	{
-		g_Log.EventError("Defmessage %ld out of range [0..%d]\n", lKeyNum, DEFMSG_QTY - 1);
 		return "";
-	}
+
 	return g_Exp.sm_szMessages[lKeyNum];
 }
 

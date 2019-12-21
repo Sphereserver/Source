@@ -245,7 +245,7 @@ bool CScript::Open(LPCTSTR pszFilename, UINT uFlags)
 	if ( !CCacheableScriptFile::Open(GetFilePath(), uFlags) )
 	{
 		if ( !(uFlags & OF_NONCRIT) )
-			g_Log.Event(LOGL_WARN, "'%s' not found\n", static_cast<LPCTSTR>(GetFilePath()));
+			g_Log.Event(LOGL_WARN, "File '%s' not found\n", static_cast<LPCTSTR>(GetFilePath()));
 		return false;
 	}
 

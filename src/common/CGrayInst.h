@@ -45,12 +45,12 @@ public:
 	CCSVFile m_CsvFiles[8];			// doors.txt, stairs.txt, roof.txt, misc.txt, teleprts.txt, floors.txt, walls.txt
 
 private:
-	CGString m_sPreferPath;		// Prefer path in which to choose the files (look here first)
-	CGString m_sExePath;		// Files that are installed ("ExePath")
-	CGString m_sCDPath;			// For files that may still be on the CD ("InstCDPath")
+	CGString m_sMulPath;			// Path to mul files
 
 public:
-	bool FindInstall();
+#ifdef _WIN32
+	void FindInstall();
+#endif
 	static LPCTSTR GetBaseFileName(VERFILE_TYPE i);
 
 	bool OpenFile(CGFile &file, LPCTSTR pszFileName, WORD wFlags);
@@ -76,37 +76,13 @@ public:
 		return &m_File[i];
 	}
 
-	void SetPreferPath(LPCTSTR pszFileName)
+	void SetMulPath(LPCTSTR pszFileName)
 	{
-		m_sPreferPath = pszFileName;
+		m_sMulPath = pszFileName;
 	}
-	CGString GetPreferPath(LPCTSTR pszFileName = NULL) const
+	CGString GetMulPath(LPCTSTR pszFileName = NULL) const
 	{
-		return CGFile::GetMergedFileName(m_sPreferPath, pszFileName);
-	}
-	CGString GetFullExePath(LPCTSTR pszFileName = NULL) const
-	{
-		return CGFile::GetMergedFileName(m_sExePath, pszFileName);
-	}
-	CGString GetFullCDPath(LPCTSTR pszFileName = NULL) const
-	{
-		return CGFile::GetMergedFileName(m_sCDPath, pszFileName);
-	}
-	CGString GetMulFilesPath() const
-	{
-		CGString sPath = GetPreferPath();
-		if ( !sPath.IsEmpty() )
-			return sPath;
-
-		sPath = GetFullExePath();
-		if ( !sPath.IsEmpty() )
-			return sPath;
-
-		sPath = GetFullCDPath();
-		if ( !sPath.IsEmpty() )
-			return sPath;
-
-		return NULL;
+		return CGFile::GetMergedFileName(m_sMulPath, pszFileName);
 	}
 
 private:

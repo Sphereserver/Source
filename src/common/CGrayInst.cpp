@@ -1,12 +1,13 @@
 #include "graycom.h"
-#include "CGrayInst.h"
 #include "../graysvr/graysvr.h"
 
-bool CGrayInstall::FindInstall()
-{
 #ifdef _WIN32
-	// Get the install path from the registry
-	static LPCTSTR m_szKeys[] =
+void CGrayInstall::FindInstall()
+{
+	ADDTOCALLSTACK("CGrayInstall::FindInstall");
+	// Get UO install path from Windows registry
+
+	static LPCTSTR sm_szRegKeyPath[] =
 	{
 		"Software\\Electronic Arts\\EA Games\\Ultima Online Classic",
 		"Software\\Electronic Arts\\EA Games\\Ultima Online Stygian Abyss Classic",
@@ -15,46 +16,46 @@ bool CGrayInstall::FindInstall()
 		"Software\\Origin Worlds Online\\Ultima Online\\1.0"
 	};
 
-	LSTATUS lRet = 0;
-	HKEY hKey = NULL;
-	for ( size_t i = 0; i < COUNTOF(m_szKeys); ++i )
+	static LPCTSTR sm_szRegKeyName[] =
 	{
-		lRet = RegOpenKeyEx(HKEY_LOCAL_MACHINE, m_szKeys[i], 0, KEY_READ|KEY_WOW64_32KEY, &hKey);
-		if ( lRet == ERROR_SUCCESS )
-			break;
-	}
-	if ( lRet != ERROR_SUCCESS )
-		return false;
+		"ExePath",
+		"InstallDir",
+		"InstCDPath"
+	};
 
+	HKEY hKey = NULL;
 	DWORD dwType = REG_SZ;
 	TCHAR szValue[_MAX_PATH];
 	DWORD dwSize = sizeof(szValue);
-	lRet = RegQueryValueEx(hKey, "ExePath", NULL, &dwType, reinterpret_cast<BYTE *>(szValue), &dwSize);
-	if ( (lRet == ERROR_SUCCESS) && (dwType == REG_SZ) )
-	{
-		TCHAR *pSlash = strrchr(szValue, '\\');		// get rid of the client.exe part of the name
-		if ( pSlash )
-			*pSlash = '\0';
-		m_sExePath = szValue;
-	}
-	else
-	{
-		lRet = RegQueryValueEx(hKey, "InstallDir", NULL, &dwType, reinterpret_cast<BYTE *>(szValue), &dwSize);
-		if ( (lRet == ERROR_SUCCESS) && (dwType == REG_SZ) )
-			m_sExePath = szValue;
-	}
 
-	// Check CD-ROM install path as well, just in case
-	lRet = RegQueryValueEx(hKey, "InstCDPath", NULL, &dwType, reinterpret_cast<BYTE *>(szValue), &dwSize);
-	if ( (lRet == ERROR_SUCCESS) && (dwType == REG_SZ) )
-		m_sCDPath = szValue;
+	for ( size_t i = 0; i < COUNTOF(sm_szRegKeyPath); ++i )
+	{
+		if ( RegOpenKeyEx(HKEY_LOCAL_MACHINE, sm_szRegKeyPath[i], 0, KEY_READ|KEY_WOW64_32KEY, &hKey) == ERROR_SUCCESS )
+		{
+			for ( size_t j = 0; j < COUNTOF(sm_szRegKeyName); ++j )
+			{
+				if ( (RegQueryValueEx(hKey, sm_szRegKeyName[j], NULL, &dwType, reinterpret_cast<BYTE *>(szValue), &dwSize) == ERROR_SUCCESS) && (dwType == REG_SZ) )
+				{
+					if ( sm_szRegKeyName[j] == "ExePath" )
+					{
+						// Get rid of the '\\client.exe' ending string
+						TCHAR *pszExe = strrchr(szValue, '\\');
+						if ( pszExe )
+							*pszExe = '\0';
+					}
+					m_sMulPath = szValue;
+					break;
+				}
+			}
+
+			if ( !m_sMulPath.IsEmpty() )
+				break;
+		}
+	}
 
 	RegCloseKey(hKey);
-#else
-	// Linux has no registry, 'MulFiles' path must be set manually on sphere.ini
-#endif
-	return true;
 }
+#endif
 
 void CGrayInstall::DetectMulVersions()
 {
@@ -128,14 +129,7 @@ bool CGrayInstall::OpenFile(CGFile &file, LPCTSTR pszFileName, WORD wFlags)
 {
 	ADDTOCALLSTACK("CGrayInstall::OpenFile");
 	ASSERT(pszFileName);
-	if ( !m_sPreferPath.IsEmpty() && file.Open(GetPreferPath(pszFileName), wFlags) )
-		return true;
-	if ( file.Open(GetFullExePath(pszFileName), wFlags) )
-		return true;
-	if ( file.Open(GetFullCDPath(pszFileName), wFlags) )
-		return true;
-
-	return false;
+	return file.Open(GetMulPath(pszFileName), wFlags);
 }
 
 bool CGrayInstall::OpenFile(VERFILE_TYPE i)
