@@ -10,7 +10,7 @@ CO_WARNING_FLAGS	= -Wall -Wno-implicit-function-declaration -Wno-unknown-pragmas
 ifdef NIGHTLY
 	BUILD_DEFS	= -D_NIGHTLYBUILD
 endif
-ifdef DBG
+ifdef DEBUG
 	BUILD_DEFS	= -D_DEBUG
 	GENERAL_FLAGS	+= -ggdb3
 endif
