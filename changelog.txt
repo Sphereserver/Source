@@ -1697,3 +1697,4 @@ Fixed: Scripts not parsing " " quotes as string correctly.
 
 21-12-2019, Coruja
 Fixed: MulFiles setting on sphere.ini not working correctly.
+Removed: Support for obsolete console auto-complete feature on Windows build (sphere.dic file).

@@ -25,7 +25,6 @@ int CTextConsole::OnConsoleKey(CGString &sText, TCHAR szChar, bool fEcho)
 
 	if ( sText.GetLength() >= SCRIPT_MAX_LINE_LEN )
 	{
-	commandtoolong:
 		SysMessage("Command too long\n");
 		sText.Empty();
 		return 0;
@@ -40,66 +39,6 @@ int CTextConsole::OnConsoleKey(CGString &sText, TCHAR szChar, bool fEcho)
 			SysMessage("\n");
 		return 2;
 	}
-	else if ( szChar == 9 )			// TAB (auto-completion)
-	{
-		// Extract up to start of the word
-		LPCTSTR pszArgs = sText.GetPtr() + sText.GetLength();
-		while ( (pszArgs >= sText.GetPtr()) && (*pszArgs != '.') && (*pszArgs != ' ') && (*pszArgs != '/') && (*pszArgs != '=') )
-			--pszArgs;
-		++pszArgs;
-		size_t inputLen = strlen(pszArgs);
-
-		// Search in the auto-complete list for starting on P, and save coords of first/last match
-		CGStringListRec *psFirstMatch = NULL;
-		CGStringListRec *psLastMatch = NULL;
-		CGStringListRec *psCurMatch = NULL;		// the one that should be set
-		for ( psCurMatch = g_AutoComplete.GetHead(); psCurMatch != NULL; psCurMatch = psCurMatch->GetNext() )
-		{
-			if ( !strnicmp(psCurMatch->GetPtr(), pszArgs, inputLen) )	// matched
-			{
-				if ( !psFirstMatch )
-					psFirstMatch = psLastMatch = psCurMatch;
-				else
-					psLastMatch = psCurMatch;
-			}
-			else if ( psLastMatch )
-				break;		// if no longer matches - save time by instant quit
-		}
-
-		LPCTSTR pszTemp = NULL;
-		bool fMatch = false;
-		if ( psFirstMatch && (psFirstMatch == psLastMatch) )	// there IS a match and the ONLY
-		{
-			pszTemp = psFirstMatch->GetPtr() + inputLen;
-			fMatch = true;
-		}
-		else if ( psFirstMatch )		// also make SE (if SERV/SERVER in dic) to become SERV
-		{
-			pszArgs = pszTemp = psFirstMatch->GetPtr();
-			pszTemp += inputLen;
-			inputLen = strlen(pszArgs);
-			fMatch = true;
-			for ( psCurMatch = psFirstMatch->GetNext(); psCurMatch != psLastMatch->GetNext(); psCurMatch = psCurMatch->GetNext() )
-			{
-				if ( strnicmp(psCurMatch->GetPtr(), pszArgs, inputLen) != 0 )	// mismatched
-				{
-					fMatch = false;
-					break;
-				}
-			}
-		}
-
-		if ( fMatch )
-		{
-			if ( fEcho )
-				SysMessage(pszTemp);
-
-			sText += pszTemp;
-			if ( sText.GetLength() > SCRIPT_MAX_LINE_LEN )
-				goto commandtoolong;
-		}
-		return 1;
-	}
 
 	if ( fEcho )
 	{
@@ -109,9 +48,9 @@ int CTextConsole::OnConsoleKey(CGString &sText, TCHAR szChar, bool fEcho)
 		SysMessage(szTmp);
 	}
 
-	if ( szChar == 8 )
+	if ( szChar == 0x8 )	// back key
 	{
-		if ( sText.GetLength() )	// back key
+		if ( sText.GetLength() )
 			sText.SetLength(sText.GetLength() - 1);
 		return 1;
 	}

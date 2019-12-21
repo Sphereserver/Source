@@ -948,7 +948,7 @@ bool NTWindow_OnTick( int iWaitmSec )
 		{
 			if ( msg.message == WM_CHAR )	//	char to edit box
 			{
-				if ( msg.wParam == '\r' )	//	ENTER
+				if ( msg.wParam == VK_RETURN )	//	ENTER
 				{
 					if ( theApp.m_wndMain.OnCommand( 0, IDOK, msg.hwnd ))
 					{
@@ -966,112 +966,6 @@ bool NTWindow_OnTick( int iWaitmSec )
 					strcpy(theApp.m_wndMain.m_zCommands[2], theApp.m_wndMain.m_zCommands[3]);
 					strcpy(theApp.m_wndMain.m_zCommands[3], theApp.m_wndMain.m_zCommands[4]);
 					theApp.m_wndMain.m_wndInput.GetWindowText(theApp.m_wndMain.m_zCommands[4], sizeof(theApp.m_wndMain.m_zCommands[4]));
-				}
-				else if ( msg.wParam == VK_TAB )	// TAB (auto-complete)
-				{
-					size_t selStart, selEnd;
-					TCHAR *pszTemp = Str_GetTemp();
-					CEdit *inp = &theApp.m_wndMain.m_wndInput;
-
-					//	get current selection (to be replaced), suppose it being our "completed" word
-					inp->GetSel(selStart, selEnd);
-					inp->GetWindowText(pszTemp, SCRIPT_MAX_LINE_LEN);
-
-					// the code will act incorrectly if using tab in the middle of the text
-					// since we are just unable to get our current position. really unable?
-					if ( selEnd == strlen(pszTemp) )		// so proceed only if working on last char
-					{
-						TCHAR * pszCurSel = Str_GetTemp();
-						size_t inputLen = 0;
-
-						// there IS a selection, so extract it
-						if ( selStart != selEnd )
-						{
-							strncpy(pszCurSel, pszTemp + selStart, selEnd - selStart);
-							pszCurSel[selEnd - selStart] = '\0';
-						}
-						else
-						{
-							*pszCurSel = '\0';
-						}
-
-						// detect part of the text we are entered so far
-						TCHAR *p = &pszTemp[strlen(pszTemp) - 1];
-						while (( p >= pszTemp ) && ( *p != '.' ) && ( *p != ' ' ) && ( *p != '/' ) && ( *p != '=' ))
-						{
-							p--;
-						}
-						p++;
-
-						// remove the selected part of the message
-						pszTemp[selStart] = '\0';
-						inputLen = strlen(p);
-
-						// search in the auto-complete list for starting on P, and save coords of 1st and Last matched
-						CGStringListRec	*firstmatch = NULL;
-						CGStringListRec	*lastmatch = NULL;
-						CGStringListRec	*curmatch = NULL;	// the one that should be set
-
-						for ( curmatch = g_AutoComplete.GetHead(); curmatch != NULL; curmatch = curmatch->GetNext() )
-						{
-							if ( !strnicmp(curmatch->GetPtr(), p, inputLen) )	// matched
-							{
-								if ( firstmatch == NULL )
-								{
-									firstmatch = lastmatch = curmatch;
-								}
-								else
-								{
-									lastmatch = curmatch;
-								}
-							}
-							else if ( lastmatch )
-							{
-								break;	// if no longer matches - save time by instant quit
-							}
-						}
-
-						if ( firstmatch != NULL )	// there IS a match
-						{
-							bool bOnly(false);
-							if ( firstmatch == lastmatch )					// and the match is the ONLY
-							{
-								bOnly = true;
-								curmatch = firstmatch;
-							}
-							else if ( !*pszCurSel )							// or there is still no selection
-							{
-								curmatch = firstmatch;	
-							}
-							else											// need to find for the next record
-							{
-								size_t curselLen = strlen(pszCurSel);
-								for ( curmatch = firstmatch; curmatch != lastmatch->GetNext(); curmatch = curmatch->GetNext() )
-								{
-									// found the first next one
-									if ( strnicmp(curmatch->GetPtr() + inputLen, pszCurSel, curselLen) > 0 )
-									{
-										break;
-									}
-								}
-								if ( curmatch == lastmatch->GetNext() )
-								{
-									curmatch = firstmatch; // scrolled over
-								}
-							}
-
-							LPCTSTR	tmp = curmatch->GetPtr() + inputLen;
-							inp->ReplaceSel(tmp);
-							if ( !bOnly )
-							{
-								inp->SetSel(selStart, selStart + strlen(tmp));
-							}
-						}
-					}
-					else
-					{
-						inp->SendMessage(WM_CHAR, ' ');	// in this case just replace selection by a space
-					}
 				}
 			}
 		}

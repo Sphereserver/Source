@@ -243,7 +243,6 @@ protected:
 
 extern LPCTSTR g_szCompiledDate;
 extern LPCTSTR const g_Stat_Name[STAT_QTY];
-extern CGStringList g_AutoComplete;
 
 extern int Sphere_InitServer( int argc, char *argv[] );
 extern void Sphere_ExitServer();

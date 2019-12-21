@@ -354,7 +354,6 @@ CExpression g_Exp;	// Global script variables.
 CLog		g_Log;
 CEventLog * g_pLog = &g_Log;
 CAccounts	g_Accounts;	// All the player accounts. name sorted CAccount
-CGStringList	g_AutoComplete;	// auto-complete list
 TScriptProfiler g_profiler;		// script profiler
 CMapList	g_MapList;			// global maps information
 
@@ -622,39 +621,6 @@ int Sphere_InitServer( int argc, char *argv[] )
 	EXC_SET("sockets init");
 	if ( !g_Serv.SocketsInit() )
 		return -9;
-
-	//	load auto-complete dictionary
-	EXC_SET("auto-complete");
-	{
-		CFileText	dict;
-		if ( dict.Open(SPHERE_FILE ".dic", OF_READ|OF_TEXT|OF_DEFAULTMODE) )
-		{
-			TCHAR * pszTemp = Str_GetTemp();
-			size_t count = 0;
-			while ( !dict.IsEOF() )
-			{
-				dict.ReadString(pszTemp, SCRIPT_MAX_LINE_LEN-1);
-				if ( *pszTemp )
-				{
-					TCHAR *c = strchr(pszTemp, '\r');
-					if ( c != NULL )
-						*c = '\0';
-
-					c = strchr(pszTemp, '\n');
-					if ( c != NULL )
-						*c = '\0';
-
-					if ( *pszTemp != '\0' )
-					{
-						count++;
-						g_AutoComplete.AddTail(pszTemp);
-					}
-				}
-			}
-			g_Log.Event(LOGM_INIT, "Auto-complete dictionary loaded (contains %" FMTSIZE_T " words)\n", count);
-			dict.Close();
-		}
-	}
 
 	g_Log.Event(LOGL_EVENT, "\nStartup complete (Items=%" FMTDWORD ", Chars=%" FMTDWORD ", Accounts=%" FMTDWORD ")\n", g_Serv.StatGet(SERV_STAT_ITEMS), g_Serv.StatGet(SERV_STAT_CHARS), g_Serv.StatGet(SERV_STAT_ACCOUNTS));
 #ifdef _WIN32

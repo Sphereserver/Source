@@ -1495,11 +1495,12 @@ void CServer::SetResyncPause(bool fPause, CTextConsole *pSrc, bool fMessage)
 	ADDTOCALLSTACK("CServer::SetResyncPause");
 	if ( fPause )
 	{
-		g_Serv.SysMessagef("%s\n", g_Cfg.GetDefaultMsg(DEFMSG_SERVER_RESYNC_START));
+		LPCTSTR pszTemp = g_Cfg.GetDefaultMsg(DEFMSG_SERVER_RESYNC_START);
+		g_Serv.SysMessagef("%s\n", pszTemp);
 		if ( fMessage )
-			g_World.Broadcast(g_Cfg.GetDefaultMsg(DEFMSG_SERVER_RESYNC_START));
+			g_World.Broadcast(pszTemp);
 		else if ( pSrc && pSrc->GetChar() )
-			pSrc->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_SERVER_RESYNC_START));
+			pSrc->SysMessage(pszTemp);
 
 		SetServerMode(SERVMODE_ResyncPause);
 		m_fResyncPause = true;
@@ -1510,12 +1511,12 @@ void CServer::SetResyncPause(bool fPause, CTextConsole *pSrc, bool fMessage)
 		g_Serv.SysMessagef("%s\n", g_Cfg.GetDefaultMsg(DEFMSG_SERVER_RESYNC_RESTART));
 		SetServerMode(SERVMODE_ResyncLoad);
 
-		long lMsgNum = g_Cfg.Load(true) ? DEFMSG_SERVER_RESYNC_SUCCESS : DEFMSG_SERVER_RESYNC_FAILED;
-		g_Serv.SysMessagef("%s\n", g_Cfg.GetDefaultMsg(lMsgNum));
+		LPCTSTR pszTemp = g_Cfg.GetDefaultMsg(g_Cfg.Load(true) ? DEFMSG_SERVER_RESYNC_SUCCESS : DEFMSG_SERVER_RESYNC_FAILED);
+		g_Serv.SysMessagef("%s\n", pszTemp);
 		if ( fMessage )
-			g_World.Broadcast(g_Cfg.GetDefaultMsg(lMsgNum));
+			g_World.Broadcast(pszTemp);
 		else if ( pSrc && pSrc->GetChar() )
-			pSrc->SysMessage(g_Cfg.GetDefaultMsg(lMsgNum));
+			pSrc->SysMessage(pszTemp);
 
 		m_fResyncPause = false;
 		SetServerMode(SERVMODE_Run);
