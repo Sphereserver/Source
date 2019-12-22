@@ -3598,24 +3598,23 @@ bool CResource::Load(bool fResync)
 	return true;
 }
 
-LPCTSTR CResource::GetDefaultMsg(long lKeyNum)
+LPCTSTR CResource::GetDefaultMsg(int iKeyNum)
 {
 	ADDTOCALLSTACK("CResource::GetDefaultMsg");
-	if ( (lKeyNum < 0) || (lKeyNum >= DEFMSG_QTY) )
+	if ( (iKeyNum < 0) || (iKeyNum >= DEFMSG_QTY) )
 		return "";
 
-	return g_Exp.sm_szMessages[lKeyNum];
+	return g_Exp.sm_szMessages[iKeyNum];
 }
 
 LPCTSTR CResource::GetDefaultMsg(LPCTSTR pszKey)
 {
 	ADDTOCALLSTACK("CResource::GetDefaultMsg");
-	for ( size_t i = 0; i < DEFMSG_QTY; ++i )
+	for ( int i = 0; i < DEFMSG_QTY; ++i )
 	{
 		if ( !strcmpi(pszKey, g_Exp.sm_szMsgNames[i]) )
 			return g_Exp.sm_szMessages[i];
 	}
-	g_Log.EventError("Defmessage \"%s\" not found\n", pszKey);
 	return "";
 }
 

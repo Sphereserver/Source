@@ -1127,7 +1127,7 @@ public:
 
 	#define SysMessageDefault(pszKey)		SysMessage(g_Cfg.GetDefaultMsg(pszKey))
 	LPCTSTR GetDefaultMsg(LPCTSTR pszKey);
-	LPCTSTR GetDefaultMsg(long lKeyNum);
+	LPCTSTR GetDefaultMsg(int iKeyNum);
 
 	typedef std::map<DWORD, DWORD> KRGumpsMap;
 	KRGumpsMap m_mapKRGumps;

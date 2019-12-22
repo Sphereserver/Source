@@ -1324,9 +1324,7 @@ bool CScriptObj::r_LoadVal(CScript &s)
 			{
 				if ( !strcmpi(pszKey, g_Exp.sm_szMsgNames[i]) )
 				{
-					bool fQuoted = false;
-					TCHAR *pszArgs = s.GetArgStr(&fQuoted);
-					strncpy(g_Exp.sm_szMessages[i], pszArgs, EXPRESSION_MAX_KEY_LEN - 1);
+					strncpy(g_Exp.sm_szMessages[i], s.GetArgStr(), EXPRESSION_MAX_KEY_LEN - 1);
 					return true;
 				}
 			}
@@ -1931,7 +1929,7 @@ bool CScriptObj::r_Verb(CScript &s, CTextConsole *pSrc)
 		{
 			if ( !pRef )
 				return true;
-			CScript script(pszKey, s.GetArgRaw());
+			CScript script(pszKey, s.GetArgStr());
 			return pRef->r_Verb(script, pSrc);
 		}
 		// else just fall through. as they seem to be setting the pointer !?
@@ -2724,7 +2722,7 @@ bool CFileObj::r_LoadVal(CScript &s)
 			return true;
 		}
 		else
-			g_Log.Event(LOGL_ERROR, "FILE (%s): Cannot set mode after file opening\n", static_cast<LPCTSTR>(m_pFile->GetFilePath()));
+			g_Log.Event(LOGL_ERROR, "Can't change access mode of open file '%s', it must be closed first\n", static_cast<LPCTSTR>(m_pFile->GetFilePath()));
 		return false;
 	}
 
@@ -2737,7 +2735,7 @@ bool CFileObj::r_LoadVal(CScript &s)
 		{
 			if ( !m_pFile->IsFileOpen() )
 			{
-				g_Log.Event(LOGL_ERROR, "FILE: Cannot write content. Open the file first\n");
+				g_Log.Event(LOGL_ERROR, "Failed to write on file '%s', it must be opened first\n", static_cast<LPCTSTR>(m_pFile->GetFilePath()));
 				return false;
 			}
 
@@ -2767,7 +2765,7 @@ bool CFileObj::r_LoadVal(CScript &s)
 
 			if ( !fSuccess )
 			{
-				g_Log.Event(LOGL_ERROR, "FILE: Failed writing to \"%s\"\n", static_cast<LPCTSTR>(m_pFile->GetFilePath()));
+				g_Log.Event(LOGL_ERROR, "Failed to write on file '%s'\n", static_cast<LPCTSTR>(m_pFile->GetFilePath()));
 				return false;
 			}
 			break;
@@ -2877,7 +2875,7 @@ bool CFileObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 
 			if ( m_pFile->IsFileOpen() )
 			{
-				g_Log.Event(LOGL_ERROR, "FILE: Cannot open file (%s). First close \"%s\"\n", pszFilename, static_cast<LPCTSTR>(m_pFile->GetFilePath()));
+				g_Log.Event(LOGL_ERROR, "Failed to open file '%s', another file is already open\n", pszFilename);
 				return false;
 			}
 
@@ -2903,14 +2901,14 @@ bool CFileObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 
 			if ( (m_pFile->GetPosition() + iRead > m_pFile->GetLength()) || m_pFile->IsEOF() )
 			{
-				g_Log.Event(LOGL_ERROR, "FILE: Failed reading %" FMTSIZE_T " byte from \"%s\". Too near to EOF\n", iRead, static_cast<LPCTSTR>(m_pFile->GetFilePath()));
+				g_Log.Event(LOGL_ERROR, "Failed to read %" FMTSIZE_T " bytes from file '%s' (EOF reached)\n", iRead, static_cast<LPCTSTR>(m_pFile->GetFilePath()));
 				return false;
 			}
 
 			TCHAR *pszBuffer = GetReadBuffer(true);
 			if ( iRead != m_pFile->Read(pszBuffer, iRead) )
 			{
-				g_Log.Event(LOGL_ERROR, "FILE: Failed reading %" FMTSIZE_T " byte from \"%s\"\n", iRead, static_cast<LPCTSTR>(m_pFile->GetFilePath()));
+				g_Log.Event(LOGL_ERROR, "Failed to read %" FMTSIZE_T " bytes from file '%s'\n", iRead, static_cast<LPCTSTR>(m_pFile->GetFilePath()));
 				return false;
 			}
 
