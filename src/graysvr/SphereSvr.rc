@@ -118,7 +118,7 @@ BEGIN
 	LTEXT		"Copyright (C) 1997-2019 SphereServer development team", 3, 10, 24, 200, 8
 	CTEXT		"___________________________________________________________________________", 4, 0, 32, 320, 8
 	LTEXT		"This software makes use of:", 5, 10, 46, 100, 8
-	LTEXT		"libev library (v4.27)\nCopyright (C) 2007-2019 Marc Alexander Lehmann", 6, 15, 62, 290, 16
+	LTEXT		"libev library (v4.31)\nCopyright (C) 2007-2019 Marc Alexander Lehmann", 6, 15, 62, 290, 16
 	LTEXT		"MySQL Connector/C (v6.1.11)\nGeneral Public License (GPL) 2000-2017 Oracle", 7, 15, 86, 290, 16
 	LTEXT		"SQLite library (v3.30.1)\nGeneral Public License (GPL) 2000-2019", 8, 15, 110, 290, 16
 	LTEXT		"Twofish encryption library (v1.0)\nCopyright (C) 1998 Bruce Schneier, Doug Whiting, John Kelsey, Chris Hall, David Wagner", 9, 15, 134, 290, 16
