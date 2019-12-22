@@ -12,6 +12,13 @@
 #pragma GCC diagnostic ignored "-Wunused-value"
 #pragma GCC diagnostic ignored "-Wunused-variable"
 
+#if (__GNUC__ >= 6)
+	#pragma GCC diagnostic ignored "-Wmisleading-indentation"
+	#pragma GCC diagnostic ignored "-Wreturn-type"
+#endif
+#if (__GNUC__ >= 7)
+	#pragma GCC diagnostic ignored "-Wdangling-else"
+#endif
 
 #ifdef __MINGW32__
 #include <time.h>
