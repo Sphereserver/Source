@@ -3341,31 +3341,31 @@ void CResource::OnTick(bool fNow)
 	strcat(a, b);			\
 }
 
-bool CResource::LoadIni(bool fTest)
+bool CResource::LoadIni()
 {
 	ADDTOCALLSTACK("CResource::LoadIni");
-	if ( !OpenResourceFind(m_scpIni, SPHERE_FILE ".ini", !fTest) )
-		return false;
 
-	LoadResourcesOpen(&m_scpIni);
-	m_scpIni.Close();
-	m_scpIni.CloseForce();
-	return true;
-}
-
-bool CResource::LoadCryptIni()
-{
-	ADDTOCALLSTACK("CResource::LoadCryptIni");
-	if ( !OpenResourceFind(m_scpCryptIni, SPHERE_FILE "Crypt.ini", false) )
+	if ( OpenResourceFind(m_scpCryptIni, SPHERE_FILE "Crypt.ini", false) )
 	{
+		LoadResourcesOpen(&m_scpCryptIni);
+		m_scpCryptIni.Close();
+		m_scpCryptIni.CloseForce();
+	}
+	else
 		g_Log.Event(LOGL_WARN, "File '" SPHERE_FILE "Crypt.ini' not found\n");
+
+	if ( OpenResourceFind(m_scpIni, SPHERE_FILE ".ini", false) )
+	{
+		LoadResourcesOpen(&m_scpIni);
+		m_scpIni.Close();
+		m_scpIni.CloseForce();
+		return true;
+	}
+	else
+	{
+		g_Log.Event(LOGL_FATAL, "File '" SPHERE_FILE ".ini' not found\n");
 		return false;
 	}
-
-	LoadResourcesOpen(&m_scpCryptIni);
-	m_scpCryptIni.Close();
-	m_scpCryptIni.CloseForce();
-	return true;
 }
 
 void CResource::Unload(bool fResync)
@@ -3426,11 +3426,6 @@ bool CResource::Load(bool fResync)
 	}
 	else
 	{
-		if ( !g_Cfg.LoadIni(false) )
-			return false;
-
-		g_Cfg.LoadCryptIni();
-
 		CGString sMulPath = g_Install.GetMulPath();
 #ifdef _WIN32
 		if ( sMulPath.IsEmpty() )

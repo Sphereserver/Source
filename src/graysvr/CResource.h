@@ -1022,8 +1022,7 @@ public:
 	bool r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc);
 	bool r_GetRef(LPCTSTR &pszKey, CScriptObj *&pRef);
 
-	bool LoadIni(bool fTest);
-	bool LoadCryptIni();
+	bool LoadIni();
 	bool Load(bool fResync);
 	void Unload(bool fResync);
 	void OnTick(bool fNow);

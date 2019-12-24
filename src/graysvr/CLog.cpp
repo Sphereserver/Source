@@ -103,7 +103,6 @@ int CLog::EventStr( DWORD dwMask, LPCTSTR pszMsg )
 		{
 			Close();	// LINUX should already be closed.
 			OpenLog();
-			Printf("%s", datetime.Format(NULL));
 		}
 #ifndef _WIN32
 		else
