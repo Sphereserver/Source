@@ -29,7 +29,6 @@ Even using 64bit OS, Sphere must be compiled/executed in 32bit mode to work prop
   ```
 * To compile on 64bit OS:
   ```
-  # Add 32bit support using:
   sudo dpkg --add-architecture i386
   sudo apt-get update
   sudo apt-get dist-upgrade
@@ -37,25 +36,32 @@ Even using 64bit OS, Sphere must be compiled/executed in 32bit mode to work prop
 
 #### Install MySQL 5.7 client
 * Ubuntu 14.10 or older:
-  ```
-  # Default package repository only have support up to MySQL 5.6, so add MySQL 5.7 support and install it using:
-  sudo add-apt-repository 'deb http://repo.mysql.com/apt/ubuntu/ trusty mysql-5.7'
-  sudo apt-get update
-  sudo apt-get install libmysqlclient-dev:i386
-  ```
+  * Default package repository only have support up to MySQL 5.6, so add MySQL 5.7 support
+    ```
+    sudo add-apt-repository 'deb http://repo.mysql.com/apt/ubuntu/ trusty mysql-5.7'
+    sudo apt-get update
+    ```
+  * Install MySQL
+    ```
+    sudo apt-get install libmysqlclient-dev:i386
+    ```
 
 * Ubuntu 15.04 to 19.04:
-  ```
-  sudo apt-get install libmysqlclient-dev:i386
-  ```
+  * Install MySQL
+    ```
+    sudo apt-get install libmysqlclient-dev:i386
+    ```
 
 * Ubuntu 19.10 or later:
-  ```
-  # Default package repository dropped support for MySQL 5.7, so add it back and install using:
-  sudo add-apt-repository 'deb http://repo.mysql.com/apt/ubuntu/ disco mysql-5.7'
-  sudo apt-get update --allow-insecure-repositories
-  sudo apt-get install libmysqlclient-dev:i386=5.7*
-  ```
+  * Default package repository dropped support for MySQL 5.7, so add it back
+    ```
+    sudo add-apt-repository 'deb http://repo.mysql.com/apt/ubuntu/ disco mysql-5.7'
+    sudo apt-get update --allow-insecure-repositories
+    ```
+  * Install MySQL
+    ```
+    sudo apt-get install libmysqlclient-dev:i386=5.7*
+    ```
 
 #### Install required packages
 ```
@@ -66,18 +72,23 @@ sudo apt-get install make
 ```
 
 ### Linux (CentOS / Red Hat)
-#### Install MySQL 5.7 client
-* CentOS 6 / Red Hat 6:
+#### Add MySQL 5.7 support
+* Add MySQL support on package repository
+  * CentOS 6 / Red Hat 6:
+    ```
+    sudo yum localinstall https://dev.mysql.com/get/mysql80-community-release-el6-3.noarch.rpm
+    ```
+  * CentOS 7 / Red Hat 7:
+    ```
+    sudo yum localinstall https://dev.mysql.com/get/mysql80-community-release-el7-3.noarch.rpm
+    ```
+  * CentOS 8 / Red Hat 8:
+    ```
+    sudo yum localinstall https://dev.mysql.com/get/mysql80-community-release-el8-1.noarch.rpm
+    ```
+
+* Configure MySQL version on package repository
   ```
-  sudo rpm -Uvh https://dev.mysql.com/get/mysql57-community-release-el6-11.noarch.rpm
-  ```
-* CentOS 7 / Red Hat 7:
-  ```
-  sudo rpm -Uvh https://dev.mysql.com/get/mysql57-community-release-el7-11.noarch.rpm
-  ```
-* CentOS 8 / Red Hat 8:
-  ```
-  sudo rpm -Uvh https://dev.mysql.com/get/mysql80-community-release-el8-1.noarch.rpm
   sudo yum-config-manager --disable mysql80-community
   sudo yum-config-manager --enable mysql57-community
   ```
@@ -90,17 +101,21 @@ sudo yum install glibc-devel.i686
 sudo yum install mysql-community-devel.i686 mysql-community-libs.i686
 ```
 
-### Get the source code and compile it
+### Get the source code
 ```
 git clone https://github.com/SphereServer/Source.git
 cd Source
+```
+
+### Compile the source code
+```
 make NIGHTLY=1
 ```
 
 ## Coding notes for new contributors
 * Make sure you can compile and run the program before pushing a commit.
 * Rebasing instead of pulling the project is a better practice to avoid unnecessary "merge branch master" commits.
-* Removing/Changing/Adding anything that was working in one way for years should be followed by an ini setting if the changes cannot be replicated from script to keep some backwards compatibility.
+* Adding/removing/changing anything that was working in one way for years should be followed by an ini setting when the changes can't be replicated on scripts to keep backwards compatibility.
 
 ## Licensing
 Copyright 2019 SphereServer development team
