@@ -1370,17 +1370,14 @@ void CClient::addPlayerStart(CChar *pChar)
 		m_pChar->ClientAttach(this);
 	}
 	ASSERT(m_pChar->m_pPlayer);
-	ASSERT(m_pAccount);
+
+	CItem *pLingerMemory = m_pChar->LayerFind(LAYER_FLAG_ClientLinger);
+	if ( pLingerMemory )
+		pLingerMemory->Delete();
 
 	CPointMap pt = m_pChar->GetTopPoint();
 	CSector *pSector = pt.GetSector();
-
-	CItem *pItemChange = m_pChar->LayerFind(LAYER_FLAG_ClientLinger);
-	if ( pItemChange )
-		pItemChange->Delete();
-
-	ClearTargMode();	// clear death menu mode. etc. ready to walk about. cancel any previous modes
-	m_Env.SetInvalid();
+	ClearTargMode();
 
 	new PacketPlayerStart(this);
 	addMapDiff();
@@ -1800,7 +1797,7 @@ void CClient::addSpecialMoveClear()
 	new PacketSpecialMoveClear(this);
 }
 
-void CClient::addPlayerSee(const CPointMap &ptOld, bool fIgnoreSelfRegion)
+void CClient::addPlayerSee(const CPointMap ptOld, bool fIgnoreSelfRegion)
 {
 	ADDTOCALLSTACK("CClient::addPlayerSee");
 	// Adjust to my new location. What do I see here?
@@ -1885,7 +1882,7 @@ void CClient::addPlayerSee(const CPointMap &ptOld, bool fIgnoreSelfRegion)
 	}
 }
 
-void CClient::addPlayerView(const CPointMap &ptOld, bool fFull)
+void CClient::addPlayerView(const CPointMap ptOld, bool fFull)
 {
 	ADDTOCALLSTACK("CClient::addPlayerView");
 	// I moved = Change my point of view. Teleport etc..

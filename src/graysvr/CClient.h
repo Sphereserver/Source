@@ -689,8 +689,8 @@ public:
 	bool addContainerSetup(const CItemContainer *pContainer);
 
 	void addPlayerStart(CChar *pChar);
-	void addPlayerSee(const CPointMap &ptOld, bool fIgnoreSelfRegion = false);
-	void addPlayerView(const CPointMap &ptOld, bool fFull = true);
+	void addPlayerSee(const CPointMap ptOld, bool fIgnoreSelfRegion = false);
+	void addPlayerView(const CPointMap ptOld, bool fFull = true);
 	void addPlayerWarMode();
 
 	void addCharMove(const CChar *pChar);

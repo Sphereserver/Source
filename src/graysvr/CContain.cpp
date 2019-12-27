@@ -823,7 +823,6 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 		int iMinY = (pItemDef->m_ttContainer.m_dwMinXY & 0xFFFF);
 		int iMaxX = (pItemDef->m_ttContainer.m_dwMaxXY & 0xFFFF0000) >> 16;
 		int iMaxY = (pItemDef->m_ttContainer.m_dwMaxXY & 0xFFFF);
-		DEBUG_WARN(("Custom container gump id %d for item 0%x\n", gump, GetDispID()));
 		return CPointMap(static_cast<WORD>(Calc_GetRandVal(iMinX, iMaxX)), static_cast<WORD>(Calc_GetRandVal(iMinY, iMaxY)));
 	}
 
@@ -927,7 +926,7 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 		return CPointMap(static_cast<WORD>(Calc_GetRandVal(sm_ContainerRect[i].m_minX, sm_ContainerRect[i].m_maxX)), static_cast<WORD>(Calc_GetRandVal(sm_ContainerRect[i].m_minY, sm_ContainerRect[i].m_maxY)));
 	}
 
-	DEBUG_WARN(("Unknown container gump id %d for item 0%x\n", gump, GetDispID()));
+	DEBUG_WARN(("Can't get rect of unknown container gump TDATA2=0%hx for item '%s'\n", gump, pItemDef->GetResourceName()));
 	return CPointMap(static_cast<WORD>(Calc_GetRandVal(0, 200)), static_cast<WORD>(Calc_GetRandVal(0, 200)));
 }
 

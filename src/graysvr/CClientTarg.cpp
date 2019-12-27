@@ -1165,6 +1165,7 @@ void CClient::OnTarg_Skill(CObjBase *pObj)
 		{
 			m_pChar->m_Act_Targ = m_Targ_UID;
 			m_pChar->Skill_Start(m_tmSkillTarg.m_Skill);
+			return;
 		}
 		case SKILL_PROVOCATION:
 		{
