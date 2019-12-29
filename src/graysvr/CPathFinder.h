@@ -1,8 +1,3 @@
-//
-//	CPathFinder
-//		pathfinding algorytm based on AStar (A*) algorithm
-//		based on A* Pathfinder (Version 1.71a) by Patrick Lester, pwlester@policyalmanac.org
-//
 #ifndef _INC_CPATHFINDER_H
 #define _INC_CPATHFINDER_H
 #pragma once
@@ -21,98 +16,103 @@ class CPathFinderPointRef;
 
 class CPathFinderPoint : public CPointMap
 {
-protected:
-	CPathFinderPoint* m_Parent;
-public:
-	bool m_Walkable;
-	int FValue;
-	int GValue;
-	int HValue;
-
 public:
 	CPathFinderPoint();
-	explicit CPathFinderPoint(const CPointMap& pt);
-
-private:
-	CPathFinderPoint(const CPathFinderPoint& copy);
-	CPathFinderPoint& operator=(const CPathFinderPoint& other);
+	explicit CPathFinderPoint(const CPointMap pt);
 
 public:
-	const CPathFinderPoint* GetParent() const;
-	void SetParent(CPathFinderPointRef& pt);
+	CPathFinderPoint *m_pParent;
+	bool m_fWalkable;
+	int iValF;
+	int iValG;
+	int iValH;
 
-	bool operator < (const CPathFinderPoint& pt) const;
+private:
+	CPathFinderPoint(const CPathFinderPoint &copy);
+	CPathFinderPoint &operator=(const CPathFinderPoint &other);
 };
 
 class CPathFinderPointRef
 {
 public:
-	CPathFinderPoint* m_Point;
-
-public:
-	CPathFinderPointRef() : m_Point(0)
+	CPathFinderPointRef()
 	{
+		m_pPoint = 0;
 	}
-
-	explicit CPathFinderPointRef(CPathFinderPoint& Pt)
+	explicit CPathFinderPointRef(CPathFinderPoint &pt)
 	{
-		m_Point = &Pt;
+		m_pPoint = &pt;
 	}
 
 public:
-	CPathFinderPointRef& operator = ( const CPathFinderPointRef& Pt )
+	CPathFinderPoint *m_pPoint;
+
+public:
+	CPathFinderPointRef &operator=(const CPathFinderPointRef &pt)
 	{
-		m_Point = Pt.m_Point;
+		m_pPoint = pt.m_pPoint;
 		return *this;
 	}
-
-	bool operator < (const CPathFinderPointRef& Pt) const
+	bool operator < (const CPathFinderPointRef &pt) const
 	{
-		return m_Point->FValue < Pt.m_Point->FValue;
+		return (m_pPoint->iValF < pt.m_pPoint->iValF);
 	}
-
-	bool operator == ( const CPathFinderPointRef& Pt )
+	bool operator == (const CPathFinderPointRef &pt) const
 	{
-		return Pt.m_Point == m_Point;
+		return (m_pPoint == pt.m_pPoint);
 	}
 };
 
 class CPathFinder
 {
 public:
-	CPathFinder(CChar *pChar, CPointMap ptTarget);
-	~CPathFinder();
-
 	static const char *m_sClassName;
 
-private:
-	CPathFinder(const CPathFinder& copy);
-	CPathFinder& operator=(const CPathFinder& other);
-
-public:
-	bool FindPath();
-	CPointMap ReadStep(signed short i);
-	signed short LastPathSize();
-	void ClearLastPath();
+	CPathFinder(CChar *pChar, CPointMap ptTarget);
 
 protected:
 	CPathFinderPoint m_Points[MAX_NPC_PATH_STORAGE_SIZE][MAX_NPC_PATH_STORAGE_SIZE];
 	std::deque<CPathFinderPointRef> m_Opened;
 	std::deque<CPathFinderPointRef> m_Closed;
-
 	std::deque<CPointMap> m_LastPath;
 
 	signed short m_RealX;
 	signed short m_RealY;
 
 	CChar *m_pChar;
-	CPointMap m_Target;
+	CPointMap m_ptTarget;
+
+public:
+	bool FindPath();
+
+	CPointMap ReadStep(signed short i) const
+	{
+		return m_LastPath[i];
+	}
+
+	signed short LastPathSize() const
+	{
+		return static_cast<signed short>(m_LastPath.size());
+	}
+
+	void ClearLastPath()
+	{
+		m_LastPath.clear();
+	}
 
 protected:
+	void GetChildren(CPathFinderPointRef pt, std::list<CPathFinderPointRef> ptChildList);
 	void Clear();
-	int Heuristic(CPathFinderPointRef &pt1, CPathFinderPointRef &pt2);
-	void GetChildren(CPathFinderPointRef& Point, std::list<CPathFinderPointRef>& ChildrenRefList );
-	void FillMap();	// prepares map with walkable statuses
+	void FillMap();
+
+	int Heuristic(CPathFinderPointRef ptStart, CPathFinderPointRef ptEnd) const
+	{
+		return 10 * (abs(ptStart.m_pPoint->m_x - ptEnd.m_pPoint->m_x) + abs(ptStart.m_pPoint->m_y - ptEnd.m_pPoint->m_y));
+	}
+
+private:
+	CPathFinder(const CPathFinder &copy);
+	CPathFinder &operator=(const CPathFinder &other);
 };
 
 #endif	// _INC_CPATHFINDER_H
