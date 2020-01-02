@@ -217,23 +217,24 @@ CItem * CItem::CreateBase( ITEMID_TYPE id )	// static
 	return pItem;
 }
 
-CItem * CItem::CreateDupeItem( const CItem * pItem, CChar * pSrc, bool fSetNew )	// static
+CItem *CItem::CreateDupeItem(const CItem *pItem, CChar *pSrc, bool fSetNew)		// static
 {
 	ADDTOCALLSTACK("CItem::CreateDupeItem");
-	// Dupe this item.
-	if ( pItem == NULL )
-		return( NULL );
-	CItem * pItemNew = CreateBase( pItem->GetID());
+	// Dupe this item
+	if ( !pItem )
+		return NULL;
+
+	CItem *pItemNew = CreateBase(pItem->GetID());
 	ASSERT(pItemNew);
-	pItemNew->DupeCopy( pItem );
+	pItemNew->DupeCopy(pItem);
+	pItemNew->UpdatePropertyFlag();
 
 	if ( pSrc )
 		pSrc->m_Act_Targ = pItemNew->GetUID();
-
 	if ( fSetNew )
 		g_World.m_uidNew = pItemNew->GetUID();
 
-	return( pItemNew );
+	return pItemNew;
 }
 
 CItem *CItem::CreateScript(ITEMID_TYPE id, CChar *pSrc)		// static
@@ -3103,28 +3104,52 @@ TRIGRET_TYPE CItem::OnTriggerCreate( CTextConsole * pSrc, CScriptTriggerArgs * p
 	return iRet;
 }
 
-void CItem::DupeCopy( const CItem * pItem )
+void CItem::DupeCopy(const CItem *pItem)
 {
 	ADDTOCALLSTACK("CItem::DupeCopy");
-	// Dupe this item.
+	// Dupe this item
 
-	CObjBase::DupeCopy( pItem );
+	CObjBase::DupeCopy(pItem);
+	SetBase(pItem->Item_GetDef());
+	SetTimeout(pItem->GetTimerDiff());
 
 	m_dwDispIndex = pItem->m_dwDispIndex;
-	SetBase( pItem->Item_GetDef() );
-	SetTimeout( pItem->GetTimerDiff() );
-	m_type = pItem->m_type;
 	m_amount = pItem->m_amount;
-	m_Attr  = pItem->m_Attr;
+	m_type = pItem->m_type;
+	m_CanUse = pItem->m_CanUse;
+	m_weight = pItem->m_weight;
 	m_uidLink = pItem->m_uidLink;
+	m_LastParryChance = pItem->m_LastParryChance;
+	m_Attr = pItem->m_Attr;
+
+	m_StrengthBonus = pItem->m_StrengthBonus;
+	m_DexterityBonus = pItem->m_DexterityBonus;
+	m_IntelligenceBonus = pItem->m_IntelligenceBonus;
+	m_HitpointIncrease = pItem->m_HitpointIncrease;
+	m_StaminaIncrease = pItem->m_StaminaIncrease;
+	m_ManaIncrease = pItem->m_ManaIncrease;
+	m_MageArmor = pItem->m_MageArmor;
+	m_MageWeapon = pItem->m_MageWeapon;
+	m_ArtifactRarity = pItem->m_ArtifactRarity;
+	m_SelfRepair = pItem->m_SelfRepair;
+	m_SpellChanneling = pItem->m_SpellChanneling;
+	m_LowerRequirements = pItem->m_LowerRequirements;
+	m_UseBestWeaponSkill = pItem->m_UseBestWeaponSkill;
+	m_HitPhysicalArea = pItem->m_HitPhysicalArea;
+	m_HitFireArea = pItem->m_HitFireArea;
+	m_HitColdArea = pItem->m_HitColdArea;
+	m_HitPoisonArea = pItem->m_HitPoisonArea;
+	m_HitEnergyArea = pItem->m_HitEnergyArea;
+	m_HitDispel = pItem->m_HitDispel;
+	m_HitFireball = pItem->m_HitFireball;
+	m_HitHarm = pItem->m_HitHarm;
+	m_HitLightning = pItem->m_HitLightning;
+	m_HitMagicArrow = pItem->m_HitMagicArrow;
+	m_WeightReduction = pItem->m_WeightReduction;
 
 	m_itNormal.m_more1 = pItem->m_itNormal.m_more1;
 	m_itNormal.m_more2 = pItem->m_itNormal.m_more2;
 	m_itNormal.m_morep = pItem->m_itNormal.m_morep;
-	
-	m_TagDefs.Copy(&(pItem->m_TagDefs));
-	m_BaseDefs.Copy(&(pItem->m_BaseDefs));
-	m_OEvents.Copy(&(pItem->m_OEvents));
 }
 
 void CItem::SetAnim( ITEMID_TYPE id, int iTime )

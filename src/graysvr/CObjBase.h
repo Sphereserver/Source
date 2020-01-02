@@ -210,9 +210,54 @@ protected:
 	{
 		CObjBaseTemplate::DupeCopy(pObj);
 		m_wHue = pObj->GetHue();
-		//m_timeout = pObj->m_timeout;
 		m_TagDefs.Copy(&pObj->m_TagDefs);
 		m_BaseDefs.Copy(&pObj->m_BaseDefs);
+		m_OEvents.Copy(&pObj->m_OEvents);
+
+		m_Can = pObj->m_Can;
+		m_ModMaxWeight = pObj->m_ModMaxWeight;
+
+		m_attackBase = pObj->m_attackBase;
+		m_attackRange = pObj->m_attackRange;
+
+		m_defenseBase = pObj->m_defenseBase;
+		m_defenseRange = pObj->m_defenseRange;
+
+		m_DamPhysical = pObj->m_DamPhysical;
+		m_DamFire = pObj->m_DamFire;
+		m_DamCold = pObj->m_DamCold;
+		m_DamPoison = pObj->m_DamPoison;
+		m_DamEnergy = pObj->m_DamEnergy;
+
+		m_ResPhysical = pObj->m_ResPhysical;
+		m_ResPhysicalMax = pObj->m_ResPhysicalMax;
+		m_ResFire = pObj->m_ResFire;
+		m_ResFireMax = pObj->m_ResFireMax;
+		m_ResCold = pObj->m_ResCold;
+		m_ResColdMax = pObj->m_ResColdMax;
+		m_ResPoison = pObj->m_ResPoison;
+		m_ResPoisonMax = pObj->m_ResPoisonMax;
+		m_ResEnergy = pObj->m_ResEnergy;
+		m_ResEnergyMax = pObj->m_ResEnergyMax;
+
+		m_Luck = pObj->m_Luck;
+		m_DamIncrease = pObj->m_DamIncrease;
+		m_SpellDamIncrease = pObj->m_SpellDamIncrease;
+		m_HitLifeLeech = pObj->m_HitLifeLeech;
+		m_HitManaDrain = pObj->m_HitManaDrain;
+		m_HitManaLeech = pObj->m_HitManaLeech;
+		m_HitStaminaLeech = pObj->m_HitStaminaLeech;
+		m_HitChanceIncrease = pObj->m_HitChanceIncrease;
+		m_DefChanceIncrease = pObj->m_DefChanceIncrease;
+		m_DefChanceIncreaseMax = pObj->m_DefChanceIncreaseMax;
+		m_SwingSpeedIncrease = pObj->m_SwingSpeedIncrease;
+		m_FasterCasting = pObj->m_FasterCasting;
+		m_FasterCastRecovery = pObj->m_FasterCastRecovery;
+		m_LowerManaCost = pObj->m_LowerManaCost;
+		m_LowerReagentCost = pObj->m_LowerReagentCost;
+		m_EnhancePotions = pObj->m_EnhancePotions;
+		m_NightSight = pObj->m_NightSight;
+		m_ReflectPhysicalDamage = pObj->m_ReflectPhysicalDamage;
 	}
 
 public:

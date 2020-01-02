@@ -118,7 +118,7 @@ make NIGHTLY=1
 * Adding/removing/changing anything that was working in one way for years should be followed by an ini setting when the changes can't be replicated on scripts to keep backwards compatibility.
 
 ## Licensing
-Copyright 2019 SphereServer development team
+Copyright 2020 SphereServer development team
 
 Licensed under the Apache License, Version 2.0 (the "License").<br>
 You may not use any file of this project except in compliance with the License.<br>

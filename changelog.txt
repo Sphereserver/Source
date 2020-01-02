@@ -1701,3 +1701,7 @@ Removed: Support for obsolete console auto-complete feature on Windows build (sp
 
 22-12-2019, Coruja
 Changed: Updated internal Libev libs v4.27 to v4.31.
+
+02-01-2020, Coruja
+Fixed: Function DUPE not duping some properties correctly.
+Fixed: GM chars unable to drop items on player bankbox.
