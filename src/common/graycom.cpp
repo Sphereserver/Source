@@ -31,13 +31,6 @@
 		}
 	#endif
 
-	int	ATOI(const char *str)
-	{
-		int	res;
-		sscanf(str, "%d", &res);
-		return res;
-	}
-
 	char *ITOA(int value, char *buffer, int radix)
 	{
 		sprintf(buffer, (radix == 16) ? "%x" : "%d", value);

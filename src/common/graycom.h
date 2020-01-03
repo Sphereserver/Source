@@ -34,13 +34,12 @@
 	#endif
 #endif
 
+#define	ATOI atoi
 #ifdef _WIN32
-	#define ATOI atoi
 	#define ITOA _itoa
 	#define LTOA _ltoa
 	#define STRREV _strrev
 #else
-	int ATOI(const char *str);
 	char *ITOA(int value, char *buffer, int radix);
 	char *LTOA(long value, char *buffer, int radix);
 	void STRREV(char *str);
