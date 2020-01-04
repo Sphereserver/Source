@@ -1708,3 +1708,5 @@ Fixed: GM chars unable to drop items on player bankbox.
 
 04-01-2020, Coruja
 Fixed: OF_PetSlots optional flag on sphere.ini not decreasing follower slots when pet die.
+Fixed: Human NPCs calling too many guards when they see an criminal/murderer.
+Fixed: Guard NPCs walking too far away from the location where they got called.

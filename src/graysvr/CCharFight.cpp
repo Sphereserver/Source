@@ -943,10 +943,19 @@ void CChar::OnNoticeCrime(CChar *pCriminal, const CChar *pCharMark)
 		OnHarmedBy(pCriminal);
 	}
 
-	if ( m_pArea && m_pArea->IsGuarded() && (GetNPCBrain() == NPCBRAIN_HUMAN) && NPC_CanSpeak() )
+	if ( m_pArea && m_pArea->IsGuarded() )
 	{
-		Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_CRIM));
-		CallGuards(pCriminal);
+		if ( GetNPCBrain(false) == NPCBRAIN_GUARD )
+		{
+			// Guard NPCs should attack the criminal
+			NPC_LookAtCharGuard(pCriminal);
+		}
+		else if ( (GetNPCBrain() == NPCBRAIN_HUMAN) && NPC_CanSpeak() )
+		{
+			// Human NPCs should call for guards
+			Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_CRIM));
+			CallGuards(pCriminal);
+		}
 	}
 }
 
@@ -957,9 +966,6 @@ bool CChar::CheckCrimeSeen(SKILL_TYPE skill, CChar *pCharMark, const CObjBase *p
 	// Did others see me commit or try to commit the crime
 	// RETURN:
 	//  true = someone saw me
-
-	if ( m_pNPC && (m_pNPC->m_Brain == NPCBRAIN_GUARD) )	// guards only fight for justice, they can't commit a crime
-		return false;
 
 	bool fSeen = false;
 	CWorldSearch AreaChars(GetTopPoint(), UO_MAP_VIEW_SIZE);
@@ -1352,13 +1358,15 @@ void CChar::CallGuards(CChar *pCriminal)
 		if ( !rid.IsValidUID() )
 			return;
 		pGuard = CChar::CreateNPC(static_cast<CREID_TYPE>(rid.GetResIndex()));
-		if ( !pGuard )
+		if ( !pGuard || !pGuard->m_pNPC )
 			return;
 
 		if ( pCriminal->m_pArea->m_TagDefs.GetKeyNum("RED") )
 			pGuard->m_TagDefs.SetNum("NAME.HUE", g_Cfg.m_iColorNotoEvil, true);
 		pGuard->Spell_Effect_Create(SPELL_Summon, LAYER_SPELL_Summon, 1000, g_Cfg.m_iGuardLingerTime);
 		pGuard->Spell_Teleport(pCriminal->GetTopPoint(), false, false);
+		pGuard->m_ptHome = GetTopPoint();
+		pGuard->m_pNPC->m_Home_Dist_Wander = UO_MAP_VIEW_SIZE;
 	}
 	pGuard->NPC_LookAtCharGuard(pCriminal);
 }
@@ -1628,11 +1636,11 @@ int CChar::OnTakeDamage(int iDmg, CChar *pSrc, DAMAGE_TYPE uType, int iDmgPhysic
 	//  0 = no damage
 	//  INT_MAX	= killed
 
-	if ( !pSrc )
-		pSrc = this;
-
 	if ( IsStatFlag(STATF_DEAD) )	// already dead
 		return -1;
+
+	if ( !pSrc )
+		pSrc = this;
 
 	if ( !(uType & DAMAGE_GOD) )
 	{

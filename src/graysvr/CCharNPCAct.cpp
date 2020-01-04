@@ -845,7 +845,7 @@ bool CChar::NPC_LookAtCharGuard(CChar *pChar)
 {
 	ADDTOCALLSTACK("CChar::NPC_LookAtCharGuard");
 	// Guard NPC is looking at char
-	if ( !pChar || (pChar == this) )
+	if ( !m_pNPC || !pChar || (pChar == this) )
 		return false;
 	if ( !m_pArea || !pChar->m_pArea || !pChar->m_pArea->IsGuarded() )
 		return false;
@@ -918,8 +918,8 @@ bool CChar::NPC_LookAtCharHuman(CChar *pChar)
 			m_atFlee.m_iStepsCurrent = 0;
 			Skill_Start(NPCACT_FLEE);
 			m_pNPC->m_Act_Motivation = 80;
-			return true;
 		}
+		return true;
 	}
 	return false;
 }
@@ -2251,13 +2251,6 @@ void CChar::NPC_Act_Idle()
 	// Look for items/chars around
 	if ( NPC_LookAround() )
 		return;
-
-	// Make guards outside guarded region walk back to guarded region
-	if ( (m_pNPC->m_Brain == NPCBRAIN_GUARD) && !m_pArea->IsGuarded() && m_ptHome.IsValidPoint() )
-	{
-		Skill_Start(NPCACT_GO_HOME);
-		return;
-	}
 
 	// Some creatures can do special actions
 	if ( (Stat_GetVal(STAT_DEX) >= Stat_GetAdjusted(STAT_DEX)) && !Calc_GetRandVal(3) )
