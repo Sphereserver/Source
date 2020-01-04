@@ -3082,11 +3082,11 @@ PacketGumpValueInput::PacketGumpValueInput(const CClient* target, bool cancel, I
 			break;
 		case INPVAL_Text:
 			z = Str_GetTemp();
-			len = sprintf(z, "%s (%" FMTDWORD " chars max)", caption, maxLength) + 1;
+			len = static_cast<size_t>(sprintf(z, "%s (%" FMTDWORD " chars max)", caption, maxLength)) + 1;
 			break;
 		case INPVAL_Numeric:
 			z = Str_GetTemp();
-			len = sprintf(z, "%s (0 - %" FMTDWORD ")", caption, maxLength) + 1;
+			len = static_cast<size_t>(sprintf(z, "%s (0 - %" FMTDWORD ")", caption, maxLength)) + 1;
 			break;
 	}
 	if (len > WORD_MAX)

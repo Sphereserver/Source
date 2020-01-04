@@ -398,7 +398,7 @@ bool CAccounts::Account_ListUnused(CTextConsole *pSrc, LPCTSTR pszDays, LPCTSTR 
 		else if ( iDeleted > 0 )
 			pSrc->SysMessagef("All %" FMTSIZE_T " unused accounts deleted\n", iDeleted);
 		else
-			pSrc->SysMessagef("No accounts deleted\n");
+			pSrc->SysMessage("No accounts deleted\n");
 	}
 
 	return true;

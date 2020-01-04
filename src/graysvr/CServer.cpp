@@ -955,10 +955,8 @@ void CServer::ListClients(CTextConsole *pConsole) const
 		strcat(pszMsg, pszMsgTemp);
 	}
 
-	if ( iClients <= 0 )
+	if ( iClients == 0 )
 		sprintf(pszMsgTemp, "%s\n", g_Cfg.GetDefaultMsg(DEFMSG_HL_NO_CLIENT));
-	else if ( iClients == 1 )
-		sprintf(pszMsgTemp, "%s\n", g_Cfg.GetDefaultMsg(DEFMSG_HL_ONE_CLIENT));
 	else
 		sprintf(pszMsgTemp, "%s %" FMTSIZE_T "\n", g_Cfg.GetDefaultMsg(DEFMSG_HL_MANY_CLIENTS), iClients);
 
@@ -1320,7 +1318,7 @@ bool CServer::r_Verb(CScript &s, CTextConsole *pSrc)
 			}
 
 			if ( g_World.Export(ppArgs[0], pSrc->GetChar(), (iQty >= 2) ? static_cast<WORD>(ATOI(ppArgs[1])) : IMPFLAGS_ITEMS, (iQty >= 3) ? ATOI(ppArgs[2]) : SHRT_MAX) )
-				pSrc->SysMessagef("Export complete\n");
+				pSrc->SysMessage("Export complete\n");
 			else
 				pSrc->SysMessage("Export failed\n");
 			break;
@@ -1356,7 +1354,7 @@ bool CServer::r_Verb(CScript &s, CTextConsole *pSrc)
 			}
 
 			if ( g_World.Import(ppArgs[0], pSrc->GetChar(), (iQty >= 2) ? static_cast<WORD>(ATOI(ppArgs[1])) : IMPFLAGS_ITEMS|IMPFLAGS_CHARS, (iQty >= 3) ? ATOI(ppArgs[2]) : SHRT_MAX) )
-				pSrc->SysMessagef("Import complete\n");
+				pSrc->SysMessage("Import complete\n");
 			else
 				pSrc->SysMessage("Import failed\n");
 			break;
@@ -1399,7 +1397,7 @@ bool CServer::r_Verb(CScript &s, CTextConsole *pSrc)
 			}
 
 			if ( g_World.Import(ppArgs[0], pSrc->GetChar(), IMPFLAGS_ITEMS|IMPFLAGS_CHARS|IMPFLAGS_ACCOUNT, SHRT_MAX, ppArgs[1], ppArgs[2]) )
-				pSrc->SysMessagef("Restore complete\n");
+				pSrc->SysMessage("Restore complete\n");
 			else
 				pSrc->SysMessage("Restore failed\n");
 			break;
@@ -1580,9 +1578,9 @@ void CServer::ProfileDump(CTextConsole *pSrc, bool fDump)
 		}
 
 		if ( g_profiler.initstate != 0xF1 )
-			pSrc->SysMessagef("Scripts profiler is not initialized\n");
+			pSrc->SysMessage("Scripts profiler is not initialized\n");
 		else if ( !g_profiler.called )
-			pSrc->SysMessagef("Script profiler is not yet informational\n");
+			pSrc->SysMessage("Script profiler is not yet informational\n");
 		else
 		{
 			ULONGLONG average = g_profiler.total / g_profiler.called;
