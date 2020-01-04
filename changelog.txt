@@ -1710,3 +1710,4 @@ Fixed: GM chars unable to drop items on player bankbox.
 Fixed: OF_PetSlots optional flag on sphere.ini not decreasing follower slots when pet die.
 Fixed: Human NPCs calling too many guards when they see an criminal/murderer.
 Fixed: Guard NPCs walking too far away from the location where they got called.
+Changed: Char trigger @PetDesert now will be called when the pet get released in any situation instead only when it got starving or attacked by its master.

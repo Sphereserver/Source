@@ -329,7 +329,7 @@ CChar::~CChar()
 	if ( m_pParty )
 		m_pParty->RemoveMember(this);
 
-	NPC_PetClearOwners(false);	// clear follower slots on pet owner
+	NPC_PetClearOwners();		// clear follower slots on pet owner
 	DeleteAll();				// remove me early so virtuals will work
 	ClearNPC();
 	ClearPlayer();

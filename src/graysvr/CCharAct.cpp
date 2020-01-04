@@ -2555,7 +2555,7 @@ bool CChar::Death()
 		if ( pCorpse )
 			pCorpse->m_uidLink.InitUID();
 
-		NPC_PetClearOwners(false);
+		NPC_PetClearOwners();
 		return false;	// delete the NPC
 	}
 
@@ -3562,7 +3562,7 @@ void CChar::OnTickFood(int iVal, int iHitsHungerLoss)
 	{
 		OnTakeDamage(iHitsHungerLoss, this, DAMAGE_FIXED);
 		if ( m_pNPC )
-			NPC_PetDesert();
+			NPC_PetRelease();
 	}
 }
 

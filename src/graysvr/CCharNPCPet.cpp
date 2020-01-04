@@ -479,7 +479,7 @@ bool CChar::NPC_PetCheckAccess(int iCmd, CChar *pChar)
 	return true;
 }
 
-void CChar::NPC_PetClearOwners(bool fResendTooltip)
+void CChar::NPC_PetClearOwners()
 {
 	ADDTOCALLSTACK("CChar::NPC_PetClearOwners");
 	CChar *pOwner = NPC_PetGetOwner();
@@ -521,13 +521,8 @@ void CChar::NPC_PetClearOwners(bool fResendTooltip)
 			pCharRider->Horse_UnMount();
 	}
 
-	if ( pOwner )
-	{
-		if ( IsSetOF(OF_PetSlots) )
-			pOwner->FollowersUpdate(this, -m_FollowerSlots);
-		if ( fResendTooltip )
-			UpdatePropertyFlag();
-	}
+	if ( pOwner && IsSetOF(OF_PetSlots) )
+		pOwner->FollowersUpdate(this, -m_FollowerSlots);
 }
 
 bool CChar::NPC_PetSetOwner(CChar *pChar, bool fResendTooltip)
@@ -541,7 +536,7 @@ bool CChar::NPC_PetSetOwner(CChar *pChar, bool fResendTooltip)
 	if ( pOwner == pChar )
 		return false;
 
-	NPC_PetClearOwners(false);	// clear previous owner before set the new owner
+	NPC_PetClearOwners();	// clear previous owner before set the new owner
 	m_ptHome.InitPoint();	// no longer homed
 	CItemSpawn *pSpawn = dynamic_cast<CItemSpawn *>(m_uidSpawnItem.ItemFind());
 	if ( pSpawn )
@@ -609,7 +604,7 @@ bool CChar::NPC_CheckHirelingStatus()
 			if ( pMemory )
 				pMemory->m_itEqMemory.m_Action = NPC_MEM_ACT_SPEAK_HIRE;
 
-			NPC_PetDesert();
+			NPC_PetRelease();
 			return false;
 		}
 
@@ -740,7 +735,7 @@ bool CChar::NPC_SetVendorPrice(CItem *pItem, int iPrice)
 	ADDTOCALLSTACK("CChar::NPC_SetVendorPrice");
 	// player vendors.
 	// CLIMODE_PROMPT_VENDOR_PRICE
-	// This does not check who is setting the price if if it is valid for them to do so.
+	// This does not check who is setting the price if it is valid for them to do so.
 
 	if ( !NPC_IsVendor() )
 		return false;
@@ -783,14 +778,6 @@ void CChar::NPC_PetRelease()
 		return;
 	}
 
-	NPC_PetClearOwners();
-	SoundChar(CRESND_NOTICE);
-	Skill_Start(SKILL_NONE);
-}
-
-void CChar::NPC_PetDesert()
-{
-	ADDTOCALLSTACK("CChar::NPC_PetDesert");
 	CChar *pOwner = NPC_PetGetOwner();
 	if ( !pOwner )
 		return;
@@ -801,12 +788,12 @@ void CChar::NPC_PetDesert()
 			return;
 	}
 
-	if ( !pOwner->CanSee(this) )
-		pOwner->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_DESERTED), GetName());
-
 	TCHAR *pszMsg = Str_GetTemp();
 	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_DECIDE_MASTER), GetName());
 	Speak(pszMsg);
 
-	NPC_PetRelease();
+	NPC_PetClearOwners();
+	UpdatePropertyFlag();
+	SoundChar(CRESND_NOTICE);
+	Skill_Start(SKILL_NONE);
 }
