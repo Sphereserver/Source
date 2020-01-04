@@ -1983,13 +1983,16 @@ CItem *CChar::Make_Figurine(CGrayUID uidOwner, ITEMID_TYPE id)
 CItem *CChar::NPC_Shrink()
 {
 	ADDTOCALLSTACK("CChar::NPC_Shrink");
+	if ( !m_pNPC )
+		return NULL;
+
+	NPC_PetClearOwners();	// clear follower slots on pet owner
+
 	if ( IsStatFlag(STATF_Conjured) )
 	{
 		Stat_SetVal(STAT_STR, 0);
 		return NULL;
 	}
-
-	NPC_PetClearOwners(false);	// clear follower slots on pet owner
 
 	CItem *pItem = Make_Figurine();
 	if ( !pItem )
@@ -2476,7 +2479,7 @@ bool CChar::Death()
 		}
 
 		if ( pItem->IsMemoryTypes(MEMORY_HARMEDBY) )
-			Memory_ClearTypes(static_cast<CItemMemory *>(pItem), 0xFFFF);
+			Memory_ClearTypes(static_cast<CItemMemory *>(pItem), 0xFFFF & ~MEMORY_IPET);
 	}
 
 	// Give kill credit to my attackers

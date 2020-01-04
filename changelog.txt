@@ -1705,3 +1705,6 @@ Changed: Updated internal Libev libs v4.27 to v4.31.
 02-01-2020, Coruja
 Fixed: Function DUPE not duping some properties correctly.
 Fixed: GM chars unable to drop items on player bankbox.
+
+04-01-2020, Coruja
+Fixed: OF_PetSlots optional flag on sphere.ini not decreasing follower slots when pet die.
