@@ -144,42 +144,32 @@ void CClient::Event_Book_Title(CItem *pItem, LPCTSTR pszTitle, LPCTSTR pszAuthor
 void CClient::Event_Item_Pickup(CGrayUID uid, WORD wAmount)
 {
 	ADDTOCALLSTACK("CClient::Event_Item_Pickup");
-	EXC_TRY("CClient::Event_Item_Pickup");
+	EXC_TRY("Event_Item_Pickup");
 	if ( !m_pChar )
 		return;
 
-	EXC_SET("Item");
+	EXC_SET("FastLoot check");
+	CServTime timeCurrent = g_World.GetCurrentTime();
+	if ( timeCurrent < m_timeLastEventItemPickup + 5 )
+	{
+		new PacketDragCancel(this, PacketDragCancel::Other);
+		return;
+	}
+	m_timeLastEventItemPickup = timeCurrent;
+
+	EXC_SET("Item check");
 	CItem *pItem = uid.ItemFind();
 	if ( !pItem || pItem->IsWeird() )
 	{
-		EXC_SET("Item - addObjectRemove(uid)");
 		addObjectRemove(uid);
-		EXC_SET("Item - addItemDragCancel(0)");
-		new PacketDragCancel(this, PacketDragCancel::CannotLift);
+		new PacketDragCancel(this, PacketDragCancel::OutOfRange);
 		return;
 	}
-
-	// FastLoot prevention (,emptycontainer)
-	EXC_SET("FastLoot");
-	CServTime CurTime = g_World.GetCurrentTime();
-	if ( CurTime < m_timeLastEventItemPickup + 5 )
-	{
-		EXC_SET("FastLoot - addItemDragCancel(0)");
-		new PacketDragCancel(this, PacketDragCancel::CannotLift);
-		return;
-	}
-	m_timeLastEventItemPickup = CurTime;
-
-	// Where is the item coming from? (just in case we have to toss it back)
-	EXC_SET("Origin");
-	CObjBase *pObjParent = dynamic_cast<CObjBase *>(pItem->GetParent());
-	m_Targ_PrvUID = pObjParent ? pObjParent->GetUID() : static_cast<CGrayUID>(UID_CLEAR);
-	m_Targ_p = pItem->GetTopPoint();
 
 	EXC_SET("ItemPickup");
+	CObjBase *pPrevParent = dynamic_cast<CObjBase *>(pItem->GetParent());
 	if ( !m_pChar->ItemPickup(pItem, wAmount) )
 	{
-		EXC_SET("ItemPickup - addItemDragCancel(0)");
 		new PacketDragCancel(this, PacketDragCancel::CannotLift);
 		return;
 	}
@@ -188,8 +178,10 @@ void CClient::Event_Item_Pickup(CGrayUID uid, WORD wAmount)
 	addSound(pVar ? static_cast<SOUND_TYPE>(pVar->GetValNum()) : SOUND_USE_CLOTH);
 
 	EXC_SET("TargMode");
-	SetTargMode(CLIMODE_DRAG);
 	m_Targ_UID = uid;
+	m_Targ_PrvUID = pPrevParent ? pPrevParent->GetUID() : static_cast<CGrayUID>(UID_CLEAR);
+	m_Targ_p = pItem->GetTopPoint();
+	SetTargMode(CLIMODE_DRAG);
 	EXC_CATCH;
 }
 
