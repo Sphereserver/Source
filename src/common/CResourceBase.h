@@ -163,11 +163,14 @@ struct RESOURCE_ID : public RESOURCE_ID_BASE
 struct CResourceQty
 {
 public:
-	CResourceQty() : m_iQty(0) { };
+	CResourceQty()
+	{
+		m_iQty = 0;
+	}
 
 private:
 	RESOURCE_ID m_rid;		// RES_SKILL, RES_ITEMDEF, or RES_TYPEDEF
-	INT64 m_iQty;
+	int m_iQty;
 
 public:
 	RESOURCE_ID GetResourceID() const
@@ -180,11 +183,11 @@ public:
 		m_iQty = iQty;
 	}
 
-	INT64 GetResQty() const
+	int GetResQty() const
 	{
 		return m_iQty;
 	}
-	void SetResQty(INT64 iQty)
+	void SetResQty(int iQty)
 	{
 		m_iQty = iQty;
 	}
@@ -849,7 +852,7 @@ public:
 	void LoadResourcesOpen(CScript *pScript);
 	bool LoadResources(CResourceScript *pScript);
 	CResourceScript *LoadResourcesAdd(LPCTSTR pszNewFileName);
-	virtual bool OpenResourceFind(CScript &s, LPCTSTR pszFileName, bool bCritical = true);
+	virtual bool OpenResourceFind(CScript &s, LPCTSTR pszFileName, bool fCritical = true);
 	virtual bool LoadResourceSection(CScript *pScript) = 0;
 
 	CResourceScript *GetResourceFile(size_t i)

@@ -118,10 +118,10 @@ void CCharBase::SetFoodType(LPCTSTR pszFood)
 
 	// Try to determine the real value
 	m_MaxFood = 0;
-	for ( size_t i = 0; i < m_FoodType.GetCount(); i++ )
+	for ( size_t i = 0; i < m_FoodType.GetCount(); ++i )
 	{
 		if ( m_MaxFood < m_FoodType[i].GetResQty() )
-			m_MaxFood = static_cast<int>(m_FoodType[i].GetResQty());
+			m_MaxFood = m_FoodType[i].GetResQty();
 	}
 }
 
@@ -137,7 +137,7 @@ LPCTSTR CCharBase::GetTradeName() const
 	if ( !pszSpace )
 		return pszName;
 
-	pszSpace++;
+	++pszSpace;
 	if ( !strnicmp(pszSpace, "the ", 4) )
 		pszSpace += 4;
 	return pszSpace;

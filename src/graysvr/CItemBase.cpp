@@ -725,10 +725,10 @@ DWORD CItemBase::CalculateMakeValue(int iQualityLevel) const
 		if ( !pSkillDef )
 			continue;
 
-		// This is the normal skill required. If iQuality is much less than iSkillNeed then something is wrong
-		int iSkillNeed = static_cast<int>(m_SkillMake[i].GetResQty());
-		if ( iQualityLevel < iSkillNeed )
-			iQualityLevel = iSkillNeed;
+		// This is the normal skill required. If iQuality is much less than iSkillReq then something is wrong
+		int iSkillReq = m_SkillMake[i].GetResQty();
+		if ( iQualityLevel < iSkillReq )
+			iQualityLevel = iSkillReq;
 
 		dwValue += pSkillDef->m_Values.GetLinear(iQualityLevel);
 	}

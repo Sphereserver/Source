@@ -2569,7 +2569,7 @@ bool PacketProfileReq::onReceive(NetState* net)
 			wTextLen = wMaxLen - 1;
 
 		pszText = Str_GetTemp();
-		readStringNUNICODE(pszText, wMaxLen, wTextLen + 1, false);
+		readStringNUNICODE(pszText, wMaxLen, static_cast<size_t>(wTextLen) + 1, false);
 	}
 
 	pClient->Event_Profile(fWrite, pChar, pszText);
@@ -3203,15 +3203,15 @@ bool PacketSpellSelect::onReceive(NetState* net)
 
 	if ( IsSetMagicFlags(MAGICF_PRECAST) && !pSpellDef->IsSpellType(SPELLFLAG_NOPRECAST) )
 	{
-		int skill;
-		if ( !pSpellDef->GetPrimarySkill(&skill) )
+		int iSkill;
+		if ( !pSpellDef->GetPrimarySkill(&iSkill) )
 			return true;
 
 		pClient->m_tmSkillMagery.m_Spell = spell;
 		pChar->m_atMagery.m_Spell = spell;
 		pClient->m_Targ_UID = pChar->GetUID();
 		pClient->m_Targ_PrvUID = pChar->GetUID();
-		pChar->Skill_Start(static_cast<SKILL_TYPE>(skill));
+		pChar->Skill_Start(static_cast<SKILL_TYPE>(iSkill));
 	}
 	else
 		pClient->Cmd_Skill_Magery(spell, pChar);

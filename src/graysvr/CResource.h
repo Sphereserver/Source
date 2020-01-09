@@ -306,7 +306,7 @@ public:
 	CValueCurveDef m_iRegenerateTime;	// TICK_PER_SEC once found how long to regen this type.
 
 public:
-	TRIGRET_TYPE OnTrigger(LPCTSTR pszTrigName, CTextConsole *pSrc, CScriptTriggerArgs *pArgs);
+	TRIGRET_TYPE OnTrigger(LPCTSTR pszTrigName, CTextConsole *pSrc, CScriptTriggerArgs *pArgs = NULL);
 	bool r_LoadVal(CScript &s);
 	bool r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc = NULL);
 
@@ -1131,8 +1131,8 @@ public:
 	typedef std::map<DWORD, DWORD> KRGumpsMap;
 	KRGumpsMap m_mapKRGumps;
 
-	bool SetKRDialogMap(DWORD rid, DWORD idKRDialog);
-	DWORD GetKRDialogMap(DWORD idKRDialog);
+	bool SetKRDialogMap(DWORD rid, DWORD dwKRDialogID);
+	DWORD GetKRDialogMap(DWORD dwKRDialogID);
 	DWORD GetKRDialog(DWORD rid);
 
 	bool GenerateDefname(TCHAR *pszObjectName, size_t iInputLength, LPCTSTR pszPrefix, TCHAR *pszOutput, bool fCheckConflict = true, CVarDefMap *vDefnames = NULL);

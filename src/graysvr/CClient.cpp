@@ -1089,7 +1089,7 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 			if ( IsSetMagicFlags(MAGICF_PRECAST) && !pSpellDef->IsSpellType(SPELLFLAG_NOPRECAST) )
 			{
 				int iSkill;
-				if ( !pSpellDef->GetPrimarySkill(&iSkill, NULL) )
+				if ( !pSpellDef->GetPrimarySkill(&iSkill) )
 					return true;
 
 				m_tmSkillMagery.m_Spell = spell;	// m_atMagery.m_Spell
@@ -1439,7 +1439,7 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 				else
 				{
 					int iSkill;
-					if ( !pSpellDef->GetPrimarySkill(&iSkill, NULL) )
+					if ( !pSpellDef->GetPrimarySkill(&iSkill) )
 						return false;
 
 					m_pChar->Skill_Start(static_cast<SKILL_TYPE>(iSkill));

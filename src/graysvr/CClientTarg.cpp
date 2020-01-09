@@ -1290,7 +1290,7 @@ void CClient::OnTarg_Skill_Magery(CObjBase *pObj, const CPointMap &pt)
 	m_pChar->m_Act_p = pt;
 	m_Targ_p = pt;
 
-	if ( IsSetMagicFlags(MAGICF_PRECAST) && !pSpellDef->IsSpellType(SPELLFLAG_NOPRECAST) && m_pChar->m_pClient )
+	if ( m_pChar->m_pClient && IsSetMagicFlags(MAGICF_PRECAST) && !pSpellDef->IsSpellType(SPELLFLAG_NOPRECAST) )
 	{
 		if ( g_Cfg.IsSkillFlag(m_pChar->m_Act_SkillCurrent, SKF_MAGIC) )
 		{
@@ -1301,11 +1301,11 @@ void CClient::OnTarg_Skill_Magery(CObjBase *pObj, const CPointMap &pt)
 		return;
 	}
 
-	int skill;
-	if ( !pSpellDef->GetPrimarySkill(&skill, NULL) )
+	int iSkill;
+	if ( !pSpellDef->GetPrimarySkill(&iSkill) )
 		return;
 
-	m_pChar->Skill_Start(static_cast<SKILL_TYPE>(skill));
+	m_pChar->Skill_Start(static_cast<SKILL_TYPE>(iSkill));
 }
 
 void CClient::OnTarg_Pet_Command(CObjBase *pObj, const CPointMap &pt)

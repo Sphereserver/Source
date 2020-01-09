@@ -75,15 +75,9 @@ public:
 	{
 		m_codes[0] = 0;
 	}
-	CLanguageID( const char * pszInit )
+	CLanguageID(LPCTSTR pszLang)
 	{
-		Set( pszInit );
-	}
-	CLanguageID( int iDefault )
-	{
-		UNREFERENCED_PARAMETER(iDefault);
-		ASSERT(iDefault==0);
-		m_codes[0] = 0;
+		Set(pszLang);
 	}
 	bool IsDef() const
 	{

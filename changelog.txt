@@ -1714,3 +1714,7 @@ Changed: Char trigger @PetDesert now will be called when the pet get released in
 
 08-01-2020, Coruja
 Fixed: Item pickup setting TARGP/TARGPRV char properties even when pickup fail.
+[sphere_msgs.scp]: Updated message list with the following changes
+	-Removed: npc_pet_deserted, party_add_too_fast, hl_one_client
+	-Updated: magery_5, msg_frozen
+	-Fixed typo: forensics_carbedby -> forensics_carvedby

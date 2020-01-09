@@ -1195,10 +1195,7 @@ bool CChar::Skill_MakeItem_Success()
 		else
 		{
 			for ( WORD i = 1; i < m_atCreate.m_Amount; ++i )
-			{
-				CItem *pItemNew = CItem::CreateTemplate(m_atCreate.m_ItemID, NULL, this);
-				ItemBounce(pItemNew);
-			}
+				ItemBounce(CItem::CreateTemplate(m_atCreate.m_ItemID, NULL, this));
 		}
 	}
 	else if ( pItem->IsType(IT_SCROLL) )

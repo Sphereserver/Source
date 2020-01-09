@@ -1767,11 +1767,11 @@ int CChar::OnTakeDamage(int iDmg, CChar *pSrc, DAMAGE_TYPE uType, int iDmgPhysic
 		if ( m_pPlayer && !(uType & DAMAGE_NODISTURB) && g_Cfg.IsSkillFlag(Skill_GetActive(), SKF_MAGIC) )
 		{
 			// Check if my spell can be interrupted
-			int iSpellSkill;
+			int iSkill;
 			const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
-			if ( pSpellDef && pSpellDef->GetPrimarySkill(&iSpellSkill) )
+			if ( pSpellDef && pSpellDef->GetPrimarySkill(&iSkill) )
 			{
-				int iDisturbChance = pSpellDef->m_Interrupt.GetLinear(Skill_GetBase(static_cast<SKILL_TYPE>(iSpellSkill)));
+				int iDisturbChance = pSpellDef->m_Interrupt.GetLinear(Skill_GetBase(static_cast<SKILL_TYPE>(iSkill)));
 				if ( iDisturbChance )
 				{
 					if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )

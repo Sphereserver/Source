@@ -383,9 +383,7 @@ size_t CContainer::ResourceConsumePart(const CResourceQtyArray *pResources, DWOR
 		if ( dwQtyTotal <= 0 )
 			continue;
 
-		RESOURCE_ID rid = pResources->GetAt(i).GetResourceID();
-		DWORD dwRet = ContentConsume(rid, dwQtyTotal, fTest, dwArg);
-		if ( dwRet )
+		if ( ContentConsume(pResources->GetAt(i).GetResourceID(), dwQtyTotal, fTest, dwArg) )
 			iMissing = i;
 	}
 

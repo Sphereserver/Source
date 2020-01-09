@@ -326,13 +326,13 @@ bool CClient::Cmd_Use_Item(CItem *pItem, bool fTestTouch, bool fScript)
 
 			if ( IsSetMagicFlags(MAGICF_PRECAST) && !pSpellDef->IsSpellType(SPELLFLAG_NOPRECAST) )
 			{
-				int skill;
-				if ( !pSpellDef->GetPrimarySkill(&skill) )
+				int iSkill;
+				if ( !pSpellDef->GetPrimarySkill(&iSkill) )
 					return false;
 
 				m_tmSkillMagery.m_Spell = spell;	// m_atMagery.m_Spell
 				m_pChar->m_atMagery.m_Spell = spell;
-				m_pChar->Skill_Start(static_cast<SKILL_TYPE>(skill));
+				m_pChar->Skill_Start(static_cast<SKILL_TYPE>(iSkill));
 				return true;
 			}
 			return Cmd_Skill_Magery(spell, pItem);
@@ -989,11 +989,11 @@ bool CClient::Cmd_Skill_Magery(SPELL_TYPE iSpell, CObjBase *pSrc)
 	}
 	else
 	{
-		int skill;
-		if ( !pSpellDef->GetPrimarySkill(&skill) )
+		int iSkill;
+		if ( !pSpellDef->GetPrimarySkill(&iSkill) )
 			return false;
 
-		return m_pChar->Skill_Start(static_cast<SKILL_TYPE>(skill));
+		return m_pChar->Skill_Start(static_cast<SKILL_TYPE>(iSkill));
 	}
 }
 

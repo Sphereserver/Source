@@ -213,7 +213,7 @@ CResourceScript *CResourceBase::LoadResourcesAdd(LPCTSTR pszNewFileName)
 	return NULL;
 }
 
-bool CResourceBase::OpenResourceFind(CScript &s, LPCTSTR pszFileName, bool bCritical)
+bool CResourceBase::OpenResourceFind(CScript &s, LPCTSTR pszFileName, bool fCritical)
 {
 	ADDTOCALLSTACK("CResourceBase::OpenResourceFind");
 	// Open a single resource script file
@@ -224,7 +224,7 @@ bool CResourceBase::OpenResourceFind(CScript &s, LPCTSTR pszFileName, bool bCrit
 	// Search the local dir or full path first
 	if ( s.Open(pszFileName, OF_READ|OF_NONCRIT) )
 		return true;
-	if ( !bCritical )
+	if ( !fCritical )
 		return false;
 
 	// Check the script file path
@@ -1107,7 +1107,7 @@ size_t CResourceQty::WriteKey(TCHAR *pszArgs, bool fQtyOnly, bool fKeyOnly) cons
 	ADDTOCALLSTACK("CResourceQty::WriteKey");
 	size_t i = 0;
 	if ( (GetResQty() || fQtyOnly) && !fKeyOnly )
-		i = sprintf(pszArgs, "%lld ", GetResQty());
+		i = sprintf(pszArgs, "%d ", GetResQty());
 	if ( !fQtyOnly )
 		i += strcpylen(pszArgs + i, g_Cfg.ResourceGetName(m_rid));
 	return i;
@@ -1138,7 +1138,7 @@ bool CResourceQty::Load(LPCTSTR &pszCmds)
 	const char *orig = pszCmds;
 	GETNONWHITESPACE(pszCmds);
 
-	m_iQty = LLONG_MIN;
+	m_iQty = INT_MIN;
 	if ( !IsAlpha(*pszCmds) )	// might be { or .
 	{
 		m_iQty = Exp_GetVal(pszCmds);
@@ -1159,7 +1159,7 @@ bool CResourceQty::Load(LPCTSTR &pszCmds)
 	}
 
 	GETNONWHITESPACE(pszCmds);
-	if ( m_iQty == LLONG_MIN )	// trailing qty?
+	if ( m_iQty == INT_MIN )	// trailing qty?
 	{
 		if ( (*pszCmds == '\0') || (*pszCmds == ',') )
 			m_iQty = 1;
@@ -1207,8 +1207,7 @@ size_t CResourceQtyArray::FindResourceType(RES_TYPE restype) const
 	ADDTOCALLSTACK("CResourceQtyArray::FindResourceType");
 	for ( size_t i = 0; i < GetCount(); ++i )
 	{
-		RESOURCE_ID ridtest = GetAt(i).GetResourceID();
-		if ( ridtest.GetResType() == restype )
+		if ( GetAt(i).GetResourceID().GetResType() == restype )
 			return i;
 	}
 	return BadIndex();
@@ -1219,8 +1218,7 @@ size_t CResourceQtyArray::FindResourceID(RESOURCE_ID_BASE rid) const
 	ADDTOCALLSTACK("CResourceQtyArray::FindResourceID");
 	for ( size_t i = 0; i < GetCount(); ++i )
 	{
-		RESOURCE_ID ridtest = GetAt(i).GetResourceID();
-		if ( ridtest == rid )
+		if ( GetAt(i).GetResourceID() == rid )
 			return i;
 	}
 	return BadIndex();
@@ -1234,8 +1232,7 @@ size_t CResourceQtyArray::FindResourceMatch(CObjBase *pObj) const
 
 	for ( size_t i = 0; i < GetCount(); ++i )
 	{
-		RESOURCE_ID ridtest = GetAt(i).GetResourceID();
-		if ( pObj->IsResourceMatch(ridtest, 0) )
+		if ( pObj->IsResourceMatch(GetAt(i).GetResourceID(), 0) )
 			return i;
 	}
 	return BadIndex();
@@ -1325,15 +1322,15 @@ void CResourceQtyArray::WriteNames(TCHAR *pszArgs, size_t index) const
 		if ( (i > 0) && (index == 0) )
 			pszArgs += sprintf(pszArgs, ", ");
 
-		INT64 iQty = GetAt(i).GetResQty();
+		int iQty = GetAt(i).GetResQty();
 		if ( iQty )
 		{
 			if ( GetAt(i).GetResType() == RES_SKILL )
-				pszArgs += sprintf(pszArgs, "%lld.%lld ", iQty / 10, iQty % 10);
+				pszArgs += sprintf(pszArgs, "%d.%d ", iQty / 10, iQty % 10);
 			else
-				pszArgs += sprintf(pszArgs, "%lld ", iQty);
+				pszArgs += sprintf(pszArgs, "%d ", iQty);
 		}
-		pszArgs += GetAt(i).WriteNameSingle(pszArgs, static_cast<int>(iQty));
+		pszArgs += GetAt(i).WriteNameSingle(pszArgs, iQty);
 	}
 	*pszArgs = '\0';
 }
@@ -1350,7 +1347,7 @@ bool CResourceQtyArray::operator==(const CResourceQtyArray &array) const
 		{
 			if ( j >= array.GetCount() )
 				return false;
-			if ( !(GetAt(i).GetResourceID() == array[j].GetResourceID()) )
+			if ( GetAt(i).GetResourceID() != array[j].GetResourceID() )
 				continue;
 			if ( GetAt(i).GetResQty() != array[j].GetResQty() )
 				continue;

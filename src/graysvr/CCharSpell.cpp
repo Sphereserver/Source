@@ -230,7 +230,7 @@ CChar *CChar::Spell_Summon(CREID_TYPE id, CPointMap ptTarg)
 
 	int iSkill;
 	const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
-	if ( !pSpellDef || !pSpellDef->GetPrimarySkill(&iSkill, NULL) )
+	if ( !pSpellDef || !pSpellDef->GetPrimarySkill(&iSkill) )
 		return NULL;
 
 	if ( !pSpellDef->IsSpellType(SPELLFLAG_TARG_OBJ|SPELLFLAG_TARG_XYZ) )
@@ -2202,7 +2202,7 @@ bool CChar::Spell_CanCast(SPELL_TYPE &spell, bool fTest, CObjBase *pSrc, bool fF
 		return false;
 
 	int iSkill = SKILL_NONE;
-	if ( !pSpellDef->GetPrimarySkill(&iSkill, NULL) )
+	if ( !pSpellDef->GetPrimarySkill(&iSkill) )
 		iSkill = SKILL_MAGERY;
 	if ( !Skill_CanUse(static_cast<SKILL_TYPE>(iSkill)) )
 		return false;
@@ -2479,25 +2479,6 @@ bool CChar::Spell_TargCheck()
 		}
 		if ( !Spell_TargCheck_Face() )
 			return false;
-	}
-	return true;
-}
-
-bool CChar::Spell_Unequip(LAYER_TYPE layer)
-{
-	ADDTOCALLSTACK("CChar::Spell_Unequip");
-	CItem *pItem = LayerFind(layer);
-	if ( pItem )
-	{
-		if ( IsSetMagicFlags(MAGICF_NOCASTFROZENHANDS) && IsStatFlag(STATF_Freeze) )
-		{
-			SysMessageDefault(DEFMSG_SPELL_TRY_FROZENHANDS);
-			return false;
-		}
-		else if ( !CanMove(pItem) )
-			return false;
-		else if ( !pItem->IsTypeSpellbook() && !pItem->IsType(IT_WAND) && !pItem->m_SpellChanneling )
-			ItemBounce(pItem);
 	}
 	return true;
 }
@@ -3048,10 +3029,26 @@ int CChar::Spell_CastStart()
 	// Attempt to unequip stuff before casting (except wands, spellbooks and items with SPELLCHANNELING property set)
 	if ( !g_Cfg.m_fEquippedCast && !fAllowEquip )
 	{
-		if ( !Spell_Unequip(LAYER_HAND1) )
-			return -1;
-		if ( !Spell_Unequip(LAYER_HAND2) )
-			return -1;
+		for ( CItem *pItemHand = GetContentHead(); pItemHand != NULL; pItemHand = pItemHand->GetNext() )
+		{
+			if ( (pItemHand->GetEquipLayer() != LAYER_HAND1) && (pItemHand->GetEquipLayer() != LAYER_HAND2) )
+				continue;
+
+			if ( IsStatFlag(STATF_Freeze) && IsSetMagicFlags(MAGICF_NOCASTFROZENHANDS) )
+			{
+				SysMessageDefault(DEFMSG_SPELL_TRY_FROZENHANDS);
+				return -1;
+			}
+			else if ( pItemHand->IsTypeSpellbook() || pItemHand->IsType(IT_WAND) || pItemHand->m_SpellChanneling )
+			{
+				// These items can stay in hands while casting
+				continue;
+			}
+
+			if ( !CanMove(pItemHand) )
+				return -1;
+			ItemBounce(pItemHand);
+		}
 	}
 
 	m_atMagery.m_Spell = static_cast<SPELL_TYPE>(Args.m_iN1);
@@ -3062,17 +3059,12 @@ int CChar::Spell_CastStart()
 	if ( !pSpellDef )
 		return -1;
 
-	if ( g_Cfg.m_iRevealFlags & REVEALF_SPELLCAST )
-		Reveal(STATF_Hidden|STATF_Invisible);
-	else
-		Reveal(STATF_Hidden);
+	Reveal((g_Cfg.m_iRevealFlags & REVEALF_SPELLCAST) ? STATF_Hidden|STATF_Invisible : STATF_Hidden);
 
-	// Animate casting
 	if ( !pSpellDef->IsSpellType(SPELLFLAG_NO_CASTANIM) && !IsSetMagicFlags(MAGICF_NOANIM) )
 		UpdateAnimate(pSpellDef->IsSpellType(SPELLFLAG_DIR_ANIM) ? ANIM_CAST_DIR : ANIM_CAST_AREA);
 
-	fWOP = (Args.m_VarsLocal.GetKeyNum("WOP") > 0);
-	if ( fWOP )
+	if ( Args.m_VarsLocal.GetKeyNum("WOP") > 0 )
 	{
 		HUE_TYPE WOPColor = static_cast<HUE_TYPE>(Args.m_VarsLocal.GetKeyNum("WOPColor"));
 		FONT_TYPE WOPFont = static_cast<FONT_TYPE>(Args.m_VarsLocal.GetKeyNum("WOPFont"));

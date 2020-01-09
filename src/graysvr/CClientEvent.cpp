@@ -2528,8 +2528,8 @@ void CClient::Event_ExtCmd(EXTCMD_TYPE type, TCHAR *pszArgs)
 
 			if ( IsSetMagicFlags(MAGICF_PRECAST) && !pSpellDef->IsSpellType(SPELLFLAG_NOPRECAST) )
 			{
-				int skill;
-				if ( !pSpellDef->GetPrimarySkill(&skill) )
+				int iSkill;
+				if ( !pSpellDef->GetPrimarySkill(&iSkill) )
 					return;
 
 				m_tmSkillMagery.m_Spell = spell;
@@ -2537,7 +2537,7 @@ void CClient::Event_ExtCmd(EXTCMD_TYPE type, TCHAR *pszArgs)
 				m_pChar->m_Act_p = m_pChar->GetTopPoint();
 				m_pChar->m_Act_Targ = m_Targ_UID;
 				m_pChar->m_Act_TargPrv = m_Targ_PrvUID;
-				m_pChar->Skill_Start(static_cast<SKILL_TYPE>(skill));
+				m_pChar->Skill_Start(static_cast<SKILL_TYPE>(iSkill));
 			}
 			else
 				Cmd_Skill_Magery(spell, m_pChar);

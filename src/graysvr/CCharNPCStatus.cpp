@@ -332,11 +332,11 @@ int CChar::NPC_WantThisItem(CItem *pItem) const
 	ASSERT(pCharDef);
 	size_t iRet = pCharDef->m_Desires.FindResourceMatch(pItem);
 	if ( iRet != pCharDef->m_Desires.BadIndex() )
-		return static_cast<int>(pCharDef->m_Desires[iRet].GetResQty());
+		return pCharDef->m_Desires[iRet].GetResQty();
 
 	// I'm hungry and this is food ?
 	int iFoodLevel = Food_GetLevelPercent();
-	if ( Food_CanEat(pItem) && (iFoodLevel < 100) )
+	if ( (iFoodLevel < 100) && Food_CanEat(pItem) )
 		return 100 - iFoodLevel;
 
 	if ( NPC_IsVendor() )

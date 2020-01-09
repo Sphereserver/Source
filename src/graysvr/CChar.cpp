@@ -3203,11 +3203,11 @@ bool CChar::r_Verb(CScript &s, CTextConsole *pSrc)	// execute command from scrip
 				break;
 			}
 
-			int skill;
-			if ( !pSpellDef->GetPrimarySkill(&skill, NULL) )
+			int iSkill;
+			if ( !pSpellDef->GetPrimarySkill(&iSkill) )
 				return false;
 
-			Skill_Start(static_cast<SKILL_TYPE>(skill));
+			Skill_Start(static_cast<SKILL_TYPE>(iSkill));
 			break;
 		}
 		case CHV_PRIVSET:

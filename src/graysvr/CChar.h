@@ -1161,7 +1161,6 @@ private:
 	void Spell_Area(CPointMap ptTarg, int iDist, int iSkillLevel);
 	bool Spell_TargCheck_Face();
 	bool Spell_TargCheck();
-	bool Spell_Unequip(LAYER_TYPE layer);
 
 	int Spell_CastStart();
 	void Spell_CastFail();
