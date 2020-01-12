@@ -618,7 +618,7 @@ void CChar::NPC_OnNoticeSnoop(CChar *pCharThief, CChar *pCharMark)
 
 	if ( NPC_CanSpeak() )
 	{
-		static LPCTSTR const sm_szTextSnoop[] =
+		static const LPCTSTR sm_szTextSnoop[] =
 		{
 			g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_SNOOPED_1),
 			g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_SNOOPED_2),
@@ -859,7 +859,7 @@ bool CChar::NPC_LookAtCharGuard(CChar *pChar)
 
 	if ( NPC_CanSpeak() && !Calc_GetRandVal(3) )
 	{
-		static LPCTSTR const sm_szGuardStrike[] =
+		static const LPCTSTR sm_szGuardStrike[] =
 		{
 			g_Cfg.GetDefaultMsg(DEFMSG_NPC_GUARD_STRIKE_1),
 			g_Cfg.GetDefaultMsg(DEFMSG_NPC_GUARD_STRIKE_2),
@@ -953,7 +953,7 @@ bool CChar::NPC_LookAtCharHealer(CChar *pChar)
 
 	if ( (notoHealer != NOTO_CRIMINAL) && (notoTarg == NOTO_CRIMINAL) )
 	{
-		static LPCTSTR const sm_szHealerRefuseCriminals[] =
+		static const LPCTSTR sm_szHealerRefuseCriminals[] =
 		{
 			g_Cfg.GetDefaultMsg(DEFMSG_NPC_HEALER_REF_CRIM_1),
 			g_Cfg.GetDefaultMsg(DEFMSG_NPC_HEALER_REF_CRIM_2),
@@ -968,7 +968,7 @@ bool CChar::NPC_LookAtCharHealer(CChar *pChar)
 
 	if ( (notoHealer == NOTO_GOOD) && (notoTarg == NOTO_EVIL) )
 	{
-		static LPCTSTR const sm_szHealerRefuseEvils[] =
+		static const LPCTSTR sm_szHealerRefuseEvils[] =
 		{
 			g_Cfg.GetDefaultMsg(DEFMSG_NPC_HEALER_REF_EVIL_1),
 			g_Cfg.GetDefaultMsg(DEFMSG_NPC_HEALER_REF_EVIL_2),
@@ -983,7 +983,7 @@ bool CChar::NPC_LookAtCharHealer(CChar *pChar)
 
 	if ( ((notoHealer == NOTO_CRIMINAL) || (notoHealer == NOTO_EVIL)) && (notoTarg == NOTO_GOOD) )
 	{
-		static LPCTSTR const sm_szHealerRefuseGoods[] =
+		static const LPCTSTR sm_szHealerRefuseGoods[] =
 		{
 			g_Cfg.GetDefaultMsg(DEFMSG_NPC_HEALER_REF_GOOD_1),
 			g_Cfg.GetDefaultMsg(DEFMSG_NPC_HEALER_REF_GOOD_2),
@@ -997,7 +997,7 @@ bool CChar::NPC_LookAtCharHealer(CChar *pChar)
 	}
 
 	// Attempt to resurrect
-	static LPCTSTR const sm_szHealer[] =
+	static const LPCTSTR sm_szHealer[] =
 	{
 		g_Cfg.GetDefaultMsg(DEFMSG_NPC_HEALER_RES_1),
 		g_Cfg.GetDefaultMsg(DEFMSG_NPC_HEALER_RES_2),
@@ -1174,7 +1174,7 @@ bool CChar::NPC_LookAround(bool fCheckItems)
 
 	if ( !Char_GetDef()->Can(CAN_C_SWIM|CAN_C_WALK|CAN_C_FLY|CAN_C_HOVER|CAN_C_RUN) || IsStatFlag(STATF_Freeze|STATF_Stone) )
 	{
-		// Don't look too far it NPC can't move and can't cast spells at distance
+		// Don't look too far if NPC can't move and can't cast spells at distance
 		if ( !NPC_FightMayCast() )
 			iViewSight = 2;
 	}
@@ -1243,11 +1243,6 @@ void CChar::NPC_Act_Wander()
 		// Stop wandering
 		Skill_Start(SKILL_NONE);
 		return;
-	}
-	else if ( Calc_GetRandVal(2) )
-	{
-		if ( NPC_LookAround() )
-			return;
 	}
 
 	// Go back to home point when walk too far
@@ -1896,7 +1891,7 @@ bool CChar::NPC_Act_Talk()
 	{
 		if ( NPC_CanSpeak() )
 		{
-			static LPCTSTR const sm_szGenericGoneMsg[] =
+			static const LPCTSTR sm_szGenericGoneMsg[] =
 			{
 				g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_GONE_1),
 				g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_GONE_2)
@@ -1920,13 +1915,6 @@ void CChar::NPC_Act_GoHome()
 	if ( !m_pNPC )
 		return;
 
-	// Periodically look around
-	if ( !Calc_GetRandVal(2) )
-	{
-		if ( NPC_LookAround() )
-			return;
-	}
-
 	if ( !m_ptHome.IsValidPoint() || !GetTopPoint().IsValidPoint() || (GetTopPoint().GetDist(m_ptHome) < m_pNPC->m_Home_Dist_Wander) )
 	{
 		Skill_Start(SKILL_NONE);
@@ -1935,8 +1923,8 @@ void CChar::NPC_Act_GoHome()
 
 	if ( g_Cfg.m_iLostNPCTeleport )
 	{
-		int iDist = m_ptHome.GetDist(GetTopPoint());
-		if ( (iDist > g_Cfg.m_iLostNPCTeleport) && (iDist > m_pNPC->m_Home_Dist_Wander) )
+		int iDist = GetTopPoint().GetDist(m_ptHome);
+		if ( iDist > g_Cfg.m_iLostNPCTeleport )
 		{
 			if ( IsTrigUsed(TRIGGER_NPCLOSTTELEPORT) )
 			{
@@ -1947,16 +1935,14 @@ void CChar::NPC_Act_GoHome()
 					return;
 				}
 			}
-			Spell_Teleport(m_ptHome, true, false);
+			if ( Spell_Teleport(m_ptHome, true, false) )
+				return;
 		}
 	}
 
 	m_Act_p = m_ptHome;
 	if ( !NPC_WalkToPoint() )
-	{
 		Skill_Start(SKILL_NONE);
-		return;
-	}
 }
 
 void CChar::NPC_Act_Looting()
@@ -2034,34 +2020,24 @@ void CChar::NPC_Act_RunTo(int iDist)
 	// Run to point (m_Act_p)
 
 	int iResult = NPC_WalkToPoint(true);
-	if ( iResult == 0 )
+	if ( (iResult == 2) && (NPC_GetAiFlags() & NPC_AI_PERSISTENTPATH) )
 	{
-		// Destination reached, look for something new to do
-		NPC_Act_Idle();
-	}
-	else if ( iResult == 2 )
-	{
-		// Can't run there, check if NPC should keep trying or give up
-		if ( NPC_GetAiFlags() & NPC_AI_PERSISTENTPATH )
-		{
-			if ( iDist > GetTopPoint().GetDist(m_Act_p) )
-				iDist = GetTopPoint().GetDist(m_Act_p);
-			else
-				--iDist;
+		// Can't move there, check if NPC should keep trying or give up
+		int iDistAct = GetTopPoint().GetDist(m_Act_p);
+		if ( iDist > iDistAct )
+			iDist = iDistAct;
+		else
+			--iDist;
 
-			if ( iDist )
-			{
-				NPC_Act_RunTo(iDist);
-				return;
-			}
-		}
-		else if ( m_Act_p.IsValidPoint() && IsPlayableCharacter() && !IsStatFlag(STATF_Freeze|STATF_Stone) )
+		if ( iDist )
 		{
-			Spell_Teleport(m_Act_p, true, false);
+			NPC_Act_RunTo(iDist);
 			return;
 		}
-		NPC_Act_Idle();
 	}
+
+	if ( iResult != 1 )
+		NPC_Act_Idle();
 }
 
 void CChar::NPC_Act_GoTo(int iDist)
@@ -2071,34 +2047,24 @@ void CChar::NPC_Act_GoTo(int iDist)
 	// Walk to point (m_Act_p)
 
 	int iResult = NPC_WalkToPoint();
-	if ( iResult == 0 )
+	if ( (iResult == 2) && (NPC_GetAiFlags() & NPC_AI_PERSISTENTPATH) )
 	{
-		// Destination reached, look for something new to do
-		NPC_Act_Idle();
-	}
-	else if ( iResult == 2 )
-	{
-		// Can't run there, check if NPC should keep trying or give up
-		if ( NPC_GetAiFlags() & NPC_AI_PERSISTENTPATH )
-		{
-			if ( iDist > GetTopPoint().GetDist(m_Act_p) )
-				iDist = GetTopPoint().GetDist(m_Act_p);
-			else
-				--iDist;
+		// Can't move there, check if NPC should keep trying or give up
+		int iDistAct = GetTopPoint().GetDist(m_Act_p);
+		if ( iDist > iDistAct )
+			iDist = iDistAct;
+		else
+			--iDist;
 
-			if ( iDist )
-			{
-				NPC_Act_GoTo(iDist);
-				return;
-			}
-		}
-		else if ( m_Act_p.IsValidPoint() && IsPlayableCharacter() && !IsStatFlag(STATF_Freeze|STATF_Stone) )
+		if ( iDist )
 		{
-			Spell_Teleport(m_Act_p, true, false);
+			NPC_Act_GoTo(iDist);
 			return;
 		}
-		NPC_Act_Idle();
 	}
+
+	if ( iResult != 1 )
+		NPC_Act_Idle();
 }
 
 bool CChar::NPC_Act_Food()
@@ -2292,8 +2258,9 @@ void CChar::NPC_Act_Idle()
 	}
 
 	// Just stand here for a bit
-	Skill_Start(SKILL_NONE);
-	SetTimeout(static_cast<INT64>(Calc_GetRandVal(1, 20)) * TICK_PER_SEC);
+	if ( Skill_GetActive() != SKILL_NONE )
+		Skill_Start(SKILL_NONE);
+	SetTimeout(static_cast<INT64>(Calc_GetRandVal(5, 15)) * TICK_PER_SEC);
 }
 
 bool CChar::NPC_OnReceiveItem(CChar *pCharSrc, CItem *pItem)
