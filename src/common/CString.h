@@ -208,14 +208,14 @@ public:
 	* @param offset position from start the search.
 	* @return position of the character in CGString if any, -1 otherwise.
 	*/
-	int indexOf(TCHAR c, int offset);
+	int indexOf(TCHAR c, size_t offset);
 	/**
 	* @brief Look for the first occurence of a substring in CGString from a position.
 	* @param str substring to look for.
 	* @param offset position from start the search.
 	* @return position of the substring in CGString if any, -1 otherwise.
 	*/
-	int indexOf(CGString str, int offset);
+	int indexOf(CGString str, size_t offset);
 	/**
 	* @brief Look for the first occurence of a substring in CGString.
 	* @param str substring to look for.
@@ -234,14 +234,14 @@ public:
 	* @param from position where stop the search.
 	* @return position of the character in CGString if any, -1 otherwise.
 	*/
-	int lastIndexOf(TCHAR c, int from);
+	int lastIndexOf(TCHAR c, size_t from);
 	/**
 	* @brief Look for the last occurence of a substring in CGString from a position to the end.
 	* @param str substring to look for.
 	* @param from position where stop the search.
 	* @return position of the substring in CGString if any, -1 otherwise.
 	*/
-	int lastIndexOf(CGString str, int from);
+	int lastIndexOf(CGString str, size_t from);
 	/**
 	* @brief Look for the last occurence of a substring in CGString.
 	* @param str substring to look for.
@@ -376,19 +376,19 @@ MATCH_TYPE Str_RegExMatch(LPCTSTR pszPattern, LPCTSTR pszText);
 
 /**
 * @brief Wrapper to cstring strcpy, but returns the length of the string copied.
-* @param pDst dest memory space.
-* @param pSrc source data.
+* @param pszDst dest memory space.
+* @param pszSrc source data.
 * @return length of the string copied.
 */
-size_t strcpylen(TCHAR * pDst, LPCTSTR pSrc);
+size_t strcpylen(TCHAR *pszDst, LPCTSTR pszSrc);
 /**
 * @brief Wrapper to cstring strncpy, but returns the length of string copied.
-* @param pDst dest memory space.
-* @param pSrc source data.
-* @param iMaxSize max data to be coppied.
+* @param pszDst dest memory space.
+* @param pszSrc source data.
+* @param iMaxLen max data to be coppied.
 * @return length of the string copied.
 */
-size_t strcpylen(TCHAR * pDst, LPCTSTR pSrc, size_t imaxlen);
+size_t strcpylen(TCHAR *pszDst, LPCTSTR pszSrc, size_t iMaxLen);
 
 /**
 * @brief Give the article and space to a word. For example, for "boot" will return "a ".
@@ -462,7 +462,7 @@ TCHAR * Str_TrimWhitespace(TCHAR * pStr);
 * @param offset position where to start the search.
 * @return -1 for a bad offset or if string if not found, otherwise the position of the substring in string.
 */
-int Str_IndexOf(TCHAR * pStr1, TCHAR * pStr2, int offset = 0);
+int Str_IndexOf(TCHAR * pStr1, TCHAR * pStr2, size_t offset = 0);
 /**
 * @brief Parse a simple argument from a list of arguments.
 * 

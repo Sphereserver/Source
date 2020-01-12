@@ -37,43 +37,19 @@ ULONG gMemAmount = 0; ///< Total mem allocated by CGStrings.
 int gReallocs = 0; ///< Total reallocs caused by CGString resizing.
 #endif
 
-//see os_unix.h
-// #ifndef _WIN32
-// void _strupr( TCHAR * pszStr )
-// {
-// 	// No portable UNIX/LINUX equiv to this.
-// 	for ( ;pszStr[0] != '\0'; pszStr++ )
-// 	{
-// 		*pszStr = toupper( *pszStr );
-// 	}
-// }
-//
-// void _strlwr( TCHAR * pszStr )
-// {
-// 	// No portable UNIX/LINUX equiv to this.
-// 	for ( ;pszStr[0] != '\0'; pszStr++ )
-// 	{
-// 		*pszStr = tolower( *pszStr );
-// 	}
-// }
-// #endif
-
-
-size_t strcpylen(TCHAR * pDst, LPCTSTR pSrc)
+size_t strcpylen(TCHAR *pszDst, LPCTSTR pszSrc)
 {
-	strcpy(pDst, pSrc);
-	return(strlen(pDst));
+	strcpy(pszDst, pszSrc);
+	return strlen(pszDst);
 }
 
-
-size_t strcpylen(TCHAR * pDst, LPCTSTR pSrc, size_t iMaxSize)
+size_t strcpylen(TCHAR *pszDst, LPCTSTR pszSrc, size_t iMaxLen)
 {
-	// it does NOT include the iMaxSize element! (just like memcpy)
-	// so iMaxSize=sizeof() is ok !
+	// It does NOT include the iMaxLen element (just like memcpy), so iMaxLen = sizeof() is ok!
 	ASSERT(iMaxSize);
-	strncpy(pDst, pSrc, iMaxSize - 1);
-	pDst[iMaxSize - 1] = '\0';	// always terminate.
-	return(strlen(pDst));
+	strncpy(pszDst, pszSrc, iMaxLen - 1);
+	pszDst[iMaxLen - 1] = '\0';
+	return strlen(pszDst);
 }
 
 //***************************************************************************
@@ -281,35 +257,33 @@ int CGString::indexOf(TCHAR c)
 	return indexOf(c, 0);
 }
 
-int CGString::indexOf(TCHAR c, int offset)
+int CGString::indexOf(TCHAR c, size_t offset)
 {
-	if (offset < 0)
+	if (offset <= 0)
 		return -1;
 
-	int len = strlen(m_pchData);
+	size_t len = strlen(m_pchData);
 	if (offset >= len)
 		return -1;
 
-	for (int i = offset; i<len; i++)
+	for (size_t i = offset; i < len; ++i)
 	{
 		if (m_pchData[i] == c)
-		{
-			return i;
-		}
+			return static_cast<int>(i);
 	}
 	return -1;
 }
 
-int CGString::indexOf(CGString str, int offset)
+int CGString::indexOf(CGString str, size_t offset)
 {
-	if (offset < 0)
+	if (offset <= 0)
 		return -1;
 
-	int len = strlen(m_pchData);
+	size_t len = strlen(m_pchData);
 	if (offset >= len)
 		return -1;
 
-	int slen = str.GetLength();
+	size_t slen = str.GetLength();
 	if (slen > len)
 		return -1;
 
@@ -317,16 +291,15 @@ int CGString::indexOf(CGString str, int offset)
 	strcpy(str_value, str.GetPtr());
 	TCHAR firstChar = str_value[0];
 
-	for (int i = offset; i < len; i++)
+	for (size_t i = offset; i < len; i++)
 	{
 		TCHAR c = m_pchData[i];
 		if (c == firstChar)
 		{
-			int rem = len - i;
-			if (rem >= slen)
+			if (len - i >= slen)
 			{
-				int j = i;
-				int k = 0;
+				size_t j = i;
+				size_t k = 0;
 				bool found = true;
 				while (k < slen)
 				{
@@ -335,12 +308,12 @@ int CGString::indexOf(CGString str, int offset)
 						found = false;
 						break;
 					}
-					j++; k++;
+					++j; ++k;
 				}
 				if (found)
 				{
 					delete[] str_value;
-					return i;
+					return static_cast<int>(i);
 				}
 			}
 		}
@@ -360,35 +333,33 @@ int CGString::lastIndexOf(TCHAR c)
 	return lastIndexOf(c, 0);
 }
 
-int CGString::lastIndexOf(TCHAR c, int from)
+int CGString::lastIndexOf(TCHAR c, size_t from)
 {
-	if (from < 0)
+	if (from <= 0)
 		return -1;
 
-	int len = strlen(m_pchData);
+	size_t len = strlen(m_pchData);
 	if (from > len)
 		return -1;
 
-	for (int i = (len - 1); i >= from; i--)
+	for (size_t i = len - 1; i >= from; --i)
 	{
 		if (m_pchData[i] == c)
-		{
-			return i;
-		}
+			return static_cast<int>(i);
 	}
 	return -1;
 }
 
-int CGString::lastIndexOf(CGString str, int from)
+int CGString::lastIndexOf(CGString str, size_t from)
 {
-	if (from < 0)
+	if (from <= 0)
 		return -1;
 
-	int len = strlen(m_pchData);
+	size_t len = strlen(m_pchData);
 	if (from >= len)
 		return -1;
 
-	int slen = str.GetLength();
+	size_t slen = str.GetLength();
 	if (slen > len)
 		return -1;
 
@@ -396,16 +367,15 @@ int CGString::lastIndexOf(CGString str, int from)
 	strcpy(str_value, str.GetPtr());
 	TCHAR firstChar = str_value[0];
 
-	for (int i = (len - 1); i >= from; i--)
+	for (size_t i = len - 1; i >= from; i--)
 	{
 		TCHAR c = m_pchData[i];
 		if (c == firstChar)
 		{
-			int rem = i;
-			if (rem >= slen)
+			if (i >= slen)
 			{
-				int j = i;
-				int k = 0;
+				size_t j = i;
+				size_t k = 0;
 				bool found = true;
 				while (k < slen)
 				{
@@ -414,12 +384,12 @@ int CGString::lastIndexOf(CGString str, int from)
 						found = false;
 						break;
 					}
-					j++; k++;
+					++j; ++k;
 				}
 				if (found)
 				{
 					delete[] str_value;
-					return i;
+					return static_cast<int>(i);
 				}
 			}
 		}
@@ -717,31 +687,30 @@ size_t Str_GetBare(TCHAR * pszOut, LPCTSTR pszInp, size_t iMaxOutSize, LPCTSTR p
 }
 
 
-int Str_IndexOf(TCHAR * pStr1, TCHAR * pStr2, int offset)
+int Str_IndexOf(TCHAR * pStr1, TCHAR * pStr2, size_t offset)
 {
-	if (offset < 0)
+	if (offset <= 0)
 		return -1;
 
-	int len = strlen(pStr1);
+	size_t len = strlen(pStr1);
 	if (offset >= len)
 		return -1;
 
-	int slen = strlen(pStr2);
+	size_t slen = strlen(pStr2);
 	if (slen > len)
 		return -1;
 
 	TCHAR firstChar = pStr2[0];
 
-	for (int i = offset; i < len; i++)
+	for (size_t i = offset; i < len; ++i)
 	{
 		TCHAR c = pStr1[i];
 		if (c == firstChar)
 		{
-			int rem = len - i;
-			if (rem >= slen)
+			if (len - i >= slen)
 			{
-				int j = i;
-				int k = 0;
+				size_t j = i;
+				size_t k = 0;
 				bool found = true;
 				while (k < slen)
 				{
@@ -750,12 +719,10 @@ int Str_IndexOf(TCHAR * pStr1, TCHAR * pStr2, int offset)
 						found = false;
 						break;
 					}
-					j++; k++;
+					++j; ++k;
 				}
 				if (found)
-				{
-					return i;
-				}
+					return static_cast<int>(i);
 			}
 		}
 	}
@@ -839,8 +806,6 @@ void Str_MakeUnFiltered(TCHAR * pStrOut, LPCTSTR pStrIn, size_t iSizeMax)
 	}
 }
 
-#define TOLOWER tolower
-
 static MATCH_TYPE Str_Match_After_Star(LPCTSTR pPattern, LPCTSTR pText)
 {
 	// pass over existing ? and * in pattern
@@ -857,7 +822,7 @@ static MATCH_TYPE Str_Match_After_Star(LPCTSTR pPattern, LPCTSTR pText)
 		return MATCH_VALID;
 
 	// get the next character to match which must be a literal or '['
-	TCHAR nextp = static_cast<TCHAR>(TOLOWER(*pPattern));
+	TCHAR nextp = static_cast<TCHAR>(tolower(*pPattern));
 	MATCH_TYPE match = MATCH_INVALID;
 
 	// Continue until we run out of text or definite result seen
@@ -867,7 +832,7 @@ static MATCH_TYPE Str_Match_After_Star(LPCTSTR pPattern, LPCTSTR pText)
 		// in the pattern match the next character in the text or that
 		// the next pattern char is the beginning of a range.  Increment
 		// text pointer as we go here
-		if (nextp == TOLOWER(*pText) || nextp == '[')
+		if ((nextp == tolower(*pText)) || (nextp == '['))
 		{
 			match = Str_Match(pPattern, pText);
 			if (match == MATCH_VALID)
@@ -937,9 +902,9 @@ MATCH_TYPE Str_Match(LPCTSTR pPattern, LPCTSTR pText)
 
 				// matching a '!', '^', '-', '\' or a ']'
 				if (*pPattern == '\\')
-					range_start = range_end = static_cast<TCHAR>(TOLOWER(*++pPattern));
+					range_start = range_end = static_cast<TCHAR>(tolower(*++pPattern));
 				else
-					range_start = range_end = static_cast<TCHAR>(TOLOWER(*pPattern));
+					range_start = range_end = static_cast<TCHAR>(tolower(*pPattern));
 
 				// if end of pattern then bad pattern (Missing ']')
 				if (!*pPattern)
@@ -949,14 +914,14 @@ MATCH_TYPE Str_Match(LPCTSTR pPattern, LPCTSTR pText)
 				if (*++pPattern == '-')
 				{
 					// get the range end
-					range_end = static_cast<TCHAR>(TOLOWER(*++pPattern));
+					range_end = static_cast<TCHAR>(tolower(*++pPattern));
 					// if end of pattern or construct then bad pattern
 					if (range_end == '\0' || range_end == ']')
 						return MATCH_PATTERN;
 					// special character range end
 					if (range_end == '\\')
 					{
-						range_end = static_cast<TCHAR>(TOLOWER(*++pPattern));
+						range_end = static_cast<TCHAR>(tolower(*++pPattern));
 						// if end of text then we have a bad pattern
 						if (!range_end)
 							return MATCH_PATTERN;
@@ -968,7 +933,7 @@ MATCH_TYPE Str_Match(LPCTSTR pPattern, LPCTSTR pText)
 				// if the text character is in range then match found.
 				// make sure the range letters have the proper
 				// relationship to one another before comparison
-				TCHAR chText = static_cast<TCHAR>(TOLOWER(*pText));
+				TCHAR chText = static_cast<TCHAR>(tolower(*pText));
 				if (range_start < range_end)
 				{
 					if (chText >= range_start && chText <= range_end)
@@ -1019,7 +984,7 @@ MATCH_TYPE Str_Match(LPCTSTR pPattern, LPCTSTR pText)
 
 		// must match this character (case independant) ?exactly
 		default:
-			if (TOLOWER(*pPattern) != TOLOWER(*pText))
+			if (tolower(*pPattern) != tolower(*pText))
 				return MATCH_LITERAL;
 		}
 	}
