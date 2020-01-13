@@ -2918,6 +2918,17 @@ void CChar::Spell_CastFail()
 	CScriptTriggerArgs Args(m_atMagery.m_Spell, 0, m_Act_TargPrv.ObjFind());
 	Args.m_VarsLocal.SetNum("CreateObject1", iT1);
 
+	const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
+	if ( !pSpellDef )
+		return;
+
+	if ( IsSetMagicFlags(MAGICF_FREEZEONCAST) && !pSpellDef->IsSpellType(SPELLFLAG_NOFREEZEONCAST) )
+	{
+		StatFlag_Clear(STATF_FreezeCast);
+		if ( m_pClient )
+			m_pClient->addCharMove(this);
+	}
+
 	if ( IsTrigUsed(TRIGGER_SPELLFAIL) )
 	{
 		if ( OnTrigger(CTRIG_SpellFail, this, &Args) == TRIGRET_RET_TRUE )
@@ -3058,6 +3069,13 @@ int CChar::Spell_CastStart()
 	pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
 	if ( !pSpellDef )
 		return -1;
+
+	if ( IsSetMagicFlags(MAGICF_FREEZEONCAST) && !pSpellDef->IsSpellType(SPELLFLAG_NOFREEZEONCAST) )
+	{
+		StatFlag_Set(STATF_FreezeCast);
+		if ( m_pClient )
+			m_pClient->addCharMove(this);
+	}
 
 	Reveal((g_Cfg.m_iRevealFlags & REVEALF_SPELLCAST) ? STATF_Hidden|STATF_Invisible : STATF_Hidden);
 

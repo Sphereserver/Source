@@ -962,6 +962,15 @@ bool CClient::Cmd_Skill_Magery(SPELL_TYPE iSpell, CObjBase *pSrc)
 			break;
 	}
 
+	if ( IsSetMagicFlags(MAGICF_PRECAST) && !pSpellDef->IsSpellType(SPELLFLAG_NOPRECAST) )
+	{
+		if ( IsSetMagicFlags(MAGICF_FREEZEONCAST) && !pSpellDef->IsSpellType(SPELLFLAG_NOFREEZEONCAST) )
+		{
+			m_pChar->StatFlag_Clear(STATF_FreezeCast);
+			addCharMove(m_pChar);
+		}
+	}
+
 	// Targeted spells
 	if ( pSpellDef->IsSpellType(SPELLFLAG_TARG_OBJ|SPELLFLAG_TARG_XYZ) )
 	{

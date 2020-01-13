@@ -1720,3 +1720,8 @@ Fixed: Item pickup setting TARGP/TARGPRV char properties even when pickup fail.
 	-Removed: npc_pet_deserted, party_add_too_fast, hl_one_client
 	-Updated: magery_5, msg_frozen
 	-Fixed typo: forensics_carbedby -> forensics_carvedby
+
+12-01-2020, Coruja
+Fixed: Rubberband effect while casting spells when MAGICF_FREEZEONCAST magic flag is enabled on sphere.ini
+[sphere_defs.scp]: Added new char flag 'statf_freezecast' to make the char unable to walk while casting spells (used by MAGICF_FREEZEONCAST magic flag on sphere.ini)
+[sphere_dialog.scp]: Added support for 'statf_freezecast' char flag on character properties dialog

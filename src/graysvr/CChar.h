@@ -340,7 +340,7 @@ private:
 	#define STATF_DEAD			0x00000002
 	#define STATF_Freeze		0x00000004	// Paralyzed (spell)
 	#define STATF_Invisible		0x00000008	// Invisible (spell)
-	//							0x00000010
+	#define STATF_FreezeCast	0x00000010	// Can't move while casting spells (used by MAGICF_FREEZEONCAST magic flag)
 	#define STATF_War			0x00000020	// War mode on ?
 	#define STATF_Reactive		0x00000040	// have reactive armor on
 	#define STATF_Poisoned		0x00000080	// Poison level is in the poison object

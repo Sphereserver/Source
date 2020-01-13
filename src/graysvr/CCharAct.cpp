@@ -1621,12 +1621,7 @@ bool CChar::ItemBounce(CItem *pItem, bool fDisplayMsg)
 	{
 		if ( !GetTopPoint().IsValidPoint() )
 		{
-			// NPC is being created and has no valid point yet
-			if ( pszWhere )
-				DEBUG_ERR(("No pack to place loot item '%s' for NPC '%s'\n", pItem->GetResourceName(), GetResourceName()));
-			else
-				DEBUG_ERR(("Loot item '%s' too heavy for NPC '%s'\n", pItem->GetResourceName(), GetResourceName()));
-
+			DEBUG_ERR(("Deleted item '%s' (UID=0%" FMTDWORDH ") because parent char '%s' (UID=0%" FMTDWORDH ") not placed on world can't carry it and also can't drop it on ground\n", pItem->GetName(), static_cast<DWORD>(pItem->GetUID()), GetName(), static_cast<DWORD>(GetUID())));
 			pItem->Delete();
 			return false;
 		}
@@ -2519,7 +2514,7 @@ bool CChar::Death()
 	Reveal();
 	SoundChar(CRESND_DIE);
 	StatFlag_Set(STATF_Insubstantial|STATF_DEAD);
-	StatFlag_Clear(STATF_Hidden|STATF_Hovering|STATF_Stone|STATF_War|STATF_Freeze);
+	StatFlag_Clear(STATF_Hidden|STATF_Hovering|STATF_Stone|STATF_War|STATF_FreezeCast|STATF_Freeze);
 	SetPoisonCure(0, true);
 	Skill_Cleanup();
 	Spell_Dispel(100);		// get rid of all spell effects (moved here to prevent double @Destroy trigger)
@@ -2636,20 +2631,11 @@ bool CChar::OnFreezeCheck()
 {
 	ADDTOCALLSTACK("CChar::OnFreezeCheck");
 
-	if ( IsStatFlag(STATF_Freeze|STATF_Stone) && !IsPriv(PRIV_GM) )
+	if ( IsStatFlag(STATF_Freeze|STATF_FreezeCast|STATF_Stone) && !IsPriv(PRIV_GM) )
 		return true;
 	if ( static_cast<UINT64>(GetKeyNum("NoMoveTill")) > g_World.GetCurrentTime().GetTimeRaw() )
 		return true;
 
-	if ( m_pPlayer )
-	{
-		if ( IsSetMagicFlags(MAGICF_FREEZEONCAST) && g_Cfg.IsSkillFlag(m_Act_SkillCurrent, SKF_MAGIC) )		// casting magic spells
-		{
-			CSpellDef *pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
-			if ( pSpellDef && !pSpellDef->IsSpellType(SPELLFLAG_NOFREEZEONCAST) )
-				return true;
-		}
-	}
 	return false;
 }
 

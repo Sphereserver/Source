@@ -3472,7 +3472,7 @@ bool PacketGargoyleFly::onReceive(NetState* net)
 		client->SysMessageDefault(DEFMSG_GARGOYLE_FLY_CANTDEAD);
 		return false;
 	}
-	if ( character->IsStatFlag(STATF_Freeze|STATF_Stone) )
+	if ( character->IsStatFlag(STATF_Freeze|STATF_FreezeCast|STATF_Stone) )
 	{
 		client->SysMessageDefault(DEFMSG_MSG_FROZEN);
 		return false;

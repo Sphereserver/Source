@@ -2859,6 +2859,13 @@ int CChar::Skill_Magery(SKTRIG_TYPE stage)
 		if ( !pSpellDef )
 			return 0;
 
+		if ( IsSetMagicFlags(MAGICF_FREEZEONCAST) && !pSpellDef->IsSpellType(SPELLFLAG_NOFREEZEONCAST) )
+		{
+			StatFlag_Clear(STATF_FreezeCast);
+			if ( m_pClient )
+				m_pClient->addCharMove(this);
+		}
+
 		if ( m_pClient && IsSetMagicFlags(MAGICF_PRECAST) && !pSpellDef->IsSpellType(SPELLFLAG_NOPRECAST) )
 		{
 			m_pClient->Cmd_Skill_Magery(m_atMagery.m_Spell, m_pClient->m_Targ_PrvUID.ObjFind());
@@ -3683,7 +3690,7 @@ bool CChar::Skill_Wait(SKILL_TYPE skilltry)
 		}
 	}
 
-	if ( IsStatFlag(STATF_DEAD|STATF_Freeze|STATF_Stone) )
+	if ( IsStatFlag(STATF_DEAD|STATF_Freeze|STATF_FreezeCast|STATF_Stone) )
 	{
 		SysMessageDefault(DEFMSG_SKILLWAIT_1);
 		return true;

@@ -482,7 +482,7 @@ BYTE CChar::GetModeFlag(const CClient *pViewer) const
 	CCharBase *pCharDef = Char_GetDef();
 	BYTE bMode = 0;
 
-	if ( IsStatFlag(STATF_Freeze|STATF_Stone) )
+	if ( IsStatFlag(STATF_Freeze|STATF_FreezeCast|STATF_Stone) )
 		bMode |= CHARMODE_FREEZE;
 	if ( pCharDef->IsFemale() )
 		bMode |= CHARMODE_FEMALE;
