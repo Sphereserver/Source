@@ -2,30 +2,49 @@ version: 0.56.4.{build}
 configuration: Nightly
 pull_requests:
   do_not_increment_build_number: true
+before_build:
+  - ps: if (-not (Test-Path env:APPVEYOR_PULL_REQUEST_NUMBER)) {Update-AppveyorBuild -Version ("0.56.4.{0}" -f ((git rev-list --count HEAD) - 2406))}
 image:
   - Visual Studio 2015
   - Ubuntu
+platform:
+  - x86
+  - x64
 
 for:
   -
     matrix:
       only:
         - image: Visual Studio 2015
-    before_build:
-      - ps: if (-not (Test-Path env:APPVEYOR_PULL_REQUEST_NUMBER)) {Update-AppveyorBuild -Version ("0.56.4.{0}" -f ((git rev-list --count HEAD) - 2406))}
+          platform: x86
     build:
       project: SphereSvr.vcxproj
       verbosity: minimal
     after_build:
       - cmd: mkdir accounts logs save scripts
-      - cmd: 7z a SphereSvr-Win32.zip accounts\ logs\ save\ scripts\ %APPVEYOR_BUILD_FOLDER%\%CONFIGURATION%\SphereSvr.exe %APPVEYOR_BUILD_FOLDER%\src\sphere.ini %APPVEYOR_BUILD_FOLDER%\src\sphereCrypt.ini %APPVEYOR_BUILD_FOLDER%\src\common\mysql\lib\libmysql.dll
+      - cmd: 7z a SphereSvr-Win32.zip accounts\ logs\ save\ scripts\ %APPVEYOR_BUILD_FOLDER%\%CONFIGURATION%\SphereSvr.exe %APPVEYOR_BUILD_FOLDER%\src\sphere.ini %APPVEYOR_BUILD_FOLDER%\src\sphereCrypt.ini %APPVEYOR_BUILD_FOLDER%\src\common\mysql\lib\%PLATFORM%\libmysql.dll
     artifacts:
       - path: SphereSvr-Win32.zip
         name: SphereSvr
   -
     matrix:
       only:
+        - image: Visual Studio 2015
+          platform: x64
+    build:
+      project: SphereSvr.vcxproj
+      verbosity: minimal
+    after_build:
+      - cmd: mkdir accounts logs save scripts
+      - cmd: 7z a SphereSvr-Win64.zip accounts\ logs\ save\ scripts\ %APPVEYOR_BUILD_FOLDER%\%PLATFORM%\%CONFIGURATION%\SphereSvr.exe %APPVEYOR_BUILD_FOLDER%\src\sphere.ini %APPVEYOR_BUILD_FOLDER%\src\sphereCrypt.ini %APPVEYOR_BUILD_FOLDER%\src\common\mysql\lib\%PLATFORM%\libmysql.dll
+    artifacts:
+      - path: SphereSvr-Win64.zip
+        name: SphereSvr
+  -
+    matrix:
+      only:
         - image: Ubuntu
+          platform: x86
     install:
       - sh: sudo apt-get -qq update
       - sh: sudo apt-get -qq install gcc-multilib g++-multilib libmysqlclient-dev:i386 > /dev/null
@@ -33,12 +52,33 @@ for:
       - sh: lsb_release -d
       - sh: gcc --version
     build_script:
-      - sh: make NIGHTLY=1
+      - sh: make NIGHTLY=1 x86=1
     after_build:
       - sh: mkdir accounts logs save scripts
       - sh: tar -czvf SphereSvr-Linux32.tar.gz accounts/ logs/ save/ scripts/ spheresvr -C src/ sphere.ini sphereCrypt.ini
     artifacts:
       - path: SphereSvr-Linux32.tar.gz
+        name: SphereSvr
+    before_deploy:
+      - sh: echo "set ssl:verify-certificate no" >> ~/.lftprc
+  -
+    matrix:
+      only:
+        - image: Ubuntu
+          platform: x64
+    install:
+      - sh: sudo apt-get -qq update
+      - sh: sudo apt-get -qq install gcc g++ libmysqlclient-dev > /dev/null
+    before_build:
+      - sh: lsb_release -d
+      - sh: gcc --version
+    build_script:
+      - sh: make NIGHTLY=1
+    after_build:
+      - sh: mkdir accounts logs save scripts
+      - sh: tar -czvf SphereSvr-Linux64.tar.gz accounts/ logs/ save/ scripts/ spheresvr -C src/ sphere.ini sphereCrypt.ini
+    artifacts:
+      - path: SphereSvr-Linux64.tar.gz
         name: SphereSvr
     before_deploy:
       - sh: echo "set ssl:verify-certificate no" >> ~/.lftprc

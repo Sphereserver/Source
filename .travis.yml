@@ -7,11 +7,6 @@ git:
 notifications:
   email: false
 addons:
-  apt:
-    packages:
-    - gcc-multilib
-    - g++-multilib
-    - libmysqlclient-dev:i386
   coverity_scan:
     project:
       name: "Sphereserver/Source"

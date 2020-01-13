@@ -8,26 +8,24 @@ Game server for Ultima Online
 [Automatic builds](https://forum.spherecommunity.net/sshare.php?srt=4)
 
 ## Building
-Project can be compiled on Windows (Visual Studio) and Linux (GCC).
-
-Even using 64bit OS, Sphere must be compiled/executed in 32bit mode to work properly. Project files included on source code will compile it in 32bit mode by default.
+Project can be compiled on Windows (Visual Studio) and Linux (GCC)
 
 ### Windows (Visual Studio)
 * Open the project file `SphereSvr.vcxproj` using Visual Studio
-* On top menu, select the build configuration (Debug/Local/Nightly/Release) and click on `Build > Build Solution` to compile
+* On top menu, select the build configuration (Debug/Local/Nightly/Release), platform (x86/x64), and click on `Build > Build Solution` to compile
 
 #### NOTES:
 * Required version: VS2012 or later (VS Code is not supported)
-* On VS >= 2013: When opening `SphereSvr.vcxproj` for the first time it will request an update on project file, just click OK to update
+* On VS >= 2013: When opening `SphereSvr.vcxproj` for the first time it will request an update on project file, just click OK to update (if update request doesn't get opened automatically, just open it on `Project > Retarget solution`)
 * On VS >= 2017: Newest VS have an modular installation which comes with just basic components, and extra components must be installed as needed. To compile Sphere you must open **Visual Studio Installer** to install `Desktop Development with C++` workload
 
 ### Linux (Ubuntu)
 #### Add architecture support
-* To compile on 32bit OS:
+* To compile 32bit build on 32bit OS or 64bit build on 64bit OS:
   ```
   # Skip this step (architecture is already supported by OS)
   ```
-* To compile on 64bit OS:
+* To compile 32bit build on 64bit OS:
   ```
   sudo dpkg --add-architecture i386
   sudo apt-get update
@@ -42,15 +40,25 @@ Even using 64bit OS, Sphere must be compiled/executed in 32bit mode to work prop
     sudo apt-get update
     ```
   * Install MySQL
-    ```
-    sudo apt-get install libmysqlclient-dev:i386
-    ```
+    * To compile 32bit build on 32bit OS or 64bit build on 64bit OS:
+      ```
+      sudo apt-get install libmysqlclient-dev
+      ```
+    * To compile 32bit build on 64bit OS:
+      ```
+      sudo apt-get install libmysqlclient-dev:i386
+      ```
 
 * Ubuntu 15.04 to 19.04:
   * Install MySQL
-    ```
-    sudo apt-get install libmysqlclient-dev:i386
-    ```
+    * To compile 32bit build on 32bit OS or 64bit build on 64bit OS:
+      ```
+      sudo apt-get install libmysqlclient-dev
+      ```
+    * To compile 32bit build on 64bit OS:
+      ```
+      sudo apt-get install libmysqlclient-dev:i386
+      ```
 
 * Ubuntu 19.10 or later:
   * Default package repository dropped support for MySQL 5.7, so add it back
@@ -59,17 +67,30 @@ Even using 64bit OS, Sphere must be compiled/executed in 32bit mode to work prop
     sudo apt-get update --allow-insecure-repositories
     ```
   * Install MySQL
-    ```
-    sudo apt-get install libmysqlclient-dev:i386=5.7*
-    ```
+    * To compile 32bit build on 32bit OS or 64bit build on 64bit OS:
+      ```
+      sudo apt-get install libmysqlclient-dev=5.7*
+      ```
+    * To compile 32bit build on 64bit OS:
+      ```
+      sudo apt-get install libmysqlclient-dev:i386=5.7*
+      ```
 
 #### Install required packages
-```
-sudo apt-get install git
-sudo apt-get install gcc-multilib
-sudo apt-get install g++-multilib
-sudo apt-get install make
-```
+* To compile 32bit build on 32bit OS or 64bit build on 64bit OS:
+  ```
+  sudo apt-get install git
+  sudo apt-get install gcc
+  sudo apt-get install g++
+  sudo apt-get install make
+  ```
+* To compile 32bit build on 64bit OS:
+  ```
+  sudo apt-get install git
+  sudo apt-get install gcc-multilib
+  sudo apt-get install g++-multilib
+  sudo apt-get install make
+  ```
 
 ### Linux (CentOS / Red Hat)
 #### Add MySQL 5.7 support
@@ -94,12 +115,20 @@ sudo apt-get install make
   ```
 
 #### Install required packages
-```
-sudo yum install git
-sudo yum install gcc-c++
-sudo yum install glibc-devel.i686
-sudo yum install mysql-community-devel.i686 mysql-community-libs.i686
-```
+* To compile 32bit build on 32bit OS or 64bit build on 64bit OS:
+  ```
+  sudo yum install git
+  sudo yum install gcc-c++
+  sudo yum install glibc-devel
+  sudo yum install mysql-community-devel mysql-community-libs
+  ```
+* To compile 32bit build on 64bit OS:
+  ```
+  sudo yum install git
+  sudo yum install gcc-c++
+  sudo yum install glibc-devel.i686
+  sudo yum install mysql-community-devel.i686 mysql-community-libs.i686
+  ```
 
 ### Get the source code
 ```
@@ -108,6 +137,11 @@ cd Source
 ```
 
 ### Compile the source code
+* To compile 32bit build:
+```
+make NIGHTLY=1 x86=1
+```
+* To compile 64bit build:
 ```
 make NIGHTLY=1
 ```

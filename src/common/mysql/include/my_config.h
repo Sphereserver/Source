@@ -90,7 +90,11 @@
 /* #undef HAVE_FSYNC */
 /* #undef HAVE_GETHOSTBYADDR_R */
 /* #undef HAVE_GETHRTIME */
+#if defined(_WIN64) || defined(x64)
+#define HAVE_GETNAMEINFO 1
+#else
 /* #undef HAVE_GETNAMEINFO */
+#endif
 /* #undef HAVE_GETPASS */
 /* #undef HAVE_GETPASSPHRASE */
 /* #undef HAVE_GETPWNAM */
@@ -138,7 +142,11 @@
 /* #undef DNS_USE_CPU_CLOCK_FOR_ID */
 /* #undef HAVE_EPOLL */
 /* #undef HAVE_EVENT_PORTS */
+#if defined(_WIN64) || defined(x64)
+#define HAVE_INET_NTOP 1
+#else
 /* #undef HAVE_INET_NTOP */
+#endif
 /* #undef HAVE_WORKING_KQUEUE */
 /* #undef HAVE_TIMERADD */
 /* #undef HAVE_TIMERCLEAR */
@@ -169,8 +177,13 @@
 /* #undef WORDS_BIGENDIAN */
 
 /* Type sizes */
+#if defined(_WIN64) || defined(x64)
+#define SIZEOF_VOIDP     8
+#define SIZEOF_CHARP     8
+#else
 #define SIZEOF_VOIDP     4
 #define SIZEOF_CHARP     4
+#endif
 #define SIZEOF_LONG      4
 #define SIZEOF_SHORT     2
 #define SIZEOF_INT       4
@@ -214,12 +227,20 @@
 /*
  * Platform specific CMake files
  */
+#if defined(_WIN64) || defined(x64)
+#define MACHINE_TYPE "x86_64"
+#else
 #define MACHINE_TYPE "AMD64"
+#endif
 /* #undef HAVE_LINUX_LARGE_PAGES */
 /* #undef HAVE_SOLARIS_LARGE_PAGES */
 /* #undef HAVE_SOLARIS_ATOMIC */
 /* #undef HAVE_SOLARIS_STYLE_GETHOST */
+#if defined(_WIN64) || defined(x64)
+#define SYSTEM_TYPE "Win64"
+#else
 #define SYSTEM_TYPE "Win32"
+#endif
 /* Windows stuff, mostly functions, that have Posix analogs but named differently */
 /* #undef IPPROTO_IPV6 */
 /* #undef IPV6_V6ONLY */

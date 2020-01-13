@@ -5,17 +5,33 @@
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Local|Win32">
       <Configuration>Local</Configuration>
       <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Local|x64">
+      <Configuration>Local</Configuration>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Nightly|Win32">
       <Configuration>Nightly</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Nightly|x64">
+      <Configuration>Nightly</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -37,25 +53,35 @@
     <PlatformToolset>v110</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Local|Win32'">
+  <PropertyGroup Condition="'$(Configuration)'=='Local'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Nightly|Win32'">
+  <PropertyGroup Condition="'$(Configuration)'=='Nightly'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+  <ItemDefinitionGroup Condition="'$(Platform)'=='Win32'">
+    <Link>
+      <AdditionalLibraryDirectories>src\common\mysql\lib\x86</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Platform)'=='x64'">
+    <Link>
+      <AdditionalLibraryDirectories>src\common\mysql\lib\x64</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Debug'">
     <ClCompile>
       <CallingConvention>StdCall</CallingConvention>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <MinimalRebuild>true</MinimalRebuild>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <WarningLevel>Level2</WarningLevel>
@@ -65,7 +91,6 @@
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <AdditionalLibraryDirectories>src\common\mysql\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>ws2_32.lib;libmysql.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OptimizeReferences>false</OptimizeReferences>
       <SubSystem>Windows</SubSystem>
@@ -78,17 +103,17 @@
 for /f %%h in ('git rev-parse --short HEAD') do set GitHash=%%h
 if defined GitRev (
 	echo Current build revision: %GitRev% ^(Git hash: %GitHash%^)
-	echo #define __GITREVISION__ %GitRev% > src/common/version/GitRevision.h
-	echo #define __GITHASH__ "%GitHash%" >> src/common/version/GitRevision.h
+	echo #define __GITREVISION__ %GitRev% &gt; src/common/version/GitRevision.h
+	echo #define __GITHASH__ "%GitHash%" &gt;&gt; src/common/version/GitRevision.h
 )</Command>
       <Message>Getting revision number from Git repository</Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Local|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Local'">
     <ClCompile>
       <CallingConvention>FastCall</CallingConvention>
       <MinimalRebuild>true</MinimalRebuild>
-      <PreprocessorDefinitions>_PRIVATEBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_PRIVATEBUILD;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level2</WarningLevel>
       <ExceptionHandling>Async</ExceptionHandling>
     </ClCompile>
@@ -96,7 +121,6 @@ if defined GitRev (
       <PreprocessorDefinitions>_PRIVATEBUILD;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <AdditionalLibraryDirectories>src\common\mysql\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>ws2_32.lib;libmysql.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OptimizeReferences>true</OptimizeReferences>
       <SubSystem>Windows</SubSystem>
@@ -106,16 +130,16 @@ if defined GitRev (
 for /f %%h in ('git rev-parse --short HEAD') do set GitHash=%%h
 if defined GitRev (
 	echo Current build revision: %GitRev% ^(Git hash: %GitHash%^)
-	echo #define __GITREVISION__ %GitRev% > src/common/version/GitRevision.h
-	echo #define __GITHASH__ "%GitHash%" >> src/common/version/GitRevision.h
+	echo #define __GITREVISION__ %GitRev% &gt; src/common/version/GitRevision.h
+	echo #define __GITHASH__ "%GitHash%" &gt;&gt; src/common/version/GitRevision.h
 )</Command>
       <Message>Getting revision number from Git repository</Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Nightly|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Nightly'">
     <ClCompile>
       <CallingConvention>FastCall</CallingConvention>
-      <PreprocessorDefinitions>_NIGHTLYBUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_NIGHTLYBUILD;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level2</WarningLevel>
       <ExceptionHandling>Async</ExceptionHandling>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -124,7 +148,6 @@ if defined GitRev (
       <PreprocessorDefinitions>_NIGHTLYBUILD;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <AdditionalLibraryDirectories>src\common\mysql\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>ws2_32.lib;libmysql.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OptimizeReferences>true</OptimizeReferences>
       <SubSystem>Windows</SubSystem>
@@ -134,16 +157,16 @@ if defined GitRev (
 for /f %%h in ('git rev-parse --short HEAD') do set GitHash=%%h
 if defined GitRev (
 	echo Current build revision: %GitRev% ^(Git hash: %GitHash%^)
-	echo #define __GITREVISION__ %GitRev% > src/common/version/GitRevision.h
-	echo #define __GITHASH__ "%GitHash%" >> src/common/version/GitRevision.h
+	echo #define __GITREVISION__ %GitRev% &gt; src/common/version/GitRevision.h
+	echo #define __GITHASH__ "%GitHash%" &gt;&gt; src/common/version/GitRevision.h
 )</Command>
       <Message>Getting revision number from Git repository</Message>
     </PreBuildEvent>
   </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)'=='Release'">
     <ClCompile>
       <CallingConvention>FastCall</CallingConvention>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level2</WarningLevel>
       <ExceptionHandling>Async</ExceptionHandling>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -152,7 +175,6 @@ if defined GitRev (
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ResourceCompile>
     <Link>
-      <AdditionalLibraryDirectories>src\common\mysql\lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>ws2_32.lib;libmysql.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OptimizeReferences>true</OptimizeReferences>
       <SubSystem>Windows</SubSystem>
@@ -162,8 +184,8 @@ if defined GitRev (
 for /f %%h in ('git rev-parse --short HEAD') do set GitHash=%%h
 if defined GitRev (
 	echo Current build revision: %GitRev% ^(Git hash: %GitHash%^)
-	echo #define __GITREVISION__ %GitRev% > src/common/version/GitRevision.h
-	echo #define __GITHASH__ "%GitHash%" >> src/common/version/GitRevision.h
+	echo #define __GITREVISION__ %GitRev% &gt; src/common/version/GitRevision.h
+	echo #define __GITHASH__ "%GitHash%" &gt;&gt; src/common/version/GitRevision.h
 )</Command>
       <Message>Getting revision number from Git repository</Message>
     </PreBuildEvent>

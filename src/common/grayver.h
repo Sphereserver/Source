@@ -38,6 +38,10 @@
 	#define SPHERE_VER_FILEOS		VOS_UNKNOWN
 #endif
 
-#define SPHERE_VER_ARCH				"32 bits"
+#if defined(_WIN64) || defined(x64)
+	#define SPHERE_VER_ARCH			"64bit"
+#else
+	#define SPHERE_VER_ARCH			"32bit"
+#endif
 
 #endif	// _INC_GRAYVER_H
