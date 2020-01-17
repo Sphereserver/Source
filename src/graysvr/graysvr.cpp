@@ -531,9 +531,6 @@ void Main::onStart()
 void Main::tick()
 {
 	// Give the world (CMainTask) a single tick
-#ifdef EXCEPTIONS_DEBUG
-	const char *m_sClassName = "Sphere";
-#endif
 	EXC_TRY("Tick");
 
 	EXC_SET("shipstimers");

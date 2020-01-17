@@ -12,6 +12,9 @@
 
 class CUnixTerminal
 {
+public:
+	static const char *m_sClassName;
+
 private:
 #ifdef _USECURSES
 	WINDOW *m_pWindow;

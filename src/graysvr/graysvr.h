@@ -140,6 +140,7 @@ enum RESDISPLAY_VERSION
 #include "CItemStone.h"
 #include "CParty.h"
 #include "CChar.h"
+#include "CPathFinder.h"
 #include "CServRef.h"
 #include "CServer.h"
 #include "CSector.h"
@@ -221,12 +222,10 @@ private:
 class Main : public AbstractSphereThread
 {
 public:
+	static const char *m_sClassName;
+
 	Main();
 	virtual ~Main() { };
-
-private:
-	Main(const Main& copy);
-	Main& operator=(const Main& other);
 
 public:
 	// we increase the access level from protected to public in order to allow manual execution when
@@ -237,6 +236,10 @@ public:
 protected:
 	virtual void onStart();
 	virtual bool shouldExit();
+
+private:
+	Main(const Main &copy);
+	Main &operator=(const Main &other);
 };
 
 //////////////////////////////////////////////////////////////

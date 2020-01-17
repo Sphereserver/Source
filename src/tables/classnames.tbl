@@ -1,10 +1,7 @@
 //
 //	Class:	all
-//	Set:	class  names
+//	Set:	class names
 //
-
-#include "../graysvr/CPathFinder.h"
-#include "../graysvr/CClient.h"
 
 #define ADD(a,b) const char * a::m_sClassName = b
 
@@ -58,11 +55,15 @@ ADD(CItemBaseMulti,			"CItemBaseMulti");
 ADD(CPathFinder,			"CPathFinder");
 ADD(CPartyDef,				"CPartyDef");
 ADD(CStoneMember,			"CStoneMember");
+#ifndef _WIN32
+ADD(CUnixTerminal,			"CUnixTerminal");
+#endif
 ADD(CVarDefCont,			"CVarDefCont");
 ADD(CVarDefContNum,			"CVarDefContNum");
 ADD(CVarDefContStr,			"CVarDefContStr");
 ADD(CVarDefMap,				"CVarDefMap");
 ADD(CVarDefMap::CVarDefContTest, "CVarDefContTest");
+ADD(Main,					"Main");
 ADD(NetworkInput,			"NetworkInput");
 ADD(NetworkOutput,			"NetworkOutput");
 ADD(NetworkThread,			"NetworkThread");

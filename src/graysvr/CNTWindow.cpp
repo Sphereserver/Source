@@ -897,7 +897,9 @@ bool NTWindow_OnTick( int iWaitmSec )
 {
 	// RETURN: false = exit the app.
 
+#ifdef EXCEPTIONS_DEBUG
 	const char *m_sClassName = "NTWindow";
+#endif
 	if ( iWaitmSec )
 	{
 		if ( !theApp.m_wndMain.m_hWnd || !theApp.m_wndMain.SetTimer(IDT_ONTICK, iWaitmSec) )
