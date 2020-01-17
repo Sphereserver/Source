@@ -436,6 +436,7 @@ public:
 	// Speech
 	FONT_TYPE m_fonttype;		// speech font to use (client send this to server, but it's not used)
 	HUE_TYPE m_SpeechHue;		// speech hue to use
+	HUE_TYPE m_EmoteHue;		// emote hue to use (client send this to server, but it's not used)
 
 	// In order to revert to original Hue and body
 	CREID_TYPE m_prev_id;		// Backup of body type for ghosts and poly

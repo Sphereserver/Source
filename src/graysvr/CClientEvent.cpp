@@ -1572,6 +1572,8 @@ void CClient::Event_Talk(LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, boo
 	m_pAccount->m_lang.SetStr(NULL);
 	if ( mode == TALKMODE_SYSTEM )
 		m_pChar->m_SpeechHue = wHue;
+	else if ( mode == TALKMODE_EMOTE )
+		m_pChar->m_EmoteHue = wHue;
 
 	// Rip out the unprintables first
 	TCHAR szText[MAX_TALK_BUFFER];
@@ -1665,6 +1667,8 @@ void CClient::Event_TalkUNICODE(NWORD *wszText, int iTextLen, HUE_TYPE wHue, TAL
 	m_pAccount->m_lang.SetStr(pszLang);
 	if ( mode == TALKMODE_SYSTEM )
 		m_pChar->m_SpeechHue = wHue;
+	else if ( mode == TALKMODE_EMOTE )
+		m_pChar->m_EmoteHue = wHue;
 
 	TCHAR szText[MAX_TALK_BUFFER];
 	const NWORD *puText = wszText;

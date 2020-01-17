@@ -1731,4 +1731,7 @@ Added: 64bit architecture support on Sphere
 	-32bit/64bit builds are compiled separately but are compatible with each other and share the same source code / script pack
 	-NOTE: To switch between 32bit/64bit build you must also switch MySQL client library to the version compatible with selected arch
 		-Windows: replace 'libmysql.dll' file with the version included on downloaded zip
-		-Linux: replace MySQL package (Ubuntu: 'libmysqlclient-dev' to 64bit or 'libmysqlclient-dev:i386' to 32bit / CentOS: 'mysql-community-devel' to 64bit or 'mysql-community-devel.i686' to 32bit)
+		-Linux: replace MySQL package (Ubuntu: 'libmysqlclient20' to 64bit or 'libmysqlclient20:i386' to 32bit / CentOS: 'mysql-community-libs' to 64bit or 'mysql-community-libs.i686' to 32bit)
+
+17-01-2020, Coruja
+Added: New EMOTECOLOR char property (read-only) to store emote color received from client (':+space' client shortcut)

@@ -210,6 +210,7 @@ CChar::CChar(CREID_TYPE id) : CObjBase(false)
 	m_dirFace = DIR_SE;
 	m_fonttype = FONT_NORMAL;
 	m_SpeechHue = HUE_TEXT_DEF;
+	m_EmoteHue = HUE_TEXT_DEF;
 
 	m_height = 0;
 	m_ModMaxWeight = 0;
@@ -796,6 +797,7 @@ bool CChar::DupeFrom(CChar *pChar, bool fNewbieItems)
 	m_dirFace = pChar->m_dirFace;
 	m_fonttype = pChar->m_fonttype;
 	m_SpeechHue = pChar->m_SpeechHue;
+	m_EmoteHue = pChar->m_EmoteHue;
 
 	m_height = pChar->m_height;
 
@@ -2044,7 +2046,10 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatVal(m_fonttype);
 			break;
 		case CHC_SPEECHCOLOR:
-			sVal.FormatVal(m_SpeechHue);
+			sVal.FormatHex(m_SpeechHue);
+			break;
+		case CHC_EMOTECOLOR:
+			sVal.FormatHex(m_EmoteHue);
 			break;
 		case CHC_FOOD:
 			sVal.FormatVal(Stat_GetVal(STAT_FOOD));
@@ -2709,7 +2714,9 @@ void CChar::r_Write(CScript &s)
 	if ( m_fonttype != FONT_NORMAL )
 		s.WriteKeyVal("FONT", m_fonttype);
 	if ( m_SpeechHue != HUE_TEXT_DEF )
-		s.WriteKeyVal("SPEECHCOLOR", m_SpeechHue);
+		s.WriteKeyHex("SPEECHCOLOR", m_SpeechHue);
+	if ( m_EmoteHue != HUE_TEXT_DEF )
+		s.WriteKeyHex("EMOTECOLOR", m_EmoteHue);
 	if ( m_dirFace != DIR_SE )
 		s.WriteKeyVal("DIR", m_dirFace);
 	if ( m_prev_id != GetID() )

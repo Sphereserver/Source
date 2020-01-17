@@ -1891,7 +1891,11 @@ void CWorld::Speak(const CObjBaseTemplate *pSrc, LPCTSTR pszText, HUE_TYPE wHue,
 	{
 		const CChar *pCharSrc = dynamic_cast<const CChar *>(pSrc);
 		if ( pCharSrc )
+		{
 			fSpeakAsGhost = pCharSrc->IsSpeakAsGhost();
+			if ( wHue == HUE_TEXT_DEF )
+				wHue = pCharSrc->m_SpeechHue;
+		}
 	}
 	else
 		mode = TALKMODE_BROADCAST;
@@ -1944,7 +1948,11 @@ void CWorld::SpeakUNICODE(const CObjBaseTemplate *pSrc, const NCHAR *pszText, HU
 	{
 		const CChar *pCharSrc = dynamic_cast<const CChar *>(pSrc);
 		if ( pCharSrc )
+		{
 			fSpeakAsGhost = pCharSrc->IsSpeakAsGhost();
+			if ( wHue == HUE_TEXT_DEF )
+				wHue = pCharSrc->m_SpeechHue;
+		}
 	}
 	else
 		mode = TALKMODE_BROADCAST;
@@ -2110,7 +2118,7 @@ void CWorld::OnTick()
 				if ( pSector )
 					pSector->OnTick(m_Sector_Pulse);
 				else
-					g_Log.EventError("Ticking invalid sector %d for map %" FMTSIZE_T "\n", iSector, iMap);
+					g_Log.EventError("Ticking invalid sector %d for map %d\n", iSector, iMap);
 
 				EXC_CATCHSUB("Sector");
 			}

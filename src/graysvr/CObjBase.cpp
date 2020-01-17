@@ -420,21 +420,21 @@ void CObjBase::Emote(LPCTSTR pszTextYou, LPCTSTR pszTextThem, CClient *pClientEx
 		const char *s = pszTextYou;
 		pszTextYou = strchr(s, ' ');
 
-		WORD wArgs[] = { static_cast<WORD>(defaultHue), static_cast<WORD>(defaultFont), static_cast<WORD>(defaultUnicode) };
-
 		if ( pszTextYou )
 		{
+			WORD wArgs[3] = { static_cast<WORD>(defaultHue), static_cast<WORD>(defaultFont), static_cast<WORD>(defaultUnicode) };
+
 			for ( int i = 0; (s < pszTextYou) && (i < 3); ++i, ++s )
 			{
 				if ( *s != ',' )
 					wArgs[i] = static_cast<WORD>(Exp_GetLLVal(s));
 			}
 			++pszTextYou;
-		}
 
-		defaultHue = static_cast<HUE_TYPE>(wArgs[0]);
-		defaultFont = static_cast<FONT_TYPE>(wArgs[1]);
-		defaultUnicode = static_cast<bool>(wArgs[2]);
+			defaultHue = static_cast<HUE_TYPE>(wArgs[0]);
+			defaultFont = static_cast<FONT_TYPE>(wArgs[1]);
+			defaultUnicode = static_cast<bool>(wArgs[2]);
+		}
 	}
 
 	if ( !pszTextThem )
