@@ -108,6 +108,8 @@ void CClient::CharDisconnect()
 	ADDTOCALLSTACK("CClient::CharDisconnect");
 	// Disconnect the CChar from the client.
 	// Even tho the CClient might stay active.
+
+	EXC_TRY("CharDisconnect");
 	if ( !m_pChar )
 		return;
 
@@ -162,6 +164,7 @@ void CClient::CharDisconnect()
 
 	m_pAccount = NULL;
 	m_pChar = NULL;
+	EXC_CATCH;
 }
 
 void CClient::SysMessage(LPCTSTR pszMsg) const	// system message (in lower left corner)

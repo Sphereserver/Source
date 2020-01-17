@@ -175,6 +175,7 @@ void CUnixTerminal::prepare()
 void CUnixTerminal::restore()
 {
 	ADDTOCALLSTACK("CUnixTerminal::restore");
+	EXC_TRY("Restore");
 	ASSERT(m_fPrepared);
 
 #ifdef _USECURSES
@@ -188,6 +189,7 @@ void CUnixTerminal::restore()
 #endif
 
 	m_fPrepared = false;
+	EXC_CATCH;
 }
 
 #endif	// _WIN32

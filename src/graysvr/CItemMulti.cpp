@@ -98,6 +98,7 @@ void CItemMulti::MultiRealizeRegion()
 void CItemMulti::MultiUnRealizeRegion()
 {
 	ADDTOCALLSTACK("CItemMulti::MultiUnRealizeRegion");
+	EXC_TRY("MultiUnRealizeRegion");
 	if ( !m_pRegion )
 		return;
 
@@ -114,6 +115,7 @@ void CItemMulti::MultiUnRealizeRegion()
 			continue;
 		pChar->MoveToRegionReTest(REGION_TYPE_AREA);
 	}
+	EXC_CATCH;
 }
 
 bool CItemMulti::Multi_CreateComponent(ITEMID_TYPE id, signed short x, signed short y, signed char z, DWORD dwKeyCode)

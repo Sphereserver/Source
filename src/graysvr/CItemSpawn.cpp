@@ -289,6 +289,7 @@ void CItemSpawn::AddObj(CGrayUID uid)
 void CItemSpawn::OnTick(bool fExec)
 {
 	ADDTOCALLSTACK("CItemSpawn::OnTick");
+	EXC_TRY("Tick");
 
 	INT64 iMinutes;
 	if ( m_itSpawnChar.m_TimeHiMin <= 0 )
@@ -319,6 +320,8 @@ void CItemSpawn::OnTick(bool fExec)
 		GenerateItem(pDef);
 	else
 		GenerateChar(pDef);
+
+	EXC_CATCH;
 }
 
 void CItemSpawn::KillChildren()

@@ -482,6 +482,8 @@ bool CChar::NPC_PetCheckAccess(int iCmd, CChar *pChar)
 void CChar::NPC_PetClearOwners()
 {
 	ADDTOCALLSTACK("CChar::NPC_PetClearOwners");
+	EXC_TRY("PetClearOwners");
+
 	CChar *pOwner = NPC_PetGetOwner();
 	Memory_ClearTypes(MEMORY_IPET|MEMORY_FRIEND);
 
@@ -523,6 +525,8 @@ void CChar::NPC_PetClearOwners()
 
 	if ( pOwner && IsSetOF(OF_PetSlots) )
 		pOwner->FollowersUpdate(this, -m_FollowerSlots);
+
+	EXC_CATCH;
 }
 
 bool CChar::NPC_PetSetOwner(CChar *pChar, bool fResendTooltip)

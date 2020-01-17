@@ -1274,7 +1274,6 @@ bool CWorld::SaveTry(bool fForceImmediate)
 	ADDTOCALLSTACK("CWorld::SaveTry");
 	// Save world state
 
-	EXC_TRY("SaveTry");
 	if ( m_FileWorld.IsFileOpen() )
 	{
 		// Server is already saving
@@ -1319,12 +1318,6 @@ bool CWorld::SaveTry(bool fForceImmediate)
 		return SaveForce();
 
 	return true;
-	EXC_CATCH;
-
-	EXC_DEBUG_START;
-	g_Log.EventDebug("immediate '%d'\n", static_cast<int>(fForceImmediate));
-	EXC_DEBUG_END;
-	return false;
 }
 
 bool CWorld::Save(bool fForceImmediate)
@@ -1332,6 +1325,7 @@ bool CWorld::Save(bool fForceImmediate)
 	ADDTOCALLSTACK("CWorld::Save");
 	// Save world state
 
+	EXC_TRY("Save");
 	bool fSaved = true;
 	try
 	{
@@ -1382,6 +1376,12 @@ bool CWorld::Save(bool fForceImmediate)
 	CScriptTriggerArgs Args(fForceImmediate, m_iSaveStage);
 	g_Serv.r_Call(fSaved ? "f_onserver_save_ok" : "f_onserver_save_fail", &g_Serv, &Args);
 	return fSaved;
+	EXC_CATCH;
+
+	EXC_DEBUG_START;
+	g_Log.EventDebug("immediate '%d'\n", static_cast<int>(fForceImmediate));
+	EXC_DEBUG_END;
+	return false;
 }
 
 void CWorld::SaveStatics()

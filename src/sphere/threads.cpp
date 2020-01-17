@@ -182,6 +182,7 @@ void AbstractThread::start()
 
 void AbstractThread::terminate(bool ended)
 {
+	EXC_TRY("Terminate");
 	if( isActive() )
 	{
 		bool wasCurrentThread = isCurrentThread();
@@ -219,6 +220,7 @@ void AbstractThread::terminate(bool ended)
 #endif
 		}
 	}
+	EXC_CATCH;
 }
 
 void AbstractThread::run()
