@@ -64,61 +64,39 @@ extern int CvtNUNICODEToSystem( TCHAR * pOut, int iSizeOutBytes, const NCHAR * p
 
 class CLanguageID
 {
+	// Language codes (ENU, FRA, DEU, ...)
+	// See langcode.iff file on UO folder
 private:
-	// 3 letter code for language.
-	// ENU,FRA,DEU,etc. (see langcode.iff)
-	// terminate with a 0
-	// 0 = english default.
-	char m_codes[4]; // UNICODE language pref. ('ENU'=english)
+	char m_szLang[4];		// 3 letters + null terminator
+
 public:
 	CLanguageID()
 	{
-		m_codes[0] = 0;
+		m_szLang[0] = '\0';
 	}
 	CLanguageID(LPCTSTR pszLang)
 	{
-		Set(pszLang);
+		SetStr(pszLang);
 	}
-	bool IsDef() const
+
+	bool IsEmpty() const
 	{
-		return( m_codes[0] != 0 );
+		return (m_szLang[0] == '\0');
 	}
-	void GetStrDef( TCHAR * pszLang )
-	{
-		if ( ! IsDef())
-		{
-			strcpy( pszLang, "enu" );
-		}
-		else
-		{
-			memcpy( pszLang, m_codes, 3 );
-			pszLang[3] = '\0';
-		}
-	}
-	void GetStr( TCHAR * pszLang ) const
-	{
-		memcpy( pszLang, m_codes, 3 );
-		pszLang[3] = '\0';
-	}
+
 	LPCTSTR GetStr() const
 	{
-		TCHAR * pszTmp = Str_GetTemp();
-		GetStr( pszTmp );
-		return( pszTmp );
+		return m_szLang;
 	}
-	bool Set( LPCTSTR pszLang )
+	void SetStr(LPCTSTR pszLang)
 	{
-		// needs not be terminated!
-		if ( pszLang != NULL )
+		if ( pszLang )
 		{
-			memcpy( m_codes, pszLang, 3 );
-			m_codes[3] = 0;
-			if ( isalnum(m_codes[0]))
-				return true;
-			// not valid !
+			memcpy(m_szLang, pszLang, 3);
+			m_szLang[3] = '\0';
 		}
-		m_codes[0] = 0;
-		return( false );
+		else
+			m_szLang[0] = '\0';
 	}
 };
 

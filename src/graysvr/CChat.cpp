@@ -449,22 +449,6 @@ bool CChat::IsValidName(LPCTSTR pszName, bool bPlayer)	//static
 	return true;
 }
 
-void CChat::Broadcast(CChatMember *pFrom, LPCTSTR pszText, CLanguageID lang, bool bOverride)
-{
-	ADDTOCALLSTACK("CChat::Broadcast");
-	CGString sName;
-	FormatName(sName, pFrom, bOverride);
-
-	ClientIterator it;
-	for ( CClient *pClient = it.next(); pClient != NULL; pClient = it.next() )
-	{
-		if ( !pClient->m_bChatActive )
-			continue;
-		if ( bOverride || pClient->m_bReceiving )
-			pClient->SendChatMsg(CHATMSG_PlayerMessage, sName, pszText, lang);
-	}
-}
-
 void CChat::BroadcastAddChannel(CChatChannel *pChannel)
 {
 	ADDTOCALLSTACK("CChat::BroadcastAddChannel");

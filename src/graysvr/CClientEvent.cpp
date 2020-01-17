@@ -1569,7 +1569,7 @@ void CClient::Event_Talk(LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, boo
 	if ( (wHue < HUE_BLUE_LOW) || (wHue > HUE_DYE_HIGH) )
 		wHue = HUE_TEXT_DEF;
 
-	m_pAccount->m_lang.Set(NULL);		// default
+	m_pAccount->m_lang.SetStr(NULL);
 	if ( mode == TALKMODE_SYSTEM )
 		m_pChar->m_SpeechHue = wHue;
 
@@ -1603,7 +1603,7 @@ void CClient::Event_Talk(LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, boo
 		bool fCancelSpeech = false;
 		TCHAR z[MAX_TALK_BUFFER];
 
-		if ( m_pChar->OnTriggerSpeech(false, pszText, m_pChar, mode, wHue) )
+		if ( m_pChar->OnTriggerSpeech(false, pszText, m_pChar, mode, wHue) || m_pChar->IsStatFlag(STATF_Stone) )
 			fCancelSpeech = true;
 
 		if ( g_Log.IsLoggedMask(LOGM_PLAYER_SPEAK) )
@@ -1662,7 +1662,7 @@ void CClient::Event_TalkUNICODE(NWORD *wszText, int iTextLen, HUE_TYPE wHue, TAL
 	if ( (wHue < HUE_BLUE_LOW) || (wHue > HUE_DYE_HIGH) )
 		wHue = HUE_TEXT_DEF;
 
-	m_pAccount->m_lang.Set(pszLang);
+	m_pAccount->m_lang.SetStr(pszLang);
 	if ( mode == TALKMODE_SYSTEM )
 		m_pChar->m_SpeechHue = wHue;
 
@@ -1679,7 +1679,7 @@ void CClient::Event_TalkUNICODE(NWORD *wszText, int iTextLen, HUE_TYPE wHue, TAL
 	if ( !Event_Command(pszText, mode) )
 	{
 		bool fCancelSpeech = false;
-		if ( m_pChar->OnTriggerSpeech(false, pszText, m_pChar, mode, wHue) )
+		if ( m_pChar->OnTriggerSpeech(false, pszText, m_pChar, mode, wHue) || m_pChar->IsStatFlag(STATF_Stone) )
 			fCancelSpeech = true;
 
 		if ( g_Log.IsLoggedMask(LOGM_PLAYER_SPEAK) )

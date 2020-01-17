@@ -1912,8 +1912,6 @@ void CChar::SpeakUTF8(LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_T
 	ADDTOCALLSTACK("CChar::SpeakUTF8");
 	// Ignore the font argument here
 
-	if ( IsStatFlag(STATF_Stone) )
-		return;
 	if ( (mode != TALKMODE_SPELL) && (g_Cfg.m_iRevealFlags & REVEALF_SPEAK) )
 		Reveal();
 
@@ -1925,8 +1923,6 @@ void CChar::SpeakUTF8Ex(const NWORD *pszText, HUE_TYPE wHue, TALKMODE_TYPE mode,
 	ADDTOCALLSTACK("CChar::SpeakUTF8Ex");
 	// Ignore the font argument here
 
-	if ( IsStatFlag(STATF_Stone) )
-		return;
 	if ( (mode != TALKMODE_SPELL) && (g_Cfg.m_iRevealFlags & REVEALF_SPEAK) )
 		Reveal();
 

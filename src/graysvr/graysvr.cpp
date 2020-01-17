@@ -115,7 +115,7 @@ CMapList::CMapList()
 	memset(m_mapsinitalized, 0, sizeof(m_mapsinitalized));
 	m_pMapDiffCollection = NULL;
 
-	for ( size_t m = 0; m < MAP_QTY; ++m )
+	for ( int m = 0; m < MAP_QTY; ++m )
 		Load(m, 0, 0, 0, m, m);
 }
 
@@ -267,7 +267,7 @@ bool CMapList::DetectMapSize(int map)
 
 void CMapList::Init()
 {
-	for ( size_t i = 0; i < MAP_QTY; ++i )
+	for ( int i = 0; i < MAP_QTY; ++i )
 	{
 		if ( m_maps[i] )	// map marked as available. check whatever it's possible
 		{

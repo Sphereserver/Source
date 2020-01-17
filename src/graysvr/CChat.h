@@ -32,7 +32,6 @@ public:
 	static void FormatName(CGString &sName, const CChatMember *pMember = NULL, bool bSystem = false);
 	static bool IsValidName(LPCTSTR pszName, bool bPlayer);
 
-	void Broadcast(CChatMember *pFrom, LPCTSTR pszText, CLanguageID lang = 0, bool bOverride = false);
 	void BroadcastAddChannel(CChatChannel *pChannel);
 	void BroadcastRemoveChannel(CChatChannel *pChannel);
 };
@@ -108,7 +107,7 @@ private:
 		return static_cast<CChatChannel *>(CGObListRec::GetNext());
 	}
 
-	void Broadcast(CHATMSG_TYPE iType, LPCTSTR pszName = NULL, LPCTSTR pszText = NULL, CLanguageID lang = 0, bool bOverride = false);
+	void Broadcast(CHATMSG_TYPE iType, LPCTSTR pszName = NULL, LPCTSTR pszText = NULL, CLanguageID lang = NULL, bool bOverride = false);
 	void SendMember(CChatMember *pMember, CChatMember *pToMember = NULL);
 	void FillMembersList(CChatMember *pMember);
 };
@@ -143,7 +142,7 @@ protected:
 	void addChatWindow();
 
 private:
-	void SendChatMsg(CHATMSG_TYPE iType, LPCTSTR pszName1 = NULL, LPCTSTR pszName2 = NULL, CLanguageID lang = 0);
+	void SendChatMsg(CHATMSG_TYPE iType, LPCTSTR pszName1 = NULL, LPCTSTR pszName2 = NULL, CLanguageID lang = NULL);
 
 	void SetReceiving(bool bToggle)
 	{

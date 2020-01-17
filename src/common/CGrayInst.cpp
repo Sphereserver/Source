@@ -173,7 +173,7 @@ VERFILE_TYPE CGrayInstall::OpenFiles(DWORD dwMask)
 			{
 				// Map file is handled differently
 				TCHAR szFileName[_MAX_PATH];
-				for ( size_t m = 0; m < MAP_QTY; ++m )
+				for ( int m = 0; m < MAP_QTY; ++m )
 				{
 					if ( g_MapList.IsInitialized(m) || (m == 0) )	// need at least a minimum of map0... (Ben)
 					{

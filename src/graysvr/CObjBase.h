@@ -375,7 +375,7 @@ public:
 	void Emote(LPCTSTR pszTextYou, LPCTSTR pszTextThem = NULL, CClient *pClientExclude = NULL);
 
 	virtual void Speak(LPCTSTR pszText, HUE_TYPE wHue = HUE_TEXT_DEF, TALKMODE_TYPE mode = TALKMODE_SAY, FONT_TYPE font = FONT_NORMAL);
-	virtual void SpeakUTF8(LPCTSTR pszText, HUE_TYPE wHue = HUE_TEXT_DEF, TALKMODE_TYPE mode = TALKMODE_SAY, FONT_TYPE font = FONT_NORMAL, CLanguageID lang = 0);
+	virtual void SpeakUTF8(LPCTSTR pszText, HUE_TYPE wHue = HUE_TEXT_DEF, TALKMODE_TYPE mode = TALKMODE_SAY, FONT_TYPE font = FONT_NORMAL, CLanguageID lang = NULL);
 	virtual void SpeakUTF8Ex(const NWORD *pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, CLanguageID lang);
 
 	void RemoveFromView(CClient *pClientExclude = NULL, bool fHardcoded = true);

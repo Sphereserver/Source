@@ -554,10 +554,10 @@ public:
 
 	void Event_Attack(CGrayUID uid);
 	void Event_Book_Title(CItem *pItem, LPCTSTR pszTitle, LPCTSTR pszAuthor);
-	void Event_BugReport(const TCHAR *pszText, int iTextLen, BUGREPORT_TYPE type, CLanguageID lang = 0);
+	void Event_BugReport(const TCHAR *pszText, int iTextLen, BUGREPORT_TYPE type, CLanguageID lang = NULL);
 	bool Event_CharRename(CChar *pChar, LPCTSTR pszName);
 	void Event_ChatButton(const NCHAR *pszName = NULL);
-	void Event_ChatText(const NCHAR *pszText, int iTextLen, CLanguageID lang = 0);
+	void Event_ChatText(const NCHAR *pszText, int iTextLen, CLanguageID lang = NULL);
 	void Event_CombatMode(bool fWar);
 	bool Event_DoubleClick(CGrayUID uid, bool fMacro, bool fTestTouch, bool fScript = false);
 	void Event_ExtCmd(EXTCMD_TYPE type, TCHAR *pszArgs);
@@ -714,7 +714,7 @@ public:
 	void addPlayerUpdate();
 
 	void addBark(LPCTSTR pszText, const CObjBaseTemplate *pSrc, HUE_TYPE wHue = HUE_TEXT_DEF, TALKMODE_TYPE mode = TALKMODE_SAY, FONT_TYPE font = FONT_NORMAL);
-	void addBarkUNICODE(const NCHAR *pszText, const CObjBaseTemplate *pSrc, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, CLanguageID lang = 0);
+	void addBarkUNICODE(const NCHAR *pszText, const CObjBaseTemplate *pSrc, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, CLanguageID lang = NULL);
 	void addBarkLocalized(DWORD dwClilocID, const CObjBaseTemplate *pSrc, HUE_TYPE wHue = HUE_TEXT_DEF, TALKMODE_TYPE mode = TALKMODE_SAY, FONT_TYPE font = FONT_NORMAL, LPCTSTR pszArgs = "");
 	void addBarkLocalizedEx(DWORD dwClilocID, const CObjBaseTemplate *pSrc, HUE_TYPE wHue = HUE_TEXT_DEF, TALKMODE_TYPE mode = TALKMODE_SAY, FONT_TYPE font = FONT_NORMAL, AFFIX_TYPE affix = AFFIX_APPEND, LPCTSTR pszAffix = "", LPCTSTR pszArgs = "");
 	void addBarkParse(LPCTSTR pszText, const CObjBaseTemplate *pSrc, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font = FONT_NORMAL, bool fUnicode = false);
@@ -772,7 +772,7 @@ public:
 	void addGumpDialogProps(CObjBase *pObj);
 
 	void addLoginComplete();
-	void addChatSystemMessage(CHATMSG_TYPE type, LPCTSTR pszName1 = NULL, LPCTSTR pszName2 = NULL, CLanguageID lang = 0);
+	void addChatSystemMessage(CHATMSG_TYPE type, LPCTSTR pszName1 = NULL, LPCTSTR pszName2 = NULL, CLanguageID lang = NULL);
 
 	void addGlobalChatConnect();
 	void addGlobalChatStatusToggle();

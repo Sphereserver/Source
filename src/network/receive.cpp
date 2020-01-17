@@ -2943,7 +2943,7 @@ bool PacketLanguage::onReceive(NetState* net)
 	TCHAR language[4];
 	readStringNullASCII(language, COUNTOF(language));
 
-	client->m_pAccount->m_lang.Set(language);
+	client->m_pAccount->m_lang.SetStr(language);
 	return true;
 }
 

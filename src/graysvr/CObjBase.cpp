@@ -2177,7 +2177,7 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 				return false;
 
 			TCHAR *ppArgs[2];
-			int iArgQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs));
+			size_t iArgQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs));
 			if ( iArgQty == 0 )
 				break;
 

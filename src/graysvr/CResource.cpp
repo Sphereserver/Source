@@ -3773,7 +3773,7 @@ bool CItemTypeDef::r_LoadVal(CScript &s)
 		int iVal = Exp_GetVal(pszArgs);
 		if ( iVal < 0 )
 			return false;
-		size_t iLo = static_cast<size_t>(iVal);
+		int iLo = iVal;
 
 		GETNONWHITESPACE(pszArgs);
 		if ( *pszArgs == ',' )
@@ -3788,17 +3788,17 @@ bool CItemTypeDef::r_LoadVal(CScript &s)
 			if ( iVal < 0 )
 				return false;
 
-			if ( (iVal > 0) && (static_cast<size_t>(iVal) < iLo) )	// swap
+			if ( (iVal > 0) && (iVal < iLo) )	// swap
 			{
 				int iTemp = iLo;
 				iLo = iVal;
 				iVal = iTemp;
 			}
 		}
-		size_t iHi = static_cast<size_t>(iVal);
 
-		for ( size_t i = iLo; i <= iHi; ++i )
-			g_World.m_TileTypes.SetAtGrow(i, this);
+		int iHi = iVal;
+		for ( int i = iLo; i <= iHi; ++i )
+			g_World.m_TileTypes.SetAtGrow(static_cast<size_t>(i), this);
 
 		return true;
 	}

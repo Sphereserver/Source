@@ -885,7 +885,7 @@ bool CAccount::r_LoadVal(CScript &s)
 				ClearPrivFlags(PRIV_JAILED);
 			break;
 		case AC_LANG:
-			m_lang.Set(s.GetArgStr());
+			m_lang.SetStr(s.GetArgStr());
 			break;
 		case AC_LASTCHARUID:
 			if ( g_Serv.IsLoading() )
@@ -1211,7 +1211,7 @@ void CAccount::r_Write(CScript &s)
 		s.WriteKey("LASTIP", m_Last_IP.GetAddrStr());
 	if ( !m_sChatName.IsEmpty() )
 		s.WriteKey("CHATNAME", static_cast<LPCTSTR>(m_sChatName));
-	if ( m_lang.IsDef() )
+	if ( !m_lang.IsEmpty() )
 		s.WriteKey("LANG", m_lang.GetStr());
 
 	m_BaseDefs.r_WritePrefix(s);	// new variable storage system

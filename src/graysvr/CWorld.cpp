@@ -946,7 +946,7 @@ void CWorld::Init()
 
 	// Initialize all sectors
 	int iSectors = 0;
-	for ( size_t iMap = 0; iMap < MAP_QTY; ++iMap )
+	for ( int iMap = 0; iMap < MAP_QTY; ++iMap )
 	{
 		if ( !g_MapList.m_maps[iMap] )
 			continue;
@@ -969,7 +969,7 @@ void CWorld::Init()
 		"Ter Mur"
 	};
 
-	for ( size_t iMap = 0; iMap < MAP_QTY; ++iMap )
+	for ( int iMap = 0; iMap < MAP_QTY; ++iMap )
 	{
 		if ( !g_MapList.m_maps[iMap] )
 			continue;
@@ -978,12 +978,12 @@ void CWorld::Init()
 
 		if ( *pszMaps )
 			strcat(pszMaps, ", ");
-		sprintf(pszMapName, "%" FMTSIZE_T "='%s'", iMap, (iMap < COUNTOF(sm_szMapNames)) ? sm_szMapNames[iMap] : "[Unnamed]");
+		sprintf(pszMapName, "%d='%s'", iMap, (iMap < static_cast<int>(COUNTOF(sm_szMapNames))) ? sm_szMapNames[iMap] : "[Unnamed]");
 		strcat(pszMaps, pszMapName);
 
 		if ( *pszSectors )
 			strcat(pszSectors, ", ");
-		sprintf(pszSectorSize, "%" FMTSIZE_T "='%d'", iMap, iSectorQty);
+		sprintf(pszSectorSize, "%d='%d'", iMap, iSectorQty);
 		strcat(pszSectors, pszSectorSize);
 
 		// Initialize sectors
@@ -1079,7 +1079,7 @@ bool CWorld::SaveStage()
 		// Save world sectors
 		if ( IsSetEF(EF_DynamicBackgroundSave) )
 		{
-			unsigned int uComplexity = 0;
+			size_t uComplexity = 0;
 
 			CSector *pSector = m_Sectors[m_iSaveStage];
 			if ( pSector )
@@ -1406,7 +1406,7 @@ void CWorld::SaveStatics()
 		// Loop through all sectors and save static items
 		CSector *pSector;
 		CItem *pItem, *pNext;
-		for ( size_t iMap = 0; iMap < MAP_QTY; ++iMap )
+		for ( int iMap = 0; iMap < MAP_QTY; ++iMap )
 		{
 			if ( !g_MapList.m_maps[iMap] )
 				continue;
@@ -1720,7 +1720,7 @@ void CWorld::RespawnDeadNPCs()
 	// Respawn dead NPCs on all sectors
 
 	g_Serv.SetServerMode(SERVMODE_RestockAll);
-	for ( size_t iMap = 0; iMap < MAP_QTY; ++iMap )
+	for ( int iMap = 0; iMap < MAP_QTY; ++iMap )
 	{
 		if ( !g_MapList.m_maps[iMap] )
 			continue;
@@ -1755,7 +1755,7 @@ void CWorld::Restock()
 				pBase->Restock();
 		}
 	}
-	for ( size_t iMap = 0; iMap < MAP_QTY; ++iMap )
+	for ( int iMap = 0; iMap < MAP_QTY; ++iMap )
 	{
 		if ( !g_MapList.m_maps[iMap] )
 			continue;
@@ -1782,7 +1782,7 @@ void CWorld::ReloadMultis()
 	CItem *pItem = NULL;
 	CItemMulti *pMulti = NULL;
 
-	for ( size_t iMap = 0; iMap < MAP_QTY; ++iMap )
+	for ( int iMap = 0; iMap < MAP_QTY; ++iMap )
 	{
 		if ( !g_MapList.m_maps[iMap] )
 			continue;
@@ -1891,11 +1891,7 @@ void CWorld::Speak(const CObjBaseTemplate *pSrc, LPCTSTR pszText, HUE_TYPE wHue,
 	{
 		const CChar *pCharSrc = dynamic_cast<const CChar *>(pSrc);
 		if ( pCharSrc )
-		{
 			fSpeakAsGhost = pCharSrc->IsSpeakAsGhost();
-			if ( wHue == HUE_TEXT_DEF )
-				wHue = pCharSrc->m_SpeechHue;
-		}
 	}
 	else
 		mode = TALKMODE_BROADCAST;
@@ -1948,11 +1944,7 @@ void CWorld::SpeakUNICODE(const CObjBaseTemplate *pSrc, const NCHAR *pszText, HU
 	{
 		const CChar *pCharSrc = dynamic_cast<const CChar *>(pSrc);
 		if ( pCharSrc )
-		{
 			fSpeakAsGhost = pCharSrc->IsSpeakAsGhost();
-			if ( wHue == HUE_TEXT_DEF )
-				wHue = pCharSrc->m_SpeechHue;
-		}
 	}
 	else
 		mode = TALKMODE_BROADCAST;
@@ -2104,7 +2096,7 @@ void CWorld::OnTick()
 		m_timeSector = GetCurrentTime() + SECTOR_TICK_PERIOD;	// next tick time
 		++m_Sector_Pulse;
 
-		for ( size_t iMap = 0; iMap < MAP_QTY; ++iMap )
+		for ( int iMap = 0; iMap < MAP_QTY; ++iMap )
 		{
 			if ( !g_MapList.m_maps[iMap] )
 				continue;
