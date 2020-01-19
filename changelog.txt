@@ -1735,3 +1735,7 @@ Added: 64bit architecture support on Sphere
 
 17-01-2020, Coruja
 Added: New EMOTECOLOR char property (read-only) to store emote color received from client (':+space' client shortcut)
+
+19-01-2020, Coruja
+Fixed: Function TIMERF not setting the timer correctly.
+Changed: Worldsave now will save all multis on 'spheremultis.scp' file instead of only customizable houses.

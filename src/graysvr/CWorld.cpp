@@ -332,7 +332,7 @@ void CTimedFunctionHandler::Add(CGrayUID uid, int iNumSeconds, LPCTSTR pszFuncNa
 		tf = new TimedFunction;
 
 	tf->uid = uid;
-	tf->elapsed = iNumSeconds;
+	tf->elapsed = iNumSeconds - 1;
 	strncpy(tf->funcname, pszFuncName, sizeof(tf->funcname) - 1);
 
 	if ( m_fBeingProcessed )
@@ -356,7 +356,7 @@ int CTimedFunctionHandler::Load(const char *pszName, bool fQuoted, const char *p
 		if ( IsDigit(pszVal[0]) )
 			m_iCurTick = ATOI(pszVal);
 		else
-			g_Log.Event(LOGL_ERROR, "Invalid NextTick line in save file: %s=%s\n", pszName, pszVal);
+			g_Log.Event(LOGL_ERROR, "Invalid %s '%s'\n", pszName, pszVal);
 	}
 	else if ( !strcmpi(pszName, "TimerFNumbers") )
 	{
@@ -384,10 +384,10 @@ int CTimedFunctionHandler::Load(const char *pszName, bool fQuoted, const char *p
 					tf = NULL;
 				}
 				else
-					g_Log.Event(LOGL_ERROR, "Invalid Timerf in %sdata.scp. Each TimerFCall and TimerFNumbers pair must be in that order\n", SPHERE_FILE);
+					g_Log.Event(LOGL_ERROR, "Invalid %s sequence\n", pszName);
 			}
 			else
-				g_Log.Event(LOGL_ERROR, "Invalid Timerf line in %sdata.scp: %s=%s\n", SPHERE_FILE, pszName, pszVal);
+				g_Log.Event(LOGL_ERROR, "Invalid %s '%s'\n", pszName, pszVal);
 		}
 	}
 	else if ( !strcmpi(pszName, "TimerFCall") )
@@ -401,7 +401,7 @@ int CTimedFunctionHandler::Load(const char *pszName, bool fQuoted, const char *p
 		strncpy(tf->funcname, pszVal, sizeof(tf->funcname) - 1);
 
 		if ( !fNew )
-			g_Log.Event(LOGL_ERROR, "Invalid Timerf in %sdata.scp. Each TimerFCall and TimerFNumbers pair must be in that order\n", SPHERE_FILE);
+			g_Log.Event(LOGL_ERROR, "Invalid %s sequence\n", pszName);
 	}
 	return 0;
 }
@@ -764,7 +764,7 @@ void CWorldThread::GarbageCollection_New()
 		pGMPageNext = pGMPage->GetNext();
 		if ( !pGMPage->m_uidChar.CharFind() )
 		{
-			DEBUG_ERR(("GC: Deleted GM Page linked to invalid char uid=0%" FMTDWORDH "\n", static_cast<DWORD>(pGMPage->m_uidChar)));
+			DEBUG_ERR(("GC: Deleted GM Page linked to invalid char UID=0%" FMTDWORDH "\n", static_cast<DWORD>(pGMPage->m_uidChar)));
 			delete pGMPage;
 		}
 		else if ( !g_Accounts.Account_Find(pGMPage->m_sAccount) )
@@ -1035,7 +1035,7 @@ bool CWorld::OpenScriptBackup(CScript &s, LPCTSTR pszBaseDir, LPCTSTR pszBaseNam
 	{
 		s.Close();
 		if ( remove(sBackupName) != 0 )
-			g_Log.Event(LOGM_SAVE|LOGL_CRIT, "Can't remove previous backup file '%s'\n", static_cast<LPCTSTR>(sBackupName));
+			g_Log.Event(LOGM_SAVE|LOGL_CRIT, "Can't remove previous backup save file '%s'\n", static_cast<LPCTSTR>(sBackupName));
 	}
 
 	// Rename current save file to backup file
@@ -1079,26 +1079,26 @@ bool CWorld::SaveStage()
 		// Save world sectors
 		if ( IsSetEF(EF_DynamicBackgroundSave) )
 		{
-			size_t uComplexity = 0;
+			size_t iComplexity = 0;
 
 			CSector *pSector = m_Sectors[m_iSaveStage];
 			if ( pSector )
 			{
 				pSector->r_Write();
-				uComplexity += (pSector->GetCharComplexity() + pSector->GetInactiveChars()) * 100 + pSector->GetItemComplexity();
+				iComplexity += (pSector->GetCharComplexity() + pSector->GetInactiveChars()) * 100 + pSector->GetItemComplexity();
 			}
 
-			size_t iDynamicStage = static_cast<size_t>(m_iSaveStage) + 1;
-			if ( uComplexity <= g_Cfg.m_iSaveStepMaxComplexity )
+			if ( iComplexity <= g_Cfg.m_iSaveStepMaxComplexity )
 			{
+				size_t iDynamicStage = static_cast<size_t>(m_iSaveStage) + 1;
 				size_t iSectorsCount = 1;
 				while ( (iDynamicStage < m_SectorsQty) && (iSectorsCount <= g_Cfg.m_iSaveSectorsPerTick) )
 				{
 					pSector = m_Sectors[iDynamicStage];
 					if ( pSector )
 					{
-						uComplexity += (pSector->GetCharComplexity() + pSector->GetInactiveChars()) * 100 + pSector->GetItemComplexity();
-						if ( uComplexity > g_Cfg.m_iSaveStepMaxComplexity )
+						iComplexity += (pSector->GetCharComplexity() + pSector->GetInactiveChars()) * 100 + pSector->GetItemComplexity();
+						if ( iComplexity > g_Cfg.m_iSaveStepMaxComplexity )
 							break;
 
 						pSector->r_Write();
