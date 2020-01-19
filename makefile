@@ -18,7 +18,7 @@ ifdef DEBUG
 	BUILD_DEFS	= -D_DEBUG
 	GENERAL_FLAGS	+= -ggdb3
 endif
-BUILD_DEFS		+= -DTHREAD_TRACK_CALLSTACK
+BUILD_DEFS		+= -D_THREAD_TRACK_CALLSTACK
 
 ifneq ($(shell git rev-parse --git-dir),)
 	GITREVISION	= $(shell expr $(shell git rev-list --count HEAD) - 2406)

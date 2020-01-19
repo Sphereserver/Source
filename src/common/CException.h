@@ -104,7 +104,7 @@ private:
 
 	#define EXC_SET(a)	inLocalBlock = a; inLocalBlockCnt++
 
-	#ifdef THREAD_TRACK_CALLSTACK
+	#ifdef _THREAD_TRACK_CALLSTACK
 		#define EXC_CATCH_EXCEPTION(a)	bCATCHExcept = true; \
 										StackDebugInformation::printStackTrace(); \
 										if ( (inLocalBlock != NULL) && (inLocalBlockCnt > 0) ) \
@@ -137,7 +137,7 @@ private:
 
 	#define EXC_SETSUB(a)	inLocalSubBlock = a; inLocalSubBlockCnt++
 
-	#ifdef THREAD_TRACK_CALLSTACK
+	#ifdef _THREAD_TRACK_CALLSTACK
 		#define EXC_CATCH_SUB(a, b)	bCATCHExceptSub = true; \
 									StackDebugInformation::printStackTrace(); \
 									if ( (inLocalSubBlock != NULL) && (inLocalSubBlockCnt > 0) ) \

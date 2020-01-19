@@ -368,7 +368,7 @@ bool AbstractThread::checkStuck()
 		{
 			//	TODO:
 			//g_Log.Event(LOGL_CRIT, "'%s' thread hang, restarting...\n", m_name);
-			#ifdef THREAD_TRACK_CALLSTACK
+			#ifdef _THREAD_TRACK_CALLSTACK
 				static_cast<AbstractSphereThread*>(this)->printStackTrace();
 			#endif
 			terminate(false);
@@ -392,7 +392,7 @@ typedef struct tagTHREADNAME_INFO
 } THREADNAME_INFO;
 #pragma pack(pop)
 
-const DWORD MS_VC_EXCEPTION = 0x406D1388;
+constexpr DWORD MS_VC_EXCEPTION = 0x406D1388;
 #endif
 
 void AbstractThread::onStart()
@@ -480,7 +480,7 @@ bool AbstractThread::shouldExit()
 AbstractSphereThread::AbstractSphereThread(const char *name, Priority priority)
 	: AbstractThread(name, priority)
 {
-#ifdef THREAD_TRACK_CALLSTACK
+#ifdef _THREAD_TRACK_CALLSTACK
 	m_stackPos = 0;
 	memset(m_stackInfo, 0, sizeof(m_stackInfo));
 	m_freezeCallStack = false;
@@ -498,18 +498,13 @@ char *AbstractSphereThread::allocateBuffer()
 {
 	SimpleThreadLock stlBuffer(g_tmpStringMutex);
 
-	char * buffer = NULL; 
 	++g_tmpStringIndex;
-
-	if( g_tmpStringIndex >= THREAD_TSTRING_STORAGE )
-	{
+	if ( g_tmpStringIndex >= THREAD_TSTRING_STORAGE )
 		g_tmpStringIndex %= THREAD_TSTRING_STORAGE;
-	}
 
-	buffer = g_tmpStrings[g_tmpStringIndex];
-	*buffer = '\0';
-
-	return buffer;
+	char *szBuffer = g_tmpStrings[g_tmpStringIndex];
+	*szBuffer = '\0';
+	return szBuffer;
 }
 
 TemporaryStringStorage *AbstractSphereThread::allocateStringBuffer()
@@ -560,7 +555,7 @@ bool AbstractSphereThread::shouldExit()
 	return AbstractThread::shouldExit();
 }
 
-#ifdef THREAD_TRACK_CALLSTACK
+#ifdef _THREAD_TRACK_CALLSTACK
 void AbstractSphereThread::pushStackCall(const char *name)
 {
 	if ( !m_freezeCallStack )

@@ -13,14 +13,6 @@
 #include <list>
 
 
-// keep track of callstack on windows release builds
-// (linux does this via makefile)
-#ifdef _WIN32
-#	ifndef _DEBUG
-#		define THREAD_TRACK_CALLSTACK
-#	endif
-#endif
-
 /**
  * Sphere threading system
  * Threads should be inherited from AbstractThread with overridden tick() method
@@ -113,8 +105,6 @@ private:
 class AbstractThread : public IThread
 {
 public:
-	static const char *m_sClassName;
-
 	AbstractThread(const char *name, Priority priority = IThread::Normal);
 	virtual ~AbstractThread();
 
@@ -169,7 +159,7 @@ struct TemporaryStringStorage;
 class AbstractSphereThread : public AbstractThread
 {
 private:
-#ifdef THREAD_TRACK_CALLSTACK
+#ifdef _THREAD_TRACK_CALLSTACK
 	struct STACK_INFO_REC
 	{
 		const char *functionName;
@@ -197,7 +187,7 @@ public:
 	// allocates a manageable String from the thread local storage
 	void allocateString(TemporaryString &string);
 
-#ifdef THREAD_TRACK_CALLSTACK
+#ifdef _THREAD_TRACK_CALLSTACK
 	inline void freezeCallStack(bool freeze)
 	{
 		m_freezeCallStack = freeze;
@@ -321,7 +311,7 @@ T TlsValue<T>::get() const
 
 
 // used to hold debug information for stack
-#ifdef THREAD_TRACK_CALLSTACK
+#ifdef _THREAD_TRACK_CALLSTACK
 class StackDebugInformation
 {
 private:
@@ -367,6 +357,6 @@ public:
 #define ADDTOCALLSTACK_INTENSIVE(_function_)
 #define PAUSECALLSTACK
 #define UNPAUSECALLSTACK
-#endif // THREAD_TRACK_CALLSTACK
+#endif	// _THREAD_TRACK_CALLSTACK
 
 #endif

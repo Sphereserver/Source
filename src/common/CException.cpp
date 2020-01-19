@@ -90,7 +90,7 @@ void Assert_CheckFail(LPCTSTR pszExp, LPCTSTR pszFile, long lLine)
 		PAUSECALLSTACK;
 
 		g_Log.Event(LOGL_FATAL, "%s\n", strsignal(sig));
-	#ifdef THREAD_TRACK_CALLSTACK
+	#ifdef _THREAD_TRACK_CALLSTACK
 		StackDebugInformation::printStackTrace();
 	#endif
 
@@ -167,8 +167,7 @@ bool CGrayError::GetErrorMessage(LPTSTR lpszError) const
 	{
 		// Return the message defined by the system for the error code
 		TCHAR szCode[1024];
-		int nChars = GetSystemErrorMessage(m_hError, szCode, sizeof(szCode));
-		if ( nChars )
+		if ( GetSystemErrorMessage(m_hError, szCode, sizeof(szCode)) )
 		{
 			if ( m_hError & 0x80000000 )
 				sprintf(lpszError, "Error Pri=%d, Code=0x%" FMTDWORDH "(%s), Desc='%s'", m_eSeverity, m_hError, szCode, m_pszDescription);
@@ -224,7 +223,7 @@ CGrayException::CGrayException(unsigned int uCode, DWORD dwAddress) : m_dwAddres
 
 bool CGrayException::GetErrorMessage(LPTSTR lpszError) const
 {
-	LPCTSTR pszMsg;
+	LPCTSTR pszMsg = "";
 	switch ( m_hError )
 	{
 		case STATUS_BREAKPOINT:				pszMsg = "Breakpoint";				break;
