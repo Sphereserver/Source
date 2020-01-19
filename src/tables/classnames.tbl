@@ -5,6 +5,7 @@
 
 #define ADD(a,b) const char * a::m_sClassName = b
 
+ADD(AbstractThread,			"AbstractThread");
 ADD(CAccount,				"CAccount");
 ADD(CAccounts,				"CAccounts");
 ADD(CResourceLink,			"CResourceLink");

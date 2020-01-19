@@ -112,6 +112,12 @@ private:
 // Thread implementation. See IThread for list of available methods.
 class AbstractThread : public IThread
 {
+public:
+	static const char *m_sClassName;
+
+	AbstractThread(const char *name, Priority priority = IThread::Normal);
+	virtual ~AbstractThread();
+
 private:
 	unsigned int m_id;
 	const char *m_name;
@@ -124,10 +130,6 @@ private:
 
 	bool m_terminateRequested;
 	ManualResetEvent m_terminateEvent;
-
-public:
-	AbstractThread(const char *name, Priority priority = IThread::Normal);
-	virtual ~AbstractThread();
 
 private:
 	AbstractThread(const AbstractThread& copy);
