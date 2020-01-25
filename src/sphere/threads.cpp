@@ -214,9 +214,9 @@ void AbstractThread::terminate(bool ended)
 		if (ended == false && wasCurrentThread)
 		{
 #ifdef _WIN32
-			_endthreadex(0);
+			_endthreadex(EXIT_SUCCESS);
 #else
-			pthread_exit(0);
+			pthread_exit(EXIT_SUCCESS);
 #endif
 		}
 	}
@@ -392,7 +392,7 @@ typedef struct tagTHREADNAME_INFO
 } THREADNAME_INFO;
 #pragma pack(pop)
 
-constexpr DWORD MS_VC_EXCEPTION = 0x406D1388;
+#define MS_VC_EXCEPTION		0x406D1388
 #endif
 
 void AbstractThread::onStart()

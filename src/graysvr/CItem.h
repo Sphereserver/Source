@@ -1291,25 +1291,15 @@ private:
 	CItemMemory &operator=(const CItemMemory &other);
 
 public:
-	WORD SetMemoryTypes(WORD wType)
+	void SetMemoryTypes(WORD wType)
 	{
 		SetHueAlt(wType);
-		return wType;
 	}
 	WORD GetMemoryTypes() const
 	{
 		return GetHueAlt();
 	}
 
-	CItemStone *Guild_GetLink();
-	bool Guild_IsAbbrevOn() const;
-	void Guild_SetAbbrev(bool fAbbrevShow);
-	WORD Guild_GetVotes() const;
-	void Guild_SetVotes(WORD wVotes);
-	int Guild_SetLoyalTo(CGrayUID uid);
-	CGrayUID Guild_GetLoyalTo() const;
-	int Guild_SetTitle(LPCTSTR pszTitle);
-	LPCTSTR Guild_GetTitle() const;
 	virtual int FixWeirdness();
 };
 

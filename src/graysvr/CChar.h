@@ -1179,7 +1179,7 @@ public:
 	bool Memory_OnTick(CItemMemory *pMemory);
 	bool Memory_UpdateFlags(CItemMemory *pMemory);
 	void Memory_AddTypes(CItemMemory *pMemory, WORD wMemTypes);
-	bool Memory_ClearTypes(CItemMemory *pMemory, WORD wMemTypes);
+	void Memory_ClearTypes(CItemMemory *pMemory, WORD wMemTypes);
 	CItemMemory *Memory_CreateObj(CGrayUID uid, WORD wMemTypes);
 	CItemMemory *Memory_CreateObj(const CObjBase *pObj, WORD wMemTypes)
 	{

@@ -165,6 +165,7 @@ CNTWindow::CNTWindow()
 
 CNTWindow::~CNTWindow()
 {
+	NTWindow_DeleteIcon();
 	DestroyWindow();
 }
 

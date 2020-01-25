@@ -728,7 +728,7 @@ void CChar::Memory_AddTypes(CItemMemory *pMemory, WORD wMemTypes)
 	}
 }
 
-bool CChar::Memory_ClearTypes(CItemMemory *pMemory, WORD wMemTypes)
+void CChar::Memory_ClearTypes(CItemMemory *pMemory, WORD wMemTypes)
 {
 	ADDTOCALLSTACK("CChar::Memory_ClearTypes");
 	// Clear flag from the given pMemory
@@ -738,14 +738,14 @@ bool CChar::Memory_ClearTypes(CItemMemory *pMemory, WORD wMemTypes)
 		if ( wMemTypes & MEMORY_IPET )
 			StatFlag_Clear(STATF_Pet);
 
-		if ( pMemory->SetMemoryTypes(pMemory->GetMemoryTypes() & ~wMemTypes) == 0 )
+		if ( (pMemory->GetMemoryTypes() & ~wMemTypes) == 0 )
 			pMemory->Delete();
 		else
+		{
+			pMemory->SetMemoryTypes(pMemory->GetMemoryTypes() & ~wMemTypes);
 			Memory_UpdateFlags(pMemory);
-
-		return true;
+		}
 	}
-	return false;
 }
 
 CItemMemory *CChar::Memory_CreateObj(CGrayUID uid, WORD wMemTypes)

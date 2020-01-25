@@ -945,21 +945,19 @@ void CWorld::Init()
 		g_MapList.m_pMapDiffCollection->Init();
 
 	// Initialize all sectors
-	int iSectors = 0;
+	int iSectorQty = 0;
 	for ( int iMap = 0; iMap < MAP_QTY; ++iMap )
 	{
 		if ( !g_MapList.m_maps[iMap] )
 			continue;
-		iSectors += g_MapList.GetSectorQty(iMap);
+		iSectorQty += g_MapList.GetSectorQty(iMap);
 	}
+	m_Sectors = new CSector *[iSectorQty];
 
-	m_Sectors = new CSector *[iSectors];
-	TCHAR *pszMapName = Str_GetTemp();
 	TCHAR *pszMaps = Str_GetTemp();
-	TCHAR *pszSectorSize = Str_GetTemp();
 	TCHAR *pszSectors = Str_GetTemp();
 
-	static LPCTSTR const sm_szMapNames[] =
+	static const LPCTSTR sm_szMapNames[] =
 	{
 		"Felucca",
 		"Trammel",
@@ -974,17 +972,15 @@ void CWorld::Init()
 		if ( !g_MapList.m_maps[iMap] )
 			continue;
 
-		int iSectorQty = g_MapList.GetSectorQty(iMap);
+		iSectorQty = g_MapList.GetSectorQty(iMap);
 
 		if ( *pszMaps )
 			strcat(pszMaps, ", ");
-		sprintf(pszMapName, "%d='%s'", iMap, (iMap < static_cast<int>(COUNTOF(sm_szMapNames))) ? sm_szMapNames[iMap] : "[Unnamed]");
-		strcat(pszMaps, pszMapName);
+		sprintf(pszMaps, "%s%d='%s'", pszMaps, iMap, (iMap < static_cast<int>(COUNTOF(sm_szMapNames))) ? sm_szMapNames[iMap] : "[Unnamed]");
 
 		if ( *pszSectors )
 			strcat(pszSectors, ", ");
-		sprintf(pszSectorSize, "%d='%d'", iMap, iSectorQty);
-		strcat(pszSectors, pszSectorSize);
+		sprintf(pszSectors, "%s%d='%d'", pszSectors, iMap, iSectorQty);
 
 		// Initialize sectors
 		for ( int iSector = 0; iSector < iSectorQty; ++iSector )
@@ -999,7 +995,7 @@ void CWorld::Init()
 	if ( *pszMaps )
 		g_Log.Event(LOGM_INIT, "Expansion maps supported by your MUL files: %s\n", pszMaps);
 	if ( *pszSectors )
-		g_Log.Event(LOGM_INIT, "Allocating map sectors: %s\n\n", pszSectors);
+		g_Log.Event(LOGM_INIT, "Allocated map sectors: %s\n\n", pszSectors);
 	EXC_CATCH;
 }
 
@@ -1215,7 +1211,7 @@ bool CWorld::SaveForce()
 	bool fSuccess = true;
 
 	size_t iStage = 0;
-	static LPCTSTR const sm_szSaveStage[] =
+	static const LPCTSTR sm_szSaveStage[] =
 	{
 		"garbage collection",
 		"sectors",
@@ -1636,7 +1632,7 @@ enum WC_TYPE
 	WC_QTY
 };
 
-LPCTSTR const CWorld::sm_szLoadKeys[WC_QTY + 1] =	// static
+const LPCTSTR CWorld::sm_szLoadKeys[WC_QTY + 1] =	// static
 {
 	"PREVBUILD",
 	"SAVECOUNT",
