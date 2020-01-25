@@ -3241,9 +3241,9 @@ RESOURCE_ID CResource::ResourceGetNewID(RES_TYPE restype, LPCTSTR pszName, CVarD
 
 	if ( pszName )
 	{
-		int iVarNum = g_Exp.m_VarDefs.SetNum(pszName, rid.GetPrivateUID());
-		if ( iVarNum >= 0 )
-			*ppVarNum = dynamic_cast<CVarDefContNum *>(g_Exp.m_VarDefs.GetAt(iVarNum));
+		CVarDefContNum *pVarNum = g_Exp.m_VarDefs.SetNum(pszName, rid.GetPrivateUID());
+		if ( pVarNum )
+			*ppVarNum = pVarNum;
 	}
 
 	return rid;

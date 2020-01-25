@@ -954,7 +954,9 @@ void CWorld::Init()
 	}
 	m_Sectors = new CSector *[iSectorQty];
 
+	TCHAR *pszMapName = Str_GetTemp();
 	TCHAR *pszMaps = Str_GetTemp();
+	TCHAR *pszSectorSize = Str_GetTemp();
 	TCHAR *pszSectors = Str_GetTemp();
 
 	static const LPCTSTR sm_szMapNames[] =
@@ -976,11 +978,13 @@ void CWorld::Init()
 
 		if ( *pszMaps )
 			strcat(pszMaps, ", ");
-		sprintf(pszMaps, "%s%d='%s'", pszMaps, iMap, (iMap < static_cast<int>(COUNTOF(sm_szMapNames))) ? sm_szMapNames[iMap] : "[Unnamed]");
+		sprintf(pszMapName, "%d='%s'", iMap, (iMap < static_cast<int>(COUNTOF(sm_szMapNames))) ? sm_szMapNames[iMap] : "[Unnamed]");
+		strcat(pszMaps, pszMapName);
 
 		if ( *pszSectors )
 			strcat(pszSectors, ", ");
-		sprintf(pszSectors, "%s%d='%d'", pszSectors, iMap, iSectorQty);
+		sprintf(pszSectorSize, "%d='%d'", iMap, iSectorQty);
+		strcat(pszSectors, pszSectorSize);
 
 		// Initialize sectors
 		for ( int iSector = 0; iSector < iSectorQty; ++iSector )

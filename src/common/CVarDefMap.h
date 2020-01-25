@@ -124,8 +124,8 @@ private:
 	void DeleteAtKey( LPCTSTR at );
 	void DeleteAtIterator( DefSet::iterator it );
 
-	int SetNumOverride( LPCTSTR pszKey, INT64 iVal );
-	int SetStrOverride( LPCTSTR pszKey, LPCTSTR pszVal );
+	CVarDefContNum *SetNumOverride(LPCTSTR pszKey, INT64 iVal);
+	CVarDefContStr *SetStrOverride(LPCTSTR pszKey, LPCTSTR pszVal);
 
 public:
 	void Copy( const CVarDefMap * pArray );
@@ -146,10 +146,10 @@ public:
 	LPCTSTR FindValNum( INT64 iVal ) const;
 	LPCTSTR FindValStr( LPCTSTR pVal ) const;
 
-	int SetNumNew( LPCTSTR pszKey, INT64 iVal );
-	int SetNum( LPCTSTR pszKey, INT64 iVal, bool fZero = false );
-	int SetStrNew( LPCTSTR pszKey, LPCTSTR pszVal );
-	int SetStr( LPCTSTR pszKey, bool fQuoted, LPCTSTR pszVal, bool fZero = false );
+	CVarDefContNum *SetNumNew(LPCTSTR pszKey, INT64 iVal);
+	CVarDefContNum *SetNum(LPCTSTR pszKey, INT64 iVal, bool fZero = false);
+	CVarDefContStr *SetStrNew(LPCTSTR pszKey, LPCTSTR pszVal);
+	CVarDefCont *SetStr(LPCTSTR pszKey, bool fQuoted, LPCTSTR pszVal, bool fZero = false);
 
 	CVarDefCont * GetAt( size_t at ) const;
 	CVarDefCont * GetKey( LPCTSTR pszKey ) const;

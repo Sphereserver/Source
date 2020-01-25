@@ -122,7 +122,7 @@ CVarDefContStr::~CVarDefContStr()
 
 LPCTSTR CVarDefContStr::GetValStr() const 
 { 
-	return( m_sVal ); 
+	return m_sVal.GetPtr();
 }
 
 inline INT64 CVarDefContStr::GetValNum() const
@@ -460,39 +460,40 @@ size_t CVarDefMap::GetCount() const
 	return m_Container.size();
 }
 
-int CVarDefMap::SetNumNew( LPCTSTR pszName, INT64 iVal )
+CVarDefContNum *CVarDefMap::SetNumNew(LPCTSTR pszName, INT64 iVal)
 {
 	ADDTOCALLSTACK("CVarDefMap::SetNumNew");
-	CVarDefCont * pVarNum = new CVarDefContNum( pszName, iVal );
+	CVarDefContNum *pVarNum = new CVarDefContNum(pszName, iVal);
 	if ( !pVarNum )
-		return( -1 );
+		return NULL;
 
-	DefPairResult res = m_Container.insert(pVarNum);
+	DefPairResult res = m_Container.insert(static_cast<CVarDefCont *>(pVarNum));
 	if ( res.second )
-		return static_cast<int>(std::distance(m_Container.begin(), res.first));
-	else
-		return -1;
+		return pVarNum;
+
+	delete pVarNum;
+	return NULL;
 }
 
-int CVarDefMap::SetNumOverride( LPCTSTR pszKey, INT64 iVal )
+CVarDefContNum *CVarDefMap::SetNumOverride(LPCTSTR pszKey, INT64 iVal)
 {
 	ADDTOCALLSTACK("CVarDefMap::SetNumOverride");
 	DeleteAtKey(pszKey);
 	return SetNumNew(pszKey,iVal);
 }
 
-int CVarDefMap::SetNum( LPCTSTR pszName, INT64 iVal, bool fZero )
+CVarDefContNum *CVarDefMap::SetNum(LPCTSTR pszName, INT64 iVal, bool fZero)
 {
 	ADDTOCALLSTACK("CVarDefMap::SetNum");
 	ASSERT(pszName);
 
 	if ( pszName[0] == '\0' )
-		return( -1 );
+		return NULL;
 
 	if ( fZero && (iVal == 0) )
 	{
 		DeleteAtKey(pszName);
-		return( -1 );
+		return NULL;
 	}
 
 	CVarDefContTest * pVarSearch = new CVarDefContTest(pszName);
@@ -512,51 +513,48 @@ int CVarDefMap::SetNum( LPCTSTR pszName, INT64 iVal, bool fZero )
 	if ( pVarNum )
 	{
 		pVarNum->SetValNum( iVal );
-	}
-	else
-	{
-		if ( g_Serv.IsLoading() )
-		{
-			DEBUG_ERR(( "Replace existing VarStr '%s'\n", pVarBase->GetKey()));
-		}
-		return SetNumOverride( pszName, iVal );
+		return pVarNum;
 	}
 
-	return static_cast<int>(std::distance(m_Container.begin(), iResult));
+	if ( g_Serv.IsLoading() )
+		DEBUG_ERR(("Replace existing VarStr '%s'\n", pVarBase->GetKey()));
+
+	return SetNumOverride(pszName, iVal);
 }
 
-int CVarDefMap::SetStrNew( LPCTSTR pszName, LPCTSTR pszVal )
+CVarDefContStr *CVarDefMap::SetStrNew(LPCTSTR pszName, LPCTSTR pszVal)
 {
 	ADDTOCALLSTACK("CVarDefMap::SetStrNew");
-	CVarDefCont * pVarStr = new CVarDefContStr( pszName, pszVal );
+	CVarDefContStr *pVarStr = new CVarDefContStr(pszName, pszVal);
 	if ( !pVarStr )
-		return( -1 );
+		return NULL;
 
-	DefPairResult res = m_Container.insert(pVarStr);
+	DefPairResult res = m_Container.insert(static_cast<CVarDefCont *>(pVarStr));
 	if ( res.second )
-		return static_cast<int>(std::distance(m_Container.begin(), res.first));
-	else
-		return -1;
+		return pVarStr;
+
+	delete pVarStr;
+	return NULL;
 }
 
-int CVarDefMap::SetStrOverride( LPCTSTR pszKey, LPCTSTR pszVal )
+CVarDefContStr *CVarDefMap::SetStrOverride(LPCTSTR pszKey, LPCTSTR pszVal)
 {
 	ADDTOCALLSTACK("CVarDefMap::SetStrOverride");
 	DeleteAtKey(pszKey);
 	return SetStrNew(pszKey,pszVal);
 }
 
-int CVarDefMap::SetStr( LPCTSTR pszName, bool fQuoted, LPCTSTR pszVal, bool fZero )
+CVarDefCont *CVarDefMap::SetStr(LPCTSTR pszName, bool fQuoted, LPCTSTR pszVal, bool fZero)
 {
 	ADDTOCALLSTACK("CVarDefMap::SetStr");
 	// ASSUME: This has been clipped of unwanted beginning and trailing spaces.
 	if ( !pszName || !pszName[0] )
-		return -1;
+		return NULL;
 
 	if ( pszVal == NULL || pszVal[0] == '\0' )	// but not if empty
 	{
 		DeleteAtKey(pszName);
-		return( -1 );
+		return NULL;
 	}
 
 	if ( !fQuoted && IsSimpleNumberString(pszVal))
@@ -581,17 +579,14 @@ int CVarDefMap::SetStr( LPCTSTR pszName, bool fQuoted, LPCTSTR pszVal, bool fZer
 	CVarDefContStr * pVarStr = dynamic_cast <CVarDefContStr *>( pVarBase );
 	if ( pVarStr )
 	{
-		pVarStr->SetValStr( pszVal );
+		pVarStr->SetValStr(pszVal);
+		return pVarStr;
 	}
-	else
-	{
-		if ( g_Serv.IsLoading())
-		{
-			DEBUG_ERR(( "Replace existing VarNum '%s' with %s\n", pVarBase->GetKey(), pszVal ));
-		}
-		return SetStrOverride( pszName, pszVal );
-	}
-	return static_cast<int>(std::distance(m_Container.begin(), iResult) );
+
+	if ( g_Serv.IsLoading() )
+		DEBUG_ERR(("Replace existing VarNum '%s' with '%s'\n", pVarBase->GetKey(), pszVal));
+
+	return SetStrOverride(pszName, pszVal);
 }
 
 CVarDefCont * CVarDefMap::GetKey( LPCTSTR pszKey ) const

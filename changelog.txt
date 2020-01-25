@@ -1739,3 +1739,8 @@ Added: New EMOTECOLOR char property (read-only) to store emote color received fr
 19-01-2020, Coruja
 Fixed: Function TIMERF not setting the timer correctly.
 Changed: Worldsave now will save all multis on 'spheremultis.scp' file instead of only customizable houses.
+
+25-01-2020, Coruja
+Changed: Misc optimizations on internal variables engine.
+	-This should give a big performance boost to load files at server startup
+	-Ported from SphereX branch, credits to Nolok

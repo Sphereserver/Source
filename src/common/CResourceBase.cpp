@@ -347,8 +347,9 @@ bool CResourceDef::SetResourceName(LPCTSTR pszName)
 		}
 	}
 
-	int iVarNum;
-	CVarDefCont *pVarKey = g_Exp.m_VarDefs.GetKey(pszName);
+	const CVarDefCont *pVarKey = g_Exp.m_VarDefs.GetKey(pszName);
+	CVarDefContNum *pVarKeyNum = NULL;
+
 	if ( pVarKey )
 	{
 		if ( static_cast<DWORD>(pVarKey->GetValNum()) == GetResourceID().GetPrivateUID() )
@@ -359,15 +360,15 @@ bool CResourceDef::SetResourceName(LPCTSTR pszName)
 		else
 			DEBUG_WARN(("DEFNAME=%s already exists (0%llx != 0%x)\n", pszName, RES_GET_INDEX(pVarKey->GetValNum()), GetResourceID().GetResIndex()));
 
-		iVarNum = g_Exp.m_VarDefs.SetNum(pszName, GetResourceID().GetPrivateUID());
+		pVarKeyNum = g_Exp.m_VarDefs.SetNum(pszName, GetResourceID().GetPrivateUID());
 	}
 	else
-		iVarNum = g_Exp.m_VarDefs.SetNumNew(pszName, GetResourceID().GetPrivateUID());
+		pVarKeyNum = g_Exp.m_VarDefs.SetNumNew(pszName, GetResourceID().GetPrivateUID());
 
-	if ( iVarNum < 0 )
+	if ( !pVarKeyNum )
 		return false;
 
-	SetResourceVar(dynamic_cast<const CVarDefContNum *>(g_Exp.m_VarDefs.GetAt(iVarNum)));
+	SetResourceVar(pVarKeyNum);
 	return true;
 }
 
