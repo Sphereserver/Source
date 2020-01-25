@@ -85,32 +85,32 @@ enum RES_TYPE	// all the script resource blocks we know how to deal with
 
 struct RESOURCE_ID_BASE : public CGrayUIDBase
 {
-#define RES_TYPE_SHIFT		25	// leave 6 bits = 64 for RES_TYPE
-#define RES_TYPE_MASK		63
-#define RES_PAGE_SHIFT		18	// leave 7 bits = 128 pages of space
-#define RES_PAGE_MASK		127
 #define RES_INDEX_SHIFT		0	// leave 18 bits = 262144 entries
 #define RES_INDEX_MASK		0x3FFFF
+#define RES_GET_INDEX(dw)	((dw) & RES_INDEX_MASK)
+
+#define RES_TYPE_SHIFT		25	// leave 6 bits = 64 for RES_TYPE
+#define RES_TYPE_MASK		63
+#define RES_GET_TYPE(dw)	((dw >> RES_TYPE_SHIFT) & RES_TYPE_MASK)
+
+#define RES_PAGE_SHIFT		18	// leave 7 bits = 128 pages of space
+#define RES_PAGE_MASK		127
+#define RES_GET_PAGE(dw)	((dw >> RES_PAGE_SHIFT) & RES_PAGE_MASK)
 
 public:
-#define RES_GET_INDEX(dw)	((dw) & RES_INDEX_MASK)
 	int GetResIndex() const
 	{
 		return RES_GET_INDEX(m_dwInternalVal);
 	}
 
-#define RES_GET_TYPE(dw)	((dw >> RES_TYPE_SHIFT) & RES_TYPE_MASK)
 	RES_TYPE GetResType() const
 	{
-		DWORD dwVal = RES_GET_TYPE(m_dwInternalVal);
-		return static_cast<RES_TYPE>(dwVal);
+		return static_cast<RES_TYPE>(RES_GET_TYPE(m_dwInternalVal));
 	}
 
 	int GetResPage() const
 	{
-		DWORD dwVal = m_dwInternalVal >> RES_PAGE_SHIFT;
-		dwVal &= RES_PAGE_MASK;
-		return dwVal;
+		return RES_GET_PAGE(m_dwInternalVal);
 	}
 
 	bool operator==(const RESOURCE_ID_BASE &rid) const
@@ -473,7 +473,6 @@ public:
 
 	// Get the name of the resource item. Used for saving (may be number or name)
 	LPCTSTR GetResourceName() const;
-	bool MakeResourceName();
 
 	virtual LPCTSTR GetName() const		// default to same as the DEFNAME name
 	{
@@ -521,14 +520,14 @@ public:
 
 	void AddRefInstance()
 	{
-		m_dwRefInstances++;
+		++m_dwRefInstances;
 	}
 	void DelRefInstance()
 	{
 #ifdef _DEBUG
 		ASSERT(m_dwRefInstances > 0);
 #endif
-		m_dwRefInstances--;
+		--m_dwRefInstances;
 	}
 	DWORD GetRefInstances() const
 	{
@@ -537,8 +536,6 @@ public:
 
 	void ScanSection(RES_TYPE restype);
 	bool IsLinked() const;
-	CResourceScript *GetLinkFile() const;
-	long GetLinkOffset() const;
 	void SetLink(CResourceScript *pScript);
 	void CopyTransfer(CResourceLink *pLink);
 	void ClearTriggers();

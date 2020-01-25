@@ -383,72 +383,6 @@ LPCTSTR CResourceDef::GetResourceName() const
 	return pszTemp;
 }
 
-bool CResourceDef::MakeResourceName()
-{
-	ADDTOCALLSTACK("CResourceDef::MakeResourceName");
-	if ( m_pDefName )
-		return true;
-
-	LPCTSTR pszName = GetName();
-	GETNONWHITESPACE(pszName);
-
-	TCHAR *pszTemp = Str_GetTemp();
-	strcpy(pszTemp, "a_");
-
-	TCHAR *pszDef = pszTemp + 2;
-	TCHAR ch;
-	for ( ; *pszName; ++pszName )
-	{
-		ch = *pszName;
-		if ( (ch == ' ') || (ch == '\t') || (ch == '-') )
-			ch = '_';
-		else if ( !isalnum(ch) )
-			continue;
-
-		// Collapse multiple spaces together
-		if ( (ch == '_') && (*(pszDef - 1) == '_') )
-			continue;
-		*pszDef = ch;
-		++pszDef;
-	}
-	*pszDef = '_';
-	*(++pszDef) = '\0';
-
-	LPCTSTR pszKey = NULL;		// auxiliary, the key of a similar CVarDef, if any found
-	size_t iMax = g_Exp.m_VarDefs.GetCount();
-	size_t iLen = strlen(pszTemp);
-	int iVar = 1;
-
-	for ( size_t i = 0; i < iMax; ++i )
-	{
-		// Is this a similar key?
-		pszKey = g_Exp.m_VarDefs.GetAt(i)->GetKey();
-		if ( strnicmp(pszTemp, pszKey, iLen) != 0 )
-			continue;
-
-		// Skip underscores
-		pszKey = pszKey + iLen;
-		while ( *pszKey == '_' )
-			++pszKey;
-
-		// Is this is subsequent key with a number? Get the highest (plus one)
-		if ( IsStrNumericDec(pszKey) )
-		{
-			int iVarThis = ATOI(pszKey);
-			if ( iVarThis >= iVar )
-				iVar = iVarThis + 1;
-		}
-		else
-			++iVar;
-	}
-
-	// Add an extra _, hopefully won't conflict with named areas
-	sprintf(pszDef, "_%d", iVar);
-	SetResourceName(pszTemp);
-	// Assign name
-	return true;
-}
-
 bool CRegionBase::MakeRegionName()
 {
 	ADDTOCALLSTACK("CRegionBase::MakeRegionName");
@@ -809,18 +743,6 @@ bool CResourceLink::IsLinked() const
 	if ( m_pScript )
 		return m_Context.IsValid();
 	return false;
-}
-
-CResourceScript *CResourceLink::GetLinkFile() const
-{
-	ADDTOCALLSTACK("CResourceLink::GetLinkFile");
-	return m_pScript;
-}
-
-long CResourceLink::GetLinkOffset() const
-{
-	ADDTOCALLSTACK("CResourceLink::GetLinkOffset");
-	return m_Context.m_lOffset;
 }
 
 void CResourceLink::SetLink(CResourceScript *pScript)

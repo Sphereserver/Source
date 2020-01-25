@@ -717,7 +717,7 @@ bool CVarDefMap::r_LoadVal( CScript & s )
 {
 	ADDTOCALLSTACK("CVarDefMap::r_LoadVal");
 	bool fQuoted = false;
-	return( ( SetStr( s.GetKey(), fQuoted, s.GetArgStr( &fQuoted )) >= 0 ) ? true : false );
+	return (SetStr(s.GetKey(), fQuoted, s.GetArgStr(&fQuoted)) != NULL);
 }
 
 void CVarDefMap::r_WritePrefix( CScript & s, LPCTSTR pszPrefix, LPCTSTR pszKeyExclude )
