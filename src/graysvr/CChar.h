@@ -1089,10 +1089,8 @@ public:
 	ANIM_TYPE Skill_GetAnim(SKILL_TYPE skill);
 	SOUND_TYPE Skill_GetSound(SKILL_TYPE skill);
 	int Skill_Stage(SKTRIG_TYPE stage);
-	TRIGRET_TYPE Skill_OnTrigger(SKILL_TYPE skill, SKTRIG_TYPE stage);
-	TRIGRET_TYPE Skill_OnTrigger(SKILL_TYPE skill, SKTRIG_TYPE stage, CScriptTriggerArgs *pArgs);		// pArgs.m_iN1 will be rewritten with skill
-	TRIGRET_TYPE Skill_OnCharTrigger(SKILL_TYPE skill, CTRIG_TYPE ctrig);
-	TRIGRET_TYPE Skill_OnCharTrigger(SKILL_TYPE skill, CTRIG_TYPE ctrig, CScriptTriggerArgs *pArgs);	// pArgs.m_iN1 will be rewritten with skill
+	TRIGRET_TYPE Skill_OnTrigger(SKILL_TYPE skill, SKTRIG_TYPE stage, CScriptTriggerArgs *pArgs = NULL);
+	TRIGRET_TYPE Skill_OnCharTrigger(SKILL_TYPE skill, CTRIG_TYPE ctrig, CScriptTriggerArgs *pArgs = NULL);
 
 	bool Skill_SmeltOre(CItem *pOre);
 	bool Skill_SmeltItem(CItem *pItem);

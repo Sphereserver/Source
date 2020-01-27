@@ -52,9 +52,10 @@ enum GUMPCTL_TYPE	// controls we can put in a gump.
 };
 
 
-//*******************************************
-// -CDialogDef
-LPCTSTR const CDialogDef::sm_szLoadKeys[GUMPCTL_QTY+1] =
+///////////////////////////////////////////////////////////
+// CDialogDef
+
+const LPCTSTR CDialogDef::sm_szLoadKeys[GUMPCTL_QTY+1] =
 {
 	"button",
 	"buttontileart",
@@ -789,7 +790,7 @@ TRIGRET_TYPE CClient::Menu_OnSelect( RESOURCE_ID_BASE rid, int iSelect, CObjBase
 			if ( strcmpi( s.GetArgStr(), "@cancel" ) )
 				continue;
 
-			return pObj->OnTriggerRunVal( s, TRIGRUN_SECTION_TRUE, m_pChar, NULL );
+			return pObj->OnTriggerRunVal(s, TRIGRUN_SECTION_TRUE, m_pChar);
 		}
 	}
 	else
@@ -806,7 +807,7 @@ TRIGRET_TYPE CClient::Menu_OnSelect( RESOURCE_ID_BASE rid, int iSelect, CObjBase
 			if ( i > iSelect )
 				break;
 
-			return pObj->OnTriggerRunVal( s, TRIGRUN_SECTION_TRUE, m_pChar, NULL );
+			return pObj->OnTriggerRunVal(s, TRIGRUN_SECTION_TRUE, m_pChar);
 		}
 	}
 

@@ -743,7 +743,7 @@ size_t CClient::Cmd_Skill_Menu_Build(RESOURCE_ID_BASE rid, int iSelect, CMenuIte
 				continue;
 			if ( strcmpi(s.GetArgStr(), "@Cancel") )
 				continue;
-			if ( m_pChar->OnTriggerRunVal(s, TRIGRUN_SECTION_TRUE, m_pChar, NULL) == TRIGRET_RET_TRUE )
+			if ( m_pChar->OnTriggerRunVal(s, TRIGRUN_SECTION_TRUE, m_pChar) == TRIGRET_RET_TRUE )
 				return 0;
 			break;
 		}
@@ -760,7 +760,6 @@ size_t CClient::Cmd_Skill_Menu_Build(RESOURCE_ID_BASE rid, int iSelect, CMenuIte
 	bool fSkip = false;		// skip this if we lack resources or skill.
 	int iOnCount = 0;
 	size_t iShowCount = 0;
-	CScriptTriggerArgs Args;
 
 	while ( s.ReadKeyParse() )
 	{
@@ -837,9 +836,9 @@ size_t CClient::Cmd_Skill_Menu_Build(RESOURCE_ID_BASE rid, int iSelect, CMenuIte
 		if ( iOnCount == iSelect )
 		{
 			// Execute command from script
-			TRIGRET_TYPE tRet = m_pChar->OnTriggerRunVal(s, TRIGRUN_SINGLE_EXEC, m_pChar, &Args);
-			if ( tRet != TRIGRET_RET_DEFAULT )
-				return tRet == TRIGRET_RET_TRUE ? 0 : 1;
+			TRIGRET_TYPE tr = m_pChar->OnTriggerRunVal(s, TRIGRUN_SINGLE_EXEC, m_pChar);
+			if ( tr != TRIGRET_RET_DEFAULT )
+				return (tr == TRIGRET_RET_TRUE) ? 0 : 1;
 
 			++iShowCount;	// we are good. but continue til the end
 		}
@@ -1136,7 +1135,7 @@ bool CClient::Cmd_Skill_Tracking(WORD wTrackType, bool fExec)
 			// Tracking failed or cancelled
 			m_pChar->Skill_UseQuick(SKILL_TRACKING, 10 + Calc_GetRandVal(30));
 
-			static LPCTSTR const sm_Track_FailMsg[] =
+			static const LPCTSTR sm_Track_FailMsg[] =
 			{
 				g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_FAIL_ANIMAL),
 				g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_FAIL_MONSTER),

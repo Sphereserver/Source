@@ -493,7 +493,7 @@ enum SK_TYPE
 	SK_QTY
 };
 
-LPCTSTR const CScriptObj::sm_szScriptKeys[SK_QTY + 1] =
+const LPCTSTR CScriptObj::sm_szScriptKeys[SK_QTY + 1] =
 {
 	"BEGIN",
 	"BREAK",
@@ -543,9 +543,11 @@ TRIGRET_TYPE CScriptObj::OnTriggerRun(CScript &s, TRIGRUN_TYPE trigger, CTextCon
 	//DEBUGCHECK(this == g_Log.m_pObjectContext);
 
 	// All scripts should have args for locals to work
-	CScriptTriggerArgs argsEmpty;
 	if ( !pArgs )
-		pArgs = &argsEmpty;
+	{
+		CScriptTriggerArgs pArgsEmpty;
+		pArgs = &pArgsEmpty;
+	}
 
 	// Script execution is always not threaded action
 	EXC_TRY("TriggerRun");
@@ -1155,7 +1157,7 @@ enum SSC_TYPE
 	SSC_QTY
 };
 
-LPCTSTR const CScriptObj::sm_szLoadKeys[SSC_QTY + 1] =
+const LPCTSTR CScriptObj::sm_szLoadKeys[SSC_QTY + 1] =
 {
 	#define ADD(a,b) b,
 	#include "../tables/CScriptObj_functions.tbl"
@@ -1174,7 +1176,7 @@ enum SSV_TYPE
 	SSV_QTY
 };
 
-LPCTSTR const CScriptObj::sm_szVerbKeys[SSV_QTY + 1] =
+const LPCTSTR CScriptObj::sm_szVerbKeys[SSV_QTY + 1] =
 {
 	"NEW",
 	"NEWDUPE",
@@ -1357,7 +1359,6 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 {
 	ADDTOCALLSTACK("CScriptObj::r_WriteVal");
 	EXC_TRY("WriteVal");
-	CObjBase *pObj;
 	CScriptObj *pRef = NULL;
 	bool fGetRef = r_GetRef(pszKey, pRef);
 
@@ -1396,15 +1397,12 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatHex(0x8000);
 		else if ( dynamic_cast<CClient *>(pRefTemp) )
 			sVal.FormatHex(0x10000);
-		else if ( (pObj = dynamic_cast<CObjBase *>(pRefTemp)) != NULL )
-		{
-			if ( dynamic_cast<CChar *>(pObj) )
-				sVal.FormatHex(0x40000);
-			else if ( dynamic_cast<CItem *>(pObj) )
-				sVal.FormatHex(0x80000);
-			else
-				sVal.FormatHex(0x20000);
-		}
+		else if ( dynamic_cast<CChar *>(pRefTemp) )
+			sVal.FormatHex(0x40000);
+		else if ( dynamic_cast<CItem *>(pRefTemp) )
+			sVal.FormatHex(0x80000);
+		else if ( dynamic_cast<CObjBase *>(pRefTemp) )
+			sVal.FormatHex(0x20000);
 		else
 			sVal.FormatHex(0x1);
 		return true;
@@ -1419,7 +1417,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		}
 		if ( pszKey[0] == '\0' )	// just testing the ref
 		{
-			pObj = dynamic_cast<CObjBase *>(pRef);
+			const CObjBase *pObj = dynamic_cast<const CObjBase *>(pRef);
 			sVal.FormatHex(pObj ? static_cast<DWORD>(pObj->GetUID()) : 1);
 			return true;
 		}
@@ -1534,7 +1532,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			}
 			if ( !*pszKey )
 			{
-				pObj = dynamic_cast<CObjBase *>(pRef);
+				const CObjBase *pObj = dynamic_cast<const CObjBase *>(pRef);
 				sVal.FormatHex(pObj ? static_cast<DWORD>(pObj->GetUID()) : UID_CLEAR);
 				return true;
 			}
@@ -1545,7 +1543,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			// fall through
 		case SSC_VAR:
 		{
-			CVarDefCont *pVar = g_Exp.m_VarGlobals.GetKey(pszKey);
+			const CVarDefCont *pVar = g_Exp.m_VarGlobals.GetKey(pszKey);
 			if ( pVar )
 				sVal = pVar->GetValStr();
 			else if ( fZero )
@@ -1562,7 +1560,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			fZero = true;
 		case SSC_DEF:
 		{
-			CVarDefCont *pVar = g_Exp.m_VarDefs.GetKey(pszKey);
+			const CVarDefCont *pVar = g_Exp.m_VarDefs.GetKey(pszKey);
 			if ( pVar )
 				sVal = pVar->GetValStr();
 			else if ( fZero )
@@ -2244,7 +2242,7 @@ enum AGC_TYPE
 	AGC_QTY
 };
 
-LPCTSTR const CScriptTriggerArgs::sm_szLoadKeys[AGC_QTY + 1] =
+const LPCTSTR CScriptTriggerArgs::sm_szLoadKeys[AGC_QTY + 1] =
 {
 	"ARGN",
 	"ARGN1",
@@ -2312,7 +2310,7 @@ bool CScriptTriggerArgs::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole
 	if ( IsSetEF(EF_Intrinsic_Locals) )
 	{
 		EXC_SET("intrinsic");
-		CVarDefCont *pVar = m_VarsLocal.GetKey(pszKey);
+		const CVarDefCont *pVar = m_VarsLocal.GetKey(pszKey);
 		if ( pVar )
 		{
 			sVal = pVar->GetValStr();
@@ -2658,7 +2656,7 @@ enum FO_TYPE
 	FO_QTY
 };
 
-LPCTSTR const CFileObj::sm_szLoadKeys[FO_QTY + 1] =
+const LPCTSTR CFileObj::sm_szLoadKeys[FO_QTY + 1] =
 {
 	#define ADD(a,b) b,
 	#include "../tables/CFile_props.tbl"
@@ -2674,7 +2672,7 @@ enum FOV_TYPE
 	FOV_QTY
 };
 
-LPCTSTR const CFileObj::sm_szVerbKeys[FOV_QTY + 1] =
+const LPCTSTR CFileObj::sm_szVerbKeys[FOV_QTY + 1] =
 {
 	#define ADD(a,b) b,
 	#include "../tables/CFile_functions.tbl"
@@ -3143,7 +3141,7 @@ enum CFO_TYPE
 	CFO_QTY
 };
 
-LPCTSTR const CFileObjContainer::sm_szLoadKeys[CFO_QTY + 1] =
+const LPCTSTR CFileObjContainer::sm_szLoadKeys[CFO_QTY + 1] =
 {
 	#define ADD(a,b) b,
 	#include "../tables/CFileObjContainer_props.tbl"
@@ -3159,7 +3157,7 @@ enum CFOV_TYPE
 	CFOV_QTY
 };
 
-LPCTSTR const CFileObjContainer::sm_szVerbKeys[CFOV_QTY + 1] =
+const LPCTSTR CFileObjContainer::sm_szVerbKeys[CFOV_QTY + 1] =
 {
 	#define ADD(a,b) b,
 	#include "../tables/CFileObjContainer_functions.tbl"

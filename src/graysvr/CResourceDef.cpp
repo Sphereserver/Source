@@ -46,7 +46,7 @@ const TCHAR * CValueCurveDef::Write() const
 	TCHAR * pszOut = Str_GetTemp();
 	size_t j = 0;
 	size_t iQty = m_aiValues.GetCount();
-	for ( size_t i = 0; i < iQty; i++ )
+	for ( size_t i = 0; i < iQty; ++i )
 	{
 		if ( i > 0 )
 			pszOut[j++] = ',';
@@ -68,7 +68,7 @@ bool CValueCurveDef::Load( TCHAR * pszDef )
 	{
 		return( false );
 	}
-	for ( size_t i = 0; i < iQty; i++ )
+	for ( size_t i = 0; i < iQty; ++i )
 	{
 		m_aiValues[i] = static_cast<int>(Arg_piCmd[i]);
 	}
@@ -419,17 +419,14 @@ LPCTSTR const CSkillClassDef::sm_szLoadKeys[SCC_QTY+1] =
 void CSkillClassDef::Init()
 {
 	ADDTOCALLSTACK("CSkillClassDef::Init");
-	m_SkillSumMax = 10*1000;
+	m_SkillSumMax = 10 * 1000;
 	m_StatSumMax = 300;
-	size_t i;
-	for ( i = 0; i < COUNTOF(m_SkillLevelMax); i++ )
-	{
+
+	for ( size_t i = 0; i < COUNTOF(m_SkillLevelMax); ++i )
 		m_SkillLevelMax[i] = 1000;
-	}
-	for ( i = 0; i < COUNTOF(m_StatMax); i++ )
-	{
+
+	for ( size_t i = 0; i < COUNTOF(m_StatMax); ++i )
 		m_StatMax[i] = 100;
-	}
 }
 
 bool CSkillClassDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
@@ -1060,7 +1057,7 @@ size_t CRandGroupDef::GetRandMemberIndex(CChar *pCharSrc, bool fTrigger) const
 
 	// calculate weight only of items pCharSrc can get
 	int iTotalWeight = 0;
-	for ( i = 0; i < iCount; i++ )
+	for ( i = 0; i < iCount; ++i )
 	{
 		// If no regionresource, return just some random entry!
 		pOreDef = static_cast<CRegionResourceDef *>(g_Cfg.ResourceGetDef(m_Members[i].GetResourceID()));
@@ -1084,7 +1081,7 @@ size_t CRandGroupDef::GetRandMemberIndex(CChar *pCharSrc, bool fTrigger) const
 	iWeight = Calc_GetRandVal( iTotalWeight ) + 1;
 	iCount = members.GetCount();
 
-	for ( i = 0; iWeight > 0 && i < iCount; ++i )
+	for ( i = 0; (iWeight > 0) && (i < iCount); ++i )
 		iWeight -= m_Members[members[i]].GetResQty();
 
 	if ( i >= iCount && iWeight > 0 )

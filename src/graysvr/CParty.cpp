@@ -434,7 +434,7 @@ bool CPartyDef::DeclineEvent(CChar *pCharDecline, CChar *pCharInviter)	// static
 	if ( !pCharInviter || !pCharDecline )
 		return false;
 
-	CVarDefCont *pVar = pCharInviter->GetTagDefs()->GetKey("PARTY_LASTINVITE");
+	const CVarDefCont *pVar = pCharInviter->GetTagDefs()->GetKey("PARTY_LASTINVITE");
 	if ( !pVar || (static_cast<CGrayUID>(pVar->GetValNum()) != pCharDecline->GetUID()) )
 		return false;
 
@@ -456,7 +456,7 @@ bool CPartyDef::AcceptEvent(CChar *pCharAccept, CChar *pCharInviter, bool fForce
 
 	if ( !fForced )
 	{
-		CVarDefCont *pVar = pCharInviter->GetTagDefs()->GetKey("PARTY_LASTINVITE");
+		const CVarDefCont *pVar = pCharInviter->GetTagDefs()->GetKey("PARTY_LASTINVITE");
 		if ( !pVar || (static_cast<CGrayUID>(pVar->GetValNum()) != pCharAccept->GetUID()) )
 			return false;
 
@@ -514,7 +514,7 @@ enum PDV_TYPE
 	PDV_QTY
 };
 
-LPCTSTR const CPartyDef::sm_szVerbKeys[PDV_QTY + 1] =
+const LPCTSTR CPartyDef::sm_szVerbKeys[PDV_QTY + 1] =
 {
 	#define ADD(a,b) b,
 	#include "../tables/CParty_functions.tbl"
@@ -530,7 +530,7 @@ enum PDC_TYPE
 	PDC_QTY
 };
 
-LPCTSTR const CPartyDef::sm_szLoadKeys[PDC_QTY + 1] =
+const LPCTSTR CPartyDef::sm_szLoadKeys[PDC_QTY + 1] =
 {
 	#define ADD(a,b) b,
 	#include "../tables/CParty_props.tbl"
@@ -684,7 +684,7 @@ bool CPartyDef::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				if ( iQty >= m_TagDefs.GetCount() )
 					return false;	// trying to get non-existant tag
 
-				CVarDefCont *pVar = m_TagDefs.GetAt(iQty);
+				const CVarDefCont *pVar = m_TagDefs.GetAt(iQty);
 				if ( !pVar )
 					return false;	// trying to get non-existant tag
 

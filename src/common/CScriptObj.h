@@ -88,9 +88,9 @@ class CScriptObj
 	// This object can be scripted (but might not be)
 public:
 	static const char *m_sClassName;
-	static LPCTSTR const sm_szScriptKeys[];
-	static LPCTSTR const sm_szLoadKeys[];
-	static LPCTSTR const sm_szVerbKeys[];
+	static const LPCTSTR sm_szScriptKeys[];
+	static const LPCTSTR sm_szLoadKeys[];
+	static const LPCTSTR sm_szVerbKeys[];
 
 	CScriptObj() { };
 	virtual ~CScriptObj() { };
@@ -108,8 +108,8 @@ public:
 		return TRIGRET_RET_DEFAULT;
 	}
 	bool OnTriggerFind(CScript &s, LPCTSTR pszTrigName);
-	TRIGRET_TYPE OnTriggerRun(CScript &s, TRIGRUN_TYPE trigger, CTextConsole *pSrc, CScriptTriggerArgs *pArgs, CGString *psResult);
-	TRIGRET_TYPE OnTriggerRunVal(CScript &s, TRIGRUN_TYPE trigger, CTextConsole *pSrc, CScriptTriggerArgs *pArgs);
+	TRIGRET_TYPE OnTriggerRun(CScript &s, TRIGRUN_TYPE trigger, CTextConsole *pSrc, CScriptTriggerArgs *pArgs = NULL, CGString *psResult = NULL);
+	TRIGRET_TYPE OnTriggerRunVal(CScript &s, TRIGRUN_TYPE trigger, CTextConsole *pSrc, CScriptTriggerArgs *pArgs = NULL);
 
 	size_t ParseText(TCHAR *pszResponse, CTextConsole *pSrc, int iFlags = 0, CScriptTriggerArgs *pArgs = NULL);
 
@@ -119,7 +119,7 @@ public:
 	virtual bool r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc);
 	virtual bool r_Verb(CScript &s, CTextConsole *pSrc);	// execute command from script
 
-	bool r_Call(LPCTSTR pszFunction, CTextConsole *pSrc, CScriptTriggerArgs *pArgs, CGString *psVal = NULL, TRIGRET_TYPE *piRet = NULL);
+	bool r_Call(LPCTSTR pszFunction, CTextConsole *pSrc, CScriptTriggerArgs *pArgs = NULL, CGString *psVal = NULL, TRIGRET_TYPE *piRet = NULL);
 	bool r_SetVal(LPCTSTR pszKey, LPCTSTR pszVal)
 	{
 		CScript s(pszKey, pszVal);
@@ -138,7 +138,7 @@ class CScriptTriggerArgs : public CScriptObj
 	// All the args an event will need
 public:
 	static const char *m_sClassName;
-	static LPCTSTR const sm_szLoadKeys[];
+	static const LPCTSTR sm_szLoadKeys[];
 
 	CScriptTriggerArgs() : m_iN1(0), m_iN2(0), m_iN3(0)
 	{
@@ -210,13 +210,13 @@ class CFileObj : public CScriptObj
 {
 public:
 	static const char *m_sClassName;
+	static const LPCTSTR sm_szLoadKeys[];
+	static const LPCTSTR sm_szVerbKeys[];
 
 	CFileObj();
 	~CFileObj();
 
 private:
-	static LPCTSTR const sm_szLoadKeys[];
-	static LPCTSTR const sm_szVerbKeys[];
 	CFileText *m_pFile;
 	bool m_fAppend;
 	bool m_fCreate;
@@ -256,13 +256,13 @@ class CFileObjContainer : public CScriptObj
 {
 public:
 	static const char *m_sClassName;
+	static const LPCTSTR sm_szLoadKeys[];
+	static const LPCTSTR sm_szVerbKeys[];
 
 	CFileObjContainer();
 	~CFileObjContainer();
 
 private:
-	static LPCTSTR const sm_szLoadKeys[];
-	static LPCTSTR const sm_szVerbKeys[];
 	std::vector<CFileObj *> m_FileList;
 	int m_iFileNumber;
 	int m_iGlobalTimeout;

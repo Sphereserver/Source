@@ -13,16 +13,12 @@ class CObjBase : public CObjBaseTemplate, public CScriptObj
 	// All instances of CItem or CChar have these base attributes
 public:
 	static const char *m_sClassName;
-	static LPCTSTR const sm_szLoadKeys[];
-	static LPCTSTR const sm_szVerbKeys[];
-	static LPCTSTR const sm_szRefKeys[];
+	static const LPCTSTR sm_szLoadKeys[];
+	static const LPCTSTR sm_szVerbKeys[];
+	static const LPCTSTR sm_szRefKeys[];
 
 	explicit CObjBase(bool fItem);
 	virtual ~CObjBase();
-
-private:
-	CObjBase(const CObjBase &copy);
-	CObjBase &operator=(const CObjBase &other);
 
 private:
 	CServTime m_timeout;
@@ -90,12 +86,12 @@ public:
 public:
 	BYTE RangeL() const
 	{
-		CVarDefCont *pRange = GetDefKey("RANGE", true);
+		const CVarDefCont *pRange = GetDefKey("RANGE", true);
 		return static_cast<BYTE>((pRange ? pRange->GetValNum() : 0) & BYTE_MAX);
 	}
 	BYTE RangeH() const
 	{
-		CVarDefCont *pRange = GetDefKey("RANGE", true);
+		const CVarDefCont *pRange = GetDefKey("RANGE", true);
 		return static_cast<BYTE>(((pRange ? pRange->GetValNum() : 0) >> 8) & BYTE_MAX);
 	}
 
@@ -115,29 +111,19 @@ public:
 
 	CVarDefCont *GetDefKey(LPCTSTR pszKey, bool fDef) const
 	{
-		CVarDefCont	*pVar = m_BaseDefs.GetKey(pszKey);
-		if ( !fDef || pVar )
+		CVarDefCont *pVar = m_BaseDefs.GetKey(pszKey);
+		if ( pVar || !fDef )
 			return pVar;
-		if ( IsItem() )
-		{
-			CItemBase *pItemDef = static_cast<CItemBase *>(Base_GetDef());
-			ASSERT(pItemDef);
-			return pItemDef->m_BaseDefs.GetKey(pszKey);
-		}
-		else
-		{
-			CCharBase *pCharDef = static_cast<CCharBase *>(Base_GetDef());
-			ASSERT(pCharDef);
-			return pCharDef->m_BaseDefs.GetKey(pszKey);
-		}
+
+		const CBaseBaseDef *pBase = Base_GetDef();
+		ASSERT(pBase);
+		return pBase->m_BaseDefs.GetKey(pszKey);
 	}
 
 	LPCTSTR GetDefStr(LPCTSTR pszKey, bool fZero = false, bool fDef = false) const
 	{
-		CVarDefCont	*pVar = GetDefKey(pszKey, fDef);
-		if ( pVar )
-			return pVar->GetValStr();
-		return fZero ? "0" : "";
+		const CVarDefCont *pVar = GetDefKey(pszKey, fDef);
+		return pVar ? pVar->GetValStr() : (fZero ? "0" : "");
 	}
 	void SetDefStr(LPCTSTR pszKey, LPCTSTR pszVal, bool fQuoted = false, bool fZero = true)
 	{
@@ -146,7 +132,7 @@ public:
 
 	INT64 GetDefNum(LPCTSTR pszKey, bool fDef = false) const
 	{
-		CVarDefCont	*pVar = GetDefKey(pszKey, fDef);
+		const CVarDefCont *pVar = GetDefKey(pszKey, fDef);
 		return pVar ? pVar->GetValNum() : 0;
 	}
 	void SetDefNum(LPCTSTR pszKey, INT64 iVal, bool fZero = true)
@@ -161,29 +147,19 @@ public:
 
 	CVarDefCont *GetKey(LPCTSTR pszKey, bool fDef) const
 	{
-		CVarDefCont	*pVar = m_TagDefs.GetKey(pszKey);
-		if ( !fDef || pVar )
+		CVarDefCont *pVar = m_TagDefs.GetKey(pszKey);
+		if ( pVar || !fDef )
 			return pVar;
-		if ( IsItem() )
-		{
-			CItemBase *pItemDef = static_cast<CItemBase *>(Base_GetDef());
-			ASSERT(pItemDef);
-			return pItemDef->m_TagDefs.GetKey(pszKey);
-		}
-		else
-		{
-			CCharBase *pCharDef = static_cast<CCharBase *>(Base_GetDef());
-			ASSERT(pCharDef);
-			return pCharDef->m_TagDefs.GetKey(pszKey);
-		}
+
+		const CBaseBaseDef *pBase = Base_GetDef();
+		ASSERT(pBase);
+		return pBase->m_BaseDefs.GetKey(pszKey);
 	}
 
 	LPCTSTR GetKeyStr(LPCTSTR pszKey, bool fZero = false, bool fDef = false) const
 	{
-		CVarDefCont	*pVar = GetKey(pszKey, fDef);
-		if ( pVar )
-			return pVar->GetValStr();
-		return fZero ? "0" : "";
+		const CVarDefCont *pVar = GetKey(pszKey, fDef);
+		return pVar ? pVar->GetValStr() : (fZero ? "0" : "");
 	}
 	void SetKeyStr(LPCTSTR pszKey, LPCTSTR pszVal)
 	{
@@ -192,7 +168,7 @@ public:
 
 	INT64 GetKeyNum(LPCTSTR pszKey, bool fDef = false) const
 	{
-		CVarDefCont	*pVar = GetKey(pszKey, fDef);
+		const CVarDefCont *pVar = GetKey(pszKey, fDef);
 		return pVar ? pVar->GetValNum() : 0;
 	}
 	void SetKeyNum(LPCTSTR pszKey, INT64 iVal)
@@ -335,21 +311,19 @@ public:
 		// Return time in seconds from now
 		if ( !IsTimerSet() )
 			return -1;
-		INT64 iDiffInTicks = GetTimerDiff();
-		if ( iDiffInTicks < 0 )
-			return 0;
-		return iDiffInTicks / TICK_PER_SEC;
+
+		INT64 iDiff = GetTimerDiff();
+		return (iDiff < 0) ? 0 : iDiff / TICK_PER_SEC;
 	}
 
 	INT64 GetTimerDAdjusted() const
 	{
-		// Return time in seconds from now
+		// Return time in tenths of seconds from now
 		if ( !IsTimerSet() )
 			return -1;
-		INT64 iDiffInTicks = GetTimerDiff();
-		if ( iDiffInTicks < 0 )
-			return 0;
-		return iDiffInTicks;
+
+		INT64 iDiff = GetTimerDiff();
+		return (iDiff < 0) ? 0 : iDiff;
 	}
 
 public:
@@ -402,7 +376,7 @@ public:
 	#define SU_UPDATE_HITS		0x1	// update hits to others
 	#define SU_UPDATE_MODE		0x2	// update mode to all
 	#define SU_UPDATE_TOOLTIP	0x4	// update tooltip to all
-	BYTE m_fStatusUpdate;		// update flags for next tick
+	BYTE m_fStatusUpdate;			// update flags for next tick
 	virtual void OnTickStatusUpdate();
 
 protected:
@@ -417,6 +391,10 @@ public:
 	DWORD UpdatePropertyRevision(DWORD dwHash);
 	void UpdatePropertyFlag();
 	void FreePropertyList();
+
+private:
+	CObjBase(const CObjBase &copy);
+	CObjBase &operator=(const CObjBase &other);
 };
 
 #endif	// _INC_COBJBASE_H

@@ -82,7 +82,7 @@ void CGString::SetLength(size_t iNewLength)
 		m_iMaxLength = iNewLength + (STRING_DEFAULT_SIZE >> 1);	// allow grow, and always expand only
 #ifdef DEBUG_STRINGS
 		gMemAmount += m_iMaxLength;
-		gReallocs++;
+		++gReallocs;
 #endif
 		TCHAR	*pNewData = new TCHAR[m_iMaxLength + 1];
 		ASSERT(pNewData);
@@ -142,7 +142,7 @@ void CGString::Reverse()
 CGString::~CGString()
 {
 #ifdef DEBUG_STRINGS
-	gAmount--;
+	--gAmount;
 #endif
 	Empty(true);
 }
@@ -150,7 +150,7 @@ CGString::~CGString()
 CGString::CGString()
 {
 #ifdef DEBUG_STRINGS
-	gAmount++;
+	++gAmount;
 #endif
 	Init();
 }
@@ -291,7 +291,7 @@ int CGString::indexOf(CGString str, size_t offset)
 	strcpy(str_value, str.GetPtr());
 	TCHAR firstChar = str_value[0];
 
-	for (size_t i = offset; i < len; i++)
+	for (size_t i = offset; i < len; ++i)
 	{
 		TCHAR c = m_pchData[i];
 		if (c == firstChar)
@@ -367,7 +367,7 @@ int CGString::lastIndexOf(CGString str, size_t from)
 	strcpy(str_value, str.GetPtr());
 	TCHAR firstChar = str_value[0];
 
-	for (size_t i = len - 1; i >= from; i--)
+	for (size_t i = len - 1; i >= from; --i)
 	{
 		TCHAR c = m_pchData[i];
 		if (c == firstChar)
@@ -429,7 +429,7 @@ LPCTSTR Str_GetArticleAndSpace(LPCTSTR pszWord)
 	{
 		static const TCHAR sm_Vowels[] = { 'A', 'E', 'I', 'O', 'U' };
 		TCHAR chName = static_cast<TCHAR>(toupper(pszWord[0]));
-		for (size_t x = 0; x < COUNTOF(sm_Vowels); x++)
+		for (size_t x = 0; x < COUNTOF(sm_Vowels); ++x)
 		{
 			if (chName == sm_Vowels[x])
 				return "an ";
@@ -442,7 +442,7 @@ size_t Str_TrimEndWhitespace(TCHAR * pStr, size_t len)
 {
 	while (len > 0)
 	{
-		len--;
+		--len;
 		if (pStr[len] < 0 || !ISWHITESPACE(pStr[len]))
 		{
 			++len;
@@ -480,7 +480,7 @@ bool Str_Parse(TCHAR * pLine, TCHAR ** ppLine2, LPCTSTR pszSep)
 
 	TCHAR ch;
 	bool bQuotes = false;
-	for (; ; pLine++)
+	for (; ; ++pLine)
 	{
 		ch = *pLine;
 		if (ch == '"')	// quoted argument
@@ -506,9 +506,7 @@ bool Str_Parse(TCHAR * pLine, TCHAR ** ppLine2, LPCTSTR pszSep)
 		GETNONWHITESPACE(pLine);
 		ch = *pLine;
 		if (ch && strchr(pszSep, ch))
-		{
-			pLine++;
-		}
+			++pLine;
 	}
 
 	// skip leading white space on args as well.
@@ -525,14 +523,14 @@ size_t Str_ParseCmds(TCHAR * pszCmdLine, TCHAR ** ppCmd, size_t iMax, LPCTSTR ps
 	if (pszCmdLine != NULL && pszCmdLine[0] != '\0')
 	{
 		ppCmd[0] = pszCmdLine;
-		iQty++;
+		++iQty;
 		while (Str_Parse(ppCmd[iQty - 1], &(ppCmd[iQty]), pszSep))
 		{
 			if (++iQty >= iMax)
 				break;
 		}
 	}
-	for (size_t j = iQty; j < iMax; j++)
+	for (size_t j = iQty; j < iMax; ++j)
 		ppCmd[j] = NULL;	// terminate if possible
 	return iQty;
 }
@@ -545,11 +543,11 @@ size_t Str_ParseCmds(TCHAR * pszCmdLine, INT64 * piCmd, size_t iMax, LPCTSTR psz
 
 	size_t iQty = Str_ParseCmds(pszCmdLine, ppTmp, iMax, pszSep);
 	size_t i;
-	for (i = 0; i < iQty; i++)
+	for (i = 0; i < iQty; ++i)
 	{
 		piCmd[i] = Exp_GetVal(ppTmp[i]);
 	}
-	for (; i < iMax; i++)
+	for (; i < iMax; ++i)
 	{
 		piCmd[i] = 0;
 	}
@@ -559,12 +557,12 @@ size_t Str_ParseCmds(TCHAR * pszCmdLine, INT64 * piCmd, size_t iMax, LPCTSTR psz
 static int Str_CmpHeadI(LPCTSTR pszFind, LPCTSTR pszTable)
 {
 	TCHAR ch0 = '_';
-	for (size_t i = 0; ; i++)
+	for (size_t i = 0; ; ++i)
 	{
 		//	we should always use same case as in other places. since strcmpi lowers,
 		//	we should lower here as well. fucking shit!
-		TCHAR ch1 = static_cast<TCHAR>(tolower(pszFind[i]));
-		TCHAR ch2 = static_cast<TCHAR>(tolower(pszTable[i]));
+		const TCHAR ch1 = static_cast<TCHAR>(tolower(pszFind[i]));
+		const TCHAR ch2 = static_cast<TCHAR>(tolower(pszTable[i]));
 		if (ch2 == 0)
 		{
 			if ((!isalnum(ch1)) && (ch1 != ch0))
@@ -588,10 +586,10 @@ int FindTableHeadSorted(LPCTSTR pszFind, const LPCTSTR *ppszTable, int iCount, s
 
 	while ( iLow <= iHigh )
 	{
-		int i = (iLow + iHigh) / 2;
-		LPCTSTR pszName = *reinterpret_cast<const LPCTSTR *>(reinterpret_cast<const BYTE *>(ppszTable) + (i * iElemSize));
+		const int i = (iLow + iHigh) / 2;
+		const LPCTSTR pszName = *reinterpret_cast<const LPCTSTR *>(reinterpret_cast<const BYTE *>(ppszTable) + (i * iElemSize));
 
-		int iCompare = Str_CmpHeadI(pszFind, pszName);
+		const int iCompare = Str_CmpHeadI(pszFind, pszName);
 		if ( iCompare == 0 )
 			return i;
 		else if ( iCompare > 0 )
@@ -623,10 +621,10 @@ int FindTableSorted(LPCTSTR pszFind, const LPCTSTR *ppszTable, int iCount)
 
 	while ( iLow <= iHigh )
 	{
-		int i = (iLow + iHigh) / 2;
-		LPCTSTR pszName = *reinterpret_cast<const LPCTSTR *>(reinterpret_cast<const BYTE *>(ppszTable) + (i * sizeof(LPCTSTR)));
+		const int i = (iLow + iHigh) / 2;
+		const LPCTSTR pszName = *reinterpret_cast<const LPCTSTR *>(reinterpret_cast<const BYTE *>(ppszTable) + (i * sizeof(LPCTSTR)));
 
-		int iCompare = strcmpi(pszFind, pszName);
+		const int iCompare = strcmpi(pszFind, pszName);
 		if ( iCompare == 0 )
 			return i;
 		else if ( iCompare > 0 )
@@ -661,7 +659,7 @@ size_t Str_GetBare(TCHAR * pszOut, LPCTSTR pszInp, size_t iMaxOutSize, LPCTSTR p
 	//GETNONWHITESPACE(pszInp);		// kill leading whitespace
 
 	size_t j = 0;
-	for (size_t i = 0; ; i++)
+	for (size_t i = 0; ; ++i)
 	{
 		TCHAR ch = pszInp[i];
 		if (ch)
@@ -671,7 +669,7 @@ size_t Str_GetBare(TCHAR * pszOut, LPCTSTR pszInp, size_t iMaxOutSize, LPCTSTR p
 
 			size_t k = 0;
 			while (pszStrip[k] && pszStrip[k] != ch)
-				k++;
+				++k;
 
 			if (pszStrip[k])
 				continue;
@@ -692,7 +690,7 @@ int Str_IndexOf(TCHAR * pStr1, TCHAR * pStr2, size_t offset)
 	if (offset <= 0)
 		return -1;
 
-	size_t len = strlen(pStr1);
+	const size_t len = strlen(pStr1);
 	if (offset >= len)
 		return -1;
 
@@ -736,7 +734,7 @@ bool Str_Check(LPCTSTR pszIn)
 
 	LPCTSTR p = pszIn;
 	while (*p != '\0' && (*p != 0x0A) && (*p != 0x0D))
-		p++;
+		++p;
 
 	return (*p != '\0');
 }
@@ -754,7 +752,7 @@ bool Str_CheckName(LPCTSTR pszIn)
 			((*p >= '0') && (*p <= '9')) ||
 			((*p == ' ') || (*p == '\'') || (*p == '-') || (*p == '.'))
 			))
-		p++;
+		++p;
 
 	return (*p != '\0');
 }
@@ -762,7 +760,7 @@ bool Str_CheckName(LPCTSTR pszIn)
 TCHAR * Str_MakeFiltered(TCHAR * pStr)
 {
 	size_t len = strlen(pStr);
-	for (size_t i = 0; len; i++, len--)
+	for (size_t i = 0; len; ++i, --len)
 	{
 		if (pStr[i] == '\\')
 		{
@@ -774,7 +772,7 @@ TCHAR * Str_MakeFiltered(TCHAR * pStr)
 			case 't': pStr[i] = '\t'; break;
 			case '\\': pStr[i] = '\\'; break;
 			}
-			len--;
+			--len;
 			memmove(pStr + i + 1, pStr + i + 2, len);
 		}
 	}
@@ -786,7 +784,7 @@ void Str_MakeUnFiltered(TCHAR * pStrOut, LPCTSTR pStrIn, size_t iSizeMax)
 	size_t len = strlen(pStrIn);
 	size_t iIn = 0;
 	size_t iOut = 0;
-	for (; iOut < iSizeMax && iIn <= len; iIn++, iOut++)
+	for (; iOut < iSizeMax && iIn <= len; ++iIn, ++iOut)
 	{
 		TCHAR ch = pStrIn[iIn];
 		switch (ch)
@@ -809,7 +807,7 @@ void Str_MakeUnFiltered(TCHAR * pStrOut, LPCTSTR pStrIn, size_t iSizeMax)
 static MATCH_TYPE Str_Match_After_Star(LPCTSTR pPattern, LPCTSTR pText)
 {
 	// pass over existing ? and * in pattern
-	for (; *pPattern == '?' || *pPattern == '*'; pPattern++)
+	for (; *pPattern == '?' || *pPattern == '*'; ++pPattern)
 	{
 		// take one char for each ? and +
 		if (*pPattern == '?' &&
@@ -857,7 +855,7 @@ MATCH_TYPE Str_Match(LPCTSTR pPattern, LPCTSTR pText)
 	TCHAR range_start;
 	TCHAR range_end;  // start and end in range
 
-	for (; *pPattern; pPattern++, pText++)
+	for (; *pPattern; ++pPattern, ++pText)
 	{
 		// if this is the end of the text then this is the end of the match
 		if (!*pText)
@@ -878,13 +876,13 @@ MATCH_TYPE Str_Match(LPCTSTR pPattern, LPCTSTR pText)
 		case '[':
 		{
 			// move to beginning of range
-			pPattern++;
+			++pPattern;
 			// check if this is a member match or exclusion match
 			bool fInvert = false;             // is this [..] or [!..]
 			if (*pPattern == '!' || *pPattern == '^')
 			{
 				fInvert = true;
-				pPattern++;
+				++pPattern;
 			}
 			// if closing bracket here or at range start then we have a
 			// malformed pattern
@@ -927,7 +925,7 @@ MATCH_TYPE Str_Match(LPCTSTR pPattern, LPCTSTR pText)
 							return MATCH_PATTERN;
 					}
 					// move just beyond this range
-					pPattern++;
+					++pPattern;
 				}
 
 				// if the text character is in range then match found.
@@ -970,13 +968,13 @@ MATCH_TYPE Str_Match(LPCTSTR pPattern, LPCTSTR pText)
 					// skip exact match
 					if (*pPattern == '\\')
 					{
-						pPattern++;
+						++pPattern;
 						// if end of text then we have a bad pattern
 						if (!*pPattern)
 							return MATCH_PATTERN;
 					}
 					// move to next pattern char
-					pPattern++;
+					++pPattern;
 				}
 			}
 		}

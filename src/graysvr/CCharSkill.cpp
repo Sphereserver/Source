@@ -844,13 +844,13 @@ int CChar::Stat_GetRegenVal(STAT_TYPE stat, bool fGetTicks)
 	if ( fGetTicks )
 	{
 		sprintf(chRegen, "REGEN%s", pszStat);
-		CVarDefCont *pVar = GetDefKey(chRegen, false);
+		const CVarDefCont *pVar = GetDefKey(chRegen, false);
 		return pVar ? static_cast<int>(pVar->GetValNum()) * TICK_PER_SEC : g_Cfg.m_iRegenRate[stat];
 	}
 	else
 	{
 		sprintf(chRegen, "REGENVAL%s", pszStat);
-		CVarDefCont *pVar = GetDefKey(chRegen, false);
+		const CVarDefCont *pVar = GetDefKey(chRegen, false);
 		return pVar ? static_cast<int>(pVar->GetValNum()) : 1;
 	}
 }
@@ -1330,7 +1330,7 @@ int CChar::Skill_NaturalResource_Setup(CItem *pResBit)
 {
 	ADDTOCALLSTACK("CChar::Skill_NaturalResource_Setup");
 	// RETURN:
-	//  difficulty = 0-100
+	//  Difficulty = 0-100
 	ASSERT(pResBit);
 
 	// Find the resource type located here based on color.
@@ -1376,13 +1376,17 @@ CItem *CChar::Skill_NaturalResource_Create(CItem *pResBit, SKILL_TYPE skill)
 	CScriptTriggerArgs Args(0, 0, pResBit);
 	Args.m_VarsLocal.SetNum("ResourceID", pResourceDef->m_ReapItem);
 	Args.m_iN1 = wAmount;
-	TRIGRET_TYPE tRet = TRIGRET_RET_DEFAULT;
+
 	if ( IsTrigUsed(TRIGGER_REGIONRESOURCEGATHER) )
-		tRet = OnTrigger(CTRIG_RegionResourceGather, this, &Args);
+	{
+		if ( OnTrigger(CTRIG_RegionResourceGather, this, &Args) == TRIGRET_RET_TRUE )
+			return NULL;
+	}
 	if ( IsTrigUsed(TRIGGER_RESOURCEGATHER) )
-		tRet = pResourceDef->OnTrigger("@ResourceGather", this, &Args);
-	if ( tRet == TRIGRET_RET_TRUE )
-		return NULL;
+	{
+		if ( pResourceDef->OnTrigger("@ResourceGather", this, &Args) == TRIGRET_RET_TRUE )
+			return NULL;
+	}
 
 	wAmount = static_cast<WORD>(pResBit->ConsumeAmount(static_cast<DWORD>(Args.m_iN1)));	// amount i used up.
 	if ( wAmount <= 0 )
@@ -3131,7 +3135,7 @@ int CChar::Skill_Act_Throwing(SKTRIG_TYPE stage)
 	SoundChar(CRESND_GETHIT);
 
 	int iDamage = 0;
-	CVarDefCont *pDam = GetDefKey("THROWDAM", true);
+	const CVarDefCont *pDam = GetDefKey("THROWDAM", true);
 	if ( pDam )
 	{
 		INT64 iVal[2];
@@ -3148,7 +3152,7 @@ int CChar::Skill_Act_Throwing(SKTRIG_TYPE stage)
 	}
 
 	ITEMID_TYPE id = ITEMID_NOTHING;
-	CVarDefCont *pRock = GetDefKey("THROWOBJ", true);
+	const CVarDefCont *pRock = GetDefKey("THROWOBJ", true);
 	if ( pRock )
 	{
 		LPCTSTR pszRock = pRock->GetValStr();
@@ -3540,12 +3544,6 @@ void CChar::Skill_Fail(bool fCancel)
 	Skill_Cleanup();
 }
 
-TRIGRET_TYPE CChar::Skill_OnTrigger(SKILL_TYPE skill, SKTRIG_TYPE stage)
-{
-	CScriptTriggerArgs pArgs;
-	return Skill_OnTrigger(skill, stage, &pArgs);
-}
-
 TRIGRET_TYPE CChar::Skill_OnTrigger(SKILL_TYPE skill, SKTRIG_TYPE stage, CScriptTriggerArgs *pArgs)
 {
 	ADDTOCALLSTACK("CChar::Skill_OnTrigger");
@@ -3554,6 +3552,12 @@ TRIGRET_TYPE CChar::Skill_OnTrigger(SKILL_TYPE skill, SKTRIG_TYPE stage, CScript
 
 	if ( !((stage == SKTRIG_SELECT) || (stage == SKTRIG_GAIN) || (stage == SKTRIG_USEQUICK) || (stage == SKTRIG_WAIT) || (stage == SKTRIG_TARGETCANCEL)) )
 		m_Act_SkillCurrent = skill;
+
+	if ( !pArgs )
+	{
+		CScriptTriggerArgs pArgsEmpty;
+		pArgs = &pArgsEmpty;
+	}
 
 	pArgs->m_iN1 = skill;
 	if ( g_Cfg.IsSkillFlag(skill, SKF_MAGIC) )
@@ -3573,12 +3577,6 @@ TRIGRET_TYPE CChar::Skill_OnTrigger(SKILL_TYPE skill, SKTRIG_TYPE stage, CScript
 	return iRet;
 }
 
-TRIGRET_TYPE CChar::Skill_OnCharTrigger(SKILL_TYPE skill, CTRIG_TYPE ctrig)
-{
-	CScriptTriggerArgs pArgs;
-	return Skill_OnCharTrigger(skill, ctrig, &pArgs);
-}
-
 TRIGRET_TYPE CChar::Skill_OnCharTrigger(SKILL_TYPE skill, CTRIG_TYPE ctrig, CScriptTriggerArgs *pArgs)
 {
 	ADDTOCALLSTACK("CChar::Skill_OnCharTrigger");
@@ -3587,6 +3585,12 @@ TRIGRET_TYPE CChar::Skill_OnCharTrigger(SKILL_TYPE skill, CTRIG_TYPE ctrig, CScr
 
 	if ( !((ctrig == CTRIG_SkillSelect) || (ctrig == CTRIG_SkillGain) || (ctrig == CTRIG_SkillUseQuick) || (ctrig == CTRIG_SkillWait) || (ctrig == CTRIG_SkillTargetCancel)) )
 		m_Act_SkillCurrent = skill;
+
+	if ( !pArgs )
+	{
+		CScriptTriggerArgs pArgsEmpty;
+		pArgs = &pArgsEmpty;
+	}
 
 	pArgs->m_iN1 = skill;
 	if ( g_Cfg.IsSkillFlag(skill, SKF_MAGIC) )

@@ -1052,13 +1052,13 @@ bool CChar::ReadScript(CResourceLock &s, bool fVendor)
 		}
 		else
 		{
-			TRIGRET_TYPE tRet = OnTriggerRun(s, TRIGRUN_SINGLE_EXEC, &g_Serv, NULL, NULL);
-			if ( (tRet == TRIGRET_RET_FALSE) && fFullInterp )
+			TRIGRET_TYPE tr = OnTriggerRun(s, TRIGRUN_SINGLE_EXEC, &g_Serv);
+			if ( (tr == TRIGRET_RET_FALSE) && fFullInterp )
 				continue;
-			else if ( tRet != TRIGRET_RET_DEFAULT )
+			else if ( tr != TRIGRET_RET_DEFAULT )
 			{
 				m_UIDLastNewItem.InitUID();
-				return (tRet == TRIGRET_RET_FALSE);
+				return (tr == TRIGRET_RET_FALSE);
 			}
 		}
 	}
@@ -1333,10 +1333,6 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 
 	EXC_TRY("WriteVal");
 
-	CCharBase *pCharDef = Char_GetDef();
-	ASSERT(pCharDef);
-	CChar *pCharSrc = pSrc->GetChar();
-
 	int index = FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1);
 	if ( index < 0 )
 	{
@@ -1479,13 +1475,13 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		{
 			if ( !strnicmp(pszKey, "BREATH.DAM", 10) )
 			{
-				CVarDefCont *pVar = GetDefKey(pszKey, true);
+				const CVarDefCont *pVar = GetDefKey(pszKey, true);
 				sVal.FormatLLVal(pVar ? pVar->GetValNum() : 0);
 				return true;
 			}
 			else if ( !strnicmp(pszKey, "BREATH.HUE", 10) || !strnicmp(pszKey, "BREATH.ANIM", 11) || !strnicmp(pszKey, "BREATH.TYPE", 11) )
 			{
-				CVarDefCont *pVar = GetDefKey(pszKey, true);
+				const CVarDefCont *pVar = GetDefKey(pszKey, true);
 				sVal.FormatHex(pVar ? static_cast<DWORD>(pVar->GetValNum()) : 0);
 				return true;
 			}
@@ -1637,7 +1633,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			TCHAR *ppArgs[2];
 			Str_ParseCmds(const_cast<TCHAR *>(pszKey), ppArgs, COUNTOF(ppArgs), ":,/");
 
-			sVal = pCharDef->IsFemale() ? ppArgs[1] : ppArgs[0];
+			sVal = Char_GetDef()->IsFemale() ? ppArgs[1] : ppArgs[0];
 			return true;
 		}
 		case CHC_KARMA:
@@ -1682,7 +1678,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			return true;
 		}
 		case CHC_AR:
-			sVal.FormatVal(m_defense + pCharDef->m_defense);
+			sVal.FormatVal(Char_GetDef()->m_defense + m_defense);
 			return true;
 		case CHC_AGE:
 			sVal.FormatLLVal(-(g_World.GetTimeDiff(m_timeCreate) / (TICK_PER_SEC * 60 * 60 * 24)));		// in days
@@ -1846,13 +1842,13 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			return true;
 		}
 		case CHC_DISPIDDEC:
-			sVal.FormatVal(pCharDef->m_trackID);
+			sVal.FormatVal(Char_GetDef()->m_trackID);
 			return true;
 		case CHC_GUILDABBREV:
 			sVal = Guild_Abbrev(MEMORY_GUILD);
 			return true;
 		case CHC_ID:
-			sVal = g_Cfg.ResourceGetName(pCharDef->GetResourceID());
+			sVal = g_Cfg.ResourceGetName(Char_GetDef()->GetResourceID());
 			return true;
 		case CHC_ISGM:
 			sVal.FormatVal(IsPriv(PRIV_GM));
@@ -1861,7 +1857,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatVal(m_pParty != NULL);
 			return true;
 		case CHC_ISMYPET:
-			sVal.FormatVal(NPC_IsOwnedBy(pCharSrc, true));
+			sVal.FormatVal(NPC_IsOwnedBy(pSrc->GetChar(), true));
 			return true;
 		case CHC_ISONLINE:
 		{
@@ -1920,7 +1916,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				pMemory = Memory_FindObj(static_cast<CGrayUID>(Exp_GetLLVal(pszKey)));
 			}
 			else
-				pMemory = Memory_FindObj(pCharSrc);
+				pMemory = Memory_FindObj(pSrc->GetChar());
 
 			WORD wFlags = 0;
 			if ( pMemory )
@@ -2088,7 +2084,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			break;
 		case CHC_NIGHTSIGHT:
 		{
-			CVarDefCont *pVar = GetDefKey(pszKey, true);
+			const CVarDefCont *pVar = GetDefKey(pszKey, true);
 			sVal.FormatLLVal(pVar ? pVar->GetValNum() : 0);
 			break;
 		}
@@ -2099,7 +2095,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 
 			CChar *pChar = static_cast<CGrayUID>(Exp_GetLLVal(pszKey)).CharFind();
 			if ( !pChar )
-				pChar = pCharSrc;
+				pChar = pSrc->GetChar();
 
 			SKIP_ARGSEP(pszKey);
 			sVal.FormatVal(Noto_GetFlag(pChar, (Exp_GetVal(pszKey) >= 1)));

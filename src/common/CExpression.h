@@ -2,16 +2,16 @@
 #define _INC_CEXPRESSION_H
 #pragma once
 
-#define ISWHITESPACE(ch)				(IsSpace(ch) || ((unsigned char)(ch) == 0xA0))
+#define ISWHITESPACE(ch)				(IsSpace(ch) || ((ch) == 0xA0))
 #define _IS_SWITCH(ch)					(((ch) == '-') || ((ch) == '/'))	// command line switch
-#define _ISCSYMF(ch)					(IsAlpha(ch) || (ch == '_'))		// __iscsym or __iscsymf
-#define _ISCSYM(ch)						(isalnum(ch) || (ch == '_'))		// __iscsym or __iscsymf
+#define _ISCSYMF(ch)					(IsAlpha(ch) || (ch == '_'))		// __iscsymf
+#define _ISCSYM(ch)						(isalnum(ch) || (ch == '_'))		// __iscsym
 
 #define SKIP_SEPARATORS(pszStr)			while (*(pszStr) == '.') { ++(pszStr); }	// || ISWHITESPACE(*(pszStr))
-#define SKIP_ARGSEP(pszStr)				while ((*(pszStr) == ',') || IsSpace(*pszStr)) { ++(pszStr); }
-#define SKIP_IDENTIFIERSTRING(pszStr)	while (_ISCSYM(*pszStr)) { ++(pszStr); }
+#define SKIP_ARGSEP(pszStr)				while ((*(pszStr) == ',') || IsSpace(*(pszStr))) { ++(pszStr); }
+#define SKIP_IDENTIFIERSTRING(pszStr)	while (_ISCSYM(*(pszStr))) { ++(pszStr); }
 
-#define GETNONWHITESPACE(pszStr)		while (ISWHITESPACE(pszStr[0])) { ++(pszStr); }
+#define GETNONWHITESPACE(pszStr)		while (ISWHITESPACE(*(pszStr))) { ++(pszStr); }
 
 #define REMOVE_QUOTES(x)	\
 {							\
@@ -23,7 +23,7 @@
 		*pszX = '\0';		\
 }
 
-#ifndef M_PI 
+#ifndef M_PI
 	#define M_PI 3.14159265358979323846
 #endif
 
@@ -64,7 +64,7 @@ enum INTRINSIC_TYPE
 	INTRINSIC_QTY
 };
 
-static LPCTSTR const sm_IntrinsicFunctions[INTRINSIC_QTY + 1] =
+static const LPCTSTR sm_IntrinsicFunctions[INTRINSIC_QTY + 1] =
 {
 	"ABS",			// llabs()
 	"ARCCOS",		// acos()
@@ -103,8 +103,8 @@ public:
 	CGString m_sTmp;
 
 	// Defined default messages
-	static TCHAR sm_szMessages[DEFMSG_QTY][EXPRESSION_MAX_KEY_LEN];		// like: "You put %s to %s"
-	static LPCTSTR const sm_szMsgNames[DEFMSG_QTY];		// like: "put_it"
+	static const TCHAR sm_szMessages[DEFMSG_QTY][EXPRESSION_MAX_KEY_LEN];		// like: "You put %s to %s"
+	static const LPCTSTR sm_szMsgNames[DEFMSG_QTY];		// like: "put_it"
 
 public:
 	// Strict G++ Prototyping produces an error when not casting char*& to const char*&, so this is a rather lazy workaround

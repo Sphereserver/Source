@@ -209,6 +209,7 @@ void AbstractThread::terminate(bool ended)
 
 		// let everyone know we have been terminated
 		m_terminateEvent.set();
+		EXC_CATCH;
 
 		// current thread can be terminated now
 		if (ended == false && wasCurrentThread)
@@ -219,7 +220,6 @@ void AbstractThread::terminate(bool ended)
 			pthread_exit(EXIT_SUCCESS);
 #endif
 		}
-		EXC_CATCH;
 	}
 }
 
