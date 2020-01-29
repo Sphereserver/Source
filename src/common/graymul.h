@@ -687,7 +687,7 @@ enum ANIM_TYPE_NEW	// not all creatures animate the same for some reason. http:/
 enum CRESND_TYPE	// Placeholders (not real sound IDs): the SoundChar method chooses the best sound for each creature
 {
 	CRESND_RAND = -1,	// pick up randomly CRESND_IDLE or CRESND_NOTICE
-	CRESND_IDLE = 0,	// just random noise. or default "no" response
+	CRESND_IDLE,		// just random noise. or default "no" response
 	CRESND_NOTICE,		// just random noise. or default "yes" response
 	CRESND_HIT,
 	CRESND_GETHIT,
@@ -719,8 +719,7 @@ enum AFFIX_TYPE
 enum DIR_TYPE	// Walking directions. m_dir
 {
 	DIR_INVALID = -1,
-
-	DIR_N = 0,
+	DIR_N,
 	DIR_NE,
 	DIR_E,
 	DIR_SE,
@@ -825,7 +824,7 @@ enum SKILL_TYPE	// List of skill numbers (things that can be done at a given tim
 
 enum LAYER_TYPE		// defined by UO. Only one item can be in a slot.
 {
-	LAYER_NONE = 0,	// spells that are layed on the CChar ?
+	LAYER_NONE,		// spells that are layed on the CChar ?
 	LAYER_HAND1,	// 1 = spellbook or weapon.
 	LAYER_HAND2,	// 2 = other hand or 2 handed thing. = shield (also used for light halo 'ITEMID_LIGHT_SRC')
 	LAYER_SHOES,	// 3
@@ -928,7 +927,7 @@ enum LAYER_TYPE		// defined by UO. Only one item can be in a slot.
 
 enum SPELL_TYPE	// List of spell numbers in spell book.
 {
-	SPELL_NONE = 0,
+	SPELL_NONE,
 
 	// Magery
 	SPELL_Clumsy = 1,		// 1st circle
