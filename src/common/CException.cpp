@@ -198,20 +198,6 @@ bool CGrayAssert::GetErrorMessage(LPTSTR lpszError) const
 	return true;
 }
 
-/*
-LPCTSTR const CGrayAssert::GetAssertFile()
-{
-	LPTSTR pszTmp = Str_GetTemp();
-	strcpylen(pszTmp, m_pszFile, strlen(m_pszFile));	//make a copy, don't send the original
-	return pszTmp;
-}
-
-const unsigned CGrayAssert::GetAssertLine()
-{
-	return m_lLine;
-}
-*/
-
 ///////////////////////////////////////////////////////////
 // CGrayException
 

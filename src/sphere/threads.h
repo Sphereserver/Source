@@ -105,6 +105,8 @@ private:
 class AbstractThread : public IThread
 {
 public:
+	static const char *m_sClassName;
+
 	AbstractThread(const char *name, Priority priority = IThread::Normal);
 	virtual ~AbstractThread();
 

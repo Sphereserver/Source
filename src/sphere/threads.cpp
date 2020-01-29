@@ -182,6 +182,7 @@ void AbstractThread::start()
 
 void AbstractThread::terminate(bool ended)
 {
+	EXC_TRY("Terminate");
 	if( isActive() )
 	{
 		bool wasCurrentThread = isCurrentThread();
@@ -202,14 +203,12 @@ void AbstractThread::terminate(bool ended)
 		}
 
 		// Common things
-		EXC_TRY("Terminate");
 		ThreadHolder::pop(this);
 		m_id = 0;
 		m_handle = 0;
 
 		// let everyone know we have been terminated
 		m_terminateEvent.set();
-		EXC_CATCH;
 
 		// current thread can be terminated now
 		if (ended == false && wasCurrentThread)
@@ -221,6 +220,7 @@ void AbstractThread::terminate(bool ended)
 #endif
 		}
 	}
+	EXC_CATCH;
 }
 
 void AbstractThread::run()

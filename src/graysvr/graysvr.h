@@ -2,17 +2,7 @@
 #define _INC_GRAYSVR_H
 #pragma once
 
-//	Enable advanced exceptions catching. Consumes some more resources, but is very useful
-//	for debug on a running environment. Also it makes sphere more stable since exceptions
-//	are local
-#ifndef _DEBUG
-	#ifndef EXCEPTIONS_DEBUG
-		#define EXCEPTIONS_DEBUG
-	#endif
-#endif
-
 #include "../common/graycom.h"
-
 
 class CServTime
 {
@@ -185,7 +175,7 @@ public:
 	{
 	public:
 		const WORD m_ID;
-		CGString const m_sText;
+		const CGString m_sText;
 
 		TResponseString(WORD id, LPCTSTR pszText) : m_ID(id), m_sText(pszText)
 		{
@@ -245,7 +235,7 @@ private:
 //////////////////////////////////////////////////////////////
 
 extern LPCTSTR g_szCompiledDate;
-extern LPCTSTR const g_Stat_Name[STAT_QTY];
+extern const LPCTSTR g_Stat_Name[STAT_QTY];
 
 extern int Sphere_InitServer( int argc, char *argv[] );
 extern void Sphere_ExitServer();

@@ -4,6 +4,15 @@
 #include "../sphere/threads.h"
 #include "../graysvr/CLog.h"
 
+// Enable advanced exceptions catching. Consumes some more resources, but is very useful
+// for debug on a running environment. Also it makes sphere more stable since exceptions
+// are local
+#ifndef _DEBUG
+	#ifndef EXCEPTIONS_DEBUG
+		#define EXCEPTIONS_DEBUG
+	#endif
+#endif
+
 extern "C"
 {
 	extern void globalstartsymbol();
@@ -54,14 +63,12 @@ public:
 	virtual ~CGrayAssert() { }; 
 
 protected:
-	LPCTSTR const m_pszExp;
-	LPCTSTR const m_pszFile;
+	const LPCTSTR m_pszExp;
+	const LPCTSTR m_pszFile;
 	const long m_lLine;
 
 public:
 	virtual bool GetErrorMessage(LPTSTR lpszError) const;
-	//LPCTSTR const GetAssertFile();
-	//const unsigned GetAssertLine();
 
 private:
 	CGrayAssert &operator=(const CGrayAssert &other);

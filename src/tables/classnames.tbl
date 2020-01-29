@@ -5,6 +5,7 @@
 
 #define ADD(a,b) const char * a::m_sClassName = b
 
+ADD(AbstractThread,			"AbstractThread");
 ADD(CAccount,				"CAccount");
 ADD(CAccounts,				"CAccounts");
 ADD(CResourceLink,			"CResourceLink");
@@ -54,6 +55,7 @@ ADD(CDataBase,				"CDataBase");
 ADD(CItemBaseMulti,			"CItemBaseMulti");
 ADD(CPathFinder,			"CPathFinder");
 ADD(CPartyDef,				"CPartyDef");
+ADD(CSQLite,				"CSQLite");
 ADD(CStoneMember,			"CStoneMember");
 #ifndef _WIN32
 ADD(CUnixTerminal,			"CUnixTerminal");

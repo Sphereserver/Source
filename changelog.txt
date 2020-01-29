@@ -1744,3 +1744,6 @@ Changed: Worldsave now will save all multis on 'spheremultis.scp' file instead o
 Changed: Misc optimizations on internal variables engine.
 	-This should give a big performance boost to load files at server startup
 	-Ported from SphereX branch, credits to Nolok
+
+29-01-2020, Coruja
+Fixed: Console not throwing some specific exception errors when the exception occur.
