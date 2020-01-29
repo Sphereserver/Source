@@ -543,11 +543,9 @@ TRIGRET_TYPE CScriptObj::OnTriggerRun(CScript &s, TRIGRUN_TYPE trigger, CTextCon
 	//DEBUGCHECK(this == g_Log.m_pObjectContext);
 
 	// All scripts should have args for locals to work
+	CScriptTriggerArgs ArgsEmpty;
 	if ( !pArgs )
-	{
-		CScriptTriggerArgs pArgsEmpty;
-		pArgs = &pArgsEmpty;
-	}
+		pArgs = &ArgsEmpty;
 
 	// Script execution is always not threaded action
 	EXC_TRY("TriggerRun");

@@ -103,7 +103,7 @@ public:
 	CGString m_sTmp;
 
 	// Defined default messages
-	static const TCHAR sm_szMessages[DEFMSG_QTY][EXPRESSION_MAX_KEY_LEN];		// like: "You put %s to %s"
+	static TCHAR sm_szMessages[DEFMSG_QTY][EXPRESSION_MAX_KEY_LEN];		// like: "You put %s to %s"
 	static const LPCTSTR sm_szMsgNames[DEFMSG_QTY];		// like: "put_it"
 
 public:

@@ -46,7 +46,7 @@ size_t strcpylen(TCHAR *pszDst, LPCTSTR pszSrc)
 size_t strcpylen(TCHAR *pszDst, LPCTSTR pszSrc, size_t iMaxLen)
 {
 	// It does NOT include the iMaxLen element (just like memcpy), so iMaxLen = sizeof() is ok!
-	ASSERT(iMaxSize);
+	ASSERT(iMaxLen);
 	strncpy(pszDst, pszSrc, iMaxLen - 1);
 	pszDst[iMaxLen - 1] = '\0';
 	return strlen(pszDst);

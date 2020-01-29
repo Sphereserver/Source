@@ -3553,11 +3553,9 @@ TRIGRET_TYPE CChar::Skill_OnTrigger(SKILL_TYPE skill, SKTRIG_TYPE stage, CScript
 	if ( !((stage == SKTRIG_SELECT) || (stage == SKTRIG_GAIN) || (stage == SKTRIG_USEQUICK) || (stage == SKTRIG_WAIT) || (stage == SKTRIG_TARGETCANCEL)) )
 		m_Act_SkillCurrent = skill;
 
+	CScriptTriggerArgs ArgsEmpty;
 	if ( !pArgs )
-	{
-		CScriptTriggerArgs pArgsEmpty;
-		pArgs = &pArgsEmpty;
-	}
+		pArgs = &ArgsEmpty;
 
 	pArgs->m_iN1 = skill;
 	if ( g_Cfg.IsSkillFlag(skill, SKF_MAGIC) )
@@ -3586,11 +3584,9 @@ TRIGRET_TYPE CChar::Skill_OnCharTrigger(SKILL_TYPE skill, CTRIG_TYPE ctrig, CScr
 	if ( !((ctrig == CTRIG_SkillSelect) || (ctrig == CTRIG_SkillGain) || (ctrig == CTRIG_SkillUseQuick) || (ctrig == CTRIG_SkillWait) || (ctrig == CTRIG_SkillTargetCancel)) )
 		m_Act_SkillCurrent = skill;
 
+	CScriptTriggerArgs ArgsEmpty;
 	if ( !pArgs )
-	{
-		CScriptTriggerArgs pArgsEmpty;
-		pArgs = &pArgsEmpty;
-	}
+		pArgs = &ArgsEmpty;
 
 	pArgs->m_iN1 = skill;
 	if ( g_Cfg.IsSkillFlag(skill, SKF_MAGIC) )
