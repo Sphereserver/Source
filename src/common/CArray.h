@@ -715,17 +715,17 @@ void CGTypedArray<TYPE, ARG_TYPE>::SetCount( size_t nNewCount )
 
 	if ( nNewCount > m_nCount )
 	{
-		TYPE *pNewData = reinterpret_cast<TYPE *>(new BYTE[nNewCount * sizeof(TYPE *)]);
+		BYTE *pNewData = new BYTE[nNewCount * sizeof(TYPE)];
 		if ( m_nCount )
 		{
 			// Copy the old stuff to the new array
-			memcpy(static_cast<void *>(pNewData), m_pData, m_nCount * sizeof(TYPE *));
-			delete[] reinterpret_cast<BYTE *>(m_pData);	// don't call any destructors.
+			memcpy(static_cast<void *>(pNewData), m_pData, m_nCount * sizeof(TYPE));
+			delete[] reinterpret_cast<BYTE *>(m_pData);		// don't call any destructor
 		}
 
-		// Just construct or init the new stuff.
-		ConstructElements( pNewData + m_nCount, nNewCount - m_nCount );
-		m_pData = pNewData;
+		// Just construct or init the new stuff
+		ConstructElements(reinterpret_cast<TYPE *>(pNewData) + m_nCount, nNewCount - m_nCount);
+		m_pData = reinterpret_cast<TYPE *>(pNewData);
 
 		m_nRealCount = nNewCount;
 	}
