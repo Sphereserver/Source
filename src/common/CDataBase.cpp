@@ -22,14 +22,13 @@ void CDataBase::Connect()
 	if ( m_socket )
 		return;
 
-	if ( mysql_get_client_version() < LIBMYSQL_VERSION_ID )
-	{
 #ifdef _WIN32
+	if ( mysql_get_client_version() < LIBMYSQL_VERSION_ID )
 		g_Log.EventWarn("Your MySQL client library %s is outdated. For better compatibility, update your 'libmysql.dll' file to version %s\n", mysql_get_client_info(), LIBMYSQL_VERSION);
 #else
-		g_Log.EventWarn("Your MySQL client library %s is outdated. For better compatibility, update your 'libmysqlclient' package to version %s\n", mysql_get_client_info(), LIBMYSQL_VERSION);
+	if ( mysql_get_client_version() < MYSQL_VERSION_ID )
+		g_Log.EventWarn("Your MySQL client library %s is outdated. For better compatibility, update your 'libmysqlclient' (Ubuntu) / 'mysql-community-libs' (CentOS / Red Hat) package to version %s\n", mysql_get_client_info(), MYSQL_SERVER_VERSION);
 #endif
-	}
 
 	m_socket = mysql_init(NULL);
 	if ( !m_socket )
