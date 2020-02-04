@@ -334,11 +334,6 @@ public:
 	* @param s CGString to copy.
 	* @return the CGString.
 	*/
-	const CGString &operator=(CGString &s)
-	{
-		Copy(s.GetPtr());
-		return *this;
-	}
 	const CGString &operator=(const CGString &s)
 	{
 		Copy(s.GetPtr());

@@ -2115,7 +2115,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatVal(IsStatFlag(STATF_Stone));
 			break;
 		case CHC_TITLE:
-			sVal = (strlen(pszKey) == 5) ? m_sTitle : static_cast<CGString>(GetTradeTitle());
+			sVal = (strlen(pszKey) == 5) ? static_cast<LPCTSTR>(m_sTitle) : GetTradeTitle();
 			break;
 		case CHC_LIGHT:
 			sVal.FormatHex(m_LocalLight);

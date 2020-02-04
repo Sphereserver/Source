@@ -1246,7 +1246,7 @@ bool CItemStone::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 	else if ( !strnicmp("CHARTER", pszKey, 7) )
 	{
 		size_t i = static_cast<size_t>(ATOI(pszKey + 7));
-		sVal = (i < COUNTOF(m_sCharter)) ? m_sCharter[i] : NULL;
+		sVal = (i < COUNTOF(m_sCharter)) ? static_cast<LPCTSTR>(m_sCharter[i]) : "";
 		return true;
 	}
 

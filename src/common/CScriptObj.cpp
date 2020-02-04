@@ -1590,7 +1590,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatHex(ATOI(pszKey));
 			break;
 		case SSC_FLOATVAL:	// Float math
-			sVal = CVarFloat::FloatMath(pszKey);
+			sVal.Format("%f", CVarFloat::MakeFloatMath(pszKey));
 			break;
 		case SSC_QVAL:
 		{

@@ -61,14 +61,6 @@ CGString CVarFloat::Get(LPCTSTR pszName)
 
 short int Reentrant_Count = 0;
 
-CGString CVarFloat::FloatMath(LPCTSTR &pszExpr)
-{
-	ADDTOCALLSTACK("CVarFloat::FloatMath");
-	char chReal[VARDEF_FLOAT_MAXBUFFERSIZE];
-	sprintf(chReal, "%f", MakeFloatMath(pszExpr));
-	return CGString(chReal);
-}
-
 RealType CVarFloat::MakeFloatMath(LPCTSTR &pszExpr)
 {
 	ADDTOCALLSTACK("CVarFloat::MakeFloatMath");

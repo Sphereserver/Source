@@ -206,7 +206,7 @@ CGString CGFile::GetMergedFileName(LPCTSTR pszPath, LPCTSTR pszFileName) // stat
 	if ( pszFileName )
 		strncat(szFullPath, pszFileName, sizeof(szFullPath) - 1);
 
-	return static_cast<CGString>(szFullPath);
+	return CGString(szFullPath);
 }
 
 LPCTSTR CGFile::GetFilesTitle(LPCTSTR pszPath)	// static

@@ -658,7 +658,7 @@ bool CPartyDef::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		}
 		case PDC_SPEECHFILTER:
 		{
-			sVal = m_pSpeechFunction.IsEmpty() ? "" : m_pSpeechFunction;
+			sVal = m_pSpeechFunction.IsEmpty() ? "" : static_cast<LPCTSTR>(m_pSpeechFunction);
 			break;
 		}
 		case PDC_TAG0:

@@ -49,7 +49,6 @@ public:
 	bool Insert(LPCTSTR pszName, LPCTSTR pszValue, bool fForceSet = false);
 	CGString Get(LPCTSTR pszName);
 
-	static CGString FloatMath(LPCTSTR &pszExpr);
 	static RealType MakeFloatMath(LPCTSTR &pszExpr);
 
 private:
