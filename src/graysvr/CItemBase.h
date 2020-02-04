@@ -612,11 +612,10 @@ class CItemBaseDupe : public CResourceDef
 public:
 	static const char *m_sClassName;
 
-	CItemBaseDupe(ITEMID_TYPE id, CItemBase *pMasterItem) : CResourceDef(RESOURCE_ID(RES_ITEMDEF, id))
+	CItemBaseDupe(ITEMID_TYPE id, CItemBase *pMasterItem) : CResourceDef(RESOURCE_ID(RES_ITEMDEF, id)), m_MasterItem(pMasterItem)
 	{
 		ASSERT(pMasterItem);
 		ASSERT(pMasterItem->GetResourceID().GetResIndex() != id);
-		m_MasterItem = pMasterItem;
 		m_Can = 0;
 		m_uiFlags = 0;
 		m_Height = 0;

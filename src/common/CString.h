@@ -292,7 +292,7 @@ public:
 		return ReferenceAt(nIndex);
 	}
 	/**
-	* @brief cast as const LPCSTR.
+	* @brief cast as const LPCTSTR.
 	* @return internal data pointer.
 	*/
 	operator LPCTSTR() const
@@ -334,10 +334,15 @@ public:
 	* @param s CGString to copy.
 	* @return the CGString.
 	*/
-	const CGString& operator=(const CGString &s)
+	const CGString &operator=(CGString &s)
 	{
 		Copy(s.GetPtr());
-		return(*this);
+		return *this;
+	}
+	const CGString &operator=(const CGString &s)
+	{
+		Copy(s.GetPtr());
+		return *this;
 	}
 };
 

@@ -143,9 +143,7 @@ void CResourceBase::AddResourceDir(LPCTSTR pszDirName)
 	if ( iRet < 0 )
 	{
 		// Also check script file path
-		sFilePath = CGFile::GetMergedFileName(m_sSCPBaseDir, sFilePath.GetPtr());
-
-		iRet = filelist.ReadDir(sFilePath, true);
+		iRet = filelist.ReadDir(CGFile::GetMergedFileName(m_sSCPBaseDir, sFilePath.GetPtr()), true);
 		if ( iRet < 0 )
 		{
 			DEBUG_ERR(("DirList=%d for '%s'\n", iRet, pszDirName));
@@ -157,10 +155,7 @@ void CResourceBase::AddResourceDir(LPCTSTR pszDirName)
 
 	CGStringListRec *psFile = filelist.GetHead();
 	for ( ; psFile; psFile = psFile->GetNext() )
-	{
-		sFilePath = CGFile::GetMergedFileName(pszDirName, *psFile);
-		AddResourceFile(sFilePath);
-	}
+		AddResourceFile(CGFile::GetMergedFileName(pszDirName, *psFile));
 }
 
 void CResourceBase::LoadResourcesOpen(CScript *pScript)
