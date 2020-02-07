@@ -578,7 +578,7 @@ SPELL_TYPE CCharNPC::Spells_GetAt(size_t index)
 
 int CCharNPC::GetNpcAiFlags(const CChar *pChar) const
 {
-	CVarDefCont *pVar = pChar->GetKey("OVERRIDE.NPCAI", true);
+	const CVarDefCont *pVar = pChar->GetKey("OVERRIDE.NPCAI", true);
 	return pVar ? static_cast<int>(pVar->GetValNum()) : g_Cfg.m_iNpcAi;
 }
 

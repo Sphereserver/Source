@@ -2813,7 +2813,7 @@ void CObjBase::SetTriggerActive(LPCTSTR pszTrig)
 {
 	if ( pszTrig )
 	{
-		char *chText = Str_GetTemp();
+		char chText[58];		// size inherited from struct 'T_TRIGGERS::m_name' + 10
 		sprintf(chText, "Trigger: %s", pszTrig);
 		ADDTOCALLSTACK(chText);
 	}

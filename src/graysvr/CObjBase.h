@@ -242,7 +242,7 @@ public:
 
 	bool IsTriggerActive(LPCTSTR pszTrig);
 	LPCTSTR GetTriggerActive();
-	void SetTriggerActive(LPCTSTR pszTrig = NULL);
+	void SetTriggerActive(LPCTSTR pszTrig);
 
 	virtual bool OnTick() = 0;
 	virtual int FixWeirdness() = 0;

@@ -646,7 +646,7 @@ int CChar::NPC_WalkToPoint(bool fRun)
 	//  0 = char is already here
 	//  1 = char took the step
 	//  2 = char can't take this step right now (obstacle)
-	if ( Can(CAN_C_NONMOVER) )
+	if ( !m_pNPC || Can(CAN_C_NONMOVER) )
 		return 0;
 
 	EXC_TRY("NPC_WalkToPoint");
@@ -662,7 +662,7 @@ int CChar::NPC_WalkToPoint(bool fRun)
 	// Use pathfinding
 	EXC_SET("NPC_AI_PATH");
 	bool fUsePathfinding = false;
-	if ( NPC_GetAiFlags() & NPC_AI_PATH )
+	if ( m_pNPC->GetNpcAiFlags(this) & NPC_AI_PATH )
 	{
 		NPC_Pathfinding();
 
@@ -742,7 +742,7 @@ int CChar::NPC_WalkToPoint(bool fRun)
 			bool fClearedWay = false;
 
 			// Check if char can move objects placed on the way
-			if ( (NPC_GetAiFlags() & NPC_AI_MOVEOBSTACLES) && pCharDef->Can(CAN_C_USEHANDS) && !IsStatFlag(STATF_DEAD|STATF_Freeze|STATF_Stone) )
+			if ( (m_pNPC->GetNpcAiFlags(this) & NPC_AI_MOVEOBSTACLES) && pCharDef->Can(CAN_C_USEHANDS) && !IsStatFlag(STATF_DEAD|STATF_Freeze|STATF_Stone) )
 			{
 				int iInt = Stat_GetAdjusted(STAT_INT);
 				if ( iInt > iRand )
@@ -1018,7 +1018,7 @@ bool CChar::NPC_LookAtItem(CItem *pItem)
 {
 	ADDTOCALLSTACK("CChar::NPC_LookAtItem");
 	// NPC is looking at item
-	if ( !Can(CAN_C_USEHANDS) || !CanSee(pItem) )
+	if ( !m_pNPC || !Can(CAN_C_USEHANDS) || !CanSee(pItem) )
 		return false;
 
 	int iDist = GetTopDist(pItem);
@@ -1039,7 +1039,7 @@ bool CChar::NPC_LookAtItem(CItem *pItem)
 		}
 	}
 
-	if ( NPC_GetAiFlags() & NPC_AI_LOOTING )
+	if ( m_pNPC->GetNpcAiFlags(this) & NPC_AI_LOOTING )
 	{
 		// Loot nearby items on ground
 		if ( iWantThisItem > Calc_GetRandVal(100) )
@@ -1539,9 +1539,11 @@ bool CChar::NPC_FightCast(CObjBase *&pTarg, CObjBase *pSrc, SPELL_TYPE &spell)
 {
 	ADDTOCALLSTACK("CChar::NPC_FightCast");
 	// NPC can fight using magery, so check if it can cast the spell
+	if ( !m_pNPC || !pTarg )
+		return false;
 
 	const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(spell);
-	if ( !pTarg || !pSpellDef || pSpellDef->IsSpellType(SPELLFLAG_PLAYERONLY) )
+	if ( !pSpellDef || pSpellDef->IsSpellType(SPELLFLAG_PLAYERONLY) )
 		return false;
 
 	if ( !Spell_CanCast(spell, true, pSrc, false) )
@@ -1560,7 +1562,7 @@ bool CChar::NPC_FightCast(CObjBase *&pTarg, CObjBase *pSrc, SPELL_TYPE &spell)
 				int iFriendIndex = 1;
 
 				CChar *pTarget = pTarg->GetUID().CharFind();
-				if ( NPC_GetAiFlags() & NPC_AI_COMBAT )
+				if ( m_pNPC->GetNpcAiFlags(this) & NPC_AI_COMBAT )
 				{
 					CWorldSearch AreaChars(GetTopPoint(), GetSight());
 					for (;;)
@@ -1723,7 +1725,7 @@ CChar *CChar::NPC_FightFindBestTarget()
 			if ( !CanSeeLOS(pChar) )
 				continue;
 
-			if ( (NPC_GetAiFlags() & NPC_AI_THREAT) && (refAttacker.threat > iThreat) )
+			if ( (m_pNPC->GetNpcAiFlags(this) & NPC_AI_THREAT) && (refAttacker.threat > iThreat) )
 			{
 				// This char has more threat than current target, so switch to this target
 				pTarg = pChar;
@@ -2018,9 +2020,11 @@ void CChar::NPC_Act_RunTo(int iDist)
 	ADDTOCALLSTACK("CChar::NPC_Act_RunTo");
 	// NPCACT_RUNTO
 	// Run to point (m_Act_p)
+	if ( !m_pNPC )
+		return;
 
 	int iResult = NPC_WalkToPoint(true);
-	if ( (iResult == 2) && (NPC_GetAiFlags() & NPC_AI_PERSISTENTPATH) )
+	if ( (iResult == 2) && (m_pNPC->GetNpcAiFlags(this) & NPC_AI_PERSISTENTPATH) )
 	{
 		// Can't move there, check if NPC should keep trying or give up
 		int iDistAct = GetTopPoint().GetDist(m_Act_p);
@@ -2045,9 +2049,11 @@ void CChar::NPC_Act_GoTo(int iDist)
 	ADDTOCALLSTACK("CChar::NPC_Act_GoTo");
 	// NPCACT_GOTO
 	// Walk to point (m_Act_p)
+	if ( !m_pNPC )
+		return;
 
 	int iResult = NPC_WalkToPoint();
-	if ( (iResult == 2) && (NPC_GetAiFlags() & NPC_AI_PERSISTENTPATH) )
+	if ( (iResult == 2) && (m_pNPC->GetNpcAiFlags(this) & NPC_AI_PERSISTENTPATH) )
 	{
 		// Can't move there, check if NPC should keep trying or give up
 		int iDistAct = GetTopPoint().GetDist(m_Act_p);
@@ -2071,6 +2077,8 @@ bool CChar::NPC_Act_Food()
 {
 	ADDTOCALLSTACK("CChar::NPC_Act_Food");
 	// NPC is searching for food
+	if ( !m_pNPC )
+		return false;
 
 	int iFoodLevel = Food_GetLevelPercent();
 	if ( iFoodLevel > 40 )		// not hungry
@@ -2080,7 +2088,7 @@ bool CChar::NPC_Act_Food()
 	WORD wEatAmount = 1;
 
 	// Check if NPC have some food on backpack first
-	if ( NPC_GetAiFlags() & NPC_AI_INTFOOD )
+	if ( m_pNPC->GetNpcAiFlags(this) & NPC_AI_INTFOOD )
 	{
 		CItemContainer *pPack = GetContainer(LAYER_PACK);
 		if ( pPack )
@@ -2149,7 +2157,7 @@ bool CChar::NPC_Act_Food()
 				pClosestFood->Plant_CropReset();	// set growth timer if this is a plant
 			return true;
 		}
-		else if ( NPC_GetAiFlags() & NPC_AI_INTFOOD )
+		else if ( m_pNPC->GetNpcAiFlags(this) & NPC_AI_INTFOOD )
 		{
 			// Food is too far, must walk toward it first
 			switch ( Skill_GetActive() )
@@ -2205,10 +2213,13 @@ void CChar::NPC_Act_Idle()
 {
 	ADDTOCALLSTACK("CChar::NPC_Act_Idle");
 	// NPC is idle and should try to take some action
+	if ( !m_pNPC )
+		return;
+
 	m_pNPC->m_Act_Motivation = 0;
 
 	// Search for food
-	if ( NPC_GetAiFlags() & (NPC_AI_FOOD|NPC_AI_INTFOOD) )
+	if ( m_pNPC->GetNpcAiFlags(this) & (NPC_AI_FOOD|NPC_AI_INTFOOD) )
 	{
 		if ( NPC_Act_Food() )
 			return;
@@ -2527,7 +2538,7 @@ void CChar::NPC_OnTickAction()
 			case NPCACT_FOOD:
 			{
 				EXC_SET("food");
-				if ( NPC_GetAiFlags() & NPC_AI_INTFOOD )
+				if ( m_pNPC->GetNpcAiFlags(this) & NPC_AI_INTFOOD )
 				{
 					if ( !NPC_Act_Food() )
 						Skill_Start(SKILL_NONE);
@@ -2580,7 +2591,7 @@ void CChar::NPC_Pathfinding()
 	// Check if pathfind is really needed
 	EXC_TRY("Pathfinding");
 	EXC_SET("pre-checking");
-	int iInt = (NPC_GetAiFlags() & NPC_AI_ALWAYSINT) ? 300 : Stat_GetAdjusted(STAT_INT);
+	const int iInt = (m_pNPC->GetNpcAiFlags(this) & NPC_AI_ALWAYSINT) ? 300 : Stat_GetAdjusted(STAT_INT);
 	if ( iInt < 30 )	// too dumb
 		return;
 	if ( m_pNPC->m_nextPt == m_Act_p )	// path to this point is already saved

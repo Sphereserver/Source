@@ -442,8 +442,15 @@ public:
 	CREID_TYPE m_prev_id;		// Backup of body type for ghosts and poly
 	HUE_TYPE m_prev_Hue;		// Backup of skin color, in case of polymorph etc
 	HUE_TYPE m_wBloodHue;		// Replicating CharDef's BloodColor on the char, or overriding it
-	bool IsTriggerActive(LPCTSTR pszTrig) { return static_cast<CObjBase *>(const_cast<CChar *>(this))->IsTriggerActive(pszTrig); }
-	void SetTriggerActive(LPCTSTR pszTrig = NULL) { static_cast<CObjBase *>(const_cast<CChar *>(this))->SetTriggerActive(pszTrig); }
+
+	bool IsTriggerActive(LPCTSTR pszTrig)
+	{
+		return CObjBase::IsTriggerActive(pszTrig);
+	}
+	void SetTriggerActive(LPCTSTR pszTrig)
+	{
+		CObjBase::SetTriggerActive(pszTrig);
+	}
 
 	// Client's local light
 	BYTE m_LocalLight;
@@ -460,8 +467,8 @@ public:
 		WORD m_regen;		// Tick time since last regen
 	} m_Stat[STAT_QTY];
 
-	CServTime m_timeCreate;		// When was i created ?
-	CServTime m_timeLastRegen;	// When did i get my last regen tick ?
+	CServTime m_timeCreate;
+	CServTime m_timeLastTick;
 	CServTime m_timeLastHitsUpdate;
 	CServTime m_timeLastCallGuards;
 
@@ -1437,12 +1444,6 @@ public:
 		return (m_pNPC && ((m_pNPC->m_Brain == NPCBRAIN_HEALER) || (m_pNPC->m_Brain == NPCBRAIN_BANKER) || (m_pNPC->m_Brain == NPCBRAIN_VENDOR) || (m_pNPC->m_Brain == NPCBRAIN_ANIMAL_TRAINER)));
 	}
 
-	int NPC_GetAiFlags()
-	{
-		if ( m_pNPC )
-			return m_pNPC->GetNpcAiFlags(this);
-		return 0;
-	}
 	bool NPC_Vendor_Restock(bool fForce = false, bool fFillStock = false);
 	int NPC_GetVendorMarkup() const;
 

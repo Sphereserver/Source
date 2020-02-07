@@ -560,8 +560,14 @@ protected:
 	virtual int FixWeirdness();
 
 public:
-	bool IsTriggerActive(LPCTSTR pszTrig) { return static_cast<CObjBase *>(const_cast<CItem *>(this))->IsTriggerActive(pszTrig); }
-	void SetTriggerActive(LPCTSTR pszTrig = NULL) { static_cast<CObjBase *>(const_cast<CItem *>(this))->SetTriggerActive(pszTrig); }
+	bool IsTriggerActive(LPCTSTR pszTrig)
+	{
+		return CObjBase::IsTriggerActive(pszTrig);
+	}
+	void SetTriggerActive(LPCTSTR pszTrig)
+	{
+		CObjBase::SetTriggerActive(pszTrig);
+	}
 
 	virtual bool OnTick();
 	virtual void OnHear(LPCTSTR pszCmd, CChar *pSrc)

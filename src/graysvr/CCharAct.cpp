@@ -3467,7 +3467,7 @@ TRIGRET_TYPE CChar::OnTrigger(LPCTSTR pszTrigName, CTextConsole *pSrc, CScriptTr
 	}
 stopandret:
 	{
-		SetTriggerActive();
+		SetTriggerActive(NULL);
 		return iRet;
 	}
 	EXC_CATCH;
@@ -3556,7 +3556,7 @@ bool CChar::OnTick()
 	ADDTOCALLSTACK("CChar::OnTick");
 
 	EXC_TRY("Tick");
-	INT64 iTimeDiff = -g_World.GetTimeDiff(m_timeLastRegen);
+	INT64 iTimeDiff = -g_World.GetTimeDiff(m_timeLastTick);
 	if ( !iTimeDiff )
 		return true;
 
@@ -3596,7 +3596,7 @@ bool CChar::OnTick()
 
 	if ( iTimeDiff >= TICK_PER_SEC )		// don't bother with < 1 sec timers on the checks below
 	{
-		m_timeLastRegen = CServTime::GetCurrentTime();
+		m_timeLastTick = CServTime::GetCurrentTime();
 
 		EXC_SET("last attackers");
 		if ( g_Cfg.m_iAttackerTimeout > 0 )
@@ -3648,7 +3648,7 @@ bool CChar::OnTick()
 
 				if ( !IsStatFlag(STATF_DEAD) )
 				{
-					int iFlags = NPC_GetAiFlags();
+					const int iFlags = m_pNPC->GetNpcAiFlags(this);
 					if ( iFlags & (NPC_AI_FOOD|NPC_AI_INTFOOD) )
 						NPC_Act_Food();
 					if ( iFlags & NPC_AI_EXTRA )

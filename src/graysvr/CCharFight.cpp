@@ -2166,7 +2166,7 @@ void CChar::Fight_Clear()
 
 	if ( m_pNPC )
 	{
-		if ( NPC_GetAiFlags() & NPC_AI_PERSISTENTPATH )
+		if ( m_pNPC->GetNpcAiFlags(this) & NPC_AI_PERSISTENTPATH )
 			SetSight(GetSight() - 10);
 
 		StatFlag_Clear(STATF_War);
@@ -2214,7 +2214,7 @@ bool CChar::Fight_Attack(CChar *pCharTarg, bool fToldByMaster)
 		{
 			if ( IsStatFlag(STATF_Hovering) )	// flying NPCs should land when enter warmode
 				ToggleFlying();
-			if ( NPC_GetAiFlags() & NPC_AI_PERSISTENTPATH )		// increase view range during combat to make NPC follow targets for longer distances
+			if ( m_pNPC->GetNpcAiFlags(this) & NPC_AI_PERSISTENTPATH )		// increase view range during combat to make NPC follow targets for longer distances
 				SetSight(GetSight() + 10);
 		}
 
