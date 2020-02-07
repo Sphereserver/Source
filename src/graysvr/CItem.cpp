@@ -5040,13 +5040,13 @@ bool CItem::OnTick()
 #ifndef _DEBUG
 	catch ( const CGrayError& e )
 	{
-		EXC_CATCH_EXCEPTION(&e);
+		EXC_CATCH_EVENT(&e);
 		g_Log.EventError("'%s' item [0%" FMTDWORDH "] - CGrayError\n", GetName(), static_cast<DWORD>(GetUID()));
 		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 	}
 	catch (...)
 	{
-		EXC_CATCH_EXCEPTION(NULL);
+		EXC_CATCH_EVENT(NULL);
 		g_Log.EventError("'%s' item [0%" FMTDWORDH "] - ...\n", GetName(), static_cast<DWORD>(GetUID()));
 		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 	}
