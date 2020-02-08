@@ -324,7 +324,7 @@ public:
 	* @param pStr string to copy.
 	* @return the CGString.
 	*/
-	CGString &operator=(LPCTSTR pStr)
+	const CGString &operator=(LPCTSTR pStr)
 	{
 		Copy(pStr);
 		return(*this);
@@ -334,7 +334,7 @@ public:
 	* @param s CGString to copy.
 	* @return the CGString.
 	*/
-	CGString &operator=(const CGString &s)
+	CGString &operator=(CGString &s)
 	{
 		Copy(s.GetPtr());
 		return *this;

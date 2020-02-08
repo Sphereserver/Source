@@ -2,7 +2,6 @@
 #include <random>
 
 typedef double RealType;
-#define VARDEF_FLOAT_MAXBUFFERSIZE 82
 
 CVarFloat::CVarFloat()
 {
@@ -44,19 +43,17 @@ RealType CVarFloat::GetVal(LPCTSTR pszName)
 	return i->second;
 }
 
-CGString CVarFloat::Get(LPCTSTR pszName)
+LPCTSTR CVarFloat::Get(LPCTSTR pszName)
 {
 	ADDTOCALLSTACK("CVarFloat::Get");
 	if ( !pszName )
-		return CGString();
+		return "";
 
 	SKIP_ARGSEP(pszName);
-	if ( strlen(pszName) > VARDEF_FLOAT_MAXBUFFERSIZE )
-		return CGString();
 
-	char chReal[VARDEF_FLOAT_MAXBUFFERSIZE];
-	sprintf(chReal, "%f", static_cast<RealType>(GetVal(pszName)));
-	return CGString(chReal);
+	TCHAR szFloat[EXPRESSION_MAX_KEY_LEN];
+	sprintf(szFloat, "%f", static_cast<RealType>(GetVal(pszName)));
+	return szFloat;
 }
 
 short int Reentrant_Count = 0;
