@@ -143,7 +143,7 @@ void CResourceBase::AddResourceDir(LPCTSTR pszDirName)
 	if ( iRet < 0 )
 	{
 		// Also check script file path
-		iRet = filelist.ReadDir(CGString(CGFile::GetMergedFileName(m_sSCPBaseDir, sFilePath.GetPtr())), true);
+		iRet = filelist.ReadDir(CGFile::GetMergedFileName(m_sSCPBaseDir, sFilePath.GetPtr()), true);
 		if ( iRet < 0 )
 		{
 			DEBUG_ERR(("DirList=%d for '%s'\n", iRet, pszDirName));
@@ -155,7 +155,7 @@ void CResourceBase::AddResourceDir(LPCTSTR pszDirName)
 
 	CGStringListRec *psFile = filelist.GetHead();
 	for ( ; psFile; psFile = psFile->GetNext() )
-		AddResourceFile(CGString(CGFile::GetMergedFileName(pszDirName, *psFile)));
+		AddResourceFile(CGFile::GetMergedFileName(pszDirName, *psFile));
 }
 
 void CResourceBase::LoadResourcesOpen(CScript *pScript)
@@ -223,11 +223,11 @@ bool CResourceBase::OpenResourceFind(CScript &s, LPCTSTR pszFileName, bool fCrit
 		return false;
 
 	// Check the script file path
-	if ( s.Open(CGString(CGFile::GetMergedFileName(m_sSCPBaseDir, pszFileName)), OF_READ|OF_NONCRIT) )
+	if ( s.Open(CGFile::GetMergedFileName(m_sSCPBaseDir, pszFileName), OF_READ|OF_NONCRIT) )
 		return true;
 
 	// Strip the directory and re-check script file path
-	return s.Open(CGString(CGFile::GetMergedFileName(m_sSCPBaseDir, CGFile::GetFilesTitle(pszFileName))), OF_READ);
+	return s.Open(CGFile::GetMergedFileName(m_sSCPBaseDir, CGFile::GetFilesTitle(pszFileName)), OF_READ);
 }
 
 bool CResourceBase::LoadResourceSection(CScript *pScript)

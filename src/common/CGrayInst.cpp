@@ -125,11 +125,11 @@ LPCTSTR CGrayInstall::GetBaseFileName(VERFILE_TYPE i)	// static
 	return NULL;
 }
 
-bool CGrayInstall::OpenFile(CGFile &file, LPCTSTR pszFileName, WORD wFlags)
+bool CGrayInstall::OpenFile(CGFile &file, LPCTSTR pszFileName, UINT uFlags)
 {
 	ADDTOCALLSTACK("CGrayInstall::OpenFile");
 	ASSERT(pszFileName);
-	return file.Open(GetMulPath(pszFileName), wFlags);
+	return file.Open(GetMulPath(pszFileName), uFlags);
 }
 
 bool CGrayInstall::OpenFile(VERFILE_TYPE i)

@@ -53,7 +53,7 @@ public:
 #endif
 	static LPCTSTR GetBaseFileName(VERFILE_TYPE i);
 
-	bool OpenFile(CGFile &file, LPCTSTR pszFileName, WORD wFlags);
+	bool OpenFile(CGFile &file, LPCTSTR pszFileName, UINT uFlags);
 	bool OpenFile(VERFILE_TYPE i);
 	VERFILE_TYPE OpenFiles(DWORD dwMask);
 	void CloseFiles();

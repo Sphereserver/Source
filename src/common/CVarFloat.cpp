@@ -43,17 +43,19 @@ RealType CVarFloat::GetVal(LPCTSTR pszName)
 	return i->second;
 }
 
-LPCTSTR CVarFloat::Get(LPCTSTR pszName)
+CGString CVarFloat::Get(LPCTSTR pszName)
 {
 	ADDTOCALLSTACK("CVarFloat::Get");
 	if ( !pszName )
-		return "";
+		return CGString();
 
 	SKIP_ARGSEP(pszName);
+	if ( strlen(pszName) > EXPRESSION_MAX_KEY_LEN )
+		return CGString();
 
-	TCHAR szFloat[EXPRESSION_MAX_KEY_LEN];
-	sprintf(szFloat, "%f", static_cast<RealType>(GetVal(pszName)));
-	return szFloat;
+	char chReal[EXPRESSION_MAX_KEY_LEN];
+	sprintf(chReal, "%f", static_cast<RealType>(GetVal(pszName)));
+	return CGString(chReal);
 }
 
 short int Reentrant_Count = 0;
