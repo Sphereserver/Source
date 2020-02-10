@@ -609,7 +609,7 @@ static const LPCTSTR sm_szPrivLevels[PLEVEL_QTY + 1] =
 PLEVEL_TYPE CAccount::GetPrivLevelText(LPCTSTR pszFlags)	// static
 {
 	ADDTOCALLSTACK("CAccount::GetPrivLevelText");
-	int iPlevel = FindTable(pszFlags, sm_szPrivLevels, COUNTOF(sm_szPrivLevels) - 1);
+	int iPlevel = FindTable(pszFlags, sm_szPrivLevels, COUNTOF(sm_szPrivLevels));
 	if ( iPlevel > 0 )
 		return static_cast<PLEVEL_TYPE>(iPlevel);
 

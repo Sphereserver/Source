@@ -602,7 +602,7 @@ int FindTableHeadSorted(LPCTSTR pszFind, const LPCTSTR *ppszTable, int iCount, s
 
 int FindTableHead(LPCTSTR pszFind, const LPCTSTR *ppszTable, int iCount)
 {
-	for ( int i = 0; i < iCount; ++i )
+	for ( int i = 0; i < iCount - 1; ++i )
 	{
 		if ( Str_CmpHeadI(pszFind, *ppszTable) == 0 )
 			return i;
@@ -638,11 +638,10 @@ int FindTableSorted(LPCTSTR pszFind, const LPCTSTR *ppszTable, int iCount)
 int FindTable(LPCTSTR pszFind, const LPCTSTR *ppszTable, int iCount)
 {
 	// A non-sorted table.
-	for ( int i = 0; i < iCount; ++i )
+	for ( int i = 0; i < iCount - 1; ++i )
 	{
 		if ( strcmpi(pszFind, *ppszTable) == 0 )
 			return i;
-
 		ppszTable = reinterpret_cast<const LPCTSTR *>(reinterpret_cast<const BYTE *>(ppszTable) + sizeof(LPCTSTR));
 	}
 	return -1;

@@ -490,6 +490,17 @@ enum STAT_TYPE
 	STAT_QTY
 };
 
+const LPCTSTR g_Stat_Name[STAT_QTY + 1] =
+{
+	"STR",
+	"INT",
+	"DEX",
+	"FOOD",
+	"KARMA",
+	"FAME",
+	NULL
+};
+
 class CSkillClassDef : public CResourceLink // For skill def table
 {
 	// Similar to character class.

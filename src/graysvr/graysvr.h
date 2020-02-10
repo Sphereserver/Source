@@ -234,8 +234,7 @@ private:
 
 //////////////////////////////////////////////////////////////
 
-extern LPCTSTR g_szCompiledDate;
-extern const LPCTSTR g_Stat_Name[STAT_QTY];
+const LPCTSTR g_szCompiledDate = __DATE__;
 
 extern int Sphere_InitServer( int argc, char *argv[] );
 extern void Sphere_ExitServer();

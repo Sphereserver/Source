@@ -330,17 +330,6 @@ int CEventLog::VEvent(DWORD dwMask, LPCTSTR pszFormat, va_list args)
 	return EventStr(dwMask, pszTemp);
 }
 
-const LPCTSTR g_Stat_Name[STAT_QTY] =	// not sorted obviously.
-{
-	"STR",
-	"INT",
-	"DEX",
-	"FOOD",
-	"KARMA",
-	"FAME"
-};
-
-LPCTSTR g_szCompiledDate = __DATE__;
 size_t CObjBase::sm_iCount = 0;	// UID table.
 ULONGLONG llTimeProfileFrequency = 1000;	// time profiler
 
