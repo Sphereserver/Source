@@ -926,7 +926,7 @@ public:
 
 	char m_cCommandPrefix;
 
-	int m_iDefaultCommandLevel;
+	PLEVEL_TYPE m_iDefaultCommandLevel;
 
 	// Notoriety colors
 	HUE_TYPE m_iColorNotoGood;

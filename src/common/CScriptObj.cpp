@@ -3356,3 +3356,117 @@ bool CFileObjContainer::r_Verb(CScript &s, CTextConsole *pSrc)
 	EXC_DEBUG_END;
 	return false;
 }
+
+///////////////////////////////////////////////////////////
+
+static int Str_CmpHeadI(LPCTSTR pszFind, LPCTSTR pszTable)
+{
+	for ( size_t i = 0; ; ++i )
+	{
+		// Always use same case as other places. Since strcmpi is lowercase, this also should be
+		const TCHAR ch1 = static_cast<TCHAR>(tolower(pszFind[i]));
+		const TCHAR ch2 = static_cast<TCHAR>(tolower(pszTable[i]));
+
+		if ( ch2 == 0 )
+			return (!isalnum(ch1) && (ch1 != '_')) ? 0 : ch1 - ch2;
+
+		if ( ch1 != ch2 )
+			return ch1 - ch2;
+	}
+}
+
+int FindTable(LPCTSTR pszFind, const LPCTSTR *ppszTable, int iCount)
+{
+	// Search on a non-sorted table
+	for ( int i = 0; i <= iCount - 1; ++i )
+	{
+		if ( strcmpi(pszFind, *ppszTable) == 0 )
+			return i;
+		ppszTable = reinterpret_cast<const LPCTSTR *>(reinterpret_cast<const BYTE *>(ppszTable) + sizeof(LPCTSTR));
+	}
+	return -1;
+}
+
+int FindTableSorted(LPCTSTR pszFind, const LPCTSTR *ppszTable, int iCount)
+{
+	// Binary search on a sorted table
+	// RETURN:
+	//  -1 = not found
+
+	int iLow = 0;
+	int iHigh = iCount - 1;
+
+	while ( iLow <= iHigh )
+	{
+		const int i = (iLow + iHigh) / 2;
+		const int iCompare = strcmpi(pszFind, *reinterpret_cast<const LPCTSTR *>(reinterpret_cast<const BYTE *>(ppszTable) + (i * sizeof(LPCTSTR))));
+
+		if ( iCompare > 0 )
+			iLow = i + 1;
+		else if ( iCompare < 0 )
+			iHigh = i - 1;
+		else
+			return i;
+	}
+	return -1;
+}
+
+int FindTableHead(LPCTSTR pszFind, const LPCTSTR *ppszTable, int iCount)
+{
+	// Search on a non-sorted table
+	for ( int i = 0; i <= iCount - 1; ++i )
+	{
+		if ( Str_CmpHeadI(pszFind, *ppszTable) == 0 )
+			return i;
+		ppszTable = reinterpret_cast<const LPCTSTR *>(reinterpret_cast<const BYTE *>(ppszTable) + sizeof(LPCTSTR));
+	}
+	return -1;
+}
+
+int FindTableHeadSorted(LPCTSTR pszFind, const LPCTSTR *ppszTable, int iCount)
+{
+	// Binary search on a sorted table
+	// RETURN:
+	//  -1 = not found
+
+	int iLow = 0;
+	int iHigh = iCount - 1;
+
+	while ( iLow <= iHigh )
+	{
+		const int i = (iLow + iHigh) / 2;
+		const int iCompare = Str_CmpHeadI(pszFind, *reinterpret_cast<const LPCTSTR *>(reinterpret_cast<const BYTE *>(ppszTable) + (i * sizeof(LPCTSTR))));
+
+		if ( iCompare > 0 )
+			iLow = i + 1;
+		else if ( iCompare < 0 )
+			iHigh = i - 1;
+		else
+			return i;
+	}
+	return -1;
+}
+
+int FindTableHeadSortedRes(LPCTSTR pszFind, const LPCTSTR *ppszTable, int iCount)
+{
+	// Binary search on a resource sorted table
+	// RETURN:
+	//  -1 = not found
+
+	int iLow = 0;
+	int iHigh = iCount - 1;
+
+	while ( iLow <= iHigh )
+	{
+		const int i = (iLow + iHigh) / 2;
+		const int iCompare = Str_CmpHeadI(pszFind, *reinterpret_cast<const LPCTSTR *>(reinterpret_cast<const BYTE *>(ppszTable) + (i * sizeof(g_Cfg.sm_szLoadKeys[0]))));
+
+		if ( iCompare > 0 )
+			iLow = i + 1;
+		else if ( iCompare < 0 )
+			iHigh = i - 1;
+		else
+			return i;
+	}
+	return -1;
+}

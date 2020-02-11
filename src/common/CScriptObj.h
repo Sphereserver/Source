@@ -294,4 +294,12 @@ private:
 	CFileObjContainer &operator=(const CFileObjContainer &other);
 };
 
+///////////////////////////////////////////////////////////
+
+int FindTable(LPCTSTR pszFind, const LPCTSTR *ppszTable, int iCount);
+int FindTableSorted(LPCTSTR pszFind, const LPCTSTR *ppszTable, int iCount);
+int FindTableHead(LPCTSTR pszFind, const LPCTSTR *ppszTable, int iCount);
+int FindTableHeadSorted(LPCTSTR pszFind, const LPCTSTR *ppszTable, int iCount);
+int FindTableHeadSortedRes(LPCTSTR pszFind, const LPCTSTR *ppszTable, int iCount);
+
 #endif	// _INC_CSCRIPTOBJ_H
