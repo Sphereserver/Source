@@ -70,7 +70,7 @@ void CVerDataMul::Load( CGFile & file )
 	if ( ! file.IsFileOpen())		// T2a might not have this.
 		return;
 
-	file.SeekToBegin();
+	file.Seek(0, FILE_BEGIN);
 	DWORD dwQty;
 	if ( file.Read(static_cast<void *>(&dwQty), sizeof(dwQty)) <= 0 )
 	{

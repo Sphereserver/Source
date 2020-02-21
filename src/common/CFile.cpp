@@ -85,7 +85,7 @@ DWORD CFile::GetLength()
 {
 	// Get the size of the file
 	DWORD dwPos = GetPosition();	// save current pos
-	DWORD dwSize = SeekToEnd();
+	DWORD dwSize = Seek(0, FILE_END);
 	Seek(dwPos, FILE_BEGIN);		// restore previous pos
 	return dwSize;
 }

@@ -1747,3 +1747,7 @@ Changed: Misc optimizations on internal variables engine.
 
 29-01-2020, Coruja
 Fixed: Console not throwing some specific exception errors when the exception occur.
+
+20-02-2020, Coruja
+Fixed: Function UNEXTRACT making server crash.
+[sphereCrypt.ini]: Added crypt key for classic client 7.0.84 and enhanced client 4.0.84

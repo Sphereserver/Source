@@ -2927,7 +2927,7 @@ bool CFileObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				return false;
 
 			DWORD dwSeek = m_pFile->GetPosition();
-			m_pFile->SeekToBegin();
+			m_pFile->Seek(0, FILE_BEGIN);
 
 			if ( iLines == 0 )
 			{

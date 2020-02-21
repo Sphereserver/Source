@@ -67,15 +67,6 @@ public:
 	virtual bool Open(LPCTSTR pszFileName = NULL, UINT uMode = OF_READ|OF_SHARE_DENY_NONE);
 	virtual void Close();
 
-	void SeekToBegin()
-	{
-		Seek(0, FILE_BEGIN);
-	}
-	DWORD SeekToEnd()
-	{
-		return Seek(0, FILE_END);
-	}
-
 	DWORD GetLength();
 	virtual DWORD GetPosition() const;
 	virtual DWORD Seek(LONG lOffset = 0, DWORD dwMoveMethod = FILE_BEGIN);

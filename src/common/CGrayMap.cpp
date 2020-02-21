@@ -504,8 +504,8 @@ void CMapDiffCollection::LoadMapDiffs()
 		if ( pFileMapdif->IsFileOpen() && pFileMapdifl->IsFileOpen() )
 		{
 			// Make sure that we're at the beginning of the files
-			pFileMapdif->SeekToBegin();
-			pFileMapdifl->SeekToBegin();
+			pFileMapdif->Seek(0, FILE_BEGIN);
+			pFileMapdifl->Seek(0, FILE_BEGIN);
 
 			dwLength = pFileMapdifl->GetLength();
 			dwRead = dwOffset = 0;
@@ -546,9 +546,9 @@ void CMapDiffCollection::LoadMapDiffs()
 			continue;
 
 		// Make sure that we're at the beginning of the files
-		pFileStadif->SeekToBegin();
-		pFileStadifl->SeekToBegin();
-		pFileStadifi->SeekToBegin();
+		pFileStadif->Seek(0, FILE_BEGIN);
+		pFileStadifl->Seek(0, FILE_BEGIN);
+		pFileStadifi->Seek(0, FILE_BEGIN);
 
 		dwLength = pFileStadifl->GetLength();
 		dwRead = dwOffset = 0;

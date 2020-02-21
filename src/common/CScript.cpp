@@ -20,10 +20,10 @@ TCHAR *CScriptKey::GetArgStr(bool *fQuoted)
 	if ( *pszStr != '"' )
 		return pszStr;
 
-	pszStr++;
+	++pszStr;
 
 	// Search for last quote symbol starting from the end
-	for ( TCHAR *pszEnd = pszStr + strlen(pszStr) - 1; pszEnd >= pszStr; pszEnd-- )
+	for ( TCHAR *pszEnd = pszStr + strlen(pszStr) - 1; pszEnd >= pszStr; --pszEnd )
 	{
 		if ( *pszEnd == '"' )
 		{
@@ -86,7 +86,7 @@ TCHAR *CScriptKeyAlloc::GetKeyBufferRaw(size_t iLen)
 	// ARGS: iLen = length of the string to hold
 	if ( iLen > SCRIPT_MAX_LINE_LEN )
 		iLen = SCRIPT_MAX_LINE_LEN;
-	iLen++;		// add null
+	++iLen;		// add null
 
 	if ( m_Mem.GetDataLength() < iLen )
 		m_Mem.Alloc(iLen);
@@ -141,7 +141,7 @@ bool CScriptKeyAlloc::ParseKey(LPCTSTR pszKey, LPCTSTR pszVal)
 
 	if ( pszVal )
 	{
-		m_pszArg++;
+		++m_pszArg;
 		iLenVal = m_Mem.GetDataLength() - 2;
 		strcpylen(m_pszArg, pszVal, (iLenVal - iLenKey) + 1);
 	}
@@ -154,11 +154,10 @@ size_t CScriptKeyAlloc::ParseKeyEnd()
 	ADDTOCALLSTACK("CScriptKeyAlloc::ParseKeyEnd");
 	// Now parse the line for comments and trailing whitespace junk
 	// NOTE: leave leading whitespace for now
-
 	ASSERT(m_pszKey);
 
 	size_t iLen = 0;
-	for ( ; iLen < SCRIPT_MAX_LINE_LEN; iLen++ )
+	for ( ; iLen < SCRIPT_MAX_LINE_LEN; ++iLen )
 	{
 		TCHAR ch = m_pszKey[iLen];
 		if ( ch == '\0' )
@@ -218,7 +217,8 @@ bool CScript::Open(LPCTSTR pszFilename, UINT uFlags)
 {
 	ADDTOCALLSTACK("CScript::Open");
 	// If we are in read mode and we have no script file
-	// RETURN: true = success
+	// RETURN:
+	//  true = success
 
 	InitBase();
 
@@ -259,12 +259,9 @@ bool CScript::ReadTextLine(bool fRemoveBlanks)
 
 	while ( CCacheableScriptFile::ReadString(GetKeyBufferRaw(SCRIPT_MAX_LINE_LEN), SCRIPT_MAX_LINE_LEN) )
 	{
-		m_iLineNum++;
-		if ( fRemoveBlanks )
-		{
-			if ( ParseKeyEnd() <= 0 )
-				continue;
-		}
+		++m_iLineNum;
+		if ( fRemoveBlanks && (ParseKeyEnd() <= 0) )
+			continue;
 		return true;
 	}
 
@@ -275,11 +272,12 @@ bool CScript::ReadTextLine(bool fRemoveBlanks)
 bool CScript::FindTextHeader(LPCTSTR pszName)
 {
 	ADDTOCALLSTACK("CScript::FindTextHeader");
-	// RETURN: false = EOF reached
+	// RETURN:
+	//  false = EOF reached
 	ASSERT(pszName);
 	ASSERT(!IsBinaryMode());
 
-	SeekToBegin();
+	Seek(0, FILE_BEGIN);
 
 	size_t iLen = strlen(pszName);
 	ASSERT(iLen);
@@ -311,7 +309,8 @@ bool CScript::FindNextSection()
 {
 	ADDTOCALLSTACK("CScript::FindNextSection");
 	EXC_TRY("FindNextSection");
-	// RETURN: false = EOF reached
+	// RETURN:
+	//  false = EOF reached
 
 	if ( m_fSectionHead )	// we have read a section already (not at the start)
 	{
@@ -336,9 +335,9 @@ bool CScript::FindNextSection()
 
 foundit:
 	// Parse section name
-	m_pszKey++;
+	++m_pszKey;
 	size_t iLen = strlen(m_pszKey);
-	for ( size_t i = 0; i < iLen; i++ )
+	for ( size_t i = 0; i < iLen; ++i )
 	{
 		if ( m_pszKey[i] == ']' )
 		{
@@ -403,7 +402,7 @@ bool CScript::ReadKeyParse()
 			TCHAR *pszQuote = const_cast<TCHAR *>(strchr(pszArgs + 1, '"'));
 			if ( pszQuote )
 			{
-				pszArgs++;
+				++pszArgs;
 				*pszQuote = '\0';
 			}
 		}
