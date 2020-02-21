@@ -1750,4 +1750,5 @@ Fixed: Console not throwing some specific exception errors when the exception oc
 
 20-02-2020, Coruja
 Fixed: Function UNEXTRACT making server crash.
+Changed: Equipped items now will update timer using TIMERD (10x per sec) instead TIMER (1x per sec).
 [sphereCrypt.ini]: Added crypt key for classic client 7.0.84 and enhanced client 4.0.84

@@ -3560,20 +3560,15 @@ bool CChar::OnTick()
 	if ( !iTimeDiff )
 		return true;
 
-	if ( iTimeDiff >= TICK_PER_SEC )		// don't bother with < 1 sec timers on the checks below
+	EXC_SET("equipped items");
+	CItem *pItemNext = NULL;
+	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItemNext )
 	{
-		// Decay equipped items (memories/spells)
-		CItem *pItemNext = NULL;
-		for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItemNext )
-		{
-			EXC_TRYSUB("Ticking items");
-			pItemNext = pItem->GetNext();
-			if ( !pItem->IsTimerSet() || !pItem->IsTimerExpired() )
-				continue;
-			if ( !OnTickEquip(pItem) )
-				pItem->Delete();
-			EXC_CATCHSUB("Char");
-		}
+		pItemNext = pItem->GetNext();
+		if ( !pItem->IsTimerSet() || !pItem->IsTimerExpired() )
+			continue;
+		if ( !OnTickEquip(pItem) )
+			pItem->Delete();
 	}
 
 	if ( IsDisconnected() )
