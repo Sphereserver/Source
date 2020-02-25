@@ -4574,7 +4574,7 @@ PacketKREncryption::PacketKREncryption(const CClient* target) : PacketSend(PACKE
 /***************************************************************************
 *
 *
-*	Packet 0xE5 : PacketWaypointAdd			Add waypoint on KR/SA radar map
+*	Packet 0xE5 : PacketWaypointAdd			Add waypoint on radar map
 *
 *
 ***************************************************************************/
@@ -4608,7 +4608,7 @@ PacketWaypointAdd::PacketWaypointAdd(const CClient *target, CObjBase *object, MA
 /***************************************************************************
 *
 *
-*	Packet 0xE6 : PacketWaypointRemove		Remove waypoint on KR/SA radar map
+*	Packet 0xE6 : PacketWaypointRemove		Remove waypoint on radar map
 *
 *
 ***************************************************************************/

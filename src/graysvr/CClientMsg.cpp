@@ -1935,10 +1935,14 @@ void CClient::addMapDiff()
 void CClient::addMapWaypoint(CObjBase *pObj, MAPWAYPOINT_TYPE type)
 {
 	ADDTOCALLSTACK("CClient::addMapWaypoint");
-	// Add/remove map waypoints on enhanced clients
+	// Add/remove map waypoints
 
 	if ( type )
 	{
+		// Classic clients only support MAPWAYPOINT_Remove and MAPWAYPOINT_Healer
+		if ( (type != MAPWAYPOINT_Healer) && !m_NetState->isClientKR() && !m_NetState->isClientEnhanced() )
+			return;
+
 		if ( PacketWaypointAdd::CanSendTo(m_NetState) )
 			new PacketWaypointAdd(this, pObj, type);
 	}

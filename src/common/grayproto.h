@@ -589,6 +589,7 @@ enum NOTO_TYPE
 #define MINCLIVER_NEWCHATSYSTEM			7000400	// minimum client to use new chat system (7.0.4.0)
 #define MINCLIVER_GLOBALCHAT			7006202	// minimum client to use global chat system (7.0.62.2)
 #define MINCLIVER_PARRYCHANCETOOLTIP	7007472	// minimum client to use 'last parry chance' tooltip (7.0.74.72)
+#define MINCLIVER_MAPWAYPOINT			7008400	// minimum client to use map waypoints on classic client (7.0.84.0)
 
 // Client versions (packets)
 #define MINCLIVER_STATLOCKS				4000100	// minimum client to receive 0xBF.0x19.0x02 packet
