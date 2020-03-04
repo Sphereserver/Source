@@ -1096,7 +1096,9 @@ bool CClient::Cmd_Skill_Tracking(WORD wTrackType, bool fExec)
 				if ( (g_Cfg.m_iRacialFlags & RACIALF_ELF_DIFFTRACK) && pChar->IsElf() )
 					wTrackingSkill /= 2;			// elves are more difficult to track (Difficult to Track racial trait)
 
-				WORD wDivisor = maximum(pChar->Skill_GetBase(SKILL_HIDING) + pChar->Skill_GetBase(SKILL_STEALTH), 1);
+				WORD wDivisor = pChar->Skill_GetBase(SKILL_HIDING) + pChar->Skill_GetBase(SKILL_STEALTH);
+				if ( wDivisor < 1 )
+					wDivisor = 1;
 
 				int iChance;
 				if ( g_Cfg.m_iFeatureSE & FEATURE_SE_UPDATE )

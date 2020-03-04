@@ -390,7 +390,8 @@ bool CChar::Spell_Resurrection(CItemCorpse *pCorpse, CChar *pCharSrc, bool fNoFa
 		return false;
 	}
 
-	int iHits = IMULDIV(Stat_GetMax(STAT_STR), g_Cfg.m_iHitpointPercentOnRez, 100);
+	int iHits = Stat_GetMax(STAT_STR);
+	iHits = IMULDIV(iHits, g_Cfg.m_iHitpointPercentOnRez, 100);
 	if ( !pCorpse )
 		pCorpse = FindMyCorpse();
 
@@ -561,10 +562,15 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 			}
 			if ( (spell == SPELL_Polymorph) && IsSetMagicFlags(MAGICF_POLYMORPHSTATS) )
 			{
+				int iHits = Stat_GetVal(STAT_STR);
+				int iMaxHits = Stat_GetMax(STAT_STR);
+				int iStam = Stat_GetVal(STAT_DEX);
+				int iMaxStam = Stat_GetMax(STAT_DEX);
+
 				Stat_SpellEffect(STAT_STR, -pSpell->m_itSpell.m_PolyStr);
 				Stat_SpellEffect(STAT_DEX, -pSpell->m_itSpell.m_PolyDex);
-				Stat_SetVal(STAT_STR, minimum(Stat_GetVal(STAT_STR), Stat_GetMax(STAT_STR)));
-				Stat_SetVal(STAT_DEX, minimum(Stat_GetVal(STAT_DEX), Stat_GetMax(STAT_DEX)));
+				Stat_SetVal(STAT_STR, minimum(iHits, iMaxHits));
+				Stat_SetVal(STAT_DEX, minimum(iStam, iMaxStam));
 			}
 			StatFlag_Clear(STATF_Polymorph);
 			if ( m_pClient )
@@ -836,9 +842,12 @@ void CChar::Spell_Effect_Remove(CItem *pSpell)
 		{
 			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 			{
+				WORD wMagicResist = Skill_GetBase(SKILL_MAGICRESISTANCE) + pSpell->m_itSpell.m_PolyDex;
+				WORD wMagicResistMax = Skill_GetMax(SKILL_MAGICRESISTANCE, true);
+
 				m_ResPhysical += pSpell->m_itSpell.m_PolyStr;
 				m_FasterCasting += 2;
-				Skill_SetBase(SKILL_MAGICRESISTANCE, minimum(Skill_GetMax(SKILL_MAGICRESISTANCE, true), Skill_GetBase(SKILL_MAGICRESISTANCE) + static_cast<WORD>(pSpell->m_itSpell.m_PolyDex)));
+				Skill_SetBase(SKILL_MAGICRESISTANCE, minimum(wMagicResist, wMagicResistMax));
 			}
 			else
 			{
@@ -898,8 +907,10 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 		return;
 
 	CChar *pCaster = pSpell->m_uidLink.CharFind();
+	INT64 iTimerItem = pSpell->GetTimerAdjusted();
+
 	WORD wStatEffect = pSpell->m_itSpell.m_spelllevel;
-	WORD wTimerEffect = static_cast<WORD>(maximum(pSpell->GetTimerAdjusted(), 0));
+	WORD wTimerEffect = static_cast<WORD>(maximum(iTimerItem, 0));
 
 	if ( IsTrigUsed(TRIGGER_EFFECTADD) )
 	{
@@ -1083,11 +1094,13 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 				}
 				case SPELL_Stone_Form:
 				{
+					WORD wResistMax = (pCaster->Skill_GetBase(SKILL_MYSTICISM) + pCaster->Skill_GetBase(SKILL_IMBUING)) / 480;
+
 					m_atMagery.m_SummonID = CREID_STONE_FORM;
 					pSpell->m_itSpell.m_PolyStr = 10;		// Swing Speed Increase / Damage Increase
 					pSpell->m_itSpell.m_PolyDex = 2;		// Faster Casting
 					pSpell->m_itSpell.m_spellcharges = (pCaster->Skill_GetBase(SKILL_MYSTICISM) + pCaster->Skill_GetBase(SKILL_FOCUS)) / 240;		// All Resists
-					pSpell->m_itSpell.m_spelllevel = maximum(2, (pCaster->Skill_GetBase(SKILL_MYSTICISM) + pCaster->Skill_GetBase(SKILL_IMBUING)) / 480);		// All Resists Max
+					pSpell->m_itSpell.m_spelllevel = maximum(2, wResistMax);		// All Resists Max
 					m_SwingSpeedIncrease -= pSpell->m_itSpell.m_PolyStr;
 					m_FasterCasting -= pSpell->m_itSpell.m_PolyDex;
 					m_ResPhysical += pSpell->m_itSpell.m_spellcharges;
@@ -1241,7 +1254,8 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 
 			if ( m_pClient && IsSetOF(OF_Buffs) )
 			{
-				double dStamPenalty = 3 - (static_cast<double>(Stat_GetVal(STAT_DEX) / maximum(1, Stat_GetAdjusted(STAT_DEX))) * 2);
+				int iDex = Stat_GetAdjusted(STAT_DEX);
+				double dStamPenalty = 3 - (static_cast<double>(Stat_GetVal(STAT_DEX) / maximum(1, iDex)) * 2);
 				WORD wTimerTotal = 0;
 				for ( WORD w = 0; w < wStatEffect; ++w )
 					wTimerTotal += (wStatEffect - w) * TICK_PER_SEC;
@@ -1685,9 +1699,18 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 			WORD wMagicResist = 0;
 			if ( IsSetCombatFlags(COMBAT_ELEMENTAL_ENGINE) )
 			{
-				wStatEffect = minimum(75, (pCaster->Skill_GetBase(SKILL_EVALINT) + pCaster->Skill_GetBase(SKILL_MEDITATION) + pCaster->Skill_GetBase(SKILL_INSCRIPTION)) / 40);
+				wStatEffect = (pCaster->Skill_GetBase(SKILL_EVALINT) + pCaster->Skill_GetBase(SKILL_MEDITATION) + pCaster->Skill_GetBase(SKILL_INSCRIPTION)) / 40;
+				if ( wStatEffect > 75 )
+					wStatEffect = 75;
+
 				wPhysicalResist = 15 - (pCaster->Skill_GetBase(SKILL_INSCRIPTION) / 200);
-				wMagicResist = minimum(Skill_GetBase(SKILL_MAGICRESISTANCE), 350 - (Skill_GetBase(SKILL_INSCRIPTION) / 20));
+
+				wMagicResist = Skill_GetBase(SKILL_MAGICRESISTANCE);
+				int iInscription = 350 - (Skill_GetBase(SKILL_INSCRIPTION) / 20);
+				if ( iInscription < 0 )
+					iInscription = 0;
+				if ( wMagicResist > static_cast<WORD>(iInscription) )
+					wMagicResist = static_cast<WORD>(iInscription);
 
 				pSpell->m_itSpell.m_spelllevel = wStatEffect;
 				pSpell->m_itSpell.m_PolyStr = wPhysicalResist;
@@ -1758,8 +1781,10 @@ bool CChar::Spell_Equip_OnTick(CItem *pItem)
 			if ( 10 > Calc_GetRandVal(100) )
 				--pItem->m_itSpell.m_spellcharges;
 
-			Stat_SetVal(STAT_INT, maximum(0, Stat_GetVal(STAT_INT) - 1));
-			Stat_SetVal(STAT_DEX, maximum(0, Stat_GetVal(STAT_DEX) - 1));
+			int iMana = Stat_GetVal(STAT_INT) - 1;
+			int iStam = Stat_GetVal(STAT_DEX) - 1;
+			Stat_SetVal(STAT_INT, maximum(0, iMana));
+			Stat_SetVal(STAT_DEX, maximum(0, iStam));
 
 			if ( !Calc_GetRandVal(3) )
 			{
@@ -1818,9 +1843,12 @@ bool CChar::Spell_Equip_OnTick(CItem *pItem)
 				{
 					default:
 					case 0:	//Lesser
-						iDmg = IMULDIV(Stat_GetVal(STAT_STR), Calc_GetRandVal(4, 7), 100);	// damage is different for lesser: it gets value from current hp
+					{
+						int iHits = Stat_GetVal(STAT_STR);
+						iDmg = IMULDIV(iHits, Calc_GetRandVal(4, 7), 100);	// damage is different for lesser: it gets value from current hp
 						pItem->SetTimeout(20);
 						break;
+					}
 					case 1:	//Standard
 						pItem->SetTimeout(30);
 						break;
@@ -1868,7 +1896,8 @@ bool CChar::Spell_Equip_OnTick(CItem *pItem)
 					iLevel = 3;
 
 				pItem->m_itSpell.m_spelllevel -= 50;	// gets weaker too.	Only on old formulas
-				iDmg = IMULDIV(Stat_GetMax(STAT_STR), static_cast<LONGLONG>(iLevel) * 2, 100);
+				int iMaxHits = Stat_GetMax(STAT_STR);
+				iDmg = IMULDIV(iMaxHits, static_cast<LONGLONG>(iLevel) * 2, 100);
 				pItem->SetTimeout((5 + Calc_GetRandLLVal(4)) * TICK_PER_SEC);
 
 				static const LPCTSTR sm_szPoisonMsg[] =
@@ -1897,7 +1926,8 @@ bool CChar::Spell_Equip_OnTick(CItem *pItem)
 		}
 		case SPELL_Strangle:
 		{
-			double dStamPenalty = 3 - (static_cast<double>(Stat_GetVal(STAT_DEX) / maximum(1, Stat_GetAdjusted(STAT_DEX))) * 2);
+			int iDex = Stat_GetAdjusted(STAT_DEX);
+			double dStamPenalty = 3 - (static_cast<double>(Stat_GetVal(STAT_DEX) / maximum(1, iDex)) * 2);
 			int iDmg = static_cast<int>(Calc_GetRandVal(pItem->m_itSpell.m_spelllevel - 2, pItem->m_itSpell.m_spelllevel + 1) * dStamPenalty);
 			int iRemainingTicks = pItem->m_itSpell.m_spelllevel - pItem->m_itSpell.m_spellcharges;
 
@@ -2760,7 +2790,7 @@ bool CChar::Spell_CastDone()
 					int iDiff = (Stat_GetAdjusted(STAT_INT) - pChar->Stat_GetAdjusted(STAT_INT)) / 2;
 					if ( iDiff < 0 )
 					{
-						pChar = this;	// spell revereses !
+						pChar = this;	// spell reverses !
 						iDiff = -iDiff;
 					}
 					int iMax = pChar->Stat_GetMax(STAT_STR) / 2;
@@ -3188,7 +3218,12 @@ bool CChar::OnSpellEffect(SPELL_TYPE spell, CChar *pCharSrc, int iSkillLevel, CI
 
 			// Racial Bonus (Berserk), gargoyles gains +3% Spell Damage Increase per each 20 HP lost
 			if ( (g_Cfg.m_iRacialFlags & RACIALF_GARG_BERSERK) && IsGargoyle() )
-				iDamageBonus += minimum(3 * ((Stat_GetMax(STAT_STR) - Stat_GetVal(STAT_STR)) / 20), 12);		// value is capped at 12%
+			{
+				int iHitsBonus = 3 * ((Stat_GetMax(STAT_STR) - Stat_GetVal(STAT_STR)) / 20);
+				if ( iHitsBonus > 12 )		// value is capped at 12%
+					iHitsBonus = 12;
+				iDamageBonus += iHitsBonus;
+			}
 
 			iEffect += iEffect * iDamageBonus / 100;
 		}

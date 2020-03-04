@@ -1225,7 +1225,8 @@ bool CItemBase::r_LoadVal(CScript &s)
 			if ( !pItemMulti )
 				return false;
 
-			pItemMulti->m_SpeedMode = static_cast<BYTE>(minimum(maximum(s.GetArgVal(), 1), 4));
+			BYTE bVal = static_cast<BYTE>(s.GetArgVal());
+			pItemMulti->m_SpeedMode = minimum(maximum(1, bVal), 4);
 			break;
 		}
 		case IBC_SHIPSPEED:

@@ -389,8 +389,11 @@ CPointMap CSectorBase::GetBasePoint() const
 	// Get base point of the sector (upper left point)
 	ASSERT((m_index >= 0) && (m_index < g_MapList.GetSectorQty(m_map)));
 
-	int iSectorCols = maximum(1, g_MapList.GetSectorCols(m_map));
 	int iSectorSize = g_MapList.GetSectorSize(m_map);
+	int iSectorCols = g_MapList.GetSectorCols(m_map);
+	if ( iSectorCols < 1 )
+		iSectorCols = 1;
+
 	CPointMap pt(static_cast<signed short>((m_index % iSectorCols) * iSectorSize), static_cast<signed short>((m_index / iSectorCols) * iSectorSize), 0, static_cast<BYTE>(m_map));
 	return pt;
 }

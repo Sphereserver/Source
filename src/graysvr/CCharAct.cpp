@@ -1464,10 +1464,10 @@ bool CChar::ItemPickup(CItem *pItem, WORD wAmount)
 	if ( wAmountMax <= 0 )
 		return false;
 
-	if ( !wAmount || !pItem->Item_GetDef()->IsStackableType() )
-		wAmount = wAmountMax;	// it's not stackable, so we must pick up the entire amount
-	else
-		wAmount = maximum(1, minimum(wAmount, wAmountMax));
+	if ( !wAmount || (wAmount > wAmountMax) || !pItem->Item_GetDef()->IsStackableType() )
+		wAmount = wAmountMax;
+	else if ( wAmount < 1 )
+		wAmount = 1;
 
 	// Is it too heavy to even drag?
 	bool fDrop = false;
@@ -1546,7 +1546,10 @@ bool CChar::ItemPickup(CItem *pItem, WORD wAmount)
 	// Do stack dropping if items are stacked
 	if ( (trigger == ITRIG_PICKUP_GROUND) && IsSetEF(EF_ItemStackDrop) )
 	{
-		signed char iItemHeight = maximum(pItem->GetHeight(), 1);
+		signed char iItemHeight = static_cast<signed char>(pItem->GetHeight());
+		if ( iItemHeight < 1 )
+			iItemHeight = 1;
+
 		signed char iStackMaxZ = GetTopZ() + 16;
 		CItem *pStack = NULL;
 		CPointMap ptNewPlace = pItem->GetTopPoint();
@@ -1654,7 +1657,12 @@ bool CChar::ItemDrop(CItem *pItem, const CPointMap &pt)
 				break;
 			if ( (pStack->GetTopZ() < pt.m_z) || (pStack->GetTopZ() > pt.m_z + 20) )
 				continue;
-			ptStack.m_z += maximum(pStack->GetHeight(), 1);
+
+			signed char iStackHeight = static_cast<signed char>(pStack->GetHeight());
+			if ( iStackHeight < 1 )
+				iStackHeight = 1;
+
+			ptStack.m_z += iStackHeight;
 		}
 
 		if ( !CanSeeLOS(ptStack) )
@@ -2282,12 +2290,13 @@ bool CChar::SetPoison(int iSkill, int iTicks, CChar *pCharSrc)
 
 	if ( IsSetMagicFlags(MAGICF_OSIFORMULAS) )
 	{
+		int iMaxHits = Stat_GetMax(STAT_STR);
 		if ( iSkill >= 1000 )
 		{
-			if ( (GetDist(pCharSrc) < 3) && (Calc_GetRandVal(10) == 1) )
+			if ( (GetDist(pCharSrc) < 3) && !Calc_GetRandVal(10) )
 			{
 				// Lethal poison
-				pPoison->m_itSpell.m_pattern = static_cast<BYTE>(IMULDIV(Stat_GetMax(STAT_STR), Calc_GetRandVal(16, 33), 100));
+				pPoison->m_itSpell.m_pattern = static_cast<BYTE>(IMULDIV(iMaxHits, Calc_GetRandVal(16, 33), 100));
 				pPoison->m_itSpell.m_spelllevel = 4;
 				pPoison->m_itSpell.m_spellcharges = 80;		//1 min, 20 sec
 				pPoison->SetTimeout(50);
@@ -2295,7 +2304,7 @@ bool CChar::SetPoison(int iSkill, int iTicks, CChar *pCharSrc)
 			else
 			{
 				// Deadly poison
-				pPoison->m_itSpell.m_pattern = static_cast<BYTE>(IMULDIV(Stat_GetMax(STAT_STR), Calc_GetRandVal(15, 30), 100));
+				pPoison->m_itSpell.m_pattern = static_cast<BYTE>(IMULDIV(iMaxHits, Calc_GetRandVal(15, 30), 100));
 				pPoison->m_itSpell.m_spelllevel = 3;
 				pPoison->m_itSpell.m_spellcharges = 60;
 				pPoison->SetTimeout(50);
@@ -2304,7 +2313,7 @@ bool CChar::SetPoison(int iSkill, int iTicks, CChar *pCharSrc)
 		else if ( iSkill >= 850 )
 		{
 			// Greater poison
-			pPoison->m_itSpell.m_pattern = static_cast<BYTE>(IMULDIV(Stat_GetMax(STAT_STR), Calc_GetRandVal(7, 15), 100));
+			pPoison->m_itSpell.m_pattern = static_cast<BYTE>(IMULDIV(iMaxHits, Calc_GetRandVal(7, 15), 100));
 			pPoison->m_itSpell.m_spelllevel = 2;
 			pPoison->m_itSpell.m_spellcharges = 60;
 			pPoison->SetTimeout(40);
@@ -2312,7 +2321,7 @@ bool CChar::SetPoison(int iSkill, int iTicks, CChar *pCharSrc)
 		else if ( iSkill >= 600 )
 		{
 			// Poison
-			pPoison->m_itSpell.m_pattern = static_cast<BYTE>(IMULDIV(Stat_GetMax(STAT_STR), Calc_GetRandVal(5, 10), 100));
+			pPoison->m_itSpell.m_pattern = static_cast<BYTE>(IMULDIV(iMaxHits, Calc_GetRandVal(5, 10), 100));
 			pPoison->m_itSpell.m_spelllevel = 1;
 			pPoison->m_itSpell.m_spellcharges = 30;
 			pPoison->SetTimeout(30);

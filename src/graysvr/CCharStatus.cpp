@@ -407,10 +407,12 @@ CItemCorpse *CChar::FindMyCorpse(bool fIgnoreLOS, int iRadius) const
 int CChar::GetHealthPercent() const
 {
 	ADDTOCALLSTACK("CChar::GetHealthPercent");
-	int iStr = Stat_GetAdjusted(STAT_STR);
-	if ( !iStr )
+	int iMax = Stat_GetAdjusted(STAT_STR);
+	if ( !iMax )
 		return 0;
-	return IMULDIV(Stat_GetVal(STAT_STR), 100, iStr);
+
+	int iVal = Stat_GetVal(STAT_STR);
+	return IMULDIV(iVal, 100, iMax);
 }
 
 bool CChar::IsSwimming() const
@@ -576,7 +578,9 @@ int CChar::Food_GetLevelPercent() const
 	int iMax = Stat_GetMax(STAT_FOOD);
 	if ( !iMax )
 		return 100;
-	return IMULDIV(Stat_GetVal(STAT_FOOD), 100, iMax);
+
+	int iVal = Stat_GetVal(STAT_FOOD);
+	return IMULDIV(iVal, 100, iMax);
 }
 
 LPCTSTR CChar::Food_GetLevelMessage() const
@@ -598,7 +602,8 @@ LPCTSTR CChar::Food_GetLevelMessage() const
 	int iMax = Stat_GetMax(STAT_FOOD);
 	if ( iMax )
 	{
-		int i = IMULDIV(Stat_GetVal(STAT_FOOD), iQty, iMax);
+		int iVal = Stat_GetVal(STAT_FOOD);
+		int i = IMULDIV(iVal, iQty, iMax);
 		if ( i < 0 )
 			i = 0;
 		else if ( static_cast<size_t>(i) >= iQty )
@@ -984,7 +989,11 @@ bool CChar::CanSeeLOS_Adv(const CPointMap &ptDst, CPointMap *pptBlock, int iMaxD
 	if ( ptSrc == ptDst )
 		return true;
 
-	ptSrc.m_z = minimum(ptSrc.m_z + GetHeightMount(), UO_SIZE_Z);
+	signed char iHeightZ = ptSrc.m_z + GetHeightMount();
+	if ( iHeightZ > UO_SIZE_Z )
+		iHeightZ = UO_SIZE_Z;
+
+	ptSrc.m_z = iHeightZ;
 	WARNLOS(("Total Z: %hhd\n", ptSrc.m_z));
 
 	signed short dx = ptDst.m_x - ptSrc.m_x;
@@ -1145,7 +1154,12 @@ bool CChar::CanSeeLOS_Adv(const CPointMap &ptDst, CPointMap *pptBlock, int iMaxD
 						for ( BYTE posy = pos_y; (abs(defx - UO_BLOCK_OFFSET(pos_x)) <= 1) && (pos_x <= 7); ++pos_x )
 						{
 							for ( pos_y = posy; (abs(defy - UO_BLOCK_OFFSET(pos_y)) <= 1) && (pos_y <= 7); ++pos_y )
-								min_z = minimum(min_z, pBlock->GetTerrain(pos_x, pos_y)->m_z);
+							{
+								signed char iTerrainZ = pBlock->GetTerrain(pos_x, pos_y)->m_z;
+								if ( iTerrainZ > min_z )
+									iTerrainZ = min_z;
+								min_z = iTerrainZ;
+							}
 						}
 
 						WARNLOS(("Terrain %hu - min:%hhd max:%hhd\n", wTerrainId, min_z, max_z));
@@ -1481,7 +1495,12 @@ bool CChar::CanSeeLOS(const CObjBaseTemplate *pObj, WORD wFlags) const
 		CPointMap pt = pObj->GetTopPoint();
 		const CChar *pChar = dynamic_cast<const CChar *>(pObj);
 		if ( pChar )
-			pt.m_z = minimum(pt.m_z + pChar->GetHeightMount(), UO_SIZE_Z);
+		{
+			int iHeight = pt.m_z + pChar->GetHeightMount();
+			if ( iHeight > UO_SIZE_Z )
+				iHeight = UO_SIZE_Z;
+			pt.m_z = static_cast<signed char>(iHeight);
+		}
 		return CanSeeLOS_Adv(pt, NULL, UO_MAP_VIEW_SIGHT, wFlags);
 	}
 	return CanSeeLOS(pObj->GetTopPoint(), NULL, UO_MAP_VIEW_SIGHT, wFlags);

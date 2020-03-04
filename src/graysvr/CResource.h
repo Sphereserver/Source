@@ -175,7 +175,8 @@ public:
 	int GetLinear(int iPercent) const
 	{
 		// ARGS: iPercent = 0-1000
-		return static_cast<int>(m_iLo) + IMULDIV(GetRange(), iPercent, 1000);
+		const int iRange = GetRange();
+		return static_cast<int>(m_iLo) + IMULDIV(iRange, iPercent, 1000);
 	}
 	int GetRandom() const
 	{

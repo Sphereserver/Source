@@ -701,15 +701,21 @@ void CChar::CreateNewCharCheck()
 		{
 			if ( !m_exp )
 			{
+				WORD wHighestSkill = Skill_GetBase(SKILL_ARCHERY);
+				if ( Skill_GetBase(SKILL_SWORDSMANSHIP) > wHighestSkill )
+					wHighestSkill = Skill_GetBase(SKILL_SWORDSMANSHIP);
+				else if ( Skill_GetBase(SKILL_MACEFIGHTING) > wHighestSkill )
+					wHighestSkill = Skill_GetBase(SKILL_MACEFIGHTING);
+				else if ( Skill_GetBase(SKILL_FENCING) > wHighestSkill )
+					wHighestSkill = Skill_GetBase(SKILL_FENCING);
+				else if ( Skill_GetBase(SKILL_WRESTLING) > wHighestSkill )
+					wHighestSkill = Skill_GetBase(SKILL_WRESTLING);
+				else if ( Skill_GetBase(SKILL_THROWING) > wHighestSkill )
+					wHighestSkill = Skill_GetBase(SKILL_THROWING);
+
 				CCharBase *pCharDef = Char_GetDef();
 				int iMult = (Stat_GetMax(STAT_STR) + (Stat_GetMax(STAT_DEX) / 2) + Stat_GetMax(STAT_INT)) / 3;
-				m_exp = maximum(Skill_GetBase(SKILL_ARCHERY),
-						maximum(Skill_GetBase(SKILL_THROWING),
-						maximum(Skill_GetBase(SKILL_SWORDSMANSHIP),
-						maximum(Skill_GetBase(SKILL_MACEFIGHTING),
-						maximum(Skill_GetBase(SKILL_FENCING),
-						Skill_GetBase(SKILL_WRESTLING))))))
-						+
+				m_exp = wHighestSkill +
 						(Skill_GetBase(SKILL_TACTICS) / 4) +
 						(Skill_GetBase(SKILL_PARRYING) / 4) +
 						(Skill_GetBase(SKILL_MAGERY) / 3) +
@@ -2661,8 +2667,11 @@ bool CChar::r_LoadVal(CScript &s)
 			m_sTitle = s.GetArgStr();
 			break;
 		case CHC_LIGHT:
-			m_LocalLight = static_cast<BYTE>(minimum(maximum(s.GetArgVal(), LIGHT_BRIGHT), LIGHT_DARK));
+		{
+			BYTE bVal = static_cast<BYTE>(s.GetArgVal());
+			m_LocalLight = minimum(maximum(LIGHT_BRIGHT, bVal), LIGHT_DARK);
 			break;
+		}
 		case CHC_EXP:
 			m_exp = s.GetArgVal();
 			ChangeExperience();

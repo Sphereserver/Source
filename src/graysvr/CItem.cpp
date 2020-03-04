@@ -4511,13 +4511,17 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	if ( (iEffectID > ITEMID_NOTHING) && (iEffectID < ITEMID_QTY) )
 	{
 		bool fExplode = (pSpellDef->IsSpellType(SPELLFLAG_FX_BOLT) && !pSpellDef->IsSpellType(SPELLFLAG_GOOD));		// bolt (chasing) spells have explode = 1 by default (if not good spell)
-		HUE_TYPE wColor = static_cast<HUE_TYPE>(maximum(0, Args.m_VarsLocal.GetKeyNum("EffectColor")));
-		DWORD dwRender = static_cast<DWORD>(maximum(0, Args.m_VarsLocal.GetKeyNum("EffectRender")));
+		INT64 iColor = Args.m_VarsLocal.GetKeyNum("EffectColor");
+		if ( iColor < 0 )
+			iColor = 0;
+		INT64 iRender = Args.m_VarsLocal.GetKeyNum("EffectRender");
+		if ( iRender < 0 )
+			iRender = 0;
 
 		if ( pSpellDef->IsSpellType(SPELLFLAG_FX_BOLT) )
-			Effect(EFFECT_BOLT, iEffectID, pCharSrc, 5, 1, fExplode, wColor, dwRender);
+			Effect(EFFECT_BOLT, iEffectID, pCharSrc, 5, 1, fExplode, static_cast<DWORD>(iColor), static_cast<DWORD>(iRender));
 		if ( pSpellDef->IsSpellType(SPELLFLAG_FX_TARG) )
-			Effect(EFFECT_OBJ, iEffectID, this, 0, 15, fExplode, wColor, dwRender);
+			Effect(EFFECT_OBJ, iEffectID, this, 0, 15, fExplode, static_cast<DWORD>(iColor), static_cast<DWORD>(iRender));
 	}
 
 	// ??? Potions should explode when hit (etc..)

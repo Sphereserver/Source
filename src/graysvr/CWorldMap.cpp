@@ -188,8 +188,12 @@ CPointMap CWorld::FindTypeNear_Top(const CPointMap &pt, IT_TYPE type, int iDist)
 				iHeight = pItemDef->GetHeight();
 			}
 		}
-		z = minimum(iHeight + pItem->GetTopPoint().m_z, UO_SIZE_Z);		// Z + height = top point
 
+		int iTopZ = pItem->GetTopPoint().m_z + iHeight;
+		if ( iTopZ > UO_SIZE_Z )
+			iTopZ = UO_SIZE_Z;
+
+		z = static_cast<BYTE>(iTopZ);
 		if ( ptElem[0].m_z > z )
 			continue;
 		if ( (pt.m_z - z < -RESOURCE_Z_CHECK) || (z - pt.m_z > RESOURCE_Z_CHECK) )

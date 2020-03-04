@@ -450,7 +450,10 @@ void CChar::Noto_Fame(int iFameChange)
 	if ( !iFameChange )
 		return;
 
-	int iFame = maximum(Stat_GetAdjusted(STAT_FAME), 0);
+	int iFame = Stat_GetAdjusted(STAT_FAME);
+	if ( iFame < 0 )
+		iFame = 0;
+
 	if ( iFameChange > 0 )
 	{
 		if ( iFame + iFameChange > g_Cfg.m_iMaxFame )
@@ -2058,7 +2061,12 @@ int CChar::Fight_CalcDamage(const CItem *pWeapon, bool fNoRandom, bool fGetMax) 
 
 		// Racial bonus (Berserk), gargoyles gains +15% Damage Increase per each 20 HP lost
 		if ( (g_Cfg.m_iRacialFlags & RACIALF_GARG_BERSERK) && IsGargoyle() )
-			iDmgBonus += minimum(15 * ((Stat_GetMax(STAT_STR) - Stat_GetVal(STAT_STR)) / 20), 60);		// value is capped at 60%
+		{
+			int iHitsBonus = 15 * ((Stat_GetMax(STAT_STR) - Stat_GetVal(STAT_STR)) / 20);
+			if ( iHitsBonus > 60 )		// value is capped at 60%
+				iHitsBonus = 60;
+			iDmgBonus += iHitsBonus;
+		}
 
 		// Horrific Beast (necro spell) add +25% Damage Increase
 		if ( g_Cfg.m_iFeatureAOS & FEATURE_AOS_UPDATE_B )
@@ -2725,7 +2733,9 @@ WAR_SWING_TYPE CChar::Fight_Hit(CChar *pCharTarg)
 
 			iSwingDelay = static_cast<int>(maximum(0, Args.m_iN1));
 			anim = static_cast<ANIM_TYPE>(Args.m_VarsLocal.GetKeyNum("Anim"));
-			animDelay = static_cast<int>(maximum(0, Args.m_VarsLocal.GetKeyNum("AnimDelay")));
+			animDelay = static_cast<int>(Args.m_VarsLocal.GetKeyNum("AnimDelay"));
+			if ( animDelay < 0 )
+				animDelay = 0;
 		}
 
 		m_atFight.m_Swing_State = WAR_SWING_SWINGING;

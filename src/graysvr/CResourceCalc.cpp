@@ -46,14 +46,17 @@ int CResource::Calc_CombatAttackSpeed(CChar *pChar, CItem *pWeapon)
 			// Sphere custom formula	(default m_iSpeedScaleFactor = 15000, uses DEX instead STAM and calculate delay using weapon WEIGHT if weapon SPEED is not set)
 			if ( pWeapon && bBaseSpeed )
 			{
-				int iSwingSpeed = maximum(1, (pChar->Stat_GetAdjusted(STAT_DEX) + 100) * bBaseSpeed);
+				int iSwingSpeed = (pChar->Stat_GetAdjusted(STAT_DEX) + 100) * bBaseSpeed;
+				if ( iSwingSpeed < 1 )
+					iSwingSpeed = 1;
 				iSwingSpeed = (g_Cfg.m_iSpeedScaleFactor * TICK_PER_SEC) / iSwingSpeed;
 				if ( iSwingSpeed < 5 )
 					iSwingSpeed = 5;
 				return iSwingSpeed;
 			}
 
-			int iSwingSpeed = IMULDIV(100 - static_cast<LONGLONG>(pChar->Stat_GetAdjusted(STAT_DEX)), 40, 100);	// base speed is just the char DEX range (0 ~ 40)
+			int iDex = 100 - pChar->Stat_GetAdjusted(STAT_DEX);
+			int iSwingSpeed = IMULDIV(iDex, 40, 100);	// base speed is just the char DEX range (0 ~ 40)
 			if ( iSwingSpeed < 5 )
 				iSwingSpeed = 5;
 			else
@@ -74,7 +77,9 @@ int CResource::Calc_CombatAttackSpeed(CChar *pChar, CItem *pWeapon)
 		case 1:
 		{
 			// pre-AOS formula	(default m_iSpeedScaleFactor = 15000)
-			int iSwingSpeed = maximum(1, (pChar->Stat_GetVal(STAT_DEX) + 100) * bBaseSpeed);
+			int iSwingSpeed = (pChar->Stat_GetVal(STAT_DEX) + 100) * bBaseSpeed;
+			if ( iSwingSpeed < 1 )
+				iSwingSpeed = 1;
 			iSwingSpeed = (g_Cfg.m_iSpeedScaleFactor * TICK_PER_SEC) / iSwingSpeed;
 			if ( iSwingSpeed < 1 )
 				iSwingSpeed = 1;
@@ -84,8 +89,9 @@ int CResource::Calc_CombatAttackSpeed(CChar *pChar, CItem *pWeapon)
 		case 2:
 		{
 			// AOS formula		(default m_iSpeedScaleFactor = 40000)
-			int iSwingSpeed = (pChar->Stat_GetVal(STAT_DEX) + 100) * bBaseSpeed;
-			iSwingSpeed = maximum(1, iSwingSpeed * (100 + pChar->m_SwingSpeedIncrease) / 100);
+			int iSwingSpeed = ((pChar->Stat_GetVal(STAT_DEX) + 100) * bBaseSpeed) * (100 + pChar->m_SwingSpeedIncrease) / 100;
+			if ( iSwingSpeed < 1 )
+				iSwingSpeed = 1;
 			iSwingSpeed = ((g_Cfg.m_iSpeedScaleFactor * TICK_PER_SEC) / iSwingSpeed) / 2;
 			if ( iSwingSpeed < 12 )		//1.25
 				iSwingSpeed = 12;
@@ -95,7 +101,9 @@ int CResource::Calc_CombatAttackSpeed(CChar *pChar, CItem *pWeapon)
 		case 3:
 		{
 			// SE formula		(default m_iSpeedScaleFactor = 80000)
-			int iSwingSpeed = maximum(1, bBaseSpeed * (100 + pChar->m_SwingSpeedIncrease) / 100);
+			int iSwingSpeed = bBaseSpeed * (100 + pChar->m_SwingSpeedIncrease) / 100;
+			if ( iSwingSpeed < 1 )
+				iSwingSpeed = 1;
 			iSwingSpeed = (g_Cfg.m_iSpeedScaleFactor / ((pChar->Stat_GetVal(STAT_DEX) + 100) * iSwingSpeed)) - 2;	// get speed in ticks of 0.25s each
 			if ( iSwingSpeed < 5 )
 				iSwingSpeed = 5;
@@ -283,7 +291,8 @@ int CResource::Calc_StealingItem(CChar *pCharThief, CItem *pItem, CChar *pCharMa
 	ASSERT(pCharMark);
 
 	int iDexMark = pCharMark->Stat_GetAdjusted(STAT_DEX);
-	int iDifficulty = (pCharMark->Skill_GetAdjusted(SKILL_STEALING) / 5) + Calc_GetRandVal(iDexMark / 2) + IMULDIV(pItem->GetWeight(), 4, WEIGHT_UNITS);
+	int iWeight = pItem->GetWeight();
+	int iDifficulty = (pCharMark->Skill_GetAdjusted(SKILL_STEALING) / 5) + Calc_GetRandVal(iDexMark / 2) + IMULDIV(iWeight, 4, WEIGHT_UNITS);
 
 	if ( pItem->IsItemEquipped() )
 		iDifficulty += iDexMark / 2 + pCharMark->Stat_GetAdjusted(STAT_INT);		// this is REALLY HARD to do
@@ -338,8 +347,11 @@ LPCTSTR CResource::Calc_MaptoSextant(CPointMap pt)
 	CPointMap ptCenter;
 	ptCenter.Read(strncpy(pszArgs, g_Cfg.m_sZeroPoint, 16));
 
-	int iLat = (pt.m_y - ptCenter.m_y) * 360 * 60 / maximum(1, g_MapList.GetY(ptCenter.m_map));
-	int iLong = (pt.m_x - ptCenter.m_x) * 360 * 60 / ((pt.m_map <= 1) ? UO_SIZE_X_REAL : maximum(1, g_MapList.GetX(pt.m_map)));
+	int iLat = g_MapList.GetY(ptCenter.m_map);
+	iLat = (pt.m_y - ptCenter.m_y) * 360 * 60 / maximum(1, iLat);
+
+	int iLong = g_MapList.GetX(pt.m_map);
+	iLong = (pt.m_x - ptCenter.m_x) * 360 * 60 / ((pt.m_map <= 1) ? UO_SIZE_X_REAL : maximum(1, iLong));
 
 	TCHAR *pszCoords = Str_GetTemp();
 	sprintf(pszCoords, "%do %d'%s, %do %d'%s", abs(iLat / 60), abs(iLat % 60), (iLat <= 0) ? "N" : "S", abs(iLong / 60), abs(iLong % 60), (iLong >= 0) ? "E" : "W");

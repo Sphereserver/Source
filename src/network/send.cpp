@@ -290,7 +290,8 @@ PacketHealthBarInfo::PacketHealthBarInfo(const CClient *target, CObjBase *object
 		if ( objectChar )
 		{
 			canRename = objectChar->NPC_IsOwnedBy(character);
-			writeInt16(static_cast<WORD>((objectChar->Stat_GetVal(STAT_STR) * 100) / maximum(objectChar->Stat_GetMax(STAT_STR), 1)));
+			int iMaxHits = objectChar->Stat_GetMax(STAT_STR);
+			writeInt16(static_cast<WORD>((objectChar->Stat_GetVal(STAT_STR) * 100) / maximum(iMaxHits, 1)));
 		}
 		else
 		{
@@ -2757,8 +2758,9 @@ PacketHealthUpdate::PacketHealthUpdate(const CChar* character, bool full) : Pack
 	}
 	else
 	{
+		int iMaxHits = character->Stat_GetMax(STAT_STR);
 		writeInt16(100);
-		writeInt16(static_cast<WORD>((character->Stat_GetVal(STAT_STR) * 100) / maximum(character->Stat_GetMax(STAT_STR), 1)));
+		writeInt16(static_cast<WORD>((character->Stat_GetVal(STAT_STR) * 100) / maximum(iMaxHits, 1)));
 	}
 }
 
@@ -2783,8 +2785,9 @@ PacketManaUpdate::PacketManaUpdate(const CChar* character, bool full) : PacketSe
 	}
 	else
 	{
+		int iMaxMana = character->Stat_GetMax(STAT_INT);
 		writeInt16(100);
-		writeInt16(static_cast<WORD>((character->Stat_GetVal(STAT_INT) * 100) / maximum(character->Stat_GetMax(STAT_INT), 1)));
+		writeInt16(static_cast<WORD>((character->Stat_GetVal(STAT_INT) * 100) / maximum(iMaxMana, 1)));
 	}
 }
 
@@ -2809,8 +2812,9 @@ PacketStaminaUpdate::PacketStaminaUpdate(const CChar* character, bool full) : Pa
 	}
 	else
 	{
+		int iMaxStam = character->Stat_GetMax(STAT_DEX);
 		writeInt16(100);
-		writeInt16(static_cast<WORD>((character->Stat_GetVal(STAT_DEX) * 100) / maximum(character->Stat_GetMax(STAT_DEX), 1)));
+		writeInt16(static_cast<WORD>((character->Stat_GetVal(STAT_DEX) * 100) / maximum(iMaxStam, 1)));
 	}
 }
 
@@ -2922,17 +2926,18 @@ void PacketServerList::writeServerEntry(const CServerRef &server, WORD index, bo
 {
 	ADDTOCALLSTACK("PacketServerList::writeServerEntry");
 
-	BYTE percentFull = 0;
 	DWORD ip = server->m_ip.GetAddrIP();
-
+	DWORD dwPercentFull = 0;
 	if (server == &g_Serv)
-		percentFull = static_cast<BYTE>(minimum((server->StatGet(SERV_STAT_CLIENTS) * 100) / maximum(1, g_Cfg.m_iClientsMax), 100));
-	else
-		percentFull = static_cast<BYTE>(minimum(server->StatGet(SERV_STAT_CLIENTS), 100));
+	{
+		dwPercentFull = (server->StatGet(SERV_STAT_CLIENTS) * 100) / maximum(1, g_Cfg.m_iClientsMax);
+		if ( dwPercentFull > 100 )
+			dwPercentFull = 100;
+	}
 
 	writeInt16(index);
 	writeStringFixedASCII(server->GetName(), MAX_SERVER_NAME_SIZE);
-	writeByte(percentFull);
+	writeByte(static_cast<BYTE>(dwPercentFull));
 	writeByte(server->m_TimeZone);
 
 	if (reverseIp)

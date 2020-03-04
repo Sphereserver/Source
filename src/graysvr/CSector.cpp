@@ -391,9 +391,16 @@ int CSector::GetLocalTime() const
 	int iLocalTime = g_World.GetGameWorldTime();
 
 	if ( g_Cfg.m_bAllowLightOverride )
-		iLocalTime += (pt.m_x / maximum(1, g_MapList.GetSectorSize(pt.m_map))) * ((24 * 60) / maximum(1, g_MapList.GetSectorCols(pt.m_map)));
+	{
+		int iSectorSize = g_MapList.GetSectorSize(pt.m_map);
+		int iSectorCols = g_MapList.GetSectorCols(pt.m_map);
+		iLocalTime += (pt.m_x / maximum(1, iSectorSize)) * ((24 * 60) / maximum(1, iSectorCols));
+	}
 	else
-		iLocalTime += (pt.m_x * 24 * 60) / maximum(1, g_MapList.GetX(pt.m_map));
+	{
+		int iSizeX = g_MapList.GetX(pt.m_map);
+		iLocalTime += (pt.m_x * 24 * 60) / maximum(1, iSizeX);
+	}
 
 	return iLocalTime % (24 * 60);
 }

@@ -2086,10 +2086,11 @@ unsigned int CWorld::GetMoonPhase(bool fMoonIndex) const
 	//	Phase = --------------------------- * 8
 	//			       SynodicPeriod
 
+	DWORD dwTime = GetGameWorldTime();
 	if ( fMoonIndex )
-		return IMULDIV(GetGameWorldTime() % FELUCCA_SYNODIC_PERIOD, 8, FELUCCA_SYNODIC_PERIOD);
+		return IMULDIV(dwTime % FELUCCA_SYNODIC_PERIOD, 8, FELUCCA_SYNODIC_PERIOD);
 	else
-		return IMULDIV(GetGameWorldTime() % TRAMMEL_SYNODIC_PERIOD, 8, TRAMMEL_SYNODIC_PERIOD);
+		return IMULDIV(dwTime % TRAMMEL_SYNODIC_PERIOD, 8, TRAMMEL_SYNODIC_PERIOD);
 }
 
 void CWorld::OnTick()

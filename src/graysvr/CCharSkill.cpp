@@ -221,10 +221,19 @@ int CChar::Stat_GetAdjusted(STAT_TYPE stat) const
 	ADDTOCALLSTACK("CChar::Stat_GetAdjusted");
 	int iVal = Stat_GetBase(stat) + Stat_GetMod(stat);
 	if ( stat == STAT_KARMA )
-		iVal = maximum(g_Cfg.m_iMinKarma, minimum(g_Cfg.m_iMaxKarma, iVal));
+	{
+		if ( iVal < g_Cfg.m_iMinKarma )
+			iVal = g_Cfg.m_iMinKarma;
+		else if ( iVal > g_Cfg.m_iMaxKarma )
+			iVal = g_Cfg.m_iMaxKarma;
+	}
 	else if ( stat == STAT_FAME )
-		iVal = maximum(0, minimum(g_Cfg.m_iMaxFame, iVal));
-
+	{
+		if ( iVal < 0 )
+			iVal = 0;
+		else if ( iVal > g_Cfg.m_iMaxFame )
+			iVal = g_Cfg.m_iMaxFame;
+	}
 	return iVal;
 }
 
@@ -483,12 +492,24 @@ WORD CChar::Skill_GetAdjusted(SKILL_TYPE skill) const
 	// which is 58 in total.
 
 	ASSERT(IsSkillBase(skill));
-	const CSkillDef *pSkillDef = g_Cfg.GetSkillDef(skill);
 	WORD wAdjSkill = 0;
 
+	const CSkillDef *pSkillDef = g_Cfg.GetSkillDef(skill);
 	if ( pSkillDef )
 	{
-		int iPureBonus = (pSkillDef->m_StatBonus[STAT_STR] * maximum(0, Stat_GetAdjusted(STAT_STR))) + (pSkillDef->m_StatBonus[STAT_INT] * maximum(0, Stat_GetAdjusted(STAT_INT))) + (pSkillDef->m_StatBonus[STAT_DEX] * maximum(0, Stat_GetAdjusted(STAT_DEX)));
+		int iStr = Stat_GetAdjusted(STAT_STR);
+		if ( iStr < 0 )
+			iStr = 0;
+
+		int iInt = Stat_GetAdjusted(STAT_INT);
+		if ( iInt < 0 )
+			iInt = 0;
+
+		int iDex = Stat_GetAdjusted(STAT_DEX);
+		if ( iDex < 0 )
+			iDex = 0;
+
+		int iPureBonus = (pSkillDef->m_StatBonus[STAT_STR] * iStr) + (pSkillDef->m_StatBonus[STAT_INT] * iInt) + (pSkillDef->m_StatBonus[STAT_DEX] * iDex);
 		wAdjSkill = static_cast<WORD>(IMULDIV(pSkillDef->m_StatPercent, iPureBonus, 10000));
 	}
 
@@ -1431,7 +1452,8 @@ bool CChar::Skill_SmeltOre(CItem *pOre)
 
 	if ( !Skill_CheckSuccess(SKILL_MINING, pIngotDef->m_ttIngot.m_iSkillReq / 10) )
 	{
-		pOre->ConsumeAmount(maximum(1, (pOre->GetAmount() / 2)));
+		WORD wAmountFail = pOre->GetAmount() / 2;
+		pOre->ConsumeAmount(maximum(1, wAmountFail));
 		SysMessageDefault(DEFMSG_SMELT_FAIL);
 		return false;
 	}
@@ -3806,7 +3828,8 @@ bool CChar::Skill_Start(SKILL_TYPE skill)
 		{
 			// read crafting parameters
 			pResBase.SetPrivateUID(static_cast<DWORD>(pArgs.m_VarsLocal.GetKeyNum("CraftItemdef")));
-			m_atCreate.m_Stroke_Count = static_cast<WORD>(maximum(1, pArgs.m_VarsLocal.GetKeyNum("CraftStrokeCnt")));
+			INT64 iStrokeCount = pArgs.m_VarsLocal.GetKeyNum("CraftStrokeCnt");
+			m_atCreate.m_Stroke_Count = static_cast<WORD>(maximum(1, iStrokeCount));
 			m_atCreate.m_ItemID = static_cast<ITEMID_TYPE>(pResBase.GetResIndex());
 			m_atCreate.m_Amount = static_cast<WORD>(pArgs.m_VarsLocal.GetKeyNum("CraftAmount"));
 		}

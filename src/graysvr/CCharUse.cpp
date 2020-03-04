@@ -784,7 +784,8 @@ bool CChar::Use_Eat(CItem *pItem, WORD wQty)
 		return false;
 	}
 
-	if ( Stat_GetVal(STAT_FOOD) >= iMaxFood )
+	int iFood = Stat_GetVal(STAT_FOOD);
+	if ( iFood >= iMaxFood )
 	{
 		SysMessageDefault(DEFMSG_FOOD_CANTEATF);
 		return false;
@@ -792,7 +793,7 @@ bool CChar::Use_Eat(CItem *pItem, WORD wQty)
 
 	Use_EatQty(pItem, wQty);
 
-	int index = IMULDIV(Stat_GetVal(STAT_FOOD), 5, iMaxFood);
+	int index = IMULDIV(iFood, 5, iMaxFood);
 	switch ( index )
 	{
 		case 0:

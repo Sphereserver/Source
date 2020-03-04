@@ -408,10 +408,10 @@ int CClient::Cmd_Extract(CScript *pScript, CRectMap &rect, signed char &zLowest)
 	// Extract Multi's ???
 
 	// Extract dynamics as well
-	int rx = 1 + abs(rect.m_right - rect.m_left) / 2;
-	int ry = 1 + abs(rect.m_bottom - rect.m_top) / 2;
+	int iRectWidth = 1 + abs(rect.m_right - rect.m_left) / 2;
+	int iRectHeight = 1 + abs(rect.m_bottom - rect.m_top) / 2;
 
-	CWorldSearch AreaItem(ptCtr, maximum(rx, ry));
+	CWorldSearch AreaItem(ptCtr, maximum(iRectWidth, iRectHeight));
 	for (;;)
 	{
 		CItem *pItem = AreaItem.GetItem();
@@ -465,9 +465,9 @@ void CClient::OnTarg_Tile(CObjBase *pObj, const CPointMap &pt)
 	CPointMap ptCtr = rect.GetCenter();
 	ptCtr.m_map = pt.m_map;
 
-	int rx = 1 + abs(rect.m_right - rect.m_left) / 2;
-	int ry = 1 + abs(rect.m_bottom - rect.m_top) / 2;
-	int iRadius = maximum(rx, ry);
+	int iRectWidth = 1 + abs(rect.m_right - rect.m_left) / 2;
+	int iRectHeight = 1 + abs(rect.m_bottom - rect.m_top) / 2;
+	int iRadius = maximum(iRectWidth, iRectHeight);
 	int iCount = 0;
 
 	switch ( m_tmTile.m_Code )
@@ -672,7 +672,8 @@ int CClient::OnSkill_AnimalLore(CGrayUID uid, bool fTest)
 		int iMax = pChar->Stat_GetMax(STAT_FOOD);
 		if ( iMax )
 		{
-			int i = IMULDIV(pChar->Stat_GetVal(STAT_FOOD), iQty, iMax);
+			int iFood = pChar->Stat_GetVal(STAT_FOOD);
+			int i = IMULDIV(iFood, iQty, iMax);
 			if ( i < 0 )
 				i = 0;
 			else if ( static_cast<size_t>(i) >= iQty )
@@ -800,7 +801,11 @@ int CClient::OnSkill_EvalInt(CGrayUID uid, bool fTest)
 	WORD wSkill = m_pChar->Skill_GetBase(SKILL_EVALINT);
 	if ( wSkill >= 760 )
 	{
-		int iMana = ((pChar->Stat_GetVal(STAT_INT) * 100) / maximum(pChar->Stat_GetMax(STAT_INT), 1)) / 10;
+		int iMaxMana = pChar->Stat_GetMax(STAT_INT);
+		if ( iMaxMana < 1 )
+			iMaxMana = 1;
+
+		int iMana = ((pChar->Stat_GetVal(STAT_INT) * 100) / iMaxMana) / 10;
 		if ( iMana < 0 )
 			iMana = 0;
 		else if ( static_cast<size_t>(iMana) >= COUNTOF(sm_szPercentLevel) )
@@ -1008,7 +1013,11 @@ int CClient::OnSkill_Anatomy(CGrayUID uid, bool fTest)
 	WORD wSkill = m_pChar->Skill_GetBase(SKILL_ANATOMY);
 	if ( wSkill >= 650 )
 	{
-		int iStam = ((pChar->Stat_GetVal(STAT_DEX) * 100) / maximum(pChar->Stat_GetMax(STAT_DEX), 1)) / 10;
+		int iMaxStam = pChar->Stat_GetMax(STAT_DEX);
+		if ( iMaxStam < 1 )
+			iMaxStam = 1;
+
+		int iStam = ((pChar->Stat_GetVal(STAT_DEX) * 100) / iMaxStam) / 10;
 		if ( iStam < 0 )
 			iStam = 0;
 		else if ( static_cast<size_t>(iStam) >= COUNTOF(sm_szPercentLevel) )
@@ -1489,7 +1498,9 @@ CItem *CClient::OnTarg_Use_Multi(const CItemBase *pItemDef, CPointMap &pt, DWORD
 		}
 
 		// Check for chars in the way
-		CWorldSearch Area(pt, maximum(rect.GetWidth(), rect.GetHeight()));
+		int iRectWidth = rect.GetWidth();
+		int iRectHeight = rect.GetHeight();
+		CWorldSearch Area(pt, maximum(iRectWidth, iRectHeight));
 		for (;;)
 		{
 			CChar *pChar = Area.GetChar();

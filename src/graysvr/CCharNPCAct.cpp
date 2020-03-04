@@ -421,14 +421,24 @@ WORD CChar::NPC_GetTrainValue(CChar *pCharSrc, SKILL_TYPE skill)
 		return 0;
 
 	CVarDefCont *pVar = GetKey("OVERRIDE.TRAINSKILLMAXPERCENT", false);
-	WORD wTrainVal = static_cast<WORD>(IMULDIV(pVar ? pVar->GetValNum() : g_Cfg.m_iTrainSkillPercent, Skill_GetBase(skill), 100));
+	INT64 iTrainSkillPercent = pVar ? pVar->GetValNum() : g_Cfg.m_iTrainSkillPercent;
+	WORD wSkillVal = Skill_GetBase(skill);
+	WORD wTrainVal = static_cast<WORD>(IMULDIV(iTrainSkillPercent, wSkillVal, 100));
 
 	pVar = GetKey("OVERRIDE.TRAINSKILLMAX", false);
-	WORD wTrainMax = minimum(pVar ? static_cast<WORD>(pVar->GetValNum()) : g_Cfg.m_iTrainSkillMax, pCharSrc->Skill_GetMax(skill, true));
+	WORD wTrainMax = pVar ? static_cast<WORD>(pVar->GetValNum()) : g_Cfg.m_iTrainSkillMax;
 	if ( wTrainVal > wTrainMax )
 		wTrainVal = wTrainMax;
 
-	return maximum(0, wTrainVal - pCharSrc->Skill_GetBase(skill));
+	WORD wSkillMax = pCharSrc->Skill_GetMax(skill, true);
+	if ( wTrainVal > wSkillMax )
+		wTrainVal = wSkillMax;
+
+	int iVal = wTrainVal - pCharSrc->Skill_GetBase(skill);
+	if ( iVal < 0 )
+		iVal = 0;
+	
+	return static_cast<WORD>(iVal);
 }
 
 bool CChar::NPC_OnTrainPay(CChar *pCharSrc, CItemMemory *pMemory, CItem *pGold)
@@ -474,7 +484,8 @@ bool CChar::NPC_OnTrainPay(CChar *pCharSrc, CItemMemory *pMemory, CItem *pGold)
 			if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(skillCheck) || (pCharSrc->Skill_GetLock(skillCheck) != SKILLLOCK_DOWN) )
 				continue;
 
-			wDecreaseTotal += minimum(pCharSrc->Skill_GetBase(skillCheck), static_cast<WORD>(wSkillTotal - wSkillCap));
+			WORD wSkillVal = pCharSrc->Skill_GetBase(skillCheck);
+			wDecreaseTotal += minimum(wSkillVal, static_cast<WORD>(wSkillTotal - wSkillCap));
 			if ( wDecreaseTotal >= wSkillTotal - wSkillCap )
 				break;
 		}
@@ -2564,8 +2575,10 @@ void CChar::NPC_OnTickAction()
 	if ( IsTimerExpired() && IsStatFlag(STATF_War) && !(IsSetCombatFlags(COMBAT_PREHIT) && (m_atFight.m_Swing_State == WAR_SWING_SWINGING)) )	// was not reset? PREHIT forces timer to be 0, so it get's defaulted here breaking NPC's speed when PREHIT is enabled. Must not check in this case.
 	{
 		// Set timer for next tick
-		INT64 iTimeout = maximum(0, (150 - Stat_GetAdjusted(STAT_DEX)) / 2);
-		SetTimeout(TICK_PER_SEC + Calc_GetRandLLVal(iTimeout / 2, iTimeout));
+		int iTimeout = (150 - Stat_GetAdjusted(STAT_DEX)) / 2;
+		if ( iTimeout < 0 )
+			iTimeout = 0;
+		SetTimeout(TICK_PER_SEC + Calc_GetRandVal(iTimeout / 2, iTimeout));
 	}
 
 	// Periodically restock vendors

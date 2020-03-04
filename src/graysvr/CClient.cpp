@@ -351,7 +351,9 @@ void CClient::UpdateFeatureFlags()
 		return;
 
 	RESDISPLAY_VERSION iResDisp = static_cast<RESDISPLAY_VERSION>(m_pAccount->GetResDisp());
-	BYTE bMaxChars = static_cast<BYTE>(maximum(m_pAccount->GetMaxChars(), m_pAccount->m_Chars.GetCharCount()));
+	BYTE bChars = static_cast<BYTE>(m_pAccount->m_Chars.GetCharCount());
+	BYTE bMaxChars = m_pAccount->GetMaxChars();
+	BYTE bCharSlots = maximum(bChars, bMaxChars);
 	m_FeatureFlags = 0;
 
 	// Expansion features
@@ -402,9 +404,9 @@ void CClient::UpdateFeatureFlags()
 	}
 
 	// Max character slots
-	if ( bMaxChars > 6 )
+	if ( bCharSlots > 6 )
 		m_FeatureFlags |= 0x1000;
-	if ( bMaxChars == 6 )
+	if ( bCharSlots == 6 )
 		m_FeatureFlags |= 0x20;
 
 	// Extra housing features (enable expansion items on house customization engine)
@@ -451,7 +453,9 @@ void CClient::UpdateCharacterListFlags()
 		return;
 
 	RESDISPLAY_VERSION iResDisp = static_cast<RESDISPLAY_VERSION>(m_pAccount->GetResDisp());
-	BYTE bMaxChars = static_cast<BYTE>(maximum(m_pAccount->GetMaxChars(), m_pAccount->m_Chars.GetCharCount()));
+	BYTE bChars = static_cast<BYTE>(m_pAccount->m_Chars.GetCharCount());
+	BYTE bMaxChars = m_pAccount->GetMaxChars();
+	BYTE bCharSlots = maximum(bChars, bMaxChars);
 	m_CharacterListFlags = 0;
 
 	// Expansion features
@@ -488,11 +492,11 @@ void CClient::UpdateCharacterListFlags()
 	}
 
 	// Max character slots
-	if ( bMaxChars > 6 )
+	if ( bCharSlots > 6 )
 		m_CharacterListFlags |= 0x1000;
-	else if ( bMaxChars == 6 )
+	else if ( bCharSlots == 6 )
 		m_CharacterListFlags |= 0x40;
-	else if ( bMaxChars == 1 )
+	else if ( bCharSlots == 1 )
 		m_CharacterListFlags |= (0x10|0x4);
 
 	// Misc
@@ -917,8 +921,12 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 				}
 
 				RESOURCE_ID rid = g_Cfg.ResourceGetID(RES_QTY, const_cast<LPCTSTR &>(ppArgs[0]));
+				int iAmount = ATOI(ppArgs[1]);
+				if ( iAmount < 1 )
+					iAmount = 1;
+
 				m_tmAdd.m_id = rid.GetResIndex();
-				m_tmAdd.m_amount = (iArgQty > 1) ? static_cast<WORD>(maximum(ATOI(ppArgs[1]), 1)) : 1;
+				m_tmAdd.m_amount = (iArgQty > 1) ? static_cast<WORD>(iAmount) : 1;
 
 				if ( (rid.GetResType() == RES_CHARDEF) || (rid.GetResType() == RES_SPAWN) )
 				{

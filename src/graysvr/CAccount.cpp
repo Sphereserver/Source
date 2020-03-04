@@ -931,8 +931,11 @@ bool CAccount::r_LoadVal(CScript &s)
 			m_PrivFlags = static_cast<WORD>(s.GetArgVal());
 			break;
 		case AC_RESDISP:
-			SetResDisp(static_cast<BYTE>(minimum(maximum(s.GetArgVal(), RDS_NONE), RDS_QTY - 1)));
+		{
+			BYTE bVal = static_cast<BYTE>(s.GetArgVal());
+			SetResDisp(minimum(maximum(RDS_NONE, bVal), RDS_QTY - 1));
 			break;
+		}
 		case AC_TAG0:
 		{
 			bool fQuoted = false;
