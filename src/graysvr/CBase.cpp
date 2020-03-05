@@ -587,8 +587,8 @@ bool CBaseBaseDef::r_LoadVal(CScript &s)
 			return true;
 		case OBC_RESLEVEL:
 		{
-			BYTE bVal = static_cast<BYTE>(s.GetArgVal());
-			return SetResLevel(minimum(maximum(RDS_NONE, bVal), RDS_QTY - 1));
+			long lVal = s.GetArgVal();
+			return SetResLevel(static_cast<BYTE>(minimum(maximum(RDS_NONE, lVal), RDS_QTY - 1)));
 		}
 		case OBC_RESOURCES:
 			m_BaseResources.Load(s.GetArgStr());

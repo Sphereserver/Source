@@ -1371,7 +1371,7 @@ bool CChar::ItemPickup(CItem *pItem, WORD wAmount)
 	ADDTOCALLSTACK("CChar::ItemPickup");
 	// Char is picking up an item
 	// If pickup succeed, item will be placed "up in the air" (LAYER_DRAGGING)
-	if ( !pItem )
+	if ( !pItem || !wAmount )
 		return false;
 
 	if ( pItem->GetParent() == this )
@@ -1464,10 +1464,8 @@ bool CChar::ItemPickup(CItem *pItem, WORD wAmount)
 	if ( wAmountMax <= 0 )
 		return false;
 
-	if ( !wAmount || (wAmount > wAmountMax) || !pItem->Item_GetDef()->IsStackableType() )
+	if ( (wAmount > wAmountMax) || !pItem->Item_GetDef()->IsStackableType() )
 		wAmount = wAmountMax;
-	else if ( wAmount < 1 )
-		wAmount = 1;
 
 	// Is it too heavy to even drag?
 	bool fDrop = false;

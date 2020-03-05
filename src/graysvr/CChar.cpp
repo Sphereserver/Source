@@ -2668,8 +2668,8 @@ bool CChar::r_LoadVal(CScript &s)
 			break;
 		case CHC_LIGHT:
 		{
-			BYTE bVal = static_cast<BYTE>(s.GetArgVal());
-			m_LocalLight = minimum(maximum(LIGHT_BRIGHT, bVal), LIGHT_DARK);
+			long lVal = s.GetArgVal();
+			m_LocalLight = static_cast<BYTE>(minimum(maximum(LIGHT_BRIGHT, lVal), LIGHT_DARK));
 			break;
 		}
 		case CHC_EXP:
