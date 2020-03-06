@@ -162,12 +162,25 @@ void CClient::Event_Item_Pickup(CGrayUID uid, WORD wAmount)
 	if ( !pItem || pItem->IsWeird() )
 	{
 		addObjectRemove(uid);
+		new PacketDragCancel(this, PacketDragCancel::OutOfSight);
+		return;
+	}
+	else if ( m_pChar->GetDist(pItem) > UO_MAP_DIST_INTERACT )
+	{
 		new PacketDragCancel(this, PacketDragCancel::OutOfRange);
 		return;
 	}
+	/*else if ( m_pChar->LayerFind(LAYER_DRAGGING) )
+	{
+		new PacketDragCancel(this, PacketDragCancel::AreHolding);
+		return;
+	}*/
 
 	EXC_SET("ItemPickup");
 	CObjBase *pPrevParent = dynamic_cast<CObjBase *>(pItem->GetParent());
+	CGrayUID uidPrevParent = pPrevParent ? pPrevParent->GetUID() : static_cast<CGrayUID>(UID_CLEAR);
+	CPointMap ptPrev = pItem->GetTopPoint();
+
 	if ( !m_pChar->ItemPickup(pItem, wAmount) )
 	{
 		new PacketDragCancel(this, PacketDragCancel::CannotLift);
@@ -179,8 +192,8 @@ void CClient::Event_Item_Pickup(CGrayUID uid, WORD wAmount)
 
 	EXC_SET("TargMode");
 	m_Targ_UID = uid;
-	m_Targ_PrvUID = pPrevParent ? pPrevParent->GetUID() : static_cast<CGrayUID>(UID_CLEAR);
-	m_Targ_p = pItem->GetTopPoint();
+	m_Targ_PrvUID = uidPrevParent;
+	m_Targ_p = ptPrev;
 	SetTargMode(CLIMODE_DRAG);
 	EXC_CATCH;
 }

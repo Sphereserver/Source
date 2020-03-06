@@ -1756,3 +1756,7 @@ Changed: Equipped items now will update timer using TIMERD (10x per sec) instead
 24-02-2020, Coruja
 Added: Support for function MAPWAYPOINT on classic clients >= 7.0.84.0.
 	-NOTE: Enhanced clients support all waypoint types, but classic clients only support type 0 (remove) and 6 (healer)
+
+06-03-2020, Coruja
+Fixed: Items being teleported to P=[0~100],[0~100] when dropped into containers that will exceed max weight limit.
+Changed: Large containers now can be placed inside small containers.

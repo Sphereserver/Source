@@ -532,7 +532,7 @@ int CItem::IsWeird() const
 	if ( !pItemDef )
 		return 0x2102;
 
-	if ( pItemDef->GetID() == 0 )
+	if ( pItemDef->GetID() == ITEMID_NOTHING )
 		return 0x2103;
 
 	if ( IsDisconnected() )	// Should be connected to the world.
