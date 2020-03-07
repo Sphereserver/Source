@@ -1760,3 +1760,4 @@ Added: Support for function MAPWAYPOINT on classic clients >= 7.0.84.0.
 06-03-2020, Coruja
 Fixed: Items being teleported to P=[0~100],[0~100] when dropped into containers that will exceed max weight limit.
 Changed: Large containers now can be placed inside small containers.
+[sphere.ini]: Added new BackpackMaxWeight setting to set default max weight limit for chars main backpack

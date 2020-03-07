@@ -921,12 +921,12 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 				}
 
 				RESOURCE_ID rid = g_Cfg.ResourceGetID(RES_QTY, const_cast<LPCTSTR &>(ppArgs[0]));
-				int iAmount = ATOI(ppArgs[1]);
+				int iAmount = (iArgQty > 1) ? ATOI(ppArgs[1]) : 1;
 				if ( iAmount < 1 )
 					iAmount = 1;
 
 				m_tmAdd.m_id = rid.GetResIndex();
-				m_tmAdd.m_amount = (iArgQty > 1) ? static_cast<WORD>(iAmount) : 1;
+				m_tmAdd.m_amount = iAmount;
 
 				if ( (rid.GetResType() == RES_CHARDEF) || (rid.GetResType() == RES_SPAWN) )
 				{

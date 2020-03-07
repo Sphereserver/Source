@@ -78,6 +78,7 @@ CResource::CResource()
 	m_fMonsterFear = false;
 	m_iBankIMax = 1000;
 	m_iBankWMax = 1000 * WEIGHT_UNITS;
+	m_iBackpackMaxWeight = 550 * WEIGHT_UNITS;
 	m_iVendorMaxSell = 255;
 	m_iMaxCharComplexity = 32;
 	m_iMaxItemComplexity = 25;
@@ -362,6 +363,7 @@ enum RC_TYPE
 	RC_AUTOACCOUNTCREATION,			// m_fAutoAccountCreation
 	RC_AUTONEWBIEKEYS,				// m_fAutoNewbieKeys
 	RC_AUTORESDISP,					// m_bAutoResDisp
+	RC_BACKPACKMAXWEIGHT,			// m_iBackpackMaxWeight
 	RC_BACKUPLEVELS,				// m_iSaveBackupLevels
 	RC_BANKMAXITEMS,				// m_iBankIMax
 	RC_BANKMAXWEIGHT,				// m_iBankWMax
@@ -579,6 +581,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY + 1] =
 	{"AUTOACCOUNTCREATION",			{ELEM_BOOL,		OFFSETOF(CResource, m_fAutoAccountCreation),			0}},
 	{"AUTONEWBIEKEYS",				{ELEM_BOOL,		OFFSETOF(CResource, m_fAutoNewbieKeys),					0}},
 	{"AUTORESDISP",					{ELEM_BOOL,		OFFSETOF(CResource, m_bAutoResDisp),					0}},
+	{"BACKPACKMAXWEIGHT",			{ELEM_INT,		OFFSETOF(CResource, m_iBackpackMaxWeight),				0}},
 	{"BACKUPLEVELS",				{ELEM_INT,		OFFSETOF(CResource, m_iSaveBackupLevels),				0}},
 	{"BANKMAXITEMS",				{ELEM_DWORD,	OFFSETOF(CResource, m_iBankIMax),						0}},
 	{"BANKMAXWEIGHT",				{ELEM_INT,		OFFSETOF(CResource, m_iBankWMax),						0}},
@@ -912,6 +915,9 @@ bool CResource::r_LoadVal(CScript &s)
 			break;
 		case RC_ATTACKERTIMEOUT:
 			m_iAttackerTimeout = s.GetArgVal() * TICK_PER_SEC;
+			break;
+		case RC_BACKPACKMAXWEIGHT:
+			m_iBackpackMaxWeight = s.GetArgVal() * WEIGHT_UNITS;
 			break;
 		case RC_BANKMAXWEIGHT:
 			m_iBankWMax = s.GetArgVal() * WEIGHT_UNITS;
@@ -1415,6 +1421,9 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 	{
 		case RC_ATTACKERTIMEOUT:
 			sVal.FormatUVal(m_iAttackerTimeout / TICK_PER_SEC);
+			break;
+		case RC_BACKPACKMAXWEIGHT:
+			sVal.FormatVal(m_iBackpackMaxWeight / WEIGHT_UNITS);
 			break;
 		case RC_BANKMAXWEIGHT:
 			sVal.FormatVal(m_iBankWMax / WEIGHT_UNITS);

@@ -1211,13 +1211,11 @@ bool CItemContainer::CanContainerHold(const CItem *pItem, const CChar *pCharMsg)
 		return false;
 	}
 
-	if ( m_ModMaxWeight )
+	int iMaxWeight = (GetContainedLayer() == LAYER_PACK) ? g_Cfg.m_iBackpackMaxWeight + m_ModMaxWeight : m_ModMaxWeight;
+	if ( iMaxWeight && (GetTotalWeight() + pItem->GetWeight() > iMaxWeight) )
 	{
-		if ( GetTotalWeight() + pItem->GetWeight() > m_ModMaxWeight )
-		{
-			pCharMsg->SysMessageDefault(DEFMSG_CONT_FULL_WEIGHT);
-			return false;
-		}
+		pCharMsg->SysMessageDefault(DEFMSG_CONT_FULL_WEIGHT);
+		return false;
 	}
 
 	switch ( GetType() )

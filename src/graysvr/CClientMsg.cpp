@@ -2635,10 +2635,11 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 						{
 							if ( m_NetState->isClientVersion(MINCLIVER_ML) )
 							{
-								if ( pItem->m_ModMaxWeight )
+								int iMaxWeight = (pItem->GetContainedLayer() == LAYER_PACK) ? g_Cfg.m_iBackpackMaxWeight + pItem->m_ModMaxWeight : pItem->m_ModMaxWeight;
+								if ( iMaxWeight > 0 )
 								{
 									m_TooltipData.Add(t = new CClientTooltip(1072241)); // Contents: ~1_COUNT~/~2_MAXCOUNT~ items, ~3_WEIGHT~/~4_MAXWEIGHT~ stones
-									t->FormatArgs("%" FMTSIZE_T "\t%d\t%d\t%d", pContainer->GetCount(), MAX_ITEMS_CONT, pContainer->GetTotalWeight() / WEIGHT_UNITS, pItem->m_ModMaxWeight / WEIGHT_UNITS);
+									t->FormatArgs("%" FMTSIZE_T "\t%d\t%d\t%d", pContainer->GetCount(), MAX_ITEMS_CONT, pContainer->GetTotalWeight() / WEIGHT_UNITS, iMaxWeight / WEIGHT_UNITS);
 								}
 								else
 								{
