@@ -1371,7 +1371,7 @@ bool CChar::ItemPickup(CItem *pItem, WORD wAmount)
 	ADDTOCALLSTACK("CChar::ItemPickup");
 	// Char is picking up an item
 	// If pickup succeed, item will be placed "up in the air" (LAYER_DRAGGING)
-	if ( !pItem || !wAmount )
+	if ( !pItem )
 		return false;
 
 	if ( pItem->GetParent() == this )
@@ -1464,17 +1464,8 @@ bool CChar::ItemPickup(CItem *pItem, WORD wAmount)
 	if ( wAmountMax <= 0 )
 		return false;
 
-	if ( (wAmount > wAmountMax) || !pItem->Item_GetDef()->IsStackableType() )
+	if ( (wAmount <= 0) || (wAmount > wAmountMax) || !pItem->Item_GetDef()->IsStackableType() )
 		wAmount = wAmountMax;
-
-	// Is it too heavy to even drag?
-	bool fDrop = false;
-	if ( GetWeightLoadPercent(GetTotalWeight() + pItem->GetWeight(wAmount)) > 300 )
-	{
-		SysMessageDefault(DEFMSG_MSG_HEAVY);
-		if ( (pChar == this) && (pItem->GetParent() == GetContainer(LAYER_PACK)) )
-			fDrop = true;	// we can always drop it out of own pack
-	}
 
 	ITRIG_TYPE trigger;
 	if ( pChar )
@@ -1522,22 +1513,17 @@ bool CChar::ItemPickup(CItem *pItem, WORD wAmount)
 		}
 	}
 
-	if ( pItem->Item_GetDef()->IsStackableType() && wAmount )
+	if ( pItem->Item_GetDef()->IsStackableType() && (wAmount < wAmountMax) )
 	{
-		// Did we only pick up part of it?
-		if ( wAmount < wAmountMax )
+		// Create an leftover item when pick up only part of the stack
+		CItem *pItemNew = pItem->UnStackSplit(wAmount, this);
+		pItemNew->SetTimeout(pItem->GetTimerDAdjusted());
+
+		if ( IsTrigUsed(TRIGGER_PICKUP_STACK) || IsTrigUsed(TRIGGER_ITEMPICKUP_STACK) )
 		{
-			// Create an left over item
-			CItem *pItemNew = pItem->UnStackSplit(wAmount, this);
-			pItemNew->SetTimeout(pItem->GetTimerDAdjusted());
-
-			if ( IsTrigUsed(TRIGGER_PICKUP_STACK) || IsTrigUsed(TRIGGER_ITEMPICKUP_STACK) )
-			{
-				CScriptTriggerArgs Args2(pItemNew);
-				if ( pItem->OnTrigger(ITRIG_PICKUP_STACK, this, &Args2) == TRIGRET_RET_TRUE )
-					return false;
-			}
-
+			CScriptTriggerArgs Args2(pItemNew);
+			if ( pItem->OnTrigger(ITRIG_PICKUP_STACK, this, &Args2) == TRIGRET_RET_TRUE )
+				return false;
 		}
 	}
 
@@ -1566,12 +1552,6 @@ bool CChar::ItemPickup(CItem *pItem, WORD wAmount)
 			ptNewPlace.m_z -= iItemHeight;
 			pStack->MoveToUpdate(ptNewPlace);
 		}
-	}
-
-	if ( fDrop )
-	{
-		ItemDrop(pItem, GetTopPoint());
-		return false;
 	}
 
 	CItemSpawn *pSpawn = static_cast<CItemSpawn *>(pItem->m_uidSpawnItem.ItemFind());
@@ -2704,7 +2684,15 @@ CRegionBase *CChar::CanMoveWalkTo(CPointBase &ptDst, bool fCheckChars, bool fChe
 
 	if ( Can(CAN_C_NONMOVER) )
 		return NULL;
-	int iWeightLoadPercent = GetWeightLoadPercent(GetTotalWeight());
+
+	int iWeightLoadPercent = 0;
+	if ( !IsPriv(PRIV_GM) )
+	{
+		const int iWeight = GetTotalWeight();
+		const int iMaxWeight = g_Cfg.Calc_MaxCarryWeight(this);
+		iWeightLoadPercent = iMaxWeight ? (iWeight * 100) / iMaxWeight : 0;
+	}
+
 	if ( !fCheckOnly )
 	{
 		if ( OnFreezeCheck() )
@@ -2712,16 +2700,9 @@ CRegionBase *CChar::CanMoveWalkTo(CPointBase &ptDst, bool fCheckChars, bool fChe
 			SysMessageDefault(DEFMSG_MSG_FROZEN);
 			return NULL;
 		}
-
-		if ( (Stat_GetVal(STAT_DEX) <= 0) && !IsStatFlag(STATF_DEAD) )
+		else if ( (Stat_GetVal(STAT_DEX) <= 0) && !IsStatFlag(STATF_DEAD) )
 		{
-			SysMessageDefault(DEFMSG_MSG_FATIGUE);
-			return NULL;
-		}
-
-		if ( iWeightLoadPercent > 200 )
-		{
-			SysMessageDefault(DEFMSG_MSG_OVERLOAD);
+			SysMessageDefault((iWeightLoadPercent > 100) ? DEFMSG_MSG_FATIGUE_WEIGHT : DEFMSG_MSG_FATIGUE);
 			return NULL;
 		}
 	}

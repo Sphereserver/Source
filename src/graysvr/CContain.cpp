@@ -1197,21 +1197,15 @@ bool CItemContainer::CanContainerHold(const CItem *pItem, const CChar *pCharMsg)
 	if ( pCharMsg->IsPriv(PRIV_GM) )
 		return true;
 
-	if ( IsAttr(ATTR_MAGIC) )
-	{
-		pCharMsg->SysMessageDefault(DEFMSG_CONT_MAGIC);
-		return false;
-	}
-
 	CVarDefCont *pVar = GetKey("OVERRIDE.MAXITEMS", false);
-	size_t tMaxItemsCont = pVar ? static_cast<size_t>(pVar->GetValNum()) : MAX_ITEMS_CONT;
-	if ( GetCount() >= tMaxItemsCont )
+	size_t iMaxItemsCont = pVar ? static_cast<size_t>(pVar->GetValNum()) : MAX_ITEMS_CONT;
+	if ( GetCount() >= iMaxItemsCont )
 	{
-		pCharMsg->SysMessageDefault(DEFMSG_CONT_FULL);
+		pCharMsg->SysMessageDefault(DEFMSG_CONT_FULL_ITEMS);
 		return false;
 	}
 
-	int iMaxWeight = (GetContainedLayer() == LAYER_PACK) ? g_Cfg.m_iBackpackMaxWeight + m_ModMaxWeight : m_ModMaxWeight;
+	int iMaxWeight = ((GetContainedLayer() == LAYER_PACK) ? g_Cfg.m_iBackpackMaxWeight : 0) + m_ModMaxWeight;
 	if ( iMaxWeight && (GetTotalWeight() + pItem->GetWeight() > iMaxWeight) )
 	{
 		pCharMsg->SysMessageDefault(DEFMSG_CONT_FULL_WEIGHT);

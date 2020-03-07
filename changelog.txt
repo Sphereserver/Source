@@ -1761,3 +1761,13 @@ Added: Support for function MAPWAYPOINT on classic clients >= 7.0.84.0.
 Fixed: Items being teleported to P=[0~100],[0~100] when dropped into containers that will exceed max weight limit.
 Changed: Large containers now can be placed inside small containers.
 [sphere.ini]: Added new BackpackMaxWeight setting to set default max weight limit for chars main backpack
+
+07-03-2020, Coruja
+Changed: Chars now can exceed MAXWEIGHT limit, but not backpack max weight limit (which is a bit higher)
+	-Walking while overweight will drop stamina faster (as it was on old Sphere versions)
+	-Stamina penalty can be customized using StaminaLossAtWeight and RunningPenalty settings on sphere.ini
+	-Backpack max weight can be customized using BackpackMaxWeight setting on sphere.ini and MODMAXWEIGHT item property
+[sphere_msgs.scp]: Updated message list with the following changes
+	-Added: cont_full_items, msg_fatigue_weight
+	-Removed: cont_full, cont_magic, cont_toosmall, msg_heavy, msg_overload
+	-Updated: cont_full_weight

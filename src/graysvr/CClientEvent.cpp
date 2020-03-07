@@ -317,11 +317,6 @@ void CClient::Event_Item_Drop(CItem *pItem, CPointMap pt, CGrayUID uidOn, BYTE g
 				if ( !pBankBox->CanContainerHold(pItem, m_pChar) )
 					return Event_Item_Drop_Fail(pItem);
 			}
-			else if ( !pCharTop->CanCarry(pItem) )
-			{
-				SysMessageDefault(DEFMSG_MSG_HEAVY);
-				return Event_Item_Drop_Fail(pItem);
-			}
 		}
 
 		if ( pContOn )

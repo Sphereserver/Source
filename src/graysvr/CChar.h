@@ -982,7 +982,6 @@ public:
 		UNREFERENCED_PARAMETER(wAmount);
 		return CContainer::GetTotalWeight();
 	}
-	int GetWeightLoadPercent(int iWeight) const;
 
 	CItem *GetSpellbook(SPELL_TYPE spell) const;
 	CItemContainer *GetContainer(LAYER_TYPE layer) const

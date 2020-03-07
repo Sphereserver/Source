@@ -91,20 +91,8 @@ bool CClient::Cmd_Use_Item(CItem *pItem, bool fTestTouch, bool fScript)
 		else if ( (pItem->IsType(IT_LIGHT_OUT) || pItem->IsType(IT_LIGHT_LIT)) && !pItem->IsItemInContainer() )
 			fMustEquip = false;
 
-		if ( fMustEquip )
-		{
-			if ( !m_pChar->CanMove(pItem) )
-				return false;
-
-			if ( (pObjTop != m_pChar) && !m_pChar->CanCarry(pItem) )
-			{
-				SysMessageDefault(DEFMSG_MSG_HEAVY);
-				return false;
-			}
-
-			if ( !m_pChar->ItemEquip(pItem, NULL, true) )
-				return false;
-		}
+		if ( fMustEquip && (!m_pChar->CanMove(pItem) || !m_pChar->ItemEquip(pItem, NULL, true)) )
+			return false;
 	}
 
 	CItemSpawn *pSpawn = static_cast<CItemSpawn *>(pItem->m_uidSpawnItem.ItemFind());	// remove this item from its spawn when players DClick it from ground, no other way to take it out.
