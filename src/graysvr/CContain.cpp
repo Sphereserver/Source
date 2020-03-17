@@ -494,7 +494,7 @@ bool CContainer::r_WriteValContainer(LPCTSTR pszKey, CGString &sVal, CTextConsol
 	ADDTOCALLSTACK("CContainer::r_WriteValContainer");
 	EXC_TRY("WriteVal");
 
-	static LPCTSTR const sm_szParams[] =
+	static const LPCTSTR sm_szParams[] =
 	{
 		"COUNT",
 		"FCOUNT",
@@ -1198,15 +1198,15 @@ bool CItemContainer::CanContainerHold(const CItem *pItem, const CChar *pCharMsg)
 		return true;
 
 	CVarDefCont *pVar = GetKey("OVERRIDE.MAXITEMS", false);
-	size_t iMaxItemsCont = pVar ? static_cast<size_t>(pVar->GetValNum()) : MAX_ITEMS_CONT;
-	if ( GetCount() >= iMaxItemsCont )
+	size_t iMaxItems = pVar ? static_cast<size_t>(pVar->GetValNum()) : MAX_ITEMS_CONT;
+	if ( GetCount() >= iMaxItems )
 	{
 		pCharMsg->SysMessageDefault(DEFMSG_CONT_FULL_ITEMS);
 		return false;
 	}
 
 	int iMaxWeight = ((GetContainedLayer() == LAYER_PACK) ? g_Cfg.m_iBackpackMaxWeight : 0) + m_ModMaxWeight;
-	if ( iMaxWeight && (GetTotalWeight() + pItem->GetWeight() > iMaxWeight) )
+	if ( (iMaxWeight > 0) && (GetTotalWeight() + pItem->GetWeight() > iMaxWeight) )
 	{
 		pCharMsg->SysMessageDefault(DEFMSG_CONT_FULL_WEIGHT);
 		return false;
@@ -1218,23 +1218,19 @@ bool CItemContainer::CanContainerHold(const CItem *pItem, const CChar *pCharMsg)
 		{
 			// Check if the bankbox will allow this item to be dropped into it
 			const CItemContainer *pContItem = dynamic_cast<const CItemContainer *>(pItem);
-			DWORD dwItemsInContainer = pContItem ? pContItem->ContentCountAll() : 0;
-			DWORD dwBankIMax = pVar ? static_cast<DWORD>(pVar->GetValNum()) : g_Cfg.m_iBankIMax;
-
+			const DWORD dwItemsInContainer = pContItem ? pContItem->ContentCountAll() : 0;
+			const DWORD dwBankIMax = pVar ? static_cast<DWORD>(pVar->GetValNum()) : g_Cfg.m_iBankMaxItems;
 			if ( ContentCountAll() + dwItemsInContainer > dwBankIMax )
 			{
 				pCharMsg->SysMessageDefault(DEFMSG_BVBOX_FULL_ITEMS);
 				return false;
 			}
 
-			int iBankWMax = g_Cfg.m_iBankWMax + (m_ModMaxWeight * WEIGHT_UNITS);
-			if ( iBankWMax >= 0 )
+			int iBankMaxWeight = g_Cfg.m_iBankMaxWeight + (m_ModMaxWeight * WEIGHT_UNITS);
+			if ( (iBankMaxWeight > 0) && (GetWeight() + pItem->GetWeight() > iBankMaxWeight) )
 			{
-				if ( GetWeight() + pItem->GetWeight() > iBankWMax )
-				{
-					pCharMsg->SysMessageDefault(DEFMSG_BVBOX_FULL_WEIGHT);
-					return false;
-				}
+				pCharMsg->SysMessageDefault(DEFMSG_BVBOX_FULL_WEIGHT);
+				return false;
 			}
 			break;
 		}
@@ -1574,7 +1570,7 @@ enum ICV_TYPE
 	ICV_QTY
 };
 
-LPCTSTR const CItemContainer::sm_szVerbKeys[ICV_QTY + 1] =
+const LPCTSTR CItemContainer::sm_szVerbKeys[ICV_QTY + 1] =
 {
 	"CLOSE",
 	"DELETE",

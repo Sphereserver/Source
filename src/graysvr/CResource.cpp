@@ -76,8 +76,8 @@ CResource::CResource()
 	m_iItemsMaxAmount = 60000;
 	m_fMonsterFight = false;
 	m_fMonsterFear = false;
-	m_iBankIMax = 1000;
-	m_iBankWMax = 1000 * WEIGHT_UNITS;
+	m_iBankMaxItems = 1000;
+	m_iBankMaxWeight = 1000 * WEIGHT_UNITS;
 	m_iBackpackMaxWeight = 550 * WEIGHT_UNITS;
 	m_iVendorMaxSell = 255;
 	m_iMaxCharComplexity = 32;
@@ -365,8 +365,8 @@ enum RC_TYPE
 	RC_AUTORESDISP,					// m_bAutoResDisp
 	RC_BACKPACKMAXWEIGHT,			// m_iBackpackMaxWeight
 	RC_BACKUPLEVELS,				// m_iSaveBackupLevels
-	RC_BANKMAXITEMS,				// m_iBankIMax
-	RC_BANKMAXWEIGHT,				// m_iBankWMax
+	RC_BANKMAXITEMS,				// m_iBankMaxItems
+	RC_BANKMAXWEIGHT,				// m_iBankMaxWeight
 	RC_BUILD,
 	RC_CHARTAGS,					// m_fCharTags
 	RC_CHATFLAGS,					// m_iChatFlags
@@ -583,8 +583,8 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY + 1] =
 	{"AUTORESDISP",					{ELEM_BOOL,		OFFSETOF(CResource, m_bAutoResDisp),					0}},
 	{"BACKPACKMAXWEIGHT",			{ELEM_INT,		OFFSETOF(CResource, m_iBackpackMaxWeight),				0}},
 	{"BACKUPLEVELS",				{ELEM_INT,		OFFSETOF(CResource, m_iSaveBackupLevels),				0}},
-	{"BANKMAXITEMS",				{ELEM_DWORD,	OFFSETOF(CResource, m_iBankIMax),						0}},
-	{"BANKMAXWEIGHT",				{ELEM_INT,		OFFSETOF(CResource, m_iBankWMax),						0}},
+	{"BANKMAXITEMS",				{ELEM_DWORD,	OFFSETOF(CResource, m_iBankMaxItems),					0}},
+	{"BANKMAXWEIGHT",				{ELEM_INT,		OFFSETOF(CResource, m_iBankMaxWeight),					0}},
 	{"BUILD",						{ELEM_VOID,		0,														0}},
 	{"CHARTAGS",					{ELEM_BOOL,		OFFSETOF(CResource, m_fCharTags),						0}},
 	{"CHATFLAGS",					{ELEM_INT,		OFFSETOF(CResource, m_iChatFlags),						0}},
@@ -920,7 +920,7 @@ bool CResource::r_LoadVal(CScript &s)
 			m_iBackpackMaxWeight = s.GetArgVal() * WEIGHT_UNITS;
 			break;
 		case RC_BANKMAXWEIGHT:
-			m_iBankWMax = s.GetArgVal() * WEIGHT_UNITS;
+			m_iBankMaxWeight = s.GetArgVal() * WEIGHT_UNITS;
 			break;
 		case RC_CHATFLAGS:
 			m_iChatFlags = s.GetArgVal();
@@ -1426,7 +1426,7 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatVal(m_iBackpackMaxWeight / WEIGHT_UNITS);
 			break;
 		case RC_BANKMAXWEIGHT:
-			sVal.FormatVal(m_iBankWMax / WEIGHT_UNITS);
+			sVal.FormatVal(m_iBankMaxWeight / WEIGHT_UNITS);
 			break;
 		case RC_BUILD:
 #ifdef __GITREVISION__

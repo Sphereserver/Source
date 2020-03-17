@@ -1774,3 +1774,5 @@ Changed: Chars now can exceed MAXWEIGHT limit, but not backpack max weight limit
 
 17-03-2020, Coruja
 Fixed: HEARALL function not working correctly.
+Fixed: BackpackMaxWeight setting on sphere.ini not allowing unlimited weight when set to -1.
+[sphereCrypt.ini]: Added crypt key for classic client 7.0.85 and enhanced client 4.0.85

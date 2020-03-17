@@ -293,8 +293,8 @@ class CRegionResourceDef : public CResourceLink
 
 public:
 	static const char *m_sClassName;
-	static LPCTSTR const sm_szLoadKeys[];
-	static LPCTSTR const sm_szTrigName[RRTRIG_QTY + 1];
+	static const LPCTSTR sm_szLoadKeys[];
+	static const LPCTSTR sm_szTrigName[RRTRIG_QTY + 1];
 
 	explicit CRegionResourceDef(RESOURCE_ID rid);
 	virtual ~CRegionResourceDef();
@@ -336,8 +336,8 @@ class CSpellDef : public CResourceLink	// 1 based spells. See SPELL_*
 
 public:
 	static const char *m_sClassName;
-	static LPCTSTR const sm_szTrigName[SPTRIG_QTY + 1];
-	static LPCTSTR const sm_szLoadKeys[];
+	static const LPCTSTR sm_szLoadKeys[];
+	static const LPCTSTR sm_szTrigName[SPTRIG_QTY + 1];
 
 	explicit CSpellDef(SPELL_TYPE id);
 	virtual ~CSpellDef() { }
@@ -428,7 +428,7 @@ class CRandGroupDef : public CResourceLink
 
 public:
 	static const char *m_sClassName;
-	static LPCTSTR const sm_szLoadKeys[];
+	static const LPCTSTR sm_szLoadKeys[];
 
 	explicit CRandGroupDef(RESOURCE_ID rid) : CResourceLink(rid)
 	{
@@ -509,7 +509,7 @@ class CSkillClassDef : public CResourceLink // For skill def table
 
 public:
 	static const char *m_sClassName;
-	static LPCTSTR const sm_szLoadKeys[];
+	static const LPCTSTR sm_szLoadKeys[];
 
 	explicit CSkillClassDef(RESOURCE_ID rid) : CResourceLink(rid)
 	{
@@ -585,8 +585,8 @@ struct CSkillDef : public CResourceLink
 	// RES_SKILL
 
 public:
-	static LPCTSTR const sm_szTrigName[SKTRIG_QTY + 1];
-	static LPCTSTR const sm_szLoadKeys[];
+	static const LPCTSTR sm_szLoadKeys[];
+	static const LPCTSTR sm_szTrigName[SKTRIG_QTY + 1];
 
 	explicit CSkillDef(SKILL_TYPE iSkill);
 	virtual ~CSkillDef() { };
@@ -770,8 +770,8 @@ public:
 	WORD m_iItemsMaxAmount;					// Max amount allowed for stackable items.
 	bool m_fMonsterFight;					// Will creatures fight amoung themselves.
 	bool m_fMonsterFear;					// will they run away if hurt ?
-	DWORD m_iBankIMax;						// Maximum number of items allowed in bank.
-	int m_iBankWMax;						// Maximum weight in stones allowed in bank.
+	DWORD m_iBankMaxItems;					// Maximum number of items allowed in bank.
+	int m_iBankMaxWeight;					// Maximum weight in stones allowed in bank.
 	int m_iBackpackMaxWeight;				// Maximum weight in stones allowed in main backpack.
 	int m_iVendorMaxSell;					// Max things a vendor will sell in one shot.
 	unsigned int m_iMaxCharComplexity;		// How many chars per sector.
@@ -1163,7 +1163,7 @@ class CDialogDef : public CResourceLink
 {
 public:
 	static const char *m_sClassName;
-	static LPCTSTR const sm_szLoadKeys[];
+	static const LPCTSTR sm_szLoadKeys[];
 
 	explicit CDialogDef(RESOURCE_ID rid);
 	virtual ~CDialogDef() { };
