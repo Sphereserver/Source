@@ -1608,51 +1608,48 @@ void CClient::Event_Talk(LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, boo
 	pszText = szText;
 	GETNONWHITESPACE(pszText);
 
-	if ( !Event_Command(pszText, mode) )
+	if ( Event_Command(pszText, mode) )
+		return;
+
+	bool fCancelSpeech = false;
+	if ( m_pChar->OnTriggerSpeech(false, pszText, m_pChar, mode, wHue) || m_pChar->IsStatFlag(STATF_Stone) )
+		fCancelSpeech = true;
+
+	if ( g_Log.IsLoggedMask(LOGM_PLAYER_SPEAK) )
+		g_Log.Event(LOGM_PLAYER_SPEAK, "%lx:'%s' Says '%s' mode=%d%s\n", GetSocketID(), m_pChar->GetName(), pszText, mode, fCancelSpeech ? " (muted)" : "");
+
+	if ( fCancelSpeech ||(mode == TALKMODE_GUILD) || (mode == TALKMODE_ALLIANCE) )		// guild/alliance mode will not pass this
+		return;
+
+	TCHAR z[MAX_TALK_BUFFER];
+	strncpy(z, pszText, MAX_TALK_BUFFER - 1);
+	z[MAX_TALK_BUFFER - 1] = '\0';
+
+	if ( g_Cfg.m_fSuppressCapitals )
 	{
-		bool fCancelSpeech = false;
-		TCHAR z[MAX_TALK_BUFFER];
-
-		if ( m_pChar->OnTriggerSpeech(false, pszText, m_pChar, mode, wHue) || m_pChar->IsStatFlag(STATF_Stone) )
-			fCancelSpeech = true;
-
-		if ( g_Log.IsLoggedMask(LOGM_PLAYER_SPEAK) )
-			g_Log.Event(LOGM_PLAYER_SPEAK, "%lx:'%s' Says '%s' mode=%d%s\n", GetSocketID(), m_pChar->GetName(), pszText, mode, fCancelSpeech ? " (muted)" : "");
-
-		if ( fCancelSpeech )
-			return;
-		if ( (mode == TALKMODE_GUILD) || (mode == TALKMODE_ALLIANCE) )		// guild/alliance mode will not pass this
-			return;
-
-		strncpy(z, pszText, MAX_TALK_BUFFER - 1);
-		z[MAX_TALK_BUFFER - 1] = '\0';
-
-		if ( g_Cfg.m_fSuppressCapitals )
+		int iChars = strlen(z);
+		int iCapitals = 0;
+		int i = 0;
+		for ( i = 0; i < iChars; ++i )
 		{
-			int iChars = strlen(z);
-			int iCapitals = 0;
-			int i = 0;
-			for ( i = 0; i < iChars; ++i )
+			if ( (z[i] >= 'A') && (z[i] <= 'Z') )
+				++iCapitals;
+		}
+
+		if ( (iChars > 5) && (((iCapitals * 100) / iChars) > 75) )		// 75% of chars are in capital letters. lowercase it
+		{
+			for ( i = 1; i < iChars; ++i )		// instead of the 1st char
 			{
 				if ( (z[i] >= 'A') && (z[i] <= 'Z') )
-					++iCapitals;
-			}
-
-			if ( (iChars > 5) && (((iCapitals * 100) / iChars) > 75) )		// 75% of chars are in capital letters. lowercase it
-			{
-				for ( i = 1; i < iChars; ++i )				// instead of the 1st char
-				{
-					if ( (z[i] >= 'A') && (z[i] <= 'Z') )
-						z[i] += 0x20;
-				}
+					z[i] += 0x20;
 			}
 		}
+	}
 
-		if ( iLen <= MAX_TALK_BUFFER / 2 )	// from this point max 128 chars
-		{
-			m_pChar->SpeakUTF8(z, wHue, mode, m_pChar->m_fonttype, m_pAccount->m_lang);
-			Event_Talk_Common(static_cast<TCHAR *>(z));
-		}
+	if ( iLen <= MAX_TALK_BUFFER / 2 )	// from this point max 128 chars
+	{
+		m_pChar->SpeakUTF8(z, wHue, mode, m_pChar->m_fonttype, m_pAccount->m_lang);
+		Event_Talk_Common(static_cast<TCHAR *>(z));
 	}
 }
 
@@ -1688,47 +1685,45 @@ void CClient::Event_TalkUNICODE(NWORD *wszText, int iTextLen, HUE_TYPE wHue, TAL
 	TCHAR *pszText = szText;
 	GETNONWHITESPACE(pszText);
 
-	if ( !Event_Command(pszText, mode) )
+	if ( Event_Command(pszText, mode) )
+		return;
+
+	bool fCancelSpeech = false;
+	if ( m_pChar->OnTriggerSpeech(false, pszText, m_pChar, mode, wHue) || m_pChar->IsStatFlag(STATF_Stone) )
+		fCancelSpeech = true;
+
+	if ( g_Log.IsLoggedMask(LOGM_PLAYER_SPEAK) )
+		g_Log.Event(LOGM_PLAYER_SPEAK, "%lx:'%s' Says UNICODE '%s' '%s' mode=%d%s\n", GetSocketID(), m_pChar->GetName(), m_pAccount->m_lang.GetStr(), pszText, mode, fCancelSpeech ? " (muted)" : "");
+
+	if ( fCancelSpeech || (mode == TALKMODE_GUILD) || (mode == TALKMODE_ALLIANCE) )		// guild/alliance mode will not pass this
+		return;
+
+	if ( g_Cfg.m_fSuppressCapitals )
 	{
-		bool fCancelSpeech = false;
-		if ( m_pChar->OnTriggerSpeech(false, pszText, m_pChar, mode, wHue) || m_pChar->IsStatFlag(STATF_Stone) )
-			fCancelSpeech = true;
-
-		if ( g_Log.IsLoggedMask(LOGM_PLAYER_SPEAK) )
-			g_Log.Event(LOGM_PLAYER_SPEAK, "%lx:'%s' Says UNICODE '%s' '%s' mode=%d%s\n", GetSocketID(), m_pChar->GetName(), m_pAccount->m_lang.GetStr(), pszText, mode, fCancelSpeech ? " (muted)" : "");
-
-		if ( fCancelSpeech )
-			return;
-		if ( (mode == TALKMODE_GUILD) || (mode == TALKMODE_ALLIANCE) )		// guild/alliance mode will not pass this
-			return;
-
-		if ( g_Cfg.m_fSuppressCapitals )
+		size_t iChars = strlen(szText);
+		size_t iCapitals = 0;
+		size_t i = 0;
+		for ( i = 0; i < iChars; ++i )
 		{
-			size_t iChars = strlen(szText);
-			size_t iCapitals = 0;
-			size_t i = 0;
-			for ( i = 0; i < iChars; ++i )
+			if ( (szText[i] >= 'A') && (szText[i] <= 'Z') )
+				++iCapitals;
+		}
+
+		if ( (iChars > 5) && (((iCapitals * 100) / iChars) > 75) )		// 75% of chars are in capital letters. lowercase it
+		{
+			for ( i = 1; i < iChars; ++i )		// instead of the 1st char
 			{
 				if ( (szText[i] >= 'A') && (szText[i] <= 'Z') )
-					++iCapitals;
+					szText[i] += 0x20;
 			}
-
-			if ( (iChars > 5) && (((iCapitals * 100) / iChars) > 75) )		// 75% of chars are in capital letters. lowercase it
-			{
-				for ( i = 1; i < iChars; ++i )				// instead of the 1st char
-				{
-					if ( (szText[i] >= 'A') && (szText[i] <= 'Z') )
-						szText[i] += 0x20;
-				}
-				iLen = CvtSystemToNUNICODE(wszText, iTextLen, szText, iChars);
-			}
+			iLen = CvtSystemToNUNICODE(wszText, iTextLen, szText, iChars);
 		}
+	}
 
-		if ( iLen <= MAX_TALK_BUFFER / 2 )	// from this point max 128 chars
-		{
-			m_pChar->SpeakUTF8Ex(puText, wHue, mode, font, m_pAccount->m_lang);
-			Event_Talk_Common(pszText);
-		}
+	if ( iLen <= MAX_TALK_BUFFER / 2 )	// from this point max 128 chars
+	{
+		m_pChar->SpeakUTF8Ex(puText, wHue, mode, font, m_pAccount->m_lang);
+		Event_Talk_Common(pszText);
 	}
 }
 

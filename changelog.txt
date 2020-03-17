@@ -1771,3 +1771,6 @@ Changed: Chars now can exceed MAXWEIGHT limit, but not backpack max weight limit
 	-Added: cont_full_items, msg_fatigue_weight
 	-Removed: cont_full, cont_magic, cont_toosmall, msg_heavy, msg_overload
 	-Updated: cont_full_weight
+
+17-03-2020, Coruja
+Fixed: HEARALL function not working correctly.
