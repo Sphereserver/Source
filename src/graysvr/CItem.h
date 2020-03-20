@@ -712,9 +712,7 @@ public:
 	{
 		// Recursively get the item that is at "top" level
 		const CObjBase *pObj = GetParentObj();
-		if ( !pObj )
-			return const_cast<CItem *>(this);
-		if ( pObj == this )		// to avoid script errors setting same CONT
+		if ( !pObj || (pObj == this) )		// to avoid script errors setting same CONT
 			return const_cast<CItem *>(this);
 		return pObj->GetTopLevelObj();
 	}
@@ -1137,7 +1135,7 @@ public:
 
 	bool IsWeighed() const
 	{
-		if ( IsType(IT_EQ_BANK_BOX) || IsType(IT_EQ_VENDOR_BOX) || IsAttr(ATTR_MAGIC) )		// magic containers have no weight
+		if ( IsType(IT_EQ_BANK_BOX) || IsType(IT_EQ_VENDOR_BOX) )
 			return false;
 		return true;
 	}

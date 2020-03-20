@@ -312,10 +312,6 @@ void CClient::Event_Item_Drop(CItem *pItem, CPointMap pt, CGrayUID uidOn, BYTE g
 					pItem->Delete();
 					return;
 				}
-
-				// Check if bank box have enough item/weight limit to hold this item
-				if ( !pBankBox->CanContainerHold(pItem, m_pChar) )
-					return Event_Item_Drop_Fail(pItem);
 			}
 		}
 

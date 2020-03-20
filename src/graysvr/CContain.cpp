@@ -795,6 +795,7 @@ void CItemContainer::OnWeightChange(int iChange)
 	if ( !iChange )
 		return;
 
+	iChange = iChange * (100 - m_WeightReduction) / 100;
 	CContainer::OnWeightChange(iChange);
 	UpdatePropertyFlag();
 
@@ -1205,11 +1206,14 @@ bool CItemContainer::CanContainerHold(const CItem *pItem, const CChar *pCharMsg)
 		return false;
 	}
 
-	int iMaxWeight = ((GetContainedLayer() == LAYER_PACK) ? g_Cfg.m_iBackpackMaxWeight : 0) + m_ModMaxWeight;
-	if ( (iMaxWeight > 0) && (GetTotalWeight() + pItem->GetWeight() > iMaxWeight) )
+	for ( CItemContainer *pItemCont = this; pItemCont != NULL; pItemCont = dynamic_cast<CItemContainer *>(pItemCont->GetParent()) )
 	{
-		pCharMsg->SysMessageDefault(DEFMSG_CONT_FULL_WEIGHT);
-		return false;
+		int iMaxWeight = ((pItemCont->GetContainedLayer() == LAYER_PACK) ? g_Cfg.m_iBackpackMaxWeight : 0) + pItemCont->m_ModMaxWeight;
+		if ( (iMaxWeight > 0) && (pItemCont->GetTotalWeight() + pItem->GetWeight() > iMaxWeight) )
+		{
+			pCharMsg->SysMessageDefault(DEFMSG_CONT_FULL_WEIGHT);
+			return false;
+		}
 	}
 
 	switch ( GetType() )
@@ -1226,8 +1230,8 @@ bool CItemContainer::CanContainerHold(const CItem *pItem, const CChar *pCharMsg)
 				return false;
 			}
 
-			int iBankMaxWeight = g_Cfg.m_iBankMaxWeight + (m_ModMaxWeight * WEIGHT_UNITS);
-			if ( (iBankMaxWeight > 0) && (GetWeight() + pItem->GetWeight() > iBankMaxWeight) )
+			int iBankMaxWeight = g_Cfg.m_iBankMaxWeight + m_ModMaxWeight;
+			if ( (iBankMaxWeight > 0) && (GetTotalWeight() + pItem->GetWeight() > iBankMaxWeight) )
 			{
 				pCharMsg->SysMessageDefault(DEFMSG_BVBOX_FULL_WEIGHT);
 				return false;
