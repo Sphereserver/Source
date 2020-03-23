@@ -2688,9 +2688,8 @@ CRegionBase *CChar::CanMoveWalkTo(CPointBase &ptDst, bool fCheckChars, bool fChe
 	int iWeightLoadPercent = 0;
 	if ( !IsPriv(PRIV_GM) )
 	{
-		const int iWeight = GetTotalWeight();
 		const int iMaxWeight = g_Cfg.Calc_MaxCarryWeight(this);
-		iWeightLoadPercent = iMaxWeight ? (iWeight * 100) / iMaxWeight : 0;
+		iWeightLoadPercent = iMaxWeight ? (GetTotalWeight() * 100) / iMaxWeight : 0;
 	}
 
 	if ( !fCheckOnly )

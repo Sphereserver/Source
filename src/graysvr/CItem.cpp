@@ -2643,8 +2643,20 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 			SetType(static_cast<IT_TYPE>(g_Cfg.ResourceGetIndexType( RES_TYPEDEF, s.GetArgStr())));
 			break;
 		case IC_WEIGHTREDUCTION:
+		{
 			m_WeightReduction = static_cast<int>(s.GetArgVal());
+
+			CContainer *pTopCont = dynamic_cast<CContainer *>(GetTopLevelObj());
+			if ( pTopCont )
+			{
+				pTopCont->FixWeight();
+
+				CChar *pChar = dynamic_cast<CChar *>(pTopCont);
+				if ( pChar && pChar->m_pClient )
+					pChar->UpdateStatsFlag();
+			}
 			break;
+		}
 		default:
 			return( CObjBase::r_LoadVal( s ));
 	}
