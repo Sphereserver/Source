@@ -1783,3 +1783,4 @@ Fixed: WEIGHTREDUCTION item property not working correctly.
 
 27-03-2020, Coruja
 Fixed: Triggers @PreStart (skills) / @SkillPreStart (chars) incorrectly setting char ACTION before skill start.
+Changed: Updated internal Libev libs v4.31 to v4.33.
