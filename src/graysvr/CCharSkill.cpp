@@ -3572,7 +3572,7 @@ TRIGRET_TYPE CChar::Skill_OnTrigger(SKILL_TYPE skill, SKTRIG_TYPE stage, CScript
 	if ( !IsSkillBase(skill) )
 		return TRIGRET_RET_DEFAULT;
 
-	if ( !((stage == SKTRIG_SELECT) || (stage == SKTRIG_GAIN) || (stage == SKTRIG_USEQUICK) || (stage == SKTRIG_WAIT) || (stage == SKTRIG_TARGETCANCEL)) )
+	if ( !((stage == SKTRIG_GAIN) || (stage == SKTRIG_PRESTART) || (stage == SKTRIG_SELECT) || (stage == SKTRIG_TARGETCANCEL) || (stage == SKTRIG_USEQUICK) || (stage == SKTRIG_WAIT)) )
 		m_Act_SkillCurrent = skill;
 
 	CScriptTriggerArgs ArgsEmpty;
@@ -3603,7 +3603,7 @@ TRIGRET_TYPE CChar::Skill_OnCharTrigger(SKILL_TYPE skill, CTRIG_TYPE ctrig, CScr
 	if ( !IsSkillBase(skill) )
 		return TRIGRET_RET_DEFAULT;
 
-	if ( !((ctrig == CTRIG_SkillSelect) || (ctrig == CTRIG_SkillGain) || (ctrig == CTRIG_SkillUseQuick) || (ctrig == CTRIG_SkillWait) || (ctrig == CTRIG_SkillTargetCancel)) )
+	if ( !((ctrig == CTRIG_SkillGain) || (ctrig == CTRIG_SkillPreStart) || (ctrig == CTRIG_SkillSelect) || (ctrig == CTRIG_SkillTargetCancel) || (ctrig == CTRIG_SkillUseQuick) || (ctrig == CTRIG_SkillWait)) )
 		m_Act_SkillCurrent = skill;
 
 	CScriptTriggerArgs ArgsEmpty;

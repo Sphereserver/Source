@@ -1780,3 +1780,6 @@ Fixed: BackpackMaxWeight setting on sphere.ini not allowing unlimited weight whe
 20-03-2020, Coruja
 Fixed: Containers not checking sub-containers weight correctly.
 Fixed: WEIGHTREDUCTION item property not working correctly.
+
+27-03-2020, Coruja
+Fixed: Triggers @PreStart (skills) / @SkillPreStart (chars) incorrectly setting char ACTION before skill start.
