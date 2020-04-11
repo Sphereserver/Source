@@ -810,11 +810,9 @@ public:
 		if ( m_pPlayer )
 			return m_pPlayer->Stat_SetLock(stat, state);
 	}
-	SKILLLOCK_TYPE Stat_GetLock(STAT_TYPE stat)
+	SKILLLOCK_TYPE Stat_GetLock(STAT_TYPE stat) const
 	{
-		if ( m_pPlayer )
-			return m_pPlayer->Stat_GetLock(stat);
-		return SKILLLOCK_UP;
+		return m_pPlayer ? m_pPlayer->Stat_GetLock(stat) : SKILLLOCK_UP;
 	}
 
 private:
@@ -1113,7 +1111,7 @@ public:
 
 private:
 	int Skill_Done();
-	void Skill_Decay();
+	void Skill_Decrease(SKILL_TYPE skill);
 	void Skill_Experience(SKILL_TYPE skill, int iDifficulty);
 
 	int Skill_NaturalResource_Setup(CItem *pResBit);

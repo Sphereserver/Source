@@ -181,7 +181,7 @@ bool CChar::NPC_Vendor_Restock(bool fForce, bool fFillStock)
 		m_pNPC->m_timeRestock.Init();
 		for ( size_t i = 0; i < COUNTOF(sm_VendorLayers); ++i )
 		{
-			CItemContainer *pCont = GetContainerCreate(sm_VendorLayers[i]);
+			CItemContainer *pCont = GetContainer(sm_VendorLayers[i]);
 			if ( pCont )
 				pCont->Empty();
 		}
@@ -2578,7 +2578,7 @@ void CChar::NPC_OnTickAction()
 		int iTimeout = (150 - Stat_GetAdjusted(STAT_DEX)) / 2;
 		if ( iTimeout < 0 )
 			iTimeout = 0;
-		SetTimeout(TICK_PER_SEC + Calc_GetRandVal(iTimeout / 2, iTimeout));
+		SetTimeout(Calc_GetRandVal(iTimeout / 2, iTimeout) + TICK_PER_SEC);
 	}
 
 	// Periodically restock vendors

@@ -332,7 +332,7 @@ void CChar::Stat_SetBase(STAT_TYPE stat, int iVal)
 int CChar::Stat_GetLimit(STAT_TYPE stat) const
 {
 	ADDTOCALLSTACK("CChar::Stat_GetLimit");
-	const CVarDefCont *pTagStorage = NULL;
+	const CVarDefCont *pVar = NULL;
 	TemporaryString sStatName;
 
 	if ( m_pPlayer )
@@ -341,8 +341,8 @@ int CChar::Stat_GetLimit(STAT_TYPE stat) const
 		ASSERT(pSkillClass);
 		if ( stat == STAT_QTY )
 		{
-			if ( (pTagStorage = GetKey("OVERRIDE.STATSUM", true)) != NULL )
-				return static_cast<int>(pTagStorage->GetValNum());
+			if ( (pVar = GetKey("OVERRIDE.STATSUM", true)) != NULL )
+				return static_cast<int>(pVar->GetValNum());
 
 			return pSkillClass->m_StatSumMax;
 		}
@@ -350,8 +350,8 @@ int CChar::Stat_GetLimit(STAT_TYPE stat) const
 
 		sprintf(sStatName, "OVERRIDE.STATCAP_%d", static_cast<int>(stat));
 		int iStatMax;
-		if ( (pTagStorage = GetKey(sStatName, true)) != NULL )
-			iStatMax = static_cast<int>(pTagStorage->GetValNum());
+		if ( (pVar = GetKey(sStatName, true)) != NULL )
+			iStatMax = static_cast<int>(pVar->GetValNum());
 		else
 			iStatMax = pSkillClass->m_StatMax[stat];
 
@@ -368,15 +368,15 @@ int CChar::Stat_GetLimit(STAT_TYPE stat) const
 	{
 		if ( stat == STAT_QTY )
 		{
-			if ( (pTagStorage = GetKey("OVERRIDE.STATSUM", true)) != NULL )
-				return static_cast<int>(pTagStorage->GetValNum());
+			if ( (pVar = GetKey("OVERRIDE.STATSUM", true)) != NULL )
+				return static_cast<int>(pVar->GetValNum());
 
 			return 300;
 		}
 
 		sprintf(sStatName, "OVERRIDE.STATCAP_%d", static_cast<int>(stat));
-		if ( (pTagStorage = GetKey(sStatName, true)) != NULL )
-			return static_cast<int>(pTagStorage->GetValNum());
+		if ( (pVar = GetKey(sStatName, true)) != NULL )
+			return static_cast<int>(pVar->GetValNum());
 
 		return 100;
 	}
@@ -529,7 +529,7 @@ void CChar::Skill_SetBase(SKILL_TYPE skill, WORD wValue)
 		if ( OnTrigger(CTRIG_SkillChange, this, &args) == TRIGRET_RET_TRUE )
 			return;
 
-		wValue = static_cast<WORD>(args.m_iN2);
+		wValue = static_cast<WORD>(maximum(0, args.m_iN2));
 	}
 	m_Skill[skill] = wValue;
 
@@ -546,7 +546,7 @@ void CChar::Skill_SetBase(SKILL_TYPE skill, WORD wValue)
 WORD CChar::Skill_GetMax(SKILL_TYPE skill, bool fIgnoreLock) const
 {
 	ADDTOCALLSTACK("CChar::Skill_GetMax");
-	const CVarDefCont *pTagStorage = NULL;
+	const CVarDefCont *pVar = NULL;
 	TemporaryString sSkillName;
 
 	if ( m_pPlayer )
@@ -555,8 +555,8 @@ WORD CChar::Skill_GetMax(SKILL_TYPE skill, bool fIgnoreLock) const
 		sprintf(sSkillName, "OVERRIDE.SKILLCAP_%d", static_cast<int>(skill));
 
 		WORD wSkillMax;
-		if ( (pTagStorage = GetKey(sSkillName, true)) != NULL )
-			wSkillMax = static_cast<WORD>(pTagStorage->GetValNum());
+		if ( (pVar = GetKey(sSkillName, true)) != NULL )
+			wSkillMax = static_cast<WORD>(pVar->GetValNum());
 		else
 		{
 			const CSkillClassDef *pSkillClass = m_pPlayer->GetSkillClass();
@@ -564,14 +564,11 @@ WORD CChar::Skill_GetMax(SKILL_TYPE skill, bool fIgnoreLock) const
 			wSkillMax = pSkillClass->m_SkillLevelMax[skill];
 		}
 
-		if ( !fIgnoreLock )
+		if ( !fIgnoreLock && (m_pPlayer->Skill_GetLock(skill) >= SKILLLOCK_DOWN) )
 		{
-			if ( m_pPlayer->Skill_GetLock(skill) >= SKILLLOCK_DOWN )
-			{
-				WORD wSkillLevel = Skill_GetBase(skill);
-				if ( wSkillLevel < wSkillMax )
-					wSkillMax = wSkillLevel;
-			}
+			WORD wSkillLevel = Skill_GetBase(skill);
+			if ( wSkillLevel < wSkillMax )
+				wSkillMax = wSkillLevel;
 		}
 
 		return wSkillMax;
@@ -580,15 +577,15 @@ WORD CChar::Skill_GetMax(SKILL_TYPE skill, bool fIgnoreLock) const
 	{
 		if ( skill == static_cast<SKILL_TYPE>(g_Cfg.m_iMaxSkill) )
 		{
-			if ( (pTagStorage = GetKey("OVERRIDE.SKILLSUM", true)) != NULL )
-				return static_cast<WORD>(pTagStorage->GetValNum());
+			if ( (pVar = GetKey("OVERRIDE.SKILLSUM", true)) != NULL )
+				return static_cast<WORD>(pVar->GetValNum());
 
 			return static_cast<WORD>(g_Cfg.m_iMaxSkill) * 500;
 		}
 
 		sprintf(sSkillName, "OVERRIDE.SKILLCAP_%d", static_cast<int>(skill));
-		if ( (pTagStorage = GetKey(sSkillName, true)) != NULL )
-			return static_cast<WORD>(pTagStorage->GetValNum());
+		if ( (pVar = GetKey(sSkillName, true)) != NULL )
+			return static_cast<WORD>(pVar->GetValNum());
 
 		return 1000;
 	}
@@ -597,9 +594,9 @@ WORD CChar::Skill_GetMax(SKILL_TYPE skill, bool fIgnoreLock) const
 DWORD CChar::Skill_GetSumMax() const
 {
 	ADDTOCALLSTACK("CChar::Skill_GetSumMax");
-	const CVarDefCont *pTagStorage = GetKey("OVERRIDE.SKILLSUM", true);
-	if ( pTagStorage )
-		return static_cast<DWORD>(pTagStorage->GetValNum());
+	const CVarDefCont *pVar = GetKey("OVERRIDE.SKILLSUM", true);
+	if ( pVar )
+		return static_cast<DWORD>(pVar->GetValNum());
 
 	const CSkillClassDef *pSkillClass = m_pPlayer->GetSkillClass();
 	if ( pSkillClass )
@@ -608,38 +605,32 @@ DWORD CChar::Skill_GetSumMax() const
 	return 0;
 }
 
-void CChar::Skill_Decay()
+void CChar::Skill_Decrease(SKILL_TYPE skill)
 {
-	ADDTOCALLSTACK("CChar::Skill_Decay");
-	// Decay the character's skill levels.
+	ADDTOCALLSTACK("CChar::Skill_Decrease");
+	// Decrease a skill which the player set to decrease
+	if ( !m_pPlayer )
+		return;
 
-	SKILL_TYPE skillDeduct = SKILL_NONE;
-	WORD wSkillLevel = 0;
+	SKILL_TYPE skillDecrease = SKILL_NONE;
+	WORD wSkillDecreaseVal = 0;
 
-	// Look for a skill to deduct from
 	for ( unsigned int i = 0; i < g_Cfg.m_iMaxSkill; ++i )
 	{
-		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(i) )
+		if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(i) || (Skill_GetLock(static_cast<SKILL_TYPE>(i)) != SKILLLOCK_DOWN) || (static_cast<SKILL_TYPE>(i) == skill) )
 			continue;
 
-		// Check that the skill is set to decrease and that it is not already at 0
-		if ( (Skill_GetLock(static_cast<SKILL_TYPE>(i)) != SKILLLOCK_DOWN) || (Skill_GetBase(static_cast<SKILL_TYPE>(i)) <= 0) )
+		WORD wVal = Skill_GetBase(static_cast<SKILL_TYPE>(i));
+		if ( wVal <= wSkillDecreaseVal )
 			continue;
 
-		// Prefer to deduct from lesser skills
-		if ( (skillDeduct != SKILL_NONE) && (wSkillLevel > Skill_GetBase(static_cast<SKILL_TYPE>(i))) )
-			continue;
-
-		skillDeduct = static_cast<SKILL_TYPE>(i);
-		wSkillLevel = Skill_GetBase(skillDeduct);
+		skillDecrease = static_cast<SKILL_TYPE>(i);
+		wSkillDecreaseVal = wVal;
+		break;
 	}
 
-	// deduct a point from the chosen skill
-	if ( skillDeduct != SKILL_NONE )
-	{
-		--wSkillLevel;
-		Skill_SetBase(skillDeduct, wSkillLevel);
-	}
+	if ( skillDecrease != SKILL_NONE )
+		Skill_SetBase(skillDecrease, --wSkillDecreaseVal);
 }
 
 void CChar::Skill_Experience(SKILL_TYPE skill, int iDifficulty)
@@ -679,10 +670,9 @@ void CChar::Skill_Experience(SKILL_TYPE skill, int iDifficulty)
 	// no gain at all if it was WAY TOO easy
 	WORD wSkillLevel = Skill_GetBase(skill);
 	WORD wSkillLevelFixed = maximum(50, wSkillLevel);
-	int iGainRadius = pSkillDef->m_GainRadius;
-	if ( (iGainRadius > 0) && ((iDifficulty + iGainRadius) < wSkillLevelFixed) )
+	if ( (pSkillDef->m_GainRadius > 0) && (pSkillDef->m_GainRadius + iDifficulty < wSkillLevelFixed) )
 	{
-		if ( GetKeyNum("NOSKILLMSG") )
+		if ( !GetKeyNum("NOSKILLMSG") )
 			SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_GAINRADIUS_NOT_MET));
 		return;
 	}
@@ -690,18 +680,18 @@ void CChar::Skill_Experience(SKILL_TYPE skill, int iDifficulty)
 	INT64 iChance = pSkillDef->m_AdvRate.GetChancePercent(wSkillLevel);
 	INT64 iSkillMax = Skill_GetMax(skill);	// max advance for this skill.
 
-	CScriptTriggerArgs pArgs(0, iChance, iSkillMax);
+	CScriptTriggerArgs Args(0, iChance, iSkillMax);
 	if ( IsTrigUsed(TRIGGER_SKILLGAIN) )
 	{
-		if ( Skill_OnCharTrigger(skill, CTRIG_SkillGain, &pArgs) == TRIGRET_RET_TRUE )
+		if ( Skill_OnCharTrigger(skill, CTRIG_SkillGain, &Args) == TRIGRET_RET_TRUE )
 			return;
 	}
 	if ( IsTrigUsed(TRIGGER_GAIN) )
 	{
-		if ( Skill_OnTrigger(skill, SKTRIG_GAIN, &pArgs) == TRIGRET_RET_TRUE )
+		if ( Skill_OnTrigger(skill, SKTRIG_GAIN, &Args) == TRIGRET_RET_TRUE )
 			return;
 	}
-	pArgs.getArgNs(0, &iChance, &iSkillMax);
+	Args.getArgNs(0, &iChance, &iSkillMax);
 
 	if ( iChance <= 0 )
 		return;
@@ -711,7 +701,7 @@ void CChar::Skill_Experience(SKILL_TYPE skill, int iDifficulty)
 		// slightly more chance of decay than gain
 		INT64 iRoll = Calc_GetRandVal(1000);
 		if ( iRoll * 3 <= iChance * 4 )
-			Skill_Decay();
+			Skill_Decrease(skill);
 
 		if ( iDifficulty > 0 )
 		{
@@ -720,18 +710,18 @@ void CChar::Skill_Experience(SKILL_TYPE skill, int iDifficulty)
 				SysMessagef("%s=%hu.%hu Difficult=%d Gain Chance=%lld.%lld%% Roll=%lld%%", pSkillDef->GetKey(), wSkillLevel / 10, wSkillLevel % 10, iDifficulty / 10, iChance / 10, iChance % 10, iRoll / 10);
 #endif
 			if ( iRoll <= iChance )
-			{
-				++wSkillLevel;
-				Skill_SetBase(skill, wSkillLevel);
-			}
+				Skill_SetBase(skill, ++wSkillLevel);
 		}
 	}
+
+	// Check if skill should allow stat gain
+	if ( Skill_GetLock(skill) != SKILLLOCK_UP )
+		return;
 
 	// Dish out any stat gains - even for failures
 	int iStatSum = Stat_GetSum();
 	int iStatCap = Stat_GetLimit(STAT_QTY);
 
-	// Stat effects are unrelated to advance in skill !
 	for ( STAT_TYPE i = STAT_STR; i < STAT_BASE_QTY; i = static_cast<STAT_TYPE>(i + 1) )
 	{
 		// Can't gain STR or DEX if morphed.
@@ -885,30 +875,23 @@ bool CChar::Stat_Decrease(STAT_TYPE stat, SKILL_TYPE skill)
 		return false;
 
 	// Check for stats degrade.
-	int iStatSumAvg = Stat_GetLimit(STAT_QTY);
 	int iStatSum = Stat_GetSum() + 1;	// +1 here assuming we are going to have +1 stat at some point thus we are calling this function
-	if ( iStatSum <= iStatSumAvg )		// no need to lower any stat
+	int iStatSumCap = Stat_GetLimit(STAT_QTY);
+	if ( iStatSum <= iStatSumCap )		// no need to lower any stat
 		return true;
 
-	int iMinVal;
-	if ( skill )
-		iMinVal = Stat_GetMax(stat);
-	else
-		iMinVal = Stat_GetAdjusted(stat);
-
 	// We are at a point where our skills can degrade a bit.
-	int iStatSumMax = iStatSumAvg + iStatSumAvg / 4;
-	int iChanceForLoss = Calc_GetSCurve(iStatSumMax - iStatSum, (iStatSumMax - iStatSumAvg) / 4);
+	int iStatSumMax = iStatSumCap + (iStatSumCap / 4);
+	int iChanceForLoss = Calc_GetSCurve(iStatSumMax - iStatSum, (iStatSumMax - iStatSumCap) / 4);
 	if ( iChanceForLoss > Calc_GetRandVal(1000) )
 	{
 		// Find the stat that was used least recently and degrade it.
-		STAT_TYPE iMin = STAT_NONE;
+		STAT_TYPE iMinStat = STAT_NONE;
+		int iMinVal = skill ? Stat_GetMax(stat) : Stat_GetAdjusted(stat);
 		int iVal = 0;
 		for ( STAT_TYPE i = STAT_STR; i < STAT_BASE_QTY; i = static_cast<STAT_TYPE>(i + 1) )
 		{
-			if ( i == stat )
-				continue;
-			if ( Stat_GetLock(i) != SKILLLOCK_DOWN )
+			if ( (Stat_GetLock(i) != SKILLLOCK_DOWN) || (i == stat) )
 				continue;
 
 			if ( skill )
@@ -921,18 +904,18 @@ bool CChar::Stat_Decrease(STAT_TYPE stat, SKILL_TYPE skill)
 
 			if ( iMinVal > iVal )
 			{
-				iMin = i;
+				iMinStat = i;
 				iMinVal = iVal;
 			}
 		}
 
-		if ( iMin == STAT_NONE )
+		if ( iMinStat == STAT_NONE )
 			return false;
 
-		int iStatVal = Stat_GetBase(iMin);
+		int iStatVal = Stat_GetBase(iMinStat);
 		if ( iStatVal > 10 )
 		{
-			Stat_SetBase(iMin, iStatVal - 1);
+			Stat_SetBase(iMinStat, iStatVal - 1);
 			return true;
 		}
 	}

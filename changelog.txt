@@ -1787,3 +1787,6 @@ Changed: Updated internal Libev libs v4.31 to v4.33.
 
 10-04-2020, Coruja
 Fixed: Snooping skill revealing hidden chars at wrong moment.
+
+11-04-2020, Coruja
+Fixed: Skills getting increased to 6553.5 when set to a negative value.

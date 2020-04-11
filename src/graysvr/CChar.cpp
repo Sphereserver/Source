@@ -2195,7 +2195,8 @@ bool CChar::r_LoadVal(CScript &s)
 		SKILL_TYPE skill = g_Cfg.FindSkillKey(pszKey);
 		if ( skill != SKILL_NONE )
 		{
-			Skill_SetBase(skill, static_cast<WORD>(s.GetArgVal()));
+			long lVal = s.GetArgVal();
+			Skill_SetBase(skill, static_cast<WORD>(maximum(0, lVal)));
 			return true;
 		}
 
@@ -2888,12 +2889,15 @@ bool CChar::r_Verb(CScript &s, CTextConsole *pSrc)	// execute command from scrip
 	{
 		case CHV_ALLSKILLS:
 		{
-			WORD wVal = static_cast<WORD>(s.GetArgVal());
+			long lVal = s.GetArgVal();
+			if ( lVal < 0 )
+				lVal = 0;
+
 			for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; ++i )
 			{
 				if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(i) )
 					continue;
-				Skill_SetBase(static_cast<SKILL_TYPE>(i), wVal);
+				Skill_SetBase(static_cast<SKILL_TYPE>(i), static_cast<WORD>(lVal));
 			}
 			break;
 		}
