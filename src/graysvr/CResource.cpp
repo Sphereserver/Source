@@ -85,8 +85,8 @@ CResource::CResource()
 	m_iMaxSectorComplexity = 1024;
 	m_fGenericSounds = true;
 	m_fAutoNewbieKeys = true;
-	m_iStamRunningPenalty = 50;
-	m_iStaminaLossAtWeight = 150;
+	m_iStamRunningPenalty = 100;
+	m_iStaminaLossAtWeight = 5;
 	m_iHitpointPercentOnRez = 10;
 	m_iHitsHungerLoss = 0;
 	m_iMaxBaseSkill = 200;

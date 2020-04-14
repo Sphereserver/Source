@@ -2382,7 +2382,7 @@ CItemCorpse *CChar::MakeCorpse(bool fFrontFall)
 		pCorpse->m_itCorpse.m_uidKiller.InitUID();
 
 	pCorpse->m_itCorpse.m_BaseID = m_prev_id;
-	pCorpse->m_itCorpse.m_facing_dir = fFrontFall ? static_cast<DIR_TYPE>(m_dirFace|0x80) : m_dirFace;
+	pCorpse->m_itCorpse.m_facing_dir = fFrontFall ? static_cast<DIR_TYPE>(m_dirFace|DIR_MASK_RUNNING) : m_dirFace;
 
 	// Move char contents to the corpse on ground
 	if ( !(wFlags & DEATH_NOLOOTDROP) )	
@@ -2419,7 +2419,7 @@ bool CChar::RaiseCorpse(CItemCorpse *pCorpse)
 		pCorpse->ContentsDump(GetTopPoint());		// drop left items on ground
 	}
 
-	UpdateAnimate((pCorpse->m_itCorpse.m_facing_dir & 0x80) ? ANIM_DIE_FORWARD : ANIM_DIE_BACK, true, true);
+	UpdateAnimate((pCorpse->m_itCorpse.m_facing_dir & DIR_MASK_RUNNING) ? ANIM_DIE_FORWARD : ANIM_DIE_BACK, true, true);
 	pCorpse->Delete();
 	return true;
 }
@@ -2685,11 +2685,12 @@ CRegionBase *CChar::CanMoveWalkTo(CPointBase &ptDst, bool fCheckChars, bool fChe
 	if ( Can(CAN_C_NONMOVER) )
 		return NULL;
 
-	int iWeightLoadPercent = 0;
+	int iWeight = 0;
+	int iMaxWeight = 0;
 	if ( !IsPriv(PRIV_GM) )
 	{
-		const int iMaxWeight = g_Cfg.Calc_MaxCarryWeight(this);
-		iWeightLoadPercent = iMaxWeight ? (GetTotalWeight() * 100) / iMaxWeight : 0;
+		iWeight = GetTotalWeight() / WEIGHT_UNITS;
+		iMaxWeight = g_Cfg.Calc_MaxCarryWeight(this) / WEIGHT_UNITS;
 	}
 
 	if ( !fCheckOnly )
@@ -2701,7 +2702,7 @@ CRegionBase *CChar::CanMoveWalkTo(CPointBase &ptDst, bool fCheckChars, bool fChe
 		}
 		else if ( (Stat_GetVal(STAT_DEX) <= 0) && !IsStatFlag(STATF_DEAD) )
 		{
-			SysMessageDefault((iWeightLoadPercent > 100) ? DEFMSG_MSG_FATIGUE_WEIGHT : DEFMSG_MSG_FATIGUE);
+			SysMessageDefault((iWeight > iMaxWeight) ? DEFMSG_MSG_FATIGUE_WEIGHT : DEFMSG_MSG_FATIGUE);
 			return NULL;
 		}
 	}
@@ -2723,7 +2724,7 @@ CRegionBase *CChar::CanMoveWalkTo(CPointBase &ptDst, bool fCheckChars, bool fChe
 	EXC_TRY("CanMoveWalkTo");
 
 	EXC_SET("Check valid move");
-	pArea = CheckValidMove(ptDst, &dwBlockFlags, dir, &ClimbHeight, fPathFinding);
+	pArea = CheckValidMove(ptDst, &dwBlockFlags, static_cast<DIR_TYPE>(dir & ~DIR_MASK_RUNNING), &ClimbHeight, fPathFinding);
 	if ( !pArea )
 		return NULL;
 
@@ -2790,15 +2791,20 @@ CRegionBase *CChar::CanMoveWalkTo(CPointBase &ptDst, bool fCheckChars, bool fChe
 	if ( !fCheckOnly )
 	{
 		EXC_SET("Stamina penalty");
-		CVarDefCont *pVal = GetKey("OVERRIDE.RUNNINGPENALTY", true);
-		if ( IsStatFlag(STATF_Fly|STATF_Hovering) )
-			iWeightLoadPercent += pVal ? static_cast<int>(pVal->GetValNum()) : g_Cfg.m_iStamRunningPenalty;
+		if ( iWeight > iMaxWeight )
+		{
+			int iWeightPenalty = g_Cfg.m_iStaminaLossAtWeight + ((iWeight - iMaxWeight) / 25);
 
-		pVal = GetKey("OVERRIDE.STAMINALOSSATWEIGHT", true);
-		if ( Calc_GetSCurve(iWeightLoadPercent - (pVal ? static_cast<int>(pVal->GetValNum()) : g_Cfg.m_iStaminaLossAtWeight), 10) > Calc_GetRandVal(1000) )
-			iStamReq += 1;
+			if ( IsStatFlag(STATF_OnHorse) )
+				iWeightPenalty /= 3;
 
-		if ( iStamReq )
+			if ( dir & DIR_MASK_RUNNING )
+				iWeightPenalty += (iWeightPenalty * g_Cfg.m_iStamRunningPenalty) / 100;
+
+			iStamReq += iWeightPenalty;
+		}
+
+		if ( iStamReq > 0 )
 			UpdateStatVal(STAT_DEX, -iStamReq);
 
 		StatFlag_Mod(STATF_InDoors, (dwBlockFlags & CAN_I_ROOF) || pArea->IsFlag(REGION_FLAG_UNDERGROUND));

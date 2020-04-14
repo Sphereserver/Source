@@ -1790,3 +1790,8 @@ Fixed: Snooping skill revealing hidden chars at wrong moment.
 
 11-04-2020, Coruja
 Fixed: Skills getting increased to 6553.5 when set to a negative value.
+
+14-04-2020, Coruja
+Fixed: Char stamina not decreasing correctly when walk/run while overweight.
+[sphere.ini]: Updated default value of StaminaLossAtWeight and RunningPenalty settings
+	-IMPORTANT: It's HIGHLY recommended update these values to make stamina decrease correctly.

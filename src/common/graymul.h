@@ -727,7 +727,8 @@ enum DIR_TYPE	// Walking directions. m_dir
 	DIR_SW,
 	DIR_W,
 	DIR_NW,
-	DIR_QTY		// also means "center"
+	DIR_QTY,	// also means "center"
+	DIR_MASK_RUNNING = 0x80
 };
 
 enum SKILL_TYPE	// List of skill numbers (things that can be done at a given time)

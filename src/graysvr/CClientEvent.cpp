@@ -621,7 +621,7 @@ bool CClient::Event_Walk(BYTE rawdir, BYTE sequence)
 	if ( !m_pChar )
 		return false;
 
-	DIR_TYPE dir = static_cast<DIR_TYPE>(rawdir & 0x0F);
+	DIR_TYPE dir = static_cast<DIR_TYPE>(rawdir & 0xF);
 	if ( dir >= DIR_QTY )
 	{
 		new PacketMovementRej(this, sequence);
@@ -648,9 +648,9 @@ bool CClient::Event_Walk(BYTE rawdir, BYTE sequence)
 
 			UINT64 iDelay = 0;
 			if ( m_pChar->IsStatFlag(STATF_OnHorse|STATF_Hovering) )
-				iDelay = (rawdir & 0x80) ? 100 : 200;
+				iDelay = (rawdir & DIR_MASK_RUNNING) ? 100 : 200;
 			else
-				iDelay = (rawdir & 0x80) ? 200 : 400;
+				iDelay = (rawdir & DIR_MASK_RUNNING) ? 200 : 400;
 
 			// Decrease it a bit (2x16ms ticks) to avoid false-positive results if GetSystemClock()
 			// lacks accuracy for some reason, which often happens on CPUs with dynamic clock speed
@@ -667,7 +667,7 @@ bool CClient::Event_Walk(BYTE rawdir, BYTE sequence)
 		pt.Move(dir);
 
 		// Check Z height. The client already knows this but doesn't tell us.
-		if ( m_pChar->CanMoveWalkTo(pt, true, false, dir) == NULL )
+		if ( m_pChar->CanMoveWalkTo(pt, true, false, static_cast<DIR_TYPE>(rawdir)) == NULL )
 		{
 			new PacketMovementRej(this, sequence);
 			return false;
@@ -695,7 +695,7 @@ bool CClient::Event_Walk(BYTE rawdir, BYTE sequence)
 		m_pChar->CheckRevealOnMove();
 
 		// Set running flag if I'm running
-		m_pChar->StatFlag_Mod(STATF_Fly, (rawdir & 0x80) ? true : false);
+		m_pChar->StatFlag_Mod(STATF_Fly, (rawdir & DIR_MASK_RUNNING) ? true : false);
 
 		if ( tr == TRIGRET_RET_TRUE )
 		{

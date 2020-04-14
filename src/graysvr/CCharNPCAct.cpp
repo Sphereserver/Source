@@ -2578,7 +2578,7 @@ void CChar::NPC_OnTickAction()
 		int iTimeout = (150 - Stat_GetAdjusted(STAT_DEX)) / 2;
 		if ( iTimeout < 0 )
 			iTimeout = 0;
-		SetTimeout(Calc_GetRandVal(iTimeout / 2, iTimeout) + TICK_PER_SEC);
+		SetTimeout(static_cast<INT64>(Calc_GetRandVal(iTimeout / 2, iTimeout)) + TICK_PER_SEC);
 	}
 
 	// Periodically restock vendors

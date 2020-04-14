@@ -4509,7 +4509,7 @@ bool PacketMovementReqNew::onReceive(NetState* net)
 		BYTE direction = readByte();
 		DWORD mode = readInt32();	// 1 = walk, 2 = run
 		if ( mode == 2 )
-			direction |= 0x80;
+			direction |= DIR_MASK_RUNNING;
 
 		// The client send these values, but they're not really needed
 		//DWORD x = readInt32();
