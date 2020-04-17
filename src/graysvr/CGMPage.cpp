@@ -62,7 +62,7 @@ enum GC_TYPE
 	GC_QTY
 };
 
-LPCTSTR const CGMPage::sm_szLoadKeys[GC_QTY + 1] =
+const LPCTSTR CGMPage::sm_szLoadKeys[GC_QTY + 1] =
 {
 	"ACCOUNT",
 	"CHARUID",

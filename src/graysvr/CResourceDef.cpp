@@ -159,7 +159,7 @@ int CValueCurveDef::GetChancePercent(int iSkillPercent) const
 //*******************************************
 // -CSkillDef
 
-LPCTSTR const CSkillDef::sm_szTrigName[SKTRIG_QTY+1] = 
+const LPCTSTR CSkillDef::sm_szTrigName[SKTRIG_QTY + 1] = 
 {
 	"@AAAUNUSED",
 	"@ABORT",
@@ -201,7 +201,7 @@ enum SKC_TYPE
 	SKC_QTY
 };
 
-LPCTSTR const CSkillDef::sm_szLoadKeys[SKC_QTY+1] =
+const LPCTSTR CSkillDef::sm_szLoadKeys[SKC_QTY + 1] =
 {
 	"ADV_RATE",
 	"BONUS_DEX",
@@ -407,7 +407,7 @@ enum SCC_TYPE
 	SCC_QTY
 };
 
-LPCTSTR const CSkillClassDef::sm_szLoadKeys[SCC_QTY+1] =
+const LPCTSTR CSkillClassDef::sm_szLoadKeys[SCC_QTY + 1] =
 {
 	"DEFNAME",
 	"NAME",
@@ -522,7 +522,7 @@ bool CSkillClassDef::r_LoadVal( CScript &s )
 //*******************************************
 // -CSpellDef
 
-LPCTSTR const CSpellDef::sm_szTrigName[SPTRIG_QTY+1] = 
+const LPCTSTR CSpellDef::sm_szTrigName[SPTRIG_QTY + 1] = 
 {
 	"@AAAUNUSED",
 	"@EFFECT",
@@ -558,7 +558,7 @@ enum SPC_TYPE
 	SPC_QTY
 };
 
-LPCTSTR const CSpellDef::sm_szLoadKeys[SPC_QTY+1] =
+const LPCTSTR CSpellDef::sm_szLoadKeys[SPC_QTY + 1] =
 {
 	"CAST_TIME",
 	"DEFNAME",
@@ -832,7 +832,7 @@ enum RGC_TYPE
 	RGC_QTY
 };
 
-LPCTSTR const CRandGroupDef::sm_szLoadKeys[RGC_QTY+1] =
+const LPCTSTR CRandGroupDef::sm_szLoadKeys[RGC_QTY + 1] =
 {
 	"CALCMEMBERINDEX",
 	"CATEGORY",
@@ -1104,7 +1104,7 @@ enum RMC_TYPE
 	RMC_QTY
 };
 
-LPCTSTR const CRegionResourceDef::sm_szLoadKeys[RMC_QTY+1] =
+const LPCTSTR CRegionResourceDef::sm_szLoadKeys[RMC_QTY + 1] =
 {
 	"AMOUNT",
 	"DEFNAME",
@@ -1115,7 +1115,7 @@ LPCTSTR const CRegionResourceDef::sm_szLoadKeys[RMC_QTY+1] =
 	NULL
 };
 
-LPCTSTR const CRegionResourceDef::sm_szTrigName[RRTRIG_QTY+1] =	// static
+const LPCTSTR CRegionResourceDef::sm_szTrigName[RRTRIG_QTY + 1] =	// static
 {
 	"@AAAUNUSED",
 	"@ResourceFound",
@@ -1123,8 +1123,6 @@ LPCTSTR const CRegionResourceDef::sm_szTrigName[RRTRIG_QTY+1] =	// static
 	"@ResourceTest",
 	NULL
 };
-
-
 
 TRIGRET_TYPE CRegionResourceDef::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScriptTriggerArgs * pArgs )
 {

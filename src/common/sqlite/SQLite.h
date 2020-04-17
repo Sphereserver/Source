@@ -15,8 +15,8 @@ class CSQLite : public CScriptObj
 {
 public:
 	static const char *m_sClassName;
-	static LPCTSTR const sm_szLoadKeys[];
-	static LPCTSTR const sm_szVerbKeys[];
+	static const LPCTSTR sm_szLoadKeys[];
+	static const LPCTSTR sm_szVerbKeys[];
 
 	CSQLite();
 	~CSQLite();

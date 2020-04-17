@@ -16,9 +16,9 @@ class CSector;
 struct CPointBase	// Non initialized 3d point.
 {
 public:
-	static LPCTSTR const sm_szLoadKeys[];
-	static const int sm_Moves[DIR_QTY+1][2];
-	static LPCTSTR sm_szDirs[DIR_QTY+1];
+	static const LPCTSTR sm_szLoadKeys[];
+	static const LPCTSTR sm_szDirs[DIR_QTY + 1];
+	static const int sm_Moves[DIR_QTY + 1][2];
 public:
 	signed short m_x;	// equipped items dont need x,y
 	signed short m_y;

@@ -126,7 +126,7 @@ enum OBC_TYPE
 	OBC_QTY
 };
 
-LPCTSTR const CBaseBaseDef::sm_szLoadKeys[OBC_QTY + 1] =
+const LPCTSTR CBaseBaseDef::sm_szLoadKeys[OBC_QTY + 1] =
 {
 	#define ADD(a,b) b,
 	#include "../tables/CBaseBaseDef_props.tbl"

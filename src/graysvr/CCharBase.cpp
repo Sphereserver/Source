@@ -151,7 +151,7 @@ enum CBC_TYPE
 	CBC_QTY
 };
 
-LPCTSTR const CCharBase::sm_szLoadKeys[CBC_QTY + 1] =
+const LPCTSTR CCharBase::sm_szLoadKeys[CBC_QTY + 1] =
 {
 	#define ADD(a,b) b,
 	#include "../tables/CCharBase_props.tbl"

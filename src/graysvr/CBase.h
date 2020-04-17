@@ -70,7 +70,7 @@ struct CBaseBaseDef : public CResourceLink
 	// Base type of both CItemBase and CCharBase
 	// Minimal amount of common info to define RES_ITEMDEF or RES_CHARDEF (it might just be a DUPE)
 public:
-	static LPCTSTR const sm_szLoadKeys[];
+	static const LPCTSTR sm_szLoadKeys[];
 
 	explicit CBaseBaseDef(RESOURCE_ID id);
 	virtual ~CBaseBaseDef() { }

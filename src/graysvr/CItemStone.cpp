@@ -137,7 +137,7 @@ enum STMMV_TYPE
 	STMMV_QTY
 };
 
-LPCTSTR const CStoneMember::sm_szVerbKeys[STMMV_QTY + 1] =
+const LPCTSTR CStoneMember::sm_szVerbKeys[STMMV_QTY + 1] =
 {
 	#define ADD(a,b) b,
 	#include "../tables/CStoneMember_functions.tbl"
@@ -185,7 +185,7 @@ enum STMM_TYPE
 	STMM_QTY
 };
 
-LPCTSTR const CStoneMember::sm_szLoadKeys[STMM_QTY + 1] =
+const LPCTSTR CStoneMember::sm_szLoadKeys[STMM_QTY + 1] =
 {
 	#define ADD(a,b) b,
 	#include "../tables/CStoneMember_props.tbl"
@@ -882,7 +882,7 @@ enum ISV_TYPE
 	ISV_QTY
 };
 
-LPCTSTR const CItemStone::sm_szVerbKeys[ISV_QTY + 1] =
+const LPCTSTR CItemStone::sm_szVerbKeys[ISV_QTY + 1] =
 {
 	#define ADD(a,b) b,
 	#include "../tables/CItemStone_functions.tbl"
@@ -1096,7 +1096,7 @@ enum STC_TYPE
 	STC_QTY
 };
 
-LPCTSTR const CItemStone::sm_szLoadKeys[STC_QTY + 1] =
+const LPCTSTR CItemStone::sm_szLoadKeys[STC_QTY + 1] =
 {
 	#define ADD(a,b) b,
 	#include "../tables/CItemStone_props.tbl"

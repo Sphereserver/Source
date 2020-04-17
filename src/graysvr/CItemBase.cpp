@@ -802,7 +802,7 @@ enum IBC_TYPE
 	IBC_QTY
 };
 
-LPCTSTR const CItemBase::sm_szLoadKeys[IBC_QTY + 1] =
+const LPCTSTR CItemBase::sm_szLoadKeys[IBC_QTY + 1] =
 {
 	#define ADD(a,b) b,
 	#include "../tables/CItemBase_props.tbl"
@@ -1764,7 +1764,7 @@ enum MLC_TYPE
 	MLC_QTY
 };
 
-LPCTSTR const CItemBaseMulti::sm_szLoadKeys[] =
+const LPCTSTR CItemBaseMulti::sm_szLoadKeys[] =
 {
 	"BASECOMPONENT",
 	"COMPONENT",

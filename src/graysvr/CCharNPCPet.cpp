@@ -67,7 +67,7 @@ bool CChar::NPC_OnHearPetCmd(LPCTSTR pszCmd, CChar *pSrc, bool fAllPets)
 		return true;
 	}
 
-	static LPCTSTR const sm_PetCommands[] =
+	static const LPCTSTR sm_PetCommands[] =
 	{
 		"ATTACK",
 		"BOUGHT",

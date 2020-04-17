@@ -222,7 +222,7 @@ class CItemBase : public CBaseBaseDef
 	// Partly based on CUOItemTypeRec/CUOItemTypeRec2
 public:
 	static const char *m_sClassName;
-	static LPCTSTR const sm_szLoadKeys[];
+	static const LPCTSTR sm_szLoadKeys[];
 
 	explicit CItemBase(ITEMID_TYPE id);
 	virtual ~CItemBase() { };
@@ -678,7 +678,7 @@ class CItemBaseMulti : public CItemBase
 	// NOTE: It does not have to be a true multi item ITEMID_MULTI
 public:
 	static const char *m_sClassName;
-	static LPCTSTR const sm_szLoadKeys[];
+	static const LPCTSTR sm_szLoadKeys[];
 
 	explicit CItemBaseMulti(CItemBase *pBase);
 	virtual ~CItemBaseMulti() { }

@@ -7,7 +7,7 @@ class CGMPage : public CGObListRec, public CScriptObj
 	// RES_GMPAGE
 public:
 	static const char *m_sClassName;
-	static LPCTSTR const sm_szLoadKeys[];
+	static const LPCTSTR sm_szLoadKeys[];
 
 	CGMPage(LPCTSTR pszAccount);
 	~CGMPage();

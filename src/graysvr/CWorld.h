@@ -160,7 +160,7 @@ extern class CWorld : public CScriptObj, public CWorldThread
 
 public:
 	static const char *m_sClassName;
-	static LPCTSTR const sm_szLoadKeys[];
+	static const LPCTSTR sm_szLoadKeys[];
 	LPCTSTR GetName() const
 	{
 		return "World";

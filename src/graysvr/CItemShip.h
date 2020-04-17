@@ -12,8 +12,8 @@ public:
 	virtual ~CItemShip();
 
 private:
-	static LPCTSTR const sm_szLoadKeys[];
-	static LPCTSTR const sm_szVerbKeys[];
+	static const LPCTSTR sm_szLoadKeys[];
+	static const LPCTSTR sm_szVerbKeys[];
 
 	CGrayUID m_uidHold;
 	std::vector<CGrayUID> m_uidPlanks;

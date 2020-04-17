@@ -485,7 +485,7 @@ bool CChar::Use_Train_ArcheryButte(CItem *pItem, bool fSetup)
 
 	if ( Skill_UseQuick(skill, Calc_GetRandVal(40)) )
 	{
-		static LPCTSTR const sm_szArcheryButteMsg[] =
+		static const LPCTSTR sm_szArcheryButteMsg[] =
 		{
 			g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_ARCHBUTTE_HIT1),
 			g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_ARCHBUTTE_HIT2),
@@ -1538,7 +1538,7 @@ int CChar::Do_Use_Item(CItem *pItem, bool fLink)
 				return false;
 
 			// Spyglass will tell you the moon phases
-			static LPCTSTR const sm_szMoonPhaseMsg[] =
+			static const LPCTSTR sm_szMoonPhaseMsg[] =
 			{
 				g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SPYGLASS_M1),
 				g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SPYGLASS_M2),

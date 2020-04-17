@@ -395,7 +395,7 @@ enum RC_TYPE
 	RC_QTY
 };
 
-LPCTSTR const CRegionBase::sm_szLoadKeys[RC_QTY+1] =	// static (Sorted)
+const LPCTSTR CRegionBase::sm_szLoadKeys[RC_QTY + 1] =	// static
 {
 	"ANNOUNCE",
 	"ARENA",
@@ -884,7 +884,7 @@ enum RV_TYPE
 	RV_QTY
 };
 
-LPCTSTR const CRegionBase::sm_szVerbKeys[RV_QTY+1] =
+const LPCTSTR CRegionBase::sm_szVerbKeys[RV_QTY + 1] =
 {
 	"ALLCLIENTS",
 	"TAGLIST",
@@ -978,7 +978,7 @@ bool CRegionBase::SendSectorsVerb( LPCTSTR pszVerb, LPCTSTR pszArgs, CTextConsol
 	return( fRet );
 }
 
-LPCTSTR const CRegionBase::sm_szTrigName[RTRIG_QTY+1] =	// static
+const LPCTSTR CRegionBase::sm_szTrigName[RTRIG_QTY + 1] =	// static
 {
 	"@AAAUNUSED",
 	"@CLIPERIODIC",
@@ -1047,7 +1047,7 @@ enum RWC_TYPE
 	RWC_QTY
 };
 
-LPCTSTR const CRegionWorld::sm_szLoadKeys[RWC_QTY+1] =	// static
+const LPCTSTR CRegionWorld::sm_szLoadKeys[RWC_QTY + 1] =	// static
 {
 	"DEFNAME",
 	"REGION",
@@ -1168,7 +1168,7 @@ void CRegionWorld::r_Write( CScript &s )
 	RWV_QTY
 };*/
 
-/*LPCTSTR const CRegionWorld::sm_szVerbKeys[] =
+/*const LPCTSTR CRegionWorld::sm_szVerbKeys[] =
 {
 	"TAGLIST",
 	NULL

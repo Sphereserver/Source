@@ -3,7 +3,7 @@
 //*************************************************************************
 // -CPointBase
 
-LPCTSTR CPointBase::sm_szDirs[DIR_QTY+1] =
+const LPCTSTR CPointBase::sm_szDirs[DIR_QTY + 1] =
 {
 	g_Cfg.GetDefaultMsg(DEFMSG_MAP_DIR_0),
 	g_Cfg.GetDefaultMsg(DEFMSG_MAP_DIR_1),
@@ -16,7 +16,7 @@ LPCTSTR CPointBase::sm_szDirs[DIR_QTY+1] =
 	g_Cfg.GetDefaultMsg(DEFMSG_MAP_DIR_8)
 };
 
-const int CPointBase::sm_Moves[DIR_QTY+1][2] =
+const int CPointBase::sm_Moves[DIR_QTY + 1][2] =
 {
 	{  0, -1 },	// DIR_N
 	{  1, -1 },	// DIR_NE
@@ -46,8 +46,7 @@ enum PT_TYPE
 	PT_QTY
 };
 
-
-LPCTSTR const CPointBase::sm_szLoadKeys[PT_QTY+1] =
+const LPCTSTR CPointBase::sm_szLoadKeys[PT_QTY + 1] =
 {
 	"ISNEARTYPE",
 	"M",

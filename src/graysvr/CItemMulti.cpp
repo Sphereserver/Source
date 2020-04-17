@@ -328,7 +328,7 @@ enum
 	SHV_QTY
 };
 
-LPCTSTR const CItemMulti::sm_szVerbKeys[SHV_QTY + 1] =
+const LPCTSTR CItemMulti::sm_szVerbKeys[SHV_QTY + 1] =
 {
 	"MULTICREATE",
 	NULL

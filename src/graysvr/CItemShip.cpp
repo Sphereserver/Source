@@ -755,7 +755,7 @@ enum
 	SHV_QTY
 };
 
-LPCTSTR const CItemShip::sm_szVerbKeys[SHV_QTY+1] =
+const LPCTSTR CItemShip::sm_szVerbKeys[SHV_QTY + 1] =
 {
 	"SHIPANCHORDROP",
 	"SHIPANCHORRAISE",
@@ -1087,7 +1087,7 @@ dodirmovechange:
 	{
 		if ( !pszSpeak )
 		{
-			static LPCTSTR const sm_szTillerReplyMsg[] =
+			static const LPCTSTR sm_szTillerReplyMsg[] =
 			{
 				g_Cfg.GetDefaultMsg(DEFMSG_TILLER_REPLY_1),
 				g_Cfg.GetDefaultMsg(DEFMSG_TILLER_REPLY_2),
@@ -1136,7 +1136,7 @@ enum IMCS_TYPE
 	IMCS_QTY
 };
 
-LPCTSTR const CItemShip::sm_szLoadKeys[IMCS_QTY + 1] = // static
+const LPCTSTR CItemShip::sm_szLoadKeys[IMCS_QTY + 1] = // static
 {
 	"HATCH",
 	"PILOT",

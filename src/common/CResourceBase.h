@@ -825,7 +825,7 @@ public:
 	virtual ~CResourceBase() { };
 
 protected:
-	static LPCTSTR const sm_szResourceBlocks[RES_QTY];
+	static const LPCTSTR sm_szResourceBlocks[RES_QTY];
 	CGObArray<CResourceScript *> m_ResourceFiles;	// all resource files we need to get blocks later
 
 public:

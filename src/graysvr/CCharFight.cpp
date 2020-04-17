@@ -421,7 +421,7 @@ void CChar::Noto_ChangeDeltaMsg(int iDelta, LPCTSTR pszType)
 	if ( !iDelta )
 		return;
 
-	static LPCTSTR const sm_szNotoDelta[8] =
+	static const LPCTSTR sm_szNotoDelta[8] =
 	{
 		g_Cfg.GetDefaultMsg(DEFMSG_MSG_NOTO_CHANGE_1),
 		g_Cfg.GetDefaultMsg(DEFMSG_MSG_NOTO_CHANGE_2),
@@ -432,9 +432,7 @@ void CChar::Noto_ChangeDeltaMsg(int iDelta, LPCTSTR pszType)
 		g_Cfg.GetDefaultMsg(DEFMSG_MSG_NOTO_CHANGE_7),
 		g_Cfg.GetDefaultMsg(DEFMSG_MSG_NOTO_CHANGE_8)
 	};
-
-	int iDegree = minimum(abs(iDelta) / NOTO_FACTOR, 7);
-	SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_NOTO_CHANGE_0), g_Cfg.GetDefaultMsg((iDelta > 0) ? DEFMSG_MSG_NOTO_CHANGE_GAIN : DEFMSG_MSG_NOTO_CHANGE_LOST), sm_szNotoDelta[iDegree], pszType);
+	SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_NOTO_CHANGE_0), g_Cfg.GetDefaultMsg((iDelta > 0) ? DEFMSG_MSG_NOTO_CHANGE_GAIN : DEFMSG_MSG_NOTO_CHANGE_LOST), sm_szNotoDelta[minimum(abs(iDelta) / NOTO_FACTOR, 7)], pszType);
 }
 
 void CChar::Noto_ChangeNewMsg(int iPrvLevel)

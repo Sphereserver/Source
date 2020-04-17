@@ -11,7 +11,7 @@ class CCharBase : public CBaseBaseDef	// define basic info about each "TYPE" of 
 	// RES_CHARDEF
 public:
 	static const char *m_sClassName;
-	static LPCTSTR const sm_szLoadKeys[];
+	static const LPCTSTR sm_szLoadKeys[];
 
 	explicit CCharBase(CREID_TYPE id);
 	~CCharBase() { }

@@ -26,11 +26,11 @@ class CWebPageDef : public CResourceLink
 	// This is a single web page we are generating or serving
 public:
 	static const char *m_sClassName;
-	static LPCTSTR const sm_szLoadKeys[];
-	static LPCTSTR const sm_szVerbKeys[];
-	static LPCTSTR const sm_szPageType[];
-	static LPCTSTR const sm_szPageExt[];
-	static LPCTSTR const sm_szTrigName[WTRIG_QTY + 1];
+	static const LPCTSTR sm_szLoadKeys[];
+	static const LPCTSTR sm_szVerbKeys[];
+	static const LPCTSTR sm_szPageType[];
+	static const LPCTSTR sm_szPageExt[];
+	static const LPCTSTR sm_szTrigName[WTRIG_QTY + 1];
 
 	explicit CWebPageDef(RESOURCE_ID rid);
 	virtual ~CWebPageDef() { };

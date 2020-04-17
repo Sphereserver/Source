@@ -157,7 +157,7 @@ enum SC_TYPE
 	SC_QTY
 };
 
-LPCTSTR const CServerDef::sm_szLoadKeys[SC_QTY + 1] =	// static
+const LPCTSTR CServerDef::sm_szLoadKeys[SC_QTY + 1] =	// static
 {
 	"ACCOUNTS",
 	"ADMINEMAIL",

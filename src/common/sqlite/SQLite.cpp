@@ -155,7 +155,7 @@ enum LDBO_TYPE
 	LDBO_QTY
 };
 
-LPCTSTR const CSQLite::sm_szLoadKeys[LDBO_QTY + 1] =
+const LPCTSTR CSQLite::sm_szLoadKeys[LDBO_QTY + 1] =
 {
 	"CONNECTED",
 	"ROW",
@@ -171,7 +171,7 @@ enum LDBOV_TYPE
 	LDBOV_QTY
 };
 
-LPCTSTR const CSQLite::sm_szVerbKeys[LDBOV_QTY + 1] =
+const LPCTSTR CSQLite::sm_szVerbKeys[LDBOV_QTY + 1] =
 {
 	"CLOSE",
 	"CONNECT",

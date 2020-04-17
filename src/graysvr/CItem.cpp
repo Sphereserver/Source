@@ -6,7 +6,7 @@
 	character trigger (even if it does not make sense)! CTRIG_item* will be automatically
 	called when one of these triggers fired, depending on their index. So NEVER unalign the two lists!
 */
-LPCTSTR const CItem::sm_szTrigName[ITRIG_QTY+1] =	// static
+const LPCTSTR CItem::sm_szTrigName[ITRIG_QTY + 1] =	// static
 {
 	"@AAAUNUSED",
 	"@AfterClick",
@@ -336,7 +336,7 @@ CItem * CItem::CreateHeader( TCHAR * pszArg, CObjBase * pCont, bool fDupeCheck, 
 	return( pItem );
 }
 
-LPCTSTR const CItem::sm_szTemplateTable[ITC_QTY+1] =
+const LPCTSTR CItem::sm_szTemplateTable[ITC_QTY + 1] =
 {
 	"BREAK",
 	"BUY",
@@ -1917,7 +1917,7 @@ enum ICR_TYPE
 	ICR_QTY
 };
 
-LPCTSTR const CItem::sm_szRefKeys[ICR_QTY+1] =
+const LPCTSTR CItem::sm_szRefKeys[ICR_QTY + 1] =
 {
 	"CONT",
 	"LINK",
@@ -1962,14 +1962,13 @@ enum IC_TYPE
 	IC_QTY
 };
 
-LPCTSTR const CItem::sm_szLoadKeys[IC_QTY+1] =
+const LPCTSTR CItem::sm_szLoadKeys[IC_QTY + 1] =
 {
 	#define ADD(a,b) b,
 	#include "../tables/CItem_props.tbl"
 	#undef ADD
 	NULL
 };
-
 
 bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 {
@@ -2698,7 +2697,7 @@ enum CIV_TYPE
 	CIV_QTY
 };
 
-LPCTSTR const CItem::sm_szVerbKeys[CIV_QTY+1] =
+const LPCTSTR CItem::sm_szVerbKeys[CIV_QTY + 1] =
 {
 	#define ADD(a,b) b,
 	#include "../tables/CItem_functions.tbl"

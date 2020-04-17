@@ -19,7 +19,7 @@ extern class CServer : public CServerDef, public CTextConsole
 {
 public:
 	static const char *m_sClassName;
-	static LPCTSTR const sm_szVerbKeys[];
+	static const LPCTSTR sm_szVerbKeys[];
 
 	CServer();
 

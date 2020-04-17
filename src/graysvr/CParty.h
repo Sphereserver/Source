@@ -7,8 +7,8 @@ class CPartyDef : public CGObListRec, public CScriptObj
 	// List of characters in party
 public:
 	static const char *m_sClassName;
-	static LPCTSTR const sm_szVerbKeys[];
-	static LPCTSTR const sm_szLoadKeys[];
+	static const LPCTSTR sm_szVerbKeys[];
+	static const LPCTSTR sm_szLoadKeys[];
 
 	CPartyDef(CChar *pCharInviter, CChar *pCharAccept);
 

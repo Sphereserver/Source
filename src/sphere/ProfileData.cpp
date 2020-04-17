@@ -144,7 +144,7 @@ PROFILE_TYPE ProfileData::GetCurrentTask() const
 
 LPCTSTR ProfileData::GetName(PROFILE_TYPE id) const
 {
-	static LPCTSTR const sm_pszProfileName[PROFILE_QTY] =
+	static const LPCTSTR sm_pszProfileName[PROFILE_QTY] =
 	{
 		"IDLE",
 		"OVERHEAD",

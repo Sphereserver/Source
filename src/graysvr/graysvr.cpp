@@ -395,7 +395,7 @@ LPCTSTR GetTimeMinDesc( int minutes )
 		hour = ( hour + 1 ) % 24;
 	}
 /*
-	static LPCTSTR const sm_ClockHour[] =
+	static const LPCTSTR sm_ClockHour[] =
 	{
 		"midnight",
 		"one",

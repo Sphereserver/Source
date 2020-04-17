@@ -82,7 +82,7 @@ void CGrayInstall::DetectMulVersions()
 LPCTSTR CGrayInstall::GetBaseFileName(VERFILE_TYPE i)	// static
 {
 	ADDTOCALLSTACK("CGrayInstall::GetBaseFileName");
-	static LPCTSTR const sm_szFileNames[VERFILE_QTY] =
+	static const LPCTSTR sm_szFileNames[VERFILE_QTY] =
 	{
 		"artidx.mul",
 		"art.mul",

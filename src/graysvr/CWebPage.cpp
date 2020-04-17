@@ -12,7 +12,7 @@ enum WV_TYPE
 	WV_QTY
 };
 
-LPCTSTR const CWebPageDef::sm_szVerbKeys[WV_QTY + 1] =
+const LPCTSTR CWebPageDef::sm_szVerbKeys[WV_QTY + 1] =
 {
 	"CLIENTLIST",		// Generate HTML table of clients
 	"GMPAGELIST",		// Generate HTML table of GM pages
@@ -53,7 +53,7 @@ enum WC_TYPE
 	WC_QTY
 };
 
-LPCTSTR const CWebPageDef::sm_szLoadKeys[WC_QTY + 1] =
+const LPCTSTR CWebPageDef::sm_szLoadKeys[WC_QTY + 1] =
 {
 	"PLEVEL",				// Required plevel to view this page
 	"WEBPAGEFILE",			// Determines where the page is saved
@@ -333,7 +333,7 @@ void CWebPageDef::WebPageLog()
 	WebPageUpdate(true, pszTemp, &g_Serv);
 }
 
-LPCTSTR const CWebPageDef::sm_szPageExt[] =
+const LPCTSTR CWebPageDef::sm_szPageExt[] =
 {
 	".bmp",
 	".gif",
@@ -346,7 +346,7 @@ LPCTSTR const CWebPageDef::sm_szPageExt[] =
 	".txt"
 };
 
-LPCTSTR const CWebPageDef::sm_szPageType[WEBPAGE_QTY + 1] =
+const LPCTSTR CWebPageDef::sm_szPageType[WEBPAGE_QTY + 1] =
 {
 	"text/html",		// WEBPAGE_TEMPLATE
 	"text/html",		// WEBPAGE_TEXT
@@ -370,7 +370,7 @@ bool CWebPageDef::SetSourceFile(LPCTSTR pszName, CClient *pClient)
 	if ( index < 0 )
 		return false;
 
-	static WEBPAGE_TYPE const sm_szPageExtType[] =
+	static const WEBPAGE_TYPE sm_szPageExtType[] =
 	{
 		WEBPAGE_BMP,
 		WEBPAGE_GIF,
@@ -416,7 +416,7 @@ bool CWebPageDef::IsMatch(LPCTSTR pszMatch) const
 	return !strcmpi(pszCompare, pszMatch);
 }
 
-LPCTSTR const CWebPageDef::sm_szTrigName[WTRIG_QTY + 1] =	// static
+const LPCTSTR CWebPageDef::sm_szTrigName[WTRIG_QTY + 1] =	// static
 {
 	"@AAAUNUSED",
 	"@Load",

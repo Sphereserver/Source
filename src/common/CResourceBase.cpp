@@ -4,7 +4,7 @@
 //*********************************************************
 // CResourceBase
 
-LPCTSTR const CResourceBase::sm_szResourceBlocks[RES_QTY] =	// static
+const LPCTSTR CResourceBase::sm_szResourceBlocks[RES_QTY] =	// static
 {
 	"AAAUNUSED",		// unused / unknown
 	"ACCOUNT",			// Define an account instance
@@ -655,42 +655,42 @@ void CResourceLink::ScanSection(RES_TYPE restype)
 	ADDTOCALLSTACK("CResourceLink::ScanSection");
 	// Scan the section we are linking
 	ASSERT(m_pScript);
-	LPCTSTR const *ppTable = NULL;
+	const LPCTSTR *pszTable = NULL;
 	int iQty = 0;
 
 	switch ( restype )
 	{
 		case RES_TYPEDEF:
 		case RES_ITEMDEF:
-			ppTable = CItem::sm_szTrigName;
+			pszTable = CItem::sm_szTrigName;
 			iQty = ITRIG_QTY;
 			break;
 		case RES_CHARDEF:
 		case RES_EVENTS:
 		case RES_SKILLCLASS:
-			ppTable = CChar::sm_szTrigName;
+			pszTable = CChar::sm_szTrigName;
 			iQty = CTRIG_QTY;
 			break;
 		case RES_SKILL:
-			ppTable = CSkillDef::sm_szTrigName;
+			pszTable = CSkillDef::sm_szTrigName;
 			iQty = SKTRIG_QTY;
 			break;
 		case RES_SPELL:
-			ppTable = CSpellDef::sm_szTrigName;
+			pszTable = CSpellDef::sm_szTrigName;
 			iQty = SPTRIG_QTY;
 			break;
 		case RES_AREA:
 		case RES_ROOM:
 		case RES_REGIONTYPE:
-			ppTable = CRegionWorld::sm_szTrigName;
+			pszTable = CRegionWorld::sm_szTrigName;
 			iQty = RTRIG_QTY;
 			break;
 		case RES_WEBPAGE:
-			ppTable = CWebPageDef::sm_szTrigName;
+			pszTable = CWebPageDef::sm_szTrigName;
 			iQty = WTRIG_QTY;
 			break;
 		case RES_REGIONRESOURCE:
-			ppTable = CRegionResourceDef::sm_szTrigName;
+			pszTable = CRegionResourceDef::sm_szTrigName;
 			iQty = RRTRIG_QTY;
 			break;
 		default:
@@ -711,7 +711,7 @@ void CResourceLink::ScanSection(RES_TYPE restype)
 			if ( iQty )
 			{
 				m_pScript->ParseKeyLate();
-				iTrigger = FindTableSorted(m_pScript->GetArgRaw(), ppTable, iQty);
+				iTrigger = FindTableSorted(m_pScript->GetArgRaw(), pszTable, iQty);
 
 				if ( iTrigger < XTRIG_UNKNOWN )
 					iTrigger = XTRIG_UNKNOWN;
@@ -720,7 +720,7 @@ void CResourceLink::ScanSection(RES_TYPE restype)
 					TriglistAdd(m_pScript->GetArgRaw());
 					if ( HasTrigger(iTrigger) )
 					{
-						DEBUG_ERR(("Duplicate trigger '%s' in '%s'\n", ppTable[iTrigger], GetResourceName()));
+						DEBUG_ERR(("Duplicate trigger '%s' in '%s'\n", pszTable[iTrigger], GetResourceName()));
 						continue;
 					}
 				}

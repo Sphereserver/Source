@@ -14,8 +14,8 @@ public:
 	virtual ~CItemMultiCustom();
 
 private:
-	static LPCTSTR const sm_szLoadKeys[];
-	static LPCTSTR const sm_szVerbKeys[];
+	static const LPCTSTR sm_szLoadKeys[];
+	static const LPCTSTR sm_szVerbKeys[];
 
 public:
 	struct Component

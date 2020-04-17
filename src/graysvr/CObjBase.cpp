@@ -165,8 +165,8 @@ void CObjBase::SetHue(HUE_TYPE wHue, bool fSkipTrigger, CTextConsole *pSrc, CObj
 		Sanity checks are recommended and if possible, avoid using it on universal events.
 
 		Trigger info to be added to intenal
-		LPCTSTR const CItem::sm_szTrigName	//CItem.cpp
-		LPCTSTR const CChar::sm_szTrigName	//CChar.cpp
+		const LPCTSTR CItem::sm_szTrigName	//CItem.cpp
+		const LPCTSTR CChar::sm_szTrigName	//CChar.cpp
 		enum ITRIG_TYPE						//CObjBase.h
 		enum CTRIG_TYPE						//CObjBase.h
 		ADD(DYE, "@Dye")					//triggers.tbl
@@ -605,7 +605,7 @@ enum OBR_TYPE
 	OBR_QTY
 };
 
-LPCTSTR const CObjBase::sm_szRefKeys[OBR_QTY+1] =
+const LPCTSTR CObjBase::sm_szRefKeys[OBR_QTY + 1] =
 {
 	"ROOM",
 	"SECTOR",
@@ -659,7 +659,7 @@ enum OBC_TYPE
 	OC_QTY
 };
 
-LPCTSTR const CObjBase::sm_szLoadKeys[OC_QTY+1] =
+const LPCTSTR CObjBase::sm_szLoadKeys[OC_QTY + 1] =
 {
 	#define ADD(a,b) b,
 	#include "../tables/CObjBase_props.tbl"
@@ -1853,7 +1853,7 @@ enum OV_TYPE
 	OV_QTY
 };
 
-LPCTSTR const CObjBase::sm_szVerbKeys[OV_QTY+1] =
+const LPCTSTR CObjBase::sm_szVerbKeys[OV_QTY + 1] =
 {
 	#define ADD(a,b) b,
 	#include "../tables/CObjBase_functions.tbl"

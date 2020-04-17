@@ -21,8 +21,8 @@ class CStoneMember : public CGObListRec, public CScriptObj
 
 public:
 	static const char *m_sClassName;
-	static LPCTSTR const sm_szLoadKeys[];
-	static LPCTSTR const sm_szVerbKeys[];
+	static const LPCTSTR sm_szLoadKeys[];
+	static const LPCTSTR sm_szVerbKeys[];
 
 	CStoneMember(CItemStone *pStone, CGrayUID uidLinkTo, STONEPRIV_TYPE priv, LPCTSTR pszTitle = "", CGrayUID uidLoyalTo = UID_CLEAR, bool fVal1 = false, bool fVal2 = false, int iAccountGold = 0);
 	virtual ~CStoneMember();
@@ -114,8 +114,8 @@ class CItemStone : public CItem, public CGObList
 
 public:
 	static const char *m_sClassName;
-	static LPCTSTR const sm_szLoadKeys[];
-	static LPCTSTR const sm_szVerbKeys[];
+	static const LPCTSTR sm_szLoadKeys[];
+	static const LPCTSTR sm_szVerbKeys[];
 
 	CItemStone(ITEMID_TYPE id, CItemBase *pItemDef);
 	virtual ~CItemStone();

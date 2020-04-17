@@ -384,7 +384,7 @@ enum ISPW_TYPE
 	ISPW_QTY
 };
 
-LPCTSTR const CItemSpawn::sm_szLoadKeys[ISPW_QTY + 1] =
+const LPCTSTR CItemSpawn::sm_szLoadKeys[ISPW_QTY + 1] =
 {
 	"ADDOBJ",
 	"AMOUNT",
@@ -744,7 +744,7 @@ void CItemMessage::r_Write(CScript &s)
 	}
 }
 
-LPCTSTR const CItemMessage::sm_szLoadKeys[CIC_QTY + 1] =	// static
+const LPCTSTR CItemMessage::sm_szLoadKeys[CIC_QTY + 1] =	// static
 {
 	"AUTHOR",
 	"BODY",
@@ -825,7 +825,7 @@ bool CItemMessage::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc
 	return false;
 }
 
-LPCTSTR const CItemMessage::sm_szVerbKeys[] =
+const LPCTSTR CItemMessage::sm_szVerbKeys[] =
 {
 	"ERASE",
 	"PAGE",
@@ -923,7 +923,7 @@ int CItemMemory::FixWeirdness()
 //*********************************************************
 // CItemCommCrystal
 
-LPCTSTR const CItemCommCrystal::sm_szLoadKeys[] =
+const LPCTSTR CItemCommCrystal::sm_szLoadKeys[] =
 {
 	"SPEECH",
 	NULL
@@ -1031,12 +1031,12 @@ void CItemCommCrystal::DupeCopy(const CItem *pItem)
 //////////////////////////////////////
 // -CItemScript
 
-LPCTSTR const CItemScript::sm_szLoadKeys[] =
+const LPCTSTR CItemScript::sm_szLoadKeys[] =
 {
 	NULL
 };
 
-LPCTSTR const CItemScript::sm_szVerbKeys[] =
+const LPCTSTR CItemScript::sm_szVerbKeys[] =
 {
 	NULL
 };

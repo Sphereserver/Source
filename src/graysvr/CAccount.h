@@ -20,7 +20,7 @@ class CAccounts
 
 protected:
 	static const char *m_sClassName;
-	static LPCTSTR const sm_szVerbKeys[];
+	static const LPCTSTR sm_szVerbKeys[];
 
 	CObNameSortArray m_Accounts;			// sorted CAccount list
 
@@ -55,8 +55,8 @@ class CAccount : public CScriptObj
 	// RES_ACCOUNT
 public:
 	static const char *m_sClassName;
-	static LPCTSTR const sm_szVerbKeys[];
-	static LPCTSTR const sm_szLoadKeys[];
+	static const LPCTSTR sm_szVerbKeys[];
+	static const LPCTSTR sm_szLoadKeys[];
 
 	CAccount(LPCTSTR pszName);
 	virtual ~CAccount();	// virtual not required at the moment but might be if subclassed

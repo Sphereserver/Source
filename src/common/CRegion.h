@@ -525,9 +525,9 @@ public:
 	int m_iLinkedSectors;	// just for statistics tracking. How many sectors are linked ?
 	int m_iModified;
 
-	static LPCTSTR const sm_szLoadKeys[];
-	static LPCTSTR const sm_szTrigName[RTRIG_QTY+1];
-	static LPCTSTR const sm_szVerbKeys[];
+	static const LPCTSTR sm_szLoadKeys[];
+	static const LPCTSTR sm_szTrigName[RTRIG_QTY + 1];
+	static const LPCTSTR sm_szVerbKeys[];
 
 	CResourceRefArray		m_Events;	// trigger [REGION x] when entered or exited RES_REGIONTYPE
 	CVarDefMap				m_TagDefs;		// attach extra tags here.
@@ -646,8 +646,8 @@ class CRegionWorld : public CRegionBase
 	// [AREA] = RES_AREA
 public:
 	static const char *m_sClassName;
-	static LPCTSTR const sm_szLoadKeys[];
-	static LPCTSTR const sm_szVerbKeys[];
+	static const LPCTSTR sm_szLoadKeys[];
+	static const LPCTSTR sm_szVerbKeys[];
 
 public:
 	const CRandGroupDef * FindNaturalResource( int /* IT_TYPE */ type ) const;

@@ -170,7 +170,7 @@ enum CPC_TYPE
 	CPC_QTY
 };
 
-LPCTSTR const CCharPlayer::sm_szLoadKeys[CPC_QTY + 1] =
+const LPCTSTR CCharPlayer::sm_szLoadKeys[CPC_QTY + 1] =
 {
 	#define ADD(a,b) b,
 	#include "../tables/CCharPlayer_props.tbl"
@@ -186,7 +186,7 @@ enum CNC_TYPE
 	CNC_QTY
 };
 
-LPCTSTR const CCharNPC::sm_szLoadKeys[CNC_QTY + 1] =
+const LPCTSTR CCharNPC::sm_szLoadKeys[CNC_QTY + 1] =
 {
 	#define ADD(a,b) b,
 	#include "../tables/CCharNpc_props.tbl"
@@ -464,7 +464,7 @@ enum CPV_TYPE
 	CPV_QTY
 };
 
-LPCTSTR const CCharPlayer::sm_szVerbKeys[CPV_QTY + 1] =
+const LPCTSTR CCharPlayer::sm_szVerbKeys[CPV_QTY + 1] =
 {
 	#define ADD(a,b) b,
 	#include "../tables/CCharPlayer_functions.tbl"

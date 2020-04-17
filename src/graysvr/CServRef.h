@@ -16,7 +16,7 @@ class CServerDef : public CScriptObj
 {
 public:
 	static const char *m_sClassName;
-	static LPCTSTR const sm_szLoadKeys[];
+	static const LPCTSTR sm_szLoadKeys[];
 
 	CServerDef(LPCTSTR pszName, CSocketAddressIP dwIP);
 
