@@ -218,12 +218,13 @@ public:
 
 private:
 	CFileText *m_pFile;
+	TCHAR *m_pszReadBuffer;
+	CGString *m_psWriteBuffer;
+
 	bool m_fAppend;
 	bool m_fCreate;
 	bool m_fRead;
 	bool m_fWrite;
-	TCHAR *m_pszBuffer;
-	CGString *m_psWriteBuffer;
 
 private:
 	void SetDefaultMode();

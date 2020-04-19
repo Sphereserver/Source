@@ -420,7 +420,7 @@ SKILL_TYPE CChar::Skill_GetBest(size_t uRank) const
 	return static_cast<SKILL_TYPE>(LOWORD(dwSkillTmp));
 }
 
-SKILL_TYPE CChar::Skill_GetMagicRandom(WORD wMinValue)
+SKILL_TYPE CChar::Skill_GetMagicRandom(WORD wMinValue) const
 {
 	ADDTOCALLSTACK("CChar::Skill_GetMagicRandom");
 	SKILL_TYPE skills[SKILL_QTY];
@@ -428,9 +428,7 @@ SKILL_TYPE CChar::Skill_GetMagicRandom(WORD wMinValue)
 	for ( unsigned int i = 0; i < g_Cfg.m_iMaxSkill; ++i )
 	{
 		SKILL_TYPE skill = static_cast<SKILL_TYPE>(i);
-		if ( !g_Cfg.IsSkillFlag(skill, SKF_MAGIC) )
-			continue;
-		if ( Skill_GetBase(skill) < wMinValue )
+		if ( !g_Cfg.IsSkillFlag(skill, SKF_MAGIC) || (Skill_GetBase(skill) < wMinValue) )
 			continue;
 
 		skills[iCount] = skill;

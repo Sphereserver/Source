@@ -392,17 +392,6 @@ CItemCorpse *CChar::FindMyCorpse(bool fIgnoreLOS, int iRadius) const
 	return NULL;
 }
 
-int CChar::GetHealthPercent() const
-{
-	ADDTOCALLSTACK("CChar::GetHealthPercent");
-	int iMax = Stat_GetAdjusted(STAT_STR);
-	if ( !iMax )
-		return 0;
-
-	int iVal = Stat_GetVal(STAT_STR);
-	return IMULDIV(iVal, 100, iMax);
-}
-
 bool CChar::IsSwimming() const
 {
 	ADDTOCALLSTACK("CChar::IsSwimming");

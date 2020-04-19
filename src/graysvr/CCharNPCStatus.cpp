@@ -173,7 +173,7 @@ size_t CChar::NPC_OnHearName(LPCTSTR pszText) const
 bool CChar::NPC_CanSpeak() const
 {
 	ADDTOCALLSTACK("CChar::NPC_CanSpeak");
-	//	players and chars with speech can
+	// Check if NPC can speak
 	if ( !m_pNPC || (m_pNPC->m_Speech.GetCount() > 0) )
 		return true;
 
@@ -189,7 +189,7 @@ bool CChar::NPC_FightMayCast(bool fCheckSkill) const
 	// Dont check for skill if !fCheckSkill
 	if ( !m_pNPC )
 		return false;
-	if ( fCheckSkill && !const_cast<CChar *>(this)->Skill_GetMagicRandom(300) )
+	if ( fCheckSkill && !Skill_GetMagicRandom(300) )
 		return false;
 	if ( m_pArea && m_pArea->IsFlag(REGION_ANTIMAGIC_DAMAGE|REGION_FLAG_SAFE) )
 		return false;
@@ -228,21 +228,16 @@ CChar *CChar::NPC_PetGetOwner() const
 	if ( !IsStatFlag(STATF_Pet) )
 		return NULL;
 
-	CItemMemory	*pMemory = Memory_FindTypes(MEMORY_IPET);
-	if ( !pMemory )
-		return NULL;
-
-	return pMemory->m_uidLink.CharFind();
+	const CItemMemory *pMemory = Memory_FindTypes(MEMORY_IPET);
+	return pMemory ? pMemory->m_uidLink.CharFind() : NULL;
 }
 
 bool CChar::NPC_CheckWalkHere(const CPointBase &pt, const CRegionBase *pArea) const
 {
 	ADDTOCALLSTACK("CChar::NPC_CheckWalkHere");
 	// Does the NPC want to walk here ? step on this item ?
-	if ( !m_pNPC )
+	if ( !m_pNPC || !pt.IsValidXY() )
 		return false;
-	if ( !pt.IsValidXY() )
-		return true;
 
 	if ( m_pArea )
 	{
@@ -406,9 +401,7 @@ int CChar::NPC_GetHostilityLevelToward(const CChar *pCharTarg) const
 		return iHostility;
 	}
 
-	if ( m_pNPC->m_Brain == NPCBRAIN_BERSERK )		// Beserks always hate everyone
-		return 100;
-	if ( pCharTarg->m_pPlayer )
+	if ( pCharTarg->m_pPlayer || (m_pNPC->m_Brain == NPCBRAIN_BERSERK) )	// beserks always hate everyone
 		return 100;
 
 	if ( pCharTarg->m_pNPC )
@@ -440,17 +433,13 @@ int CChar::NPC_GetAttackMotivation(CChar *pChar) const
 	//   50 = even match.
 	//   100 = he's a push over.
 
-	if ( !m_pNPC || !pChar || !pChar->m_pArea )
-		return 0;
-	if ( pChar->m_pArea->IsFlag(REGION_FLAG_SAFE) )
+	if ( !m_pNPC || !pChar || !pChar->m_pArea || pChar->m_pArea->IsFlag(REGION_FLAG_SAFE) || !pChar->Fight_IsAttackable() )
 		return 0;
 
 	int iMotivation = NPC_GetHostilityLevelToward(pChar);
 	if ( iMotivation <= 0 )
 		return iMotivation;
 
-	if ( !pChar->Fight_IsAttackable() )
-		return 0;
 	if ( (m_pNPC->m_Brain == NPCBRAIN_BERSERK) || (m_pNPC->m_Brain == NPCBRAIN_GUARD) )
 		return 100;
 
@@ -461,10 +450,8 @@ int CChar::NPC_GetAttackMotivation(CChar *pChar) const
 	// Less interested the further away they are
 	iMotivation -= GetDist(pChar);
 
-	if ( g_Cfg.m_fMonsterFear )
-	{
-		if ( GetHealthPercent() < 50 )
-			iMotivation -= 50 + (Stat_GetAdjusted(STAT_INT) / 16);
-	}
+	if ( g_Cfg.m_fMonsterFear && (Stat_GetVal(STAT_STR) < Stat_GetAdjusted(STAT_STR) / 2) )
+		iMotivation -= 50 + (Stat_GetAdjusted(STAT_INT) / 16);
+
 	return iMotivation;
 }

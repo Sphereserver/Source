@@ -17,7 +17,7 @@ CChar *CTextConsole::GetChar() const
 int CTextConsole::OnConsoleKey(CGString &sText, TCHAR szChar, bool fEcho)
 {
 	ADDTOCALLSTACK("CTextConsole::OnConsoleKey");
-	// Eventaully we should call OnConsoleCmd
+	// Eventually we should call CServer::OnConsoleCmd()
 	// RETURN:
 	//  0 = dump this connection
 	//  1 = keep processing
@@ -539,7 +539,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerRun(CScript &s, TRIGRUN_TYPE trigger, CTextCon
 	//  TRIGRET_RET_TRUE = return and handled (halt further processing)
 	//  TRIGRET_RET_DEFAULT = if process returns nothing specifically
 
-	//CScriptFileContext set g_Log.m_pObjectContext is the current context (we assume)
+	// CScriptFileContext set g_Log.m_pObjectContext is the current context (we assume)
 	//DEBUGCHECK(this == g_Log.m_pObjectContext);
 
 	// All scripts should have args for locals to work
@@ -2555,7 +2555,7 @@ bool CScriptTriggerArgs::r_Verb(CScript &s, CTextConsole *pSrc)
 CFileObj::CFileObj()
 {
 	m_pFile = new CFileText();
-	m_pszBuffer = new TCHAR[SCRIPT_MAX_LINE_LEN];
+	m_pszReadBuffer = new TCHAR[SCRIPT_MAX_LINE_LEN];
 	m_psWriteBuffer = new CGString();
 	SetDefaultMode();
 }
@@ -2565,9 +2565,9 @@ CFileObj::~CFileObj()
 	if ( m_pFile->IsFileOpen() )
 		m_pFile->Close();
 
-	delete m_psWriteBuffer;
-	delete[] m_pszBuffer;
 	delete m_pFile;
+	delete[] m_pszReadBuffer;
+	delete m_psWriteBuffer;
 }
 
 void CFileObj::SetDefaultMode()
@@ -2602,10 +2602,11 @@ TCHAR *CFileObj::GetReadBuffer(bool fDelete)
 {
 	ADDTOCALLSTACK("CFileObj::GetReadBuffer");
 	if ( fDelete )
-		memset(m_pszBuffer, 0, SCRIPT_MAX_LINE_LEN);
+		memset(m_pszReadBuffer, 0, SCRIPT_MAX_LINE_LEN);
 	else
-		*m_pszBuffer = 0;
-	return m_pszBuffer;
+		*m_pszReadBuffer = 0;
+
+	return m_pszReadBuffer;
 }
 
 CGString *CFileObj::GetWriteBuffer()

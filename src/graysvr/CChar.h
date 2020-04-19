@@ -578,6 +578,7 @@ public:
 	signed char GetFixZ(CPointMap pt, DWORD dwBlockFlags = 0);
 	virtual void Delete(bool fForce = false, CClient *pClient = NULL);
 	virtual bool NotifyDelete(CClient *pClient = NULL);
+
 	bool IsStatFlag(UINT64 uiStatFlag) const
 	{
 		return (m_StatFlag & uiStatFlag);
@@ -672,8 +673,6 @@ public:
 	{
 		return CCharBase::IsGargoyleID(GetDispID());
 	}
-	int GetHealthPercent() const;
-	LPCTSTR GetTradeTitle() const;
 
 	// Information about us
 	CREID_TYPE GetID() const
@@ -916,6 +915,7 @@ public:
 public:
 	LPCTSTR GetPronoun() const;	// he
 	LPCTSTR GetPossessPronoun() const;	// his
+	LPCTSTR GetTradeTitle() const;
 
 	BYTE GetModeFlag(const CClient *pViewer = NULL) const;
 	BYTE GetDirFlag() const
@@ -1080,7 +1080,7 @@ public:
 		return m_pPlayer ? m_pPlayer->Skill_GetLock(skill) : SKILLLOCK_UP;
 	}
 	WORD Skill_GetAdjusted(SKILL_TYPE skill) const;
-	SKILL_TYPE Skill_GetMagicRandom(WORD wMinValue = 0);
+	SKILL_TYPE Skill_GetMagicRandom(WORD wMinValue = 0) const;
 
 	bool Skill_CanUse(SKILL_TYPE skill);
 	void Skill_SetBase(SKILL_TYPE skill, WORD wValue);
@@ -1119,7 +1119,7 @@ private:
 	void Skill_SetTimeout();
 	INT64 Skill_GetTimeout();
 
-	int	Skill_Scripted(SKTRIG_TYPE stage);
+	int Skill_Scripted(SKTRIG_TYPE stage);
 
 	int Skill_MakeItem(SKTRIG_TYPE stage);
 	int Skill_Information(SKTRIG_TYPE stage);
@@ -1175,7 +1175,7 @@ public:
 	bool Spell_Teleport(CPointMap ptDest, bool fTakePets = false, bool fCheckAntiMagic = true, bool fDisplayEffect = true, ITEMID_TYPE iEffect = ITEMID_NOTHING, SOUND_TYPE iSound = SOUND_NONE);
 	bool Spell_CreateGate(CPointMap ptDest, bool fCheckAntiMagic = true);
 	bool Spell_CanCast(SPELL_TYPE &spell, bool fTest, CObjBase *pSrc, bool fFailMsg, bool fCheckAntiMagic = true);
-	int	GetSpellDuration(SPELL_TYPE spell, int iSkillLevel, CChar *pCharSrc = NULL);
+	int GetSpellDuration(SPELL_TYPE spell, int iSkillLevel, CChar *pCharSrc = NULL);
 
 	// Memories about objects in the world
 	bool Memory_OnTick(CItemMemory *pMemory);
@@ -1226,7 +1226,7 @@ public:
 
 private:
 	// Armor, weapons and combat
-	int	CalcFightRange(CItem *pWeapon = NULL);
+	int CalcFightRange(CItem *pWeapon = NULL);
 
 	bool Fight_IsActive() const;
 	bool Fight_IsAttackable() const;
