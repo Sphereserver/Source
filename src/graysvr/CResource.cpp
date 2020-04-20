@@ -979,7 +979,7 @@ bool CResource::r_LoadVal(CScript &s)
 		case RC_FREEZERESTARTTIME:
 		{
 			int iVal = s.GetArgVal();
-			m_iFreezeRestartTime = maximum(10, iVal) * TICK_PER_SEC;
+			m_iFreezeRestartTime = minimum(maximum(10, iVal), INT_MAX / TICK_PER_SEC) * TICK_PER_SEC;
 			break;
 		}
 		case RC_GAMEMINUTELENGTH:

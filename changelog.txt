@@ -1795,3 +1795,6 @@ Fixed: Skills getting increased to 6553.5 when set to a negative value.
 Fixed: Char stamina not decreasing correctly when walk/run while overweight.
 [sphere.ini]: Updated default value of StaminaLossAtWeight and RunningPenalty settings
 	-IMPORTANT: It's HIGHLY recommended update these values to make stamina decrease correctly.
+
+19-04-2020, Coruja
+Fixed: Server crash when FreezeRestartTime setting on sphere.ini is set to an value > 214748364.
