@@ -2675,7 +2675,7 @@ bool CResource::LoadResourceSection(CScript *pScript)
 				size_t i = m_Servers.FindKey(pScript->GetKey());
 				if ( i == m_Servers.BadIndex() )
 				{
-					pServ = new CServerDef(pScript->GetKey(), CSocketAddressIP(SOCKET_LOCAL_ADDRESS));
+					pServ = new CServerDef(pScript->GetKey(), CSocketAddressIP(INADDR_LOOPBACK_REVERSE));
 					fAddNew = true;
 				}
 				else
@@ -2686,7 +2686,7 @@ bool CResource::LoadResourceSection(CScript *pScript)
 				{
 					pServ->m_ip.SetHostPortStr(pScript->GetKey());
 					if ( pScript->ReadKey() )
-						pServ->m_ip.SetPort(static_cast<WORD>(pScript->GetArgVal()));
+						pServ->m_ip.SetPortStr(pScript->GetKey());
 				}
 
 				if ( !strcmpi(pServ->GetName(), g_Serv.GetName()) || (g_Serv.m_ip == pServ->m_ip) )

@@ -24,8 +24,8 @@ void CPingServer::onStart()
 	}
 
 	CSocketAddress SockAddr;
-	SockAddr.SetHostStr("0.0.0.0");
-	SockAddr.SetPort(PINGSERVER_PORT);
+	SockAddr.SetAddrIP(INADDR_LOOPBACK_REVERSE);
+	SockAddr.SetPortNum(PINGSERVER_PORT);
 
 	if ( m_socket.Bind(SockAddr) == SOCKET_ERROR )
 	{

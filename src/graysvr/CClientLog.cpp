@@ -122,7 +122,7 @@ void CClient::addRelay(const CServerDef *pServ)
 	if ( GetPeer().IsLocalAddr() || GetPeer().IsSameIP(ipAddr) )	// weird problem with client relaying back to self
 	{
 		DEBUG_MSG(("%lx:Login_Relay loopback to server %s\n", GetSocketID(), ipAddr.GetAddrStr()));
-		ipAddr.SetAddrIP(SOCKET_LOCAL_ADDRESS);
+		ipAddr.SetAddrIP(INADDR_LOOPBACK_REVERSE);
 	}
 
 	EXC_SET("customer id");

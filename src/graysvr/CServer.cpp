@@ -11,7 +11,7 @@
 	#endif
 #endif
 
-CServer::CServer() : CServerDef(SPHERE_TITLE, CSocketAddressIP(SOCKET_LOCAL_ADDRESS))
+CServer::CServer() : CServerDef(SPHERE_TITLE, CSocketAddressIP(INADDR_LOOPBACK_REVERSE))
 {
 	SetServerMode(SERVMODE_Loading);
 	m_iExitFlag = 0;
@@ -200,7 +200,7 @@ bool CServer::GetPublicIP()
 	// Create socket
 	CSocketAddress sockAddr;
 	sockAddr.SetHostStr(pszDomain);
-	sockAddr.SetPort(80);
+	sockAddr.SetPortNum(80);
 
 	CGSocket sock;
 	sock.Create();
@@ -491,7 +491,7 @@ bool CServer::CommandLine(int argc, TCHAR *argv[])
 #endif
 			case 'P':
 			{
-				m_ip.SetPort(static_cast<WORD>(ATOI(pszArg + 1)));
+				m_ip.SetPortStr(pszArg + 1);
 				continue;
 			}
 			case 'N':

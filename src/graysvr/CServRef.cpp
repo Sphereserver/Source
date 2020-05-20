@@ -207,7 +207,7 @@ bool CServerDef::r_LoadVal(CScript &s)
 			m_sRestAPIPublicIP = s.GetArgStr();
 			break;
 		case SC_SERVPORT:
-			m_ip.SetPort(static_cast<WORD>(s.GetArgVal()));
+			m_ip.SetPortStr(s.GetArgStr());
 			break;
 		case SC_TIMEZONE:
 			m_TimeZone = static_cast<signed char>(s.GetArgVal());

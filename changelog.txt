@@ -1798,3 +1798,11 @@ Fixed: Char stamina not decreasing correctly when walk/run while overweight.
 
 19-04-2020, Coruja
 Fixed: Server crash when FreezeRestartTime setting on sphere.ini is set to an value > 214748364.
+[items/sphere_item_building_doors.scp]: Misc updates
+[items/sphere_item_deco_virtues.scp]: Misc updates
+[items/sphere_item_holiday_anniversary.scp]: Added new items from publish 106
+[items/sphere_item_profession_cook_barkeep_baker.scp]: Added new items from publish 106
+[sphere_skills.scp]: Updated Anatomy, Animal Lore, Arms Lore, Eval Int, Fishing, Forensic Eval, Item ID, Lumberjacking, Mining and Taste ID skills
+
+18-05-2020, Coruja
+Changed: Optimized internal network socket engine.
