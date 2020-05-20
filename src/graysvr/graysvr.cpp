@@ -758,8 +758,8 @@ static void Sphere_MainMonitorLoop()
 		if ( g_Serv.IsLoading() || ! g_Cfg.m_fSecure || g_Serv.IsValidBusy() )
 			continue;
 
-		EXC_SET("Check Stuck");
 #ifndef _DEBUG
+		EXC_SET("Check Stuck");
 		if (g_Main.checkStuck() == true)
 			g_Log.Event(LOGL_CRIT, "'%s' thread hang, restarting...\n", g_Main.getName());
 #endif

@@ -136,7 +136,7 @@ void CVarDefContStr::SetValStr( LPCTSTR pszVal )
 	if (strlen(pszVal) <= SCRIPT_MAX_LINE_LEN/2)
 		m_sVal.Copy( pszVal );
 	else
-		g_Log.EventWarn("Setting max length of %d was exceeded on (VAR,TAG,LOCAL).%s \r", SCRIPT_MAX_LINE_LEN/2, GetKey() );
+		g_Log.EventWarn("VarStr '%s' exceeded max length allowed (%" FMTSIZE_T "/%d)\n", GetKey(), strlen(pszVal), SCRIPT_MAX_LINE_LEN / 2);
 }
 
 
