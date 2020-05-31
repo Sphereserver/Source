@@ -929,7 +929,7 @@ bool CChar::CanSeeLOS(const CPointMap &ptDst, CPointMap *pptBlock, int iMaxDist,
 		}
 	}
 
-	return (abs(ptSrc.m_z - ptDst.m_z) < 20);
+	return (abs(ptSrc.m_z - ptDst.m_z) < WALL_HEIGHT);
 }
 
 // a - gradient < x < b + gradient

@@ -1811,3 +1811,4 @@ Fixed: Server crash when console get many "variable exceeded max length" warning
 31-05-2020, Coruja
 Fixed: Spells DURATION not working correctly.
 Fixed: Wandering NPCs taking too much time to react.
+Fixed: EF_ItemStacking experimental feature on sphere.ini not working correctly.

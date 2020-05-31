@@ -1633,7 +1633,7 @@ bool CChar::ItemDrop(CItem *pItem, const CPointMap &pt)
 			pStack = AreaItems.GetItem();
 			if ( !pStack )
 				break;
-			if ( (pStack->GetTopZ() < pt.m_z) || (pStack->GetTopZ() > pt.m_z + 20) )
+			if ( (pStack->GetTopZ() < pt.m_z) || (pStack->GetTopZ() > pt.m_z + WALL_HEIGHT) )
 				continue;
 
 			signed char iStackHeight = static_cast<signed char>(pStack->GetHeight());
@@ -1643,7 +1643,7 @@ bool CChar::ItemDrop(CItem *pItem, const CPointMap &pt)
 			ptStack.m_z += iStackHeight;
 		}
 
-		if ( !CanSeeLOS(ptStack) )
+		if ( (ptStack.m_z - pt.m_z > WALL_HEIGHT - 4) || !CanSeeLOS(ptStack) )
 			return false;
 		return pItem->MoveToCheck(ptStack, this);	// don't flip the item if it got stacked
 	}

@@ -2566,12 +2566,14 @@ void CClient::Event_ExtCmd(EXTCMD_TYPE type, TCHAR *pszArgs)
 					case IT_DOOR_LOCKED:
 					case IT_PORTCULIS:
 					case IT_PORT_LOCKED:
-						if ( abs(iCharZ - pItem->GetTopPoint().m_z) < 20 )
+					{
+						if ( abs(iCharZ - pItem->GetTopPoint().m_z) < WALL_HEIGHT )
 						{
 							m_pChar->SysMessageDefault(DEFMSG_MACRO_OPENDOOR);
 							m_pChar->Use_Obj(pItem, true);
 							return;
 						}
+					}
 				}
 			}
 			return;

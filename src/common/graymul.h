@@ -1515,7 +1515,8 @@ public:
 #define UO_SIZE_X_REAL		0x1400	// 640*UO_BLOCK_SIZE = 5120 = The actual world is only this big
 
 // This should depend on height of players char.
-#define PLAYER_HEIGHT 15	// We need x units of room to walk under something. (human) ??? this should vary based on creature type.
+#define PLAYER_HEIGHT	15	// We need x units of room to walk under something. (human) ??? this should vary based on creature type.
+#define WALL_HEIGHT		20
 
 struct CUOMapMeter	// 3 bytes (map0.mul)
 {

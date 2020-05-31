@@ -1210,7 +1210,7 @@ BYTE CItemMultiCustom::GetLevel(signed short z)
 
 signed char CItemMultiCustom::GetLevelZ(BYTE bLevel)
 {
-	return 7 + ((bLevel - 1) * 20);
+	return 7 + ((bLevel - 1) * WALL_HEIGHT);
 }
 
 bool CItemMultiCustom::IsValidItem(ITEMID_TYPE id, CClient *pClient, bool fMulti)
