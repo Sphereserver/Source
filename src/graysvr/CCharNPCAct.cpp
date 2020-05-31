@@ -2282,7 +2282,7 @@ void CChar::NPC_Act_Idle()
 	// Just stand here for a bit
 	if ( Skill_GetActive() != SKILL_NONE )
 		Skill_Start(SKILL_NONE);
-	SetTimeout(static_cast<INT64>(Calc_GetRandVal(5, 10)) * TICK_PER_SEC);
+	SetTimeout(Calc_GetRandLLVal(TICK_PER_SEC, 3 * TICK_PER_SEC));
 }
 
 bool CChar::NPC_OnReceiveItem(CChar *pCharSrc, CItem *pItem)

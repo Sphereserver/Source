@@ -1807,3 +1807,7 @@ Fixed: Server crash when FreezeRestartTime setting on sphere.ini is set to an va
 18-05-2020, Coruja
 Changed: Optimized internal network socket engine.
 Fixed: Server crash when console get many "variable exceeded max length" warnings in a row.
+
+31-05-2020, Coruja
+Fixed: Spells DURATION not working correctly.
+Fixed: Wandering NPCs taking too much time to react.

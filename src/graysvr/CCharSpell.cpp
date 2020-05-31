@@ -2556,7 +2556,7 @@ bool CChar::Spell_CastDone()
 	}
 
 	CScriptTriggerArgs Args(spell, iSkillLevel, pObjSrc);
-	Args.m_VarsLocal.SetNum("Duration", GetSpellDuration(spell, iSkillLevel, this) / TICK_PER_SEC, true);
+	Args.m_VarsLocal.SetNum("Duration", GetSpellDuration(spell, iSkillLevel, this), true);
 
 	ITEMID_TYPE iT1 = ITEMID_NOTHING;
 	ITEMID_TYPE iT2 = ITEMID_NOTHING;
@@ -2624,7 +2624,7 @@ bool CChar::Spell_CastDone()
 
 		INT64 piArgs[2];
 		size_t iArgQty = Str_ParseCmds(const_cast<TCHAR *>(Args.m_VarsLocal.GetKeyStr("Duration")), piArgs, COUNTOF(piArgs), ",");
-		iDurationMin = (iArgQty >= 1) ? piArgs[0] * TICK_PER_SEC : GetSpellDuration(m_atMagery.m_Spell, iSkillLevel, this);
+		iDurationMin = (iArgQty >= 1) ? piArgs[0] * TICK_PER_SEC : GetSpellDuration(m_atMagery.m_Spell, iSkillLevel, this) * TICK_PER_SEC;
 		iDurationMax = (iArgQty >= 2) ? piArgs[1] * TICK_PER_SEC : iDurationMin;
 
 		wColor = static_cast<HUE_TYPE>(Args.m_VarsLocal.GetKeyNum("EffectColor"));
@@ -3780,5 +3780,6 @@ int CChar::GetSpellDuration(SPELL_TYPE spell, int iSkillLevel, CChar *pCharSrc)
 		if ( pSpellDef )
 			iDuration = pSpellDef->m_Duration.GetLinear(iSkillLevel) / 10;
 	}
-	return iDuration * TICK_PER_SEC;
+
+	return iDuration;
 }
