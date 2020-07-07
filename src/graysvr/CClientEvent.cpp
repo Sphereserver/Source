@@ -2478,6 +2478,11 @@ void CClient::Event_ExtCmd(EXTCMD_TYPE type, TCHAR *pszArgs)
 	TCHAR *ppArgs[2];
 	Str_ParseCmds(pszArgs, ppArgs, COUNTOF(ppArgs), " ");
 
+	if (!ppArgs[0] && type != EXTCMD_OpenDoor) {
+		DEBUG_ERR(("%lx:Invalid ExtCmd packet\n", GetSocketID()));
+		return;
+	}
+
 	switch ( type )
 	{
 		case EXTCMD_OpenSpellbook:
