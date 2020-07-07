@@ -1710,7 +1710,7 @@ int CChar::OnTakeDamage(int iDmg, CChar *pSrc, DAMAGE_TYPE uType, int iDmgPhysic
 			int iArMax = (pCharDef->m_defense + m_defense) * Calc_GetRandVal(7, 35) / 100;
 			int iArMin = iArMax / 2;
 
-			int iDef = Calc_GetRandVal(iArMin, (iArMax - iArMin) + 1);
+			int iDef = Calc_GetRandVal(iArMin, iArMax);
 			if ( uType & DAMAGE_MAGIC )		// magical damage halves effectiveness of defense
 				iDef /= 2;
 
