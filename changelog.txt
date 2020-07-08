@@ -1812,3 +1812,9 @@ Fixed: Server crash when console get many "variable exceeded max length" warning
 Fixed: Spells DURATION not working correctly.
 Fixed: Wandering NPCs taking too much time to react.
 Fixed: EF_ItemStacking experimental feature on sphere.ini not working correctly.
+
+07-07-2020, DracoScript
+Fixed: Pre-AOS armor (AR) formula not working correctly.
+
+07-07-2020, s0ckz
+Fixed: Server crash when receive a invalid macro packet from client.
