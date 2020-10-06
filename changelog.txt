@@ -1818,3 +1818,13 @@ Fixed: Pre-AOS armor (AR) formula not working correctly.
 
 07-07-2020, s0ckz
 Fixed: Server crash when receive a invalid macro packet from client.
+
+06-10-2020, Coruja
+Fixed: Map starting locations not working correctly when scripts have multiple [STARTS] templates defined.
+[sphereCrypt.ini]: Added crypt key for classic clients 7.0.86 ~ 7.0.87 and enhanced clients 4.0.86 ~ 4.0.87
+[maps/sphere_map2.scp]: Updated 'Terort Skitas', 'Reg Volom' and 'Ki-Rin Passage' regions
+[maps/sphere_map_points0.scp]: Updated [STARTS] and [MOONGATES] templates
+[maps/sphere_map_points0_hs.scp]: Updated 'Underwater World' teleporters
+[maps/sphere_map_points1.scp]: Added missing [STARTS] template and updated [MOONGATES] template
+[maps/sphere_map_points4.scp]: Updated [MOONGATES] template
+[maps/sphere_map_points5.scp]: Added missing [STARTS] template and updated [MOONGATES] template

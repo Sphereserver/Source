@@ -2724,7 +2724,6 @@ bool CResource::LoadResourceSection(CScript *pScript)
 		}
 		case RES_STARTS:
 		{
-			m_StartDefs.RemoveAll();
 			while ( pScript->ReadKey() )
 			{
 				CStartLoc *pStartLoc = new CStartLoc(pScript->GetKey());
