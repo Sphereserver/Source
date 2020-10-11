@@ -13,7 +13,11 @@ bool CrashDump::IsEnabled()
 
 void CrashDump::Enable()
 {
-	m_hDll = LoadLibrary("dbghelp.dll");
+	TCHAR szLibPath[MAX_PATH];
+	GetSystemDirectory(szLibPath, sizeof(szLibPath));
+	strcat(szLibPath, "\\dbghelp.dll");
+
+	m_hDll = LoadLibrary(szLibPath);
 	if (!m_hDll)
 	{
 		m_bEnabled = false;

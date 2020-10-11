@@ -239,7 +239,11 @@ bool CNTWindow::RegisterClass(char *className)	// static
 		return( false );
 	}
 
-    LoadLibrary("Riched20.dll"); // Load the RichEdit DLL to activate the class
+	TCHAR szLibPath[MAX_PATH];
+	GetSystemDirectory(szLibPath, sizeof(szLibPath));
+	strcat(szLibPath, "\\riched20.dll");
+
+	LoadLibrary(szLibPath);
 	return true;
 }
 
@@ -639,21 +643,31 @@ LRESULT CNTWindow::OnNotify( int idCtrl, NMHDR * pnmh )
 
 							if (filePath != NULL)
 							{
-								// ShellExecute fails when a relative path is passed to it that uses forward slashes as a path
-								// separator.. to workaround this we can use GetFullPathName (which accepts forward slashes) to
-								// resolve the relative path to an absolute path
-								TCHAR * z = Str_GetTemp();
-								if (GetFullPathName(filePath, THREAD_STRING_LENGTH, z, NULL) > 0)
+								TCHAR szApplicationName[MAX_PATH];
+								GetSystemDirectory(szApplicationName, sizeof(szApplicationName));
+								strcat(szApplicationName, "\\notepad.exe");
+
+								TCHAR szCommandLine[MAX_PATH];
+								sprintf(szCommandLine, " \"%s\"", filePath);
+
+								STARTUPINFO si;
+								ZeroMemory(&si, sizeof(si));
+								si.cb = sizeof(si);
+
+								PROCESS_INFORMATION pi;
+								ZeroMemory(&pi, sizeof(pi));
+
+								if ( CreateProcess(szApplicationName, szCommandLine, NULL, NULL, true, 0, NULL, NULL, &si, &pi) )
 								{
-									INT_PTR r = reinterpret_cast<INT_PTR>(ShellExecute(NULL, NULL, z, NULL, NULL, SW_SHOW));
-									if (r > 32)
-										return 1;
+									CloseHandle(pi.hProcess);
+									CloseHandle(pi.hThread);
+									return 1;
 								}
 
-								// failure occurred
 								DWORD dwErrorCode = CGFile::GetLastError();
-								if (CGrayError::GetSystemErrorMessage(dwErrorCode, z, THREAD_STRING_LENGTH) > 0)
-									g_Log.Event(LOGL_WARN, "Failed to open '%s' code=%hu (%s)\n", filePath, dwErrorCode, z);
+								LPTSTR pszErrorMsg = Str_GetTemp();
+								if (CGrayError::GetSystemErrorMessage(dwErrorCode, pszErrorMsg, THREAD_STRING_LENGTH) > 0)
+									g_Log.Event(LOGL_WARN, "Failed to open '%s' code=%hu (%s)\n", filePath, dwErrorCode, pszErrorMsg);
 								else
 									g_Log.Event(LOGL_WARN, "Failed to open '%s' code=%hu\n", filePath, dwErrorCode);
 							}

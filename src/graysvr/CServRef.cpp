@@ -38,7 +38,12 @@ DWORD CServerDef::StatGet(SERV_STAT_TYPE i) const
 			if ( !m_hModule )	// load psapi.dll if not loaded yet
 			{
 				EXC_SET("load process info");
-				m_hModule = LoadLibrary(TEXT("psapi.dll"));
+
+				TCHAR szLibPath[MAX_PATH];
+				GetSystemDirectory(szLibPath, sizeof(szLibPath));
+				strcat(szLibPath, "\\psapi.dll");
+
+				m_hModule = LoadLibrary(szLibPath);
 				if ( !m_hModule )
 				{
 					m_fProcessInfoAvailable = false;
