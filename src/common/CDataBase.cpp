@@ -126,9 +126,9 @@ bool CDataBase::Query(LPCTSTR pszQuery, CVarDefMap &mapQueryResult)
 					mapQueryResult.SetStr(pFields[i].name, true, pszVal);
 				}
 
-				sprintf(pszKey, "%d.%u", iRowNum, i);
+				snprintf(pszKey, 24, "%d.%u", iRowNum, i);
 				mapQueryResult.SetStr(pszKey, true, pszVal);
-				sprintf(pszKey, "%d.%s", iRowNum, pFields[i].name);
+				snprintf(pszKey, 76, "%d.%s", iRowNum, pFields[i].name);
 				mapQueryResult.SetStr(pszKey, true, pszVal);
 			}
 			++iRowNum;

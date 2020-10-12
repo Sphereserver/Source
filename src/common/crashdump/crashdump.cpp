@@ -15,7 +15,7 @@ void CrashDump::Enable()
 {
 	TCHAR szLibPath[MAX_PATH];
 	GetSystemDirectory(szLibPath, sizeof(szLibPath));
-	strcat(szLibPath, "\\dbghelp.dll");
+	strncat(szLibPath, "\\dbghelp.dll", sizeof(szLibPath) - 1);
 
 	m_hDll = LoadLibrary(szLibPath);
 	if (!m_hDll)
@@ -51,20 +51,20 @@ void CrashDump::Disable()
 
 void CrashDump::StartCrashDump( DWORD processID, DWORD threadID, struct _EXCEPTION_POINTERS* pExceptionData ) 
 {
-	HANDLE process = NULL, dumpFile = NULL;
-	
 	if (!processID || !threadID || !pExceptionData)
 		return;
 
-	process = GetCurrentProcess();
+	HANDLE process = GetCurrentProcess();
 	if (process == NULL)
 		return;
 	
-	char buf[128] = "";
 	SYSTEMTIME st;
 	GetSystemTime(&st);
-	sprintf(buf, "sphereCrash_%02hu%02hu-%02hu%02hu%02hu%04hu.dmp", st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
-	dumpFile = CreateFile(buf, GENERIC_WRITE, FILE_SHARE_WRITE, 0, CREATE_ALWAYS, 0, 0);
+
+	char szFileName[FILENAME_MAX];
+	snprintf(szFileName, sizeof(szFileName), "sphereCrash_%02hu%02hu-%02hu%02hu%02hu%04hu.dmp", st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond, st.wMilliseconds);
+
+	HANDLE dumpFile = CreateFile(szFileName, GENERIC_WRITE, FILE_SHARE_WRITE, 0, CREATE_ALWAYS, 0, 0);
 	if (dumpFile == INVALID_HANDLE_VALUE)
 		return;
 	

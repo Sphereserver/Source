@@ -21,6 +21,10 @@ extern bool NTWindow_PostMsg(LPCTSTR pszMsg);
 extern bool NTWindow_PostMsgColor(COLORREF color);
 extern void NTWindow_SetWindowTitle(LPCTSTR pszText = NULL);
 
+#if defined(_MSC_VER) && _MSC_VER < 1900
+	#define snprintf	sprintf_s
+#endif
+
 #ifdef __MINGW32__
 	// On MinGW the 'operator=' is private on many classes and UNREFERENCED_PARAMETER macro on MinGW is (P)=(P), so we have a compilation error here
 	#ifdef UNREFERENCED_PARAMETER

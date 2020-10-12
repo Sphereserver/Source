@@ -20,9 +20,9 @@ bool CNTWindow::CAboutDlg::OnInitDialog()
 {
 	char *pszBuild = Str_GetTemp();
 #if defined(__GITREVISION__) && defined(__GITHASH__)
-	sprintf(pszBuild, "Compiled at %s (Build %d / Git hash %s)", g_szCompiledDate, __GITREVISION__, __GITHASH__);
+	snprintf(pszBuild, 80, "Compiled at %s (Build %d / Git hash %s)", g_szCompiledDate, __GITREVISION__, __GITHASH__);
 #else
-	sprintf(pszBuild, "Compiled at %s", g_szCompiledDate);
+	snprintf(pszBuild, 40, "Compiled at %s", g_szCompiledDate);
 #endif
 
 	SetDlgItemText(IDC_ABOUT_VERSION, SPHERE_TITLE_VER " (" SPHERE_VER_ARCH ")");
@@ -241,7 +241,7 @@ bool CNTWindow::RegisterClass(char *className)	// static
 
 	TCHAR szLibPath[MAX_PATH];
 	GetSystemDirectory(szLibPath, sizeof(szLibPath));
-	strcat(szLibPath, "\\riched20.dll");
+	strncat(szLibPath, "\\riched20.dll", sizeof(szLibPath) - 1);
 
 	LoadLibrary(szLibPath);
 	return true;
@@ -475,11 +475,11 @@ bool CNTWindow::OnCommand( WORD wNotifyCode, INT_PTR wID, HWND hwndCtl )
 		{
 			TCHAR szTmp[ MAX_TALK_BUFFER ];
 			m_wndInput.GetWindowText( szTmp, sizeof(szTmp));
-			strcpy(m_zCommands[4], m_zCommands[3]);
-			strcpy(m_zCommands[3], m_zCommands[2]);
-			strcpy(m_zCommands[2], m_zCommands[1]);
-			strcpy(m_zCommands[1], m_zCommands[0]);
-			strcpy(m_zCommands[0], szTmp);
+
+			for ( int i = 4; i > 0; --i )
+				strncpy(theApp.m_wndMain.m_zCommands[i], theApp.m_wndMain.m_zCommands[i - 1], sizeof(theApp.m_wndMain.m_zCommands[i]) - 1);
+
+			strncpy(m_zCommands[0], szTmp, sizeof(m_zCommands[0]) - 1);
 			m_wndInput.SetWindowText("");
 			g_Serv.m_sConsoleText = szTmp;
 			g_Serv.m_fConsoleTextReadyFlag = true;
@@ -521,7 +521,7 @@ void	CNTWindow::SetLogFont( const char * pszFont )
 	{
 		LOGFONT logfont;
    		memset( &logfont, 0, sizeof(logfont) );
-   		strcpy( logfont.lfFaceName, pszFont );
+		strncpy(logfont.lfFaceName, pszFont, sizeof(logfont.lfFaceName) - 1);
 
 		// calculate height for a 10pt font, some systems can produce an unreadable
 		// font size if we let CreateFontIndirect pick a system default size
@@ -634,10 +634,9 @@ LRESULT CNTWindow::OnNotify( int idCtrl, NMHDR * pnmh )
 							{
 								if ( strstr(SPHERE_FILE "tables" SPHERE_SCRIPT, start) )
 								{
-									TCHAR * z = Str_GetTemp();
-									strcpy(z, g_Cfg.m_sSCPBaseDir);
-									strcat(z, start);
-									filePath = z;
+									TCHAR szBaseDir[MAX_PATH];
+									snprintf(szBaseDir, sizeof(szBaseDir), "%s%s", static_cast<LPCTSTR>(g_Cfg.m_sSCPBaseDir), start);
+									filePath = szBaseDir;
 								}
 							}
 
@@ -645,10 +644,10 @@ LRESULT CNTWindow::OnNotify( int idCtrl, NMHDR * pnmh )
 							{
 								TCHAR szApplicationName[MAX_PATH];
 								GetSystemDirectory(szApplicationName, sizeof(szApplicationName));
-								strcat(szApplicationName, "\\notepad.exe");
+								strncat(szApplicationName, "\\notepad.exe", sizeof(szApplicationName) - 1);
 
 								TCHAR szCommandLine[MAX_PATH];
-								sprintf(szCommandLine, " \"%s\"", filePath);
+								snprintf(szCommandLine, sizeof(szCommandLine), " \"%s\"", filePath);
 
 								STARTUPINFO si;
 								ZeroMemory(&si, sizeof(si));
@@ -764,7 +763,7 @@ bool NTWindow_Init(HINSTANCE hInstance, LPTSTR lpCmdLine, int nCmdShow)
 		if ( argv[1][1] == 'c' )
 		{
 			if ( argv[1][2] )
-				strcpy(className, &argv[1][2]);
+				strncpy(className, &argv[1][2], sizeof(className) - 1);
 		}
 	}
 	CNTWindow::RegisterClass(className);
@@ -802,7 +801,7 @@ void NTWindow_Exit()
 	if ( g_Serv.m_iExitFlag < 0 )
 	{
 		TCHAR *pszMsg = Str_GetTemp();
-		sprintf(pszMsg, "Server terminated by error %d!", g_Serv.m_iExitFlag);
+		snprintf(pszMsg, 32, "Server terminated by error %d!", g_Serv.m_iExitFlag);
 		theApp.m_wndMain.MessageBox(pszMsg, theApp.m_pszAppName, MB_OK|MB_ICONEXCLAMATION );
 		// just sit here for a bit til the user wants to close the window.
 		while ( NTWindow_OnTick(500) )
@@ -846,16 +845,14 @@ void NTWindow_SetWindowTitle( LPCTSTR pszText )
 		break;
 	}
 
-	// Number of connections ?
-
-	char *psTitle = Str_GetTemp();
-	sprintf(psTitle, "%s - %s (%s) %s", theApp.m_pszAppName, g_Serv.GetName(), pszMode, pszText ? pszText : "" );
-	theApp.m_wndMain.SetWindowText( psTitle );
+	char szTitle[MAX_PATH];
+	snprintf(szTitle, sizeof(szTitle), "%s - %s (%s) %s", theApp.m_pszAppName, g_Serv.GetName(), pszMode, pszText ? pszText : "");
+	theApp.m_wndMain.SetWindowText(szTitle);
 
 	if ( GRAY_GetOSInfo()->dwPlatformId > VER_PLATFORM_WIN32s )
 	{
 		theApp.m_wndMain.pnid.uFlags = NIF_TIP;
-		strcpylen(theApp.m_wndMain.pnid.szTip, psTitle, COUNTOF(theApp.m_wndMain.pnid.szTip)-1);
+		strcpylen(theApp.m_wndMain.pnid.szTip, szTitle, COUNTOF(theApp.m_wndMain.pnid.szTip) - 1);
 		Shell_NotifyIcon(NIM_MODIFY, &theApp.m_wndMain.pnid);
 	}
 }
@@ -978,10 +975,10 @@ bool NTWindow_OnTick( int iWaitmSec )
 				if ( msg.wParam == VK_UP )			//	UP (commands history)
 				{
 					theApp.m_wndMain.m_wndInput.SetWindowText(theApp.m_wndMain.m_zCommands[0]);
-					strcpy(theApp.m_wndMain.m_zCommands[0], theApp.m_wndMain.m_zCommands[1]);
-					strcpy(theApp.m_wndMain.m_zCommands[1], theApp.m_wndMain.m_zCommands[2]);
-					strcpy(theApp.m_wndMain.m_zCommands[2], theApp.m_wndMain.m_zCommands[3]);
-					strcpy(theApp.m_wndMain.m_zCommands[3], theApp.m_wndMain.m_zCommands[4]);
+
+					for ( int i = 0; i < 4; ++i )
+						strncpy(theApp.m_wndMain.m_zCommands[i], theApp.m_wndMain.m_zCommands[i + 1], sizeof(theApp.m_wndMain.m_zCommands[i]) - 1);
+
 					theApp.m_wndMain.m_wndInput.GetWindowText(theApp.m_wndMain.m_zCommands[4], sizeof(theApp.m_wndMain.m_zCommands[4]));
 				}
 			}

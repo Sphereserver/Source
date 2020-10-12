@@ -37,8 +37,8 @@ void CSQLite::Close()
 TablePtr CSQLite::QueryPtr(LPCTSTR pszQuery)
 {
 	ADDTOCALLSTACK("CSQLite::QueryPtr");
-	char **retStrings = 0;
-	char *errmsg = 0;
+	char **retStrings = '\0';
+	char *errmsg = '\0';
 	int iRows = 0, iCols = 0;
 
 	m_resultCode = sqlite3_get_table(m_socket, UTF8MBSTR(pszQuery), &retStrings, &iRows, &iCols, &errmsg);
@@ -108,9 +108,9 @@ void CSQLite::Query(LPCTSTR pszQuery, CVarDefMap &mapQueryResult)
 			pTable.m_pTable->GoRow(iRow);
 			for ( int iCol = 0; iCol < iCols; ++iCol )
 			{
-				sprintf(pszKey, "%d.%d", iRow, iCol);
+				snprintf(pszKey, 24, "%d.%d", iRow, iCol);
 				mapQueryResult.SetStr(pszKey, true, pTable.m_pTable->GetColValue(iCol));
-				sprintf(pszKey, "%d.%s", iRow, pTable.m_pTable->GetColName(iCol));
+				snprintf(pszKey, 76, "%d.%s", iRow, pTable.m_pTable->GetColName(iCol));
 				mapQueryResult.SetStr(pszKey, true, pTable.m_pTable->GetColValue(iCol));
 			}
 		}
@@ -123,7 +123,7 @@ void CSQLite::Exec(LPCTSTR pszQuery)
 	if ( !m_socket )
 		return;
 
-	char *errmsg = 0;
+	char *errmsg = '\0';
 
 	m_resultCode = sqlite3_exec(m_socket, UTF8MBSTR(pszQuery), 0, 0, &errmsg);
 	if ( m_resultCode != SQLITE_OK )
@@ -140,7 +140,7 @@ void CSQLite::ConvertUTF8ToString(LPTSTR pszIn, stdvstring &pszOut)
 	pszOut.resize(len, 0);
 
 	wchar_t *wChar = new wchar_t[len];
-	wChar[0] = 0;
+	wChar[0] = '\0';
 
 	mbstowcs(wChar, pszIn, len);
 	wcstombs(&pszOut[0], wChar, len);
@@ -324,7 +324,7 @@ UTF8MBSTR::UTF8MBSTR(LPCTSTR pszArgs)
 	else
 	{
 		m_pszUTF8_MultiByte = new char[1];
-		m_pszUTF8_MultiByte[0] = 0;
+		m_pszUTF8_MultiByte[0] = '\0';
 		m_iLen = 0;
 	}
 }
@@ -333,7 +333,8 @@ UTF8MBSTR::UTF8MBSTR(UTF8MBSTR &pszArgs)
 {
 	m_iLen = pszArgs.m_iLen;
 	m_pszUTF8_MultiByte = new char[m_iLen + 1];
-	strncpy(m_pszUTF8_MultiByte, pszArgs.m_pszUTF8_MultiByte, m_iLen + 1);
+	strncpy(m_pszUTF8_MultiByte, pszArgs.m_pszUTF8_MultiByte, m_iLen);
+	m_pszUTF8_MultiByte[m_iLen] = '\0';
 }
 
 UTF8MBSTR::~UTF8MBSTR()
@@ -347,12 +348,12 @@ size_t UTF8MBSTR::ConvertStringToUTF8(LPCTSTR pszIn, char *&pszOut)
 	ADDTOCALLSTACK("UTF8MBSTR::ConvertStringToUTF8");
 	size_t len = strlen(pszIn);
 	wchar_t *wChar = new wchar_t[len + 1];
-	wChar[0] = 0;
+	wChar[0] = '\0';
 	mbstowcs(wChar, pszIn, len + 1);
 
 	size_t lenRequired = wcstombs(NULL, wChar, len + 1);
 	pszOut = new char[lenRequired + 1];
-	pszOut[0] = 0;
+	pszOut[0] = '\0';
 	wcstombs(pszOut, wChar, lenRequired + 1);
 
 	delete[] wChar;

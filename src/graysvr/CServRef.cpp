@@ -41,7 +41,7 @@ DWORD CServerDef::StatGet(SERV_STAT_TYPE i) const
 
 				TCHAR szLibPath[MAX_PATH];
 				GetSystemDirectory(szLibPath, sizeof(szLibPath));
-				strcat(szLibPath, "\\psapi.dll");
+				strncat(szLibPath, "\\psapi.dll", sizeof(szLibPath) - 1);
 
 				m_hModule = LoadLibrary(szLibPath);
 				if ( !m_hModule )
@@ -80,7 +80,7 @@ DWORD CServerDef::StatGet(SERV_STAT_TYPE i) const
 			{
 				CFileText inf;
 				TCHAR *buf = Str_GetTemp(), *head;
-				sprintf(buf, "/proc/%d/status", getpid());
+				snprintf(buf, 25, "/proc/%d/status", getpid());
 				if ( inf.Open(buf, OF_READ|OF_TEXT) )
 				{
 					for (;;)
