@@ -37,8 +37,8 @@ void CSQLite::Close()
 TablePtr CSQLite::QueryPtr(LPCTSTR pszQuery)
 {
 	ADDTOCALLSTACK("CSQLite::QueryPtr");
-	char **retStrings = '\0';
-	char *errmsg = '\0';
+	char **retStrings = 0;
+	char *errmsg = 0;
 	int iRows = 0, iCols = 0;
 
 	m_resultCode = sqlite3_get_table(m_socket, UTF8MBSTR(pszQuery), &retStrings, &iRows, &iCols, &errmsg);
@@ -123,7 +123,7 @@ void CSQLite::Exec(LPCTSTR pszQuery)
 	if ( !m_socket )
 		return;
 
-	char *errmsg = '\0';
+	char *errmsg = 0;
 
 	m_resultCode = sqlite3_exec(m_socket, UTF8MBSTR(pszQuery), 0, 0, &errmsg);
 	if ( m_resultCode != SQLITE_OK )

@@ -1,7 +1,7 @@
 #if !defined(_CRASHDUMP_H) && defined(_WIN32) && !defined(_DEBUG) && !defined(_NO_CRASHDUMP)
 #define _CRASHDUMP_H
 
-#include <windows.h>
+#include "../os_windows.h"
 #ifdef __MINGW32__
 #include "mingwdbghelp.h"
 #else  // __MINGW32__
