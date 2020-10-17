@@ -155,14 +155,15 @@ bool CServer::SocketsInit()
 			ip.SetAddrIP(*reinterpret_cast<DWORD *>(pHost->h_addr_list[i]));	// 0.1.2.3
 			if ( !m_ip.IsLocalAddr() && !m_ip.IsSameIP(ip) )
 				continue;
-			g_Log.Event(LOGL_EVENT, "Monitoring local IP %s:%d (TCP) - Main server\n", ip.GetAddrStr(), m_ip.GetPort());
+
+			g_Log.Event(LOGL_EVENT, "Monitoring local IP %s:%d (TCP) - Main server%s\n", ip.GetAddrStr(), m_ip.GetPort(), ((g_Cfg.m_fUseHTTP == 2) ? ", HTTP server" : ""));
 			if ( IsSetEF(EF_UsePingServer) )
 				g_Log.Event(LOGL_EVENT, "Monitoring local IP %s:%d (UDP) - Ping server\n", ip.GetAddrStr(), PINGSERVER_PORT);
 		}
 	}
 	if ( GetPublicIP() )
 	{
-		g_Log.Event(LOGL_EVENT, "Monitoring public IP %s:%d (TCP) - Main server\n", m_ip.GetAddrStr(), m_ip.GetPort());
+		g_Log.Event(LOGL_EVENT, "Monitoring public IP %s:%d (TCP) - Main server%s\n", m_ip.GetAddrStr(), m_ip.GetPort(), ((g_Cfg.m_fUseHTTP == 2) ? ", HTTP server" : ""));
 		if ( IsSetEF(EF_UsePingServer) )
 			g_Log.Event(LOGL_EVENT, "Monitoring public IP %s:%d (UDP) - Ping server\n", m_ip.GetAddrStr(), PINGSERVER_PORT);
 	}
@@ -213,9 +214,9 @@ bool CServer::GetPublicIP()
 	}
 
 	// Send HTTP request
-	TCHAR *pszHeader = Str_GetTemp();
-	sprintf(pszHeader, "GET %s HTTP/1.1\r\nHost: %s\r\nUser-Agent: " SPHERE_TITLE_VER "\r\nConnection: Close\r\n\r\n", pszPath ? pszPath : "/", pszDomain);
-	if ( sock.Send(pszHeader, strlen(pszHeader)) == SOCKET_ERROR )
+	TCHAR szHeader[256];
+	snprintf(szHeader, sizeof(szHeader), "GET %s HTTP/1.1\r\nHost: %s\r\nUser-Agent: " SPHERE_TITLE_VER "\r\nConnection: Close\r\n\r\n", pszPath ? pszPath : "/", pszDomain);
+	if ( sock.Send(szHeader, strlen(szHeader)) == SOCKET_ERROR )
 	{
 		sock.Close();
 		return false;
@@ -349,9 +350,9 @@ bool CServer::Load()
 
 #ifdef _WIN32
 	EXC_SET("setting console title");
-	TCHAR *pszTemp = Str_GetTemp();
-	sprintf(pszTemp, SPHERE_TITLE_VER " - %s", GetName());
-	SetConsoleTitle(pszTemp);
+	TCHAR szTitle[32];
+	snprintf(szTitle, sizeof(szTitle), SPHERE_TITLE_VER " - %s", GetName());
+	SetConsoleTitle(szTitle);
 #else
 	EXC_SET("setting signals");
 	SetSignals(g_Cfg.m_fSecure);
@@ -402,18 +403,18 @@ int CServer::PrintPercent(long iCount, long iTotal)
 		return 100;
 
 	int iPercent = IMULDIV(iCount, 100, iTotal);
-	TCHAR *pszTemp = Str_GetTemp();
-	sprintf(pszTemp, "%d%%", iPercent);
+	TCHAR szTemp[5];
+	snprintf(szTemp, sizeof(szTemp), "%d%%", iPercent);
 
 	if ( m_iTelnetClients )
-		PrintTelnet(pszTemp);
+		PrintTelnet(szTemp);
 
 #ifndef _WIN32
 	if ( g_UnixTerminal.isColorEnabled() )
 	{
-		SysMessage(pszTemp);
+		SysMessage(szTemp);
 #endif
-		size_t iLen = strlen(pszTemp);
+		size_t iLen = strlen(szTemp);
 		while ( iLen > 0 )	// backspace it
 		{
 			if ( m_iTelnetClients )
@@ -428,7 +429,7 @@ int CServer::PrintPercent(long iCount, long iTotal)
 #endif
 
 #ifdef _WIN32
-	NTWindow_SetWindowTitle(pszTemp);
+	NTWindow_SetWindowTitle(szTemp);
 #endif
 	return iPercent;
 }
@@ -806,9 +807,7 @@ longcommand:
 			}
 
 			TCHAR szFileStrip[_MAX_PATH];
-			strncpy(szFileStrip, g_Cfg.m_sStripPath, _MAX_PATH - 1);
-			szFileStrip[_MAX_PATH - 1] = '\0';
-			strcat(szFileStrip, "sphere_strip" SPHERE_SCRIPT);
+			snprintf(szFileStrip, _MAX_PATH, "%s%s", static_cast<LPCTSTR>(g_Cfg.m_sStripPath), "sphere_strip" SPHERE_SCRIPT);
 
 			FILE *pFileStrip = fopen(szFileStrip, "w");
 			if ( !pFileStrip )
@@ -923,7 +922,7 @@ void CServer::ListClients(CTextConsole *pConsole) const
 			if ( pCharCmd && !pCharCmd->CanDisturb(pChar) )
 				continue;
 
-			sprintf(pszMsgTemp, "%lx:Acc%c'%s', Char='%s' (IP: %s)\n", pClient->GetSocketID(), szPriv, pAcc ? pAcc->GetName() : "<NA>", pChar->GetName(), pClient->GetPeerStr());
+			snprintf(pszMsgTemp, 128, "%lx:Acc%c'%s', Char='%s' (IP: %s)\n", pClient->GetSocketID(), szPriv, pAcc ? pAcc->GetName() : "<NA>", pChar->GetName(), pClient->GetPeerStr());
 		}
 		else
 		{
@@ -943,7 +942,7 @@ void CServer::ListClients(CTextConsole *pConsole) const
 					break;
 			}
 
-			sprintf(pszMsgTemp, "%lx:Acc%c'%s' (IP: %s) %s\n", pClient->GetSocketID(), szPriv, pAcc ? pAcc->GetName() : "<NA>", pClient->GetPeerStr(), pszState);
+			snprintf(pszMsgTemp, 128, "%lx:Acc%c'%s' (IP: %s) %s\n", pClient->GetSocketID(), szPriv, pAcc ? pAcc->GetName() : "<NA>", pClient->GetPeerStr(), pszState);
 		}
 
 		// If we have many clients, SCRIPT_MAX_LINE_LEN may be too short ;) (matex)
@@ -952,13 +951,13 @@ void CServer::ListClients(CTextConsole *pConsole) const
 			pConsole->SysMessage(pszMsg);
 			pszMsg[0] = '\0';
 		}
-		strcat(pszMsg, pszMsgTemp);
+		strncat(pszMsg, pszMsgTemp, SCRIPT_MAX_LINE_LEN - 1);
 	}
 
 	if ( iClients == 0 )
-		sprintf(pszMsgTemp, "%s\n", g_Cfg.GetDefaultMsg(DEFMSG_HL_NO_CLIENT));
+		snprintf(pszMsgTemp, SCRIPT_MAX_LINE_LEN, "%s\n", g_Cfg.GetDefaultMsg(DEFMSG_HL_NO_CLIENT));
 	else
-		sprintf(pszMsgTemp, "%s %" FMTSIZE_T "\n", g_Cfg.GetDefaultMsg(DEFMSG_HL_MANY_CLIENTS), iClients);
+		snprintf(pszMsgTemp, SCRIPT_MAX_LINE_LEN, "%s %" FMTSIZE_T "\n", g_Cfg.GetDefaultMsg(DEFMSG_HL_MANY_CLIENTS), iClients);
 
 	pConsole->SysMessage(pszMsg);
 	pConsole->SysMessage(pszMsgTemp);
@@ -977,26 +976,26 @@ LPCTSTR CServer::GetStatusString(BYTE bIndex) const
 		case 0x21:	// '!'
 		{
 			// Typical (first time) poll response
-			TCHAR szVersion[128];
-			sprintf(pszTemp, SPHERE_TITLE ", Name=%s, Port=%hu, Ver=" SPHERE_VER_STR_FULL ", TZ=%hhd, Email=%s, URL=%s, Lang=%s, CliVer=%s\n", GetName(), m_ip.GetPort(), m_TimeZone, static_cast<LPCTSTR>(m_sEMail), static_cast<LPCTSTR>(m_sURL), static_cast<LPCTSTR>(m_sLang), m_ClientVersion.WriteClientVerString(m_ClientVersion.GetClientVer(), szVersion));
+			TCHAR szVersion[32];
+			snprintf(pszTemp, 256, SPHERE_TITLE ", Name=%s, Port=%hu, Ver=" SPHERE_VER_STR_FULL ", TZ=%hhd, Email=%s, URL=%s, Lang=%s, CliVer=%s\n", GetName(), m_ip.GetPort(), m_TimeZone, static_cast<LPCTSTR>(m_sEMail), static_cast<LPCTSTR>(m_sURL), static_cast<LPCTSTR>(m_sLang), m_ClientVersion.WriteClientVerString(m_ClientVersion.GetClientVer(), szVersion));
 			break;
 		}
 		case 0x22:	// '"'
 		{
 			// Shown in the INFO page in game
-			sprintf(pszTemp, SPHERE_TITLE ", Name=%s, Age=%lld, Clients=%" FMTDWORD ", Items=%" FMTDWORD ", Chars=%" FMTDWORD ", Mem=%" FMTDWORD "K\n", GetName(), GetAge(), StatGet(SERV_STAT_CLIENTS), StatGet(SERV_STAT_ITEMS), StatGet(SERV_STAT_CHARS), StatGet(SERV_STAT_MEM));
+			snprintf(pszTemp, 256, SPHERE_TITLE ", Name=%s, Age=%lld, Clients=%" FMTDWORD ", Items=%" FMTDWORD ", Chars=%" FMTDWORD ", Mem=%" FMTDWORD "K\n", GetName(), GetAge(), StatGet(SERV_STAT_CLIENTS), StatGet(SERV_STAT_ITEMS), StatGet(SERV_STAT_CHARS), StatGet(SERV_STAT_MEM));
 			break;
 		}
 		case 0x24:	// '$'
 		{
 			// Show at startup
-			sprintf(pszTemp, "Admin=%s, URL=%s, Lang=%s, TZ=%hhd\n", static_cast<LPCTSTR>(m_sEMail), static_cast<LPCTSTR>(m_sURL), static_cast<LPCTSTR>(m_sLang), m_TimeZone);
+			snprintf(pszTemp, 128, "Admin=%s, URL=%s, Lang=%s, TZ=%hhd\n", static_cast<LPCTSTR>(m_sEMail), static_cast<LPCTSTR>(m_sURL), static_cast<LPCTSTR>(m_sLang), m_TimeZone);
 			break;
 		}
 		case 0x25:	// '%'
 		{
 			// ConnectUO status string
-			sprintf(pszTemp, SPHERE_TITLE " Items=%" FMTDWORD ", Mobiles=%" FMTDWORD ", Clients=%" FMTDWORD ", Mem=%" FMTDWORD "K", StatGet(SERV_STAT_ITEMS), StatGet(SERV_STAT_CHARS), StatGet(SERV_STAT_CLIENTS), StatGet(SERV_STAT_MEM));
+			snprintf(pszTemp, 128, SPHERE_TITLE " Items=%" FMTDWORD ", Mobiles=%" FMTDWORD ", Clients=%" FMTDWORD ", Mem=%" FMTDWORD "K", StatGet(SERV_STAT_ITEMS), StatGet(SERV_STAT_CHARS), StatGet(SERV_STAT_CLIENTS), StatGet(SERV_STAT_MEM));
 			break;
 		}
 	}

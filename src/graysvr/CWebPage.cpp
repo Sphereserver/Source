@@ -137,7 +137,6 @@ bool CWebPageDef::r_Verb(CScript &s, CTextConsole *pSrc)	// some command on this
 	ASSERT(pSrc);
 
 	sm_iListIndex = 0;
-	TCHAR *pszTemp = Str_GetTemp();
 
 	WV_TYPE index = static_cast<WV_TYPE>(FindTableSorted(s.GetKey(), sm_szVerbKeys, COUNTOF(sm_szVerbKeys) - 1));
 	switch ( index )
@@ -147,16 +146,21 @@ bool CWebPageDef::r_Verb(CScript &s, CTextConsole *pSrc)	// some command on this
 			if ( !s.HasArgs() )
 				return false;
 
+			CChar *pChar = NULL;
+			TCHAR szTemp[MAX_NAME_SIZE];
+
 			ClientIterator it;
 			for ( CClient *pClient = it.next(); pClient != NULL; pClient = it.next() )
 			{
-				CChar *pChar = pClient->GetChar();
+				pChar = pClient->GetChar();
 				if ( !pChar || (pChar->IsStatFlag(STATF_Insubstantial) && (pClient->GetPrivLevel() > PLEVEL_Player)) )
 					continue;
 
-				strncpy(pszTemp, s.GetArgStr(), MAX_NAME_SIZE - 1);
-				pChar->ParseText(Str_MakeFiltered(pszTemp), &g_Serv, 1);
-				pSrc->SysMessage(pszTemp);
+				strncpy(szTemp, s.GetArgStr(), MAX_NAME_SIZE - 1);
+				szTemp[MAX_NAME_SIZE - 1] = '\0';
+
+				pChar->ParseText(Str_MakeFiltered(szTemp), &g_Serv, 1);
+				pSrc->SysMessage(szTemp);
 				++sm_iListIndex;
 			}
 			break;
@@ -166,11 +170,15 @@ bool CWebPageDef::r_Verb(CScript &s, CTextConsole *pSrc)	// some command on this
 			if ( !s.HasArgs() )
 				return false;
 
+			TCHAR szTemp[MAX_TALK_BUFFER * 2];
+
 			for ( CGMPage *pGMPage = dynamic_cast<CGMPage *>(g_World.m_GMPages.GetHead()); pGMPage != NULL; pGMPage = pGMPage->GetNext() )
 			{
-				strncpy(pszTemp, s.GetArgStr(), THREAD_TSTRING_STORAGE - 1);
-				pGMPage->ParseText(Str_MakeFiltered(pszTemp), &g_Serv, 1);
-				pSrc->SysMessage(pszTemp);
+				strncpy(szTemp, s.GetArgStr(), (MAX_TALK_BUFFER * 2) - 1);
+				szTemp[(MAX_TALK_BUFFER * 2) - 1] = '\0';
+
+				pGMPage->ParseText(Str_MakeFiltered(szTemp), &g_Serv, 1);
+				pSrc->SysMessage(szTemp);
 				++sm_iListIndex;
 			}
 			break;
@@ -181,16 +189,21 @@ bool CWebPageDef::r_Verb(CScript &s, CTextConsole *pSrc)	// some command on this
 			if ( !s.HasArgs() )
 				return false;
 
+			CItemStone *pStone = NULL;
 			IT_TYPE	type = (index == WV_GUILDLIST) ? IT_STONE_GUILD : IT_STONE_TOWN;
+			TCHAR szTemp[MAX_ITEM_NAME_SIZE];
+
 			for ( size_t i = 0; i < g_World.m_Stones.GetCount(); ++i )
 			{
-				CItemStone *pStone = g_World.m_Stones[i];
+				pStone = g_World.m_Stones[i];
 				if ( !pStone || !pStone->IsType(type) )
 					continue;
 
-				strncpy(pszTemp, s.GetArgStr(), MAX_ITEM_NAME_SIZE - 1);
-				pStone->ParseText(Str_MakeFiltered(pszTemp), &g_Serv, 1);
-				pSrc->SysMessage(pszTemp);
+				strncpy(szTemp, s.GetArgStr(), MAX_ITEM_NAME_SIZE - 1);
+				szTemp[MAX_ITEM_NAME_SIZE - 1] = '\0';
+
+				pStone->ParseText(Str_MakeFiltered(szTemp), &g_Serv, 1);
+				pSrc->SysMessage(szTemp);
 				++sm_iListIndex;
 			}
 			break;
@@ -253,7 +266,8 @@ bool CWebPageDef::WebPageUpdate(bool fNow, LPCTSTR pszDstName, CTextConsole *pSr
 	while ( FileRead.ReadTextLine(false) )
 	{
 		TCHAR *pszTemp = Str_GetTemp();
-		strcpy(pszTemp, FileRead.GetKey());
+		strncpy(pszTemp, FileRead.GetKey(), THREAD_STRING_LENGTH - 1);
+		pszTemp[THREAD_STRING_LENGTH - 1] = '\0';
 
 		TCHAR *pszHead = strstr(pszTemp, "<script language=\"Sphere\">");
 		if ( pszHead )
@@ -317,20 +331,20 @@ void CWebPageDef::WebPageLog()
 
 	LPCTSTR pszExt = FileRead.GetFileExt();
 
-	TCHAR szName[_MAX_PATH];
+	TCHAR szName[FILENAME_MAX];
 	strncpy(szName, m_sDstFilePath, sizeof(szName) - 1);
 	szName[m_sDstFilePath.GetLength() - strlen(pszExt)] = '\0';
 
 	CGTime timeCurrent = CGTime::GetCurrentTime();
 
-	TCHAR *pszTemp = Str_GetTemp();
-	sprintf(pszTemp, "%s%d-%02d-%02d%s", szName, timeCurrent.GetYear(), timeCurrent.GetMonth(), timeCurrent.GetDay(), pszExt);
+	TCHAR szFileName[FILENAME_MAX];
+	snprintf(szFileName, sizeof(szFileName), "%s%d-%02d-%02d%s", szName, timeCurrent.GetYear(), timeCurrent.GetMonth(), timeCurrent.GetDay(), pszExt);
 
 	CFileText FileTest;
-	if ( FileTest.Open(pszTemp, OF_READ|OF_TEXT) )
+	if ( FileTest.Open(szFileName, OF_READ|OF_TEXT) )
 		return;
 
-	WebPageUpdate(true, pszTemp, &g_Serv);
+	WebPageUpdate(true, szFileName, &g_Serv);
 }
 
 const LPCTSTR CWebPageDef::sm_szPageExt[] =
@@ -487,8 +501,8 @@ int CWebPageDef::ServPageRequest(CClient *pClient, LPCTSTR pszURLArgs, CGTime *p
 
 	if ( !fGenerate && pTimeLastModified->IsTimeValid() && (pTimeLastModified->GetTime() <= timeFileLastModified) )
 	{
-		TCHAR *pszTemp = Str_GetTemp();
-		sprintf(pszTemp,
+		TCHAR szTemp[256];
+		snprintf(szTemp, sizeof(szTemp),
 			"HTTP/1.1 304 Not Modified\r\n"
 			"Date: %s\r\n"
 			"Server: " SPHERE_TITLE_VER "\r\n"
@@ -496,7 +510,7 @@ int CWebPageDef::ServPageRequest(CClient *pClient, LPCTSTR pszURLArgs, CGTime *p
 			"\r\n",
 			timeCurrent.FormatGmt(NULL)
 		);
-		new PacketWeb(pClient, reinterpret_cast<const BYTE *>(pszTemp), strlen(pszTemp));
+		new PacketWeb(pClient, reinterpret_cast<const BYTE *>(szTemp), strlen(szTemp));
 		return 304;		// Not modified
 	}
 
@@ -506,7 +520,7 @@ int CWebPageDef::ServPageRequest(CClient *pClient, LPCTSTR pszURLArgs, CGTime *p
 
 	// Send HTTP header
 	TCHAR szTemp[8 * 1024];
-	size_t iLen = sprintf(szTemp,
+	size_t iLen = snprintf(szTemp, sizeof(szTemp),
 		"HTTP/1.1 200 OK\r\n"
 		"Date: %s\r\n"
 		"Server: " SPHERE_TITLE_VER "\r\n"
@@ -517,11 +531,11 @@ int CWebPageDef::ServPageRequest(CClient *pClient, LPCTSTR pszURLArgs, CGTime *p
 	);
 
 	if ( m_type == WEBPAGE_TEMPLATE )
-		iLen += sprintf(szTemp + iLen, "Expires: 0\r\n");
+		iLen += snprintf(szTemp + iLen, sizeof(szTemp), "Expires: 0\r\n");
 	else
-		iLen += sprintf(szTemp + iLen, "Last-Modified: %s\r\n", CGTime(timeFileLastModified).FormatGmt(NULL));
+		iLen += snprintf(szTemp + iLen, sizeof(szTemp), "Last-Modified: %s\r\n", CGTime(timeFileLastModified).FormatGmt(NULL));
 
-	iLen += sprintf(szTemp + iLen, "Content-Length: %" FMTDWORD "\r\n\r\n", dwSize);
+	iLen += snprintf(szTemp + iLen, sizeof(szTemp), "Content-Length: %" FMTDWORD "\r\n\r\n", dwSize);
 
 	PacketWeb packet;
 	packet.setData(reinterpret_cast<const BYTE *>(szTemp), iLen);
@@ -699,7 +713,7 @@ bool CWebPageDef::ServPage(CClient *pClient, TCHAR *pszPageName, CGTime *pTimeLa
 	// 2) Check if there's a custom webpage for this specific error
 	pClient->m_Targ_Text = pszPageName;
 	TCHAR *pszTemp = Str_GetTemp();
-	sprintf(pszTemp, SPHERE_FILE "%d.htm", iStatusCode);
+	snprintf(pszTemp, FILENAME_MAX, SPHERE_FILE "%d.htm", iStatusCode);
 	pWebPage = g_Cfg.FindWebPage(pszTemp);
 	if ( pWebPage && (pWebPage->ServPageRequest(pClient, pszPageName, NULL) < 400) )
 		return true;
