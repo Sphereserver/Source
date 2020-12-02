@@ -1162,33 +1162,34 @@ private:
 class CDialogDef : public CResourceLink
 {
 public:
-	static const char *m_sClassName;
-	static const LPCTSTR sm_szLoadKeys[];
-
 	explicit CDialogDef(RESOURCE_ID rid);
 	virtual ~CDialogDef() { };
 
+	static const char *m_sClassName;
+	static const LPCTSTR sm_szLoadKeys[];
+
 public:
 	// Temporary placeholders (valid only during dialog setup)
-	size_t m_iControls;
-	size_t m_iTexts;
+	CGString m_sControl[1024];
+	size_t m_iControlCount;
+
+	CGString m_sText[512];
+	size_t m_iTextCount;
+
 	CObjBase *m_pObj;
 	int m_x;
 	int m_y;
-	int m_iOriginX;		// Keep track of position when parsing
+	int m_iOriginX;
 	int m_iOriginY;
-	WORD m_iPage;		// Page to open the dialog in
-	bool m_bNoDispose;	// Contains 'nodispose' control
-
-	CGString m_sControls[1024];
-	CGString m_sText[512];
+	WORD m_wPage;
+	bool m_fNoDispose;
 
 public:
-	bool GumpSetup(int iPage, CClient *pClientSrc, CObjBase *pObj, LPCTSTR pszArguments = "");
-	size_t GumpAddText(LPCTSTR pszText);		// Add text to the text section, return insertion index
+	bool GumpSetup(int iPage, CClient *pClientSrc, CObjBase *pObj, LPCTSTR pszArgs = "");
+	size_t GumpAddText(LPCTSTR pszArgs);
 
-	bool r_LoadVal(CScript &s);
 	bool r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc);
+	bool r_LoadVal(CScript &s);
 	bool r_Verb(CScript &s, CTextConsole *pSrc);
 
 private:

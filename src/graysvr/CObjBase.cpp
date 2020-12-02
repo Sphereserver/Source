@@ -2034,7 +2034,8 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 			EXC_SET("MENU");
 			if ( !pClientSrc )
 				return false;
-			pClientSrc->Menu_Setup(g_Cfg.ResourceGetIDType(RES_MENU, s.GetArgStr()), this);
+
+			pClientSrc->Menu_Setup(g_Cfg.ResourceGetIDType(RES_MENU, s.GetArgStr()));
 			break;
 		}
 		case OV_MESSAGE:	//put info message (for pSrc client only) over item.

@@ -586,9 +586,6 @@ public:
 	bool Event_Walk(BYTE rawdir, BYTE sequence = 0);
 	bool Event_CheckWalkBuffer();
 
-	TRIGRET_TYPE Menu_OnSelect(RESOURCE_ID_BASE rid, int iSelect, CObjBase *pObj);
-	TRIGRET_TYPE Dialog_OnButton(RESOURCE_ID_BASE rid, DWORD dwButtonID, CObjBase *pObj, CDialogResponseArgs *pArgs);
-
 	void Login_Relay(WORD wRelay);		// relay player to a certain IP
 	BYTE Login_ServerList(LPCTSTR pszAccount, LPCTSTR pszPassword);		// initial login (Login on "loginserver", new format)
 
@@ -764,10 +761,10 @@ public:
 	void addMapMode(CItemMap *pMap, MAPCMD_TYPE iType, bool fEdit = false);
 
 	void addGumpTextDisp(const CObjBase *pObj, GUMP_TYPE gump, LPCTSTR pszName, LPCTSTR pszText);
-	void addGumpInpVal(bool fCancel, INPVAL_TYPE type, DWORD dwMaxLength, LPCTSTR pszText1, LPCTSTR pszText2, CObjBase *pObj);
+	void addGumpInpVal(bool fCancel, INPVAL_TYPE type, DWORD dwMaxLength, LPCTSTR pszText, LPCTSTR pszCaption, CObjBase *pObj);
 
 	void addItemMenu(CLIMODE_TYPE mode, const CMenuItem *item, size_t iCount, CObjBase *pObj = NULL);
-	void addGumpDialog(CLIMODE_TYPE mode, const CGString *psControls, size_t iControls, const CGString *psText, size_t iTexts, DWORD x, DWORD y, CObjBase *pObj = NULL, DWORD rid = 0);
+	void addGumpDialog(CLIMODE_TYPE mode, const CGString *psControls, size_t iControlCount, const CGString *psText, size_t iTextCount, DWORD x, DWORD y, CObjBase *pObj = NULL, DWORD rid = 0);
 
 	void addGumpDialogProps(CObjBase *pObj);
 
@@ -892,7 +889,10 @@ public:
 
 	void Dialog_Setup(CLIMODE_TYPE mode, RESOURCE_ID_BASE rid, int iPage, CObjBase *pObj, LPCTSTR pszArgs = "");
 	bool Dialog_Close(CObjBase *pObj, DWORD rid, DWORD dwButtonID);
+	TRIGRET_TYPE Dialog_OnButton(RESOURCE_ID_BASE rid, DWORD dwButtonID, CObjBase *pObj, CDialogResponseArgs *pArgs);
+
 	void Menu_Setup(RESOURCE_ID_BASE rid, CObjBase *pObj = NULL);
+	TRIGRET_TYPE Menu_OnSelect(RESOURCE_ID_BASE rid, WORD wIndex, CObjBase *pObj);
 
 	int OnSkill_Info(SKILL_TYPE skill, CGrayUID uid, bool fTest);
 

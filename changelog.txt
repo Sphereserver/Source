@@ -1828,3 +1828,7 @@ Fixed: Map starting locations not working correctly when scripts have multiple [
 [maps/sphere_map_points1.scp]: Added missing [STARTS] template and updated [MOONGATES] template
 [maps/sphere_map_points4.scp]: Updated [MOONGATES] template
 [maps/sphere_map_points5.scp]: Added missing [STARTS] template and updated [MOONGATES] template
+
+02-12-2020, Coruja
+[sphere_admin.scp]: Fixed dialog 'd_admin_player_notes' incorrectly inserting quote marks when writing account notes
+[sphere_dialog.scp]: Updated dialog 'd_pet_release' and fixed dialog 'd_gmpage_info' incorrectly inserting quote marks on response text
