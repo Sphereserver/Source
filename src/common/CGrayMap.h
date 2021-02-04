@@ -135,7 +135,6 @@ public:
 	bool CheckTile_Item(DWORD dwItemBlockFlags, signed char zBottom, height_t zheight, DWORD dwID);
 	inline void SetTop(DWORD &dwItemBlockFlags, signed char &z, DWORD &dwID);
 	bool CheckTile_Terrain(DWORD dwItemBlockFlags, signed char z, DWORD dwID);
-	static LPCTSTR GetTileName(DWORD dwID);
 };
 
 struct CMapDiffBlock

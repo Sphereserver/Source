@@ -51,27 +51,6 @@ CGrayMapBlockState::CGrayMapBlockState(DWORD dwBlockFlags, signed char z, int iH
 	m_zClimbHeight = 0;
 }
 
-LPCTSTR CGrayMapBlockState::GetTileName(DWORD dwID)	// static
-{
-	ADDTOCALLSTACK("CGrayMapBlockState::GetTileName");
-	if ( dwID == 0 )
-		return "<null>";
-
-	TCHAR *pStr = Str_GetTemp();
-	if ( dwID < TERRAIN_QTY )
-	{
-		CGrayTerrainInfo land(static_cast<TERRAIN_TYPE>(dwID));
-		strcpy(pStr, land.m_name);
-	}
-	else
-	{
-		dwID -= TERRAIN_QTY;
-		CGrayItemInfo item(static_cast<ITEMID_TYPE>(dwID));
-		strcpy(pStr, item.m_name);
-	}
-	return pStr;
-}
-
 bool CGrayMapBlockState::CheckTile(DWORD dwItemBlockFlags, signed char zBottom, height_t zHeight, DWORD dwID)
 {
 	ADDTOCALLSTACK("CGrayMapBlockState::CheckTile");

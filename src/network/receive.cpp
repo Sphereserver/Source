@@ -637,11 +637,9 @@ bool PacketAttackReq::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketAttackReq::onReceive");
 
-	CGrayUID uid = static_cast<CGrayUID>(readInt32());
-
 	CClient* client = net->m_client;
 	ASSERT(client);
-	client->Event_Attack(uid);
+	client->Event_Attack(static_cast<CGrayUID>(readInt32()));
 	return true;
 }
 
@@ -766,11 +764,9 @@ bool PacketSingleClick::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketSingleClick::onReceive");
 
-	CGrayUID uid = static_cast<CGrayUID>(readInt32());
-
 	CClient* client = net->m_client;
 	ASSERT(client);
-	client->Event_SingleClick(uid);
+	client->Event_SingleClick(static_cast<CGrayUID>(readInt32()));
 	return true;
 }
 
@@ -1969,15 +1965,11 @@ bool PacketAllNamesReq::onReceive(NetState* net)
 	if (!character)
 		return false;
 
-	const CObjBase* object;
-	for (WORD length = readInt16(); length > sizeof(DWORD); length -= sizeof(DWORD))
-	{
-		object = static_cast<CGrayUID>(readInt32()).ObjFind();
-		if (!object || !character->CanSee(object))
-			continue;
+	skip(2); // length
 
+	const CObjBase *object = static_cast<CGrayUID>(readInt32()).ObjFind();
+	if (object && character->CanSee(object))
 		new PacketAllNamesResponse(client, object);
-	}
 
 	return true;
 }
@@ -2530,8 +2522,7 @@ bool PacketToolTipReq::onReceive(NetState* net)
 	CClient* client = net->m_client;
 	ASSERT(client);
 
-	CGrayUID uid = static_cast<CGrayUID>(readInt32());
-	client->Event_ToolTip(uid);
+	client->Event_ToolTip(static_cast<CGrayUID>(readInt32()));
 	return true;
 }
 
@@ -3083,11 +3074,9 @@ bool PacketPopupReq::onReceive(NetState* net)
 {
 	ADDTOCALLSTACK("PacketPopupReq::onReceive");
 
-	CGrayUID uid = static_cast<CGrayUID>(readInt32());
-
 	CClient *client = net->m_client;
 	ASSERT(client);
-	client->Event_AOSPopupMenuRequest(uid);
+	client->Event_AOSPopupMenuRequest(static_cast<CGrayUID>(readInt32()));
 	return true;
 }
 
@@ -3679,8 +3668,12 @@ bool PacketAOSTooltipReq::onReceive(NetState* net)
 	if (!character)
 		return false;
 
+	WORD packetLength = readInt16();
+	if ( packetLength > BYTE_MAX )
+		packetLength = BYTE_MAX;
+
 	const CObjBase* object;
-	for (WORD length = readInt16(); length > sizeof(DWORD); length -= sizeof(DWORD))
+	for (WORD length = packetLength; length > sizeof(DWORD); length -= sizeof(DWORD))
 	{
 		object = static_cast<CGrayUID>(readInt32()).ObjFind();
 		if (!object || !character->CanSee(object))

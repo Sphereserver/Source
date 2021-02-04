@@ -2111,7 +2111,7 @@ void CClient::Event_AOSPopupMenuRequest(CGrayUID uid) //construct packet after a
 
 				SKILL_TYPE skillCheck;
 				WORD wFlagSkill = POPUPFLAG_ENABLED;
-				for ( WORD i = 0; i < g_Cfg.m_iMaxSkill; ++i )
+				for ( unsigned int i = 0; i < g_Cfg.m_iMaxSkill; ++i )
 				{
 					if ( !g_Cfg.m_SkillIndexDefs.IsValidIndex(i) )
 						continue;
@@ -2600,46 +2600,46 @@ void CClient::Event_ExtCmd(EXTCMD_TYPE type, TCHAR *pszArgs)
 bool CClient::xPacketFilter(const BYTE *pData, size_t iLen)
 {
 	ADDTOCALLSTACK("CClient::xPacketFilter");
+	if ( (iLen <= 0) || (pData[0] < 0) || (pData[0] >= PACKET_QTY) || !g_Serv.m_PacketFilter[pData[0]][0] )
+		return false;
 
 	EXC_TRY("packet filter");
-	if ( (iLen > 0) && g_Serv.m_PacketFilter[pData[0]][0] )
+	CScriptTriggerArgs Args(pData[0]);
+	TCHAR idx[5];
+
+	Args.m_s1 = GetPeerStr();
+	Args.m_pO1 = this;		// yay for ARGO.SENDPACKET
+	Args.m_VarsLocal.SetNum("CONNECTIONTYPE", GetConnectType());
+
+	size_t iBytes = iLen;
+	size_t iByteStr = minimum(iBytes, SCRIPT_MAX_LINE_LEN);
+	TCHAR *zBuf = Str_GetTemp();
+
+	Args.m_VarsLocal.SetNum("NUM", iBytes);
+	memcpy(zBuf, &(pData[0]), iByteStr);
+	zBuf[iByteStr] = 0;
+	Args.m_VarsLocal.SetStr("STR", true, zBuf, true);
+
+	if ( m_pAccount )
 	{
-		CScriptTriggerArgs Args(pData[0]);
-		TCHAR idx[5];
+		Args.m_VarsLocal.SetStr("ACCOUNT", false, m_pAccount->GetName());
+		if ( m_pChar )
+			Args.m_VarsLocal.SetNum("CHAR", m_pChar->GetUID());
+	}
 
-		Args.m_s1 = GetPeerStr();
-		Args.m_pO1 = this;		// yay for ARGO.SENDPACKET
-		Args.m_VarsLocal.SetNum("CONNECTIONTYPE", GetConnectType());
+	// Fill locals [0..X] to the first X bytes of the packet
+	for ( size_t i = 0; i < iBytes; ++i )
+	{
+		sprintf(idx, "%" FMTSIZE_T, i);
+		Args.m_VarsLocal.SetNum(idx, static_cast<int>(pData[i]));
+	}
 
-		size_t iBytes = iLen;
-		size_t iByteStr = minimum(iBytes, SCRIPT_MAX_LINE_LEN);
-		TCHAR *zBuf = Str_GetTemp();
-
-		Args.m_VarsLocal.SetNum("NUM", iBytes);
-		memcpy(zBuf, &(pData[0]), iByteStr);
-		zBuf[iByteStr] = 0;
-		Args.m_VarsLocal.SetStr("STR", true, zBuf, true);
-		if ( m_pAccount )
-		{
-			Args.m_VarsLocal.SetStr("ACCOUNT", false, m_pAccount->GetName());
-			if ( m_pChar )
-				Args.m_VarsLocal.SetNum("CHAR", m_pChar->GetUID());
-		}
-
-		// Fill locals [0..X] to the first X bytes of the packet
-		for ( size_t i = 0; i < iBytes; ++i )
-		{
-			sprintf(idx, "%" FMTSIZE_T, i);
-			Args.m_VarsLocal.SetNum(idx, static_cast<int>(pData[i]));
-		}
-
-		// Call the filtering function
-		TRIGRET_TYPE tr;
-		if ( g_Serv.r_Call(g_Serv.m_PacketFilter[pData[0]], &g_Serv, &Args, NULL, &tr) )
-		{
-			if ( tr == TRIGRET_RET_TRUE )
-				return true;
-		}
+	// Call the filtering function
+	TRIGRET_TYPE tr;
+	if ( g_Serv.r_Call(g_Serv.m_PacketFilter[pData[0]], &g_Serv, &Args, NULL, &tr) )
+	{
+		if ( tr == TRIGRET_RET_TRUE )
+			return true;
 	}
 
 	EXC_CATCH;
@@ -2649,46 +2649,46 @@ bool CClient::xPacketFilter(const BYTE *pData, size_t iLen)
 bool CClient::xOutPacketFilter(const BYTE *pData, size_t iLen)
 {
 	ADDTOCALLSTACK("CClient::xOutPacketFilter");
+	if ( (iLen <= 0) || (pData[0] < 0) || (pData[0] >= PACKET_QTY) || !g_Serv.m_OutPacketFilter[pData[0]][0] )
+		return false;
 
 	EXC_TRY("Outgoing packet filter");
-	if ( (iLen > 0) && g_Serv.m_OutPacketFilter[pData[0]][0] )
+	CScriptTriggerArgs Args(pData[0]);
+	TCHAR idx[5];
+
+	Args.m_s1 = GetPeerStr();
+	Args.m_pO1 = this;
+	Args.m_VarsLocal.SetNum("CONNECTIONTYPE", GetConnectType());
+
+	size_t iBytes = iLen;
+	size_t iByteStr = minimum(iBytes, SCRIPT_MAX_LINE_LEN);
+	TCHAR *zBuf = Str_GetTemp();
+
+	Args.m_VarsLocal.SetNum("NUM", iBytes);
+	memcpy(zBuf, &(pData[0]), iByteStr);
+	zBuf[iByteStr] = 0;
+	Args.m_VarsLocal.SetStr("STR", true, zBuf, true);
+
+	if ( m_pAccount )
 	{
-		CScriptTriggerArgs Args(pData[0]);
-		TCHAR idx[5];
+		Args.m_VarsLocal.SetStr("ACCOUNT", false, m_pAccount->GetName());
+		if ( m_pChar )
+			Args.m_VarsLocal.SetNum("CHAR", m_pChar->GetUID());
+	}
 
-		Args.m_s1 = GetPeerStr();
-		Args.m_pO1 = this;
-		Args.m_VarsLocal.SetNum("CONNECTIONTYPE", GetConnectType());
+	// Fill locals [0..X] to the first X bytes of the packet
+	for ( size_t i = 0; i < iBytes; ++i )
+	{
+		sprintf(idx, "%" FMTSIZE_T, i);
+		Args.m_VarsLocal.SetNum(idx, static_cast<int>(pData[i]));
+	}
 
-		size_t iBytes = iLen;
-		size_t iByteStr = minimum(iBytes, SCRIPT_MAX_LINE_LEN);
-		TCHAR *zBuf = Str_GetTemp();
-
-		Args.m_VarsLocal.SetNum("NUM", iBytes);
-		memcpy(zBuf, &(pData[0]), iByteStr);
-		zBuf[iByteStr] = 0;
-		Args.m_VarsLocal.SetStr("STR", true, zBuf, true);
-		if ( m_pAccount )
-		{
-			Args.m_VarsLocal.SetStr("ACCOUNT", false, m_pAccount->GetName());
-			if ( m_pChar )
-				Args.m_VarsLocal.SetNum("CHAR", m_pChar->GetUID());
-		}
-
-		// Fill locals [0..X] to the first X bytes of the packet
-		for ( size_t i = 0; i < iBytes; ++i )
-		{
-			sprintf(idx, "%" FMTSIZE_T, i);
-			Args.m_VarsLocal.SetNum(idx, static_cast<int>(pData[i]));
-		}
-
-		// Call the filtering function
-		TRIGRET_TYPE tr;
-		if ( g_Serv.r_Call(g_Serv.m_OutPacketFilter[pData[0]], &g_Serv, &Args, NULL, &tr) )
-		{
-			if ( tr == TRIGRET_RET_TRUE )
-				return true;
-		}
+	// Call the filtering function
+	TRIGRET_TYPE tr;
+	if ( g_Serv.r_Call(g_Serv.m_OutPacketFilter[pData[0]], &g_Serv, &Args, NULL, &tr) )
+	{
+		if ( tr == TRIGRET_RET_TRUE )
+			return true;
 	}
 
 	EXC_CATCH;
