@@ -1832,3 +1832,6 @@ Fixed: Map starting locations not working correctly when scripts have multiple [
 02-12-2020, Coruja
 [sphere_admin.scp]: Fixed dialog 'd_admin_player_notes' incorrectly inserting quote marks when writing account notes
 [sphere_dialog.scp]: Updated dialog 'd_pet_release' and fixed dialog 'd_gmpage_info' incorrectly inserting quote marks on response text
+
+03-02-2021, Coruja
+Fixed: Windows build crashing at server startup when server name length is too long.

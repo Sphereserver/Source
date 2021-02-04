@@ -15,9 +15,10 @@ Project can be compiled on Windows (Visual Studio) and Linux (GCC)
 * On top menu, select the build configuration (Debug/Local/Nightly/Release), platform (x86/x64), and click on `Build > Build Solution` to compile
 
 #### NOTES:
-* Required version: VS2012 or later (VS Code is not supported)
-* On VS >= 2013: When opening `SphereSvr.vcxproj` for the first time it will request an update on project file, just click OK to update (if update request doesn't get opened automatically, just open it on `Project > Retarget solution`)
-* On VS >= 2017: Newest VS have an modular installation which comes with just basic components, and extra components must be installed as needed. To compile Sphere you must open **Visual Studio Installer** to install `Desktop Development with C++` workload
+* Required version: VS2015 or later (VS Code is not supported)
+* When using VS >= 2017:
+  * When opening `SphereSvr.vcxproj` for the first time it will request an update on project file, just click OK to update (if update request doesn't get opened automatically, just open it on `Project > Retarget solution`)
+  * Newest VS have an modular installation which comes with just basic components, and extra components must be installed as needed. To compile Sphere you must open `Visual Studio Installer` to install `Desktop Development with C++` workload
 
 ### Linux (Ubuntu)
 #### Add architecture support
@@ -152,7 +153,7 @@ make NIGHTLY=1
 * Adding/removing/changing anything that was working in one way for years should be followed by an ini setting when the changes can't be replicated on scripts to keep backwards compatibility.
 
 ## Licensing
-Copyright 2020 SphereServer development team
+Copyright 2021 SphereServer development team
 
 Licensed under the Apache License, Version 2.0 (the "License").<br>
 You may not use any file of this project except in compliance with the License.<br>
