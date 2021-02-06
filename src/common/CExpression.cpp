@@ -543,11 +543,11 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 					}
 					case INTRINSIC_ISNUMBER:
 					{
-						char z[64];
-						LTOA(atol(pszArgs), z, 10);
+						char *pchEnd;
+						static_cast<void>(strtol(pszArgs, &pchEnd, 10));
 
 						iCount = 1;
-						iResult = strcmp(pszArgs, z) ? 0 : 1;
+						iResult = *pchEnd ? 0 : 1;
 						break;
 					}
 					case INTRINSIC_ISOBSCENE:

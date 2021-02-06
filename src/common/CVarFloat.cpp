@@ -362,9 +362,9 @@ RealType CVarFloat::GetSingle(LPCTSTR &pszArgs)
 				{
 					iCount = 1;
 					{
-						char ch[64];
-						LTOA(atol(pszArgs), ch, 10);
-						dResult = strcmp(pszArgs, ch) ? 0 : 1;
+						char *pchEnd;
+						static_cast<void>(strtol(pszArgs, &pchEnd, 10));
+						dResult = *pchEnd ? 0 : 1;
 					}
 					break;
 				}

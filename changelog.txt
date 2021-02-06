@@ -1835,3 +1835,7 @@ Fixed: Map starting locations not working correctly when scripts have multiple [
 
 03-02-2021, Coruja
 Fixed: Windows build crashing at server startup when server name length is too long.
+
+06-02-2021, Coruja
+Fixed: Server crash when call intrinsic functions <eval ISNUMBER()> / <floatval ISNUMBER()> with invalid args.
+[sphereCrypt.ini]: Added crypt key for classic client 7.0.88 and enhanced client 4.0.88

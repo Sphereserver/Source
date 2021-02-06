@@ -2600,7 +2600,7 @@ void CClient::Event_ExtCmd(EXTCMD_TYPE type, TCHAR *pszArgs)
 bool CClient::xPacketFilter(const BYTE *pData, size_t iLen)
 {
 	ADDTOCALLSTACK("CClient::xPacketFilter");
-	if ( (iLen <= 0) || (pData[0] < 0) || (pData[0] >= PACKET_QTY) || !g_Serv.m_PacketFilter[pData[0]][0] )
+	if ( (iLen <= 0) || (pData[0] >= PACKET_QTY) || !g_Serv.m_PacketFilter[pData[0]][0] )
 		return false;
 
 	EXC_TRY("packet filter");
@@ -2608,7 +2608,7 @@ bool CClient::xPacketFilter(const BYTE *pData, size_t iLen)
 	TCHAR idx[5];
 
 	Args.m_s1 = GetPeerStr();
-	Args.m_pO1 = this;		// yay for ARGO.SENDPACKET
+	Args.m_pO1 = this;
 	Args.m_VarsLocal.SetNum("CONNECTIONTYPE", GetConnectType());
 
 	size_t iBytes = iLen;
@@ -2649,7 +2649,7 @@ bool CClient::xPacketFilter(const BYTE *pData, size_t iLen)
 bool CClient::xOutPacketFilter(const BYTE *pData, size_t iLen)
 {
 	ADDTOCALLSTACK("CClient::xOutPacketFilter");
-	if ( (iLen <= 0) || (pData[0] < 0) || (pData[0] >= PACKET_QTY) || !g_Serv.m_OutPacketFilter[pData[0]][0] )
+	if ( (iLen <= 0) || (pData[0] >= PACKET_QTY) || !g_Serv.m_OutPacketFilter[pData[0]][0] )
 		return false;
 
 	EXC_TRY("Outgoing packet filter");
