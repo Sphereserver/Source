@@ -520,37 +520,41 @@ int CWebPageDef::ServPageRequest(CClient *pClient, LPCTSTR pszURLArgs, CGTime *p
 
 	// Send HTTP header
 	TCHAR szTemp[8 * 1024];
-	size_t iLen = snprintf(szTemp, sizeof(szTemp),
+	snprintf(szTemp, sizeof(szTemp),
 		"HTTP/1.1 200 OK\r\n"
 		"Date: %s\r\n"
 		"Server: " SPHERE_TITLE_VER "\r\n"
 		"Accept-Ranges: bytes\r\n"
-		"Content-Type: %s\r\n",
+		"Content-Type: %s\r\n"
+		"Content-Length: %" FMTDWORD "\r\n",
 		timeCurrent.FormatGmt(NULL),
-		sm_szPageType[m_type]
+		sm_szPageType[m_type],
+		dwSize
 	);
 
 	if ( m_type == WEBPAGE_TEMPLATE )
-		iLen += snprintf(szTemp + iLen, sizeof(szTemp), "Expires: 0\r\n");
+		strncat(szTemp, "Expires: 0\r\n\r\n", sizeof(szTemp) - 1);
 	else
-		iLen += snprintf(szTemp + iLen, sizeof(szTemp), "Last-Modified: %s\r\n", CGTime(timeFileLastModified).FormatGmt(NULL));
-
-	iLen += snprintf(szTemp + iLen, sizeof(szTemp), "Content-Length: %" FMTDWORD "\r\n\r\n", dwSize);
+	{
+		strncat(szTemp, "Last-Modified: ", sizeof(szTemp) - 1);
+		strncat(szTemp, CGTime(timeFileLastModified).FormatGmt(NULL), sizeof(szTemp) - 1);
+		strncat(szTemp, "\r\n\r\n", sizeof(szTemp) - 1);
+	}
 
 	PacketWeb packet;
-	packet.setData(reinterpret_cast<const BYTE *>(szTemp), iLen);
+	packet.setData(reinterpret_cast<const BYTE *>(szTemp), strlen(szTemp));
 	packet.send(pClient);
 
 	// Send webpage content
 	for (;;)
 	{
-		iLen = FileRead.Read(szTemp, sizeof(szTemp));
-		if ( iLen <= 0 )
+		dwSize = FileRead.Read(szTemp, sizeof(szTemp));
+		if ( dwSize <= 0 )
 			break;
 
-		packet.setData(reinterpret_cast<const BYTE *>(szTemp), iLen);
+		packet.setData(reinterpret_cast<const BYTE *>(szTemp), dwSize);
 		packet.send(pClient);
-		if ( iLen < sizeof(szTemp) )
+		if ( dwSize < sizeof(szTemp) )
 			break;
 	}
 	return 200;		// OK

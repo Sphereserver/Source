@@ -245,11 +245,13 @@ public:
 		m_pszExeName = szFileName;
 
         LPTSTR pszTmp = const_cast<LPTSTR>(strrchr( m_pszExeName, '\\' ));	// Get title
-        lstrcpy( szFileName, ( pszTmp == NULL ) ? m_pszExeName : ( pszTmp + 1 ));
+		strncpy(szFileName, pszTmp ? pszTmp + 1 : m_pszExeName, sizeof(szFileName) - 1);
+		szFileName[sizeof(szFileName) - 1] = '\0';
+
 		pszTmp = strrchr( szFileName, '.' );	// Get extension.
 		if ( pszTmp != NULL )
 			pszTmp[0] = '\0';
-		lstrcat( szFileName, ".INI" );
+		strncat(szFileName, ".ini", sizeof(szFileName) - 1);
 
 		OFSTRUCT ofs = { };
 		if ( OpenFile( szFileName, &ofs, OF_EXIST ) != HFILE_ERROR)
