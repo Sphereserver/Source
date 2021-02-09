@@ -775,9 +775,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerRun(CScript &s, TRIGRUN_TYPE trigger, CTextCon
 				{
 					EXC_SET("parsing <> in a key");
 					TemporaryString pszBuffer;
-					strcpy(pszBuffer, s.GetKey());
-					strcat(pszBuffer, " ");
-					strcat(pszBuffer, s.GetArgRaw());
+					snprintf(pszBuffer, THREAD_STRING_LENGTH, "%s %s", s.GetKey(), s.GetArgRaw());
 					ParseText(pszBuffer, pSrc, 0, pArgs);
 					s.ParseKey(pszBuffer);
 				}
@@ -1738,8 +1736,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				if ( *pszKey == '"' )
 					break;
 				sVal.FormatULLHex(*pszKey);
-				strcat(pszBuffer, " ");
-				strncat(pszBuffer, sVal, SCRIPT_MAX_LINE_LEN - 1);
+				snprintf(pszBuffer, SCRIPT_MAX_LINE_LEN, " %s", static_cast<LPCTSTR>(sVal));
 			}
 			sVal = pszBuffer;
 			return true;
@@ -1773,8 +1770,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				else
 					sVal.FormatULLHex('\0');
 
-				strcat(pszBuffer, " ");
-				strncat(pszBuffer, sVal, SCRIPT_MAX_LINE_LEN - 1);
+				snprintf(pszBuffer, SCRIPT_MAX_LINE_LEN, " %s", static_cast<LPCTSTR>(sVal));
 			}
 			sVal = pszBuffer;
 			return true;
@@ -1870,7 +1866,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case SSC_MD5HASH:
 		{
 			GETNONWHITESPACE(pszKey);
-			char digest[33];
+			char digest[MD5_DIGEST_LENGTH + 1];
 			CMD5::fastDigest(digest, pszKey);
 			sVal.Format("%s", digest);
 			return true;

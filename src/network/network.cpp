@@ -37,18 +37,13 @@ void xRecordPacket(const CClient *client, Packet *packet, LPCTSTR heading)
 	packet->dump(dump);
 
 	// build file name
-	TCHAR fname[64];
-	strcpy(fname, "packets_");
-	if (client->m_pAccount)
-		strcat(fname, client->m_pAccount->GetName());
+	TCHAR szFileName[64];
+	if ( client->m_pAccount )
+		snprintf(szFileName, sizeof(szFileName), "packets_%s.log", client->m_pAccount->GetName());
 	else
-	{
-		strcat(fname, "(");
-		strcat(fname, client->GetPeerStr());
-		strcat(fname, ")");
-	}
-	strcat(fname, ".log");
-	CGString sFullFileName = CGFile::GetMergedFileName(g_Log.GetLogDir(), fname);
+		snprintf(szFileName, sizeof(szFileName), "packets_(%s).log", client->GetPeerStr());
+
+	CGString sFullFileName = CGFile::GetMergedFileName(g_Log.GetLogDir(), szFileName);
 	
 	// write to file
 	CFileText out;

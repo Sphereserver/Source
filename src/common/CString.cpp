@@ -129,7 +129,7 @@ void CGString::Add(LPCTSTR pszStr)
 	if (iLenCat)
 	{
 		SetLength(iLenCat + m_iLength);
-		strcat(m_pchData, pszStr);
+		strncat(m_pchData, pszStr, sizeof(m_pchData) - 1);
 		m_iLength = strlen(m_pchData);
 	}
 }

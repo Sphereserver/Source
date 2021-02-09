@@ -8,6 +8,7 @@
 #pragma once
 
 #include <string.h>
+#define MD5_DIGEST_LENGTH 32
 
 class CMD5
 {

@@ -105,11 +105,11 @@ CResourceScript *CResourceBase::AddResourceFile(LPCTSTR pszName)
 		return NULL;
 	}
 
-	if ( CScript::GetFilesExt(szTitle) == NULL )
+	if ( !CScript::GetFilesExt(szTitle) )
 	{
 		// No file extension provided, so append .scp to the filename
-		strcat(szName, SPHERE_SCRIPT);
-		strcat(szTitle, SPHERE_SCRIPT);
+		strncat(szName, SPHERE_SCRIPT, sizeof(szName) - 1);
+		strncat(szTitle, SPHERE_SCRIPT, sizeof(szTitle) - 1);
 	}
 
 	if ( !strnicmp(szTitle, SPHERE_FILE "tables", strlen(SPHERE_FILE "tables")) )
@@ -213,7 +213,7 @@ bool CResourceBase::OpenResourceFind(CScript &s, LPCTSTR pszFileName, bool fCrit
 	ADDTOCALLSTACK("CResourceBase::OpenResourceFind");
 	// Open a single resource script file
 
-	if ( pszFileName == NULL )
+	if ( !pszFileName )
 		pszFileName = s.GetFilePath();
 
 	// Search the local dir or full path first

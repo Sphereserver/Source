@@ -269,6 +269,6 @@ void CMD5::digest( char *digest )
 	{
 		char temp[3];
 		sprintf( temp, "%02x", buffer[i] );
-		strcat( digest, temp );
+		strncat(digest, temp, MD5_DIGEST_LENGTH + 1);
 	}
 }

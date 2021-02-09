@@ -3341,13 +3341,6 @@ void CResource::OnTick(bool fNow)
 	m_timePeriodic = CServTime::GetCurrentTime() + (60 * TICK_PER_SEC);
 }
 
-#define catresname(a, b)	\
-{							\
-	if ( *(a) )				\
-		strcat(a, " + ");	\
-	strcat(a, b);			\
-}
-
 bool CResource::LoadIni()
 {
 	ADDTOCALLSTACK("CResource::LoadIni");

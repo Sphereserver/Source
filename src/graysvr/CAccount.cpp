@@ -474,9 +474,9 @@ bool CAccount::SetPassword(LPCTSTR pszPassword, bool fMD5)
 			return false;
 	}
 
-	if ( g_Cfg.m_fMd5Passwords && (!fMD5 || (strlen(pszPassword) != 32)) )
+	if ( g_Cfg.m_fMd5Passwords && (!fMD5 || (strlen(pszPassword) != MD5_DIGEST_LENGTH)) )
 	{
-		char digest[33];
+		char digest[MD5_DIGEST_LENGTH + 1];
 		CMD5::fastDigest(digest, pszPassword);
 		m_sPassword = digest;
 		g_Log.Event(LOGM_ACCOUNTS, "Account '%s': plain text password converted to MD5 hash\n", GetName());
@@ -514,7 +514,7 @@ bool CAccount::CheckPassword(LPCTSTR pszPassword)
 	// Check password
 	if ( g_Cfg.m_fMd5Passwords )
 	{
-		char digest[33];
+		char digest[MD5_DIGEST_LENGTH + 1];
 		CMD5::fastDigest(digest, pszPassword);
 		return !strcmpi(digest, m_sPassword);
 	}

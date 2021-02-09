@@ -977,14 +977,14 @@ void CWorld::Init()
 		iSectorQty = g_MapList.GetSectorQty(iMap);
 
 		if ( *pszMaps )
-			strcat(pszMaps, ", ");
+			strncat(pszMaps, ", ", THREAD_STRING_LENGTH - 1);
 		sprintf(pszMapName, "%d='%s'", iMap, (iMap < static_cast<int>(COUNTOF(sm_szMapNames))) ? sm_szMapNames[iMap] : "[Unnamed]");
-		strcat(pszMaps, pszMapName);
+		strncat(pszMaps, pszMapName, THREAD_STRING_LENGTH - 1);
 
 		if ( *pszSectors )
-			strcat(pszSectors, ", ");
+			strncat(pszSectors, ", ", THREAD_STRING_LENGTH - 1);
 		sprintf(pszSectorSize, "%d='%d'", iMap, iSectorQty);
-		strcat(pszSectors, pszSectorSize);
+		strncat(pszSectors, pszSectorSize, THREAD_STRING_LENGTH - 1);
 
 		// Initialize sectors
 		for ( int iSector = 0; iSector < iSectorQty; ++iSector )

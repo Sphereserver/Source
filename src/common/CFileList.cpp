@@ -55,9 +55,9 @@ int CFileList::ReadDir( LPCTSTR pszFileDir, bool bShowError )
 #ifdef _WIN32
 	if ( len > 0 )
 	{
-		len--;
-		if ( szFileDir[len] == '\\' || szFileDir[len] == '/' )
-			strcat( szFileDir, "*.*" );
+		--len;
+		if ( (szFileDir[len] == '\\') || (szFileDir[len] == '/') )
+			strncat(szFileDir, "*.*", sizeof(szFileDir) - 1);
 	}
 #endif
 
@@ -69,7 +69,7 @@ int CFileList::ReadDir( LPCTSTR pszFileDir, bool bShowError )
 #else
 	char szFilename[_MAX_PATH];
 	// Need to strip out the *.scp part
-	for ( size_t i = len; i > 0; i-- )
+	for ( size_t i = len; i > 0; --i )
 	{
 		if ( szFileDir[i] == '/' )
 		{
