@@ -875,14 +875,10 @@ bool CResource::r_LoadVal(CScript &s)
 			}
 
 			char *pchArgs = s.GetArgRaw();
-			if ( !pchArgs || (strlen(pchArgs) > 30) )
-			{
-				g_Log.EventError("Invalid function name for packet filtering (limit is 30 chars)\n");
+			if ( !pchArgs )
 				return false;
-			}
 
-			strcpy(g_Serv.m_PacketFilter[iPacket], pchArgs);
-			DEBUG_MSG(("PACKET FILTER: Hooked packet '0x%x' with function '%s'\n", iPacket, pchArgs));
+			strncpy(g_Serv.m_PacketFilter[iPacket], pchArgs, sizeof(g_Serv.m_PacketFilter[iPacket]) - 1);
 			return true;
 		}
 		else if ( s.IsKeyHead("OUTPACKET", 9) )		// OUTPACKETx=<function name to execute upon packet>
@@ -895,14 +891,10 @@ bool CResource::r_LoadVal(CScript &s)
 			}
 
 			char *pchArgs = s.GetArgRaw();
-			if ( !pchArgs || (strlen(pchArgs) > 30) )
-			{
-				g_Log.EventError("Invalid function name for outgoing packet filtering (limit is 30 chars)\n");
+			if ( !pchArgs )
 				return false;
-			}
 
-			strcpy(g_Serv.m_OutPacketFilter[iPacket], pchArgs);
-			DEBUG_MSG(("OUTGOING PACKET FILTER: Hooked packet '0x%x' with function '%s'\n", iPacket, pchArgs));
+			strncpy(g_Serv.m_OutPacketFilter[iPacket], pchArgs, sizeof(g_Serv.m_OutPacketFilter[iPacket]) - 1);
 			return true;
 		}
 		return false;

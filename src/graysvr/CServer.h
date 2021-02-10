@@ -39,8 +39,8 @@ public:
 	CChat m_Chats;						// Keep all the active chats
 
 	CGSocket m_SocketMain;				// Incoming monitor socket (might be multiple ports?)
-	char m_PacketFilter[PACKET_QTY][32];		// List of inbound packet filtering functions
-	char m_OutPacketFilter[PACKET_QTY][32];		// List of outbound packet filtering functions
+	char m_PacketFilter[PACKET_QTY][EXPRESSION_MAX_KEY_LEN];		// List of inbound packet filtering functions
+	char m_OutPacketFilter[PACKET_QTY][EXPRESSION_MAX_KEY_LEN];		// List of outbound packet filtering functions
 
 	CFileObj fhFile;					// File script object
 	CDataBase m_hdb;					// MySQL database

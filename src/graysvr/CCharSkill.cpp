@@ -1249,30 +1249,30 @@ bool CChar::Skill_MakeItem_Success()
 		switch ( iQualityBase )
 		{
 			case 0:		// shoddy quality
-				strcpy(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_1));
+				strncpy(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_1), EXPRESSION_MAX_KEY_LEN - 1);
 				iQuality = Calc_GetRandVal(25) + 1;
 				break;
 			case 1:		// poor quality
-				strcpy(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_2));
+				strncpy(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_2), EXPRESSION_MAX_KEY_LEN - 1);
 				iQuality = Calc_GetRandVal(25) + 26;
 				break;
 			case 2:		// below average quality
-				strcpy(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_3));
+				strncpy(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_3), EXPRESSION_MAX_KEY_LEN - 1);
 				iQuality = Calc_GetRandVal(25) + 51;
 				break;
 			case 3:		// average quality
 				iQuality = Calc_GetRandVal(50) + 76;
 				break;
 			case 4:		// above average quality
-				strcpy(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_4));
+				strncpy(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_4), EXPRESSION_MAX_KEY_LEN - 1);
 				iQuality = Calc_GetRandVal(25) + 126;
 				break;
 			case 5:		// excellent quality
-				strcpy(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_5));
+				strncpy(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_5), EXPRESSION_MAX_KEY_LEN - 1);
 				iQuality = Calc_GetRandVal(25) + 151;
 				break;
 			case 6:		// superior quality
-				strcpy(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_6));
+				strncpy(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_6), EXPRESSION_MAX_KEY_LEN - 1);
 				iQuality = Calc_GetRandVal(25) + 176;
 				break;
 		}

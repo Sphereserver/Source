@@ -268,7 +268,7 @@ void Packet::writeStringASCII(const char* value, bool terminate)
 	while (value != NULL && *value)
 	{
 		writeCharASCII(*value);
-		value++;
+		++value;
 	}
 
 	if (terminate)
@@ -301,10 +301,10 @@ void Packet::writeStringASCII(const WCHAR* value, bool terminate)
 	while (value != NULL && *value)
 	{
 		int len = wctomb(buffer, *value);
-		for (int i = 0; i < len; i++)
+		for (int i = 0; i < len; ++i)
 			writeCharASCII(buffer[i]);
 
-		value++;
+		++value;
 	}
 	delete[] buffer;
 	
@@ -347,7 +347,7 @@ void Packet::writeStringFixedASCII(const WCHAR* value, size_t size, bool termina
 		else
 		{
 			int len = wctomb(buffer, value[l]);
-			for (int i = 0; i < len; i++)
+			for (int i = 0; i < len; ++i)
 				writeCharASCII(buffer[i]);
 		}
 	}
@@ -381,7 +381,7 @@ void Packet::writeStringUNICODE(const char* value, bool terminate)
 	{
 		mbtowc(&c, value, MB_CUR_MAX);
 		writeCharUNICODE(c);
-		value++;
+		++value;
 	}
 
 	if (terminate)
@@ -434,7 +434,7 @@ void Packet::writeStringUNICODE(const WCHAR* value, bool terminate)
 	while (value != NULL && *value)
 	{
 		writeCharUNICODE(*value);
-		value++;
+		++value;
 	}
 
 	if (terminate)
@@ -465,7 +465,7 @@ void Packet::writeStringFixedUNICODE(const WCHAR* value, size_t size, bool termi
 	if (size <= 0)
 		return;
 	else if (terminate)
-		size--;
+		--size;
 
 	bool zero = false;
 	for (size_t i = 0; i < size; ++i)
@@ -495,7 +495,7 @@ void Packet::writeStringNUNICODE(const char* value, bool terminate)
 	{
 		mbtowc(&c, value, MB_CUR_MAX);
 		writeCharNUNICODE(c);
-		value++;
+		++value;
 	}
 
 	if (terminate)
@@ -548,7 +548,7 @@ void Packet::writeStringNUNICODE(const WCHAR* value, bool terminate)
 	while (value != NULL && *value)
 	{
 		writeCharNUNICODE(*value);
-		value++;
+		++value;
 	}
 
 	if (terminate)
@@ -579,7 +579,7 @@ void Packet::writeStringFixedNUNICODE(const WCHAR* value, size_t size, bool term
 	if (size <= 0)
 		return;
 	else if (terminate)
-		size--;
+		--size;
 
 	bool zero = false;
 	for (size_t i = 0; i < size; ++i)
@@ -855,7 +855,7 @@ size_t Packet::readStringNullASCII(char* buffer, size_t maxlength)
 	ASSERT(buffer != NULL);
 
 	size_t i;
-	for (i = 0; i < maxlength; i++)
+	for (i = 0; i < maxlength; ++i)
 	{
 		buffer[i] = readCharASCII();
 		if (buffer[i] == '\0')
@@ -937,7 +937,7 @@ size_t Packet::readStringNullNUNICODE(WCHAR* buffer, size_t maxlength)
 	ASSERT(buffer != NULL);
 
 	size_t i;
-	for (i = 0; i < maxlength; i++)
+	for (i = 0; i < maxlength; ++i)
 	{
 		buffer[i] = readCharNUNICODE();
 		if (buffer[i] == '\0')
@@ -973,7 +973,7 @@ size_t Packet::readStringNullNUNICODE(char* buffer, size_t bufferSize, size_t ma
 void Packet::dump(AbstractString& output) const
 {
 	TemporaryString z;
-	sprintf(z, "Packet len=%" FMTSIZE_T " id=0x%02x [%s]\n", m_length, m_buffer[0], CGTime::GetCurrentTime().Format(NULL));
+	snprintf(z, 64, "Packet len=%" FMTSIZE_T " id=0x%02x [%s]\n", m_length, m_buffer[0], CGTime::GetCurrentTime().Format(NULL));
 	output.append(z);
 	output.append("        0  1  2  3  4  5  6  7   8  9  A  B  C  D  E  F\n");
 	output.append("       -- -- -- -- -- -- -- --  -- -- -- -- -- -- -- --\n");
@@ -986,12 +986,12 @@ void Packet::dump(AbstractString& output) const
 	TCHAR bytes[50];
 	TCHAR chars[17];
 
-	for (size_t i = 0; i < whole; i++, byteIndex += 16 )
+	for (size_t i = 0; i < whole; ++i, byteIndex += 16 )
 	{
 		memset(bytes, 0, sizeof(bytes));
 		memset(chars, 0, sizeof(chars));
 
-		for (size_t j = 0; j < 16; j++)
+		for (size_t j = 0; j < 16; ++j)
 		{
 			BYTE c = m_buffer[idx++];
 
@@ -999,9 +999,8 @@ void Packet::dump(AbstractString& output) const
 			if ( ((m_buffer[0] == PACKET_ServersReq) && (idx >= 32) && (idx <= 62)) || ((m_buffer[0] == PACKET_CharDelete) && (idx >= 2) && (idx <= 32)) || ((m_buffer[0] == PACKET_CharListReq) && (idx >= 37) && (idx <= 67)) )
 				c = '*';
 
-			sprintf(z, "%02hhx", c);
-			strncat(bytes, z, sizeof(bytes) - 1);
-			strcat(bytes, (j == 7) ? "  " : " ");
+			snprintf(z, 2, "%02hhx", c);
+			snprintf(bytes, sizeof(bytes), "%s%s", static_cast<LPCTSTR>(z), (j == 7) ? "  " : " ");
 
 			if ((c >= 0x20) && (c <= 0x80))
 			{
@@ -1010,10 +1009,10 @@ void Packet::dump(AbstractString& output) const
 				strncat(chars, z, sizeof(chars) - 1);
 			}
 			else
-				strcat(chars, ".");
+				strncat(chars, ".", sizeof(chars) - 1);
 		}
 
-		sprintf(z, "%04x   ", byteIndex);
+		snprintf(z, 4, "%04x   ", byteIndex);
 		output.append(z);
 		output.append(bytes);
 		output.append("  ");
@@ -1026,7 +1025,7 @@ void Packet::dump(AbstractString& output) const
 		memset(bytes, 0, sizeof(bytes));
 		memset(chars, 0, sizeof(chars));
 
-		for (size_t j = 0; j < 16; j++)
+		for (size_t j = 0; j < 16; ++j)
 		{
 			if (j < rem)
 			{
@@ -1036,9 +1035,8 @@ void Packet::dump(AbstractString& output) const
 				if ( ((m_buffer[0] == PACKET_ServersReq) && (idx >= 32) && (idx <= 62)) || ((m_buffer[0] == PACKET_CharDelete) && (idx >= 2) && (idx <= 32)) || ((m_buffer[0] == PACKET_CharListReq) && (idx >= 37) && (idx <= 67)) )
 					c = '*';
 
-				sprintf(z, "%02hhx", c);
-				strncat(bytes, z, sizeof(bytes) - 1);
-				strcat(bytes, (j == 7) ? "  " : " ");
+				snprintf(z, 2, "%02hhx", c);
+				snprintf(bytes, sizeof(bytes), "%s%s", static_cast<LPCTSTR>(z), (j == 7) ? "  " : " ");
 
 				if ((c >= 0x20) && (c <= 0x80))
 				{
@@ -1047,13 +1045,13 @@ void Packet::dump(AbstractString& output) const
 					strncat(chars, z, sizeof(chars) - 1);
 				}
 				else
-					strcat(chars, ".");
+					strncat(chars, ".", sizeof(chars) - 1);
 			}
 			else
-				strcat(bytes, "   ");
+				strncat(bytes, "   ", sizeof(bytes) - 1);
 		}
 
-		sprintf(z, "%04x   ", byteIndex);
+		snprintf(z, 4, "%04x   ", byteIndex);
 		output.append(z);
 		output.append(bytes);
 		output.append("  ");

@@ -10,10 +10,10 @@ CCSVFile::CCSVFile()
 
 CCSVFile::~CCSVFile()
 {
-	for ( size_t i = 0; m_pszColumnTypes[i] != NULL; i++ )
+	for ( size_t i = 0; m_pszColumnTypes[i] != NULL; ++i )
 		delete[] m_pszColumnTypes[i];
 
-	for ( size_t i = 0; m_pszColumnNames[i] != NULL; i++ )
+	for ( size_t i = 0; m_pszColumnNames[i] != NULL; ++i )
 		delete[] m_pszColumnNames[i];
 }
 
@@ -58,13 +58,13 @@ bool CCSVFile::OpenBase(void *pExtra)
 	}
 
 	// Copy the names
-	for ( size_t i = 0; i < m_iColumnCount; i++ )
+	for ( size_t i = 0; i < m_iColumnCount; ++i )
 	{
 		m_pszColumnTypes[i] = new TCHAR[128];
-		strcpy(m_pszColumnTypes[i], ppColumnTypes[i]);
+		strncpy(m_pszColumnTypes[i], ppColumnTypes[i], COUNTOF(m_pszColumnTypes) - 1);
 
 		m_pszColumnNames[i] = new TCHAR[128];
-		strcpy(m_pszColumnNames[i], ppColumnNames[i]);
+		strncpy(m_pszColumnNames[i], ppColumnNames[i], COUNTOF(m_pszColumnNames) - 1);
 	}
 
 	m_pszColumnTypes[m_iColumnCount] = NULL;
@@ -97,7 +97,7 @@ bool CCSVFile::ReadRowContent(size_t rowIndex, CSVRowData &target)
 
 	// Copy to target
 	target.clear();
-	for ( size_t i = 0; i < columns; i++ )
+	for ( size_t i = 0; i < columns; ++i )
 		target[m_pszColumnNames[i]] = ppRowContent[i];
 
 	return !target.empty();
