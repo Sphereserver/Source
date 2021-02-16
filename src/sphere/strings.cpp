@@ -65,7 +65,7 @@ void AbstractString::setAt(size_t index, char c)
 void AbstractString::append(const char *s)
 {
 	ensureLength(m_length + strlen(s));
-	strncat(m_buf, s, sizeof(m_buf) - 1);
+	strcat(m_buf, s);
 }
 
 void AbstractString::replace(char what, char toWhat)

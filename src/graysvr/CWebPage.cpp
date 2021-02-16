@@ -502,14 +502,7 @@ int CWebPageDef::ServPageRequest(CClient *pClient, LPCTSTR pszURLArgs, CGTime *p
 	if ( !fGenerate && pTimeLastModified->IsTimeValid() && (pTimeLastModified->GetTime() <= timeFileLastModified) )
 	{
 		TCHAR szTemp[256];
-		snprintf(szTemp, sizeof(szTemp),
-			"HTTP/1.1 304 Not Modified\r\n"
-			"Date: %s\r\n"
-			"Server: " SPHERE_TITLE_VER "\r\n"
-			"Content-Length: 0\r\n"
-			"\r\n",
-			timeCurrent.FormatGmt(NULL)
-		);
+		snprintf(szTemp, sizeof(szTemp), "HTTP/1.1 304 Not Modified\r\nDate: %s\r\nServer: " SPHERE_TITLE_VER "\r\nContent-Length: 0\r\n\r\n", timeCurrent.FormatGmt(NULL));
 		new PacketWeb(pClient, reinterpret_cast<const BYTE *>(szTemp), strlen(szTemp));
 		return 304;		// Not modified
 	}
@@ -520,26 +513,10 @@ int CWebPageDef::ServPageRequest(CClient *pClient, LPCTSTR pszURLArgs, CGTime *p
 
 	// Send HTTP header
 	TCHAR szTemp[8 * 1024];
-	snprintf(szTemp, sizeof(szTemp),
-		"HTTP/1.1 200 OK\r\n"
-		"Date: %s\r\n"
-		"Server: " SPHERE_TITLE_VER "\r\n"
-		"Accept-Ranges: bytes\r\n"
-		"Content-Type: %s\r\n"
-		"Content-Length: %" FMTDWORD "\r\n",
-		timeCurrent.FormatGmt(NULL),
-		sm_szPageType[m_type],
-		dwSize
-	);
-
 	if ( m_type == WEBPAGE_TEMPLATE )
-		strncat(szTemp, "Expires: 0\r\n\r\n", sizeof(szTemp) - 1);
+		snprintf(szTemp, sizeof(szTemp), "HTTP/1.1 200 OK\r\nDate: %s\r\nServer: " SPHERE_TITLE_VER "\r\nAccept-Ranges: bytes\r\nContent-Type: %s\r\nContent-Length: %" FMTDWORD "\r\nExpires: 0\r\n\r\n", timeCurrent.FormatGmt(NULL), sm_szPageType[m_type], dwSize);
 	else
-	{
-		strncat(szTemp, "Last-Modified: ", sizeof(szTemp) - 1);
-		strncat(szTemp, CGTime(timeFileLastModified).FormatGmt(NULL), sizeof(szTemp) - 1);
-		strncat(szTemp, "\r\n\r\n", sizeof(szTemp) - 1);
-	}
+		snprintf(szTemp, sizeof(szTemp), "HTTP/1.1 200 OK\r\nDate: %s\r\nServer: " SPHERE_TITLE_VER "\r\nAccept-Ranges: bytes\r\nContent-Type: %s\r\nContent-Length: %" FMTDWORD "\r\nLast-Modified: %s\r\n\r\n", timeCurrent.FormatGmt(NULL), sm_szPageType[m_type], dwSize, CGTime(timeFileLastModified).FormatGmt(NULL));
 
 	PacketWeb packet;
 	packet.setData(reinterpret_cast<const BYTE *>(szTemp), strlen(szTemp));

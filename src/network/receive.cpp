@@ -231,7 +231,9 @@ bool PacketCreate::doCreate(NetState *net, LPCTSTR pszName, bool fFemale, RACE_T
 
 			if ( idFace )
 			{
-				if ( !(((idFace >= ITEMID_FACE_1) && (idFace <= ITEMID_FACE_10)) || ((idFace >= ITEMID_FACE_ANIME) && (idFace <= ITEMID_FACE_VAMPIRE))) )
+				if ( !((idFace >= ITEMID_FACE_1) && (idFace <= ITEMID_FACE_VAMPIRE)) )
+					goto InvalidInfo;
+				if ( (idFace >= ITEMID_FACE_ANIME) && !(g_Cfg.m_iFeatureExtra & FEATURE_EXTRA_ROLEPLAYFACES) )
 					goto InvalidInfo;
 			}
 			break;
@@ -261,7 +263,9 @@ bool PacketCreate::doCreate(NetState *net, LPCTSTR pszName, bool fFemale, RACE_T
 
 			if ( idFace )
 			{
-				if ( !(((idFace >= ITEMID_FACE_1) && (idFace <= ITEMID_FACE_10)) || ((idFace >= ITEMID_FACE_ANIME) && (idFace <= ITEMID_FACE_VAMPIRE))) )
+				if ( !((idFace >= ITEMID_FACE_1) && (idFace <= ITEMID_FACE_VAMPIRE)) )
+					goto InvalidInfo;
+				if ( (idFace >= ITEMID_FACE_ANIME) && !(g_Cfg.m_iFeatureExtra & FEATURE_EXTRA_ROLEPLAYFACES) )
 					goto InvalidInfo;
 			}
 			break;

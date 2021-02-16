@@ -999,7 +999,7 @@ void Packet::dump(AbstractString& output) const
 			if ( ((m_buffer[0] == PACKET_ServersReq) && (idx >= 32) && (idx <= 62)) || ((m_buffer[0] == PACKET_CharDelete) && (idx >= 2) && (idx <= 32)) || ((m_buffer[0] == PACKET_CharListReq) && (idx >= 37) && (idx <= 67)) )
 				c = '*';
 
-			snprintf(z, 2, "%02hhx", c);
+			snprintf(z, 3, "%02hhx", c);
 			snprintf(bytes, sizeof(bytes), "%s%s", static_cast<LPCTSTR>(z), (j == 7) ? "  " : " ");
 
 			if ((c >= 0x20) && (c <= 0x80))
@@ -1012,7 +1012,7 @@ void Packet::dump(AbstractString& output) const
 				strncat(chars, ".", sizeof(chars) - 1);
 		}
 
-		snprintf(z, 4, "%04x   ", byteIndex);
+		snprintf(z, 8, "%04x   ", byteIndex);
 		output.append(z);
 		output.append(bytes);
 		output.append("  ");
@@ -1035,7 +1035,7 @@ void Packet::dump(AbstractString& output) const
 				if ( ((m_buffer[0] == PACKET_ServersReq) && (idx >= 32) && (idx <= 62)) || ((m_buffer[0] == PACKET_CharDelete) && (idx >= 2) && (idx <= 32)) || ((m_buffer[0] == PACKET_CharListReq) && (idx >= 37) && (idx <= 67)) )
 					c = '*';
 
-				snprintf(z, 2, "%02hhx", c);
+				snprintf(z, 3, "%02hhx", c);
 				snprintf(bytes, sizeof(bytes), "%s%s", static_cast<LPCTSTR>(z), (j == 7) ? "  " : " ");
 
 				if ((c >= 0x20) && (c <= 0x80))
@@ -1051,7 +1051,7 @@ void Packet::dump(AbstractString& output) const
 				strncat(bytes, "   ", sizeof(bytes) - 1);
 		}
 
-		snprintf(z, 4, "%04x   ", byteIndex);
+		snprintf(z, 8, "%04x   ", byteIndex);
 		output.append(z);
 		output.append(bytes);
 		output.append("  ");

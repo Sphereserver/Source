@@ -879,6 +879,7 @@ bool CResource::r_LoadVal(CScript &s)
 				return false;
 
 			strncpy(g_Serv.m_PacketFilter[iPacket], pchArgs, sizeof(g_Serv.m_PacketFilter[iPacket]) - 1);
+			g_Serv.m_PacketFilter[iPacket][sizeof(g_Serv.m_PacketFilter[iPacket]) - 1] = '\0';
 			return true;
 		}
 		else if ( s.IsKeyHead("OUTPACKET", 9) )		// OUTPACKETx=<function name to execute upon packet>
@@ -895,6 +896,7 @@ bool CResource::r_LoadVal(CScript &s)
 				return false;
 
 			strncpy(g_Serv.m_OutPacketFilter[iPacket], pchArgs, sizeof(g_Serv.m_OutPacketFilter[iPacket]) - 1);
+			g_Serv.m_OutPacketFilter[iPacket][sizeof(g_Serv.m_OutPacketFilter[iPacket]) - 1] = '\0';
 			return true;
 		}
 		return false;
