@@ -32,11 +32,11 @@ bool CLog::OpenLog( LPCTSTR pszBaseDirName )	// name set previously.
 
 	// Get the new name based on date.
 	m_dateStamp = CGTime::GetCurrentTime();
-	TCHAR *pszTemp = Str_GetTemp();
-	sprintf(pszTemp, SPHERE_FILE "%d-%02d-%02d.log", m_dateStamp.GetYear(), m_dateStamp.GetMonth(), m_dateStamp.GetDay());
+	TCHAR szFileName[FILENAME_MAX];
+	snprintf(szFileName, sizeof(szFileName), SPHERE_FILE "%d-%02d-%02d.log", m_dateStamp.GetYear(), m_dateStamp.GetMonth(), m_dateStamp.GetDay());
 
 	// Use the OF_READWRITE to append to an existing file.
-	if ( CFileText::Open(GetMergedFileName(m_sBaseDir, pszTemp), OF_SHARE_DENY_NONE|OF_READWRITE|OF_TEXT) )
+	if ( CFileText::Open(GetMergedFileName(m_sBaseDir, szFileName), OF_SHARE_DENY_NONE|OF_READWRITE|OF_TEXT) )
 	{
 		setvbuf(m_pStream, NULL, _IONBF, 0);
 		return true;
@@ -112,7 +112,7 @@ int CLog::EventStr( DWORD dwMask, LPCTSTR pszMsg )
 #endif
 
 		TCHAR szTime[7];
-		sprintf(szTime, "%02d:%02d:", datetime.GetHour(), datetime.GetMinute());
+		snprintf(szTime, sizeof(szTime), "%02d:%02d:", datetime.GetHour(), datetime.GetMinute());
 		m_dateStamp = datetime;
 
 		LPCTSTR pszLabel = NULL;
@@ -139,7 +139,7 @@ int CLog::EventStr( DWORD dwMask, LPCTSTR pszMsg )
 		if ( m_pScriptContext && !(dwMask & LOGM_NOCONTEXT) )
 		{
 			CScriptLineContext LineContext = m_pScriptContext->GetContext();
-			sprintf(szScriptContext, "(%s,%d)", m_pScriptContext->GetFileTitle(), LineContext.m_iLineNum);
+			snprintf(szScriptContext, sizeof(szScriptContext), "(%s,%d)", m_pScriptContext->GetFileTitle(), LineContext.m_iLineNum);
 		}
 		else
 		{
@@ -228,13 +228,13 @@ void _cdecl CLog::CatchEvent( const CGrayError *pErr, LPCTSTR pszCatchContext, .
 			iLen = strlen(szMsg);
 		}
 
-		iLen += sprintf(szMsg + iLen, ", in ");
+		iLen += snprintf(szMsg + iLen, sizeof(szMsg), ", in ");
 
 		va_list vargs;
 		va_start(vargs, pszCatchContext);
 
 		iLen += vsprintf(szMsg + iLen, pszCatchContext, vargs);
-		iLen += sprintf(szMsg + iLen, "\n");
+		iLen += snprintf(szMsg + iLen, sizeof(szMsg), "\n");
 
 		EventStr(eSeverity, szMsg);
 		va_end(vargs);

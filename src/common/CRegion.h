@@ -381,10 +381,10 @@ public:
 	}
 
 	size_t Read( LPCTSTR pVal );
-	TCHAR * Write( TCHAR * pBuffer ) const
+	TCHAR *Write(TCHAR *pszBuffer) const
 	{
-		sprintf(pBuffer, "%d,%d,%d,%d,%d", m_left, m_top, m_right, m_bottom, m_map);
-		return( pBuffer );
+		snprintf(pszBuffer, 32, "%d,%d,%d,%d,%d", m_left, m_top, m_right, m_bottom, m_map);
+		return pszBuffer;
 	}
 	LPCTSTR Write() const;
 

@@ -97,7 +97,7 @@ int CItemSpawn::GetName(TCHAR *pszOut) const
 	if ( !pDef || !pszName || (pszName[0] == '\0') )
 		pszName = g_Cfg.ResourceGetName(rid);
 
-	return sprintf(pszOut, " (%s)", pszName);
+	return snprintf(pszOut, MAX_ITEM_NAME_SIZE, " (%s)", pszName);
 }
 
 CItemSpawn::CItemSpawn(ITEMID_TYPE id, CItemBase *pItemDef) : CItem(ITEMID_WorldGem, pItemDef)
@@ -738,7 +738,7 @@ void CItemMessage::r_Write(CScript &s)
 	TemporaryString pszTemp;
 	for ( WORD w = 0; w < GetPageCount(); ++w )
 	{
-		sprintf(pszTemp, "BODY.%hu", w);
+		snprintf(pszTemp, 12, "BODY.%hu", w);
 		LPCTSTR pszText = GetPageText(w);
 		s.WriteKey(pszTemp, pszText ? pszText : "");
 	}

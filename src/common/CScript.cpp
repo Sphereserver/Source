@@ -391,7 +391,7 @@ bool CScript::ReadKeyParse()
 	LPCTSTR	pszArgs = m_pszArg;
 	pszArgs += 2;
 	GETNONWHITESPACE(pszArgs);
-	TemporaryString buf;
+	TemporaryString pszTemp;
 
 	if ( m_pszArg[0] == '.' )
 	{
@@ -404,25 +404,25 @@ bool CScript::ReadKeyParse()
 				*pszQuote = '\0';
 			}
 		}
-		sprintf(buf, "<%s>%s", m_pszKey, pszArgs);
+		snprintf(pszTemp, SCRIPT_MAX_LINE_LEN, "<%s>%s", m_pszKey, pszArgs);
 	}
 	else if ( (m_pszArg[0] == m_pszArg[1]) && (m_pszArg[1] == '+') )
 	{
 		if ( m_pszArg[2] != '\0' )
 			return true;
-		sprintf(buf, "<eval (<%s> + 1)>", m_pszKey);
+		snprintf(pszTemp, SCRIPT_MAX_LINE_LEN, "<eval (<%s> + 1)>", m_pszKey);
 	}
 	else if ( (m_pszArg[0] == m_pszArg[1]) && (m_pszArg[1] == '-') )
 	{
 		if ( m_pszArg[2] != '\0' )
 			return true;
-		sprintf(buf, "<eval (<%s> - 1)>", m_pszKey);
+		snprintf(pszTemp, SCRIPT_MAX_LINE_LEN, "<eval (<%s> - 1)>", m_pszKey);
 	}
 	else
 	{
-		sprintf(buf, "<%s (<%s> %c (%s))>", (strnicmp(m_pszKey, "float.", 6) == 0) ? "floatval" : "eval", m_pszKey, *m_pszArg, pszArgs);
+		snprintf(pszTemp, SCRIPT_MAX_LINE_LEN, "<%s (<%s> %c (%s))>", (strnicmp(m_pszKey, "float.", 6) == 0) ? "floatval" : "eval", m_pszKey, *m_pszArg, pszArgs);
 	}
-	strcpy(m_pszArg, buf);
+	strcpy(m_pszArg, pszTemp);
 
 	return true;
 	EXC_CATCH;

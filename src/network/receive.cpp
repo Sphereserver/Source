@@ -2236,7 +2236,7 @@ bool PacketGumpValueInputResponse::onReceive(NetState* net)
 		// m_Prop_UID = object we are after
 
 		TCHAR *pszLogMsg = Str_GetTemp();
-		sprintf(pszLogMsg, "%lx:'%s' tweak UID=0%" FMTDWORDH " (%s) to '%s %s'", net->id(), client->GetName(), static_cast<DWORD>(object->GetUID()), object->GetName(), static_cast<LPCTSTR>(client->m_Targ_Text), static_cast<LPCTSTR>(text));
+		snprintf(pszLogMsg, THREAD_STRING_LENGTH, "%lx:'%s' tweak UID=0%" FMTDWORDH " (%s) to '%s %s'", net->id(), client->GetName(), static_cast<DWORD>(object->GetUID()), object->GetName(), static_cast<LPCTSTR>(client->m_Targ_Text), static_cast<LPCTSTR>(text));
 
 		CScript script(client->m_Targ_Text, text);
 		bool fRet = object->r_Verb(script, client->GetChar());

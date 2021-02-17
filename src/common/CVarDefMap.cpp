@@ -76,9 +76,9 @@ void CVarDefContNum::SetValNum( INT64 iVal )
 
 inline LPCTSTR CVarDefContNum::GetValStr() const
 {
-	TemporaryString pszTmp;
-	sprintf(pszTmp, "0%llx", m_iVal);
-	return pszTmp;
+	TemporaryString pszTemp;
+	snprintf(pszTemp, 24, "0%llx", m_iVal);
+	return pszTemp;
 }
 
 bool CVarDefContNum::r_LoadVal( CScript & s )
@@ -742,9 +742,9 @@ void CVarDefMap::r_WritePrefix( CScript & s, LPCTSTR pszPrefix, LPCTSTR pszKeyEx
 			continue;
 
 		if ( bHasPrefix )
-			sprintf(z, "%s.%s", pszPrefix, pVar->GetKey());
+			snprintf(z, THREAD_STRING_LENGTH, "%s.%s", pszPrefix, pVar->GetKey());
 		else
-			sprintf(z, "%s", pVar->GetKey());
+			snprintf(z, THREAD_STRING_LENGTH, "%s", pVar->GetKey());
 
 		pszVal = pVar->GetValStr();
 		const CVarDefContStr * pVarStr = dynamic_cast <const CVarDefContStr *>(pVar);
