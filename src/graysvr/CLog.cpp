@@ -208,10 +208,10 @@ void _cdecl CLog::CatchEvent( const CGrayError *pErr, LPCTSTR pszCatchContext, .
 	// Keep a record of what we catch.
 	try
 	{
-		TCHAR szMsg[512];
 		LOGL_TYPE eSeverity;
-		int iLen = 0;
-		if ( pErr != NULL )
+		TCHAR szMsg[512];
+
+		if ( pErr )
 		{
 			eSeverity = pErr->m_eSeverity;
 			const CGrayAssert *pAssertErr = dynamic_cast<const CGrayAssert *>(pErr);
@@ -219,25 +219,22 @@ void _cdecl CLog::CatchEvent( const CGrayError *pErr, LPCTSTR pszCatchContext, .
 				pAssertErr->GetErrorMessage(szMsg);
 			else
 				pErr->GetErrorMessage(szMsg);
-			iLen = strlen(szMsg);
 		}
 		else
 		{
 			eSeverity = LOGL_CRIT;
 			strcpy(szMsg, "Exception");
-			iLen = strlen(szMsg);
 		}
 
-		iLen += snprintf(szMsg + iLen, sizeof(szMsg), ", in ");
+		strncat(szMsg, ", in ", sizeof(szMsg) - 1);
 
 		va_list vargs;
 		va_start(vargs, pszCatchContext);
-
-		iLen += vsprintf(szMsg + iLen, pszCatchContext, vargs);
-		iLen += snprintf(szMsg + iLen, sizeof(szMsg), "\n");
-
-		EventStr(eSeverity, szMsg);
+		vsprintf(szMsg + strlen(szMsg), pszCatchContext, vargs);
 		va_end(vargs);
+
+		strncat(szMsg, "\n", sizeof(szMsg) - 1);
+		EventStr(eSeverity, szMsg);
 	}
 	catch ( ... )
 	{

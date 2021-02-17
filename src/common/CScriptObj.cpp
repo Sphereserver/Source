@@ -87,7 +87,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop(CScript &s, int iType, CTextConsole *p
 				goto toomanyloops;
 
 			pArgs->m_VarsLocal.SetNum("_WHILE", i++, false);
-			strcpy(pszTemp, sOrig.GetPtr());
+			strncpy(pszTemp, sOrig.GetPtr(), THREAD_STRING_LENGTH - 1);
 			pszCond = pszTemp;
 			ParseText(pszCond, pSrc, 0, pArgs);
 			if ( !Exp_GetLLVal(pszCond) )
@@ -708,7 +708,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerRun(CScript &s, TRIGRUN_TYPE trigger, CTextCon
 				size_t iArgsQty = Str_ParseCmds(const_cast<TCHAR *>(s.GetArgRaw()), ppArgs, COUNTOF(ppArgs), " \t,");
 
 				TemporaryString pszTemp;
-				strcpy(pszTemp, ppArgs[0]);
+				strncpy(pszTemp, ppArgs[0], THREAD_STRING_LENGTH - 1);
 				TCHAR *pszTempPoint = pszTemp;
 				ParseText(pszTempPoint, pSrc, 0, pArgs);
 
@@ -759,7 +759,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerRun(CScript &s, TRIGRUN_TYPE trigger, CTextCon
 				size_t iArgsQty = Str_ParseCmds(const_cast<TCHAR *>(pszKey), ppArgs, COUNTOF(ppArgs), " \t,");
 
 				TemporaryString pszTemp;
-				strcpy(pszTemp, ppArgs[0]);
+				strncpy(pszTemp, ppArgs[0], THREAD_STRING_LENGTH - 1);
 				ParseText(pszTemp, pSrc, 0, pArgs);
 
 				CScriptLineContext StartContext = s.GetContext();

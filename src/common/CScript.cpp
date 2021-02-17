@@ -422,7 +422,7 @@ bool CScript::ReadKeyParse()
 	{
 		snprintf(pszTemp, SCRIPT_MAX_LINE_LEN, "<%s (<%s> %c (%s))>", (strnicmp(m_pszKey, "float.", 6) == 0) ? "floatval" : "eval", m_pszKey, *m_pszArg, pszArgs);
 	}
-	strcpy(m_pszArg, pszTemp);
+	strncpy(m_pszArg, pszTemp, SCRIPT_MAX_LINE_LEN - 1);
 
 	return true;
 	EXC_CATCH;

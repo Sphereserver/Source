@@ -230,7 +230,7 @@ bool CChar::NPC_OnHearPetCmd(LPCTSTR pszCmd, CChar *pSrc, bool fAllPets)
 					sprintf(pszTemp2, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_STAT_GOLD_4), pBank->m_itEqBankBox.m_Check_Restock, pBank->GetTimerAdjusted() / 60);
 					sprintf(pszTemp3, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_STAT_GOLD_3), static_cast<int>(pCont->GetCount()));
 				}
-				sprintf(pszMsg, "%s %s %s", pszTemp1, pszTemp2, pszTemp3);
+				snprintf(pszMsg, THREAD_STRING_LENGTH, "%s %s %s", pszTemp1, pszTemp2, pszTemp3);
 			}
 			else if ( pCharDef->m_iHireDayWage )
 			{

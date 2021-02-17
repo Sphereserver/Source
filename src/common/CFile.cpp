@@ -194,9 +194,9 @@ CGString CGFile::GetMergedFileName(LPCTSTR pszPath, LPCTSTR pszFileName) // stat
 		if ( iLen && (szFullPath[iLen - 1] != '\\') && (szFullPath[iLen - 1] != '/') )
 		{
 #ifdef _WIN32
-			strcat(szFullPath, "\\");
+			strncat(szFullPath, "\\", sizeof(szFullPath) - 1);
 #else
-			strcat(szFullPath, "/");
+			strncat(szFullPath, "/", sizeof(szFullPath) - 1);
 #endif
 		}
 	}
