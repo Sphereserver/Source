@@ -1567,8 +1567,9 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			TCHAR *ppLevel_sep[100];
 			const CGString *pFameAt0 = g_Cfg.m_Fame.GetAt(0);
 
-			TCHAR *pszFameAt0 = new TCHAR[pFameAt0->GetLength() + 1];
-			strcpylen(pszFameAt0, pFameAt0->GetPtr());
+			size_t iLen = pFameAt0->GetLength() + 1;
+			TCHAR *pszFameAt0 = new TCHAR[iLen];
+			strcpylen(pszFameAt0, pFameAt0->GetPtr(), iLen);
 
 			size_t iArgQty = Str_ParseCmds(pszFameAt0, ppLevel_sep, COUNTOF(ppLevel_sep), ",");
 			if ( iArgQty > 0 )
@@ -1657,8 +1658,9 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			TCHAR *ppLevel_sep[100];
 			const CGString *pKarmaAt0 = g_Cfg.m_Karma.GetAt(0);
 
-			TCHAR *pszKarmaAt0 = new TCHAR[pKarmaAt0->GetLength() + 1];
-			strcpylen(pszKarmaAt0, pKarmaAt0->GetPtr());
+			size_t iLen = pKarmaAt0->GetLength() + 1;
+			TCHAR *pszKarmaAt0 = new TCHAR[iLen];
+			strcpylen(pszKarmaAt0, pKarmaAt0->GetPtr(), iLen);
 
 			size_t iArgQty = Str_ParseCmds(pszKarmaAt0, ppLevel_sep, COUNTOF(ppLevel_sep), ",");
 			if ( iArgQty > 0 )

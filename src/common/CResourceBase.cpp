@@ -965,7 +965,7 @@ void CResourceRefArray::WriteResourceRefList(CGString &sVal) const
 		if ( i > 0 )
 			pszVal[len++] = ',';
 
-		len += strcpylen(pszVal + len, GetResourceName(i));
+		len += strcpylen(pszVal + len, GetResourceName(i), SCRIPT_MAX_LINE_LEN);
 		if ( len >= SCRIPT_MAX_LINE_LEN - 1 )
 			break;
 	}
@@ -1025,7 +1025,7 @@ size_t CResourceQty::WriteKey(TCHAR *pszArgs, bool fQtyOnly, bool fKeyOnly) cons
 	if ( (GetResQty() || fQtyOnly) && !fKeyOnly )
 		i = sprintf(pszArgs, "%d ", GetResQty());
 	if ( !fQtyOnly )
-		i += strcpylen(pszArgs + i, g_Cfg.ResourceGetName(m_rid));
+		i += strcpylen(pszArgs + i, g_Cfg.ResourceGetName(m_rid), MAX_ITEM_NAME_SIZE);
 	return i;
 }
 
@@ -1036,14 +1036,14 @@ size_t CResourceQty::WriteNameSingle(TCHAR *pszArgs, int iQty) const
 	{
 		const CItemBase *pItemBase = CItemBase::FindItemBase(static_cast<ITEMID_TYPE>(m_rid.GetResIndex()));
 		if ( pItemBase )
-			return strcpylen(pszArgs, pItemBase->GetNamePluralize(pItemBase->GetTypeName(), (iQty > 1)));
+			return strcpylen(pszArgs, pItemBase->GetNamePluralize(pItemBase->GetTypeName(), (iQty > 1)), MAX_ITEM_NAME_SIZE);
 	}
 
 	const CScriptObj *pResourceDef = g_Cfg.ResourceGetDef(m_rid);
 	if ( pResourceDef )
-		return strcpylen(pszArgs, pResourceDef->GetName());
+		return strcpylen(pszArgs, pResourceDef->GetName(), MAX_ITEM_NAME_SIZE);
 
-	return strcpylen(pszArgs, g_Cfg.ResourceGetName(m_rid));
+	return strcpylen(pszArgs, g_Cfg.ResourceGetName(m_rid), MAX_ITEM_NAME_SIZE);
 }
 
 bool CResourceQty::Load(LPCTSTR &pszCmds)

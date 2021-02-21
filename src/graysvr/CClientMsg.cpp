@@ -1189,7 +1189,7 @@ void CClient::addItemName(const CItem *pItem)
 	if ( IsPriv(PRIV_GM) )
 	{
 		if ( pItem->IsAttr(ATTR_INVIS) )
-			len += strcpylen(szName + len, " (invis)");
+			len += sprintf(szName + len, " (invis)");
 		if ( pParentCont && pParentCont->IsType(IT_EQ_VENDOR_BOX) )
 			len += sprintf(szName + len, " (%hhu restock)", pItem->GetContainedLayer());
 

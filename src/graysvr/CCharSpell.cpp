@@ -3130,7 +3130,7 @@ int CChar::Spell_CastStart()
 				TCHAR ch = pSpellDef->m_sRunes[i];
 				if ( !ch )
 					break;
-				len += strcpylen(pszTemp + len, g_Cfg.GetRune(ch));
+				len += strcpylen(pszTemp + len, g_Cfg.GetRune(ch), MAX_TALK_BUFFER);
 				if ( pSpellDef->m_sRunes[i + 1] )
 					pszTemp[len++] = ' ';
 			}

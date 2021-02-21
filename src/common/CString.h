@@ -375,13 +375,6 @@ MATCH_TYPE Str_Match(LPCTSTR pPattern, LPCTSTR pText);
 MATCH_TYPE Str_RegExMatch(LPCTSTR pszPattern, LPCTSTR pszText);
 
 /**
-* @brief Wrapper to cstring strcpy, but returns the length of the string copied.
-* @param pszDst dest memory space.
-* @param pszSrc source data.
-* @return length of the string copied.
-*/
-size_t strcpylen(TCHAR *pszDst, LPCTSTR pszSrc);
-/**
 * @brief Wrapper to cstring strncpy, but returns the length of string copied.
 * @param pszDst dest memory space.
 * @param pszSrc source data.

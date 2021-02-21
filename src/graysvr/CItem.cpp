@@ -1241,7 +1241,7 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 	if (fSingular)
 	{
 		if ( ! IsIndividualName())
-			len += strcpylen( pTemp+len, pItemDef->GetArticleAndSpace());
+			len += strcpylen( pTemp+len, pItemDef->GetArticleAndSpace(), MAX_ITEM_NAME_SIZE);
 	}
 	else
 	{
@@ -1265,8 +1265,8 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 		if ( fTitleSet )
 		{
 			if ( fSingular && !IsSetOF(OF_NoPrefix) ) 
-				len = strcpylen( pTemp, Str_GetArticleAndSpace(pszTitle));
-			len += strcpylen( pTemp+len, pszTitle );
+				len = strcpylen(pTemp, Str_GetArticleAndSpace(pszTitle), MAX_ITEM_NAME_SIZE);
+			len += strcpylen(pTemp + len, pszTitle, MAX_ITEM_NAME_SIZE);
 		}
 
 		if ( IsAttr(ATTR_MAGIC))
@@ -1274,12 +1274,12 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 			if ( !pszTitle )
 			{
 				pszTitle = IsSetOF(OF_NoPrefix) ? "" : "a ";
-				len = strcpylen( pTemp, pszTitle );
+				len = strcpylen(pTemp, pszTitle, MAX_ITEM_NAME_SIZE);
 			}
 
 			LPCTSTR pszMagic = g_Cfg.GetDefaultMsg(DEFMSG_ITEMTITLE_MAGIC);
 			if ( !IsTypeArmorWeapon() && (strnicmp(pszName, pszMagic, strlen(pszMagic)) != 0) )		// don't put "magic" prefix on armor/weapons and names already starting with "magic"
-				len += strcpylen(pTemp + len, pszMagic);
+				len += strcpylen(pTemp + len, pszMagic, MAX_ITEM_NAME_SIZE);
 		}
 	}
 
@@ -1287,37 +1287,37 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 	switch ( m_type )
 	{
 		case IT_STONE_GUILD:
-			len += strcpylen( pTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_GUILDSTONE_FOR ) );
+			len += strcpylen(pTemp + len, g_Cfg.GetDefaultMsg(DEFMSG_ITEMTITLE_GUILDSTONE_FOR), MAX_ITEM_NAME_SIZE);
 			break;
 		case IT_STONE_TOWN:
-			len += strcpylen( pTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_TOWN_OF ) );
+			len += strcpylen(pTemp + len, g_Cfg.GetDefaultMsg(DEFMSG_ITEMTITLE_TOWN_OF), MAX_ITEM_NAME_SIZE);
 			break;
 		case IT_EQ_MEMORY_OBJ:
-			len += strcpylen( pTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_MEMORY_OF ) );
+			len += strcpylen(pTemp + len, g_Cfg.GetDefaultMsg(DEFMSG_ITEMTITLE_MEMORY_OF), MAX_ITEM_NAME_SIZE);
 			break;
 		case IT_SPAWN_CHAR:
-			if ( ! IsIndividualName())
-				len += strcpylen( pTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_SPAWN ) );
+			if ( !IsIndividualName() )
+				len += strcpylen(pTemp + len, g_Cfg.GetDefaultMsg(DEFMSG_ITEMTITLE_SPAWN), MAX_ITEM_NAME_SIZE);
 			break;
 		case IT_KEY:
-			if ( ! m_itKey.m_lockUID.IsValidUID())
-				len += strcpylen( pTemp+len, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_BLANK ) );
+			if ( !m_itKey.m_lockUID.IsValidUID() )
+				len += strcpylen(pTemp + len, g_Cfg.GetDefaultMsg(DEFMSG_ITEMTITLE_BLANK), MAX_ITEM_NAME_SIZE);
 			break;
 		case IT_RUNE:
 			if ( !m_itRune.m_ptMark.IsValidPoint() )
-				len += strcpylen(pTemp + len, g_Cfg.GetDefaultMsg(DEFMSG_RUNE_NAME_UNMARKED));
+				len += strcpylen(pTemp + len, g_Cfg.GetDefaultMsg(DEFMSG_RUNE_NAME_UNMARKED), MAX_ITEM_NAME_SIZE);
 			else
 			{
 				if ( !m_itRune.m_Charges )
-					len += strcpylen(pTemp + len, g_Cfg.GetDefaultMsg(DEFMSG_ITEMTITLE_FADED));
-				len += strcpylen(pTemp + len, g_Cfg.GetDefaultMsg(DEFMSG_RUNE_NAME_MARKED));
+					len += strcpylen(pTemp + len, g_Cfg.GetDefaultMsg(DEFMSG_ITEMTITLE_FADED), MAX_ITEM_NAME_SIZE);
+				len += strcpylen(pTemp + len, g_Cfg.GetDefaultMsg(DEFMSG_RUNE_NAME_MARKED), MAX_ITEM_NAME_SIZE);
 			}
 			break;
 		default:
 			break;
 	}
 
-	len += strcpylen( pTemp+len, pszName );
+	len += strcpylen(pTemp + len, pszName, MAX_ITEM_NAME_SIZE);
 
 	// Suffix the name.
 

@@ -78,24 +78,24 @@ void CClient::OnTarg_Obj_Info(CObjBase *pObj, const CPointMap &pt, ITEMID_TYPE i
 	size_t len = 0;
 	if ( id )
 	{
-		len = sprintf(pszTemp, "[Static z=%hhd, 0%x=", pt.m_z, id);
+		len = snprintf(pszTemp, THREAD_STRING_LENGTH, "[Static z=%hhd, 0%x=", pt.m_z, id);
 
 		// static items have no uid's but we can still use them.
 		CItemBase *pItemDef = CItemBase::FindItemBase(id);
 		if ( pItemDef )
-			len += sprintf(pszTemp + len, "%s->%s], ", pItemDef->GetResourceName(), g_Cfg.ResourceGetName(RESOURCE_ID(RES_TYPEDEF, pItemDef->GetType())));
+			len += snprintf(pszTemp + len, THREAD_STRING_LENGTH, "%s->%s], ", pItemDef->GetResourceName(), g_Cfg.ResourceGetName(RESOURCE_ID(RES_TYPEDEF, pItemDef->GetType())));
 		else
-			len += sprintf(pszTemp + len, "NON scripted], ");
+			len += snprintf(pszTemp + len, THREAD_STRING_LENGTH, "NON scripted], ");
 	}
 	else
 	{
 		// tile info for location.
-		len = strcpylen(pszTemp, "[No static tile], ");
+		len = snprintf(pszTemp, THREAD_STRING_LENGTH, "[No static tile], ");
 	}
 
 	const CUOMapMeter *pMeter = g_World.GetMapMeter(pt);
 	if ( pMeter )
-		len += sprintf(pszTemp + len, "TERRAIN=0%hx TYPE=%s", pMeter->m_wTerrainIndex, g_World.GetTerrainItemTypeDef(pMeter->m_wTerrainIndex)->GetResourceName());
+		len += snprintf(pszTemp + len, THREAD_STRING_LENGTH, "TERRAIN=0%hx TYPE=%s", pMeter->m_wTerrainIndex, g_World.GetTerrainItemTypeDef(pMeter->m_wTerrainIndex)->GetResourceName());
 
 	SysMessage(pszTemp);
 }

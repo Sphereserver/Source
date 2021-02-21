@@ -51,7 +51,7 @@ int CFileList::ReadDir( LPCTSTR pszFileDir, bool bShowError )
 	ADDTOCALLSTACK("CFileList::ReadDir");
 	// NOTE: It seems NOT to like the trailing \ alone
 	TCHAR szFileDir[_MAX_PATH];
-	size_t len = strcpylen(szFileDir, pszFileDir);
+	size_t len = strcpylen(szFileDir, pszFileDir, sizeof(szFileDir));
 #ifdef _WIN32
 	if ( len > 0 )
 	{

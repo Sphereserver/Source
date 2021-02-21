@@ -37,16 +37,9 @@ ULONG gMemAmount = 0; ///< Total mem allocated by CGStrings.
 int gReallocs = 0; ///< Total reallocs caused by CGString resizing.
 #endif
 
-size_t strcpylen(TCHAR *pszDst, LPCTSTR pszSrc)
-{
-	strcpy(pszDst, pszSrc);
-	return strlen(pszDst);
-}
-
 size_t strcpylen(TCHAR *pszDst, LPCTSTR pszSrc, size_t iMaxLen)
 {
 	// It does NOT include the iMaxLen element (just like memcpy), so iMaxLen = sizeof() is ok!
-	ASSERT(iMaxLen);
 	strncpy(pszDst, pszSrc, iMaxLen - 1);
 	pszDst[iMaxLen - 1] = '\0';
 	return strlen(pszDst);
