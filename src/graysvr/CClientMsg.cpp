@@ -227,7 +227,7 @@ void CClient::resendBuffs()
 					_strlwr(const_cast<TCHAR *>(pszName));
 				}
 
-				strcpy(szNumBuff[0], Str_GetArticleAndSpace(pszName));
+				strncpy(szNumBuff[0], Str_GetArticleAndSpace(pszName), sizeof(szNumBuff[0]) - 1);
 				strncpy(szNumBuff[1], pszName, sizeof(szNumBuff[1]) - 1);
 				szNumBuff[0][strlen(szNumBuff[0]) - 1] = '\0';		// trim whitespace from "a " / "an " strings
 				removeBuff(BI_POLYMORPH);
@@ -1002,9 +1002,9 @@ void CClient::GetAdjustedItemID(const CChar *pChar, const CItem *pItem, ITEMID_T
 			// Display the mount item associated with the RESDISPDNID of the mount's chardef
 			if ( idHorse != pItem->m_itFigurine.m_ID )
 			{
-				TCHAR *pszMountDefname = Str_GetTemp();
-				sprintf(pszMountDefname, "mount_0x%x", idHorse);
-				ITEMID_TYPE idMountItem = static_cast<ITEMID_TYPE>(g_Exp.m_VarDefs.GetKeyNum(pszMountDefname));
+				TCHAR szMountDefname[20];
+				snprintf(szMountDefname, sizeof(szMountDefname), "mount_0x%x", idHorse);
+				ITEMID_TYPE idMountItem = static_cast<ITEMID_TYPE>(g_Exp.m_VarDefs.GetKeyNum(szMountDefname));
 				if ( idMountItem > ITEMID_NOTHING )
 				{
 					id = idMountItem;
@@ -1150,23 +1150,22 @@ void CClient::addItemName(const CItem *pItem)
 		return;
 
 	bool fIdentified = (IsPriv(PRIV_GM) || pItem->IsAttr(ATTR_IDENTIFIED));
-	LPCTSTR pszNameFull = pItem->GetNameFull(fIdentified);
 
-	TCHAR szName[MAX_ITEM_NAME_SIZE * 2];
-	size_t len = strcpylen(szName, pszNameFull, sizeof(szName));
+	TCHAR szName[MAX_ITEM_NAME_SIZE];
+	int len = snprintf(szName, sizeof(szName), pItem->GetNameFull(fIdentified));
 
 	const CContainer *pCont = dynamic_cast<const CContainer *>(pItem);
 	if ( pCont )
 	{
 		// Don't show content info if container is a corpse on ground or another player backpack
 		if ( ((pItem->GetEquipLayer() != LAYER_PACK) || (pItem->GetParentObj() == m_pChar)) && !pItem->IsType(IT_CORPSE) && !pItem->IsType(IT_BBOARD) )
-			len += sprintf(szName + len, g_Cfg.GetDefaultMsg(DEFMSG_CONT_ITEMS), pCont->GetCount(), pCont->GetTotalWeight() / WEIGHT_UNITS);
+			len += snprintf(szName + len, sizeof(szName), g_Cfg.GetDefaultMsg(DEFMSG_CONT_ITEMS), pCont->GetCount(), pCont->GetTotalWeight() / WEIGHT_UNITS);
 	}
 	else if ( pItem->IsTypeArmorWeapon() )
 	{
 		WORD wPercent = pItem->Armor_GetRepairPercent();
 		if ( (wPercent < 50) && (m_pChar->Skill_GetAdjusted(SKILL_ARMSLORE) / 10 > wPercent) )
-			len += sprintf(szName + len, " (%s)", pItem->Armor_GetRepairDesc());
+			len += snprintf(szName + len, sizeof(szName), " (%s)", pItem->Armor_GetRepairDesc());
 	}
 
 	const CItemContainer *pParentCont = dynamic_cast<const CItemContainer *>(pItem->GetParent());
@@ -1174,7 +1173,7 @@ void CClient::addItemName(const CItem *pItem)
 	{
 		const CItemVendable *pVendItem = dynamic_cast<const CItemVendable *>(pItem);
 		if ( pVendItem )
-			len += sprintf(szName + len, " (%" FMTDWORD " gp)", pVendItem->GetBasePrice());
+			len += snprintf(szName + len, sizeof(szName), " (%" FMTDWORD " gp)", pVendItem->GetBasePrice());
 	}
 
 	HUE_TYPE wHue = HUE_TEXT_DEF;
@@ -1189,9 +1188,9 @@ void CClient::addItemName(const CItem *pItem)
 	if ( IsPriv(PRIV_GM) )
 	{
 		if ( pItem->IsAttr(ATTR_INVIS) )
-			len += sprintf(szName + len, " (invis)");
+			len += snprintf(szName + len, sizeof(szName), " (invis)");
 		if ( pParentCont && pParentCont->IsType(IT_EQ_VENDOR_BOX) )
-			len += sprintf(szName + len, " (%hhu restock)", pItem->GetContainedLayer());
+			len += snprintf(szName + len, sizeof(szName), " (%hhu restock)", pItem->GetContainedLayer());
 
 		switch ( pItem->GetType() )
 		{
@@ -1210,15 +1209,16 @@ void CClient::addItemName(const CItem *pItem)
 			{
 				CResourceDef *pResDef = g_Cfg.ResourceGetDef(pItem->m_itResource.m_rid_res);
 				if ( pResDef )
-					len += sprintf(szName + len, " (%s)", pResDef->GetName());
+					len += snprintf(szName + len, sizeof(szName), " (%s)", pResDef->GetName());
 				break;
 			}
 			default:
 				break;
 		}
 	}
+
 	if ( IsPriv(PRIV_DEBUG) )
-		len += sprintf(szName + len, " [0%" FMTDWORDH "]", static_cast<DWORD>(pItem->GetUID()));
+		len += snprintf(szName + len, sizeof(szName), " [0%" FMTDWORDH "]", static_cast<DWORD>(pItem->GetUID()));
 
 	if ( IsTrigUsed(TRIGGER_AFTERCLICK) || IsTrigUsed(TRIGGER_ITEMAFTERCLICK) )
 	{
@@ -1245,50 +1245,36 @@ void CClient::addCharName(const CChar *pChar)
 	// Single click text for a character
 	ASSERT(pChar);
 
-	TCHAR *pszPrefix = Str_GetTemp();
-	strncpy(pszPrefix, pChar->GetKeyStr("NAME.PREFIX"), MAX_NAME_SIZE - 1);
+	TCHAR szPrefix[MAX_NAME_SIZE];
+	strncpy(szPrefix, pChar->GetKeyStr("NAME.PREFIX"), sizeof(szPrefix) - 1);
 
-	if ( !*pszPrefix )
-		strncat(pszPrefix, pChar->Noto_GetFameTitle(), MAX_NAME_SIZE - 1);
+	if ( !*szPrefix )
+		strncat(szPrefix, pChar->Noto_GetFameTitle(), sizeof(szPrefix) - 1);
 
-	TCHAR *pszSuffix = Str_GetTemp();
-	strncpy(pszSuffix, pChar->GetKeyStr("NAME.SUFFIX"), MAX_NAME_SIZE - 1);
+	TCHAR szSuffix[MAX_NAME_SIZE];
+	strncpy(szSuffix, pChar->GetKeyStr("NAME.SUFFIX"), sizeof(szSuffix) - 1);
 
 	if ( pChar->m_pPlayer )
 	{
 		LPCTSTR pszGuildAbbrev = pChar->Guild_Abbrev(MEMORY_GUILD);
 		if ( pszGuildAbbrev )
-		{
-			strcat(pszSuffix, " [");
-			strncat(pszSuffix, pszGuildAbbrev, MAX_NAME_SIZE - 1);
-			strcat(pszSuffix, "]");
-		}
+			snprintf(szSuffix + strlen(szSuffix), sizeof(szSuffix), " [%s]", pszGuildAbbrev);
 		else
 		{
 			pszGuildAbbrev = pChar->Guild_Abbrev(MEMORY_TOWN);
 			if ( pszGuildAbbrev )
-			{
-				strcat(pszSuffix, " [");
-				strncat(pszSuffix, pszGuildAbbrev, MAX_NAME_SIZE - 1);
-				strcat(pszSuffix, "]");
-			}
+				snprintf(szSuffix + strlen(szSuffix), sizeof(szSuffix), " [%s]", pszGuildAbbrev);
 		}
 	}
-	else
+	else if ( g_Cfg.m_fVendorTradeTitle && (pChar->GetNPCBrain() == NPCBRAIN_HUMAN) )
 	{
-		if ( g_Cfg.m_fVendorTradeTitle && (pChar->GetNPCBrain() == NPCBRAIN_HUMAN) )
-		{
-			LPCTSTR pszTradeTitle = pChar->GetTradeTitle();
-			if ( pszTradeTitle )
-			{
-				strcat(pszSuffix, " ");
-				strncat(pszSuffix, pszTradeTitle, MAX_NAME_SIZE - 1);
-			}
-		}
+		LPCTSTR pszTradeTitle = pChar->GetTradeTitle();
+		if ( pszTradeTitle )
+			snprintf(szSuffix + strlen(szSuffix), sizeof(szSuffix), " %s", pszTradeTitle);
 	}
 
-	TCHAR *pszName = Str_GetTemp();
-	sprintf(pszName, "%s%s%s", pszPrefix, pChar->GetName(), pszSuffix);
+	TCHAR szName[MAX_NAME_SIZE];
+	snprintf(szName, sizeof(szName), "%s%s%s", szPrefix, pChar->GetName(), szSuffix);
 
 	HUE_TYPE wHue = pChar->Noto_GetHue(m_pChar);
 	bool fAllShow = IsPriv(PRIV_DEBUG|PRIV_ALLSHOW);
@@ -1298,53 +1284,49 @@ void CClient::addCharName(const CChar *pChar)
 		if ( pChar->m_pNPC )
 		{
 			if ( pChar->IsPlayableCharacter() )
-				strcat(pszName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_NPC));
+				strncat(szName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_NPC), sizeof(szName) - 1);
 			if ( pChar->IsStatFlag(STATF_Conjured) )
-				strcat(pszName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_SUMMONED));
+				strncat(szName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_SUMMONED), sizeof(szName) - 1);
 			else if ( pChar->IsStatFlag(STATF_Pet) )
-				strcat(pszName, g_Cfg.GetDefaultMsg(pChar->m_pNPC->m_bonded ? DEFMSG_CHARINFO_BONDED : DEFMSG_CHARINFO_TAME));
+				strncat(szName, g_Cfg.GetDefaultMsg(pChar->m_pNPC->m_bonded ? DEFMSG_CHARINFO_BONDED : DEFMSG_CHARINFO_TAME), sizeof(szName) - 1);
 		}
 		if ( pChar->IsStatFlag(STATF_INVUL) && !pChar->IsStatFlag(STATF_Incognito) && !pChar->IsPriv(PRIV_PRIV_NOSHOW) )
-			strcat(pszName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_INVUL));
+			strncat(szName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_INVUL), sizeof(szName) - 1);
 		if ( pChar->IsStatFlag(STATF_Stone) )
-			strcat(pszName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_STONE));
+			strncat(szName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_STONE), sizeof(szName) - 1);
 		if ( pChar->IsStatFlag(STATF_Freeze) )
-			strcat(pszName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_FROZEN));
+			strncat(szName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_FROZEN), sizeof(szName) - 1);
 		if ( pChar->IsStatFlag(STATF_Insubstantial|STATF_Invisible|STATF_Hidden) )
-			strcat(pszName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_HIDDEN));
+			strncat(szName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_HIDDEN), sizeof(szName) - 1);
 		if ( pChar->IsStatFlag(STATF_Hallucinating) )
-			strcat(pszName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_HALLU));
+			strncat(szName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_HALLU), sizeof(szName) - 1);
 
 		if ( fAllShow )
 		{
 			if ( pChar->IsStatFlag(STATF_Spawned) )
-				strcat(pszName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_SPAWN));
+				strncat(szName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_SPAWN), sizeof(szName) - 1);
 			if ( IsPriv(PRIV_DEBUG) )
-				sprintf(pszName + strlen(pszName), " [0%" FMTDWORDH "]", static_cast<DWORD>(pChar->GetUID()));
+				snprintf(szName + strlen(szName), sizeof(szName), " [0%" FMTDWORDH "]", static_cast<DWORD>(pChar->GetUID()));
 		}
 	}
 	if ( pChar->IsPriv(PRIV_JAILED) )
-		strcat(pszName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_JAILED));
+		strncat(szName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_JAILED), sizeof(szName) - 1);
 	if ( pChar->IsDisconnected() )
-		strcat(pszName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_LOGOUT));
+		strncat(szName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_LOGOUT), sizeof(szName) - 1);
 	if ( (fAllShow || (pChar == m_pChar)) && pChar->IsStatFlag(STATF_Criminal) )
-		strcat(pszName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_CRIMINAL));
+		strncat(szName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_CRIMINAL), sizeof(szName) - 1);
 
 #ifdef _DEBUG
 	if ( fAllShow || (IsPriv(PRIV_GM) && (g_Cfg.m_wDebugFlags & DEBUGF_NPC_EMOTE)) )
 #else
 	if ( fAllShow )
 #endif
-	{
-		strcat(pszName, " [");
-		strncat(pszName, pChar->Skill_GetName(), MAX_NAME_SIZE - 1);
-		strcat(pszName, "]");
-	}
+		snprintf(szName + strlen(szName), sizeof(szName), " [%s]", pChar->Skill_GetName());
 
 	if ( IsTrigUsed(TRIGGER_AFTERCLICK) )
 	{
 		CScriptTriggerArgs Args(this);
-		Args.m_VarsLocal.SetStrNew("ClickMsgText", pszName);
+		Args.m_VarsLocal.SetStrNew("ClickMsgText", szName);
 		Args.m_VarsLocal.SetNumNew("ClickMsgHue", static_cast<INT64>(wHue));
 
 		if ( const_cast<CChar *>(pChar)->OnTrigger(CTRIG_AfterClick, m_pChar, &Args) == TRIGRET_RET_TRUE )
@@ -1352,12 +1334,12 @@ void CClient::addCharName(const CChar *pChar)
 
 		LPCTSTR pszNewStr = Args.m_VarsLocal.GetKeyStr("ClickMsgText");
 		if ( pszNewStr )
-			strncpy(pszName, pszNewStr, MAX_NAME_SIZE - 1);
+			strncpy(szName, pszNewStr, sizeof(szName) - 1);
 
 		wHue = static_cast<HUE_TYPE>(Args.m_VarsLocal.GetKeyNum("ClickMsgHue"));
 	}
 
-	addObjMessage(pszName, pChar, wHue, TALKMODE_ITEM);
+	addObjMessage(szName, pChar, wHue, TALKMODE_ITEM);
 }
 
 void CClient::addPlayerStart(CChar *pChar)
@@ -1678,10 +1660,10 @@ bool CClient::addTargetChars(CLIMODE_TYPE mode, CREID_TYPE baseID, bool fCheckCr
 	if ( !pBase )
 		return false;
 
-	TCHAR *pszTemp = Str_GetTemp();
-	sprintf(pszTemp, "%s %s?", g_Cfg.GetDefaultMsg(DEFMSG_WHERE_TO_SUMMON), pBase->GetTradeName());
+	TCHAR szPrompt[EXPRESSION_MAX_KEY_LEN];
+	snprintf(szPrompt, sizeof(szPrompt), "%s %s?", g_Cfg.GetDefaultMsg(DEFMSG_WHERE_TO_SUMMON), pBase->GetTradeName());
 
-	addTarget(mode, pszTemp, true, fCheckCrime, iTimeout);
+	addTarget(mode, szPrompt, true, fCheckCrime, iTimeout);
 	return true;
 }
 
@@ -1721,18 +1703,18 @@ bool CClient::addTargetItems(CLIMODE_TYPE mode, ITEMID_TYPE id, HUE_TYPE wHue, b
 		pszName = "template";
 	}
 
-	TCHAR *pszTemp = Str_GetTemp();
-	sprintf(pszTemp, "%s %s?", g_Cfg.GetDefaultMsg(DEFMSG_WHERE_TO_PLACE), pszName);
+	TCHAR szPrompt[EXPRESSION_MAX_KEY_LEN];
+	snprintf(szPrompt, sizeof(szPrompt), "%s %s?", g_Cfg.GetDefaultMsg(DEFMSG_WHERE_TO_PLACE), pszName);
 
 	if ( CItemBase::IsID_Multi(id) )	// a multi we get from multi.mul
 	{
-		SetTargMode(mode, pszTemp);
+		SetTargMode(mode, szPrompt);
 		new PacketAddTarget(this, fAllowGround ? PacketAddTarget::Ground : PacketAddTarget::Object, mode, PacketAddTarget::None, id, wHue);
 		return true;
 	}
 
 	// Preview not supported by this ver?
-	addTarget(mode, pszTemp, true);
+	addTarget(mode, szPrompt, true);
 	return true;
 }
 
@@ -2362,15 +2344,15 @@ void CClient::addGlobalChatConnect()
 		return;
 
 	// Set Jabber ID (syntax: CharName_CharUID@ServerID)
-	TCHAR *pszJID = Str_GetTemp();
-	sprintf(pszJID, "%.6s_%.7" FMTDWORD "@%.2hhu", m_pChar->GetName(), static_cast<DWORD>(m_pChar->GetUID()), 0);
-	CGlobalChat::SetJID(pszJID);
+	TCHAR szJID[22];
+	snprintf(szJID, sizeof(szJID), "%.6s_%.7" FMTDWORD "@%.2hhu", m_pChar->GetName(), static_cast<DWORD>(m_pChar->GetUID()), 0);
+	CGlobalChat::SetJID(szJID);
 
 	// Send xml to client
-	TCHAR *pszXML = Str_GetTemp();
-	sprintf(pszXML, "<iq to=\"%s\" id=\"iq_%.10" FMTDWORD "\" type=\"6\" version=\"1\" jid=\"%s\" />", CGlobalChat::GetJID(), static_cast<DWORD>(CGTime::GetCurrentTime().GetTime()), CGlobalChat::GetJID());
+	TCHAR szXML[105];
+	snprintf(szXML, sizeof(szXML), "<iq to=\"%s\" id=\"iq_%.10" FMTDWORD "\" type=\"6\" version=\"1\" jid=\"%s\" />", CGlobalChat::GetJID(), static_cast<DWORD>(CGTime::GetCurrentTime().GetTime()), CGlobalChat::GetJID());
 
-	new PacketGlobalChat(this, 0, PacketGlobalChat::Connect, PacketGlobalChat::InfoQuery, pszXML);
+	new PacketGlobalChat(this, 0, PacketGlobalChat::Connect, PacketGlobalChat::InfoQuery, szXML);
 	addBarkLocalized(1158413, NULL, HUE_TEXT_DEF, TALKMODE_SYSTEM);	// Global Chat is now connected. 
 }
 
@@ -2382,11 +2364,11 @@ void CClient::addGlobalChatStatusToggle()
 		return;
 
 	int iShow = static_cast<int>(CGlobalChat::IsVisible());
-	TCHAR *pszXML = Str_GetTemp();
-	sprintf(pszXML, "<presence from=\"%s\" id=\"pres_%.10" FMTDWORD "\" name=\"%.6s\" show=\"%d\" version=\"1\" />", CGlobalChat::GetJID(), static_cast<DWORD>(CGTime::GetCurrentTime().GetTime()), m_pChar->GetName(), iShow);
+	TCHAR szXML[100];
+	snprintf(szXML, sizeof(szXML), "<presence from=\"%s\" id=\"pres_%.10" FMTDWORD "\" name=\"%.6s\" show=\"%d\" version=\"1\" />", CGlobalChat::GetJID(), static_cast<DWORD>(CGTime::GetCurrentTime().GetTime()), m_pChar->GetName(), iShow);
 
 	CGlobalChat::SetVisible(static_cast<bool>(iShow));
-	new PacketGlobalChat(this, 0, PacketGlobalChat::Connect, PacketGlobalChat::Presence, pszXML);
+	new PacketGlobalChat(this, 0, PacketGlobalChat::Connect, PacketGlobalChat::Presence, szXML);
 	addBarkLocalized(iShow ? 1158428 : 1158427, NULL, HUE_TEXT_DEF, TALKMODE_SYSTEM);	// Global Chat Online / Global Chat Offline
 
 	// TO-DO: also send the status change to all clients on friend list
@@ -2491,62 +2473,48 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 				}
 				else if ( pChar )
 				{
-					TCHAR *pszPrefix = Str_GetTemp();
-					strncpy(pszPrefix, pChar->GetKeyStr("NAME.PREFIX"), MAX_NAME_SIZE - 1);
+					TCHAR szPrefix[MAX_NAME_SIZE];
+					strncpy(szPrefix, pChar->GetKeyStr("NAME.PREFIX"), sizeof(szPrefix) - 1);
 
-					if ( !*pszPrefix )
-						strncat(pszPrefix, pChar->Noto_GetFameTitle(), MAX_NAME_SIZE - 1);
+					if ( !*szPrefix )
+						strncat(szPrefix, pChar->Noto_GetFameTitle(), sizeof(szPrefix) - 1);
 
-					TCHAR *pszSuffix = Str_GetTemp();
-					strncpy(pszSuffix, pChar->GetKeyStr("NAME.SUFFIX"), MAX_NAME_SIZE - 1);
+					TCHAR szSuffix[MAX_NAME_SIZE];
+					strncpy(szSuffix, pChar->GetKeyStr("NAME.SUFFIX"), sizeof(szSuffix) - 1);
 
 					if ( pChar->m_pPlayer )
 					{
 						LPCTSTR pszGuildAbbrev = pChar->Guild_Abbrev(MEMORY_GUILD);
 						if ( pszGuildAbbrev )
-						{
-							strcat(pszSuffix, " [");
-							strncat(pszSuffix, pszGuildAbbrev, MAX_NAME_SIZE - 1);
-							strcat(pszSuffix, "]");
-						}
+							snprintf(szSuffix + strlen(szSuffix), sizeof(szSuffix), " [%s]", pszGuildAbbrev);
 						else
 						{
 							pszGuildAbbrev = pChar->Guild_Abbrev(MEMORY_TOWN);
 							if ( pszGuildAbbrev )
-							{
-								strcat(pszSuffix, " [");
-								strncat(pszSuffix, pszGuildAbbrev, MAX_NAME_SIZE - 1);
-								strcat(pszSuffix, "]");
-							}
+								snprintf(szSuffix + strlen(szSuffix), sizeof(szSuffix), " [%s]", pszGuildAbbrev);
 						}
 					}
-					else
+					else if ( g_Cfg.m_fVendorTradeTitle && (pChar->GetNPCBrain() == NPCBRAIN_HUMAN) )
 					{
-						if ( g_Cfg.m_fVendorTradeTitle && (pChar->GetNPCBrain() == NPCBRAIN_HUMAN) )
-						{
-							LPCTSTR pszTradeTitle = pChar->GetTradeTitle();
-							if ( pszTradeTitle )
-							{
-								strcat(pszSuffix, " ");
-								strncat(pszSuffix, pszTradeTitle, MAX_NAME_SIZE - 1);
-							}
-						}
+						LPCTSTR pszTradeTitle = pChar->GetTradeTitle();
+						if ( pszTradeTitle )
+							snprintf(szSuffix + strlen(szSuffix), sizeof(szSuffix), " %s", pszTradeTitle);
 					}
 
-					if ( !*pszPrefix )
-						strcat(pszPrefix, " ");
-					if ( !*pszSuffix )
-						strcat(pszSuffix, " ");
+					if ( !*szPrefix )
+						strcat(szPrefix, " ");
+					if ( !*szSuffix )
+						strcat(szSuffix, " ");
 
 					m_TooltipData.InsertAt(0, t = new CClientTooltip(1050045)); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
 					if ( dwClilocName )
-						t->FormatArgs("%s\t%" FMTDWORD "\t%s", pszPrefix, dwClilocName, pszSuffix);
+						t->FormatArgs("%s\t%" FMTDWORD "\t%s", szPrefix, dwClilocName, szSuffix);
 					else
-						t->FormatArgs("%s\t%s\t%s", pszPrefix, pObj->GetName(), pszSuffix);
+						t->FormatArgs("%s\t%s\t%s", szPrefix, pObj->GetName(), szSuffix);
 
 					// Need to find a way to get the ushort inside hues.mul for index wHue to get this working
 					//HUE_TYPE wHue = pChar->Noto_GetHue(m_pChar);
-					//t->FormatArgs("<basefont color=\"#%02x%02x%02x\">%s\t%s\t%s</basefont>", (wHue & 0x7C00) >> 7, (wHue & 0x3E0) >> 2, (wHue & 0x1F) << 3, pszPrefix, pChar->GetName(), pszSuffix); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
+					//t->FormatArgs("<basefont color=\"#%02x%02x%02x\">%s\t%s\t%s</basefont>", (wHue & 0x7C00) >> 7, (wHue & 0x3E0) >> 2, (wHue & 0x1F) << 3, szPrefix, pChar->GetName(), szSuffix); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
 
 					if ( pChar->m_pPlayer )
 					{
