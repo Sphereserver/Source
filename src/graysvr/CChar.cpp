@@ -1167,7 +1167,7 @@ height_t CChar::GetHeightMount() const
 height_t CChar::GetHeight() const
 {
 	ADDTOCALLSTACK("CChar::GetHeight");
-	if ( m_height )		// set by a dynamic variable (On=@Create  Height=10)
+	if ( m_height )		// set by a dynamic variable (ON=@Create  Height=10)
 		return m_height;
 
 	CCharBase *pCharDef = Char_GetDef();
@@ -1175,14 +1175,14 @@ height_t CChar::GetHeight() const
 	if ( tmpHeight )	// set by a chardef variable ([CHARDEF 10]  Height=10)
 		return tmpHeight;
 
-	char *heightDef = Str_GetTemp();
-	sprintf(heightDef, "height_0%x", static_cast<unsigned int>(pCharDef->GetDispID()));
-	tmpHeight = static_cast<height_t>(g_Exp.m_VarDefs.GetKeyNum(heightDef));
+	char szHeightDef[20];
+	sprintf(szHeightDef, "height_0%x", static_cast<unsigned int>(pCharDef->GetDispID()));
+	tmpHeight = static_cast<height_t>(g_Exp.m_VarDefs.GetKeyNum(szHeightDef));
 	if ( tmpHeight )	// set by a defname ([DEFNAME charheight]  height_0a)
 		return tmpHeight;
 
-	sprintf(heightDef, "height_%u", static_cast<unsigned int>(pCharDef->GetDispID()));
-	tmpHeight = static_cast<height_t>(g_Exp.m_VarDefs.GetKeyNum(heightDef));
+	sprintf(szHeightDef, "height_%u", static_cast<unsigned int>(pCharDef->GetDispID()));
+	tmpHeight = static_cast<height_t>(g_Exp.m_VarDefs.GetKeyNum(szHeightDef));
 	if ( tmpHeight )	// set by a defname ([DEFNAME charheight]  height_10)
 		return tmpHeight;
 
@@ -3067,12 +3067,12 @@ bool CChar::r_Verb(CScript &s, CTextConsole *pSrc)	// execute command from scrip
 		{
 			if ( pCharSrc )
 			{
-				char *z = Str_GetTemp();
+				TCHAR szMsg[EXPRESSION_MAX_KEY_LEN];
 				if ( pCharSrc == this )
-					sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_MSG_FOOD_LVL_SELF), Food_GetLevelMessage());
+					snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_MSG_FOOD_LVL_SELF), Food_GetLevelMessage());
 				else
-					sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_MSG_FOOD_LVL_OTHER), GetName(), Food_GetLevelMessage());
-				pCharSrc->ObjMessage(z, this);
+					snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_MSG_FOOD_LVL_OTHER), GetName(), Food_GetLevelMessage());
+				pCharSrc->ObjMessage(szMsg, this);
 			}
 			break;
 		}
@@ -3343,23 +3343,23 @@ bool CChar::r_Verb(CScript &s, CTextConsole *pSrc)	// execute command from scrip
 		{
 			if ( pCharSrc )
 			{
-				char *z = Str_GetTemp();
+				TCHAR szMsg[EXPRESSION_MAX_KEY_LEN];
 				if ( m_pArea )
 				{
 					if ( m_pArea->GetResourceID().IsItem() )
-						sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_MSG_WHERE_AREA), m_pArea->GetName(), GetTopPoint().WriteUsed());
+						snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_MSG_WHERE_AREA), m_pArea->GetName(), GetTopPoint().WriteUsed());
 					else
 					{
 						const CRegionBase *pRoom = GetTopPoint().GetRegion(REGION_TYPE_ROOM);
 						if ( pRoom )
-							sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_MSG_WHERE_ROOM), m_pArea->GetName(), pRoom->GetName(), GetTopPoint().WriteUsed());
+							snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_MSG_WHERE_ROOM), m_pArea->GetName(), pRoom->GetName(), GetTopPoint().WriteUsed());
 						else
-							sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_MSG_WHERE_AREA), m_pArea->GetName(), GetTopPoint().WriteUsed());
+							snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_MSG_WHERE_AREA), m_pArea->GetName(), GetTopPoint().WriteUsed());
 					}
 				}
 				else
-					sprintf(z, g_Cfg.GetDefaultMsg(DEFMSG_MSG_WHERE), GetTopPoint().WriteUsed());
-				pCharSrc->ObjMessage(z, this);
+					snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_MSG_WHERE), GetTopPoint().WriteUsed());
+				pCharSrc->ObjMessage(szMsg, this);
 			}
 			break;
 		}

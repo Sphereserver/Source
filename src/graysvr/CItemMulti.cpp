@@ -88,9 +88,9 @@ void CItemMulti::MultiRealizeRegion()
 		dwFlags |= pRegionBack->GetRegionFlags();
 	m_pRegion->SetRegionFlags(dwFlags);
 
-	TCHAR *pszTemp = Str_GetTemp();
-	snprintf(pszTemp, MAX_ITEM_NAME_SIZE, "%s (%s)", pRegionBack->GetName(), GetName());
-	m_pRegion->SetName(pszTemp);
+	TCHAR szName[MAX_ITEM_NAME_SIZE];
+	snprintf(szName, sizeof(szName), "%s (%s)", pRegionBack->GetName(), GetName());
+	m_pRegion->SetName(szName);
 
 	m_pRegion->RealizeRegion();
 }

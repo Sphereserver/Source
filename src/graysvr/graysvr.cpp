@@ -451,7 +451,7 @@ LPCTSTR GetTimeMinDesc( int minutes )
 //		pTail = " o'clock in the morning";
 	}
 
-	sprintf( pTime, "%s %s %s", pMinDif, sm_ClockHour[hour], pTail );
+	snprintf(pTime, EXPRESSION_MAX_KEY_LEN, "%s %s %s", pMinDif, sm_ClockHour[hour], pTail);
 	return pTime;
 }
 
@@ -833,11 +833,11 @@ void defragSphere(char *path)
 		strncpy(z, path, sizeof(z) - 1);
 		z[sizeof(z) - 1] = '\0';
 		if ( i == 0 )
-			strcat(z, SPHERE_FILE "statics" SPHERE_SCRIPT);
+			strncat(z, SPHERE_FILE "statics" SPHERE_SCRIPT, sizeof(z) - 1);
 		else if ( i == 1 )
-			strcat(z, SPHERE_FILE "world" SPHERE_SCRIPT);
+			strncat(z, SPHERE_FILE "world" SPHERE_SCRIPT, sizeof(z) - 1);
 		else
-			strcat(z, SPHERE_FILE "chars" SPHERE_SCRIPT);
+			strncat(z, SPHERE_FILE "chars" SPHERE_SCRIPT, sizeof(z) - 1);
 
 		g_Log.Event(LOGL_EVENT, "Reading %s\n", z);
 		if ( !inf.Open(z, OF_READ|OF_TEXT|OF_DEFAULTMODE) )
@@ -891,15 +891,15 @@ void defragSphere(char *path)
 		strncpy(z, path, sizeof(z) - 1);
 		z[sizeof(z) - 1] = '\0';
 		if ( i == 0 )
-			strcat(z, SPHERE_FILE "accu.scp");
+			strncat(z, SPHERE_FILE "accu.scp", sizeof(z) - 1);
 		else if ( i == 1 )
-			strcat(z, SPHERE_FILE "chars" SPHERE_SCRIPT);
+			strncat(z, SPHERE_FILE "chars" SPHERE_SCRIPT, sizeof(z) - 1);
 		else if ( i == 2 )
-			strcat(z, SPHERE_FILE "data" SPHERE_SCRIPT);
+			strncat(z, SPHERE_FILE "data" SPHERE_SCRIPT, sizeof(z) - 1);
 		else if ( i == 3 )
-			strcat(z, SPHERE_FILE "world" SPHERE_SCRIPT);
+			strncat(z, SPHERE_FILE "world" SPHERE_SCRIPT, sizeof(z) - 1);
 		else if ( i == 4 )
-			strcat(z, SPHERE_FILE "statics" SPHERE_SCRIPT);
+			strncat(z, SPHERE_FILE "statics" SPHERE_SCRIPT, sizeof(z) - 1);
 
 		g_Log.Event(LOGL_EVENT, "Updating UIDs in '%s' to '%s.new'\n", z, z);
 		if ( !inf.Open(z, OF_READ|OF_TEXT|OF_DEFAULTMODE) )
@@ -907,7 +907,7 @@ void defragSphere(char *path)
 			g_Log.Event(LOGL_EVENT, "Can't open file '%s' for reading. Skipped!\n", z);
 			continue;
 		}
-		strcat(z, ".new");
+		strncat(z, ".new", sizeof(z) - 1);
 		if ( !ouf.Open(z, OF_WRITE|OF_CREATE|OF_DEFAULTMODE) )
 		{
 			g_Log.Event(LOGL_EVENT, "Can't open file '%s' for writing. Skipped!\n", z);
@@ -1055,9 +1055,9 @@ void defragSphere(char *path)
 				{
 					*p = 0;
 					strncpy(z, p1, sizeof(z) - 1);
-					sprintf(z1, "0%" FMTDWORDH, uid);
-					strcat(buf, z1);
-					strcat(buf, z);
+					snprintf(z1, sizeof(z1), "0%" FMTDWORDH, uid);
+					strncat(buf, z1, sizeof(buf) - 1);
+					strncat(buf, z, sizeof(buf) - 1);
 				}
 			}
 			//	output the resulting line

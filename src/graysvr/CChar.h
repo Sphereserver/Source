@@ -762,9 +762,9 @@ public:
 			if ( IsPriv(PRIV_GM) )
 				return true;
 
-			TCHAR *uid = Str_GetTemp();
-			sprintf(uid, "SeenBy_0%" FMTDWORDH, static_cast<DWORD>(GetUID()));
-			if ( !pItem->m_TagDefs.GetKeyNum(uid) )
+			TCHAR szUID[20];
+			sprintf(szUID, "SeenBy_0%" FMTDWORDH, static_cast<DWORD>(GetUID()));
+			if ( !pItem->m_TagDefs.GetKeyNum(szUID) )
 				return false;
 		}
 		return true;

@@ -20,14 +20,14 @@ void CClient::OnTarg_Obj_Set(CObjBase *pObj)
 	}
 
 	// Parse the command.
-	TCHAR *pszLogMsg = Str_GetTemp();
-	sprintf(pszLogMsg, "%lx:'%s' commands UID=0%" FMTDWORDH " (%s) to '%s'", m_NetState->id(), GetName(), static_cast<DWORD>(pObj->GetUID()), pObj->GetName(), static_cast<LPCTSTR>(m_Targ_Text));
+	TCHAR szMsg[THREAD_STRING_LENGTH];
+	snprintf(szMsg, sizeof(szMsg), "%lx:'%s' commands UID=0%" FMTDWORDH " (%s) to '%s'", m_NetState->id(), GetName(), static_cast<DWORD>(pObj->GetUID()), pObj->GetName(), static_cast<LPCTSTR>(m_Targ_Text));
 
 	// Check priv level for the new verb.
 	if ( !g_Cfg.CanUsePrivVerb(pObj, m_Targ_Text, this) )
 	{
 		SysMessageDefault(DEFMSG_MSG_ACC_PRIV);
-		g_Log.Event(LOGM_GM_CMDS, "%s=0\n", pszLogMsg);
+		g_Log.Event(LOGM_GM_CMDS, "%s=0\n", szMsg);
 		return;
 	}
 
@@ -42,7 +42,7 @@ void CClient::OnTarg_Obj_Set(CObjBase *pObj)
 	if ( !fRet )
 		SysMessageDefault(DEFMSG_MSG_ERR_INVSET);
 	if ( GetPrivLevel() >= g_Cfg.m_iCommandLog )
-		g_Log.Event(LOGM_GM_CMDS, "%s=%d\n", pszLogMsg, fRet);
+		g_Log.Event(LOGM_GM_CMDS, "%s=%d\n", szMsg, fRet);
 }
 
 void CClient::OnTarg_Obj_Function(CObjBase *pObj, const CPointMap &pt, ITEMID_TYPE id)
@@ -74,30 +74,30 @@ void CClient::OnTarg_Obj_Info(CObjBase *pObj, const CPointMap &pt, ITEMID_TYPE i
 		return;
 	}
 
-	TCHAR *pszTemp = Str_GetTemp();
+	TCHAR szMsg[EXPRESSION_MAX_KEY_LEN];
 	size_t len = 0;
 	if ( id )
 	{
-		len = snprintf(pszTemp, THREAD_STRING_LENGTH, "[Static z=%hhd, 0%x=", pt.m_z, id);
+		len = snprintf(szMsg, sizeof(szMsg), "[Static z=%hhd, 0%x=", pt.m_z, id);
 
 		// static items have no uid's but we can still use them.
 		CItemBase *pItemDef = CItemBase::FindItemBase(id);
 		if ( pItemDef )
-			len += snprintf(pszTemp + len, THREAD_STRING_LENGTH, "%s->%s], ", pItemDef->GetResourceName(), g_Cfg.ResourceGetName(RESOURCE_ID(RES_TYPEDEF, pItemDef->GetType())));
+			len += snprintf(&szMsg[len], sizeof(szMsg), "%s->%s], ", pItemDef->GetResourceName(), g_Cfg.ResourceGetName(RESOURCE_ID(RES_TYPEDEF, pItemDef->GetType())));
 		else
-			len += snprintf(pszTemp + len, THREAD_STRING_LENGTH, "NON scripted], ");
+			len += snprintf(&szMsg[len], sizeof(szMsg), "NON scripted], ");
 	}
 	else
 	{
 		// tile info for location.
-		len = snprintf(pszTemp, THREAD_STRING_LENGTH, "[No static tile], ");
+		len = snprintf(szMsg, sizeof(szMsg), "[No static tile], ");
 	}
 
 	const CUOMapMeter *pMeter = g_World.GetMapMeter(pt);
 	if ( pMeter )
-		len += snprintf(pszTemp + len, THREAD_STRING_LENGTH, "TERRAIN=0%hx TYPE=%s", pMeter->m_wTerrainIndex, g_World.GetTerrainItemTypeDef(pMeter->m_wTerrainIndex)->GetResourceName());
+		len += snprintf(&szMsg[len], sizeof(szMsg), "TERRAIN=0%hx TYPE=%s", pMeter->m_wTerrainIndex, g_World.GetTerrainItemTypeDef(pMeter->m_wTerrainIndex)->GetResourceName());
 
-	SysMessage(pszTemp);
+	SysMessage(szMsg);
 }
 
 bool CClient::Cmd_Control(CChar *pChar2)
@@ -217,9 +217,9 @@ void CClient::OnTarg_UnExtract(CObjBase *pObj, const CPointMap &pt)
 	if ( !g_Cfg.OpenResourceFind(s, m_Targ_Text) )
 		return;
 
-	TCHAR *pszTemp = Str_GetTemp();
-	sprintf(pszTemp, "%d template id", m_tmTile.m_id);
-	if ( !s.FindTextHeader(pszTemp) )
+	TCHAR szTemp[24];
+	snprintf(szTemp, sizeof(szTemp), "%d template id", m_tmTile.m_id);
+	if ( !s.FindTextHeader(szTemp) )
 		return;
 	if ( !s.ReadKey() )
 		return;		// throw this one away
@@ -686,9 +686,9 @@ int CClient::OnSkill_AnimalLore(CGrayUID uid, bool fTest)
 	else
 		pszLoyaltyRating = g_Cfg.GetDefaultMsg(DEFMSG_ANIMALLORE_LOYALTY_WILD);
 
-	TCHAR *pszTemp = Str_GetTemp();
-	sprintf(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_ANIMALLORE_LOYALTY_RESULT), pChar->GetPronoun(), pszLoyaltyRating);
-	addObjMessage(pszTemp, pChar);
+	TCHAR szMsg[EXPRESSION_MAX_KEY_LEN];
+	snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_ANIMALLORE_LOYALTY_RESULT), pChar->GetPronoun(), pszLoyaltyRating);
+	addObjMessage(szMsg, pChar);
 
 	return m_pChar->Skill_GetBase(SKILL_ANIMALLORE);
 }
@@ -794,9 +794,9 @@ int CClient::OnSkill_EvalInt(CGrayUID uid, bool fTest)
 	else if ( static_cast<size_t>(iInt) >= COUNTOF(sm_szEvalInt_IntLevel) )
 		iInt = COUNTOF(sm_szEvalInt_IntLevel) - 1;
 
-	TCHAR *pszTemp = Str_GetTemp();
-	sprintf(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_EVALINT_INT_RESULT), pChar->GetPronoun(), sm_szEvalInt_IntLevel[iInt]);
-	addObjMessage(pszTemp, pChar);
+	TCHAR szMsg[EXPRESSION_MAX_KEY_LEN];
+	snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_EVALINT_INT_RESULT), pChar->GetPronoun(), sm_szEvalInt_IntLevel[iInt]);
+	addObjMessage(szMsg, pChar);
 
 	WORD wSkill = m_pChar->Skill_GetBase(SKILL_EVALINT);
 	if ( wSkill >= 760 )
@@ -811,8 +811,8 @@ int CClient::OnSkill_EvalInt(CGrayUID uid, bool fTest)
 		else if ( static_cast<size_t>(iMana) >= COUNTOF(sm_szPercentLevel) )
 			iMana = COUNTOF(sm_szPercentLevel) - 1;
 
-		sprintf(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_EVALINT_MANA_RESULT), sm_szPercentLevel[iMana]);
-		addObjMessage(pszTemp, pChar);
+		snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_EVALINT_MANA_RESULT), sm_szPercentLevel[iMana]);
+		addObjMessage(szMsg, pChar);
 	}
 
 	return wSkill;
@@ -1006,9 +1006,9 @@ int CClient::OnSkill_Anatomy(CGrayUID uid, bool fTest)
 	else if ( static_cast<size_t>(iDex) >= COUNTOF(sm_szAnatomy_DexLevel) )
 		iDex = COUNTOF(sm_szAnatomy_DexLevel) - 1;
 
-	TCHAR *pszTemp = Str_GetTemp();
-	sprintf(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_ANATOMY_RESULT), sm_szAnatomy_StrLevel[iStr], sm_szAnatomy_DexLevel[iDex]);
-	addObjMessage(pszTemp, pChar);
+	TCHAR szMsg[EXPRESSION_MAX_KEY_LEN];
+	snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_ANATOMY_RESULT), sm_szAnatomy_StrLevel[iStr], sm_szAnatomy_DexLevel[iDex]);
+	addObjMessage(szMsg, pChar);
 
 	WORD wSkill = m_pChar->Skill_GetBase(SKILL_ANATOMY);
 	if ( wSkill >= 650 )
@@ -1023,8 +1023,8 @@ int CClient::OnSkill_Anatomy(CGrayUID uid, bool fTest)
 		else if ( static_cast<size_t>(iStam) >= COUNTOF(sm_szPercentLevel) )
 			iStam = COUNTOF(sm_szPercentLevel) - 1;
 
-		sprintf(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_ANATOMY_STAM_RESULT), sm_szPercentLevel[iStam]);
-		addObjMessage(pszTemp, pChar);
+		snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_ANATOMY_STAM_RESULT), sm_szPercentLevel[iStam]);
+		addObjMessage(szMsg, pChar);
 	}
 
 	return wSkill;
@@ -1871,9 +1871,9 @@ bool CClient::OnTarg_Use_Item(CObjBase *pObjTarg, CPointMap &pt, ITEMID_TYPE id)
 						RESOURCE_ID defaultseed = g_Cfg.ResourceGetIDType(RES_ITEMDEF, "DEFAULTSEED");
 						pItemTarg->SetDispID(static_cast<ITEMID_TYPE>(defaultseed.GetResIndex()));
 						pItemTarg->SetType(IT_SEED);
-						TCHAR *pszTemp = Str_GetTemp();
-						sprintf(pszTemp, "%s seed", pItemTarg->GetName());
-						pItemTarg->SetName(pszTemp);
+						TCHAR szName[MAX_ITEM_NAME_SIZE];
+						snprintf(szName, sizeof(szName), "%s seed", pItemTarg->GetName());
+						pItemTarg->SetName(szName);
 						pItemTarg->Update();
 						return true;
 					}

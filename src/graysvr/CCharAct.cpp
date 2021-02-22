@@ -136,9 +136,9 @@ void CChar::Jail(CTextConsole *pSrc, bool fSet, int iCell)
 	{
 		TCHAR szJailName[16];
 		if ( iCell )
-			sprintf(szJailName, "jail%d", iCell);
+			snprintf(szJailName, sizeof(szJailName), "jail%d", iCell);
 		else
-			strcpy(szJailName, "jail");
+			strncpy(szJailName, "jail", sizeof(szJailName) - 1);
 
 		CPointMap ptJail = g_Cfg.GetRegionPoint(szJailName);
 		if ( ptJail.IsValidPoint() )
@@ -1813,9 +1813,9 @@ void CChar::EatAnim(LPCTSTR pszName, int iQty)
 	if ( !IsStatFlag(STATF_OnHorse) )
 		UpdateAnimate(ANIM_EAT);
 
-	TCHAR *pszMsg = Str_GetTemp();
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EATSOME), pszName);
-	Emote(pszMsg);
+	TCHAR szMsg[EXPRESSION_MAX_KEY_LEN];
+	snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_MSG_EATSOME), pszName);
+	Emote(szMsg);
 
 	int iHits = 0;
 	int iMana = 0;
@@ -2032,9 +2032,9 @@ bool CChar::Horse_Mount(CChar *pHorse)
 		return false;
 	}
 
-	TCHAR *pszMountID = Str_GetTemp();
-	sprintf(pszMountID, "mount_0x%x", pHorse->GetDispID());
-	LPCTSTR pszMemoryID = g_Exp.m_VarDefs.GetKeyStr(pszMountID);
+	TCHAR szMountID[20];
+	snprintf(szMountID, sizeof(szMountID), "mount_0x%x", pHorse->GetDispID());
+	LPCTSTR pszMemoryID = g_Exp.m_VarDefs.GetKeyStr(szMountID);
 
 	RESOURCE_ID rid = g_Cfg.ResourceGetID(RES_QTY, pszMemoryID);
 
@@ -2361,10 +2361,10 @@ CItemCorpse *CChar::MakeCorpse(bool fFrontFall)
 	if ( !pCorpse )		// weird internal error
 		return NULL;
 
-	TCHAR *pszName = Str_GetTemp();
-	sprintf(pszName, g_Cfg.GetDefaultMsg(m_pPlayer ? DEFMSG_MSG_CORPSE_PLAYER : DEFMSG_MSG_CORPSE_NPC), GetName());
+	TCHAR szName[MAX_ITEM_NAME_SIZE];
+	snprintf(szName, sizeof(szName), g_Cfg.GetDefaultMsg(m_pPlayer ? DEFMSG_MSG_CORPSE_PLAYER : DEFMSG_MSG_CORPSE_NPC), GetName());
 
-	pCorpse->SetName(pszName);
+	pCorpse->SetName(szName);
 	pCorpse->SetHue(GetHue());
 	pCorpse->SetAttr(ATTR_MOVE_NEVER);
 	pCorpse->SetCorpseType(GetDispID());
@@ -2463,8 +2463,8 @@ bool CChar::Death()
 	// Give kill credit to my attackers
 	int iKillers = 0;
 	CChar *pKiller = NULL;
-	TCHAR *pszKillStr = Str_GetTemp();
-	int iKillStrLen = sprintf(pszKillStr, g_Cfg.GetDefaultMsg(DEFMSG_MSG_KILLED_BY), m_pPlayer ? 'P' : 'N', GetNameWithoutIncognito());
+	TCHAR szMsg[THREAD_STRING_LENGTH];
+	int len = snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_MSG_KILLED_BY), m_pPlayer ? 'P' : 'N', GetNameWithoutIncognito());
 
 	for ( size_t i = 0; i < m_lastAttackers.size(); ++i )
 	{
@@ -2481,18 +2481,18 @@ bool CChar::Death()
 			}
 
 			pKiller->Noto_Kill(this, IsStatFlag(STATF_Pet), static_cast<int>(m_lastAttackers.size()));
-			iKillStrLen += sprintf(pszKillStr + iKillStrLen, "%s%c'%s'", iKillers ? ", " : "", pKiller->m_pPlayer ? 'P' : 'N', pKiller->GetNameWithoutIncognito());
+			len += snprintf(&szMsg[len], sizeof(szMsg), "%s%c'%s'", iKillers ? ", " : "", pKiller->m_pPlayer ? 'P' : 'N', pKiller->GetNameWithoutIncognito());
 			++iKillers;
 		}
 	}
 
 	// Record the kill event for posterity
 	if ( !iKillers )
-		iKillStrLen += sprintf(pszKillStr + iKillStrLen, "accident");
+		len += snprintf(&szMsg[len], sizeof(szMsg), "accident");
 	if ( m_pPlayer )
-		g_Log.Event(LOGM_KILLS, "%s\n", pszKillStr);
+		g_Log.Event(LOGM_KILLS, "%s\n", szMsg);
 	if ( m_pParty )
-		m_pParty->SysMessageAll(pszKillStr);
+		m_pParty->SysMessageAll(szMsg);
 
 	Reveal();
 	SoundChar(CRESND_DIE);
@@ -3340,13 +3340,13 @@ TRIGRET_TYPE CChar::OnTrigger(LPCTSTR pszTrigName, CTextConsole *pSrc, CScriptTr
 	SetTriggerActive(pszTrigName);
 	TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
 
-	TemporaryString sCharTrigName;
-	sprintf(sCharTrigName, "@char%s", pszTrigName + 1);
+	TemporaryString szTrigName;
+	snprintf(szTrigName, 30, "@char%s", pszTrigName + 1);
 
 	EXC_TRY("Trigger");
 
 	// Triggers installed on characters, sensitive to actions on all chars
-	if ( IsTrigUsed(sCharTrigName) && (FindTableSorted(sCharTrigName, sm_szTrigName, COUNTOF(sm_szTrigName) - 1) > XTRIG_UNKNOWN) )
+	if ( IsTrigUsed(szTrigName) && (FindTableSorted(szTrigName, sm_szTrigName, COUNTOF(sm_szTrigName) - 1) > XTRIG_UNKNOWN) )
 	{
 		CChar *pChar = pSrc->GetChar();
 		if ( pChar && (pChar != this) )
@@ -3354,7 +3354,7 @@ TRIGRET_TYPE CChar::OnTrigger(LPCTSTR pszTrigName, CTextConsole *pSrc, CScriptTr
 			EXC_SET("chardef");
 			CGrayUID uidOldAct = pChar->m_Act_Targ;
 			pChar->m_Act_Targ = GetUID();
-			iRet = pChar->OnTrigger(sCharTrigName, pSrc, pArgs);
+			iRet = pChar->OnTrigger(szTrigName, pSrc, pArgs);
 			pChar->m_Act_Targ = uidOldAct;
 			if ( iRet == TRIGRET_RET_TRUE )
 				goto stopandret;	//return iRet;
@@ -3524,13 +3524,13 @@ void CChar::OnTickFood(int iVal, int iHitsHungerLoss)
 	LPCTSTR pszMsgLevel = Food_GetLevelMessage();
 	SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_HUNGER), pszMsgLevel);
 
-	TCHAR *pszMsg = Str_GetTemp();
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MSG_FOOD_LVL_LOOKS), pszMsgLevel);
+	TCHAR szMsg[EXPRESSION_MAX_KEY_LEN];
+	snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_MSG_FOOD_LVL_LOOKS), pszMsgLevel);
 	CItem *pMountItem = Horse_GetMountItem();
 	if ( pMountItem )
-		pMountItem->Emote(pszMsg);
+		pMountItem->Emote(szMsg);
 	else
-		Emote(pszMsg);
+		Emote(szMsg);
 
 	// Get hunger damage if food level reach 0
 	if ( iFoodLevel <= 0 )
