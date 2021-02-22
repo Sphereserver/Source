@@ -2481,14 +2481,15 @@ bool CChar::Death()
 			}
 
 			pKiller->Noto_Kill(this, IsStatFlag(STATF_Pet), static_cast<int>(m_lastAttackers.size()));
-			len += snprintf(&szMsg[len], sizeof(szMsg), "%s%c'%s'", iKillers ? ", " : "", pKiller->m_pPlayer ? 'P' : 'N', pKiller->GetNameWithoutIncognito());
+			if ( len < sizeof(szMsg) )
+				len += snprintf(&szMsg[len], sizeof(szMsg), "%s%c'%s'", iKillers ? ", " : "", pKiller->m_pPlayer ? 'P' : 'N', pKiller->GetNameWithoutIncognito());
 			++iKillers;
 		}
 	}
 
 	// Record the kill event for posterity
 	if ( !iKillers )
-		len += snprintf(&szMsg[len], sizeof(szMsg), "accident");
+		strncat(szMsg, "accident", sizeof(szMsg) - 1);
 	if ( m_pPlayer )
 		g_Log.Event(LOGM_KILLS, "%s\n", szMsg);
 	if ( m_pParty )

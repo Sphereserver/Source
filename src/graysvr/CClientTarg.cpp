@@ -79,13 +79,14 @@ void CClient::OnTarg_Obj_Info(CObjBase *pObj, const CPointMap &pt, ITEMID_TYPE i
 	if ( id )
 	{
 		len = snprintf(szMsg, sizeof(szMsg), "[Static z=%hhd, 0%x=", pt.m_z, id);
-
-		// static items have no uid's but we can still use them.
-		CItemBase *pItemDef = CItemBase::FindItemBase(id);
-		if ( pItemDef )
-			len += snprintf(&szMsg[len], sizeof(szMsg), "%s->%s], ", pItemDef->GetResourceName(), g_Cfg.ResourceGetName(RESOURCE_ID(RES_TYPEDEF, pItemDef->GetType())));
-		else
-			len += snprintf(&szMsg[len], sizeof(szMsg), "NON scripted], ");
+		if ( len < sizeof(szMsg) )
+		{
+			CItemBase *pItemDef = CItemBase::FindItemBase(id);
+			if ( pItemDef )
+				len += snprintf(&szMsg[len], sizeof(szMsg), "%s->%s], ", pItemDef->GetResourceName(), g_Cfg.ResourceGetName(RESOURCE_ID(RES_TYPEDEF, pItemDef->GetType())));
+			else
+				len += snprintf(&szMsg[len], sizeof(szMsg), "NON scripted], ");
+		}
 	}
 	else
 	{
@@ -94,8 +95,8 @@ void CClient::OnTarg_Obj_Info(CObjBase *pObj, const CPointMap &pt, ITEMID_TYPE i
 	}
 
 	const CUOMapMeter *pMeter = g_World.GetMapMeter(pt);
-	if ( pMeter )
-		len += snprintf(&szMsg[len], sizeof(szMsg), "TERRAIN=0%hx TYPE=%s", pMeter->m_wTerrainIndex, g_World.GetTerrainItemTypeDef(pMeter->m_wTerrainIndex)->GetResourceName());
+	if ( pMeter && (len < sizeof(szMsg)) )
+		snprintf(&szMsg[len], sizeof(szMsg), "TERRAIN=0%hx TYPE=%s", pMeter->m_wTerrainIndex, g_World.GetTerrainItemTypeDef(pMeter->m_wTerrainIndex)->GetResourceName());
 
 	SysMessage(szMsg);
 }

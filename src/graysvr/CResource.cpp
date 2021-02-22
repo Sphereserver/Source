@@ -1771,7 +1771,7 @@ bool CResource::IsObscene(LPCTSTR pszText) const
 	for ( size_t i = 0; i < iMax; ++i )
 	{
 		TCHAR *pszMatch = new TCHAR[strlen(m_Obscene[i]) + 3];
-		sprintf(pszMatch, "%s%s%s", "*", m_Obscene[i], "*");
+		snprintf(pszMatch, strlen(m_Obscene[i]) + 3, "*%s*", m_Obscene[i]);
 		MATCH_TYPE iResult = Str_Match(pszMatch, pszText);
 		delete[] pszMatch;
 
