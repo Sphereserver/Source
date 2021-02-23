@@ -1154,28 +1154,25 @@ void CClient::addItemName(const CItem *pItem)
 	TCHAR szName[MAX_ITEM_NAME_SIZE];
 	int len = snprintf(szName, sizeof(szName), pItem->GetNameFull(fIdentified));
 
-	if ( len < sizeof(szName) )
+	const CContainer *pCont = dynamic_cast<const CContainer *>(pItem);
+	if ( pCont )
 	{
-		const CContainer *pCont = dynamic_cast<const CContainer *>(pItem);
-		if ( pCont )
-		{
-			// Don't show content info if container is a corpse on ground or another player backpack
-			if ( ((pItem->GetEquipLayer() != LAYER_PACK) || (pItem->GetParentObj() == m_pChar)) && !pItem->IsType(IT_CORPSE) && !pItem->IsType(IT_BBOARD) )
-				len += snprintf(&szName[len], sizeof(szName), g_Cfg.GetDefaultMsg(DEFMSG_CONT_ITEMS), pCont->GetCount(), pCont->GetTotalWeight() / WEIGHT_UNITS);
-		}
-		else if ( pItem->IsTypeArmorWeapon() )
-		{
-			WORD wPercent = pItem->Armor_GetRepairPercent();
-			if ( (wPercent < 50) && (m_pChar->Skill_GetAdjusted(SKILL_ARMSLORE) / 10 > wPercent) )
-				len += snprintf(&szName[len], sizeof(szName), " (%s)", pItem->Armor_GetRepairDesc());
-		}
+		// Don't show content info if container is a corpse on ground or another player backpack
+		if ( ((pItem->GetEquipLayer() != LAYER_PACK) || (pItem->GetParentObj() == m_pChar)) && !pItem->IsType(IT_CORPSE) && !pItem->IsType(IT_BBOARD) && (len < sizeof(szName) - 1) )
+			len += snprintf(&szName[len], sizeof(szName), g_Cfg.GetDefaultMsg(DEFMSG_CONT_ITEMS), pCont->GetCount(), pCont->GetTotalWeight() / WEIGHT_UNITS);
+	}
+	else if ( pItem->IsTypeArmorWeapon() )
+	{
+		WORD wPercent = pItem->Armor_GetRepairPercent();
+		if ( (wPercent < 50) && (m_pChar->Skill_GetAdjusted(SKILL_ARMSLORE) / 10 > wPercent) && (len < sizeof(szName) - 1) )
+			len += snprintf(&szName[len], sizeof(szName), " (%s)", pItem->Armor_GetRepairDesc());
 	}
 
 	const CItemContainer *pParentCont = dynamic_cast<const CItemContainer *>(pItem->GetParent());
 	if ( pParentCont && pParentCont->IsType(IT_EQ_VENDOR_BOX) )
 	{
 		const CItemVendable *pVendItem = dynamic_cast<const CItemVendable *>(pItem);
-		if ( pVendItem && (len < sizeof(szName)) )
+		if ( pVendItem && (len < sizeof(szName) - 1) )
 			len += snprintf(&szName[len], sizeof(szName), " (%" FMTDWORD " gp)", pVendItem->GetBasePrice());
 	}
 
@@ -1190,9 +1187,9 @@ void CClient::addItemName(const CItem *pItem)
 
 	if ( IsPriv(PRIV_GM) )
 	{
-		if ( pItem->IsAttr(ATTR_INVIS) && (len < sizeof(szName)) )
+		if ( pItem->IsAttr(ATTR_INVIS) && (len < sizeof(szName) - 1) )
 			len += snprintf(&szName[len], sizeof(szName), " (invis)");
-		if ( pParentCont && pParentCont->IsType(IT_EQ_VENDOR_BOX) && (len < sizeof(szName)) )
+		if ( pParentCont && pParentCont->IsType(IT_EQ_VENDOR_BOX) && (len < sizeof(szName) - 1) )
 			len += snprintf(&szName[len], sizeof(szName), " (%hhu restock)", pItem->GetContainedLayer());
 
 		switch ( pItem->GetType() )
@@ -1211,7 +1208,7 @@ void CClient::addItemName(const CItem *pItem)
 			case IT_WATER:
 			{
 				CResourceDef *pResDef = g_Cfg.ResourceGetDef(pItem->m_itResource.m_rid_res);
-				if ( pResDef && (len < sizeof(szName)) )
+				if ( pResDef && (len < sizeof(szName) - 1) )
 					len += snprintf(&szName[len], sizeof(szName), " (%s)", pResDef->GetName());
 				break;
 			}
@@ -1220,7 +1217,7 @@ void CClient::addItemName(const CItem *pItem)
 		}
 	}
 
-	if ( IsPriv(PRIV_DEBUG) && (len < sizeof(szName)) )
+	if ( IsPriv(PRIV_DEBUG) && (len < sizeof(szName) - 1) )
 		len += snprintf(&szName[len], sizeof(szName), " [0%" FMTDWORDH "]", static_cast<DWORD>(pItem->GetUID()));
 
 	if ( IsTrigUsed(TRIGGER_AFTERCLICK) || IsTrigUsed(TRIGGER_ITEMAFTERCLICK) )
@@ -1249,36 +1246,31 @@ void CClient::addCharName(const CChar *pChar)
 	ASSERT(pChar);
 
 	TCHAR szPrefix[MAX_NAME_SIZE];
-	strncpy(szPrefix, pChar->GetKeyStr("NAME.PREFIX"), sizeof(szPrefix) - 1);
-	szPrefix[sizeof(szPrefix) - 1] = '\0';
+	strcpylen(szPrefix, pChar->GetKeyStr("NAME.PREFIX"), sizeof(szPrefix) - 1);
 
 	if ( !*szPrefix )
 		strncat(szPrefix, pChar->Noto_GetFameTitle(), sizeof(szPrefix) - 1);
 
 	TCHAR szSuffix[MAX_NAME_SIZE];
-	strncpy(szSuffix, pChar->GetKeyStr("NAME.SUFFIX"), sizeof(szSuffix) - 1);
-	szSuffix[sizeof(szSuffix) - 1] = '\0';
+	int len = strcpylen(szSuffix, pChar->GetKeyStr("NAME.SUFFIX"), sizeof(szSuffix) - 1);
 
-	if ( strlen(szSuffix) < sizeof(szSuffix) )
+	if ( pChar->m_pPlayer )
 	{
-		if ( pChar->m_pPlayer )
+		LPCTSTR pszGuildAbbrev = pChar->Guild_Abbrev(MEMORY_GUILD);
+		if ( pszGuildAbbrev && (len < sizeof(szSuffix) - 1) )
+			snprintf(&szSuffix[len], sizeof(szSuffix), " [%s]", pszGuildAbbrev);
+		else
 		{
-			LPCTSTR pszGuildAbbrev = pChar->Guild_Abbrev(MEMORY_GUILD);
-			if ( pszGuildAbbrev )
-				snprintf(&szSuffix[strlen(szSuffix)], sizeof(szSuffix), " [%s]", pszGuildAbbrev);
-			else
-			{
-				pszGuildAbbrev = pChar->Guild_Abbrev(MEMORY_TOWN);
-				if ( pszGuildAbbrev )
-					snprintf(&szSuffix[strlen(szSuffix)], sizeof(szSuffix), " [%s]", pszGuildAbbrev);
-			}
+			pszGuildAbbrev = pChar->Guild_Abbrev(MEMORY_TOWN);
+			if ( pszGuildAbbrev && (len < sizeof(szSuffix) - 1) )
+				snprintf(&szSuffix[len], sizeof(szSuffix), " [%s]", pszGuildAbbrev);
 		}
-		else if ( g_Cfg.m_fVendorTradeTitle && (pChar->GetNPCBrain() == NPCBRAIN_HUMAN) )
-		{
-			LPCTSTR pszTradeTitle = pChar->GetTradeTitle();
-			if ( pszTradeTitle )
-				snprintf(&szSuffix[strlen(szSuffix)], sizeof(szSuffix), " %s", pszTradeTitle);
-		}
+	}
+	else if ( g_Cfg.m_fVendorTradeTitle && (pChar->GetNPCBrain() == NPCBRAIN_HUMAN) )
+	{
+		LPCTSTR pszTradeTitle = pChar->GetTradeTitle();
+		if ( pszTradeTitle && (len < sizeof(szSuffix) - 1) )
+			snprintf(&szSuffix[len], sizeof(szSuffix), " %s", pszTradeTitle);
 	}
 
 	TCHAR szName[MAX_NAME_SIZE];
@@ -1313,7 +1305,7 @@ void CClient::addCharName(const CChar *pChar)
 		{
 			if ( pChar->IsStatFlag(STATF_Spawned) )
 				strncat(szName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_SPAWN), sizeof(szName) - 1);
-			if ( IsPriv(PRIV_DEBUG) && (strlen(szName) < sizeof(szName)) )
+			if ( IsPriv(PRIV_DEBUG) && (strlen(szName) < sizeof(szName) - 1) )
 				snprintf(&szName[strlen(szName)], sizeof(szName), " [0%" FMTDWORDH "]", static_cast<DWORD>(pChar->GetUID()));
 		}
 	}
@@ -1330,7 +1322,7 @@ void CClient::addCharName(const CChar *pChar)
 	if ( fAllShow )
 #endif
 	{
-		if ( strlen(szName) < sizeof(szName) )
+		if ( strlen(szName) < sizeof(szName) - 1 )
 			snprintf(&szName[strlen(szName)], sizeof(szName), " [%s]", pChar->Skill_GetName());
 	}
 
@@ -2485,31 +2477,31 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 				else if ( pChar )
 				{
 					TCHAR szPrefix[MAX_NAME_SIZE];
-					strncpy(szPrefix, pChar->GetKeyStr("NAME.PREFIX"), sizeof(szPrefix) - 1);
+					strcpylen(szPrefix, pChar->GetKeyStr("NAME.PREFIX"), sizeof(szPrefix) - 1);
 
 					if ( !*szPrefix )
 						strncat(szPrefix, pChar->Noto_GetFameTitle(), sizeof(szPrefix) - 1);
 
 					TCHAR szSuffix[MAX_NAME_SIZE];
-					strncpy(szSuffix, pChar->GetKeyStr("NAME.SUFFIX"), sizeof(szSuffix) - 1);
+					int len = strcpylen(szSuffix, pChar->GetKeyStr("NAME.SUFFIX"), sizeof(szSuffix) - 1);
 
 					if ( pChar->m_pPlayer )
 					{
 						LPCTSTR pszGuildAbbrev = pChar->Guild_Abbrev(MEMORY_GUILD);
-						if ( pszGuildAbbrev )
-							snprintf(&szSuffix[strlen(szSuffix)], sizeof(szSuffix), " [%s]", pszGuildAbbrev);
+						if ( pszGuildAbbrev && (len < sizeof(szSuffix) - 1) )
+							snprintf(&szSuffix[len], sizeof(szSuffix), " [%s]", pszGuildAbbrev);
 						else
 						{
 							pszGuildAbbrev = pChar->Guild_Abbrev(MEMORY_TOWN);
-							if ( pszGuildAbbrev )
-								snprintf(&szSuffix[strlen(szSuffix)], sizeof(szSuffix), " [%s]", pszGuildAbbrev);
+							if ( pszGuildAbbrev && (len < sizeof(szSuffix) - 1) )
+								snprintf(&szSuffix[len], sizeof(szSuffix), " [%s]", pszGuildAbbrev);
 						}
 					}
 					else if ( g_Cfg.m_fVendorTradeTitle && (pChar->GetNPCBrain() == NPCBRAIN_HUMAN) )
 					{
 						LPCTSTR pszTradeTitle = pChar->GetTradeTitle();
-						if ( pszTradeTitle )
-							snprintf(&szSuffix[strlen(szSuffix)], sizeof(szSuffix), " %s", pszTradeTitle);
+						if ( pszTradeTitle && (len < sizeof(szSuffix) - 1) )
+							snprintf(&szSuffix[len], sizeof(szSuffix), " %s", pszTradeTitle);
 					}
 
 					if ( !*szPrefix )

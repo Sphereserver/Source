@@ -79,7 +79,7 @@ void CClient::OnTarg_Obj_Info(CObjBase *pObj, const CPointMap &pt, ITEMID_TYPE i
 	if ( id )
 	{
 		len = snprintf(szMsg, sizeof(szMsg), "[Static z=%hhd, 0%x=", pt.m_z, id);
-		if ( len < sizeof(szMsg) )
+		if ( len < sizeof(szMsg) - 1 )
 		{
 			CItemBase *pItemDef = CItemBase::FindItemBase(id);
 			if ( pItemDef )
@@ -95,7 +95,7 @@ void CClient::OnTarg_Obj_Info(CObjBase *pObj, const CPointMap &pt, ITEMID_TYPE i
 	}
 
 	const CUOMapMeter *pMeter = g_World.GetMapMeter(pt);
-	if ( pMeter && (len < sizeof(szMsg)) )
+	if ( pMeter && (len < sizeof(szMsg) - 1) )
 		snprintf(&szMsg[len], sizeof(szMsg), "TERRAIN=0%hx TYPE=%s", pMeter->m_wTerrainIndex, g_World.GetTerrainItemTypeDef(pMeter->m_wTerrainIndex)->GetResourceName());
 
 	SysMessage(szMsg);

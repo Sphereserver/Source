@@ -2481,7 +2481,7 @@ bool CChar::Death()
 			}
 
 			pKiller->Noto_Kill(this, IsStatFlag(STATF_Pet), static_cast<int>(m_lastAttackers.size()));
-			if ( len < sizeof(szMsg) )
+			if ( len < sizeof(szMsg) - 1 )
 				len += snprintf(&szMsg[len], sizeof(szMsg), "%s%c'%s'", iKillers ? ", " : "", pKiller->m_pPlayer ? 'P' : 'N', pKiller->GetNameWithoutIncognito());
 			++iKillers;
 		}
