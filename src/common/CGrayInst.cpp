@@ -186,14 +186,14 @@ VERFILE_TYPE CGrayInstall::OpenFiles(DWORD dwMask)
 
 						if ( !m_Maps[index].IsFileOpen() )
 						{
-							sprintf(szFileName, "map%d.mul", index);
+							snprintf(szFileName, sizeof(szFileName), "map%d.mul", index);
 							OpenFile(m_Maps[index], szFileName, OF_READ|OF_SHARE_DENY_WRITE);
 
 							if ( m_Maps[index].IsFileOpen() )
 								m_IsMapUopFormat[index] = false;
 							else
 							{
-								sprintf(szFileName, "map%dLegacyMUL.uop", index);
+								snprintf(szFileName, sizeof(szFileName), "map%dLegacyMUL.uop", index);
 								OpenFile(m_Maps[index], szFileName, OF_READ|OF_SHARE_DENY_WRITE);
 
 								// Should parse uop file here for faster reference later
@@ -241,7 +241,7 @@ VERFILE_TYPE CGrayInstall::OpenFiles(DWORD dwMask)
 
 											for ( DWORD x = 0; x < dwLoop; ++x )
 											{
-												sprintf(szFileName, "build/map%dlegacymul/%.8" FMTDWORD ".dat", index, x);
+												snprintf(szFileName, sizeof(szFileName), "build/map%dlegacymul/%.8" FMTDWORD ".dat", index, x);
 												if ( HashFileName(szFileName) == qwHash )
 												{
 													pMapAddress.dwFirstBlock = x * 4096;
@@ -264,39 +264,39 @@ VERFILE_TYPE CGrayInstall::OpenFiles(DWORD dwMask)
 						}
 						if ( !m_Staidx[index].IsFileOpen() )
 						{
-							sprintf(szFileName, "staidx%d.mul", index);
+							snprintf(szFileName, sizeof(szFileName), "staidx%d.mul", index);
 							OpenFile(m_Staidx[index], szFileName, OF_READ|OF_SHARE_DENY_WRITE);
 						}
 						if ( !m_Statics[index].IsFileOpen() )
 						{
-							sprintf(szFileName, "statics%d.mul", index);
+							snprintf(szFileName, sizeof(szFileName), "statics%d.mul", index);
 							OpenFile(m_Statics[index], szFileName, OF_READ|OF_SHARE_DENY_WRITE);
 						}
 						if ( g_Cfg.m_fUseMapDiffs )
 						{
 							if ( !m_Mapdif[index].IsFileOpen() )
 							{
-								sprintf(szFileName, "mapdif%d.mul", index);
+								snprintf(szFileName, sizeof(szFileName), "mapdif%d.mul", index);
 								OpenFile(m_Mapdif[index], szFileName, OF_READ|OF_SHARE_DENY_WRITE);
 							}
 							if ( !m_Mapdifl[index].IsFileOpen() )
 							{
-								sprintf(szFileName, "mapdifl%d.mul", index);
+								snprintf(szFileName, sizeof(szFileName), "mapdifl%d.mul", index);
 								OpenFile(m_Mapdifl[index], szFileName, OF_READ|OF_SHARE_DENY_WRITE);
 							}
 							if ( !m_Stadif[index].IsFileOpen() )
 							{
-								sprintf(szFileName, "stadif%d.mul", index);
+								snprintf(szFileName, sizeof(szFileName), "stadif%d.mul", index);
 								OpenFile(m_Stadif[index], szFileName, OF_READ|OF_SHARE_DENY_WRITE);
 							}
 							if ( !m_Stadifi[index].IsFileOpen() )
 							{
-								sprintf(szFileName, "stadifi%d.mul", index);
+								snprintf(szFileName, sizeof(szFileName), "stadifi%d.mul", index);
 								OpenFile(m_Stadifi[index], szFileName, OF_READ|OF_SHARE_DENY_WRITE);
 							}
 							if ( !m_Stadifl[index].IsFileOpen() )
 							{
-								sprintf(szFileName, "stadifl%d.mul", index);
+								snprintf(szFileName, sizeof(szFileName), "stadifl%d.mul", index);
 								OpenFile(m_Stadifl[index], szFileName, OF_READ|OF_SHARE_DENY_WRITE);
 							}
 						}

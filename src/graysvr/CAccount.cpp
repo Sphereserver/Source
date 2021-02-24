@@ -125,14 +125,14 @@ bool CAccounts::Account_LoadAll(bool fChanges, bool fClearChanges)
 {
 	ADDTOCALLSTACK("CAccounts::Account_LoadAll");
 
-	TCHAR *pszFilename = Str_GetTemp();
-	sprintf(pszFilename, "%s" SPHERE_FILE "%s", static_cast<LPCTSTR>(g_Cfg.m_sAcctBaseDir), fChanges ? "acct" : "accu");
+	TCHAR szFileName[_MAX_PATH];
+	snprintf(szFileName, sizeof(szFileName), "%s" SPHERE_FILE "%s", static_cast<LPCTSTR>(g_Cfg.m_sAcctBaseDir), fChanges ? "acct" : "accu");
 
 	if ( !fChanges )
-		g_Log.Event(LOGL_EVENT, "Loading %s%s\n", pszFilename, SPHERE_SCRIPT);
+		g_Log.Event(LOGL_EVENT, "Loading %s%s\n", szFileName, SPHERE_SCRIPT);
 
 	CScript s;
-	if ( !s.Open(pszFilename, OF_READ|OF_TEXT|OF_DEFAULTMODE|(fChanges ? OF_NONCRIT : 0)) )
+	if ( !s.Open(szFileName, OF_READ|OF_TEXT|OF_DEFAULTMODE|(fChanges ? OF_NONCRIT : 0)) )
 	{
 		if ( !fChanges )
 		{
@@ -1114,18 +1114,18 @@ bool CAccount::r_Verb(CScript &s, CTextConsole *pSrc)
 	{
 		case AV_DELETE:
 		{
-			TCHAR *pszMsg = Str_GetTemp();
+			TCHAR szMsg[EXPRESSION_MAX_KEY_LEN];
 			if ( g_Accounts.Account_Delete(this, true) )
 			{
-				sprintf(pszMsg, "Account '%s' deleted", GetName());
+				snprintf(szMsg, sizeof(szMsg), "Account '%s' deleted", GetName());
 				g_Accounts.Account_Delete(this);
 			}
 			else
-				sprintf(pszMsg, "Account '%s' deletion blocked by script", GetName());
+				snprintf(szMsg, sizeof(szMsg), "Account '%s' deletion blocked by script", GetName());
 
-			g_Log.Event(LOGM_ACCOUNTS, "%s\n", pszMsg);
+			g_Log.Event(LOGM_ACCOUNTS, "%s\n", szMsg);
 			if ( pSrc != &g_Serv )
-				pSrc->SysMessage(pszMsg);
+				pSrc->SysMessage(szMsg);
 			return true;
 		}
 		case AV_BLOCK:

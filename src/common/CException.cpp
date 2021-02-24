@@ -170,18 +170,18 @@ bool CGrayError::GetErrorMessage(LPTSTR lpszError) const
 		if ( GetSystemErrorMessage(m_hError, szCode, sizeof(szCode)) )
 		{
 			if ( m_hError & 0x80000000 )
-				sprintf(lpszError, "Error Pri=%d, Code=0x%" FMTDWORDH "(%s), Desc='%s'", m_eSeverity, m_hError, szCode, m_pszDescription);
+				snprintf(lpszError, THREAD_STRING_LENGTH, "Error Pri=%d, Code=0x%" FMTDWORDH "(%s), Desc='%s'", m_eSeverity, m_hError, szCode, m_pszDescription);
 			else
-				sprintf(lpszError, "Error Pri=%d, Code=%" FMTDWORD "(%s), Desc='%s'", m_eSeverity, m_hError, szCode, m_pszDescription);
+				snprintf(lpszError, THREAD_STRING_LENGTH, "Error Pri=%d, Code=%" FMTDWORD "(%s), Desc='%s'", m_eSeverity, m_hError, szCode, m_pszDescription);
 			return true;
 		}
 	}
 #endif
 
 	if ( m_hError & 0x80000000 )
-		sprintf(lpszError, "Error Pri=%d, Code=0x%" FMTDWORDH ", Desc='%s'", m_eSeverity, m_hError, m_pszDescription);
+		snprintf(lpszError, THREAD_STRING_LENGTH, "Error Pri=%d, Code=0x%" FMTDWORDH ", Desc='%s'", m_eSeverity, m_hError, m_pszDescription);
 	else
-		sprintf(lpszError, "Error Pri=%d, Code=%" FMTDWORD ", Desc='%s'", m_eSeverity, m_hError, m_pszDescription);
+		snprintf(lpszError, THREAD_STRING_LENGTH, "Error Pri=%d, Code=%" FMTDWORD ", Desc='%s'", m_eSeverity, m_hError, m_pszDescription);
 	return true;
 }
 
@@ -194,7 +194,7 @@ CGrayAssert::CGrayAssert(LOGL_TYPE eSeverity, LPCTSTR pszExp, LPCTSTR pszFile, l
 
 bool CGrayAssert::GetErrorMessage(LPTSTR lpszError) const
 {
-	sprintf(lpszError, "Assert pri=%d:'%s' file '%s', line %ld", m_eSeverity, m_pszExp, m_pszFile, m_lLine);
+	snprintf(lpszError, THREAD_STRING_LENGTH, "Assert pri=%d:'%s' file '%s', line %ld", m_eSeverity, m_pszExp, m_pszFile, m_lLine);
 	return true;
 }
 
@@ -218,11 +218,11 @@ bool CGrayException::GetErrorMessage(LPTSTR lpszError) const
 		case STATUS_INTEGER_DIVIDE_BY_ZERO:	pszMsg = "Integer: Divide by Zero";	break;
 		case STATUS_STACK_OVERFLOW:			pszMsg = "Stack Overflow";			break;
 		default:
-			sprintf(lpszError, "code=0x%" FMTDWORDH ", (0x%" FMTDWORDH ")", m_hError, m_dwAddress);
+			snprintf(lpszError, THREAD_STRING_LENGTH, "code=0x%" FMTDWORDH ", (0x%" FMTDWORDH ")", m_hError, m_dwAddress);
 			return true;
 	}
 
-	sprintf(lpszError, "\"%s\" (0x%" FMTDWORDH ")", pszMsg, m_dwAddress);
+	snprintf(lpszError, THREAD_STRING_LENGTH, "\"%s\" (0x%" FMTDWORDH ")", pszMsg, m_dwAddress);
 	return true;
 }
 

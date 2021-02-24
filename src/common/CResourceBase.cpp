@@ -251,9 +251,9 @@ LPCTSTR CResourceBase::ResourceGetName(RESOURCE_ID_BASE rid) const
 
 	TCHAR *pszTemp = Str_GetTemp();
 	if ( rid.IsValidUID() )
-		sprintf(pszTemp, "0%x", rid.GetResIndex());
+		snprintf(pszTemp, THREAD_STRING_LENGTH, "0%x", rid.GetResIndex());
 	else
-		sprintf(pszTemp, "%" FMTDWORD, rid.GetPrivateUID());
+		snprintf(pszTemp, THREAD_STRING_LENGTH, "%" FMTDWORD, rid.GetPrivateUID());
 	return pszTemp;
 }
 
@@ -371,9 +371,9 @@ LPCTSTR CResourceDef::GetResourceName() const
 	if ( m_pDefName )
 		return m_pDefName->GetKey();
 
-	TemporaryString pszTemp;
-	sprintf(pszTemp, "0%x", GetResourceID().GetResIndex());
-	return pszTemp;
+	TemporaryString szTemp;
+	snprintf(szTemp, THREAD_STRING_LENGTH, "0%x", GetResourceID().GetResIndex());
+	return szTemp;
 }
 
 bool CRegionBase::MakeRegionName()
@@ -463,7 +463,7 @@ bool CRegionBase::MakeRegionName()
 	}
 
 	// Only one, no need for the extra "_"
-	sprintf(pszDef, "%d", iVar);
+	snprintf(pszDef, THREAD_STRING_LENGTH, "%d", iVar);
 	SetResourceName(pszTemp);
 	// Assign name
 	return true;
@@ -1023,7 +1023,7 @@ size_t CResourceQty::WriteKey(TCHAR *pszArgs, bool fQtyOnly, bool fKeyOnly) cons
 	ADDTOCALLSTACK("CResourceQty::WriteKey");
 	size_t i = 0;
 	if ( (GetResQty() || fQtyOnly) && !fKeyOnly )
-		i = sprintf(pszArgs, "%d ", GetResQty());
+		i = snprintf(pszArgs, THREAD_STRING_LENGTH, "%d ", GetResQty());
 	if ( !fQtyOnly )
 		i += strcpylen(pszArgs + i, g_Cfg.ResourceGetName(m_rid), MAX_ITEM_NAME_SIZE);
 	return i;
@@ -1220,7 +1220,7 @@ void CResourceQtyArray::WriteKeys(TCHAR *pszArgs, size_t index, bool fQtyOnly, b
 	for ( size_t i = (index > 0 ? index - 1 : 0); i < max; ++i )
 	{
 		if ( (i > 0) && (index == 0) )
-			pszArgs += sprintf(pszArgs, ",");
+			pszArgs += snprintf(pszArgs, THREAD_STRING_LENGTH, ",");
 		pszArgs += GetAt(i).WriteKey(pszArgs, fQtyOnly, fKeyOnly);
 	}
 	*pszArgs = '\0';
@@ -1236,15 +1236,15 @@ void CResourceQtyArray::WriteNames(TCHAR *pszArgs, size_t index) const
 	for ( size_t i = (index > 0) ? index - 1 : 0; i < max; ++i )
 	{
 		if ( (i > 0) && (index == 0) )
-			pszArgs += sprintf(pszArgs, ", ");
+			pszArgs += snprintf(pszArgs, THREAD_STRING_LENGTH, ", ");
 
 		int iQty = GetAt(i).GetResQty();
 		if ( iQty )
 		{
 			if ( GetAt(i).GetResType() == RES_SKILL )
-				pszArgs += sprintf(pszArgs, "%d.%d ", iQty / 10, iQty % 10);
+				pszArgs += snprintf(pszArgs, THREAD_STRING_LENGTH, "%d.%d ", iQty / 10, iQty % 10);
 			else
-				pszArgs += sprintf(pszArgs, "%d ", iQty);
+				pszArgs += snprintf(pszArgs, THREAD_STRING_LENGTH, "%d ", iQty);
 		}
 		pszArgs += GetAt(i).WriteNameSingle(pszArgs, iQty);
 	}

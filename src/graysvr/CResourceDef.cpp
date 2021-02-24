@@ -51,7 +51,7 @@ const TCHAR * CValueCurveDef::Write() const
 		if ( i > 0 )
 			pszOut[j++] = ',';
 
-		j += sprintf( pszOut + j, "%d", m_aiValues[i] );
+		j += snprintf(pszOut + j, THREAD_STRING_LENGTH - j, "%d", m_aiValues[i]);
 	}
 	pszOut[j] = '\0';
 	return pszOut;

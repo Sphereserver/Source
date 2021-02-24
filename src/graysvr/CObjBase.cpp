@@ -2814,9 +2814,9 @@ void CObjBase::SetTriggerActive(LPCTSTR pszTrig)
 {
 	if ( pszTrig )
 	{
-		char chText[58];		// size inherited from struct 'T_TRIGGERS::m_name' + 10
-		sprintf(chText, "Trigger: %s", pszTrig);
-		ADDTOCALLSTACK(chText);
+		TCHAR szTemp[58];		// size inherited from struct 'T_TRIGGERS::m_name' + 10
+		snprintf(szTemp, sizeof(szTemp), "Trigger: %s", pszTrig);
+		ADDTOCALLSTACK(szTemp);
 	}
 	m_RunningTrigger = pszTrig ? pszTrig : NULL;
 }

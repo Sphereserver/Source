@@ -725,11 +725,11 @@ TCHAR * CPointBase::WriteUsed( TCHAR * pszBuffer ) const
 {
 	ADDTOCALLSTACK_INTENSIVE("CPointBase::WriteUsed");
 	if ( m_map )
-		sprintf(pszBuffer, "%hd,%hd,%hhd,%hhu", m_x, m_y, m_z, m_map);
+		snprintf(pszBuffer, 20, "%hd,%hd,%hhd,%hhu", m_x, m_y, m_z, m_map);
 	else if ( m_z )
-		sprintf(pszBuffer, "%hd,%hd,%hhd", m_x, m_y, m_z);
+		snprintf(pszBuffer, 16, "%hd,%hd,%hhd", m_x, m_y, m_z);
 	else
-		sprintf(pszBuffer, "%hd,%hd", m_x, m_y);
+		snprintf(pszBuffer, 12, "%hd,%hd", m_x, m_y);
 
 	return pszBuffer;
 }

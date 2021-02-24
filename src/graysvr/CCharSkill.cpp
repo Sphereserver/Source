@@ -333,7 +333,7 @@ int CChar::Stat_GetLimit(STAT_TYPE stat) const
 {
 	ADDTOCALLSTACK("CChar::Stat_GetLimit");
 	const CVarDefCont *pVar = NULL;
-	TemporaryString sStatName;
+	TCHAR szTemp[30];
 
 	if ( m_pPlayer )
 	{
@@ -348,9 +348,9 @@ int CChar::Stat_GetLimit(STAT_TYPE stat) const
 		}
 		ASSERT((stat >= STAT_STR) && (stat < STAT_BASE_QTY));
 
-		sprintf(sStatName, "OVERRIDE.STATCAP_%d", static_cast<int>(stat));
+		snprintf(szTemp, sizeof(szTemp), "OVERRIDE.STATCAP_%d", static_cast<int>(stat));
 		int iStatMax;
-		if ( (pVar = GetKey(sStatName, true)) != NULL )
+		if ( (pVar = GetKey(szTemp, true)) != NULL )
 			iStatMax = static_cast<int>(pVar->GetValNum());
 		else
 			iStatMax = pSkillClass->m_StatMax[stat];
@@ -374,8 +374,8 @@ int CChar::Stat_GetLimit(STAT_TYPE stat) const
 			return 300;
 		}
 
-		sprintf(sStatName, "OVERRIDE.STATCAP_%d", static_cast<int>(stat));
-		if ( (pVar = GetKey(sStatName, true)) != NULL )
+		snprintf(szTemp, sizeof(szTemp), "OVERRIDE.STATCAP_%d", static_cast<int>(stat));
+		if ( (pVar = GetKey(szTemp, true)) != NULL )
 			return static_cast<int>(pVar->GetValNum());
 
 		return 100;
@@ -545,15 +545,15 @@ WORD CChar::Skill_GetMax(SKILL_TYPE skill, bool fIgnoreLock) const
 {
 	ADDTOCALLSTACK("CChar::Skill_GetMax");
 	const CVarDefCont *pVar = NULL;
-	TemporaryString sSkillName;
+	TCHAR szTemp[30];
 
 	if ( m_pPlayer )
 	{
 		ASSERT(IsSkillBase(skill));
-		sprintf(sSkillName, "OVERRIDE.SKILLCAP_%d", static_cast<int>(skill));
+		snprintf(szTemp, sizeof(szTemp), "OVERRIDE.SKILLCAP_%d", static_cast<int>(skill));
 
 		WORD wSkillMax;
-		if ( (pVar = GetKey(sSkillName, true)) != NULL )
+		if ( (pVar = GetKey(szTemp, true)) != NULL )
 			wSkillMax = static_cast<WORD>(pVar->GetValNum());
 		else
 		{
@@ -581,8 +581,8 @@ WORD CChar::Skill_GetMax(SKILL_TYPE skill, bool fIgnoreLock) const
 			return static_cast<WORD>(g_Cfg.m_iMaxSkill) * 500;
 		}
 
-		sprintf(sSkillName, "OVERRIDE.SKILLCAP_%d", static_cast<int>(skill));
-		if ( (pVar = GetKey(sSkillName, true)) != NULL )
+		snprintf(szTemp, sizeof(szTemp), "OVERRIDE.SKILLCAP_%d", static_cast<int>(skill));
+		if ( (pVar = GetKey(szTemp, true)) != NULL )
 			return static_cast<WORD>(pVar->GetValNum());
 
 		return 1000;
@@ -849,17 +849,17 @@ int CChar::Stat_GetRegenVal(STAT_TYPE stat, bool fGetTicks)
 			break;
 	}
 
-	char chRegen[14];
+	TCHAR szTemp[13];
 	if ( fGetTicks )
 	{
-		sprintf(chRegen, "REGEN%s", pszStat);
-		const CVarDefCont *pVar = GetDefKey(chRegen, false);
+		snprintf(szTemp, sizeof(szTemp), "REGEN%s", pszStat);
+		const CVarDefCont *pVar = GetDefKey(szTemp, false);
 		return pVar ? static_cast<int>(pVar->GetValNum()) * TICK_PER_SEC : g_Cfg.m_iRegenRate[stat];
 	}
 	else
 	{
-		sprintf(chRegen, "REGENVAL%s", pszStat);
-		const CVarDefCont *pVar = GetDefKey(chRegen, false);
+		snprintf(szTemp, sizeof(szTemp), "REGENVAL%s", pszStat);
+		const CVarDefCont *pVar = GetDefKey(szTemp, false);
 		return pVar ? static_cast<int>(pVar->GetValNum()) : 1;
 	}
 }
@@ -1018,9 +1018,9 @@ LPCTSTR CChar::Skill_GetName(bool fUse) const
 		if ( !fUse )
 			return g_Cfg.GetSkillKey(skill);
 
-		TCHAR *pszText = Str_GetTemp();
-		sprintf(pszText, "%s %s", g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_USING), g_Cfg.GetSkillKey(skill));
-		return pszText;
+		TCHAR *pszTemp = Str_GetTemp();
+		snprintf(pszTemp, THREAD_STRING_LENGTH, "%s %s", g_Cfg.GetDefaultMsg(DEFMSG_SKILLACT_USING), g_Cfg.GetSkillKey(skill));
+		return pszTemp;
 	}
 
 	switch ( skill )
@@ -1283,9 +1283,9 @@ bool CChar::Skill_MakeItem_Success()
 		if ( (iQuality > 175) && (wSkillLevel > 999) && !IsSetOF(OF_NoItemNaming) )
 		{
 			// A GM made this, and it is of high quality
-			TCHAR *pszNewName = Str_GetTemp();
-			sprintf(pszNewName, g_Cfg.GetDefaultMsg(DEFMSG_GRANDMASTER_MARK), pItem->GetName(), GetName());
-			pItem->SetName(pszNewName);
+			TCHAR szName[MAX_ITEM_NAME_SIZE];
+			snprintf(szName, sizeof(szName), g_Cfg.GetDefaultMsg(DEFMSG_GRANDMASTER_MARK), pItem->GetName(), GetName());
+			pItem->SetName(szName);
 			//pItem->SetDefNum("CRAFTEDBY", GetUID());		// TO-DO: before enable this we must find away to properly clear CRAFTEDBY value on items when CRAFTEDBY char got deleted
 		}
 	}
@@ -1564,9 +1564,9 @@ bool CChar::Skill_Tracking(CGrayUID uidTarg, int iDistMax)
 
 	if ( pszDef[0] )
 	{
-		TCHAR *pszMsg = Str_GetTemp();
-		sprintf(pszMsg, pszDef, pChar->GetName(), pChar->IsDisconnected() ? g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_RESULT_DISC) : CPointBase::sm_szDirs[dir]);
-		ObjMessage(pszMsg, this);
+		TCHAR szMsg[EXPRESSION_MAX_KEY_LEN];
+		snprintf(szMsg, sizeof(szMsg), pszDef, pChar->GetName(), pChar->IsDisconnected() ? g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_RESULT_DISC) : CPointBase::sm_szDirs[dir]);
+		ObjMessage(szMsg, this);
 	}
 	return true;		// keep the skill active
 }
@@ -2316,9 +2316,9 @@ int CChar::Skill_Taming(SKTRIG_TYPE stage)
 			g_Cfg.GetDefaultMsg(DEFMSG_TAMING_4)
 		};
 
-		TCHAR *pszMsg = Str_GetTemp();
-		sprintf(pszMsg, sm_szTameSpeak[Calc_GetRandVal(COUNTOF(sm_szTameSpeak))], pChar->GetName());
-		Speak(pszMsg);
+		TCHAR szMsg[EXPRESSION_MAX_KEY_LEN];
+		snprintf(szMsg, sizeof(szMsg), sm_szTameSpeak[Calc_GetRandVal(COUNTOF(sm_szTameSpeak))], pChar->GetName());
+		Speak(szMsg);
 
 		// Keep trying and updating the animation
 		--m_atTaming.m_Stroke_Count;
@@ -2333,9 +2333,9 @@ int CChar::Skill_Taming(SKTRIG_TYPE stage)
 	if ( pMemory && (pMemory->m_itEqMemory.m_Action == NPC_MEM_ACT_TAMED) )
 	{
 		// I did, no skill to tame it again
-		TCHAR *pszMsg = Str_GetTemp();
-		sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_TAMING_REMEMBER), pChar->GetName());
-		ObjMessage(pszMsg, pChar);
+		TCHAR szMsg[EXPRESSION_MAX_KEY_LEN];
+		snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_TAMING_REMEMBER), pChar->GetName());
+		ObjMessage(szMsg, pChar);
 
 		pChar->NPC_PetSetOwner(this);
 		pChar->m_Act_Targ = GetUID();
@@ -2723,9 +2723,9 @@ int CChar::Skill_Healing(SKTRIG_TYPE stage)
 	{
 		if ( pChar != this )
 		{
-			TCHAR *pszMsg = Str_GetTemp();
-			sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_HEALING_TO), pChar->GetName());
-			Emote(pszMsg);
+			TCHAR szMsg[EXPRESSION_MAX_KEY_LEN];
+			snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_HEALING_TO), pChar->GetName());
+			Emote(szMsg);
 		}
 		else
 		{

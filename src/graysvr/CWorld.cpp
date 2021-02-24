@@ -954,10 +954,13 @@ void CWorld::Init()
 	}
 	m_Sectors = new CSector *[iSectorQty];
 
-	TCHAR *pszMapName = Str_GetTemp();
-	TCHAR *pszMaps = Str_GetTemp();
-	TCHAR *pszSectorSize = Str_GetTemp();
-	TCHAR *pszSectors = Str_GetTemp();
+	TCHAR szMapName[THREAD_STRING_LENGTH];
+	TCHAR szMapList[THREAD_STRING_LENGTH];
+	*szMapList = '\0';
+
+	TCHAR szSectorSize[THREAD_STRING_LENGTH];
+	TCHAR szSectorList[THREAD_STRING_LENGTH];
+	*szSectorList = '\0';
 
 	static const LPCTSTR sm_szMapNames[] =
 	{
@@ -976,15 +979,15 @@ void CWorld::Init()
 
 		iSectorQty = g_MapList.GetSectorQty(iMap);
 
-		if ( *pszMaps )
-			strncat(pszMaps, ", ", THREAD_STRING_LENGTH - 1);
-		sprintf(pszMapName, "%d='%s'", iMap, (iMap < static_cast<int>(COUNTOF(sm_szMapNames))) ? sm_szMapNames[iMap] : "[Unnamed]");
-		strncat(pszMaps, pszMapName, THREAD_STRING_LENGTH - 1);
+		if ( *szMapList )
+			strncat(szMapList, ", ", sizeof(szMapList) - 1);
+		snprintf(szMapName, sizeof(szMapName), "%d='%s'", iMap, (iMap < static_cast<int>(COUNTOF(sm_szMapNames))) ? sm_szMapNames[iMap] : "[Unnamed]");
+		strncat(szMapList, szMapName, sizeof(szMapList) - 1);
 
-		if ( *pszSectors )
-			strncat(pszSectors, ", ", THREAD_STRING_LENGTH - 1);
-		sprintf(pszSectorSize, "%d='%d'", iMap, iSectorQty);
-		strncat(pszSectors, pszSectorSize, THREAD_STRING_LENGTH - 1);
+		if ( *szSectorList )
+			strncat(szSectorList, ", ", sizeof(szSectorList) - 1);
+		snprintf(szSectorSize, sizeof(szSectorSize), "%d='%d'", iMap, iSectorQty);
+		strncat(szSectorList, szSectorSize, sizeof(szSectorList) - 1);
 
 		// Initialize sectors
 		for ( int iSector = 0; iSector < iSectorQty; ++iSector )
@@ -996,10 +999,10 @@ void CWorld::Init()
 	}
 	ASSERT(m_SectorsQty);
 
-	if ( *pszMaps )
-		g_Log.Event(LOGM_INIT, "Expansion maps supported by your MUL files: %s\n", pszMaps);
-	if ( *pszSectors )
-		g_Log.Event(LOGM_INIT, "Allocated map sectors: %s\n\n", pszSectors);
+	if ( *szMapList )
+		g_Log.Event(LOGM_INIT, "Expansion maps supported by your MUL files: %s\n", szMapList);
+	if ( *szSectorList )
+		g_Log.Event(LOGM_INIT, "Allocated map sectors: %s\n\n", szSectorList);
 	EXC_CATCH;
 }
 
@@ -1168,11 +1171,11 @@ bool CWorld::SaveStage()
 		g_Log.Event(LOGM_SAVE, "Player data saved  (%s)\n", static_cast<LPCTSTR>(m_FilePlayers.GetFilePath()));
 		g_Log.Event(LOGM_SAVE, "Multi data saved   (%s)\n", static_cast<LPCTSTR>(m_FileMultis.GetFilePath()));
 
-		TCHAR *pszTime = Str_GetTemp();
-		sprintf(pszTime, "%lld.%04lld", static_cast<INT64>(TIME_PROFILE_GET_HI / 1000), static_cast<INT64>(TIME_PROFILE_GET_LO));
-		g_Log.Event(LOGM_SAVE, "World save completed, took %s seconds\n", pszTime);
+		TCHAR szTimeElapsed[25];
+		sprintf(szTimeElapsed, "%lld.%04lld", static_cast<INT64>(TIME_PROFILE_GET_HI / 1000), static_cast<INT64>(TIME_PROFILE_GET_LO));
+		g_Log.Event(LOGM_SAVE, "World save completed, took %s seconds\n", szTimeElapsed);
 
-		CScriptTriggerArgs Args(pszTime);
+		CScriptTriggerArgs Args(szTimeElapsed);
 		g_Serv.r_Call("f_onserver_save_finished", &g_Serv, &Args);
 
 		// Clean up all the held over UIDs
