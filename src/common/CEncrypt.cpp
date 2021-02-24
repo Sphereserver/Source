@@ -189,9 +189,10 @@ void CCrypt::LoginCryptStart(DWORD dwIP, BYTE *pbEvent, size_t iLen)
 {
 	ADDTOCALLSTACK("CCrypt::LoginCryptStart");
 	ASSERT(pbEvent);
+	if ( iLen > MAX_BUFFER )
+		return;
 
 	BYTE bRaw[MAX_BUFFER];
-	ASSERT(iLen <= sizeof(bRaw));
 	memcpy(bRaw, pbEvent, iLen);
 
 	m_Seed = dwIP;
@@ -275,9 +276,10 @@ void CCrypt::GameCryptStart(DWORD dwIP, BYTE *pbEvent, size_t iLen)
 {
 	ADDTOCALLSTACK("CCrypt::GameCryptStart");
 	ASSERT(pbEvent);
+	if ( iLen > MAX_BUFFER )
+		return;
 
 	BYTE bRaw[MAX_BUFFER];
-	ASSERT(iLen <= sizeof(bRaw));
 	memcpy(bRaw, pbEvent, iLen);
 
 	m_Seed = dwIP;
@@ -476,11 +478,11 @@ TCHAR *CCrypt::WriteClientVerString(DWORD dwVer, TCHAR *pszOutput)
 	ADDTOCALLSTACK("CCrypt::WriteClientVerString");
 	if ( dwVer >= MINCLIVER_NEWVERSIONING )
 	{
-		sprintf(pszOutput, "%" FMTDWORD ".%" FMTDWORD ".%" FMTDWORD ".%" FMTDWORD, dwVer / 1000000, (dwVer / 10000) % 100, (dwVer % 10000) / 100, dwVer % 100);
+		snprintf(pszOutput, 44, "%" FMTDWORD ".%" FMTDWORD ".%" FMTDWORD ".%" FMTDWORD, dwVer / 1000000, (dwVer / 10000) % 100, (dwVer % 10000) / 100, dwVer % 100);
 	}
 	else
 	{
-		int iVer = sprintf(pszOutput, "%" FMTDWORD ".%" FMTDWORD ".%" FMTDWORD, dwVer / 1000000, (dwVer / 10000) % 100, (dwVer % 10000) / 100);
+		int iVer = snprintf(pszOutput, 33, "%" FMTDWORD ".%" FMTDWORD ".%" FMTDWORD, dwVer / 1000000, (dwVer / 10000) % 100, (dwVer % 10000) / 100);
 		int iPatch = static_cast<int>(dwVer % 100);
 		if ( iPatch )
 		{
@@ -718,7 +720,7 @@ void CCrypt::InitTables()	// static
 	ADDTOCALLSTACK("CCrypt::InitTables");
 	for ( size_t i = 0; i < CRYPT_GAMEKEY_COUNT; ++i )
 	{
-		memcpy(sm_dwCodingData[i], sm_dwInitData, COUNTOF(sm_dwInitData) - 1);
+		memcpy(sm_dwCodingData[i], sm_dwInitData, COUNTOF(sm_dwCodingData[i]) - 1);
 
 		DWORD dwCode[3];
 		dwCode[0] = (sm_KeyTable[i][0] << 24) + (sm_KeyTable[i][1] << 16) + (sm_KeyTable[i][2] << 8) + sm_KeyTable[i][3];

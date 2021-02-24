@@ -2464,7 +2464,7 @@ bool CChar::Death()
 	int iKillers = 0;
 	CChar *pKiller = NULL;
 	TCHAR szMsg[THREAD_STRING_LENGTH];
-	int len = snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_MSG_KILLED_BY), m_pPlayer ? 'P' : 'N', GetNameWithoutIncognito());
+	size_t len = snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_MSG_KILLED_BY), m_pPlayer ? 'P' : 'N', GetNameWithoutIncognito());
 
 	for ( size_t i = 0; i < m_lastAttackers.size(); ++i )
 	{

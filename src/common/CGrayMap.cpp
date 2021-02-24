@@ -287,9 +287,9 @@ void CGrayStaticsBlock::LoadStatics(DWORD dwBlockIndex, int map)
 		// Make sure that the statics block length is valid
 		if ( (index.GetBlockLength() % sizeof(CUOStaticItemRec)) != 0 )
 		{
-			TCHAR *pszTemp = Str_GetTemp();
-			sprintf(pszTemp, "CGrapMapBlock: Read Statics - Block Length of %" FMTDWORD, index.GetBlockLength());
-			throw CGrayError(LOGL_CRIT, CGFile::GetLastError(), pszTemp);
+			TCHAR szTemp[57];
+			sprintf(szTemp, "CGrapMapBlock: Read Statics - Block Length of %" FMTDWORD, index.GetBlockLength());
+			throw CGrayError(LOGL_CRIT, CGFile::GetLastError(), szTemp);
 		}
 		m_iStatics = index.GetBlockLength() / sizeof(CUOStaticItemRec);
 		ASSERT(m_iStatics);
@@ -357,7 +357,7 @@ void CGrayMapBlock::Load(int bx, int by)
 		{
 			if ( pDiffBlock->m_pTerrainBlock )
 			{
-				memcpy(&m_Terrain, pDiffBlock->m_pTerrainBlock, sizeof(CUOMapBlock));
+				memcpy(&m_Terrain, pDiffBlock->m_pTerrainBlock, sizeof(m_Terrain));
 				bPatchedTerrain = true;
 			}
 

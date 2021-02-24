@@ -1318,11 +1318,11 @@ bool CItemMultiCustom::LoadValidItems()
 	TCHAR *pszRowFull = Str_GetTemp();
 	for ( CSVRowData::iterator itCsv = csvDataRow.begin(); itCsv != csvDataRow.end(); ++itCsv )
 	{
-		strcat(pszHeaderFull, "\t");
-		strcat(pszHeaderFull, itCsv->first.c_str());
+		strncat(pszHeaderFull, "\t", THREAD_STRING_LENGTH - 1);
+		strncat(pszHeaderFull, itCsv->first.c_str(), THREAD_STRING_LENGTH - 1);
 
-		strcat(pszRowFull, "\t");
-		strcat(pszRowFull, itCsv->second.c_str());
+		strncat(pszRowFull, "\t", THREAD_STRING_LENGTH - 1);
+		strncat(pszRowFull, itCsv->second.c_str(), THREAD_STRING_LENGTH - 1);
 	}
 
 	g_Log.EventDebug("header count '%" FMTSIZE_T "', header text '%s'\n", csvDataRow.size(), pszHeaderFull);
@@ -1337,5 +1337,5 @@ void CItemMultiCustom::CGrayMultiCustom::LoadFrom(CItemMultiCustom::DesignDetail
 	m_iItemQty = pDesign->m_vectorComponents.size();
 	m_pItems = new CUOMultiItemRecHS[m_iItemQty];
 	for ( size_t i = 0; i < m_iItemQty; ++i )
-		memcpy(&m_pItems[i], &pDesign->m_vectorComponents.at(i)->m_item, sizeof(CUOMultiItemRecHS));
+		memcpy(&m_pItems[i], &pDesign->m_vectorComponents.at(i)->m_item, sizeof(m_pItems[i]));
 }

@@ -180,8 +180,8 @@ void CMD5::update( const unsigned char *data, unsigned int length )
 	// Process the data in 64 byte chunks or save it for further processing
     while( length >= 64 )
 	{
-		memcpy( m_input, data, 64 );
-		byteReverse( m_input, 16 );
+		memcpy(m_input, data, sizeof(m_input));
+		byteReverse(m_input, 16);
 		update();
 		data += 64;
 		length -= 64;
@@ -268,7 +268,7 @@ void CMD5::digest( char *digest )
     for( unsigned int i = 0; i < 16; ++i )
 	{
 		char temp[3];
-		sprintf( temp, "%02x", buffer[i] );
+		snprintf(temp, sizeof(temp), "%02x", buffer[i]);
 		strncat(digest, temp, MD5_DIGEST_LENGTH);
 	}
 }

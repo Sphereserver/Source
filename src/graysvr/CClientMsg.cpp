@@ -1152,7 +1152,7 @@ void CClient::addItemName(const CItem *pItem)
 	bool fIdentified = (IsPriv(PRIV_GM) || pItem->IsAttr(ATTR_IDENTIFIED));
 
 	TCHAR szName[MAX_ITEM_NAME_SIZE];
-	int len = snprintf(szName, sizeof(szName), pItem->GetNameFull(fIdentified));
+	size_t len = snprintf(szName, sizeof(szName), pItem->GetNameFull(fIdentified));
 
 	const CContainer *pCont = dynamic_cast<const CContainer *>(pItem);
 	if ( pCont )
@@ -1252,7 +1252,7 @@ void CClient::addCharName(const CChar *pChar)
 		strncat(szPrefix, pChar->Noto_GetFameTitle(), sizeof(szPrefix) - 1);
 
 	TCHAR szSuffix[MAX_NAME_SIZE];
-	int len = strcpylen(szSuffix, pChar->GetKeyStr("NAME.SUFFIX"), sizeof(szSuffix));
+	size_t len = strcpylen(szSuffix, pChar->GetKeyStr("NAME.SUFFIX"), sizeof(szSuffix));
 
 	if ( pChar->m_pPlayer )
 	{
@@ -2488,7 +2488,7 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 						strncat(szPrefix, pChar->Noto_GetFameTitle(), sizeof(szPrefix) - 1);
 
 					TCHAR szSuffix[MAX_NAME_SIZE];
-					int len = strcpylen(szSuffix, pChar->GetKeyStr("NAME.SUFFIX"), sizeof(szSuffix));
+					size_t len = strcpylen(szSuffix, pChar->GetKeyStr("NAME.SUFFIX"), sizeof(szSuffix));
 
 					if ( pChar->m_pPlayer )
 					{

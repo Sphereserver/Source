@@ -1246,7 +1246,7 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 	else
 	{
 		pszTitle = "%hu ";
-		len += sprintf( pTemp+len, pszTitle, GetAmount());
+		len += snprintf(pTemp + len, THREAD_STRING_LENGTH - len, pszTitle, GetAmount());
 	}
 
 	if ( fIdentified )
@@ -1329,11 +1329,9 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 			const CSpellDef * pSpellDef = g_Cfg.GetSpellDef( spell );
 			if ( pSpellDef )
 			{
-				len += sprintf( pTemp+len, " of %s", pSpellDef->GetName());
-				if (m_itWeapon.m_spellcharges)
-				{
-					len += sprintf( pTemp+len, " (%d %s)", m_itWeapon.m_spellcharges, g_Cfg.GetDefaultMsg( DEFMSG_ITEMTITLE_CHARGES ) );
-				}
+				len += snprintf(pTemp + len, THREAD_STRING_LENGTH - len, " of %s", pSpellDef->GetName());
+				if ( m_itWeapon.m_spellcharges )
+					len += snprintf(pTemp + len, THREAD_STRING_LENGTH - len, " (%d %s)", m_itWeapon.m_spellcharges, g_Cfg.GetDefaultMsg(DEFMSG_ITEMTITLE_CHARGES));
 			}
 		}
 	}
@@ -1346,9 +1344,7 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 				ITEMID_TYPE AmmoID = static_cast<ITEMID_TYPE>(RES_GET_INDEX(m_itLoom.m_ClothID));
 				const CItemBase * pAmmoDef = CItemBase::FindItemBase(AmmoID);
 				if ( pAmmoDef )
-				{
-					len += sprintf( pTemp+len, " (%hu %ss)", m_itLoom.m_ClothQty, pAmmoDef->GetName());
-				}
+					len += snprintf(pTemp + len, THREAD_STRING_LENGTH - len, " (%hu %ss)", m_itLoom.m_ClothQty, pAmmoDef->GetName());
 			}
 			break;
 
@@ -1358,9 +1354,7 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 				ITEMID_TYPE AmmoID = static_cast<ITEMID_TYPE>(RES_GET_INDEX(m_itArcheryButte.m_AmmoType));
 				const CItemBase * pAmmoDef = CItemBase::FindItemBase(AmmoID);
 				if ( pAmmoDef )
-				{
-					len += sprintf( pTemp+len, " %hu %ss", m_itArcheryButte.m_AmmoCount, pAmmoDef->GetName());
-				}
+					len += snprintf(pTemp + len, THREAD_STRING_LENGTH - len, " %hu %ss", m_itArcheryButte.m_AmmoCount, pAmmoDef->GetName());
 			}
 			break;
 
@@ -1368,7 +1362,7 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 			{
 				const CItemStone *pStone = static_cast<const CItemStone*>(this);
 				ASSERT(pStone);
-				len += sprintf( pTemp+len, " (pop:%" FMTSIZE_T ")", pStone->GetCount());
+				len += snprintf(pTemp + len, THREAD_STRING_LENGTH - len, " (pop:%" FMTSIZE_T ")", pStone->GetCount());
 			}
 			break;
 
@@ -1376,7 +1370,7 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 		case IT_LIGHT_OUT:
 			// how many charges ?
 			if ( !IsAttr(ATTR_MOVE_NEVER|ATTR_STATIC) )
-				len += sprintf(pTemp + len, " (%hu %s)", m_itLight.m_charges, g_Cfg.GetDefaultMsg(DEFMSG_ITEMTITLE_CHARGES));
+				len += snprintf(pTemp + len, THREAD_STRING_LENGTH - len, " (%hu %s)", m_itLight.m_charges, g_Cfg.GetDefaultMsg(DEFMSG_ITEMTITLE_CHARGES));
 			break;
 
 		default:
@@ -1412,15 +1406,15 @@ height_t CItem::GetHeight() const
 {
 	ADDTOCALLSTACK("CItem::GetHeight");
 
-	char *heightDef = Str_GetTemp();
-	sprintf(heightDef, "itemheight_0%x", static_cast<unsigned int>(GetDispID()));
+	TCHAR szHeightDef[23];
+	snprintf(szHeightDef, sizeof(szHeightDef), "itemheight_0%x", static_cast<unsigned int>(GetDispID()));
 
-	height_t tmpHeight = static_cast<height_t>(g_Exp.m_VarDefs.GetKeyNum(heightDef));
+	height_t tmpHeight = static_cast<height_t>(g_Exp.m_VarDefs.GetKeyNum(szHeightDef));
 	if ( tmpHeight )	// set by a defname ([DEFNAME charheight]  height_0a)
 		return tmpHeight;
 
-	sprintf(heightDef, "itemheight_%u", static_cast<unsigned int>(GetDispID()));
-	tmpHeight = static_cast<height_t>(g_Exp.m_VarDefs.GetKeyNum(heightDef));
+	snprintf(szHeightDef, sizeof(szHeightDef), "itemheight_%u", static_cast<unsigned int>(GetDispID()));
+	tmpHeight = static_cast<height_t>(g_Exp.m_VarDefs.GetKeyNum(szHeightDef));
 	if ( tmpHeight )	// set by a defname ([DEFNAME charheight]  height_10)
 		return tmpHeight;
 
@@ -2841,20 +2835,20 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 	ASSERT(pItemDef);
 	CChar * pChar = pSrc->GetChar();
 
-	TemporaryString sCharTrigName;
-	sprintf(sCharTrigName, "@item%s", pszTrigName+1);
+	TemporaryString szTrigName;
+	snprintf(szTrigName, 24, "@item%s", pszTrigName + 1);
 
-	int iCharAction = (CTRIG_TYPE) FindTableSorted( sCharTrigName, CChar::sm_szTrigName, COUNTOF(CChar::sm_szTrigName)-1 );
+	int iCharAction = FindTableSorted(szTrigName, CChar::sm_szTrigName, COUNTOF(CChar::sm_szTrigName) - 1);
 
 	// 1) Triggers installed on character, sensitive to actions on all items
-	if ( IsTrigUsed(sCharTrigName) && (iCharAction > XTRIG_UNKNOWN) )
+	if ( IsTrigUsed(szTrigName) && (iCharAction > XTRIG_UNKNOWN) )
 	{
 		EXC_SET("chardef");
 		if ( pChar != NULL )
 		{
 			CGrayUID uidOldAct = pChar->m_Act_Targ;
 			pChar->m_Act_Targ = GetUID();
-			iRet = pChar->OnTrigger(sCharTrigName, pSrc, pArgs);
+			iRet = pChar->OnTrigger(szTrigName, pSrc, pArgs);
 			pChar->m_Act_Targ = uidOldAct;
 			if ( iRet == TRIGRET_RET_TRUE )
 				goto stopandret;//return iRet;	// Block further action.
@@ -3009,10 +3003,10 @@ TRIGRET_TYPE CItem::OnTriggerCreate( CTextConsole * pSrc, CScriptTriggerArgs * p
 	ASSERT(pItemDef);
 	CChar * pChar = pSrc->GetChar();
 
-	TemporaryString sCharTrigName;
-	sprintf(sCharTrigName, "@item%s", pszTrigName+1);
+	TemporaryString szTrigName;
+	snprintf(szTrigName, 24, "@item%s", pszTrigName + 1);
 
-	int iCharAction = (CTRIG_TYPE) FindTableSorted( sCharTrigName, CChar::sm_szTrigName, COUNTOF(CChar::sm_szTrigName)-1 );
+	int iCharAction = FindTableSorted(szTrigName, CChar::sm_szTrigName, COUNTOF(CChar::sm_szTrigName) - 1);
 
 	// 1) Look up the trigger in the RES_ITEMDEF. (default)
 	EXC_SET("itemdef");
@@ -3028,14 +3022,14 @@ TRIGRET_TYPE CItem::OnTriggerCreate( CTextConsole * pSrc, CScriptTriggerArgs * p
 	}
 
 	// 2) Triggers installed on character, sensitive to actions on all items
-	if ( IsTrigUsed(sCharTrigName) && (iCharAction > XTRIG_UNKNOWN) )
+	if ( IsTrigUsed(szTrigName) && (iCharAction > XTRIG_UNKNOWN) )
 	{
 		EXC_SET("chardef");
 		if ( pChar != NULL )
 		{
 			CGrayUID uidOldAct = pChar->m_Act_Targ;
 			pChar->m_Act_Targ = GetUID();
-			iRet = pChar->OnTrigger(sCharTrigName, pSrc, pArgs);
+			iRet = pChar->OnTrigger(szTrigName, pSrc, pArgs);
 			pChar->m_Act_Targ = uidOldAct;
 			if ( iRet == TRIGRET_RET_TRUE )
 				return iRet;	// Block further action.
