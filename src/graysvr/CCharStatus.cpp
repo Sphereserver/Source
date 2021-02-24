@@ -625,7 +625,7 @@ LPCTSTR CChar::GetTradeTitle() const
 		CCharBase *pCharDef = Char_GetDef();
 		ASSERT(pCharDef);
 		if ( pCharDef->GetTypeName() != pCharDef->GetTradeName() )
-			sprintf(pszTemp, "%s %s", g_Cfg.GetDefaultMsg(pCharDef->IsFemale() ? DEFMSG_TRADETITLE_ARTICLE_FEMALE : DEFMSG_TRADETITLE_ARTICLE_MALE), pCharDef->GetTradeName());
+			snprintf(pszTemp, MAX_NAME_SIZE, "%s %s", g_Cfg.GetDefaultMsg(pCharDef->IsFemale() ? DEFMSG_TRADETITLE_ARTICLE_FEMALE : DEFMSG_TRADETITLE_ARTICLE_MALE), pCharDef->GetTradeName());
 		return pszTemp;
 	}
 
@@ -679,7 +679,7 @@ LPCTSTR CChar::GetTradeTitle() const
 			else if ( skill == SKILL_NINJITSU )
 				i += 4;
 		}
-		sprintf(pszTemp, "%s %s", sm_szSkillTitle[i], static_cast<LPCTSTR>(g_Cfg.GetSkillDef(skill)->m_sTitle));
+		snprintf(pszTemp, MAX_NAME_SIZE, "%s %s", sm_szSkillTitle[i], static_cast<LPCTSTR>(g_Cfg.GetSkillDef(skill)->m_sTitle));
 		break;
 	}
 	return pszTemp;

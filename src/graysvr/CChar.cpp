@@ -1167,26 +1167,30 @@ height_t CChar::GetHeightMount() const
 height_t CChar::GetHeight() const
 {
 	ADDTOCALLSTACK("CChar::GetHeight");
-	if ( m_height )		// set by a dynamic variable (ON=@Create  Height=10)
+	// Check dynamic variable (ON=@Create -> HEIGHT=10)
+	if ( m_height )
 		return m_height;
 
+	// Check CHARDEF variable ([CHARDEF 10] -> HEIGHT=10)
 	CCharBase *pCharDef = Char_GetDef();
-	height_t tmpHeight = pCharDef->GetHeight();
-	if ( tmpHeight )	// set by a chardef variable ([CHARDEF 10]  Height=10)
-		return tmpHeight;
+	height_t iHeight = pCharDef->GetHeight();
+	if ( iHeight )
+		return iHeight;
 
+	// Check hex DEFNAME ([DEFNAME charheight] -> height_0a)
 	char szHeightDef[20];
-	sprintf(szHeightDef, "height_0%x", static_cast<unsigned int>(pCharDef->GetDispID()));
-	tmpHeight = static_cast<height_t>(g_Exp.m_VarDefs.GetKeyNum(szHeightDef));
-	if ( tmpHeight )	// set by a defname ([DEFNAME charheight]  height_0a)
-		return tmpHeight;
+	snprintf(szHeightDef, sizeof(szHeightDef), "height_0%x", static_cast<unsigned int>(pCharDef->GetDispID()));
+	iHeight = static_cast<height_t>(g_Exp.m_VarDefs.GetKeyNum(szHeightDef));
+	if ( iHeight )
+		return iHeight;
 
-	sprintf(szHeightDef, "height_%u", static_cast<unsigned int>(pCharDef->GetDispID()));
-	tmpHeight = static_cast<height_t>(g_Exp.m_VarDefs.GetKeyNum(szHeightDef));
-	if ( tmpHeight )	// set by a defname ([DEFNAME charheight]  height_10)
-		return tmpHeight;
+	// Check dec DEFNAME ([DEFNAME charheight] -> height_10)
+	snprintf(szHeightDef, sizeof(szHeightDef), "height_%u", static_cast<unsigned int>(pCharDef->GetDispID()));
+	iHeight = static_cast<height_t>(g_Exp.m_VarDefs.GetKeyNum(szHeightDef));
+	if ( iHeight )
+		return iHeight;
 
-	return PLAYER_HEIGHT;	// if everything fails
+	return PLAYER_HEIGHT;
 }
 
 // Just set the base id and not the actual display id
@@ -2778,19 +2782,19 @@ void CChar::r_Write(CScript &s)
 	if ( m_FollowerMax != pCharDef->m_FollowerMax )
 		s.WriteKeyVal("MAXFOLLOWER", m_FollowerMax);
 
-	TCHAR szTmp[8];
+	TCHAR szTemp[9];
 	for ( size_t i = 0; i < STAT_QTY; ++i )
 	{
 		// Save MOD first (this is VERY important)
 		if ( Stat_GetMod(static_cast<STAT_TYPE>(i)) )
 		{
-			sprintf(szTmp, "MOD%s", g_Stat_Name[i]);
-			s.WriteKeyVal(szTmp, Stat_GetMod(static_cast<STAT_TYPE>(i)));
+			snprintf(szTemp, sizeof(szTemp), "MOD%s", g_Stat_Name[i]);
+			s.WriteKeyVal(szTemp, Stat_GetMod(static_cast<STAT_TYPE>(i)));
 		}
 		if ( Stat_GetBase(static_cast<STAT_TYPE>(i)) )
 		{
-			sprintf(szTmp, "O%s", g_Stat_Name[i]);
-			s.WriteKeyVal(szTmp, Stat_GetBase(static_cast<STAT_TYPE>(i)));
+			snprintf(szTemp, sizeof(szTemp), "O%s", g_Stat_Name[i]);
+			s.WriteKeyVal(szTemp, Stat_GetBase(static_cast<STAT_TYPE>(i)));
 		}
 	}
 
@@ -3122,7 +3126,7 @@ bool CChar::r_Verb(CScript &s, CTextConsole *pSrc)	// execute command from scrip
 		case CHV_MAKEITEM:
 		{
 			TCHAR *pszTmp = Str_GetTemp();
-			strncpy(pszTmp, s.GetArgRaw(), MAX_ITEM_NAME_SIZE);
+			strncpy(pszTmp, s.GetArgRaw(), MAX_ITEM_NAME_SIZE - 1);
 			GETNONWHITESPACE(pszTmp);
 
 			WORD wReplicationQty = 1;

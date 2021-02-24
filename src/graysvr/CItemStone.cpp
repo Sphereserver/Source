@@ -69,10 +69,10 @@ CStoneMember::~CStoneMember()
 LPCTSTR CStoneMember::GetPrivName() const
 {
 	ADDTOCALLSTACK("CStoneMember::GetPrivName");
-	TCHAR *pszTemp = Str_GetTemp();
-	sprintf(pszTemp, "STONECONFIG_PRIVNAME_PRIVID-%d", m_priv);
+	TCHAR szName[MAX_NAME_SIZE];
+	snprintf(szName, sizeof(szName), "STONECONFIG_PRIVNAME_PRIVID-%d", m_priv);
 
-	CVarDefCont *pVar = g_Exp.m_VarDefs.GetKey(pszTemp);
+	CVarDefCont *pVar = g_Exp.m_VarDefs.GetKey(szName);
 	if ( pVar )
 		return pVar->GetValStr();
 
@@ -386,18 +386,18 @@ LPCTSTR CItemStone::GetTypeName() const
 LPCTSTR CItemStone::GetAlignName() const
 {
 	ADDTOCALLSTACK("CItemStone::GetAlignName");
-	TCHAR *pszTemp = Str_GetTemp();
+	TCHAR szName[MAX_NAME_SIZE];
 	switch ( GetType() )
 	{
 		case IT_STONE_GUILD:
-			sprintf(pszTemp, "GUILDCONFIG_ALIGN_%d", m_itStone.m_align);
+			snprintf(szName, sizeof(szName), "GUILDCONFIG_ALIGN_%d", m_itStone.m_align);
 			break;
 		case IT_STONE_TOWN:
-			sprintf(pszTemp, "TOWNSCONFIG_ALIGN_%d", m_itStone.m_align);
+			snprintf(szName, sizeof(szName), "TOWNSCONFIG_ALIGN_%d", m_itStone.m_align);
 			break;
 	}
 
-	CVarDefCont *pVar = g_Exp.m_VarDefs.GetKey(pszTemp);
+	CVarDefCont *pVar = g_Exp.m_VarDefs.GetKey(szName);
 	return pVar ? pVar->GetValStr() : "";
 }
 
@@ -445,12 +445,12 @@ CStoneMember *CItemStone::AddRecruit(const CChar *pChar, STONEPRIV_TYPE priv, bo
 		return NULL;
 	}
 
-	TCHAR *pszTemp = Str_GetTemp();
+	TCHAR szMsg[MAX_TALK_BUFFER];
 	const CItemStone *pStone = pChar->Guild_Find(GetMemoryType());
 	if ( pStone && (pStone != this) )
 	{
-		sprintf(pszTemp, "%s appears to belong to %s. Must resign previous %s", pChar->GetName(), pStone->GetName(), GetTypeName());
-		Speak(pszTemp);
+		snprintf(szMsg, sizeof(szMsg), "%s appears to belong to %s. Must resign previous %s", pChar->GetName(), pStone->GetName(), GetTypeName());
+		Speak(szMsg);
 		return NULL;
 	}
 
@@ -462,8 +462,8 @@ CStoneMember *CItemStone::AddRecruit(const CChar *pChar, STONEPRIV_TYPE priv, bo
 	{
 		if ( (priv == pMember->m_priv) || (priv == STONEPRIV_CANDIDATE) )
 		{
-			sprintf(pszTemp, "%s is already %s %s.", pChar->GetName(), pMember->GetPrivName(), GetName());
-			Speak(pszTemp);
+			snprintf(szMsg, sizeof(szMsg), "%s is already %s %s.", pChar->GetName(), pMember->GetPrivName(), GetName());
+			Speak(szMsg);
 			return NULL;
 		}
 		pMember->m_priv = priv;
@@ -484,8 +484,8 @@ CStoneMember *CItemStone::AddRecruit(const CChar *pChar, STONEPRIV_TYPE priv, bo
 		ElectMaster();
 	}
 
-	sprintf(pszTemp, "%s is now %s %s", pChar->GetName(), pMember->GetPrivName(), GetName());
-	Speak(pszTemp);
+	snprintf(szMsg, sizeof(szMsg), "%s is now %s %s", pChar->GetName(), pMember->GetPrivName(), GetName());
+	Speak(szMsg);
 	return pMember;
 }
 
@@ -963,9 +963,9 @@ bool CItemStone::r_Verb(CScript &s, CTextConsole *pSrc)		// execute command from
 			if ( s.HasArgs() )
 			{
 				m_itStone.m_align = static_cast<STONEALIGN_TYPE>(s.GetArgVal());
-				TCHAR *pszTemp = Str_GetTemp();
-				sprintf(pszTemp, "%s is now a %s %s\n", GetName(), GetAlignName(), GetTypeName());
-				Speak(pszTemp);
+				TCHAR szMsg[MAX_TALK_BUFFER];
+				snprintf(szMsg, sizeof(szMsg), "%s is now a %s %s", GetName(), GetAlignName(), GetTypeName());
+				Speak(szMsg);
 			}
 			break;
 		}
@@ -1058,13 +1058,13 @@ void CItemStone::r_Write(CScript &s)
 	if ( !m_sAbbrev.IsEmpty() )
 		s.WriteKey("ABBREV", m_sAbbrev);
 
-	TCHAR *pszTemp = Str_GetTemp();
+	TCHAR szTemp[THREAD_STRING_LENGTH];
 	for ( size_t i = 0; i < COUNTOF(m_sCharter); ++i )
 	{
 		if ( !m_sCharter[i].IsEmpty() )
 		{
-			sprintf(pszTemp, "CHARTER%" FMTSIZE_T, i);
-			s.WriteKey(pszTemp, m_sCharter[i]);
+			snprintf(szTemp, sizeof(szTemp), "CHARTER%" FMTSIZE_T, i);
+			s.WriteKey(szTemp, m_sCharter[i]);
 		}
 	}
 

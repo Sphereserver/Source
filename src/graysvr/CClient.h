@@ -756,7 +756,7 @@ public:
 	void addBulletinBoard(const CItemContainer *pBoard);
 	void addBBoardMessage(const CItemContainer *pBoard, BULLETINBOARD_TYPE action, CGrayUID uidMsg);
 
-	void addToolTip(const CObjBase *pObj, LPCTSTR pszText);
+	void addToolTip(const CObjBase *pObj);
 	void addDrawMap(CItemMap *pMap);
 	void addMapMode(CItemMap *pMap, MAPCMD_TYPE iType, bool fEdit = false);
 

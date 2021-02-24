@@ -1099,21 +1099,21 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t iI
 		pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_BUY_CHARGE));
 	else
 	{
-		TCHAR *pszText = Str_GetTemp();
+		TCHAR szText[MAX_TALK_BUFFER];
 		if ( g_Cfg.m_iFeatureTOL & FEATURE_TOL_VIRTUALGOLD )
 		{
 			m_pChar->m_virtualGold -= dwCostTotal;
-			sprintf(pszText, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_BUY_BANK), static_cast<int>(dwCostTotal));
+			snprintf(szText, sizeof(szText), g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_BUY_BANK), static_cast<int>(dwCostTotal));
 		}
 		else
 		{
 			DWORD dwGold = m_pChar->GetContainerCreate(LAYER_PACK)->ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), dwCostTotal);
 			if ( !g_Cfg.m_fPayFromPackOnly && dwGold )
 				m_pChar->ContentConsume(RESOURCE_ID(RES_TYPEDEF, IT_GOLD), dwGold);
-			sprintf(pszText, g_Cfg.GetDefaultMsg(g_Cfg.m_fPayFromPackOnly ? DEFMSG_NPC_VENDOR_BUY : DEFMSG_NPC_VENDOR_BUY_BANK), static_cast<int>(dwCostTotal));
+			snprintf(szText, sizeof(szText), g_Cfg.GetDefaultMsg(g_Cfg.m_fPayFromPackOnly ? DEFMSG_NPC_VENDOR_BUY : DEFMSG_NPC_VENDOR_BUY_BANK), static_cast<int>(dwCostTotal));
 		}
 		pVendor->GetContainerCreate(LAYER_BANKBOX)->m_itEqBankBox.m_Check_Amount += dwCostTotal;
-		pVendor->Speak(pszText);
+		pVendor->Speak(szText);
 	}
 
 	// Close vendor gump
@@ -1215,9 +1215,9 @@ void CClient::Event_VendorSell(CChar *pVendor, const VendorItem *items, size_t i
 
 	if ( dwGold )
 	{
-		TCHAR *pszText = Str_GetTemp();
-		sprintf(pszText, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_SELL), static_cast<int>(dwGold));
-		pVendor->Speak(pszText);
+		TCHAR szText[MAX_TALK_BUFFER];
+		snprintf(szText, sizeof(szText), g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_SELL), static_cast<int>(dwGold));
+		pVendor->Speak(szText);
 
 		if ( fShortfall )
 			pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_SELL_CANTAFFORD));
@@ -1300,9 +1300,7 @@ void CClient::Event_ToolTip(CGrayUID uid)
 			return;
 	}
 
-	char *z = Str_GetTemp();
-	sprintf(z, "'%s'", pObj->GetName());
-	addToolTip(uid.ObjFind(), z);
+	addToolTip(pObj);
 }
 
 // Client replied the addPrompt sent by server
@@ -2472,7 +2470,7 @@ void CClient::Event_ExtCmd(EXTCMD_TYPE type, TCHAR *pszArgs)
 		Args.m_iN1 = type;
 		if ( m_pChar->OnTrigger(CTRIG_UserExtCmd, m_pChar, &Args) == TRIGRET_RET_TRUE )
 			return;
-		strcpy(pszArgs, Args.m_s1);
+		strncpy(pszArgs, Args.m_s1, MAX_NAME_SIZE - 1);
 	}
 
 	TCHAR *ppArgs[2];

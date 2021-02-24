@@ -954,7 +954,7 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 							_strlwr(const_cast<TCHAR *>(pszName));
 						}
 
-						strcpy(szNumBuff[0], Str_GetArticleAndSpace(pszName));
+						strncpy(szNumBuff[0], Str_GetArticleAndSpace(pszName), sizeof(szNumBuff[0]) - 1);
 						strncpy(szNumBuff[1], pszName, sizeof(szNumBuff[1]) - 1);
 						szNumBuff[0][strlen(szNumBuff[0]) - 1] = '\0';		// trim whitespace from "a " / "an " strings
 						m_pClient->removeBuff(BI_POLYMORPH);
@@ -1908,9 +1908,9 @@ bool CChar::Spell_Equip_OnTick(CItem *pItem)
 					g_Cfg.GetDefaultMsg(DEFMSG_SPELL_POISON_4)
 				};
 
-				TCHAR *pszMsg = Str_GetTemp();
-				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_SPELL_LOOKS), sm_szPoisonMsg[iLevel]);
-				Emote(NULL, pszMsg, m_pClient);
+				TCHAR szMsg[MAX_TALK_BUFFER];
+				snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_SPELL_LOOKS), sm_szPoisonMsg[iLevel]);
+				Emote(NULL, szMsg, m_pClient);
 				SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_SPELL_YOUFEEL), sm_szPoisonMsg[iLevel]);
 			}
 

@@ -1149,10 +1149,8 @@ void CClient::addItemName(const CItem *pItem)
 	if ( !pItem )
 		return;
 
-	bool fIdentified = (IsPriv(PRIV_GM) || pItem->IsAttr(ATTR_IDENTIFIED));
-
 	TCHAR szName[MAX_ITEM_NAME_SIZE];
-	size_t len = snprintf(szName, sizeof(szName), pItem->GetNameFull(fIdentified));
+	size_t len = strcpylen(szName, pItem->GetNameFull(IsPriv(PRIV_GM) || pItem->IsAttr(ATTR_IDENTIFIED)), sizeof(szName));
 
 	const CContainer *pCont = dynamic_cast<const CContainer *>(pItem);
 	if ( pCont )
@@ -1406,13 +1404,16 @@ void CClient::addPlayerWarMode()
 	new PacketWarMode(this, m_pChar);
 }
 
-void CClient::addToolTip(const CObjBase *pObj, LPCTSTR pszText)
+void CClient::addToolTip(const CObjBase *pObj)
 {
 	ADDTOCALLSTACK("CClient::addToolTip");
 	if ( !pObj || pObj->IsChar() )
 		return;
 
-	new PacketTooltip(this, pObj, pszText);
+	TCHAR szName[MAX_ITEM_NAME_SIZE];
+	snprintf(szName, sizeof(szName), "'%s'", pObj->GetName());
+
+	new PacketTooltip(this, pObj, szName);
 }
 
 bool CClient::addBookOpen(CItem *pBook)
@@ -2510,9 +2511,9 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 					}
 
 					if ( !*szPrefix )
-						strcat(szPrefix, " ");
+						strncat(szPrefix, " ", sizeof(szPrefix) - 1);
 					if ( !*szSuffix )
-						strcat(szSuffix, " ");
+						strncat(szSuffix, " ", sizeof(szSuffix) - 1);
 
 					m_TooltipData.InsertAt(0, t = new CClientTooltip(1050045)); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
 					if ( dwClilocName )

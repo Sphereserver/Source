@@ -976,7 +976,7 @@ LPCTSTR CServer::GetStatusString(BYTE bIndex) const
 		case 0x21:	// '!'
 		{
 			// Typical (first time) poll response
-			TCHAR szVersion[32];
+			TCHAR szVersion[44];
 			snprintf(pszTemp, 256, SPHERE_TITLE ", Name=%s, Port=%hu, Ver=" SPHERE_VER_STR_FULL ", TZ=%hhd, Email=%s, URL=%s, Lang=%s, CliVer=%s\n", GetName(), m_ip.GetPort(), m_TimeZone, static_cast<LPCTSTR>(m_sEMail), static_cast<LPCTSTR>(m_sURL), static_cast<LPCTSTR>(m_sLang), m_ClientVersion.WriteClientVerString(m_ClientVersion.GetClientVer(), szVersion));
 			break;
 		}

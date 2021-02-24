@@ -746,27 +746,27 @@ bool CRegionBase::r_LoadVal( CScript & s )
 void CRegionBase::r_WriteBody( CScript & s, LPCTSTR pszPrefix )
 {
 	ADDTOCALLSTACK("CRegionBase::r_WriteBody");
-	TemporaryString z;
+	TemporaryString szTemp;
 	if ( GetRegionFlags())
 	{
-		sprintf(z, "%sFLAGS", pszPrefix);
-		s.WriteKeyHex(z, GetRegionFlags());
+		snprintf(szTemp, THREAD_STRING_LENGTH, "%sFLAGS", pszPrefix);
+		s.WriteKeyHex(szTemp, GetRegionFlags());
 	}
 
 	if ( m_Events.GetCount() > 0 )
 	{
 		CGString sVal;
 		m_Events.WriteResourceRefList( sVal );
-		sprintf(z, "%sEVENTS", pszPrefix);
-		s.WriteKey(z, sVal);
+		snprintf(szTemp, THREAD_STRING_LENGTH, "%sEVENTS", pszPrefix);
+		s.WriteKey(szTemp, sVal);
 	}
 
 	// Write New variables
 	m_BaseDefs.r_WritePrefix(s);
 
 	// Write out any extra TAGS here.
-	sprintf(z, "%sTAG", pszPrefix);
-	m_TagDefs.r_WritePrefix(s, z);
+	snprintf(szTemp, THREAD_STRING_LENGTH, "%sTAG", pszPrefix);
+	m_TagDefs.r_WritePrefix(s, szTemp);
 }
 
 

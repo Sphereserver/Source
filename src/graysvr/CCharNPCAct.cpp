@@ -279,9 +279,9 @@ bool CChar::NPC_StablePetRetrieve(CChar *pCharPlayer)
 		{
 			if ( !pCharPlayer->Use_Figurine(pItem) )
 			{
-				TCHAR *pszMsg = Str_GetTemp();
-				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_STABLEMASTER_CLAIM_FOLLOWER), pItem->GetName());
-				Speak(pszMsg);
+				TCHAR szMsg[MAX_TALK_BUFFER];
+				snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_NPC_STABLEMASTER_CLAIM_FOLLOWER), pItem->GetName());
+				Speak(szMsg);
 				return true;
 			}
 			pItem->Delete();
@@ -329,9 +329,9 @@ void CChar::NPC_OnHear(LPCTSTR pszCmd, CChar *pSrc, bool fAllPets)
 			CChar *pCharOld = m_Act_Targ.CharFind();
 			if ( pCharOld )
 			{
-				TCHAR *pszMsg = Str_GetTemp();
-				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_INTERRUPT), pCharOld->GetName(), pSrc->GetName());
-				Speak(pszMsg);
+				TCHAR szMsg[MAX_TALK_BUFFER];
+				snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_INTERRUPT), pCharOld->GetName(), pSrc->GetName());
+				Speak(szMsg);
 			}
 		}
 	}
@@ -584,15 +584,17 @@ bool CChar::NPC_OnTrainHear(CChar *pCharSrc, LPCTSTR pszCmd)
 		pMemory->m_itEqMemory.m_Action = NPC_MEM_ACT_SPEAK_TRAIN;
 		pMemory->m_itEqMemory.m_Skill = static_cast<WORD>(skill);
 
-		TCHAR *pszMsg = Str_GetTemp();
-		sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_PRICE_FULL), static_cast<int>(wTrainCost));
-		Speak(pszMsg);
+		TCHAR szMsg[MAX_TALK_BUFFER];
+		snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_PRICE_FULL), static_cast<int>(wTrainCost));
+		Speak(szMsg);
 		Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_PRICE_LESS));
 		return true;
 	}
 
 	// Show all skills available to train
-	TCHAR *pszSkillList = Str_GetTemp();
+	TCHAR szSkillList[MAX_TALK_BUFFER];
+	*szSkillList = '\0';
+
 	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; ++i )
 	{
 		SKILL_TYPE skillCheck = static_cast<SKILL_TYPE>(i);
@@ -605,16 +607,16 @@ bool CChar::NPC_OnTrainHear(CChar *pCharSrc, LPCTSTR pszCmd)
 		if ( wSkillTrain <= 0 )
 			continue;
 
-		if ( *pszSkillList )
-			strcat(pszSkillList, ", ");
-		strncat(pszSkillList, g_Cfg.GetSkillKey(skillCheck), MAX_TALK_BUFFER - 1);
+		if ( *szSkillList )
+			strncat(szSkillList, ", ", sizeof(szSkillList) - 1);
+		strncat(szSkillList, g_Cfg.GetSkillKey(skillCheck), sizeof(szSkillList) - 1);
 	}
 
-	if ( *pszSkillList )
+	if ( *szSkillList )
 	{
-		TCHAR *pszMsg = Str_GetTemp();
-		sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_TEACH), pszSkillList);
-		Speak(pszMsg);
+		TCHAR szMsg[MAX_TALK_BUFFER];
+		snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_TEACH), szSkillList);
+		Speak(szMsg);
 	}
 	else
 		Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_TRAINER_NOTHING));
@@ -1910,9 +1912,9 @@ bool CChar::NPC_Act_Talk()
 				g_Cfg.GetDefaultMsg(DEFMSG_NPC_GENERIC_GONE_2)
 			};
 
-			TCHAR *pszMsg = Str_GetTemp();
-			sprintf(pszMsg, sm_szGenericGoneMsg[Calc_GetRandVal(COUNTOF(sm_szGenericGoneMsg))], pChar->GetName());
-			Speak(pszMsg);
+			TCHAR szMsg[MAX_TALK_BUFFER];
+			snprintf(szMsg, sizeof(szMsg), sm_szGenericGoneMsg[Calc_GetRandVal(COUNTOF(sm_szGenericGoneMsg))], pChar->GetName());
+			Speak(szMsg);
 		}
 		return false;
 	}
@@ -2378,9 +2380,9 @@ bool CChar::NPC_OnReceiveItem(CChar *pCharSrc, CItem *pItem)
 
 			if ( NPC_CanSpeak() )
 			{
-				TCHAR *pszMsg = Str_GetTemp();
-				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_BANKER_DEPOSIT), pItem->GetAmount());
-				Speak(pszMsg);
+				TCHAR szMsg[MAX_TALK_BUFFER];
+				snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_NPC_BANKER_DEPOSIT), pItem->GetAmount());
+				Speak(szMsg);
 			}
 
 			if ( pCharSrc->m_pClient )
