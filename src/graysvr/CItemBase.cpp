@@ -65,7 +65,7 @@ CItemBase::CItemBase(ITEMID_TYPE id) : CBaseBaseDef(RESOURCE_ID(RES_ITEMDEF, id)
 
 	TCHAR szName[sizeof(tiledata.m_name) + 1];
 	size_t j = 0;
-	for ( size_t i = 0; i < sizeof(tiledata.m_name) && tiledata.m_name[i]; i++ )
+	for ( size_t i = 0; i < sizeof(tiledata.m_name) && tiledata.m_name[i]; ++i )
 	{
 		if ( (j == 0) && ISWHITESPACE(tiledata.m_name[i]) )
 			continue;
@@ -225,7 +225,7 @@ TCHAR *CItemBase::GetNamePluralize(LPCTSTR pszNameBase, bool fPluralize)	// stat
 	size_t j = 0;
 	bool fInside = false;
 	bool fPlural = false;
-	for ( size_t i = 0; pszNameBase[i]; i++ )
+	for ( size_t i = 0; pszNameBase[i]; ++i )
 	{
 		if ( pszNameBase[i] == '%' )
 		{
@@ -648,7 +648,7 @@ ITEMID_TYPE CItemBase::GetNextFlipID(ITEMID_TYPE id) const
 	if ( m_flip_id.GetCount() > 0 )
 	{
 		ITEMID_TYPE idprev = GetDispID();
-		for ( size_t i = 0; i < m_flip_id.GetCount(); i++ )
+		for ( size_t i = 0; i < m_flip_id.GetCount(); ++i )
 		{
 			ITEMID_TYPE idnext = m_flip_id[i];
 			if ( idprev == id )
@@ -667,7 +667,7 @@ bool CItemBase::IsSameDispID(ITEMID_TYPE id) const
 	if ( GetDispID() == id )
 		return true;
 
-	for ( size_t i = 0; i < m_flip_id.GetCount(); i++ )
+	for ( size_t i = 0; i < m_flip_id.GetCount(); ++i )
 	{
 		if ( m_flip_id[i] == id )
 			return true;
@@ -698,11 +698,11 @@ DWORD CItemBase::CalculateMakeValue(int iQualityLevel) const
 		return 0;
 	}
 
-	sm_iReentrantCount++;
+	++sm_iReentrantCount;
 	DWORD dwValue = 0;
 
 	// Add value based on base resources
-	for ( size_t i = 0; i < m_BaseResources.GetCount(); i++ )
+	for ( size_t i = 0; i < m_BaseResources.GetCount(); ++i )
 	{
 		RESOURCE_ID rid = m_BaseResources[i].GetResourceID();
 		if ( rid.GetResType() != RES_ITEMDEF )
@@ -716,7 +716,7 @@ DWORD CItemBase::CalculateMakeValue(int iQualityLevel) const
 	}
 
 	// Add some value based on the skill required to craft it
-	for ( size_t i = 0; i < m_SkillMake.GetCount(); i++ )
+	for ( size_t i = 0; i < m_SkillMake.GetCount(); ++i )
 	{
 		RESOURCE_ID rid = m_SkillMake[i].GetResourceID();
 		if ( rid.GetResType() != RES_SKILL )
@@ -733,7 +733,7 @@ DWORD CItemBase::CalculateMakeValue(int iQualityLevel) const
 		dwValue += pSkillDef->m_Values.GetLinear(iQualityLevel);
 	}
 
-	sm_iReentrantCount--;
+	--sm_iReentrantCount;
 	return dwValue;
 }
 
@@ -873,7 +873,7 @@ bool CItemBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			pszKey += 9;
 			if ( *pszKey == '.' )
 			{
-				pszKey++;
+				++pszKey;
 				if ( !strcmpi(pszKey, "TILES") )
 				{
 					sVal.FormatVal(pItemMulti->m_shipSpeed.tiles);
@@ -895,16 +895,12 @@ bool CItemBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case IBC_DUPELIST:
 		{
 			TCHAR *pszTemp = Str_GetTemp();
-			size_t iLen = 0;
 			*pszTemp = '\0';
-			for ( size_t i = 0; i < m_flip_id.GetCount(); i++ )
-			{
-				if ( i > 0 )
-					iLen += strcpylen(pszTemp + iLen, ",", SCRIPT_MAX_LINE_LEN);
 
-				iLen += sprintf(pszTemp + iLen, "0%x", static_cast<unsigned int>(m_flip_id[i]));
-				ASSERT(iLen < SCRIPT_MAX_LINE_LEN);
-			}
+			size_t iLen = 0;
+			for ( size_t i = 0; i < m_flip_id.GetCount(); ++i )
+				iLen += snprintf(pszTemp + iLen, SCRIPT_MAX_LINE_LEN - iLen, "%s0%x", (i > 0) ? "," : "", static_cast<unsigned int>(m_flip_id[i]));
+
 			sVal = pszTemp;
 			break;
 		}
@@ -1234,7 +1230,7 @@ bool CItemBase::r_LoadVal(CScript &s)
 			pszKey += 9;
 			if ( *pszKey == '.' )
 			{
-				pszKey++;
+				++pszKey;
 				if ( !IsType(IT_SHIP) )
 					return false;
 				CItemBaseMulti *pItemMulti = dynamic_cast<CItemBaseMulti *>(this);
@@ -1349,7 +1345,7 @@ bool CItemBase::r_LoadVal(CScript &s)
 			if ( iArgQty <= 0 )
 				return false;
 			m_flip_id.Empty();
-			for ( size_t i = 0; i < iArgQty; i++ )
+			for ( size_t i = 0; i < iArgQty; ++i )
 			{
 				ITEMID_TYPE id = static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetIndexType(RES_ITEMDEF, ppArgs[i]));
 				if ( !IsValidDispID(id) )
@@ -1910,7 +1906,7 @@ bool CItemBaseMulti::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pS
 			pszKey += 9;
 			if ( *pszKey == '.' )
 			{
-				pszKey++;
+				++pszKey;
 				if ( !strcmpi(pszKey, "TILES") )
 				{
 					sVal.FormatVal(m_shipSpeed.tiles);

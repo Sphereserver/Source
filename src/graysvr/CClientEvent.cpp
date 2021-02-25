@@ -1420,9 +1420,9 @@ void CClient::Event_PromptResp_GMPage(LPCTSTR pszReason)
 	}
 
 	const CPointMap &pt = m_pChar->GetTopPoint();
-	TCHAR *pszMsg = Str_GetTemp();
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_GMPAGE_RECEIVED), m_pChar->GetName(), static_cast<DWORD>(m_pChar->GetUID()), pt.WriteUsed(), pszReason);
-	g_Log.Event(LOGM_NOCONTEXT|LOGM_GM_PAGE, "%s\n", pszMsg);
+	TCHAR szMsg[MAX_TALK_BUFFER * 2];
+	snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_GMPAGE_RECEIVED), m_pChar->GetName(), static_cast<DWORD>(m_pChar->GetUID()), pt.WriteUsed(), pszReason);
+	g_Log.Event(LOGM_NOCONTEXT|LOGM_GM_PAGE, "%s\n", szMsg);
 
 	CGMPage *pGMPage = static_cast<CGMPage *>(g_World.m_GMPages.GetHead());
 	for ( ; pGMPage != NULL; pGMPage = pGMPage->GetNext() )
@@ -1438,6 +1438,7 @@ void CClient::Event_PromptResp_GMPage(LPCTSTR pszReason)
 		pGMPage = new CGMPage(m_pAccount->GetName());
 		SysMessageDefault(DEFMSG_GMPAGE_SENT);
 	}
+
 	pGMPage->m_uidChar = m_pChar->GetUID();
 	pGMPage->m_pt = pt;
 	pGMPage->m_sReason = pszReason;
@@ -1448,7 +1449,7 @@ void CClient::Event_PromptResp_GMPage(LPCTSTR pszReason)
 	for ( CClient *pClient = it.next(); pClient != NULL; pClient = it.next() )
 	{
 		if ( pClient->IsPriv(PRIV_GM_PAGE) )
-			pClient->SysMessage(pszMsg);
+			pClient->SysMessage(szMsg);
 	}
 }
 
@@ -2348,9 +2349,9 @@ void CClient::Event_AOSPopupMenuSelect(CGrayUID uid, WORD wIndex)	//do something
 		{
 			if ( wIndex != POPUP_SPK_TRAIN_SKILL + SKILL_SPELLWEAVING )
 			{
-				TCHAR *pszMsg = Str_GetTemp();
-				sprintf(pszMsg, "train %s", g_Cfg.GetSkillKey(static_cast<SKILL_TYPE>(wIndex - POPUP_SPK_TRAIN_SKILL)));
-				pChar->NPC_OnHear(pszMsg, m_pChar);
+				TCHAR szMsg[MAX_TALK_BUFFER];
+				snprintf(szMsg, sizeof(szMsg), "train %s", g_Cfg.GetSkillKey(static_cast<SKILL_TYPE>(wIndex - POPUP_SPK_TRAIN_SKILL)));
+				pChar->NPC_OnHear(szMsg, m_pChar);
 				return;
 			}
 		}
@@ -2603,8 +2604,6 @@ bool CClient::xPacketFilter(const BYTE *pData, size_t iLen)
 
 	EXC_TRY("packet filter");
 	CScriptTriggerArgs Args(pData[0]);
-	TCHAR idx[5];
-
 	Args.m_s1 = GetPeerStr();
 	Args.m_pO1 = this;
 	Args.m_VarsLocal.SetNum("CONNECTIONTYPE", GetConnectType());
@@ -2626,9 +2625,10 @@ bool CClient::xPacketFilter(const BYTE *pData, size_t iLen)
 	}
 
 	// Fill locals [0..X] to the first X bytes of the packet
+	TCHAR idx[5];
 	for ( size_t i = 0; i < iBytes; ++i )
 	{
-		sprintf(idx, "%" FMTSIZE_T, i);
+		snprintf(idx, sizeof(idx), "%" FMTSIZE_T, i);
 		Args.m_VarsLocal.SetNum(idx, static_cast<int>(pData[i]));
 	}
 
@@ -2652,8 +2652,6 @@ bool CClient::xOutPacketFilter(const BYTE *pData, size_t iLen)
 
 	EXC_TRY("Outgoing packet filter");
 	CScriptTriggerArgs Args(pData[0]);
-	TCHAR idx[5];
-
 	Args.m_s1 = GetPeerStr();
 	Args.m_pO1 = this;
 	Args.m_VarsLocal.SetNum("CONNECTIONTYPE", GetConnectType());
@@ -2675,9 +2673,10 @@ bool CClient::xOutPacketFilter(const BYTE *pData, size_t iLen)
 	}
 
 	// Fill locals [0..X] to the first X bytes of the packet
+	TCHAR idx[5];
 	for ( size_t i = 0; i < iBytes; ++i )
 	{
-		sprintf(idx, "%" FMTSIZE_T, i);
+		snprintf(idx, sizeof(idx), "%" FMTSIZE_T, i);
 		Args.m_VarsLocal.SetNum(idx, static_cast<int>(pData[i]));
 	}
 

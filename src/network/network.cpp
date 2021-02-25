@@ -819,9 +819,9 @@ inline void AddSocketToSet(fd_set& fds, SOCKET socket, int& count)
  ***************************************************************************/
 const char * GenerateNetworkThreadName(size_t id)
 {
-	char * name = new char[25];
-	sprintf(name, "NetworkThread #%" FMTSIZE_T, id);
-	return name;
+	char *pszTemp = new char[26];
+	snprintf(pszTemp, 26, "NetworkThread #%" FMTSIZE_T, id);
+	return pszTemp;
 }
 
 #ifdef _WIN32

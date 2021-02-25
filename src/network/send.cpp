@@ -36,7 +36,7 @@ PacketTelnet::PacketTelnet(const CClient* target, LPCTSTR message, bool bNullTer
 
 	seek();
 
-	for (size_t i = 0; message[i] != '\0'; i++)
+	for (size_t i = 0; message[i] != '\0'; ++i)
 	{
 		if (message[i] == '\n')
 			writeCharASCII('\r');
@@ -1024,7 +1024,7 @@ PacketSkills::PacketSkills(const CClient* target, const CChar* character, SKILL_
 		else
 			writeByte(0x00);
 
-		for (size_t i = 0; i < g_Cfg.m_iMaxSkill; i++)
+		for (size_t i = 0; i < g_Cfg.m_iMaxSkill; ++i)
 		{
 			if (!g_Cfg.m_SkillIndexDefs.IsValidIndex(i))
 				continue;
@@ -1189,7 +1189,7 @@ PacketItemContents::PacketItemContents(const CClient* target, const CItem* spell
 	skip(2);
 
 	WORD count = 0;
-	for (WORD i = SPELL_Clumsy; i <= SPELL_MAGERY_QTY; i++)
+	for (WORD i = SPELL_Clumsy; i <= SPELL_MAGERY_QTY; ++i)
 	{
 		if (!spellbook->IsSpellInBook(static_cast<SPELL_TYPE>(i)))
 			continue;
@@ -1205,7 +1205,7 @@ PacketItemContents::PacketItemContents(const CClient* target, const CItem* spell
 		writeInt32(spellbook->GetUID());
 		writeInt16(HUE_DEFAULT);
 
-		count++;
+		++count;
 	}
 
 	// write item count
@@ -1247,7 +1247,7 @@ PacketItemContents::PacketItemContents(const CClient* target, const CItemContain
 		writeInt32(spellbook->GetUID());
 		writeInt16(static_cast<WORD>(HUE_DEFAULT));
 
-		count++;
+		++count;
 	}
 
 	// write item count
@@ -1289,7 +1289,7 @@ PacketQueryClient::PacketQueryClient(CClient* target, BYTE bCmd) : PacketSend(PA
 			int padding = 0;
 			if (length - (count * 7) > 0)
 			{
-				count++;
+				++count;
 				padding = (count * 7) - length; 
 			}
 
@@ -1299,7 +1299,7 @@ PacketQueryClient::PacketQueryClient(CClient* target, BYTE bCmd) : PacketSend(PA
 			writeByte(0x1);
 			writeByte(0);
 
-			for (int i = 0; i < 2; i++)
+			for (int i = 0; i < 2; ++i)
 			{
 				writeByte(static_cast<BYTE>(i));
 				writeInt16(static_cast<WORD>(g_MapList.GetX(i)));
@@ -1308,7 +1308,7 @@ PacketQueryClient::PacketQueryClient(CClient* target, BYTE bCmd) : PacketSend(PA
 				writeInt16(static_cast<WORD>(g_MapList.GetY(i)));
 			}
 
-			for (int i = 0; i < padding; i++)
+			for (int i = 0; i < padding; ++i)
 				writeByte(0);
 			break;
 		}
@@ -1511,7 +1511,7 @@ PacketBookPageContent::PacketBookPageContent(const CClient *target, const CItem 
 	writeInt32(book->GetUID());
 	writeInt16(0);
 
-	for (WORD i = 0; i < pagecount; i++)
+	for (WORD i = 0; i < pagecount; ++i)
 		addPage(book, startpage + i);
 
 	push(target);
@@ -1535,7 +1535,7 @@ void PacketBookPageContent::addPage(const CItem *book, WORD page)
 		{
 			while (s.ReadKey(false))
 			{
-				lines++;
+				++lines;
 				writeStringASCII(s.GetKey());
 			}
 		}
@@ -1557,14 +1557,14 @@ void PacketBookPageContent::addPage(const CItem *book, WORD page)
 						if (ch == '\t')
 						{
 							ch = '\0';
-							lines++;
+							++lines;
 						}
 
 						writeCharASCII(ch);
 					}
 
 					writeCharASCII('\0');
-					lines++;
+					++lines;
 				}
 			}
 		}
@@ -1894,7 +1894,7 @@ PacketBulletinBoard::PacketBulletinBoard(const CClient* target, BULLETINBOARD_TY
 	writeStringFixedASCII(message->GetName(), lenstr);
 
 	// message time
-	sprintf(tempstr, "Day %" FMTDWORD, (g_World.GetGameWorldTime(message->GetTimeStamp()) / (24 * 60)) % 365);
+	snprintf(tempstr, 15, "Day %" FMTDWORD, (g_World.GetGameWorldTime(message->GetTimeStamp()) / (24 * 60)) % 365);
 	lenstr = strlen(tempstr) + 1;
 
 	writeByte(static_cast<BYTE>(lenstr));
@@ -1908,7 +1908,7 @@ PacketBulletinBoard::PacketBulletinBoard(const CClient* target, BULLETINBOARD_TY
 		WORD lines = message->GetPageCount();
 		writeInt16(lines);
 
-		for (WORD i = 0; i < lines; i++)
+		for (WORD i = 0; i < lines; ++i)
 		{
 			LPCTSTR text = message->GetPageText(i);
 			if (text == NULL)
@@ -2193,7 +2193,7 @@ PacketDisplayMenu::PacketDisplayMenu(const CClient* target, CLIMODE_TYPE mode, c
 	writeStringFixedASCII(static_cast<LPCTSTR>(items[0].m_sText), len);
 
 	writeByte(static_cast<BYTE>(count));
-	for (size_t i = 1; i <= count; i++)
+	for (size_t i = 1; i <= count; ++i)
 	{
 		writeInt16(items[i].m_id);
 		writeInt16(items[i].m_color);
@@ -2305,12 +2305,12 @@ PacketPaperdoll::PacketPaperdoll(const CClient* target, const CChar* character) 
 {
 	ADDTOCALLSTACK("PacketPaperdoll::PacketPaperdoll");
 
-	TCHAR *name = Str_GetTemp();
-	LPCTSTR title = character->GetTradeTitle();
-	if ( title[0] )
-		sprintf(name, "%s, %s", character->Noto_GetTitle(), title);
+	TCHAR szName[MAX_NAME_SIZE * 2];
+	LPCTSTR pszTitle = character->GetTradeTitle();
+	if ( *pszTitle )
+		snprintf(szName, sizeof(szName), "%s, %s", character->Noto_GetTitle(), pszTitle);
 	else
-		sprintf(name, "%s", character->Noto_GetTitle());
+		snprintf(szName, sizeof(szName), "%s", character->Noto_GetTitle());
 
 	BYTE flags = 0;
 	if (character->IsStatFlag(STATF_War))
@@ -2322,7 +2322,7 @@ PacketPaperdoll::PacketPaperdoll(const CClient* target, const CChar* character) 
 	}
 
 	writeInt32(character->GetUID());
-	writeStringFixedASCII(name, MAX_NAME_SIZE * 2);
+	writeStringFixedASCII(szName, sizeof(szName));
 	writeByte(flags);
 	push(target);
 }
@@ -2905,7 +2905,7 @@ PacketServerList::PacketServerList(const CClient* target) : PacketSend(PACKET_Se
 
 	writeServerEntry(&g_Serv, ++count, reverseIp);
 
-	for (size_t i = 0; count < MAX_SERVERS; i++)		// too many servers in list can crash the client
+	for (size_t i = 0; count < MAX_SERVERS; ++i)		// too many servers in list can crash the client
 	{
 		CServerRef server = g_Cfg.Server_GetDef(i);
 		if (server == NULL)
@@ -2991,7 +2991,7 @@ PacketCharacterList::PacketCharacterList(CClient* target) : PacketSend(PACKET_Ch
 	if ( target->m_NetState->isClientVersion(MINCLIVER_EXTRASTARTINFO) )
 	{
 		// newer clients receive additional start info
-		for ( size_t i = 0; i < startCount; i++ )
+		for ( size_t i = 0; i < startCount; ++i )
 		{
 			const CStartLoc *start = g_Cfg.m_StartDefs[i];
 			writeByte(static_cast<BYTE>(i));
@@ -3007,7 +3007,7 @@ PacketCharacterList::PacketCharacterList(CClient* target) : PacketSend(PACKET_Ch
 	}
 	else
 	{
-		for ( size_t i = 0; i < startCount; i++ )
+		for ( size_t i = 0; i < startCount; ++i )
 		{
 			const CStartLoc *start = g_Cfg.m_StartDefs[i];
 			writeByte(static_cast<BYTE>(i));
@@ -3019,7 +3019,7 @@ PacketCharacterList::PacketCharacterList(CClient* target) : PacketSend(PACKET_Ch
 	writeInt32(target->m_CharacterListFlags);
 
 	WORD iLastCharSlot = 0;
-	for ( size_t i = 0; i < count; i++ )
+	for ( size_t i = 0; i < count; ++i )
 	{
 		if ( !account->m_Chars.IsValidIndex(i) )
 			continue;
@@ -3087,11 +3087,11 @@ PacketGumpValueInput::PacketGumpValueInput(const CClient* target, bool cancel, I
 			break;
 		case INPVAL_Text:
 			z = Str_GetTemp();
-			len = static_cast<size_t>(sprintf(z, "%s (%" FMTDWORD " chars max)", caption, maxLength)) + 1;
+			len = static_cast<size_t>(snprintf(z, EXPRESSION_MAX_KEY_LEN, "%s (%" FMTDWORD " chars max)", caption, maxLength)) + 1;
 			break;
 		case INPVAL_Numeric:
 			z = Str_GetTemp();
-			len = static_cast<size_t>(sprintf(z, "%s (0 - %" FMTDWORD ")", caption, maxLength)) + 1;
+			len = static_cast<size_t>(snprintf(z, EXPRESSION_MAX_KEY_LEN, "%s (0 - %" FMTDWORD ")", caption, maxLength)) + 1;
 			break;
 	}
 	if (len > WORD_MAX)
@@ -3208,15 +3208,15 @@ void PacketGumpDialog::writeCompressedControls(const CGString* controls, size_t 
 	{
 		// compress and write controls
 		z_uLong controlLength = 1;
-		for (size_t i = 0; i < controlCount; i++)
+		for (size_t i = 0; i < controlCount; ++i)
 			controlLength += controls[i].GetLength() + 2;
 
 		char* toCompress = new char[controlLength];
 
 		z_uLong controlLengthActual = 0;
-		for (size_t i = 0; i < controlCount; i++)
-			controlLengthActual += sprintf(&toCompress[controlLengthActual], "{%s}", static_cast<LPCTSTR>(controls[i]));
-		controlLengthActual++;
+		for (size_t i = 0; i < controlCount; ++i)
+			controlLengthActual += snprintf(toCompress + controlLengthActual, controlLength - controlLengthActual, "{%s}", static_cast<LPCTSTR>(controls[i]));
+		++controlLengthActual;
 
 		ASSERT(controlLengthActual == controlLength);
 
@@ -3245,7 +3245,7 @@ void PacketGumpDialog::writeCompressedControls(const CGString* controls, size_t 
 		// compress and write texts
 		size_t textsPosition(getPosition());
 
-		for (size_t i = 0; i < textCount; i++)
+		for (size_t i = 0; i < textCount; ++i)
 		{
 			writeInt16(static_cast<WORD>(texts[i].GetLength()));
 			writeStringFixedNUNICODE(static_cast<LPCTSTR>(texts[i]), texts[i].GetLength());
@@ -3289,7 +3289,7 @@ void PacketGumpDialog::writeStandardControls(const CGString* controls, size_t co
 	skip(2);
 
 	// write controls
-	for (size_t i = 0; i < controlCount; i++)
+	for (size_t i = 0; i < controlCount; ++i)
 	{
 		writeCharASCII('{');
 		writeStringASCII(static_cast<LPCTSTR>(controls[i]), false);
@@ -3304,7 +3304,7 @@ void PacketGumpDialog::writeStandardControls(const CGString* controls, size_t co
 
 	// write texts
 	writeInt16(static_cast<WORD>(textCount));
-	for (size_t i = 0; i < textCount; i++)
+	for (size_t i = 0; i < textCount; ++i)
 	{
 		writeInt16(static_cast<WORD>(texts[i].GetLength()));
 		writeStringFixedNUNICODE(static_cast<LPCTSTR>(texts[i]), texts[i].GetLength());
@@ -3374,21 +3374,21 @@ PacketProfile::PacketProfile(const CClient* target, const CChar* character) : Pa
 	initLength();
 	writeInt32(character->GetUID());
 
-	TCHAR *name = Str_GetTemp();
-	LPCTSTR title = character->GetTradeTitle();
-	if ( title[0] )
-		sprintf(name, "%s, %s", character->Noto_GetTitle(), title);
+	TCHAR szName[MAX_NAME_SIZE * 2];
+	LPCTSTR pszTitle = character->GetTradeTitle();
+	if ( *pszTitle )
+		snprintf(szName, sizeof(szName), "%s, %s", character->Noto_GetTitle(), pszTitle);
 	else
-		sprintf(name, "%s", character->Noto_GetTitle());
-	writeStringASCII(name);
+		snprintf(szName, sizeof(szName), "%s", character->Noto_GetTitle());
+	writeStringASCII(szName);
 
 	if ( character == target->GetChar() )
 	{
 		const CAccount *account = target->m_pAccount;
 		ASSERT(account);
-		TCHAR *age = Str_GetTemp();
-		sprintf(age, g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_AGE), (CGTime::GetCurrentTime().GetDaysTotal() - account->m_dateFirstConnect.GetDaysTotal()) / 30);
-		writeStringNUNICODE(age);
+		TCHAR szAge[EXPRESSION_MAX_KEY_LEN];
+		snprintf(szAge, sizeof(szAge), g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_AGE), (CGTime::GetCurrentTime().GetDaysTotal() - account->m_dateFirstConnect.GetDaysTotal()) / 30);
+		writeStringNUNICODE(szAge);
 	}
 	else
 		writeCharNUNICODE('\0');
@@ -3546,7 +3546,7 @@ PacketPartyList::PacketPartyList(const CCharRefArray* members) : PacketParty(PAR
 
 	writeByte(static_cast<BYTE>(iQty));
 
-	for (size_t i = 0; i < iQty; i++)
+	for (size_t i = 0; i < iQty; ++i)
 		writeInt32(members->GetChar(i));
 }
 
@@ -3569,7 +3569,7 @@ PacketPartyRemoveMember::PacketPartyRemoveMember(const CChar* member, const CCha
 	writeByte(static_cast<BYTE>(iQty));
 	writeInt32(member->GetUID());
 
-	for (size_t i = 0; i < iQty; i++)
+	for (size_t i = 0; i < iQty; ++i)
 		writeInt32(members->GetChar(i));
 }
 
@@ -3714,7 +3714,7 @@ void PacketDisplayPopup::addOption(WORD entryTag, DWORD textId, WORD flags, WORD
 			writeInt16(color);
 	}
 
-	m_popupCount++;
+	++m_popupCount;
 }
 
 void PacketDisplayPopup::finalise(void)
@@ -4220,7 +4220,7 @@ PacketPropertyList::PacketPropertyList(const CObjBase* object, DWORD version, co
 	writeInt16(0);
 	writeInt32(version);
 	
-	for (size_t x = 0; x < data->GetCount(); x++)
+	for (size_t x = 0; x < data->GetCount(); ++x)
 	{
 		const CClientTooltip* tipEntry = data->GetAt(x);
 		size_t tipLength = strlen(tipEntry->m_args);
@@ -4508,7 +4508,7 @@ PacketBuff::PacketBuff(const CClient* target, const BUFF_ICONS iconId, const DWO
 		writeInt16(0x1);		// show icon
 		writeInt16(0);
 
-		for (size_t i = 0; i < argCount; i++)
+		for (size_t i = 0; i < argCount; ++i)
 		{
 			writeCharUNICODE('\t');
 			writeStringUNICODE(args[i], false);
@@ -4834,7 +4834,7 @@ PacketWorldObjCont::PacketWorldObjCont(const CClient* target, CObjBase** objects
 	initLength();
 	writeInt16(static_cast<WORD>(objectCount));
 
-	for (size_t i = 0; i < objectCount; i++)
+	for (size_t i = 0; i < objectCount; ++i)
 	{
 		CObjBase* object = objects[i];
 		if (object->IsItem())
@@ -4920,8 +4920,7 @@ PacketGlobalChat::PacketGlobalChat(const CClient *target, BYTE unknown, BYTE act
 	ADDTOCALLSTACK("PacketGlobalChat::PacketGlobalChat");
 
 	TCHAR *xmlFull = Str_GetTemp();
-	sprintf(xmlFull, "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?><ultima_stanza>%s</ultima_stanza>", xml);
-	//DEBUG_ERR(("GlobalChat XML sent: %s\n", xmlFull));
+	snprintf(xmlFull, THREAD_STRING_LENGTH, "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\" ?><ultima_stanza>%s</ultima_stanza>", xml);
 
 	writeByte(unknown);
 	writeByte(action);

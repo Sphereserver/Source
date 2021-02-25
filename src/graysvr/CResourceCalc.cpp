@@ -354,6 +354,6 @@ LPCTSTR CResource::Calc_MaptoSextant(CPointMap pt)
 	iLong = (pt.m_x - ptCenter.m_x) * 360 * 60 / ((pt.m_map <= 1) ? UO_SIZE_X_REAL : maximum(1, iLong));
 
 	TCHAR *pszCoords = Str_GetTemp();
-	sprintf(pszCoords, "%do %d'%s, %do %d'%s", abs(iLat / 60), abs(iLat % 60), (iLat <= 0) ? "N" : "S", abs(iLong / 60), abs(iLong % 60), (iLong >= 0) ? "E" : "W");
+	snprintf(pszCoords, 51, "%do %d'%s, %do %d'%s", abs(iLat / 60), abs(iLat % 60), (iLat <= 0) ? "N" : "S", abs(iLong / 60), abs(iLong % 60), (iLong >= 0) ? "E" : "W");
 	return pszCoords;
 }

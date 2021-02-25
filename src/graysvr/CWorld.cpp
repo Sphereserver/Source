@@ -944,7 +944,6 @@ void CWorld::Init()
 	if ( g_MapList.m_pMapDiffCollection )
 		g_MapList.m_pMapDiffCollection->Init();
 
-	// Initialize all sectors
 	int iSectorQty = 0;
 	for ( int iMap = 0; iMap < MAP_QTY; ++iMap )
 	{
@@ -954,13 +953,11 @@ void CWorld::Init()
 	}
 	m_Sectors = new CSector *[iSectorQty];
 
-	TCHAR szMapName[THREAD_STRING_LENGTH];
 	TCHAR szMapList[THREAD_STRING_LENGTH];
-	*szMapList = '\0';
+	int iMapListLen = 0;
 
-	TCHAR szSectorSize[THREAD_STRING_LENGTH];
 	TCHAR szSectorList[THREAD_STRING_LENGTH];
-	*szSectorList = '\0';
+	int iSectorListLen = 0;
 
 	static const LPCTSTR sm_szMapNames[] =
 	{
@@ -978,16 +975,8 @@ void CWorld::Init()
 			continue;
 
 		iSectorQty = g_MapList.GetSectorQty(iMap);
-
-		if ( *szMapList )
-			strncat(szMapList, ", ", sizeof(szMapList) - 1);
-		snprintf(szMapName, sizeof(szMapName), "%d='%s'", iMap, (iMap < static_cast<int>(COUNTOF(sm_szMapNames))) ? sm_szMapNames[iMap] : "[Unnamed]");
-		strncat(szMapList, szMapName, sizeof(szMapList) - 1);
-
-		if ( *szSectorList )
-			strncat(szSectorList, ", ", sizeof(szSectorList) - 1);
-		snprintf(szSectorSize, sizeof(szSectorSize), "%d='%d'", iMap, iSectorQty);
-		strncat(szSectorList, szSectorSize, sizeof(szSectorList) - 1);
+		iMapListLen += snprintf(szMapList + iMapListLen, sizeof(szMapList) - iMapListLen, "%s%d='%s'", (iMapListLen > 0) ? ", " : "", iMap, (iMap < static_cast<int>(COUNTOF(sm_szMapNames))) ? sm_szMapNames[iMap] : "[Unnamed]");
+		iSectorListLen += snprintf(szSectorList + iSectorListLen, sizeof(szSectorList) - iSectorListLen, "%s%d='%d'", (iSectorListLen > 0) ? ", " : "", iMap, iSectorQty);
 
 		// Initialize sectors
 		for ( int iSector = 0; iSector < iSectorQty; ++iSector )
@@ -999,10 +988,8 @@ void CWorld::Init()
 	}
 	ASSERT(m_SectorsQty);
 
-	if ( *szMapList )
-		g_Log.Event(LOGM_INIT, "Expansion maps supported by your MUL files: %s\n", szMapList);
-	if ( *szSectorList )
-		g_Log.Event(LOGM_INIT, "Allocated map sectors: %s\n\n", szSectorList);
+	g_Log.Event(LOGM_INIT, "Expansion maps supported by your MUL files: %s\n", szMapList);
+	g_Log.Event(LOGM_INIT, "Allocated map sectors: %s\n\n", szSectorList);
 	EXC_CATCH;
 }
 
@@ -1172,7 +1159,7 @@ bool CWorld::SaveStage()
 		g_Log.Event(LOGM_SAVE, "Multi data saved   (%s)\n", static_cast<LPCTSTR>(m_FileMultis.GetFilePath()));
 
 		TCHAR szTimeElapsed[25];
-		sprintf(szTimeElapsed, "%lld.%04lld", static_cast<INT64>(TIME_PROFILE_GET_HI / 1000), static_cast<INT64>(TIME_PROFILE_GET_LO));
+		snprintf(szTimeElapsed, sizeof(szTimeElapsed), "%lld.%04lld", static_cast<INT64>(TIME_PROFILE_GET_HI / 1000), static_cast<INT64>(TIME_PROFILE_GET_LO));
 		g_Log.Event(LOGM_SAVE, "World save completed, took %s seconds\n", szTimeElapsed);
 
 		CScriptTriggerArgs Args(szTimeElapsed);

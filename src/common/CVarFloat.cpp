@@ -53,9 +53,9 @@ CGString CVarFloat::Get(LPCTSTR pszName)
 	if ( strlen(pszName) > EXPRESSION_MAX_KEY_LEN )
 		return CGString();
 
-	char chReal[EXPRESSION_MAX_KEY_LEN];
-	sprintf(chReal, "%f", static_cast<RealType>(GetVal(pszName)));
-	return CGString(chReal);
+	TCHAR szReal[EXPRESSION_MAX_KEY_LEN];
+	snprintf(szReal, sizeof(szReal), "%f", static_cast<RealType>(GetVal(pszName)));
+	return CGString(szReal);
 }
 
 short int Reentrant_Count = 0;

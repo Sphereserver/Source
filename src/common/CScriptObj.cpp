@@ -2069,9 +2069,9 @@ bool CScriptObj::r_Verb(CScript &s, CTextConsole *pSrc)
 			CGString sVal;
 			if ( !r_WriteVal(s.GetArgStr(), sVal, pSrc) )
 				return false;
-			TCHAR *pszMsg = Str_GetTemp();
-			sprintf(pszMsg, "'%s' for '%s' is '%s'\n", static_cast<LPCTSTR>(s.GetArgStr()), GetName(), static_cast<LPCTSTR>(sVal));
-			pSrc->SysMessage(pszMsg);
+			TCHAR szMsg[THREAD_STRING_LENGTH];
+			snprintf(szMsg, sizeof(szMsg), "'%s' for '%s' is '%s'\n", static_cast<LPCTSTR>(s.GetArgStr()), GetName(), static_cast<LPCTSTR>(sVal));
+			pSrc->SysMessage(szMsg);
 			break;
 		}
 		default:
