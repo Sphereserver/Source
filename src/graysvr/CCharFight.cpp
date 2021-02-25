@@ -985,14 +985,14 @@ bool CChar::CheckCrimeSeen(SKILL_TYPE skill, CChar *pCharMark, const CObjBase *p
 		fSeen = true;
 		bool fYour = (pChar == pCharMark);
 
-		TCHAR *pszMsg = Str_GetTemp();
+		TCHAR szMsg[EXPRESSION_MAX_KEY_LEN];
 		if ( pItem && pszAction )
 		{
 			if ( pCharMark )
-				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MSG_YOUNOTICE_2), GetName(), pszAction, fYour ? g_Cfg.GetDefaultMsg(DEFMSG_MSG_YOUNOTICE_YOUR) : pCharMark->GetName(), fYour ? "" : g_Cfg.GetDefaultMsg(DEFMSG_MSG_YOUNOTICE_S), pItem->GetName());
+				snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_MSG_YOUNOTICE_2), GetName(), pszAction, fYour ? g_Cfg.GetDefaultMsg(DEFMSG_MSG_YOUNOTICE_YOUR) : pCharMark->GetName(), fYour ? "" : g_Cfg.GetDefaultMsg(DEFMSG_MSG_YOUNOTICE_S), pItem->GetName());
 			else
-				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MSG_YOUNOTICE_1), GetName(), pszAction, pItem->GetName());
-			pChar->ObjMessage(pszMsg, this);
+				snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_MSG_YOUNOTICE_1), GetName(), pszAction, pItem->GetName());
+			pChar->ObjMessage(szMsg, this);
 		}
 
 		// They are not a criminal til someone calls the guards
@@ -2345,14 +2345,14 @@ bool CChar::Attacker_Add(CChar *pChar, INT64 iThreat)
 	if ( (m_pNPC || pChar->m_pNPC) && IsSetCombatFlags(COMBAT_NPC_NOATTACKMSG) )
 		return true;
 
-	TCHAR *pszMsg = Str_GetTemp();
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_COMBAT_ATTACKO), GetName(), pChar->GetName());
-	UpdateObjMessage(pszMsg, NULL, pChar->m_pClient, HUE_TEXT_DEF, TALKMODE_EMOTE);
+	TCHAR szMsg[EXPRESSION_MAX_KEY_LEN];
+	snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_COMBAT_ATTACKO), GetName(), pChar->GetName());
+	UpdateObjMessage(szMsg, NULL, pChar->m_pClient, HUE_TEXT_DEF, TALKMODE_EMOTE);
 
 	if ( pChar->m_pClient && pChar->CanSee(this) )
 	{
-		sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_COMBAT_ATTACKS), GetName());
-		pChar->m_pClient->addBarkParse(pszMsg, this, HUE_TEXT_DEF, TALKMODE_EMOTE);
+		snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_COMBAT_ATTACKS), GetName());
+		pChar->m_pClient->addBarkParse(szMsg, this, HUE_TEXT_DEF, TALKMODE_EMOTE);
 	}
 	return true;
 }

@@ -763,7 +763,7 @@ public:
 				return true;
 
 			TCHAR szUID[20];
-			sprintf(szUID, "SeenBy_0%" FMTDWORDH, static_cast<DWORD>(GetUID()));
+			snprintf(szUID, sizeof(szUID), "SeenBy_0%" FMTDWORDH, static_cast<DWORD>(GetUID()));
 			if ( !pItem->m_TagDefs.GetKeyNum(szUID) )
 				return false;
 		}

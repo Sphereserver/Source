@@ -707,11 +707,11 @@ bool CAccount::Kick(CTextConsole *pSrc, bool fBlock)
 		pSrc->SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_BLOCK), GetName());
 	}
 
-	TCHAR *pszMsg = Str_GetTemp();
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_KICK), GetName(), fBlock ? "BLOCK" : "DISCONNECT", pSrc->GetName());
-	g_Log.Event(LOGM_NOCONTEXT|LOGM_GM_CMDS, "%s\n", pszMsg);
+	TCHAR szMsg[EXPRESSION_MAX_KEY_LEN];
+	snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_KICK), GetName(), fBlock ? "BLOCK" : "DISCONNECT", pSrc->GetName());
+	g_Log.Event(LOGM_NOCONTEXT|LOGM_GM_CMDS, "%s\n", szMsg);
 	if ( pSrc != &g_Serv )
-		pSrc->SysMessage(pszMsg);
+		pSrc->SysMessage(szMsg);
 	return true;
 }
 

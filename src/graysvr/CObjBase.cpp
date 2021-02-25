@@ -440,32 +440,32 @@ void CObjBase::Emote(LPCTSTR pszTextYou, LPCTSTR pszTextThem, CClient *pClientEx
 	if ( !pszTextThem )
 		pszTextThem = pszTextYou;
 
-	TCHAR *pszOthers = Str_GetTemp();
-	TCHAR *pszYou = Str_GetTemp();
+	TCHAR szMsgOthers[EXPRESSION_MAX_KEY_LEN];
+	TCHAR szMsgYou[EXPRESSION_MAX_KEY_LEN];
 
 	if ( pObjTop->IsChar() )
 	{
 		if ( pObjTop != this )
 		{
 			// Equipped items
-			sprintf(pszOthers, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_1), pObjTop->GetName(), GetName(), pszTextThem);
-			sprintf(pszYou, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_2), GetName(), pszTextYou);
+			snprintf(szMsgOthers, sizeof(szMsgOthers), g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_1), pObjTop->GetName(), GetName(), pszTextThem);
+			snprintf(szMsgYou, sizeof(szMsgYou), g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_2), GetName(), pszTextYou);
 		}
 		else
 		{
 			// Chars
-			sprintf(pszOthers, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_5), GetName(), pszTextThem);
-			sprintf(pszYou, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_6), pszTextYou);
+			snprintf(szMsgOthers, sizeof(szMsgOthers), g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_5), GetName(), pszTextThem);
+			snprintf(szMsgYou, sizeof(szMsgYou), g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_6), pszTextYou);
 		}
 	}
 	else
 	{
 		// Items on ground or inside container
-		sprintf(pszOthers, g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_7), GetName(), pszTextThem);
-		strcpy(pszYou, pszOthers);
+		snprintf(szMsgOthers, sizeof(szMsgOthers), g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_7), GetName(), pszTextThem);
+		strcpy(szMsgYou, szMsgOthers);
 	}
 
-	pObjTop->UpdateObjMessage(pszOthers, pszYou, pClientExclude, defaultHue, TALKMODE_EMOTE, defaultFont, defaultUnicode);
+	pObjTop->UpdateObjMessage(szMsgOthers, szMsgYou, pClientExclude, defaultHue, TALKMODE_EMOTE, defaultFont, defaultUnicode);
 }
 
 void CObjBase::Speak(LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font)

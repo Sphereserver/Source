@@ -210,33 +210,30 @@ bool CChar::NPC_OnHearPetCmd(LPCTSTR pszCmd, CChar *pSrc, bool fAllPets)
 			if ( !NPC_CanSpeak() )
 				break;
 
+			TCHAR szMsg[MAX_TALK_BUFFER];
 			CItemContainer *pBank = GetContainerCreate(LAYER_BANKBOX);
-			TCHAR *pszMsg = Str_GetTemp();
 			if ( NPC_IsVendor() )
 			{
+				int iLen = 0;
 				CItemContainer *pCont = GetContainerCreate(LAYER_VENDOR_STOCK);
-				TCHAR *pszTemp1 = Str_GetTemp();
-				TCHAR *pszTemp2 = Str_GetTemp();
-				TCHAR *pszTemp3 = Str_GetTemp();
 				if ( pCharDef->m_iHireDayWage )
 				{
-					sprintf(pszTemp1, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_STAT_GOLD_1), pBank->m_itEqBankBox.m_Check_Amount);
-					sprintf(pszTemp2, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_STAT_GOLD_2), pBank->m_itEqBankBox.m_Check_Amount / pCharDef->m_iHireDayWage);
-					sprintf(pszTemp3, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_STAT_GOLD_3), static_cast<int>(pCont->GetCount()));
+					iLen += snprintf(szMsg + iLen, sizeof(szMsg) - iLen, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_STAT_GOLD_1), pBank->m_itEqBankBox.m_Check_Amount);
+					iLen += snprintf(szMsg + iLen, sizeof(szMsg) - iLen, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_STAT_GOLD_2), pBank->m_itEqBankBox.m_Check_Amount / pCharDef->m_iHireDayWage);
+					iLen += snprintf(szMsg + iLen, sizeof(szMsg) - iLen, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_STAT_GOLD_3), static_cast<int>(pCont->GetCount()));
 				}
 				else
 				{
-					sprintf(pszTemp1, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_STAT_GOLD_1), pBank->m_itEqBankBox.m_Check_Amount);
-					sprintf(pszTemp2, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_STAT_GOLD_4), pBank->m_itEqBankBox.m_Check_Restock, pBank->GetTimerAdjusted() / 60);
-					sprintf(pszTemp3, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_STAT_GOLD_3), static_cast<int>(pCont->GetCount()));
+					iLen += snprintf(szMsg + iLen, sizeof(szMsg) - iLen, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_STAT_GOLD_1), pBank->m_itEqBankBox.m_Check_Amount);
+					iLen += snprintf(szMsg + iLen, sizeof(szMsg) - iLen, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_STAT_GOLD_4), pBank->m_itEqBankBox.m_Check_Restock, pBank->GetTimerAdjusted() / 60);
+					iLen += snprintf(szMsg + iLen, sizeof(szMsg) - iLen, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_STAT_GOLD_3), static_cast<int>(pCont->GetCount()));
 				}
-				snprintf(pszMsg, THREAD_STRING_LENGTH, "%s %s %s", pszTemp1, pszTemp2, pszTemp3);
 			}
 			else if ( pCharDef->m_iHireDayWage )
 			{
-				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_DAYS_LEFT), pBank->m_itEqBankBox.m_Check_Amount / pCharDef->m_iHireDayWage);
+				snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_DAYS_LEFT), pBank->m_itEqBankBox.m_Check_Amount / pCharDef->m_iHireDayWage);
 			}
-			Speak(pszMsg);
+			Speak(szMsg);
 			return true;
 		}
 
@@ -249,16 +246,16 @@ bool CChar::NPC_OnHearPetCmd(LPCTSTR pszCmd, CChar *pSrc, bool fAllPets)
 			CItemContainer *pBank = GetContainerCreate(LAYER_BANKBOX);
 			if ( pBank )
 			{
-				TCHAR *pszMsg = Str_GetTemp();
+				TCHAR szMsg[MAX_TALK_BUFFER];
 				if ( pBank->m_itEqBankBox.m_Check_Amount > pCharDef->m_iHireDayWage )
 				{
-					sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_GETGOLD_1), pBank->m_itEqBankBox.m_Check_Amount - pCharDef->m_iHireDayWage);
+					snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_GETGOLD_1), pBank->m_itEqBankBox.m_Check_Amount - pCharDef->m_iHireDayWage);
 					pSrc->AddGoldToPack(pBank->m_itEqBankBox.m_Check_Amount - pCharDef->m_iHireDayWage);
 					pBank->m_itEqBankBox.m_Check_Amount = pCharDef->m_iHireDayWage;
 				}
 				else
-					sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_GETGOLD_2), pBank->m_itEqBankBox.m_Check_Amount);
-				Speak(pszMsg);
+					snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_GETGOLD_2), pBank->m_itEqBankBox.m_Check_Amount);
+				Speak(szMsg);
 			}
 			return true;
 		}
@@ -595,9 +592,9 @@ bool CChar::NPC_CheckHirelingStatus()
 		pBank->m_itEqBankBox.m_Check_Amount -= dwPeriodWage;
 	else
 	{
-		TCHAR *pszMsg = Str_GetTemp();
-		sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_WAGE_COST), pCharDef->m_iHireDayWage);
-		Speak(pszMsg);
+		TCHAR szMsg[MAX_TALK_BUFFER];
+		snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_WAGE_COST), pCharDef->m_iHireDayWage);
+		Speak(szMsg);
 
 		CChar *pOwner = NPC_PetGetOwner();
 		if ( pOwner )
@@ -641,9 +638,9 @@ void CChar::NPC_OnHirePayMore(CItem *pGold, bool fHire)
 		pGold->Delete();
 	}
 
-	TCHAR *pszMsg = Str_GetTemp();
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_HIRE_TIME), pBank->m_itEqBankBox.m_Check_Amount / pCharDef->m_iHireDayWage);
-	Speak(pszMsg);
+	TCHAR szMsg[MAX_TALK_BUFFER];
+	snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_HIRE_TIME), pBank->m_itEqBankBox.m_Check_Amount / pCharDef->m_iHireDayWage);
+	Speak(szMsg);
 }
 
 bool CChar::NPC_OnHirePay(CChar *pCharSrc, CItemMemory *pMemory, CItem *pGold)
@@ -724,9 +721,9 @@ bool CChar::NPC_OnHireHear(CChar *pCharSrc)
 		return false;
 	}
 
-	TCHAR *pszMsg = Str_GetTemp();
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg(Calc_GetRandVal(2) ? DEFMSG_NPC_PET_HIRE_AMNT : DEFMSG_NPC_PET_HIRE_RATE), pCharDef->m_iHireDayWage);
-	Speak(pszMsg);
+	TCHAR szMsg[MAX_TALK_BUFFER];
+	snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(Calc_GetRandVal(2) ? DEFMSG_NPC_PET_HIRE_AMNT : DEFMSG_NPC_PET_HIRE_RATE), pCharDef->m_iHireDayWage);
+	Speak(szMsg);
 
 	pMemory = Memory_AddObjTypes(pCharSrc, MEMORY_SPEAK);
 	if ( pMemory )
@@ -760,9 +757,9 @@ bool CChar::NPC_SetVendorPrice(CItem *pItem, int iPrice)
 	if ( iPrice < 0 )	// just a test.
 		return true;
 
-	TCHAR *pszMsg = Str_GetTemp();
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_SETPRICE_1), pVendItem->GetName(), iPrice);
-	Speak(pszMsg);
+	TCHAR szMsg[MAX_TALK_BUFFER];
+	snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_SETPRICE_1), pVendItem->GetName(), iPrice);
+	Speak(szMsg);
 
 	pVendItem->SetBasePrice(iPrice);
 	return true;
@@ -792,9 +789,9 @@ void CChar::NPC_PetRelease()
 			return;
 	}
 
-	TCHAR *pszMsg = Str_GetTemp();
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_DECIDE_MASTER), GetName());
-	Speak(pszMsg);
+	TCHAR szMsg[MAX_TALK_BUFFER];
+	snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_NPC_PET_DECIDE_MASTER), GetName());
+	Speak(szMsg);
 
 	NPC_PetClearOwners();
 	UpdatePropertyFlag();

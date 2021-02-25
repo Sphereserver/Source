@@ -372,9 +372,9 @@ bool CPartyDef::RemoveMember(CChar *pChar, CChar *pCharSrc)
 	DetachChar(pChar);
 	pChar->SysMessageDefault(DEFMSG_PARTY_REMOVED);
 
-	TCHAR *pszMsg = Str_GetTemp();
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_PARTY_TARG_REMOVE_SUCCESS), pChar->GetName());
-	SysMessageAll(pszMsg);
+	TCHAR szMsg[EXPRESSION_MAX_KEY_LEN];
+	snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_PARTY_TARG_REMOVE_SUCCESS), pChar->GetName());
+	SysMessageAll(szMsg);
 
 	if ( m_Chars.GetCharCount() <= 1 )
 	{
@@ -481,8 +481,8 @@ bool CPartyDef::AcceptEvent(CChar *pCharAccept, CChar *pCharInviter, bool fForce
 			return false;
 	}
 
-	TCHAR *pszMsg = Str_GetTemp();
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_PARTY_JOINED), pCharAccept->GetName());
+	TCHAR szMsg[EXPRESSION_MAX_KEY_LEN];
+	snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_PARTY_JOINED), pCharAccept->GetName());
 
 	if ( !pParty )
 	{
@@ -490,7 +490,7 @@ bool CPartyDef::AcceptEvent(CChar *pCharAccept, CChar *pCharInviter, bool fForce
 		pParty = new CPartyDef(pCharInviter, pCharAccept);
 		ASSERT(pParty);
 		g_World.m_Parties.InsertHead(pParty);
-		pCharInviter->SysMessage(pszMsg);
+		pCharInviter->SysMessage(szMsg);
 	}
 	else
 	{
@@ -498,7 +498,7 @@ bool CPartyDef::AcceptEvent(CChar *pCharAccept, CChar *pCharInviter, bool fForce
 		if ( pParty->IsPartyFull() || (!fForced && !pParty->IsPartyMaster(pCharInviter)) )
 			return false;
 
-		pParty->SysMessageAll(pszMsg);	// tell everyone already in the party about this
+		pParty->SysMessageAll(szMsg);	// tell everyone already in the party about this
 		pParty->AcceptMember(pCharAccept);
 	}
 

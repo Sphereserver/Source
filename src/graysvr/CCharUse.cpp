@@ -85,9 +85,9 @@ bool CChar::Use_CarveCorpse(CItemCorpse *pCorpse)
 
 		if ( pChar && pChar->m_pPlayer )
 		{
-			TCHAR *pszMsg = Str_GetTemp();
-			sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_CORPSE_NAME), pPart->GetName(), pChar->GetName());
-			pPart->SetName(pszMsg);
+			TCHAR szName[MAX_ITEM_NAME_SIZE];
+			snprintf(szName, sizeof(szName), g_Cfg.GetDefaultMsg(DEFMSG_CORPSE_NAME), pPart->GetName(), pChar->GetName());
+			pPart->SetName(szName);
 			pPart->m_uidLink = pChar->GetUID();
 			pPart->MoveToDecay(pt, pPart->GetDecayTime());
 			continue;
@@ -1566,9 +1566,9 @@ int CChar::Do_Use_Item(CItem *pItem, bool fLink)
 				ObjMessage(g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SEXTANT_T2A), this);
 			else
 			{
-				TCHAR *pszMsg = Str_GetTemp();
-				sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SEXTANT), m_pArea->GetName(), g_Cfg.Calc_MaptoSextant(GetTopPoint()));
-				ObjMessage(pszMsg, this);
+				TCHAR szMsg[EXPRESSION_MAX_KEY_LEN];
+				snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SEXTANT), m_pArea->GetName(), g_Cfg.Calc_MaptoSextant(GetTopPoint()));
+				ObjMessage(szMsg, this);
 			}
 			return true;
 		}

@@ -288,7 +288,7 @@ void CGrayStaticsBlock::LoadStatics(DWORD dwBlockIndex, int map)
 		if ( (index.GetBlockLength() % sizeof(CUOStaticItemRec)) != 0 )
 		{
 			TCHAR szTemp[57];
-			sprintf(szTemp, "CGrapMapBlock: Read Statics - Block Length of %" FMTDWORD, index.GetBlockLength());
+			snprintf(szTemp, sizeof(szTemp), "CGrapMapBlock: Read Statics - Block Length of %" FMTDWORD, index.GetBlockLength());
 			throw CGrayError(LOGL_CRIT, CGFile::GetLastError(), szTemp);
 		}
 		m_iStatics = index.GetBlockLength() / sizeof(CUOStaticItemRec);
@@ -308,7 +308,7 @@ void CGrayStaticsBlock::LoadStatics(size_t iCount, CUOStaticItemRec *pStatics)
 	if ( m_iStatics > 0 )
 	{
 		m_pStatics = new CUOStaticItemRec[m_iStatics];
-		memcpy(m_pStatics, pStatics, sizeof(CUOStaticItemRec) * m_iStatics);
+		memcpy(m_pStatics, pStatics, sizeof(m_pStatics[0]) * m_iStatics);
 	}
 	else
 	{

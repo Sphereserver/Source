@@ -2085,9 +2085,9 @@ bool PacketVendorSellReq::onReceive(NetState* net)
 	}
 	else if (itemCount >= MAX_ITEMS_CONT)
 	{
-		TCHAR *pszText = Str_GetTemp();
-		sprintf(pszText, g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_SELL_LIMIT), MAX_ITEMS_CONT);
-		pVendor->Speak(pszText);
+		TCHAR szText[MAX_TALK_BUFFER];
+		snprintf(szText, sizeof(szText), g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_SELL_LIMIT), MAX_ITEMS_CONT);
+		pVendor->Speak(szText);
 		return true;
 	}
 

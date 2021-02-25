@@ -392,10 +392,9 @@ bool CClient::Cmd_Use_Item(CItem *pItem, bool fTestTouch, bool fScript)
 		case IT_WEAPON_MACE_PICK:
 			if ( fEquipped || !IsSetOF(OF_NoDClickTarget) )
 			{
-				// Mine at the location
-				TCHAR *pszTemp = Str_GetTemp();
-				sprintf(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_MACEPICK_TARG), pItem->GetName());
-				addTarget(CLIMODE_TARG_USE_ITEM, pszTemp, true, true);
+				TCHAR szPrompt[EXPRESSION_MAX_KEY_LEN];
+				snprintf(szPrompt, sizeof(szPrompt), g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_MACEPICK_TARG), pItem->GetName());
+				addTarget(CLIMODE_TARG_USE_ITEM, szPrompt, true, true);
 			}
 			return true;
 
@@ -424,9 +423,9 @@ bool CClient::Cmd_Use_Item(CItem *pItem, bool fTestTouch, bool fScript)
 
 		case IT_CANNON_BALL:
 		{
-			TCHAR *pszTemp = Str_GetTemp();
-			sprintf(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_CBALL_PROMT), pItem->GetName());
-			addTarget(CLIMODE_TARG_USE_ITEM, pszTemp);
+			TCHAR szPrompt[EXPRESSION_MAX_KEY_LEN];
+			snprintf(szPrompt, sizeof(szPrompt), g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_CBALL_PROMT), pItem->GetName());
+			addTarget(CLIMODE_TARG_USE_ITEM, szPrompt);
 			return true;
 		}
 
@@ -457,9 +456,9 @@ bool CClient::Cmd_Use_Item(CItem *pItem, bool fTestTouch, bool fScript)
 		case IT_SEED:
 		case IT_PITCHER_EMPTY:
 		{
-			TCHAR *pszTemp = Str_GetTemp();
-			sprintf(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_PITCHER_TARG), pItem->GetName());
-			addTarget(CLIMODE_TARG_USE_ITEM, pszTemp, true);
+			TCHAR szPrompt[EXPRESSION_MAX_KEY_LEN];
+			snprintf(szPrompt, sizeof(szPrompt), g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_PITCHER_TARG), pItem->GetName());
+			addTarget(CLIMODE_TARG_USE_ITEM, szPrompt, true);
 			return true;
 		}
 
@@ -528,9 +527,9 @@ bool CClient::Cmd_Use_Item(CItem *pItem, bool fTestTouch, bool fScript)
 
 		case IT_SEWING_KIT:
 		{
-			TCHAR *pszTemp = Str_GetTemp();
-			sprintf(pszTemp, g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SEWKIT_PROMT), pItem->GetName());
-			addTarget(CLIMODE_TARG_USE_ITEM, pszTemp);
+			TCHAR szPrompt[EXPRESSION_MAX_KEY_LEN];
+			snprintf(szPrompt, sizeof(szPrompt), g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SEWKIT_PROMT), pItem->GetName());
+			addTarget(CLIMODE_TARG_USE_ITEM, szPrompt);
 			return true;
 		}
 

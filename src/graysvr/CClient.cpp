@@ -271,9 +271,9 @@ void CClient::addTargetVerb(LPCTSTR pszCmd, LPCTSTR pszArgs)
 		return;
 
 	m_Targ_Text.Format("%s%s%s", pszCmd, (pszArgs[0] && pszCmd[0]) ? " " : "", pszArgs);
-	TCHAR *pszMsg = Str_GetTemp();
-	sprintf(pszMsg, g_Cfg.GetDefaultMsg(DEFMSG_TARGET_COMMAND), static_cast<LPCTSTR>(m_Targ_Text));
-	addTarget(CLIMODE_TARG_OBJ_SET, pszMsg);
+	TCHAR szMsg[EXPRESSION_MAX_KEY_LEN];
+	snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_TARGET_COMMAND), static_cast<LPCTSTR>(m_Targ_Text));
+	addTarget(CLIMODE_TARG_OBJ_SET, szMsg);
 }
 
 void CClient::addTargetFunctionMulti(LPCTSTR pszFunction, ITEMID_TYPE itemid, HUE_TYPE wHue, bool fAllowGround)
