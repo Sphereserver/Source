@@ -41,7 +41,7 @@ DWORD CServerDef::StatGet(SERV_STAT_TYPE i) const
 
 				TCHAR szLibPath[MAX_PATH];
 				GetSystemDirectory(szLibPath, sizeof(szLibPath));
-				strncat(szLibPath, "\\psapi.dll", sizeof(szLibPath) - 1);
+				strncat(szLibPath, "\\psapi.dll", sizeof(szLibPath) - strlen(szLibPath) - 1);
 
 				m_hModule = LoadLibrary(szLibPath);
 				if ( !m_hModule )

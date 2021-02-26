@@ -1585,15 +1585,15 @@ void CClient::Event_Talk(LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, boo
 	if ( fNoStrip )
 	{
 		// The characters in Unicode speech don't need to be filtered
-		strncpy(szText, pszText, MAX_TALK_BUFFER - 1);
-		szText[MAX_TALK_BUFFER - 1] = '\0';
+		strncpy(szText, pszText, sizeof(szText) - 1);
+		szText[sizeof(szText) - 1] = '\0';
 		iLen = strlen(szText);
 	}
 	else
 	{
 		TCHAR szTextG[MAX_TALK_BUFFER];
-		strncpy(szTextG, pszText, MAX_TALK_BUFFER - 1);
-		szTextG[MAX_TALK_BUFFER - 1] = '\0';
+		strncpy(szTextG, pszText, sizeof(szTextG) - 1);
+		szTextG[sizeof(szTextG) - 1] = '\0';
 		iLen = Str_GetBare(szText, szTextG, sizeof(szText) - 1);
 	}
 
@@ -1617,8 +1617,8 @@ void CClient::Event_Talk(LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, boo
 		return;
 
 	TCHAR z[MAX_TALK_BUFFER];
-	strncpy(z, pszText, MAX_TALK_BUFFER - 1);
-	z[MAX_TALK_BUFFER - 1] = '\0';
+	strncpy(z, pszText, sizeof(z) - 1);
+	z[sizeof(z) - 1] = '\0';
 
 	if ( g_Cfg.m_fSuppressCapitals )
 	{
@@ -1670,7 +1670,7 @@ void CClient::Event_TalkUNICODE(NWORD *wszText, int iTextLen, HUE_TYPE wHue, TAL
 	else if ( mode == TALKMODE_EMOTE )
 		m_pChar->m_EmoteHue = wHue;
 
-	TCHAR szText[MAX_TALK_BUFFER];
+	TCHAR szText[MAX_TALK_BUFFER] = { '\0' };
 	const NWORD *puText = wszText;
 
 	int iLen = CvtNUNICODEToSystem(szText, sizeof(szText), wszText, iTextLen);
@@ -2472,6 +2472,7 @@ void CClient::Event_ExtCmd(EXTCMD_TYPE type, TCHAR *pszArgs)
 		if ( m_pChar->OnTrigger(CTRIG_UserExtCmd, m_pChar, &Args) == TRIGRET_RET_TRUE )
 			return;
 		strncpy(pszArgs, Args.m_s1, MAX_NAME_SIZE - 1);
+		pszArgs[MAX_NAME_SIZE - 1] = '\0';
 	}
 
 	TCHAR *ppArgs[2];

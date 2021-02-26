@@ -242,6 +242,7 @@ bool CObjBase::SetNamePool(LPCTSTR pszName)
 		// Pick random name from the given #NAMES list
 		++pszName;
 		strncpy(szTemp, pszName, sizeof(szTemp) - 1);
+		szTemp[sizeof(szTemp) - 1] = '\0';
 
 		TCHAR *ppArgs[2];
 		Str_ParseCmds(szTemp, ppArgs, COUNTOF(ppArgs));
@@ -261,11 +262,13 @@ bool CObjBase::SetNamePool(LPCTSTR pszName)
 		}
 
 		strncpy(szTemp, s.GetKey(), sizeof(szTemp) - 1);
+		szTemp[sizeof(szTemp) - 1] = '\0';
 	}
 	else
 	{
 		// Directly set the given name
 		strncpy(szTemp, pszName, sizeof(szTemp) - 1);
+		szTemp[sizeof(szTemp) - 1] = '\0';
 	}
 
 	if ( !CObjBaseTemplate::SetName(szTemp) )
@@ -462,7 +465,7 @@ void CObjBase::Emote(LPCTSTR pszTextYou, LPCTSTR pszTextThem, CClient *pClientEx
 	{
 		// Items on ground or inside container
 		snprintf(szMsgOthers, sizeof(szMsgOthers), g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_7), GetName(), pszTextThem);
-		strcpy(szMsgYou, szMsgOthers);
+		strncpy(szMsgYou, szMsgOthers, sizeof(szMsgYou) - 1);
 	}
 
 	pObjTop->UpdateObjMessage(szMsgOthers, szMsgYou, pClientExclude, defaultHue, TALKMODE_EMOTE, defaultFont, defaultUnicode);

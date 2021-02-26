@@ -3125,14 +3125,15 @@ bool CChar::r_Verb(CScript &s, CTextConsole *pSrc)	// execute command from scrip
 		}
 		case CHV_MAKEITEM:
 		{
-			TCHAR *pszTmp = Str_GetTemp();
-			strncpy(pszTmp, s.GetArgRaw(), MAX_ITEM_NAME_SIZE - 1);
-			GETNONWHITESPACE(pszTmp);
+			TCHAR *pszTemp = Str_GetTemp();
+			strncpy(pszTemp, s.GetArgRaw(), MAX_ITEM_NAME_SIZE - 1);
+			pszTemp[MAX_ITEM_NAME_SIZE - 1] = '\0';
+			GETNONWHITESPACE(pszTemp);
 
 			WORD wReplicationQty = 1;
 
 			TCHAR *ppArgs[2];
-			size_t iArgQty = Str_ParseCmds(pszTmp, ppArgs, COUNTOF(ppArgs), " ,\t");
+			size_t iArgQty = Str_ParseCmds(pszTemp, ppArgs, COUNTOF(ppArgs), " ,\t");
 			if ( iArgQty == 2 )
 			{
 				if ( IsDigit(ppArgs[1][0]) )

@@ -15,7 +15,7 @@ void CrashDump::Enable()
 {
 	TCHAR szLibPath[MAX_PATH];
 	GetSystemDirectory(szLibPath, sizeof(szLibPath));
-	strncat(szLibPath, "\\dbghelp.dll", sizeof(szLibPath) - 1);
+	strncat(szLibPath, "\\dbghelp.dll", sizeof(szLibPath) - strlen(szLibPath) - 1);
 
 	m_hDll = LoadLibrary(szLibPath);
 	if (!m_hDll)

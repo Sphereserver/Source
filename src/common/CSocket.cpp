@@ -56,6 +56,7 @@ void CSocketAddress::SetHostPortStr(LPCTSTR pszIP)
 	// NOTE: This is a blocking call
 	TCHAR szTemp[256];
 	strncpy(szTemp, pszIP, sizeof(szTemp) - 1);
+	szTemp[sizeof(szTemp) - 1];
 	SetPortExtStr(szTemp);
 	SetHostStr(szTemp);
 }

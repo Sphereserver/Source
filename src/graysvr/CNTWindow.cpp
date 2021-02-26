@@ -241,7 +241,7 @@ bool CNTWindow::RegisterClass(char *className)	// static
 
 	TCHAR szLibPath[MAX_PATH];
 	GetSystemDirectory(szLibPath, sizeof(szLibPath));
-	strncat(szLibPath, "\\riched20.dll", sizeof(szLibPath) - 1);
+	strncat(szLibPath, "\\riched20.dll", sizeof(szLibPath) - strlen(szLibPath) - 1);
 
 	LoadLibrary(szLibPath);
 	return true;
@@ -477,9 +477,13 @@ bool CNTWindow::OnCommand( WORD wNotifyCode, INT_PTR wID, HWND hwndCtl )
 			m_wndInput.GetWindowText( szTmp, sizeof(szTmp));
 
 			for ( int i = 4; i > 0; --i )
+			{
 				strncpy(theApp.m_wndMain.m_zCommands[i], theApp.m_wndMain.m_zCommands[i - 1], sizeof(theApp.m_wndMain.m_zCommands[i]) - 1);
+				theApp.m_wndMain.m_zCommands[i][sizeof(theApp.m_wndMain.m_zCommands[i]) - 1] = '\0';
+			}
 
 			strncpy(m_zCommands[0], szTmp, sizeof(m_zCommands[0]) - 1);
+			m_zCommands[0][sizeof(m_zCommands[0]) - 1] = '\0';
 			m_wndInput.SetWindowText("");
 			g_Serv.m_sConsoleText = szTmp;
 			g_Serv.m_fConsoleTextReadyFlag = true;
@@ -522,6 +526,7 @@ void	CNTWindow::SetLogFont( const char * pszFont )
 		LOGFONT logfont;
    		memset( &logfont, 0, sizeof(logfont) );
 		strncpy(logfont.lfFaceName, pszFont, sizeof(logfont.lfFaceName) - 1);
+		logfont.lfFaceName[sizeof(logfont.lfFaceName) - 1] = '\0';
 
 		// calculate height for a 10pt font, some systems can produce an unreadable
 		// font size if we let CreateFontIndirect pick a system default size
@@ -644,7 +649,7 @@ LRESULT CNTWindow::OnNotify( int idCtrl, NMHDR * pnmh )
 							{
 								TCHAR szApplicationName[MAX_PATH];
 								GetSystemDirectory(szApplicationName, sizeof(szApplicationName));
-								strncat(szApplicationName, "\\notepad.exe", sizeof(szApplicationName) - 1);
+								strncat(szApplicationName, "\\notepad.exe", sizeof(szApplicationName) - strlen(szApplicationName) - 1);
 
 								TCHAR szCommandLine[MAX_PATH];
 								snprintf(szCommandLine, sizeof(szCommandLine), " \"%s\"", filePath);
@@ -763,7 +768,10 @@ bool NTWindow_Init(HINSTANCE hInstance, LPTSTR lpCmdLine, int nCmdShow)
 		if ( argv[1][1] == 'c' )
 		{
 			if ( argv[1][2] )
+			{
 				strncpy(className, &argv[1][2], sizeof(className) - 1);
+				className[sizeof(className) - 1] = '\0';
+			}
 		}
 	}
 	CNTWindow::RegisterClass(className);
@@ -977,7 +985,10 @@ bool NTWindow_OnTick( int iWaitmSec )
 					theApp.m_wndMain.m_wndInput.SetWindowText(theApp.m_wndMain.m_zCommands[0]);
 
 					for ( int i = 0; i < 4; ++i )
+					{
 						strncpy(theApp.m_wndMain.m_zCommands[i], theApp.m_wndMain.m_zCommands[i + 1], sizeof(theApp.m_wndMain.m_zCommands[i]) - 1);
+						theApp.m_wndMain.m_zCommands[i][sizeof(theApp.m_wndMain.m_zCommands[i]) - 1] = '\0';
+					}
 
 					theApp.m_wndMain.m_wndInput.GetWindowText(theApp.m_wndMain.m_zCommands[4], sizeof(theApp.m_wndMain.m_zCommands[4]));
 				}

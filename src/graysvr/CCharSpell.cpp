@@ -928,7 +928,7 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 	}
 
 	// Buffs related variables
-	TCHAR szNumBuff[7][MAX_NAME_SIZE];
+	TCHAR szNumBuff[7][MAX_NAME_SIZE] = { '\0' };
 	LPCTSTR pszNumBuff[7] = { szNumBuff[0], szNumBuff[1], szNumBuff[2], szNumBuff[3], szNumBuff[4], szNumBuff[5], szNumBuff[6] };
 
 	switch ( pSpellDef->m_idLayer )

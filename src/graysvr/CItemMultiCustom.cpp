@@ -1316,13 +1316,13 @@ bool CItemMultiCustom::LoadValidItems()
 
 	TCHAR *pszHeaderFull = Str_GetTemp();
 	TCHAR *pszRowFull = Str_GetTemp();
+	size_t iHeaderLen = 0;
+	size_t iRowLen = 0;
+
 	for ( CSVRowData::iterator itCsv = csvDataRow.begin(); itCsv != csvDataRow.end(); ++itCsv )
 	{
-		strncat(pszHeaderFull, "\t", THREAD_STRING_LENGTH - 1);
-		strncat(pszHeaderFull, itCsv->first.c_str(), THREAD_STRING_LENGTH - 1);
-
-		strncat(pszRowFull, "\t", THREAD_STRING_LENGTH - 1);
-		strncat(pszRowFull, itCsv->second.c_str(), THREAD_STRING_LENGTH - 1);
+		iHeaderLen += snprintf(pszHeaderFull + iHeaderLen, THREAD_STRING_LENGTH - iHeaderLen, "\t%s", itCsv->first.c_str());
+		iRowLen += snprintf(pszRowFull + iRowLen, THREAD_STRING_LENGTH - iRowLen, "\t%s", itCsv->second.c_str());
 	}
 
 	g_Log.EventDebug("header count '%" FMTSIZE_T "', header text '%s'\n", csvDataRow.size(), pszHeaderFull);

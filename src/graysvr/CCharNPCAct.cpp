@@ -592,8 +592,8 @@ bool CChar::NPC_OnTrainHear(CChar *pCharSrc, LPCTSTR pszCmd)
 	}
 
 	// Show all skills available to train
-	TCHAR szSkillList[MAX_TALK_BUFFER];
-	*szSkillList = '\0';
+	TCHAR szSkillList[MAX_TALK_BUFFER] = { '\0' };
+	size_t len = 0;
 
 	for ( size_t i = 0; i < g_Cfg.m_iMaxSkill; ++i )
 	{
@@ -607,9 +607,7 @@ bool CChar::NPC_OnTrainHear(CChar *pCharSrc, LPCTSTR pszCmd)
 		if ( wSkillTrain <= 0 )
 			continue;
 
-		if ( *szSkillList )
-			strncat(szSkillList, ", ", sizeof(szSkillList) - 1);
-		strncat(szSkillList, g_Cfg.GetSkillKey(skillCheck), sizeof(szSkillList) - 1);
+		len += snprintf(szSkillList + len, sizeof(szSkillList) - len, "%s%s", (len > 0) ? ", " : "", g_Cfg.GetSkillKey(skillCheck));
 	}
 
 	if ( *szSkillList )
