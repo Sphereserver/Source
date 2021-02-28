@@ -18,16 +18,16 @@ CNTApp theApp;
 
 bool CNTWindow::CAboutDlg::OnInitDialog()
 {
-	char *pszBuild = Str_GetTemp();
+	char szBuild[80];
 #if defined(__GITREVISION__) && defined(__GITHASH__)
-	snprintf(pszBuild, 80, "Compiled at %s (Build %d / Git hash %s)", g_szCompiledDate, __GITREVISION__, __GITHASH__);
+	snprintf(szBuild, sizeof(szBuild), "Compiled at %s (Build %d / Git hash %s)", g_szCompiledDate, __GITREVISION__, __GITHASH__);
 #else
-	snprintf(pszBuild, 40, "Compiled at %s", g_szCompiledDate);
+	snprintf(szBuild, sizeof(szBuild), "Compiled at %s", g_szCompiledDate);
 #endif
 
 	SetDlgItemText(IDC_ABOUT_VERSION, SPHERE_TITLE_VER " (" SPHERE_VER_ARCH ")");
 	SetDlgItemText(IDC_ABOUT_WEBSITE, SPHERE_WEBSITE);
-	SetDlgItemText(IDC_ABOUT_COMPILER, pszBuild);
+	SetDlgItemText(IDC_ABOUT_COMPILER, szBuild);
 	return false;
 }
 
@@ -241,7 +241,7 @@ bool CNTWindow::RegisterClass(char *className)	// static
 
 	TCHAR szLibPath[MAX_PATH];
 	GetSystemDirectory(szLibPath, sizeof(szLibPath));
-	strncat(szLibPath, "\\riched20.dll", sizeof(szLibPath) - strlen(szLibPath) - 1);
+	strncat(szLibPath, "\\riched20.dll", sizeof(szLibPath) - 1);
 
 	LoadLibrary(szLibPath);
 	return true;
@@ -290,7 +290,7 @@ int CNTWindow::OnCreate( HWND hWnd, LPCREATESTRUCT lParam )
 		pnid.uFlags = NIF_TIP | NIF_ICON | NIF_MESSAGE;
 		pnid.uCallbackMessage = WM_USER_TRAY_NOTIFY;
 		pnid.hIcon  = theApp.LoadIcon( IDR_MAINFRAME );
-		strcpylen(pnid.szTip, theApp.m_pszAppName, COUNTOF(pnid.szTip)-1);
+		strcpylen(pnid.szTip, theApp.m_pszAppName, sizeof(pnid.szTip));
 		Shell_NotifyIcon(NIM_ADD, &pnid);
 	}
 
@@ -649,7 +649,7 @@ LRESULT CNTWindow::OnNotify( int idCtrl, NMHDR * pnmh )
 							{
 								TCHAR szApplicationName[MAX_PATH];
 								GetSystemDirectory(szApplicationName, sizeof(szApplicationName));
-								strncat(szApplicationName, "\\notepad.exe", sizeof(szApplicationName) - strlen(szApplicationName) - 1);
+								strncat(szApplicationName, "\\notepad.exe", sizeof(szApplicationName) - 1);
 
 								TCHAR szCommandLine[MAX_PATH];
 								snprintf(szCommandLine, sizeof(szCommandLine), " \"%s\"", filePath);
@@ -808,8 +808,8 @@ void NTWindow_Exit()
 	// Unattach the window.
 	if ( g_Serv.m_iExitFlag < 0 )
 	{
-		TCHAR *pszMsg = Str_GetTemp();
-		snprintf(pszMsg, 32, "Server terminated by error %d!", g_Serv.m_iExitFlag);
+		TCHAR pszMsg[40];
+		snprintf(pszMsg, sizeof(pszMsg), "Server terminated by error %d!", g_Serv.m_iExitFlag);
 		theApp.m_wndMain.MessageBox(pszMsg, theApp.m_pszAppName, MB_OK|MB_ICONEXCLAMATION );
 		// just sit here for a bit til the user wants to close the window.
 		while ( NTWindow_OnTick(500) )
@@ -860,7 +860,7 @@ void NTWindow_SetWindowTitle( LPCTSTR pszText )
 	if ( GRAY_GetOSInfo()->dwPlatformId > VER_PLATFORM_WIN32s )
 	{
 		theApp.m_wndMain.pnid.uFlags = NIF_TIP;
-		strcpylen(theApp.m_wndMain.pnid.szTip, szTitle, COUNTOF(theApp.m_wndMain.pnid.szTip) - 1);
+		strcpylen(theApp.m_wndMain.pnid.szTip, szTitle, sizeof(theApp.m_wndMain.pnid.szTip));
 		Shell_NotifyIcon(NIM_MODIFY, &theApp.m_wndMain.pnid);
 	}
 }

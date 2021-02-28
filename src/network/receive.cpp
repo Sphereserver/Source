@@ -46,7 +46,7 @@ bool PacketCreate::onReceive(NetState* net, bool hasExtraSkill)
 
 	TCHAR charname[MAX_NAME_SIZE];
 	skip(9); // 4=pattern1, 4=pattern2, 1=kuoc
-	readStringASCII(charname, MAX_NAME_SIZE);
+	readStringASCII(charname, sizeof(charname));
 	skip(2); // 0x00
 	DWORD flags = readInt32();
 	skip(8); // unk
@@ -799,7 +799,7 @@ bool PacketTextCommand::onReceive(NetState* net)
 
 	EXTCMD_TYPE type = static_cast<EXTCMD_TYPE>(readByte());
 	TCHAR name[MAX_NAME_SIZE];
-	readStringNullASCII(name, MAX_NAME_SIZE - 1);
+	readStringNullASCII(name, sizeof(name) - 1);
 
 	client->Event_ExtCmd(type, name);
 	return true;
@@ -1587,10 +1587,10 @@ bool PacketCharRename::onReceive(NetState* net)
 		return false;
 
 	TCHAR szOldName[MAX_NAME_SIZE];
-	strncpy(szOldName, pChar->GetName(), MAX_NAME_SIZE - 1);
+	strncpy(szOldName, pChar->GetName(), sizeof(szOldName) - 1);
 
 	TCHAR szNewName[MAX_NAME_SIZE];
-	readStringASCII(szNewName, MAX_NAME_SIZE);
+	readStringASCII(szNewName, sizeof(szNewName));
 
 	CClient *pClient = net->m_client;
 	ASSERT(pClient);
@@ -1677,9 +1677,9 @@ bool PacketServersReq::onReceive(NetState* net)
 	ADDTOCALLSTACK("PacketServersReq::onReceive");
 
 	TCHAR acctname[MAX_ACCOUNT_NAME_SIZE];
-	readStringASCII(acctname, COUNTOF(acctname));
+	readStringASCII(acctname, sizeof(acctname));
 	TCHAR acctpass[MAX_ACCOUNT_PASS_SIZE];
-	readStringASCII(acctpass, COUNTOF(acctpass));
+	readStringASCII(acctpass, sizeof(acctpass));
 	skip(1);
 
 	CClient* client = net->m_client;
@@ -1738,7 +1738,7 @@ bool PacketCreateNew::onReceive(NetState* net)
 
 	skip(10); // 2=length, 4=pattern1, 4=pattern2
 	TCHAR charname[MAX_NAME_SIZE];
-	readStringASCII(charname, MAX_NAME_SIZE);
+	readStringASCII(charname, sizeof(charname));
 	skip(30);
 	PROFESSION_TYPE profession = static_cast<PROFESSION_TYPE>(readByte());
 	BYTE flags = readByte();
@@ -1884,9 +1884,9 @@ bool PacketCharListReq::onReceive(NetState* net)
 
 	skip(4);
 	TCHAR acctname[MAX_ACCOUNT_NAME_SIZE];
-	readStringASCII(acctname, COUNTOF(acctname));
+	readStringASCII(acctname, sizeof(acctname));
 	TCHAR acctpass[MAX_ACCOUNT_PASS_SIZE];
-	readStringASCII(acctpass, COUNTOF(acctpass));
+	readStringASCII(acctpass, sizeof(acctpass));
 
 	net->m_client->Setup_ListReq(acctname, acctpass, false);
 	return true;
@@ -1914,10 +1914,10 @@ bool PacketBookHeaderEdit::onReceive(NetState* net)
 	skip(2); // pages
 
 	TCHAR title[MAX_NAME_SIZE * 2];
-	readStringASCII(title, COUNTOF(title));
+	readStringASCII(title, sizeof(title));
 
 	TCHAR author[MAX_NAME_SIZE];
-	readStringASCII(author, COUNTOF(author));
+	readStringASCII(author, sizeof(author));
 
 	net->m_client->Event_Book_Title(pItem, title, author);
 	return true;
@@ -2204,7 +2204,7 @@ bool PacketGumpValueInputResponse::onReceive(NetState* net)
 	BYTE action = readByte();
 	WORD textLength = readInt16();
 	TCHAR text[MAX_NAME_SIZE];
-	readStringASCII(text, minimum(MAX_NAME_SIZE, textLength));
+	readStringASCII(text, minimum(sizeof(text), textLength));
 
 	if ((client->GetTargMode() != CLIMODE_INPVAL) || (uid != client->m_Targ_UID))
 	{
@@ -2275,7 +2275,7 @@ bool PacketSpeakReqUNICODE::onReceive(NetState* net)
 	HUE_TYPE hue = static_cast<HUE_TYPE>(readInt16());
 	FONT_TYPE font = static_cast<FONT_TYPE>(readInt16());
 	TCHAR language[4];
-	readStringASCII(language, COUNTOF(language));
+	readStringASCII(language, sizeof(language));
 
 	if (packetLength <= getPosition())
 		return false;
@@ -2303,7 +2303,7 @@ bool PacketSpeakReqUNICODE::onReceive(NetState* net)
 
 		skip(static_cast<long>(toskip));
 		TCHAR text[MAX_TALK_BUFFER + 2];
-		readStringNullASCII(text, COUNTOF(text));
+		readStringNullASCII(text, sizeof(text));
 		client->Event_Talk(text, hue, mode, true);
 	}
 	else
@@ -2451,7 +2451,7 @@ bool PacketChatCommand::onReceive(NetState* net)
 
 	size_t packetLength = readInt16();
 	TCHAR language[4];
-	readStringASCII(language, COUNTOF(language));
+	readStringASCII(language, sizeof(language));
 
 	if (packetLength <= getPosition())
 		return false;
@@ -2500,7 +2500,7 @@ bool PacketChatButton::onReceive(NetState* net)
 		// On old chat system, client will always send this packet when click on chat button
 		skip(1);	// 0x0
 		NCHAR chatname[(MAX_NAME_SIZE + 1) * sizeof(WCHAR)];
-		readStringUNICODE(reinterpret_cast<WCHAR *>(chatname), (COUNTOF(chatname) / sizeof(WCHAR)) - 1);
+		readStringUNICODE(reinterpret_cast<WCHAR *>(chatname), (sizeof(chatname) / sizeof(WCHAR)) - 1);
 
 		client->Event_ChatButton(chatname);
 	}
@@ -2936,7 +2936,7 @@ bool PacketLanguage::onReceive(NetState* net)
 	ASSERT(client);
 
 	TCHAR language[4];
-	readStringNullASCII(language, COUNTOF(language));
+	readStringNullASCII(language, sizeof(language));
 
 	client->m_pAccount->m_lang.SetStr(language);
 	return true;
@@ -3554,7 +3554,7 @@ bool PacketPromptResponseUnicode::onReceive(NetState* net)
 	DWORD type = readInt32();
 
 	TCHAR language[4];
-	readStringASCII(language, COUNTOF(language));
+	readStringASCII(language, sizeof(language));
 	
 	if (length < getPosition())
 		return false;
@@ -3641,10 +3641,10 @@ bool PacketBookHeaderEditNew::onReceive(NetState* net)
 	TCHAR author[MAX_NAME_SIZE];
 
 	size_t titleLength = readInt16();
-	readStringASCII(title, minimum(titleLength, COUNTOF(title)));
+	readStringASCII(title, minimum(titleLength, sizeof(title)));
 
 	size_t authorLength = readInt16();
-	readStringASCII(author, minimum(authorLength, COUNTOF(author)));
+	readStringASCII(author, minimum(authorLength, sizeof(author)));
 
 	net->m_client->Event_Book_Title(pItem, title, author);
 	return true;
@@ -4283,12 +4283,12 @@ bool PacketBugReport::onReceive(NetState* net)
 	skip(2);	// length
 
 	TCHAR language[4];
-	readStringASCII(language, COUNTOF(language));
+	readStringASCII(language, sizeof(language));
 
 	BUGREPORT_TYPE type = static_cast<BUGREPORT_TYPE>(readInt16());
 
 	TCHAR text[1001];
-	int textLength = readStringNullNUNICODE(text, 1001, 1000);
+	int textLength = readStringNullNUNICODE(text, sizeof(text), sizeof(text) - 1);
 
 	net->m_client->Event_BugReport(text, textLength, type, CLanguageID(language));
 	return true;
@@ -4580,9 +4580,9 @@ bool PacketCrashReport::onReceive(NetState* net)
 	skip(4); // unknown
 	DWORD errorCode = readInt32();
 	TCHAR executable[100];
-	readStringASCII(executable, COUNTOF(executable));
+	readStringASCII(executable, sizeof(executable));
 	TCHAR description[100];
-	readStringASCII(description, COUNTOF(description));
+	readStringASCII(description, sizeof(description));
 	skip(1); // zero
 	DWORD errorOffset = readInt32();
 
@@ -4640,8 +4640,7 @@ bool PacketGlobalChatReq::onReceive(NetState *net)
 	skip(1);
 
 	TCHAR xml[MAX_TALK_BUFFER * 2];
-	readStringASCII(xml, COUNTOF(xml));
-	//DEBUG_ERR(("GlobalChat XML received: %s\n", xml));
+	readStringASCII(xml, sizeof(xml));
 	
 	switch ( action )
 	{

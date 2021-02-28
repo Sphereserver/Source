@@ -187,7 +187,7 @@ void CChat::Action(CClient *pClient, const NCHAR *pszText, int len, CLanguageID 
 			{
 				if ( pszMsg[i] == '{' )	// there's a password here
 				{
-					pszMsg[i] = 0;
+					pszMsg[i] = '\0';
 					pszPassword = pszMsg + i + 1;
 					size_t iPasswordLength = strlen(pszPassword);
 					for ( i = 0; i < iPasswordLength; ++i )
@@ -220,8 +220,8 @@ void CChat::Action(CClient *pClient, const NCHAR *pszText, int len, CLanguageID 
 
 			// Split the recipient from the message (look for a space)
 			TCHAR szBuffer[MAX_TALK_BUFFER];
-			strncpy(szBuffer, pszMsg, MAX_TALK_BUFFER - 1);
-			szBuffer[MAX_TALK_BUFFER - 1] = '\0';
+			strncpy(szBuffer, pszMsg, sizeof(szBuffer) - 1);
+			szBuffer[sizeof(szBuffer) - 1] = '\0';
 
 			size_t i = 0;
 			size_t iBufferLength = strlen(szBuffer);

@@ -182,7 +182,7 @@ int CvtSystemToNUNICODE(NCHAR *pszOut, int iSizeOutChars, LPCTSTR pszInp, int iS
 
 	if ( iSizeInBytes <= 0 )
 	{
-		pszOut[0] = 0;
+		pszOut[0] = '\0';
 		return 0;
 	}
 
@@ -203,12 +203,12 @@ int CvtSystemToNUNICODE(NCHAR *pszOut, int iSizeOutChars, LPCTSTR pszInp, int iS
 
 		if ( iOutTmp <= 0 )
 		{
-			pszOut[0] = 0;
+			pszOut[0] = '\0';
 			return 0;
 		}
 		if ( iOutTmp > iSizeOutChars )	// this should never happen
 		{
-			pszOut[0] = 0;
+			pszOut[0] = '\0';
 			return 0;
 		}
 
@@ -247,7 +247,7 @@ int CvtSystemToNUNICODE(NCHAR *pszOut, int iSizeOutChars, LPCTSTR pszInp, int iS
 		}
 	}
 
-	pszOut[iOut] = 0;	// make sure it's null terminated
+	pszOut[iOut] = '\0';	// make sure it's null terminated
 	return iOut;
 }
 
@@ -265,7 +265,7 @@ int CvtNUNICODEToSystem(TCHAR *pszOut, int iSizeOutBytes, const NCHAR *pszInp, i
 
 	if ( iSizeInChars <= 0 )
 	{
-		pszOut[0] = 0;
+		pszOut[0] = '\0';
 		return 0;
 	}
 
@@ -298,7 +298,7 @@ int CvtNUNICODEToSystem(TCHAR *pszOut, int iSizeOutBytes, const NCHAR *pszInp, i
 
 		if ( iOut < 0 )
 		{
-			pszOut[0] = 0;
+			pszOut[0] = '\0';
 			return 0;
 		}
 	}
@@ -331,7 +331,7 @@ int CvtNUNICODEToSystem(TCHAR *pszOut, int iSizeOutBytes, const NCHAR *pszInp, i
 		}
 	}
 
-	pszOut[iOut] = 0;	// make sure it's null terminated
+	pszOut[iOut] = '\0';	// make sure it's null terminated
 	return iOut;
 }
 

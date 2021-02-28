@@ -175,7 +175,7 @@ LPCTSTR ProfileData::GetDescription(PROFILE_TYPE id) const
 		snprintf(pszTmp, 61, "%3llu (total: %llu) instances", m_PreviousTimes[id].m_Time, m_AverageTimes[id].m_Time);
 	else if ( id >= PROFILE_TIME_QTY )
 		snprintf(pszTmp, 55, "%3llu (avg: %llu) bytes", m_PreviousTimes[id].m_Time, m_AverageTimes[id].m_Time);
-	else
+	else if ( id >= 0 )
 	{
 		snprintf(pszTmp, 114, "%3d.%04ds  avg: %3d.%04ds  [samples: %7d  avg: %7d]  runtime: %ds",
 			static_cast<int>(m_PreviousTimes[id].m_Time / llTimeProfileFrequency),

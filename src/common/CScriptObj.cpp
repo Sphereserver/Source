@@ -891,7 +891,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerRun(CScript &s, TRIGRUN_TYPE trigger, CTextCon
 							TCHAR *z = strchr(pszArgRaw, ' ');
 							if ( z )
 							{
-								*z = 0;
+								*z = '\0';
 								++z;
 								GETNONWHITESPACE(z);
 							}
@@ -947,7 +947,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerRun(CScript &s, TRIGRUN_TYPE trigger, CTextCon
 							TCHAR *z = strchr(pszArgs, ' ');
 							if ( z )
 							{
-								*z = 0;
+								*z = '\0';
 								++z;
 								GETNONWHITESPACE(z);
 							}
@@ -1840,7 +1840,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				char *p = chSeparators;
 				while ( *p && (*p != ',') )
 					++p;
-				*p = 0;
+				*p = '\0';
 			}
 
 			const char *p = pszKey + strlen(chSeparators) + 1;
@@ -2600,7 +2600,7 @@ TCHAR *CFileObj::GetReadBuffer(bool fDelete)
 	if ( fDelete )
 		memset(m_pszReadBuffer, 0, SCRIPT_MAX_LINE_LEN);
 	else
-		*m_pszReadBuffer = 0;
+		*m_pszReadBuffer = '\0';
 
 	return m_pszReadBuffer;
 }
