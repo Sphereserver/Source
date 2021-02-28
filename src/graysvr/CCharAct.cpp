@@ -138,7 +138,10 @@ void CChar::Jail(CTextConsole *pSrc, bool fSet, int iCell)
 		if ( iCell )
 			snprintf(szJailName, sizeof(szJailName), "jail%d", iCell);
 		else
+		{
 			strncpy(szJailName, "jail", sizeof(szJailName) - 1);
+			szJailName[sizeof(szJailName) - 1] = '\0';
+		}
 
 		CPointMap ptJail = g_Cfg.GetRegionPoint(szJailName);
 		if ( ptJail.IsValidPoint() )

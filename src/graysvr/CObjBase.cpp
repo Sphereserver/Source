@@ -466,6 +466,7 @@ void CObjBase::Emote(LPCTSTR pszTextYou, LPCTSTR pszTextThem, CClient *pClientEx
 		// Items on ground or inside container
 		snprintf(szMsgOthers, sizeof(szMsgOthers), g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_7), GetName(), pszTextThem);
 		strncpy(szMsgYou, szMsgOthers, sizeof(szMsgYou) - 1);
+		szMsgYou[sizeof(szMsgYou) - 1] = '\0';
 	}
 
 	pObjTop->UpdateObjMessage(szMsgOthers, szMsgYou, pClientExclude, defaultHue, TALKMODE_EMOTE, defaultFont, defaultUnicode);

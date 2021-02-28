@@ -962,6 +962,7 @@ void CClient::addObjMessage(LPCTSTR pszMsg, const CObjBaseTemplate *pSrc, HUE_TY
 			return;
 
 		strncpy(m_zLastObjMessage, pszMsg, sizeof(m_zLastObjMessage) - 1);
+		m_zLastObjMessage[sizeof(m_zLastObjMessage) - 1] = '\0';
 	}
 
 	addBarkParse(pszMsg, pSrc, wHue, mode);
@@ -1340,7 +1341,10 @@ void CClient::addCharName(const CChar *pChar)
 
 		LPCTSTR pszNewStr = Args.m_VarsLocal.GetKeyStr("ClickMsgText");
 		if ( pszNewStr )
+		{
 			strncpy(szName, pszNewStr, sizeof(szName) - 1);
+			szName[sizeof(szName) - 1] = '\0';
+		}
 
 		wHue = static_cast<HUE_TYPE>(Args.m_VarsLocal.GetKeyNum("ClickMsgHue"));
 	}

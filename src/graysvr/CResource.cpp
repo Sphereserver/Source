@@ -1960,6 +1960,7 @@ CPointMap CResource::GetRegionPoint(LPCTSTR pszCmd) const
 	{
 		TCHAR szTemp[32];
 		strncpy(szTemp, pszCmd, sizeof(szTemp) - 1);
+		szTemp[sizeof(szTemp) - 1] = '\0';
 
 		size_t iCount = pt.Read(szTemp);
 		if ( iCount >= 2 )
@@ -2190,6 +2191,7 @@ bool CResource::LoadResourceSection(CScript *pScript)
 			while ( pScript->ReadKeyParse() )
 			{
 				strncpy(szIP, pScript->GetKey(), sizeof(szIP) - 1);
+				szIP[sizeof(szIP) - 1] = '\0';
 				HistoryIP &history = g_NetworkManager.getIPHistoryManager().getHistoryForIP(szIP);
 				history.setBlocked(true);
 			}
@@ -2214,7 +2216,8 @@ bool CResource::LoadResourceSection(CScript *pScript)
 					{
 						if ( !strcmpi(pszKey, g_Exp.sm_szMsgNames[i]) )
 						{
-							strncpy(g_Exp.sm_szMessages[i], pScript->GetArgStr(), EXPRESSION_MAX_KEY_LEN - 1);
+							strncpy(g_Exp.sm_szMessages[i], pScript->GetArgStr(), sizeof(g_Exp.sm_szMessages[i]) - 1);
+							g_Exp.sm_szMessages[i][sizeof(g_Exp.sm_szMessages[i]) - 1] = '\0';
 							break;
 						}
 					}
@@ -2934,6 +2937,7 @@ RESOURCE_ID CResource::ResourceGetNewID(RES_TYPE restype, LPCTSTR pszName, CVarD
 
 			TCHAR *pszArg1 = Str_GetTemp();
 			strncpy(pszArg1, pszName, SCRIPT_MAX_LINE_LEN - 1);
+			pszArg1[SCRIPT_MAX_LINE_LEN - 1] = '\0';
 			pszName = pszArg1;
 
 			TCHAR *pszArg2;
@@ -2958,6 +2962,7 @@ RESOURCE_ID CResource::ResourceGetNewID(RES_TYPE restype, LPCTSTR pszName, CVarD
 
 			TCHAR *pszArg1 = Str_GetTemp();
 			strncpy(pszArg1, pszName, SCRIPT_MAX_LINE_LEN - 1);
+			pszArg1[SCRIPT_MAX_LINE_LEN - 1] = '\0';
 			pszName = pszArg1;
 
 			TCHAR *pszArg2;

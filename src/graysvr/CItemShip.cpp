@@ -1096,8 +1096,9 @@ dodirmovechange:
 			pszSpeak = sm_szTillerReplyMsg[Calc_GetRandVal(COUNTOF(sm_szTillerReplyMsg))];
 		}
 
-		TCHAR szText[ MAX_TALK_BUFFER ];
-		strncpy(szText, pszSpeak, MAX_TALK_BUFFER - 1);
+		TCHAR szText[MAX_TALK_BUFFER];
+		strncpy(szText, pszSpeak, sizeof(szText) - 1);
+		szText[sizeof(szText) - 1] = '\0';
 		pChar->ParseText( szText, &g_Serv );
 		pTiller->Speak( szText, HUE_TEXT_DEF, TALKMODE_SAY, FONT_NORMAL );
 	}

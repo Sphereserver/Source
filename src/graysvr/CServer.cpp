@@ -807,7 +807,7 @@ longcommand:
 			}
 
 			TCHAR szFileStrip[_MAX_PATH];
-			snprintf(szFileStrip, _MAX_PATH, "%s%s", static_cast<LPCTSTR>(g_Cfg.m_sStripPath), "sphere_strip" SPHERE_SCRIPT);
+			snprintf(szFileStrip, sizeof(szFileStrip), "%s%s", static_cast<LPCTSTR>(g_Cfg.m_sStripPath), "sphere_strip" SPHERE_SCRIPT);
 
 			FILE *pFileStrip = fopen(szFileStrip, "w");
 			if ( !pFileStrip )
@@ -821,8 +821,8 @@ longcommand:
 			while ( (script = g_Cfg.GetResourceFile(i++)) != NULL )
 			{
 				TCHAR szFileScript[_MAX_PATH];
-				strncpy(szFileScript, script->GetFilePath(), _MAX_PATH - 1);
-				szFileScript[_MAX_PATH - 1] = '\0';
+				strncpy(szFileScript, script->GetFilePath(), sizeof(szFileScript) - 1);
+				szFileScript[sizeof(szFileScript) - 1] = '\0';
 
 				FILE *pFileScript = fopen(szFileScript, "r");
 				if ( !pFileScript )

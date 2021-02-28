@@ -86,6 +86,7 @@ void CClient::addSysMessage(LPCTSTR pszMsg)
 			return;
 
 		strncpy(m_zLastMessage, pszMsg, sizeof(m_zLastMessage) - 1);
+		m_zLastMessage[sizeof(m_zLastMessage) - 1] = '\0';
 	}
 
 	addBarkParse(pszMsg, NULL, HUE_TEXT_DEF, TALKMODE_SYSTEM);
@@ -231,6 +232,7 @@ bool CClient::OnRxConsole(const BYTE *pData, size_t iLen)
 					else
 					{
 						strncpy(m_zLogin, m_Targ_Text, sizeof(m_zLogin) - 1);
+						m_zLogin[sizeof(m_zLogin) - 1] = '\0';
 						SysMessage("\nPassword: ");
 					}
 					m_Targ_Text.Empty();
@@ -292,6 +294,7 @@ bool CClient::OnRxAxis(const BYTE *pData, size_t iLen)
 				if ( !m_zLogin[0] )
 				{
 					strncpy(m_zLogin, m_Targ_Text, sizeof(m_zLogin) - 1);
+					m_zLogin[sizeof(m_zLogin) - 1] = '\0';
 					m_Targ_Text.Empty();
 				}
 				else

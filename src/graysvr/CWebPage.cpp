@@ -156,8 +156,8 @@ bool CWebPageDef::r_Verb(CScript &s, CTextConsole *pSrc)	// some command on this
 				if ( !pChar || (pChar->IsStatFlag(STATF_Insubstantial) && (pClient->GetPrivLevel() > PLEVEL_Player)) )
 					continue;
 
-				strncpy(szTemp, s.GetArgStr(), MAX_NAME_SIZE - 1);
-				szTemp[MAX_NAME_SIZE - 1] = '\0';
+				strncpy(szTemp, s.GetArgStr(), sizeof(szTemp) - 1);
+				szTemp[sizeof(szTemp) - 1] = '\0';
 
 				pChar->ParseText(Str_MakeFiltered(szTemp), &g_Serv, 1);
 				pSrc->SysMessage(szTemp);
@@ -174,8 +174,8 @@ bool CWebPageDef::r_Verb(CScript &s, CTextConsole *pSrc)	// some command on this
 
 			for ( CGMPage *pGMPage = dynamic_cast<CGMPage *>(g_World.m_GMPages.GetHead()); pGMPage != NULL; pGMPage = pGMPage->GetNext() )
 			{
-				strncpy(szTemp, s.GetArgStr(), (MAX_TALK_BUFFER * 2) - 1);
-				szTemp[(MAX_TALK_BUFFER * 2) - 1] = '\0';
+				strncpy(szTemp, s.GetArgStr(), sizeof(szTemp) - 1);
+				szTemp[sizeof(szTemp) - 1] = '\0';
 
 				pGMPage->ParseText(Str_MakeFiltered(szTemp), &g_Serv, 1);
 				pSrc->SysMessage(szTemp);
@@ -199,8 +199,8 @@ bool CWebPageDef::r_Verb(CScript &s, CTextConsole *pSrc)	// some command on this
 				if ( !pStone || !pStone->IsType(type) )
 					continue;
 
-				strncpy(szTemp, s.GetArgStr(), MAX_ITEM_NAME_SIZE - 1);
-				szTemp[MAX_ITEM_NAME_SIZE - 1] = '\0';
+				strncpy(szTemp, s.GetArgStr(), sizeof(szTemp) - 1);
+				szTemp[sizeof(szTemp) - 1] = '\0';
 
 				pStone->ParseText(Str_MakeFiltered(szTemp), &g_Serv, 1);
 				pSrc->SysMessage(szTemp);
