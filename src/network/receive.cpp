@@ -615,10 +615,10 @@ bool PacketSpeakReq::onReceive(NetState* net)
 		return false;
 
 	packetLength -= getPosition();
-	if (packetLength > MAX_TALK_BUFFER / 2)
+	if (packetLength > MAX_TALK_BUFFER / sizeof(WCHAR))
 		return false;
 
-	TCHAR text[MAX_TALK_BUFFER / 2];
+	TCHAR text[MAX_TALK_BUFFER / sizeof(WCHAR)];
 	readStringASCII(text, minimum(COUNTOF(text), packetLength));
 
 	client->Event_Talk(text, hue, mode, false);
@@ -1913,7 +1913,7 @@ bool PacketBookHeaderEdit::onReceive(NetState* net)
 	skip(1); // unknown
 	skip(2); // pages
 
-	TCHAR title[MAX_NAME_SIZE * 2];
+	TCHAR title[MAX_NAME_SIZE * sizeof(WCHAR)];
 	readStringASCII(title, sizeof(title));
 
 	TCHAR author[MAX_NAME_SIZE];
@@ -2003,7 +2003,7 @@ bool PacketPromptResponse::onReceive(NetState* net)
 		return false;
 
 	packetLength -= getPosition();
-	if (packetLength > (MAX_TALK_BUFFER + 2) / 2)
+	if (packetLength > (MAX_TALK_BUFFER + 2) / sizeof(WCHAR) )
 		return false;
 
 	TCHAR* text = Str_GetTemp();
@@ -3637,7 +3637,7 @@ bool PacketBookHeaderEditNew::onReceive(NetState* net)
 	skip(1); // writable
 	skip(2); // pages
 
-	TCHAR title[MAX_NAME_SIZE * 2];
+	TCHAR title[MAX_NAME_SIZE * sizeof(WCHAR)];
 	TCHAR author[MAX_NAME_SIZE];
 
 	size_t titleLength = readInt16();
@@ -4639,7 +4639,7 @@ bool PacketGlobalChatReq::onReceive(NetState *net)
 	BYTE action = readByte();
 	skip(1);
 
-	TCHAR xml[MAX_TALK_BUFFER * 2];
+	TCHAR xml[MAX_TALK_BUFFER * sizeof(WCHAR)];
 	readStringASCII(xml, sizeof(xml));
 	
 	switch ( action )

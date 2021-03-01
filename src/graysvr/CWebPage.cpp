@@ -170,8 +170,7 @@ bool CWebPageDef::r_Verb(CScript &s, CTextConsole *pSrc)	// some command on this
 			if ( !s.HasArgs() )
 				return false;
 
-			TCHAR szTemp[MAX_TALK_BUFFER * 2];
-
+			TCHAR szTemp[MAX_TALK_BUFFER * sizeof(WCHAR)];
 			for ( CGMPage *pGMPage = dynamic_cast<CGMPage *>(g_World.m_GMPages.GetHead()); pGMPage != NULL; pGMPage = pGMPage->GetNext() )
 			{
 				strncpy(szTemp, s.GetArgStr(), sizeof(szTemp) - 1);
@@ -693,9 +692,9 @@ bool CWebPageDef::ServPage(CClient *pClient, TCHAR *pszPageName, CGTime *pTimeLa
 
 	// 2) Check if there's a custom webpage for this specific error
 	pClient->m_Targ_Text = pszPageName;
-	TCHAR *pszTemp = Str_GetTemp();
-	snprintf(pszTemp, FILENAME_MAX, SPHERE_FILE "%d.htm", iStatusCode);
-	pWebPage = g_Cfg.FindWebPage(pszTemp);
+	TCHAR szFileName[FILENAME_MAX];
+	snprintf(szFileName, sizeof(szFileName), SPHERE_FILE "%d.htm", iStatusCode);
+	pWebPage = g_Cfg.FindWebPage(szFileName);
 	if ( pWebPage && (pWebPage->ServPageRequest(pClient, pszPageName, NULL) < 400) )
 		return true;
 

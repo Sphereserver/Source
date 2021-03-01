@@ -43,7 +43,7 @@ void CClient::Event_ChatButton(const NCHAR *pszName)
 		}
 
 		// Make the chat name non-unicode and store it on account
-		TCHAR szChatName[(MAX_NAME_SIZE + 1) * 2];
+		TCHAR szChatName[(MAX_NAME_SIZE + 1) * sizeof(WCHAR)];
 		CvtNUNICODEToSystem(szChatName, sizeof(szChatName), pszName, 128);
 
 		if ( !CChat::IsValidName(szChatName, true) || !g_Accounts.Account_ChatNameAvailable(szChatName) )
@@ -1420,7 +1420,7 @@ void CClient::Event_PromptResp_GMPage(LPCTSTR pszReason)
 	}
 
 	const CPointMap &pt = m_pChar->GetTopPoint();
-	TCHAR szMsg[MAX_TALK_BUFFER * 2];
+	TCHAR szMsg[MAX_TALK_BUFFER * sizeof(WCHAR)];
 	snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_GMPAGE_RECEIVED), m_pChar->GetName(), static_cast<DWORD>(m_pChar->GetUID()), pt.WriteUsed(), pszReason);
 	g_Log.Event(LOGM_NOCONTEXT|LOGM_GM_PAGE, "%s\n", szMsg);
 
@@ -1641,7 +1641,7 @@ void CClient::Event_Talk(LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, boo
 		}
 	}
 
-	if ( iLen <= MAX_TALK_BUFFER / 2 )	// from this point max 128 chars
+	if ( iLen <= MAX_TALK_BUFFER / sizeof(WCHAR) )	// from this point max 128 chars
 	{
 		m_pChar->SpeakUTF8(z, wHue, mode, m_pChar->m_fonttype, m_pAccount->m_lang);
 		Event_Talk_Common(static_cast<TCHAR *>(z));
@@ -1715,7 +1715,7 @@ void CClient::Event_TalkUNICODE(NWORD *wszText, int iTextLen, HUE_TYPE wHue, TAL
 		}
 	}
 
-	if ( iLen <= MAX_TALK_BUFFER / 2 )	// from this point max 128 chars
+	if ( iLen <= MAX_TALK_BUFFER / sizeof(WCHAR) )	// from this point max 128 chars
 	{
 		m_pChar->SpeakUTF8Ex(puText, wHue, mode, font, m_pAccount->m_lang);
 		Event_Talk_Common(pszText);

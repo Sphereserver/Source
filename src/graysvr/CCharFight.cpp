@@ -365,7 +365,7 @@ LPCTSTR CChar::Noto_GetTitle() const
 		pszFameTitle = Noto_GetFameTitle();
 
 	TCHAR *pszTemp = Str_GetTemp();
-	snprintf(pszTemp, MAX_NAME_SIZE * 2, "%s%s%s%s%s%s",
+	snprintf(pszTemp, MAX_NAME_SIZE * sizeof(WCHAR), "%s%s%s%s%s%s",
 		pszTitle[0] ? g_Cfg.GetDefaultMsg(Char_GetDef()->IsFemale() ? DEFMSG_TITLE_ARTICLE_FEMALE : DEFMSG_TITLE_ARTICLE_MALE) : "",
 		pszTitle,
 		pszTitle[0] ? " " : "",

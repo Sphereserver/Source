@@ -2305,7 +2305,7 @@ PacketPaperdoll::PacketPaperdoll(const CClient* target, const CChar* character) 
 {
 	ADDTOCALLSTACK("PacketPaperdoll::PacketPaperdoll");
 
-	TCHAR szName[MAX_NAME_SIZE * 2];
+	TCHAR szName[MAX_NAME_SIZE * sizeof(WCHAR)];
 	LPCTSTR pszTitle = character->GetTradeTitle();
 	if ( *pszTitle )
 		snprintf(szName, sizeof(szName), "%s, %s", character->Noto_GetTitle(), pszTitle);
@@ -2551,7 +2551,7 @@ PacketDisplayBook::PacketDisplayBook(const CClient* target, CItem* book) : Packe
 	writeBool(isWritable);
 	writeBool(isWritable);
 	writeInt16(pages);
-	writeStringFixedASCII(static_cast<LPCTSTR>(title), MAX_NAME_SIZE * 2);
+	writeStringFixedASCII(static_cast<LPCTSTR>(title), MAX_NAME_SIZE * sizeof(WCHAR));
 	writeStringFixedASCII(static_cast<LPCTSTR>(author), MAX_NAME_SIZE);
 
 	push(target);
@@ -3374,7 +3374,7 @@ PacketProfile::PacketProfile(const CClient* target, const CChar* character) : Pa
 	initLength();
 	writeInt32(character->GetUID());
 
-	TCHAR szName[MAX_NAME_SIZE * 2];
+	TCHAR szName[MAX_NAME_SIZE * sizeof(WCHAR)];
 	LPCTSTR pszTitle = character->GetTradeTitle();
 	if ( *pszTitle )
 		snprintf(szName, sizeof(szName), "%s, %s", character->Noto_GetTitle(), pszTitle);
@@ -3687,7 +3687,7 @@ void PacketDisplayPopup::addOption(WORD entryTag, DWORD textId, WORD flags, WORD
 
 	if (m_popupCount >= BYTE_MAX)
 	{
-		DEBUG_ERR(("Bad AddContextEntry usage: Too many entries, max = %d\n", BYTE_MAX));
+		DEBUG_ERR(("AddContextEntry: reached max entries allowed (%d/%d)\n", m_popupCount, BYTE_MAX));
 		return;
 	}
 
