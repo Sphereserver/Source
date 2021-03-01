@@ -187,7 +187,7 @@ CGString CGFile::GetMergedFileName(LPCTSTR pszPath, LPCTSTR pszFileName) // stat
 	TCHAR szFullPath[_MAX_PATH];
 	if ( pszPath && pszPath[0] )
 	{
-		strncpy(szFullPath, pszPath, sizeof(szFullPath) - 1);
+		strncpy(szFullPath, pszPath, sizeof(szFullPath));
 		szFullPath[sizeof(szFullPath) - 1] = '\0';
 
 		size_t iLen = strlen(szFullPath);

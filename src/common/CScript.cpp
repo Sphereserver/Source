@@ -143,7 +143,8 @@ bool CScriptKeyAlloc::ParseKey(LPCTSTR pszKey, LPCTSTR pszVal)
 	{
 		++m_pszArg;
 		iLenVal = m_Mem.GetDataLength() - 2;
-		strcpylen(m_pszArg, pszVal, (iLenVal - iLenKey) + 1);
+		strncpy(m_pszArg, pszVal, (iLenVal - iLenKey) + 1);
+		m_pszArg[iLenVal - iLenKey] = '\0';
 	}
 
 	return true;
@@ -422,7 +423,7 @@ bool CScript::ReadKeyParse()
 	{
 		snprintf(pszTemp, SCRIPT_MAX_LINE_LEN, "<%s (<%s> %c (%s))>", (strnicmp(m_pszKey, "float.", 6) == 0) ? "floatval" : "eval", m_pszKey, *m_pszArg, pszArgs);
 	}
-	strncpy(m_pszArg, pszTemp, SCRIPT_MAX_LINE_LEN - 1);
+	strncpy(m_pszArg, pszTemp, SCRIPT_MAX_LINE_LEN);
 	m_pszArg[SCRIPT_MAX_LINE_LEN - 1] = '\0';
 
 	return true;

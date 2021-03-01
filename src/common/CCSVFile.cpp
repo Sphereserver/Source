@@ -61,11 +61,11 @@ bool CCSVFile::OpenBase(void *pExtra)
 	for ( size_t i = 0; i < m_iColumnCount; ++i )
 	{
 		m_pszColumnTypes[i] = new TCHAR[128];
-		strncpy(m_pszColumnTypes[i], ppColumnTypes[i], COUNTOF(m_pszColumnTypes) - 1);
+		strncpy(m_pszColumnTypes[i], ppColumnTypes[i], COUNTOF(m_pszColumnTypes));
 		m_pszColumnTypes[i][COUNTOF(m_pszColumnTypes) - 1] = '\0';
 
 		m_pszColumnNames[i] = new TCHAR[128];
-		strncpy(m_pszColumnNames[i], ppColumnNames[i], COUNTOF(m_pszColumnNames) - 1);
+		strncpy(m_pszColumnNames[i], ppColumnNames[i], COUNTOF(m_pszColumnNames));
 		m_pszColumnNames[i][COUNTOF(m_pszColumnNames) - 1] = '\0';
 	}
 

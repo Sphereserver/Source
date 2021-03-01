@@ -156,7 +156,7 @@ bool CWebPageDef::r_Verb(CScript &s, CTextConsole *pSrc)	// some command on this
 				if ( !pChar || (pChar->IsStatFlag(STATF_Insubstantial) && (pClient->GetPrivLevel() > PLEVEL_Player)) )
 					continue;
 
-				strncpy(szTemp, s.GetArgStr(), sizeof(szTemp) - 1);
+				strncpy(szTemp, s.GetArgStr(), sizeof(szTemp));
 				szTemp[sizeof(szTemp) - 1] = '\0';
 
 				pChar->ParseText(Str_MakeFiltered(szTemp), &g_Serv, 1);
@@ -173,7 +173,7 @@ bool CWebPageDef::r_Verb(CScript &s, CTextConsole *pSrc)	// some command on this
 			TCHAR szTemp[MAX_TALK_BUFFER * sizeof(WCHAR)];
 			for ( CGMPage *pGMPage = dynamic_cast<CGMPage *>(g_World.m_GMPages.GetHead()); pGMPage != NULL; pGMPage = pGMPage->GetNext() )
 			{
-				strncpy(szTemp, s.GetArgStr(), sizeof(szTemp) - 1);
+				strncpy(szTemp, s.GetArgStr(), sizeof(szTemp));
 				szTemp[sizeof(szTemp) - 1] = '\0';
 
 				pGMPage->ParseText(Str_MakeFiltered(szTemp), &g_Serv, 1);
@@ -198,7 +198,7 @@ bool CWebPageDef::r_Verb(CScript &s, CTextConsole *pSrc)	// some command on this
 				if ( !pStone || !pStone->IsType(type) )
 					continue;
 
-				strncpy(szTemp, s.GetArgStr(), sizeof(szTemp) - 1);
+				strncpy(szTemp, s.GetArgStr(), sizeof(szTemp));
 				szTemp[sizeof(szTemp) - 1] = '\0';
 
 				pStone->ParseText(Str_MakeFiltered(szTemp), &g_Serv, 1);
@@ -265,7 +265,7 @@ bool CWebPageDef::WebPageUpdate(bool fNow, LPCTSTR pszDstName, CTextConsole *pSr
 	while ( FileRead.ReadTextLine(false) )
 	{
 		TCHAR *pszTemp = Str_GetTemp();
-		strncpy(pszTemp, FileRead.GetKey(), THREAD_STRING_LENGTH - 1);
+		strncpy(pszTemp, FileRead.GetKey(), THREAD_STRING_LENGTH);
 		pszTemp[THREAD_STRING_LENGTH - 1] = '\0';
 
 		TCHAR *pszHead = strstr(pszTemp, "<script language=\"Sphere\">");
@@ -328,16 +328,10 @@ void CWebPageDef::WebPageLog()
 	if ( !FileRead.Open(m_sDstFilePath, OF_READ|OF_TEXT) )
 		return;
 
-	LPCTSTR pszExt = FileRead.GetFileExt();
-
-	TCHAR szName[FILENAME_MAX];
-	strncpy(szName, m_sDstFilePath, sizeof(szName) - 1);
-	szName[m_sDstFilePath.GetLength() - strlen(pszExt)] = '\0';
-
 	CGTime timeCurrent = CGTime::GetCurrentTime();
 
 	TCHAR szFileName[FILENAME_MAX];
-	snprintf(szFileName, sizeof(szFileName), "%s%d-%02d-%02d%s", szName, timeCurrent.GetYear(), timeCurrent.GetMonth(), timeCurrent.GetDay(), pszExt);
+	snprintf(szFileName, sizeof(szFileName), "%s%d-%02d-%02d%s", static_cast<LPCTSTR>(m_sDstFilePath), timeCurrent.GetYear(), timeCurrent.GetMonth(), timeCurrent.GetDay(), FileRead.GetFileExt());
 
 	CFileText FileTest;
 	if ( FileTest.Open(szFileName, OF_READ|OF_TEXT) )

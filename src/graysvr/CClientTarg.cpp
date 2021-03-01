@@ -497,11 +497,12 @@ void CClient::OnTarg_Tile(CObjBase *pObj, const CPointMap &pt)
 		}
 		case CV_NUDGE:
 		{
-			TCHAR szTmp[512];
-			strcpylen(szTmp, m_Targ_Text, COUNTOF(szTmp));
+			TCHAR szTemp[512];
+			strncpy(szTemp, m_Targ_Text, sizeof(szTemp));
+			szTemp[sizeof(szTemp) - 1] = '\0';
 
 			INT64 piArgs[3];		// maximum parameters in one line
-			Str_ParseCmds(szTmp, piArgs, COUNTOF(piArgs));
+			Str_ParseCmds(szTemp, piArgs, COUNTOF(piArgs));
 
 			CPointMap ptNudge(static_cast<signed short>(piArgs[0]), static_cast<signed short>(piArgs[1]), static_cast<signed char>(piArgs[2]));
 
@@ -591,11 +592,12 @@ void CClient::OnTarg_Tile(CObjBase *pObj, const CPointMap &pt)
 		}
 		case CV_TILE:
 		{
-			TCHAR szTmp[256];
-			strcpylen(szTmp, m_Targ_Text, COUNTOF(szTmp));
+			TCHAR szTemp[256];
+			strncpy(szTemp, m_Targ_Text, sizeof(szTemp));
+			szTemp[sizeof(szTemp) - 1] = '\0';
 
 			INT64 piArgs[16];		// maximum parameters in one line
-			size_t iArgQty = Str_ParseCmds(szTmp, piArgs, COUNTOF(piArgs));
+			size_t iArgQty = Str_ParseCmds(szTemp, piArgs, COUNTOF(piArgs));
 			size_t iArg = 0;
 
 			signed char z = static_cast<signed char>(piArgs[0]);	// z height is the first arg

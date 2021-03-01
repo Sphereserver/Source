@@ -607,7 +607,8 @@ bool CChar::NPC_OnTrainHear(CChar *pCharSrc, LPCTSTR pszCmd)
 		if ( wSkillTrain <= 0 )
 			continue;
 
-		len += snprintf(szSkillList + len, sizeof(szSkillList) - len, "%s%s", (len > 0) ? ", " : "", g_Cfg.GetSkillKey(skillCheck));
+		if ( len < sizeof(szSkillList) )
+			len += snprintf(szSkillList + len, sizeof(szSkillList) - len, "%s%s", (len > 0) ? ", " : "", g_Cfg.GetSkillKey(skillCheck));
 	}
 
 	if ( *szSkillList )

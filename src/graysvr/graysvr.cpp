@@ -45,7 +45,7 @@ void TriglistInit()
 	T_TRIGGERS	trig;
 	g_triggers.clear();
 
-#define ADD(_a_)	strncpy(trig.m_name, "@", sizeof(trig.m_name) - 1); strncat(trig.m_name, #_a_, sizeof(trig.m_name) - 1); trig.m_used = 0; g_triggers.push_back(trig);
+#define ADD(_a_)	strncpy(trig.m_name, "@", sizeof(trig.m_name)); strncat(trig.m_name, #_a_, sizeof(trig.m_name) - 1); trig.m_used = 0; g_triggers.push_back(trig);
 #include "../tables/triggers.tbl"
 
 }
@@ -324,8 +324,11 @@ int CEventLog::VEvent(DWORD dwMask, LPCTSTR pszFormat, va_list args)
 		return 0;
 
 	TemporaryString pszTemp;
-	if ( _vsnprintf(pszTemp, SCRIPT_MAX_LINE_LEN - 1, pszFormat, args) == 0 )
-		strncpy(pszTemp, pszFormat, SCRIPT_MAX_LINE_LEN - 1);
+	if ( _vsnprintf(pszTemp, SCRIPT_MAX_LINE_LEN, pszFormat, args) == 0 )
+	{
+		strncpy(pszTemp, pszFormat, SCRIPT_MAX_LINE_LEN);
+		pszTemp[SCRIPT_MAX_LINE_LEN - 1] = '\0';
+	}
 
 	return EventStr(dwMask, pszTemp);
 }
@@ -830,7 +833,7 @@ void defragSphere(char *path)
 	DWORD *uids = static_cast<DWORD *>(calloc((SIZE_MAX / 2) / sizeof(DWORD), sizeof(DWORD)));
 	for ( i = 0; i < 3; i++ )
 	{
-		strncpy(z, path, sizeof(z) - 1);
+		strncpy(z, path, sizeof(z));
 		z[sizeof(z) - 1] = '\0';
 		if ( i == 0 )
 			strncat(z, SPHERE_FILE "statics" SPHERE_SCRIPT, sizeof(z) - 1);
@@ -888,7 +891,7 @@ void defragSphere(char *path)
 
 	for ( i = 0; i < 5; i++ )
 	{
-		strncpy(z, path, sizeof(z) - 1);
+		strncpy(z, path, sizeof(z));
 		z[sizeof(z) - 1] = '\0';
 		if ( i == 0 )
 			strncat(z, SPHERE_FILE "accu.scp", sizeof(z) - 1);
@@ -1054,7 +1057,8 @@ void defragSphere(char *path)
 				if ( uid != DWORD_MAX )
 				{
 					*p = 0;
-					strncpy(z, p1, sizeof(z) - 1);
+					strncpy(z, p1, sizeof(z));
+					z[sizeof(z) - 1] = '\0';
 					snprintf(z1, sizeof(z1), "0%" FMTDWORDH, uid);
 					strncat(buf, z1, sizeof(buf) - 1);
 					strncat(buf, z, sizeof(buf) - 1);

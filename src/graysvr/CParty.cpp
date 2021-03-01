@@ -838,7 +838,8 @@ bool CPartyDef::r_Verb(CScript &s, CTextConsole *pSrc)
 						++pszArg;
 						++iLen;
 					}
-					strcpylen(pszUID, pszArgBackup, ++iLen);
+					strncpy(pszUID, pszArgBackup, ++iLen);
+					pszUID[iLen - 1] = '\0';
 
 					int i = Exp_GetVal(pszUID);
 					if ( (i < 0) || !m_Chars.IsValidIndex(i) )
@@ -855,7 +856,8 @@ bool CPartyDef::r_Verb(CScript &s, CTextConsole *pSrc)
 					++pszArg;
 					++iLen;
 				}
-				strcpylen(pszUID, pszArgBackup, ++iLen);
+				strncpy(pszUID, pszArgBackup, ++iLen);
+				pszUID[iLen - 1] = '\0';
 
 				uid = static_cast<CGrayUID>(Exp_GetLLVal(pszUID));
 			}

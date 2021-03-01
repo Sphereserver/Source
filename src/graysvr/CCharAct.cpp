@@ -139,7 +139,7 @@ void CChar::Jail(CTextConsole *pSrc, bool fSet, int iCell)
 			snprintf(szJailName, sizeof(szJailName), "jail%d", iCell);
 		else
 		{
-			strncpy(szJailName, "jail", sizeof(szJailName) - 1);
+			strncpy(szJailName, "jail", sizeof(szJailName));
 			szJailName[sizeof(szJailName) - 1] = '\0';
 		}
 
@@ -2485,7 +2485,7 @@ bool CChar::Death()
 
 			pKiller->Noto_Kill(this, IsStatFlag(STATF_Pet), static_cast<int>(m_lastAttackers.size()));
 			if ( len < sizeof(szMsg) )
-				len += snprintf(szMsg + len, sizeof(szMsg) - len, "%s%c'%s'", iKillers ? ", " : "", pKiller->m_pPlayer ? 'P' : 'N', pKiller->GetNameWithoutIncognito());
+				len += snprintf(szMsg + len, sizeof(szMsg) - len, "%s%c'%s'", (len > 0) ? ", " : "", pKiller->m_pPlayer ? 'P' : 'N', pKiller->GetNameWithoutIncognito());
 			++iKillers;
 		}
 	}

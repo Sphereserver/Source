@@ -220,7 +220,8 @@ CGrayItemInfo::CGrayItemInfo( ITEMID_TYPE id )
 			m_wHue = record.m_wHue;
 			m_wLight = record.m_wLight;
 			m_height = record.m_height;
-			strcpylen(m_name, record.m_name, COUNTOF(m_name));
+			strncpy(m_name, record.m_name, sizeof(m_name));
+			m_name[sizeof(m_name) - 1] = '\0';
 			break;
 		}
 	}
@@ -320,7 +321,8 @@ CGrayTerrainInfo::CGrayTerrainInfo( TERRAIN_TYPE id )
 			m_flags = record.m_flags;
 			m_unknown = 0;
 			m_index = record.m_index;
-			strcpylen(m_name, record.m_name, COUNTOF(m_name));
+			strncpy(m_name, record.m_name, sizeof(m_name));
+			m_name[sizeof(m_name) - 1] = '\0';
 			break;
 		}
 	}

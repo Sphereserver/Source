@@ -878,7 +878,7 @@ bool CResource::r_LoadVal(CScript &s)
 			if ( !pchArgs )
 				return false;
 
-			strncpy(g_Serv.m_PacketFilter[iPacket], pchArgs, sizeof(g_Serv.m_PacketFilter[iPacket]) - 1);
+			strncpy(g_Serv.m_PacketFilter[iPacket], pchArgs, sizeof(g_Serv.m_PacketFilter[iPacket]));
 			g_Serv.m_PacketFilter[iPacket][sizeof(g_Serv.m_PacketFilter[iPacket]) - 1] = '\0';
 			return true;
 		}
@@ -895,7 +895,7 @@ bool CResource::r_LoadVal(CScript &s)
 			if ( !pchArgs )
 				return false;
 
-			strncpy(g_Serv.m_OutPacketFilter[iPacket], pchArgs, sizeof(g_Serv.m_OutPacketFilter[iPacket]) - 1);
+			strncpy(g_Serv.m_OutPacketFilter[iPacket], pchArgs, sizeof(g_Serv.m_OutPacketFilter[iPacket]));
 			g_Serv.m_OutPacketFilter[iPacket][sizeof(g_Serv.m_OutPacketFilter[iPacket]) - 1] = '\0';
 			return true;
 		}
@@ -1916,7 +1916,7 @@ bool CResource::CanUsePrivVerb(const CScriptObj *pObjTarg, LPCTSTR pszCmd, CText
 	size_t iSpace = strcspn(pszCmd, " ");	// position of space
 	TCHAR *pszMyCmd = Str_GetTemp();
 	strncpy(pszMyCmd, pszCmd, iSpace);
-	pszMyCmd[iSpace] = '\0';
+	pszMyCmd[iSpace - 1] = '\0';
 
 	TCHAR *pszDot;	// position of dot
 	while ( (pszDot = strchr(pszMyCmd, '.')) != NULL )
@@ -1959,7 +1959,7 @@ CPointMap CResource::GetRegionPoint(LPCTSTR pszCmd) const
 	if ( IsDigit(pszCmd[0]) || (pszCmd[0] == '-') )
 	{
 		TCHAR szTemp[32];
-		strncpy(szTemp, pszCmd, sizeof(szTemp) - 1);
+		strncpy(szTemp, pszCmd, sizeof(szTemp));
 		szTemp[sizeof(szTemp) - 1] = '\0';
 
 		size_t iCount = pt.Read(szTemp);
@@ -2190,7 +2190,7 @@ bool CResource::LoadResourceSection(CScript *pScript)
 			TCHAR szIP[16];
 			while ( pScript->ReadKeyParse() )
 			{
-				strncpy(szIP, pScript->GetKey(), sizeof(szIP) - 1);
+				strncpy(szIP, pScript->GetKey(), sizeof(szIP));
 				szIP[sizeof(szIP) - 1] = '\0';
 				HistoryIP &history = g_NetworkManager.getIPHistoryManager().getHistoryForIP(szIP);
 				history.setBlocked(true);
@@ -2216,7 +2216,7 @@ bool CResource::LoadResourceSection(CScript *pScript)
 					{
 						if ( !strcmpi(pszKey, g_Exp.sm_szMsgNames[i]) )
 						{
-							strncpy(g_Exp.sm_szMessages[i], pScript->GetArgStr(), sizeof(g_Exp.sm_szMessages[i]) - 1);
+							strncpy(g_Exp.sm_szMessages[i], pScript->GetArgStr(), sizeof(g_Exp.sm_szMessages[i]));
 							g_Exp.sm_szMessages[i][sizeof(g_Exp.sm_szMessages[i]) - 1] = '\0';
 							break;
 						}
@@ -2936,7 +2936,7 @@ RESOURCE_ID CResource::ResourceGetNewID(RES_TYPE restype, LPCTSTR pszName, CVarD
 				return ridInvalid;
 
 			TCHAR *pszArg1 = Str_GetTemp();
-			strncpy(pszArg1, pszName, SCRIPT_MAX_LINE_LEN - 1);
+			strncpy(pszArg1, pszName, SCRIPT_MAX_LINE_LEN);
 			pszArg1[SCRIPT_MAX_LINE_LEN - 1] = '\0';
 			pszName = pszArg1;
 
@@ -2961,7 +2961,7 @@ RESOURCE_ID CResource::ResourceGetNewID(RES_TYPE restype, LPCTSTR pszName, CVarD
 				return ridInvalid;
 
 			TCHAR *pszArg1 = Str_GetTemp();
-			strncpy(pszArg1, pszName, SCRIPT_MAX_LINE_LEN - 1);
+			strncpy(pszArg1, pszName, SCRIPT_MAX_LINE_LEN);
 			pszArg1[SCRIPT_MAX_LINE_LEN - 1] = '\0';
 			pszName = pszArg1;
 
@@ -3730,7 +3730,9 @@ bool CResource::DumpUnscriptedItems(CTextConsole *pSrc, LPCTSTR pszFilename)
 
 		s.WriteSection("ITEMDEF 0%x", i);
 
-		strcpylen(szItemName, tiledata.m_name, sizeof(szItemName));
+		strncpy(szItemName, tiledata.m_name, sizeof(szItemName));
+		szItemName[sizeof(szItemName) - 1] = '\0';
+
 		if ( GenerateDefname(szItemName, sizeof(szItemName), "i_", pszDefnameBuffer, true, &vDefnames) )
 		{
 			s.Printf("//%s\n", szItemName);

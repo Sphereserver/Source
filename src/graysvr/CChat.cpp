@@ -220,7 +220,7 @@ void CChat::Action(CClient *pClient, const NCHAR *pszText, int len, CLanguageID 
 
 			// Split the recipient from the message (look for a space)
 			TCHAR szBuffer[MAX_TALK_BUFFER];
-			strncpy(szBuffer, pszMsg, sizeof(szBuffer) - 1);
+			strncpy(szBuffer, pszMsg, sizeof(szBuffer));
 			szBuffer[sizeof(szBuffer) - 1] = '\0';
 
 			size_t i = 0;

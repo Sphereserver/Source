@@ -241,7 +241,7 @@ bool CObjBase::SetNamePool(LPCTSTR pszName)
 	{
 		// Pick random name from the given #NAMES list
 		++pszName;
-		strncpy(szTemp, pszName, sizeof(szTemp) - 1);
+		strncpy(szTemp, pszName, sizeof(szTemp));
 		szTemp[sizeof(szTemp) - 1] = '\0';
 
 		TCHAR *ppArgs[2];
@@ -261,13 +261,13 @@ bool CObjBase::SetNamePool(LPCTSTR pszName)
 			}
 		}
 
-		strncpy(szTemp, s.GetKey(), sizeof(szTemp) - 1);
+		strncpy(szTemp, s.GetKey(), sizeof(szTemp));
 		szTemp[sizeof(szTemp) - 1] = '\0';
 	}
 	else
 	{
 		// Directly set the given name
-		strncpy(szTemp, pszName, sizeof(szTemp) - 1);
+		strncpy(szTemp, pszName, sizeof(szTemp));
 		szTemp[sizeof(szTemp) - 1] = '\0';
 	}
 
@@ -465,7 +465,7 @@ void CObjBase::Emote(LPCTSTR pszTextYou, LPCTSTR pszTextThem, CClient *pClientEx
 	{
 		// Items on ground or inside container
 		snprintf(szMsgOthers, sizeof(szMsgOthers), g_Cfg.GetDefaultMsg(DEFMSG_MSG_EMOTE_7), GetName(), pszTextThem);
-		strncpy(szMsgYou, szMsgOthers, sizeof(szMsgYou) - 1);
+		strncpy(szMsgYou, szMsgOthers, sizeof(szMsgYou));
 		szMsgYou[sizeof(szMsgYou) - 1] = '\0';
 	}
 
@@ -1158,7 +1158,8 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			if ( *pszKey )
 			{
 				TCHAR *pszArg = Str_GetTemp();
-				strcpylen(pszArg, pszKey, strlen(pszKey) + 1);
+				strncpy(pszArg, pszKey, THREAD_STRING_LENGTH);
+				pszArg[THREAD_STRING_LENGTH - 1] = '\0';
 
 				pItem = dynamic_cast<CItem *>(static_cast<CGrayUID>(Exp_GetVal(pszKey)).ObjFind());
 				if ( !pItem )
@@ -1195,7 +1196,8 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			if ( *pszKey )
 			{
 				TCHAR *pszArg = Str_GetTemp();
-				strcpylen(pszArg, pszKey, strlen(pszKey) + 1);
+				strncpy(pszArg, pszKey, THREAD_STRING_LENGTH);
+				pszArg[THREAD_STRING_LENGTH - 1] = '\0';
 
 				pItem = dynamic_cast<CItem *>(static_cast<CGrayUID>(Exp_GetVal(pszKey)).ObjFind());
 				if ( !pItem )

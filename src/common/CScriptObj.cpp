@@ -87,7 +87,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop(CScript &s, int iType, CTextConsole *p
 				goto toomanyloops;
 
 			pArgs->m_VarsLocal.SetNum("_WHILE", i++, false);
-			strncpy(pszTemp, sOrig.GetPtr(), THREAD_STRING_LENGTH - 1);
+			strncpy(pszTemp, sOrig.GetPtr(), THREAD_STRING_LENGTH);
 			pszTemp[THREAD_STRING_LENGTH - 1] = '\0';
 			pszCond = pszTemp;
 			ParseText(pszCond, pSrc, 0, pArgs);
@@ -348,7 +348,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop(CScript &s, int iType, CTextConsole *p
 		if ( Str_ParseCmds(s.GetArgStr(), ppArgs, COUNTOF(ppArgs), " \t,") >= 1 )
 		{
 			char chFunctionName[1024];
-			strncpy(chFunctionName, ppArgs[0], sizeof(chFunctionName) - 1);
+			strncpy(chFunctionName, ppArgs[0], sizeof(chFunctionName));
 			chFunctionName[sizeof(chFunctionName) - 1] = '\0';
 
 			TRIGRET_TYPE iRet = g_World.m_TimedFunctions.Loop(chFunctionName, iLoopsMade, StartContext, s, pSrc, pArgs, psResult);
@@ -393,7 +393,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerScript(CScript &s, LPCTSTR pszTrigName, CTextC
 	{
 		// Lowercase for speed
 		TCHAR *pszName = Str_GetTemp();
-		strncpy(pszName, pszTrigName, sizeof(pTrigger->name) - 1);
+		strncpy(pszName, pszTrigName, sizeof(pTrigger->name));
 		pszName[sizeof(pTrigger->name) - 1] = '\0';
 		_strlwr(pszName);
 
@@ -413,7 +413,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerScript(CScript &s, LPCTSTR pszTrigName, CTextC
 			// First time that the trigger is called, so create its record
 			pTrigger = new TScriptProfiler::TScriptProfilerTrigger;
 			memset(pTrigger, 0, sizeof(TScriptProfiler::TScriptProfilerTrigger));
-			strncpy(pTrigger->name, pszName, sizeof(pTrigger->name) - 1);
+			strncpy(pTrigger->name, pszName, sizeof(pTrigger->name));
 			pTrigger->name[sizeof(pTrigger->name) - 1] = '\0';
 			if ( g_profiler.TriggersTail )
 				g_profiler.TriggersTail->next = pTrigger;
@@ -711,7 +711,8 @@ TRIGRET_TYPE CScriptObj::OnTriggerRun(CScript &s, TRIGRUN_TYPE trigger, CTextCon
 				size_t iArgsQty = Str_ParseCmds(const_cast<TCHAR *>(s.GetArgRaw()), ppArgs, COUNTOF(ppArgs), " \t,");
 
 				TemporaryString pszTemp;
-				strncpy(pszTemp, ppArgs[0], THREAD_STRING_LENGTH - 1);
+				strncpy(pszTemp, ppArgs[0], THREAD_STRING_LENGTH);
+				pszTemp[THREAD_STRING_LENGTH - 1] = '\0';
 				TCHAR *pszTempPoint = pszTemp;
 				ParseText(pszTempPoint, pSrc, 0, pArgs);
 
@@ -762,7 +763,8 @@ TRIGRET_TYPE CScriptObj::OnTriggerRun(CScript &s, TRIGRUN_TYPE trigger, CTextCon
 				size_t iArgsQty = Str_ParseCmds(const_cast<TCHAR *>(pszKey), ppArgs, COUNTOF(ppArgs), " \t,");
 
 				TemporaryString pszTemp;
-				strncpy(pszTemp, ppArgs[0], THREAD_STRING_LENGTH - 1);
+				strncpy(pszTemp, ppArgs[0], THREAD_STRING_LENGTH);
+				pszTemp[THREAD_STRING_LENGTH - 1] = '\0';
 				ParseText(pszTemp, pSrc, 0, pArgs);
 
 				CScriptLineContext StartContext = s.GetContext();
@@ -1325,7 +1327,7 @@ bool CScriptObj::r_LoadVal(CScript &s)
 			{
 				if ( !strcmpi(pszKey, g_Exp.sm_szMsgNames[i]) )
 				{
-					strncpy(g_Exp.sm_szMessages[i], s.GetArgStr(), sizeof(g_Exp.sm_szMessages[i]) - 1);
+					strncpy(g_Exp.sm_szMessages[i], s.GetArgStr(), sizeof(g_Exp.sm_szMessages[i]));
 					g_Exp.sm_szMessages[i][sizeof(g_Exp.sm_szMessages[i]) - 1] = '\0';
 					return true;
 				}
@@ -1686,7 +1688,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 
 			TCHAR *pszBuffer = Str_GetTemp();
 			strncpy(pszBuffer, ppArgs[2] + iPos, iCnt);
-			pszBuffer[iCnt] = '\0';
+			pszBuffer[iCnt - 1] = '\0';
 
 #ifdef _DEBUG
 			if ( g_Cfg.m_wDebugFlags & DEBUGF_SCRIPTS )
@@ -1733,7 +1735,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatULLHex(*pszKey);
 
 			TCHAR *pszBuffer = Str_GetTemp();
-			strncpy(pszBuffer, sVal, SCRIPT_MAX_LINE_LEN - 1);
+			strncpy(pszBuffer, sVal, SCRIPT_MAX_LINE_LEN);
 			pszBuffer[SCRIPT_MAX_LINE_LEN - 1] = '\0';
 
 			while ( *(++pszKey) )
@@ -1761,7 +1763,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatULLHex(*ppArgs[1]);
 
 			TCHAR *pszBuffer = Str_GetTemp();
-			strncpy(pszBuffer, sVal, SCRIPT_MAX_LINE_LEN - 1);
+			strncpy(pszBuffer, sVal, SCRIPT_MAX_LINE_LEN);
 			pszBuffer[SCRIPT_MAX_LINE_LEN - 1] = '\0';
 
 			while ( --iPad )
@@ -1789,7 +1791,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 
 			GETNONWHITESPACE(pszKey);
 			TCHAR *pszBuffer = Str_GetTemp();
-			strncpy(pszBuffer, pszKey, SCRIPT_MAX_LINE_LEN - 1);
+			strncpy(pszBuffer, pszKey, SCRIPT_MAX_LINE_LEN);
 			pszBuffer[SCRIPT_MAX_LINE_LEN - 1] = '\0';
 
 			TCHAR *ppCmd[10];	// limit to 10 arguments
@@ -1842,7 +1844,8 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		{
 			GETNONWHITESPACE(pszKey);
 			char chSeparators[16];
-			strcpylen(chSeparators, pszKey, 16);
+			strncpy(chSeparators, pszKey, sizeof(chSeparators));
+			chSeparators[sizeof(chSeparators) - 1] = '\0';
 			{
 				char *p = chSeparators;
 				while ( *p && (*p != ',') )
@@ -1856,7 +1859,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			{
 				TCHAR *ppCmd[255];
 				TCHAR *z = Str_GetTemp();
-				strncpy(z, p, SCRIPT_MAX_LINE_LEN - 1);
+				strncpy(z, p, SCRIPT_MAX_LINE_LEN);
 				z[SCRIPT_MAX_LINE_LEN - 1] = '\0';
 				size_t iCount = Str_ParseCmds(z, ppCmd, COUNTOF(ppCmd), chSeparators);
 				if ( iCount > 0 )
@@ -2117,7 +2120,7 @@ bool CScriptObj::r_Call(LPCTSTR pszFunction, CTextConsole *pSrc, CScriptTriggerA
 			// Lowercase for speed, and strip arguments
 			char *pchName = Str_GetTemp();
 			char *pchSpace;
-			strncpy(pchName, pszFunction, sizeof(pFun->name) - 1);
+			strncpy(pchName, pszFunction, sizeof(pFun->name));
 			pchName[sizeof(pFun->name) - 1] = '\0';
 			if ( (pchSpace = strchr(pchName, ' ')) != NULL )
 				*pchSpace = '\0';
@@ -2139,7 +2142,7 @@ bool CScriptObj::r_Call(LPCTSTR pszFunction, CTextConsole *pSrc, CScriptTriggerA
 				// First time that the function is called, so create its record
 				pFun = new TScriptProfiler::TScriptProfilerFunction;
 				memset(pFun, 0, sizeof(TScriptProfiler::TScriptProfilerFunction));
-				strncpy(pFun->name, pchName, sizeof(pFun->name) - 1);
+				strncpy(pFun->name, pchName, sizeof(pFun->name));
 				pFun->name[sizeof(pFun->name) - 1] = '\0';
 				if ( g_profiler.FunctionsTail )
 					g_profiler.FunctionsTail->next = pFun;

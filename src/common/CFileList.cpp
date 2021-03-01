@@ -104,7 +104,7 @@ int CFileList::ReadDir( LPCTSTR pszFileDir, bool bShowError )
 		if ( fileinfo->d_name[0] == '.' )
 			continue;
 
-		strncpy(szFilename, szFileDir, sizeof(szFilename) - 1);
+		strncpy(szFilename, szFileDir, sizeof(szFilename));
 		strncat(szFilename, fileinfo->d_name, sizeof(szFilename) - 1);
 		len = strlen(szFilename);
 

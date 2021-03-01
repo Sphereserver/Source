@@ -333,7 +333,8 @@ void CTimedFunctionHandler::Add(CGrayUID uid, int iNumSeconds, LPCTSTR pszFuncNa
 
 	tf->uid = uid;
 	tf->elapsed = iNumSeconds - 1;
-	strncpy(tf->funcname, pszFuncName, sizeof(tf->funcname) - 1);
+	strncpy(tf->funcname, pszFuncName, sizeof(tf->funcname));
+	tf->funcname[sizeof(tf->funcname) - 1] = '\0';
 
 	if ( m_fBeingProcessed )
 		m_tFqueuedToBeAdded.push_back(tf);
@@ -361,7 +362,7 @@ int CTimedFunctionHandler::Load(const char *pszName, bool fQuoted, const char *p
 	else if ( !strcmpi(pszName, "TimerFNumbers") )
 	{
 		TCHAR *ppArgs[4];
-		strncpy(tempBuffer, pszVal, sizeof(tempBuffer) - 1);	// because pszVal is constant and Str_ParseCmds wants a non-constant string
+		strncpy(tempBuffer, pszVal, sizeof(tempBuffer));	// because pszVal is constant and Str_ParseCmds wants a non-constant string
 		size_t iArgs = Str_ParseCmds(tempBuffer, ppArgs, COUNTOF(ppArgs), " ,\t");
 
 		if ( iArgs == 3 )
@@ -398,7 +399,8 @@ int CTimedFunctionHandler::Load(const char *pszName, bool fQuoted, const char *p
 			tf = new TimedFunction;
 			fNew = true;
 		}
-		strncpy(tf->funcname, pszVal, sizeof(tf->funcname) - 1);
+		strncpy(tf->funcname, pszVal, sizeof(tf->funcname));
+		tf->funcname[sizeof(tf->funcname) - 1] = '\0';
 
 		if ( !fNew )
 			g_Log.Event(LOGL_ERROR, "Invalid %s sequence\n", pszName);

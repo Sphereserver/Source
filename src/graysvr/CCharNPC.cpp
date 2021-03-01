@@ -132,7 +132,8 @@ SKILL_TYPE CCharPlayer::Skill_GetLockType(LPCTSTR pszKey) const
 	// Syntax accept 'SKILLLOCK[X]' and 'SKILLLOCK.X' (where X can be skill name or skill index)
 
 	TCHAR pszArgs[40];
-	strcpylen(pszArgs, pszKey, COUNTOF(pszArgs));
+	strncpy(pszArgs, pszKey, sizeof(pszArgs));
+	pszArgs[sizeof(pszArgs) - 1] = '\0';
 
 	TCHAR *ppArgs[3];
 	size_t iQty = Str_ParseCmds(pszArgs, ppArgs, COUNTOF(ppArgs), ".[]");
@@ -150,7 +151,8 @@ STAT_TYPE CCharPlayer::Stat_GetLockType(LPCTSTR pszKey) const
 	// Syntax accept 'STATLOCK[X]' and 'STATLOCK.X' (where X can be stat name or stat index)
 
 	TCHAR pszArgs[40];
-	strcpylen(pszArgs, pszKey, COUNTOF(pszArgs));
+	strncpy(pszArgs, pszKey, sizeof(pszArgs));
+	pszArgs[sizeof(pszArgs) - 1] = '\0';
 
 	TCHAR *ppArgs[3];
 	size_t iQty = Str_ParseCmds(pszArgs, ppArgs, COUNTOF(ppArgs), ".[]");

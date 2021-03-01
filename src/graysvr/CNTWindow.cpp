@@ -290,7 +290,8 @@ int CNTWindow::OnCreate( HWND hWnd, LPCREATESTRUCT lParam )
 		pnid.uFlags = NIF_TIP | NIF_ICON | NIF_MESSAGE;
 		pnid.uCallbackMessage = WM_USER_TRAY_NOTIFY;
 		pnid.hIcon  = theApp.LoadIcon( IDR_MAINFRAME );
-		strcpylen(pnid.szTip, theApp.m_pszAppName, sizeof(pnid.szTip));
+		strncpy(pnid.szTip, theApp.m_pszAppName, sizeof(pnid.szTip));
+		pnid.szTip[sizeof(pnid.szTip) - 1] = '\0';
 		Shell_NotifyIcon(NIM_ADD, &pnid);
 	}
 
@@ -478,11 +479,11 @@ bool CNTWindow::OnCommand( WORD wNotifyCode, INT_PTR wID, HWND hwndCtl )
 
 			for ( int i = 4; i > 0; --i )
 			{
-				strncpy(theApp.m_wndMain.m_zCommands[i], theApp.m_wndMain.m_zCommands[i - 1], sizeof(theApp.m_wndMain.m_zCommands[i]) - 1);
+				strncpy(theApp.m_wndMain.m_zCommands[i], theApp.m_wndMain.m_zCommands[i - 1], sizeof(theApp.m_wndMain.m_zCommands[i]));
 				theApp.m_wndMain.m_zCommands[i][sizeof(theApp.m_wndMain.m_zCommands[i]) - 1] = '\0';
 			}
 
-			strncpy(m_zCommands[0], szTmp, sizeof(m_zCommands[0]) - 1);
+			strncpy(m_zCommands[0], szTmp, sizeof(m_zCommands[0]));
 			m_zCommands[0][sizeof(m_zCommands[0]) - 1] = '\0';
 			m_wndInput.SetWindowText("");
 			g_Serv.m_sConsoleText = szTmp;
@@ -525,7 +526,7 @@ void	CNTWindow::SetLogFont( const char * pszFont )
 	{
 		LOGFONT logfont;
    		memset( &logfont, 0, sizeof(logfont) );
-		strncpy(logfont.lfFaceName, pszFont, sizeof(logfont.lfFaceName) - 1);
+		strncpy(logfont.lfFaceName, pszFont, sizeof(logfont.lfFaceName));
 		logfont.lfFaceName[sizeof(logfont.lfFaceName) - 1] = '\0';
 
 		// calculate height for a 10pt font, some systems can produce an unreadable
@@ -769,7 +770,7 @@ bool NTWindow_Init(HINSTANCE hInstance, LPTSTR lpCmdLine, int nCmdShow)
 		{
 			if ( argv[1][2] )
 			{
-				strncpy(className, &argv[1][2], sizeof(className) - 1);
+				strncpy(className, &argv[1][2], sizeof(className));
 				className[sizeof(className) - 1] = '\0';
 			}
 		}
@@ -860,7 +861,8 @@ void NTWindow_SetWindowTitle( LPCTSTR pszText )
 	if ( GRAY_GetOSInfo()->dwPlatformId > VER_PLATFORM_WIN32s )
 	{
 		theApp.m_wndMain.pnid.uFlags = NIF_TIP;
-		strcpylen(theApp.m_wndMain.pnid.szTip, szTitle, sizeof(theApp.m_wndMain.pnid.szTip));
+		strncpy(theApp.m_wndMain.pnid.szTip, szTitle, sizeof(theApp.m_wndMain.pnid.szTip));
+		theApp.m_wndMain.pnid.szTip[sizeof(theApp.m_wndMain.pnid.szTip) - 1] = '\0';
 		Shell_NotifyIcon(NIM_MODIFY, &theApp.m_wndMain.pnid);
 	}
 }
@@ -986,7 +988,7 @@ bool NTWindow_OnTick( int iWaitmSec )
 
 					for ( int i = 0; i < 4; ++i )
 					{
-						strncpy(theApp.m_wndMain.m_zCommands[i], theApp.m_wndMain.m_zCommands[i + 1], sizeof(theApp.m_wndMain.m_zCommands[i]) - 1);
+						strncpy(theApp.m_wndMain.m_zCommands[i], theApp.m_wndMain.m_zCommands[i + 1], sizeof(theApp.m_wndMain.m_zCommands[i]));
 						theApp.m_wndMain.m_zCommands[i][sizeof(theApp.m_wndMain.m_zCommands[i]) - 1] = '\0';
 					}
 

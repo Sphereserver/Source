@@ -47,12 +47,12 @@ void CDataBase::Connect()
 	const char *pszArgs = strchr(pszHost, ':');
 	if ( pszArgs )
 	{
-		char szTemp[HOSTNAME_LENGTH];
-		strncpy(szTemp, pszHost, sizeof(szTemp) - 1);
-		szTemp[sizeof(szTemp) - 1] = '\0';
-		*(strchr(szTemp, ':')) = '\0';
+		char *pszTemp = Str_GetTemp();
+		strncpy(pszTemp, pszHost, HOSTNAME_LENGTH);
+		pszTemp[HOSTNAME_LENGTH - 1] = '\0';
+		*(strchr(pszTemp, ':')) = '\0';
 		uiPort = ATOI(pszArgs + 1);
-		pszHost = szTemp;
+		pszHost = pszTemp;
 	}
 
 	if ( mysql_real_connect(m_socket, pszHost, pszUser, pszPassword, pszDB, uiPort, NULL, CLIENT_MULTI_STATEMENTS) )

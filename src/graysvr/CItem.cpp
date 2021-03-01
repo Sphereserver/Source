@@ -2462,7 +2462,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 				CPointMap pt;	// invalid point
 				TCHAR *pszTemp = Str_GetTemp();
 				strncpy(pszTemp, s.GetArgStr(), 16);
-				pszTemp[16] = '\0';
+				pszTemp[15] = '\0';
 				GETNONWHITESPACE( pszTemp );
 
 				if ( IsDigit( pszTemp[0] ) || pszTemp[0] == '-' )
@@ -2579,7 +2579,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 				CPointMap pt;	// invalid point
 				TCHAR *pszTemp = Str_GetTemp();
 				strncpy(pszTemp, s.GetArgStr(), 30);
-				pszTemp[30] = '\0';
+				pszTemp[29] = '\0';
 				GETNONWHITESPACE( pszTemp );
 				size_t iArgs = 0;
 				if ( IsDigit( pszTemp[0] ) || (pszTemp[0] == '-') )
@@ -3979,7 +3979,7 @@ LPCTSTR CItem::Use_SpyGlass( CChar * pUser ) const
 				sSearch = g_Cfg.GetDefaultMsg(DEFMSG_USE_SPYGLASS_WEATHER);
 			else
 				sSearch = g_Cfg.GetDefaultMsg(DEFMSG_USE_SPYGLASS_NO_LAND);
-			strncpy(pResult, sSearch, MAX_TALK_BUFFER - 1);
+			strncpy(pResult, sSearch, MAX_TALK_BUFFER);
 			pResult[MAX_TALK_BUFFER - 1] = '\0';
 			break;
 		}

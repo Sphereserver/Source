@@ -1585,14 +1585,14 @@ void CClient::Event_Talk(LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, boo
 	if ( fNoStrip )
 	{
 		// The characters in Unicode speech don't need to be filtered
-		strncpy(szText, pszText, sizeof(szText) - 1);
+		strncpy(szText, pszText, sizeof(szText));
 		szText[sizeof(szText) - 1] = '\0';
 		iLen = strlen(szText);
 	}
 	else
 	{
 		TCHAR szTextG[MAX_TALK_BUFFER];
-		strncpy(szTextG, pszText, sizeof(szTextG) - 1);
+		strncpy(szTextG, pszText, sizeof(szTextG));
 		szTextG[sizeof(szTextG) - 1] = '\0';
 		iLen = Str_GetBare(szText, szTextG, sizeof(szText) - 1);
 	}
@@ -1617,7 +1617,7 @@ void CClient::Event_Talk(LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, boo
 		return;
 
 	TCHAR z[MAX_TALK_BUFFER];
-	strncpy(z, pszText, sizeof(z) - 1);
+	strncpy(z, pszText, sizeof(z));
 	z[sizeof(z) - 1] = '\0';
 
 	if ( g_Cfg.m_fSuppressCapitals )
@@ -2471,7 +2471,7 @@ void CClient::Event_ExtCmd(EXTCMD_TYPE type, TCHAR *pszArgs)
 		Args.m_iN1 = type;
 		if ( m_pChar->OnTrigger(CTRIG_UserExtCmd, m_pChar, &Args) == TRIGRET_RET_TRUE )
 			return;
-		strncpy(pszArgs, Args.m_s1, MAX_NAME_SIZE - 1);
+		strncpy(pszArgs, Args.m_s1, MAX_NAME_SIZE);
 		pszArgs[MAX_NAME_SIZE - 1] = '\0';
 	}
 

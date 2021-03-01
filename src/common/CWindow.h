@@ -245,7 +245,7 @@ public:
 		m_pszExeName = szFileName;
 
         LPTSTR pszTmp = const_cast<LPTSTR>(strrchr( m_pszExeName, '\\' ));	// Get title
-		strncpy(szFileName, pszTmp ? pszTmp + 1 : m_pszExeName, sizeof(szFileName) - 1);
+		strncpy(szFileName, pszTmp ? pszTmp + 1 : m_pszExeName, sizeof(szFileName));
 		szFileName[sizeof(szFileName) - 1] = '\0';
 
 		pszTmp = strrchr( szFileName, '.' );	// Get extension.

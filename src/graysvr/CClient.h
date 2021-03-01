@@ -980,7 +980,10 @@ public:
 	{
 		m_clilocid = dwClilocID;
 		if ( pszArgs )
-			strcpylen(m_args, pszArgs, SCRIPT_MAX_LINE_LEN);
+		{
+			strncpy(m_args, pszArgs, SCRIPT_MAX_LINE_LEN);
+			m_args[SCRIPT_MAX_LINE_LEN - 1] = '\0';
+		}
 		else
 			m_args[0] = '\0';
 	}
@@ -998,7 +1001,10 @@ public:
 		va_start(vargs, pszFormat);
 
 		if ( !_vsnprintf(m_args, SCRIPT_MAX_LINE_LEN, pszFormat, vargs) )
-			strcpylen(m_args, pszFormat, SCRIPT_MAX_LINE_LEN);
+		{
+			strncpy(m_args, pszFormat, SCRIPT_MAX_LINE_LEN);
+			m_args[SCRIPT_MAX_LINE_LEN - 1] = '\0';
+		}
 
 		va_end(vargs);
 	}

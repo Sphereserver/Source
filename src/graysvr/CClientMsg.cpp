@@ -227,8 +227,8 @@ void CClient::resendBuffs()
 					_strlwr(const_cast<TCHAR *>(pszName));
 				}
 
-				strncpy(szNumBuff[0], Str_GetArticleAndSpace(pszName), sizeof(szNumBuff[0]) - 1);
-				strncpy(szNumBuff[1], pszName, sizeof(szNumBuff[1]) - 1);
+				strncpy(szNumBuff[0], Str_GetArticleAndSpace(pszName), sizeof(szNumBuff[0]));
+				strncpy(szNumBuff[1], pszName, sizeof(szNumBuff[1]));
 				szNumBuff[0][strlen(szNumBuff[0]) - 1] = '\0';		// trim whitespace from "a " / "an " strings
 				removeBuff(BI_POLYMORPH);
 				addBuff(BI_POLYMORPH, 1075824, 1075823, wTimerEffect, pszNumBuff, 2);
@@ -239,8 +239,8 @@ void CClient::resendBuffs()
 				const CChar *pCaster = pItem->m_uidLink.CharFind();
 				if ( pCaster )
 				{
-					strncpy(szNumBuff[0], pCaster->GetName(), sizeof(szNumBuff[0]) - 1);
-					strncpy(szNumBuff[1], pCaster->GetName(), sizeof(szNumBuff[1]) - 1);
+					strncpy(szNumBuff[0], pCaster->GetName(), sizeof(szNumBuff[0]));
+					strncpy(szNumBuff[1], pCaster->GetName(), sizeof(szNumBuff[1]));
 					removeBuff(BI_BLOODOATHCURSE);
 					addBuff(BI_BLOODOATHCURSE, 1075659, 1075660, wTimerEffect, pszNumBuff, 2);
 				}
@@ -961,7 +961,7 @@ void CClient::addObjMessage(LPCTSTR pszMsg, const CObjBaseTemplate *pSrc, HUE_TY
 		if ( !strcmpi(pszMsg, m_zLastObjMessage) )
 			return;
 
-		strncpy(m_zLastObjMessage, pszMsg, sizeof(m_zLastObjMessage) - 1);
+		strncpy(m_zLastObjMessage, pszMsg, sizeof(m_zLastObjMessage));
 		m_zLastObjMessage[sizeof(m_zLastObjMessage) - 1] = '\0';
 	}
 
@@ -1230,7 +1230,10 @@ void CClient::addItemName(const CItem *pItem)
 
 		LPCTSTR pszNewStr = Args.m_VarsLocal.GetKeyStr("ClickMsgText");
 		if ( pszNewStr )
-			strcpylen(szName, pszNewStr, sizeof(szName));
+		{
+			strncpy(szName, pszNewStr, sizeof(szName));
+			szName[sizeof(szName) - 1] = '\0';
+		}
 
 		wHue = static_cast<HUE_TYPE>(Args.m_VarsLocal.GetKeyNum("ClickMsgHue"));
 	}
@@ -1245,7 +1248,8 @@ void CClient::addCharName(const CChar *pChar)
 	ASSERT(pChar);
 
 	TCHAR szPrefix[MAX_NAME_SIZE];
-	strcpylen(szPrefix, pChar->GetKeyStr("NAME.PREFIX"), sizeof(szPrefix));
+	strncpy(szPrefix, pChar->GetKeyStr("NAME.PREFIX"), sizeof(szPrefix));
+	szPrefix[sizeof(szPrefix) - 1] = '\0';
 
 	if ( !*szPrefix )
 		strncat(szPrefix, pChar->Noto_GetFameTitle(), sizeof(szPrefix) - 1);
@@ -1342,7 +1346,7 @@ void CClient::addCharName(const CChar *pChar)
 		LPCTSTR pszNewStr = Args.m_VarsLocal.GetKeyStr("ClickMsgText");
 		if ( pszNewStr )
 		{
-			strncpy(szName, pszNewStr, sizeof(szName) - 1);
+			strncpy(szName, pszNewStr, sizeof(szName));
 			szName[sizeof(szName) - 1] = '\0';
 		}
 
@@ -2487,7 +2491,8 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 				else if ( pChar )
 				{
 					TCHAR szPrefix[MAX_NAME_SIZE];
-					strcpylen(szPrefix, pChar->GetKeyStr("NAME.PREFIX"), sizeof(szPrefix));
+					strncpy(szPrefix, pChar->GetKeyStr("NAME.PREFIX"), sizeof(szPrefix));
+					szPrefix[sizeof(szPrefix) - 1] = '\0';
 
 					if ( !*szPrefix )
 						strncat(szPrefix, pChar->Noto_GetFameTitle(), sizeof(szPrefix) - 1);

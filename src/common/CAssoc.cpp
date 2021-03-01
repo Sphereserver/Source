@@ -41,7 +41,6 @@ bool CElementDef::SetValStr( void * pBase, LPCTSTR pszVal ) const
 {
 	ADDTOCALLSTACK("CElementDef::SetValStr");
 	// Set the element value as a string.
-	DWORD dwVal = 0;
 	ASSERT(m_offset>=0);
 	void * pValPtr = GetValPtr(pBase);
 	switch ( m_type )
@@ -49,28 +48,35 @@ bool CElementDef::SetValStr( void * pBase, LPCTSTR pszVal ) const
 		case ELEM_VOID:
 			return false;
 		case ELEM_STRING:
-			strcpylen(static_cast<TCHAR *>(pValPtr), pszVal, GetValLength() - 1);
-			return( true );
+		{
+			int iLen = GetValLength() - 1;
+			strncpy(static_cast<TCHAR *>(pValPtr), pszVal, iLen);
+			static_cast<TCHAR *>(pValPtr)[iLen - 1] = '\0';
+			return true;
+		}
 		case ELEM_CSTRING:
+		{
 			*static_cast<CGString *>(pValPtr) = pszVal;
 			return true;
+		}
 		case ELEM_BOOL:
 		case ELEM_BYTE:
 		case ELEM_WORD:
 		case ELEM_INT: // signed ?
 		case ELEM_DWORD:
-			dwVal = Exp_GetVal( pszVal );
-			memcpy( pValPtr, &dwVal, GetValLength());
+		{
+			DWORD dwVal = Exp_GetVal(pszVal);
+			memcpy(pValPtr, &dwVal, GetValLength());
 			return true;
+		}
 		case ELEM_MASK_BYTE:	// bits in a BYTE
 		case ELEM_MASK_WORD:	// bits in a WORD
 		case ELEM_MASK_INT:
 		case ELEM_MASK_DWORD:	// bits in a DWORD
 			return false;
 		default:
-			break;
+			return false;
 	}
-	return false;
 }
 
 bool CElementDef::GetValStr( const void * pBase, CGString & sVal ) const

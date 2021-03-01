@@ -48,10 +48,8 @@ const TCHAR * CValueCurveDef::Write() const
 	size_t iQty = m_aiValues.GetCount();
 	for ( size_t i = 0; i < iQty; ++i )
 	{
-		if ( i > 0 )
-			pszOut[j++] = ',';
-
-		j += snprintf(pszOut + j, THREAD_STRING_LENGTH - j, "%d", m_aiValues[i]);
+		if ( j < THREAD_STRING_LENGTH )
+			j += snprintf(pszOut + j, THREAD_STRING_LENGTH - j, "%s%d", (j > 0) ? "," : "", m_aiValues[i]);
 	}
 	pszOut[j] = '\0';
 	return pszOut;

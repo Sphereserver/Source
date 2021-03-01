@@ -85,7 +85,7 @@ void CClient::addSysMessage(LPCTSTR pszMsg)
 		if ( !strcmpi(pszMsg, m_zLastMessage) )
 			return;
 
-		strncpy(m_zLastMessage, pszMsg, sizeof(m_zLastMessage) - 1);
+		strncpy(m_zLastMessage, pszMsg, sizeof(m_zLastMessage));
 		m_zLastMessage[sizeof(m_zLastMessage) - 1] = '\0';
 	}
 
@@ -231,7 +231,7 @@ bool CClient::OnRxConsole(const BYTE *pData, size_t iLen)
 						SysMessage("\nLogin: ");
 					else
 					{
-						strncpy(m_zLogin, m_Targ_Text, sizeof(m_zLogin) - 1);
+						strncpy(m_zLogin, m_Targ_Text, sizeof(m_zLogin));
 						m_zLogin[sizeof(m_zLogin) - 1] = '\0';
 						SysMessage("\nPassword: ");
 					}
@@ -293,7 +293,7 @@ bool CClient::OnRxAxis(const BYTE *pData, size_t iLen)
 			{
 				if ( !m_zLogin[0] )
 				{
-					strncpy(m_zLogin, m_Targ_Text, sizeof(m_zLogin) - 1);
+					strncpy(m_zLogin, m_Targ_Text, sizeof(m_zLogin));
 					m_zLogin[sizeof(m_zLogin) - 1] = '\0';
 					m_Targ_Text.Empty();
 				}

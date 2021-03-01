@@ -899,8 +899,10 @@ bool CItemBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 
 			size_t iLen = 0;
 			for ( size_t i = 0; i < m_flip_id.GetCount(); ++i )
-				iLen += snprintf(pszTemp + iLen, SCRIPT_MAX_LINE_LEN - iLen, "%s0%x", (i > 0) ? "," : "", static_cast<unsigned int>(m_flip_id[i]));
-
+			{
+				if ( iLen < SCRIPT_MAX_LINE_LEN )
+					iLen += snprintf(pszTemp + iLen, SCRIPT_MAX_LINE_LEN - iLen, "%s0%x", (iLen > 0) ? "," : "", static_cast<unsigned int>(m_flip_id[i]));
+			}
 			sVal = pszTemp;
 			break;
 		}

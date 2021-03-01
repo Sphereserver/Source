@@ -138,12 +138,18 @@ bool CServer::SocketsInit()
 
 	int iRet = gethostname(szName, sizeof(szName));
 	if ( iRet )
-		strncpy(szName, m_ip.GetAddrStr(), sizeof(szName) - 1);
+	{
+		strncpy(szName, m_ip.GetAddrStr(), sizeof(szName));
+		szName[sizeof(szName) - 1] = '\0';
+	}
 	else
 	{
 		pHost = gethostbyname(szName);
 		if ( pHost && pHost->h_addr && pHost->h_name )
-			strncpy(szName, pHost->h_name, sizeof(szName) - 1);
+		{
+			strncpy(szName, pHost->h_name, sizeof(szName));
+			szName[sizeof(szName) - 1] = '\0';
+		}
 	}
 
 	g_Log.Event(LOGL_EVENT, "\nServer started on hostname '%s'\n", szName);
@@ -190,13 +196,15 @@ bool CServer::GetPublicIP()
 
 	// Parse URL into domain/path
 	TCHAR szURL[_MAX_PATH];
-	strncpy(szURL, g_Serv.m_sRestAPIPublicIP, sizeof(szURL) - 1);
+	strncpy(szURL, g_Serv.m_sRestAPIPublicIP, sizeof(szURL));
 	szURL[sizeof(szURL) - 1] = '\0';
 
 	TCHAR *pszPath = strchr(szURL, '/');
+	int iLen = pszPath ? pszPath - szURL : sizeof(szURL);
+
 	TCHAR *pszDomain = Str_GetTemp();
-	strncpy(pszDomain, szURL, pszPath ? pszPath - szURL : sizeof(szURL) - 1);
-	pszDomain[pszPath ? pszPath - szURL : sizeof(szURL) - 1] = '\0';
+	strncpy(pszDomain, szURL, iLen);
+	pszDomain[iLen - 1] = '\0';
 
 	// Create socket
 	CSocketAddress sockAddr;
@@ -821,7 +829,7 @@ longcommand:
 			while ( (script = g_Cfg.GetResourceFile(i++)) != NULL )
 			{
 				TCHAR szFileScript[_MAX_PATH];
-				strncpy(szFileScript, script->GetFilePath(), sizeof(szFileScript) - 1);
+				strncpy(szFileScript, script->GetFilePath(), sizeof(szFileScript));
 				szFileScript[sizeof(szFileScript) - 1] = '\0';
 
 				FILE *pFileScript = fopen(szFileScript, "r");
@@ -843,7 +851,7 @@ longcommand:
 
 					x = y;
 					GETNONWHITESPACE(x);
-					strncpy(z, x, THREAD_STRING_LENGTH - 1);
+					strncpy(z, x, THREAD_STRING_LENGTH);
 					z[THREAD_STRING_LENGTH - 1] = '\0';
 
 					if ( ((z[0] == '[') && (strnicmp(z, "[EOF]", 5) != 0)) || !strnicmp(z, "DEFNAME", 7) || !strnicmp(z, "NAME", 4) ||
@@ -1036,7 +1044,7 @@ bool CServer::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 
 		// Extract account name/index to a temporary buffer
 		TCHAR *pszTemp = Str_GetTemp();
-		strncpy(pszTemp, pszKey, MAX_ACCOUNT_NAME_ENTRY - 1);
+		strncpy(pszTemp, pszKey, MAX_ACCOUNT_NAME_ENTRY);
 		pszTemp[MAX_ACCOUNT_NAME_ENTRY - 1] = '\0';
 
 		TCHAR *pszSplit = strchr(pszTemp, '.');
@@ -1197,7 +1205,7 @@ bool CServer::r_Verb(CScript &s, CTextConsole *pSrc)
 
 			// Extract account name/index to a temporary buffer
 			TCHAR *pszTemp = Str_GetTemp();
-			strncpy(pszTemp, pszKey, MAX_ACCOUNT_NAME_ENTRY - 1);
+			strncpy(pszTemp, pszKey, MAX_ACCOUNT_NAME_ENTRY);
 			pszTemp[MAX_ACCOUNT_NAME_ENTRY - 1] = '\0';
 
 			TCHAR *pszSplit = strchr(pszTemp, '.');

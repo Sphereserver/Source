@@ -1587,7 +1587,8 @@ bool PacketCharRename::onReceive(NetState* net)
 		return false;
 
 	TCHAR szOldName[MAX_NAME_SIZE];
-	strncpy(szOldName, pChar->GetName(), sizeof(szOldName) - 1);
+	strncpy(szOldName, pChar->GetName(), sizeof(szOldName));
+	szOldName[sizeof(szOldName) - 1] = '\0';
 
 	TCHAR szNewName[MAX_NAME_SIZE];
 	readStringASCII(szNewName, sizeof(szNewName));

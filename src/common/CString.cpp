@@ -40,7 +40,7 @@ int gReallocs = 0; ///< Total reallocs caused by CGString resizing.
 size_t strcpylen(TCHAR *pszDst, LPCTSTR pszSrc, size_t iMaxLen)
 {
 	// It does NOT include the iMaxLen element (just like memcpy), so iMaxLen = sizeof() is ok!
-	strncpy(pszDst, pszSrc, iMaxLen - 1);
+	strncpy(pszDst, pszSrc, iMaxLen);
 	pszDst[iMaxLen - 1] = '\0';
 	return strlen(pszDst);
 }

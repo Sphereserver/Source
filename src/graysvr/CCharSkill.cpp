@@ -1182,7 +1182,7 @@ bool CChar::Skill_MakeItem_Success()
 		return false;
 
 	int iQuality = 0;
-	TCHAR szMsg[EXPRESSION_MAX_KEY_LEN];
+	TCHAR szMsg[EXPRESSION_MAX_KEY_LEN] = { '\0' };
 	WORD wSkillLevel = Skill_GetBase(Skill_GetActive());					// primary skill value
 	CItemVendable *pItemVend = dynamic_cast<CItemVendable *>(pItem);		// cast CItemVendable for setting quality and exp later
 
@@ -1249,36 +1249,36 @@ bool CChar::Skill_MakeItem_Success()
 		switch ( iQualityBase )
 		{
 			case 0:		// shoddy quality
-				strncpy(szMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_1), sizeof(szMsg) - 1);
-				szMsg[EXPRESSION_MAX_KEY_LEN - 1] = '\0';
+				strncpy(szMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_1), sizeof(szMsg));
+				szMsg[sizeof(szMsg) - 1] = '\0';
 				iQuality = Calc_GetRandVal(25) + 1;
 				break;
 			case 1:		// poor quality
-				strncpy(szMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_2), sizeof(szMsg) - 1);
-				szMsg[EXPRESSION_MAX_KEY_LEN - 1] = '\0';
+				strncpy(szMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_2), sizeof(szMsg));
+				szMsg[sizeof(szMsg) - 1] = '\0';
 				iQuality = Calc_GetRandVal(25) + 26;
 				break;
 			case 2:		// below average quality
-				strncpy(szMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_3), sizeof(szMsg) - 1);
-				szMsg[EXPRESSION_MAX_KEY_LEN - 1] = '\0';
+				strncpy(szMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_3), sizeof(szMsg));
+				szMsg[sizeof(szMsg) - 1] = '\0';
 				iQuality = Calc_GetRandVal(25) + 51;
 				break;
 			case 3:		// average quality
 				iQuality = Calc_GetRandVal(50) + 76;
 				break;
 			case 4:		// above average quality
-				strncpy(szMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_4), sizeof(szMsg) - 1);
-				szMsg[EXPRESSION_MAX_KEY_LEN - 1] = '\0';
+				strncpy(szMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_4), sizeof(szMsg));
+				szMsg[sizeof(szMsg) - 1] = '\0';
 				iQuality = Calc_GetRandVal(25) + 126;
 				break;
 			case 5:		// excellent quality
-				strncpy(szMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_5), sizeof(szMsg) - 1);
-				szMsg[EXPRESSION_MAX_KEY_LEN - 1] = '\0';
+				strncpy(szMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_5), sizeof(szMsg));
+				szMsg[sizeof(szMsg) - 1] = '\0';
 				iQuality = Calc_GetRandVal(25) + 151;
 				break;
 			case 6:		// superior quality
-				strncpy(szMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_6), sizeof(szMsg) - 1);
-				szMsg[EXPRESSION_MAX_KEY_LEN - 1] = '\0';
+				strncpy(szMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_6), sizeof(szMsg));
+				szMsg[sizeof(szMsg) - 1] = '\0';
 				iQuality = Calc_GetRandVal(25) + 176;
 				break;
 		}
