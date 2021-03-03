@@ -878,7 +878,6 @@ public:
 	int Use_Trap();
 	bool Use_Light();
 	int Use_LockPick(CChar *pCharSrc, bool fTest, bool fFail);
-	LPCTSTR Use_SpyGlass(CChar *pUser) const;
 
 	bool IsBookWritable() const
 	{

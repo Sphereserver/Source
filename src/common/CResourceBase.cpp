@@ -93,7 +93,6 @@ CResourceScript *CResourceBase::AddResourceFile(LPCTSTR pszName)
 	ASSERT(pszName != NULL);
 
 	TCHAR szName[_MAX_PATH];
-	ASSERT(strlen(pszName) < sizeof(szName));
 	strncpy(szName, pszName, sizeof(szName));
 	szName[sizeof(szName) - 1] = '\0';
 

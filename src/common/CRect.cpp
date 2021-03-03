@@ -838,6 +838,7 @@ size_t CGRect::Read( LPCTSTR pszVal )
 	// parse reading the rectangle
 	TCHAR *pszTemp = Str_GetTemp();
 	strncpy(pszTemp, pszVal, 30);
+	pszTemp[29] = '\0';
 
 	TCHAR *ppVal[5];
 	size_t iArgQty = Str_ParseCmds(pszTemp, ppVal, COUNTOF(ppVal), " ,\t");

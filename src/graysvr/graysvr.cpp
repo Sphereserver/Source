@@ -42,12 +42,11 @@ bool IsTrigUsed(const char *name)
 
 void TriglistInit()
 {
-	T_TRIGGERS	trig;
+	T_TRIGGERS trig;
 	g_triggers.clear();
-
-#define ADD(_a_)	strncpy(trig.m_name, "@", sizeof(trig.m_name)); strncat(trig.m_name, #_a_, sizeof(trig.m_name) - 1); trig.m_used = 0; g_triggers.push_back(trig);
-#include "../tables/triggers.tbl"
-
+	#define ADD(_a_)	snprintf(trig.m_name, sizeof(trig.m_name), "@%s", #_a_); trig.m_used = 0; g_triggers.push_back(trig);
+	#include "../tables/triggers.tbl"
+	#undef ADD
 }
 
 void TriglistClear()
@@ -62,7 +61,7 @@ void TriglistClear()
 void TriglistAdd(E_TRIGGERS id)
 {
 	if ( g_triggers.size() )
-		g_triggers[id].m_used++;
+		++g_triggers[id].m_used;
 }
 
 void TriglistAdd(const char *name)
@@ -72,7 +71,7 @@ void TriglistAdd(const char *name)
 	{
 		if ( !strcmpi(it->m_name, name) )
 		{
-			it->m_used++;
+			++it->m_used;
 			break;
 		}
 	}
@@ -84,9 +83,9 @@ void Triglist(long &total, long &used)
 	std::vector<T_TRIGGERS>::iterator it;
 	for ( it = g_triggers.begin(); it != g_triggers.end(); ++it )
 	{
-		total++;
+		++total;
 		if ( it->m_used )
-			used++;
+			++used;
 	}
 }
 
@@ -464,7 +463,7 @@ size_t FindStrWord( LPCTSTR pTextSearch, LPCTSTR pszKeyWord )
 	// Make sure we look for starts of words.
 
 	size_t j = 0;
-	for ( size_t i = 0; ; i++ )
+	for ( size_t i = 0; ; ++i )
 	{
 		if ( pszKeyWord[j] == '\0' || pszKeyWord[j] == ',')
 		{
@@ -490,7 +489,7 @@ size_t FindStrWord( LPCTSTR pTextSearch, LPCTSTR pszKeyWord )
 				continue;
 		}
 		if ( toupper( pTextSearch[i] ) == toupper( pszKeyWord[j] ))
-			j++;
+			++j;
 		else
 			j = 0;
 	}
@@ -781,17 +780,20 @@ void dword_q_sort(DWORD numbers[], DWORD left, DWORD right)
 	pivot = numbers[left];
 	while (left < right)
 	{
-		while ((numbers[right] >= pivot) && (left < right)) right--;
+		while ( (numbers[right] >= pivot) && (left < right) )
+			--right;
 		if (left != right)
 		{
 			numbers[left] = numbers[right];
-			left++;
+			++left;
 		}
-		while ((numbers[left] <= pivot) && (left < right)) left++;
+
+		while ( (numbers[left] <= pivot) && (left < right) )
+			++left;
 		if (left != right)
 		{
 			numbers[right] = numbers[left];
-			right--;
+			--right;
 		}
 	}
 	numbers[left] = pivot;
@@ -828,19 +830,19 @@ void defragSphere(char *path)
 	g_Log.Event(LOGL_EVENT, "Defragmentation (UID alteration) of " SPHERE_TITLE " saves.\n"
 		"Use it at your own risk and if you know what you are doing, since it can possibly harm your server.\n"
 		"The process can take up to several hours depending on the CPU you have.\n"
-		"After finished, you will have your '" SPHERE_FILE "*.scp' save files converted to '" SPHERE_FILE "*.scp.new'.\n");
+		"After finished, you will have your '" SPHERE_FILE "*" SPHERE_SCRIPT "' save files converted to '" SPHERE_FILE "*" SPHERE_SCRIPT ".new'.\n");
 
 	DWORD *uids = static_cast<DWORD *>(calloc((SIZE_MAX / 2) / sizeof(DWORD), sizeof(DWORD)));
-	for ( i = 0; i < 3; i++ )
+	for ( i = 0; i < 3; ++i )
 	{
 		strncpy(z, path, sizeof(z));
 		z[sizeof(z) - 1] = '\0';
 		if ( i == 0 )
-			strncat(z, SPHERE_FILE "statics" SPHERE_SCRIPT, sizeof(z) - 1);
+			strncat(z, SPHERE_FILE "statics" SPHERE_SCRIPT, sizeof(z) - strlen(z) - 1);
 		else if ( i == 1 )
-			strncat(z, SPHERE_FILE "world" SPHERE_SCRIPT, sizeof(z) - 1);
+			strncat(z, SPHERE_FILE "world" SPHERE_SCRIPT, sizeof(z) - strlen(z) - 1);
 		else
-			strncat(z, SPHERE_FILE "chars" SPHERE_SCRIPT, sizeof(z) - 1);
+			strncat(z, SPHERE_FILE "chars" SPHERE_SCRIPT, sizeof(z) - strlen(z) - 1);
 
 		g_Log.Event(LOGL_EVENT, "Reading %s\n", z);
 		if ( !inf.Open(z, OF_READ|OF_TEXT|OF_DEFAULTMODE) )
@@ -864,13 +866,13 @@ void defragSphere(char *path)
 				p = buf + 7;
 				p1 = p;
 				while ( *p1 && ( *p1 != '\r' ) && ( *p1 != '\n' ))
-					p1++;
+					++p1;
 				*p1 = 0;
 
 				//	prepare new uid
 				*(p-1) = '0';
 				*p = 'x';
-				p--;
+				--p;
 				uids[uid++] = strtoul(p, &p1, 16);
 			}
 		}
@@ -889,20 +891,20 @@ void defragSphere(char *path)
 	g_Log.Event(LOGL_EVENT, "Quick-sorting UIDs array...\n");
 	dword_q_sort(uids, 0, dTotalUIDs - 1);
 
-	for ( i = 0; i < 5; i++ )
+	for ( i = 0; i < 5; ++i )
 	{
 		strncpy(z, path, sizeof(z));
 		z[sizeof(z) - 1] = '\0';
 		if ( i == 0 )
-			strncat(z, SPHERE_FILE "accu.scp", sizeof(z) - 1);
+			strncat(z, SPHERE_FILE "accu" SPHERE_SCRIPT, sizeof(z) - strlen(z) - 1);
 		else if ( i == 1 )
-			strncat(z, SPHERE_FILE "chars" SPHERE_SCRIPT, sizeof(z) - 1);
+			strncat(z, SPHERE_FILE "chars" SPHERE_SCRIPT, sizeof(z) - strlen(z) - 1);
 		else if ( i == 2 )
-			strncat(z, SPHERE_FILE "data" SPHERE_SCRIPT, sizeof(z) - 1);
+			strncat(z, SPHERE_FILE "data" SPHERE_SCRIPT, sizeof(z) - strlen(z) - 1);
 		else if ( i == 3 )
-			strncat(z, SPHERE_FILE "world" SPHERE_SCRIPT, sizeof(z) - 1);
+			strncat(z, SPHERE_FILE "world" SPHERE_SCRIPT, sizeof(z) - strlen(z) - 1);
 		else if ( i == 4 )
-			strncat(z, SPHERE_FILE "statics" SPHERE_SCRIPT, sizeof(z) - 1);
+			strncat(z, SPHERE_FILE "statics" SPHERE_SCRIPT, sizeof(z) - strlen(z) - 1);
 
 		g_Log.Event(LOGL_EVENT, "Updating UIDs in '%s' to '%s.new'\n", z, z);
 		if ( !inf.Open(z, OF_READ|OF_TEXT|OF_DEFAULTMODE) )
@@ -910,7 +912,7 @@ void defragSphere(char *path)
 			g_Log.Event(LOGL_EVENT, "Can't open file '%s' for reading. Skipped!\n", z);
 			continue;
 		}
-		strncat(z, ".new", sizeof(z) - 1);
+		strncat(z, ".new", sizeof(z) - strlen(z) - 1);
 		if ( !ouf.Open(z, OF_WRITE|OF_CREATE|OF_DEFAULTMODE) )
 		{
 			g_Log.Event(LOGL_EVENT, "Can't open file '%s' for writing. Skipped!\n", z);
@@ -920,8 +922,8 @@ void defragSphere(char *path)
 		while ( inf.ReadString(buf, sizeof(buf)) )
 		{
 			uid = strlen(buf);
-			if (uid > (COUNTOF(buf) - 3))
-				uid = COUNTOF(buf) - 3;
+			if ( uid > sizeof(buf) - 3 )
+				uid = sizeof(buf) - 3;
 
 			buf[uid] = buf[uid+1] = buf[uid+2] = 0;	// just to be sure to be in line always
 							// NOTE: it is much faster than to use memcpy to clear before reading
@@ -963,13 +965,15 @@ void defragSphere(char *path)
 			else if ((( buf[0] == 'T' ) && ( strstr(buf, "TAG.") == buf )) ||		// TAG.=
 					 (( buf[0] == 'R' ) && ( strstr(buf, "REGION.TAG") == buf )))
 			{
-				while ( *p && ( *p != '=' )) p++;
-				p++;
+				while ( *p && (*p != '=') )
+					++p;
+				++p;
 			}
 			else if (( i == 2 ) && strchr(buf, '='))	// spheredata.scp - plain VARs
 			{
-				while ( *p && ( *p != '=' )) p++;
-				p++;
+				while ( *p && (*p != '=') )
+					++p;
+				++p;
 			}
 			else p = NULL;
 
@@ -981,9 +985,9 @@ void defragSphere(char *path)
 			if ( p )
 			{
 				p1 = p;
-				while ( *p1 &&
-					((( *p1 >= '0' ) && ( *p1 <= '9' )) ||
-					 (( *p1 >= 'a' ) && ( *p1 <= 'f' )))) p1++;
+				while ( *p1 && (((*p1 >= '0') && (*p1 <= '9')) || ((*p1 >= 'a') && (*p1 <= 'f'))) )
+					++p1;
+
 				if ( !bSpecial )
 				{
 					if ( *p1 && ( *p1 != '\r' ) && ( *p1 != '\n' )) // some more text in line
@@ -1005,9 +1009,9 @@ void defragSphere(char *path)
 				c2 = *p;
 				*(p-1) = '0';
 				*p = 'x';
-				p--;
+				--p;
 				uid = strtoul(p, &p1, 16);
-				p++;
+				++p;
 				*(p-1) = c1;
 				*p = c2;
 				//	Note 28-Jun-2004
@@ -1038,7 +1042,7 @@ void defragSphere(char *path)
 				}
 
 				//	Search for this uid in the table
-/*				for ( d = 0; d < dTotalUIDs; d++ )
+				/*for ( d = 0; d < dTotalUIDs; ++d )
 				{
 					if ( !uids[d] )	// end of array
 					{
@@ -1060,8 +1064,8 @@ void defragSphere(char *path)
 					strncpy(z, p1, sizeof(z));
 					z[sizeof(z) - 1] = '\0';
 					snprintf(z1, sizeof(z1), "0%" FMTDWORDH, uid);
-					strncat(buf, z1, sizeof(buf) - 1);
-					strncat(buf, z, sizeof(buf) - 1);
+					strncat(buf, z1, sizeof(buf) - strlen(buf) - 1);
+					strncat(buf, z, sizeof(buf) - strlen(buf) - 1);
 				}
 			}
 			//	output the resulting line
@@ -1144,4 +1148,6 @@ int _cdecl main( int argc, char * argv[] )
 	return g_Serv.m_iExitFlag;
 }
 
+#define ADD(a,b) const char * a::m_sClassName = b
 #include "../tables/classnames.tbl"
+#undef ADD

@@ -144,6 +144,7 @@ enum E_TRIGGERS
 {
 	#define ADD(a) TRIGGER_##a,
 	#include "../tables/triggers.tbl"
+	#undef ADD
 	TRIGGER_QTY
 };
 

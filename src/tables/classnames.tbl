@@ -3,8 +3,6 @@
 //	Set:	class names
 //
 
-#define ADD(a,b) const char * a::m_sClassName = b
-
 ADD(AbstractThread,			"AbstractThread");
 ADD(CAccount,				"CAccount");
 ADD(CAccounts,				"CAccounts");
@@ -70,5 +68,3 @@ ADD(NetworkInput,			"NetworkInput");
 ADD(NetworkOutput,			"NetworkOutput");
 ADD(NetworkThread,			"NetworkThread");
 ADD(NetworkManager,			"NetworkManager");
-
-#undef ADD

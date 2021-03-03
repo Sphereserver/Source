@@ -5,12 +5,14 @@ TCHAR CExpression::sm_szMessages[DEFMSG_QTY][EXPRESSION_MAX_KEY_LEN] =
 {
 	#define MSG(a,b) b,
 	#include "../tables/defmessages.tbl"
+	#undef MSG
 };
 
 const LPCTSTR CExpression::sm_szMsgNames[DEFMSG_QTY] =
 {
 	#define MSG(a,b) #a,
 	#include "../tables/defmessages.tbl"
+	#undef MSG
 };
 
 int ahextoi(LPCTSTR pszArgs)	// convert hex string to int

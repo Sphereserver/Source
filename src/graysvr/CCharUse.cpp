@@ -1549,11 +1549,9 @@ int CChar::Do_Use_Item(CItem *pItem, bool fLink)
 				g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SPYGLASS_M7),
 				g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SPYGLASS_M8)
 			};
+
 			SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SPYGLASS_TR), sm_szMoonPhaseMsg[g_World.GetMoonPhase(false)]);
 			SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_SPYGLASS_FE), sm_szMoonPhaseMsg[g_World.GetMoonPhase(true)]);
-
-			if ( m_pArea && m_pArea->IsFlag(REGION_FLAG_SHIP) )
-				ObjMessage(pItem->Use_SpyGlass(this), this);
 			return true;
 		}
 

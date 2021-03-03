@@ -1141,7 +1141,7 @@ bool CItem::MoveToCheck(const CPointMap &pt, CChar *pCharMover, bool fForceDecay
 		if ( !pItem )
 			break;
 
-		iItemCount++;
+		++iItemCount;
 		if ( iItemCount > g_Cfg.m_iMaxItemComplexity )
 		{
 			Speak("Too many items here!");
@@ -2813,16 +2813,15 @@ TRIGRET_TYPE CItem::OnTrigger( LPCTSTR pszTrigName, CTextConsole * pSrc, CScript
 	if ( !pSrc )
 		pSrc = &g_Serv;
 
-	ITRIG_TYPE iAction;
-	if ( ISINTRESOURCE(pszTrigName))
+	int iAction;
+	if ( ISINTRESOURCE(pszTrigName) )
 	{
-		iAction = (ITRIG_TYPE) GETINTRESOURCE(pszTrigName);
+		iAction = GETINTRESOURCE(pszTrigName);
 		pszTrigName = sm_szTrigName[iAction];
 	}
 	else
-	{
-		iAction = (ITRIG_TYPE) FindTableSorted( pszTrigName, sm_szTrigName, COUNTOF(sm_szTrigName)-1 );
-	}
+		iAction = FindTableSorted(pszTrigName, sm_szTrigName, COUNTOF(sm_szTrigName) - 1);
+
 	SetTriggerActive(pszTrigName);
 
 	TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
@@ -2981,17 +2980,15 @@ TRIGRET_TYPE CItem::OnTriggerCreate( CTextConsole * pSrc, CScriptTriggerArgs * p
 	if ( !pSrc )
 		pSrc = &g_Serv;
 
-	ITRIG_TYPE iAction;
+	int iAction;
 	LPCTSTR pszTrigName = sm_szTrigName[ITRIG_Create];
-	if ( ISINTRESOURCE(pszTrigName))
+	if ( ISINTRESOURCE(pszTrigName) )
 	{
-		iAction = (ITRIG_TYPE) GETINTRESOURCE(pszTrigName);
+		iAction = GETINTRESOURCE(pszTrigName);
 		pszTrigName = sm_szTrigName[iAction];
 	}
 	else
-	{
-		iAction = (ITRIG_TYPE) FindTableSorted( pszTrigName, sm_szTrigName, COUNTOF(sm_szTrigName)-1 );
-	}
+		iAction = FindTableSorted(pszTrigName, sm_szTrigName, COUNTOF(sm_szTrigName) - 1);
 
 	TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;
 
@@ -3267,7 +3264,7 @@ void CItem::ConvertBolttoCloth()
 
 	// We need to check all cloth_bolt items
 	bool correctID = false;
-	for ( int i = static_cast<int>(ITEMID_CLOTH_BOLT1); i <= static_cast<int>(ITEMID_CLOTH_BOLT8); i++ )
+	for ( int i = static_cast<int>(ITEMID_CLOTH_BOLT1); i <= static_cast<int>(ITEMID_CLOTH_BOLT8); ++i )
 	{
 		if ( IsSameDispID(static_cast<ITEMID_TYPE>(i)) )
 		{
@@ -3289,7 +3286,7 @@ void CItem::ConvertBolttoCloth()
 	CItemContainer *pCont = dynamic_cast<CItemContainer *>(GetParentObj());
 	Delete();
 
-	for ( size_t i = 0; i < pDefCloth->m_BaseResources.GetCount(); i++ )
+	for ( size_t i = 0; i < pDefCloth->m_BaseResources.GetCount(); ++i )
 	{
 		RESOURCE_ID rid = pDefCloth->m_BaseResources[i].GetResourceID();
 		if ( rid.GetResType() != RES_ITEMDEF )
@@ -3909,200 +3906,6 @@ CItem *CItem::Weapon_FindRangedAmmo(RESOURCE_ID_BASE id)
 	return NULL;
 }
 
-LPCTSTR CItem::Use_SpyGlass( CChar * pUser ) const
-{
-	ADDTOCALLSTACK("CItem::Use_SpyGlass");
-	// IT_SPY_GLASS
-	// Assume we are in water now ?
-
-	CPointMap ptCoords = pUser->GetTopPoint();
-
-#define BASE_SIGHT 26 // 32 (UO_MAP_VIEW_RADAR) is the edge of the radar circle (for the most part)
-	WEATHER_TYPE wtWeather = ptCoords.GetSector()->GetWeather();
-	BYTE iLight = ptCoords.GetSector()->GetLight();
-	CGString sSearch;
-	TCHAR	*pResult = Str_GetTemp();
-
-	// Weather bonus
-	double rWeatherSight = (wtWeather == WEATHER_Rain) ? 0.25 * BASE_SIGHT : 0.0;
-	// Light level bonus
-	double rLightSight = (1.0 - (static_cast<double>(iLight) / 25.0)) * BASE_SIGHT * 0.25;
-	signed short iVisibility = static_cast<signed short>(BASE_SIGHT + rWeatherSight + rLightSight);
-
-	// Check for the nearest land, only check every 4th square for speed
-	const CUOMapMeter * pMeter = g_World.GetMapMeter( ptCoords ); // Are we at sea?
-	if ( pMeter == NULL )
-		return pResult;
-
-	switch ( pMeter->m_wTerrainIndex )
-	{
-		case TERRAIN_WATER1:
-		case TERRAIN_WATER2:
-		case TERRAIN_WATER3:
-		case TERRAIN_WATER4:
-		case TERRAIN_WATER5:
-		case TERRAIN_WATER6:
-		{
-			// Look for land if at sea
-			CPointMap ptLand;
-			for ( signed short x = ptCoords.m_x - iVisibility; x <= (ptCoords.m_x + iVisibility); x += 2)
-			{
-				for ( signed short y = ptCoords.m_y - iVisibility; y <= (ptCoords.m_y + iVisibility); y += 2)
-				{
-					CPointMap ptCur(x, y, ptCoords.m_z);
-					pMeter = g_World.GetMapMeter( ptCur );
-					if ( pMeter == NULL )
-						continue;
-
-					switch ( pMeter->m_wTerrainIndex )
-					{
-						case TERRAIN_WATER1:
-						case TERRAIN_WATER2:
-						case TERRAIN_WATER3:
-						case TERRAIN_WATER4:
-						case TERRAIN_WATER5:
-						case TERRAIN_WATER6:
-							break;
-						default:
-							if (ptCoords.GetDist(ptCur) < ptCoords.GetDist(ptLand))
-								ptLand = ptCur;
-							break;
-					}
-				}
-			}
-
-			if ( ptLand.IsValidPoint() )
-				sSearch.Format("%s %s. ", g_Cfg.GetDefaultMsg(DEFMSG_USE_SPYGLASS_LAND), CPointBase::sm_szDirs[ptCoords.GetDir(ptLand)]);
-			else if (iLight > 3)
-				sSearch = g_Cfg.GetDefaultMsg(DEFMSG_USE_SPYGLASS_DARK);
-			else if (wtWeather == WEATHER_Rain)
-				sSearch = g_Cfg.GetDefaultMsg(DEFMSG_USE_SPYGLASS_WEATHER);
-			else
-				sSearch = g_Cfg.GetDefaultMsg(DEFMSG_USE_SPYGLASS_NO_LAND);
-			strncpy(pResult, sSearch, MAX_TALK_BUFFER);
-			pResult[MAX_TALK_BUFFER - 1] = '\0';
-			break;
-		}
-
-		default:
-			pResult[0] = '\0';
-			break;
-	}
-
-	// Check for interesting items, like boats, carpets, etc.., ignore our stuff
-	CItem * pItemSighted = NULL;
-	CItem * pBoatSighted = NULL;
-	int iItemSighted = 0;
-	int iBoatSighted = 0;
-	CWorldSearch ItemsArea( ptCoords, iVisibility );
-	for (;;)
-	{
-		CItem * pItem = ItemsArea.GetItem();
-		if ( pItem == NULL )
-			break;
-		if ( pItem == this )
-			continue;
-
-		int iDist = ptCoords.GetDist(pItem->GetTopPoint());
-		if ( iDist > iVisibility ) // See if it's beyond the "horizon"
-			continue;
-		if ( iDist <= 8 ) // spyglasses are fuzzy up close.
-			continue;
-
-		// Skip items linked to a ship or multi
-		if ( pItem->m_uidLink.IsValidUID() )
-		{
-			CItem * pItemLink = pItem->m_uidLink.ItemFind();
-			if (( pItemLink ) && ( pItemLink->IsTypeMulti() ))
-					continue;
-		}
-
-		// Track boats separately from other items
-		if ( iDist <= UO_MAP_VIEW_RADAR && // if it's visible in the radar window as a boat, report it
-			pItem->m_type == IT_SHIP )
-		{
-			iBoatSighted ++; // Keep a tally of how many we see
-			if (!pBoatSighted || iDist < ptCoords.GetDist(pBoatSighted->GetTopPoint())) // Only find closer items to us
-			{
-				pBoatSighted = pItem;
-			}
-		}
-		else
-		{
-			iItemSighted ++; // Keep a tally of how much we see
-			if (!pItemSighted || iDist < ptCoords.GetDist(pItemSighted->GetTopPoint())) // Only find the closest item to us, give boats a preference
-			{
-				pItemSighted = pItem;
-			}
-		}
-	}
-	if (iBoatSighted) // Report boat sightings
-	{
-		DIR_TYPE dir = ptCoords.GetDir(pBoatSighted->GetTopPoint());
-		if (iBoatSighted == 1)
-			sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_SHIP_SINGLE), pBoatSighted->GetName(), CPointBase::sm_szDirs[dir]);
-		else
-			sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_SHIP_MANY), CPointBase::sm_szDirs[dir]);
-		strncat(pResult, sSearch, MAX_TALK_BUFFER - 1);
-	}
-
-	if (iItemSighted) // Report item sightings, also boats beyond the boat visibility range in the radar screen
-	{
-		int iDist = ptCoords.GetDist(pItemSighted->GetTopPoint());
-		DIR_TYPE dir = ptCoords.GetDir(pItemSighted->GetTopPoint());
-		if (iItemSighted == 1)
-		{
-			if ( iDist > UO_MAP_VIEW_RADAR ) // if beyond ship visibility in the radar window, don't be specific
-				sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_STH_DIR), CPointBase::sm_szDirs[dir]);
-			else
-				sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_ITEM_DIR), pItemSighted->GetNameFull(false), CPointBase::sm_szDirs[dir]);
-		}
-		else
-		{
-			if ( iDist > UO_MAP_VIEW_RADAR ) // if beyond ship visibility in the radar window, don't be specific
-				sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_ITEM_DIR_MANY), CPointBase::sm_szDirs[dir]);
-			else
-				sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_SPECIAL_DIR), pItemSighted->GetNameFull(false), CPointBase::sm_szDirs[dir]);
-		}
-		strncat(pResult, sSearch, MAX_TALK_BUFFER - 1);
-	}
-
-	// Check for creatures
-	CChar * pCharSighted = NULL;
-	int iCharSighted = 0;
-	CWorldSearch AreaChar( ptCoords, iVisibility );
-	for (;;)
-	{
-		CChar * pChar = AreaChar.GetChar();
-		if ( pChar == NULL )
-			break;
-		if ( pChar == pUser )
-			continue;
-		if ( pChar->m_pArea->IsFlag(REGION_FLAG_SHIP))
-			continue; // skip creatures on ships, etc.
-		int iDist = ptCoords.GetDist(pChar->GetTopPoint());
-		if ( iDist > iVisibility ) // Can we see it?
-			continue;
-		iCharSighted ++;
-		if ( !pCharSighted || iDist < ptCoords.GetDist(pCharSighted->GetTopPoint())) // Only find the closest char to us
-		{
-			pCharSighted = pChar;
-		}
-	}
-
-	if (iCharSighted > 0) // Report creature sightings, don't be too specific (that's what tracking is for)
-	{
-		DIR_TYPE dir =  ptCoords.GetDir(pCharSighted->GetTopPoint());
-
-		if (iCharSighted == 1)
-			sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_CREAT_SINGLE), CPointBase::sm_szDirs[dir] );
-		else
-			sSearch.Format(g_Cfg.GetDefaultMsg(DEFMSG_SHIP_SEEN_CREAT_MANY), CPointBase::sm_szDirs[dir] );
-		strncat(pResult, sSearch, MAX_TALK_BUFFER - 1);
-	}
-	return pResult;
-}
-
 bool CItem::Use_Light()
 {
 	ADDTOCALLSTACK("CItem::Use_Light");
@@ -4426,7 +4229,7 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 				m_itWeapon.m_spellcharges = 0;
 			}
 
-			m_itWeapon.m_spellcharges++;
+			++m_itWeapon.m_spellcharges;
 			UpdatePropertyFlag();
 		}
 	}
@@ -4890,7 +4693,7 @@ bool CItem::OnTick()
 				if ( IsAttr(ATTR_MOVE_NEVER|ATTR_STATIC) )	// infinite charges
 					return true;
 
-				m_itLight.m_charges--;
+				--m_itLight.m_charges;
 				if ( m_itLight.m_charges > 0 )
 					SetTimeout(60 * TICK_PER_SEC);
 				else
@@ -4973,7 +4776,7 @@ bool CItem::OnTick()
 					}
 					else
 					{
-						m_itPotion.m_tick --;
+						--m_itPotion.m_tick;
 						TCHAR *pszMsg = Str_GetTemp();
 						CObjBase* pObj = static_cast<CObjBase*>(GetTopLevelObj());
 						ASSERT(pObj);
@@ -5009,7 +4812,7 @@ bool CItem::OnTick()
 				EXC_SET("default behaviour::IT_BEE_HIVE");
 				// Regenerate honey count
 				if ( m_itBeeHive.m_honeycount < 5 )
-					m_itBeeHive.m_honeycount++;
+					++m_itBeeHive.m_honeycount;
 				SetTimeout( 15*60*TICK_PER_SEC );
 			}
 			return true;

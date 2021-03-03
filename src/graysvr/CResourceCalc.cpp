@@ -343,9 +343,13 @@ LPCTSTR CResource::Calc_MaptoSextant(CPointMap pt)
 {
 	ADDTOCALLSTACK("CResource::Calc_MaptoSextant");
 	// Conversion from map square to degrees, minutes
+
 	TCHAR *pszArgs = Str_GetTemp();
+	strncpy(pszArgs, g_Cfg.m_sZeroPoint, 16);
+	pszArgs[15] = '\0';
+
 	CPointMap ptCenter;
-	ptCenter.Read(strncpy(pszArgs, g_Cfg.m_sZeroPoint, 16));
+	ptCenter.Read(pszArgs);
 
 	int iLat = g_MapList.GetY(ptCenter.m_map);
 	iLat = (pt.m_y - ptCenter.m_y) * 360 * 60 / maximum(1, iLat);

@@ -33,6 +33,7 @@ enum DEFMSG_TYPE
 {
 	#define MSG(a,b) DEFMSG_##a,
 	#include "../tables/defmessages.tbl"
+	#undef MSG
 	DEFMSG_QTY
 };
 
