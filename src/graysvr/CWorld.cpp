@@ -346,9 +346,6 @@ int CTimedFunctionHandler::Load(const char *pszName, bool fQuoted, const char *p
 {
 	ADDTOCALLSTACK("CTimedFunctionHandler::Load");
 	UNREFERENCED_PARAMETER(fQuoted);
-	static char tempBuffer[128];
-	static TimedFunction *tf = NULL;
-
 	if ( !pszName )
 		return -1;
 
@@ -361,14 +358,18 @@ int CTimedFunctionHandler::Load(const char *pszName, bool fQuoted, const char *p
 	}
 	else if ( !strcmpi(pszName, "TimerFNumbers") )
 	{
+		static char szTemp[128];
+		strncpy(szTemp, pszVal, sizeof(szTemp));
+		szTemp[sizeof(szTemp) - 1] = '\0';
+
 		TCHAR *ppArgs[4];
-		strncpy(tempBuffer, pszVal, sizeof(tempBuffer));	// because pszVal is constant and Str_ParseCmds wants a non-constant string
-		size_t iArgs = Str_ParseCmds(tempBuffer, ppArgs, COUNTOF(ppArgs), " ,\t");
+		size_t iArgs = Str_ParseCmds(szTemp, ppArgs, COUNTOF(ppArgs), " ,\t");
 
 		if ( iArgs == 3 )
 		{
 			if ( IsDigit(ppArgs[0][0]) && IsDigit(ppArgs[1][0]) && IsDigit(ppArgs[2][0]) )
 			{
+				static TimedFunction *tf = NULL;
 				bool fNew = false;
 				if ( !tf )
 				{
@@ -393,6 +394,7 @@ int CTimedFunctionHandler::Load(const char *pszName, bool fQuoted, const char *p
 	}
 	else if ( !strcmpi(pszName, "TimerFCall") )
 	{
+		static TimedFunction *tf = NULL;
 		bool fNew = false;
 		if ( !tf )
 		{
@@ -1992,7 +1994,7 @@ void CWorld::SpeakUNICODE(const CObjBaseTemplate *pSrc, const NCHAR *pszText, HU
 					CGString sName;
 					sName.Format("<%s>", pSrc->GetName());
 
-					int iLen = CvtSystemToNUNICODE(szTextGhostNamed, COUNTOF(szTextGhostNamed), sName, -1);
+					size_t iLen = CvtSystemToNUNICODE(szTextGhostNamed, COUNTOF(szTextGhostNamed), sName, -1);
 					for ( size_t i = 0; (szTextGhost[i] != '\0') && (iLen < MAX_TALK_BUFFER - 1); ++i, ++iLen )
 						szTextGhostNamed[iLen] = szTextGhost[i];
 
@@ -2008,7 +2010,7 @@ void CWorld::SpeakUNICODE(const CObjBaseTemplate *pSrc, const NCHAR *pszText, HU
 					CGString sName;
 					sName.Format("<%s>", pSrc->GetName());
 
-					int iLen = CvtSystemToNUNICODE(szTextNamed, COUNTOF(szTextNamed), sName, -1);
+					size_t iLen = CvtSystemToNUNICODE(szTextNamed, COUNTOF(szTextNamed), sName, -1);
 					for ( size_t i = 0; (pszText[i] != '\0') && (iLen < MAX_TALK_BUFFER - 1); ++i, ++iLen )
 						szTextNamed[iLen] = pszText[i];
 

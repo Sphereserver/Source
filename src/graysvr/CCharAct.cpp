@@ -2492,7 +2492,7 @@ bool CChar::Death()
 
 	// Record the kill event for posterity
 	if ( !iKillers )
-		strncat(szMsg, "accident", sizeof(szMsg) - 1);
+		strncat(szMsg, "accident", sizeof(szMsg) - strlen(szMsg) - 1);
 	if ( m_pPlayer )
 		g_Log.Event(LOGM_KILLS, "%s\n", szMsg);
 	if ( m_pParty )
@@ -3332,14 +3332,14 @@ TRIGRET_TYPE CChar::OnTrigger(LPCTSTR pszTrigName, CTextConsole *pSrc, CScriptTr
 	if ( !pCharDef )
 		return TRIGRET_RET_DEFAULT;
 
-	CTRIG_TYPE iAction;
+	int iAction;
 	if ( ISINTRESOURCE(pszTrigName) )
 	{
-		iAction = static_cast<CTRIG_TYPE>(GETINTRESOURCE(pszTrigName));
+		iAction = GETINTRESOURCE(pszTrigName);
 		pszTrigName = sm_szTrigName[iAction];
 	}
 	else
-		iAction = static_cast<CTRIG_TYPE>(FindTableSorted(pszTrigName, sm_szTrigName, COUNTOF(sm_szTrigName) - 1));
+		iAction = FindTableSorted(pszTrigName, sm_szTrigName, COUNTOF(sm_szTrigName) - 1);
 
 	SetTriggerActive(pszTrigName);
 	TRIGRET_TYPE iRet = TRIGRET_RET_DEFAULT;

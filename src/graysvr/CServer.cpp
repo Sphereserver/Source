@@ -959,7 +959,7 @@ void CServer::ListClients(CTextConsole *pConsole) const
 			pConsole->SysMessage(pszMsg);
 			pszMsg[0] = '\0';
 		}
-		strncat(pszMsg, pszMsgTemp, SCRIPT_MAX_LINE_LEN - 1);
+		strncat(pszMsg, pszMsgTemp, SCRIPT_MAX_LINE_LEN - strlen(pszMsg) - 1);
 	}
 
 	if ( iClients == 0 )

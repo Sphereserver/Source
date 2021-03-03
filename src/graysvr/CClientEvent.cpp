@@ -667,7 +667,7 @@ bool CClient::Event_Walk(BYTE rawdir, BYTE sequence)
 		pt.Move(dir);
 
 		// Check Z height. The client already knows this but doesn't tell us.
-		if ( m_pChar->CanMoveWalkTo(pt, true, false, static_cast<DIR_TYPE>(rawdir)) == NULL )
+		if ( !m_pChar->CanMoveWalkTo(pt, true, false, static_cast<DIR_TYPE>(rawdir)) )
 		{
 			new PacketMovementRej(this, sequence);
 			return false;
@@ -1673,7 +1673,7 @@ void CClient::Event_TalkUNICODE(NWORD *wszText, int iTextLen, HUE_TYPE wHue, TAL
 	TCHAR szText[MAX_TALK_BUFFER] = { '\0' };
 	const NWORD *puText = wszText;
 
-	int iLen = CvtNUNICODEToSystem(szText, sizeof(szText), wszText, iTextLen);
+	size_t iLen = CvtNUNICODEToSystem(szText, sizeof(szText), wszText, iTextLen);
 	if ( iLen <= 0 )
 		return;
 

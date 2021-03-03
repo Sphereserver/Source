@@ -260,15 +260,13 @@ void CMD5::digest( char *digest )
 		return;
 		// throw std::exception( "Call to CMD5::digest() without finalized flag being set." );
 
-	digest[0] = 0;
-
-	unsigned char * buffer = reinterpret_cast<unsigned char *>( m_buffer );
+	digest[0] = '\0';
+	size_t len = 0;
+	unsigned char *buffer = reinterpret_cast<unsigned char *>(m_buffer);
 
 	// 16 byte a 2 characters
-    for( unsigned int i = 0; i < 16; ++i )
+	for ( unsigned int i = 0; i < 16; ++i )
 	{
-		char temp[3];
-		snprintf(temp, sizeof(temp), "%02x", buffer[i]);
-		strncat(digest, temp, MD5_DIGEST_LENGTH);
+		len += snprintf(digest + len, MD5_DIGEST_LENGTH + 1 - len, "%02x", buffer[i]);
 	}
 }

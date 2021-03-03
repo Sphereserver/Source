@@ -223,17 +223,18 @@ void _cdecl CLog::CatchEvent( const CGrayError *pErr, LPCTSTR pszCatchContext, .
 		else
 		{
 			eSeverity = LOGL_CRIT;
-			strcpy(szMsg, "Exception");
+			strncpy(szMsg, "Exception", sizeof(szMsg));
+			szMsg[sizeof(szMsg) - 1] = '\0';
 		}
 
-		strncat(szMsg, ", in ", sizeof(szMsg) - 1);
+		strncat(szMsg, ", in ", sizeof(szMsg) - strlen(szMsg) - 1);
 
 		va_list vargs;
 		va_start(vargs, pszCatchContext);
 		vsprintf(szMsg + strlen(szMsg), pszCatchContext, vargs);
 		va_end(vargs);
 
-		strncat(szMsg, "\n", sizeof(szMsg) - 1);
+		strncat(szMsg, "\n", sizeof(szMsg) - strlen(szMsg) - 1);
 		EventStr(eSeverity, szMsg);
 	}
 	catch ( ... )

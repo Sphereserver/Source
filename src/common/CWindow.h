@@ -251,7 +251,7 @@ public:
 		pszTmp = strrchr( szFileName, '.' );	// Get extension.
 		if ( pszTmp != NULL )
 			pszTmp[0] = '\0';
-		strncat(szFileName, ".ini", sizeof(szFileName) - 1);
+		strncat(szFileName, ".ini", sizeof(szFileName) - strlen(szFileName) - 1);
 
 		OFSTRUCT ofs = { };
 		if ( OpenFile( szFileName, &ofs, OF_EXIST ) != HFILE_ERROR)

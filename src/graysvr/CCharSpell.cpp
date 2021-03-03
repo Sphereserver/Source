@@ -955,9 +955,9 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 						}
 
 						strncpy(szNumBuff[0], Str_GetArticleAndSpace(pszName), sizeof(szNumBuff[0]));
-						strncpy(szNumBuff[1], pszName, sizeof(szNumBuff[1]));
 						szNumBuff[0][sizeof(szNumBuff[0]) - 1] = '\0';
 						szNumBuff[0][strlen(szNumBuff[0]) - 1] = '\0';		// trim whitespace from "a " / "an " strings
+						strncpy(szNumBuff[1], pszName, sizeof(szNumBuff[1]));
 						szNumBuff[1][sizeof(szNumBuff[1]) - 1] = '\0';
 						m_pClient->removeBuff(BI_POLYMORPH);
 						m_pClient->addBuff(BI_POLYMORPH, 1075824, 1075823, wTimerEffect, pszNumBuff, 2);
@@ -1374,7 +1374,9 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 				if ( m_pClient )
 				{
 					strncpy(szNumBuff[0], pCaster->GetName(), sizeof(szNumBuff[0]));
+					szNumBuff[0][sizeof(szNumBuff[0]) - 1] = '\0';
 					strncpy(szNumBuff[1], pCaster->GetName(), sizeof(szNumBuff[1]));
+					szNumBuff[1][sizeof(szNumBuff[1]) - 1] = '\0';
 					m_pClient->removeBuff(BI_BLOODOATHCURSE);
 					m_pClient->addBuff(BI_BLOODOATHCURSE, 1075659, 1075660, wTimerEffect, pszNumBuff, 2);
 				}
@@ -1382,6 +1384,7 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 				if ( pClientCaster )
 				{
 					strncpy(szNumBuff[0], GetName(), sizeof(szNumBuff[0]));
+					szNumBuff[0][sizeof(szNumBuff[0]) - 1] = '\0';
 					pClientCaster->removeBuff(BI_BLOODOATHCASTER);
 					pClientCaster->addBuff(BI_BLOODOATHCASTER, 1075661, 1075662, wTimerEffect, pszNumBuff, 1);
 				}
@@ -2626,7 +2629,7 @@ bool CChar::Spell_CastDone()
 
 		INT64 piArgs[2];
 		size_t iArgQty = Str_ParseCmds(const_cast<TCHAR *>(Args.m_VarsLocal.GetKeyStr("Duration")), piArgs, COUNTOF(piArgs), ",");
-		iDurationMin = (iArgQty >= 1) ? piArgs[0] * TICK_PER_SEC : GetSpellDuration(m_atMagery.m_Spell, iSkillLevel, this) * TICK_PER_SEC;
+		iDurationMin = (iArgQty >= 1) ? piArgs[0] * TICK_PER_SEC : static_cast<INT64>(GetSpellDuration(m_atMagery.m_Spell, iSkillLevel, this)) * TICK_PER_SEC;
 		iDurationMax = (iArgQty >= 2) ? piArgs[1] * TICK_PER_SEC : iDurationMin;
 
 		wColor = static_cast<HUE_TYPE>(Args.m_VarsLocal.GetKeyNum("EffectColor"));

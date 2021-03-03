@@ -194,9 +194,9 @@ CGString CGFile::GetMergedFileName(LPCTSTR pszPath, LPCTSTR pszFileName) // stat
 		if ( iLen && (szFullPath[iLen - 1] != '\\') && (szFullPath[iLen - 1] != '/') )
 		{
 #ifdef _WIN32
-			strncat(szFullPath, "\\", sizeof(szFullPath) - 1);
+			strncat(szFullPath, "\\", sizeof(szFullPath) - strlen(szFullPath) - 1);
 #else
-			strncat(szFullPath, "/", sizeof(szFullPath) - 1);
+			strncat(szFullPath, "/", sizeof(szFullPath) - strlen(szFullPath) - 1);
 #endif
 		}
 	}
@@ -204,7 +204,7 @@ CGString CGFile::GetMergedFileName(LPCTSTR pszPath, LPCTSTR pszFileName) // stat
 		szFullPath[0] = '\0';
 
 	if ( pszFileName )
-		strncat(szFullPath, pszFileName, sizeof(szFullPath) - 1);
+		strncat(szFullPath, pszFileName, sizeof(szFullPath) - strlen(szFullPath) - 1);
 
 	return CGString(szFullPath);
 }
@@ -217,10 +217,10 @@ LPCTSTR CGFile::GetFilesTitle(LPCTSTR pszPath)	// static
 	size_t iLen = strlen(pszPath);
 	while ( iLen > 0 )
 	{
-		iLen--;
+		--iLen;
 		if ( (pszPath[iLen] == '\\') || (pszPath[iLen] == '/') )
 		{
-			iLen++;
+			++iLen;
 			break;
 		}
 	}
@@ -234,7 +234,7 @@ LPCTSTR CGFile::GetFilesExt(LPCTSTR pszPath)	// static
 	size_t iLen = strlen(pszPath);
 	while ( iLen > 0 )
 	{
-		iLen--;
+		--iLen;
 		if ( (pszPath[iLen] == '\\') || (pszPath[iLen] == '/') )
 			break;
 		if ( pszPath[iLen] == '.' )

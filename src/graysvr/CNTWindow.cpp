@@ -73,7 +73,7 @@ void CNTWindow::CStatusDlg::FillClients()
 	CNTWindow::CListTextConsole capture( m_wndListClients.m_hWnd );
 	g_Serv.ListClients( &capture );
 	int iCount = m_wndListClients.GetCount();
-	iCount++;
+	++iCount;
 }
 
 void CNTWindow::CStatusDlg::FillStats()
@@ -241,7 +241,7 @@ bool CNTWindow::RegisterClass(char *className)	// static
 
 	TCHAR szLibPath[MAX_PATH];
 	GetSystemDirectory(szLibPath, sizeof(szLibPath));
-	strncat(szLibPath, "\\riched20.dll", sizeof(szLibPath) - 1);
+	strncat(szLibPath, "\\riched20.dll", sizeof(szLibPath) - strlen(szLibPath) - 1);
 
 	LoadLibrary(szLibPath);
 	return true;
@@ -615,9 +615,9 @@ LRESULT CNTWindow::OnNotify( int idCtrl, NMHDR * pnmh )
 						{
 							if (( *start == ' ' ) || ( *start == '(' ))
 								break;
-							start--;
+							--start;
 						}
-						start++;
+						++start;
 						*end = '\0';
 
 						if ( *start != '\0' )
@@ -650,7 +650,7 @@ LRESULT CNTWindow::OnNotify( int idCtrl, NMHDR * pnmh )
 							{
 								TCHAR szApplicationName[MAX_PATH];
 								GetSystemDirectory(szApplicationName, sizeof(szApplicationName));
-								strncat(szApplicationName, "\\notepad.exe", sizeof(szApplicationName) - 1);
+								strncat(szApplicationName, "\\notepad.exe", sizeof(szApplicationName) - strlen(szApplicationName) - 1);
 
 								TCHAR szCommandLine[MAX_PATH];
 								snprintf(szCommandLine, sizeof(szCommandLine), " \"%s\"", filePath);

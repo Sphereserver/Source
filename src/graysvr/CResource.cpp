@@ -1913,10 +1913,13 @@ bool CResource::CanUsePrivVerb(const CScriptObj *pObjTarg, LPCTSTR pszCmd, CText
 			return !strnicmp(pszCmd, "LOGIN", 5);
 	}
 
-	size_t iSpace = strcspn(pszCmd, " ");	// position of space
+	size_t iLen = strcspn(pszCmd, " ");
+	if ( iLen >= THREAD_STRING_LENGTH )
+		return false;
+
 	TCHAR *pszMyCmd = Str_GetTemp();
-	strncpy(pszMyCmd, pszCmd, iSpace);
-	pszMyCmd[iSpace - 1] = '\0';
+	strncpy(pszMyCmd, pszCmd, iLen + 1);
+	pszMyCmd[iLen] = '\0';
 
 	TCHAR *pszDot;	// position of dot
 	while ( (pszDot = strchr(pszMyCmd, '.')) != NULL )

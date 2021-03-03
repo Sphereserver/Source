@@ -162,7 +162,7 @@ static int CvtUNICODEToSystem(TCHAR *pszOut, int iSizeOutBytes, WCHAR wChar)
 	return iBytes;
 }
 
-int CvtSystemToNUNICODE(NCHAR *pszOut, int iSizeOutChars, LPCTSTR pszInp, int iSizeInBytes)
+size_t CvtSystemToNUNICODE(NCHAR *pszOut, int iSizeOutChars, LPCTSTR pszInp, int iSizeInBytes)
 {
 	// Convert system default text format UTF8 to UNICODE
 	// This need not be a properly terminated string
@@ -175,7 +175,7 @@ int CvtSystemToNUNICODE(NCHAR *pszOut, int iSizeOutChars, LPCTSTR pszInp, int iS
 	ASSERT(pszOut);
 	ASSERT(pszInp);
 	if ( iSizeOutChars <= 0 )
-		return -1;
+		return 0;
 
 	if ( iSizeInBytes <= -1 )
 		iSizeInBytes = strlen(pszInp);
@@ -251,7 +251,7 @@ int CvtSystemToNUNICODE(NCHAR *pszOut, int iSizeOutChars, LPCTSTR pszInp, int iS
 	return iOut;
 }
 
-int CvtNUNICODEToSystem(TCHAR *pszOut, int iSizeOutBytes, const NCHAR *pszInp, int iSizeInChars)
+size_t CvtNUNICODEToSystem(TCHAR *pszOut, int iSizeOutBytes, const NCHAR *pszInp, int iSizeInChars)
 {
 	// Convert UNICODE to system default text format UTF8
 	// This need not be a properly terminated string

@@ -93,7 +93,7 @@ CResourceScript *CResourceBase::AddResourceFile(LPCTSTR pszName)
 	ASSERT(pszName != NULL);
 
 	TCHAR szName[_MAX_PATH];
-	ASSERT(strlen(pszName) < COUNTOF(szName));
+	ASSERT(strlen(pszName) < sizeof(szName));
 	strncpy(szName, pszName, sizeof(szName));
 	szName[sizeof(szName) - 1] = '\0';
 
@@ -110,8 +110,8 @@ CResourceScript *CResourceBase::AddResourceFile(LPCTSTR pszName)
 	if ( !CScript::GetFilesExt(szTitle) )
 	{
 		// No file extension provided, so append .scp to the filename
-		strncat(szName, SPHERE_SCRIPT, sizeof(szName) - 1);
-		strncat(szTitle, SPHERE_SCRIPT, sizeof(szTitle) - 1);
+		strncat(szName, SPHERE_SCRIPT, sizeof(szName) - strlen(szName) - 1);
+		strncat(szTitle, SPHERE_SCRIPT, sizeof(szTitle) - strlen(szTitle) - 1);
 	}
 
 	if ( !strnicmp(szTitle, SPHERE_FILE "tables", strlen(SPHERE_FILE "tables")) )

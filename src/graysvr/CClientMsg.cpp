@@ -228,8 +228,10 @@ void CClient::resendBuffs()
 				}
 
 				strncpy(szNumBuff[0], Str_GetArticleAndSpace(pszName), sizeof(szNumBuff[0]));
-				strncpy(szNumBuff[1], pszName, sizeof(szNumBuff[1]));
+				szNumBuff[0][sizeof(szNumBuff[0]) - 1] = '\0';
 				szNumBuff[0][strlen(szNumBuff[0]) - 1] = '\0';		// trim whitespace from "a " / "an " strings
+				strncpy(szNumBuff[1], pszName, sizeof(szNumBuff[1]));
+				szNumBuff[1][sizeof(szNumBuff[1]) - 1] = '\0';
 				removeBuff(BI_POLYMORPH);
 				addBuff(BI_POLYMORPH, 1075824, 1075823, wTimerEffect, pszNumBuff, 2);
 				break;
@@ -240,7 +242,9 @@ void CClient::resendBuffs()
 				if ( pCaster )
 				{
 					strncpy(szNumBuff[0], pCaster->GetName(), sizeof(szNumBuff[0]));
+					szNumBuff[0][sizeof(szNumBuff[0]) - 1] = '\0';
 					strncpy(szNumBuff[1], pCaster->GetName(), sizeof(szNumBuff[1]));
+					szNumBuff[1][sizeof(szNumBuff[1]) - 1] = '\0';
 					removeBuff(BI_BLOODOATHCURSE);
 					addBuff(BI_BLOODOATHCURSE, 1075659, 1075660, wTimerEffect, pszNumBuff, 2);
 				}
@@ -1252,7 +1256,7 @@ void CClient::addCharName(const CChar *pChar)
 	szPrefix[sizeof(szPrefix) - 1] = '\0';
 
 	if ( !*szPrefix )
-		strncat(szPrefix, pChar->Noto_GetFameTitle(), sizeof(szPrefix) - 1);
+		strncat(szPrefix, pChar->Noto_GetFameTitle(), sizeof(szPrefix) - strlen(szPrefix) - 1);
 
 	TCHAR szSuffix[MAX_NAME_SIZE];
 	size_t len = strcpylen(szSuffix, pChar->GetKeyStr("NAME.SUFFIX"), sizeof(szSuffix));
@@ -1287,27 +1291,27 @@ void CClient::addCharName(const CChar *pChar)
 		if ( pChar->m_pNPC )
 		{
 			if ( pChar->IsPlayableCharacter() )
-				strncat(szName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_NPC), sizeof(szName) - 1);
+				strncat(szName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_NPC), sizeof(szName) - strlen(szName) - 1);
 			if ( pChar->IsStatFlag(STATF_Conjured) )
-				strncat(szName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_SUMMONED), sizeof(szName) - 1);
+				strncat(szName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_SUMMONED), sizeof(szName) - strlen(szName) - 1);
 			else if ( pChar->IsStatFlag(STATF_Pet) )
-				strncat(szName, g_Cfg.GetDefaultMsg(pChar->m_pNPC->m_bonded ? DEFMSG_CHARINFO_BONDED : DEFMSG_CHARINFO_TAME), sizeof(szName) - 1);
+				strncat(szName, g_Cfg.GetDefaultMsg(pChar->m_pNPC->m_bonded ? DEFMSG_CHARINFO_BONDED : DEFMSG_CHARINFO_TAME), sizeof(szName) - strlen(szName) - 1);
 		}
 		if ( pChar->IsStatFlag(STATF_INVUL) && !pChar->IsStatFlag(STATF_Incognito) && !pChar->IsPriv(PRIV_PRIV_NOSHOW) )
-			strncat(szName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_INVUL), sizeof(szName) - 1);
+			strncat(szName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_INVUL), sizeof(szName) - strlen(szName) - 1);
 		if ( pChar->IsStatFlag(STATF_Stone) )
-			strncat(szName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_STONE), sizeof(szName) - 1);
+			strncat(szName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_STONE), sizeof(szName) - strlen(szName) - 1);
 		if ( pChar->IsStatFlag(STATF_Freeze) )
-			strncat(szName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_FROZEN), sizeof(szName) - 1);
+			strncat(szName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_FROZEN), sizeof(szName) - strlen(szName) - 1);
 		if ( pChar->IsStatFlag(STATF_Insubstantial|STATF_Invisible|STATF_Hidden) )
-			strncat(szName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_HIDDEN), sizeof(szName) - 1);
+			strncat(szName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_HIDDEN), sizeof(szName) - strlen(szName) - 1);
 		if ( pChar->IsStatFlag(STATF_Hallucinating) )
-			strncat(szName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_HALLU), sizeof(szName) - 1);
+			strncat(szName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_HALLU), sizeof(szName) - strlen(szName) - 1);
 
 		if ( fAllShow )
 		{
 			if ( pChar->IsStatFlag(STATF_Spawned) )
-				strncat(szName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_SPAWN), sizeof(szName) - 1);
+				strncat(szName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_SPAWN), sizeof(szName) - strlen(szName) - 1);
 			if ( IsPriv(PRIV_DEBUG) )
 			{
 				len = strlen(szName);
@@ -1317,11 +1321,11 @@ void CClient::addCharName(const CChar *pChar)
 		}
 	}
 	if ( pChar->IsPriv(PRIV_JAILED) )
-		strncat(szName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_JAILED), sizeof(szName) - 1);
+		strncat(szName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_JAILED), sizeof(szName) - strlen(szName) - 1);
 	if ( pChar->IsDisconnected() )
-		strncat(szName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_LOGOUT), sizeof(szName) - 1);
+		strncat(szName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_LOGOUT), sizeof(szName) - strlen(szName) - 1);
 	if ( (fAllShow || (pChar == m_pChar)) && pChar->IsStatFlag(STATF_Criminal) )
-		strncat(szName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_CRIMINAL), sizeof(szName) - 1);
+		strncat(szName, g_Cfg.GetDefaultMsg(DEFMSG_CHARINFO_CRIMINAL), sizeof(szName) - strlen(szName) - 1);
 
 #ifdef _DEBUG
 	if ( fAllShow || (IsPriv(PRIV_GM) && (g_Cfg.m_wDebugFlags & DEBUGF_NPC_EMOTE)) )
@@ -2495,7 +2499,7 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 					szPrefix[sizeof(szPrefix) - 1] = '\0';
 
 					if ( !*szPrefix )
-						strncat(szPrefix, pChar->Noto_GetFameTitle(), sizeof(szPrefix) - 1);
+						strncat(szPrefix, pChar->Noto_GetFameTitle(), sizeof(szPrefix) - strlen(szPrefix) - 1);
 
 					TCHAR szSuffix[MAX_NAME_SIZE];
 					size_t len = strcpylen(szSuffix, pChar->GetKeyStr("NAME.SUFFIX"), sizeof(szSuffix));
@@ -2520,9 +2524,9 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 					}
 
 					if ( !*szPrefix )
-						strncat(szPrefix, " ", sizeof(szPrefix) - 1);
+						strncat(szPrefix, " ", sizeof(szPrefix) - strlen(szPrefix) - 1);
 					if ( !*szSuffix )
-						strncat(szSuffix, " ", sizeof(szSuffix) - 1);
+						strncat(szSuffix, " ", sizeof(szSuffix) - strlen(szSuffix) - 1);
 
 					m_TooltipData.InsertAt(0, t = new CClientTooltip(1050045)); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
 					if ( dwClilocName )

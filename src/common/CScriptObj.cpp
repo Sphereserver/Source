@@ -1688,7 +1688,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 
 			TCHAR *pszBuffer = Str_GetTemp();
 			strncpy(pszBuffer, ppArgs[2] + iPos, iCnt);
-			pszBuffer[iCnt - 1] = '\0';
+			pszBuffer[iCnt] = '\0';
 
 #ifdef _DEBUG
 			if ( g_Cfg.m_wDebugFlags & DEBUGF_SCRIPTS )

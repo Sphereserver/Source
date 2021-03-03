@@ -759,8 +759,10 @@ public:
 	void AddSortString(LPCTSTR pszText)
 	{
 		ASSERT(pszText);
-		TCHAR *pNew = new TCHAR[strlen(pszText) + 1];
-		strcpy(pNew, pszText);
+		size_t len = strlen(pszText) + 1;
+		TCHAR *pNew = new TCHAR[len];
+		strncpy(pNew, pszText, len);
+		pNew[len - 1] = '\0';
 		AddSortKey(pNew, pNew);
 	}
 

@@ -57,7 +57,7 @@ int CFileList::ReadDir( LPCTSTR pszFileDir, bool bShowError )
 	{
 		--len;
 		if ( (szFileDir[len] == '\\') || (szFileDir[len] == '/') )
-			strncat(szFileDir, "*.*", sizeof(szFileDir) - 1);
+			strncat(szFileDir, "*.*", sizeof(szFileDir) - strlen(szFileDir) - 1);
 	}
 #endif
 
@@ -67,7 +67,6 @@ int CFileList::ReadDir( LPCTSTR pszFileDir, bool bShowError )
 
 	if ( lFind == -1 )
 #else
-	char szFilename[_MAX_PATH];
 	// Need to strip out the *.scp part
 	for ( size_t i = len; i > 0; --i )
 	{
@@ -77,10 +76,11 @@ int CFileList::ReadDir( LPCTSTR pszFileDir, bool bShowError )
 			break;
 		}
 	}
-	
-	DIR* dirp = opendir(szFileDir);
-	struct dirent * fileinfo = NULL;
 
+	struct dirent *fileinfo = NULL;
+	char szFileName[_MAX_PATH];
+
+	DIR *dirp = opendir(szFileDir);
 	if ( !dirp )
 #endif
 	{
@@ -104,11 +104,8 @@ int CFileList::ReadDir( LPCTSTR pszFileDir, bool bShowError )
 		if ( fileinfo->d_name[0] == '.' )
 			continue;
 
-		strncpy(szFilename, szFileDir, sizeof(szFilename));
-		strncat(szFilename, fileinfo->d_name, sizeof(szFilename) - 1);
-		len = strlen(szFilename);
-
-		if ( (len > 4) && !strcmpi(&szFilename[len - 4], SPHERE_SCRIPT) )
+		len = snprintf(szFileName, sizeof(szFileName), "%s%s", szFileDir, fileinfo->d_name);
+		if ( (len > 4) && !strcmpi(&szFileName[len - 4], SPHERE_SCRIPT) )
 			AddTail(fileinfo->d_name);
 #endif
 	}
