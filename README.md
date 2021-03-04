@@ -37,7 +37,7 @@ Project can be compiled on Windows (Visual Studio) and Linux (GCC)
 * Ubuntu 14.10 or older:
   * Default package repository only have support up to MySQL 5.6, so add MySQL 5.7 support
     ```
-    sudo add-apt-repository 'deb http://repo.mysql.com/apt/ubuntu/ trusty mysql-5.7'
+    sudo add-apt-repository 'deb http://repo.mysql.com/apt/ubuntu/ precise mysql-5.7'
     sudo apt-get update
     ```
   * Install MySQL

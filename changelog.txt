@@ -1839,3 +1839,7 @@ Fixed: Windows build crashing at server startup when server name length is too l
 06-02-2021, Coruja
 Fixed: Server crash when call intrinsic functions <eval ISNUMBER()> / <floatval ISNUMBER()> with invalid args.
 [sphereCrypt.ini]: Added crypt key for classic client 7.0.88 and enhanced client 4.0.88
+
+04-03-2021, Coruja
+[sphereCrypt.ini]: Added crypt key for classic client 7.0.89 and enhanced client 4.0.89
+[sphere_msgs.scp]: Removed unused messages 'item_magic', 'item_newbie', 'item_repair', 'use_spyglass_*', 'ship_seen_*'
