@@ -2600,7 +2600,7 @@ void CClient::Event_ExtCmd(EXTCMD_TYPE type, TCHAR *pszArgs)
 bool CClient::xPacketFilter(const BYTE *pData, size_t iLen)
 {
 	ADDTOCALLSTACK("CClient::xPacketFilter");
-	if ( (iLen <= 0) || (pData[0] >= PACKET_QTY) || !g_Serv.m_PacketFilter[pData[0]][0] )
+	if ( (iLen <= 0) || (iLen >= THREAD_STRING_LENGTH) || (pData[0] >= PACKET_QTY) || !g_Serv.m_PacketFilter[pData[0]][0] )
 		return false;
 
 	EXC_TRY("packet filter");
@@ -2608,15 +2608,12 @@ bool CClient::xPacketFilter(const BYTE *pData, size_t iLen)
 	Args.m_s1 = GetPeerStr();
 	Args.m_pO1 = this;
 	Args.m_VarsLocal.SetNum("CONNECTIONTYPE", GetConnectType());
+	Args.m_VarsLocal.SetNum("NUM", iLen);
 
-	size_t iBytes = iLen;
-	size_t iByteStr = minimum(iBytes, SCRIPT_MAX_LINE_LEN);
-	TCHAR *zBuf = Str_GetTemp();
-
-	Args.m_VarsLocal.SetNum("NUM", iBytes);
-	memcpy(zBuf, &(pData[0]), iByteStr);
-	zBuf[iByteStr] = 0;
-	Args.m_VarsLocal.SetStr("STR", true, zBuf, true);
+	TCHAR *pszTemp = Str_GetTemp();
+	memcpy(pszTemp, &(pData[0]), iLen);
+	pszTemp[iLen] = '\0';
+	Args.m_VarsLocal.SetStr("STR", true, pszTemp, true);
 
 	if ( m_pAccount )
 	{
@@ -2627,7 +2624,7 @@ bool CClient::xPacketFilter(const BYTE *pData, size_t iLen)
 
 	// Fill locals [0..X] to the first X bytes of the packet
 	TCHAR idx[5];
-	for ( size_t i = 0; i < iBytes; ++i )
+	for ( size_t i = 0; i < iLen; ++i )
 	{
 		snprintf(idx, sizeof(idx), "%" FMTSIZE_T, i);
 		Args.m_VarsLocal.SetNum(idx, static_cast<int>(pData[i]));
@@ -2648,7 +2645,7 @@ bool CClient::xPacketFilter(const BYTE *pData, size_t iLen)
 bool CClient::xOutPacketFilter(const BYTE *pData, size_t iLen)
 {
 	ADDTOCALLSTACK("CClient::xOutPacketFilter");
-	if ( (iLen <= 0) || (pData[0] >= PACKET_QTY) || !g_Serv.m_OutPacketFilter[pData[0]][0] )
+	if ( (iLen <= 0) || (iLen >= THREAD_STRING_LENGTH) || (pData[0] >= PACKET_QTY) || !g_Serv.m_OutPacketFilter[pData[0]][0] )
 		return false;
 
 	EXC_TRY("Outgoing packet filter");
@@ -2656,15 +2653,12 @@ bool CClient::xOutPacketFilter(const BYTE *pData, size_t iLen)
 	Args.m_s1 = GetPeerStr();
 	Args.m_pO1 = this;
 	Args.m_VarsLocal.SetNum("CONNECTIONTYPE", GetConnectType());
+	Args.m_VarsLocal.SetNum("NUM", iLen);
 
-	size_t iBytes = iLen;
-	size_t iByteStr = minimum(iBytes, SCRIPT_MAX_LINE_LEN);
-	TCHAR *zBuf = Str_GetTemp();
-
-	Args.m_VarsLocal.SetNum("NUM", iBytes);
-	memcpy(zBuf, &(pData[0]), iByteStr);
-	zBuf[iByteStr] = 0;
-	Args.m_VarsLocal.SetStr("STR", true, zBuf, true);
+	TCHAR *pszTemp = Str_GetTemp();
+	memcpy(pszTemp, &(pData[0]), iLen);
+	pszTemp[iLen] = '\0';
+	Args.m_VarsLocal.SetStr("STR", true, pszTemp, true);
 
 	if ( m_pAccount )
 	{
@@ -2675,7 +2669,7 @@ bool CClient::xOutPacketFilter(const BYTE *pData, size_t iLen)
 
 	// Fill locals [0..X] to the first X bytes of the packet
 	TCHAR idx[5];
-	for ( size_t i = 0; i < iBytes; ++i )
+	for ( size_t i = 0; i < iLen; ++i )
 	{
 		snprintf(idx, sizeof(idx), "%" FMTSIZE_T, i);
 		Args.m_VarsLocal.SetNum(idx, static_cast<int>(pData[i]));

@@ -606,8 +606,10 @@ void CClient::xProcessClientSetup(CEvent *pEvent, size_t iLen)
 	ASSERT(iLen > 0);
 
 	// Try all client versions on the message
+	if ( iLen > sizeof(CEvent) )
+		return addLoginErr(PacketLoginError::UnkCrypt);
+
 	CEvent evInputBuffer;
-	ASSERT(iLen <= sizeof(evInputBuffer));
 	memcpy(evInputBuffer.m_Raw, pEvent->m_Raw, iLen);
 
 	if ( !m_Crypt.Init(m_NetState->m_seed, evInputBuffer.m_Raw, iLen, m_NetState->isClientKR()) )

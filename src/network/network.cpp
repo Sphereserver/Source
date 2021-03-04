@@ -1783,7 +1783,8 @@ bool NetworkInput::processOtherClientData(NetState* state, Packet* buffer)
 
 			// first real data from client which we can use to log in
 			EXC_SET("encryption setup");
-			ASSERT(buffer->getRemainingLength() <= sizeof(CEvent));
+			if ( buffer->getRemainingLength() > sizeof(CEvent) )
+				return false;
 
 			CEvent evt;
 			memcpy(&evt, buffer->getRemainingData(), buffer->getRemainingLength());

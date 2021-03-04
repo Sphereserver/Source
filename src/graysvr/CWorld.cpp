@@ -318,7 +318,6 @@ void CTimedFunctionHandler::Add(CGrayUID uid, int iNumSeconds, LPCTSTR pszFuncNa
 {
 	ADDTOCALLSTACK("CTimedFunctionHandler::Add");
 	ASSERT(pszFuncName);
-	ASSERT(strlen(pszFuncName) < 128);
 
 	int iTick = m_iCurTick;
 

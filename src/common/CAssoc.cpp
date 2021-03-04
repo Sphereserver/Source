@@ -9,12 +9,12 @@ LPCTSTR CValStr::FindName( int iVal ) const
 	ADDTOCALLSTACK("CValStr::FindName");
 	size_t i = 0;
 	ASSERT(this[i].m_pszName != NULL);
-	for ( ; this[i].m_pszName; i++ )
+	for ( ; this[i].m_pszName; ++i )
 	{
 		if ( iVal < this[i + 1].m_iVal )
-			return( this[i].m_pszName );
+			return this[i].m_pszName;
 	}
-	return( this[i - 1].m_pszName );
+	return this[i - 1].m_pszName;
 }
 
 //***************************************************************************
@@ -41,8 +41,9 @@ bool CElementDef::SetValStr( void * pBase, LPCTSTR pszVal ) const
 {
 	ADDTOCALLSTACK("CElementDef::SetValStr");
 	// Set the element value as a string.
-	ASSERT(m_offset>=0);
-	void * pValPtr = GetValPtr(pBase);
+	ASSERT(m_offset >= 0);
+
+	void *pValPtr = GetValPtr(pBase);
 	switch ( m_type )
 	{
 		case ELEM_VOID:
@@ -83,35 +84,40 @@ bool CElementDef::GetValStr( const void * pBase, CGString & sVal ) const
 {
 	ADDTOCALLSTACK("CElementDef::GetValStr");
 	// Get the element value as a string.
+	ASSERT(m_offset >= 0);
 
-	DWORD dwVal = 0;
-	ASSERT(m_offset>=0);
-	void * pValPtr = GetValPtr(pBase);
+	void *pValPtr = GetValPtr(pBase);
 	switch ( m_type )
 	{
 		case ELEM_VOID:
 			return false;
 		case ELEM_STRING:
+		{
 			sVal = static_cast<TCHAR *>(pValPtr);
-			return( true );
+			return true;
+		}
 		case ELEM_CSTRING:
+		{
 			sVal = *static_cast<CGString *>(pValPtr);
 			return true;
+		}
 		case ELEM_BOOL:
 		case ELEM_BYTE:
 		case ELEM_WORD:
 		case ELEM_INT: // signed ?
 		case ELEM_DWORD:
-			memcpy( &dwVal, pValPtr, GetValLength());
+		{
+			DWORD dwVal = 0;
+			memcpy(&dwVal, pValPtr, GetValLength());
 			sVal.Format("%" FMTDWORD, dwVal);
 			return true;
+		}
 		case ELEM_MASK_BYTE:	// bits in a BYTE
 		case ELEM_MASK_WORD:	// bits in a WORD
 		case ELEM_MASK_INT:
 		case ELEM_MASK_DWORD:	// bits in a DWORD
 			return false;
 		default:
-			break;
+			return false;
 	}
-	return false;
 }
