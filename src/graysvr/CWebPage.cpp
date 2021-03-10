@@ -583,7 +583,7 @@ bool CWebPageDef::ServPagePost(CClient *pClient, TCHAR *pszContent, int iContent
 		return false;
 
 	// Parse the data
-	pszContent[iContentLength] = 0;
+	pszContent[iContentLength] = '\0';
 	TCHAR *ppArgs[64];
 	size_t iArgQty = Str_ParseCmds(pszContent, ppArgs, COUNTOF(ppArgs), "&");
 	if ( (iArgQty <= 0) || (iArgQty >= 63) )

@@ -9,10 +9,11 @@
 	#include "os_unix.h"
 #endif
 
-#define SPHERE_FILE			"sphere"	// file name prefix
-#define SPHERE_SCRIPT		".scp"		// file name extension
+#define SPHERE_FILE				"sphere"
+#define SPHERE_FILE_EXT_SCP		".scp"
+#define SPHERE_FILE_EXT_INI		".ini"
 
-#define SCRIPT_MAX_LINE_LEN	4096
+#define SCRIPT_MAX_LINE_LEN		4096
 
 #ifndef MAKEDWORD
 	#define MAKEDWORD(l, h)		((DWORD)(((WORD)(l))|(((DWORD)((WORD)(h))) << 16)))

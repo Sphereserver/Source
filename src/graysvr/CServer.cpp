@@ -261,7 +261,7 @@ bool CServer::GetPublicIP()
 			return true;
 		}
 	}
-	DEBUG_ERR(("Failed to get server public IP: REST API 'http://%s' returned a non-IP value. Please check RestAPIPublicIP setting on " SPHERE_FILE ".ini\n", szURL));
+	DEBUG_ERR(("Failed to get server public IP: REST API 'http://%s' returned a non-IP value. Please check RestAPIPublicIP setting on " SPHERE_FILE SPHERE_FILE_EXT_INI "\n", szURL));
 	return false;
 }
 
@@ -464,12 +464,12 @@ bool CServer::OnConsoleCmd(CGString &sText, CTextConsole *pSrc)
 			pSrc->SysMessagef(
 				"Available commands:\n"
 				"#             Force world save (## to save world and statics)\n"
-				"A             Update accounts with pending changes of file '" SPHERE_FILE "acct" SPHERE_SCRIPT "'\n"
+				"A             Update accounts with pending changes of file '" SPHERE_FILE "acct" SPHERE_FILE_EXT_SCP "'\n"
 				"ACCOUNT HELP  View list of account related commands\n"
 				"B [msg]       Broadcast message to all clients\n"
 				"C             View list of online clients\n"
-				"DA            Dump world areas to file 'map_all" SPHERE_SCRIPT "'\n"
-				"DUI           Dump unscripted items to file 'unscripted_items" SPHERE_SCRIPT "'\n"
+				"DA            Dump world areas to file 'map_all" SPHERE_FILE_EXT_SCP "'\n"
+				"DUI           Dump unscripted items to file 'unscripted_items" SPHERE_FILE_EXT_SCP "'\n"
 				"E             Clear server script profiler info\n"
 				"G             Force world garbage collection\n"
 				"H             Hear all that is said (%s)\n"
@@ -478,7 +478,7 @@ bool CServer::OnConsoleCmd(CGString &sText, CTextConsole *pSrc)
 				"P             View server script profiler info (%s) (P# to dump info to file 'profiler_dump.txt')\n"
 				"R             Resync pause\n"
 				"S             Toggle server secure mode (%s)\n"
-				"STRIP         Dump all script templates to file 'sphere_strip" SPHERE_SCRIPT "'\n"
+				"STRIP         Dump all script templates to file 'sphere_strip" SPHERE_FILE_EXT_SCP "'\n"
 				"T             View list of server active threads\n"
 				"U             View list of script triggers used\n"
 				"X             Force server exit (X# to save world and statics before exit)\n"
@@ -574,7 +574,7 @@ bool CServer::OnConsoleCmd(CGString &sText, CTextConsole *pSrc)
 				pSrc->SysMessage("Scripts profiler info cleared\n");
 			}
 			else
-				pSrc->SysMessage("Script profiler feature is not enabled on " SPHERE_FILE ".ini\n");
+				pSrc->SysMessage("Script profiler feature is not enabled on " SPHERE_FILE SPHERE_FILE_EXT_INI "\n");
 			break;
 		}
 		case 'g':
@@ -693,12 +693,12 @@ longcommand:
 		{
 			if ( g_Cfg.m_sStripPath.IsEmpty() )
 			{
-				pSrc->SysMessage("StripPath not defined on " SPHERE_FILE ".ini, function aborted\n");
+				pSrc->SysMessage("StripPath not defined on " SPHERE_FILE SPHERE_FILE_EXT_INI ", function aborted\n");
 				return false;
 			}
 
 			TCHAR szFileStrip[_MAX_PATH];
-			snprintf(szFileStrip, sizeof(szFileStrip), "%s%s", static_cast<LPCTSTR>(g_Cfg.m_sStripPath), "sphere_strip" SPHERE_SCRIPT);
+			snprintf(szFileStrip, sizeof(szFileStrip), "%s%s", static_cast<LPCTSTR>(g_Cfg.m_sStripPath), "sphere_strip" SPHERE_FILE_EXT_SCP);
 
 			FILE *pFileStrip = fopen(szFileStrip, "w");
 			if ( !pFileStrip )
@@ -1565,7 +1565,7 @@ void CServer::ProfileDump(CTextConsole *pSrc, bool fDump)
 		}
 	}
 	else
-		pSrc->SysMessage("Script profiler feature is not enabled on " SPHERE_FILE ".ini\n");
+		pSrc->SysMessage("Script profiler feature is not enabled on " SPHERE_FILE SPHERE_FILE_EXT_INI "\n");
 
 	if ( ft )
 	{

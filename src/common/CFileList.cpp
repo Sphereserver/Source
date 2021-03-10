@@ -105,7 +105,7 @@ int CFileList::ReadDir( LPCTSTR pszFileDir, bool bShowError )
 			continue;
 
 		len = snprintf(szFileName, sizeof(szFileName), "%s%s", szFileDir, fileinfo->d_name);
-		if ( (len > 4) && !strcmpi(&szFileName[len - 4], SPHERE_SCRIPT) )
+		if ( (len > 4) && !strcmpi(&szFileName[len - 4], SPHERE_FILE_EXT_SCP) )
 			AddTail(fileinfo->d_name);
 #endif
 	}

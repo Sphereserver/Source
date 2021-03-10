@@ -133,7 +133,7 @@ CResource::CResource()
 	m_iMaxFame = 10000;
 
 	// Other
-	m_fNoResRobe = 0;
+	m_fNoResRobe = false;
 	m_iLostNPCTeleport = 50;
 	m_iExperimental = 0;
 	m_iOptionFlags = (OF_NoDClickTarget|OF_Command_Sysmsgs|OF_OSIMultiSight|OF_NoHouseMuteSpeech|OF_Buffs|OF_NoDClickTurn);
@@ -862,7 +862,7 @@ bool CResource::r_LoadVal(CScript &s)
 				}
 			}
 
-			DEBUG_ERR(("Bad usage of MAPx. Check your " SPHERE_FILE ".ini or scripts (SERV.MAP is a read only property)\n"));
+			DEBUG_ERR(("Bad usage of MAPx. Check your " SPHERE_FILE SPHERE_FILE_EXT_INI " or scripts (SERV.MAP is a read only property)\n"));
 			return false;
 		}
 		else if ( s.IsKeyHead("PACKET", 6) )	// PACKETx=<function name to execute upon packet>
@@ -3347,16 +3347,16 @@ bool CResource::LoadIni()
 {
 	ADDTOCALLSTACK("CResource::LoadIni");
 
-	if ( OpenResourceFind(m_scpCryptIni, SPHERE_FILE "Crypt.ini", false) )
+	if ( OpenResourceFind(m_scpCryptIni, SPHERE_FILE "Crypt" SPHERE_FILE_EXT_INI, false) )
 	{
 		LoadResourcesOpen(&m_scpCryptIni);
 		m_scpCryptIni.Close();
 		m_scpCryptIni.CloseForce();
 	}
 	else
-		g_Log.Event(LOGL_WARN, "File '" SPHERE_FILE "Crypt.ini' not found\n");
+		g_Log.Event(LOGL_WARN, "File '" SPHERE_FILE "Crypt" SPHERE_FILE_EXT_INI "' not found\n");
 
-	if ( OpenResourceFind(m_scpIni, SPHERE_FILE ".ini", false) )
+	if ( OpenResourceFind(m_scpIni, SPHERE_FILE SPHERE_FILE_EXT_INI, false) )
 	{
 		LoadResourcesOpen(&m_scpIni);
 		m_scpIni.Close();
@@ -3365,7 +3365,7 @@ bool CResource::LoadIni()
 	}
 	else
 	{
-		g_Log.Event(LOGL_FATAL, "File '" SPHERE_FILE ".ini' not found\n");
+		g_Log.Event(LOGL_FATAL, "File '" SPHERE_FILE SPHERE_FILE_EXT_INI "' not found\n");
 		return false;
 	}
 }
@@ -3439,7 +3439,7 @@ bool CResource::Load(bool fResync)
 #endif
 		if ( sMulPath.IsEmpty() )
 		{
-			g_Log.Event(LOGL_FATAL, "Unable to find Ultima Online MUL files automatically, please set the 'MulFiles' path manually on " SPHERE_FILE ".ini\n");
+			g_Log.Event(LOGL_FATAL, "Unable to find Ultima Online MUL files automatically, please set the 'MulFiles' path manually on " SPHERE_FILE SPHERE_FILE_EXT_INI "\n");
 			return false;
 		}
 		g_Log.Event(LOGL_EVENT, "Loading MUL files from path: '%s'\n", static_cast<LPCTSTR>(sMulPath));
@@ -3460,14 +3460,14 @@ bool CResource::Load(bool fResync)
 	}
 	catch ( const CGrayError &e )
 	{
-		g_Log.Event(LOGL_FATAL, "File '" SPHERE_FILE ".ini' not found\n");
+		g_Log.Event(LOGL_FATAL, "File '" SPHERE_FILE SPHERE_FILE_EXT_INI "' not found\n");
 		g_Log.CatchEvent(&e, "g_VerData.Load");
 		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 		return false;
 	}
 	catch ( ... )
 	{
-		g_Log.Event(LOGL_FATAL, "File '" SPHERE_FILE ".ini' not found\n");
+		g_Log.Event(LOGL_FATAL, "File '" SPHERE_FILE SPHERE_FILE_EXT_INI "' not found\n");
 		g_Log.CatchEvent(NULL, "g_VerData.Load");
 		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
 		return false;
@@ -3482,7 +3482,7 @@ bool CResource::Load(bool fResync)
 	{
 		if ( !OpenResourceFind(m_scpTables, SPHERE_FILE "tables") )
 		{
-			g_Log.Event(LOGL_FATAL, "File '" SPHERE_FILE "tables" SPHERE_SCRIPT "' not found\n");
+			g_Log.Event(LOGL_FATAL, "File '" SPHERE_FILE "tables" SPHERE_FILE_EXT_SCP "' not found\n");
 			return false;
 		}
 
@@ -3697,7 +3697,7 @@ bool CResource::DumpUnscriptedItems(CTextConsole *pSrc, LPCTSTR pszFilename)
 		return false;
 
 	if ( !pszFilename || (pszFilename[0] == '\0') )
-		pszFilename = "unscripted_items" SPHERE_SCRIPT;
+		pszFilename = "unscripted_items" SPHERE_FILE_EXT_SCP;
 	else if ( strlen(pszFilename) <= 4 )
 		return false;
 

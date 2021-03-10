@@ -673,13 +673,10 @@ int CWorldThread::FixObjTry(CObjBase *pObj, DWORD uid)
 	if ( !pObj )
 		return 0x7102;
 
-	if ( uid != 0 )
+	if ( (uid != UID_CLEAR) && (uid != (pObj->GetUID() & UID_O_INDEX_MASK)) )
 	{
-		if ( (pObj->GetUID() & UID_O_INDEX_MASK) != uid )
-		{
-			DEBUG_ERR(("UID 0%" FMTDWORDH ", '%s', Mislinked\n", uid, pObj->GetName()));
-			return 0x7101;
-		}
+		DEBUG_ERR(("UID 0%" FMTDWORDH ", '%s', Mislinked\n", uid, pObj->GetName()));
+		return 0x7101;
 	}
 	return pObj->FixWeirdness();
 }
@@ -1012,7 +1009,7 @@ void CWorld::GetBackupName(CGString &sBuffer, LPCTSTR pszBaseDir, TCHAR pszType,
 			break;
 		iCount >>= 3;
 	}
-	sBuffer.Format("%s" SPHERE_FILE "b%d%d%c%s", pszBaseDir, iGroup, iCount & 0x7, pszType, SPHERE_SCRIPT);
+	sBuffer.Format("%s" SPHERE_FILE "b%d%d%c%s", pszBaseDir, iGroup, iCount & 0x7, pszType, SPHERE_FILE_EXT_SCP);
 }
 
 bool CWorld::OpenScriptBackup(CScript &s, LPCTSTR pszBaseDir, LPCTSTR pszBaseName, int iSaveCount)	// static
@@ -1033,7 +1030,7 @@ bool CWorld::OpenScriptBackup(CScript &s, LPCTSTR pszBaseDir, LPCTSTR pszBaseNam
 
 	// Rename current save file to backup file
 	CGString sSaveName;
-	sSaveName.Format("%s" SPHERE_FILE "%s%s", pszBaseDir, pszBaseName, SPHERE_SCRIPT);
+	sSaveName.Format("%s" SPHERE_FILE "%s%s", pszBaseDir, pszBaseName, SPHERE_FILE_EXT_SCP);
 
 	if ( s.Open(sSaveName, OF_NONCRIT) )
 	{
@@ -1454,7 +1451,7 @@ bool CWorld::LoadFile(LPCTSTR pszFileName)
 	ADDTOCALLSTACK("CWorld::LoadFile");
 	// Load files
 
-	g_Log.Event(LOGL_EVENT, "Loading %s%s\n", pszFileName, SPHERE_SCRIPT);
+	g_Log.Event(LOGL_EVENT, "Loading %s%s\n", pszFileName, SPHERE_FILE_EXT_SCP);
 
 	CScript s;
 	if ( !s.Open(pszFileName, OF_READ|OF_TEXT|OF_DEFAULTMODE) )

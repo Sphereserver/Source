@@ -1843,3 +1843,6 @@ Fixed: Server crash when call intrinsic functions <eval ISNUMBER()> / <floatval 
 04-03-2021, Coruja
 [sphereCrypt.ini]: Added crypt key for classic client 7.0.89 and enhanced client 4.0.89
 [sphere_msgs.scp]: Removed unused messages 'item_magic', 'item_newbie', 'item_repair', 'use_spyglass_*', 'ship_seen_*'
+
+10-03-2021, Coruja
+[sphereCrypt.ini]: Added crypt key for classic client 7.0.90 and enhanced client 4.0.90

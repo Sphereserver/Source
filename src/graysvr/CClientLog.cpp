@@ -391,7 +391,7 @@ bool CClient::OnRxPing(const BYTE *pData, size_t iLen)
 				break;
 
 			SetConnectType(CONNECT_TELNET);
-			m_zLogin[0] = 0;
+			m_zLogin[0] = '\0';
 			SysMessagef("\n%s", g_Cfg.GetDefaultMsg(DEFMSG_CONSOLE_WELCOME_2));
 			SysMessage("\nLogin: ");
 			return true;
@@ -404,7 +404,7 @@ bool CClient::OnRxPing(const BYTE *pData, size_t iLen)
 				break;
 
 			SetConnectType(CONNECT_AXIS);
-			m_zLogin[0] = 0;
+			m_zLogin[0] = '\0';
 
 			time_t dateChange;
 			DWORD dwSize;

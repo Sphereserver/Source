@@ -109,8 +109,8 @@ CResourceScript *CResourceBase::AddResourceFile(LPCTSTR pszName)
 	if ( !CScript::GetFilesExt(szTitle) )
 	{
 		// No file extension provided, so append .scp to the filename
-		strncat(szName, SPHERE_SCRIPT, sizeof(szName) - strlen(szName) - 1);
-		strncat(szTitle, SPHERE_SCRIPT, sizeof(szTitle) - strlen(szTitle) - 1);
+		strncat(szName, SPHERE_FILE_EXT_SCP, sizeof(szName) - strlen(szName) - 1);
+		strncat(szTitle, SPHERE_FILE_EXT_SCP, sizeof(szTitle) - strlen(szTitle) - 1);
 	}
 
 	if ( !strnicmp(szTitle, SPHERE_FILE "tables", strlen(SPHERE_FILE "tables")) )
@@ -137,7 +137,7 @@ void CResourceBase::AddResourceDir(LPCTSTR pszDirName)
 	if ( pszDirName[0] == '\0' )
 		return;
 
-	CGString sFilePath = CGFile::GetMergedFileName(pszDirName, "*" SPHERE_SCRIPT);
+	CGString sFilePath = CGFile::GetMergedFileName(pszDirName, "*" SPHERE_FILE_EXT_SCP);
 
 	CFileList filelist;
 	int iRet = filelist.ReadDir(sFilePath, false);
@@ -924,22 +924,22 @@ bool CResourceRefArray::r_LoadVal(CScript &s, RES_TYPE restype)
 
 			if ( g_Cfg.m_pEventsPetLink.ContainsPtr(pResourceLink) )
 			{
-				DEBUG_ERR(("'%s' already defined in " SPHERE_FILE ".ini - skipping\n", pResourceLink->GetName()));
+				DEBUG_ERR(("'%s' already defined in " SPHERE_FILE SPHERE_FILE_EXT_INI " - skipping\n", pResourceLink->GetName()));
 				continue;
 			}
 			else if ( g_Cfg.m_pEventsPlayerLink.ContainsPtr(pResourceLink) )
 			{
-				DEBUG_ERR(("'%s' already defined in " SPHERE_FILE ".ini - skipping\n", pResourceLink->GetName()));
+				DEBUG_ERR(("'%s' already defined in " SPHERE_FILE SPHERE_FILE_EXT_INI " - skipping\n", pResourceLink->GetName()));
 				continue;
 			}
 			else if ( (restype == RES_REGIONTYPE) && g_Cfg.m_pEventsRegionLink.ContainsPtr(pResourceLink) )
 			{
-				DEBUG_ERR(("'%s' already defined in " SPHERE_FILE ".ini - skipping\n", pResourceLink->GetName()));
+				DEBUG_ERR(("'%s' already defined in " SPHERE_FILE SPHERE_FILE_EXT_INI " - skipping\n", pResourceLink->GetName()));
 				continue;
 			}
 			else if ( g_Cfg.m_iEventsItemLink.ContainsPtr(pResourceLink) )
 			{
-				DEBUG_ERR(("'%s' already defined in " SPHERE_FILE ".ini - skipping\n", pResourceLink->GetName()));
+				DEBUG_ERR(("'%s' already defined in " SPHERE_FILE SPHERE_FILE_EXT_INI " - skipping\n", pResourceLink->GetName()));
 				continue;
 			}
 

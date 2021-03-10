@@ -112,7 +112,7 @@ TCHAR *CCacheableScriptFile::ReadString(TCHAR *pBuffer, size_t iSizeMax)
 	{
 		*pBuffer = '\0';
 		strcpy(pBuffer, m_fileContent->at(m_currentLine).c_str());
-		m_currentLine++;
+		++m_currentLine;
 		return pBuffer;
 	}
 	return NULL;

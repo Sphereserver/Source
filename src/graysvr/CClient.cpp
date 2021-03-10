@@ -57,8 +57,8 @@ CClient::CClient(NetState *state)
 
 	m_pPopupPacket = NULL;
 
-	m_zLastMessage[0] = 0;
-	m_zLastObjMessage[0] = 0;
+	m_zLastMessage[0] = '\0';
+	m_zLastObjMessage[0] = '\0';
 
 	m_pHouseDesign = NULL;
 

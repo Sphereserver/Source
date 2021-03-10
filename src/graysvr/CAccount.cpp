@@ -65,7 +65,7 @@ bool CAccounts::Account_SaveAll()
 
 	s.Printf("// " SPHERE_TITLE " accounts file.\n"
 			 "// NOTE: This file cannot be edited while the server is running.\n"
-			 "// Changes must be made on " SPHERE_FILE "acct" SPHERE_SCRIPT " to be applied on next worldsave.\n");
+			 "// Changes must be made on " SPHERE_FILE "acct" SPHERE_FILE_EXT_SCP " to be applied on next worldsave.\n");
 
 	for ( size_t i = 0; i < m_Accounts.GetCount(); ++i )
 	{
@@ -129,7 +129,7 @@ bool CAccounts::Account_LoadAll(bool fChanges, bool fClearChanges)
 	snprintf(szFileName, sizeof(szFileName), "%s" SPHERE_FILE "%s", static_cast<LPCTSTR>(g_Cfg.m_sAcctBaseDir), fChanges ? "acct" : "accu");
 
 	if ( !fChanges )
-		g_Log.Event(LOGL_EVENT, "Loading %s%s\n", szFileName, SPHERE_SCRIPT);
+		g_Log.Event(LOGL_EVENT, "Loading %s%s\n", szFileName, SPHERE_FILE_EXT_SCP);
 
 	CScript s;
 	if ( !s.Open(szFileName, OF_READ|OF_TEXT|OF_DEFAULTMODE|(fChanges ? OF_NONCRIT : 0)) )
