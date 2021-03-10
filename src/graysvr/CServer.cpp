@@ -2,9 +2,7 @@
 #include "../network/network.h"
 #include "../graysvr/CPingServer.h"
 
-#ifdef _WIN32
-	#include "../common/crashdump/crashdump.h"
-#else
+#ifndef _WIN32
 	#include "CUnixTerminal.h"
 	#ifdef _LIBEV
 		extern LinuxEv g_NetworkEvent;
@@ -440,121 +438,6 @@ int CServer::PrintPercent(long iCount, long iTotal)
 	NTWindow_SetWindowTitle(szTemp);
 #endif
 	return iPercent;
-}
-
-extern void defragSphere(char *);
-
-bool CServer::CommandLine(int argc, TCHAR *argv[])
-{
-	// Console command line
-	// This runs after script file enum but before loading the world file
-	// RETURN:
-	//  true = keep running after this
-
-	for ( int argn = 1; argn < argc; ++argn )
-	{
-		TCHAR *pszArg = argv[argn];
-		if ( !_IS_SWITCH(pszArg[0]) )
-			continue;
-
-		++pszArg;
-		switch ( toupper(pszArg[0]) )
-		{
-			case '?':
-			{
-				PrintStr(SPHERE_TITLE " \n"
-					"Command line switches:\n"
-#ifdef _WIN32
-					"-cClassName Setup custom window class name for " SPHERE_TITLE " (default: " SPHERE_TITLE "Svr)\n"
-#else
-					"-c Use colored console output (default: off)\n"
-#endif
-					"-D Dump global variable DEFNAMEs to defs.txt\n"
-#if defined(_WIN32) && !defined(_DEBUG) && !defined(_NO_CRASHDUMP)
-					"-E Enable crash dumper\n"
-#endif
-					"-Gpath/to/saves/ Defrag " SPHERE_TITLE " saves\n"
-#ifdef _WIN32
-					"-K install/remove Installs or removes NT Service\n"
-#endif
-					"-Nstring Set the " SPHERE_TITLE " name\n"
-					"-Ofilename Output console to this file name\n"
-					"-P# Set the port number\n"
-					"-Q Quit when finished\n"
-				);
-				return false;
-			}
-#ifdef _WIN32
-			case 'C':
-			case 'K':
-			{
-				// These are parsed in other places (NT service, NT window part, etc)
-				continue;
-			}
-#else
-			case 'C':
-			{
-				g_UnixTerminal.setColorEnabled(true);
-				continue;
-			}
-#endif
-			case 'P':
-			{
-				m_ip.SetPortStr(pszArg + 1);
-				continue;
-			}
-			case 'N':
-			{
-				SetName(pszArg + 1);
-				continue;
-			}
-			case 'D':
-			{
-				CFileText ft;
-				if ( !ft.Open("defs.txt", OF_WRITE|OF_TEXT) )
-					return false;
-
-				for ( size_t i = 0; i < g_Exp.m_VarDefs.GetCount(); ++i )
-				{
-					if ( (i % 0x1FF) == 0 )
-						PrintPercent(i, g_Exp.m_VarDefs.GetCount());
-
-					CVarDefCont *pCont = g_Exp.m_VarDefs.GetAt(i);
-					if ( pCont )
-						ft.Printf("%s=%s\n", pCont->GetKey(), pCont->GetValStr());
-				}
-				continue;
-			}
-#if defined(_WIN32) && !defined(_DEBUG) && !defined(_NO_CRASHDUMP)
-			case 'E':
-			{
-				CrashDump::Enable();
-				if ( CrashDump::IsEnabled() )
-					PrintStr("Crash dump enabled\n");
-				else
-					PrintStr("Crash dump NOT enabled\n");
-				continue;
-			}
-#endif
-			case 'G':
-			{
-				defragSphere(pszArg + 1);
-				continue;
-			}
-			case 'O':
-			{
-				if ( g_Log.Open(pszArg + 1, OF_SHARE_DENY_WRITE|OF_READWRITE|OF_TEXT) )
-					g_Log.m_fLockOpen = true;
-				continue;
-			}
-			case 'Q':
-				return false;
-			default:
-				g_Log.Event(LOGL_CRIT, "Don't recognize command line data '%s'\n", static_cast<LPCTSTR>(argv[argn]));
-				break;
-		}
-	}
-	return true;
 }
 
 bool CServer::OnConsoleCmd(CGString &sText, CTextConsole *pSrc)

@@ -10,9 +10,6 @@
     <Filter Include="common\twofish">
       <UniqueIdentifier>{353e7db8-874b-4551-8e15-0fcc9875d06e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="common\crashdump">
-      <UniqueIdentifier>{bfcf28bb-2d0c-48a1-a304-037fb69f178b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="common\sqlite">
       <UniqueIdentifier>{19b83913-ef63-4820-9ae0-158e0c75d5b8}</UniqueIdentifier>
     </Filter>
@@ -164,9 +161,6 @@
     </ClCompile>
     <ClCompile Include="src\sphere\threads.cpp">
       <Filter>sphere</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\crashdump\crashdump.cpp">
-      <Filter>common\crashdump</Filter>
     </ClCompile>
     <ClCompile Include="src\common\CVarFloat.cpp">
       <Filter>common</Filter>
@@ -511,9 +505,6 @@
     </ClInclude>
     <ClInclude Include="src\sphere\threads.h">
       <Filter>sphere</Filter>
-    </ClInclude>
-    <ClInclude Include="src\common\crashdump\crashdump.h">
-      <Filter>common\crashdump</Filter>
     </ClInclude>
     <ClInclude Include="src\common\CVarFloat.h">
       <Filter>common</Filter>

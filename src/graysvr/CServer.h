@@ -69,7 +69,6 @@ public:
 	void PrintStr(LPCTSTR pszMsg) const;
 	int PrintPercent(long iCount, long iTotal);
 
-	bool CommandLine(int argc, TCHAR *argv[]);
 	bool OnConsoleCmd(CGString &sText, CTextConsole *pSrc);
 	void ListClients(CTextConsole *pConsole) const;
 

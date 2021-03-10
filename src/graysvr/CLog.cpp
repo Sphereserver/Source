@@ -9,8 +9,6 @@
 
 bool CLog::OpenLog( LPCTSTR pszBaseDirName )	// name set previously.
 {
-	if ( m_fLockOpen )	// the log is already locked open
-		return false;
 	if ( m_sBaseDir == NULL )
 		return false;
 

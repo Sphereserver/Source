@@ -237,9 +237,9 @@ private:
 
 const LPCTSTR g_szCompiledDate = __DATE__;
 
-extern int Sphere_InitServer( int argc, char *argv[] );
+extern int Sphere_InitServer();
 extern void Sphere_ExitServer();
-extern int Sphere_MainEntryPoint( int argc, char *argv[] );
+extern int Sphere_MainEntryPoint();
 
 ///////////////////////////////////////////////////////////////
 // -CGrayUID

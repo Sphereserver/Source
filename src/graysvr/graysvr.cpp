@@ -563,10 +563,10 @@ extern CDataBaseAsyncHelper g_asyncHdb;
 
 //*******************************************************************
 
-int Sphere_InitServer( int argc, char *argv[] )
+int Sphere_InitServer()
 {
 #ifdef EXCEPTIONS_DEBUG
-	const char *m_sClassName = "Sphere";
+	const char *m_sClassName = SPHERE_TITLE;
 #endif
 	EXC_TRY("Init");
 	ASSERT(MAX_BUFFER >= sizeof(CEvent));
@@ -592,13 +592,6 @@ int Sphere_InitServer( int argc, char *argv[] )
 	EXC_SET("loading");
 	if ( !g_Serv.Load() )
 		return -3;
-
-	if ( argc > 1 )
-	{
-		EXC_SET("cmdline");
-		if ( !g_Serv.CommandLine(argc, argv) )
-			return -1;
-	}
 
 	WritePidFile(2);
 
@@ -627,9 +620,6 @@ int Sphere_InitServer( int argc, char *argv[] )
 	return g_Serv.m_iExitFlag;
 	EXC_CATCH;
 
-	EXC_DEBUG_START;
-	g_Log.EventDebug("cmdline argc=%d starting with %p (argv1='%s')\n", argc, static_cast<void *>(argv), ( argc > 2 ) ? argv[1] : "");
-	EXC_DEBUG_END;
 	return -10;
 }
 
@@ -733,7 +723,7 @@ void CServer::ShipTimers_Delete(CItemShip *pShip)
 static void Sphere_MainMonitorLoop()
 {
 #ifdef EXCEPTIONS_DEBUG
-	const char *m_sClassName = "Sphere";
+	const char *m_sClassName = SPHERE_TITLE;
 #endif
 	// Just make sure the main loop is alive every so often.
 	// This should be the parent thread. try to restart it if it is not.
@@ -770,337 +760,26 @@ static void Sphere_MainMonitorLoop()
 
 }
 
-//******************************************************
-void dword_q_sort(DWORD numbers[], DWORD left, DWORD right)
-{
-	DWORD	pivot, l_hold, r_hold;
-
-	l_hold = left;
-	r_hold = right;
-	pivot = numbers[left];
-	while (left < right)
-	{
-		while ( (numbers[right] >= pivot) && (left < right) )
-			--right;
-		if (left != right)
-		{
-			numbers[left] = numbers[right];
-			++left;
-		}
-
-		while ( (numbers[left] <= pivot) && (left < right) )
-			++left;
-		if (left != right)
-		{
-			numbers[right] = numbers[left];
-			--right;
-		}
-	}
-	numbers[left] = pivot;
-	pivot = left;
-	left = l_hold;
-	right = r_hold;
-	if (left < pivot) dword_q_sort(numbers, left, pivot-1);
-	if (right > pivot) dword_q_sort(numbers, pivot+1, right);
-}
-
-void defragSphere(char *path)
-{
-	ASSERT(path != NULL);
-
-	CFileText inf;
-	CGFile ouf;
-	char z[256], z1[256], buf[1024];
-	size_t i;
-	DWORD uid = UID_CLEAR;
-	char *p = NULL, *p1 = NULL;
-	DWORD dBytesRead;
-	DWORD dTotalMb;
-	DWORD mb10 = 10 * 1024 * 1024;
-	DWORD mb5 = 5 * 1024 * 1024;
-	bool bSpecial;
-	DWORD dTotalUIDs;
-
-	char	c,c1,c2;
-	DWORD	d;
-
-	// NOTE: Sure I could use CVarDefArray, but it is extremely slow with memory allocation, takes hours
-	// to read and save the data. Moreover, it takes less memory in this case and does less convertations.
-
-	g_Log.Event(LOGL_EVENT, "Defragmentation (UID alteration) of " SPHERE_TITLE " saves.\n"
-		"Use it at your own risk and if you know what you are doing, since it can possibly harm your server.\n"
-		"The process can take up to several hours depending on the CPU you have.\n"
-		"After finished, you will have your '" SPHERE_FILE "*" SPHERE_SCRIPT "' save files converted to '" SPHERE_FILE "*" SPHERE_SCRIPT ".new'.\n");
-
-	DWORD *uids = static_cast<DWORD *>(calloc((SIZE_MAX / 2) / sizeof(DWORD), sizeof(DWORD)));
-	for ( i = 0; i < 3; ++i )
-	{
-		strncpy(z, path, sizeof(z));
-		z[sizeof(z) - 1] = '\0';
-		if ( i == 0 )
-			strncat(z, SPHERE_FILE "statics" SPHERE_SCRIPT, sizeof(z) - strlen(z) - 1);
-		else if ( i == 1 )
-			strncat(z, SPHERE_FILE "world" SPHERE_SCRIPT, sizeof(z) - strlen(z) - 1);
-		else
-			strncat(z, SPHERE_FILE "chars" SPHERE_SCRIPT, sizeof(z) - strlen(z) - 1);
-
-		g_Log.Event(LOGL_EVENT, "Reading %s\n", z);
-		if ( !inf.Open(z, OF_READ|OF_TEXT|OF_DEFAULTMODE) )
-		{
-			g_Log.Event(LOGL_EVENT, "Can't open file '%s' for reading. Skipped!\n", z);
-			continue;
-		}
-		dBytesRead = dTotalMb = 0;
-		while ( !feof(inf.m_pStream) )
-		{
-			fgets(buf, sizeof(buf), inf.m_pStream);
-			dBytesRead += strlen(buf);
-			if ( dBytesRead > mb10 )
-			{
-				dBytesRead -= mb10;
-				dTotalMb += 10;
-				g_Log.Event(LOGL_EVENT, "Total read %" FMTDWORD " Mb\n", dTotalMb);
-			}
-			if (( buf[0] == 'S' ) && ( strstr(buf, "SERIAL=") == buf ))
-			{
-				p = buf + 7;
-				p1 = p;
-				while ( *p1 && ( *p1 != '\r' ) && ( *p1 != '\n' ))
-					++p1;
-				*p1 = 0;
-
-				//	prepare new uid
-				*(p-1) = '0';
-				*p = 'x';
-				--p;
-				uids[uid++] = strtoul(p, &p1, 16);
-			}
-		}
-		inf.Close();
-	}
-
-	dTotalUIDs = uid;
-	if ( dTotalUIDs <= 0 )
-	{
-		g_Log.Event(LOGL_EVENT, "Save files are empty, defragmentation is not needed\n");
-		free(uids);
-		return;
-	}
-
-	g_Log.Event(LOGL_EVENT, "Found %" FMTDWORD " UIDs (latest: 0%" FMTDWORDH ")\n", uid, uids[dTotalUIDs - 1]);
-	g_Log.Event(LOGL_EVENT, "Quick-sorting UIDs array...\n");
-	dword_q_sort(uids, 0, dTotalUIDs - 1);
-
-	for ( i = 0; i < 5; ++i )
-	{
-		strncpy(z, path, sizeof(z));
-		z[sizeof(z) - 1] = '\0';
-		if ( i == 0 )
-			strncat(z, SPHERE_FILE "accu" SPHERE_SCRIPT, sizeof(z) - strlen(z) - 1);
-		else if ( i == 1 )
-			strncat(z, SPHERE_FILE "chars" SPHERE_SCRIPT, sizeof(z) - strlen(z) - 1);
-		else if ( i == 2 )
-			strncat(z, SPHERE_FILE "data" SPHERE_SCRIPT, sizeof(z) - strlen(z) - 1);
-		else if ( i == 3 )
-			strncat(z, SPHERE_FILE "world" SPHERE_SCRIPT, sizeof(z) - strlen(z) - 1);
-		else if ( i == 4 )
-			strncat(z, SPHERE_FILE "statics" SPHERE_SCRIPT, sizeof(z) - strlen(z) - 1);
-
-		g_Log.Event(LOGL_EVENT, "Updating UIDs in '%s' to '%s.new'\n", z, z);
-		if ( !inf.Open(z, OF_READ|OF_TEXT|OF_DEFAULTMODE) )
-		{
-			g_Log.Event(LOGL_EVENT, "Can't open file '%s' for reading. Skipped!\n", z);
-			continue;
-		}
-		strncat(z, ".new", sizeof(z) - strlen(z) - 1);
-		if ( !ouf.Open(z, OF_WRITE|OF_CREATE|OF_DEFAULTMODE) )
-		{
-			g_Log.Event(LOGL_EVENT, "Can't open file '%s' for writing. Skipped!\n", z);
-			continue;
-		}
-		dBytesRead = dTotalMb = 0;
-		while ( inf.ReadString(buf, sizeof(buf)) )
-		{
-			uid = strlen(buf);
-			if ( uid > sizeof(buf) - 3 )
-				uid = sizeof(buf) - 3;
-
-			buf[uid] = buf[uid+1] = buf[uid+2] = 0;	// just to be sure to be in line always
-							// NOTE: it is much faster than to use memcpy to clear before reading
-			bSpecial = false;
-			dBytesRead += uid;
-			if ( dBytesRead > mb5 )
-			{
-				dBytesRead -= mb5;
-				dTotalMb += 5;
-				g_Log.Event(LOGL_EVENT, "Total processed %" FMTDWORD " Mb\n", dTotalMb);
-			}
-			p = buf;
-
-			//	Note 28-Jun-2004
-			//	mounts seems having ACTARG1 > 0x30000000. The actual UID is ACTARG1-0x30000000. The
-			//	new also should be new+0x30000000. need investigation if this can help making mounts
-			//	not to disappear after the defrag
-			if (( buf[0] == 'A' ) && ( strstr(buf, "ACTARG1=0") == buf ))		// ACTARG1=
-				p += 8;
-			else if (( buf[0] == 'C' ) && ( strstr(buf, "CONT=0") == buf ))			// CONT=
-				p += 5;
-			else if (( buf[0] == 'C' ) && ( strstr(buf, "CHARUID=0") == buf ))		// CHARUID=
-				p += 8;
-			else if (( buf[0] == 'L' ) && ( strstr(buf, "LASTCHARUID=0") == buf ))	// LASTCHARUID=
-				p += 12;
-			else if (( buf[0] == 'L' ) && ( strstr(buf, "LINK=0") == buf ))			// LINK=
-				p += 5;
-			else if (( buf[0] == 'M' ) && ( strstr(buf, "MEMBER=0") == buf ))		// MEMBER=
-			{
-				p += 7;
-				bSpecial = true;
-			}
-			else if (( buf[0] == 'M' ) && ( strstr(buf, "MORE1=0") == buf ))		// MORE1=
-				p += 6;
-			else if (( buf[0] == 'M' ) && ( strstr(buf, "MORE2=0") == buf ))		// MORE2=
-				p += 6;
-			else if (( buf[0] == 'S' ) && ( strstr(buf, "SERIAL=0") == buf ))		// SERIAL=
-				p += 7;
-			else if ((( buf[0] == 'T' ) && ( strstr(buf, "TAG.") == buf )) ||		// TAG.=
-					 (( buf[0] == 'R' ) && ( strstr(buf, "REGION.TAG") == buf )))
-			{
-				while ( *p && (*p != '=') )
-					++p;
-				++p;
-			}
-			else if (( i == 2 ) && strchr(buf, '='))	// spheredata.scp - plain VARs
-			{
-				while ( *p && (*p != '=') )
-					++p;
-				++p;
-			}
-			else p = NULL;
-
-			//	UIDs are always hex, so prefixed by 0
-			if ( p && ( *p != '0' )) p = NULL;
-
-			//	here we got potentialy UID-contained variable
-			//	check if it really is only UID-like var containing
-			if ( p )
-			{
-				p1 = p;
-				while ( *p1 && (((*p1 >= '0') && (*p1 <= '9')) || ((*p1 >= 'a') && (*p1 <= 'f'))) )
-					++p1;
-
-				if ( !bSpecial )
-				{
-					if ( *p1 && ( *p1 != '\r' ) && ( *p1 != '\n' )) // some more text in line
-						p = NULL;
-				}
-			}
-
-			//	here we definitely know that this is very uid-like
-			if ( p )
-			{
-				c = *p1;
-
-				*p1 = 0;
-				//	here in p we have the current value of the line.
-				//	check if it is a valid UID
-
-				//	prepare converting 0.. to 0x..
-				c1 = *(p-1);
-				c2 = *p;
-				*(p-1) = '0';
-				*p = 'x';
-				--p;
-				uid = strtoul(p, &p1, 16);
-				++p;
-				*(p-1) = c1;
-				*p = c2;
-				//	Note 28-Jun-2004
-				//	The search algourytm is very simple and fast. But maybe integrate some other, at least /2 algorythm
-				//	since has amount/2 tryes at worst chance to get the item and never scans the whole array
-				//	It should improve speed since defragmenting 150Mb saves takes ~2:30 on 2.0Mhz CPU
-				{
-					DWORD	dStep = dTotalUIDs/2;
-					d = dStep;
-					for (;;)
-					{
-						dStep /= 2;
-
-						if ( uids[d] == uid )
-						{
-							uid = d | (uids[d]&0xF0000000);	// do not forget attach item and special flags like 04..
-							break;
-						}
-						else if ( uids[d] < uid ) d += dStep;
-						else d -= dStep;
-
-						if ( dStep == 1 )
-						{
-							uid = DWORD_MAX;
-							break; // did not find the UID
-						}
-					}
-				}
-
-				//	Search for this uid in the table
-				/*for ( d = 0; d < dTotalUIDs; ++d )
-				{
-					if ( !uids[d] )	// end of array
-					{
-						uid = DWORD_MAX;
-						break;
-					}
-					else if ( uids[d] == uid )
-					{
-						uid = d | (uids[d]&0xF0000000);	// do not forget attach item and special flags like 04..
-						break;
-					}
-				}*/
-
-				//	replace UID by the new one since it has been found
-				*p1 = c;
-				if ( uid != DWORD_MAX )
-				{
-					*p = 0;
-					strncpy(z, p1, sizeof(z));
-					z[sizeof(z) - 1] = '\0';
-					snprintf(z1, sizeof(z1), "0%" FMTDWORDH, uid);
-					strncat(buf, z1, sizeof(buf) - strlen(buf) - 1);
-					strncat(buf, z, sizeof(buf) - strlen(buf) - 1);
-				}
-			}
-			//	output the resulting line
-			ouf.Write(buf, strlen(buf));
-		}
-		inf.Close();
-		ouf.Close();
-	}
-	free(uids);
-	g_Log.Event(LOGL_EVENT,	"Defragmentation complete\n");
-}
-
 #ifdef _WIN32
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd)
 {
 	UNREFERENCED_PARAMETER(hPrevInstance);
+	UNREFERENCED_PARAMETER(lpCmdLine);
 
-	TCHAR *argv[32];
-	argv[0] = NULL;
-	int argc = Str_ParseCmds(lpCmdLine, &argv[1], COUNTOF(argv) - 1, " \t") + 1;
-
-	NTWindow_Init(hInstance, lpCmdLine, nCmdShow);
-	int iRet = Sphere_MainEntryPoint(argc, argv);
+	NTWindow_Init(hInstance, nShowCmd);
+	int iRet = Sphere_MainEntryPoint();
 	NTWindow_Exit();
 	TerminateProcess(GetCurrentProcess(), iRet);
 	return iRet;
 }
 
-int Sphere_MainEntryPoint( int argc, char *argv[] )
+int Sphere_MainEntryPoint()
 #else
 int _cdecl main( int argc, char * argv[] )
 #endif
 {
 #ifdef EXCEPTIONS_DEBUG
-	const char *m_sClassName = "Sphere";
+	const char *m_sClassName = SPHERE_TITLE;
 #endif
 	EXC_TRY("Main");
 
@@ -1109,7 +788,7 @@ int _cdecl main( int argc, char * argv[] )
 	g_UnixTerminal.prepare();
 #endif
 
-	g_Serv.m_iExitFlag = Sphere_InitServer( argc, argv );
+	g_Serv.m_iExitFlag = Sphere_InitServer();
 	if ( ! g_Serv.m_iExitFlag )
 	{
 		WritePidFile(0);

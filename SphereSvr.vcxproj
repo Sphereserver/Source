@@ -194,7 +194,6 @@ if defined GitRev (
     <ClCompile Include="src\common\CCacheableScriptFile.cpp" />
     <ClCompile Include="src\common\CCSVFile.cpp" />
     <ClCompile Include="src\common\CEncrypt.cpp" />
-    <ClCompile Include="src\common\crashdump\crashdump.cpp" />
     <ClCompile Include="src\common\CVarFloat.cpp" />
     <ClCompile Include="src\common\sqlite\SQLite.cpp" />
     <ClCompile Include="src\common\sqlite\sqlite3.c" />
@@ -303,7 +302,6 @@ if defined GitRev (
     <ClInclude Include="src\common\CCSVFile.h" />
     <ClInclude Include="src\common\CEncrypt.h" />
     <ClInclude Include="src\common\CMD5.h" />
-    <ClInclude Include="src\common\crashdump\crashdump.h" />
     <ClInclude Include="src\common\CVarFloat.h" />
     <ClInclude Include="src\common\CWindow.h" />
     <ClInclude Include="src\common\sqlite\SQLite.h" />

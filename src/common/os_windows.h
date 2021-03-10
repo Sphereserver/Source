@@ -13,7 +13,7 @@
 #include <WinSock2.h>
 #include <windows.h>
 
-extern bool NTWindow_Init(HINSTANCE hInstance, LPTSTR lpCmdLinel, int nCmdShow);
+extern bool NTWindow_Init(HINSTANCE hInstance, int nCmdShow);
 extern void NTWindow_Exit();
 extern void NTWindow_DeleteIcon();
 extern bool NTWindow_OnTick(int iWaitmSec);

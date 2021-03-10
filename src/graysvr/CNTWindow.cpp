@@ -755,30 +755,15 @@ LRESULT WINAPI CNTWindow::WindowProc( HWND hWnd, UINT message, WPARAM wParam, LP
 
 //************************************
 
-bool NTWindow_Init(HINSTANCE hInstance, LPTSTR lpCmdLine, int nCmdShow)
+bool NTWindow_Init(HINSTANCE hInstance, int nCmdShow)
 {
-	theApp.InitInstance(SPHERE_TITLE "Server V" SPHERE_VER_STR_FULL, hInstance, lpCmdLine);
+	theApp.InitInstance(SPHERE_TITLE "Server V" SPHERE_VER_STR_FULL, hInstance);
 
-	//	read target window name from the arguments
-	char	className[32] = SPHERE_TITLE "Svr";
-	TCHAR	*argv[32];
-	argv[0] = NULL;
-	size_t argc = Str_ParseCmds(lpCmdLine, &argv[1], COUNTOF(argv)-1, " \t") + 1;
-	if (( argc > 1 ) && _IS_SWITCH(*argv[1]) )
-	{
-		if ( argv[1][1] == 'c' )
-		{
-			if ( argv[1][2] )
-			{
-				strncpy(className, &argv[1][2], sizeof(className));
-				className[sizeof(className) - 1] = '\0';
-			}
-		}
-	}
-	CNTWindow::RegisterClass(className);
+	char *pszClassName = SPHERE_TITLE "Svr";
+	CNTWindow::RegisterClass(pszClassName);
 
 	theApp.m_wndMain.m_hWnd = ::CreateWindow(
-		className,
+		pszClassName,
 		SPHERE_TITLE_VER, // window name
 		WS_OVERLAPPEDWINDOW,   // window style
 		CW_USEDEFAULT,  // horizontal position of window

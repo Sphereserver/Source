@@ -50,10 +50,6 @@ public:
 	void print(LPCTSTR pszText);
 	void prepare();
 
-	void setColorEnabled(bool fSet)
-	{
-		m_fColorEnabled = fSet;
-	}
 	bool isColorEnabled() const
 	{
 		return m_fColorEnabled;

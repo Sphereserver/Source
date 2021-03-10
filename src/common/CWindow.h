@@ -210,7 +210,6 @@ public:
 	static const char *m_sClassName;
 	LPCTSTR	 	m_pszAppName;	// Specifies the name of the application. (display freindly)
 	HINSTANCE 	m_hInstance;	// Identifies the current instance of the application.
-	LPTSTR 		m_lpCmdLine;	// Points to a null-terminated string that specifies the command line for the application.
 	CWindow *	m_pMainWnd;		// Holds a pointer to the application's main window. For an example of how to initialize m_pMainWnd, see InitInstance.
 	CGString	m_pszExeName;	// The module name of the application.
 	CGString	m_pszProfileName;	// the path to the profile.
@@ -220,7 +219,6 @@ public:
 	{
 		m_pszAppName = "";
 		m_hInstance = NULL;
-		m_lpCmdLine = NULL;
 		m_pMainWnd = NULL;
 	}
 
@@ -233,11 +231,10 @@ private:
 	CWinApp& operator=(const CWinApp& other);
 
 public:
-	void InitInstance( LPCTSTR pszAppName, HINSTANCE hInstance, LPTSTR lpszCmdLine )
+	void InitInstance(LPCTSTR pszAppName, HINSTANCE hInstance)
 	{
 		m_pszAppName = pszAppName;	// assume this is a static data pointer valid forever.
 		m_hInstance	= hInstance;
-		m_lpCmdLine	= lpszCmdLine;
 
 		char szFileName[ _MAX_PATH ];
 		if ( ! GetModuleFileName( m_hInstance, szFileName, sizeof( szFileName )))

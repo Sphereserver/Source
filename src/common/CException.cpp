@@ -8,7 +8,6 @@ void Assert_CheckFail(LPCTSTR pszExp, LPCTSTR pszFile, long lLine)
 #ifdef _WIN32
 
 	#ifndef _DEBUG
-		#include "./crashdump/crashdump.h"
 
 		extern "C"
 		{
@@ -21,11 +20,7 @@ void Assert_CheckFail(LPCTSTR pszExp, LPCTSTR pszFile, long lLine)
 
 			void _cdecl Sphere_Exception_Win32(unsigned int id, struct _EXCEPTION_POINTERS *pData)
 			{
-		#ifndef _NO_CRASHDUMP
-				if ( CrashDump::IsEnabled() )
-					CrashDump::StartCrashDump(GetCurrentProcessId(), GetCurrentThreadId(), pData);
-		#endif
-				// WIN32 gets an exception.
+				// WIN32 gets an exception
 				DWORD dwCodeStart = (DWORD_PTR)&globalstartsymbol;		// sync up to MAP file
 				DWORD dwAddr = (DWORD_PTR)pData->ExceptionRecord->ExceptionAddress;
 				dwAddr -= dwCodeStart;
