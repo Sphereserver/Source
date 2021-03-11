@@ -140,14 +140,14 @@ void CResourceBase::AddResourceDir(LPCTSTR pszDirName)
 	CGString sFilePath = CGFile::GetMergedFileName(pszDirName, "*" SPHERE_FILE_EXT_SCP);
 
 	CFileList filelist;
-	int iRet = filelist.ReadDir(sFilePath, false);
+	int iRet = filelist.ReadDir(sFilePath);
 	if ( iRet < 0 )
 	{
 		// Also check script file path
-		iRet = filelist.ReadDir(CGFile::GetMergedFileName(m_sSCPBaseDir, sFilePath.GetPtr()), true);
+		iRet = filelist.ReadDir(CGFile::GetMergedFileName(m_sSCPBaseDir, sFilePath.GetPtr()));
 		if ( iRet < 0 )
 		{
-			DEBUG_ERR(("DirList=%d for '%s'\n", iRet, pszDirName));
+			DEBUG_ERR(("Can't open resource dir '%s'\n", pszDirName));
 			return;
 		}
 	}

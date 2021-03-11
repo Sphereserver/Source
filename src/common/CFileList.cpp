@@ -1,123 +1,104 @@
-/**
-* @file CFileList.cpp
-*/
-
 #include "graycom.h"
 #include "CFileList.h"
-
-#if defined(_WIN32)
-#include <io.h> 		// findfirst
-#else	// LINUX
-#include <dirent.h>
+#ifndef _WIN32
+	#include <dirent.h>
 #endif
 
-// Similar to the MFC CFileFind
-bool CFileList::ReadFileInfo( LPCTSTR pszFilePath, time_t & dwDateChange, DWORD & dwSize ) // static
+bool CFileList::ReadFileInfo(LPCTSTR pszPath, time_t &timeDateChange, DWORD &dwSize)	// static
 {
 	ADDTOCALLSTACK("CFileList::ReadFileInfo");
+
 #ifdef _WIN32
-	// WIN32
 	struct _finddata_t fileinfo;
 	fileinfo.attrib = _A_NORMAL;
-	intptr_t lFind = _findfirst( pszFilePath, &fileinfo );
 
-	if ( lFind == -1 )
-#else
-	// LINUX
-	struct stat fileStat;
-	if ( stat( pszFilePath, &fileStat) == -1 )
-#endif
+	intptr_t hFile = _findfirst(pszPath, &fileinfo);
+	if ( hFile != -1 )
 	{
-		DEBUG_ERR(( "Can't open input dir [%s]\n", pszFilePath ));
-		return( false );
+		timeDateChange = fileinfo.time_write;
+		dwSize = fileinfo.size;
+		_findclose(hFile);
+		return true;
 	}
-
-#ifdef _WIN32
-	// WIN32
-	dwDateChange = fileinfo.time_write;
-	dwSize = fileinfo.size;
-	_findclose( lFind );
 #else
-	// LINUX
-	dwDateChange = fileStat.st_mtime;
-	dwSize = fileStat.st_size;
+	struct stat fileStat;
+	if ( stat(pszPath, &fileStat) != -1 )
+	{
+		timeDateChange = fileStat.st_mtime;
+		dwSize = fileStat.st_size;
+		return true;
+	}
 #endif
 
-	return( true );
+	return false;
 }
 
-int CFileList::ReadDir( LPCTSTR pszFileDir, bool bShowError )
+int CFileList::ReadDir(LPCTSTR pszPath)
 {
 	ADDTOCALLSTACK("CFileList::ReadDir");
 	// NOTE: It seems NOT to like the trailing \ alone
-	TCHAR szFileDir[_MAX_PATH];
-	size_t len = strcpylen(szFileDir, pszFileDir, sizeof(szFileDir));
+
+	TCHAR szPath[_MAX_PATH];
+	size_t len = strcpylen(szPath, pszPath, sizeof(szPath));
+
 #ifdef _WIN32
 	if ( len > 0 )
 	{
 		--len;
-		if ( (szFileDir[len] == '\\') || (szFileDir[len] == '/') )
-			strncat(szFileDir, "*.*", sizeof(szFileDir) - strlen(szFileDir) - 1);
+		if ( (szPath[len] == '\\') || (szPath[len] == '/') )
+			strncat(szPath, "*.*", sizeof(szPath) - strlen(szPath) - 1);
 	}
-#endif
 
-#ifdef _WIN32
 	struct _finddata_t fileinfo;
-	intptr_t lFind = _findfirst(szFileDir, &fileinfo);
+	intptr_t hFile = _findfirst(szPath, &fileinfo);
+	if ( hFile != -1 )
+	{
+		do
+		{
+			if ( fileinfo.name[0] == '.' )
+				continue;
+			AddTail(fileinfo.name);
+		}
+		while ( !_findnext(hFile, &fileinfo) );
 
-	if ( lFind == -1 )
+		_findclose(hFile);
+		return static_cast<int>(GetCount());
+	}
 #else
-	// Need to strip out the *.scp part
+	// Strip out the *.scp part
 	for ( size_t i = len; i > 0; --i )
 	{
-		if ( szFileDir[i] == '/' )
+		if ( szPath[i] == '/' )
 		{
-			szFileDir[i+1] = 0x00;
+			szPath[i++] = '\0';
 			break;
 		}
 	}
 
-	struct dirent *fileinfo = NULL;
-	char szFileName[_MAX_PATH];
-
-	DIR *dirp = opendir(szFileDir);
-	if ( !dirp )
-#endif
+	DIR *dirp = opendir(szPath);
+	if ( dirp )
 	{
-		if (bShowError == true)
+		struct dirent *fileinfo = NULL;
+		char szFileName[_MAX_PATH];
+
+		do
 		{
-			DEBUG_ERR(("Unable to open directory %s\n", szFileDir));
+			fileinfo = readdir(dirp);
+			if ( !fileinfo )
+				break;
+			if ( fileinfo->d_name[0] == '.' )
+				continue;
+
+			len = snprintf(szFileName, sizeof(szFileName), "%s%s", szPath, fileinfo->d_name);
+			if ( (len > 4) && !strcmpi(&szFileName[len - 4], SPHERE_FILE_EXT_SCP) )
+				AddTail(fileinfo->d_name);
 		}
-		return -1;
+		while ( fileinfo != NULL );
+
+		closedir(dirp);
+		return static_cast<int>(GetCount());
 	}
-
-	do
-	{
-#if defined(_WIN32)
-		if ( fileinfo.name[0] == '.' )
-			continue;
-		AddTail(fileinfo.name);
-#else
-		fileinfo = readdir(dirp);
-		if ( !fileinfo )
-			break;
-		if ( fileinfo->d_name[0] == '.' )
-			continue;
-
-		len = snprintf(szFileName, sizeof(szFileName), "%s%s", szFileDir, fileinfo->d_name);
-		if ( (len > 4) && !strcmpi(&szFileName[len - 4], SPHERE_FILE_EXT_SCP) )
-			AddTail(fileinfo->d_name);
 #endif
-	}
-#if defined(_WIN32)
-	while ( !_findnext(lFind, &fileinfo));
 
-	_findclose(lFind);
-#else
-	while ( fileinfo != NULL );
-
-	closedir(dirp);
-#endif
-	return static_cast<int>(GetCount());
+	return -1;
 }
-
