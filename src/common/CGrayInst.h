@@ -115,7 +115,6 @@ public:
 	CGTypedArray<CUOVersionBlock, CUOVersionBlock &> m_Data;
 
 private:
-	int QCompare(size_t left, DWORD dwRefIndex) const;
 	void QSort(size_t left, size_t right);
 
 public:

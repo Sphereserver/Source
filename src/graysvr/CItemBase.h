@@ -219,7 +219,7 @@ class CItemBase : public CBaseBaseDef
 {
 	// RES_ITEMDEF
 	// Describe basic stuff about all items.
-	// Partly based on CUOItemTypeRec/CUOItemTypeRec2
+	// Partly based on CUOItemTypeRec/CUOItemTypeRecHS
 public:
 	static const char *m_sClassName;
 	static const LPCTSTR sm_szLoadKeys[];
@@ -233,7 +233,7 @@ private:
 	IT_TYPE m_type;
 	WORD m_weight;				// weight in WEIGHT_UNITS (WORD_MAX=not movable). Defaults from .mul files
 	BYTE m_layer;
-	UINT64 m_uiFlags;			// UFLAG_* from CUOItemTypeRec/CUOItemTypeRec2
+	UINT64 m_uiFlags;			// UFLAG_* from CUOItemTypeRec/CUOItemTypeRecHS
 	BYTE m_speed;
 
 public:
@@ -453,13 +453,13 @@ public:
 	static int IsID_Door(ITEMID_TYPE id);
 	static bool IsID_DoorOpen(ITEMID_TYPE id);
 
-	static bool GetItemData(ITEMID_TYPE id, CUOItemTypeRec2 *pTiledata);
-	static void GetItemSpecificFlags(const CUOItemTypeRec2 &tiledata, DWORD &dwBlockThis, IT_TYPE type, ITEMID_TYPE id);
+	static bool GetItemData(ITEMID_TYPE id, CUOItemTypeRecHS *pTiledata);
+	static void GetItemSpecificFlags(const CUOItemTypeRecHS &tiledata, DWORD &dwBlockThis, IT_TYPE type, ITEMID_TYPE id);
 	static void GetItemTiledataFlags(DWORD &dwBlockThis, ITEMID_TYPE id);
 	static height_t GetItemHeight(ITEMID_TYPE id, DWORD &dwBlockThis);
-	static height_t GetItemHeightFlags(const CUOItemTypeRec2 &tiledata, DWORD &dwBlockThis);
+	static height_t GetItemHeightFlags(const CUOItemTypeRecHS &tiledata, DWORD &dwBlockThis);
 
-	static IT_TYPE GetTypeBase(ITEMID_TYPE id, const CUOItemTypeRec2 &tiledata);
+	static IT_TYPE GetTypeBase(ITEMID_TYPE id, const CUOItemTypeRecHS &tiledata);
 	GUMP_TYPE GetContainerGumpID() const;
 	ITEMID_TYPE GetNextFlipID(ITEMID_TYPE id) const;
 
@@ -474,7 +474,7 @@ public:
 	DWORD GetMakeValue(int iQualityLevel);
 	void ResetMakeValue();
 
-	bool r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc = NULL);
+	bool r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc);
 	virtual bool r_LoadVal(CScript &s);
 
 public:
@@ -627,7 +627,7 @@ public:
 	DWORD m_Can;
 
 private:
-	UINT64 m_uiFlags;		// UFLAG_* from CUOItemTypeRec/CUOItemTypeRec2
+	UINT64 m_uiFlags;		// UFLAG_* from CUOItemTypeRec/CUOItemTypeRecHS
 	height_t m_Height;
 
 public:

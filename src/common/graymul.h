@@ -1377,7 +1377,7 @@ public:
 struct CUOIndexRec	// 12 byte block = used for table indexes. (staidx0.mul,multi.idx,anim.idx)
 {
 private:
-	DWORD	m_dwOffset;	// 0xFFFFFFFF = nothing here ! else pointer to something (CUOStaticItemRec possibly)
+	DWORD	m_dwOffset;	// DWORD_MAX = nothing here ! else pointer to something (CUOStaticItemRec possibly)
 	DWORD 	m_dwLength; // Length of the object in question.
 public:
 	WORD 	m_wVal3;	// Varied uses. ex. GumpSizey
@@ -1398,7 +1398,7 @@ public:
 	}
 	bool HasData() const
 	{
-		return( m_dwOffset != 0xFFFFFFFF && m_dwLength != 0 );
+		return ((m_dwOffset != DWORD_MAX) && (m_dwLength != 0));
 	}
 	void Init()
 	{
@@ -1520,7 +1520,7 @@ public:
 
 struct CUOMapMeter	// 3 bytes (map0.mul)
 {
-	WORD m_wTerrainIndex;	// TERRAIN_TYPE index to Radarcol and CUOTerrainTypeRec/CUOTerrainTypeRec2
+	WORD m_wTerrainIndex;	// TERRAIN_TYPE index to Radarcol and CUOTerrainTypeRec/CUOTerrainTypeRecHS
 	signed char m_z;
 	static bool IsTerrainNull( WORD wTerrainIndex )
 	{
@@ -1537,7 +1537,7 @@ struct CUOMapBlock	// 196 byte block = 8x8 meters, (map0.mul)
 
 struct CUOStaticItemRec	// 7 byte block = static items on the map (statics0.mul)
 {
-	WORD	m_wTileID;		// ITEMID_TYPE = Index to tile CUOItemTypeRec/CUOItemTypeRec2
+	WORD	m_wTileID;		// ITEMID_TYPE = Index to tile CUOItemTypeRec/CUOItemTypeRecHS
 	BYTE	m_x;		// x <= 7 = offset from block.
 	BYTE 	m_y;		// y <= 7
 	signed char m_z;	//
@@ -1554,8 +1554,6 @@ struct CUOStaticItemRec	// 7 byte block = static items on the map (statics0.mul)
 
 } PACK_NEEDED;
 
-#define UOTILE_BLOCK_QTY	32	// Come in blocks of 32.
-
 struct CUOTerrainTypeRec	// size = 0x1a = 26 (tiledata.mul)
 {	
 	// First half of tiledata.mul file is for terrain tiles.
@@ -1565,7 +1563,7 @@ struct CUOTerrainTypeRec	// size = 0x1a = 26 (tiledata.mul)
 
 } PACK_NEEDED;
 
-struct CUOTerrainTypeRec2	// size = 0x1e = 30 (tiledata.mul, High Seas+)
+struct CUOTerrainTypeRecHS	// size = 0x1e = 30 (tiledata.mul, High Seas+)
 {
 	// First half of tiledata.mul file is for terrain tiles.
 	DWORD m_flags;	// 0xc0=water, 0x40=dirt or rock, 0x60=lava, 0x50=cave, 0=floor
@@ -1574,16 +1572,10 @@ struct CUOTerrainTypeRec2	// size = 0x1e = 30 (tiledata.mul, High Seas+)
 	char m_name[20];
 } PACK_NEEDED;
 
-struct CGrayTerrainInfo : public CUOTerrainTypeRec2
+struct CGrayTerrainInfo : public CUOTerrainTypeRecHS
 {
-	CGrayTerrainInfo( TERRAIN_TYPE id );
+	CGrayTerrainInfo(TERRAIN_TYPE id);
 };
-
-	// 0x68800 = (( 0x4000 / 32 ) * 4 ) + ( 0x4000 * 26 )
-#define UOTILE_TERRAIN_SIZE ((( TERRAIN_QTY / UOTILE_BLOCK_QTY ) * 4 ) + ( TERRAIN_QTY * sizeof( CUOTerrainTypeRec )))
-
-	// 0x78800 = (( 0x4000 / 32 ) * 4 ) + ( 0x4000 * 30 )
-#define UOTILE_TERRAIN_SIZE2 ((( TERRAIN_QTY / UOTILE_BLOCK_QTY ) * 4 ) + ( TERRAIN_QTY * sizeof( CUOTerrainTypeRec2 )))
 
 struct CUOItemTypeRec	// size = 37 (tiledata.mul)
 {	// Second half of tiledata.mul file is for item tiles (ITEMID_TYPE).
@@ -1632,7 +1624,7 @@ struct CUOItemTypeRec	// size = 37 (tiledata.mul)
 	char m_name[20];	// sometimes legit not to have a name
 } PACK_NEEDED;
 
-struct CUOItemTypeRec2	// size = 41 (tiledata.mul, High Seas+)
+struct CUOItemTypeRecHS	// size = 41 (tiledata.mul, High Seas+)
 {
 	UINT64 m_flags;
 	BYTE m_weight;		// 255 = unmovable.
@@ -1645,9 +1637,9 @@ struct CUOItemTypeRec2	// size = 41 (tiledata.mul, High Seas+)
 	char m_name[20];	// sometimes legit not to have a name
 } PACK_NEEDED;
 
-struct CGrayItemInfo : public CUOItemTypeRec2
+struct CGrayItemInfo : public CUOItemTypeRecHS
 {
-	explicit CGrayItemInfo( ITEMID_TYPE id );
+	explicit CGrayItemInfo(ITEMID_TYPE id);
 
 	static ITEMID_TYPE GetMaxTileDataItem();
 };
@@ -1656,7 +1648,7 @@ struct CUOMultiItemRec // (Multi.mul)
 {
 	// Describe multi's like houses and boats. One single tile.
 	// From Multi.Idx and Multi.mul files.
-	WORD m_wTileID;	// ITEMID_TYPE = Index to tile CUOItemTypeRec/CUOItemTypeRec2
+	WORD m_wTileID;	// ITEMID_TYPE = Index to tile CUOItemTypeRec/CUOItemTypeRecHS
 	signed short m_dx;	// signed delta.
 	signed short m_dy;
 	signed short m_dz;
@@ -1673,7 +1665,7 @@ struct CUOMultiItemRecHS // (Multi.mul, High Seas+)
 {
 	// Describe multi's like houses and boats. One single tile.
 	// From Multi.Idx and Multi.mul files
-	WORD m_wTileID;	// ITEMID_TYPE = Index to tile CUOItemTypeRec/CUOItemTypeRec2
+	WORD m_wTileID;	// ITEMID_TYPE = Index to tile CUOItemTypeRec/CUOItemTypeRecHS
 	signed short m_dx;	// signed delta.
 	signed short m_dy;
 	signed short m_dz;

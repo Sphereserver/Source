@@ -53,7 +53,7 @@ CItemBase::CItemBase(ITEMID_TYPE id) : CBaseBaseDef(RESOURCE_ID(RES_ITEMDEF, id)
 	m_dwDispIndex = id;
 
 	// I have it indexed but it needs to be loaded. Read it from the script and *.mul files
-	CUOItemTypeRec2 tiledata;
+	CUOItemTypeRecHS tiledata;
 	memset(&tiledata, 0, sizeof(tiledata));
 	if ( id < ITEMID_MULTI )
 		static_cast<void>(GetItemData(id, &tiledata));
@@ -432,7 +432,7 @@ bool CItemBase::IsID_DoorOpen(ITEMID_TYPE id)	// static
 	return false;
 }
 
-bool CItemBase::GetItemData(ITEMID_TYPE id, CUOItemTypeRec2 *pTiledata)	// static
+bool CItemBase::GetItemData(ITEMID_TYPE id, CUOItemTypeRecHS *pTiledata)	// static
 {
 	ADDTOCALLSTACK("CItemBase::GetItemData");
 	// Read from g_Install.m_fTileData
@@ -444,7 +444,7 @@ bool CItemBase::GetItemData(ITEMID_TYPE id, CUOItemTypeRec2 *pTiledata)	// stati
 	try
 	{
 		CGrayItemInfo info(id);
-		*pTiledata = *(static_cast<CUOItemTypeRec2 *>(&info));
+		*pTiledata = *static_cast<CUOItemTypeRecHS *>(&info);
 	}
 	catch ( const CGrayError &e )
 	{
@@ -466,7 +466,7 @@ bool CItemBase::GetItemData(ITEMID_TYPE id, CUOItemTypeRec2 *pTiledata)	// stati
 	return true;
 }
 
-inline void CItemBase::GetItemSpecificFlags(const CUOItemTypeRec2 &tiledata, DWORD &dwBlockThis, IT_TYPE type, ITEMID_TYPE id)	// static
+inline void CItemBase::GetItemSpecificFlags(const CUOItemTypeRecHS &tiledata, DWORD &dwBlockThis, IT_TYPE type, ITEMID_TYPE id)	// static
 {
 	ADDTOCALLSTACK("CItemBase::GetItemSpecificFlags");
 	if ( type == IT_DOOR )
@@ -488,7 +488,7 @@ void CItemBase::GetItemTiledataFlags(DWORD &dwBlockThis, ITEMID_TYPE id)	// stat
 {
 	ADDTOCALLSTACK("CItemBase::GetItemTiledataFlags");
 
-	CUOItemTypeRec2 tiledata;
+	CUOItemTypeRecHS tiledata;
 	memset(&tiledata, 0, sizeof(tiledata));
 	if ( !GetItemData(id, &tiledata) )
 	{
@@ -514,7 +514,7 @@ void CItemBase::GetItemTiledataFlags(DWORD &dwBlockThis, ITEMID_TYPE id)	// stat
 		dwBlockThis |= CAN_I_HOVER;
 }
 
-inline height_t CItemBase::GetItemHeightFlags(const CUOItemTypeRec2 &tiledata, DWORD &dwBlockThis)	// static
+inline height_t CItemBase::GetItemHeightFlags(const CUOItemTypeRecHS &tiledata, DWORD &dwBlockThis)	// static
 {
 	ADDTOCALLSTACK("CItemBase::GetItemHeightFlags");
 
@@ -574,7 +574,7 @@ height_t CItemBase::GetItemHeight(ITEMID_TYPE id, DWORD &dwBlockThis)	// static
 	}
 
 	// Not already loaded
-	CUOItemTypeRec2 tiledata;
+	CUOItemTypeRecHS tiledata;
 	if ( !GetItemData(id, &tiledata) )
 	{
 		dwBlockThis = CAN_I_MOVEMASK;
@@ -584,7 +584,7 @@ height_t CItemBase::GetItemHeight(ITEMID_TYPE id, DWORD &dwBlockThis)	// static
 	return GetItemHeightFlags(tiledata, dwBlockThis);
 }
 
-IT_TYPE CItemBase::GetTypeBase(ITEMID_TYPE id, const CUOItemTypeRec2 &tiledata)	// static
+IT_TYPE CItemBase::GetTypeBase(ITEMID_TYPE id, const CUOItemTypeRecHS &tiledata)	// static
 {
 	ADDTOCALLSTACK("CItemBase::GetTypeBase");
 	if ( IsID_Ship(id) )
@@ -1606,7 +1606,7 @@ CItemBase *CItemBase::MakeDupeReplacement(CItemBase *pBase, ITEMID_TYPE iddupe)	
 		pBaseNew->m_flip_id.Add(id);
 
 	// Create the dupe stub
-	CUOItemTypeRec2 tiledata;
+	CUOItemTypeRecHS tiledata;
 	memset(&tiledata, 0, sizeof(tiledata));
 
 	CItemBaseDupe *pBaseDupe = new CItemBaseDupe(id, pBaseNew);

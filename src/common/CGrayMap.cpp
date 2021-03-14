@@ -423,7 +423,7 @@ void CGrayMapBlock::Load(int bx, int by)
 		}
 
 		// Read terrain data
-		if ( pFile->Read(&m_Terrain, sizeof(CUOMapBlock)) <= 0 )
+		if ( pFile->Read(&m_Terrain, sizeof(CUOMapBlock)) == 0 )
 		{
 			memset(&m_Terrain, 0, sizeof(m_Terrain));
 			throw CGrayError(LOGL_CRIT, CGFile::GetLastError(), "CGrayMapBlock: Read");
