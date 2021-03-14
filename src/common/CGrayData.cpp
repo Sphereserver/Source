@@ -30,7 +30,8 @@ void CVerDataMul::QSort(size_t left, size_t right)
 			if ( i != j )
 			{
 				CUOVersionBlock temp = m_Data.GetAt(i);
-				m_Data.SetAt(i, m_Data.GetAt(j));
+				CUOVersionBlock block = m_Data.GetAt(j);
+				m_Data.SetAt(i, block);
 				m_Data.SetAt(j, temp);
 			}
 

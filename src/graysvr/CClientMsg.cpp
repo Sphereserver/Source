@@ -1053,7 +1053,7 @@ void CClient::GetAdjustedCharID(const CChar *pChar, CREID_TYPE &id, HUE_TYPE &wH
 	if ( IsPriv(PRIV_DEBUG) )
 	{
 		id = CREID_MAN;
-		wHue = 0;
+		wHue = HUE_DEFAULT;
 		return;
 	}
 

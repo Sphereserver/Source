@@ -233,21 +233,21 @@ private:
 public:
 	explicit CGrayMapBlock(const CPointMap &pt) : CPointSort(pt)	// the upper left corner
 	{
-		sm_iCount++;
+		++sm_iCount;
 		m_map = pt.m_map;
 		Load(pt.m_x / UO_BLOCK_SIZE, pt.m_y / UO_BLOCK_SIZE);
 	}
 
 	CGrayMapBlock(int bx, int by, int map) : CPointSort(static_cast<WORD>(bx) * UO_BLOCK_SIZE, static_cast<WORD>(by) * UO_BLOCK_SIZE)
 	{
-		sm_iCount++;
+		++sm_iCount;
 		m_map = map;
 		Load(bx, by);
 	}
 
 	virtual ~CGrayMapBlock()
 	{
-		sm_iCount--;
+		--sm_iCount;
 	}
 
 private:

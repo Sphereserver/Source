@@ -938,7 +938,7 @@ void CSector::OnTick(int iPulseCount)
 				if ( (iRegionPeriodic == 2) && IsTrigUsed(TRIGGER_REGPERIODIC) )
 				{
 					pChar->m_pArea->OnRegionTrigger(pChar, RTRIG_REGPERIODIC);
-					iRegionPeriodic--;
+					--iRegionPeriodic;
 				}
 				if ( IsTrigUsed(TRIGGER_CLIPERIODIC) )
 					pChar->m_pArea->OnRegionTrigger(pChar, RTRIG_CLIPERIODIC);

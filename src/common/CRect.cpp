@@ -209,13 +209,13 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 		if ( *pszKey == '\0' )
 		{
 			int iStaticQty = 0;
-			for ( size_t i = 0; i < pBlock->m_Statics.GetStaticQty(); i++ )
+			for ( size_t i = 0; i < pBlock->m_Statics.GetStaticQty(); ++i )
 			{
 				const CUOStaticItemRec * pStatic = pBlock->m_Statics.GetStatic( i );
 				CPointMap ptTest( pStatic->m_x+pBlock->m_x, pStatic->m_y+pBlock->m_y, pStatic->m_z, this->m_map );
 				if ( this->GetDist( ptTest ) > 0 )
 					continue;
-				iStaticQty++;
+				++iStaticQty;
 			}
 
 			sVal.FormatVal( iStaticQty );
@@ -252,7 +252,7 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 				sVal.FormatVal( 0 );
 				return false;
 			}
-			for ( size_t i = 0; i < pBlock->m_Statics.GetStaticQty(); pStatic = NULL, i++ )
+			for ( size_t i = 0; i < pBlock->m_Statics.GetStaticQty(); pStatic = NULL, ++i )
 			{
 				pStatic = pBlock->m_Statics.GetStatic( i );
 				CPointMap ptTest( pStatic->m_x+pBlock->m_x, pStatic->m_y+pBlock->m_y, pStatic->m_z, this->m_map);
@@ -264,7 +264,7 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 		}
 		else
 		{
-			for ( size_t i = 0; i < pBlock->m_Statics.GetStaticQty(); pStatic = NULL, i++ )
+			for ( size_t i = 0; i < pBlock->m_Statics.GetStaticQty(); pStatic = NULL, ++i )
 			{
 				pStatic = pBlock->m_Statics.GetStatic( i );
 				CPointMap ptTest( pStatic->m_x+pBlock->m_x, pStatic->m_y+pBlock->m_y, pStatic->m_z, this->m_map);
@@ -272,7 +272,7 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 					continue;
 				if ( iStatic == 0 )
 					break;
-				iStatic--;
+				--iStatic;
 			}
 		}
 
@@ -326,7 +326,7 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 		if ( *pszKey == '\0' )
 		{
 			int iComponentQty = 0;
-			for (size_t i = 0; i < iMultiQty; i++)
+			for ( size_t i = 0; i < iMultiQty; ++i )
 			{
 				pRegion = rlinks.GetAt(i);
 				if (pRegion == NULL)
@@ -342,7 +342,7 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 					continue;
 
 				size_t iQty = pMulti->GetItemCount();
-				for (size_t ii = 0; ii < iQty; ii++)
+				for ( size_t ii = 0; ii < iQty; ++ii )
 				{
 					pMultiItem = pMulti->GetItem(ii);
 					if (pMultiItem == NULL)
@@ -353,7 +353,7 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 					if (GetDist(ptTest) > 0)
 						continue;
 
-					iComponentQty++;
+					++iComponentQty;
 				}
 			}
 
@@ -391,7 +391,7 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 				return false;
 			}
 			
-			for (size_t i = 0; i < iMultiQty; i++)
+			for ( size_t i = 0; i < iMultiQty; ++i )
 			{
 				pRegion = rlinks.GetAt(i);
 				if (pRegion == NULL)
@@ -407,7 +407,7 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 					continue;
 
 				size_t iQty = pMulti->GetItemCount();
-				for (size_t ii = 0; ii < iQty; pMultiItem = NULL, ii++)
+				for ( size_t ii = 0; ii < iQty; pMultiItem = NULL, ++ii )
 				{
 					pMultiItem = pMulti->GetItem(ii);
 					if (pMultiItem == NULL)
@@ -429,7 +429,7 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 		}
 		else
 		{
-			for (size_t i = 0; i < iMultiQty; i++)
+			for ( size_t i = 0; i < iMultiQty; ++i )
 			{
 				pRegion = rlinks.GetAt(i);
 				if (pRegion == NULL)
@@ -445,7 +445,7 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 					continue;
 
 				size_t iQty = pMulti->GetItemCount();
-				for (size_t ii = 0; ii < iQty; pMultiItem = NULL, ii++)
+				for ( size_t ii = 0; ii < iQty; pMultiItem = NULL, ++ii )
 				{
 					pMultiItem = pMulti->GetItem(ii);
 					if (pMultiItem == NULL)
@@ -459,7 +459,7 @@ bool CPointBase::r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const
 					if (iComponent == 0)
 						break;
 
-					iComponent--;
+					--iComponent;
 				}
 
 				if (pMultiItem != NULL)
