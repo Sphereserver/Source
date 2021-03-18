@@ -121,7 +121,7 @@ public:
 	void Load(CGFile &file);
 	void Unload()
 	{
-		m_Data.Empty();
+		m_Data.RemoveAll();
 	}
 
 	bool FindVerDataBlock(VERFILE_TYPE type, DWORD id, CUOIndexRec &index) const;

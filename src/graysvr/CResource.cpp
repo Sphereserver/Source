@@ -1874,7 +1874,7 @@ PLEVEL_TYPE CResource::GetPrivCommandLevel(LPCTSTR pszCmd) const
 	size_t iPlevel = PLEVEL_QTY;
 	while ( --iPlevel > 0 )
 	{
-		if ( FindTableHeadSorted(pszCmd, m_PrivCommands[iPlevel].GetBasePtr(), m_PrivCommands[iPlevel].GetCount()) >= 0 )
+		if ( FindTableHeadSorted(pszCmd, m_PrivCommands[iPlevel].GetData(), m_PrivCommands[iPlevel].GetCount()) >= 0 )
 			return static_cast<PLEVEL_TYPE>(iPlevel);
 	}
 	return m_iDefaultCommandLevel;
@@ -3392,7 +3392,7 @@ void CResource::Unload(bool fResync)
 	m_Functions.RemoveAll();
 	m_Fame.RemoveAll();
 	m_Karma.RemoveAll();
-	m_MoonGates.Empty();
+	m_MoonGates.RemoveAll();
 	m_NotoFameLevels.RemoveAll();
 	m_NotoKarmaLevels.RemoveAll();
 	m_NotoTitles.RemoveAll();
@@ -3551,28 +3551,28 @@ bool CResource::Load(bool fResync)
 		g_Serv.m_fReloadMultis = false;
 	}
 
-	m_iEventsItemLink.Empty();
+	m_iEventsItemLink.RemoveAll();
 	if ( !m_sEventsItem.IsEmpty() )
 	{
 		CScript script("EVENTSITEM", m_sEventsItem);
 		m_iEventsItemLink.r_LoadVal(script, RES_EVENTS);
 	}
 
-	m_pEventsPetLink.Empty();
+	m_pEventsPetLink.RemoveAll();
 	if ( !m_sEventsPet.IsEmpty() )
 	{
 		CScript script("EVENTSPET", m_sEventsPet);
 		m_pEventsPetLink.r_LoadVal(script, RES_EVENTS);
 	}
 
-	m_pEventsPlayerLink.Empty();
+	m_pEventsPlayerLink.RemoveAll();
 	if ( !m_sEventsPlayer.IsEmpty() )
 	{
 		CScript script("EVENTSPLAYER", m_sEventsPlayer);
 		m_pEventsPlayerLink.r_LoadVal(script, RES_EVENTS);
 	}
 
-	m_pEventsRegionLink.Empty();
+	m_pEventsRegionLink.RemoveAll();
 	if ( !m_sEventsRegion.IsEmpty() )
 	{
 		CScript script("EVENTSREGION", m_sEventsRegion);

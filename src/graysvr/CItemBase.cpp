@@ -1346,7 +1346,8 @@ bool CItemBase::r_LoadVal(CScript &s)
 			size_t iArgQty = Str_ParseCmds(s.GetArgStr(), ppArgs, COUNTOF(ppArgs));
 			if ( iArgQty <= 0 )
 				return false;
-			m_flip_id.Empty();
+
+			m_flip_id.RemoveAll();
 			for ( size_t i = 0; i < iArgQty; ++i )
 			{
 				ITEMID_TYPE id = static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetIndexType(RES_ITEMDEF, ppArgs[i]));
@@ -1650,10 +1651,10 @@ CItemBaseDupe *CItemBaseDupe::GetDupeRef(ITEMID_TYPE id)	// static
 
 CItemBaseMulti::CItemBaseMulti(CItemBase *pBase) : CItemBase(pBase->GetID())
 {
-	m_Components.Empty();
+	m_Components.RemoveAll();
 	m_rect.SetRectEmpty();
 	m_dwRegionFlags = REGION_FLAG_NOBUILDING;
-	m_Speech.Empty();
+	m_Speech.RemoveAll();
 	m_shipSpeed.period = TICK_PER_SEC / 2;
 	m_shipSpeed.tiles = 1;
 	m_SpeedMode = 3;
@@ -1698,7 +1699,7 @@ void CItemBaseMulti::SetMultiRegion(TCHAR *pszArgs)
 	size_t iQty = Str_ParseCmds(pszArgs, piArgs, COUNTOF(piArgs));
 	if ( iQty <= 1 )
 		return;
-	m_Components.Empty();	// might be after a resync
+	m_Components.RemoveAll();	// might be after a resync
 	m_rect.SetRect(static_cast<int>(piArgs[0]), static_cast<int>(piArgs[1]), static_cast<int>(piArgs[2] + 1), static_cast<int>(piArgs[3] + 1), static_cast<int>(piArgs[4]));
 }
 

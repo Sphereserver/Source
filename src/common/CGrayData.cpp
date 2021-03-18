@@ -20,9 +20,9 @@ void CVerDataMul::QSort(size_t left, size_t right)
 
 	do
 	{
-		while ( (j < m_Data.GetCount()) && (GetEntry(j)->GetIndex() - dwIndex < 0) )
+		while ( (j < m_Data.GetCount()) && (static_cast<int>(GetEntry(j)->GetIndex() - dwIndex) < 0) )
 			++j;
-		while ( (i > 0) && (GetEntry(i)->GetIndex() - dwIndex > 0) )
+		while ( (i > 0) && (static_cast<int>(GetEntry(i)->GetIndex() - dwIndex) > 0) )
 			--i;
 
 		if ( i >= j )
@@ -66,7 +66,7 @@ void CVerDataMul::Load(CGFile &file)
 	Unload();
 	m_Data.SetCount(dwQty);
 
-	if ( file.Read(static_cast<void *>(m_Data.GetBasePtr()), dwQty * sizeof(CUOVersionBlock)) == 0 )
+	if ( file.Read(static_cast<void *>(m_Data.GetData()), dwQty * sizeof(CUOVersionBlock)) == 0 )
 		throw CGrayError(LOGL_CRIT, CGFile::GetLastError(), "VerData: Read");
 
 	if ( dwQty == 0 )
@@ -87,7 +87,7 @@ bool CVerDataMul::FindVerDataBlock(VERFILE_TYPE type, DWORD id, CUOIndexRec &ind
 		return false;
 
 	const DWORD dwIndex = VERDATA_MAKE_INDEX(type, id);
-	const CUOVersionBlock *pArray = m_Data.GetBasePtr();
+	const CUOVersionBlock *pArray = m_Data.GetData();
 
 	int iLow = 0;
 	while ( iLow <= iHigh )

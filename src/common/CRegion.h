@@ -435,7 +435,7 @@ public:
 	void EmptyRegion()
 	{
 		m_rectUnion.SetRectEmpty();
-		m_Rects.Empty();
+		m_Rects.RemoveAll();
 	}
 	size_t GetRegionRectCount() const;
 	CGRect & GetRegionRect(size_t i);

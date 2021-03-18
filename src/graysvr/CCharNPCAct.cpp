@@ -183,7 +183,7 @@ bool CChar::NPC_Vendor_Restock(bool fForce, bool fFillStock)
 		{
 			CItemContainer *pCont = GetContainer(sm_VendorLayers[i]);
 			if ( pCont )
-				pCont->Empty();
+				pCont->DeleteAll();
 		}
 	}
 

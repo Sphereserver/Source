@@ -347,7 +347,7 @@ CItemStone::~CItemStone()
 	SetAmount(0);		// the stone will be removed anyway, so set amount=0 to skip redundant checks
 	DeletePrepare();	// must remove early because virtuals will fail in child destructor
 	g_World.m_Stones.RemovePtr(this);
-	Empty();			// do this manually to preserve parents type cast
+	DeleteAll();		// do this manually to preserve parents type cast
 }
 
 MEMORY_TYPE CItemStone::GetMemoryType() const
