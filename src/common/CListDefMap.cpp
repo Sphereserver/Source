@@ -319,27 +319,22 @@ int CListDefCont::FindValNum( INT64 iVal, size_t nStartIndex /* = 0 */ ) const
 
 bool CListDefCont::AddElementNum(INT64 iVal)
 {
-#undef max
 	ADDTOCALLSTACK("CListDefCont::AddElementNum");
-	if ( (m_listElements.size() + 1) >= std::numeric_limits<size_t>::max() )
+	if ( m_listElements.size() + 1 >= SIZE_MAX )
 		return false;
 
-	m_listElements.push_back( new CListDefContNum(m_Key.GetPtr(), iVal) );
-
+	m_listElements.push_back(new CListDefContNum(m_Key.GetPtr(), iVal));
 	return true;
 }
 
 bool CListDefCont::AddElementStr(LPCTSTR pszKey)
 {
 	ADDTOCALLSTACK("CListDefCont::AddElementStr");
-	if ( (m_listElements.size() + 1) >= std::numeric_limits<size_t>::max() )
+	if ( m_listElements.size() + 1 >= SIZE_MAX )
 		return false;
-#define max maximum
 
-	REMOVE_QUOTES( pszKey );
-
-	m_listElements.push_back( new CListDefContStr(m_Key.GetPtr(), pszKey) );
-
+	REMOVE_QUOTES(pszKey);
+	m_listElements.push_back(new CListDefContStr(m_Key.GetPtr(), pszKey));
 	return true;
 }
 

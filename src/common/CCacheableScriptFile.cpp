@@ -89,7 +89,6 @@ bool CCacheableScriptFile::IsFileOpen() const
 	if ( UseDefaultFile() )
 		return CFileText::IsFileOpen();
 
-	ADDTOCALLSTACK("CCacheableScriptFile::IsFileOpen");
 	return !m_closed;
 }
 
@@ -98,7 +97,6 @@ bool CCacheableScriptFile::IsEOF() const
 	if ( UseDefaultFile() )
 		return CFileText::IsEOF();
 
-	ADDTOCALLSTACK("CCacheableScriptFile::IsEOF");
 	return (!m_fileContent || (m_currentLine == m_fileContent->size()));
 }
 
@@ -107,7 +105,6 @@ TCHAR *CCacheableScriptFile::ReadString(TCHAR *pBuffer, size_t iSizeMax)
 	if ( UseDefaultFile() )
 		return CFileText::ReadString(pBuffer, iSizeMax);
 
-	ADDTOCALLSTACK("CCacheableScriptFile::ReadString");
 	if ( m_fileContent && (m_currentLine < m_fileContent->size()) )
 	{
 		*pBuffer = '\0';

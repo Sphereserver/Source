@@ -1619,10 +1619,10 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			INT64 iVal = Exp_GetLLVal(pszKey);
 			SKIP_ARGSEP(pszKey);
 			INT64 iBit = Exp_GetLLVal(pszKey);
-			if ( iBit < 0 )
+			if ( (iBit < 0) || (iBit >= 64) )
 			{
-				g_Log.EventWarn("%s(%lld,%lld): Can't shift bit by negative position\n", sm_szLoadKeys[index], iVal, iBit);
-				iBit = 0;
+				DEBUG_ERR(("%s(%lld,%lld): can't shift bit by negative or too big value\n", sm_szLoadKeys[index], iVal, iBit));
+				return false;
 			}
 
 			if ( index == SSC_ISBIT )

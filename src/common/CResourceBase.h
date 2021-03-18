@@ -355,7 +355,7 @@ private:
 	{
 		m_iOpenCount = 0;
 		m_timeLastAccess.Init();
-		m_dwSize = (std::numeric_limits<DWORD>::max)();
+		m_dwSize = DWORD_MAX;
 	}
 
 	bool CheckForChange();
@@ -363,7 +363,7 @@ private:
 public:
 	bool IsFirstCheck() const
 	{
-		return ((m_dwSize == (std::numeric_limits<DWORD>::max)()) && !m_dateChange.IsTimeValid());
+		return ((m_dwSize == DWORD_MAX) && !m_dateChange.IsTimeValid());
 	}
 
 	void ReSync();

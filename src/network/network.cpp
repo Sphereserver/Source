@@ -872,7 +872,7 @@ NetworkManager::NetworkManager(void)
 {
 	m_states = NULL;
 	m_stateCount = 0;
-	m_lastGivenSlot = (std::numeric_limits<size_t>::max)();
+	m_lastGivenSlot = SIZE_MAX;
 	m_isThreaded = false;
 }
 
@@ -916,7 +916,7 @@ NetworkThread* NetworkManager::selectBestThread(void)
 	ADDTOCALLSTACK("NetworkManager::selectBestThread");
 
 	NetworkThread* bestThread = NULL;
-	size_t bestThreadSize = (std::numeric_limits<size_t>::max)();
+	size_t bestThreadSize = SIZE_MAX;
 	DEBUGNETWORK(("Searching for a suitable thread to handle a new client...\n"));
 
 	// search for quietest thread
@@ -1056,7 +1056,7 @@ NetState* NetworkManager::findFreeSlot(size_t start)
 
 	// start searching from the last given slot to try and give incremental
 	// ids to clients
-	if (start == (std::numeric_limits<size_t>::max)())
+	if ( start == SIZE_MAX )
 		start = m_lastGivenSlot + 1;
 
 	// find unused slot

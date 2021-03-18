@@ -577,7 +577,6 @@ int Sphere_InitServer()
 	ASSERT(sizeof(NWORD) == 2 );
 	ASSERT(sizeof(NDWORD) == 4 );
 	ASSERT(sizeof(CUOItemTypeRec) == 37 ); // byte pack working ?
-	ASSERT((std::numeric_limits<size_t>::min)() == 0); // ensure unsigned
 
 #ifdef _WIN32
 	if ( !QueryPerformanceFrequency(reinterpret_cast<LARGE_INTEGER *>(&llTimeProfileFrequency)) )

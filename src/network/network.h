@@ -351,7 +351,10 @@ private:
 class NetworkOutput
 {
 private:
-	static inline size_t _failed_result(void) { return (std::numeric_limits<size_t>::max)(); }
+	static inline size_t _failed_result(void)
+	{
+		return SIZE_MAX;
+	}
 
 private:
 	NetworkThread* m_thread;	// owning network thread
@@ -448,7 +451,7 @@ private:
 	void createNetworkThreads(size_t count);	// create n threads to handle client i/o
 	NetworkThread* selectBestThread(void);		// select the most suitable thread for handling a new client
 	void assignNetworkState(NetState* state);	// assign a state to a thread
-	NetState* findFreeSlot(size_t start = (std::numeric_limits<size_t>::max)());	// find an unused slot for new client
+	NetState* findFreeSlot(size_t start = SIZE_MAX);	// find an unused slot for new client
 		
 	friend class ClientIterator;
 	friend class NetworkThreadStateIterator;
