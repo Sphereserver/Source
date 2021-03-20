@@ -1,11 +1,254 @@
-//
-// CObjBase.h
-//
-
 #ifndef _INC_COBJBASE_H
 #define _INC_COBJBASE_H
 #pragma once
 
+///////////////////////////////////////////////////////////
+// CObjBaseTemplate
+
+class CObjBaseTemplate : public CGObListRec
+{
+	// A dynamic object of some sort
+public:
+	static const char *m_sClassName;
+
+	CObjBaseTemplate() { };
+	virtual ~CObjBaseTemplate() { };
+
+private:
+	CGrayUID m_UID;
+	CGString m_sName;
+	CPointMap m_pt;
+
+protected:
+	void SetUID(DWORD dwVal)
+	{
+		// Don't set container flags through here
+		m_UID.SetObjUID(dwVal);
+	}
+
+	void DupeCopy(const CObjBaseTemplate *pObj)
+	{
+		// NOTE: never copy m_UID
+		ASSERT(pObj);
+		m_sName = pObj->m_sName;
+		m_pt = pObj->m_pt;
+	}
+
+public:
+	// UID
+
+	CGrayUID GetUID() const
+	{
+		return m_UID;
+	}
+
+	bool IsValidUID() const
+	{
+		return m_UID.IsValidUID();
+	}
+	bool IsItem() const
+	{
+		return m_UID.IsItem();
+	}
+	bool IsChar() const
+	{
+		return m_UID.IsChar();
+	}
+	bool IsItemInContainer() const
+	{
+		return m_UID.IsItemInContainer();
+	}
+	bool IsItemEquipped() const
+	{
+		return m_UID.IsItemEquipped();
+	}
+	bool IsDisconnected() const
+	{
+		return m_UID.IsObjDisconnected();
+	}
+	bool IsTopLevel() const
+	{
+		return m_UID.IsObjTopLevel();
+	}
+
+	void SetContainerFlags(DWORD dwFlags = 0)
+	{
+		m_UID.SetObjContainerFlags(dwFlags);
+	}
+
+	bool IsDeleted() const;
+	virtual int IsWeird() const;
+	virtual CObjBaseTemplate *GetTopLevelObj() const = 0;
+
+	// Location
+
+	const CPointMap &GetTopPoint() const
+	{
+		return m_pt;
+	}
+	void SetTopPoint(const CPointMap &pt)
+	{
+		SetContainerFlags(0);
+		ASSERT(pt.IsValidPoint());
+		m_pt = pt;
+	}
+
+	CSector *GetTopSector() const
+	{
+		return GetTopLevelObj()->GetTopPoint().GetSector();
+	}
+
+	const CPointMap &GetContainedPoint() const
+	{
+		return m_pt;
+	}
+	void SetContainedPoint(const CPointMap &pt)
+	{
+		SetContainerFlags(UID_O_CONTAINED);
+		m_pt.m_x = pt.m_x;
+		m_pt.m_y = pt.m_y;
+		m_pt.m_z = LAYER_NONE;
+		m_pt.m_map = 0;
+	}
+
+	BYTE GetContainedLayer() const
+	{
+		// Used for corpse or restock count as well in vendor container
+		return m_pt.m_z;
+	}
+	void SetContainedLayer(BYTE layer)
+	{
+		// Used for corpse or restock count as well in vendor container
+		m_pt.m_z = layer;
+	}
+
+	LAYER_TYPE GetEquipLayer() const
+	{
+		return static_cast<LAYER_TYPE>(m_pt.m_z);
+	}
+	void SetEquipLayer(LAYER_TYPE layer)
+	{
+		SetContainerFlags(UID_O_EQUIPPED);
+		m_pt.m_x = 0;
+		m_pt.m_y = 0;
+		m_pt.m_z = static_cast<signed char>(layer);
+		m_pt.m_map = 0;
+	}
+
+	signed char GetTopZ() const
+	{
+		return m_pt.m_z;
+	}
+	virtual void SetTopZ(signed char z)
+	{
+		m_pt.m_z = z;
+	}
+
+	BYTE GetTopMap() const
+	{
+		return m_pt.m_map;
+	}
+
+	void SetUnkPoint(const CPointMap &pt)
+	{
+		m_pt = pt;
+	}
+
+	// Name
+
+	virtual LPCTSTR GetName() const
+	{
+		return m_sName;
+	}
+	virtual bool SetName(LPCTSTR pszName)
+	{
+		if ( !pszName )
+			return false;
+
+		m_sName = pszName;
+		return true;
+	}
+
+	LPCTSTR GetIndividualName() const
+	{
+		return m_sName;
+	}
+	bool IsIndividualName() const
+	{
+		return !m_sName.IsEmpty();
+	}
+
+	// Distance and direction
+
+	int GetDist(const CObjBaseTemplate *pObj) const
+	{
+		// Logged out chars have infinite distance
+		if ( !pObj )
+			return SHRT_MAX;
+
+		pObj = pObj->GetTopLevelObj();
+		if ( pObj->IsDisconnected() )
+			return SHRT_MAX;
+
+		return GetTopDist(pObj);
+	}
+
+	int GetTopDist(const CPointMap &pt) const
+	{
+		return GetTopPoint().GetDist(pt);
+	}
+	int GetTopDist(const CObjBaseTemplate *pObj) const
+	{
+		// Logged out chars have infinite distance
+		// Assume both already at top level
+		ASSERT(pObj);
+		if ( pObj->IsDisconnected() )
+			return SHRT_MAX;
+
+		return GetTopPoint().GetDist(pObj->GetTopPoint());
+	}
+	int GetTopDist3D(const CObjBaseTemplate *pObj) const
+	{
+		// Logged out chars have infinite distance
+		// Assume both already at top level
+		ASSERT(pObj);
+		if ( pObj->IsDisconnected() )
+			return SHRT_MAX;
+
+		return GetTopPoint().GetDist3D(pObj->GetTopPoint());
+	}
+
+	DIR_TYPE GetDir(const CObjBaseTemplate *pObj, DIR_TYPE dirDefault = DIR_QTY) const
+	{
+		ASSERT(pObj);
+		pObj = pObj->GetTopLevelObj();
+		return GetTopDir(pObj, dirDefault);
+	}
+	DIR_TYPE GetTopDir(const CObjBaseTemplate *pObj, DIR_TYPE dirDefault = DIR_QTY) const
+	{
+		ASSERT(pObj);
+		return GetTopPoint().GetDir(pObj->GetTopPoint(), dirDefault);
+	}
+
+public:
+	CObjBaseTemplate *GetNext() const
+	{
+		return static_cast<CObjBaseTemplate *>(CGObListRec::GetNext());
+	}
+	CObjBaseTemplate *GetPrev() const
+	{
+		return static_cast<CObjBaseTemplate *>(CGObListRec::GetPrev());
+	}
+
+private:
+	CObjBaseTemplate(const CObjBaseTemplate &copy);
+	CObjBaseTemplate &operator=(const CObjBaseTemplate &other);
+};
+
+///////////////////////////////////////////////////////////
+// CObjBase
+
+class PacketSend;
 class PacketPropertyList;
 
 class CObjBase : public CObjBaseTemplate, public CScriptObj

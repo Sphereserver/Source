@@ -2728,7 +2728,7 @@ bool CResource::LoadResourceSection(CScript *pScript)
 			{
 				CStartLoc *pStartLoc = new CStartLoc(pScript->GetKey());
 				if ( pScript->ReadKey() )
-					pStartLoc->m_sName = pScript->GetKey();
+					pStartLoc->m_sLocation = pScript->GetKey();
 				if ( pScript->ReadKey() )
 					pStartLoc->m_pt.Read(pScript->GetKeyBuffer());
 				if ( pScript->ReadKey() )

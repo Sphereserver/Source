@@ -336,15 +336,13 @@ public:
 class CClientTooltip;
 class CDialogResponseArgs;
 class CGMPage;
-class CItemBase;
 class CItemContainer;
 class CItemMap;
 class CItemMultiCustom;
+class CObjBaseTemplate;
 class NetState;
 class Packet;
 class PacketDisplayPopup;
-class PacketSend;
-class PacketServerRelay;
 struct VendorItem;
 
 class CClient : public CGObListRec, public CScriptObj, public CChatMember, public CGlobalChat, public CTextConsole

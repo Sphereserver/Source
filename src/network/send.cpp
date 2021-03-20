@@ -2995,8 +2995,8 @@ PacketCharacterList::PacketCharacterList(CClient* target) : PacketSend(PACKET_Ch
 		{
 			const CStartLoc *start = g_Cfg.m_StartDefs[i];
 			writeByte(static_cast<BYTE>(i));
-			writeStringFixedASCII(static_cast<LPCTSTR>(start->m_sArea), MAX_NAME_SIZE + 2);
-			writeStringFixedASCII(static_cast<LPCTSTR>(start->m_sName), MAX_NAME_SIZE + 2);
+			writeStringFixedASCII(static_cast<LPCTSTR>(start->m_sCity), MAX_NAME_SIZE + 2);
+			writeStringFixedASCII(static_cast<LPCTSTR>(start->m_sLocation), MAX_NAME_SIZE + 2);
 			writeInt32(start->m_pt.m_x);
 			writeInt32(start->m_pt.m_y);
 			writeInt32(start->m_pt.m_z);
@@ -3011,8 +3011,8 @@ PacketCharacterList::PacketCharacterList(CClient* target) : PacketSend(PACKET_Ch
 		{
 			const CStartLoc *start = g_Cfg.m_StartDefs[i];
 			writeByte(static_cast<BYTE>(i));
-			writeStringFixedASCII(static_cast<LPCTSTR>(start->m_sArea), MAX_NAME_SIZE + 1);
-			writeStringFixedASCII(static_cast<LPCTSTR>(start->m_sName), MAX_NAME_SIZE + 1);
+			writeStringFixedASCII(static_cast<LPCTSTR>(start->m_sCity), MAX_NAME_SIZE + 1);
+			writeStringFixedASCII(static_cast<LPCTSTR>(start->m_sLocation), MAX_NAME_SIZE + 1);
 		}
 	}
 
