@@ -95,22 +95,22 @@ private:
 	CGString m_sName;
 	CGString m_sGroup;
 
-	#define REGION_ANTIMAGIC_ALL		0x000001	// Can't cast any magic here
-	#define REGION_ANTIMAGIC_RECALL_IN	0x000002	// Can't recall in or teleport here
-	#define REGION_ANTIMAGIC_RECALL_OUT	0x000004	// Can't recall out of here
-	#define REGION_ANTIMAGIC_GATE		0x000008	// Can't cast gate travel here
-	#define REGION_ANTIMAGIC_TELEPORT	0x000010	// Can't teleport here
-	#define REGION_ANTIMAGIC_DAMAGE		0x000020	// Can't cast damage spells here
-	#define REGION_FLAG_SHIP			0x000040	// Ship region (accept ship commands)
-	#define REGION_FLAG_NOBUILDING		0x000080	// No building allowed here
-	#define REGION_FLAG_ANNOUNCE		0x000200	// Announce to all who enter
-	#define REGION_FLAG_INSTA_LOGOUT	0x000400	// Instant logout
-	#define REGION_FLAG_UNDERGROUND		0x000800	// Dungeon region (no weather)
-	#define REGION_FLAG_NODECAY			0x001000	// Items dropped on ground will not decay
-	#define REGION_FLAG_SAFE			0x002000	// Region is safe from all harm
-	#define REGION_FLAG_GUARDED			0x004000	// Region is protected by guards (guards name = REGION.TAG.GUARDOWNER)
-	#define REGION_FLAG_NO_PVP			0x008000	// No PVP allowed here
-	#define REGION_FLAG_ARENA			0x010000	// Everyone will have neutral notoriety to fight without being flagged as murderer/criminal
+	#define REGION_ANTIMAGIC_ALL		0x00001	// Can't cast any spell here
+	#define REGION_ANTIMAGIC_RECALL_IN	0x00002	// Can't recall in, teleport in, or mark runes here
+	#define REGION_ANTIMAGIC_RECALL_OUT	0x00004	// Can't recall out, use moongates, or mark runes here
+	#define REGION_ANTIMAGIC_GATE		0x00008	// Can't use moongates here
+	#define REGION_ANTIMAGIC_TELEPORT	0x00010	// Can't teleport here
+	#define REGION_ANTIMAGIC_DAMAGE		0x00020	// Can't cast damage spells here
+	#define REGION_FLAG_SHIP			0x00040	// Ship region (accept ship commands)
+	#define REGION_FLAG_NOBUILDING		0x00080	// No building allowed here
+	#define REGION_FLAG_ANNOUNCE		0x00200	// Announce to all who enter
+	#define REGION_FLAG_INSTA_LOGOUT	0x00400	// Instant logout
+	#define REGION_FLAG_UNDERGROUND		0x00800	// Dungeon region (always have clear weather and 'DungeonLight' light level)
+	#define REGION_FLAG_NODECAY			0x01000	// Items dropped on ground will never decay
+	#define REGION_FLAG_SAFE			0x02000	// Region is safe from all harm
+	#define REGION_FLAG_GUARDED			0x04000	// Region is protected by guards (guards name = REGION.TAG.GUARDOWNER)
+	#define REGION_FLAG_NO_PVP			0x08000	// No PVP allowed here
+	#define REGION_FLAG_ARENA			0x10000	// Everyone will have neutral notoriety to fight without being flagged as murderer/criminal
 	DWORD m_dwFlags;
 
 public:

@@ -112,6 +112,9 @@ public:
 	CRegionLinks m_RegionLinks;					// CRegionBase(s) in this CSector
 	CObPointSortArray m_Teleports;				// CTeleport array
 	static int m_iMapBlockCacheTime;
+
+	#define SECTOR_FLAG_NOSLEEP		0x1	// Sector will never sleep (this flag take over SECTOR_FLAG_INSTASLEEP)
+	#define SECTOR_FLAG_INSTASLEEP	0x2	// Sector will sleep as soon as there is no active client inside
 	BYTE m_bFlags;
 
 public:

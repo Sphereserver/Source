@@ -1,110 +1,99 @@
-//
-// Crect.h
-//
-
 #ifndef _INC_CRECT_H
 #define _INC_CRECT_H
 #pragma once
-
-///////////////////////////////////////////////////////////
-// CPointBase
 
 class CSector;
 class CRegionBase;
 class CRegionLinks;
 
-struct CPointBase	// Non initialized 3d point.
+struct CPointBase
 {
+	// Non initialized 3D point
 public:
 	static const LPCTSTR sm_szLoadKeys[];
 	static const LPCTSTR sm_szDirs[DIR_QTY + 1];
-	static const int sm_Moves[DIR_QTY + 1][2];
+	static const int sm_Dirs[DIR_QTY + 1][2];
+
 public:
-	signed short m_x;	// equipped items dont need x,y
+	signed short m_x;
 	signed short m_y;
-	signed char m_z;	// This might be layer if equipped ? or equipped on corpse. Not used if in other container.
-	BYTE m_map;			// another map? (only if top level.)
+	signed char m_z;	// also used as layer on equipped items
+	BYTE m_map;
 
 public:
-	bool operator == ( const CPointBase & pt ) const
-	{
-		return( m_x == pt.m_x && m_y == pt.m_y && m_z == pt.m_z && m_map == pt.m_map );
-	}
-
-	bool operator != ( const CPointBase & pt ) const
-	{
-		return( ! ( *this == pt ));
-	}
-
-	const CPointBase operator += ( const CPointBase & pt )
-	{
-		m_x += pt.m_x;
-		m_y += pt.m_y;
-		m_z += pt.m_z;
-		return( * this );
-	}
-
-	const CPointBase operator -= ( const CPointBase & pt )
-	{
-		m_x -= pt.m_x;
-		m_y -= pt.m_y;
-		m_z -= pt.m_z;
-		return( * this );
-	}
+	void Set(const CPointBase &pt);
+	void Set(signed short x, signed short y, signed char z = 0, BYTE map = 0);
 
 	void InitPoint();
 	void ZeroPoint();
-	int GetDistZ( const CPointBase & pt ) const;
-	int GetDistZAdj( const CPointBase & pt ) const;
-	int GetDistBase( const CPointBase & pt ) const; // Distance between points
-	int GetDist( const CPointBase & pt ) const; // Distance between points
-	int GetDist3D( const CPointBase & pt ) const; // 3D Distance between points
+	void ValidatePoint();
 
+	int GetDistBase(const CPointBase &pt) const;
+	int GetDist(const CPointBase &pt) const;
+	int GetDist3D(const CPointBase &pt) const;
+
+	bool IsSame2D(const CPointBase &pt) const;
 	bool IsValidXY() const;
 	bool IsValidZ() const;
 	bool IsValidPoint() const;
 
-	void ValidatePoint();
+	void Move(DIR_TYPE dir);
+	void MoveN(DIR_TYPE dir, int iSteps);
+	int StepLinePath(const CPointBase &pt, int iSteps);
 
-	bool IsSame2D( const CPointBase & pt ) const;
-
-	void Set( const CPointBase & pt );
-	void Set(signed short x, signed short y, signed char z = 0, BYTE map = 0);
-	size_t Read( TCHAR * pVal );
-
-	TCHAR * WriteUsed( TCHAR * pszBuffer ) const;
-	LPCTSTR WriteUsed() const;
-
-	void Move( DIR_TYPE dir );
-	void MoveN( DIR_TYPE dir, int amount );
-
-	DIR_TYPE GetDir( const CPointBase & pt, DIR_TYPE DirDefault = DIR_QTY ) const; // Direction to point pt
-
-	// Take a step directly toward the target.
-	int StepLinePath( const CPointBase & ptSrc, int iSteps );
-
-	CSector * GetSector() const;
-
-#define REGION_TYPE_AREA  1
-#define REGION_TYPE_ROOM  2
-#define REGION_TYPE_HOUSE 4
-#define REGION_TYPE_SHIP  8
-#define REGION_TYPE_MULTI 12
+	#define REGION_TYPE_AREA		0x1
+	#define REGION_TYPE_ROOM		0x2
+	#define REGION_TYPE_HOUSE		0x4
+	#define REGION_TYPE_SHIP		0x8
+	#define REGION_TYPE_MULTI		REGION_TYPE_HOUSE|REGION_TYPE_SHIP
 	CRegionBase *GetRegion(BYTE bType) const;
 	size_t GetRegions(BYTE bType, CRegionLinks &rlinks) const;
 
+	CSector *GetSector() const;
+	DIR_TYPE GetDir(const CPointBase &pt, DIR_TYPE dirDefault = DIR_QTY) const;
+
 	long GetPointSortIndex() const
 	{
-		return( MAKELONG( m_x, m_y ));
+		return MAKELONG(m_x, m_y);
 	}
 
-	bool r_WriteVal( LPCTSTR pszKey, CGString & sVal ) const;
-	bool r_LoadVal( LPCTSTR pszKey, LPCTSTR pszArgs );
+	size_t Read(TCHAR *pszVal);
+	LPCTSTR WriteUsed() const;
+
+	bool r_WriteVal(LPCTSTR pszKey, CGString &sVal) const;
+	bool r_LoadVal(LPCTSTR pszKey, LPCTSTR pszArgs);
+
+public:
+	bool operator==(const CPointBase &pt) const
+	{
+		return ((m_x == pt.m_x) && (m_y == pt.m_y) && (m_z == pt.m_z) && (m_map == pt.m_map));
+	}
+	bool operator!=(const CPointBase &pt) const
+	{
+		return !(*this == pt);
+	}
+	const CPointBase operator+=(const CPointBase &pt)
+	{
+		m_x += pt.m_x;
+		m_y += pt.m_y;
+		m_z += pt.m_z;
+		return *this;
+	}
+	const CPointBase operator-=(const CPointBase &pt)
+	{
+		m_x -= pt.m_x;
+		m_y -= pt.m_y;
+		m_z -= pt.m_z;
+		return *this;
+	}
 };
+
+///////////////////////////////////////////////////////////
+// CPointMap
 
 struct CPointMap : public CPointBase
 {
-	// A point in the world (or in a container) (initialized)
+	// A point in the world or container (initialized)
 	CPointMap()
 	{
 		InitPoint();
@@ -116,18 +105,19 @@ struct CPointMap : public CPointBase
 		m_z = z;
 		m_map = map;
 	}
-	CPointMap & operator = ( const CPointBase & pt )
+	CPointMap(const CPointBase &pt)
 	{
-		Set( pt );
-		return( * this );
+		Set(pt);
 	}
-	CPointMap( const CPointBase & pt )
+	CPointMap(TCHAR *pszVal)
 	{
-		Set( pt );
+		Read(pszVal);
 	}
-	CPointMap( TCHAR * pVal )
+
+	CPointMap &operator=(const CPointBase &pt)
 	{
-		Read( pVal );
+		Set(pt);
+		return *this;
 	}
 };
 
@@ -147,13 +137,11 @@ struct CPointSort : public CPointMap
 		m_z = z;
 		m_map = map;
 	}
-	CPointSort( const CPointBase & pt )
+	CPointSort(const CPointBase &pt)
 	{
-		Set( pt );
+		Set(pt);
 	}
-	virtual ~CPointSort()	// just to make this dynamic
-	{
-	}
+	virtual ~CPointSort() { };
 };
 
 ///////////////////////////////////////////////////////////
@@ -170,8 +158,8 @@ public:
 	int m_map;
 
 public:
-	CPointBase GetRectCorner(DIR_TYPE dir) const;
 	CSector *GetSector(int i) const;
+	CPointBase GetRectCorner(DIR_TYPE dir) const;
 
 	int GetWidth() const
 	{
@@ -206,11 +194,13 @@ public:
 		m_bottom = 0;
 		m_map = 0;
 	}
+
+
+
 	bool IsRectEmpty() const
 	{
 		return ((m_left >= m_right) || (m_top >= m_bottom));
 	}
-
 	bool IsInsideX(int x) const
 	{
 		return ((x >= m_left) && (x < m_right));
@@ -318,11 +308,6 @@ public:
 
 	size_t Read(LPCTSTR pszVal);
 	LPCTSTR Write() const;
-	TCHAR *Write(TCHAR *pszBuffer) const
-	{
-		snprintf(pszBuffer, 32, "%d,%d,%d,%d,%d", m_left, m_top, m_right, m_bottom, m_map);
-		return pszBuffer;
-	}
 };
 
 ///////////////////////////////////////////////////////////

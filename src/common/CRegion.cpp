@@ -376,11 +376,11 @@ bool CRegionBase::IsGuarded() const
 bool CRegionBase::CheckAntiMagic(SPELL_TYPE spell) const
 {
 	ADDTOCALLSTACK("CRegionBase::CheckAntiMagic");
-	if ( !IsFlag(REGION_ANTIMAGIC_ALL | REGION_ANTIMAGIC_RECALL_IN | REGION_ANTIMAGIC_RECALL_OUT | REGION_ANTIMAGIC_GATE | REGION_ANTIMAGIC_TELEPORT | REGION_ANTIMAGIC_DAMAGE | REGION_FLAG_SHIP) )
+	if ( !IsFlag(REGION_ANTIMAGIC_ALL|REGION_ANTIMAGIC_RECALL_IN|REGION_ANTIMAGIC_RECALL_OUT|REGION_ANTIMAGIC_GATE|REGION_ANTIMAGIC_TELEPORT|REGION_ANTIMAGIC_DAMAGE|REGION_FLAG_SHIP) )
 		return false;
 	if ( IsFlag(REGION_ANTIMAGIC_ALL) )
 		return true;
-	if ( IsFlag(REGION_ANTIMAGIC_RECALL_IN | REGION_FLAG_SHIP) && ((spell == SPELL_Mark) || (spell == SPELL_Gate_Travel)) )
+	if ( IsFlag(REGION_ANTIMAGIC_RECALL_IN|REGION_FLAG_SHIP) && ((spell == SPELL_Mark) || (spell == SPELL_Gate_Travel)) )
 		return true;
 	if ( IsFlag(REGION_ANTIMAGIC_RECALL_OUT) && ((spell == SPELL_Recall) || (spell == SPELL_Gate_Travel) || (spell == SPELL_Mark)) )
 		return true;
