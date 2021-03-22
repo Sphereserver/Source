@@ -795,17 +795,12 @@ bool CClient::Event_Command(LPCTSTR pszCommand, TALKMODE_TYPE mode)
 	ADDTOCALLSTACK("CClient::Event_Command");
 	if ( (mode == TALKMODE_GUILD) || (mode == TALKMODE_ALLIANCE) )
 		return false;
-	if ( (pszCommand[0] == 0) || Str_Check(pszCommand) )
+	if ( (pszCommand[0] == '\0') || Str_Check(pszCommand) )
 		return true;		// should not be said
-
-	if ( ((m_pChar->GetID() == CREID_EQUIP_GM_ROBE) && (pszCommand[0] == '=')) || (pszCommand[0] == g_Cfg.m_cCommandPrefix) )
-	{
-		// Lazy :P
-	}
-	else
+	if ( (pszCommand[0] != g_Cfg.m_cCommandPrefix) && ((m_pChar->GetID() != CREID_EQUIP_GM_ROBE) || (pszCommand[0] != '=')) )
 		return false;
 
-	pszCommand += 1;
+	++pszCommand;
 	GETNONWHITESPACE(pszCommand);
 	bool fAllowCommand = g_Cfg.CanUsePrivVerb(this, pszCommand, this);
 	bool fAllowSay = true;
@@ -1196,14 +1191,14 @@ void CClient::Event_VendorSell(CChar *pVendor, const VendorItem *items, size_t i
 		if ( wAmount >= pItem->GetAmount() )
 		{
 			pItem->RemoveFromView();
-			if ( pVendor->IsStatFlag(STATF_Pet) && pContExtra )
+			if ( pContExtra && pVendor->IsStatFlag(STATF_Pet) )
 				pContExtra->ContentAdd(pItem);
 			else
 				pItem->Delete();
 		}
 		else
 		{
-			if ( pVendor->IsStatFlag(STATF_Pet) && pContExtra )
+			if ( pContExtra && pVendor->IsStatFlag(STATF_Pet) )
 			{
 				CItem *pItemNew = CItem::CreateDupeItem(pItem);
 				pItemNew->SetAmount(wAmount);
@@ -1622,18 +1617,17 @@ void CClient::Event_Talk(LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, boo
 
 	if ( g_Cfg.m_fSuppressCapitals )
 	{
-		int iChars = strlen(z);
-		int iCapitals = 0;
-		int i = 0;
-		for ( i = 0; i < iChars; ++i )
+		size_t iLen = strlen(z);
+		size_t iCapitals = 0;
+		for ( size_t i = 0; i < iLen; ++i )
 		{
 			if ( (z[i] >= 'A') && (z[i] <= 'Z') )
 				++iCapitals;
 		}
 
-		if ( (iChars > 5) && (((iCapitals * 100) / iChars) > 75) )		// 75% of chars are in capital letters. lowercase it
+		if ( (iLen > 5) && (((iCapitals * 100) / iLen) > 75) )		// 75% of chars are in capital letters. lowercase it
 		{
-			for ( i = 1; i < iChars; ++i )		// instead of the 1st char
+			for ( size_t i = 1; i < iLen; ++i )		// skip 1st char
 			{
 				if ( (z[i] >= 'A') && (z[i] <= 'Z') )
 					z[i] += 0x20;
@@ -1695,23 +1689,22 @@ void CClient::Event_TalkUNICODE(NWORD *wszText, int iTextLen, HUE_TYPE wHue, TAL
 
 	if ( g_Cfg.m_fSuppressCapitals )
 	{
-		size_t iChars = strlen(szText);
+		size_t iLen = strlen(szText);
 		size_t iCapitals = 0;
-		size_t i = 0;
-		for ( i = 0; i < iChars; ++i )
+		for ( size_t i = 0; i < iLen; ++i )
 		{
 			if ( (szText[i] >= 'A') && (szText[i] <= 'Z') )
 				++iCapitals;
 		}
 
-		if ( (iChars > 5) && (((iCapitals * 100) / iChars) > 75) )		// 75% of chars are in capital letters. lowercase it
+		if ( (iLen > 5) && (((iCapitals * 100) / iLen) > 75) )		// 75% of chars are in capital letters. lowercase it
 		{
-			for ( i = 1; i < iChars; ++i )		// instead of the 1st char
+			for ( size_t i = 1; i < iLen; ++i )		// skip 1st char
 			{
 				if ( (szText[i] >= 'A') && (szText[i] <= 'Z') )
 					szText[i] += 0x20;
 			}
-			iLen = CvtSystemToNUNICODE(wszText, iTextLen, szText, iChars);
+			iLen = CvtSystemToNUNICODE(wszText, iTextLen, szText, iLen);
 		}
 	}
 
@@ -1730,12 +1723,11 @@ bool CClient::Event_CharRename(CChar *pChar, LPCTSTR pszName)
 		return false;
 	if ( Str_CheckName(pszName) || !strlen(pszName) )
 		return false;
-
 	if ( (m_pChar == pChar) || !pChar->NPC_IsOwnedBy(m_pChar) )
 		return false;
 	if ( FindTableSorted(pszName, sm_szCmd_Redirect, COUNTOF(sm_szCmd_Redirect)) >= 0 )
 		return false;
-	if ( FindTableSorted(pszName, CCharNPC::sm_szVerbKeys, 14) >= 0 )
+	if ( FindTableSorted(pszName, CCharNPC::sm_szVerbKeys, 15) >= 0 )
 		return false;
 	if ( g_Cfg.IsObscene(pszName) )
 		return false;

@@ -488,7 +488,7 @@ void CChar::OnRemoveOb(CGObListRec *pObRec)	// override this = called when remov
 				Stat_SetMax(STAT_INT, Stat_GetMax(STAT_INT) - pItem->m_ManaIncrease);
 
 			if ( pItem->m_SpellChanneling )
-				m_FasterCasting += 1;
+				++m_FasterCasting;
 
 			m_Luck -= pItem->m_Luck;
 			m_DamIncrease -= pItem->m_DamIncrease;
@@ -1770,7 +1770,7 @@ bool CChar::ItemEquip(CItem *pItem, CChar *pCharMsg, bool fFromDClick)
 			Stat_SetMax(STAT_INT, Stat_GetMax(STAT_INT) + pItem->m_ManaIncrease);
 
 		if ( pItem->m_SpellChanneling )
-			m_FasterCasting -= 1;
+			--m_FasterCasting;
 
 		m_Luck += pItem->m_Luck;
 		m_DamIncrease += pItem->m_DamIncrease;

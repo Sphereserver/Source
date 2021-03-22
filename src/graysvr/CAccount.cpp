@@ -974,7 +974,6 @@ bool CAccount::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 	if ( !pSrc )
 		return false;
 
-	bool fZero = false;
 	switch ( static_cast<AC_TYPE>(FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1)) )
 	{
 		case AC_ACCOUNT:
@@ -1032,18 +1031,18 @@ bool CAccount::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case AC_RESDISP:
 			sVal.FormatVal(m_ResDisp);
 			break;
-		case AC_TAG0:
-			fZero = true;
-			++pszKey;
-			// fall through
 		case AC_TAG:
-		{
 			if ( pszKey[3] != '.' )
 				return false;
 			pszKey += 4;
-			sVal = m_TagDefs.GetKeyStr(pszKey, fZero);
+			sVal = m_TagDefs.GetKeyStr(pszKey, false);
 			return true;
-		}
+		case AC_TAG0:
+			if ( pszKey[4] != '.' )
+				return false;
+			pszKey += 5;
+			sVal = m_TagDefs.GetKeyStr(pszKey, true);
+			return true;
 		case AC_TAGCOUNT:
 			sVal.FormatVal(m_TagDefs.GetCount());
 			break;

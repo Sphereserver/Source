@@ -1443,7 +1443,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		else if ( (*pszKey == 'r') || (*pszKey == 'R') )
 		{
 			// <R>, <R15>, <R3,15> are shortcuts to rand(), rand(15) and rand(3,15)
-			pszKey += 1;
+			++pszKey;
 			if ( *pszKey && ((*pszKey < '0') || (*pszKey > '9')) && (*pszKey != '-') )
 				goto badcmd;
 
@@ -1478,7 +1478,6 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 
 	pszKey += strlen(sm_szLoadKeys[index]);
 	SKIP_SEPARATORS(pszKey);
-	bool fZero = false;
 
 	switch ( index )
 	{
@@ -1540,16 +1539,16 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			}
 			return pRef->r_WriteVal(pszKey, sVal, pSrc);
 		}
-		case SSC_VAR0:
-			fZero = true;
-			// fall through
 		case SSC_VAR:
 		{
 			const CVarDefCont *pVar = g_Exp.m_VarGlobals.GetKey(pszKey);
-			if ( pVar )
-				sVal = pVar->GetValStr();
-			else if ( fZero )
-				sVal.FormatVal(0);
+			sVal = pVar ? pVar->GetValStr() : "";
+			return true;
+		}
+		case SSC_VAR0:
+		{
+			const CVarDefCont *pVar = g_Exp.m_VarGlobals.GetKey(pszKey);
+			sVal = pVar ? pVar->GetValStr() : "0";
 			return true;
 		}
 		case SSC_DEFLIST:
@@ -1558,15 +1557,16 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case SSC_LIST:
 			g_Exp.m_ListGlobals.r_Write(pSrc, pszKey, sVal);
 			return true;
-		case SSC_DEF0:
-			fZero = true;
 		case SSC_DEF:
 		{
 			const CVarDefCont *pVar = g_Exp.m_VarDefs.GetKey(pszKey);
-			if ( pVar )
-				sVal = pVar->GetValStr();
-			else if ( fZero )
-				sVal.FormatVal(0);
+			sVal = pVar ? pVar->GetValStr() : "";
+			return true;
+		}
+		case SSC_DEF0:
+		{
+			const CVarDefCont *pVar = g_Exp.m_VarDefs.GetKey(pszKey);
+			sVal = pVar ? pVar->GetValStr() : "0";
 			return true;
 		}
 		case SSC_DEFMSG:

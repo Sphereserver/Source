@@ -138,7 +138,6 @@ bool CBaseBaseDef::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc
 {
 	ADDTOCALLSTACK("CBaseBaseDef::r_WriteVal");
 	EXC_TRY("WriteVal");
-	bool fZero = false;
 
 	switch ( FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1) )
 	{
@@ -338,11 +337,9 @@ bool CBaseBaseDef::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc
 					else if ( !strnicmp(pszKey, "VAL", 3) )
 						fQtyOnly = true;
 
-					TCHAR *pszTmp = Str_GetTemp();
-					m_BaseResources.WriteKeys(pszTmp, index, fQtyOnly, fKeyOnly);
-					if ( fQtyOnly && (pszTmp[0] == '\0') )
-						strcpy(pszTmp, "0");
-					sVal = pszTmp;
+					TCHAR *pszTemp = Str_GetTemp();
+					m_BaseResources.WriteKeys(pszTemp, index, fQtyOnly, fKeyOnly);
+					sVal = (fQtyOnly && (pszTemp[0] == '\0')) ? "0" : pszTemp;
 				}
 			}
 			else
@@ -365,15 +362,17 @@ bool CBaseBaseDef::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc
 		case OBC_RESPOISONMAX:
 			sVal.FormatVal(m_ResPoisonMax);
 			break;
-		case OBC_TAG0:
-			fZero = true;
-			++pszKey;
-			// fall through
 		case OBC_TAG:
 			if ( pszKey[3] != '.' )
 				return false;
 			pszKey += 4;
-			sVal = m_TagDefs.GetKeyStr(pszKey, fZero);
+			sVal = m_TagDefs.GetKeyStr(pszKey, false);
+			break;
+		case OBC_TAG0:
+			if ( pszKey[4] != '.' )
+				return false;
+			pszKey += 5;
+			sVal = m_TagDefs.GetKeyStr(pszKey, true);
 			break;
 		case OBC_TEVENTS:
 			m_TEvents.WriteResourceRefList(sVal);

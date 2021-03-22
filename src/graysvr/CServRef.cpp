@@ -262,7 +262,7 @@ bool CServerDef::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			break;
 		case SC_CLIENTVERSION:
 		{
-			TCHAR szVersion[128];
+			TCHAR szVersion[44];
 			sVal = m_ClientVersion.WriteClientVerString(m_ClientVersion.GetClientVer(), szVersion);
 			break;
 		}

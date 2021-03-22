@@ -697,7 +697,6 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		return CScriptObj::r_WriteVal(pszKey, sVal, pSrc);
 	}
 
-	bool fZero = false;
 	switch ( index )
 	{
 		//return as string or hex number or NULL if not set
@@ -1137,12 +1136,12 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 
 			if ( pClient )
 			{
-				DWORD context = static_cast<DWORD>(g_Cfg.ResourceGetIDType(RES_DIALOG, pszKey));
+				DWORD rid = static_cast<DWORD>(g_Cfg.ResourceGetIDType(RES_DIALOG, pszKey));
 				if ( pClient->m_NetState->isClientKR() )
-					context = g_Cfg.GetKRDialog(context);
-				context &= 0xFFFFFF;
+					rid = g_Cfg.GetKRDialog(rid);
+				rid &= 0xFFFFFF;
 
-				CClient::OpenedGumpsMap_t::iterator itGumpFound = pClient->m_mapOpenedGumps.find(static_cast<int>(context));
+				CClient::OpenedGumpsMap_t::iterator itGumpFound = pClient->m_mapOpenedGumps.find(static_cast<int>(rid));
 				sVal.FormatVal((itGumpFound != pClient->m_mapOpenedGumps.end()) ? (*itGumpFound).second : 0);
 			}
 			else
@@ -1266,20 +1265,22 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case OC_RESPOISONMAX:
 			sVal.FormatVal(m_ResPoisonMax);
 			break;
-		case OC_TAG0:
-			fZero = true;
-			++pszKey;
-			// fall through
 		case OC_TAG:
 		{
 			if ( pszKey[3] != '.' )
 				return false;
 			pszKey += 4;
 			CVarDefCont *pVarKey = m_TagDefs.GetKey(pszKey);
-			if ( !pVarKey )
-				sVal = Base_GetDef()->m_TagDefs.GetKeyStr(pszKey, fZero);
-			else
-				sVal = pVarKey->GetValStr();
+			sVal = pVarKey ? pVarKey->GetValStr() : Base_GetDef()->m_TagDefs.GetKeyStr(pszKey, false);
+			return true;
+		}
+		case OC_TAG0:
+		{
+			if ( pszKey[4] != '.' )
+				return false;
+			pszKey += 5;
+			CVarDefCont *pVarKey = m_TagDefs.GetKey(pszKey);
+			sVal = pVarKey ? pVarKey->GetValStr() : Base_GetDef()->m_TagDefs.GetKeyStr(pszKey, true);
 			return true;
 		}
 		case OC_TIMER:
@@ -2391,19 +2392,19 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 			if ( !pClientSrc )
 				return false;
 
-			TCHAR *ppArgs[3];		// maximum parameters in one line
+			TCHAR *ppArgs[3];
 			size_t iArgQty = Str_ParseCmds(s.GetArgStr(), ppArgs, COUNTOF(ppArgs));
 			if ( iArgQty < 1 )
 				return false;
 
 			if ( index == OV_SDIALOG )
 			{
-				DWORD context = static_cast<DWORD>(g_Cfg.ResourceGetIDType(RES_DIALOG, ppArgs[0]));
+				DWORD rid = static_cast<DWORD>(g_Cfg.ResourceGetIDType(RES_DIALOG, ppArgs[0]));
 				if ( pClientSrc->m_NetState->isClientKR() )
-					context = g_Cfg.GetKRDialog(context);
-				context &= 0xFFFFFF;
+					rid = g_Cfg.GetKRDialog(rid);
+				rid &= 0xFFFFFF;
 
-				CClient::OpenedGumpsMap_t::iterator itGumpFound = pClientSrc->m_mapOpenedGumps.find(static_cast<int>(context));
+				CClient::OpenedGumpsMap_t::iterator itGumpFound = pClientSrc->m_mapOpenedGumps.find(static_cast<int>(rid));
 				if ( pCharSrc && (itGumpFound != pClientSrc->m_mapOpenedGumps.end()) && ((*itGumpFound).second > 0) )
 					break;
 			}
@@ -2416,35 +2417,26 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 			if ( !pClientSrc )
 				return false;
 
-			TCHAR *ppArgs[2];		// maximum parameters in one line
+			TCHAR *ppArgs[2];
 			size_t iArgQty = Str_ParseCmds(s.GetArgStr(), ppArgs, COUNTOF(ppArgs));
 			if ( iArgQty < 1 )
 				return false;
 
-			DWORD context = static_cast<DWORD>(g_Cfg.ResourceGetIDType(RES_DIALOG, ppArgs[0]));
+			DWORD rid = static_cast<DWORD>(g_Cfg.ResourceGetIDType(RES_DIALOG, ppArgs[0]));
 			if ( pClientSrc->m_NetState->isClientKR() )
-				context = g_Cfg.GetKRDialog(context);
+				rid = g_Cfg.GetKRDialog(rid);
 
-			pClientSrc->Dialog_Close(this, context, (iArgQty > 1) ? Exp_GetVal(ppArgs[1]) : 0);
+			pClientSrc->Dialog_Close(this, rid, (iArgQty > 1) ? Exp_GetVal(ppArgs[1]) : 0);
 			break;
 		}
 		case OV_TRYP:
 		{
 			EXC_SET("TRYP");
-			int iMinPriv = s.GetArgVal();
-			if ( iMinPriv >= PLEVEL_QTY )
-			{
-				pSrc->SysMessagef("The %s property can't be changed.", static_cast<LPCTSTR>(s.GetArgStr()));
-				return false;
-			}
-
-			if ( pSrc->GetPrivLevel() < iMinPriv )
+			if ( pSrc->GetPrivLevel() < s.GetArgVal() )
 			{
 				pSrc->SysMessagef("You lack the privilege to change the %s property.", static_cast<LPCTSTR>(s.GetArgStr()));
 				return false;
 			}
-
-			// do this verb only if we can touch it.
 			if ( pSrc->GetPrivLevel() <= PLEVEL_Counsel )
 			{
 				if ( !pCharSrc || !pCharSrc->CanTouch(this) )
@@ -2453,7 +2445,7 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 					return false;
 				}
 			}
-			// no break here, TRYP only does extra checks
+			// fall through
 		}
 		case OV_TRY:
 		{
@@ -2516,7 +2508,7 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 		case OV_UPDATEX:
 			EXC_SET("UPDATEX");
 			RemoveFromView();
-			// no break here, UPDATEX just remove the object from view before update it
+			// fall through
 		case OV_UPDATE:
 		{
 			EXC_SET("UPDATE");
@@ -2715,7 +2707,7 @@ void CObjBase::FreePropertyList()
 	ADDTOCALLSTACK("CObjBase::FreePropertyList");
 	// free m_PropertyList
 
-	if ( m_PropertyList == NULL )
+	if ( !m_PropertyList )
 		return;
 
 	delete m_PropertyList;

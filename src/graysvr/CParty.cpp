@@ -640,7 +640,6 @@ bool CPartyDef::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		return pRef->r_WriteVal(pszKey, sVal, pSrc);
 	}
 
-	bool fZero = false;
 	switch ( FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1) )
 	{
 		case PDC_ISSAMEPARTYOF:
@@ -661,17 +660,20 @@ bool CPartyDef::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal = m_pSpeechFunction.IsEmpty() ? "" : static_cast<LPCTSTR>(m_pSpeechFunction);
 			break;
 		}
-		case PDC_TAG0:
-		{
-			fZero = true;
-			++pszKey;
-		}
 		case PDC_TAG:
 		{
 			if ( pszKey[3] != '.' )
 				return false;
 			pszKey += 4;
-			sVal = m_TagDefs.GetKeyStr(pszKey, fZero);
+			sVal = m_TagDefs.GetKeyStr(pszKey, false);
+			break;
+		}
+		case PDC_TAG0:
+		{
+			if ( pszKey[4] != '.' )
+				return false;
+			pszKey += 5;
+			sVal = m_TagDefs.GetKeyStr(pszKey, true);
 			break;
 		}
 		case PDC_TAGAT:

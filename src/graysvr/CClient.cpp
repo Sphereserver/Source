@@ -661,7 +661,7 @@ bool CClient::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			break;
 		case CC_CLIENTVERSION:
 		{
-			TCHAR szVersion[128];
+			TCHAR szVersion[44];
 			sVal = m_Crypt.WriteClientVerString(m_Crypt.GetClientVer(), szVersion);
 			break;
 		}
@@ -692,7 +692,7 @@ bool CClient::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			if ( pszKey[0] == '\0' )
 			{
 				// Return full version string (eg: 5.0.2d)
-				TCHAR szVersion[128];
+				TCHAR szVersion[44];
 				sVal = CCrypt::WriteClientVerString(dwCliVer, szVersion);
 			}
 			else
@@ -765,7 +765,7 @@ bool CClient::r_LoadVal(CScript &s)
 		bool fZero = s.IsKeyHead("CTAG0.", 6);
 		bool fQuoted = false;
 
-		pszKey = pszKey + (fZero ? 6 : 5);
+		pszKey += fZero ? 6 : 5;
 		m_TagDefs.SetStr(pszKey, fQuoted, s.GetArgStr(&fQuoted), fZero);
 		return true;
 	}

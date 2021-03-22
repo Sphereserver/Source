@@ -8,11 +8,9 @@
 #include <stdarg.h>
 #include <string.h>
 #include <limits.h>
-#include <limits>
 #include <pthread.h>
 #include <unistd.h>
 #include <sys/wait.h>
-#include <errno.h>
 #include <cctype>
 
 // Port some Windows stuff to Linux
@@ -75,13 +73,13 @@ typedef int					BOOL;
 
 inline void _strupr(TCHAR *pszStr)
 {
-	for ( ; pszStr[0] != '\0'; ++pszStr )
+	for ( ; *pszStr != '\0'; ++pszStr )
 		*pszStr = toupper(*pszStr);
 }
 
 inline void _strlwr(TCHAR *pszStr)
 {
-	for ( ; pszStr[0] != '\0'; ++pszStr )
+	for ( ; *pszStr != '\0'; ++pszStr )
 		*pszStr = tolower(*pszStr);
 }
 
