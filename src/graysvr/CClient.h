@@ -537,7 +537,7 @@ private:
 	void OnTarg_Pet_Stable(CChar *pCharPet);
 
 	// Commands from client
-	void Event_Talk_Common(TCHAR *szText);	// PC speech
+	void Event_Talk_Common(TCHAR *pszText);
 	bool Event_Command(LPCTSTR pszCommand, TALKMODE_TYPE mode = TALKMODE_SYSTEM);	// client entered a '/' command like /ADD
 
 public:

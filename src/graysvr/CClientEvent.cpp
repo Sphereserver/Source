@@ -1448,7 +1448,7 @@ void CClient::Event_PromptResp_GMPage(LPCTSTR pszReason)
 	}
 }
 
-void CClient::Event_Talk_Common(TCHAR *szText)
+void CClient::Event_Talk_Common(TCHAR *pszText)
 {
 	ADDTOCALLSTACK("CClient::Event_Talk_Common");
 	if ( !m_pChar || !m_pChar->m_pPlayer || !m_pChar->m_pArea )
@@ -1458,18 +1458,18 @@ void CClient::Event_Talk_Common(TCHAR *szText)
 	LPCTSTR pszMsgGuards = g_Exp.m_VarDefs.GetKeyStr("guardcall");
 	if ( !strnicmp(pszMsgGuards, "", 0) )
 		pszMsgGuards = "GUARD,GUARDS";
-	if ( FindStrWord(szText, pszMsgGuards) > 0 )
+	if ( FindStrWord(pszText, pszMsgGuards) > 0 )
 		m_pChar->CallGuards();
 
 	// Are we in a region that can hear ?
 	CItemMulti *pItemMulti = dynamic_cast<CItemMulti *>(m_pChar->m_pArea->GetResourceID().ItemFind());
 	if ( pItemMulti )
-		pItemMulti->OnHearRegion(szText, m_pChar);
+		pItemMulti->OnHearRegion(pszText, m_pChar);
 
 	// Are there items on the ground that might hear u ?
 	CSector *pSector = m_pChar->GetTopSector();
 	if ( pSector->HasListenItems() )
-		pSector->OnHearItem(m_pChar, szText);
+		pSector->OnHearItem(m_pChar, pszText);
 
 	// Find an NPC that may have heard us.
 	CChar *pChar = NULL;
@@ -1488,7 +1488,7 @@ void CClient::Event_Talk_Common(TCHAR *szText)
 		if ( pChar->IsStatFlag(STATF_COMM_CRYSTAL) )
 		{
 			for ( CItem *pItem = pChar->GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
-				pItem->OnHear(szText, m_pChar);
+				pItem->OnHear(pszText, m_pChar);
 		}
 
 		if ( pChar == m_pChar )
@@ -1497,21 +1497,21 @@ void CClient::Event_Talk_Common(TCHAR *szText)
 			continue;
 
 		bool fNamed = false;
-		if ( !strnicmp(szText, "ALL ", 4) )
+		if ( !strnicmp(pszText, "ALL ", 4) )
 			i = 4;
 		else
 		{
 			// Named the char specifically ?
-			i = pChar->NPC_OnHearName(szText);
+			i = pChar->NPC_OnHearName(pszText);
 			fNamed = true;
 		}
 
 		if ( i > 0 )
 		{
-			while ( ISWHITESPACE(szText[i]) )
+			while ( ISWHITESPACE(pszText[i]) )
 				++i;
 
-			if ( pChar->NPC_OnHearPetCmd(szText + i, m_pChar, !fNamed) )
+			if ( pChar->NPC_OnHearPetCmd(pszText + i, m_pChar, !fNamed) )
 			{
 				if ( fNamed || (GetTargMode() == CLIMODE_TARG_PET_CMD) )
 					return;
@@ -1549,10 +1549,10 @@ void CClient::Event_Talk_Common(TCHAR *szText)
 	}
 
 	// Change to lowercase for ease of search
-	_strlwr(szText);
+	_strlwr(pszText);
 
 	// The char hears you say this.
-	pChar->NPC_OnHear(&szText[i], m_pChar);
+	pChar->NPC_OnHear(&pszText[i], m_pChar);
 }
 
 // Client sent ASCII speech text
@@ -1611,17 +1611,13 @@ void CClient::Event_Talk(LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, boo
 	if ( fCancelSpeech ||(mode == TALKMODE_GUILD) || (mode == TALKMODE_ALLIANCE) )		// guild/alliance mode will not pass this
 		return;
 
-	TCHAR z[MAX_TALK_BUFFER];
-	strncpy(z, pszText, sizeof(z));
-	z[sizeof(z) - 1] = '\0';
-
 	if ( g_Cfg.m_fSuppressCapitals )
 	{
-		size_t iLen = strlen(z);
+		size_t iLen = strlen(szText);
 		size_t iCapitals = 0;
 		for ( size_t i = 0; i < iLen; ++i )
 		{
-			if ( (z[i] >= 'A') && (z[i] <= 'Z') )
+			if ( (szText[i] >= 'A') && (szText[i] <= 'Z') )
 				++iCapitals;
 		}
 
@@ -1629,16 +1625,16 @@ void CClient::Event_Talk(LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, boo
 		{
 			for ( size_t i = 1; i < iLen; ++i )		// skip 1st char
 			{
-				if ( (z[i] >= 'A') && (z[i] <= 'Z') )
-					z[i] += 0x20;
+				if ( (szText[i] >= 'A') && (szText[i] <= 'Z') )
+					szText[i] += 0x20;
 			}
 		}
 	}
 
 	if ( iLen <= MAX_TALK_BUFFER / sizeof(WCHAR) )	// from this point max 128 chars
 	{
-		m_pChar->SpeakUTF8(z, wHue, mode, m_pChar->m_fonttype, m_pAccount->m_lang);
-		Event_Talk_Common(static_cast<TCHAR *>(z));
+		m_pChar->SpeakUTF8(szText, wHue, mode, m_pChar->m_fonttype, m_pAccount->m_lang);
+		Event_Talk_Common(szText);
 	}
 }
 
