@@ -43,10 +43,7 @@ TablePtr CSQLite::QueryPtr(LPCTSTR pszQuery)
 
 	m_resultCode = sqlite3_get_table(m_socket, UTF8MBSTR(pszQuery), &retStrings, &iRows, &iCols, &errmsg);
 	if ( m_resultCode != SQLITE_OK )
-	{
 		g_Log.EventError("SQLite error #%d: %s [Cmd: \"%s\"]\n", m_resultCode, errmsg, pszQuery);
-		sqlite3_free(errmsg);
-	}
 
 	Table *pTable = new Table();
 	pTable->m_iCols = iCols;
@@ -82,6 +79,7 @@ TablePtr CSQLite::QueryPtr(LPCTSTR pszQuery)
 	}
 
 	sqlite3_free_table(retStrings);
+	sqlite3_free(errmsg);
 	return TablePtr(pTable);
 }
 
