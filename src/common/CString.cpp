@@ -510,41 +510,37 @@ bool Str_Parse(TCHAR * pLine, TCHAR ** ppLine2, LPCTSTR pszSep)
 	return true;
 }
 
-size_t Str_ParseCmds(TCHAR * pszCmdLine, TCHAR ** ppCmd, size_t iMax, LPCTSTR pszSep)
+size_t Str_ParseCmds(TCHAR *pszCmdLine, TCHAR **ppCmd, size_t iMax, LPCTSTR pszSep)
 {
 	size_t iQty = 0;
-	if (pszCmdLine != NULL && pszCmdLine[0] != '\0')
+	if ( (pszCmdLine != NULL) && (pszCmdLine[0] != '\0') )
 	{
 		ppCmd[0] = pszCmdLine;
 		++iQty;
-		while (Str_Parse(ppCmd[iQty - 1], &(ppCmd[iQty]), pszSep))
+		while ( Str_Parse(ppCmd[iQty - 1], &ppCmd[iQty], pszSep) )
 		{
-			if (++iQty >= iMax)
+			if ( ++iQty >= iMax )
 				break;
 		}
 	}
-	for (size_t j = iQty; j < iMax; ++j)
-		ppCmd[j] = '\0';
+	for ( size_t i = iQty; i < iMax; ++i )
+		ppCmd[i] = NULL;
 	return iQty;
 }
 
-size_t Str_ParseCmds(TCHAR * pszCmdLine, INT64 * piCmd, size_t iMax, LPCTSTR pszSep)
+size_t Str_ParseCmds(TCHAR *pszCmdLine, INT64 *piCmd, size_t iMax, LPCTSTR pszSep)
 {
-	TCHAR * ppTmp[256];
-	if (iMax > COUNTOF(ppTmp))
-		iMax = COUNTOF(ppTmp);
+	TCHAR *ppCmd[256];
+	if ( iMax > COUNTOF(ppCmd) )
+		iMax = COUNTOF(ppCmd);
 
-	size_t iQty = Str_ParseCmds(pszCmdLine, ppTmp, iMax, pszSep);
-	size_t i;
-	for (i = 0; i < iQty; ++i)
-	{
-		piCmd[i] = Exp_GetVal(ppTmp[i]);
-	}
-	for (; i < iMax; ++i)
-	{
+	size_t i = 0;
+	size_t iQty = Str_ParseCmds(pszCmdLine, ppCmd, iMax, pszSep);
+	for ( ; i < iQty; ++i )
+		piCmd[i] = Exp_GetVal(ppCmd[i]);
+	for ( ; i < iMax; ++i )
 		piCmd[i] = 0;
-	}
-	return(iQty);
+	return iQty;
 }
 
 size_t Str_GetBare(TCHAR * pszOut, LPCTSTR pszInp, size_t iMaxOutSize, LPCTSTR pszStrip)
@@ -876,8 +872,8 @@ MATCH_TYPE Str_Match(LPCTSTR pPattern, LPCTSTR pText)
 					++pPattern;
 				}
 			}
+			break;
 		}
-		break;
 
 		// must match this character (case independant) ?exactly
 		default:

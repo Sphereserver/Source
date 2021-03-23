@@ -504,8 +504,8 @@ bool CSkillClassDef::r_LoadVal( CScript &s )
 				m_StatMax[i] = static_cast<WORD>(s.GetArgVal());
 				break;
 			}
+			return CResourceDef::r_LoadVal(s);
 		}
-		return( CResourceDef::r_LoadVal( s ));
 	}
 	return true;
 	EXC_CATCH;
@@ -649,40 +649,33 @@ bool CSpellDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			sVal	= m_sTargetPrompt;
 			break;
 		case SPC_RESOURCES:
+		{
+			pszKey += 9;
+			if ( *pszKey == '.' )
 			{
-				pszKey	+= 9;
-				// Check for "RESOURCES.*"
-				if ( *pszKey == '.' )
-				{
-					bool fQtyOnly = false;
-					bool fKeyOnly = false;
-					SKIP_SEPARATORS( pszKey );
-					// Determine the index of the resource
-					// we wish to find
-					index = Exp_GetVal( pszKey );
-					SKIP_SEPARATORS( pszKey );
+				bool fKeyOnly = false;
+				bool fQtyOnly = false;
+				SKIP_SEPARATORS(pszKey);
+				index = Exp_GetVal(pszKey);
+				SKIP_SEPARATORS(pszKey);
 
-					// Check for "RESOURCES.x.KEY"
-					if ( !strnicmp( pszKey, "KEY", 3 ))
-						fKeyOnly = true;
-					// Check for "RESORUCES.x.VAL"
-					else if ( !strnicmp( pszKey, "VAL", 3 ))
-						fQtyOnly = true;
+				if ( !strnicmp(pszKey, "KEY", 3) )
+					fKeyOnly = true;
+				else if ( !strnicmp(pszKey, "VAL", 3) )
+					fQtyOnly = true;
 
-					TCHAR *pszTmp = Str_GetTemp();
-					m_Reags.WriteKeys( pszTmp, index, fQtyOnly, fKeyOnly );
-					if ( fQtyOnly && pszTmp[0] == '\0' )
-						strcpy( pszTmp, "0" ); // Return 0 for empty quantity
-					sVal = pszTmp;
-				}
-				else
-				{
-					TCHAR *pszTmp = Str_GetTemp();
-					m_Reags.WriteKeys( pszTmp );
-					sVal = pszTmp;
-				}
-				break;
+				TCHAR *pszTemp = Str_GetTemp();
+				m_Reags.WriteKeys(pszTemp, index, fQtyOnly, fKeyOnly);
+				sVal = (fQtyOnly && pszTemp[0] == '\0') ? "0" : pszTemp;
 			}
+			else
+			{
+				TCHAR *pszTemp = Str_GetTemp();
+				m_Reags.WriteKeys(pszTemp);
+				sVal = pszTemp;
+			}
+			break;
+		}
 		case SPC_RUNE_ITEM:
 			sVal.FormatVal( m_idSpell );
 			break;
@@ -694,12 +687,12 @@ bool CSpellDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			sVal.FormatVal( m_idScroll );
 			break;
 		case SPC_SKILLREQ:
-			{
-				TCHAR *pszTmp = Str_GetTemp();
-				m_SkillReq.WriteKeys( pszTmp );
-				sVal = pszTmp;
-			}
+		{
+			TCHAR *pszTemp = Str_GetTemp();
+			m_SkillReq.WriteKeys(pszTemp);
+			sVal = pszTemp;
 			break;
+		}
 		case SPC_SOUND:
 			sVal.FormatVal(m_sound);
 			break;
@@ -947,71 +940,56 @@ bool CRandGroupDef::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * p
 		case RGC_CALCMEMBERINDEX:
 		{
 			pszKey += 15;
-			GETNONWHITESPACE( pszKey );
+			GETNONWHITESPACE(pszKey);
 
 			if ( pszKey[0] == '\0' )
-			{
-				sVal.FormatVal( GetRandMemberIndex(NULL, false) );
-			}
+				sVal.FormatVal(GetRandMemberIndex(NULL, false));
 			else
 			{
-				CGrayUID uidTofind = static_cast<DWORD>(Exp_GetVal(pszKey));
-				CChar * pSend = uidTofind.CharFind();
-
-				if ( pSend )
-				{
-					sVal.FormatVal( GetRandMemberIndex(pSend, false) );
-				}
-				else
-				{
+				CChar *pChar = static_cast<CGrayUID>(Exp_GetLLVal(pszKey)).CharFind();
+				if ( !pChar )
 					return false;
-				}
+				sVal.FormatVal(GetRandMemberIndex(pChar, false));
 			}
-
-		} break;
-
+			break;
+		}
 		case RGC_DEFNAME: // "DEFNAME"
 			sVal = GetResourceName();
 			break;
 
 		case RGC_RESOURCES:
 		{
-			pszKey	+= 9;
+			pszKey += 9;
 			if ( *pszKey == '.' )
 			{
-				SKIP_SEPARATORS( pszKey );
-
-				if ( !strnicmp( pszKey, "COUNT", 5 ))
-				{
+				SKIP_SEPARATORS(pszKey);
+				if ( !strnicmp(pszKey, "COUNT", 5) )
 					sVal.FormatVal(m_Members.GetCount());
-				}
 				else
 				{
-					bool fQtyOnly = false;
 					bool fKeyOnly = false;
-					int index = Exp_GetVal( pszKey );
-					SKIP_SEPARATORS( pszKey );
+					bool fQtyOnly = false;
+					int index = Exp_GetVal(pszKey);
+					SKIP_SEPARATORS(pszKey);
 
-					if ( !strnicmp( pszKey, "KEY", 3 ))
+					if ( !strnicmp(pszKey, "KEY", 3) )
 						fKeyOnly = true;
-					else if ( !strnicmp( pszKey, "VAL", 3 ))
+					else if ( !strnicmp(pszKey, "VAL", 3) )
 						fQtyOnly = true;
 
-					TCHAR *pszTmp = Str_GetTemp();
-					m_Members.WriteKeys( pszTmp, index, fQtyOnly, fKeyOnly );
-					if ( fQtyOnly && pszTmp[0] == '\0' )
-						strcpy( pszTmp, "0" );
-
-					sVal = pszTmp;
+					TCHAR *pszTemp = Str_GetTemp();
+					m_Members.WriteKeys(pszTemp, index, fQtyOnly, fKeyOnly);
+					sVal = (fQtyOnly && pszTemp[0] == '\0') ? "0" : pszTemp;
 				}
 			}
 			else
 			{
-				TCHAR *pszTmp = Str_GetTemp();
-				m_Members.WriteKeys( pszTmp );
-				sVal = pszTmp;
+				TCHAR *pszTemp = Str_GetTemp();
+				m_Members.WriteKeys(pszTemp);
+				sVal = pszTemp;
 			}
-		} break;
+			break;
+		}
 
 		default:
 			return( CResourceDef::r_WriteVal( pszKey, sVal, pSrc ));
@@ -1184,16 +1162,14 @@ bool CRegionResourceDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConso
 		case RMC_AMOUNT:
 			sVal = m_Amount.Write();
 			break;
-		case RMC_REAP: // "REAP",
-			{
-				CItemBase * pItemDef = CItemBase::FindItemBase(m_ReapItem);
-				if ( !pItemDef )
-				{
-					return false;
-				}
-
-				sVal = pItemDef->GetResourceName();
-			} break;
+		case RMC_REAP:
+		{
+			CItemBase *pItemDef = CItemBase::FindItemBase(m_ReapItem);
+			if ( !pItemDef )
+				return false;
+			sVal = pItemDef->GetResourceName();
+			break;
+		}
 		case RMC_REAPAMOUNT:
 			sVal = m_ReapAmount.Write();
 			break;

@@ -1078,27 +1078,25 @@ bool CItemBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				int index = Exp_GetVal(pszKey);
 				SKIP_SEPARATORS(pszKey);
 
-				bool fQtyOnly = false;
 				bool fKeyOnly = false;
+				bool fQtyOnly = false;
 				if ( !strnicmp(pszKey, "KEY", 3) )
 					fKeyOnly = true;
 				else if ( !strnicmp(pszKey, "VAL", 3) )
 					fQtyOnly = true;
 
-				TCHAR *pszTmp = Str_GetTemp();
+				TCHAR *pszTemp = Str_GetTemp();
 				if ( fKeyOnly || fQtyOnly )
-					m_SkillMake.WriteKeys(pszTmp, index, fQtyOnly, fKeyOnly);
+					m_SkillMake.WriteKeys(pszTemp, index, fQtyOnly, fKeyOnly);
 				else
-					m_SkillMake.WriteNames(pszTmp, index);
-				if ( fQtyOnly && (pszTmp[0] == '\0') )
-					strcpy(pszTmp, "0");
-				sVal = pszTmp;
+					m_SkillMake.WriteNames(pszTemp, index);
+				sVal = (fQtyOnly && (pszTemp[0] == '\0')) ? "0" : pszTemp;
 			}
 			else
 			{
-				TCHAR *pszTmp = Str_GetTemp();
-				m_SkillMake.WriteNames(pszTmp);
-				sVal = pszTmp;
+				TCHAR *pszTemp = Str_GetTemp();
+				m_SkillMake.WriteNames(pszTemp);
+				sVal = pszTemp;
 			}
 			break;
 		}
@@ -1107,9 +1105,9 @@ bool CItemBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			break;
 		case IBC_RESMAKE:
 		{
-			TCHAR *pszTmp = Str_GetTemp();
-			m_BaseResources.WriteNames(pszTmp);
-			sVal = pszTmp;
+			TCHAR *pszTemp = Str_GetTemp();
+			m_BaseResources.WriteNames(pszTemp);
+			sVal = pszTemp;
 			break;
 		}
 		case IBC_SPEED:
@@ -1541,9 +1539,12 @@ bool CItemBase::r_LoadVal(CScript &s)
 			m_ttNormal.m_tData4 = s.GetArgVal();
 			break;
 		case IBC_TWOHANDS:
-			if ( (s.GetArgStr()[0] == '1') || (s.GetArgStr()[0] == 'Y') || (s.GetArgStr()[0] == 'y') )
+		{
+			LPCTSTR pszArgs = s.GetArgStr();
+			if ( (pszArgs[0] == '1') || (pszArgs[0] == 'Y') || (pszArgs[0] == 'y') )
 				m_layer = LAYER_HAND2;
 			break;
+		}
 		case IBC_TYPE:
 			m_type = static_cast<IT_TYPE>(g_Cfg.ResourceGetIndexType(RES_TYPEDEF, s.GetArgStr()));
 			if ( m_type == IT_CONTAINER_LOCKED )	// at this level it just means to add a key for it
@@ -1740,15 +1741,19 @@ int CItemBaseMulti::GetMaxDist() const
 {
 	ADDTOCALLSTACK("CItemBaseMulti::GetMaxDist");
 	int iDist = abs(m_rect.m_left);
-	int iDistTmp = abs(m_rect.m_top);
-	if ( iDistTmp > iDist )
-		iDist = iDistTmp;
-	iDistTmp = abs(m_rect.m_right + 1);
-	if ( iDistTmp > iDist )
-		iDist = iDistTmp;
-	iDistTmp = abs(m_rect.m_bottom + 1);
-	if ( iDistTmp > iDist )
-		iDist = iDistTmp;
+
+	int iDistTemp = abs(m_rect.m_top);
+	if ( iDistTemp > iDist )
+		iDist = iDistTemp;
+
+	iDistTemp = abs(m_rect.m_right + 1);
+	if ( iDistTemp > iDist )
+		iDist = iDistTemp;
+
+	iDistTemp = abs(m_rect.m_bottom + 1);
+	if ( iDistTemp > iDist )
+		iDist = iDistTemp;
+
 	return iDist + 1;
 }
 
