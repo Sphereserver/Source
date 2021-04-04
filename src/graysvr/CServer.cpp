@@ -325,9 +325,9 @@ bool CServer::Load()
 		return false;
 
 #if defined(__GITREVISION__) && defined(__GITHASH__)
-	g_Log.Event(LOGL_EVENT, "%s (%s) by %s\nCompiled at %s (build %d / Git hash %s)\n\n", SPHERE_TITLE_VER, SPHERE_VER_ARCH, SPHERE_WEBSITE, g_szCompiledDate, __GITREVISION__, __GITHASH__);
+	g_Log.Event(LOGL_EVENT, "%s (%s %s) by %s\nCompiled at %s (build %d / Git hash %s)\n\n", SPHERE_TITLE_VER, SPHERE_VER_ARCH, SPHERE_PLATFORM, SPHERE_WEBSITE, g_szCompiledDate, __GITREVISION__, __GITHASH__);
 #else
-	g_Log.Event(LOGL_EVENT, "%s (%s) by %s\nCompiled at %s\n\n", SPHERE_TITLE_VER, SPHERE_VER_ARCH, SPHERE_WEBSITE, g_szCompiledDate);
+	g_Log.Event(LOGL_EVENT, "%s (%s %s) by %s\nCompiled at %s\n\n", SPHERE_TITLE_VER, SPHERE_VER_ARCH, SPHERE_PLATFORM, SPHERE_WEBSITE, g_szCompiledDate);
 #endif
 
 #ifdef _NIGHTLYBUILD

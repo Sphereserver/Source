@@ -38,10 +38,20 @@
 	#define SPHERE_VER_FILEOS		VOS_UNKNOWN
 #endif
 
-#if defined(_WIN64) || defined(x64)
-	#define SPHERE_VER_ARCH			"64bit"
+#if defined(_WIN32)
+	#define SPHERE_PLATFORM			"Windows"
+#elif defined(__linux__)
+	#define SPHERE_PLATFORM			"Linux"
+#elif defined(__FreeBSD__)
+	#define SPHERE_PLATFORM			"FreeBSD"
 #else
-	#define SPHERE_VER_ARCH			"32bit"
+	#define SPHERE_PLATFORM			"Unknown"
+#endif
+
+#if defined(_WIN64) || defined(x64)
+	#define SPHERE_VER_ARCH			"64-bit"
+#else
+	#define SPHERE_VER_ARCH			"32-bit"
 #endif
 
 #endif	// _INC_GRAYVER_H

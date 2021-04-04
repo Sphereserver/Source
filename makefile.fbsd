@@ -20,10 +20,10 @@ ifdef DEBUG
 endif
 BUILD_DEFS		+= -D_THREAD_TRACK_CALLSTACK
 
-#ifneq ($(shell git rev-parse --git-dir),)
-#	GITREVISION	= $(shell expr $(shell git rev-list --count HEAD) - 2406)
-#	GITHASH		= $(shell git rev-parse --short HEAD)
-#endif
+ifneq ($(shell git rev-parse --git-dir),)
+	GITREVISION	= $(shell expr $(shell git rev-list --count HEAD) - 2406)
+	GITHASH		= $(shell git rev-parse --short HEAD)
+endif
 
 O_FLAGS		= $(CODE_GEN_FLAGS) $(GENERAL_FLAGS) $(O_WARNING_FLAGS)
 CO_FLAGS	= $(CODE_GEN_FLAGS) $(GENERAL_FLAGS) $(CO_WARNING_FLAGS)
