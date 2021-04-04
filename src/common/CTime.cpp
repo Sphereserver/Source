@@ -7,7 +7,11 @@
 ULONGLONG GetTickCount64()
 {
 	struct timespec ts;
+#ifdef __FreeBSD__
+	clock_gettime(CLOCK_MONOTONIC_FAST, &ts);
+#else
 	clock_gettime(CLOCK_MONOTONIC, &ts);
+#endif
 	return (static_cast<ULONGLONG>(ts.tv_sec * 10000) + (ts.tv_nsec / 100000)) / 10;
 }
 #endif
