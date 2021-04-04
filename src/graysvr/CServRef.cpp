@@ -19,7 +19,7 @@ CServerDef::CServerDef(LPCTSTR pszName, CSocketAddressIP dwIP) : m_ip(dwIP, SPHE
 	memset(m_dwStat, 0, sizeof(m_dwStat));	// THIS MUST BE FIRST
 	SetName(pszName);
 	m_timeCreate = CServTime::GetCurrentTime();
-	m_TimeZone = static_cast<signed char>(_timezone / (60 * 60));
+	m_TimeZone = static_cast<signed char>((size_t)_timezone / (60 * 60));
 }
 
 DWORD CServerDef::StatGet(SERV_STAT_TYPE i) const

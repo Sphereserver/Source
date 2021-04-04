@@ -1,4 +1,7 @@
 #include "../graysvr/graysvr.h"
+#ifdef __FreeBSD__
+	#include <errno.h>
+#endif
 
 ///////////////////////////////////////////////////////////
 // CSocketAddressIP

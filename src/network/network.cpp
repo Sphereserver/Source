@@ -2,6 +2,10 @@
 #include "send.h"
 #include "receive.h"
 
+#ifdef __FreeBSD__
+	#include <sys/errno.h>
+#endif
+
 #if !defined(_WIN32) || defined(_LIBEV)
 	extern LinuxEv g_NetworkEvent;
 #endif

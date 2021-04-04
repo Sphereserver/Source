@@ -7,7 +7,7 @@
 #include "threads.h"
 #ifndef _WIN32
 	#include <algorithm>
-	#ifndef _BSD
+	#ifdef __linux__
 		#include <sys/prctl.h>
 	#endif
 #endif
@@ -432,7 +432,9 @@ void AbstractThread::onStart()
 	// thread name must be 16 bytes, zero-padded if shorter
 	char name[16] = { '\0' };
 	strcpylen(name, m_name, COUNTOF(name));
+#ifdef __linux__
 	prctl(PR_SET_NAME, name, 0, 0, 0);
+#endif
 #endif
 }
 

@@ -11,6 +11,9 @@
 #ifdef __linux
 	#define STANDARD_CPLUSPLUS_THIS(_x_) this->_x_
 #endif
+#ifdef __FreeBSD__
+	#define STANDARD_CPLUSPLUS_THIS(_x_) this->_x_
+#endif
 
 ///////////////////////////////////////////////////////////
 // CGObListRec

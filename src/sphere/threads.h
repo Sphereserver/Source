@@ -111,7 +111,11 @@ public:
 	virtual ~AbstractThread();
 
 private:
+#ifdef __FreeBSD__
+	pthread_t m_id;
+#else
 	unsigned int m_id;
+#endif
 	const char *m_name;
 	static int m_threadsAvailable;
 	spherethread_t m_handle;
@@ -128,7 +132,11 @@ private:
 	AbstractThread& operator=(const AbstractThread& other);
 
 public:
+#ifdef __FreeBSD__
+	unsigned int getId() const { return (unsigned int)(size_t)m_id; }
+#else
 	unsigned int getId() const { return m_id; }
+#endif
 	const char *getName() const { return m_name; }
 
 	bool isActive() const;
