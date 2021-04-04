@@ -43,7 +43,7 @@ enum ELEM_TYPE	// define types of structure/record elements.
 };
 
 #ifndef OFFSETOF			// stddef.h ?
-	#define OFFSETOF(s,m)   	(uint)( (BYTE *)&(((s *)0)->m) - (BYTE *)0 )
+	#define OFFSETOF(s,m)   	(unsigned int)( (BYTE *)&(((s *)0)->m) - (BYTE *)0 )
 #endif
 
 struct CElementDef
