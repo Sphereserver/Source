@@ -96,7 +96,7 @@ void CNTWindow::CStatusDlg::FillStats()
 		if (profile.IsEnabled() == false)
 			continue;
 
-		capture.SysMessagef("Thread %u - '%s'\n", thrCurrent->getId(), thrCurrent->getName());
+		capture.SysMessagef("Thread %lu - '%s'\n", thrCurrent->getId(), thrCurrent->getName());
 
 		for (int i = 0; i < PROFILE_QTY; i++)
 		{

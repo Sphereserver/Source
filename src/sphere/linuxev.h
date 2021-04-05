@@ -7,7 +7,7 @@
 	#include "threads.h"
 	#include "mutex.h"
 
-	#ifdef _BSD
+	#ifdef __FreeBSD__
 		#define EV_BACKEND_LIST (EVBACKEND_SELECT | EVBACKEND_POLL | EVBACKEND_KQUEUE)
 	#else
 		#define EV_BACKEND_LIST (EVBACKEND_SELECT | EVBACKEND_POLL | EVBACKEND_EPOLL)

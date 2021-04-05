@@ -12,7 +12,11 @@ SimpleMutex::SimpleMutex()
 	static_cast<void>(InitializeCriticalSectionAndSpinCount(&m_criticalSection, 0x80000020));
 #else
 	pthread_mutexattr_init(&m_criticalSectionAttr);
+#ifdef __FreeBSD__
+	pthread_mutexattr_settype(&m_criticalSectionAttr, PTHREAD_MUTEX_RECURSIVE);
+#else
 	pthread_mutexattr_settype(&m_criticalSectionAttr, PTHREAD_MUTEX_RECURSIVE_NP);
+#endif
 	pthread_mutex_init(&m_criticalSection, &m_criticalSectionAttr);
 #endif
 }
@@ -120,7 +124,11 @@ AutoResetEvent::AutoResetEvent()
 	m_handle = CreateEvent(NULL, FALSE, FALSE, NULL);
 #else
 	pthread_mutexattr_init(&m_criticalSectionAttr);
+#ifdef __FreeBSD__
+	pthread_mutexattr_settype(&m_criticalSectionAttr, PTHREAD_MUTEX_RECURSIVE);
+#else
 	pthread_mutexattr_settype(&m_criticalSectionAttr, PTHREAD_MUTEX_RECURSIVE_NP);
+#endif
 	pthread_mutex_init(&m_criticalSection, &m_criticalSectionAttr);
 
 	pthread_condattr_init(&m_conditionAttr);
@@ -203,7 +211,11 @@ ManualResetEvent::ManualResetEvent()
 #else
 	m_value = false;
 	pthread_mutexattr_init(&m_criticalSectionAttr);
+#ifdef __FreeBSD__
+	pthread_mutexattr_settype(&m_criticalSectionAttr, PTHREAD_MUTEX_RECURSIVE);
+#else
 	pthread_mutexattr_settype(&m_criticalSectionAttr, PTHREAD_MUTEX_RECURSIVE_NP);
+#endif
 	pthread_mutex_init(&m_criticalSection, &m_criticalSectionAttr);
 
 	pthread_condattr_init(&m_conditionAttr);

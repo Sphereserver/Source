@@ -17,7 +17,7 @@
 	extern const OSVERSIONINFO *GRAY_GetOSInfo();
 #else
 	#include "os_unix.h"
-	#ifdef _BSD
+	#ifdef __FreeBSD__
 		int getTimezone();
 		#define _timezone		getTimezone()
 	#else

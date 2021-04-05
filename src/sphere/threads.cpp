@@ -7,9 +7,6 @@
 #include "threads.h"
 #ifndef _WIN32
 	#include <algorithm>
-	#ifndef _BSD
-		#include <sys/prctl.h>
-	#endif
 #endif
 
 // number of exceptions after which we restart thread and think that the thread have gone in exceptioning loops
@@ -112,7 +109,7 @@ void ThreadHolder::init()
 */
 int AbstractThread::m_threadsAvailable = 0;
 
-AbstractThread::AbstractThread(const char *name, IThread::Priority priority)
+AbstractThread::AbstractThread(LPCTSTR name, IThread::Priority priority)
 {
 	if( AbstractThread::m_threadsAvailable == 0 )
 	{
@@ -427,12 +424,13 @@ void AbstractThread::onStart()
 	__except(EXCEPTION_EXECUTE_HANDLER)
 	{
 	}
-#elif !defined(_BSD)
-	// Unix uses prctl to set thread name
+#else
+	// Unix uses pthread_setname_np() to set thread name
 	// thread name must be 16 bytes, zero-padded if shorter
-	char name[16] = { '\0' };
-	strcpylen(name, m_name, COUNTOF(name));
-	prctl(PR_SET_NAME, name, 0, 0, 0);
+	char name[16];
+	strncpy(name, m_name, sizeof(name));
+	name[sizeof(name) - 1] = '\0';
+	pthread_setname_np(m_id, name);
 #endif
 }
 
@@ -477,7 +475,7 @@ bool AbstractThread::shouldExit()
 /*
  * AbstractSphereThread
 */
-AbstractSphereThread::AbstractSphereThread(const char *name, Priority priority)
+AbstractSphereThread::AbstractSphereThread(LPCTSTR name, Priority priority)
 	: AbstractThread(name, priority)
 {
 #ifdef _THREAD_TRACK_CALLSTACK
@@ -574,16 +572,16 @@ void AbstractSphereThread::printStackTrace()
 
 	ULONGLONG startTime = m_stackInfo[0].startTime;
 	ULONGLONG timedelta;
-	unsigned int threadId = getId();
+	DWORD threadId = getId();
 
-	g_Log.EventDebug("__ thread (%u) __ |  # | _____________ function _____________ | __ ticks passed from previous function start __\n", threadId);
+	g_Log.EventDebug("__ thread (%" FMTDWORD ") __ |  # | _____________ function _____________ | __ ticks passed from previous function start __\n", threadId);
 	for ( size_t i = 0; i < 0x1000; ++i )
 	{
 		if ( m_stackInfo[i].startTime == 0 )
 			break;
 
 		timedelta = m_stackInfo[i].startTime - startTime;
-		g_Log.EventDebug(">>         %u     | %2" FMTSIZE_T " | %36s | +%llu %s\n", threadId, i, m_stackInfo[i].functionName, timedelta, (i == (m_stackPos - 1)) ? "<-- exception catch point (below is guessed and could be incorrect!)" : "");
+		g_Log.EventDebug(">>         %" FMTDWORD "     | %2" FMTSIZE_T " | %36s | +%llu %s\n", threadId, i, m_stackInfo[i].functionName, timedelta, (i == (m_stackPos - 1)) ? "<-- exception catch point (below is guessed and could be incorrect!)" : "");
 		startTime = m_stackInfo[i].startTime;
 	}
 

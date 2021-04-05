@@ -648,7 +648,7 @@ bool CServer::OnConsoleCmd(CGString &sText, CTextConsole *pSrc)
 			{
 				IThread *pThread = ThreadHolder::getThreadAt(iThread);
 				if ( pThread )
-					pSrc->SysMessagef("Thread %" FMTSIZE_T ": %s (ID=%u, Priority=%d)\n", iThread + 1, pThread->getName(), pThread->getId(), pThread->getPriority());
+					pSrc->SysMessagef("Thread %" FMTSIZE_T ": %s (ID=%lu, Priority=%d)\n", iThread + 1, pThread->getName(), pThread->getId(), pThread->getPriority());
 			}
 			break;
 		}
@@ -1451,9 +1451,9 @@ void CServer::ProfileDump(CTextConsole *pSrc, bool fDump)
 				continue;
 
 			if ( ft )
-				ft->Printf("Thread %u, Name=%s\n", pThread->getId(), pThread->getName());
+				ft->Printf("Thread %lu, Name=%s\n", pThread->getId(), pThread->getName());
 			else
-				pSrc->SysMessagef("Thread %u, Name=%s\n", pThread->getId(), pThread->getName());
+				pSrc->SysMessagef("Thread %lu, Name=%s\n", pThread->getId(), pThread->getName());
 
 			for ( PROFILE_TYPE i = PROFILE_IDLE; i < PROFILE_QTY; i = static_cast<PROFILE_TYPE>(i + 1) )
 			{

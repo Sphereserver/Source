@@ -2,14 +2,10 @@
 #define _INC_CARRAY_H
 #pragma once
 
-#if _MSC_VER
+#if defined(__MINGW32__) || defined(__linux) || defined(__FreeBSD__)
+	#define STANDARD_CPLUSPLUS_THIS(_x_) this->_x_
+#else
 	#define STANDARD_CPLUSPLUS_THIS(_x_) _x_
-#endif
-#ifdef __MINGW32__
-	#define STANDARD_CPLUSPLUS_THIS(_x_) this->_x_
-#endif
-#ifdef __linux
-	#define STANDARD_CPLUSPLUS_THIS(_x_) this->_x_
 #endif
 
 ///////////////////////////////////////////////////////////

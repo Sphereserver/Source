@@ -11,6 +11,9 @@
 #include "../sphere/ProfileData.h"
 #include "../common/graycom.h"
 #include <list>
+#ifndef _WIN32
+	#include <pthread.h>
+#endif
 
 
 /**
@@ -46,7 +49,11 @@ public:
 		Disabled = 0xFF	// tick never
 	};
 
-	virtual unsigned int getId() const = 0;
+#ifdef _WIN32
+	virtual DWORD getId() const = 0;
+#else
+	virtual pthread_t getId() const = 0;
+#endif
 	virtual const char *getName() const = 0;
 
 	virtual bool isActive() const = 0;
@@ -107,12 +114,16 @@ class AbstractThread : public IThread
 public:
 	static const char *m_sClassName;
 
-	AbstractThread(const char *name, Priority priority = IThread::Normal);
+	AbstractThread(LPCTSTR name, Priority priority = IThread::Normal);
 	virtual ~AbstractThread();
 
 private:
-	unsigned int m_id;
-	const char *m_name;
+#ifdef _WIN32
+	DWORD m_id;
+#else
+	pthread_t m_id;
+#endif
+	LPCTSTR m_name;
 	static int m_threadsAvailable;
 	spherethread_t m_handle;
 	unsigned int m_hangCheck;
@@ -128,8 +139,12 @@ private:
 	AbstractThread& operator=(const AbstractThread& other);
 
 public:
-	unsigned int getId() const { return m_id; }
-	const char *getName() const { return m_name; }
+#ifdef _WIN32
+	DWORD getId() const { return m_id; }
+#else
+	pthread_t getId() const { return m_id; }
+#endif
+	LPCTSTR getName() const { return m_name; }
 
 	bool isActive() const;
 	bool isCurrentThread() const;

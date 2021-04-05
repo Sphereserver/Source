@@ -32,8 +32,6 @@
 
 #if defined(_WIN32)
 	#define SPHERE_VER_FILEOS		VOS_NT_WINDOWS32
-#elif defined(_BSD)
-	#define SPHERE_VER_FILEOS		VOS_UNKNOWN
 #else
 	#define SPHERE_VER_FILEOS		VOS_UNKNOWN
 #endif

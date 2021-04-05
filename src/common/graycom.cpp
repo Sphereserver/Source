@@ -18,7 +18,7 @@
 		return &g_osInfo;	// NEVER return null!
 	}
 #else
-	#ifdef _BSD
+	#ifdef __FreeBSD__
 		#include <time.h>
 		#include <sys/types.h>
 
