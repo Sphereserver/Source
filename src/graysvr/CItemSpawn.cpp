@@ -693,7 +693,7 @@ bool CItemMap::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		int i = Exp_GetVal(pszKey) - 1;
 		if ( (i >= 0) && m_Pins.IsValidIndex(i) )
 		{
-			sVal.Format("%i,%i", m_Pins[i].m_x, m_Pins[i].m_y);
+			sVal.Format("%hu,%hu", m_Pins[i].m_x, m_Pins[i].m_y);
 			return true;
 		}
 	}

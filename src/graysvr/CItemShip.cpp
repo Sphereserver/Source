@@ -1167,22 +1167,20 @@ bool CItemShip::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			if (m_itShip.m_Pilot)
 				sVal.FormatHex(m_itShip.m_Pilot);
 			else
-				sVal.FormatVal(0);
+				sVal = "0";
 		} break;
 
 		case IMCS_HATCH:
 		{
-			pszKey += 5;
 			CItem * pItemHold = GetShipHold();
 			if ( pItemHold )
 				sVal.FormatHex( pItemHold->GetUID() );
 			else
-				sVal.FormatVal( 0 );
+				sVal = "0";
 		} break;
 
 		case IMCS_PLANKS:
 		{
-			pszKey += 6;
 			sVal.FormatVal( GetShipPlankCount() );
 		} break;
 
@@ -1224,7 +1222,7 @@ bool CItemShip::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 				return false;
 			}
 
-			sVal.Format("%d,%d", pItemMulti->m_shipSpeed.period, pItemMulti->m_shipSpeed.tiles);
+			sVal.Format("%hhu,%hhu", pItemMulti->m_shipSpeed.period, pItemMulti->m_shipSpeed.tiles);
 		} break;
 
 		case IMCS_SPEEDMODE:
@@ -1235,12 +1233,11 @@ bool CItemShip::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 
 		case IMCS_TILLER:
 		{
-			pszKey += 6;
 			CItem * pTiller = Multi_GetSign();
 			if ( pTiller )
 				sVal.FormatHex( pTiller->GetUID() );
 			else
-				sVal.FormatVal( 0 );
+				sVal = "0";
 		} break;
 
 		default:

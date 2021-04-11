@@ -137,7 +137,7 @@ public:
 	bool SetPassword(LPCTSTR pszPassword, bool fMD5 = false);
 	bool CheckPassword(LPCTSTR pszPassword);
 
-	bool CheckPasswordTries(CSocketAddress SockAddr);
+	bool CheckPasswordTries(CSocketAddressIP SockAddr);
 	void ClearPasswordTries();
 
 	static PLEVEL_TYPE GetPrivLevelText(LPCTSTR pszFlags);

@@ -962,11 +962,11 @@ void CClient::addObjMessage(LPCTSTR pszMsg, const CObjBaseTemplate *pSrc, HUE_TY
 
 	if ( IsSetOF(OF_Flood_Protection) && (GetPrivLevel() == PLEVEL_Player) )
 	{
-		if ( !strcmpi(pszMsg, m_zLastObjMessage) )
+		if ( !strcmpi(pszMsg, m_szLastObjMessage) )
 			return;
 
-		strncpy(m_zLastObjMessage, pszMsg, sizeof(m_zLastObjMessage));
-		m_zLastObjMessage[sizeof(m_zLastObjMessage) - 1] = '\0';
+		strncpy(m_szLastObjMessage, pszMsg, sizeof(m_szLastObjMessage));
+		m_szLastObjMessage[sizeof(m_szLastObjMessage) - 1] = '\0';
 	}
 
 	addBarkParse(pszMsg, pSrc, wHue, mode);
@@ -3408,7 +3408,7 @@ BYTE CClient::LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg)
 	size_t iLenAccount = pszAccount ? strlen(pszAccount) : 0;
 	if ( (iLenAccount == 0) || (iLenAccount >= MAX_ACCOUNT_NAME_ENTRY) || Str_Check(pszAccount) || (Str_GetBare(szAccount, pszAccount, sizeof(szAccount)) != iLenAccount) )
 	{
-		sMsg.Format(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_DENIED), pszAccount);
+		sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_DENIED);
 		return PacketLoginError::InvalidCred;
 	}
 
@@ -3421,7 +3421,7 @@ BYTE CClient::LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg)
 		if ( !pAccount )
 		{
 			g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' doesn't exist\n", GetSocketID(), pszAccount);
-			sMsg.Format(g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_DENIED), pszAccount);
+			sMsg = g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_DENIED);
 			return PacketLoginError::InvalidCred;
 		}
 	}
@@ -3467,7 +3467,7 @@ BYTE CClient::LogIn(LPCTSTR pszAccount, LPCTSTR pszPassword, CGString &sMsg)
 	}
 
 	// Check privileges
-	CSocketAddress SockAddr = GetPeer();
+	CSocketAddressIP SockAddr = GetPeer();
 	if ( g_Cfg.m_iClientsMax <= 0 )
 	{
 		if ( !SockAddr.IsLocalAddr() )

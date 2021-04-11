@@ -1081,7 +1081,6 @@ bool CItemMultiCustom::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *
 	{
 		case IMCC_COMPONENTS:
 		{
-			pszKey += 10;
 			sVal.FormatUVal(m_designMain.m_vectorComponents.size());
 			break;
 		}
@@ -1123,27 +1122,23 @@ bool CItemMultiCustom::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *
 		}
 		case IMCC_DESIGNER:
 		{
-			pszKey += 8;
 			const CChar *pChar = m_pArchitect ? m_pArchitect->GetChar() : NULL;
 			sVal.FormatHex(pChar ? static_cast<DWORD>(pChar->GetUID()) : 0);
 			break;
 		}
 		case IMCC_EDITAREA:
 		{
-			pszKey += 8;
 			const CGRect rect = GetDesignArea();
 			sVal.Format("%d,%d,%d,%d", rect.m_left, rect.m_top, rect.m_right, rect.m_bottom);
 			break;
 		}
 		case IMCC_FIXTURES:
 		{
-			pszKey += 8;
 			sVal.FormatUVal(GetFixtureCount(&m_designMain));
 			break;
 		}
 		case IMCC_REVISION:
 		{
-			pszKey += 8;
 			sVal.FormatUVal(m_designMain.m_dwRevision);
 			break;
 		}

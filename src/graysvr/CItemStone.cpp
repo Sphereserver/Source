@@ -1145,7 +1145,7 @@ bool CItemStone::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		int i = 0;
 		int iNumber = Exp_GetVal(pszCmd);
 		SKIP_SEPARATORS(pszCmd);
-		sVal.FormatVal(0);
+		sVal = "0";
 
 		for ( CStoneMember *pMember = static_cast<CStoneMember *>(GetHead()); pMember != NULL; pMember = pMember->GetNext() )
 		{
@@ -1171,7 +1171,7 @@ bool CItemStone::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		if ( pMember )
 			return pMember->r_WriteVal(pszCmd, sVal, pSrc);
 
-		sVal.FormatVal(0);
+		sVal = "0";
 		return true;
 	}
 	else if ( !strnicmp("GUILD.", pszKey, 6) )
@@ -1214,7 +1214,7 @@ bool CItemStone::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		int i = 0;
 		int iNumber = Exp_GetVal(pszCmd);
 		SKIP_SEPARATORS(pszCmd);
-		sVal.FormatVal(0);
+		sVal = "0";
 
 		for ( CStoneMember *pMember = static_cast<CStoneMember *>(GetHead()); pMember != NULL; pMember = pMember->GetNext() )
 		{
@@ -1240,7 +1240,7 @@ bool CItemStone::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		if ( pMember )
 			return pMember->r_WriteVal(pszCmd, sVal, pSrc);
 
-		sVal.FormatVal(0);
+		sVal = "0";
 		return true;
 	}
 	else if ( !strnicmp("CHARTER", pszKey, 7) )

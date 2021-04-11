@@ -572,16 +572,21 @@ void AbstractSphereThread::printStackTrace()
 
 	ULONGLONG startTime = m_stackInfo[0].startTime;
 	ULONGLONG timedelta;
-	DWORD threadId = getId();
 
-	g_Log.EventDebug("__ thread (%" FMTDWORD ") __ |  # | _____________ function _____________ | __ ticks passed from previous function start __\n", threadId);
+#ifdef _WIN32
+	DWORD threadId = getId();
+#else
+	pthread_t threadId = getId();
+#endif
+
+	g_Log.EventDebug("__ thread (%lu) __ |  # | _____________ function _____________ | __ ticks passed from previous function start __\n", threadId);
 	for ( size_t i = 0; i < 0x1000; ++i )
 	{
 		if ( m_stackInfo[i].startTime == 0 )
 			break;
 
 		timedelta = m_stackInfo[i].startTime - startTime;
-		g_Log.EventDebug(">>         %" FMTDWORD "     | %2" FMTSIZE_T " | %36s | +%llu %s\n", threadId, i, m_stackInfo[i].functionName, timedelta, (i == (m_stackPos - 1)) ? "<-- exception catch point (below is guessed and could be incorrect!)" : "");
+		g_Log.EventDebug(">>         %lu     | %2" FMTSIZE_T " | %36s | +%llu %s\n", threadId, i, m_stackInfo[i].functionName, timedelta, (i == (m_stackPos - 1)) ? "<-- exception catch point (below is guessed and could be incorrect!)" : "");
 		startTime = m_stackInfo[i].startTime;
 	}
 

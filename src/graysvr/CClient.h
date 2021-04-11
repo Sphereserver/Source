@@ -609,7 +609,7 @@ public:
 
 public:
 	long GetSocketID() const;			// get socket id
-	CSocketAddress &GetPeer() const;	// get peer address
+	CSocketAddressIP &GetPeer() const;	// get peer address
 	LPCTSTR GetPeerStr() const;			// get string representation of the peer address
 
 public:
@@ -925,9 +925,9 @@ private:
 	CGString m_BarkBuffer;
 
 public:
-	char m_zLastMessage[SCRIPT_MAX_LINE_LEN];
-	char m_zLastObjMessage[SCRIPT_MAX_LINE_LEN];
-	char m_zLogin[64];
+	char m_szLastMessage[SCRIPT_MAX_LINE_LEN];
+	char m_szLastObjMessage[SCRIPT_MAX_LINE_LEN];
+	char m_szRemoteLogin[MAX_ACCOUNT_NAME_SIZE];
 	CVarDefMap m_TagDefs;
 	CVarDefMap m_BaseDefs;		// new variable storage system
 

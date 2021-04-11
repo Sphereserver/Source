@@ -57,8 +57,8 @@ CClient::CClient(NetState *state)
 
 	m_pPopupPacket = NULL;
 
-	m_zLastMessage[0] = '\0';
-	m_zLastObjMessage[0] = '\0';
+	m_szLastMessage[0] = '\0';
+	m_szLastObjMessage[0] = '\0';
 
 	m_pHouseDesign = NULL;
 
@@ -1589,7 +1589,7 @@ long CClient::GetSocketID() const
 	return m_NetState->id();
 }
 
-CSocketAddress &CClient::GetPeer() const
+CSocketAddressIP &CClient::GetPeer() const
 {
 	return m_NetState->m_peerAddress;
 }

@@ -82,11 +82,11 @@ void CClient::addSysMessage(LPCTSTR pszMsg)
 
 	if ( IsSetOF(OF_Flood_Protection) && (GetPrivLevel() == PLEVEL_Player) )
 	{
-		if ( !strcmpi(pszMsg, m_zLastMessage) )
+		if ( !strcmpi(pszMsg, m_szLastMessage) )
 			return;
 
-		strncpy(m_zLastMessage, pszMsg, sizeof(m_zLastMessage));
-		m_zLastMessage[sizeof(m_zLastMessage) - 1] = '\0';
+		strncpy(m_szLastMessage, pszMsg, sizeof(m_szLastMessage));
+		m_szLastMessage[sizeof(m_szLastMessage) - 1] = '\0';
 	}
 
 	addBarkParse(pszMsg, NULL, HUE_TEXT_DEF, TALKMODE_SYSTEM);
@@ -114,7 +114,7 @@ void CClient::addRelay(const CServerDef *pServ)
 		return;
 
 	EXC_TRY("addRelay");
-	CSocketAddressIP ipAddr = pServ->m_ip;
+	CSocketAddress ipAddr = pServ->m_ip;
 	if ( ipAddr.IsLocalAddr() )		// local server address not yet filled in
 	{
 		ipAddr = m_NetState->m_socket.GetSockName();
@@ -225,31 +225,31 @@ bool CClient::OnRxConsole(const BYTE *pData, size_t iLen)
 		{
 			if ( !m_pAccount )
 			{
-				if ( !m_zLogin[0] )
+				if ( !m_szRemoteLogin[0] )
 				{
-					if ( m_Targ_Text.GetLength() > sizeof(m_zLogin) - 1 )
+					if ( m_Targ_Text.GetLength() >= sizeof(m_szRemoteLogin) )
 						SysMessage("\nLogin: ");
 					else
 					{
-						strncpy(m_zLogin, m_Targ_Text, sizeof(m_zLogin));
-						m_zLogin[sizeof(m_zLogin) - 1] = '\0';
+						strncpy(m_szRemoteLogin, m_Targ_Text, sizeof(m_szRemoteLogin));
+						m_szRemoteLogin[sizeof(m_szRemoteLogin) - 1] = '\0';
 						SysMessage("\nPassword: ");
 					}
 					m_Targ_Text.Empty();
 				}
 				else
 				{
-					CAccount *pAccount = g_Accounts.Account_Find(m_zLogin);
+					CAccount *pAccount = g_Accounts.Account_Find(m_szRemoteLogin);
 					if ( !pAccount || (pAccount->GetPrivLevel() < PLEVEL_Admin) )
 					{
-						SysMessagef("\n%s", g_Cfg.GetDefaultMsg(DEFMSG_CONSOLE_NOT_PRIV));
+						SysMessagef("\n%s", g_Cfg.GetDefaultMsg(DEFMSG_MSG_ACC_DENIED));
 						m_Targ_Text.Empty();
 						return false;
 					}
 					SysMessage("\n");
 
 					CGString sMsg;
-					if ( LogIn(m_zLogin, m_Targ_Text, sMsg) == PacketLoginError::Success )
+					if ( LogIn(m_szRemoteLogin, m_Targ_Text, sMsg) == PacketLoginError::Success )
 					{
 						g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Account '%s' connected on remote admin console\n", GetSocketID(), GetName());
 						m_Targ_Text.Empty();
@@ -291,24 +291,24 @@ bool CClient::OnRxAxis(const BYTE *pData, size_t iLen)
 		{
 			if ( !m_pAccount )
 			{
-				if ( !m_zLogin[0] )
+				if ( !m_szRemoteLogin[0] )
 				{
-					strncpy(m_zLogin, m_Targ_Text, sizeof(m_zLogin));
-					m_zLogin[sizeof(m_zLogin) - 1] = '\0';
+					strncpy(m_szRemoteLogin, m_Targ_Text, sizeof(m_szRemoteLogin));
+					m_szRemoteLogin[sizeof(m_szRemoteLogin) - 1] = '\0';
 					m_Targ_Text.Empty();
 				}
 				else
 				{
-					CAccount *pAccount = g_Accounts.Account_Find(m_zLogin);
+					CAccount *pAccount = g_Accounts.Account_Find(m_szRemoteLogin);
 					if ( !pAccount || (pAccount->GetPrivLevel() < PLEVEL_Counsel) )
 					{
-						SysMessagef("\"MSG:%s\"", g_Cfg.GetDefaultMsg(DEFMSG_AXIS_NOT_PRIV));
+						SysMessagef("\"MSG:%s\"", g_Cfg.GetDefaultMsg(DEFMSG_AXIS_DENIED));
 						m_Targ_Text.Empty();
 						return false;
 					}
 
 					CGString sMsg;
-					if ( LogIn(m_zLogin, m_Targ_Text, sMsg) == PacketLoginError::Success )
+					if ( LogIn(m_szRemoteLogin, m_Targ_Text, sMsg) == PacketLoginError::Success )
 					{
 						m_Targ_Text.Empty();
 
@@ -391,7 +391,7 @@ bool CClient::OnRxPing(const BYTE *pData, size_t iLen)
 				break;
 
 			SetConnectType(CONNECT_TELNET);
-			m_zLogin[0] = '\0';
+			m_szRemoteLogin[0] = '\0';
 			SysMessagef("\n%s", g_Cfg.GetDefaultMsg(DEFMSG_CONSOLE_WELCOME_2));
 			SysMessage("\nLogin: ");
 			return true;
@@ -404,7 +404,7 @@ bool CClient::OnRxPing(const BYTE *pData, size_t iLen)
 				break;
 
 			SetConnectType(CONNECT_AXIS);
-			m_zLogin[0] = '\0';
+			m_szRemoteLogin[0] = '\0';
 
 			time_t dateChange;
 			DWORD dwSize;
@@ -624,7 +624,7 @@ void CClient::xProcessClientSetup(CEvent *pEvent, size_t iLen)
 	SetConnectType(m_Crypt.GetConnectType());
 
 	if ( !xCanEncLogin() )
-		return addLoginErr((m_Crypt.GetEncryptionType() == ENC_NONE) ? static_cast<BYTE>(PacketLoginError::BlockNoCrypt) : static_cast<BYTE>(PacketLoginError::BlockCrypt));
+		return addLoginErr((m_Crypt.GetEncryptionType() == ENC_NONE) ? PacketLoginError::BlockNoCrypt : PacketLoginError::BlockCrypt);
 	else if ( (m_Crypt.GetConnectType() == CONNECT_LOGIN) && !xCanEncLogin(true) )
 		return addLoginErr(PacketLoginError::BadClientVer);
 
@@ -641,7 +641,7 @@ void CClient::xProcessClientSetup(CEvent *pEvent, size_t iLen)
 			bErr = Login_ServerList(pEvent->ServersReq.m_acctname, pEvent->ServersReq.m_acctpass);
 			if ( bErr == PacketLoginError::Success )
 			{
-				TCHAR szAccount[MAX_ACCOUNT_NAME_SIZE + 3];
+				TCHAR szAccount[MAX_ACCOUNT_NAME_SIZE];
 				Str_GetBare(szAccount, pEvent->ServersReq.m_acctname, sizeof(szAccount) - 1);
 				CAccount *pAccount = g_Accounts.Account_Find(szAccount);
 
@@ -669,7 +669,7 @@ void CClient::xProcessClientSetup(CEvent *pEvent, size_t iLen)
 			if ( iLen < sizeof(pEvent->CharListReq) )
 				return;
 
-			TCHAR szAccount[MAX_ACCOUNT_NAME_SIZE + 3];
+			TCHAR szAccount[MAX_ACCOUNT_NAME_SIZE];
 			Str_GetBare(szAccount, pEvent->CharListReq.m_acctname, sizeof(szAccount) - 1);
 			CAccount *pAccount = g_Accounts.Account_Find(szAccount);
 

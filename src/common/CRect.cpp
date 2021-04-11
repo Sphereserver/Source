@@ -370,7 +370,7 @@ bool CPointBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal) const
 			const CItemBase *pItemDef = CItemBase::FindItemBase(static_cast<ITEMID_TYPE>(RES_GET_INDEX(iStatic)));
 			if ( !pItemDef )
 			{
-				sVal.FormatVal(0);
+				sVal = "0";
 				return false;
 			}
 
@@ -403,7 +403,7 @@ bool CPointBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal) const
 
 		if ( !pStatic )
 		{
-			sVal.FormatHex(0);
+			sVal = "0";
 			return true;
 		}
 
@@ -510,7 +510,7 @@ bool CPointBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal) const
 			const CItemBase *pItemDef = CItemBase::FindItemBase(static_cast<ITEMID_TYPE>(RES_GET_INDEX(iComponent)));
 			if ( !pItemDef )
 			{
-				sVal.FormatVal(0);
+				sVal = "0";
 				return false;
 			}
 
@@ -594,7 +594,7 @@ bool CPointBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal) const
 
 		if ( !pMultiItem )
 		{
-			sVal.FormatHex(0);
+			sVal = "0";
 			return true;
 		}
 

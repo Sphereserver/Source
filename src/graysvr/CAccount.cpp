@@ -522,7 +522,7 @@ bool CAccount::CheckPassword(LPCTSTR pszPassword)
 		return !strcmpi(pszPassword, m_sPassword);
 }
 
-bool CAccount::CheckPasswordTries(CSocketAddress SockAddr)
+bool CAccount::CheckPasswordTries(CSocketAddressIP SockAddr)
 {
 	ADDTOCALLSTACK("CAccount::CheckPasswordTries");
 	bool fReturn = true;

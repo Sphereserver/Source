@@ -217,7 +217,7 @@ bool CCharPlayer::r_WriteVal(CChar *pChar, LPCTSTR pszKey, CGString &sVal)
 			if ( pStone )
 				sVal.FormatHex(static_cast<DWORD>(pStone->GetUID()));
 			else
-				sVal.FormatVal(0);
+				sVal = "0";
 			return true;
 		}
 		else if ( *pszKey == '.' )
@@ -713,12 +713,7 @@ bool CCharNPC::r_WriteVal(CChar *pChar, LPCTSTR pszKey, CGString &sVal)
 			return true;
 		}
 		default:
-			if ( FindTableHeadSorted(pszKey, CCharPlayer::sm_szLoadKeys, COUNTOF(CCharPlayer::sm_szLoadKeys) - 1) >= 0 )
-			{
-				sVal = "0";
-				return true;
-			}
-			if ( FindTableSorted(pszKey, CClient::sm_szLoadKeys, CC_QTY) >= 0 )
+			if ( (FindTableHeadSorted(pszKey, CCharPlayer::sm_szLoadKeys, COUNTOF(CCharPlayer::sm_szLoadKeys) - 1) >= 0) || (FindTableSorted(pszKey, CClient::sm_szLoadKeys, CC_QTY) >= 0) )
 			{
 				sVal = "0";
 				return true;

@@ -587,7 +587,7 @@ bool CPartyDef::r_LoadVal(CScript &s)
 				if ( !m_pTestEvent )
 					return false;
 
-				m_pSpeechFunction.Format("%s", pszArg);
+				m_pSpeechFunction = pszArg;
 			}
 			else
 				m_pSpeechFunction.Empty();
@@ -634,7 +634,7 @@ bool CPartyDef::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			if ( pObj )
 				sVal.FormatHex(static_cast<DWORD>(pObj->GetUID()));
 			else
-				sVal.FormatVal(1);
+				sVal = "1";
 			return true;
 		}
 		return pRef->r_WriteVal(pszKey, sVal, pSrc);

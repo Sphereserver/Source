@@ -743,12 +743,12 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			{
 				SKIP_SEPARATORS(pszKey);
 				if ( !strnicmp(pszKey, "LO", 2) )
-					sVal.Format("%d", m_defenseBase);
+					sVal.Format("%hu", m_defenseBase);
 				else if ( !strnicmp(pszKey, "HI", 2) )
-					sVal.Format("%d", m_defenseBase + m_defenseRange);
+					sVal.Format("%hu", m_defenseBase + m_defenseRange);
 			}
 			else
-				sVal.Format("%d,%d", m_defenseBase, m_defenseBase + m_defenseRange);
+				sVal.Format("%hu,%hu", m_defenseBase, m_defenseBase + m_defenseRange);
 			break;
 		}
 		case OC_DAM:
@@ -758,12 +758,12 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			{
 				SKIP_SEPARATORS(pszKey);
 				if ( !strnicmp(pszKey, "LO", 2) )
-					sVal.Format("%d", m_attackBase);
+					sVal.Format("%hu", m_attackBase);
 				else if ( !strnicmp(pszKey, "HI", 2) )
-					sVal.Format("%d", m_attackBase + m_attackRange);
+					sVal.Format("%hu", m_attackBase + m_attackRange);
 			}
 			else
-				sVal.Format("%d,%d", m_attackBase, m_attackBase + m_attackRange);
+				sVal.Format("%hu,%hu", m_attackBase, m_attackBase + m_attackRange);
 			break;
 		}
 		case OC_DAMCOLD:
@@ -835,9 +835,9 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case OC_RANGE:
 		{
 			if ( RangeH() == 0 )
-				sVal.Format("%d", RangeL());
+				sVal.Format("%hhu", RangeL());
 			else
-				sVal.Format("%d,%d", RangeH(), RangeL());
+				sVal.Format("%hhu,%hhu", RangeH(), RangeL());
 			break;
 		}
 		case OC_RANGEL:
@@ -891,14 +891,14 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				if ( pChar )
 					sVal.FormatVal(fCanSee ? pChar->CanSee(pObj) : pChar->CanSeeLOS(pt, NULL, pChar->GetSight(), wFlags));
 				else
-					sVal.FormatVal(0);
+					sVal = "0";
 			}
 			else
 			{
 				if ( pChar )	// standard way src TO current object
 					sVal.FormatVal(fCanSee ? pChar->CanSee(this) : pChar->CanSeeLOS(this, wFlags));
 				else
-					sVal.FormatVal(0);
+					sVal = "0";
 			}
 			break;
 		}
@@ -960,7 +960,7 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				GETNONWHITESPACE(pszKey);
 
 				CClient *pClient = (pSrc->GetChar() && pSrc->GetChar()->m_pClient) ? pSrc->GetChar()->m_pClient : NULL;
-				sVal.FormatVal(0);
+				sVal = "0";
 
 				if ( pClient )
 				{
@@ -979,7 +979,7 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 								++itDialogFound;
 
 							if ( !strnicmp(pszKey, "ID", 2) )
-								sVal.Format("%s", g_Cfg.ResourceGetName(RESOURCE_ID(RES_DIALOG, (*itDialogFound).first)));
+								sVal = g_Cfg.ResourceGetName(RESOURCE_ID(RES_DIALOG, (*itDialogFound).first));
 							else if ( !strnicmp(pszKey, "COUNT", 5) )
 								sVal.FormatVal((*itDialogFound).second);
 						}
@@ -1111,13 +1111,13 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 					if ( pt.IsValidPoint() )
 						sVal = pt.WriteUsed();
 					else
-						sVal.FormatVal(0);
+						sVal = "0";
 				}
 				else
 					sVal.FormatVal((index == OC_ISNEARTYPETOP) ? g_World.IsTypeNear_Top(GetTopPoint(), iType, iDistance) : g_World.IsItemTypeNear(GetTopPoint(), iType, iDistance, fCheckMulti, fLimitZ));
 			}
 			else
-				sVal.FormatVal(0);
+				sVal = "0";
 			return true;
 		}
 		case OC_ISPLAYER:
@@ -1145,7 +1145,7 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				sVal.FormatVal((itGumpFound != pClient->m_mapOpenedGumps.end()) ? (*itGumpFound).second : 0);
 			}
 			else
-				sVal.FormatVal(0);
+				sVal = "0";
 			return true;
 		}
 		case OC_ISARMOR:

@@ -1758,11 +1758,10 @@ bool CDialogResponseArgs::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsol
 		}
 		else if ( !strnicmp(pszKey, "ID", 2) )
 		{
-			pszKey += 2;
 			if ( (iQty > 0) && m_CheckArray[0] )
 				sVal.FormatVal(m_CheckArray[0]);
 			else
-				sVal.FormatVal(-1);
+				sVal = "-1";
 			return true;
 		}
 

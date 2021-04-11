@@ -1240,7 +1240,7 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			pszKey = pszArgsNext;
 			SKIP_SEPARATORS(pszKey);
 
-			sVal.FormatVal(0);
+			sVal = "0";
 			return pt.r_WriteVal(pszKey, sVal);
 		}
 		else if ( !strnicmp(pszKey, "MAPLIST.", 8) )
@@ -1255,7 +1255,7 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				return true;
 			}
 
-			sVal.FormatVal(0);
+			sVal = "0";
 			if ( !g_MapList.IsMapSupported(iMap) )
 			{
 				g_Log.EventError("Unsupported map %d\n", iMap);
@@ -1285,7 +1285,7 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			int iMap = Exp_GetVal(pszKey);
 			SKIP_SEPARATORS(pszKey);
 
-			sVal.FormatVal(0);
+			sVal = "0";
 			if ( !g_MapList.IsMapSupported(iMap) )
 			{
 				g_Log.EventError("Unsupported map %d\n", iMap);
@@ -1322,7 +1322,7 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			size_t iNumber = Exp_GetVal(pszCmd);
 			SKIP_SEPARATORS(pszCmd);
 
-			sVal.FormatVal(0);
+			sVal = "0";
 			if ( iNumber >= m_Functions.GetCount() )
 			{
 				g_Log.EventError("Invalid command index %" FMTSIZE_T "\n", iNumber);
@@ -1366,7 +1366,7 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			size_t iNumber = static_cast<size_t>(Exp_GetLLVal(pszCmd));
 			SKIP_SEPARATORS(pszCmd);
 
-			sVal.FormatVal(0);
+			sVal = "0";
 			if ( iNumber >= g_World.m_Stones.GetCount() )
 				return true;
 
@@ -1387,7 +1387,7 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			size_t iNumber = static_cast<size_t>(Exp_GetLLVal(pszKey));
 			SKIP_SEPARATORS(pszKey);
 
-			sVal.FormatVal(0);
+			sVal = "0";
 			if ( iNumber >= g_Serv.StatGet(SERV_STAT_CLIENTS) )
 				return true;
 

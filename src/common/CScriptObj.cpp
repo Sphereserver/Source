@@ -25,34 +25,24 @@ int CTextConsole::OnConsoleKey(CGString &sText, TCHAR szChar, bool fEcho)
 
 	if ( sText.GetLength() >= SCRIPT_MAX_LINE_LEN )
 	{
-		SysMessage("Command too long\n");
+		SysMessage("\nCommand is too long");
 		sText.Empty();
 		return 0;
 	}
 
-	if ( (szChar == '\r') || (szChar == '\n') )
+	if ( szChar == '\b' )		// backspace key
 	{
-		// Ignore the character if we have no text stored
+		if ( sText.GetLength() )
+			sText.SetLength(sText.GetLength() - 1);
+		return 1;
+	}
+	else if ( (szChar == '\r') || (szChar == '\n') )		// enter key
+	{
 		if ( !sText.GetLength() )
 			return 1;
 		if ( fEcho )
 			SysMessage("\n");
 		return 2;
-	}
-
-	if ( fEcho )
-	{
-		TCHAR szTmp[2];
-		szTmp[0] = szChar;
-		szTmp[1] = '\0';
-		SysMessage(szTmp);
-	}
-
-	if ( szChar == 0x8 )	// back key
-	{
-		if ( sText.GetLength() )
-			sText.SetLength(sText.GetLength() - 1);
-		return 1;
 	}
 
 	sText += szChar;
@@ -1414,7 +1404,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 	{
 		if ( !pRef )	// good command but bad link
 		{
-			sVal.FormatVal(0);
+			sVal = "0";
 			return true;
 		}
 		if ( pszKey[0] == '\0' )	// just testing the ref
@@ -1879,7 +1869,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			GETNONWHITESPACE(pszKey);
 			char digest[MD5_DIGEST_LENGTH + 1];
 			CMD5::fastDigest(digest, pszKey);
-			sVal.Format("%s", digest);
+			sVal = digest;
 			return true;
 		}
 		case SSC_MULDIV:
@@ -2858,7 +2848,7 @@ bool CFileObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			break;
 		}
 		case FO_FILEPATH:
-			sVal.Format("%s", m_pFile->IsFileOpen() ? static_cast<LPCTSTR>(m_pFile->GetFilePath()) : "");
+			sVal = m_pFile->IsFileOpen() ? static_cast<LPCTSTR>(m_pFile->GetFilePath()) : "";
 			break;
 		case FO_INUSE:
 			sVal.FormatVal(m_pFile->IsFileOpen());
@@ -2920,7 +2910,7 @@ bool CFileObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			if ( index == FO_READCHAR )
 				sVal.FormatVal(*pszBuffer);
 			else
-				sVal.Format("%s", pszBuffer);
+				sVal = pszBuffer;
 			break;
 		}
 		case FO_READLINE:
@@ -2969,7 +2959,7 @@ bool CFileObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				}
 			}
 
-			sVal.Format("%s", pszBuffer);
+			sVal = pszBuffer;
 			break;
 		}
 		case FO_SEEK:

@@ -1969,7 +1969,7 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 	ADDTOCALLSTACK("CItem::r_WriteVal");
 	EXC_TRY("WriteVal");
 	int index;
-	if ( !strnicmp( CItem::sm_szLoadKeys[IC_ADDSPELL], pszKey, 8 ) )
+	if ( !strnicmp(sm_szLoadKeys[IC_ADDSPELL], pszKey, 8) )
 		index	= IC_ADDSPELL;
 	else
 		index	= FindTableSorted( pszKey, sm_szLoadKeys, COUNTOF( sm_szLoadKeys )-1 );
@@ -2180,7 +2180,7 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 				if ( GetID() != GetDispID() )
 					sVal.FormatHex( GetID() );
 				else
-					sVal.FormatVal(0);
+					sVal = "0";
 			}
 			break;
 		case IC_HEIGHT:

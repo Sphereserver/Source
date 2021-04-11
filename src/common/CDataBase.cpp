@@ -320,7 +320,7 @@ bool CDataBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 	UNREFERENCED_PARAMETER(pSrc);
 	if ( !g_Cfg.m_bMySql )
 	{
-		sVal.FormatVal(0);
+		sVal = "0";
 		return true;
 	}
 
@@ -330,7 +330,7 @@ bool CDataBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case DBO_AEXECUTE:
 		case DBO_AQUERY:
 		{
-			pszKey += strlen(sm_szLoadKeys[index]);
+			pszKey += (index == DBO_AEXECUTE) ? 8 : 6;
 			GETNONWHITESPACE(pszKey);
 
 			TCHAR *ppArgs[2];
@@ -338,8 +338,8 @@ bool CDataBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				sVal.FormatVal(AsyncQueue((index == DBO_AQUERY), ppArgs[0], ppArgs[1]));
 			else
 			{
-				g_Log.EventError("Invalid %s arguments\n", CDataBase::sm_szLoadKeys[index]);
-				sVal.FormatVal(0);
+				g_Log.EventError("Invalid %s arguments\n", sm_szLoadKeys[index]);
+				sVal = "0";
 			}
 			return true;
 		}
@@ -350,7 +350,7 @@ bool CDataBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		}
 		case DBO_ESCAPEDATA:
 		{
-			pszKey += strlen(sm_szLoadKeys[index]);
+			pszKey += 10;
 			GETNONWHITESPACE(pszKey);
 			sVal = "";
 
@@ -365,7 +365,7 @@ bool CDataBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		}
 		case DBO_ROW:
 		{
-			pszKey += strlen(sm_szLoadKeys[index]);
+			pszKey += 3;
 			SKIP_SEPARATORS(pszKey);
 			sVal = m_QueryResult.GetKeyStr(pszKey);
 			return true;

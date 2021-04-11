@@ -1132,7 +1132,7 @@ bool CItemBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			if ( !IsTypeEquippable() )
 				return false;
 			if ( !IsTypeWeapon(GetType()) && !IsType(IT_FISH_POLE) )
-				sVal.FormatVal(0);
+				sVal = "0";
 			else
 				sVal.FormatVal(m_layer == LAYER_HAND2);
 			break;
@@ -1894,7 +1894,7 @@ bool CItemBaseMulti::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pS
 				else if ( !strnicmp(pszKey, "D", 1) )
 					sVal.Format("%hd,%hd,%hhd", item.m_dx, item.m_dy, item.m_dz);
 				else
-					sVal.Format("%u,%hd,%hd,%hhd", item.m_id, item.m_dx, item.m_dy, item.m_dz);
+					sVal.Format("%d,%hd,%hd,%hhd", item.m_id, item.m_dx, item.m_dy, item.m_dz);
 			}
 			else
 				return false;

@@ -1407,15 +1407,14 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			break;
 		case CHC_ATTACKER:
 		{
-			if ( strlen(pszKey) == 8 )
+			pszKey += 8;
+			if ( *pszKey == '\0' )
 			{
 				sVal.FormatVal(m_lastAttackers.size());
 				return true;
 			}
 
-			sVal.FormatVal(0);
-			pszKey += 8;
-
+			sVal = "0";
 			if ( *pszKey == '.' )
 			{
 				++pszKey;
@@ -1427,11 +1426,10 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				}
 				else if ( !strnicmp(pszKey, "TARGET", 6) )
 				{
-					pszKey += 6;
 					if ( m_Act_Targ )
 						sVal.FormatHex(m_Fight_Targ);
 					else
-						sVal.FormatVal(-1);
+						sVal = "-1";
 					return true;
 				}
 				if ( m_lastAttackers.size() )
@@ -1499,15 +1497,14 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		}
 		case CHC_NOTOSAVE:
 		{
-			if ( strlen(pszKey) == 8 )
+			pszKey += 8;
+			if ( *pszKey == '\0' )
 			{
 				sVal.FormatVal(m_notoSaves.size());
 				return true;
 			}
 
-			sVal.FormatVal(0);
-			pszKey += 8;
-
+			sVal = "0";
 			if ( *pszKey == '.' )
 			{
 				++pszKey;
@@ -1564,7 +1561,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			if ( g_Cfg.m_Fame.GetCount() <= 0 )
 			{
 				DEBUG_ERR(("FAME ranges have not been defined\n"));
-				sVal.FormatVal(0);
+				sVal = "0";
 				return true;
 			}
 
@@ -1595,7 +1592,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				}
 			}
 
-			sVal.FormatVal(0);
+			sVal = "0";
 			delete[] pszFameAt0;
 			return true;
 		}
@@ -1656,7 +1653,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			if ( g_Cfg.m_Karma.GetCount() <= 0 )
 			{
 				DEBUG_ERR(("KARMA ranges have not been defined\n"));
-				sVal.FormatVal(0);
+				sVal = "0";
 				return true;
 			}
 
@@ -1687,7 +1684,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				}
 			}
 
-			sVal.FormatVal(0);
+			sVal = "0";
 			delete[] pszKarmaAt0;
 			return true;
 		}
@@ -1804,11 +1801,11 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				CResourceQtyArray Resources;
 				if ( (Resources.Load(pszKey) > 0) && SkillResourceTest(&Resources) )
 				{
-					sVal.FormatVal(1);
+					sVal = "1";
 					return true;
 				}
 			}
-			sVal.FormatVal(0);
+			sVal = "0";
 			return true;
 		}
 		case CHC_CANMOVE:
@@ -1833,7 +1830,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			if ( pItem )
 				sVal.FormatHex(pItem->m_itFigurine.m_UID);
 			else
-				sVal.FormatVal(0);
+				sVal = "0";
 			return true;
 		}
 		case CHC_MOVE:
@@ -1885,18 +1882,18 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				sVal.FormatVal(!IsDisconnected());
 				return true;
 			}
-			sVal.FormatVal(0);
+			sVal = "0";
 			return true;
 		}
 		case CHC_ISSTUCK:
 		{
 			CPointBase pt = GetTopPoint();
 			if ( OnFreezeCheck() )
-				sVal.FormatVal(1);
+				sVal = "1";
 			else if ( CanMoveWalkTo(pt, true, true, DIR_N) || CanMoveWalkTo(pt, true, true, DIR_E) || CanMoveWalkTo(pt, true, true, DIR_S) || CanMoveWalkTo(pt, true, true, DIR_W) )
-				sVal.FormatVal(0);
+				sVal = "0";
 			else
-				sVal.FormatVal(1);
+				sVal = "1";
 			return true;
 		}
 		case CHC_ISVENDOR:
@@ -1906,7 +1903,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		{
 			pszKey += 15;
 			CPointMap pt;
-			if ( strlen(pszKey) )
+			if ( *pszKey != '\0' )
 			{
 				pt = g_Cfg.GetRegionPoint(pszKey);
 				if ( !pt.IsValidPoint() )
@@ -2272,9 +2269,9 @@ bool CChar::r_LoadVal(CScript &s)
 			return Skill_Start(g_Cfg.FindSkillKey(s.GetArgStr()));
 		case CHC_ATTACKER:
 		{
-			if ( strlen(pszKey) > 8 )
+			pszKey += 8;
+			if ( *pszKey != '\0' )
 			{
-				pszKey += 8;
 				int id = m_lastAttackers.size();
 				if ( *pszKey == '.' )
 				{

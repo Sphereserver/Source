@@ -206,7 +206,7 @@ bool CSQLite::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			break;
 
 		case LDBO_ROW:
-			pszKey += strlen(sm_szLoadKeys[index]);
+			pszKey += 3;
 			SKIP_SEPARATORS(pszKey);
 			sVal = m_QueryResult.GetKeyStr(pszKey);
 			break;
