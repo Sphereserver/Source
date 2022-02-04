@@ -64,7 +64,7 @@ Project can be compiled on Windows (Visual Studio) and Linux (GCC)
 * Ubuntu 19.10 or later:
   * Default package repository dropped support for MySQL 5.7, so add it back
     ```
-    sudo add-apt-repository 'deb http://repo.mysql.com/apt/ubuntu/ disco mysql-5.7'
+    sudo add-apt-repository 'deb http://repo.mysql.com/apt/ubuntu/ bionic mysql-5.7'
     sudo apt-get update --allow-insecure-repositories
     ```
   * Install MySQL
@@ -98,15 +98,15 @@ Project can be compiled on Windows (Visual Studio) and Linux (GCC)
 * Add MySQL support on package repository
   * CentOS 6 / Red Hat 6:
     ```
-    sudo yum localinstall https://dev.mysql.com/get/mysql80-community-release-el6-3.noarch.rpm
+    sudo yum localinstall https://dev.mysql.com/get/mysql80-community-release-el6-5.noarch.rpm
     ```
   * CentOS 7 / Red Hat 7:
     ```
-    sudo yum localinstall https://dev.mysql.com/get/mysql80-community-release-el7-3.noarch.rpm
+    sudo yum localinstall https://dev.mysql.com/get/mysql80-community-release-el7-5.noarch.rpm
     ```
   * CentOS 8 / Red Hat 8:
     ```
-    sudo yum localinstall https://dev.mysql.com/get/mysql80-community-release-el8-1.noarch.rpm
+    sudo yum localinstall https://dev.mysql.com/get/mysql80-community-release-el8-3.noarch.rpm
     ```
 
 * Configure MySQL version on package repository
@@ -153,7 +153,7 @@ make NIGHTLY=1
 * Adding/removing/changing anything that was working in one way for years should be followed by an ini setting when the changes can't be replicated on scripts to keep backwards compatibility.
 
 ## Licensing
-Copyright 2021 SphereServer development team
+Copyright 2022 SphereServer development team
 
 Licensed under the Apache License, Version 2.0 (the "License").<br>
 You may not use any file of this project except in compliance with the License.<br>
