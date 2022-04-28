@@ -98,7 +98,7 @@ void CNTWindow::CStatusDlg::FillStats()
 
 		capture.SysMessagef("Thread %lu - '%s'\n", thrCurrent->getId(), thrCurrent->getName());
 
-		for (int i = 0; i < PROFILE_QTY; i++)
+		for ( int i = 0; i < PROFILE_QTY; ++i )
 		{
 			if (profile.IsEnabled(static_cast<PROFILE_TYPE>(i)) == false)
 				continue;
@@ -160,7 +160,7 @@ CNTWindow::CNTWindow()
 	m_iHeightInput		= 0;
    	m_hLogFont			= NULL;
 	m_wndLog.SetSel(0, 0);
-	memset(m_zCommands, 0, sizeof(m_zCommands));
+	memset(m_szCmdHistory, 0, sizeof(m_szCmdHistory));
 }
 
 CNTWindow::~CNTWindow()
@@ -477,14 +477,14 @@ bool CNTWindow::OnCommand( WORD wNotifyCode, INT_PTR wID, HWND hwndCtl )
 			TCHAR szTmp[ MAX_TALK_BUFFER ];
 			m_wndInput.GetWindowText( szTmp, sizeof(szTmp));
 
-			for ( int i = 4; i > 0; --i )
+			for ( int i = COUNTOF(theApp.m_wndMain.m_szCmdHistory) - 1; i > 0; --i )
 			{
-				strncpy(theApp.m_wndMain.m_zCommands[i], theApp.m_wndMain.m_zCommands[i - 1], sizeof(theApp.m_wndMain.m_zCommands[i]));
-				theApp.m_wndMain.m_zCommands[i][sizeof(theApp.m_wndMain.m_zCommands[i]) - 1] = '\0';
+				strncpy(theApp.m_wndMain.m_szCmdHistory[i], theApp.m_wndMain.m_szCmdHistory[i - 1], sizeof(theApp.m_wndMain.m_szCmdHistory[i]));
+				theApp.m_wndMain.m_szCmdHistory[i][sizeof(theApp.m_wndMain.m_szCmdHistory[i]) - 1] = '\0';
 			}
 
-			strncpy(m_zCommands[0], szTmp, sizeof(m_zCommands[0]));
-			m_zCommands[0][sizeof(m_zCommands[0]) - 1] = '\0';
+			strncpy(m_szCmdHistory[0], szTmp, sizeof(m_szCmdHistory[0]));
+			m_szCmdHistory[0][sizeof(m_szCmdHistory[0]) - 1] = '\0';
 			m_wndInput.SetWindowText("");
 			g_Serv.m_sConsoleText = szTmp;
 			g_Serv.m_fConsoleTextReadyFlag = true;
@@ -609,7 +609,7 @@ LRESULT CNTWindow::OnNotify( int idCtrl, NMHDR * pnmh )
 						//		Loading filepath/filename/name.scp
 						//		ERROR:(filename.scp,line)
 						LPCTSTR start = pos;
-						TCHAR * end = pos + 4;
+						TCHAR *end = pos + (sizeof(SPHERE_FILE_EXT_SCP) - 1);
 
 						while ( start > zTemp )
 						{
@@ -969,15 +969,15 @@ bool NTWindow_OnTick( int iWaitmSec )
 			{
 				if ( msg.wParam == VK_UP )			//	UP (commands history)
 				{
-					theApp.m_wndMain.m_wndInput.SetWindowText(theApp.m_wndMain.m_zCommands[0]);
+					theApp.m_wndMain.m_wndInput.SetWindowText(theApp.m_wndMain.m_szCmdHistory[0]);
 
-					for ( int i = 0; i < 4; ++i )
+					for ( int i = 0; i < COUNTOF(theApp.m_wndMain.m_szCmdHistory) - 1; ++i )
 					{
-						strncpy(theApp.m_wndMain.m_zCommands[i], theApp.m_wndMain.m_zCommands[i + 1], sizeof(theApp.m_wndMain.m_zCommands[i]));
-						theApp.m_wndMain.m_zCommands[i][sizeof(theApp.m_wndMain.m_zCommands[i]) - 1] = '\0';
+						strncpy(theApp.m_wndMain.m_szCmdHistory[i], theApp.m_wndMain.m_szCmdHistory[i + 1], sizeof(theApp.m_wndMain.m_szCmdHistory[i]));
+						theApp.m_wndMain.m_szCmdHistory[i][sizeof(theApp.m_wndMain.m_szCmdHistory[i]) - 1] = '\0';
 					}
 
-					theApp.m_wndMain.m_wndInput.GetWindowText(theApp.m_wndMain.m_zCommands[4], sizeof(theApp.m_wndMain.m_zCommands[4]));
+					theApp.m_wndMain.m_wndInput.GetWindowText(theApp.m_wndMain.m_szCmdHistory[COUNTOF(theApp.m_wndMain.m_szCmdHistory) - 1], sizeof(theApp.m_wndMain.m_szCmdHistory[COUNTOF(theApp.m_wndMain.m_szCmdHistory) - 1]));
 				}
 			}
 		}

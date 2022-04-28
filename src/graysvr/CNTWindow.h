@@ -21,7 +21,7 @@ public:
 	HFONT m_hLogFont;
 	CRichEditCtrl m_wndLog;
 	CEdit m_wndInput;			// the text input portion at the bottom
-	char m_zCommands[5][256];
+	char m_szCmdHistory[10][256];
 
 public:
 	void List_Clear();

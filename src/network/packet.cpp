@@ -951,7 +951,7 @@ void Packet::dump(AbstractString& output) const
 	output.append("        0  1  2  3  4  5  6  7   8  9  A  B  C  D  E  F\n");
 	output.append("       -- -- -- -- -- -- -- --  -- -- -- -- -- -- -- --\n");
 
-	unsigned int byteIndex = 0;
+	WORD byteIndex = 0;
 	size_t whole = m_length >> 4;
 	size_t rem = m_length & 0x0f;
 	size_t idx = 0;

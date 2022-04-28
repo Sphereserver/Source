@@ -1849,3 +1849,6 @@ Fixed: Server crash when call intrinsic functions <eval ISNUMBER()> / <floatval 
 
 03-02-2022, Coruja
 [sphereCrypt.ini]: Added crypt key for classic clients 7.0.91 ~ 7.0.94 and enhanced clients 4.0.91 ~ 4.0.94
+
+28-04-2022, Coruja
+[sphereCrypt.ini]: Added crypt key for classic client 7.0.95 and enhanced client 4.0.95
