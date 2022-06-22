@@ -3369,11 +3369,16 @@ TRIGRET_TYPE CChar::OnTrigger(LPCTSTR pszTrigName, CTextConsole *pSrc, CScriptTr
 	if ( IsTrigUsed(pszTrigName) )
 	{
 		EXC_SET("events");
-		size_t origEvents = m_OEvents.GetCount();
-		size_t curEvents = origEvents;
-		for ( size_t i = 0; i < curEvents; ++i )
+		CResourceRefArray events;
+		for ( size_t i = 0; i < m_OEvents.GetCount(); ++i ) // EVENTS (could be modifyed ingame!)
 		{
-			CResourceLink *pLink = m_OEvents[i];
+			events.Add(m_OEvents[i]);
+		}
+		for ( size_t i = 0; i < events.GetCount(); ++i )
+		{
+			CResourceLink* pLink = events[i];
+			if ( !m_OEvents.ContainsResourceID(pLink->GetResourceID()) )
+				continue;
 			if ( !pLink || !pLink->HasTrigger(iAction) )
 				continue;
 			CResourceLock s;
@@ -3382,13 +3387,6 @@ TRIGRET_TYPE CChar::OnTrigger(LPCTSTR pszTrigName, CTextConsole *pSrc, CScriptTr
 			iRet = CScriptObj::OnTriggerScript(s, pszTrigName, pSrc, pArgs);
 			if ( (iRet != TRIGRET_RET_FALSE) && (iRet != TRIGRET_RET_DEFAULT) )
 				goto stopandret;	//return iRet;
-
-			curEvents = m_OEvents.GetCount();
-			if ( curEvents < origEvents )	// the event has been deleted, modify the counter for other trigs to work
-			{
-				--i;
-				origEvents = curEvents;
-			}
 		}
 
 		// TEVENTS
