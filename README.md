@@ -98,15 +98,19 @@ Project can be compiled on Windows (Visual Studio) and Linux (GCC)
 * Add MySQL support on package repository
   * CentOS 6 / Red Hat 6:
     ```
-    sudo yum localinstall https://dev.mysql.com/get/mysql80-community-release-el6-6.noarch.rpm
+    sudo yum localinstall https://dev.mysql.com/get/mysql80-community-release-el6-7.noarch.rpm
     ```
   * CentOS 7 / Red Hat 7:
     ```
-    sudo yum localinstall https://dev.mysql.com/get/mysql80-community-release-el7-6.noarch.rpm
+    sudo yum localinstall https://dev.mysql.com/get/mysql80-community-release-el7-7.noarch.rpm
     ```
   * CentOS 8 / Red Hat 8:
     ```
     sudo yum localinstall https://dev.mysql.com/get/mysql80-community-release-el8-4.noarch.rpm
+    ```
+  * CentOS 9 / Red Hat 9:
+    ```
+    sudo yum localinstall https://dev.mysql.com/get/mysql80-community-release-el9-1.noarch.rpm
     ```
 
 * Configure MySQL version on package repository
