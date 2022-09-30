@@ -1857,3 +1857,6 @@ Fixed: Server crash when call intrinsic functions <eval ISNUMBER()> / <floatval 
 [sphereCrypt.ini]: Added crypt key for classic client 7.0.96 and enhanced client 4.0.96
 [sphere_msgs.scp]: Removed unused messages 'axis_not_priv' and 'console_not_priv'
 [items/multis/multis_houses_contest.scp]: Added new houses from publish 112
+
+30-09-2022, Coruja
+[sphereCrypt.ini]: Added crypt key for classic client 7.0.97 and enhanced client 4.0.97
