@@ -1863,3 +1863,6 @@ Fixed: Server crash when call intrinsic functions <eval ISNUMBER()> / <floatval 
 
 21-10-2022, Coruja
 Changed: Updated internal Zlib libs v1.2.11 to v1.2.13.
+
+28-01-2023, Coruja
+[sphereCrypt.ini]: Added crypt key for classic client 7.0.98 and enhanced client 4.0.98
