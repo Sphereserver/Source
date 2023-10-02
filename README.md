@@ -98,19 +98,19 @@ Project can be compiled on Windows (Visual Studio) and Linux (GCC)
 * Add MySQL support on package repository
   * CentOS 6 / Red Hat 6:
     ```
-    sudo yum localinstall https://dev.mysql.com/get/mysql80-community-release-el6-7.noarch.rpm
+    sudo yum localinstall https://dev.mysql.com/get/mysql80-community-release-el6-9.noarch.rpm
     ```
   * CentOS 7 / Red Hat 7:
     ```
-    sudo yum localinstall https://dev.mysql.com/get/mysql80-community-release-el7-7.noarch.rpm
+    sudo yum localinstall https://dev.mysql.com/get/mysql80-community-release-el7-10.noarch.rpm
     ```
   * CentOS 8 / Red Hat 8:
     ```
-    sudo yum localinstall https://dev.mysql.com/get/mysql80-community-release-el8-4.noarch.rpm
+    sudo yum localinstall https://dev.mysql.com/get/mysql80-community-release-el8-8.noarch.rpm
     ```
   * CentOS 9 / Red Hat 9:
     ```
-    sudo yum localinstall https://dev.mysql.com/get/mysql80-community-release-el9-1.noarch.rpm
+    sudo yum localinstall https://dev.mysql.com/get/mysql80-community-release-el9-4.noarch.rpm
     ```
 
 * Configure MySQL version on package repository
@@ -157,7 +157,7 @@ make NIGHTLY=1
 * Adding/removing/changing anything that was working in one way for years should be followed by an ini setting when the changes can't be replicated on scripts to keep backwards compatibility.
 
 ## Licensing
-Copyright 2022 SphereServer development team
+Copyright 2023 SphereServer development team
 
 Licensed under the Apache License, Version 2.0 (the "License").<br>
 You may not use any file of this project except in compliance with the License.<br>

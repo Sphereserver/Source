@@ -1866,3 +1866,6 @@ Changed: Updated internal Zlib libs v1.2.11 to v1.2.13.
 
 28-01-2023, Coruja
 [sphereCrypt.ini]: Added crypt key for classic client 7.0.98 and enhanced client 4.0.98
+
+02-10-2023, Coruja
+[sphereCrypt.ini]: Added crypt key for classic client 7.0.99 and enhanced client 4.0.99
