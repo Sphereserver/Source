@@ -57,7 +57,7 @@ void CItemMulti::MultiRealizeRegion()
 	const CItemBaseMulti *pMultiDef = Multi_GetDef();
 	if ( !pMultiDef )
 	{
-		DEBUG_ERR(("Bad multi type 0%x (UID=0%" FMTDWORDH ")\n", GetID(), static_cast<DWORD>(GetUID())));
+		DEBUG_ERR(("Bad MULTIDEF 0%x (UID=0%" FMTDWORDH ")\n", GetID(), static_cast<DWORD>(GetUID())));
 		return;
 	}
 
@@ -156,6 +156,8 @@ bool CItemMulti::Multi_CreateComponent(ITEMID_TYPE id, signed short x, signed sh
 			break;
 		case IT_SHIP_HOLD:
 			pItem->SetType(IT_SHIP_HOLD_LOCK);
+			break;
+		default:
 			break;
 	}
 

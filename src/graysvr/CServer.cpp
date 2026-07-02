@@ -182,6 +182,9 @@ void CServer::SocketsClose()
 		g_NetworkEvent.unregisterMainsocket();
 #endif
 	m_SocketMain.Close();
+#ifdef _WIN32
+	WSACleanup();
+#endif
 }
 
 bool CServer::GetPublicIP()
@@ -400,10 +403,7 @@ void CServer::PrintStr(LPCTSTR pszMsg) const
 int CServer::PrintPercent(long iCount, long iTotal)
 {
 	ADDTOCALLSTACK("CServer::PrintPercent");
-	if ( iTotal <= 0 )
-		return 100;
-
-	int iPercent = IMULDIV(iCount, 100, iTotal);
+	int iPercent = (iTotal > 0) ? IMULDIV(iCount, 100, iTotal) : 100;
 	TCHAR szTemp[5];
 	snprintf(szTemp, sizeof(szTemp), "%d%%", iPercent);
 
@@ -453,25 +453,25 @@ bool CServer::OnConsoleCmd(CGString &sText, CTextConsole *pSrc)
 		{
 			pSrc->SysMessagef(
 				"Available commands:\n"
-				"#             Force world save (## to save world and statics)\n"
-				"A             Update accounts with pending changes of file '" SPHERE_FILE "acct" SPHERE_FILE_EXT_SCP "'\n"
-				"ACCOUNT HELP  View list of account related commands\n"
-				"B [msg]       Broadcast message to all clients\n"
-				"C             View list of online clients\n"
-				"DA            Dump world areas to file 'map_all" SPHERE_FILE_EXT_SCP "'\n"
-				"DUI           Dump unscripted items to file 'unscripted_items" SPHERE_FILE_EXT_SCP "'\n"
-				"E             Clear server script profiler info\n"
-				"G             Force world garbage collection\n"
-				"H             Hear all that is said (%s)\n"
-				"I             View server information\n"
-				"L             Toggle log file (%s)\n"
-				"P             View server script profiler info (%s) (P# to dump info to file 'profiler_dump.txt')\n"
-				"R             Resync pause\n"
-				"S             Toggle server secure mode (%s)\n"
-				"STRIP         Dump all script templates to file 'sphere_strip" SPHERE_FILE_EXT_SCP "'\n"
-				"T             View list of server active threads\n"
-				"U             View list of script triggers used\n"
-				"X             Force server exit (X# to save world and statics before exit)\n"
+				"#               Force world save (## to save world and statics)\n"
+				"A               Update accounts with pending changes of file '" SPHERE_FILE "acct" SPHERE_FILE_EXT_SCP "'\n"
+				"ACCOUNT HELP    View list of account related commands\n"
+				"B [msg]         Broadcast message to all clients\n"
+				"C               View list of online clients\n"
+				"DA [filename]   Dump world areas to specified file\n"
+				"DUI [filename]  Dump unscripted items to specified file\n"
+				"E               Clear server script profiler info\n"
+				"G               Force world garbage collection\n"
+				"H               Hear all that is said (%s)\n"
+				"I               View server information\n"
+				"L               Toggle log file (%s)\n"
+				"P               View server script profiler info (%s) (P# to dump info to file 'profiler_dump.txt')\n"
+				"R               Resync pause\n"
+				"S               Toggle server secure mode (%s)\n"
+				"STRIP           Dump all script templates to file 'sphere_strip" SPHERE_FILE_EXT_SCP "'\n"
+				"T               View list of server active threads\n"
+				"U               View list of script triggers used\n"
+				"X               Force server exit (X# to save world and statics before exit)\n"
 				,
 				g_Log.IsLoggedMask(LOGM_PLAYER_SPEAK) ? "ON" : "OFF",
 				g_Log.IsFileOpen() ? "ON" : "OFF",
@@ -633,12 +633,12 @@ bool CServer::OnConsoleCmd(CGString &sText, CTextConsole *pSrc)
 		case 't':
 		{
 			size_t iThreadCount = ThreadHolder::getActiveThreads();
-			pSrc->SysMessagef("Current active threads: %" FMTSIZE_T "\n", iThreadCount);
+			pSrc->SysMessagef("Current active threads: %zu\n", iThreadCount);
 			for ( size_t iThread = 0; iThread < iThreadCount; ++iThread )
 			{
 				IThread *pThread = ThreadHolder::getThreadAt(iThread);
 				if ( pThread )
-					pSrc->SysMessagef("Thread %" FMTSIZE_T ": %s (ID=%lu, Priority=%d)\n", iThread + 1, pThread->getName(), pThread->getId(), pThread->getPriority());
+					pSrc->SysMessagef("Thread %zu: %s (ID=%lu, Priority=%d)\n", iThread + 1, pThread->getName(), pThread->getId(), pThread->getPriority());
 			}
 			break;
 		}
@@ -713,19 +713,18 @@ longcommand:
 				}
 
 				char *x;
-				char *y = Str_GetTemp();
-				char *z = Str_GetTemp();
+				char y[SCRIPT_MAX_LINE_LEN];
+				char z[THREAD_STRING_LENGTH];
 
-				while ( !feof(pFileScript) )
+				while ( fgets(y, sizeof(y), pFileScript) )
 				{
-					z[0] = '\0';
-					y[0] = '\0';
-					fgets(y, SCRIPT_MAX_LINE_LEN, pFileScript);
-
 					x = y;
 					GETNONWHITESPACE(x);
-					strncpy(z, x, THREAD_STRING_LENGTH);
-					z[THREAD_STRING_LENGTH - 1] = '\0';
+					if ( *x == '\0' )
+						continue;
+
+					strncpy(z, x, sizeof(z));
+					z[sizeof(z) - 1] = '\0';
 
 					if ( ((z[0] == '[') && (strnicmp(z, "[EOF]", 5) != 0)) || !strnicmp(z, "DEFNAME", 7) || !strnicmp(z, "NAME", 4) ||
 						!strnicmp(z, "ID", 2) || !strnicmp(z, "TYPE", 4) || !strnicmp(z, "WEIGHT", 6) || !strnicmp(z, "VALUE", 5) ||
@@ -838,7 +837,7 @@ void CServer::ListClients(CTextConsole *pConsole) const
 	if ( iClients == 0 )
 		snprintf(pszMsgTemp, SCRIPT_MAX_LINE_LEN, "%s\n", g_Cfg.GetDefaultMsg(DEFMSG_HL_NO_CLIENT));
 	else
-		snprintf(pszMsgTemp, SCRIPT_MAX_LINE_LEN, "%s %" FMTSIZE_T "\n", g_Cfg.GetDefaultMsg(DEFMSG_HL_MANY_CLIENTS), iClients);
+		snprintf(pszMsgTemp, SCRIPT_MAX_LINE_LEN, "%s %zu\n", g_Cfg.GetDefaultMsg(DEFMSG_HL_MANY_CLIENTS), iClients);
 
 	pConsole->SysMessage(pszMsg);
 	pConsole->SysMessage(pszMsgTemp);
@@ -1246,7 +1245,7 @@ bool CServer::r_Verb(CScript &s, CTextConsole *pSrc)
 		case SV_LOG:
 		{
 			DWORD dwMask = LOGL_EVENT;
-			LPCTSTR pszArgs = s.GetArgStr();
+			TCHAR *pszArgs = s.GetArgStr();
 			if ( pszArgs && (*pszArgs == '@') )
 			{
 				++pszArgs;

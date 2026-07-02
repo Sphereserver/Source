@@ -357,7 +357,7 @@ int CTimedFunctionHandler::Load(const char *pszName, bool fQuoted, const char *p
 	}
 	else if ( !strcmpi(pszName, "TimerFNumbers") )
 	{
-		static char szTemp[128];
+		static char szTemp[sizeof(TimedFunction::funcname)];
 		strncpy(szTemp, pszVal, sizeof(szTemp));
 		szTemp[sizeof(szTemp) - 1] = '\0';
 
@@ -743,7 +743,7 @@ void CWorldThread::GarbageCollection_New()
 	// Clean up created objects not placed on world
 	if ( m_ObjNew.GetCount() > 0 )
 	{
-		g_Log.Event(LOGL_ERROR, "GC: Deleted %" FMTSIZE_T " unplaced objects\n", m_ObjNew.GetCount());
+		g_Log.Event(LOGL_ERROR, "GC: Deleted %zu unplaced objects\n", m_ObjNew.GetCount());
 		for ( size_t i = 0; i < m_ObjNew.GetCount(); ++i )
 		{
 			CObjBase *pObj = dynamic_cast<CObjBase *>(m_ObjNew.GetAt(i));
@@ -822,9 +822,9 @@ void CWorldThread::GarbageCollection_UIDs()
 	GarbageCollection_New();
 
 	if ( iCount != CObjBase::sm_iCount )
-		g_Log.Event(LOGL_ERROR, "GC: Object memory leak %" FMTSIZE_T "!=%" FMTSIZE_T "\n", iCount, CObjBase::sm_iCount);
+		g_Log.Event(LOGL_ERROR, "GC: Object memory leak %zu!=%zu\n", iCount, CObjBase::sm_iCount);
 	else
-		g_Log.Event(LOGL_EVENT, "GC: %" FMTSIZE_T " objects accounted for\n", iCount);
+		g_Log.Event(LOGL_EVENT, "GC: %zu objects accounted for\n", iCount);
 
 	// New UID engine - search for empty holes and store it in a huge array.
 	// The size of the array should be enough even for huge shards to survive till next garbage collection
@@ -969,14 +969,28 @@ void CWorld::Init()
 		"Ter Mur"
 	};
 
+	int n = 0;
 	for ( int iMap = 0; iMap < MAP_QTY; ++iMap )
 	{
 		if ( !g_MapList.m_maps[iMap] )
 			continue;
 
 		iSectorQty = g_MapList.GetSectorQty(iMap);
-		iMapListLen += snprintf(szMapList + iMapListLen, sizeof(szMapList) - iMapListLen, "%s%d='%s'", (iMapListLen > 0) ? ", " : "", iMap, (iMap < static_cast<int>(COUNTOF(sm_szMapNames))) ? sm_szMapNames[iMap] : "[Unnamed]");
-		iSectorListLen += snprintf(szSectorList + iSectorListLen, sizeof(szSectorList) - iSectorListLen, "%s%d='%d'", (iSectorListLen > 0) ? ", " : "", iMap, iSectorQty);
+		n = snprintf(szMapList + iMapListLen, sizeof(szMapList) - iMapListLen, "%s%d='%s'", (iMapListLen > 0) ? ", " : "", iMap, (iMap < static_cast<int>(COUNTOF(sm_szMapNames))) ? sm_szMapNames[iMap] : "[Unnamed]");
+		if ( (n < 0) || (n >= static_cast<int>(sizeof(szMapList) - iMapListLen)) )
+		{
+			szMapList[sizeof(szMapList) - 1] = '\0';
+			break;
+		}
+		iMapListLen += n;
+
+		n = snprintf(szSectorList + iSectorListLen, sizeof(szSectorList) - iSectorListLen, "%s%d='%d'", (iSectorListLen > 0) ? ", " : "", iMap, iSectorQty);
+		if ( (n < 0) || (n >= static_cast<int>(sizeof(szSectorList) - iSectorListLen)) )
+		{
+			szSectorList[sizeof(szSectorList) - 1] = '\0';
+			break;
+		}
+		iSectorListLen += n;
 
 		// Initialize sectors
 		for ( int iSector = 0; iSector < iSectorQty; ++iSector )
@@ -1184,7 +1198,7 @@ bool CWorld::SaveStage()
 	EXC_CATCH;
 
 	EXC_DEBUG_START;
-	g_Log.EventDebug("stage '%d' qty '%" FMTSIZE_T "' time '%llu'\n", m_iSaveStage, m_SectorsQty, m_timeSave.GetTimeRaw());
+	g_Log.EventDebug("stage '%d' qty '%zu' time '%llu'\n", m_iSaveStage, m_SectorsQty, m_timeSave.GetTimeRaw());
 	EXC_DEBUG_END;
 
 	++m_iSaveStage;
@@ -1565,11 +1579,11 @@ bool CWorld::LoadAll()
 
 			iCount = pSector->GetItemComplexity();
 			if ( iCount > g_Cfg.m_iMaxSectorComplexity )
-				g_Log.Event(LOGL_WARN, "%" FMTSIZE_T " items at %s. Sector too complex!\n", iCount, pSector->GetBasePoint().WriteUsed());
+				g_Log.Event(LOGL_WARN, "%zu items at %s. Sector too complex!\n", iCount, pSector->GetBasePoint().WriteUsed());
 
 			iCount = pSector->GetCharComplexity();
 			if ( iCount > g_Cfg.m_iMaxCharComplexity )
-				g_Log.Event(LOGL_WARN, "%" FMTSIZE_T " chars at %s. Sector too complex!\n", iCount, pSector->GetBasePoint().WriteUsed());
+				g_Log.Event(LOGL_WARN, "%zu chars at %s. Sector too complex!\n", iCount, pSector->GetBasePoint().WriteUsed());
 		}
 		EXC_CATCHSUB("Sector light levels");
 	}

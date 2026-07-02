@@ -2,17 +2,17 @@
 #include "../common/CFileList.h"
 #include "../network/send.h"
 
-enum WV_TYPE
+enum WEBV_TYPE
 {
-	WV_CLIENTLIST,
-	WV_GMPAGELIST,
-	WV_GUILDLIST,
-	WV_TOWNLIST,
-	WV_WEBPAGE,
-	WV_QTY
+	WEBV_CLIENTLIST,
+	WEBV_GMPAGELIST,
+	WEBV_GUILDLIST,
+	WEBV_TOWNLIST,
+	WEBV_WEBPAGE,
+	WEBV_QTY
 };
 
-const LPCTSTR CWebPageDef::sm_szVerbKeys[WV_QTY + 1] =
+const LPCTSTR CWebPageDef::sm_szVerbKeys[WEBV_QTY + 1] =
 {
 	"CLIENTLIST",		// Generate HTML table of clients
 	"GMPAGELIST",		// Generate HTML table of GM pages
@@ -43,17 +43,17 @@ CWebPageDef::CWebPageDef(RESOURCE_ID rid) : CResourceLink(rid)
 		m_sSrcFilePath = SPHERE_FILE "statusbase.htm";
 }
 
-enum WC_TYPE
+enum WEBC_TYPE
 {
-	WC_PLEVEL,
-	WC_WEBPAGEFILE,
-	WC_WEBPAGELOG,
-	WC_WEBPAGESRC,
-	WC_WEBPAGEUPDATE,
-	WC_QTY
+	WEBC_PLEVEL,
+	WEBC_WEBPAGEFILE,
+	WEBC_WEBPAGELOG,
+	WEBC_WEBPAGESRC,
+	WEBC_WEBPAGEUPDATE,
+	WEBC_QTY
 };
 
-const LPCTSTR CWebPageDef::sm_szLoadKeys[WC_QTY + 1] =
+const LPCTSTR CWebPageDef::sm_szLoadKeys[WEBC_QTY + 1] =
 {
 	"PLEVEL",				// Required plevel to view this page
 	"WEBPAGEFILE",			// Determines where the page is saved
@@ -69,19 +69,19 @@ bool CWebPageDef::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 	EXC_TRY("WriteVal");
 	switch ( FindTableSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1) )
 	{
-		case WC_PLEVEL:
+		case WEBC_PLEVEL:
 			sVal.FormatVal(m_privlevel);
 			break;
-		case WC_WEBPAGEFILE:
+		case WEBC_WEBPAGEFILE:
 			sVal = m_sDstFilePath;
 			break;
-		case WC_WEBPAGELOG:
+		case WEBC_WEBPAGELOG:
 			sVal.FormatVal(m_iUpdateLog);
 			break;
-		case WC_WEBPAGESRC:
+		case WEBC_WEBPAGESRC:
 			sVal = m_sSrcFilePath;
 			break;
-		case WC_WEBPAGEUPDATE:
+		case WEBC_WEBPAGEUPDATE:
 			sVal.FormatVal(m_iUpdatePeriod / TICK_PER_SEC);
 			break;
 		default:
@@ -102,18 +102,18 @@ bool CWebPageDef::r_LoadVal(CScript &s) // Load an item Script
 	EXC_TRY("LoadVal");
 	switch ( FindTableSorted(s.GetKey(), sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1) )
 	{
-		case WC_PLEVEL:
+		case WEBC_PLEVEL:
 			m_privlevel = static_cast<PLEVEL_TYPE>(s.GetArgVal());
 			break;
-		case WC_WEBPAGEFILE:
+		case WEBC_WEBPAGEFILE:
 			m_sDstFilePath = s.GetArgStr();
 			break;
-		case WC_WEBPAGELOG:
+		case WEBC_WEBPAGELOG:
 			m_iUpdateLog = s.GetArgVal();
 			break;
-		case WC_WEBPAGESRC:
+		case WEBC_WEBPAGESRC:
 			return SetSourceFile(s.GetArgStr(), NULL);
-		case WC_WEBPAGEUPDATE:
+		case WEBC_WEBPAGEUPDATE:
 			m_iUpdatePeriod = s.GetArgVal() * TICK_PER_SEC;
 			if ( m_iUpdatePeriod && (m_type == WEBPAGE_TEXT) )
 				m_type = WEBPAGE_TEMPLATE;
@@ -138,10 +138,10 @@ bool CWebPageDef::r_Verb(CScript &s, CTextConsole *pSrc)	// some command on this
 
 	sm_iListIndex = 0;
 
-	WV_TYPE index = static_cast<WV_TYPE>(FindTableSorted(s.GetKey(), sm_szVerbKeys, COUNTOF(sm_szVerbKeys) - 1));
+	WEBV_TYPE index = static_cast<WEBV_TYPE>(FindTableSorted(s.GetKey(), sm_szVerbKeys, COUNTOF(sm_szVerbKeys) - 1));
 	switch ( index )
 	{
-		case WV_CLIENTLIST:
+		case WEBV_CLIENTLIST:
 		{
 			if ( !s.HasArgs() )
 				return false;
@@ -165,7 +165,7 @@ bool CWebPageDef::r_Verb(CScript &s, CTextConsole *pSrc)	// some command on this
 			}
 			break;
 		}
-		case WV_GMPAGELIST:
+		case WEBV_GMPAGELIST:
 		{
 			if ( !s.HasArgs() )
 				return false;
@@ -182,14 +182,14 @@ bool CWebPageDef::r_Verb(CScript &s, CTextConsole *pSrc)	// some command on this
 			}
 			break;
 		}
-		case WV_GUILDLIST:
-		case WV_TOWNLIST:
+		case WEBV_GUILDLIST:
+		case WEBV_TOWNLIST:
 		{
 			if ( !s.HasArgs() )
 				return false;
 
 			CItemStone *pStone = NULL;
-			IT_TYPE	type = (index == WV_GUILDLIST) ? IT_STONE_GUILD : IT_STONE_TOWN;
+			IT_TYPE	type = (index == WEBV_GUILDLIST) ? IT_STONE_GUILD : IT_STONE_TOWN;
 			TCHAR szTemp[MAX_ITEM_NAME_SIZE];
 
 			for ( size_t i = 0; i < g_World.m_Stones.GetCount(); ++i )
@@ -207,7 +207,7 @@ bool CWebPageDef::r_Verb(CScript &s, CTextConsole *pSrc)	// some command on this
 			}
 			break;
 		}
-		case WV_WEBPAGE:
+		case WEBV_WEBPAGE:
 		{
 			CClient *pClient = dynamic_cast<CClient *>(pSrc);
 			if ( !pClient )
@@ -330,7 +330,7 @@ void CWebPageDef::WebPageLog()
 
 	CGTime timeCurrent = CGTime::GetCurrentTime();
 
-	TCHAR szFileName[FILENAME_MAX];
+	TCHAR szFileName[_MAX_PATH];
 	snprintf(szFileName, sizeof(szFileName), "%s%d-%02d-%02d%s", static_cast<LPCTSTR>(m_sDstFilePath), timeCurrent.GetYear(), timeCurrent.GetMonth(), timeCurrent.GetDay(), FileRead.GetFileExt());
 
 	CFileText FileTest;
@@ -686,7 +686,7 @@ bool CWebPageDef::ServPage(CClient *pClient, TCHAR *pszPageName, CGTime *pTimeLa
 
 	// 2) Check if there's a custom webpage for this specific error
 	pClient->m_Targ_Text = pszPageName;
-	TCHAR szFileName[FILENAME_MAX];
+	TCHAR szFileName[_MAX_PATH];
 	snprintf(szFileName, sizeof(szFileName), SPHERE_FILE "%d.htm", iStatusCode);
 	pWebPage = g_Cfg.FindWebPage(szFileName);
 	if ( pWebPage && (pWebPage->ServPageRequest(pClient, pszPageName, NULL) < 400) )
@@ -720,7 +720,7 @@ bool CWebPageDef::ServPage(CClient *pClient, TCHAR *pszPageName, CGTime *pTimeLa
 		"Date: %s\r\n"
 		"Server: " SPHERE_TITLE_VER "\r\n"
 		"Content-Type: text/html\r\n"
-		"Content-Length: %" FMTSIZE_T "\r\n"
+		"Content-Length: %zu\r\n"
 		"Connection: close\r\n"
 		"\r\n"
 		"%s",

@@ -11,26 +11,26 @@ CSector::CSector()
 	SetDefaultWeatherChance();
 }
 
-enum SC_TYPE
+enum SECC_TYPE
 {
-	SC_CLIENTS,
-	SC_COLDCHANCE,
-	SC_COMPLEXITY,
-	SC_FLAGS,
-	SC_ISDARK,
-	SC_ISNIGHTTIME,
-	SC_ITEMCOUNT,
-	SC_LIGHT,
-	SC_LOCALTIME,
-	SC_LOCALTOD,
-	SC_NUMBER,
-	SC_RAINCHANCE,
-	SC_SEASON,
-	SC_WEATHER,
-	SC_QTY
+	SECC_CLIENTS,
+	SECC_COLDCHANCE,
+	SECC_COMPLEXITY,
+	SECC_FLAGS,
+	SECC_ISDARK,
+	SECC_ISNIGHTTIME,
+	SECC_ITEMCOUNT,
+	SECC_LIGHT,
+	SECC_LOCALTIME,
+	SECC_LOCALTOD,
+	SECC_NUMBER,
+	SECC_RAINCHANCE,
+	SECC_SEASON,
+	SECC_WEATHER,
+	SECC_QTY
 };
 
-const LPCTSTR CSector::sm_szLoadKeys[SC_QTY + 1] =
+const LPCTSTR CSector::sm_szLoadKeys[SECC_QTY + 1] =
 {
 	"CLIENTS",
 	"COLDCHANCE",
@@ -56,13 +56,13 @@ bool CSector::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 
 	switch ( FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1) )
 	{
-		case SC_CLIENTS:
+		case SECC_CLIENTS:
 			sVal.FormatVal(m_Chars_Active.HasClients());
 			return true;
-		case SC_COLDCHANCE:
+		case SECC_COLDCHANCE:
 			sVal.FormatVal(GetColdChance());
 			return true;
-		case SC_COMPLEXITY:
+		case SECC_COMPLEXITY:
 		{
 			if ( pszKey[10] == '.' )
 			{
@@ -80,37 +80,37 @@ bool CSector::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatVal(GetCharComplexity());
 			return true;
 		}
-		case SC_FLAGS:
+		case SECC_FLAGS:
 			sVal.FormatHex(m_bFlags);
 			return true;
-		case SC_ISDARK:
+		case SECC_ISDARK:
 			sVal.FormatVal(IsDark());
 			return true;
-		case SC_ISNIGHTTIME:
+		case SECC_ISNIGHTTIME:
 			sVal.FormatVal(IsNight());
 			return true;
-		case SC_ITEMCOUNT:
+		case SECC_ITEMCOUNT:
 			sVal.FormatUVal(GetItemComplexity());
 			return true;
-		case SC_LIGHT:
+		case SECC_LIGHT:
 			sVal.FormatUVal(GetLight());
 			return true;
-		case SC_LOCALTIME:
+		case SECC_LOCALTIME:
 			sVal = GetLocalGameTime();
 			return true;
-		case SC_LOCALTOD:
+		case SECC_LOCALTOD:
 			sVal.FormatVal(GetLocalTime());
 			return true;
-		case SC_NUMBER:
+		case SECC_NUMBER:
 			sVal.FormatVal(m_index);
 			return true;
-		case SC_RAINCHANCE:
+		case SECC_RAINCHANCE:
 			sVal.FormatUVal(GetRainChance());
 			return true;
-		case SC_SEASON:
+		case SECC_SEASON:
 			sVal.FormatUVal(GetSeason());
 			return true;
-		case SC_WEATHER:
+		case SECC_WEATHER:
 			sVal.FormatUVal(GetWeather());
 			return true;
 	}
@@ -128,23 +128,23 @@ bool CSector::r_LoadVal(CScript &s)
 	EXC_TRY("LoadVal");
 	switch ( FindTableSorted(s.GetKey(), sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1) )
 	{
-		case SC_COLDCHANCE:
+		case SECC_COLDCHANCE:
 			SetWeatherChance(false, s.HasArgs() ? s.GetArgVal() : -1);
 			return true;
-		case SC_FLAGS:
+		case SECC_FLAGS:
 			m_bFlags = static_cast<BYTE>(s.GetArgVal());
 			return true;
-		case SC_LIGHT:
+		case SECC_LIGHT:
 			if ( g_Cfg.m_bAllowLightOverride )
 				m_Env.m_Light = static_cast<BYTE>(s.GetArgVal() | LIGHT_OVERRIDE);
 			return true;
-		case SC_RAINCHANCE:
+		case SECC_RAINCHANCE:
 			SetWeatherChance(true, s.HasArgs() ? s.GetArgVal() : -1);
 			return true;
-		case SC_SEASON:
+		case SECC_SEASON:
 			SetSeason(s.HasArgs() ? static_cast<SEASON_TYPE>(s.GetArgVal()) : SEASON_Summer);
 			return true;
-		case SC_WEATHER:
+		case SECC_WEATHER:
 			SetWeather(s.HasArgs() ? static_cast<WEATHER_TYPE>(s.GetArgVal()) : WEATHER_Clear);
 			return true;
 	}

@@ -3213,9 +3213,16 @@ void PacketGumpDialog::writeCompressedControls(const CGString* controls, size_t 
 
 		char* toCompress = new char[controlLength];
 
+		int n = 0;
 		z_uLong controlLengthActual = 0;
 		for (size_t i = 0; i < controlCount; ++i)
-			controlLengthActual += snprintf(toCompress + controlLengthActual, controlLength - controlLengthActual, "{%s}", static_cast<LPCTSTR>(controls[i]));
+		{
+			n = snprintf(toCompress + controlLengthActual, controlLength - controlLengthActual, "{%s}", static_cast<LPCTSTR>(controls[i]));
+			if ((n < 0) || (n >= static_cast<int>(controlLength - controlLengthActual)))
+				break;
+
+			controlLengthActual += n;
+		}
 		++controlLengthActual;
 
 		ASSERT(controlLengthActual == controlLength);

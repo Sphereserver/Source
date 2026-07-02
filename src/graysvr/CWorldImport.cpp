@@ -409,7 +409,7 @@ bool CImportFile::ImportWSC( CScript & s, WORD wModeFlags )
 		if ( s.IsKey("NAME" ))
 		{
 			sName = ( pArg[0] == '#' ) ? "" : pArg;
-			if ( mode == IMPFLAGS_ITEMS )
+			if ( mode & IMPFLAGS_ITEMS )
 				continue;
 		}
 		if ( m_pCurSer == NULL )
@@ -418,7 +418,7 @@ bool CImportFile::ImportWSC( CScript & s, WORD wModeFlags )
 			break;
 		}
 
-		if ( mode == IMPFLAGS_ITEMS )	// CItem.
+		if ( mode & IMPFLAGS_ITEMS )
 		{
 			if ( s.IsKey("ID" ))
 			{
@@ -524,7 +524,7 @@ bool CImportFile::ImportWSC( CScript & s, WORD wModeFlags )
 			}
 		}
 
-		if ( mode == IMPFLAGS_CHARS )
+		if ( mode & IMPFLAGS_CHARS )
 		{
 			if ( s.IsKey("NAME" ))
 			{

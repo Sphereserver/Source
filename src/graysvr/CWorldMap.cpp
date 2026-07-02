@@ -151,8 +151,7 @@ CPointMap CWorld::FindTypeNear_Top(const CPointMap &pt, IT_TYPE type, int iDist)
 	CItemBaseDupe *pDupeDef = NULL;
 	CPointMap ptTest;
 
-	CPointMap ptElem[5];
-	memset(ptElem, 0, sizeof(ptElem));
+	CPointMap ptElem[5] = {};
 	ptElem[0].m_z = ptElem[1].m_z = ptElem[2].m_z = ptElem[3].m_z = UO_SIZE_MIN_Z;
 	ptElem[4] = CPointMap(SHRT_MAX, SHRT_MAX, UO_SIZE_MIN_Z);
 	bool fElem[4] = { false, false, false, false };

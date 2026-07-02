@@ -840,9 +840,11 @@ void Packet::readStringNUNICODE(char* buffer, size_t bufferSize, size_t length, 
 size_t Packet::readStringNullASCII(char* buffer, size_t maxlength)
 {
 	ASSERT(buffer != NULL);
+	if ( maxlength == 0 )
+		return 0;
 
 	size_t i;
-	for (i = 0; i < maxlength; ++i)
+	for ( i = 0; i < maxlength - 1; ++i )
 	{
 		buffer[i] = readCharASCII();
 		if (buffer[i] == '\0')
@@ -880,9 +882,11 @@ size_t Packet::readStringNullASCII(WCHAR* buffer, size_t maxlength)
 size_t Packet::readStringNullUNICODE(WCHAR* buffer, size_t maxlength)
 {
 	ASSERT(buffer != NULL);
+	if ( maxlength == 0 )
+		return 0;
 
 	size_t i;
-	for (i = 0; i < maxlength; ++i)
+	for ( i = 0; i < maxlength - 1; ++i )
 	{
 		buffer[i] = readCharUNICODE();
 		if (buffer[i] == '\0')
@@ -913,9 +917,11 @@ size_t Packet::readStringNullUNICODE(char* buffer, size_t bufferSize, size_t max
 size_t Packet::readStringNullNUNICODE(WCHAR* buffer, size_t maxlength)
 {
 	ASSERT(buffer != NULL);
+	if ( maxlength == 0 )
+		return 0;
 
 	size_t i;
-	for (i = 0; i < maxlength; ++i)
+	for (i = 0; i < maxlength - 1; ++i)
 	{
 		buffer[i] = readCharNUNICODE();
 		if (buffer[i] == '\0')
@@ -946,7 +952,7 @@ size_t Packet::readStringNullNUNICODE(char* buffer, size_t bufferSize, size_t ma
 void Packet::dump(AbstractString& output) const
 {
 	TemporaryString z;
-	snprintf(z, 64, "Packet len=%" FMTSIZE_T " id=0x%02x [%s]\n", m_length, m_buffer[0], CGTime::GetCurrentTime().Format(NULL));
+	snprintf(z, 64, "Packet len=%zu id=0x%02x [%s]\n", m_length, m_buffer[0], CGTime::GetCurrentTime().Format(NULL));
 	output.append(z);
 	output.append("        0  1  2  3  4  5  6  7   8  9  A  B  C  D  E  F\n");
 	output.append("       -- -- -- -- -- -- -- --  -- -- -- -- -- -- -- --\n");
@@ -1102,8 +1108,6 @@ PacketSend::PacketSend(const PacketSend *other)
 
 void PacketSend::initLength(void)
 {
-//	DEBUGNETWORK(("Packet %x starts dynamic with pos %ld.\n", m_buffer[0], m_position));
-
 	m_lengthPosition = m_position;
 	writeInt16(static_cast<WORD>(m_lengthPosition));
 }
@@ -1112,8 +1116,6 @@ void PacketSend::fixLength()
 {
 	if (m_lengthPosition > 0)
 	{
-//		DEBUGNETWORK(("Packet %x closes dynamic data writing %ld as length to pos %d.\n", m_buffer[0], m_position, m_lengthPosition));
-
 		size_t oldPosition = m_position;
 		m_position = m_lengthPosition;
 		writeInt16(static_cast<WORD>(oldPosition));
@@ -1162,7 +1164,7 @@ void PacketSend::push(const CClient *client, bool appendTransaction)
 	{
 		// since we are pushing this packet, we should clear the memory
 		// instantly if this packet will never be sent
-		DEBUGNETWORK(("Packet deleted due to exceeding maximum packet size (%" FMTSIZE_T "/%u).\n", m_length, NETWORK_MAXPACKETLEN));
+		DEBUGNETWORK(("Packet deleted due to exceeding maximum packet size (%zu/%u)\n", m_length, NETWORK_MAXPACKETLEN));
 		delete this;
 		return;
 	}

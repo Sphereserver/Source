@@ -395,6 +395,8 @@ LPCTSTR CItemStone::GetAlignName() const
 		case IT_STONE_TOWN:
 			snprintf(szName, sizeof(szName), "TOWNSCONFIG_ALIGN_%d", m_itStone.m_align);
 			break;
+		default:
+			break;
 	}
 
 	CVarDefCont *pVar = g_Exp.m_VarDefs.GetKey(szName);
@@ -620,6 +622,8 @@ bool CItemStone::CheckValidMember(CStoneMember *pMember)
 				break;
 			return true;
 		}
+		default:
+			break;
 	}
 
 	DEBUG_ERR(("Stone UID=0%" FMTDWORDH " has mislinked member UID=0%" FMTDWORDH "\n", static_cast<DWORD>(GetUID()), static_cast<DWORD>(pMember->m_uidLinkTo)));
@@ -1063,7 +1067,7 @@ void CItemStone::r_Write(CScript &s)
 	{
 		if ( !m_sCharter[i].IsEmpty() )
 		{
-			snprintf(szTemp, sizeof(szTemp), "CHARTER%" FMTSIZE_T, i);
+			snprintf(szTemp, sizeof(szTemp), "CHARTER%zu", i);
 			s.WriteKey(szTemp, m_sCharter[i]);
 		}
 	}
