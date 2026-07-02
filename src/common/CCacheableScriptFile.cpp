@@ -32,11 +32,11 @@ bool CCacheableScriptFile::OpenBase(void *pExtra)
 	size_t iLen;
 	bool fFirstLine = true, fUTF = false;
 
-	while ( !feof(m_pStream) )
+	while ( fgets(pszBuffer, SCRIPT_MAX_LINE_LEN, m_pStream) )
 	{
-		pszBuffer.setAt(0, '\0');
-		fgets(pszBuffer, SCRIPT_MAX_LINE_LEN, m_pStream);
 		iLen = strlen(pszBuffer);
+		if ( iLen == 0 )
+			continue;
 
 		// First line may contain UTF marker
 		if ( fFirstLine && (iLen >= 3) && (pszBuffer[0] == 0xEF) && (pszBuffer[1] == 0xBB) && (pszBuffer[2] == 0xBF) )

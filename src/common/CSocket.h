@@ -3,8 +3,6 @@
 #pragma once
 
 #ifdef _WIN32
-	#undef FD_SETSIZE
-	#define FD_SETSIZE 1024		// for max of N users (default = 64)
 	#include <WS2tcpip.h>
 #else
 	#include <arpa/inet.h>

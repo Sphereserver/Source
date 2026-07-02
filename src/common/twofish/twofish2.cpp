@@ -20,12 +20,11 @@ Notes:
 
 ***************************************************************************/
 
-#ifndef _WIN32
-// Sphere linux build is compiled using GCC optimization flag -Os, but for
-// some unknown reason this optimization level could break twofish, making
-// Sphere crash. So use less optimization here (flag -O1 instead -Os)
+#ifdef __GNUC__
+// Sphere linux build is compiled using GCC optimization flags, but for some
+// unknown reason these optimizations can break twofish, making Sphere crash.
+// So use less optimization here
 #pragma GCC optimize ("O1")
-#pragma GCC diagnostic ignored "-Waggressive-loop-optimizations"
 #endif
 
 #include	"aes.h"

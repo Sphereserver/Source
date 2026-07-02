@@ -5,14 +5,9 @@
 // System definitions
 
 #ifdef _WIN32
-	// NOTE: If we want a max number of sockets we must compile for it
-	#undef FD_SETSIZE
-	#define FD_SETSIZE 1024	// for max of n users ! default = 64
-
 	#ifndef STRICT
 		#define STRICT		// strict conversion of handlers and pointers
 	#endif
-
 	#include <WinSock2.h>
 	extern const OSVERSIONINFO *GRAY_GetOSInfo();
 #else

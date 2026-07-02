@@ -518,44 +518,44 @@ void CRegionBase::r_Write(CScript &s)
 	r_WriteBase(s);
 }
 
-enum RC_TYPE
+enum RGNC_TYPE
 {
-	RC_ANNOUNCE,
-	RC_ARENA,
-	RC_BUILDABLE,
-	RC_CLIENTS,
-	RC_COLDCHANCE,
-	RC_EVENTS,
-	RC_FLAGS,
-	RC_GATE,
-	RC_GROUP,
-	RC_GUARDED,
-	RC_ISEVENT,
-	RC_MAGIC,
-	RC_MAP,
-	RC_MARK,
-	RC_NAME,
-	RC_NOBUILD,
-	RC_NODECAY,
-	RC_NOPVP,
-	RC_P,
-	RC_RAINCHANCE,
-	RC_RECALL,
-	RC_RECALLIN,
-	RC_RECALLOUT,
-	RC_RECT,
-	RC_SAFE,
-	RC_TAG,
-	RC_TAG0,
-	RC_TAGAT,
-	RC_TAGCOUNT,
-	RC_TYPE,
-	RC_UID,
-	RC_UNDERGROUND,
-	RC_QTY
+	RGNC_ANNOUNCE,
+	RGNC_ARENA,
+	RGNC_BUILDABLE,
+	RGNC_CLIENTS,
+	RGNC_COLDCHANCE,
+	RGNC_EVENTS,
+	RGNC_FLAGS,
+	RGNC_GATE,
+	RGNC_GROUP,
+	RGNC_GUARDED,
+	RGNC_ISEVENT,
+	RGNC_MAGIC,
+	RGNC_MAP,
+	RGNC_MARK,
+	RGNC_NAME,
+	RGNC_NOBUILD,
+	RGNC_NODECAY,
+	RGNC_NOPVP,
+	RGNC_P,
+	RGNC_RAINCHANCE,
+	RGNC_RECALL,
+	RGNC_RECALLIN,
+	RGNC_RECALLOUT,
+	RGNC_RECT,
+	RGNC_SAFE,
+	RGNC_TAG,
+	RGNC_TAG0,
+	RGNC_TAGAT,
+	RGNC_TAGCOUNT,
+	RGNC_TYPE,
+	RGNC_UID,
+	RGNC_UNDERGROUND,
+	RGNC_QTY
 };
 
-const LPCTSTR CRegionBase::sm_szLoadKeys[RC_QTY + 1] =	// static
+const LPCTSTR CRegionBase::sm_szLoadKeys[RGNC_QTY + 1] =	// static
 {
 	"ANNOUNCE",
 	"ARENA",
@@ -603,16 +603,16 @@ bool CRegionBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 
 	switch ( index )
 	{
-		case RC_ANNOUNCE:
+		case RGNC_ANNOUNCE:
 			sVal.FormatVal(IsFlag(REGION_FLAG_ANNOUNCE));
 			break;
-		case RC_ARENA:
+		case RGNC_ARENA:
 			sVal.FormatVal(IsFlag(REGION_FLAG_ARENA));
 			break;
-		case RC_BUILDABLE:
+		case RGNC_BUILDABLE:
 			sVal.FormatVal(!IsFlag(REGION_FLAG_NOBUILDING));
 			break;
-		case RC_CLIENTS:
+		case RGNC_CLIENTS:
 		{
 			size_t iClients = 0;
 			for ( int i = 0; ; ++i )
@@ -625,58 +625,58 @@ bool CRegionBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatUVal(iClients);
 			break;
 		}
-		case RC_EVENTS:
+		case RGNC_EVENTS:
 			m_Events.WriteResourceRefList(sVal);
 			break;
-		case RC_FLAGS:
+		case RGNC_FLAGS:
 			sVal.FormatHex(GetRegionFlags());
 			break;
-		case RC_GATE:
+		case RGNC_GATE:
 			sVal.FormatVal(!IsFlag(REGION_ANTIMAGIC_GATE));
 			break;
-		case RC_GROUP:
+		case RGNC_GROUP:
 			sVal = m_sGroup;
 			break;
-		case RC_GUARDED:
+		case RGNC_GUARDED:
 			sVal.FormatVal(IsFlag(REGION_FLAG_GUARDED));
 			break;
-		case RC_ISEVENT:
+		case RGNC_ISEVENT:
 			if ( pszKey[7] != '.' )
 				return false;
 			pszKey += 8;
 			sVal.FormatVal(m_Events.ContainsResourceName(RES_EVENTS, pszKey));
 			return true;
-		case RC_MAGIC:
+		case RGNC_MAGIC:
 			sVal.FormatVal(!IsFlag(REGION_ANTIMAGIC_ALL));
 			break;
-		case RC_MAP:
+		case RGNC_MAP:
 			sVal.FormatVal(m_pt.m_map);
 			break;
-		case RC_MARK:
-		case RC_RECALLIN:
+		case RGNC_MARK:
+		case RGNC_RECALLIN:
 			sVal.FormatVal(!IsFlag(REGION_ANTIMAGIC_RECALL_IN));
 			break;
-		case RC_NAME:
+		case RGNC_NAME:
 			// The previous name was really the DEFNAME?
 			sVal = GetName();
 			break;
-		case RC_NOBUILD:
+		case RGNC_NOBUILD:
 			sVal.FormatVal(IsFlag(REGION_FLAG_NOBUILDING));
 			break;
-		case RC_NODECAY:
+		case RGNC_NODECAY:
 			sVal.FormatVal(IsFlag(REGION_FLAG_NODECAY));
 			break;
-		case RC_NOPVP:
+		case RGNC_NOPVP:
 			sVal.FormatVal(IsFlag(REGION_FLAG_NO_PVP));
 			break;
-		case RC_P:
+		case RGNC_P:
 			sVal = m_pt.WriteUsed();
 			break;
-		case RC_RECALL:
-		case RC_RECALLOUT:
+		case RGNC_RECALL:
+		case RGNC_RECALLOUT:
 			sVal.FormatVal(!IsFlag(REGION_ANTIMAGIC_RECALL_OUT));
 			break;
-		case RC_RECT:
+		case RGNC_RECT:
 		{
 			pszKey += 4;
 			if ( *pszKey == '\0' )
@@ -697,22 +697,22 @@ bool CRegionBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal = m_Rects.IsValidIndex(iRect) ? m_Rects[iRect].Write() : "0";
 			return true;
 		}
-		case RC_SAFE:
+		case RGNC_SAFE:
 			sVal.FormatVal(IsFlag(REGION_FLAG_SAFE));
 			break;
-		case RC_TAG:
+		case RGNC_TAG:
 			if ( pszKey[3] != '.' )
 				return false;
 			pszKey += 4;
 			sVal = m_TagDefs.GetKeyStr(pszKey, false);
 			return true;
-		case RC_TAG0:
+		case RGNC_TAG0:
 			if ( pszKey[4] != '.' )
 				return false;
 			pszKey += 5;
 			sVal = m_TagDefs.GetKeyStr(pszKey, true);
 			return true;
-		case RC_TAGAT:
+		case RGNC_TAGAT:
 		{
 			pszKey += 5;
 			if ( *pszKey == '.' )
@@ -745,10 +745,10 @@ bool CRegionBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			}
 			return false;
 		}
-		case RC_TAGCOUNT:
+		case RGNC_TAGCOUNT:
 			sVal.FormatVal(static_cast<long>(m_TagDefs.GetCount()));
 			break;
-		case RC_TYPE:
+		case RGNC_TYPE:
 		{
 			const CItemBase *pItemBase = NULL;
 			const CItem *pItem = GetResourceID().ItemFind();
@@ -758,13 +758,13 @@ bool CRegionBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal = pItemBase ? pItemBase->GetResourceName() : "";
 			break;
 		}
-		case RC_UID:
+		case RGNC_UID:
 			if ( pszKey[3] == '.' )		// allow use of UID.x.KEY on the REGION object
 				return CScriptObj::r_WriteVal(pszKey, sVal, pSrc);
 
 			sVal.FormatHex(GetResourceID());
 			break;
-		case RC_UNDERGROUND:
+		case RGNC_UNDERGROUND:
 			sVal.FormatVal(IsFlag(REGION_FLAG_UNDERGROUND));
 			break;
 		default:
@@ -805,69 +805,69 @@ bool CRegionBase::r_LoadVal(CScript &s)
 
 	switch ( index )
 	{
-		case RC_ANNOUNCE:
+		case RGNC_ANNOUNCE:
 			ToggleRegionFlags(REGION_FLAG_ANNOUNCE, (s.GetArgVal() != 0));
 			break;
-		case RC_ARENA:
+		case RGNC_ARENA:
 			ToggleRegionFlags(REGION_FLAG_ARENA, (s.GetArgVal() != 0));
 			break;
-		case RC_BUILDABLE:
+		case RGNC_BUILDABLE:
 			ToggleRegionFlags(REGION_FLAG_NOBUILDING, (s.GetArgVal() != 0));
 			break;
-		case RC_COLDCHANCE:
+		case RGNC_COLDCHANCE:
 			SendSectorsVerb(s.GetKey(), s.GetArgStr(), &g_Serv);
 			break;
-		case RC_EVENTS:
+		case RGNC_EVENTS:
 			SetModified(REGMOD_EVENTS);
 			return m_Events.r_LoadVal(s, RES_REGIONTYPE);
-		case RC_FLAGS:
+		case RGNC_FLAGS:
 			m_dwFlags = (s.GetArgVal() & ~REGION_FLAG_SHIP)|(m_dwFlags & REGION_FLAG_SHIP);
 			SetModified(REGMOD_FLAGS);
 			break;
-		case RC_GATE:
+		case RGNC_GATE:
 			ToggleRegionFlags(REGION_ANTIMAGIC_GATE, (s.GetArgVal() != 0));
 			break;
-		case RC_GROUP:
+		case RGNC_GROUP:
 			m_sGroup = s.GetArgStr();
 			SetModified(REGMOD_GROUP);
 			break;
-		case RC_GUARDED:
+		case RGNC_GUARDED:
 			ToggleRegionFlags(REGION_FLAG_GUARDED, (s.GetArgVal() != 0));
 			break;
-		case RC_MAGIC:
+		case RGNC_MAGIC:
 			ToggleRegionFlags(REGION_ANTIMAGIC_ALL, (s.GetArgVal() != 0));
 			break;
-		case RC_MAP:
+		case RGNC_MAP:
 			m_pt.m_map = static_cast<BYTE>(s.GetArgVal());
 			break;
-		case RC_MARK:
-		case RC_RECALLIN:
+		case RGNC_MARK:
+		case RGNC_RECALLIN:
 			ToggleRegionFlags(REGION_ANTIMAGIC_RECALL_IN, (s.GetArgVal() != 0));
 			break;
-		case RC_NAME:
+		case RGNC_NAME:
 			SetName(s.GetArgStr());
 			SetModified(REGMOD_NAME);
 			break;
-		case RC_NOBUILD:
+		case RGNC_NOBUILD:
 			ToggleRegionFlags(REGION_FLAG_NOBUILDING, (s.GetArgVal() != 0));
 			break;
-		case RC_NODECAY:
+		case RGNC_NODECAY:
 			ToggleRegionFlags(REGION_FLAG_NODECAY, (s.GetArgVal() != 0));
 			break;
-		case RC_NOPVP:
+		case RGNC_NOPVP:
 			ToggleRegionFlags(REGION_FLAG_NO_PVP, (s.GetArgVal() != 0));
 			break;
-		case RC_P:
+		case RGNC_P:
 			m_pt.Read(s.GetArgStr());
 			break;
-		case RC_RAINCHANCE:
+		case RGNC_RAINCHANCE:
 			SendSectorsVerb(s.GetKey(), s.GetArgStr(), &g_Serv);
 			break;
-		case RC_RECALL:
-		case RC_RECALLOUT:
+		case RGNC_RECALL:
+		case RGNC_RECALLOUT:
 			ToggleRegionFlags(REGION_ANTIMAGIC_RECALL_OUT, (s.GetArgVal() != 0));
 			break;
-		case RC_RECT:
+		case RGNC_RECT:
 		{
 			if ( m_iLinkedSectors )
 				return false;
@@ -876,10 +876,10 @@ bool CRegionBase::r_LoadVal(CScript &s)
 			rect.Read(s.GetArgStr());
 			return AddRegionRect(rect);
 		}
-		case RC_SAFE:
+		case RGNC_SAFE:
 			ToggleRegionFlags(REGION_FLAG_SAFE, (s.GetArgVal() != 0));
 			break;
-		case RC_UNDERGROUND:
+		case RGNC_UNDERGROUND:
 			ToggleRegionFlags(REGION_FLAG_UNDERGROUND, (s.GetArgVal() != 0));
 			break;
 		default:
@@ -894,14 +894,14 @@ bool CRegionBase::r_LoadVal(CScript &s)
 	return false;
 }
 
-enum RV_TYPE
+enum RGNV_TYPE
 {
-	RV_ALLCLIENTS,
-	RV_TAGLIST,
-	RV_QTY
+	RGNV_ALLCLIENTS,
+	RGNV_TAGLIST,
+	RGNV_QTY
 };
 
-const LPCTSTR CRegionBase::sm_szVerbKeys[RV_QTY + 1] =
+const LPCTSTR CRegionBase::sm_szVerbKeys[RGNV_QTY + 1] =
 {
 	"ALLCLIENTS",
 	"TAGLIST",
@@ -940,7 +940,7 @@ bool CRegionBase::r_Verb(CScript &s, CTextConsole *pSrc)	// execute command from
 
 	switch ( index )
 	{
-		case RV_ALLCLIENTS:
+		case RGNV_ALLCLIENTS:
 		{
 			ClientIterator it;
 			for ( CClient *pClient = it.next(); pClient != NULL; pClient = it.next() )
@@ -954,7 +954,7 @@ bool CRegionBase::r_Verb(CScript &s, CTextConsole *pSrc)	// execute command from
 			}
 			return true;
 		}
-		case RV_TAGLIST:
+		case RGNV_TAGLIST:
 		{
 			m_TagDefs.DumpKeys(pSrc, "TAG.");
 			return true;
@@ -1045,15 +1045,15 @@ void CRegionWorld::r_Write(CScript &s)
 	r_WriteBase(s);
 }
 
-enum RWC_TYPE
+enum RGNWC_TYPE
 {
-	RWC_DEFNAME,
-	RWC_REGION,
-	RWC_RESOURCES,
-	RWC_QTY
+	RGNWC_DEFNAME,
+	RGNWC_REGION,
+	RGNWC_RESOURCES,
+	RGNWC_QTY
 };
 
-const LPCTSTR CRegionWorld::sm_szLoadKeys[RWC_QTY + 1] =	// static
+const LPCTSTR CRegionWorld::sm_szLoadKeys[RGNWC_QTY + 1] =	// static
 {
 	"DEFNAME",
 	"REGION",
@@ -1068,13 +1068,13 @@ bool CRegionWorld::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc
 
 	switch ( FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1) )
 	{
-		case RWC_DEFNAME:
+		case RGNWC_DEFNAME:
 			sVal = GetResourceName();
 			break;
-		case RWC_RESOURCES:
+		case RGNWC_RESOURCES:
 			m_Events.WriteResourceRefList(sVal);
 			break;
-		case RWC_REGION:
+		case RGNWC_REGION:
 		{
 			if ( pszKey[6] && (pszKey[6] != '.') )
 				return false;
@@ -1112,9 +1112,9 @@ bool CRegionWorld::r_LoadVal(CScript &s)
 	// Load region values from scripts
 	switch ( FindTableHeadSorted(s.GetKey(), sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1) )
 	{
-		case RWC_DEFNAME:
+		case RGNWC_DEFNAME:
 			return SetResourceName(s.GetArgStr());
-		case RWC_RESOURCES:
+		case RGNWC_RESOURCES:
 			SetModified(REGMOD_EVENTS);
 			return m_Events.r_LoadVal(s, RES_REGIONTYPE);
 		default:

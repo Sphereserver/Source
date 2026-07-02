@@ -19,10 +19,6 @@
 	#define MAKEDWORD(l, h)		((DWORD)(((WORD)(l))|(((DWORD)((WORD)(h))) << 16)))
 #endif
 
-#ifndef COUNTOF
-	#define COUNTOF(a)	(sizeof(a) / sizeof(a[0]))
-#endif
-
 #define IsDigit(c)		isdigit((unsigned char)(c))
 #define IsSpace(c)		isspace((unsigned char)(c))
 #define IsAlpha(c)		isalpha((unsigned char)(c))
@@ -33,14 +29,19 @@
 
 #define IMULDIV(a, b, c)		(((((LONGLONG)(a) * (LONGLONG)(b)) + ((c) / 2)) / (c)) - IsNegative((LONGLONG)(a) * (LONGLONG)(b)) )
 
+#define FMTSIZE_T		"zu"
+
 #ifdef _WIN32
 	typedef void		THREAD_ENTRY_RET;
 	#define FMTDWORD	"lu"	// Windows uses '%lu' to format dec DWORD (unsigned long)
 	#define FMTDWORDH	"lx"	// Windows uses '%lx' to format hex DWORD (unsigned long)
-	#define FMTSIZE_T	"Iu"	// Windows uses '%Iu' to format 'size_t'
 
 	#define strcmpi		_strcmpi
 	#define strnicmp	_strnicmp
+
+	#ifndef COUNTOF
+		#define COUNTOF(a)	_countof(a)
+	#endif
 
 	#ifndef STDFUNC_FILENO
 		#define STDFUNC_FILENO(a)	_get_osfhandle(_fileno(a))
@@ -57,10 +58,20 @@
 	typedef void		*THREAD_ENTRY_RET;
 	#define FMTDWORD	"u"		// Linux uses '%u' to format dec DWORD (unsigned long)
 	#define FMTDWORDH	"x"		// Linux uses '%x' to format hex DWORD (unsigned int)
-	#define FMTSIZE_T	"zu"	// Linux uses '%zu' to format 'size_t'
 
 	#define strcmpi		strcasecmp
 	#define strnicmp	strncasecmp
+
+	#ifndef COUNTOF
+		// Ported from Windows _countof() macro defined in vcruntime.h
+		#ifdef __cplusplus
+			template <typename _CountofType, size_t _SizeOfArray>
+			char (*__countof_helper(_CountofType (&a)[_SizeOfArray]))[_SizeOfArray];
+			#define COUNTOF(a)	(sizeof(*__countof_helper(a)) + 0)
+		#else
+			#define COUNTOF(a)	(sizeof(a) / sizeof(a[0]))
+		#endif
+	#endif
 
 	#ifndef STDFUNC_FILENO
 		#define STDFUNC_FILENO		fileno

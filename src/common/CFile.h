@@ -128,7 +128,11 @@ public:
 	{
 		return (m_hFile != NOFILE_HANDLE);
 	}
-	virtual bool Open(LPCTSTR pszFileName = NULL, UINT uMode = OF_READ|OF_SHARE_DENY_NONE, void *pExtra = NULL);
+	virtual bool Open(LPCTSTR pszFileName = NULL, UINT uMode = OF_READ|OF_SHARE_DENY_NONE)
+	{
+		return CGFile::Open(pszFileName, uMode, NULL);
+	}
+	virtual bool Open(LPCTSTR pszFileName, UINT uMode, void *pExtra);
 	virtual void Close();
 
 private:

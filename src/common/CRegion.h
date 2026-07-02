@@ -126,6 +126,10 @@ public:
 	void UnRealizeRegion();
 	bool MakeRegionName();
 
+	virtual bool AddRegionRect(const CGRect &rect)
+	{
+		return CGRegion::AddRegionRect(rect);
+	}
 	bool AddRegionRect(const CRectMap &rect);
 	bool SetRegionRect(const CRectMap &rect)
 	{
