@@ -3,12 +3,7 @@
 #pragma once
 
 #ifndef _WIN32
-#ifdef _USECURSES
-	#include <curses.h>
-	#pragma comment(lib, "ncurses")
-#else
-	#include <termios.h>
-#endif
+#include <termios.h>
 
 class CUnixTerminal
 {
@@ -16,13 +11,8 @@ public:
 	static const char *m_sClassName;
 
 private:
-#ifdef _USECURSES
-	WINDOW *m_pWindow;
-#else
 	termios m_terminal;
-#endif
 	TCHAR m_szNextChar;
-	bool m_fColorEnabled;
 	bool m_fPrepared;
 
 public:
@@ -49,11 +39,6 @@ public:
 	void setColor(COLOR_TYPE color);
 	void print(LPCTSTR pszText);
 	void prepare();
-
-	bool isColorEnabled() const
-	{
-		return m_fColorEnabled;
-	}
 
 private:
 	void restore();

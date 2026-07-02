@@ -411,23 +411,18 @@ int CServer::PrintPercent(long iCount, long iTotal)
 		PrintTelnet(szTemp);
 
 #ifndef _WIN32
-	if ( g_UnixTerminal.isColorEnabled() )
+	SysMessage(szTemp);
+#endif
+	size_t iLen = strlen(szTemp);
+	while ( iLen > 0 )	// backspace it
 	{
-		SysMessage(szTemp);
-#endif
-		size_t iLen = strlen(szTemp);
-		while ( iLen > 0 )	// backspace it
-		{
-			if ( m_iTelnetClients )
-				PrintTelnet("\x08");
+		if ( m_iTelnetClients )
+			PrintTelnet("\x08");
 #ifndef _WIN32
-			SysMessage("\x08");
+		SysMessage("\x08");
 #endif
-			--iLen;
-		}
-#ifndef _WIN32
+		--iLen;
 	}
-#endif
 
 #ifdef _WIN32
 	NTWindow_SetWindowTitle(szTemp);
