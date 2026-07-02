@@ -3,14 +3,9 @@
 #pragma once
 
 #include "../graysvr/graysvr.h"
-#ifndef _WIN32
-	#include <deque>
-	#include <list>
-	#include <algorithm>
-#endif
-
-using std::deque;
-using std::list;
+#include <algorithm>
+#include <deque>
+#include <list>
 
 class CPathFinderPointRef;
 

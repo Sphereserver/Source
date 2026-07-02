@@ -14,11 +14,15 @@ Project can be compiled on Windows (Visual Studio) and Linux (GCC)
 * Open the project file `SphereSvr.vcxproj` using Visual Studio
 * On top menu, select the build configuration (Debug/Local/Nightly/Release), platform (x86/x64), and click on `Build > Build Solution` to compile
 
-#### NOTES:
-* Required version: VS2015 or later (VS Code is not supported)
-* When using VS >= 2017:
-  * When opening `SphereSvr.vcxproj` for the first time it will request an update on project file, just click OK to update (if update request doesn't get opened automatically, just open it on `Project > Retarget solution`)
-  * Newest VS have an modular installation which comes with just basic components, and extra components must be installed as needed. To compile Sphere you must open `Visual Studio Installer` to install `Desktop Development with C++` workload
+#### Requirements:
+* Windows 10 or later / Windows Server 2016 or later
+* Visual Studio 2022 or later (VS Code is not supported)
+* Open `Visual Studio Installer` menu, click on "Modify" and install these components:
+  * Workload: `Desktop Development with C++`
+  * Individual component: `MSVC v143 - VS 2022 C++ x64/x86 build tools`
+
+> [!NOTE]
+> The project uses `MSVC v143` from VS 2022 for backward compatibility. When using VS newer than 2022, you can either choose to update the project on `Project > Retarget solution` to use the latest version already installed (e.g., `MSVC v145` from VS 2026), or install the `MSVC v143` individual component and safely ignore the message requesting an update to the latest version
 
 ### Linux (Ubuntu)
 #### Add architecture support
@@ -33,49 +37,27 @@ Project can be compiled on Windows (Visual Studio) and Linux (GCC)
   sudo apt-get dist-upgrade
   ```
 
-#### Install MySQL 5.7 client
-* Ubuntu 14.10 or older:
-  * Default package repository only have support up to MySQL 5.6, so add MySQL 5.7 support
+#### Add MySQL 5.7 support
+* Ubuntu 14.04:
+  * Add MySQL 5.7 support to the package repository
     ```
-    sudo add-apt-repository 'deb http://repo.mysql.com/apt/ubuntu/ precise mysql-5.7'
+    sudo gpg --homedir /tmp --no-default-keyring --keyring /usr/share/keyrings/mysql.gpg --keyserver keyserver.ubuntu.com --recv-keys B7B3B788A8D3785C
+    echo "deb [signed-by=/usr/share/keyrings/mysql.gpg] https://repo.mysql.com/apt/ubuntu/ bionic mysql-5.7" | sudo tee /etc/apt/sources.list.d/mysql.list > /dev/null
     sudo apt-get update
     ```
-  * Install MySQL
-    * To compile 32bit build on 32bit OS or 64bit build on 64bit OS:
-      ```
-      sudo apt-get install libmysqlclient-dev
-      ```
-    * To compile 32bit build on 64bit OS:
-      ```
-      sudo apt-get install libmysqlclient-dev:i386
-      ```
-
-* Ubuntu 15.04 to 19.04:
-  * Install MySQL
-    * To compile 32bit build on 32bit OS or 64bit build on 64bit OS:
-      ```
-      sudo apt-get install libmysqlclient-dev
-      ```
-    * To compile 32bit build on 64bit OS:
-      ```
-      sudo apt-get install libmysqlclient-dev:i386
-      ```
-
-* Ubuntu 19.10 or later:
-  * Default package repository dropped support for MySQL 5.7, so add it back
+* Ubuntu 16.04 to 18.04:
+  * > Skip this step (MySQL 5.7 is already supported)
+* Ubuntu 20.04 or later:
+  * Remove default MySQL package
     ```
-    sudo add-apt-repository 'deb http://repo.mysql.com/apt/ubuntu/ bionic mysql-5.7'
-    sudo apt-get update --allow-insecure-repositories
+    sudo apt-get -q remove libmysqlclient-dev
     ```
-  * Install MySQL
-    * To compile 32bit build on 32bit OS or 64bit build on 64bit OS:
-      ```
-      sudo apt-get install libmysqlclient-dev=5.7*
-      ```
-    * To compile 32bit build on 64bit OS:
-      ```
-      sudo apt-get install libmysqlclient-dev:i386=5.7*
-      ```
+  * Add MySQL 5.7 support to the package repository
+    ```
+    sudo gpg --homedir /tmp --no-default-keyring --keyring /usr/share/keyrings/mysql.gpg --keyserver keyserver.ubuntu.com --recv-keys B7B3B788A8D3785C
+    echo "deb [signed-by=/usr/share/keyrings/mysql.gpg] https://repo.mysql.com/apt/ubuntu/ bionic mysql-5.7" | sudo tee /etc/apt/sources.list.d/mysql.list > /dev/null
+    sudo apt-get update
+    ```
 
 #### Install required packages
 * To compile 32bit build on 32bit OS or 64bit build on 64bit OS:
@@ -84,6 +66,7 @@ Project can be compiled on Windows (Visual Studio) and Linux (GCC)
   sudo apt-get install gcc
   sudo apt-get install g++
   sudo apt-get install make
+  sudo apt-get install libmysqlclient-dev=5.7*
   ```
 * To compile 32bit build on 64bit OS:
   ```
@@ -91,30 +74,39 @@ Project can be compiled on Windows (Visual Studio) and Linux (GCC)
   sudo apt-get install gcc-multilib
   sudo apt-get install g++-multilib
   sudo apt-get install make
+  sudo apt-get install libmysqlclient-dev:i386=5.7*
   ```
 
 ### Linux (CentOS / Red Hat)
 #### Add MySQL 5.7 support
-* Add MySQL support on package repository
+* Add MySQL support to the package repository
   * CentOS 6 / Red Hat 6:
     ```
-    sudo yum localinstall https://dev.mysql.com/get/mysql80-community-release-el6-9.noarch.rpm
+    sudo yum localinstall https://dev.mysql.com/get/mysql80-community-release-el6-11.noarch.rpm
     ```
   * CentOS 7 / Red Hat 7:
     ```
-    sudo yum localinstall https://dev.mysql.com/get/mysql80-community-release-el7-10.noarch.rpm
+    sudo yum localinstall https://dev.mysql.com/get/mysql84-community-release-el7-4.noarch.rpm
     ```
   * CentOS 8 / Red Hat 8:
     ```
-    sudo yum localinstall https://dev.mysql.com/get/mysql80-community-release-el8-8.noarch.rpm
+    sudo yum localinstall https://dev.mysql.com/get/mysql84-community-release-el8-3.noarch.rpm
+    sudo yum module disable mysql
     ```
   * CentOS 9 / Red Hat 9:
     ```
-    sudo yum localinstall https://dev.mysql.com/get/mysql80-community-release-el9-4.noarch.rpm
+    sudo yum localinstall https://dev.mysql.com/get/mysql84-community-release-el9-4.noarch.rpm
+    sudo yum module disable mysql
+    ```
+  * CentOS 10 / Red Hat 10:
+    ```
+    sudo yum localinstall https://dev.mysql.com/get/mysql84-community-release-el10-3.noarch.rpm
+    sudo yum module disable mysql
     ```
 
-* Configure MySQL version on package repository
+* Enable MySQL 5.7 in the package repository
   ```
+  sudo yum-config-manager --disable mysql-8.4-lts-community
   sudo yum-config-manager --disable mysql80-community
   sudo yum-config-manager --enable mysql57-community
   ```
@@ -125,14 +117,14 @@ Project can be compiled on Windows (Visual Studio) and Linux (GCC)
   sudo yum install git
   sudo yum install gcc-c++
   sudo yum install glibc-devel
-  sudo yum install mysql-community-devel mysql-community-libs
+  sudo yum install mysql-community-devel
   ```
 * To compile 32bit build on 64bit OS:
   ```
   sudo yum install git
   sudo yum install gcc-c++
   sudo yum install glibc-devel.i686
-  sudo yum install mysql-community-devel.i686 mysql-community-libs.i686
+  sudo yum install mysql-community-devel.i686
   ```
 
 ### Get the source code
@@ -157,8 +149,8 @@ make NIGHTLY=1
 * Adding/removing/changing anything that was working in one way for years should be followed by an ini setting when the changes can't be replicated on scripts to keep backwards compatibility.
 
 ## Licensing
-Copyright 2023 SphereServer development team
+Copyright 2026 SphereServer development team
 
-Licensed under the Apache License, Version 2.0 (the "License").<br>
-You may not use any file of this project except in compliance with the License.<br>
+Licensed under the Apache License, Version 2.0 (the "License").  
+You may not use any file of this project except in compliance with the License.  
 You may obtain a copy of the License at <https://www.apache.org/licenses/LICENSE-2.0>
