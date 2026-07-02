@@ -164,6 +164,8 @@ void CChar::Stat_SetMax(STAT_TYPE stat, int iVal)
 			case STAT_DEX:
 				UpdateStamFlag();
 				break;
+			default:
+				break;
 		}
 	}
 }
@@ -846,6 +848,8 @@ int CChar::Stat_GetRegenVal(STAT_TYPE stat, bool fGetTicks)
 			break;
 		case STAT_FOOD:
 			pszStat = "FOOD";
+			break;
+		default:
 			break;
 	}
 

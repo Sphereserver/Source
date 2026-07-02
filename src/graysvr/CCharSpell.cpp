@@ -1758,9 +1758,8 @@ void CChar::Spell_Effect_Add(CItem *pSpell)
 			Skill_SetBase(SKILL_MEDITATION, Skill_GetBase(SKILL_MEDITATION) + wStatEffect);
 			return;
 		}
-		//case SPELL_Chameleon:		// 106 // makes your skin match the colors of whatever is behind you.
-		//case SPELL_Shield:		// 113 // erects a temporary force field around you. Nobody approaching will be able to get within 1 tile of you, though you can move close to them if you wish.
-		//	return;
+		default:
+			return;
 	}
 }
 

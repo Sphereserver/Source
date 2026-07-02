@@ -203,6 +203,8 @@ void CClient::SysMessage(LPCTSTR pszMsg) const	// system message (in lower left 
 			new PacketTelnet(this, pszMsg, true);
 			return;
 		}
+		default:
+			return;
 	}
 }
 

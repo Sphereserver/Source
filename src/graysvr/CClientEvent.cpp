@@ -520,14 +520,11 @@ void CClient::Event_Skill_Use(SKILL_TYPE skill)
 			Cmd_Skill_Tracking();
 			break;
 
-		case SKILL_CARTOGRAPHY:
-			// EMPTY. On OSI cartography is not used clicking on the skill button anymore.
-			// This code is empty just for compatibility purposes if someone want customize
-			// the softcoded skill to enable the button again using @Select trigger.
-			break;
-
 		case SKILL_INSCRIPTION:
 			Cmd_Skill_Inscription();
+			break;
+
+		default:
 			break;
 	}
 
@@ -561,8 +558,6 @@ bool CClient::Event_CheckWalkBuffer()
 
 	switch ( m_pChar->m_pPlayer->m_speedMode )
 	{
-		case SPEEDMODE_DEFAULT:
-			break;
 		case SPEEDMODE_FAST:
 			iTimeMin = 70;
 			break;
@@ -571,6 +566,8 @@ bool CClient::Event_CheckWalkBuffer()
 			break;
 		case SPEEDMODE_HYBRID:
 			iTimeMin = 140;
+			break;
+		default:
 			break;
 	}
 
@@ -949,6 +946,8 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t iI
 				}
 				break;
 			}
+			default:
+				break;
 		}
 
 		dwCostTotal += items[i].m_amount * items[i].m_price;
@@ -1034,6 +1033,8 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t iI
 					pItemNew->m_TagDefs.SetNum("NOSAVE", 0, true);
 					break;
 				}
+				default:
+					break;
 			}
 
 			if ( (wAmount > 1) && !pItem->Item_GetDef()->IsStackableType() )
@@ -1613,7 +1614,7 @@ void CClient::Event_Talk(LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, boo
 
 	if ( g_Cfg.m_fSuppressCapitals )
 	{
-		size_t iLen = strlen(szText);
+		iLen = strlen(szText);
 		size_t iCapitals = 0;
 		for ( size_t i = 0; i < iLen; ++i )
 		{
@@ -1685,7 +1686,7 @@ void CClient::Event_TalkUNICODE(NWORD *wszText, int iTextLen, HUE_TYPE wHue, TAL
 
 	if ( g_Cfg.m_fSuppressCapitals )
 	{
-		size_t iLen = strlen(szText);
+		iLen = strlen(szText);
 		size_t iCapitals = 0;
 		for ( size_t i = 0; i < iLen; ++i )
 		{
@@ -2563,6 +2564,8 @@ void CClient::Event_ExtCmd(EXTCMD_TYPE type, TCHAR *pszArgs)
 							return;
 						}
 					}
+					default:
+						break;
 				}
 			}
 			return;
@@ -2613,7 +2616,7 @@ bool CClient::xPacketFilter(const BYTE *pData, size_t iLen)
 	TCHAR idx[5];
 	for ( size_t i = 0; i < iLen; ++i )
 	{
-		snprintf(idx, sizeof(idx), "%" FMTSIZE_T, i);
+		snprintf(idx, sizeof(idx), "%zu", i);
 		Args.m_VarsLocal.SetNum(idx, static_cast<int>(pData[i]));
 	}
 
@@ -2658,7 +2661,7 @@ bool CClient::xOutPacketFilter(const BYTE *pData, size_t iLen)
 	TCHAR idx[5];
 	for ( size_t i = 0; i < iLen; ++i )
 	{
-		snprintf(idx, sizeof(idx), "%" FMTSIZE_T, i);
+		snprintf(idx, sizeof(idx), "%zu", i);
 		Args.m_VarsLocal.SetNum(idx, static_cast<int>(pData[i]));
 	}
 

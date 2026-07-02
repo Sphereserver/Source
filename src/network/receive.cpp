@@ -1027,8 +1027,7 @@ bool PacketVendorBuyReq::onReceive(NetState* net)
 	size_t itemCount = minimum((packetLength - 8) / 7, MAX_ITEMS_CONT);
 
 	// combine goods into one list
-	VendorItem items[MAX_ITEMS_CONT];
-	memset(items, 0, sizeof(items));
+	VendorItem items[MAX_ITEMS_CONT] = {};
 	int iConvertFactor = pVendor->NPC_GetVendorMarkup();
 
 	CItemVendable *item = NULL;
@@ -1771,6 +1770,8 @@ bool PacketCreateNew::onReceive(NetState* net)
 	// a profession is selected, so here we must translate the selected profession -> skills
 	switch ( profession )
 	{
+		case PROFESSION_ADVANCED:
+			break;
 		case PROFESSION_WARRIOR:
 			strength = 45;
 			dexterity = 35;
@@ -2092,9 +2093,7 @@ bool PacketVendorSellReq::onReceive(NetState* net)
 		return true;
 	}
 
-	VendorItem items[MAX_ITEMS_CONT];
-	memset(items, 0, sizeof(items));
-
+	VendorItem items[MAX_ITEMS_CONT] = {};
 	for ( size_t i = 0; i < itemCount; ++i )
 	{
 		items[i].m_serial = static_cast<CGrayUID>(readInt32());
@@ -2219,15 +2218,16 @@ bool PacketGumpValueInputResponse::onReceive(NetState* net)
 	if (!object)
 		return true;
 
-	TCHAR *pszFix;
-	if ( (pszFix = strchr(text, '\n')) != NULL )
-		*pszFix = '\0';
-	if ( (pszFix = strchr(text, '\r')) != NULL )
-		*pszFix = '\0';
-	if ( (pszFix = strchr(text, '\t')) != NULL )
-		*pszFix = ' ';
-	if ( (pszFix = strchr(text, '#')) != NULL )
-		*pszFix = ' ';
+	for ( TCHAR *ch = text; *ch != '\0'; ++ch )
+	{
+		if ( (*ch == '\n') || (*ch == '\r') )
+		{
+			*ch = '\0';
+			break;
+		}
+		else if ( (*ch == '\t') || (*ch == '#') )
+			*ch = ' ';
+	}
 
 	// take action based on the parent context
 	if (action == 1) // ok
@@ -2409,13 +2409,16 @@ bool PacketGumpDialogRet::onReceive(NetState* net)
 
 		readStringNUNICODE(text, THREAD_STRING_LENGTH, length, false);
 
-		TCHAR* fix;
-		if ((fix = strchr(text, '\n')) != NULL)
-			*fix = '\0';
-		if ((fix = strchr(text, '\r')) != NULL)
-			*fix = '\0';
-		if ((fix = strchr(text, '\t')) != NULL)
-			*fix = ' ';
+		for ( TCHAR *ch = text; *ch != '\0'; ++ch )
+		{
+			if ( (*ch == '\n') || (*ch == '\r') )
+			{
+				*ch = '\0';
+				break;
+			}
+			else if ( *ch == '\t' )
+				*ch = ' ';
+		}
 
 		resp.AddText(id, text);
 	}

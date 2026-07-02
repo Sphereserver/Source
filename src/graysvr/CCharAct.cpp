@@ -739,6 +739,8 @@ void CChar::UpdateStatVal(STAT_TYPE stat, int iChange, int iLimit)
 		case STAT_DEX:
 			UpdateStamFlag();
 			break;
+		default:
+			break;
 	}
 }
 
@@ -786,6 +788,8 @@ ANIM_TYPE CChar::GenerateAnimate(ANIM_TYPE action, bool fTranslate)
 					break;
 				case IT_WEAPON_WHIP:
 					action = ANIM_ATTACK_1H_BASH;
+					break;
+				default:
 					break;
 			}
 		}
@@ -980,6 +984,8 @@ bool CChar::UpdateAnimate(ANIM_TYPE action, bool fTranslate, bool fBackward, BYT
 				case IT_WEAPON_WHIP:
 					subaction = NANIM_ATTACK_1H_BASH;
 					break;
+				default:
+					break;
 			}
 		}
 		else
@@ -1046,6 +1052,8 @@ bool CChar::UpdateAnimate(ANIM_TYPE action, bool fTranslate, bool fBackward, BYT
 				case ANIM_EAT:
 					action1 = NANIM_EAT;
 					break;
+				default:
+					break;
 			}
 		}
 	}
@@ -1059,6 +1067,8 @@ bool CChar::UpdateAnimate(ANIM_TYPE action, bool fTranslate, bool fBackward, BYT
 			break;
 		case ANIM_DIE_FORWARD:
 			action1 = NANIM_DEATH;
+			break;
+		default:
 			break;
 	}
 	PacketAction *cmdOld = new PacketAction(this, action, 1, fBackward, iFrameDelay, iAnimLen);
@@ -1282,6 +1292,8 @@ void CChar::SoundChar(CRESND_TYPE type)
 				return Sound(pCharDef->m_soundDie);
 			break;
 		}
+		default:
+			break;
 	}
 
 	SOUND_TYPE id = pCharDef->m_soundBase;

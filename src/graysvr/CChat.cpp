@@ -1137,7 +1137,7 @@ size_t CChatMember::FindIgnoringIndex(LPCTSTR pszName) const
 CClient *CChatMember::GetClient()
 {
 	ADDTOCALLSTACK("CChatMember::GetClient");
-	return static_cast<CClient *>(this);
+	return dynamic_cast<CClient *>(this);
 }
 
 LPCTSTR CChatMember::GetChatName()

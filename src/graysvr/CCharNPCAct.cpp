@@ -1646,6 +1646,8 @@ bool CChar::NPC_FightCast(CObjBase *&pTarg, CObjBase *pSrc, SPELL_TYPE &spell)
 							if ( !pTarget->LayerFind(LAYER_SPELL_STATS) )
 								fSpellSuits = true;
 							break;
+						default:
+							break;
 					}
 
 					if ( fSpellSuits )
@@ -2190,6 +2192,8 @@ bool CChar::NPC_Act_Food()
 					}
 					break;
 				}
+				default:
+					break;
 			}
 		}
 	}

@@ -321,6 +321,8 @@ LPCTSTR CChar::Noto_GetFameTitle() const
 					return g_Cfg.GetDefaultMsg(DEFMSG_TITLE_DEV);
 				case PLEVEL_GM:
 					return g_Cfg.GetDefaultMsg(DEFMSG_TITLE_GM);
+				default:
+					break;
 			}
 		}
 		switch ( GetPrivLevel() )
@@ -329,6 +331,8 @@ LPCTSTR CChar::Noto_GetFameTitle() const
 				return g_Cfg.GetDefaultMsg(DEFMSG_TITLE_SEER);
 			case PLEVEL_Counsel:
 				return g_Cfg.GetDefaultMsg(DEFMSG_TITLE_COUNSEL);
+			default:
+				break;
 		}
 	}
 
@@ -1057,6 +1061,8 @@ bool CChar::Skill_Snoop_Check(const CItemContainer *pItem)
 			case IT_EQ_BANK_BOX:
 				// Some sort of cheater
 				return false;
+			default:
+				break;
 		}
 	}
 
@@ -2009,6 +2015,8 @@ bool CChar::Fight_IsActive() const
 		case SKILL_WRESTLING:
 		case SKILL_THROWING:
 			return true;
+		default:
+			break;
 	}
 
 	if ( iSkillActive == Fight_GetWeaponSkill() )
@@ -2575,6 +2583,8 @@ WAR_SWING_TYPE CChar::Fight_Hit(CChar *pCharTarg)
 							case IT_WEAPON_XBOW:
 								iTyp |= DAMAGE_HIT_PIERCE;
 								break;
+							default:
+								break;
 						}
 					}
 				}
@@ -2649,6 +2659,8 @@ WAR_SWING_TYPE CChar::Fight_Hit(CChar *pCharTarg)
 				case IT_WEAPON_BOW:
 				case IT_WEAPON_XBOW:
 					iTyp |= DAMAGE_HIT_PIERCE;
+					break;
+				default:
 					break;
 			}
 		}
