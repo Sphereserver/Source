@@ -5,11 +5,7 @@ LINKER_FLAGS		= -s
 OPTIMIZATION_FLAGS	= -Os -ffast-math -fno-strict-aliasing -fno-omit-frame-pointer
 O_WARNING_FLAGS		= -Wall -Wno-maybe-uninitialized -Wno-switch -Wno-unused-result
 CO_WARNING_FLAGS	= -Wall -Wno-implicit-function-declaration -Wno-unused-result
-ifdef x86
-	ARCH_FLAGS	= -m32 -Dx86
-else
-	ARCH_FLAGS	= -m64 -Dx64
-endif
+ARCH_FLAGS		= -m64 -Dx64
 
 ifdef NIGHTLY
 	BUILD_DEFS	= -D_NIGHTLYBUILD

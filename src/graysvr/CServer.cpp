@@ -342,12 +342,6 @@ bool CServer::Load()
 					"for testing purposes. It have extra debug behaviors that are useful for development but\n"
 					"will decrease server performance. Do not use it on live servers.\n\n");
 #endif
-#ifdef _PRIVATEBUILD
-	g_Log.EventWarn("\n"
-					"This is a CUSTOM build of SphereServer. Custom builds are non-official builds, which\n"
-					"have custom changes on source code not verified by official Sphere development team.\n"
-					"Use it at your own risk.\n\n");
-#endif
 
 	EXC_SET("loading scripts");
 	TriglistInit();

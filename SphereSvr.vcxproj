@@ -1,33 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug|Win32">
-      <Configuration>Debug</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Local|Win32">
-      <Configuration>Local</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Local|x64">
-      <Configuration>Local</Configuration>
-      <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Nightly|Win32">
-      <Configuration>Nightly</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Nightly|x64">
       <Configuration>Nightly</Configuration>
       <Platform>x64</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|Win32">
-      <Configuration>Release</Configuration>
-      <Platform>Win32</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
@@ -45,21 +25,13 @@
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Local'">
-    <LinkIncremental>false</LinkIncremental>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Nightly'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Platform)'=='Win32'">
-    <Link>
-      <AdditionalLibraryDirectories>src\common\mysql\lib\x86</AdditionalLibraryDirectories>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Platform)'=='x64'">
+  <ItemDefinitionGroup>
     <Link>
       <AdditionalLibraryDirectories>src\common\mysql\lib\x64</AdditionalLibraryDirectories>
     </Link>
@@ -87,33 +59,6 @@
     <ProjectReference>
       <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
     </ProjectReference>
-    <PreBuildEvent>
-      <Command>for /f %%r in ('git rev-list --count HEAD') do set /a GitRev=%%r-2406
-for /f %%h in ('git rev-parse --short HEAD') do set GitHash=%%h
-if defined GitRev (
-	echo Current build revision: %GitRev% ^(Git hash: %GitHash%^)
-	echo #define __GITREVISION__ %GitRev% &gt; src/common/version/GitRevision.h
-	echo #define __GITHASH__ "%GitHash%" &gt;&gt; src/common/version/GitRevision.h
-)</Command>
-      <Message>Getting revision number from Git repository</Message>
-    </PreBuildEvent>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)'=='Local'">
-    <ClCompile>
-      <CallingConvention>FastCall</CallingConvention>
-      <MinimalRebuild>true</MinimalRebuild>
-      <PreprocessorDefinitions>_PRIVATEBUILD;_THREAD_TRACK_CALLSTACK;_CRT_SECURE_NO_WARNINGS;_WINSOCK_DEPRECATED_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <WarningLevel>Level2</WarningLevel>
-      <ExceptionHandling>Async</ExceptionHandling>
-    </ClCompile>
-    <ResourceCompile>
-      <PreprocessorDefinitions>_PRIVATEBUILD;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-    </ResourceCompile>
-    <Link>
-      <AdditionalDependencies>ws2_32.lib;libmysql.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <OptimizeReferences>true</OptimizeReferences>
-      <SubSystem>Windows</SubSystem>
-    </Link>
     <PreBuildEvent>
       <Command>for /f %%r in ('git rev-list --count HEAD') do set /a GitRev=%%r-2406
 for /f %%h in ('git rev-parse --short HEAD') do set GitHash=%%h

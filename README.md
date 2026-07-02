@@ -12,7 +12,7 @@ Project can be compiled on Windows (Visual Studio) and Linux (GCC)
 
 ### Windows (Visual Studio)
 * Open the project file `SphereSvr.vcxproj` using Visual Studio
-* On top menu, select the build configuration (Debug/Local/Nightly/Release), platform (x86/x64), and click on `Build > Build Solution` to compile
+* On top menu, select the build configuration (Debug/Nightly/Release) and click on `Build > Build Solution` to compile
 
 #### Requirements:
 * Windows 10 or later / Windows Server 2016 or later
@@ -25,18 +25,6 @@ Project can be compiled on Windows (Visual Studio) and Linux (GCC)
 > The project uses `MSVC v143` from VS 2022 for backward compatibility. When using VS newer than 2022, you can either choose to update the project on `Project > Retarget solution` to use the latest version already installed (e.g., `MSVC v145` from VS 2026), or install the `MSVC v143` individual component and safely ignore the message requesting an update to the latest version
 
 ### Linux (Ubuntu)
-#### Add architecture support
-* To compile 32bit build on 32bit OS or 64bit build on 64bit OS:
-  ```
-  # Skip this step (architecture is already supported by OS)
-  ```
-* To compile 32bit build on 64bit OS:
-  ```
-  sudo dpkg --add-architecture i386
-  sudo apt-get update
-  sudo apt-get dist-upgrade
-  ```
-
 #### Add MySQL 5.7 support
 * Ubuntu 14.04:
   * Add MySQL 5.7 support to the package repository
@@ -60,22 +48,13 @@ Project can be compiled on Windows (Visual Studio) and Linux (GCC)
     ```
 
 #### Install required packages
-* To compile 32bit build on 32bit OS or 64bit build on 64bit OS:
-  ```
-  sudo apt-get install git
-  sudo apt-get install gcc
-  sudo apt-get install g++
-  sudo apt-get install make
-  sudo apt-get install libmysqlclient-dev=5.7*
-  ```
-* To compile 32bit build on 64bit OS:
-  ```
-  sudo apt-get install git
-  sudo apt-get install gcc-multilib
-  sudo apt-get install g++-multilib
-  sudo apt-get install make
-  sudo apt-get install libmysqlclient-dev:i386=5.7*
-  ```
+```
+sudo apt-get install git
+sudo apt-get install gcc
+sudo apt-get install g++
+sudo apt-get install make
+sudo apt-get install libmysqlclient-dev=5.7*
+```
 
 ### Linux (CentOS / Red Hat)
 #### Add MySQL 5.7 support
@@ -112,20 +91,12 @@ Project can be compiled on Windows (Visual Studio) and Linux (GCC)
   ```
 
 #### Install required packages
-* To compile 32bit build on 32bit OS or 64bit build on 64bit OS:
-  ```
-  sudo yum install git
-  sudo yum install gcc-c++
-  sudo yum install glibc-devel
-  sudo yum install mysql-community-devel
-  ```
-* To compile 32bit build on 64bit OS:
-  ```
-  sudo yum install git
-  sudo yum install gcc-c++
-  sudo yum install glibc-devel.i686
-  sudo yum install mysql-community-devel.i686
-  ```
+```
+sudo yum install git
+sudo yum install gcc-c++
+sudo yum install glibc-devel
+sudo yum install mysql-community-devel
+```
 
 ### Get the source code
 ```
@@ -134,14 +105,18 @@ cd Source
 ```
 
 ### Compile the source code
-* To compile 32bit build:
-```
-make NIGHTLY=1 x86=1
-```
-* To compile 64bit build:
-```
-make NIGHTLY=1
-```
+* To compile Debug build:
+  ```
+  make DEBUG=1
+  ```
+* To compile Nightly build:
+  ```
+  make NIGHTLY=1
+  ```
+* To compile Release build:
+  ```
+  make
+  ```
 
 ## Coding notes for new contributors
 * Make sure you can compile and run the program before pushing a commit.

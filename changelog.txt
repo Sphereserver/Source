@@ -1869,3 +1869,7 @@ Changed: Updated internal Zlib libs v1.2.11 to v1.2.13.
 
 02-10-2023, Coruja
 [sphereCrypt.ini]: Added crypt key for classic client 7.0.99 and enhanced client 4.0.99
+
+02-07-2026, Coruja
+Removed: 32bit architecture support
+	-32bit builds are no longer needed as most modern server environments have moved to 64bit
