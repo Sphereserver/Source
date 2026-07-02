@@ -1,0 +1,351 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - '**.ini'
+      - '**.md'
+      - '**.txt'
+  pull_request:
+    branches:
+      - master
+    paths-ignore:
+      - '**.ini'
+      - '**.md'
+      - '**.txt'
+
+# To preserve commit order, use a concurrency group to make workflows run sequentially instead of in parallel
+concurrency:
+  group: ${{ github.workflow }}
+  queue: max
+
+jobs:
+  security_gate:
+    name: Security gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    permissions:
+      contents: read
+      security-events: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0    # v7.0.0
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@8aad20d150bbac5944a9f9d289da16a4b0d87c1e    # v4.36.2
+        with:
+          languages: actions
+          queries: security-extended
+
+      - name: Perform CodeQL analysis
+        uses: github/codeql-action/analyze@8aad20d150bbac5944a9f9d289da16a4b0d87c1e    # v4.36.2
+        with:
+          category: "GitHub Actions"
+
+      - name: Enforce security gate policy
+        run: |
+          ALERTS_COUNT=$(jq '[.runs[].results[]] | length' "${{ env.CODEQL_ACTION_SARIF_RESULTS_OUTPUT_DIR }}/actions.sarif")
+          if [[ "${ALERTS_COUNT}" -gt 0 ]]; then
+            echo "::error::${ALERTS_COUNT} security alert(s) detected. See 'Security and quality > Code scanning' tab for more information: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/security/code-scanning?query=is%3Aopen+tool%3ACodeQL+tag%3Aactions"
+            exit 1
+          fi
+          echo "No security alerts detected"
+
+  build:
+    name: ${{ matrix.name }}
+    needs: security_gate
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+
+    permissions:
+      contents: read
+      security-events: write
+
+    strategy:
+      fail-fast: false    # continue all matrix jobs even if one fails
+      matrix:
+        include:
+          #- name: Debug build (Linux x64)
+          #  os: ubuntu-22.04
+          #  build-type: Debug
+          #  build-cmd: "gcc --version && make DEBUG=1"
+          #- name: Debug build (Windows x64)
+          #  os: windows-2022
+          #  build-type: Debug
+          #  build-cmd: "msbuild SphereSvr.vcxproj -v:Minimal -p:Configuration=Debug -p:Platform=x64"
+          - name: Nightly build (Linux x64)
+            os: ubuntu-22.04
+            build-type: Nightly
+            build-cmd: "gcc --version && make NIGHTLY=1"
+          - name: Nightly build (Windows x64)
+            os: windows-2022
+            build-type: Nightly
+            build-cmd: "msbuild SphereSvr.vcxproj -v:Minimal -p:Configuration=Nightly -p:Platform=x64"
+          #- name: Release build (Linux x64)
+          #  os: ubuntu-22.04
+          #  build-type: Release
+          #  build-cmd: "gcc --version && make"
+          #- name: Release build (Windows x64)
+          #  os: windows-2022
+          #  build-type: Release
+          #  build-cmd: "msbuild SphereSvr.vcxproj -v:Minimal -p:Configuration=Release -p:Platform=x64"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0    # v7.0.0
+        with:
+          fetch-depth: 0    # fetch full history to calculate build number
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@8aad20d150bbac5944a9f9d289da16a4b0d87c1e    # v4.36.2
+        with:
+          languages: c-cpp
+          build-mode: manual
+
+      - name: Set up environment (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          # Remove MySQL 8.0 pre-installed packages
+          sudo apt-get -q remove libmysqlclient-dev
+
+          # Add MySQL 5.7 support to the package repository
+          sudo gpg --homedir /tmp --no-default-keyring --keyring /usr/share/keyrings/mysql.gpg --keyserver keyserver.ubuntu.com --recv-keys B7B3B788A8D3785C
+          echo "deb [signed-by=/usr/share/keyrings/mysql.gpg] https://repo.mysql.com/apt/ubuntu/ bionic mysql-5.7" | sudo tee /etc/apt/sources.list.d/mysql.list > /dev/null
+          sudo apt-get -qq update
+
+          # Install MySQL 5.7 package
+          sudo apt-get -q install libmysqlclient-dev=5.7*
+
+      - name: Set up environment (Windows)
+        if: runner.os == 'Windows'
+        run: |
+          # Set MSBuild path in $GITHUB_PATH
+          # This does the same as 'uses: microsoft/setup-msbuild', but without using third-party actions
+          $VSPath = vswhere -products * -requires Microsoft.Component.MSBuild -property installationPath -latest
+          $MSBuildPath = Join-Path $VSPath "MSBuild\Current\Bin"
+          if (-not (Test-Path "$MSBuildPath\MSBuild.exe"))
+          {
+            Write-Output "::error::MSBuild path not found"
+            exit 1
+          }
+          Add-Content -Path "$env:GITHUB_PATH" -Value "$MSBuildPath"
+          Write-Output "MSBuild path set: $MSBuildPath"
+
+      - name: Build source code
+        run: "${{ matrix.build-cmd }}"
+
+      - name: Get build properties
+        id: build_properties
+        shell: bash
+        run: |
+          VERSION_FILE="src/common/grayver.h"
+          BUILD_VERSION_DISPLAY=$(awk '/^#define SPHERE_VER_STR/{gsub(/"/,"",$3); print $3; exit}' "${VERSION_FILE}")
+          if [[ -z "${BUILD_VERSION_DISPLAY}" ]]; then
+            echo "::error::Failed to get build version reading 'SPHERE_VER_STR' value from '${VERSION_FILE}'"
+          else
+            printf 'build-version-display=%s\n' "${BUILD_VERSION_DISPLAY}" | tee -a "${GITHUB_OUTPUT}"
+          fi
+
+          BUILD_VERSION_SEMANTIC=$(awk '/^#define SPHERE_VER_FILEVERSION/{gsub(/"/,"",$3); print $3; exit}' "${VERSION_FILE}")
+          BUILD_VERSION_SEMANTIC=$(printf '%s' "${BUILD_VERSION_SEMANTIC//,/.}" | cut -d'.' -f1-3)
+          if [[ -z "${BUILD_VERSION_SEMANTIC}" ]]; then
+            echo "::error::Failed to get build version reading 'SPHERE_VER_FILEVERSION' value from '${VERSION_FILE}'"
+          else
+            printf 'build-version-semantic=%s\n' "${BUILD_VERSION_SEMANTIC}" | tee -a "${GITHUB_OUTPUT}"
+          fi
+
+          VERSION_FILE="src/common/version.h"
+          BUILD_NUMBER=$(awk '/^#define GIT_COMMIT_COUNT/{print $3; exit}' "${VERSION_FILE}")
+          if [[ -z "${BUILD_NUMBER}" ]]; then
+            echo "::error::Failed to get build number reading 'GIT_COMMIT_COUNT' value from '${VERSION_FILE}'"
+          else
+            printf 'build-number=%s\n' "${BUILD_NUMBER}" | tee -a "${GITHUB_OUTPUT}"
+          fi
+
+          if [[ -z "${BUILD_VERSION_DISPLAY}" || -z "${BUILD_VERSION_SEMANTIC}" || -z "${BUILD_NUMBER}" ]]; then
+            exit 1
+          fi
+
+      - name: Perform CodeQL analysis
+        uses: github/codeql-action/analyze@8aad20d150bbac5944a9f9d289da16a4b0d87c1e    # v4.36.2
+        with:
+          category: "${{ runner.os }} build (${{ runner.arch }})"
+
+          # Workaround: using CodeQL with 'build-mode: manual' in compiled languages integrates the scan
+          # into the compiler to improve accuracy, but it ignores the 'paths-ignore' setting. So the only
+          # way to ignore paths is disabling SARIF upload to manually filter and upload the results
+          upload: never
+
+      - name: Filter CodeQL results
+        uses: advanced-security/filter-sarif@2da736ff05ef065cb2894ac6892e47b5eac2c3c0    # v1.1
+        with:
+          input: "${{ env.CODEQL_ACTION_SARIF_RESULTS_OUTPUT_DIR }}/${{ env.CODEQL_TRACER_LANGUAGES }}.sarif"
+          output: "${{ env.CODEQL_ACTION_SARIF_RESULTS_OUTPUT_DIR }}/${{ env.CODEQL_TRACER_LANGUAGES }}.sarif"
+          # Ignore alerts on third-party libs
+          patterns: |
+            -src/common/*/**
+
+      - name: Upload CodeQL results
+        uses: github/codeql-action/upload-sarif@8aad20d150bbac5944a9f9d289da16a4b0d87c1e    # v4.36.2
+        with:
+          sarif_file: "${{ env.CODEQL_ACTION_SARIF_RESULTS_OUTPUT_DIR }}/${{ env.CODEQL_TRACER_LANGUAGES }}.sarif"
+
+      - name: Package artifact
+        shell: bash
+        run: |
+          COMMON_DIRS="accounts/ logs/ save/ scripts/"
+          mkdir -p artifacts/ ${COMMON_DIRS}
+
+          ARTIFACT_NAME="SphereSvr"
+          if [[ "${{ matrix.build-type }}" != "Release" ]]; then
+            ARTIFACT_NAME+="-${{ matrix.build-type }}"
+          fi
+
+          if [[ "${{ runner.os }}" == "Linux" ]]; then
+            tar -czvf "artifacts/${ARTIFACT_NAME}-Linux64.tar.gz" ${COMMON_DIRS} spheresvr -C src/ sphere.ini sphereCrypt.ini
+          elif [[ "${{ runner.os }}" == "Windows" ]]; then
+            if [[ "${{ matrix.build-type }}" == "Debug" ]]; then
+              PDB_FILE="./x64/${{ matrix.build-type }}/SphereSvr.pdb"
+            fi
+            7z a -bb1 "artifacts/${ARTIFACT_NAME}-Win64.zip" ${COMMON_DIRS} "./x64/${{ matrix.build-type }}/SphereSvr.exe" ${PDB_FILE} ./src/sphere.ini ./src/sphereCrypt.ini ./src/common/mysql/lib/x64/libmysql.dll
+          fi
+
+      - name: Upload artifact to blob storage
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a    # v7.0.1
+        with:
+          archive: false
+          path: artifacts/
+
+    outputs:
+      build-version-display: "${{ steps.build_properties.outputs.build-version-display }}"
+      build-version-semantic: "${{ steps.build_properties.outputs.build-version-semantic }}"
+      build-number: "${{ steps.build_properties.outputs.build-number }}"
+
+  publish:
+    name: Publish
+    needs: build
+    runs-on: ubuntu-slim
+    timeout-minutes: 10
+    if: github.event_name == 'push'
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0    # v7.0.0
+
+      - name: Download artifacts from blob storage
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c    # v8.0.1
+        with:
+          merge-multiple: true
+          skip-decompress: true
+          path: artifacts/
+
+      - name: Publish to GitHub release
+        env:
+          BUILD_VERSION_DISPLAY: ${{ needs.build.outputs.build-version-display }}
+          BUILD_VERSION_SEMANTIC: ${{ needs.build.outputs.build-version-semantic }}
+          BUILD_NUMBER: ${{ needs.build.outputs.build-number }}
+          COMMIT_MSG: ${{ github.event.head_commit.message }}
+          COMMIT_SHA: ${{ github.sha }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="v${BUILD_VERSION_SEMANTIC}-${BUILD_NUMBER}"
+          TITLE="v${BUILD_VERSION_DISPLAY} (build ${BUILD_NUMBER})"
+          NOTES_FILE=$(mktemp)
+          printf '%s\n' "${COMMIT_MSG}" > "${NOTES_FILE}"
+          ARTIFACTS=(changelog.txt artifacts/*)
+
+          # Clean up stale releases (keep only 100 most recent)
+          gh api repos/${GITHUB_REPOSITORY}/releases --paginate --jq 'map(select(.prerelease))[99:] | reverse | .[].tag_name' \
+          | while read -r TAG_STALE; do
+            echo "Deleting stale release '${TAG_STALE}'"
+            gh release delete "${TAG_STALE}" --yes --cleanup-tag
+          done
+
+          if gh release view "${TAG}" >/dev/null 2>&1; then
+            echo "Updating release '${TAG}'"
+            RELEASE_URL=$(gh release edit "${TAG}" --target "${COMMIT_SHA}" --title "${TITLE}" --notes-file "${NOTES_FILE}" --prerelease)
+            if [[ -z "${RELEASE_URL}" ]]; then
+              echo "::error::Failed to update GitHub release '${TAG}'"
+              exit 1
+            fi
+            gh release upload "${TAG}" "${ARTIFACTS[@]}" --clobber
+            echo "Release updated: ${RELEASE_URL}"
+          else
+            echo "Publishing release '${TAG}'"
+            RELEASE_URL=$(gh release create "${TAG}" --target "${COMMIT_SHA}" --title "${TITLE}" --notes-file "${NOTES_FILE}" --prerelease "${ARTIFACTS[@]}")
+            if [[ -z "${RELEASE_URL}" ]]; then
+              echo "::error::Failed to publish GitHub release '${TAG}'"
+              exit 1
+            fi
+            echo "Release published: ${RELEASE_URL}"
+          fi
+          gh release view "${TAG}" --json 'assets' --jq '.assets[] | "- \(.name)"'
+
+      - name: Publish to remote server
+        env:
+          UPLOAD_USERNAME: ${{ secrets.UPLOAD_USERNAME }}
+          UPLOAD_PASSWORD: ${{ secrets.UPLOAD_PASSWORD }}
+          UPLOAD_HOST: ${{ secrets.UPLOAD_HOST }}
+          UPLOAD_CACERT: ${{ secrets.UPLOAD_CACERT }}
+          UPLOAD_CERT: ${{ secrets.UPLOAD_CERT }}
+          UPLOAD_KEY: ${{ secrets.UPLOAD_KEY }}
+        run: |
+          if [[ -z "${UPLOAD_USERNAME}" || ( -z "${UPLOAD_PASSWORD}" && -z "${UPLOAD_KEY}" ) || -z "${UPLOAD_HOST}" ]]; then
+            echo "Upload skipped"
+            echo "To enable upload, set the repository secrets on 'Settings > Secrets and variables > Actions > Repository secrets': ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/settings/secrets/actions"
+            echo "Required:"
+            echo "- UPLOAD_USERNAME"
+            echo "- UPLOAD_PASSWORD and/or UPLOAD_KEY (private key used to authenticate FTPS, or HTTPS with mTLS)"
+            echo "- UPLOAD_HOST (remote URL, supports FTP/FTPS and HTTP/HTTPS)"
+            echo "Optional:"
+            echo "- UPLOAD_CACERT (CA certificate used to verify host identity)"
+            echo "- UPLOAD_CERT (certificate used to verify client identity)"
+            exit 0
+          fi
+
+          OPTIONS=("--insecure")
+          if [[ -n "${UPLOAD_CACERT}" ]]; then
+            CACERT_FILE=$(mktemp)
+            printf '%s' "${UPLOAD_CACERT}" > "${CACERT_FILE}"
+            OPTIONS=("--cacert" "${CACERT_FILE}")
+          fi
+          if [[ -n "${UPLOAD_CERT}" ]]; then
+            CERT_FILE=$(mktemp)
+            printf '%s' "${UPLOAD_CERT}" > "${CERT_FILE}"
+            OPTIONS+=("--cert" "${CERT_FILE}")
+          fi
+          if [[ -n "${UPLOAD_KEY}" ]]; then
+            KEY_FILE=$(mktemp)
+            printf '%s' "${UPLOAD_KEY}" > "${KEY_FILE}"
+            OPTIONS+=("--key" "${KEY_FILE}")
+          fi
+
+          cd "artifacts/"
+          for PLATFORM in "Linux64.tar.gz" "Win64.zip"; do
+            FILE=""
+            if [[ -f "SphereSvr-${PLATFORM}" ]]; then
+              FILE="SphereSvr-${PLATFORM}"
+            elif [[ -f "SphereSvr-Nightly-${PLATFORM}" ]]; then
+              FILE="SphereSvr-Nightly-${PLATFORM}"
+            elif [[ -f "SphereSvr-Debug-${PLATFORM}" ]]; then
+              echo "Skipping 'SphereSvr-Debug-${PLATFORM}' (not a nightly or release build)"
+            fi
+
+            if [[ -n "${FILE}" ]]; then
+              echo "Uploading '${FILE}' $([[ "${FILE}" != "SphereSvr-${PLATFORM}" ]] && echo "as 'SphereSvr-${PLATFORM}'")"    # use old name to preserve the same download link
+              if curl --fail --silent --show-error --connect-timeout 10 --retry 3 --user "${UPLOAD_USERNAME}:${UPLOAD_PASSWORD}" "${OPTIONS[@]}" --upload-file "${FILE}" "${UPLOAD_HOST%/}/SphereSvr-${PLATFORM}"; then
+                echo "Upload complete"
+              else
+                echo "::warning::Failed to upload '${FILE}' to remote server"
+              fi
+            fi
+          done
+          rm -f "${CACERT_FILE}" "${CERT_FILE}" "${KEY_FILE}"

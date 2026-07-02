@@ -1,2 +1,0 @@
-#define __GITHASH__ "@GITHASHCMD@"
-#define __GITREVISION__ @GITREVCMD@

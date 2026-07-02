@@ -1,5 +1,2 @@
-# Ignore all files, except those already included on git repository
+# Ignore all files, except those already tracked
 *
-
-# Ignore git versioning file
-/src/common/version/GitRevision.h
