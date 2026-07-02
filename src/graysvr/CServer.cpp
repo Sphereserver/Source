@@ -324,10 +324,11 @@ bool CServer::Load()
 	if ( !g_Cfg.LoadIni() )
 		return false;
 
-#if defined(__GITREVISION__) && defined(__GITHASH__)
-	g_Log.Event(LOGL_EVENT, "%s (%s) by %s\nCompiled at %s (build %d / Git hash %s)\n\n", SPHERE_TITLE_VER, SPHERE_VER_ARCH, SPHERE_WEBSITE, g_szCompiledDate, __GITREVISION__, __GITHASH__);
+	g_Log.Event(LOGL_EVENT, "%s (%s) by %s\n", SPHERE_TITLE_VER, SPHERE_VER_ARCH, SPHERE_WEBSITE);
+#if defined(GIT_COMMIT_COUNT) && defined(GIT_COMMIT_HASH)
+	g_Log.Event(LOGL_EVENT, "Compiled on %s (build %d / Git hash %s)\n\n", g_szCompiledDate, GIT_COMMIT_COUNT, GIT_COMMIT_HASH);
 #else
-	g_Log.Event(LOGL_EVENT, "%s (%s) by %s\nCompiled at %s\n\n", SPHERE_TITLE_VER, SPHERE_VER_ARCH, SPHERE_WEBSITE, g_szCompiledDate);
+	g_Log.Event(LOGL_EVENT, "Compiled on %s\n\n", g_szCompiledDate);
 #endif
 
 #ifdef _NIGHTLYBUILD

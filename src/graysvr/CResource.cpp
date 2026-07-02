@@ -1423,8 +1423,8 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatVal(m_iBankMaxWeight / WEIGHT_UNITS);
 			break;
 		case RC_BUILD:
-#ifdef __GITREVISION__
-			sVal.FormatVal(__GITREVISION__);
+#ifdef GIT_COMMIT_COUNT
+			sVal.FormatVal(GIT_COMMIT_COUNT);
 #else
 			sVal = g_szCompiledDate;
 #endif

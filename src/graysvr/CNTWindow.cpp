@@ -19,8 +19,8 @@ CNTApp theApp;
 bool CNTWindow::CAboutDlg::OnInitDialog()
 {
 	char szBuild[80];
-#if defined(__GITREVISION__) && defined(__GITHASH__)
-	snprintf(szBuild, sizeof(szBuild), "Compiled at %s (Build %d / Git hash %s)", g_szCompiledDate, __GITREVISION__, __GITHASH__);
+#if defined(GIT_COMMIT_COUNT) && defined(GIT_COMMIT_HASH)
+	snprintf(szBuild, sizeof(szBuild), "Compiled at %s (Build %d / Git hash %s)", g_szCompiledDate, GIT_COMMIT_COUNT, GIT_COMMIT_HASH);
 #else
 	snprintf(szBuild, sizeof(szBuild), "Compiled at %s", g_szCompiledDate);
 #endif

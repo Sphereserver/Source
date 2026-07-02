@@ -2,9 +2,9 @@
 #define _INC_GRAYVER_H
 #pragma once
 
-#include "version/GitRevision.h"
-#if defined(__GITREVISION__)
-	#define SPHERE_VER_BUILD		__GITREVISION__
+#include "version.h"
+#if defined(GIT_COMMIT_COUNT)
+	#define SPHERE_VER_BUILD		GIT_COMMIT_COUNT
 #else
 	#define SPHERE_VER_BUILD		0
 #endif

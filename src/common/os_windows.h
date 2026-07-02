@@ -3,6 +3,12 @@
 #pragma once
 
 #ifdef _WIN32
+#ifndef _CRT_SECURE_NO_WARNINGS
+	#define _CRT_SECURE_NO_WARNINGS
+#endif
+#ifndef _WINSOCK_DEPRECATED_NO_WARNINGS
+	#define _WINSOCK_DEPRECATED_NO_WARNINGS
+#endif
 #undef FD_SETSIZE
 #define FD_SETSIZE 1024	// for max of n users ! default = 64
 
