@@ -1464,31 +1464,48 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 		case CV_SYSMESSAGE:
 			SysMessage(s.GetArgStr());
 			break;
-		case CV_SYSMESSAGEF:	// there is still an issue with numbers not resolving properly when %i,%d,or other numeric format code is in use
+		case CV_SYSMESSAGEF:
 		{
-			TCHAR *ppArgs[4];
-			size_t iArgQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs));
+			TCHAR *ppArgs[10];
+			size_t iArgQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), ",");
 			if ( iArgQty < 2 )
 			{
-				g_Log.EventError("%s: too few arguments\n", sm_szVerbKeys[index]);
+				g_Log.EventError("%s: function can't have less than 2 args\n", sm_szVerbKeys[index]);
 				return false;
 			}
-			if ( iArgQty > 4 )
+
+			REMOVE_QUOTES(ppArgs[0]);
+			const TCHAR *pszFormat = ppArgs[0];
+
+			// To avoid format string vulnerabilities, parse the string manually instead of using printf functions
+			TCHAR szTemp[THREAD_STRING_LENGTH];
+			size_t iLen = 0;
+			size_t iMaxLen = COUNTOF(szTemp) - 1;
+			size_t iArgNum = 1;
+			for ( const TCHAR *ch = pszFormat; *ch && (iLen < iMaxLen); ++ch )
 			{
-				g_Log.EventError("%s: too many arguments\n", sm_szVerbKeys[index]);
-				return false;
-			}
-			if ( *ppArgs[0] == '"' )	// skip quotes
-				++ppArgs[0];
-			for ( TCHAR *pEnd = ppArgs[0] + strlen(ppArgs[0]) - 1; pEnd >= ppArgs[0]; --pEnd )
-			{
-				if ( *pEnd == '"' )		// skip quotes
+				if ( *ch == '%' )
 				{
-					*pEnd = '\0';
-					break;
+					if ( (*(ch + 1) == 's') && (iArgNum < iArgQty) )
+					{
+						if ( ppArgs[iArgNum] )
+						{
+							const TCHAR *pszArgSource = ppArgs[iArgNum];
+							while ( *pszArgSource && (iLen < iMaxLen) )
+							{
+								szTemp[iLen++] = *pszArgSource++;
+							}
+							++iArgNum;
+						}
+						++ch;
+						continue;
+					}
 				}
+				szTemp[iLen++] = *ch;
 			}
-			SysMessagef(ppArgs[0], ppArgs[1], ppArgs[2] ? ppArgs[2] : 0, ppArgs[3] ? ppArgs[3] : 0);
+			szTemp[iLen] = '\0';
+
+			SysMessage(szTemp);
 			break;
 		}
 		case CV_SMSGU:

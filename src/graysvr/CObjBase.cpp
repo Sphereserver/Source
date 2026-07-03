@@ -919,36 +919,47 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		}
 		case OC_TEXTF:
 		{
-			TCHAR *pszFormat = const_cast<TCHAR *>(pszKey);
-			pszFormat += 5;
-
-			TCHAR *pszArg[4];
-			size_t iArgQty = Str_ParseCmds(pszFormat, pszArg, COUNTOF(pszArg));
+			pszKey += 5;
+			TCHAR *ppArgs[10];
+			size_t iArgQty = Str_ParseCmds(const_cast<TCHAR *>(pszKey), ppArgs, COUNTOF(ppArgs), ",");
 			if ( iArgQty < 2 )
 			{
 				g_Log.EventError("%s: function can't have less than 2 args\n", sm_szLoadKeys[index]);
 				return false;
 			}
-			if ( iArgQty > 4 )
-			{
-				g_Log.EventError("%s: function exceeded max args allowed (%" FMTSIZE_T "/%d)\n", sm_szLoadKeys[index], iArgQty, 4);
-				return false;
-			}
 
-			if ( *pszArg[0] == '"' )	// skip quotes
-				++pszArg[0];
+			REMOVE_QUOTES(ppArgs[0]);
+			const TCHAR *pszFormat = ppArgs[0];
 
-			BYTE bCount = 0;
-			for ( TCHAR *pszEnd = pszArg[0] + strlen(pszArg[0]) - 1; pszEnd >= pszArg[0]; --pszEnd )
+			// To avoid format string vulnerabilities, parse the string manually instead of using printf functions
+			TCHAR szTemp[THREAD_STRING_LENGTH];
+			size_t iLen = 0;
+			size_t iMaxLen = COUNTOF(szTemp) - 1;
+			size_t iArgNum = 1;
+			for ( const TCHAR *ch = pszFormat; *ch && (iLen < iMaxLen); ++ch )
 			{
-				if ( *pszEnd == '"' )
+				if ( *ch == '%' )
 				{
-					*pszEnd = '\0';
-					break;
+					if ( (*(ch + 1) == 's') && (iArgNum < iArgQty) )
+					{
+						if ( ppArgs[iArgNum] )
+						{
+							const TCHAR *pszArgSource = ppArgs[iArgNum];
+							while ( *pszArgSource && (iLen < iMaxLen) )
+							{
+								szTemp[iLen++] = *pszArgSource++;
+							}
+							++iArgNum;
+						}
+						++ch;
+						continue;
+					}
 				}
-				++bCount;
+				szTemp[iLen++] = *ch;
 			}
-			sVal.Format(pszArg[0], pszArg[1], pszArg[2] ? pszArg[2] : 0, pszArg[3] ? pszArg[3] : 0);
+			szTemp[iLen] = '\0';
+
+			sVal = szTemp;
 			return true;
 		}
 		case OC_DIALOGLIST:
@@ -1156,13 +1167,13 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			CItem *pItem = NULL;
 			if ( *pszKey )
 			{
-				TCHAR *pszArg = Str_GetTemp();
-				strncpy(pszArg, pszKey, THREAD_STRING_LENGTH);
-				pszArg[THREAD_STRING_LENGTH - 1] = '\0';
-
 				pItem = dynamic_cast<CItem *>(static_cast<CGrayUID>(Exp_GetVal(pszKey)).ObjFind());
 				if ( !pItem )
 				{
+					TCHAR *pszArg = Str_GetTemp();
+					strncpy(pszArg, pszKey, THREAD_STRING_LENGTH);
+					pszArg[THREAD_STRING_LENGTH - 1] = '\0';
+
 					ITEMID_TYPE id = static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetID(RES_ITEMDEF, const_cast<LPCTSTR &>(reinterpret_cast<LPTSTR &>(pszArg))).GetResIndex());
 					const CItemBase *pItemDef = CItemBase::FindItemBase(id);
 					if ( pItemDef )
@@ -1194,13 +1205,13 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			CItem *pItem = NULL;
 			if ( *pszKey )
 			{
-				TCHAR *pszArg = Str_GetTemp();
-				strncpy(pszArg, pszKey, THREAD_STRING_LENGTH);
-				pszArg[THREAD_STRING_LENGTH - 1] = '\0';
-
 				pItem = dynamic_cast<CItem *>(static_cast<CGrayUID>(Exp_GetVal(pszKey)).ObjFind());
 				if ( !pItem )
 				{
+					TCHAR *pszArg = Str_GetTemp();
+					strncpy(pszArg, pszKey, THREAD_STRING_LENGTH);
+					pszArg[THREAD_STRING_LENGTH - 1] = '\0';
+
 					ITEMID_TYPE id = static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetID(RES_ITEMDEF, const_cast<LPCTSTR &>(reinterpret_cast<LPTSTR &>(pszArg))).GetResIndex());
 					const CItemBase *pItemDef = CItemBase::FindItemBase(id);
 					if ( pItemDef )
@@ -2285,23 +2296,25 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 			if ( !pClientSrc )
 				return false;
 			pszKey += 6;
-			bool fAllowGround = false;
-			bool fCheckCrime = false;
-			bool fFunction = false;
-			bool fMulti = false;
 
-			TCHAR chLow = static_cast<TCHAR>(tolower(*pszKey));
-			while ( (chLow >= 'a') && (chLow <= 'z') )
+			bool fFunction = false;
+			bool fAllowGround = false;
+			bool fMulti = false;
+			bool fCheckCrime = false;
+
+			while ( TCHAR ch = static_cast<TCHAR>(tolower(*pszKey)) )
 			{
-				if ( chLow == 'f' )
-					fFunction = true;
-				else if ( chLow == 'g' )
-					fAllowGround = true;
-				else if ( chLow == 'w' )
-					fCheckCrime = true;
-				else if ( chLow == 'm' )
-					fMulti = true;
-				chLow = static_cast<TCHAR>(tolower(*(++pszKey)));
+				if ( (ch < 'a') || (ch > 'z') )
+					break;
+
+				switch ( ch )
+				{
+					case 'f':	fFunction = true;		break;
+					case 'g':	fAllowGround = true;	break;
+					case 'm':	fMulti = true;			break;
+					case 'w':	fCheckCrime = true;		break;
+				}
+				++pszKey;
 			}
 
 			pClientSrc->m_Targ_UID = GetUID();
@@ -2311,15 +2324,14 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 			{
 				if ( fMulti )
 				{
-					if ( IsStrEmpty(s.GetArgStr()) )
+					TCHAR *ppArgs[3];
+					size_t iArgQty = Str_ParseCmds(s.GetArgStr(), ppArgs, COUNTOF(ppArgs));
+					if ( iArgQty < 2 )
 						break;
-					char *ppArg[3];
-					Str_ParseCmds(s.GetArgStr(), ppArg, COUNTOF(ppArg), ",");
-					if ( !IsStrNumeric(ppArg[1]) )
-						DEBUG_ERR(("Invalid argument in Target Multi\n"));
-					ITEMID_TYPE itemid = static_cast<ITEMID_TYPE>(Exp_GetVal(ppArg[1]));
-					HUE_TYPE color = static_cast<HUE_TYPE>(Exp_GetVal(ppArg[2]));
-					pClientSrc->addTargetFunctionMulti(ppArg[0], itemid, color, fAllowGround);
+
+					ITEMID_TYPE itemid = static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetIndexType(RES_ITEMDEF, ppArgs[1]));
+					HUE_TYPE color = static_cast<HUE_TYPE>(Exp_GetVal(ppArgs[2]));
+					pClientSrc->addTargetFunctionMulti(ppArgs[0], itemid, color, fAllowGround);
 				}
 				else
 					pClientSrc->addTargetFunction(s.GetArgStr(), fAllowGround, fCheckCrime);
@@ -2328,12 +2340,13 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 			{
 				if ( fMulti )
 				{
-					char *ppArg[2];
-					Str_ParseCmds(s.GetArgStr(), ppArg, COUNTOF(ppArg), ",");
-					if ( !IsStrNumeric(ppArg[0]) )
-						DEBUG_ERR(("Invalid argument in Target Multi\n"));
-					ITEMID_TYPE itemid = static_cast<ITEMID_TYPE>(Exp_GetVal(ppArg[0]));
-					HUE_TYPE color = static_cast<HUE_TYPE>(Exp_GetVal(ppArg[1]));
+					TCHAR *ppArgs[2];
+					size_t iArgQty = Str_ParseCmds(s.GetArgStr(), ppArgs, COUNTOF(ppArgs));
+					if ( iArgQty < 1 )
+						break;
+
+					ITEMID_TYPE itemid = static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetIndexType(RES_ITEMDEF, ppArgs[0]));
+					HUE_TYPE color = static_cast<HUE_TYPE>(Exp_GetVal(ppArgs[1]));
 					pClientSrc->addTargetItems(CLIMODE_TARG_USE_ITEM, itemid, color, fAllowGround);
 				}
 				else
@@ -2356,6 +2369,11 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 			}
 
 			TCHAR *pszFuncName = s.GetArgRaw();
+			if ( !pszFuncName )
+			{
+				g_Log.EventError("%s: args can't be empty\n", sm_szVerbKeys[index]);
+				return true;
+			}
 			int iTimer = Exp_GetVal(pszFuncName);
 			if ( iTimer < 0 )
 			{
@@ -2363,14 +2381,9 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 				return true;
 			}
 			SKIP_ARGSEP(pszFuncName);
-			if ( !pszFuncName )
+			if ( strlen(pszFuncName) > 1024 )
 			{
-				g_Log.EventError("%s: args can't be empty\n", sm_szVerbKeys[index]);
-				return true;
-			}
-			else if ( strlen(pszFuncName) > 1024 )
-			{
-				g_Log.EventError("%s: args exceeded max length allowed (%" FMTSIZE_T "/%d)\n", sm_szVerbKeys[index], strlen(pszFuncName), 1024);
+				g_Log.EventError("%s: args exceeded max length allowed (%zu/%d)\n", sm_szVerbKeys[index], strlen(pszFuncName), 1024);
 				return true;
 			}
 			g_World.m_TimedFunctions.Add(GetUID(), iTimer, pszFuncName);

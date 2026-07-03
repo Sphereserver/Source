@@ -44,7 +44,7 @@ size_t AbstractString::realLength()
 
 bool AbstractString::isEmpty()
 {
-	return m_length != 0;
+	return (m_length == 0);
 }
 
 const char *AbstractString::toBuffer()
@@ -193,11 +193,12 @@ void String::ensureLength(size_t newLength)
 			strncpy(newBuf, m_buf, m_length);
 			delete[] m_buf;
 		}
-		newBuf[m_length] = 0;
+		newBuf[m_length] = '\0';
 		m_buf = newBuf;
 	}
 	m_length = newLength;
-	m_buf[m_length] = 0;
+	if ( m_buf )
+		m_buf[m_length] = '\0';
 }
 
 /*

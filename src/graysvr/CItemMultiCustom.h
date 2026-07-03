@@ -47,6 +47,8 @@ private:
 	};
 
 private:
+	static constexpr signed char sm_iFoundationHeight = 7;
+
 	DesignDetails m_designMain;
 	DesignDetails m_designWorking;
 	DesignDetails m_designBackup;

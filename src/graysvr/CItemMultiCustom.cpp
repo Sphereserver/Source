@@ -95,7 +95,7 @@ void CItemMultiCustom::BeginCustomize(CClient *pClient)
 
 	CPointMap ptOld = pChar->GetTopPoint();
 	CPointMap ptNew(GetTopPoint());
-	ptNew.m_z += 7;
+	ptNew.m_z += sm_iFoundationHeight;
 
 	pChar->MoveToChar(ptNew);
 	pChar->UpdateMove(ptOld);
@@ -329,7 +329,7 @@ void CItemMultiCustom::RemoveItem(CClient *pClient, ITEMID_TYPE id, signed short
 				++m_designWorking.m_dwRevision;
 
 				if ( fRestoreDirt )
-					AddItem(NULL, ITEMID_DIRT_TILE, x, y, 7);
+					AddItem(NULL, ITEMID_DIRT_TILE, x, y, sm_iFoundationHeight);
 			}
 			break;
 		}
@@ -1191,21 +1191,13 @@ bool CItemMultiCustom::r_LoadVal(CScript &s)
 
 BYTE CItemMultiCustom::GetLevel(signed short z)
 {
-	if ( z >= 67 )
-		return 4;
-	else if ( z >= 47 )
-		return 3;
-	else if ( z >= 27 )
-		return 2;
-	else if ( z >= 7 )
-		return 1;
-	else
-		return 0;
+	BYTE iLevel = (z >= sm_iFoundationHeight) ? static_cast<BYTE>((z - sm_iFoundationHeight) / WALL_HEIGHT + 1) : 0;
+	return minimum(iLevel, 4);
 }
 
 signed char CItemMultiCustom::GetLevelZ(BYTE bLevel)
 {
-	return 7 + ((bLevel - 1) * WALL_HEIGHT);
+	return sm_iFoundationHeight + ((bLevel - 1) * WALL_HEIGHT);
 }
 
 bool CItemMultiCustom::IsValidItem(ITEMID_TYPE id, CClient *pClient, bool fMulti)
@@ -1309,19 +1301,27 @@ bool CItemMultiCustom::LoadValidItems()
 	g_Log.EventDebug("file index '%d\n", iFileIndex);
 	g_Log.EventDebug("file name '%s'\n", sm_szItemFiles[i][0]);
 
-	TCHAR *pszHeaderFull = Str_GetTemp();
-	TCHAR *pszRowFull = Str_GetTemp();
+	TCHAR *pszHeader = Str_GetTemp();
+	TCHAR *pszRow = Str_GetTemp();
 	size_t iHeaderLen = 0;
 	size_t iRowLen = 0;
+	int iLen = 0;
 
 	for ( CSVRowData::iterator itCsv = csvDataRow.begin(); itCsv != csvDataRow.end(); ++itCsv )
 	{
-		iHeaderLen += snprintf(pszHeaderFull + iHeaderLen, THREAD_STRING_LENGTH - iHeaderLen, "\t%s", itCsv->first.c_str());
-		iRowLen += snprintf(pszRowFull + iRowLen, THREAD_STRING_LENGTH - iRowLen, "\t%s", itCsv->second.c_str());
+		iLen = snprintf(pszHeader + iHeaderLen, (THREAD_STRING_LENGTH > iHeaderLen) ? THREAD_STRING_LENGTH - iHeaderLen : 0, "\t%s", itCsv->first.c_str());
+		if ( (iLen < 0) || (iLen >= ((THREAD_STRING_LENGTH > iHeaderLen) ? static_cast<int>(THREAD_STRING_LENGTH - iHeaderLen) : 0)) )
+			break;
+		iHeaderLen += iLen;
+
+		iLen = snprintf(pszRow + iRowLen, (THREAD_STRING_LENGTH > iRowLen) ? THREAD_STRING_LENGTH - iRowLen : 0, "\t%s", itCsv->second.c_str());
+		if ( (iLen < 0) || (iLen >= ((THREAD_STRING_LENGTH > iRowLen) ? static_cast<int>(THREAD_STRING_LENGTH - iRowLen) : 0)) )
+			break;
+		iRowLen += iLen;
 	}
 
-	g_Log.EventDebug("header count '%" FMTSIZE_T "', header text '%s'\n", csvDataRow.size(), pszHeaderFull);
-	g_Log.EventDebug("column count '%" FMTSIZE_T "', row text '%s'\n", csvDataRow.size(), pszRowFull);
+	g_Log.EventDebug("header count '%zu', header text '%s'\n", csvDataRow.size(), pszHeader);
+	g_Log.EventDebug("column count '%zu', row text '%s'\n", csvDataRow.size(), pszRow);
 	EXC_DEBUG_END;
 	return false;
 }
