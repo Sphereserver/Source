@@ -136,12 +136,12 @@ CGrayError::CGrayError(const CGrayError &e) : m_eSeverity(e.m_eSeverity), m_hErr
 
 #ifdef _WIN32
 
-int CGrayError::GetSystemErrorMessage(DWORD dwError, LPTSTR lpszError, DWORD dwMaxError) // static
+int CGrayError::GetSystemErrorMessage(DWORD dwError, LPTSTR lpszError, DWORD dwMaxLen) // static
 {
 	LPCVOID lpSource = NULL;
 	va_list *Arguments = NULL;
 
-	DWORD dwChars = ::FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM|FORMAT_MESSAGE_IGNORE_INSERTS, lpSource, dwError, LANG_NEUTRAL, lpszError, dwMaxError, Arguments);
+	DWORD dwChars = ::FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM|FORMAT_MESSAGE_IGNORE_INSERTS, lpSource, dwError, LANG_NEUTRAL, lpszError, dwMaxLen, Arguments);
 	if ( dwChars > 0 )
 	{
 		// Successful translation, trim any trailing junk
@@ -155,7 +155,7 @@ int CGrayError::GetSystemErrorMessage(DWORD dwError, LPTSTR lpszError, DWORD dwM
 
 #endif
 
-bool CGrayError::GetErrorMessage(LPTSTR lpszError) const
+bool CGrayError::GetErrorMessage(LPTSTR lpszError, size_t iMaxLen) const
 {
 #ifdef _WIN32
 	if ( m_hError )
@@ -165,18 +165,18 @@ bool CGrayError::GetErrorMessage(LPTSTR lpszError) const
 		if ( GetSystemErrorMessage(m_hError, szCode, sizeof(szCode)) )
 		{
 			if ( m_hError & 0x80000000 )
-				snprintf(lpszError, THREAD_STRING_LENGTH, "Error Pri=%d, Code=0x%" FMTDWORDH "(%s), Desc='%s'", m_eSeverity, m_hError, szCode, m_pszDescription);
+				snprintf(lpszError, iMaxLen, "Error Pri=%d, Code=0x%" FMTDWORDH "(%s), Desc='%s'", m_eSeverity, m_hError, szCode, m_pszDescription);
 			else
-				snprintf(lpszError, THREAD_STRING_LENGTH, "Error Pri=%d, Code=%" FMTDWORD "(%s), Desc='%s'", m_eSeverity, m_hError, szCode, m_pszDescription);
+				snprintf(lpszError, iMaxLen, "Error Pri=%d, Code=%" FMTDWORD "(%s), Desc='%s'", m_eSeverity, m_hError, szCode, m_pszDescription);
 			return true;
 		}
 	}
 #endif
 
 	if ( m_hError & 0x80000000 )
-		snprintf(lpszError, THREAD_STRING_LENGTH, "Error Pri=%d, Code=0x%" FMTDWORDH ", Desc='%s'", m_eSeverity, m_hError, m_pszDescription);
+		snprintf(lpszError, iMaxLen, "Error Pri=%d, Code=0x%" FMTDWORDH ", Desc='%s'", m_eSeverity, m_hError, m_pszDescription);
 	else
-		snprintf(lpszError, THREAD_STRING_LENGTH, "Error Pri=%d, Code=%" FMTDWORD ", Desc='%s'", m_eSeverity, m_hError, m_pszDescription);
+		snprintf(lpszError, iMaxLen, "Error Pri=%d, Code=%" FMTDWORD ", Desc='%s'", m_eSeverity, m_hError, m_pszDescription);
 	return true;
 }
 
@@ -187,9 +187,9 @@ CGrayAssert::CGrayAssert(LOGL_TYPE eSeverity, LPCTSTR pszExp, LPCTSTR pszFile, l
 {
 }
 
-bool CGrayAssert::GetErrorMessage(LPTSTR lpszError) const
+bool CGrayAssert::GetErrorMessage(LPTSTR lpszError, size_t iMaxLen) const
 {
-	snprintf(lpszError, THREAD_STRING_LENGTH, "Assert pri=%d:'%s' file '%s', line %ld", m_eSeverity, m_pszExp, m_pszFile, m_lLine);
+	snprintf(lpszError, iMaxLen, "Assert pri=%d:'%s' file '%s', line %ld", m_eSeverity, m_pszExp, m_pszFile, m_lLine);
 	return true;
 }
 
@@ -202,7 +202,7 @@ CGrayException::CGrayException(unsigned int uCode, DWORD dwAddress) : m_dwAddres
 {
 }
 
-bool CGrayException::GetErrorMessage(LPTSTR lpszError) const
+bool CGrayException::GetErrorMessage(LPTSTR lpszError, size_t iMaxLen) const
 {
 	LPCTSTR pszMsg = "";
 	switch ( m_hError )
@@ -213,11 +213,11 @@ bool CGrayException::GetErrorMessage(LPTSTR lpszError) const
 		case STATUS_INTEGER_DIVIDE_BY_ZERO:	pszMsg = "Integer: Divide by Zero";	break;
 		case STATUS_STACK_OVERFLOW:			pszMsg = "Stack Overflow";			break;
 		default:
-			snprintf(lpszError, THREAD_STRING_LENGTH, "code=0x%" FMTDWORDH ", (0x%" FMTDWORDH ")", m_hError, m_dwAddress);
+			snprintf(lpszError, iMaxLen, "code=0x%" FMTDWORDH ", (0x%" FMTDWORDH ")", m_hError, m_dwAddress);
 			return true;
 	}
 
-	snprintf(lpszError, THREAD_STRING_LENGTH, "\"%s\" (0x%" FMTDWORDH ")", pszMsg, m_dwAddress);
+	snprintf(lpszError, iMaxLen, "\"%s\" (0x%" FMTDWORDH ")", pszMsg, m_dwAddress);
 	return true;
 }
 

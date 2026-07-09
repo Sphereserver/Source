@@ -214,9 +214,9 @@ void _cdecl CLog::CatchEvent( const CGrayError *pErr, LPCTSTR pszCatchContext, .
 			eSeverity = pErr->m_eSeverity;
 			const CGrayAssert *pAssertErr = dynamic_cast<const CGrayAssert *>(pErr);
 			if ( pAssertErr )
-				pAssertErr->GetErrorMessage(szMsg);
+				pAssertErr->GetErrorMessage(szMsg, sizeof(szMsg));
 			else
-				pErr->GetErrorMessage(szMsg);
+				pErr->GetErrorMessage(szMsg, sizeof(szMsg));
 		}
 		else
 		{
@@ -229,7 +229,8 @@ void _cdecl CLog::CatchEvent( const CGrayError *pErr, LPCTSTR pszCatchContext, .
 
 		va_list vargs;
 		va_start(vargs, pszCatchContext);
-		vsprintf(szMsg + strlen(szMsg), pszCatchContext, vargs);
+		size_t len = strlen(szMsg);
+		vsnprintf(szMsg + len, sizeof(szMsg) - len, pszCatchContext, vargs);
 		va_end(vargs);
 
 		strncat(szMsg, "\n", sizeof(szMsg) - strlen(szMsg) - 1);

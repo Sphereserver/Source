@@ -628,13 +628,13 @@ void CWorld::GetFixPoint(const CPointMap &pt, CGrayMapBlockState &block)
 				if ( (z < pt.m_z + PLAYER_HEIGHT) && (dwBlockThis & (CAN_I_PLATFORM|CAN_I_CLIMB|CAN_I_WATER)) )
 				{
 					block.m_Bottom.m_dwBlockFlags = dwBlockThis;
-					block.m_Bottom.m_dwTile = pStatic->GetDispID() + TERRAIN_QTY;
+					block.m_Bottom.m_dwTile = static_cast<DWORD>(pStatic->GetDispID()) + TERRAIN_QTY;
 					block.m_Bottom.m_z = z;
 				}
 				else if ( block.m_Top.m_z > z )
 				{
 					block.m_Top.m_dwBlockFlags = dwBlockThis;
-					block.m_Top.m_dwTile = pStatic->GetDispID() + TERRAIN_QTY;
+					block.m_Top.m_dwTile = static_cast<DWORD>(pStatic->GetDispID()) + TERRAIN_QTY;
 					block.m_Top.m_z = z;
 				}
 			}
@@ -706,13 +706,13 @@ void CWorld::GetFixPoint(const CPointMap &pt, CGrayMapBlockState &block)
 					if ( (z < pt.m_z + PLAYER_HEIGHT) && (dwBlockThis & (CAN_I_PLATFORM|CAN_I_CLIMB|CAN_I_WATER)) )
 					{
 						block.m_Bottom.m_dwBlockFlags = dwBlockThis;
-						block.m_Bottom.m_dwTile = pMultiItem->GetDispID() + TERRAIN_QTY;
+						block.m_Bottom.m_dwTile = static_cast<DWORD>(pMultiItem->GetDispID()) + TERRAIN_QTY;
 						block.m_Bottom.m_z = z;
 					}
 					else if ( block.m_Top.m_z > z )
 					{
 						block.m_Top.m_dwBlockFlags = dwBlockThis;
-						block.m_Top.m_dwTile = pMultiItem->GetDispID() + TERRAIN_QTY;
+						block.m_Top.m_dwTile = static_cast<DWORD>(pMultiItem->GetDispID()) + TERRAIN_QTY;
 						block.m_Top.m_z = z;
 					}
 				}
@@ -758,13 +758,13 @@ void CWorld::GetFixPoint(const CPointMap &pt, CGrayMapBlockState &block)
 				if ( (z < pt.m_z + PLAYER_HEIGHT) && (dwBlockThis & (CAN_I_PLATFORM|CAN_I_CLIMB|CAN_I_WATER)) )
 				{
 					block.m_Bottom.m_dwBlockFlags = dwBlockThis;
-					block.m_Bottom.m_dwTile = pItemDef->GetDispID() + TERRAIN_QTY;
+					block.m_Bottom.m_dwTile = static_cast<DWORD>(pItemDef->GetDispID()) + TERRAIN_QTY;
 					block.m_Bottom.m_z = z;
 				}
 				else if ( block.m_Top.m_z > z )
 				{
 					block.m_Top.m_dwBlockFlags = dwBlockThis;
-					block.m_Top.m_dwTile = pItemDef->GetDispID() + TERRAIN_QTY;
+					block.m_Top.m_dwTile = static_cast<DWORD>(pItemDef->GetDispID()) + TERRAIN_QTY;
 					block.m_Top.m_z = z;
 				}
 			}
@@ -888,7 +888,7 @@ void CWorld::GetHeightPoint(const CPointMap &pt, CGrayMapBlockState &block, bool
 			else if ( pStatic->GetDispID() )
 				CItemBase::GetItemTiledataFlags(dwBlockThis, pStatic->GetDispID());
 
-			block.CheckTile_Item(dwBlockThis, z, zHeight, pStatic->GetDispID() + TERRAIN_QTY);
+			block.CheckTile_Item(dwBlockThis, z, zHeight, static_cast<DWORD>(pStatic->GetDispID()) + TERRAIN_QTY);
 		}
 	}
 
@@ -957,7 +957,7 @@ void CWorld::GetHeightPoint(const CPointMap &pt, CGrayMapBlockState &block, bool
 					else if ( pMultiItem->GetDispID() )
 						CItemBase::GetItemTiledataFlags(dwBlockThis, pMultiItem->GetDispID());
 
-					block.CheckTile_Item(dwBlockThis, z, zHeight, pMultiItem->GetDispID() + TERRAIN_QTY);
+					block.CheckTile_Item(dwBlockThis, z, zHeight, static_cast<DWORD>(pMultiItem->GetDispID()) + TERRAIN_QTY);
 				}
 			}
 		}
@@ -1002,7 +1002,7 @@ void CWorld::GetHeightPoint(const CPointMap &pt, CGrayMapBlockState &block, bool
 		else if ( pItem->GetDispID() )
 			CItemBase::GetItemTiledataFlags(dwBlockThis, pItem->GetDispID());
 
-		block.CheckTile_Item(dwBlockThis, z, zHeight, pItem->GetDispID() + TERRAIN_QTY);
+		block.CheckTile_Item(dwBlockThis, z, zHeight, static_cast<DWORD>(pItem->GetDispID()) + TERRAIN_QTY);
 	}
 
 	// Check terrain
@@ -1076,7 +1076,7 @@ void CWorld::GetHeightPoint2(const CPointMap &pt, CGrayMapBlockState &block, boo
 
 			dwBlockThis = 0;
 			height_t zHeight = CItemBase::GetItemHeight(pStatic->GetDispID(), dwBlockThis);
-			block.CheckTile(dwBlockThis, z, zHeight, pStatic->GetDispID() + TERRAIN_QTY);
+			block.CheckTile(dwBlockThis, z, zHeight, static_cast<DWORD>(pStatic->GetDispID()) + TERRAIN_QTY);
 		}
 	}
 
@@ -1117,7 +1117,7 @@ void CWorld::GetHeightPoint2(const CPointMap &pt, CGrayMapBlockState &block, boo
 
 					dwBlockThis = 0;
 					height_t zHeight = CItemBase::GetItemHeight(pMultiItem->GetDispID(), dwBlockThis);
-					block.CheckTile(dwBlockThis, z, zHeight, pMultiItem->GetDispID() + TERRAIN_QTY);
+					block.CheckTile(dwBlockThis, z, zHeight, static_cast<DWORD>(pMultiItem->GetDispID()) + TERRAIN_QTY);
 				}
 			}
 		}
@@ -1149,7 +1149,7 @@ void CWorld::GetHeightPoint2(const CPointMap &pt, CGrayMapBlockState &block, boo
 		if ( zHeight == 0 )
 			zHeight = zStaticHeight;
 
-		block.CheckTile(dwBlockThis, z, zHeight, pItemDef->GetDispID() + TERRAIN_QTY);
+		block.CheckTile(dwBlockThis, z, zHeight, static_cast<DWORD>(pItemDef->GetDispID()) + TERRAIN_QTY);
 	}
 
 	// Check terrain

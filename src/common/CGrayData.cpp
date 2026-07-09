@@ -131,7 +131,7 @@ CGrayItemInfo::CGrayItemInfo(ITEMID_TYPE id)
 	DWORD dwOffset;
 	CUOIndexRec index;
 
-	if ( g_VerData.FindVerDataBlock(VERFILE_TILEDATA, (id + TERRAIN_QTY) / UOTILE_BLOCK_SIZE, index) )
+	if ( g_VerData.FindVerDataBlock(VERFILE_TILEDATA, (static_cast<DWORD>(id) + TERRAIN_QTY) / UOTILE_BLOCK_SIZE, index) )
 	{
 		type = VERFILE_VERDATA;
 		format = VERFORMAT_ORIGINAL;

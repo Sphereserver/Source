@@ -5,9 +5,7 @@
 #include "../common/graycom.h"
 #include "../graysvr/graysvr.h"
 #include "threads.h"
-#ifndef _WIN32
-	#include <algorithm>
-#endif
+#include <algorithm>
 
 // number of exceptions after which we restart thread and think that the thread have gone in exceptioning loops
 #define EXCEPTIONS_ALLOWED	10
@@ -17,12 +15,12 @@
 
 // Normal Buffer
 SimpleMutex g_tmpStringMutex;
-volatile long g_tmpStringIndex = 0;
+long g_tmpStringIndex = 0;
 char g_tmpStrings[THREAD_TSTRING_STORAGE][THREAD_STRING_LENGTH];
 
 // TemporaryString Buffer
 SimpleMutex g_tmpTemporaryStringMutex;
-volatile long g_tmpTemporaryStringIndex = 0;
+long g_tmpTemporaryStringIndex = 0;
 
 struct TemporaryStringStorage
 {

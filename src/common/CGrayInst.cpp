@@ -23,37 +23,29 @@ void CGrayInstall::FindInstall()
 		"InstCDPath"
 	};
 
-	HKEY hKey = NULL;
-	DWORD dwType = REG_SZ;
 	TCHAR szValue[_MAX_PATH];
-	DWORD dwSize = sizeof(szValue);
-
 	for ( size_t i = 0; i < COUNTOF(sm_szRegKeyPath); ++i )
 	{
-		if ( RegOpenKeyEx(HKEY_LOCAL_MACHINE, sm_szRegKeyPath[i], 0, KEY_READ|KEY_WOW64_32KEY, &hKey) == ERROR_SUCCESS )
+		for ( size_t j = 0; j < COUNTOF(sm_szRegKeyName); ++j )
 		{
-			for ( size_t j = 0; j < COUNTOF(sm_szRegKeyName); ++j )
+			DWORD dwValueSize = sizeof(szValue);
+			if ( RegGetValue(HKEY_LOCAL_MACHINE, sm_szRegKeyPath[i], sm_szRegKeyName[j], RRF_RT_REG_SZ | RRF_SUBKEY_WOW6432KEY, NULL, szValue, &dwValueSize) == ERROR_SUCCESS )
 			{
-				if ( (RegQueryValueEx(hKey, sm_szRegKeyName[j], NULL, &dwType, reinterpret_cast<BYTE *>(szValue), &dwSize) == ERROR_SUCCESS) && (dwType == REG_SZ) )
+				if ( strcmpi(sm_szRegKeyName[j], "ExePath") == 0 )
 				{
-					if ( sm_szRegKeyName[j] == "ExePath" )
-					{
-						// Get rid of the '\\client.exe' ending string
-						TCHAR *pszExe = strrchr(szValue, '\\');
-						if ( pszExe )
-							*pszExe = '\0';
-					}
-					m_sMulPath = szValue;
-					break;
+					// Get rid of the '\\client.exe' ending string
+					TCHAR *pszExe = strrchr(szValue, '\\');
+					if ( pszExe )
+						*pszExe = '\0';
 				}
-			}
-
-			if ( !m_sMulPath.IsEmpty() )
+				m_sMulPath = szValue;
 				break;
+			}
 		}
-	}
 
-	RegCloseKey(hKey);
+		if ( !m_sMulPath.IsEmpty() )
+			break;
+	}
 }
 #endif
 
@@ -499,7 +491,7 @@ UINT64 CGrayInstall::HashFileName(CGString sFile)
 		edi += ebx;
 	}
 
-	if ( sFile.GetLength() - i > 0 )
+	if ( i < sFile.GetLength() )
 	{
 		switch ( sFile.GetLength() - i )
 		{

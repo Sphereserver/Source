@@ -46,9 +46,9 @@ public:
 
 public:
 #ifdef _WIN32
-	static int GetSystemErrorMessage(DWORD dwError, LPTSTR lpszError, DWORD dwMaxError);
+	static int GetSystemErrorMessage(DWORD dwError, LPTSTR lpszError, DWORD dwMaxLen);
 #endif
-	virtual bool GetErrorMessage(LPTSTR lpszError) const;
+	virtual bool GetErrorMessage(LPTSTR lpszError, size_t iMaxLen = THREAD_STRING_LENGTH) const;
 
 public:
 	CGrayError &operator=(const CGrayError &other);
@@ -68,7 +68,7 @@ protected:
 	const long m_lLine;
 
 public:
-	virtual bool GetErrorMessage(LPTSTR lpszError) const;
+	virtual bool GetErrorMessage(LPTSTR lpszError, size_t iMaxLen = THREAD_STRING_LENGTH) const;
 
 private:
 	CGrayAssert &operator=(const CGrayAssert &other);
@@ -89,7 +89,7 @@ public:
 	const DWORD m_dwAddress;
 
 public:
-	virtual bool GetErrorMessage(LPTSTR lpszError) const;
+	virtual bool GetErrorMessage(LPTSTR lpszError, size_t iMaxLen = THREAD_STRING_LENGTH) const;
 
 private:
 	CGrayException &operator=(const CGrayException &other);

@@ -151,10 +151,10 @@ public:
 	}
 
 private:
-	CGTypedArray<TYPE, ARG_TYPE>(const CGTypedArray<TYPE, ARG_TYPE> &copy);
+	CGTypedArray(const CGTypedArray<TYPE, ARG_TYPE> &copy);
 
 public:
-	const CGTypedArray<TYPE, ARG_TYPE> &operator=(const CGTypedArray<TYPE, ARG_TYPE> &other);
+	const CGTypedArray &operator=(const CGTypedArray<TYPE, ARG_TYPE> &other);
 	TYPE operator[](size_t i) const;
 	TYPE &operator[](size_t i);
 };
@@ -183,8 +183,8 @@ protected:
 	virtual void DestructElements(TYPE *pElements, size_t iCount);
 
 private:
-	CGPtrTypeArray<TYPE>(const CGPtrTypeArray<TYPE> &copy);
-	CGPtrTypeArray<TYPE> &operator=(const CGPtrTypeArray<TYPE> &other);
+	CGPtrTypeArray(const CGPtrTypeArray<TYPE> &copy);
+	CGPtrTypeArray &operator=(const CGPtrTypeArray<TYPE> &other);
 };
 
 ///////////////////////////////////////////////////////////
@@ -210,8 +210,8 @@ protected:
 	virtual void DestructElements(TYPE *pElements, size_t iCount);
 
 private:
-	CGObArray<TYPE>(const CGObArray<TYPE> &copy);
-	CGObArray<TYPE> &operator=(const CGObArray<TYPE> &other);
+	CGObArray(const CGObArray<TYPE> &copy);
+	CGObArray &operator=(const CGObArray<TYPE> &other);
 };
 
 ///////////////////////////////////////////////////////////
@@ -236,8 +236,8 @@ public:
 	void DeleteKey(KEY_TYPE key);
 
 private:
-	CGObSortArray<TYPE, KEY_TYPE>(const CGObSortArray<TYPE, KEY_TYPE> &copy);
-	CGObSortArray<TYPE, KEY_TYPE> &operator=(const CGObSortArray<TYPE, KEY_TYPE> &other);
+	CGObSortArray(const CGObSortArray<TYPE, KEY_TYPE> &copy);
+	CGObSortArray &operator=(const CGObSortArray<TYPE, KEY_TYPE> &other);
 };
 
 ///////////////////////////////////////////////////////////

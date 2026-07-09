@@ -258,17 +258,40 @@ jobs:
         run: |
           TAG="v${BUILD_VERSION_SEMANTIC}-${BUILD_NUMBER}"
           TITLE="v${BUILD_VERSION_DISPLAY} (build ${BUILD_NUMBER})"
+
           NOTES_FILE=$(mktemp)
           printf '%s\n' "${COMMIT_MSG}" > "${NOTES_FILE}"
-          ARTIFACTS=(changelog.txt artifacts/*)
+
+          SCRIPT_PACK_REPOSITORY="${GITHUB_REPOSITORY_OWNER}/Scripts"
+          if SCRIPT_PACK_COMMIT_SHA=$(gh api "repos/${SCRIPT_PACK_REPOSITORY}/commits/master" --jq '.sha' 2>/dev/null); then
+            echo "Using script pack from repository '${SCRIPT_PACK_REPOSITORY}' (SHA:${SCRIPT_PACK_COMMIT_SHA})"
+            for TYPE in "zipball" "tarball"; do
+              FILE="script-pack-${SCRIPT_PACK_COMMIT_SHA:0:7}"
+              if [[ "${TYPE}" == "zipball" ]]; then
+                FILE+=".zip"
+              else
+                FILE+=".tar.gz"
+              fi
+              echo "Downloading '${FILE}'"
+              if curl --fail --silent --show-error --location "${GITHUB_API_URL}/repos/${SCRIPT_PACK_REPOSITORY}/${TYPE}/${SCRIPT_PACK_COMMIT_SHA}" --output "artifacts/${FILE}"; then
+                echo "Download complete"
+              else
+                echo "::warning::Failed to download '${FILE}' from repository '${SCRIPT_PACK_REPOSITORY}'"
+                rm -f "artifacts/${FILE}"
+              fi
+            done
+          else
+            echo "::notice::Script pack repository '${SCRIPT_PACK_REPOSITORY}' not found"
+          fi
 
           # Clean up stale releases (keep only 100 most recent)
-          gh api repos/${GITHUB_REPOSITORY}/releases --paginate --jq 'map(select(.prerelease))[99:] | reverse | .[].tag_name' \
+          gh api "/repos/${GITHUB_REPOSITORY}/releases" --paginate --jq 'map(select(.prerelease))[99:] | reverse | .[].tag_name' \
           | while read -r TAG_STALE; do
             echo "Deleting stale release '${TAG_STALE}'"
             gh release delete "${TAG_STALE}" --yes --cleanup-tag
           done
 
+          ARTIFACTS=(changelog.txt artifacts/*)
           if gh release view "${TAG}" >/dev/null 2>&1; then
             echo "Updating release '${TAG}'"
             RELEASE_URL=$(gh release edit "${TAG}" --target "${COMMIT_SHA}" --title "${TITLE}" --notes-file "${NOTES_FILE}" --prerelease)
