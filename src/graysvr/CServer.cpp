@@ -1010,7 +1010,6 @@ enum SV_TYPE
 	SV_SAVECOUNT,	//read only
 	SV_SAVESTATICS,
 	SV_SECURE,
-	SV_SHRINKMEM,
 	SV_SHUTDOWN,
 	SV_TIME,		// read only
 	SV_UNBLOCKIP,
@@ -1046,7 +1045,6 @@ const LPCTSTR CServer::sm_szVerbKeys[SV_QTY + 1] =
 	"SAVECOUNT",	// read only
 	"SAVESTATICS",
 	"SECURE",
-	"SHRINKMEM",
 	"SHUTDOWN",
 	"TIME",			// read only
 	"UNBLOCKIP",
@@ -1306,26 +1304,6 @@ bool CServer::r_Verb(CScript &s, CTextConsole *pSrc)
 #endif
 			pSrc->SysMessagef("Secure mode %s\n", g_Cfg.m_fSecure ? "enabled" : "disabled");
 			break;
-		}
-		case SV_SHRINKMEM:
-		{
-#ifdef _WIN32
-			if ( GRAY_GetOSInfo()->dwPlatformId != VER_PLATFORM_WIN32_NT )
-			{
-				g_Log.EventError("Command not available on Windows 95/98/ME\n");
-				return false;
-			}
-			if ( !SetProcessWorkingSetSize(GetCurrentProcess(), static_cast<SIZE_T>(-1), static_cast<SIZE_T>(-1)) )
-			{
-				g_Log.EventError("Error during memory shrink\n");
-				return false;
-			}
-			pSrc->SysMessage("Memory shrinked succesfully\n");
-			break;
-#else
-			g_Log.EventError("Command only available on Windows builds\n");
-			return false;
-#endif
 		}
 		case SV_SHUTDOWN:
 		{

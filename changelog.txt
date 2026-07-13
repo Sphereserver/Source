@@ -1873,3 +1873,6 @@ Changed: Updated internal Zlib libs v1.2.11 to v1.2.13.
 02-07-2026, Coruja
 Removed: 32bit architecture support
 	-32bit builds are no longer needed as most modern server environments have moved to 64bit
+
+13-07-2026, Coruja
+Removed: Obsolete SHRINKMEM function (the OS already manages memory automatically, and manually forcing a reduction causes performance drops)

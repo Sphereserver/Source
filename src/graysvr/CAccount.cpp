@@ -217,7 +217,7 @@ bool CAccounts::Account_OnCmd(TCHAR *pszArgs, CTextConsole *pSrc)
 		case VACS_BLOCKED:
 			return Account_ListUnused(pSrc, ppCmd[1], ppCmd[2], ppCmd[3], PRIV_BLOCKED);
 		case VACS_HELP:
-			pSrc->SysMessage(
+			pSrc->SysMessagef(
 				"Available commands:\n"
 				"ACCOUNT ADD [login] [password]\n"
 				"ACCOUNT ADDMD5 [login] [password_hash]\n"
@@ -230,7 +230,7 @@ bool CAccounts::Account_OnCmd(TCHAR *pszArgs, CTextConsole *pSrc)
 				"ACCOUNT [login] JAIL [0/1]\n"
 				"ACCOUNT [login] MD5PASSWORD [password_hash]\n"
 				"ACCOUNT [login] PASSWORD [password]\n"
-				"ACCOUNT [login] PLEVEL [0-7]\n"
+				"ACCOUNT [login] PLEVEL [%d-%d]\n", PLEVEL_Player, PLEVEL_QTY - 1
 			);
 			return true;
 		case VACS_JAILED:
@@ -388,15 +388,15 @@ bool CAccounts::Account_ListUnused(CTextConsole *pSrc, LPCTSTR pszDays, LPCTSTR 
 		}
 	}
 
-	pSrc->SysMessagef("Matched %" FMTSIZE_T " of %" FMTSIZE_T " accounts unused for %d days\n", iCount, iCountOrig, iDaysTest);
+	pSrc->SysMessagef("Matched %zu of %zu accounts unused for %d days\n", iCount, iCountOrig, iDaysTest);
 
 	if ( fDelete )
 	{
 		size_t iDeleted = iCountOrig - Account_GetCount();
 		if ( iDeleted < iCount )
-			pSrc->SysMessagef("%" FMTSIZE_T " deleted, %" FMTSIZE_T " cleared of characters (must try to delete again)\n", iDeleted, iCount - iDeleted);
+			pSrc->SysMessagef("%zu deleted, %zu cleared of characters (must try to delete again)\n", iDeleted, iCount - iDeleted);
 		else if ( iDeleted > 0 )
-			pSrc->SysMessagef("All %" FMTSIZE_T " unused accounts deleted\n", iDeleted);
+			pSrc->SysMessagef("All %zu unused accounts deleted\n", iDeleted);
 		else
 			pSrc->SysMessage("No accounts deleted\n");
 	}
@@ -726,7 +726,7 @@ size_t CAccount::AttachChar(CChar *pChar)
 	{
 		size_t iQty = m_Chars.GetCharCount();
 		if ( iQty > MAX_CHARS_PER_ACCT )
-			g_Log.Event(LOGL_ERROR|LOGM_ACCOUNTS, "Account '%s' exceeded max characters allowed (%" FMTSIZE_T "/%d)\n", GetName(), iQty, MAX_CHARS_PER_ACCT);
+			g_Log.Event(LOGL_ERROR|LOGM_ACCOUNTS, "Account '%s' exceeded max characters allowed (%zu/%d)\n", GetName(), iQty, MAX_CHARS_PER_ACCT);
 	}
 	return i;
 }

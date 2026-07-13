@@ -1,23 +1,7 @@
 #include "graycom.h"
 #include "grayproto.h"
 
-#ifdef _WIN32
-	const OSVERSIONINFO *GRAY_GetOSInfo()
-	{
-		static OSVERSIONINFO g_osInfo;
-		if ( g_osInfo.dwOSVersionInfoSize != sizeof(g_osInfo) )
-		{
-			g_osInfo.dwOSVersionInfoSize = sizeof(g_osInfo);
-			if ( !GetVersionEx(&g_osInfo) )		// unable to get version (Windows < 98?)
-			{
-				memset(&g_osInfo, 0, sizeof(g_osInfo));
-				g_osInfo.dwOSVersionInfoSize = sizeof(g_osInfo);
-				g_osInfo.dwPlatformId = VER_PLATFORM_WIN32s;	// Windows 3.x
-			}
-		}
-		return &g_osInfo;	// NEVER return null!
-	}
-#else
+#ifndef _WIN32
 	#ifdef __FreeBSD__
 		#include <time.h>
 		#include <sys/types.h>
@@ -190,62 +174,56 @@ size_t CvtSystemToNUNICODE(NCHAR *pszOut, int iSizeOutChars, LPCTSTR pszInp, int
 	int iOut = 0;
 
 #ifdef _WIN32
-	const OSVERSIONINFO *pOSInfo = GRAY_GetOSInfo();
-	if ( (pOSInfo->dwPlatformId == VER_PLATFORM_WIN32_NT) || (pOSInfo->dwMajorVersion > 4) )
+	int iOutTmp = MultiByteToWideChar(
+		CP_UTF8,							// code page
+		0,									// character-type options
+		pszInp,								// address of string to map
+		iSizeInBytes,						// number of bytes in string
+		reinterpret_cast<LPWSTR>(pszOut),	// address of wide-character buffer
+		iSizeOutChars);						// buffer size
+
+	if ( iOutTmp <= 0 )
 	{
-		int iOutTmp = MultiByteToWideChar(
-			CP_UTF8,							// code page
-			0,									// character-type options
-			pszInp,								// address of string to map
-			iSizeInBytes,						// number of bytes in string
-			reinterpret_cast<LPWSTR>(pszOut),	// address of wide-character buffer
-			iSizeOutChars);						// buffer size
-
-		if ( iOutTmp <= 0 )
-		{
-			pszOut[0] = '\0';
-			return 0;
-		}
-		if ( iOutTmp > iSizeOutChars )	// this should never happen
-		{
-			pszOut[0] = '\0';
-			return 0;
-		}
-
-		// Flip all the words to network order
-		for ( ; iOut < iOutTmp; ++iOut )
-			pszOut[iOut] = *(reinterpret_cast<WCHAR *>(&pszOut[iOut]));
+		pszOut[0] = '\0';
+		return 0;
 	}
-	else
+	if ( iOutTmp > iSizeOutChars )	// this should never happen
+	{
+		pszOut[0] = '\0';
+		return 0;
+	}
+
+	// Flip all the words to network order
+	for ( ; iOut < iOutTmp; ++iOut )
+		pszOut[iOut] = *(reinterpret_cast<WCHAR *>(&pszOut[iOut]));
+#else
+	for ( int iInp = 0; iInp < iSizeInBytes; )
+	{
+		BYTE ch = pszInp[iInp];
+		if ( ch == 0 )
+			break;
+
+		if ( iOut >= iSizeOutChars )
+			break;
+
+		if ( ch >= 0x80 )	// special UTF8 encoded char
+		{
+			WCHAR wChar;
+			int iInpTmp = CvtSystemToUNICODE(wChar, pszInp + iInp, iSizeInBytes - iInp);
+			if ( iInpTmp <= 0 )
+				break;
+
+			pszOut[iOut] = wChar;
+			iInp += iInpTmp;
+		}
+		else
+		{
+			pszOut[iOut] = ch;
+			++iInp;
+		}
+		++iOut;
+	}
 #endif
-	{
-		for ( int iInp = 0; iInp < iSizeInBytes; )
-		{
-			BYTE ch = pszInp[iInp];
-			if ( ch == 0 )
-				break;
-
-			if ( iOut >= iSizeOutChars )
-				break;
-
-			if ( ch >= 0x80 )	// special UTF8 encoded char
-			{
-				WCHAR wChar;
-				int iInpTmp = CvtSystemToUNICODE(wChar, pszInp + iInp, iSizeInBytes - iInp);
-				if ( iInpTmp <= 0 )
-					break;
-
-				pszOut[iOut] = wChar;
-				iInp += iInpTmp;
-			}
-			else
-			{
-				pszOut[iOut] = ch;
-				++iInp;
-			}
-			++iOut;
-		}
-	}
 
 	pszOut[iOut] = '\0';	// make sure it's null terminated
 	return iOut;
@@ -274,62 +252,56 @@ size_t CvtNUNICODEToSystem(TCHAR *pszOut, int iSizeOutBytes, const NCHAR *pszInp
 	int iInp = 0;
 
 #ifdef _WIN32
-	const OSVERSIONINFO *pOSInfo = GRAY_GetOSInfo();
-	if ( (pOSInfo->dwPlatformId == VER_PLATFORM_WIN32_NT) || (pOSInfo->dwMajorVersion > 4) )
+	// Flip all from network order
+	WCHAR szBuffer[1024 * 8];
+	for ( ; iInp < COUNTOF(szBuffer) - 1 && (iInp < iSizeInChars) && pszInp[iInp]; ++iInp )
+		szBuffer[iInp] = pszInp[iInp];
+
+	szBuffer[iInp] = '\0';
+
+	// Convert to proper UTF8
+	iOut = WideCharToMultiByte(
+		CP_UTF8,	// code page
+		0,			// performance and mapping flags
+		szBuffer,	// address of wide-character string
+		iInp,		// number of characters in string
+		pszOut,		// address of buffer for new string
+		iSizeOutBytes,	// size of buffer in bytes
+		NULL,		// address of default for unmappable characters
+		NULL		// address of flag set when default char. used
+	);
+
+	if ( iOut < 0 )
+	{
+		pszOut[0] = '\0';
+		return 0;
+	}
+#else
+	// Just assume its really ASCII
+	for ( ; iInp < iSizeInChars; ++iInp )
 	{
 		// Flip all from network order
-		WCHAR szBuffer[1024 * 8];
-		for ( ; iInp < COUNTOF(szBuffer) - 1 && (iInp < iSizeInChars) && pszInp[iInp]; ++iInp )
-			szBuffer[iInp] = pszInp[iInp];
+		WCHAR wChar = pszInp[iInp];
+		if ( !wChar )
+			break;
 
-		szBuffer[iInp] = '\0';
-
-		// Convert to proper UTF8
-		iOut = WideCharToMultiByte(
-			CP_UTF8,	// code page
-			0,			// performance and mapping flags
-			szBuffer,	// address of wide-character string
-			iInp,		// number of characters in string
-			pszOut,		// address of buffer for new string
-			iSizeOutBytes,	// size of buffer in bytes
-			NULL,		// address of default for unmappable characters
-			NULL		// address of flag set when default char. used
-		);
-
-		if ( iOut < 0 )
+		if ( iOut >= iSizeOutBytes )
+			break;
+		if ( wChar >= 0x80 )	// needs special UTF8 encoding
 		{
-			pszOut[0] = '\0';
-			return 0;
+			int iOutTmp = CvtUNICODEToSystem(pszOut + iOut, iSizeOutBytes - iOut, wChar);
+			if ( iOutTmp <= 0 )
+				break;
+
+			iOut += iOutTmp;
+		}
+		else
+		{
+			pszOut[iOut] = static_cast<TCHAR>(wChar);
+			++iOut;
 		}
 	}
-	else
 #endif
-	{
-		// Just assume its really ASCII
-		for ( ; iInp < iSizeInChars; ++iInp )
-		{
-			// Flip all from network order
-			WCHAR wChar = pszInp[iInp];
-			if ( !wChar )
-				break;
-
-			if ( iOut >= iSizeOutBytes )
-				break;
-			if ( wChar >= 0x80 )	// needs special UTF8 encoding
-			{
-				int iOutTmp = CvtUNICODEToSystem(pszOut + iOut, iSizeOutBytes - iOut, wChar);
-				if ( iOutTmp <= 0 )
-					break;
-
-				iOut += iOutTmp;
-			}
-			else
-			{
-				pszOut[iOut] = static_cast<TCHAR>(wChar);
-				++iOut;
-			}
-		}
-	}
 
 	pszOut[iOut] = '\0';	// make sure it's null terminated
 	return iOut;

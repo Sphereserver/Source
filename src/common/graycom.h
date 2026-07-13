@@ -9,7 +9,6 @@
 		#define STRICT		// strict conversion of handlers and pointers
 	#endif
 	#include <WinSock2.h>
-	extern const OSVERSIONINFO *GRAY_GetOSInfo();
 #else
 	#include "os_unix.h"
 	#ifdef __FreeBSD__
