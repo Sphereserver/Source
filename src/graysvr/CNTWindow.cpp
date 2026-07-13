@@ -211,12 +211,7 @@ void CNTWindow::List_Add( COLORREF color, LPCTSTR pszText )
 
 	// If the select is on screen then keep scrolling.
 	if ( ! m_fLogScrollLock && ! GetCapture())
-	{
-		if ( GRAY_GetOSInfo()->dwPlatformId == VER_PLATFORM_WIN32_NT )
-		{
-			m_wndLog.Scroll();
-		}
-	}
+		m_wndLog.Scroll();
 }
 
 bool CNTWindow::RegisterClass(char *className)	// static
@@ -282,18 +277,15 @@ int CNTWindow::OnCreate( HWND hWnd, LPCREATESTRUCT lParam )
 		(HMENU)(UINT) IDC_M_INPUT, theApp.m_hInstance, NULL );
 	ASSERT( m_wndInput.m_hWnd );
 
-	if ( GRAY_GetOSInfo()->dwPlatformId > VER_PLATFORM_WIN32s )
-	{
-		memset(&pnid,0,sizeof(pnid));
-		pnid.cbSize = sizeof(NOTIFYICONDATA);
-		pnid.hWnd   = m_hWnd;
-		pnid.uFlags = NIF_TIP | NIF_ICON | NIF_MESSAGE;
-		pnid.uCallbackMessage = WM_USER_TRAY_NOTIFY;
-		pnid.hIcon  = theApp.LoadIcon( IDR_MAINFRAME );
-		strncpy(pnid.szTip, theApp.m_pszAppName, sizeof(pnid.szTip));
-		pnid.szTip[sizeof(pnid.szTip) - 1] = '\0';
-		Shell_NotifyIcon(NIM_ADD, &pnid);
-	}
+	memset(&pnid,0,sizeof(pnid));
+	pnid.cbSize = sizeof(NOTIFYICONDATA);
+	pnid.hWnd = m_hWnd;
+	pnid.uFlags = NIF_TIP | NIF_ICON | NIF_MESSAGE;
+	pnid.uCallbackMessage = WM_USER_TRAY_NOTIFY;
+	pnid.hIcon = theApp.LoadIcon(IDR_MAINFRAME);
+	strncpy(pnid.szTip, theApp.m_pszAppName, sizeof(pnid.szTip));
+	pnid.szTip[sizeof(pnid.szTip) - 1] = '\0';
+	Shell_NotifyIcon(NIM_ADD, &pnid);
 
 	NTWindow_SetWindowTitle();
 
@@ -505,11 +497,8 @@ bool CNTWindow::OnSysCommand( WPARAM uCmdType, int xPos, int yPos )
 	switch ( uCmdType )
 	{
 		case SC_MINIMIZE:
-			if ( GRAY_GetOSInfo()->dwPlatformId > VER_PLATFORM_WIN32s )
-			{
-				ShowWindow(SW_HIDE);
-				return( true );
-			}
+			ShowWindow(SW_HIDE);
+			return true;
 			break;
 	}
 	return( false );
@@ -782,11 +771,8 @@ bool NTWindow_Init(HINSTANCE hInstance, int nCmdShow)
 
 void NTWindow_DeleteIcon()
 {
-	if ( GRAY_GetOSInfo()->dwPlatformId > VER_PLATFORM_WIN32s )
-	{
-		theApp.m_wndMain.pnid.uFlags = 0;
-		Shell_NotifyIcon(NIM_DELETE, &theApp.m_wndMain.pnid);
-	}
+	theApp.m_wndMain.pnid.uFlags = 0;
+	Shell_NotifyIcon(NIM_DELETE, &theApp.m_wndMain.pnid);
 }
 
 void NTWindow_Exit()
@@ -843,13 +829,10 @@ void NTWindow_SetWindowTitle( LPCTSTR pszText )
 	snprintf(szTitle, sizeof(szTitle), "%s - %s (%s) %s", theApp.m_pszAppName, g_Serv.GetName(), pszMode, pszText ? pszText : "");
 	theApp.m_wndMain.SetWindowText(szTitle);
 
-	if ( GRAY_GetOSInfo()->dwPlatformId > VER_PLATFORM_WIN32s )
-	{
-		theApp.m_wndMain.pnid.uFlags = NIF_TIP;
-		strncpy(theApp.m_wndMain.pnid.szTip, szTitle, sizeof(theApp.m_wndMain.pnid.szTip));
-		theApp.m_wndMain.pnid.szTip[sizeof(theApp.m_wndMain.pnid.szTip) - 1] = '\0';
-		Shell_NotifyIcon(NIM_MODIFY, &theApp.m_wndMain.pnid);
-	}
+	theApp.m_wndMain.pnid.uFlags = NIF_TIP;
+	strncpy(theApp.m_wndMain.pnid.szTip, szTitle, sizeof(theApp.m_wndMain.pnid.szTip));
+	theApp.m_wndMain.pnid.szTip[sizeof(theApp.m_wndMain.pnid.szTip) - 1] = '\0';
+	Shell_NotifyIcon(NIM_MODIFY, &theApp.m_wndMain.pnid);
 }
 
 bool NTWindow_PostMsgColor( COLORREF color )
