@@ -1876,3 +1876,6 @@ Removed: 32bit architecture support
 
 13-07-2026, Coruja
 Removed: Obsolete SHRINKMEM function (the OS already manages memory automatically, and manually forcing a reduction causes performance drops)
+
+21-07-2026, Coruja
+Changed: Updated internal Zlib libs v1.2.13 to v1.3.2.
