@@ -47,7 +47,7 @@ public:
 	}
 
 private:
-	void ConvertUTF8ToString(LPTSTR pszIn, stdvstring &pszOut);
+	void ConvertUTF8ToString(LPCTSTR pszIn, stdvstring &pszOut);
 };
 
 class Table
@@ -82,10 +82,14 @@ class TablePtr
 public:
 	TablePtr();
 	TablePtr(Table *pTable);
+	TablePtr(TablePtr &&pTable);
 	virtual ~TablePtr();
 
 public:
 	Table *m_pTable;
+
+private:
+	TablePtr &operator=(const TablePtr &other);
 };
 
 // Class for converting TCHAR to multi-byte UTF-8 and vice versa
@@ -105,6 +109,9 @@ private:
 
 public:
 	operator char *();
+
+private:
+	UTF8MBSTR &operator=(const UTF8MBSTR &other);
 };
 
 #endif	// _INC_SQLITE_H

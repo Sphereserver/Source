@@ -9,8 +9,7 @@ CSQLite::CSQLite()
 
 CSQLite::~CSQLite()
 {
-	if ( m_socket )
-		Close();
+	Close();
 }
 
 void CSQLite::Connect(LPCTSTR pszFileName)
@@ -23,13 +22,16 @@ void CSQLite::Connect(LPCTSTR pszFileName)
 	if ( m_resultCode != SQLITE_OK )
 	{
 		g_Log.EventError("SQLite error #%d: %s\n", m_resultCode, sqlite3_errmsg(m_socket));
-		sqlite3_close(m_socket);
+		Close();
 	}
 }
 
 void CSQLite::Close()
 {
 	ADDTOCALLSTACK("CSQLite::Close");
+	if ( !m_socket )
+		return;
+
 	sqlite3_close(m_socket);
 	m_socket = NULL;
 }
@@ -37,49 +39,55 @@ void CSQLite::Close()
 TablePtr CSQLite::QueryPtr(LPCTSTR pszQuery)
 {
 	ADDTOCALLSTACK("CSQLite::QueryPtr");
-	char **retStrings = 0;
-	char *errmsg = 0;
-	int iRows = 0, iCols = 0;
 
-	m_resultCode = sqlite3_get_table(m_socket, UTF8MBSTR(pszQuery), &retStrings, &iRows, &iCols, &errmsg);
+	sqlite3_stmt *pStmt = NULL;
+	m_resultCode = sqlite3_prepare_v2(m_socket, UTF8MBSTR(pszQuery), -1, &pStmt, NULL);
 	if ( m_resultCode != SQLITE_OK )
-		g_Log.EventError("SQLite error #%d: %s [Cmd: \"%s\"]\n", m_resultCode, errmsg, pszQuery);
+	{
+		g_Log.EventError("SQLite prepare error #%d: %s [Cmd: \"%s\"]\n", m_resultCode, sqlite3_errmsg(m_socket), pszQuery);
+		return TablePtr(new Table());
+	}
 
 	Table *pTable = new Table();
+	int iCols = sqlite3_column_count(pStmt);
 	pTable->m_iCols = iCols;
-	pTable->m_iRows = iRows;
-	if ( iRows > 0 )
-		pTable->m_iPos = 0;
 	pTable->m_strlstCols.reserve(iCols);
 
-	int iPos = 0;
-	for ( ; iPos < iCols; ++iPos )
+	for ( int i = 0; i < iCols; ++i )
 	{
 		pTable->m_strlstCols.push_back(stdvstring());
-
-		if ( retStrings[iPos] )
-			ConvertUTF8ToString(retStrings[iPos], pTable->m_strlstCols.back());
+		const char *pszColName = sqlite3_column_name(pStmt, i);
+		if ( pszColName )
+			ConvertUTF8ToString(pszColName, pTable->m_strlstCols.back());
 		else
 			pTable->m_strlstCols.back().push_back('\0');
 	}
 
-	pTable->m_lstRows.resize(iRows);
-	for ( int iRow = 0; iRow < iRows; ++iRow )
+	while ( (m_resultCode = sqlite3_step(pStmt)) == SQLITE_ROW )
 	{
-		pTable->m_lstRows[iRow].reserve(iCols);
-		for ( int iCol = 0; iCol < iCols; ++iCol, ++iPos )
-		{
-			pTable->m_lstRows[iRow].push_back(stdvstring());
+		pTable->m_lstRows.push_back(std::vector<stdvstring>());
+		auto &row = pTable->m_lstRows.back();
+		row.reserve(iCols);
 
-			if ( retStrings[iPos] )
-				ConvertUTF8ToString(retStrings[iPos], pTable->m_lstRows[iRow].back());
+		for ( int i = 0; i < iCols; ++i )
+		{
+			row.push_back(stdvstring());
+			const unsigned char *pszValue = sqlite3_column_text(pStmt, i);
+			if ( pszValue )
+				ConvertUTF8ToString(static_cast<const char *>(static_cast<const void *>(pszValue)), row.back());
 			else
-				pTable->m_lstRows[iRow].back().push_back('\0');
+				row.back().push_back('\0');
 		}
 	}
 
-	sqlite3_free_table(retStrings);
-	sqlite3_free(errmsg);
+	pTable->m_iRows = static_cast<int>(pTable->m_lstRows.size());
+	if ( pTable->m_iRows > 0 )
+		pTable->m_iPos = 0;
+
+	if ( m_resultCode != SQLITE_DONE )
+		g_Log.EventError("SQLite step error #%d: %s\n", m_resultCode, sqlite3_errmsg(m_socket));
+
+	sqlite3_finalize(pStmt);
 	return TablePtr(pTable);
 }
 
@@ -121,17 +129,23 @@ void CSQLite::Exec(LPCTSTR pszQuery)
 	if ( !m_socket )
 		return;
 
-	char *errmsg = 0;
-
-	m_resultCode = sqlite3_exec(m_socket, UTF8MBSTR(pszQuery), 0, 0, &errmsg);
+	sqlite3_stmt *pStmt = NULL;
+	m_resultCode = sqlite3_prepare_v2(m_socket, UTF8MBSTR(pszQuery), -1, &pStmt, NULL);
 	if ( m_resultCode != SQLITE_OK )
 	{
-		g_Log.EventError("SQLite error #%d: %s [Cmd: \"%s\"]\n", m_resultCode, errmsg, pszQuery);
-		sqlite3_free(errmsg);
+		g_Log.EventError("SQLite prepare error #%d: %s [Cmd: \"%s\"]\n", m_resultCode, sqlite3_errmsg(m_socket), pszQuery);
+		return;
 	}
+
+	m_resultCode = sqlite3_step(pStmt);
+	if ( (m_resultCode != SQLITE_DONE) && (m_resultCode != SQLITE_ROW) )
+		g_Log.EventError("SQLite step error #%d: %s\n", m_resultCode, sqlite3_errmsg(m_socket));
+
+	sqlite3_finalize(pStmt);
 }
 
-void CSQLite::ConvertUTF8ToString(LPTSTR pszIn, stdvstring &pszOut)
+
+void CSQLite::ConvertUTF8ToString(LPCTSTR pszIn, stdvstring &pszOut)
 {
 	ADDTOCALLSTACK("CSQLite::ConvertUTF8ToString");
 	size_t len = strlen(pszIn) + 1;
@@ -233,13 +247,11 @@ bool CSQLite::r_Verb(CScript &s, CTextConsole *pSrc)
 	switch ( index )
 	{
 		case LDBOV_CLOSE:
-			if ( m_socket )
-				Close();
+			Close();
 			break;
 
 		case LDBOV_CONNECT:
-			if ( !m_socket )
-				Connect(s.GetArgRaw());
+			Connect(s.GetArgRaw());
 			break;
 
 		case LDBOV_EXECUTE:
@@ -306,6 +318,12 @@ TablePtr::TablePtr(Table *pTable)
 	m_pTable = pTable;
 }
 
+TablePtr::TablePtr(TablePtr &&pTable)
+{
+	m_pTable = pTable.m_pTable;
+	pTable.m_pTable = NULL;
+}
+
 TablePtr::~TablePtr()
 {
 	if ( m_pTable )
@@ -344,6 +362,13 @@ UTF8MBSTR::~UTF8MBSTR()
 size_t UTF8MBSTR::ConvertStringToUTF8(LPCTSTR pszIn, char *&pszOut)
 {
 	ADDTOCALLSTACK("UTF8MBSTR::ConvertStringToUTF8");
+	if ( !pszIn )
+	{
+		pszOut = new char[1];
+		pszOut[0] = '\0';
+		return 0;
+	}
+
 	size_t len = strlen(pszIn);
 	wchar_t *wChar = new wchar_t[len + 1];
 	wChar[0] = '\0';
