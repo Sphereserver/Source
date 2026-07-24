@@ -203,7 +203,7 @@ jobs:
             if [[ "${{ matrix.build-type }}" == "Debug" ]]; then
               PDB_FILE="./x64/${{ matrix.build-type }}/SphereSvr.pdb"
             fi
-            7z a -bb1 "artifacts/${ARTIFACT_NAME}-Win64.zip" ${COMMON_DIRS} "./x64/${{ matrix.build-type }}/SphereSvr.exe" ${PDB_FILE} ./src/sphere.ini ./src/sphereCrypt.ini ./src/common/mysql/lib/libmysql.dll
+            7z a -bb1 "artifacts/${ARTIFACT_NAME}-Win64.zip" ${COMMON_DIRS} "./x64/${{ matrix.build-type }}/SphereSvr.exe" ${PDB_FILE} ./src/sphere.ini ./src/sphereCrypt.ini ./src/common/mysql/lib/libcrypto-3-x64.dll ./src/common/mysql/lib/libmysql.dll ./src/common/mysql/lib/libssl-3-x64.dll
           fi
 
       - name: Upload artifact to blob storage
