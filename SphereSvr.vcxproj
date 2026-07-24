@@ -40,7 +40,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>libmysql.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>src\common\mysql\lib\x64</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>src\common\mysql\lib</AdditionalLibraryDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <SubSystem>Windows</SubSystem>
     </Link>
