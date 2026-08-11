@@ -1,4 +1,5 @@
 #include "../graysvr/graysvr.h"
+#include <thread>
 #ifdef __FreeBSD__
 	#include <errno.h>
 #endif
@@ -16,9 +17,20 @@ void CSocketAddressIP::SetHostStr(LPCTSTR pszHostName)
 		return SetAddrStr(pszHostName);
 
 	// Try to resolve hostname
-	struct hostent *pHost = gethostbyname(pszHostName);
-	if ( pHost && pHost->h_addr )
-		SetAddrIP(*reinterpret_cast<DWORD *>(pHost->h_addr));
+	struct addrinfo hints = {};
+	hints.ai_family = AF_INET;
+	hints.ai_socktype = SOCK_STREAM;
+	struct addrinfo *pResult = NULL;
+
+	if ( getaddrinfo(pszHostName, NULL, &hints, &pResult) == 0 )
+	{
+		if ( pResult )
+		{
+			struct sockaddr_in *pSockAddrIn = reinterpret_cast<struct sockaddr_in *>(pResult->ai_addr);
+			SetAddrIP(pSockAddrIn->sin_addr.s_addr);
+			freeaddrinfo(pResult);
+		}
+	}
 }
 
 ///////////////////////////////////////////////////////////
@@ -67,13 +79,12 @@ void CSocketAddress::SetHostPortStr(LPCTSTR pszIP)
 ///////////////////////////////////////////////////////////
 // CGSocket
 
-int CGSocket::GetLastError(bool fUseErrno)
+int CGSocket::GetLastError()
 {
 #ifdef _WIN32
-	UNREFERENCED_PARAMETER(fUseErrno);
 	return WSAGetLastError();
 #else
-	return fUseErrno ? errno : h_errno;
+	return errno;
 #endif
 }
 
@@ -228,6 +239,6 @@ void CGSocket::ClearAsync()
 {
 	// TO BE CALLED IN CClient destructor !!!
 	CancelIo(reinterpret_cast<HANDLE>(m_hSocket));
-	SleepEx(1, TRUE);
+	std::this_thread::sleep_for(std::chrono::milliseconds(1));
 }
 #endif

@@ -823,7 +823,7 @@ inline void AddSocketToSet(fd_set& fds, SOCKET socket, int& count)
 const char * GenerateNetworkThreadName(size_t id)
 {
 	char *pszTemp = new char[26];
-	snprintf(pszTemp, 26, "NetworkThread #%" FMTSIZE_T, id);
+	snprintf(pszTemp, 26, "NetworkThread #%zu", id);
 	return pszTemp;
 }
 
@@ -904,7 +904,7 @@ void NetworkManager::createNetworkThreads(size_t count)
 	if (count > maxThreads)
 	{
 		count = maxThreads;
-		g_Log.Event(LOGL_WARN, "Too many network threads requested. Reducing to %" FMTSIZE_T "\n", maxThreads);
+		g_Log.Event(LOGL_WARN, "Too many network threads requested. Reducing to %zu\n", maxThreads);
 	}
 
 	ASSERT(m_threads.empty());
@@ -933,7 +933,7 @@ NetworkThread* NetworkManager::selectBestThread(void)
 	}
 
 	if ( bestThread )
-		DEBUGNETWORK(("Selected thread #%" FMTSIZE_T "\n", bestThread->id()));
+		DEBUGNETWORK(("Selected thread #%zu\n", bestThread->id()));
 	return bestThread;
 }
 
@@ -1092,7 +1092,7 @@ void NetworkManager::start(void)
 		m_states[i] = new NetState(static_cast<long>(i));
 	m_stateCount = g_Cfg.m_iClientsMax;
 
-	DEBUGNETWORK(("Created %" FMTSIZE_T " network slots (system limit of %d clients)\n", m_stateCount, FD_SETSIZE));
+	DEBUGNETWORK(("Created %zu network slots (system limit of %d clients)\n", m_stateCount, FD_SETSIZE));
 
 	// create network threads
 	createNetworkThreads(g_Cfg.m_iNetworkThreads);
@@ -1104,7 +1104,7 @@ void NetworkManager::start(void)
 		for (NetworkThreadList::iterator it = m_threads.begin(); it != m_threads.end(); ++it)
 			(*it)->start();
 
-		DEBUGNETWORK(("Started %" FMTSIZE_T " network threads\n", m_threads.size()));
+		DEBUGNETWORK(("Started %zu network threads\n", m_threads.size()));
 	}
 	else
 	{
@@ -1848,7 +1848,7 @@ bool NetworkInput::processUnknownClientData(NetState* state, Packet* buffer)
 
 	if ( buffer->getRemainingLength() > 1024 )
 	{
-		DEBUGNETWORK(("%lx:Client connected with a seed length of %" FMTSIZE_T " exceeding max length limit of %d, disconnecting\n", state->id(), buffer->getRemainingLength(), 1024));
+		DEBUGNETWORK(("%lx:Client connected with a seed length of %zu exceeding max length limit of %d, disconnecting\n", state->id(), buffer->getRemainingLength(), 1024));
 		return false;
 	}
 
@@ -1894,7 +1894,7 @@ bool NetworkInput::processUnknownClientData(NetState* state, Packet* buffer)
 		EXC_SET("game client seed");
 		DWORD seed = 0;
 
-		DEBUGNETWORK(("%lx:Client connected with a seed length of %" FMTSIZE_T " ([0]=0x%x)\n", state->id(), buffer->getRemainingLength(), static_cast<int>(buffer->getRemainingData()[0])));
+		DEBUGNETWORK(("%lx:Client connected with a seed length of %zu ([0]=0x%x)\n", state->id(), buffer->getRemainingLength(), static_cast<int>(buffer->getRemainingData()[0])));
 		if (state->m_newseed || ((buffer->getRemainingData()[0] == PACKET_NewSeed) && (buffer->getRemainingLength() >= NETWORK_SEEDLEN_NEW)))
 		{
 			DEBUGNETWORK(("%lx:Receiving new client login handshake\n", state->id()));
@@ -1919,7 +1919,7 @@ bool NetworkInput::processUnknownClientData(NetState* state, Packet* buffer)
 			}
 			else
 			{
-				DEBUGNETWORK(("%lx:Not enough data received to be a valid handshake (%" FMTSIZE_T ")\n", state->id(), buffer->getRemainingLength()));
+				DEBUGNETWORK(("%lx:Not enough data received to be a valid handshake (%zu)\n", state->id(), buffer->getRemainingLength()));
 			}
 		}
 		else if ((buffer->getRemainingData()[0] == PACKET_UOGRequest) && (buffer->getRemainingLength() == 8))
@@ -2211,14 +2211,14 @@ size_t NetworkOutput::processPacketQueue(NetState* state, unsigned int priority)
 
 		EXC_CATCH;
 		EXC_DEBUG_START;
-		g_Log.EventDebug("id='%lx', pri='%u', packet '%" FMTSIZE_T "' of '%" FMTSIZE_T "' to send, length '%" FMTSIZE_T "' of '%" FMTSIZE_T "'\n", state->id(), priority, packetsProcessed, maxPacketsToProcess, lengthProcessed, maxLengthToProcess);
+		g_Log.EventDebug("id='%lx', pri='%u', packet '%zu' of '%zu' to send, length '%zu' of '%zu'\n", state->id(), priority, packetsProcessed, maxPacketsToProcess, lengthProcessed, maxLengthToProcess);
 		EXC_DEBUG_END;
 	}
 
 	if ( packetsProcessed >= maxPacketsToProcess )
-		DEBUGNETWORK(("Reached maximum packet count limit for this tick (%" FMTSIZE_T "/%" FMTSIZE_T ")\n", packetsProcessed, maxPacketsToProcess));
+		DEBUGNETWORK(("Reached maximum packet count limit for this tick (%zu/%zu)\n", packetsProcessed, maxPacketsToProcess));
 	if ( lengthProcessed >= maxLengthToProcess )
-		DEBUGNETWORK(("Reached maximum packet length limit for this tick (%" FMTSIZE_T "/%" FMTSIZE_T ")\n", lengthProcessed, maxLengthToProcess));
+		DEBUGNETWORK(("Reached maximum packet length limit for this tick (%zu/%zu)\n", lengthProcessed, maxLengthToProcess));
 
 	return packetsProcessed;
 }
@@ -2396,7 +2396,7 @@ bool NetworkOutput::sendPacketData(NetState* state, PacketSend* packet)
 
 	EXC_CATCH;
 	EXC_DEBUG_START;
-	g_Log.EventDebug("id='%lx', packet '0x%x', length '%" FMTSIZE_T "'\n", state->id(), *packet->getData(), packet->getLength());
+	g_Log.EventDebug("id='%lx', packet '0x%x', length '%zu'\n", state->id(), *packet->getData(), packet->getLength());
 	EXC_DEBUG_END;
 	return false;
 }
@@ -2451,7 +2451,7 @@ size_t NetworkOutput::sendData(NetState* state, const BYTE* data, size_t length)
 	if (result <= 0)
 	{
 		EXC_SET("error parse");
-		int errorCode = CGSocket::GetLastError(true);
+		int errorCode = CGSocket::GetLastError();
 
 #ifdef _WIN32
 		if (state->isAsyncMode() && errorCode == WSA_IO_PENDING)
@@ -2493,7 +2493,7 @@ size_t NetworkOutput::sendData(NetState* state, const BYTE* data, size_t length)
 	return result;
 	EXC_CATCH;
 	EXC_DEBUG_START;
-	g_Log.EventDebug("id='%lx', packet '0x%x', length '%" FMTSIZE_T "'\n", state->id(), *data, length);
+	g_Log.EventDebug("id='%lx', packet '0x%x', length '%zu'\n", state->id(), *data, length);
 	EXC_DEBUG_END;
 	return _failed_result();
 }

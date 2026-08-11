@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
@@ -15,21 +15,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <TargetName>SphereSvr</TargetName>
-    <ProjectName>0.56d</ProjectName>
     <ProjectGuid>{40CA07B5-BCC7-A9C8-A6E6-DEFC536EE8CB}</ProjectGuid>
     <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <LinkIncremental>true</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Nightly'">
-    <LinkIncremental>false</LinkIncremental>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
-    <LinkIncremental>false</LinkIncremental>
-  </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ItemDefinitionGroup>
     <ClCompile>
@@ -40,7 +29,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>libmysql.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>src\common\mysql\lib</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(ProjectDir)src\common\mysql\lib</AdditionalLibraryDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <SubSystem>Windows</SubSystem>
     </Link>
@@ -63,7 +52,7 @@ git rev-parse --is-inside-work-tree &gt;nul 2&gt;&amp;1 &amp;&amp; (
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <EnableCOMDATFolding>false</EnableCOMDATFolding>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
     </ClCompile>
@@ -78,7 +67,7 @@ git rev-parse --is-inside-work-tree &gt;nul 2&gt;&amp;1 &amp;&amp; (
     <ClCompile>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>_NIGHTLYBUILD;_THREAD_TRACK_CALLSTACK;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_NIGHTLYBUILD;_THREAD_TRACK_CALLSTACK;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WholeProgramOptimization>true</WholeProgramOptimization>
     </ClCompile>
     <ResourceCompile>
@@ -93,7 +82,7 @@ git rev-parse --is-inside-work-tree &gt;nul 2&gt;&amp;1 &amp;&amp; (
     <ClCompile>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>_THREAD_TRACK_CALLSTACK;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_THREAD_TRACK_CALLSTACK;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WholeProgramOptimization>true</WholeProgramOptimization>
     </ClCompile>
     <ResourceCompile>

@@ -3,15 +3,15 @@
 #pragma once
 
 #ifndef _WIN32
-#include <cstdint>
-#include <stdio.h>
-#include <stdarg.h>
-#include <string.h>
-#include <limits.h>
-#include <pthread.h>
-#include <unistd.h>
-#include <sys/wait.h>
 #include <cctype>
+#include <climits>
+#include <cstdarg>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <pthread.h>
+#include <sys/wait.h>
+#include <unistd.h>
 
 // Port some Windows stuff to Linux
 typedef unsigned char		BYTE;				// 8 bits
@@ -50,8 +50,6 @@ typedef int					BOOL;
 #define _cdecl
 #define __cdecl
 #define _vsnprintf				vsnprintf
-#define Sleep(mSec)				usleep(mSec * 1000)		// arg is microseconds = 1/1000000
-#define SleepEx(mSec, unused)	usleep(mSec * 1000)		// arg is microseconds = 1/1000000
 
 #ifndef _MAX_PATH
 	#define _MAX_PATH	260
@@ -71,16 +69,24 @@ typedef int					BOOL;
 	#define UNREFERENCED_PARAMETER(P)	(void)(P)
 #endif
 
-inline void _strupr(TCHAR *pszStr)
+inline TCHAR* _strupr(TCHAR *pszStr)
 {
-	for ( ; *pszStr != '\0'; ++pszStr )
-		*pszStr = toupper(*pszStr);
+	if ( pszStr )
+	{
+		for ( ; *pszStr != '\0'; ++pszStr )
+			*pszStr = static_cast<TCHAR>(toupper(static_cast<unsigned char>(*pszStr)));
+	}
+	return pszStr;
 }
 
-inline void _strlwr(TCHAR *pszStr)
+inline TCHAR* _strlwr(TCHAR *pszStr)
 {
-	for ( ; *pszStr != '\0'; ++pszStr )
-		*pszStr = tolower(*pszStr);
+	if ( pszStr )
+	{
+		for ( ; *pszStr != '\0'; ++pszStr )
+			*pszStr = static_cast<TCHAR>(tolower(static_cast<unsigned char>(*pszStr)));
+	}
+	return pszStr;
 }
 
 #endif	// _WIN32

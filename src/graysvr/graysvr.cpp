@@ -4,6 +4,7 @@
 #include "../sphere/asyncdb.h"
 #ifndef _WIN32
 	#include "CUnixTerminal.h"
+	#include <thread>
 #endif
 
 #if !defined(pid_t)
@@ -323,7 +324,7 @@ int CEventLog::VEvent(DWORD dwMask, LPCTSTR pszFormat, va_list args)
 		return 0;
 
 	TemporaryString pszTemp;
-	if ( _vsnprintf(pszTemp, SCRIPT_MAX_LINE_LEN, pszFormat, args) == 0 )
+	if ( vsnprintf(pszTemp, SCRIPT_MAX_LINE_LEN, pszFormat, args) == 0 )
 	{
 		strncpy(pszTemp, pszFormat, SCRIPT_MAX_LINE_LEN);
 		pszTemp[SCRIPT_MAX_LINE_LEN - 1] = '\0';
@@ -740,7 +741,7 @@ static void Sphere_MainMonitorLoop()
 #ifdef _WIN32
 			NTWindow_OnTick(1000);
 #else
-			Sleep(1000);
+			std::this_thread::sleep_for(std::chrono::seconds(1));
 #endif
 		}
 

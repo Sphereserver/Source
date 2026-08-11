@@ -2,6 +2,7 @@
 	#define _WIN32_DCOM		// required to initialize OLE
 #endif
 #include "mutex.h"
+#include <thread>
 
 ///////////////////////////////////////////////////////////
 // SimpleMutex
@@ -153,9 +154,9 @@ void AutoResetEvent::wait(unsigned long timeout)
 	if (timeout == 0)
 	{
 		// if timeout is 0 then the thread's timeslice may not be given up as with normal
-		// sleep methods - so we will check for this condition ourselves and use SleepEx
+		// sleep methods - so we will check for this condition ourselves and use yield()
 		// instead
-		SleepEx(0, TRUE);
+		std::this_thread::yield();
 		return;
 	}
 

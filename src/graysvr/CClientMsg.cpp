@@ -2629,18 +2629,18 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 								if ( iMaxWeight > 0 )
 								{
 									m_TooltipData.Add(t = new CClientTooltip(1072241)); // Contents: ~1_COUNT~/~2_MAXCOUNT~ items, ~3_WEIGHT~/~4_MAXWEIGHT~ stones
-									t->FormatArgs("%" FMTSIZE_T "\t%d\t%d\t%d", pContainer->GetCount(), MAX_ITEMS_CONT, pContainer->GetTotalWeight() / WEIGHT_UNITS, iMaxWeight / WEIGHT_UNITS);
+									t->FormatArgs("%zu\t%d\t%d\t%d", pContainer->GetCount(), MAX_ITEMS_CONT, pContainer->GetTotalWeight() / WEIGHT_UNITS, iMaxWeight / WEIGHT_UNITS);
 								}
 								else
 								{
 									m_TooltipData.Add(t = new CClientTooltip(1073841)); // Contents: ~1_COUNT~/~2_MAXCOUNT~ items, ~3_WEIGHT~ stones
-									t->FormatArgs("%" FMTSIZE_T "\t%d\t%d", pContainer->GetCount(), MAX_ITEMS_CONT, pContainer->GetTotalWeight() / WEIGHT_UNITS);
+									t->FormatArgs("%zu\t%d\t%d", pContainer->GetCount(), MAX_ITEMS_CONT, pContainer->GetTotalWeight() / WEIGHT_UNITS);
 								}
 							}
 							else
 							{
 								m_TooltipData.Add(t = new CClientTooltip(1050044)); // ~1_COUNT~ items, ~2_WEIGHT~ stones
-								t->FormatArgs("%" FMTSIZE_T "\t%d", pContainer->GetCount(), pContainer->GetTotalWeight() / WEIGHT_UNITS);
+								t->FormatArgs("%zu\t%d", pContainer->GetCount(), pContainer->GetTotalWeight() / WEIGHT_UNITS);
 							}
 
 							if ( pItem->m_WeightReduction != 0 )
@@ -2651,7 +2651,7 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 						}
 					}
 
-					const CChar *pCraftsman = static_cast<CGrayUID>(pItem->GetDefNum("CRAFTEDBY")).CharFind();
+					const CChar *pCraftsman = static_cast<CGrayUID>(static_cast<DWORD>(pItem->GetDefNum("CRAFTEDBY"))).CharFind();
 					if ( pCraftsman )
 					{
 						m_TooltipData.Add(t = new CClientTooltip(1050043)); // crafted by ~1_NAME~
@@ -3361,28 +3361,28 @@ void CClient::SendPacket(TCHAR *pszKey)
 		if ( packet->getLength() > SCRIPT_MAX_LINE_LEN - 4 )
 		{
 			// We won't get here because this lenght is enforced in all scripts
-			DEBUG_ERR(("SENDPACKET function exceeded max length allowed (%" FMTSIZE_T "/%d)\n", packet->getLength(), SCRIPT_MAX_LINE_LEN - 4));
+			DEBUG_ERR(("SENDPACKET function exceeded max length allowed (%zu/%d)\n", packet->getLength(), SCRIPT_MAX_LINE_LEN - 4));
 			delete packet;
 			return;
 		}
 
 		GETNONWHITESPACE(pszKey);
-
-		if ( toupper(*pszKey) == 'D' )
+		switch ( toupper(*pszKey) )
 		{
-			++pszKey;
-			packet->writeInt32(static_cast<DWORD>(Exp_GetLLVal(pszKey)));
-		}
-		else if ( toupper(*pszKey) == 'W' )
-		{
-			++pszKey;
-			packet->writeInt16(static_cast<WORD>(Exp_GetLLVal(pszKey)));
-		}
-		else
-		{
-			if ( toupper(*pszKey) == 'B' )
+			case 'D':
 				++pszKey;
-			packet->writeByte(static_cast<BYTE>(Exp_GetLLVal(pszKey)));
+				packet->writeInt32(static_cast<DWORD>(Exp_GetLLVal(pszKey)));
+				break;
+			case 'W':
+				++pszKey;
+				packet->writeInt16(static_cast<WORD>(Exp_GetLLVal(pszKey)));
+				break;
+			case 'B':
+				++pszKey;
+				// fall through
+			default:
+				packet->writeByte(static_cast<BYTE>(Exp_GetLLVal(pszKey)));
+				break;
 		}
 	}
 

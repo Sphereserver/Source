@@ -34,9 +34,9 @@ public:
 	{
 		s_addr = dwIP;
 	}
-	explicit CSocketAddressIP(const char *ip)
+	explicit CSocketAddressIP(LPCTSTR pszIP)
 	{
-		s_addr = inet_addr(ip);
+		SetAddrStr(pszIP);
 	}
 
 public:
@@ -44,12 +44,22 @@ public:
 
 	LPCTSTR GetAddrStr() const
 	{
-		return inet_ntoa(*this);
+		static thread_local TCHAR szIP[INET_ADDRSTRLEN];
+		if ( inet_ntop(AF_INET, const_cast<struct in_addr *>(static_cast<const struct in_addr *>(this)), szIP, sizeof(szIP)) )
+			return szIP;
+
+		return "0.0.0.0";
 	}
 	void SetAddrStr(LPCTSTR pszIP)
 	{
 		// IP must be in IPv4 format (x.x.x.x)
-		s_addr = inet_addr(pszIP);
+		s_addr = INADDR_BROADCAST;
+		if ( pszIP )
+		{
+			struct in_addr addr;
+			if ( inet_pton(AF_INET, pszIP, &addr) == 1 )
+				s_addr = addr.s_addr;
+		}
 	}
 
 	DWORD GetAddrIP() const
@@ -177,7 +187,7 @@ private:
 	}
 
 public:
-	static int GetLastError(bool fUseErrno = false);
+	static int GetLastError();
 	bool IsOpen() const
 	{
 		return (m_hSocket != INVALID_SOCKET);

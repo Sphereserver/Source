@@ -132,39 +132,49 @@ bool CServer::SocketsInit()
 #endif
 
 	TCHAR szName[_MAX_PATH];
-	struct hostent *pHost = NULL;
-
-	int iRet = gethostname(szName, sizeof(szName));
-	if ( iRet )
+	if ( gethostname(szName, sizeof(szName)) != 0 )
 	{
-		strncpy(szName, m_ip.GetAddrStr(), sizeof(szName));
-		szName[sizeof(szName) - 1] = '\0';
+		strncpy(szName, m_ip.GetAddrStr(), COUNTOF(szName));
+		szName[COUNTOF(szName) - 1] = '\0';
 	}
-	else
+
+	struct addrinfo hints = {};
+	hints.ai_flags = AI_CANONNAME;
+	hints.ai_family = AF_INET;
+	hints.ai_socktype = SOCK_STREAM;
+	struct addrinfo *pResult = NULL;
+
+	if ( getaddrinfo(szName, NULL, &hints, &pResult) == 0 )
 	{
-		pHost = gethostbyname(szName);
-		if ( pHost && pHost->h_addr && pHost->h_name )
+		if ( pResult && pResult->ai_canonname )
 		{
-			strncpy(szName, pHost->h_name, sizeof(szName));
-			szName[sizeof(szName) - 1] = '\0';
+			strncpy(szName, pResult->ai_canonname, COUNTOF(szName));
+			szName[COUNTOF(szName) - 1] = '\0';
 		}
 	}
 
 	g_Log.Event(LOGL_EVENT, "\nServer started on hostname '%s'\n", szName);
-	if ( !iRet && pHost && pHost->h_addr )
+	if ( pResult )
 	{
-		for ( size_t i = 0; pHost->h_addr_list[i] != NULL; ++i )
+		for ( struct addrinfo *pAddrInfo = pResult; pAddrInfo != NULL; pAddrInfo = pAddrInfo->ai_next )
 		{
-			CSocketAddressIP ip;
-			ip.SetAddrIP(*reinterpret_cast<DWORD *>(pHost->h_addr_list[i]));	// 0.1.2.3
-			if ( !m_ip.IsLocalAddr() && !m_ip.IsSameIP(ip) )
-				continue;
+			if ( pAddrInfo->ai_addr && (pAddrInfo->ai_addr->sa_family == AF_INET) )
+			{
+				struct sockaddr_in *pSockAddrIn = reinterpret_cast<struct sockaddr_in *>(pAddrInfo->ai_addr);
+				CSocketAddressIP ip;
+				ip.SetAddrIP(pSockAddrIn->sin_addr.s_addr);
 
-			g_Log.Event(LOGL_EVENT, "Monitoring local IP %s:%d (TCP) - Main server%s\n", ip.GetAddrStr(), m_ip.GetPort(), ((g_Cfg.m_fUseHTTP == 2) ? ", HTTP server" : ""));
-			if ( IsSetEF(EF_UsePingServer) )
-				g_Log.Event(LOGL_EVENT, "Monitoring local IP %s:%d (UDP) - Ping server\n", ip.GetAddrStr(), PINGSERVER_PORT);
+				if ( !m_ip.IsLocalAddr() && !m_ip.IsSameIP(ip) )
+					continue;
+
+				g_Log.Event(LOGL_EVENT, "Monitoring local IP %s:%d (TCP) - Main server%s\n", ip.GetAddrStr(), m_ip.GetPort(), ((g_Cfg.m_fUseHTTP == 2) ? ", HTTP server" : ""));
+				if ( IsSetEF(EF_UsePingServer) )
+					g_Log.Event(LOGL_EVENT, "Monitoring local IP %s:%d (UDP) - Ping server\n", ip.GetAddrStr(), PINGSERVER_PORT);
+			}
 		}
+		freeaddrinfo(pResult);
 	}
+
 	if ( GetPublicIP() )
 	{
 		g_Log.Event(LOGL_EVENT, "Monitoring public IP %s:%d (TCP) - Main server%s\n", m_ip.GetAddrStr(), m_ip.GetPort(), ((g_Cfg.m_fUseHTTP == 2) ? ", HTTP server" : ""));
@@ -197,15 +207,15 @@ bool CServer::GetPublicIP()
 
 	// Parse URL into domain/path
 	TCHAR szURL[_MAX_PATH];
-	strncpy(szURL, g_Serv.m_sRestAPIPublicIP, sizeof(szURL));
-	szURL[sizeof(szURL) - 1] = '\0';
+	strncpy(szURL, g_Serv.m_sRestAPIPublicIP, COUNTOF(szURL));
+	szURL[COUNTOF(szURL) - 1] = '\0';
 
 	TCHAR *pszPath = strchr(szURL, '/');
-	int iLen = pszPath ? pszPath - szURL : sizeof(szURL);
+	size_t iLen = pszPath ? static_cast<size_t>(pszPath - szURL) : strlen(szURL);
 
 	TCHAR *pszDomain = Str_GetTemp();
 	strncpy(pszDomain, szURL, iLen);
-	pszDomain[iLen - 1] = '\0';
+	pszDomain[iLen] = '\0';
 
 	// Create socket
 	CSocketAddress sockAddr;
@@ -224,7 +234,7 @@ bool CServer::GetPublicIP()
 
 	// Send HTTP request
 	TCHAR szHeader[256];
-	snprintf(szHeader, sizeof(szHeader), "GET %s HTTP/1.1\r\nHost: %s\r\nUser-Agent: " SPHERE_TITLE_VER "\r\nConnection: Close\r\n\r\n", pszPath ? pszPath : "/", pszDomain);
+	snprintf(szHeader, COUNTOF(szHeader), "GET %s HTTP/1.1\r\nHost: %s\r\nUser-Agent: " SPHERE_TITLE_VER "\r\nConnection: Close\r\n\r\n", pszPath ? pszPath : "/", pszDomain);
 	if ( sock.Send(szHeader, strlen(szHeader)) == SOCKET_ERROR )
 	{
 		sock.Close();
@@ -354,8 +364,8 @@ bool CServer::Load()
 
 #ifdef _WIN32
 	EXC_SET("setting console title");
-	TCHAR szTitle[32];
-	snprintf(szTitle, sizeof(szTitle), SPHERE_TITLE_VER " - %s", GetName());
+	TCHAR szTitle[MAX_SERVER_NAME_SIZE * 2];
+	snprintf(szTitle, COUNTOF(szTitle), SPHERE_TITLE_VER " - %s", GetName());
 	SetConsoleTitle(szTitle);
 #else
 	EXC_SET("setting signals");
@@ -405,7 +415,7 @@ int CServer::PrintPercent(long iCount, long iTotal)
 	ADDTOCALLSTACK("CServer::PrintPercent");
 	int iPercent = (iTotal > 0) ? IMULDIV(iCount, 100, iTotal) : 100;
 	TCHAR szTemp[5];
-	snprintf(szTemp, sizeof(szTemp), "%d%%", iPercent);
+	snprintf(szTemp, COUNTOF(szTemp), "%d%%", iPercent);
 
 	if ( m_iTelnetClients )
 		PrintTelnet(szTemp);
@@ -688,7 +698,7 @@ longcommand:
 			}
 
 			TCHAR szFileStrip[_MAX_PATH];
-			snprintf(szFileStrip, sizeof(szFileStrip), "%s%s", static_cast<LPCTSTR>(g_Cfg.m_sStripPath), "sphere_strip" SPHERE_FILE_EXT_SCP);
+			snprintf(szFileStrip, COUNTOF(szFileStrip), "%s%s", static_cast<LPCTSTR>(g_Cfg.m_sStripPath), "sphere_strip" SPHERE_FILE_EXT_SCP);
 
 			FILE *pFileStrip = fopen(szFileStrip, "w");
 			if ( !pFileStrip )
@@ -702,8 +712,8 @@ longcommand:
 			while ( (script = g_Cfg.GetResourceFile(i++)) != NULL )
 			{
 				TCHAR szFileScript[_MAX_PATH];
-				strncpy(szFileScript, script->GetFilePath(), sizeof(szFileScript));
-				szFileScript[sizeof(szFileScript) - 1] = '\0';
+				strncpy(szFileScript, script->GetFilePath(), COUNTOF(szFileScript));
+				szFileScript[COUNTOF(szFileScript) - 1] = '\0';
 
 				FILE *pFileScript = fopen(szFileScript, "r");
 				if ( !pFileScript )
@@ -716,15 +726,15 @@ longcommand:
 				char y[SCRIPT_MAX_LINE_LEN];
 				char z[THREAD_STRING_LENGTH];
 
-				while ( fgets(y, sizeof(y), pFileScript) )
+				while ( fgets(y, COUNTOF(y), pFileScript) )
 				{
 					x = y;
 					GETNONWHITESPACE(x);
 					if ( *x == '\0' )
 						continue;
 
-					strncpy(z, x, sizeof(z));
-					z[sizeof(z) - 1] = '\0';
+					strncpy(z, x, COUNTOF(z));
+					z[COUNTOF(z) - 1] = '\0';
 
 					if ( ((z[0] == '[') && (strnicmp(z, "[EOF]", 5) != 0)) || !strnicmp(z, "DEFNAME", 7) || !strnicmp(z, "NAME", 4) ||
 						!strnicmp(z, "ID", 2) || !strnicmp(z, "TYPE", 4) || !strnicmp(z, "WEIGHT", 6) || !strnicmp(z, "VALUE", 5) ||
