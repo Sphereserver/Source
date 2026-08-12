@@ -392,7 +392,7 @@ bool CItemMulti::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 
 		if ( *pszKey == '\0' )
 		{
-			sVal.FormatVal(pMultiDef->m_Components.GetCount());
+			sVal.FormatULLVal(pMultiDef->m_Components.GetCount());
 			return true;
 		}
 		else if ( *pszKey == '.' )

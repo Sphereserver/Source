@@ -1297,7 +1297,7 @@ bool CChar::r_GetRef(LPCTSTR &pszKey, CScriptObj *&pRef)
 				SKIP_SEPARATORS(pszKey);
 				return true;
 			case CHR_MEMORYFIND:			// find memory related to a given UID
-				pRef = Memory_FindObj(static_cast<CGrayUID>(Exp_GetLLSingle(pszKey)));
+				pRef = Memory_FindObj(static_cast<CGrayUID>(static_cast<DWORD>(Exp_GetLLSingle(pszKey))));
 				SKIP_SEPARATORS(pszKey);
 				return true;
 			case CHR_OWNER:
@@ -1410,7 +1410,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			pszKey += 8;
 			if ( *pszKey == '\0' )
 			{
-				sVal.FormatVal(m_lastAttackers.size());
+				sVal.FormatULLVal(m_lastAttackers.size());
 				return true;
 			}
 
@@ -1421,7 +1421,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				if ( !strnicmp(pszKey, "ID", 2) )
 				{
 					pszKey += 2;
-					sVal.FormatVal(Attacker_GetID(static_cast<CGrayUID>(Exp_GetLLSingle(pszKey)).CharFind()));
+					sVal.FormatVal(Attacker_GetID(static_cast<CGrayUID>(static_cast<DWORD>(Exp_GetLLSingle(pszKey))).CharFind()));
 					return true;
 				}
 				else if ( !strnicmp(pszKey, "TARGET", 6) )
@@ -1500,7 +1500,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			pszKey += 8;
 			if ( *pszKey == '\0' )
 			{
-				sVal.FormatVal(m_notoSaves.size());
+				sVal.FormatULLVal(m_notoSaves.size());
 				return true;
 			}
 
@@ -1511,7 +1511,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				if ( !strnicmp(pszKey, "ID", 2) )
 				{
 					pszKey += 2;
-					sVal.FormatVal(NotoSave_GetID(static_cast<CGrayUID>(Exp_GetLLSingle(pszKey)).CharFind()));
+					sVal.FormatVal(NotoSave_GetID(static_cast<CGrayUID>(static_cast<DWORD>(Exp_GetLLSingle(pszKey))).CharFind()));
 					return true;
 				}
 				if ( m_notoSaves.size() )
@@ -1924,7 +1924,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			if ( *pszKey == '.' )
 			{
 				++pszKey;
-				pMemory = Memory_FindObj(static_cast<CGrayUID>(Exp_GetLLVal(pszKey)));
+				pMemory = Memory_FindObj(static_cast<CGrayUID>(static_cast<DWORD>(Exp_GetLLVal(pszKey))));
 			}
 			else
 				pMemory = Memory_FindObj(pSrc->GetChar());
@@ -2036,7 +2036,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case CHC_DIR:
 		{
 			pszKey += 3;
-			CChar *pChar = static_cast<CGrayUID>(Exp_GetLLSingle(pszKey)).CharFind();
+			CChar *pChar = static_cast<CGrayUID>(static_cast<DWORD>(Exp_GetLLSingle(pszKey))).CharFind();
 			if ( pChar )
 				sVal.FormatVal(GetDir(pChar));
 			else
@@ -2104,7 +2104,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			pszKey += 11;
 			GETNONWHITESPACE(pszKey);
 
-			CChar *pChar = static_cast<CGrayUID>(Exp_GetLLVal(pszKey)).CharFind();
+			CChar *pChar = static_cast<CGrayUID>(static_cast<DWORD>(Exp_GetLLVal(pszKey))).CharFind();
 			if ( !pChar )
 				pChar = pSrc->GetChar();
 
@@ -2272,7 +2272,7 @@ bool CChar::r_LoadVal(CScript &s)
 			pszKey += 8;
 			if ( *pszKey != '\0' )
 			{
-				int id = m_lastAttackers.size();
+				int id = static_cast<int>(m_lastAttackers.size());
 				if ( *pszKey == '.' )
 				{
 					++pszKey;
@@ -2568,7 +2568,7 @@ bool CChar::r_LoadVal(CScript &s)
 			if ( iArgQty < 2 )
 				return false;
 
-			CGrayUID uid = static_cast<CGrayUID>(piCmd[0]);
+			CGrayUID uid = static_cast<CGrayUID>(static_cast<DWORD>(piCmd[0]));
 			WORD wFlags = static_cast<WORD>(piCmd[1]);
 
 			CItemMemory *pMemory = Memory_FindObj(uid);

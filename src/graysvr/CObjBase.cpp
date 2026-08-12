@@ -914,7 +914,7 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case OC_CTAGCOUNT:
 		{
 			CChar *pChar = dynamic_cast<CChar *>(this);
-			sVal.FormatVal((pChar && pChar->m_pClient) ? pChar->m_pClient->m_TagDefs.GetCount() : 0);
+			sVal.FormatULLVal((pChar && pChar->m_pClient) ? pChar->m_pClient->m_TagDefs.GetCount() : 0);
 			break;
 		}
 		case OC_TEXTF:
@@ -976,7 +976,7 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				if ( pClient )
 				{
 					if ( !strnicmp(pszKey, "COUNT", 5) )
-						sVal.FormatVal(pClient->m_mapOpenedGumps.size());
+						sVal.FormatULLVal(pClient->m_mapOpenedGumps.size());
 					else
 					{
 						CClient::OpenedGumpsMap_t *pDialogList = &pClient->m_mapOpenedGumps;
@@ -1393,7 +1393,7 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			return false;
 		}
 		case OC_TAGCOUNT:
-			sVal.FormatVal(m_TagDefs.GetCount());
+			sVal.FormatULLVal(m_TagDefs.GetCount());
 			break;
 		case OC_PROPSAT:
 		{
@@ -1430,7 +1430,7 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			return false;
 		}
 		case OC_PROPSCOUNT:
-			sVal.FormatVal(m_BaseDefs.GetCount());
+			sVal.FormatULLVal(m_BaseDefs.GetCount());
 			break;
 		default:
 			return false;
@@ -2124,7 +2124,7 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 			if ( iArgQty < 2 )
 				piCmd[1] = 1;
 
-			pObjNear = static_cast<CGrayUID>(piCmd[0]).ObjFind();
+			pObjNear = static_cast<CGrayUID>(static_cast<DWORD>(piCmd[0])).ObjFind();
 			if ( !pObjNear )
 				return false;
 
@@ -2264,9 +2264,9 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 			switch ( iArgQty )
 			{
 				case 4:
-					pItemSrc = static_cast<CGrayUID>(piCmd[3]).ItemFind();
+					pItemSrc = static_cast<CGrayUID>(static_cast<DWORD>(piCmd[3])).ItemFind();
 				case 3:
-					pCharSrc = (piCmd[2] == -1) ? dynamic_cast<CChar *>(this) : static_cast<CGrayUID>(piCmd[2]).CharFind();
+					pCharSrc = (piCmd[2] == -1) ? dynamic_cast<CChar *>(this) : static_cast<CGrayUID>(static_cast<DWORD>(piCmd[2])).CharFind();
 					break;
 				default:
 					break;

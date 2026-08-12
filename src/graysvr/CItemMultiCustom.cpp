@@ -546,7 +546,7 @@ void CItemMultiCustom::CommitChanges(CClient *pClient)
 		pItem = Area.GetItem();
 		if ( !pItem )
 			break;
-		if ( GetUID() != static_cast<CGrayUID>(pItem->GetTagDefs()->GetKeyNum("FIXTURE")) )
+		if ( GetUID() != static_cast<CGrayUID>(static_cast<DWORD>(pItem->GetTagDefs()->GetKeyNum("FIXTURE"))) )
 			continue;
 
 		pItem->Delete();
@@ -1081,14 +1081,14 @@ bool CItemMultiCustom::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *
 	{
 		case IMCC_COMPONENTS:
 		{
-			sVal.FormatUVal(m_designMain.m_vectorComponents.size());
+			sVal.FormatULLVal(m_designMain.m_vectorComponents.size());
 			break;
 		}
 		case IMCC_DESIGN:
 		{
 			pszKey += 6;
 			if ( !*pszKey )
-				sVal.FormatUVal(m_designMain.m_vectorComponents.size());
+				sVal.FormatULLVal(m_designMain.m_vectorComponents.size());
 			else if ( *pszKey == '.' )
 			{
 				SKIP_SEPARATORS(pszKey);
@@ -1134,7 +1134,7 @@ bool CItemMultiCustom::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *
 		}
 		case IMCC_FIXTURES:
 		{
-			sVal.FormatUVal(GetFixtureCount(&m_designMain));
+			sVal.FormatULLVal(GetFixtureCount(&m_designMain));
 			break;
 		}
 		case IMCC_REVISION:

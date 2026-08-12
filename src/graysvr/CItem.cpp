@@ -1089,7 +1089,7 @@ bool CItem::MoveTo(CPointMap pt, bool bForceFix) // Put item on the ground here.
 	{
 		size_t iCount = pSector->GetItemComplexity();
 		if ( iCount > g_Cfg.m_iMaxSectorComplexity )
-			g_Log.Event(LOGL_WARN, "%" FMTSIZE_T " items at %s. Sector too complex!\n", iCount, pt.WriteUsed());
+			g_Log.Event(LOGL_WARN, "%zu items at %s. Sector too complex!\n", iCount, pt.WriteUsed());
 	}
 
 	SetTopPoint( pt );
@@ -1362,7 +1362,7 @@ LPCTSTR CItem::GetNameFull( bool fIdentified ) const
 			{
 				const CItemStone *pStone = static_cast<const CItemStone*>(this);
 				ASSERT(pStone);
-				len += snprintf(pTemp + len, THREAD_STRING_LENGTH - len, " (pop:%" FMTSIZE_T ")", pStone->GetCount());
+				len += snprintf(pTemp + len, THREAD_STRING_LENGTH - len, " (pop:%zu)", pStone->GetCount());
 			}
 			break;
 
@@ -2343,7 +2343,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 				return false;
 
 			bool fIncludeLower = (iQty > 1) ? (piVal[1] != 0) : false;
-			for ( int iCircle = piVal[0]; iCircle > 0; --iCircle )
+			for ( int iCircle = static_cast<int>(piVal[0]); iCircle > 0; --iCircle )
 			{
 				for ( int iSpell = 1; iSpell < 9; ++iSpell )
 					AddSpellbookSpell(static_cast<SPELL_TYPE>(RES_GET_INDEX(((iCircle - 1) * 8) + iSpell)), false);
@@ -3883,7 +3883,7 @@ CItem *CItem::Weapon_FindRangedAmmo(RESOURCE_ID_BASE id)
 	if ( pVarCont )
 	{
 		// Search container using UID
-		CContainer *pCont = dynamic_cast<CContainer *>(static_cast<CGrayUID>(pVarCont->GetValNum()).ItemFind());
+		CContainer *pCont = dynamic_cast<CContainer *>(static_cast<CGrayUID>(static_cast<DWORD>(pVarCont->GetValNum())).ItemFind());
 		if ( pCont )
 			return pCont->ContentFind(id);
 

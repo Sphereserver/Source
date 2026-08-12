@@ -4292,7 +4292,7 @@ bool PacketBugReport::onReceive(NetState* net)
 	BUGREPORT_TYPE type = static_cast<BUGREPORT_TYPE>(readInt16());
 
 	TCHAR text[1001];
-	int textLength = readStringNullNUNICODE(text, sizeof(text), sizeof(text) - 1);
+	size_t textLength = readStringNullNUNICODE(text, sizeof(text), sizeof(text) - 1);
 
 	net->m_client->Event_BugReport(text, textLength, type, CLanguageID(language));
 	return true;

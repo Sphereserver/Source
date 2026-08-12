@@ -1181,7 +1181,7 @@ bool CItemShip::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 
 		case IMCS_PLANKS:
 		{
-			sVal.FormatVal( GetShipPlankCount() );
+			sVal.FormatULLVal(GetShipPlankCount());
 		} break;
 
 		case IMCS_SHIPSPEED:

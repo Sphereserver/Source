@@ -36,7 +36,7 @@ public:
 	void Close();
 	void RespawnDeadNPCs();
 	void Restock();
-	void OnTick(int iPulseCount);
+	void OnTick(size_t iPulseCount);
 
 	bool v_AllChars(CScript &s, CTextConsole *pSrc);
 	bool v_AllCharsIdle(CScript &s, CTextConsole *pSrc);

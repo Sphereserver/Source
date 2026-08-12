@@ -1665,7 +1665,7 @@ void CClient::Event_TalkUNICODE(NWORD *wszText, int iTextLen, HUE_TYPE wHue, TAL
 	const NWORD *puText = wszText;
 
 	size_t iLen = CvtNUNICODEToSystem(szText, sizeof(szText), wszText, iTextLen);
-	if ( iLen <= 0 )
+	if ( iLen == 0 )
 		return;
 
 	TCHAR *pszText = szText;
@@ -1701,7 +1701,7 @@ void CClient::Event_TalkUNICODE(NWORD *wszText, int iTextLen, HUE_TYPE wHue, TAL
 				if ( (szText[i] >= 'A') && (szText[i] <= 'Z') )
 					szText[i] += 0x20;
 			}
-			iLen = CvtSystemToNUNICODE(wszText, iTextLen, szText, iLen);
+			iLen = CvtSystemToNUNICODE(wszText, iTextLen, szText, static_cast<int>(iLen));
 		}
 	}
 
@@ -1754,7 +1754,7 @@ bool CDialogResponseArgs::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsol
 		size_t iQty = m_CheckArray.GetCount();
 		if ( pszKey[0] == '\0' )
 		{
-			sVal.FormatVal(iQty);
+			sVal.FormatULLVal(iQty);
 			return true;
 		}
 		else if ( !strnicmp(pszKey, "ID", 2) )
@@ -1787,7 +1787,7 @@ bool CDialogResponseArgs::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsol
 		size_t iQty = m_TextArray.GetCount();
 		if ( pszKey[0] == '\0' )
 		{
-			sVal.FormatVal(iQty);
+			sVal.FormatULLVal(iQty);
 			return true;
 		}
 
@@ -2389,7 +2389,7 @@ void CClient::Event_AOSPopupMenuSelect(CGrayUID uid, WORD wIndex)	//do something
 	}
 }
 
-void CClient::Event_BugReport(const TCHAR *pszText, int iTextLen, BUGREPORT_TYPE type, CLanguageID lang)
+void CClient::Event_BugReport(const TCHAR *pszText, size_t iTextLen, BUGREPORT_TYPE type, CLanguageID lang)
 {
 	ADDTOCALLSTACK("CClient::Event_BugReport");
 	UNREFERENCED_PARAMETER(iTextLen);

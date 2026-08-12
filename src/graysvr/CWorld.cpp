@@ -569,7 +569,7 @@ bool CWorldThread::IsSaving() const
 
 DWORD CWorldThread::GetUIDCount() const
 {
-	return m_UIDs.GetCount();
+	return static_cast<DWORD>(m_UIDs.GetCount());
 }
 
 CObjBase *CWorldThread::FindUID(DWORD dwIndex) const
@@ -652,7 +652,7 @@ successalloc:
 void CWorldThread::SaveThreadClose()
 {
 	ADDTOCALLSTACK("CWorldThread::SaveThreadClose");
-	for ( size_t i = 1; i < GetUIDCount(); ++i )
+	for ( DWORD i = 1; i < GetUIDCount(); ++i )
 	{
 		if ( m_UIDs[i] == UID_PLACE_HOLDER )
 			m_UIDs[i] = NULL;
@@ -1094,7 +1094,7 @@ bool CWorld::SaveStage()
 
 			if ( iComplexity <= g_Cfg.m_iSaveStepMaxComplexity )
 			{
-				size_t iDynamicStage = static_cast<size_t>(m_iSaveStage) + 1;
+				size_t iDynamicStage = m_iSaveStage + 1;
 				size_t iSectorsCount = 1;
 				while ( (iDynamicStage < m_SectorsQty) && (iSectorsCount <= g_Cfg.m_iSaveSectorsPerTick) )
 				{
@@ -1106,7 +1106,7 @@ bool CWorld::SaveStage()
 							break;
 
 						pSector->r_Write();
-						m_iSaveStage = iDynamicStage;
+						m_iSaveStage = static_cast<int>(iDynamicStage);
 						++iSectorsCount;
 					}
 					++iDynamicStage;
@@ -1187,7 +1187,7 @@ bool CWorld::SaveStage()
 
 	if ( g_Cfg.m_iSaveBackgroundTime )
 	{
-		int iNextTime = g_Cfg.m_iSaveBackgroundTime / m_SectorsQty;
+		INT64 iNextTime = g_Cfg.m_iSaveBackgroundTime / m_SectorsQty;
 		if ( iNextTime > TICK_PER_SEC / 2 )
 			iNextTime = TICK_PER_SEC / 2;
 		m_timeSave = GetCurrentTime() + iNextTime;
@@ -1917,7 +1917,7 @@ void CWorld::Speak(const CObjBaseTemplate *pSrc, LPCTSTR pszText, HUE_TYPE wHue,
 			if ( sTextGhost.IsEmpty() )
 			{
 				sTextGhost = pszText;
-				for ( size_t i = 0; i < sTextGhost.GetLength(); ++i )
+				for ( int i = 0; i < static_cast<int>(sTextGhost.GetLength()); ++i )
 				{
 					if ( (sTextGhost[i] != ' ') && (sTextGhost[i] != '\t') )
 						sTextGhost[i] = Calc_GetRandVal(2) ? 'O' : 'o';
@@ -2048,7 +2048,7 @@ void __cdecl CWorld::Broadcastf(LPCTSTR pszMsg, ...)
 	TemporaryString sTemp;
 	va_list vargs;
 	va_start(vargs, pszMsg);
-	_vsnprintf(sTemp, sTemp.realLength(), pszMsg, vargs);
+	vsnprintf(sTemp, sTemp.realLength(), pszMsg, vargs);
 	va_end(vargs);
 	Broadcast(sTemp);
 }

@@ -706,7 +706,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerRun(CScript &s, TRIGRUN_TYPE trigger, CTextCon
 				TCHAR *pszTempPoint = pszTemp;
 				ParseText(pszTempPoint, pSrc, 0, pArgs);
 
-				CGrayUID uid = static_cast<CGrayUID>(Exp_GetLLVal(pszTempPoint));
+				CGrayUID uid = static_cast<CGrayUID>(static_cast<DWORD>(Exp_GetLLVal(pszTempPoint)));
 				if ( !uid.IsValidUID() )
 				{
 					DEBUG_ERR(("%s called on invalid uid '0%" FMTDWORDH "'\n", sm_szScriptKeys[index], uid.GetObjUID()));
@@ -1226,7 +1226,7 @@ bool CScriptObj::r_GetRef(LPCTSTR &pszKey, CScriptObj *&pRef)
 	else if ( !strnicmp(pszKey, "UID.", 4) )
 	{
 		pszKey += 4;
-		pRef = static_cast<CGrayUID>(Exp_GetLLVal(pszKey)).ObjFind();
+		pRef = static_cast<CGrayUID>(static_cast<DWORD>(Exp_GetLLVal(pszKey))).ObjFind();
 		SKIP_SEPARATORS(pszKey);
 		return true;
 	}
@@ -1947,21 +1947,21 @@ bool CScriptObj::r_Verb(CScript &s, CTextConsole *pSrc)
 	{
 		case SSV_OBJ:
 		{
-			g_World.m_uidObj = static_cast<CGrayUID>(s.GetArgLLVal());
+			g_World.m_uidObj = static_cast<CGrayUID>(static_cast<DWORD>(s.GetArgLLVal()));
 			if ( !g_World.m_uidObj.ObjFind() )
 				g_World.m_uidObj = static_cast<CGrayUID>(UID_CLEAR);
 			break;
 		}
 		case SSV_NEW:
 		{
-			g_World.m_uidNew = static_cast<CGrayUID>(s.GetArgLLVal());
+			g_World.m_uidNew = static_cast<CGrayUID>(static_cast<DWORD>(s.GetArgLLVal()));
 			if ( !g_World.m_uidNew.ObjFind() )
 				g_World.m_uidNew = static_cast<CGrayUID>(UID_CLEAR);
 			break;
 		}
 		case SSV_NEWDUPE:
 		{
-			CGrayUID uid = static_cast<CGrayUID>(s.GetArgLLVal());
+			CGrayUID uid = static_cast<CGrayUID>(static_cast<DWORD>(s.GetArgLLVal()));
 			CObjBase *pObj = uid.ObjFind();
 			if ( !pObj )
 			{
@@ -2007,7 +2007,7 @@ bool CScriptObj::r_Verb(CScript &s, CTextConsole *pSrc)
 
 			if ( ppCmd[2] )
 			{
-				CGrayUID uidEquipper = static_cast<CGrayUID>(Exp_GetLLVal(ppCmd[2]));
+				CGrayUID uidEquipper = static_cast<CGrayUID>(static_cast<DWORD>(Exp_GetLLVal(ppCmd[2])));
 				bool fTriggerEquip = ppCmd[3] ? (Exp_GetLLVal(ppCmd[3]) != 0) : false;
 
 				if ( !fTriggerEquip || uidEquipper.IsItem() )
@@ -2468,7 +2468,7 @@ bool CScriptTriggerArgs::r_Verb(CScript &s, CTextConsole *pSrc)
 				pszTemp = pchEnd;
 				if ( !*pszTemp )	// setting REFx to a new object
 				{
-					m_VarObjs.Insert(wNumber, static_cast<CGrayUID>(s.GetArgLLVal()).ObjFind(), true);
+					m_VarObjs.Insert(wNumber, static_cast<CGrayUID>(static_cast<DWORD>(s.GetArgLLVal())).ObjFind(), true);
 					pszKey = pszTemp;
 					return true;
 				}
@@ -2896,14 +2896,14 @@ bool CFileObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 
 			if ( (m_pFile->GetPosition() + iRead > m_pFile->GetLength()) || m_pFile->IsEOF() )
 			{
-				g_Log.Event(LOGL_ERROR, "Failed to read %" FMTSIZE_T " bytes from file '%s' (EOF reached)\n", iRead, static_cast<LPCTSTR>(m_pFile->GetFilePath()));
+				g_Log.Event(LOGL_ERROR, "Failed to read %zu bytes from file '%s' (EOF reached)\n", iRead, static_cast<LPCTSTR>(m_pFile->GetFilePath()));
 				return false;
 			}
 
 			TCHAR *pszBuffer = GetReadBuffer(true);
 			if ( iRead != m_pFile->Read(pszBuffer, iRead) )
 			{
-				g_Log.Event(LOGL_ERROR, "Failed to read %" FMTSIZE_T " bytes from file '%s'\n", iRead, static_cast<LPCTSTR>(m_pFile->GetFilePath()));
+				g_Log.Event(LOGL_ERROR, "Failed to read %zu bytes from file '%s'\n", iRead, static_cast<LPCTSTR>(m_pFile->GetFilePath()));
 				return false;
 			}
 
@@ -3083,13 +3083,13 @@ void CFileObjContainer::ResizeContainer(size_t iNewRange)
 	}
 }
 
-int CFileObjContainer::GetFileNumber()
+size_t CFileObjContainer::GetFileNumber()
 {
 	ADDTOCALLSTACK("CFileObjContainer::GetFilenumber");
 	return m_iFileNumber;
 }
 
-void CFileObjContainer::SetFileNumber(int iNewRange)
+void CFileObjContainer::SetFileNumber(size_t iNewRange)
 {
 	ADDTOCALLSTACK("CFileObjContainer::SetFilenumber");
 	ResizeContainer(iNewRange);
@@ -3260,7 +3260,7 @@ bool CFileObjContainer::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole 
 	switch ( index )
 	{
 		case CFO_OBJECTPOOL:
-			sVal.FormatVal(GetFileNumber());
+			sVal.FormatULLVal(GetFileNumber());
 			break;
 		case CFO_GLOBALTIMEOUT:
 			sVal.FormatVal(m_iGlobalTimeout / TICK_PER_SEC);
@@ -3374,25 +3374,25 @@ static int Str_CmpHeadI(LPCTSTR pszFind, LPCTSTR pszTable)
 	}
 }
 
-int FindTable(LPCTSTR pszFind, const LPCTSTR *ppszTable, int iCount)
+int FindTable(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount)
 {
 	// Search on a non-sorted table
-	for ( int i = 0; i < iCount; ++i )
+	for ( size_t i = 0; i < iCount; ++i )
 	{
 		if ( strcmpi(pszFind, ppszTable[i]) == 0 )
-			return i;
+			return static_cast<int>(i);
 	}
 	return -1;
 }
 
-int FindTableSorted(LPCTSTR pszFind, const LPCTSTR *ppszTable, int iCount)
+int FindTableSorted(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount)
 {
 	// Binary search on a sorted table
 	// RETURN:
 	//  -1 = not found
 
 	int iLow = 0;
-	int iHigh = iCount - 1;
+	int iHigh = static_cast<int>(iCount) - 1;
 
 	while ( iLow <= iHigh )
 	{
@@ -3409,25 +3409,25 @@ int FindTableSorted(LPCTSTR pszFind, const LPCTSTR *ppszTable, int iCount)
 	return -1;
 }
 
-int FindTableHead(LPCTSTR pszFind, const LPCTSTR *ppszTable, int iCount)
+int FindTableHead(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount)
 {
 	// Search on a non-sorted table
-	for ( int i = 0; i < iCount; ++i )
+	for ( size_t i = 0; i < iCount; ++i )
 	{
 		if ( Str_CmpHeadI(pszFind, ppszTable[i]) == 0 )
-			return i;
+			return static_cast<int>(i);
 	}
 	return -1;
 }
 
-int FindTableHeadSorted(LPCTSTR pszFind, const LPCTSTR *ppszTable, int iCount)
+int FindTableHeadSorted(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount)
 {
 	// Binary search on a sorted table
 	// RETURN:
 	//  -1 = not found
 
 	int iLow = 0;
-	int iHigh = iCount - 1;
+	int iHigh = static_cast<int>(iCount) - 1;
 
 	while ( iLow <= iHigh )
 	{
@@ -3444,14 +3444,14 @@ int FindTableHeadSorted(LPCTSTR pszFind, const LPCTSTR *ppszTable, int iCount)
 	return -1;
 }
 
-int FindTableHeadSortedRes(LPCTSTR pszFind, const LPCTSTR *ppszTable, int iCount)
+int FindTableHeadSortedRes(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount)
 {
 	// Binary search on a resource sorted table
 	// RETURN:
 	//  -1 = not found
 
 	int iLow = 0;
-	int iHigh = iCount - 1;
+	int iHigh = static_cast<int>(iCount) - 1;
 
 	while ( iLow <= iHigh )
 	{

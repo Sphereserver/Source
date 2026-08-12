@@ -470,8 +470,9 @@ UINT64 CGrayInstall::HashFileName(CGString sFile)
 	eax = ecx = edx = 0;
 	ebx = edi = esi = static_cast<INT32>(sFile.GetLength()) + 0xDEADBEEF;
 
-	size_t i = 0;
-	for ( ; i + 12 < sFile.GetLength(); i += 12 )
+	int iLength = static_cast<int>(sFile.GetLength());
+	int i = 0;
+	for ( ; i + 12 < iLength; i += 12 )
 	{
 		edi = static_cast<INT32>((sFile[i +  7] << 24) | (sFile[i +  6] << 16) | (sFile[i + 5] << 8) | sFile[i + 4]) + edi;
 		esi = static_cast<INT32>((sFile[i + 11] << 24) | (sFile[i + 10] << 16) | (sFile[i + 9] << 8) | sFile[i + 8]) + esi;
@@ -491,9 +492,9 @@ UINT64 CGrayInstall::HashFileName(CGString sFile)
 		edi += ebx;
 	}
 
-	if ( i < sFile.GetLength() )
+	if ( i < iLength )
 	{
-		switch ( sFile.GetLength() - i )
+		switch ( iLength - i )
 		{
 			case 12:
 				esi += static_cast<INT32>(sFile[i + 11]) << 24;

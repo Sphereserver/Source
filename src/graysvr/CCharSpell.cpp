@@ -2628,8 +2628,8 @@ bool CChar::Spell_CastDone()
 
 		INT64 piArgs[2];
 		size_t iArgQty = Str_ParseCmds(const_cast<TCHAR *>(Args.m_VarsLocal.GetKeyStr("Duration")), piArgs, COUNTOF(piArgs), ",");
-		iDurationMin = (iArgQty >= 1) ? piArgs[0] * TICK_PER_SEC : static_cast<INT64>(GetSpellDuration(m_atMagery.m_Spell, iSkillLevel, this)) * TICK_PER_SEC;
-		iDurationMax = (iArgQty >= 2) ? piArgs[1] * TICK_PER_SEC : iDurationMin;
+		iDurationMin = (iArgQty >= 1) ? static_cast<int>(piArgs[0]) * TICK_PER_SEC : GetSpellDuration(m_atMagery.m_Spell, iSkillLevel, this) * TICK_PER_SEC;
+		iDurationMax = (iArgQty >= 2) ? static_cast<int>(piArgs[1]) * TICK_PER_SEC : iDurationMin;
 
 		wColor = static_cast<HUE_TYPE>(Args.m_VarsLocal.GetKeyNum("EffectColor"));
 	}
@@ -3129,7 +3129,7 @@ int CChar::Spell_CastStart()
 		{
 			TCHAR *pszTemp = Str_GetTemp();
 			size_t len = 0;
-			for ( size_t i = 0; ; ++i )
+			for ( int i = 0; ; ++i )
 			{
 				TCHAR ch = pSpellDef->m_sRunes[i];
 				if ( !ch )
@@ -3319,8 +3319,8 @@ bool CChar::OnSpellEffect(SPELL_TYPE spell, CChar *pCharSrc, int iSkillLevel, CI
 
 	INT64 piArgs[2];
 	size_t iArgQty = Str_ParseCmds(const_cast<TCHAR *>(Args.m_VarsLocal.GetKeyStr("Duration")), piArgs, COUNTOF(piArgs), ",");
-	int iDurationMin = (iArgQty >= 1) ? piArgs[0] * TICK_PER_SEC : 0;
-	int iDurationMax = (iArgQty >= 2) ? piArgs[1] * TICK_PER_SEC : iDurationMin;
+	int iDurationMin = (iArgQty >= 1) ? static_cast<int>(piArgs[0]) * TICK_PER_SEC : 0;
+	int iDurationMax = (iArgQty >= 2) ? static_cast<int>(piArgs[1]) * TICK_PER_SEC : iDurationMin;
 	iDuration = Calc_GetRandVal(iDurationMin, iDurationMax);
 
 	if ( pSpellDef->IsSpellType(SPELLFLAG_DAMAGE) )

@@ -133,8 +133,8 @@ bool CChar::Use_MoonGate(CItem *pItem)
 
 		// Set it's current destination based on the moon phases.
 		// ensure iTrammelPhrase isn't smaller than iFeluccaPhase, to avoid uint underflow in next calculation
-		unsigned int iTrammelPhase = g_World.GetMoonPhase(false) % iCount;
-		unsigned int iFeluccaPhase = g_World.GetMoonPhase(true) % iCount;
+		size_t iTrammelPhase = g_World.GetMoonPhase(false) % iCount;
+		size_t iFeluccaPhase = g_World.GetMoonPhase(true) % iCount;
 		if ( iTrammelPhase < iFeluccaPhase )
 			iTrammelPhase += iCount;
 

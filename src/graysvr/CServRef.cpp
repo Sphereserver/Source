@@ -38,12 +38,7 @@ DWORD CServerDef::StatGet(SERV_STAT_TYPE i) const
 			if ( !m_hModule )	// load psapi.dll if not loaded yet
 			{
 				EXC_SET("load process info");
-
-				TCHAR szLibPath[MAX_PATH];
-				GetSystemDirectory(szLibPath, sizeof(szLibPath));
-				strncat(szLibPath, "\\psapi.dll", sizeof(szLibPath) - strlen(szLibPath) - 1);
-
-				m_hModule = LoadLibrary(szLibPath);
+				m_hModule = LoadLibraryEx("psapi.dll", NULL, LOAD_LIBRARY_SEARCH_SYSTEM32);
 				if ( !m_hModule )
 				{
 					m_fProcessInfoAvailable = false;
@@ -65,7 +60,7 @@ DWORD CServerDef::StatGet(SERV_STAT_TYPE i) const
 					if ( m_GetProcessMemoryInfo(hProcess, &pmc, sizeof(pmc)) )
 					{
 						EXC_SET("read memory info");
-						d = pmc.WorkingSetSize;
+						d = static_cast<DWORD>(pmc.WorkingSetSize / 1024);
 					}
 					CloseHandle(hProcess);
 				}
@@ -75,7 +70,7 @@ DWORD CServerDef::StatGet(SERV_STAT_TYPE i) const
 			int res = getrusage(RUSAGE_SELF, &usage);
 
 			if ( (res == 0) && usage.ru_idrss )
-				d = usage.ru_idrss;
+				d = static_cast<DWORD>(usage.ru_idrss);
 			else
 			{
 				CFileText inf;
@@ -92,7 +87,7 @@ DWORD CServerDef::StatGet(SERV_STAT_TYPE i) const
 						{
 							head += 7;
 							GETNONWHITESPACE(head);
-							d = ATOI(head) * 1000;
+							d = static_cast<DWORD>((ATOI(head) * 1000) / 1024);
 							break;
 						}
 					}
@@ -106,9 +101,6 @@ DWORD CServerDef::StatGet(SERV_STAT_TYPE i) const
 				m_fProcessInfoAvailable = false;
 			}
 #endif
-
-			if ( d != 0 )
-				d /= 1024;
 		}
 	}
 	return d;
@@ -270,7 +262,7 @@ bool CServerDef::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatLLVal(-g_World.GetTimeDiff(m_timeCreate) / TICK_PER_SEC);
 			break;
 		case SC_GMPAGES:
-			sVal.FormatUVal(g_World.m_GMPages.GetCount());
+			sVal.FormatULLVal(g_World.m_GMPages.GetCount());
 			break;
 		case SC_ITEMS:
 			sVal.FormatUVal(StatGet(SERV_STAT_ITEMS));

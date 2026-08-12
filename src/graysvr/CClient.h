@@ -555,7 +555,7 @@ public:
 
 	void Event_Attack(CGrayUID uid);
 	void Event_Book_Title(CItem *pItem, LPCTSTR pszTitle, LPCTSTR pszAuthor);
-	void Event_BugReport(const TCHAR *pszText, int iTextLen, BUGREPORT_TYPE type, CLanguageID lang = NULL);
+	void Event_BugReport(const TCHAR *pszText, size_t iTextLen, BUGREPORT_TYPE type, CLanguageID lang = NULL);
 	bool Event_CharRename(CChar *pChar, LPCTSTR pszName);
 	void Event_ChatButton(const NCHAR *pszName = NULL);
 	void Event_ChatText(const NCHAR *pszText, int iTextLen, CLanguageID lang = NULL);
@@ -1001,7 +1001,7 @@ public:
 		va_list vargs;
 		va_start(vargs, pszFormat);
 
-		if ( !_vsnprintf(m_args, SCRIPT_MAX_LINE_LEN, pszFormat, vargs) )
+		if ( !vsnprintf(m_args, SCRIPT_MAX_LINE_LEN, pszFormat, vargs) )
 		{
 			strncpy(m_args, pszFormat, SCRIPT_MAX_LINE_LEN);
 			m_args[SCRIPT_MAX_LINE_LEN - 1] = '\0';

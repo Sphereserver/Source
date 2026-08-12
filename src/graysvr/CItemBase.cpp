@@ -1837,7 +1837,7 @@ bool CItemBaseMulti::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pS
 				return false;
 
 			if ( *pszKey == '\0' )
-				sVal.FormatVal(pMulti->GetItemCount());
+				sVal.FormatULLVal(pMulti->GetItemCount());
 			else if ( *pszKey == '.' )
 			{
 				SKIP_SEPARATORS(pszKey);
@@ -1872,7 +1872,7 @@ bool CItemBaseMulti::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pS
 		{
 			pszKey += 9;
 			if ( *pszKey == '\0' )
-				sVal.FormatVal(m_Components.GetCount());
+				sVal.FormatULLVal(m_Components.GetCount());
 			else if ( *pszKey == '.' )
 			{
 				SKIP_SEPARATORS(pszKey);

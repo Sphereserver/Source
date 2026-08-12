@@ -622,7 +622,7 @@ bool CRegionBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 					break;
 				iClients += pSector->m_Chars_Active.HasClients();
 			}
-			sVal.FormatUVal(iClients);
+			sVal.FormatULLVal(iClients);
 			break;
 		}
 		case RGNC_EVENTS:

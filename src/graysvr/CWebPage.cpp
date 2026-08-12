@@ -571,7 +571,7 @@ static void HtmlDecode(TCHAR *pszDst, LPCTSTR pszSrc)
 	}
 }
 
-bool CWebPageDef::ServPagePost(CClient *pClient, TCHAR *pszContent, int iContentLength)
+bool CWebPageDef::ServPagePost(CClient *pClient, TCHAR *pszContent, size_t iContentLength)
 {
 	ADDTOCALLSTACK("CWebPageDef::ServPagePost");
 	// Client sent POST data to server
@@ -579,7 +579,7 @@ bool CWebPageDef::ServPagePost(CClient *pClient, TCHAR *pszContent, int iContent
 	//  true = this was the page of interest
 	ASSERT(pClient);
 
-	if ( !pszContent || (iContentLength <= 0) || !HasTrigger(XTRIG_UNKNOWN) )
+	if ( !pszContent || (iContentLength == 0) || !HasTrigger(XTRIG_UNKNOWN) )
 		return false;
 
 	// Parse the data

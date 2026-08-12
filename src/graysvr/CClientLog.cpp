@@ -135,7 +135,7 @@ void CClient::addRelay(const CServerDef *pServ)
 		sCustomerID.Add(m_pAccount->GetName());
 
 		dwCustomerId = z_crc32(0L, Z_NULL, 0);
-		dwCustomerId = z_crc32(dwCustomerId, reinterpret_cast<const z_Bytef *>(sCustomerID.GetPtr()), sCustomerID.GetLength());
+		dwCustomerId = z_crc32(static_cast<uLong>(dwCustomerId), reinterpret_cast<const Bytef *>(sCustomerID.GetPtr()), static_cast<uInt>(sCustomerID.GetLength()));
 
 		m_pAccount->m_TagDefs.SetNum("CustomerID", dwCustomerId);
 	}
@@ -345,12 +345,12 @@ bool CClient::OnRxAxis(const BYTE *pData, size_t iLen)
 						PacketWeb packet;
 						for (;;)
 						{
-							size_t iLength = FileRead.Read(szTmp, sizeof(szTmp));
-							if ( iLength <= 0 )
+							DWORD dwLength = FileRead.Read(szTmp, sizeof(szTmp));
+							if ( dwLength == 0 )
 								break;
-							packet.setData((BYTE *)szTmp, iLength);
+							packet.setData(reinterpret_cast<const BYTE *>(szTmp), dwLength);
 							packet.send(this);
-							dwSize -= iLength;
+							dwSize -= dwLength;
 							if ( dwSize <= 0 )
 								break;
 						}
@@ -459,7 +459,7 @@ bool CClient::OnRxPing(const BYTE *pData, size_t iLen)
 		}
 	}
 
-	g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Unknown/invalid ping data '0x%x' from %s (Len: %" FMTSIZE_T ")\n", GetSocketID(), pData[0], GetPeerStr(), iLen);
+	g_Log.Event(LOGM_CLIENTS_LOG, "%lx:Unknown/invalid ping data '0x%x' from %s (Len: %zu)\n", GetSocketID(), pData[0], GetPeerStr(), iLen);
 	return false;
 }
 
@@ -617,7 +617,7 @@ void CClient::xProcessClientSetup(CEvent *pEvent, size_t iLen)
 #ifdef _DEBUG
 		xRecordPacketData(this, (const BYTE *)pEvent, iLen, "client->server");
 #endif
-		DEBUG_MSG(("%lx:Odd login message length %" FMTSIZE_T "\n", GetSocketID(), iLen));
+		DEBUG_MSG(("%lx:Odd login message length %zu\n", GetSocketID(), iLen));
 		return addLoginErr(PacketLoginError::UnkCrypt);
 	}
 

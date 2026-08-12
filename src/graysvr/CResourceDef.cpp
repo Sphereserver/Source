@@ -116,7 +116,7 @@ int CValueCurveDef::GetLinear(int iSkillPercent) const
 			if ( iLoIdx >= iQty )
 				iLoIdx = iQty - 1;
 			llSegSize = 1000 / iQty;
-			iSkillPercent -= iLoIdx * llSegSize;
+			iSkillPercent -= static_cast<int>(iLoIdx * llSegSize);
 			break;
 	}
 
@@ -943,13 +943,13 @@ bool CRandGroupDef::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * p
 			GETNONWHITESPACE(pszKey);
 
 			if ( pszKey[0] == '\0' )
-				sVal.FormatVal(GetRandMemberIndex(NULL, false));
+				sVal.FormatULLVal(GetRandMemberIndex(NULL, false));
 			else
 			{
-				CChar *pChar = static_cast<CGrayUID>(Exp_GetLLVal(pszKey)).CharFind();
+				CChar *pChar = static_cast<CGrayUID>(static_cast<DWORD>(Exp_GetLLVal(pszKey))).CharFind();
 				if ( !pChar )
 					return false;
-				sVal.FormatVal(GetRandMemberIndex(pChar, false));
+				sVal.FormatULLVal(GetRandMemberIndex(pChar, false));
 			}
 			break;
 		}
@@ -964,7 +964,7 @@ bool CRandGroupDef::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * p
 			{
 				SKIP_SEPARATORS(pszKey);
 				if ( !strnicmp(pszKey, "COUNT", 5) )
-					sVal.FormatVal(m_Members.GetCount());
+					sVal.FormatULLVal(m_Members.GetCount());
 				else
 				{
 					bool fKeyOnly = false;

@@ -567,7 +567,7 @@ bool CClient::r_GetRef(LPCTSTR &pszKey, CScriptObj *&pRef)
 						pszKey += 7;
 
 					SKIP_SEPARATORS(pszKey);
-					CChar *pChar = static_cast<CGrayUID>(Exp_GetLLSingle(pszKey)).CharFind();
+					CChar *pChar = static_cast<CGrayUID>(static_cast<DWORD>(Exp_GetLLSingle(pszKey))).CharFind();
 					if ( !pChar || !pChar->m_pClient )
 						return false;
 
@@ -1052,7 +1052,7 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 			CItem *pItem = NULL;
 			CSector *pSector = NULL;
 			CResourceDef *pSpawnDef = NULL;
-			for ( size_t iMap = 0; (iMap < MAP_QTY) && !fFound; ++iMap )
+			for ( int iMap = 0; (iMap < MAP_QTY) && !fFound; ++iMap )
 			{
 				if ( !g_MapList.m_maps[iMap] )
 					continue;
@@ -1313,7 +1313,7 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 				SysMessage("Usage: MAPWAYPOINT uid type");
 				break;
 			}
-			CObjBase *pObj = static_cast<CGrayUID>(piVal[0]).ObjFind();
+			CObjBase *pObj = static_cast<CGrayUID>(static_cast<DWORD>(piVal[0])).ObjFind();
 			addMapWaypoint(pObj, static_cast<MAPWAYPOINT_TYPE>(piVal[1]));
 			break;
 		}
@@ -1327,7 +1327,7 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 			INT64 piMidi[64];
 			size_t iArgQty = Str_ParseCmds(s.GetArgStr(), piMidi, COUNTOF(piMidi));
 			if ( iArgQty > 0 )
-				addMusic(static_cast<MIDI_TYPE>(piMidi[Calc_GetRandVal(iArgQty)]));
+				addMusic(static_cast<MIDI_TYPE>(piMidi[Calc_GetRandLLVal(iArgQty)]));
 			break;
 		}
 		case CV_NUDGE:
@@ -1371,10 +1371,10 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 			TCHAR *ppArgs[2];
 			Str_ParseCmds(s.GetArgStr(), ppArgs, COUNTOF(ppArgs));
 
-			CChar *pChar = ppArgs[0] ? static_cast<CGrayUID>(Exp_GetLLVal(ppArgs[0])).CharFind() : NULL;
+			CChar *pChar = ppArgs[0] ? static_cast<CGrayUID>(static_cast<DWORD>(Exp_GetLLVal(ppArgs[0]))).CharFind() : NULL;
 			if ( pChar )
 			{
-				CItem *pItem = ppArgs[1] ? static_cast<CGrayUID>(Exp_GetLLVal(ppArgs[1])).ItemFind() : NULL;
+				CItem *pItem = ppArgs[1] ? static_cast<CGrayUID>(static_cast<DWORD>(Exp_GetLLVal(ppArgs[1]))).ItemFind() : NULL;
 				Cmd_SecureTrade(pChar, pItem);
 			}
 			break;

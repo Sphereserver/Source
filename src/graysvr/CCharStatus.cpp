@@ -575,7 +575,7 @@ LPCTSTR CChar::Food_GetLevelMessage() const
 		g_Cfg.GetDefaultMsg(DEFMSG_MSG_FOOD_LVL_8)
 	};
 
-	size_t iQty = COUNTOF(sm_szFoodLevelMsg);
+	int iQty = COUNTOF(sm_szFoodLevelMsg);
 	int iMax = Stat_GetMax(STAT_FOOD);
 	if ( iMax )
 	{
@@ -583,7 +583,7 @@ LPCTSTR CChar::Food_GetLevelMessage() const
 		int i = IMULDIV(iVal, iQty, iMax);
 		if ( i < 0 )
 			i = 0;
-		else if ( static_cast<size_t>(i) >= iQty )
+		else if ( i >= iQty )
 			i = iQty - 1;
 		return sm_szFoodLevelMsg[i];
 	}
@@ -1035,7 +1035,7 @@ bool CChar::CanSeeLOS_Adv(const CPointMap &ptDst, CPointMap *pptBlock, int iMaxD
 		return CanSeeLOS_New_Failed(pptBlock, ptNow);
 	}
 
-	WARNLOS(("Path calculated %" FMTSIZE_T "\n", path.size()));
+	WARNLOS(("Path calculated %zu\n", path.size()));
 	// Ok now we should loop through all the points and checking for maptile, staticx, items, multis.
 	// If something is in the way and it has the wrong flags LOS return false
 

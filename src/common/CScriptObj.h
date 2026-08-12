@@ -62,7 +62,7 @@ public:
 	void VSysMessage(LPCTSTR pszFormat, va_list args) const
 	{
 		TemporaryString pszTemp;
-		_vsnprintf(pszTemp, pszTemp.realLength(), pszFormat, args);
+		vsnprintf(pszTemp, pszTemp.realLength(), pszFormat, args);
 		SysMessage(pszTemp);
 	}
 	void _cdecl SysMessagef(LPCTSTR pszFormat, ...) const __printfargs(2, 3)
@@ -265,7 +265,7 @@ public:
 
 private:
 	std::vector<CFileObj *> m_FileList;
-	int m_iFileNumber;
+	size_t m_iFileNumber;
 	int m_iGlobalTimeout;
 	int m_iCurrentTick;
 
@@ -273,8 +273,8 @@ private:
 	void ResizeContainer(size_t iNewRange);
 
 public:
-	int GetFileNumber();
-	void SetFileNumber(int iNewRange);
+	size_t GetFileNumber();
+	void SetFileNumber(size_t iNewRange);
 
 public:
 	bool OnTick();
@@ -297,10 +297,10 @@ private:
 
 ///////////////////////////////////////////////////////////
 
-int FindTable(LPCTSTR pszFind, const LPCTSTR *ppszTable, int iCount);
-int FindTableSorted(LPCTSTR pszFind, const LPCTSTR *ppszTable, int iCount);
-int FindTableHead(LPCTSTR pszFind, const LPCTSTR *ppszTable, int iCount);
-int FindTableHeadSorted(LPCTSTR pszFind, const LPCTSTR *ppszTable, int iCount);
-int FindTableHeadSortedRes(LPCTSTR pszFind, const LPCTSTR *ppszTable, int iCount);
+int FindTable(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount);
+int FindTableSorted(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount);
+int FindTableHead(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount);
+int FindTableHeadSorted(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount);
+int FindTableHeadSortedRes(LPCTSTR pszFind, const LPCTSTR *ppszTable, size_t iCount);
 
 #endif	// _INC_CSCRIPTOBJ_H

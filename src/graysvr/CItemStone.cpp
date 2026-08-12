@@ -996,7 +996,7 @@ bool CItemStone::r_Verb(CScript &s, CTextConsole *pSrc)		// execute command from
 				size_t iArgQty = Str_ParseCmds(s.GetArgStr(), piCmd, COUNTOF(piCmd));
 				if ( iArgQty == 2 )
 				{
-					CGrayUID uidStone = static_cast<CGrayUID>(piCmd[0]);
+					CGrayUID uidStone = static_cast<CGrayUID>(static_cast<DWORD>(piCmd[0]));
 					CItem *pStone = uidStone.ItemFind();
 					if ( pStone && (pStone->IsType(IT_STONE_GUILD) || pStone->IsType(IT_STONE_TOWN)) )
 					{

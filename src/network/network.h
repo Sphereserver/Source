@@ -18,9 +18,9 @@
 #define NETHISTORY_PINGDECAY	60								// time to decay 1 'ping'
 
 #ifdef _DEBUG
-	#define DEBUGNETWORK(_x_)		if ( g_Cfg.m_wDebugFlags & DEBUGF_NETWORK ) { g_pLog->EventDebug _x_; }
+	#define DEBUGNETWORK(_x_)	if ( g_Cfg.m_wDebugFlags & DEBUGF_NETWORK ) { g_pLog->EventDebug _x_; }
 #else
-	#define DEBUGNETWORK(_x_)
+	#define DEBUGNETWORK(_x_)	((void)0)
 #endif
 
 class CClient;

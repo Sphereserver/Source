@@ -185,7 +185,7 @@ void CChar::AddGoldToPack(DWORD dwAmount, CItemContainer *pPack, bool fSound)
 	WORD wGoldStack = 0;
 	while ( dwAmount > 0 )
 	{
-		wGoldStack = minimum(dwAmount, g_Cfg.m_iItemsMaxAmount);
+		wGoldStack = static_cast<WORD>(minimum(dwAmount, g_Cfg.m_iItemsMaxAmount));
 		pGold = CItem::CreateScript(ITEMID_GOLD_C1, this);
 		pGold->SetAmount(wGoldStack);
 		pPack->ContentAdd(pGold);

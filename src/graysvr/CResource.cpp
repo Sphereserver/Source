@@ -1310,7 +1310,7 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			LPCTSTR pszCmd = pszKey + 10;
 			if ( !strnicmp(pszCmd, "COUNT", 5) )
 			{
-				sVal.FormatUVal(m_Functions.GetCount());
+				sVal.FormatULLVal(m_Functions.GetCount());
 				return true;
 			}
 			else if ( m_Functions.ContainsKey(pszCmd) )
@@ -1325,7 +1325,7 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal = "0";
 			if ( iNumber >= m_Functions.GetCount() )
 			{
-				g_Log.EventError("Invalid command index %" FMTSIZE_T "\n", iNumber);
+				g_Log.EventError("Invalid command index %zu\n", iNumber);
 				return false;
 			}
 			else if ( !*pszCmd )
@@ -1359,7 +1359,7 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 						++iCount;
 				}
 
-				sVal.FormatUVal(iCount);
+				sVal.FormatULLVal(iCount);
 				return true;
 			}
 
@@ -1605,7 +1605,7 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatVal(m_iSpellTimeout / TICK_PER_SEC);
 			break;
 		case RC_GUILDS:
-			sVal.FormatUVal(g_World.m_Stones.GetCount());
+			sVal.FormatULLVal(g_World.m_Stones.GetCount());
 			return true;
 		case RC_TIMEUP:
 			sVal.FormatLLVal(-g_World.GetTimeDiff(g_World.m_timeStartup) / TICK_PER_SEC);
@@ -2311,7 +2311,7 @@ bool CResource::LoadResourceSection(CScript *pScript)
 			}
 
 			if ( m_NotoTitles.GetCount() != ((m_NotoKarmaLevels.GetCount() + 1) * (m_NotoFameLevels.GetCount() + 1)) )
-				g_Log.Event(LOGL_WARN, "Expected %" FMTSIZE_T " titles in NOTOTITLES section but found %" FMTSIZE_T "\n", (m_NotoKarmaLevels.GetCount() + 1) * (m_NotoFameLevels.GetCount() + 1), m_NotoTitles.GetCount());
+				g_Log.Event(LOGL_WARN, "Expected %zu titles in NOTOTITLES section but found %zu\n", (m_NotoKarmaLevels.GetCount() + 1) * (m_NotoFameLevels.GetCount() + 1), m_NotoTitles.GetCount());
 			return true;
 		}
 		case RES_OBSCENE:
@@ -3218,7 +3218,7 @@ RESOURCE_ID CResource::ResourceGetNewID(RES_TYPE restype, LPCTSTR pszName, CVarD
 		}
 		case RES_WEBPAGE:
 		{
-			index = m_WebPages.GetCount() + 1;
+			index = static_cast<int>(m_WebPages.GetCount() + 1);
 			break;
 		}
 		default:
@@ -3335,7 +3335,7 @@ void CResource::OnTick(bool fNow)
 
 			EXC_DEBUG_START;
 			CWebPageDef *pWeb = static_cast<CWebPageDef *>(m_WebPages[i]);
-			g_Log.EventDebug("web '%s' dest '%s' now '%d' index '%" FMTSIZE_T "'/'%" FMTSIZE_T "'\n", pWeb ? pWeb->GetName() : "", pWeb ? pWeb->GetDstName() : "", fNow ? 1 : 0, i, m_WebPages.GetCount());
+			g_Log.EventDebug("web '%s' dest '%s' now '%d' index '%zu'/'%zu'\n", pWeb ? pWeb->GetName() : "", pWeb ? pWeb->GetDstName() : "", fNow ? 1 : 0, i, m_WebPages.GetCount());
 			EXC_DEBUG_END;
 		}
 	}
@@ -3498,7 +3498,7 @@ bool CResource::Load(bool fResync)
 	// Index all script files
 	AddResourceDir(m_sSCPBaseDir);
 	size_t iCount = m_ResourceFiles.GetCount();
-	g_Log.Event(LOGL_EVENT, "Indexing %" FMTSIZE_T " scripts...\n", iCount);
+	g_Log.Event(LOGL_EVENT, "Indexing %zu scripts...\n", iCount);
 
 	for ( size_t j = 0; ; ++j )
 	{

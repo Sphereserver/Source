@@ -404,7 +404,7 @@ bool CPartyDef::Disband()
 	SysMessageAll(g_Cfg.GetDefaultMsg(DEFMSG_PARTY_DISBANDED));
 
 	CChar *pChar = NULL;
-	for ( int i = m_Chars.GetCharCount() - 1; i >= 0; --i )
+	for ( int i = static_cast<int>(m_Chars.GetCharCount()) - 1; i >= 0; --i )
 	{
 		pChar = m_Chars.GetChar(i).CharFind();
 		if ( !pChar )
@@ -435,7 +435,7 @@ bool CPartyDef::DeclineEvent(CChar *pCharDecline, CChar *pCharInviter)	// static
 		return false;
 
 	const CVarDefCont *pVar = pCharInviter->GetTagDefs()->GetKey("PARTY_LASTINVITE");
-	if ( !pVar || (static_cast<CGrayUID>(pVar->GetValNum()) != pCharDecline->GetUID()) )
+	if ( !pVar || (static_cast<CGrayUID>(static_cast<DWORD>(pVar->GetValNum())) != pCharDecline->GetUID()) )
 		return false;
 
 	pCharInviter->DeleteKey("PARTY_LASTINVITE");
@@ -457,7 +457,7 @@ bool CPartyDef::AcceptEvent(CChar *pCharAccept, CChar *pCharInviter, bool fForce
 	if ( !fForced )
 	{
 		const CVarDefCont *pVar = pCharInviter->GetTagDefs()->GetKey("PARTY_LASTINVITE");
-		if ( !pVar || (static_cast<CGrayUID>(pVar->GetValNum()) != pCharAccept->GetUID()) )
+		if ( !pVar || (static_cast<CGrayUID>(static_cast<DWORD>(pVar->GetValNum())) != pCharAccept->GetUID()) )
 			return false;
 
 		pCharInviter->DeleteKey("PARTY_LASTINVITE");
@@ -646,13 +646,13 @@ bool CPartyDef::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		{
 			pszKey += 13;
 			GETNONWHITESPACE(pszKey);
-			CChar *pChar = static_cast<CGrayUID>(Exp_GetLLVal(pszKey)).CharFind();
+			CChar *pChar = static_cast<CGrayUID>(static_cast<DWORD>(Exp_GetLLVal(pszKey))).CharFind();
 			sVal.FormatVal(pChar && (pChar->m_pParty == this));
 			break;
 		}
 		case PDC_MEMBERS:
 		{
-			sVal.FormatVal(m_Chars.GetCharCount());
+			sVal.FormatULLVal(m_Chars.GetCharCount());
 			break;
 		}
 		case PDC_SPEECHFILTER:
@@ -711,7 +711,7 @@ bool CPartyDef::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		}
 		case PDC_TAGCOUNT:
 		{
-			sVal.FormatVal(m_TagDefs.GetCount());
+			sVal.FormatULLVal(m_TagDefs.GetCount());
 			break;
 		}
 		default:
@@ -861,7 +861,7 @@ bool CPartyDef::r_Verb(CScript &s, CTextConsole *pSrc)
 				strncpy(pszUID, pszArgBackup, ++iLen);
 				pszUID[iLen - 1] = '\0';
 
-				uid = static_cast<CGrayUID>(Exp_GetLLVal(pszUID));
+				uid = static_cast<CGrayUID>(static_cast<DWORD>(Exp_GetLLVal(pszUID)));
 			}
 
 			SKIP_SEPARATORS(pszArg);

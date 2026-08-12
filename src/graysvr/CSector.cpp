@@ -57,7 +57,7 @@ bool CSector::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 	switch ( FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1) )
 	{
 		case SECC_CLIENTS:
-			sVal.FormatVal(m_Chars_Active.HasClients());
+			sVal.FormatULLVal(m_Chars_Active.HasClients());
 			return true;
 		case SECC_COLDCHANCE:
 			sVal.FormatVal(GetColdChance());
@@ -74,10 +74,10 @@ bool CSector::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 					{ "LOW",	10 },
 					{ NULL,		INT_MAX }
 				};
-				sVal = !strcmpi(pszKey, sm_ComplexityTitles->FindName(GetCharComplexity())) ? "1" : "0";
+				sVal = !strcmpi(pszKey, sm_ComplexityTitles->FindName(static_cast<int>(GetCharComplexity()))) ? "1" : "0";
 				return true;
 			}
-			sVal.FormatVal(GetCharComplexity());
+			sVal.FormatULLVal(GetCharComplexity());
 			return true;
 		}
 		case SECC_FLAGS:
@@ -90,7 +90,7 @@ bool CSector::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatVal(IsNight());
 			return true;
 		case SECC_ITEMCOUNT:
-			sVal.FormatUVal(GetItemComplexity());
+			sVal.FormatULLVal(GetItemComplexity());
 			return true;
 		case SECC_LIGHT:
 			sVal.FormatUVal(GetLight());
@@ -813,7 +813,7 @@ void CSector::Restock()
 	}
 }
 
-void CSector::OnTick(int iPulseCount)
+void CSector::OnTick(size_t iPulseCount)
 {
 	ADDTOCALLSTACK_INTENSIVE("CSector::OnTick");
 	// CWorld gives OnTick() to all CSectors

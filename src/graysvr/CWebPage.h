@@ -54,7 +54,7 @@ public:
 	bool SetSourceFile(LPCTSTR pszName, CClient *pClient);
 	bool IsMatch(LPCTSTR pszMatch) const;
 
-	bool ServPagePost(CClient *pClient, TCHAR *pszContent, int iContentLength);
+	bool ServPagePost(CClient *pClient, TCHAR *pszContent, size_t iContentLength);
 	static bool ServPage(CClient *pClient, TCHAR *pszPageName, CGTime *pTimeLastModified);
 
 	LPCTSTR GetName() const

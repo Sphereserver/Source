@@ -3209,7 +3209,7 @@ void PacketGumpDialog::writeCompressedControls(const CGString* controls, size_t 
 		// compress and write controls
 		z_uLong controlLength = 1;
 		for (size_t i = 0; i < controlCount; ++i)
-			controlLength += controls[i].GetLength() + 2;
+			controlLength += static_cast<z_uLong>(controls[i].GetLength() + 2);
 
 		char* toCompress = new char[controlLength];
 
@@ -3258,7 +3258,7 @@ void PacketGumpDialog::writeCompressedControls(const CGString* controls, size_t 
 			writeStringFixedNUNICODE(static_cast<LPCTSTR>(texts[i]), texts[i].GetLength());
 		}
 
-		z_uLong textsLength = getPosition() - textsPosition;
+		z_uLong textsLength = static_cast<z_uLong>(getPosition() - textsPosition);
 		
 		z_uLongf compressLength = z_compressBound(textsLength);
 		z_Bytef *compressBuffer = new z_Bytef[compressLength];
@@ -3273,7 +3273,7 @@ void PacketGumpDialog::writeCompressedControls(const CGString* controls, size_t 
 		}
 
 		seek(textsPosition);
-		writeInt32(textCount);
+		writeInt32(static_cast<DWORD>(textCount));
 		writeInt32(compressLength + 4);
 		writeInt32(textsLength);
 		writeData(compressBuffer, compressLength);

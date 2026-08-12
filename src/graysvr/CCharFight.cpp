@@ -356,7 +356,7 @@ int CChar::Noto_GetLevel() const
 	while ( (iFameLevel < g_Cfg.m_NotoFameLevels.GetCount()) && (iFame > g_Cfg.m_NotoFameLevels.GetAt(iFameLevel)) )
 		++iFameLevel;
 
-	return (iKarmaLevel * (g_Cfg.m_NotoFameLevels.GetCount() + 1)) + iFameLevel;
+	return static_cast<int>((iKarmaLevel * (g_Cfg.m_NotoFameLevels.GetCount() + 1)) + iFameLevel);
 }
 
 LPCTSTR CChar::Noto_GetTitle() const
@@ -666,7 +666,7 @@ int CChar::NotoSave_GetID(CChar *pChar)
 		{
 			NotoSaves &refNoto = m_notoSaves.at(i);
 			if ( refNoto.charUID == pChar->GetUID() )
-				return i;
+				return static_cast<int>(i);
 		}
 	}
 	return -1;
@@ -1175,7 +1175,7 @@ int CChar::Skill_Stealing(SKTRIG_TYPE stage)
 			return -SKTRIG_QTY;
 		}
 
-		pItem = pPack->GetAt(Calc_GetRandVal(pPack->GetCount()));		// random item on backpack
+		pItem = pPack->GetAt(Calc_GetRandLLVal(pPack->GetCount()));		// random item on backpack
 		if ( !pItem )
 			goto cantsteal;
 
@@ -2418,7 +2418,7 @@ int CChar::Attacker_GetID(CChar *pChar)
 		{
 			LastAttackers &refAttacker = m_lastAttackers.at(i);
 			if ( refAttacker.charUID == pChar->GetUID() )
-				return i;
+				return static_cast<int>(i);
 		}
 	}
 	return -1;

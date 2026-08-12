@@ -984,7 +984,7 @@ bool CAccount::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatVal(IsPriv(PRIV_BLOCKED));
 			break;
 		case AC_CHARS:
-			sVal.FormatVal(m_Chars.GetCharCount());
+			sVal.FormatULLVal(m_Chars.GetCharCount());
 			break;
 		case AC_CHATNAME:
 			sVal = m_sChatName;
@@ -1044,7 +1044,7 @@ bool CAccount::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal = m_TagDefs.GetKeyStr(pszKey, true);
 			return true;
 		case AC_TAGCOUNT:
-			sVal.FormatVal(m_TagDefs.GetCount());
+			sVal.FormatULLVal(m_TagDefs.GetCount());
 			break;
 		case AC_TOTALCONNECTTIME:
 			sVal.FormatLLVal(m_Total_Connect_Time);

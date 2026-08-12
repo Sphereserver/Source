@@ -324,7 +324,7 @@ bool CBaseBaseDef::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc
 			{
 				SKIP_SEPARATORS(pszKey);
 				if ( !strnicmp(pszKey, "COUNT", 5) )
-					sVal.FormatVal(m_BaseResources.GetCount());
+					sVal.FormatULLVal(m_BaseResources.GetCount());
 				else
 				{
 					size_t index = static_cast<size_t>(Exp_GetLLVal(pszKey));

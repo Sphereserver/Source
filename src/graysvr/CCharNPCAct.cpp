@@ -1985,7 +1985,7 @@ void CChar::NPC_Act_Looting()
 
 	CItemCorpse *pCorpse = dynamic_cast<CItemCorpse *>(pItem);
 	if ( pCorpse && (pCorpse->GetCount() > 0) )		// if it's a corpse, pick a random item inside it
-		pItem = pCorpse->GetAt(Calc_GetRandVal(pCorpse->GetCount()));
+		pItem = pCorpse->GetAt(Calc_GetRandLLVal(pCorpse->GetCount()));
 
 	if ( !CanTouch(pItem) || !CanMove(pItem) || !CanCarry(pItem) )
 	{
