@@ -25,14 +25,16 @@
 	#define OF_CREATE				O_CREAT
 	#define OF_SHARE_DENY_WRITE		0x0		// not available on Linux
 	#define OF_SHARE_DENY_NONE		0x0		// not available on Linux
+
+	#define INVALID_HANDLE_VALUE	((HANDLE)-1)
 #endif
 
-#define OF_BINARY			0x10000000
-#define OF_TEXT				0x20000000
-#define OF_NONCRIT			0x40000000	// just a test
-#define OF_DEFAULTMODE		0x80000000
+#define OF_BINARY			0x10000000	// open file in binary mode (don't handle line ending translation)
+#define OF_TEXT				0x20000000	// open file in text mode (handle line ending translation)
+#define OF_NONCRIT			0x40000000	// just check if file exists
+#define OF_DEFAULTMODE		0x80000000	// open file in default mode
 
-#define NOFILE_HANDLE		((HANDLE)-1)
+#define OF_MODE_MASK		0x0FFFFFFF
 
 class CGrayError;
 
@@ -43,7 +45,7 @@ public:
 
 	CFile()
 	{
-		m_hFile = NOFILE_HANDLE;
+		m_hFile = INVALID_HANDLE_VALUE;
 	}
 	virtual ~CFile()
 	{
@@ -109,7 +111,7 @@ public:
 
 	UINT GetMode() const
 	{
-		return (m_uMode & 0xFFFFFFF);
+		return (m_uMode & OF_MODE_MASK);
 	}
 	UINT GetFullMode() const
 	{
@@ -126,7 +128,7 @@ public:
 
 	virtual bool IsFileOpen() const
 	{
-		return (m_hFile != NOFILE_HANDLE);
+		return (m_hFile != INVALID_HANDLE_VALUE);
 	}
 	virtual bool Open(LPCTSTR pszFileName = NULL, UINT uMode = OF_READ|OF_SHARE_DENY_NONE)
 	{

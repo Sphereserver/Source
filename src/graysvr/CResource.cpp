@@ -9,7 +9,7 @@ CResource::CResource()
 	m_fUseHTTP = 2;
 	m_fUseAuthID = true;
 	m_iMapCacheTime = 2 * 60 * TICK_PER_SEC;
-	m_iSectorSleepMask = (1 << 10) - 1;
+	m_dwSectorSleepMask = (1 << 10) - 1;
 	m_fUseMapDiffs = false;
 
 	m_fSecure = true;
@@ -738,7 +738,7 @@ const CAssocReg CResource::sm_szLoadKeys[RC_QTY + 1] =
 	{"SAVESECTORSPERTICK",			{ELEM_INT,		OFFSETOF(CResource, m_iSaveSectorsPerTick),				0}},
 	{"SAVESTEPMAXCOMPLEXITY",		{ELEM_INT,		OFFSETOF(CResource, m_iSaveStepMaxComplexity),			0}},
 	{"SCPFILES",					{ELEM_CSTRING,	OFFSETOF(CResource, m_sSCPBaseDir),						0}},
-	{"SECTORSLEEP",					{ELEM_INT,		OFFSETOF(CResource, m_iSectorSleepMask),				0}},
+	{"SECTORSLEEP",					{ELEM_DWORD,	OFFSETOF(CResource, m_dwSectorSleepMask),				0}},
 	{"SECURE",						{ELEM_BOOL,		OFFSETOF(CResource, m_fSecure),							0}},
 	{"SKILLPRACTICEMAX",			{ELEM_WORD,		OFFSETOF(CResource, m_iSkillPracticeMax),				0}},
 	{"SNOOPCRIMINAL",				{ELEM_INT,		OFFSETOF(CResource, m_iSnoopCriminal),					0}},
@@ -1091,7 +1091,7 @@ bool CResource::r_LoadVal(CScript &s)
 		case RC_SECTORSLEEP:
 		{
 			int iVal = s.GetArgVal();
-			m_iSectorSleepMask = (1 << minimum(maximum(0, iVal), 31)) - 1;
+			m_dwSectorSleepMask = (1 << minimum(maximum(0, iVal), 31)) - 1;
 			break;
 		}
 		case RC_SAVEBACKGROUND:
@@ -1590,7 +1590,7 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatVal(m_iSavePeriod / (60 * TICK_PER_SEC));
 			break;
 		case RC_SECTORSLEEP:
-			sVal.FormatVal(m_iSectorSleepMask ? static_cast<long>(log(static_cast<double>(m_iSectorSleepMask) + 1) / log(static_cast<double>(2))) : 0);
+			sVal.FormatUVal(m_dwSectorSleepMask ? static_cast<unsigned long>(log2(static_cast<double>(m_dwSectorSleepMask) + 1.0)) : 0);
 			break;
 		case RC_SAVEBACKGROUND:
 			sVal.FormatVal(m_iSaveBackgroundTime / (60 * TICK_PER_SEC));

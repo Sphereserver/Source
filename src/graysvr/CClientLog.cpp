@@ -127,23 +127,23 @@ void CClient::addRelay(const CServerDef *pServ)
 	}
 
 	EXC_SET("customer id");
-	DWORD dwAddr = ipAddr.GetAddrIP();
-	DWORD dwCustomerId = 0x7F000001;
+	DWORD dwAddrIP = ipAddr.GetAddrIP();
+	DWORD dwCustomerID = 0x7F000001;
 	if ( g_Cfg.m_fUseAuthID )
 	{
 		CGString sCustomerID = pServ->GetName();
 		sCustomerID.Add(m_pAccount->GetName());
 
-		dwCustomerId = z_crc32(0L, Z_NULL, 0);
-		dwCustomerId = z_crc32(static_cast<uLong>(dwCustomerId), reinterpret_cast<const Bytef *>(sCustomerID.GetPtr()), static_cast<uInt>(sCustomerID.GetLength()));
+		dwCustomerID = static_cast<DWORD>(z_crc32(0L, Z_NULL, 0));
+		dwCustomerID = static_cast<DWORD>(z_crc32(static_cast<z_uLong>(dwCustomerID), reinterpret_cast<const z_Bytef *>(sCustomerID.GetPtr()), static_cast<z_uInt>(sCustomerID.GetLength())));
 
-		m_pAccount->m_TagDefs.SetNum("CustomerID", dwCustomerId);
+		m_pAccount->m_TagDefs.SetNum("CustomerID", dwCustomerID);
 	}
 
-	DEBUG_MSG(("%lx:Login_Relay to server %s with AuthID %" FMTDWORD "\n", GetSocketID(), ipAddr.GetAddrStr(), dwCustomerId));
+	DEBUG_MSG(("%lx:Login_Relay to server %s with AuthID %" FMTDWORD "\n", GetSocketID(), ipAddr.GetAddrStr(), dwCustomerID));
 
 	EXC_SET("server relay packet");
-	new PacketServerRelay(this, dwAddr, pServ->m_ip.GetPort(), dwCustomerId);
+	new PacketServerRelay(this, dwAddrIP, pServ->m_ip.GetPort(), dwCustomerID);
 
 	m_Targ_Mode = CLIMODE_SETUP_RELAY;
 	return;

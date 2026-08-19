@@ -55,7 +55,7 @@ DWORD CServerDef::StatGet(SERV_STAT_TYPE i) const
 				PROCESS_MEMORY_COUNTERS pmc;
 				if ( hProcess )
 				{
-					ASSERT(hProcess == NOFILE_HANDLE);
+					ASSERT(hProcess == INVALID_HANDLE_VALUE);
 					EXC_SET("get memory info");
 					if ( m_GetProcessMemoryInfo(hProcess, &pmc, sizeof(pmc)) )
 					{

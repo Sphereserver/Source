@@ -4,6 +4,10 @@
 	#include <errno.h>
 #endif
 
+#ifdef _WIN32
+	#pragma comment(lib, "ws2_32.lib")
+#endif
+
 ///////////////////////////////////////////////////////////
 // CSocketAddressIP
 

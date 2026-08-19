@@ -126,19 +126,19 @@ bool AbstractString::startsWithHead(const char *s)
 int AbstractString::indexOf(char c)
 {
 	char *pos = strchr(m_buf, c);
-	return ( pos == NULL ) ? -1 : pos - m_buf;
+	return pos ? static_cast<int>(pos - m_buf) : -1;
 }
 
 int AbstractString::indexOf(const char *s)
 {
 	char *pos = strstr(m_buf, s);
-	return ( pos == NULL ) ? -1 : pos - m_buf;
+	return pos ? static_cast<int>(pos - m_buf) : -1;
 }
 
 int AbstractString::lastIndexOf(char c)
 {
 	char *pos = strrchr(m_buf, c);
-	return ( pos == NULL ) ? -1 : pos - m_buf;
+	return pos ? static_cast<int>(pos - m_buf) : -1;
 }
 
 AbstractString::operator LPCTSTR() const

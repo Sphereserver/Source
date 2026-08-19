@@ -691,7 +691,7 @@ public:
 	int m_fUseHTTP;
 	bool m_fUseAuthID;
 	int m_iMapCacheTime;					// Time in sec to keep unused map data.
-	int m_iSectorSleepMask;					// The mask for how long sectors will sleep.
+	DWORD m_dwSectorSleepMask;				// The mask for how long sectors will sleep.
 	bool m_fUseMapDiffs;					// Whether or not to use map diff files.
 
 	CGString m_sWorldBaseDir;				// "e:\graysvr\worldsave\" = world files go here.

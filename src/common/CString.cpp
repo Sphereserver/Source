@@ -105,7 +105,7 @@ void CGString::Copy(LPCTSTR pszStr)
 void CGString::FormatV(LPCTSTR pszFormat, va_list args)
 {
 	TemporaryString pszTemp;
-	_vsnprintf(static_cast<char *>(pszTemp), pszTemp.realLength(), pszFormat, args);
+	vsnprintf(static_cast<char *>(pszTemp), pszTemp.realLength(), pszFormat, args);
 	Copy(pszTemp);
 }
 

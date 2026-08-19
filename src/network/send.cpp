@@ -3211,7 +3211,7 @@ void PacketGumpDialog::writeCompressedControls(const CGString* controls, size_t 
 		for (size_t i = 0; i < controlCount; ++i)
 			controlLength += static_cast<z_uLong>(controls[i].GetLength() + 2);
 
-		char* toCompress = new char[controlLength];
+		z_charf *toCompress = new z_charf[controlLength];
 
 		int n = 0;
 		z_uLong controlLengthActual = 0;
@@ -3227,13 +3227,13 @@ void PacketGumpDialog::writeCompressedControls(const CGString* controls, size_t 
 
 		ASSERT(controlLengthActual == controlLength);
 
-		z_uLongf compressLength = z_compressBound(controlLengthActual);
+		z_uLong compressLength = z_compressBound(controlLengthActual);
 		z_Bytef *compressBuffer = new z_Bytef[compressLength];
 
 		int error = z_compress2(compressBuffer, &compressLength, reinterpret_cast<const z_Bytef *>(toCompress), controlLengthActual, Z_DEFAULT_COMPRESSION);
 		delete[] toCompress;
 
-		if ((error != Z_OK) || (compressLength <= 0))
+		if ((error != Z_OK) || (compressLength == 0))
 		{
 			delete[] compressBuffer;
 			g_Log.EventError("Compress failed with error %d when generating gump. Using old packet\n", error);
@@ -3260,11 +3260,11 @@ void PacketGumpDialog::writeCompressedControls(const CGString* controls, size_t 
 
 		z_uLong textsLength = static_cast<z_uLong>(getPosition() - textsPosition);
 		
-		z_uLongf compressLength = z_compressBound(textsLength);
+		z_uLong compressLength = z_compressBound(textsLength);
 		z_Bytef *compressBuffer = new z_Bytef[compressLength];
 
 		int error = z_compress2(compressBuffer, &compressLength, &m_buffer[textsPosition], textsLength, Z_DEFAULT_COMPRESSION);
-		if ((error != Z_OK) || (compressLength <= 0))
+		if ((error != Z_OK) || (compressLength == 0))
 		{
 			delete[] compressBuffer;
 			g_Log.EventError("Compress failed with error %d when generating gump. Using old packet\n", error);
@@ -4334,10 +4334,10 @@ bool PacketHouseDesign::writeLevelData(BYTE bLevel, WORD wItemCount, BYTE *pbDat
 	ADDTOCALLSTACK("PacketHouseDesign::writeLevelData");
 
 	// Compress data
-	z_uLongf compressLength = z_compressBound(dwDataSize);
+	z_uLong compressLength = z_compressBound(static_cast<z_uLong>(dwDataSize));
 	z_Bytef *compressBuffer = new z_Bytef[compressLength];
 
-	int error = z_compress2(compressBuffer, &compressLength, pbData, dwDataSize, Z_DEFAULT_COMPRESSION);
+	int error = z_compress2(compressBuffer, &compressLength, static_cast<const z_Bytef *>(pbData), static_cast<z_uLong>(dwDataSize), Z_DEFAULT_COMPRESSION);
 	if ( error != Z_OK )
 	{
 		// An error occured with this floor, but we should be able to continue to the next without problems
@@ -4345,7 +4345,7 @@ bool PacketHouseDesign::writeLevelData(BYTE bLevel, WORD wItemCount, BYTE *pbDat
 		g_Log.EventError("Compress failed with error %d when generating house design for floor %hhu on building UID=0%" FMTDWORDH "\n", error, bLevel, static_cast<DWORD>(m_pHouse->GetUID()));
 		return false;
 	}
-	else if ( (compressLength <= 0) || (compressLength >= HOUSEDESIGN_LEVELDATA_BUFFER) )
+	else if ( (compressLength == 0) || (compressLength >= HOUSEDESIGN_LEVELDATA_BUFFER) )
 	{
 		// Too much data, but we should be able to continue to the next floor without problems
 		delete[] compressBuffer;
@@ -4385,7 +4385,7 @@ void PacketHouseDesign::flushStairData(void)
 {
 	ADDTOCALLSTACK("PacketHouseDesign::flushStairData");
 
-	if ( m_wStairCount <= 0 )
+	if ( m_wStairCount == 0 )
 		return;
 
 	WORD wStairCount = m_wStairCount;
@@ -4393,10 +4393,10 @@ void PacketHouseDesign::flushStairData(void)
 	m_wStairCount = 0;
 
 	// Compress data
-	z_uLongf compressLength = z_compressBound(dwStairSize);
+	z_uLong compressLength = z_compressBound(static_cast<z_uLong>(dwStairSize));
 	z_Bytef *compressBuffer = new z_Bytef[compressLength];
 
-	int error = z_compress2(compressBuffer, &compressLength, reinterpret_cast<const z_Bytef *>(m_pStairBuffer), dwStairSize, Z_DEFAULT_COMPRESSION);
+	int error = z_compress2(compressBuffer, &compressLength, reinterpret_cast<const z_Bytef *>(m_pStairBuffer), static_cast<z_uLong>(dwStairSize), Z_DEFAULT_COMPRESSION);
 	if ( error != Z_OK )
 	{
 		// An error occured with this block, but we should be able to continue to the next without problems
@@ -4404,7 +4404,7 @@ void PacketHouseDesign::flushStairData(void)
 		g_Log.EventError("Compress failed with error %d when generating house design on building UID=0%" FMTDWORDH "\n", error, static_cast<DWORD>(m_pHouse->GetUID()));
 		return;
 	}
-	else if ( (compressLength <= 0) || (compressLength >= HOUSEDESIGN_STAIRDATA_BUFFER) )
+	else if ( (compressLength == 0) || (compressLength >= HOUSEDESIGN_STAIRDATA_BUFFER) )
 	{
 		// Too much data, but we should be able to continue to the next block without problems
 		delete[] compressBuffer;

@@ -845,7 +845,7 @@ void CSector::OnTick(size_t iPulseCount)
 		fSleeping = IsSectorSleeping();
 		if ( fSleeping )
 		{
-			if ( !g_Cfg.m_iSectorSleepMask || ((iPulseCount & g_Cfg.m_iSectorSleepMask) != (GetIndex() & g_Cfg.m_iSectorSleepMask)) )
+			if ( !g_Cfg.m_dwSectorSleepMask || (static_cast<DWORD>(iPulseCount & g_Cfg.m_dwSectorSleepMask) != static_cast<DWORD>(GetIndex() & g_Cfg.m_dwSectorSleepMask)) )
 				return;
 		}
 	}

@@ -12,7 +12,7 @@ bool CFile::SetFilePath(LPCTSTR pszPath)
 	if ( !m_strFileName.CompareNoCase(pszPath) )
 		return true;
 
-	bool fIsOpen = (m_hFile != NOFILE_HANDLE);
+	bool fIsOpen = (m_hFile != INVALID_HANDLE_VALUE);
 	if ( fIsOpen )
 		Close();
 
@@ -31,7 +31,7 @@ LPCTSTR CFile::GetFileTitle() const
 
 bool CFile::Open(LPCTSTR pszFileName, UINT uMode)
 {
-	ASSERT(m_hFile == NOFILE_HANDLE);
+	ASSERT(m_hFile == INVALID_HANDLE_VALUE);
 	SetFilePath(pszFileName);
 
 #ifdef _WIN32
@@ -65,19 +65,19 @@ bool CFile::Open(LPCTSTR pszFileName, UINT uMode)
 #else
 	m_hFile = open(GetFilePath(), uMode);
 #endif
-	return (m_hFile != NOFILE_HANDLE);
+	return (m_hFile != INVALID_HANDLE_VALUE);
 }
 
 void CFile::Close()
 {
-	if ( m_hFile != NOFILE_HANDLE )
+	if ( m_hFile != INVALID_HANDLE_VALUE )
 	{
 #ifdef _WIN32
 		CloseHandle(m_hFile);
 #else
 		close(m_hFile);
 #endif
-		m_hFile = NOFILE_HANDLE;
+		m_hFile = INVALID_HANDLE_VALUE;
 	}
 }
 
@@ -104,7 +104,7 @@ DWORD CFile::Seek(LONG lOffset, DWORD dwMoveMethod)
 #ifdef _WIN32
 	return SetFilePointer(m_hFile, lOffset, NULL, dwMoveMethod);
 #else
-	if ( m_hFile <= 0 )
+	if ( m_hFile == INVALID_HANDLE_VALUE )
 		return -1;
 
 	return lseek(m_hFile, static_cast<off_t>(lOffset), dwMoveMethod);
@@ -115,7 +115,7 @@ DWORD CFile::Read(void *pBuffer, size_t iLength) const
 {
 #ifdef _WIN32
 	DWORD dwRead;
-	if ( !ReadFile(m_hFile, pBuffer, iLength, &dwRead, NULL) )
+	if ( !ReadFile(m_hFile, pBuffer, static_cast<DWORD>(iLength), &dwRead, NULL) )
 	{
 		NotifyIOError("read");
 		return 0;
@@ -136,7 +136,7 @@ bool CFile::Write(const void *pBuffer, size_t iLength) const
 {
 #ifdef _WIN32
 	DWORD dwWritten;
-	if ( !WriteFile(m_hFile, pBuffer, iLength, &dwWritten, NULL) )
+	if ( !WriteFile(m_hFile, pBuffer, static_cast<DWORD>(iLength), &dwWritten, NULL) )
 	{
 		NotifyIOError("write");
 		return false;
@@ -295,7 +295,7 @@ void CGFile::Close()
 		return;
 
 	CloseBase();
-	m_hFile = NOFILE_HANDLE;
+	m_hFile = INVALID_HANDLE_VALUE;
 }
 
 ///////////////////////////////////////////////////////////
@@ -381,13 +381,12 @@ DWORD CFileText::GetPosition() const
 
 DWORD CFileText::Read(void *pBuffer, size_t iLength) const
 {
-	// This can return: EOF(-1) constant.
-	// returns the number of full items actually read
+	// Return the number of bytes read (0 = EOF or error)
 	ASSERT(pBuffer);
 	if ( IsEOF() )
 		return 0;	// LINUX will ASSERT if we read past end
 
-	return fread(pBuffer, 1, iLength, m_pStream);
+	return static_cast<DWORD>(fread(pBuffer, sizeof(char), iLength, m_pStream));
 }
 
 TCHAR *CFileText::ReadString(TCHAR *pszBuffer, size_t iLength) const
@@ -419,7 +418,7 @@ bool CFileText::Write(const void *pBuffer, size_t iLength)
 		m_fNoBuffer = true;
 	}
 #endif
-	size_t iStatus = fwrite(pBuffer, iLength, 1, m_pStream);
+	size_t iStatus = fwrite(pBuffer, iLength, sizeof(char), m_pStream);
 #ifndef _WIN32	// However, in unix, it works
 	fflush(m_pStream);
 #endif

@@ -223,17 +223,17 @@ bool CScript::Open(LPCTSTR pszFilename, UINT uFlags)
 
 	InitBase();
 
-	if ( pszFilename == NULL )
+	if ( !pszFilename )
 		pszFilename = GetFilePath();
 	else
 		SetFilePath(pszFilename);
 
 	LPCTSTR pszTitle = GetFileTitle();
-	if ( (pszTitle == NULL) || (pszTitle[0] == '\0') )
+	if ( !pszTitle || (pszTitle[0] == '\0') )
 		return false;
 
 	LPCTSTR pszExt = GetFilesExt(GetFilePath());
-	if ( pszExt == NULL )
+	if ( !pszExt )
 	{
 		TCHAR szTemp[_MAX_PATH];
 		snprintf(szTemp, sizeof(szTemp), "%s" SPHERE_FILE_EXT_SCP, static_cast<LPCTSTR>(GetFilePath()));
@@ -453,18 +453,18 @@ bool _cdecl CScript::WriteSection(LPCTSTR pszSection, ...)
 bool CScript::WriteKey(LPCTSTR pszKey, LPCTSTR pszVal)
 {
 	ADDTOCALLSTACK_INTENSIVE("CScript::WriteKey");
-	if ( (pszKey == NULL) || (pszKey[0] == '\0') )
+	if ( !pszKey || (pszKey[0] == '\0') )
 		return false;
 
 	TCHAR ch = '\0';
 	TCHAR *pszSep;
-	if ( (pszVal == NULL) || (pszVal[0] == '\0') )
+	if ( !pszVal || (pszVal[0] == '\0') )
 	{
 		pszSep = const_cast<TCHAR *>(strchr(pszKey, '\n'));
-		if ( pszSep == NULL )
+		if ( !pszSep )
 			pszSep = const_cast<TCHAR *>(strchr(pszKey, '\r'));
 
-		if ( pszSep != NULL )
+		if ( pszSep )
 		{
 			g_Log.Event(LOGL_WARN|LOGM_CHEAT, "carriage return in key (book?) - truncating\n");
 			ch = *pszSep;
@@ -474,16 +474,16 @@ bool CScript::WriteKey(LPCTSTR pszKey, LPCTSTR pszVal)
 		// Books are like this, no real keys
 		Printf("%s\n", pszKey);
 
-		if ( pszSep != NULL )
+		if ( pszSep )
 			*pszSep = ch;
 	}
 	else
 	{
 		pszSep = const_cast<TCHAR *>(strchr(pszVal, '\n'));
-		if ( pszSep == NULL )
+		if ( !pszSep )
 			pszSep = const_cast<TCHAR *>(strchr(pszVal, '\r'));
 
-		if ( pszSep != NULL )
+		if ( pszSep )
 		{
 			g_Log.Event(LOGL_WARN|LOGM_CHEAT, "carriage return in key value - truncating\n");
 			ch = *pszSep;
@@ -492,7 +492,7 @@ bool CScript::WriteKey(LPCTSTR pszKey, LPCTSTR pszVal)
 
 		Printf("%s=%s\n", pszKey, pszVal);
 
-		if ( pszSep != NULL )
+		if ( pszSep )
 			*pszSep = ch;
 	}
 
@@ -505,7 +505,7 @@ void _cdecl CScript::WriteKeyFormat(LPCTSTR pszKey, LPCTSTR pszVal, ...)
 	TemporaryString pszTemp;
 	va_list vargs;
 	va_start(vargs, pszVal);
-	_vsnprintf(pszTemp, pszTemp.realLength(), pszVal, vargs);
+	vsnprintf(pszTemp, pszTemp.realLength(), pszVal, vargs);
 	WriteKey(pszKey, pszTemp);
 	va_end(vargs);
 }

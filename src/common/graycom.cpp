@@ -161,8 +161,8 @@ size_t CvtSystemToNUNICODE(NCHAR *pszOut, int iSizeOutChars, LPCTSTR pszInp, int
 	if ( iSizeOutChars <= 0 )
 		return 0;
 
-	if ( iSizeInBytes <= -1 )
-		iSizeInBytes = strlen(pszInp);
+	if ( iSizeInBytes == -1 )
+		iSizeInBytes = static_cast<int>(strlen(pszInp));
 
 	if ( iSizeInBytes <= 0 )
 	{

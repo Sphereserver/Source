@@ -14,42 +14,41 @@
 #include <unistd.h>
 
 // Port some Windows stuff to Linux
-typedef unsigned char		BYTE;				// 8 bits
-#define BYTE_MAX			UCHAR_MAX
+typedef uint8_t				BYTE;		// unsigned char
+#define BYTE_MAX			UINT8_MAX
 
-typedef unsigned short		WORD;				// 16 bits
-#define WORD_MAX			USHRT_MAX
+typedef uint16_t			WORD;		// unsigned short
+#define WORD_MAX			UINT16_MAX
 
-typedef unsigned int		DWORD;				// 32 bits
+typedef uint32_t			DWORD;		// unsigned int
 typedef uintptr_t			DWORD_PTR, ULONG_PTR;
-#define DWORD_MAX			UINT_MAX
+#define DWORD_MAX			UINT32_MAX
 #define DWORD_PTR_MAX		UINTPTR_MAX
 
-typedef int					INT32;				// 32 bits
-typedef unsigned int		UINT32, UINT;		// 32 bits
-typedef long				LONG;				// 32 bits
-typedef long long			LONGLONG, INT64;	// 64 bits
-typedef unsigned long long	ULONGLONG, UINT64;	// 64 bits
+typedef int32_t				INT32;
+typedef uint32_t			UINT32, UINT;
+typedef int32_t				LONG;
+typedef long long			LONGLONG, INT64;
+typedef unsigned long long	ULONGLONG, UINT64;
 
-typedef unsigned short		WCHAR;
+typedef uint16_t			WCHAR;
 typedef char				TCHAR;
-typedef char				*LPSTR, *LPTSTR;
-typedef const char			*LPCSTR, *LPCTSTR;
+typedef TCHAR				*LPSTR, *LPTSTR;
+typedef const TCHAR			*LPCSTR, *LPCTSTR;
 
 typedef int					BOOL;
 
-#define MAKEWORD(l, h)		((WORD)(((BYTE)(l))|(((WORD)((BYTE)(h))) << 8)))
-#define MAKELONG(l, h)		((LONG)(((WORD)(l))|(((DWORD)((WORD)(h))) << 16)))
-#define LOWORD(l)			((WORD)((DWORD)(l) & 0xFFFF))
-#define HIWORD(l)			((WORD)((DWORD)(l) >> 16))
-#define LOBYTE(w)			((BYTE)((DWORD)(w) & 0xFF))
-#define HIBYTE(w)			((BYTE)((DWORD)(w) >> 8))
+#define MAKEWORD(a, b)      ((WORD)(((BYTE)(((DWORD_PTR)(a)) & 0xFF)) | ((WORD)((BYTE)(((DWORD_PTR)(b)) & 0xFF))) << 8))
+#define MAKELONG(a, b)      ((LONG)(((WORD)(((DWORD_PTR)(a)) & 0xFFFF)) | ((DWORD)((WORD)(((DWORD_PTR)(b)) & 0xFFFF))) << 16))
+#define LOWORD(l)           ((WORD)(((DWORD_PTR)(l)) & 0xFFFF))
+#define HIWORD(l)           ((WORD)((((DWORD_PTR)(l)) >> 16) & 0xFFFF))
+#define LOBYTE(w)           ((BYTE)(((DWORD_PTR)(w)) & 0xFF))
+#define HIBYTE(w)           ((BYTE)((((DWORD_PTR)(w)) >> 8) & 0xFF))
 
 #define FAR
 
 #define _cdecl
 #define __cdecl
-#define _vsnprintf				vsnprintf
 
 #ifndef _MAX_PATH
 	#define _MAX_PATH	260

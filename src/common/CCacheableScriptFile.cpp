@@ -30,7 +30,9 @@ bool CCacheableScriptFile::OpenBase(void *pExtra)
 
 	TemporaryString pszBuffer;
 	size_t iLen;
-	bool fFirstLine = true, fUTF = false;
+	bool fFirstLine = true;
+	bool fUTF = false;
+	constexpr char szUTF8_BOM[] = { static_cast<char>(0xEF), static_cast<char>(0xBB), static_cast<char>(0xBF) };
 
 	while ( fgets(pszBuffer, SCRIPT_MAX_LINE_LEN, m_pStream) )
 	{
@@ -39,10 +41,10 @@ bool CCacheableScriptFile::OpenBase(void *pExtra)
 			continue;
 
 		// First line may contain UTF marker
-		if ( fFirstLine && (iLen >= 3) && (pszBuffer[0] == 0xEF) && (pszBuffer[1] == 0xBB) && (pszBuffer[2] == 0xBF) )
+		if ( fFirstLine && (iLen >= COUNTOF(szUTF8_BOM)) && (memcmp(pszBuffer, szUTF8_BOM, COUNTOF(szUTF8_BOM)) == 0) )
 			fUTF = true;
 
-		std::string strLine((fUTF ? &pszBuffer[3] : pszBuffer), iLen - (fUTF ? 3 : 0));
+		std::string strLine((fUTF ? &pszBuffer[COUNTOF(szUTF8_BOM)] : pszBuffer), iLen - (fUTF ? COUNTOF(szUTF8_BOM) : 0));
 		m_fileContent->push_back(strLine);
 		fFirstLine = false;
 		fUTF = false;
@@ -50,7 +52,7 @@ bool CCacheableScriptFile::OpenBase(void *pExtra)
 
 	fclose(m_pStream);
 	m_pStream = NULL;
-	m_hFile = 0;
+	m_hFile = INVALID_HANDLE_VALUE;
 	m_currentLine = 0;
 	m_realFile = true;
 
@@ -129,7 +131,7 @@ DWORD CCacheableScriptFile::Seek(long lOffset, UINT uOrigin)
 	if ( iLine <= m_fileContent->size() )
 	{
 		m_currentLine = iLine;
-		return iLine;
+		return static_cast<DWORD>(iLine);
 	}
 	return 0;
 }
@@ -140,7 +142,7 @@ DWORD CCacheableScriptFile::GetPosition() const
 		return CFileText::GetPosition();
 
 	ADDTOCALLSTACK("CCacheableScriptFile::GetPosition");
-	return m_currentLine;
+	return static_cast<DWORD>(m_currentLine);
 }
 
 bool CCacheableScriptFile::UseDefaultFile() const

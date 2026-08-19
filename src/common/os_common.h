@@ -2,6 +2,7 @@
 #define _INC_OS_COMMON_H
 #pragma once
 
+#include <cinttypes>
 #include <queue>
 #ifdef _WIN32
 	#include "os_windows.h"
@@ -15,10 +16,6 @@
 
 #define SCRIPT_MAX_LINE_LEN		4096
 
-#ifndef MAKEDWORD
-	#define MAKEDWORD(l, h)		((DWORD)(((WORD)(l))|(((DWORD)((WORD)(h))) << 16)))
-#endif
-
 #define IsDigit(c)		isdigit((unsigned char)(c))
 #define IsSpace(c)		isspace((unsigned char)(c))
 #define IsAlpha(c)		isalpha((unsigned char)(c))
@@ -29,64 +26,72 @@
 
 #define IMULDIV(a, b, c)		(((((LONGLONG)(a) * (LONGLONG)(b)) + ((c) / 2)) / (c)) - IsNegative((LONGLONG)(a) * (LONGLONG)(b)) )
 
+#ifndef MAKEDWORD
+	#define MAKEDWORD(a, b)		((DWORD)(((WORD)(((DWORD_PTR)(a)) & 0xFFFF)) | ((DWORD)((WORD)(((DWORD_PTR)(b)) & 0xFFFF))) << 16))
+#endif
+
+#define FMTDWORD		PRIu32
+#define FMTDWORDH		PRIx32
 #define FMTSIZE_T		"zu"
 
 #ifdef _WIN32
-	typedef void		THREAD_ENTRY_RET;
-	#define FMTDWORD	"lu"	// Windows uses '%lu' to format dec DWORD (unsigned long)
-	#define FMTDWORDH	"lx"	// Windows uses '%lx' to format hex DWORD (unsigned long)
-
 	#define strcmpi		_strcmpi
 	#define strnicmp	_strnicmp
-
-	#ifndef COUNTOF
-		#define COUNTOF(a)	_countof(a)
-	#endif
-
-	#ifndef STDFUNC_FILENO
-		#define STDFUNC_FILENO(a)	_get_osfhandle(_fileno(a))
-	#endif
-
-	#ifndef STDFUNC_GETPID
-		#define STDFUNC_GETPID		_getpid
-	#endif
-
-	#ifndef STDFUNC_UNLINK
-		#define STDFUNC_UNLINK		_unlink
-	#endif
 #else
-	typedef void		*THREAD_ENTRY_RET;
-	#define FMTDWORD	"u"		// Linux uses '%u' to format dec DWORD (unsigned long)
-	#define FMTDWORDH	"x"		// Linux uses '%x' to format hex DWORD (unsigned int)
-
 	#define strcmpi		strcasecmp
 	#define strnicmp	strncasecmp
+#endif
 
-	#ifndef COUNTOF
+#ifndef COUNTOF
+	#ifdef _WIN32
+		#define COUNTOF(_Array)	_countof(_Array)
+	#else
 		// Ported from Windows _countof() macro defined in vcruntime.h
 		#ifdef __cplusplus
-			template <typename _CountofType, size_t _SizeOfArray>
-			char (*__countof_helper(_CountofType (&a)[_SizeOfArray]))[_SizeOfArray];
-			#define COUNTOF(a)	(sizeof(*__countof_helper(a)) + 0)
+			extern "C++"
+			{
+				template <typename _CountofType, size_t _SizeOfArray>
+				char (*__countof_helper(_CountofType(&_Array)[_SizeOfArray]))[_SizeOfArray];
+
+				#define COUNTOF(_Array)	(sizeof(*__countof_helper(_Array)) + 0)
+			}
 		#else
-			#define COUNTOF(a)	(sizeof(a) / sizeof(a[0]))
+			#define COUNTOF(_Array)	(sizeof(_Array) / sizeof(_Array[0]))
 		#endif
 	#endif
+#endif
 
-	#ifndef STDFUNC_FILENO
+#ifndef STDFUNC_FILENO
+	#ifdef _WIN32
+		#define STDFUNC_FILENO(a)	_get_osfhandle(_fileno(a))
+	#else
 		#define STDFUNC_FILENO		fileno
 	#endif
+#endif
 
-	#ifndef STDFUNC_GETPID
+#ifndef STDFUNC_GETPID
+	#ifdef _WIN32
+		#define STDFUNC_GETPID		_getpid
+	#else
 		#define STDFUNC_GETPID		getpid
 	#endif
+#endif
 
-	#ifndef STDFUNC_UNLINK
+#ifndef STDFUNC_UNLINK
+	#ifdef _WIN32
+		#define STDFUNC_UNLINK		_unlink
+	#else
 		#define STDFUNC_UNLINK		unlink
 	#endif
 #endif
 
+#ifdef _WIN32
+	typedef void	THREAD_ENTRY_RET;
+#else
+	typedef void	*THREAD_ENTRY_RET;
+#endif
 typedef THREAD_ENTRY_RET(_cdecl *PTHREAD_ENTRY_PROC)(void *);
+
 typedef unsigned int	ERROR_CODE;
 
 // Time measurement macros

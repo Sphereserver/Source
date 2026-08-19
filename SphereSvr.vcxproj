@@ -28,7 +28,7 @@
       <WarningLevel>Level2</WarningLevel>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libmysql.lib;ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libmysql.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)src\common\mysql\lib</AdditionalLibraryDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <SubSystem>Windows</SubSystem>
@@ -94,6 +94,19 @@ git rev-parse --is-inside-work-tree &gt;nul 2&gt;&amp;1 &amp;&amp; (
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\common\sqlite\SQLite.cpp" />
+    <ClCompile Include="src\common\sqlite\sqlite3.c" />
+    <ClCompile Include="src\common\twofish\twofish2.cpp" />
+    <ClCompile Include="src\common\zlib\adler32.c" />
+    <ClCompile Include="src\common\zlib\compress.c" />
+    <ClCompile Include="src\common\zlib\crc32.c" />
+    <ClCompile Include="src\common\zlib\deflate.c" />
+    <ClCompile Include="src\common\zlib\gzlib.c" />
+    <ClCompile Include="src\common\zlib\inffast.c" />
+    <ClCompile Include="src\common\zlib\inflate.c" />
+    <ClCompile Include="src\common\zlib\inftrees.c" />
+    <ClCompile Include="src\common\zlib\trees.c" />
+    <ClCompile Include="src\common\zlib\zutil.c" />
     <ClCompile Include="src\common\CArray.cpp" />
     <ClCompile Include="src\common\CAssoc.cpp" />
     <ClCompile Include="src\common\CCacheableScriptFile.cpp" />
@@ -123,24 +136,6 @@ git rev-parse --is-inside-work-tree &gt;nul 2&gt;&amp;1 &amp;&amp; (
     <ClCompile Include="src\common\CVarFloat.cpp" />
     <ClCompile Include="src\common\CWindow.cpp" />
     <ClCompile Include="src\common\graycom.cpp" />
-    <ClCompile Include="src\common\sqlite\SQLite.cpp" />
-    <ClCompile Include="src\common\sqlite\sqlite3.c" />
-    <ClCompile Include="src\common\twofish\twofish2.cpp" />
-    <ClCompile Include="src\common\zlib\adler32.c" />
-    <ClCompile Include="src\common\zlib\compress.c" />
-    <ClCompile Include="src\common\zlib\crc32.c" />
-    <ClCompile Include="src\common\zlib\deflate.c" />
-    <ClCompile Include="src\common\zlib\gzclose.c" />
-    <ClCompile Include="src\common\zlib\gzlib.c" />
-    <ClCompile Include="src\common\zlib\gzread.c" />
-    <ClCompile Include="src\common\zlib\gzwrite.c" />
-    <ClCompile Include="src\common\zlib\infback.c" />
-    <ClCompile Include="src\common\zlib\inffast.c" />
-    <ClCompile Include="src\common\zlib\inflate.c" />
-    <ClCompile Include="src\common\zlib\inftrees.c" />
-    <ClCompile Include="src\common\zlib\trees.c" />
-    <ClCompile Include="src\common\zlib\uncompr.c" />
-    <ClCompile Include="src\common\zlib\zutil.c" />
     <ClCompile Include="src\graysvr\CAccount.cpp" />
     <ClCompile Include="src\graysvr\CBase.cpp" />
     <ClCompile Include="src\graysvr\CChar.cpp" />
@@ -203,6 +198,21 @@ git rev-parse --is-inside-work-tree &gt;nul 2&gt;&amp;1 &amp;&amp; (
     <ClCompile Include="src\sphere\threads.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\common\libev\ev.h" />
+    <ClInclude Include="src\common\mysql\include\mysql.h" />
+    <ClInclude Include="src\common\sqlite\SQLite.h" />
+    <ClInclude Include="src\common\sqlite\sqlite3.h" />
+    <ClInclude Include="src\common\zlib\crc32.h" />
+    <ClInclude Include="src\common\zlib\deflate.h" />
+    <ClInclude Include="src\common\zlib\gzguts.h" />
+    <ClInclude Include="src\common\zlib\inffast.h" />
+    <ClInclude Include="src\common\zlib\inffixed.h" />
+    <ClInclude Include="src\common\zlib\inflate.h" />
+    <ClInclude Include="src\common\zlib\inftrees.h" />
+    <ClInclude Include="src\common\zlib\trees.h" />
+    <ClInclude Include="src\common\zlib\zconf.h" />
+    <ClInclude Include="src\common\zlib\zlib.h" />
+    <ClInclude Include="src\common\zlib\zutil.h" />
     <ClInclude Include="src\common\CArray.h" />
     <ClInclude Include="src\common\CAssoc.h" />
     <ClInclude Include="src\common\CCacheableScriptFile.h" />
@@ -238,23 +248,6 @@ git rev-parse --is-inside-work-tree &gt;nul 2&gt;&amp;1 &amp;&amp; (
     <ClInclude Include="src\common\os_common.h" />
     <ClInclude Include="src\common\os_unix.h" />
     <ClInclude Include="src\common\os_windows.h" />
-    <ClInclude Include="src\common\sqlite\SQLite.h" />
-    <ClInclude Include="src\common\sqlite\sqlite3.h" />
-    <ClInclude Include="src\common\twofish\aes.h" />
-    <ClInclude Include="src\common\twofish\debug.h" />
-    <ClInclude Include="src\common\twofish\platform.h" />
-    <ClInclude Include="src\common\twofish\table.h" />
-    <ClInclude Include="src\common\zlib\crc32.h" />
-    <ClInclude Include="src\common\zlib\deflate.h" />
-    <ClInclude Include="src\common\zlib\gzguts.h" />
-    <ClInclude Include="src\common\zlib\inffast.h" />
-    <ClInclude Include="src\common\zlib\inffixed.h" />
-    <ClInclude Include="src\common\zlib\inflate.h" />
-    <ClInclude Include="src\common\zlib\inftrees.h" />
-    <ClInclude Include="src\common\zlib\trees.h" />
-    <ClInclude Include="src\common\zlib\zconf.h" />
-    <ClInclude Include="src\common\zlib\zlib.h" />
-    <ClInclude Include="src\common\zlib\zutil.h" />
     <ClInclude Include="src\graysvr\CAccount.h" />
     <ClInclude Include="src\graysvr\CBase.h" />
     <ClInclude Include="src\graysvr\CChar.h" />
@@ -327,12 +320,15 @@ git rev-parse --is-inside-work-tree &gt;nul 2&gt;&amp;1 &amp;&amp; (
     <None Include="src\tables\triggers.tbl" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="changelog.txt" />
-    <Text Include="src\sphere.ini" />
-    <Text Include="src\sphereCrypt.ini" />
+    <Image Include="src\graysvr\spheresvr.ico" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="src\graysvr\SphereSvr.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="src\sphere.ini" />
+    <Text Include="src\sphereCrypt.ini" />
+    <Text Include="changelog.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

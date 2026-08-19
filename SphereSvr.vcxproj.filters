@@ -1,17 +1,26 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="common">
       <UniqueIdentifier>{851a2cc0-ca88-4a95-bc64-98ad68514a3e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="common\zlib">
-      <UniqueIdentifier>{5b6a8a1c-05f3-48a6-a896-082476a79f81}</UniqueIdentifier>
+    <Filter Include="common\libev">
+      <UniqueIdentifier>{d5782dbf-cb42-40f3-aa8d-79c7c6572087}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common\mysql">
+      <UniqueIdentifier>{cb7e92a5-9704-4820-b64d-961a0a16e43a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common\mysql\include">
+      <UniqueIdentifier>{ea11bdf0-2c0e-4560-9df8-4d47662412ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common\sqlite">
+      <UniqueIdentifier>{19b83913-ef63-4820-9ae0-158e0c75d5b8}</UniqueIdentifier>
     </Filter>
     <Filter Include="common\twofish">
       <UniqueIdentifier>{353e7db8-874b-4551-8e15-0fcc9875d06e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="common\sqlite">
-      <UniqueIdentifier>{19b83913-ef63-4820-9ae0-158e0c75d5b8}</UniqueIdentifier>
+    <Filter Include="common\zlib">
+      <UniqueIdentifier>{5b6a8a1c-05f3-48a6-a896-082476a79f81}</UniqueIdentifier>
     </Filter>
     <Filter Include="graysvr">
       <UniqueIdentifier>{15356495-5833-4141-9734-de04e7355bbe}</UniqueIdentifier>
@@ -27,6 +36,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\common\sqlite\SQLite.cpp">
+      <Filter>common\sqlite</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\sqlite\sqlite3.c">
+      <Filter>common\sqlite</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\twofish\twofish2.cpp">
+      <Filter>common\twofish</Filter>
+    </ClCompile>
     <ClCompile Include="src\common\zlib\adler32.c">
       <Filter>common\zlib</Filter>
     </ClCompile>
@@ -39,7 +57,7 @@
     <ClCompile Include="src\common\zlib\deflate.c">
       <Filter>common\zlib</Filter>
     </ClCompile>
-    <ClCompile Include="src\common\zlib\infback.c">
+    <ClCompile Include="src\common\zlib\gzlib.c">
       <Filter>common\zlib</Filter>
     </ClCompile>
     <ClCompile Include="src\common\zlib\inffast.c">
@@ -54,14 +72,8 @@
     <ClCompile Include="src\common\zlib\trees.c">
       <Filter>common\zlib</Filter>
     </ClCompile>
-    <ClCompile Include="src\common\zlib\uncompr.c">
-      <Filter>common\zlib</Filter>
-    </ClCompile>
     <ClCompile Include="src\common\zlib\zutil.c">
       <Filter>common\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\twofish\twofish2.cpp">
-      <Filter>common\twofish</Filter>
     </ClCompile>
     <ClCompile Include="src\common\CArray.cpp">
       <Filter>common</Filter>
@@ -76,6 +88,9 @@
       <Filter>common</Filter>
     </ClCompile>
     <ClCompile Include="src\common\CDataBase.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="src\common\CEncrypt.cpp">
       <Filter>common</Filter>
     </ClCompile>
     <ClCompile Include="src\common\CException.cpp">
@@ -138,62 +153,14 @@
     <ClCompile Include="src\common\CVarDefMap.cpp">
       <Filter>common</Filter>
     </ClCompile>
+    <ClCompile Include="src\common\CVarFloat.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
     <ClCompile Include="src\common\CWindow.cpp">
       <Filter>common</Filter>
     </ClCompile>
     <ClCompile Include="src\common\graycom.cpp">
       <Filter>common</Filter>
-    </ClCompile>
-    <ClCompile Include="src\sphere\asyncdb.cpp">
-      <Filter>sphere</Filter>
-    </ClCompile>
-    <ClCompile Include="src\sphere\linuxev.cpp">
-      <Filter>sphere</Filter>
-    </ClCompile>
-    <ClCompile Include="src\sphere\mutex.cpp">
-      <Filter>sphere</Filter>
-    </ClCompile>
-    <ClCompile Include="src\sphere\ProfileData.cpp">
-      <Filter>sphere</Filter>
-    </ClCompile>
-    <ClCompile Include="src\sphere\strings.cpp">
-      <Filter>sphere</Filter>
-    </ClCompile>
-    <ClCompile Include="src\sphere\threads.cpp">
-      <Filter>sphere</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\CVarFloat.cpp">
-      <Filter>common</Filter>
-    </ClCompile>
-    <ClCompile Include="src\network\network.cpp">
-      <Filter>network</Filter>
-    </ClCompile>
-    <ClCompile Include="src\network\packet.cpp">
-      <Filter>network</Filter>
-    </ClCompile>
-    <ClCompile Include="src\network\receive.cpp">
-      <Filter>network</Filter>
-    </ClCompile>
-    <ClCompile Include="src\network\send.cpp">
-      <Filter>network</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\sqlite\SQLite.cpp">
-      <Filter>common\sqlite</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\sqlite\sqlite3.c">
-      <Filter>common\sqlite</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\zlib\gzclose.c">
-      <Filter>common\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\zlib\gzlib.c">
-      <Filter>common\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\zlib\gzread.c">
-      <Filter>common\zlib</Filter>
-    </ClCompile>
-    <ClCompile Include="src\common\zlib\gzwrite.c">
-      <Filter>common\zlib</Filter>
     </ClCompile>
     <ClCompile Include="src\graysvr\CAccount.cpp">
       <Filter>graysvr</Filter>
@@ -345,15 +312,57 @@
     <ClCompile Include="src\graysvr\graysvr.cpp">
       <Filter>graysvr</Filter>
     </ClCompile>
-    <ClCompile Include="src\common\CEncrypt.cpp">
-      <Filter>common</Filter>
+    <ClCompile Include="src\network\network.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="src\network\packet.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="src\network\receive.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="src\network\send.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sphere\asyncdb.cpp">
+      <Filter>sphere</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sphere\linuxev.cpp">
+      <Filter>sphere</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sphere\mutex.cpp">
+      <Filter>sphere</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sphere\ProfileData.cpp">
+      <Filter>sphere</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sphere\strings.cpp">
+      <Filter>sphere</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sphere\threads.cpp">
+      <Filter>sphere</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\common\libev\ev.h">
+      <Filter>common\libev</Filter>
+    </ClInclude>
+    <ClInclude Include="src\common\mysql\include\mysql.h">
+      <Filter>common\mysql\include</Filter>
+    </ClInclude>
+    <ClInclude Include="src\common\sqlite\SQLite.h">
+      <Filter>common\sqlite</Filter>
+    </ClInclude>
+    <ClInclude Include="src\common\sqlite\sqlite3.h">
+      <Filter>common\sqlite</Filter>
+    </ClInclude>
     <ClInclude Include="src\common\zlib\crc32.h">
       <Filter>common\zlib</Filter>
     </ClInclude>
     <ClInclude Include="src\common\zlib\deflate.h">
+      <Filter>common\zlib</Filter>
+    </ClInclude>
+    <ClInclude Include="src\common\zlib\gzguts.h">
       <Filter>common\zlib</Filter>
     </ClInclude>
     <ClInclude Include="src\common\zlib\inffast.h">
@@ -380,18 +389,6 @@
     <ClInclude Include="src\common\zlib\zutil.h">
       <Filter>common\zlib</Filter>
     </ClInclude>
-    <ClInclude Include="src\common\twofish\aes.h">
-      <Filter>common\twofish</Filter>
-    </ClInclude>
-    <ClInclude Include="src\common\twofish\debug.h">
-      <Filter>common\twofish</Filter>
-    </ClInclude>
-    <ClInclude Include="src\common\twofish\platform.h">
-      <Filter>common\twofish</Filter>
-    </ClInclude>
-    <ClInclude Include="src\common\twofish\table.h">
-      <Filter>common\twofish</Filter>
-    </ClInclude>
     <ClInclude Include="src\common\CArray.h">
       <Filter>common</Filter>
     </ClInclude>
@@ -405,6 +402,9 @@
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="src\common\CDataBase.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="src\common\CEncrypt.h">
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="src\common\CException.h">
@@ -426,6 +426,9 @@
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="src\common\CListDefMap.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="src\common\CMD5.h">
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="src\common\CMemBlock.h">
@@ -464,6 +467,12 @@
     <ClInclude Include="src\common\CVarDefMap.h">
       <Filter>common</Filter>
     </ClInclude>
+    <ClInclude Include="src\common\CVarFloat.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="src\common\CWindow.h">
+      <Filter>common</Filter>
+    </ClInclude>
     <ClInclude Include="src\common\graycom.h">
       <Filter>common</Filter>
     </ClInclude>
@@ -483,54 +492,6 @@
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="src\common\os_windows.h">
-      <Filter>common</Filter>
-    </ClInclude>
-    <ClInclude Include="src\sphere\asyncdb.h">
-      <Filter>sphere</Filter>
-    </ClInclude>
-    <ClInclude Include="src\sphere\containers.h">
-      <Filter>sphere</Filter>
-    </ClInclude>
-    <ClInclude Include="src\sphere\linuxev.h">
-      <Filter>sphere</Filter>
-    </ClInclude>
-    <ClInclude Include="src\sphere\mutex.h">
-      <Filter>sphere</Filter>
-    </ClInclude>
-    <ClInclude Include="src\sphere\ProfileData.h">
-      <Filter>sphere</Filter>
-    </ClInclude>
-    <ClInclude Include="src\sphere\strings.h">
-      <Filter>sphere</Filter>
-    </ClInclude>
-    <ClInclude Include="src\sphere\threads.h">
-      <Filter>sphere</Filter>
-    </ClInclude>
-    <ClInclude Include="src\common\CVarFloat.h">
-      <Filter>common</Filter>
-    </ClInclude>
-    <ClInclude Include="src\network\network.h">
-      <Filter>network</Filter>
-    </ClInclude>
-    <ClInclude Include="src\network\packet.h">
-      <Filter>network</Filter>
-    </ClInclude>
-    <ClInclude Include="src\network\receive.h">
-      <Filter>network</Filter>
-    </ClInclude>
-    <ClInclude Include="src\network\send.h">
-      <Filter>network</Filter>
-    </ClInclude>
-    <ClInclude Include="src\common\sqlite\SQLite.h">
-      <Filter>common\sqlite</Filter>
-    </ClInclude>
-    <ClInclude Include="src\common\sqlite\sqlite3.h">
-      <Filter>common\sqlite</Filter>
-    </ClInclude>
-    <ClInclude Include="src\common\zlib\gzguts.h">
-      <Filter>common\zlib</Filter>
-    </ClInclude>
-    <ClInclude Include="src\common\CMD5.h">
       <Filter>common</Filter>
     </ClInclude>
     <ClInclude Include="src\graysvr\CAccount.h">
@@ -611,17 +572,44 @@
     <ClInclude Include="src\graysvr\CWorld.h">
       <Filter>graysvr</Filter>
     </ClInclude>
-    <ClInclude Include="src\common\CWindow.h">
-      <Filter>common</Filter>
-    </ClInclude>
     <ClInclude Include="src\graysvr\graysvr.h">
       <Filter>graysvr</Filter>
     </ClInclude>
     <ClInclude Include="src\graysvr\resource.h">
       <Filter>graysvr</Filter>
     </ClInclude>
-    <ClInclude Include="src\common\CEncrypt.h">
-      <Filter>common</Filter>
+    <ClInclude Include="src\network\network.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="src\network\packet.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="src\network\receive.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="src\network\send.h">
+      <Filter>network</Filter>
+    </ClInclude>
+    <ClInclude Include="src\sphere\asyncdb.h">
+      <Filter>sphere</Filter>
+    </ClInclude>
+    <ClInclude Include="src\sphere\containers.h">
+      <Filter>sphere</Filter>
+    </ClInclude>
+    <ClInclude Include="src\sphere\linuxev.h">
+      <Filter>sphere</Filter>
+    </ClInclude>
+    <ClInclude Include="src\sphere\mutex.h">
+      <Filter>sphere</Filter>
+    </ClInclude>
+    <ClInclude Include="src\sphere\ProfileData.h">
+      <Filter>sphere</Filter>
+    </ClInclude>
+    <ClInclude Include="src\sphere\strings.h">
+      <Filter>sphere</Filter>
+    </ClInclude>
+    <ClInclude Include="src\sphere\threads.h">
+      <Filter>sphere</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -714,13 +702,18 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="changelog.txt" />
-    <Text Include="src\sphere.ini" />
-    <Text Include="src\sphereCrypt.ini" />
+    <Image Include="src\graysvr\spheresvr.ico">
+      <Filter>graysvr</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="src\graysvr\SphereSvr.rc">
       <Filter>graysvr</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="src\sphere.ini" />
+    <Text Include="src\sphereCrypt.ini" />
+    <Text Include="changelog.txt" />
   </ItemGroup>
 </Project>
