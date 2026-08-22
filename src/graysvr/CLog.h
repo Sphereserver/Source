@@ -105,9 +105,9 @@ private:
 	#define DEBUG_MSG(_x_)		g_pLog->EventEvent _x_
 	#define DEBUG_MYFLAG(_x_)	g_pLog->Event _x_
 #else
-	#define DEBUG_WARN(_x_)
-	#define DEBUG_MSG(_x_)
-	#define DEBUG_MYFLAG(_x_)
+	#define DEBUG_WARN(_x_)		((void)0)
+	#define DEBUG_MSG(_x_)		((void)0)
+	#define DEBUG_MYFLAG(_x_)	((void)0)
 #endif
 
 extern struct CLog : public CFileText, public CEventLog
@@ -194,19 +194,37 @@ public:
 		return (IsLoggedMask(dwMask) || IsLoggedLevel(static_cast<LOGL_TYPE>(dwMask)));
 	}
 
-private:
-	enum Color
+	struct Color
 	{
-		DEFAULT,
-		RED,
-		GREEN,
-		YELLOW,
-		BLUE,
-		MAGENTA,
-		CYAN,
-		WHITE
+#ifdef _WIN32
+		// Windows log colors use COLORREF in RGB format
+		// The color palette must be defined here (this one is based on Campbell color scheme of Windows Terminal)
+		using value_type = COLORREF;
+		static constexpr value_type Default	= RGB(178, 178, 178);	// custom gray
+		static constexpr value_type Black	= RGB(12, 12, 12);
+		static constexpr value_type Red		= RGB(197, 15, 31);
+		static constexpr value_type Green	= RGB(19, 161, 14);
+		static constexpr value_type Yellow	= RGB(193, 156, 0);
+		static constexpr value_type Blue	= RGB(0, 55, 218);
+		static constexpr value_type Magenta	= RGB(136, 23, 152);
+		static constexpr value_type Cyan	= RGB(58, 150, 221);
+		static constexpr value_type White	= RGB(242, 242, 242);	// RGB(204, 204, 204)
+#else
+		// Linux log colors use ANSI escape sequences
+		// This uses the terminal color palette, which can be customized in terminal settings
+		using value_type = LPCTSTR;
+		static constexpr value_type Default	= "\033[0m";	// reset to default
+		static constexpr value_type Black	= "\033[30m";
+		static constexpr value_type Red		= "\033[31m";
+		static constexpr value_type Green	= "\033[32m";
+		static constexpr value_type Yellow	= "\033[33m";
+		static constexpr value_type Blue	= "\033[34m";
+		static constexpr value_type Magenta	= "\033[35m";
+		static constexpr value_type Cyan	= "\033[36m";
+		static constexpr value_type White	= "\033[37m";
+#endif
 	};
-	void SetColor(Color color);
+	void SetColor(Color::value_type color);
 
 private:
 	CLog(const CLog &copy);

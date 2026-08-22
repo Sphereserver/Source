@@ -5,15 +5,13 @@
 #define APSTUDIO_READONLY_SYMBOLS
 /////////////////////////////////////////////////////////////////////////////
 //
-// Generated from the TEXTINCLUDE 2 resource.
+// Generated from the TEXTINCLUDE resource.
 //
+#define APSTUDIO_HIDDEN_SYMBOLS
 #include "windows.h"
-
+#undef APSTUDIO_HIDDEN_SYMBOLS
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
-
-/////////////////////////////////////////////////////////////////////////////
-// English (United States) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
@@ -37,8 +35,7 @@ BEGIN
 	BEGIN
 		BLOCK "040904b0"
 		BEGIN
-			VALUE "CompanyName",		"SphereServer development team"
-			VALUE "FileDescription",	"SphereServer " SPHERE_VER_STR
+			VALUE "FileDescription",	"SphereServer"
 			VALUE "FileVersion",		SPHERE_VER_STR_FULL
 			VALUE "InternalName",		"SphereSvr"
 			VALUE "LegalCopyright",		"Copyright (C) 1997-2026 SphereServer development team"
@@ -50,7 +47,7 @@ BEGIN
 
 	BLOCK "VarFileInfo"
 	BEGIN
-		VALUE "Translation", 0x409, 1200	//English (unicode)
+		VALUE "Translation", 0x409, 1200	//0x409 = LANG_ENGLISH/SUBLANG_ENGLISH_US, 1200 = Unicode
 	END
 END
 
@@ -61,15 +58,80 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDR_MAINFRAME	ICON	"spheresvr.ico"
 
+IDI_SPHERESVR	ICON	"spheresvr.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_POPUP_TRAY MENU
+BEGIN
+	POPUP "Tray Menu"
+	BEGIN
+		MENUITEM "Resync Pause",	IDM_RESYNC_PAUSE
+		MENUITEM SEPARATOR
+		MENUITEM "Statistics",		IDM_SHOW_STATS
+		MENUITEM "About",			IDM_SHOW_ABOUT
+		MENUITEM SEPARATOR
+		MENUITEM "Exit",			IDM_EXIT
+	END
+END
+
+IDR_POPUP_CONSOLE MENU
+BEGIN
+	POPUP "Console Menu"
+	BEGIN
+		MENUITEM "Copy",			IDM_COPY
+		MENUITEM SEPARATOR
+		MENUITEM "Resync Pause",	IDM_RESYNC_PAUSE
+		MENUITEM SEPARATOR
+		MENUITEM "Statistics",		IDM_SHOW_STATS
+		MENUITEM "About",			IDM_SHOW_ABOUT
+	END
+END
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_STATS DIALOGEX 0, 0, 390, 260
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "SphereServer Statistics"
+FONT 10, "Consolas", 400, 0, 0x1
+BEGIN
+	LTEXT		"Threads", IDC_STATIC, 5, 3, 50, 8
+	LISTBOX		IDC_STATS_STATISTICS, 5, 13, 380, 114, LBS_NOINTEGRALHEIGHT | WS_VSCROLL
+	LTEXT		"Clients", IDC_STATIC, 5, 131, 50, 8
+	LISTBOX		IDC_STATS_CLIENTS, 5, 141, 380, 114, LBS_NOINTEGRALHEIGHT | WS_VSCROLL
+END
+
+IDD_ABOUT DIALOGEX 0, 0, 330, 180
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About SphereServer"
+FONT 9, "Segoe UI", 400, 0, 0x1
+BEGIN
+	LTEXT		"", IDC_ABOUT_VERSION, 10, 3, 200, 8
+	LTEXT		"", IDC_ABOUT_COMPILER, 10, 11, 200, 8
+	LTEXT		"Copyright (C) 1997-2026 SphereServer development team", IDC_STATIC, 10, 19, 200, 8
+	CONTROL		"", IDC_ABOUT_UPDATE, "SysLink", LWS_RIGHT, 220, 3, 100, 8
+	CONTROL		"", IDC_ABOUT_WEBSITE, "SysLink", LWS_RIGHT, 220, 19, 100, 8
+	CONTROL		"", IDC_STATIC, "Static", SS_ETCHEDHORZ, 10, 32, 311, 2
+	LTEXT		"This software makes use of:", IDC_STATIC, 10, 37, 310, 8
+	LTEXT		"libev (v4.33)\nCopyright (C) 2007-2020 Marc Alexander Lehmann\nLicensed under the BSD 2-Clause license", IDC_STATIC, 15, 48, 300, 24
+	LTEXT		"MySQL C API (v8.0.46)\nCopyright (C) 2000-2026 Oracle and/or its affiliates\nLicensed under the GNU GPLv2 with Universal FOSS Exception", IDC_STATIC, 15, 75, 300, 24
+	LTEXT		"SQLite (v3.53.3)\nReleased into the public domain", IDC_STATIC, 15, 102, 300, 16
+	LTEXT		"Twofish (v1.0)\nCopyright (C) 1998 Bruce Schneier, Doug Whiting, John Kelsey, Chris Hall, David Wagner\nReleased into the public domain", IDC_STATIC, 15, 121, 300, 24
+	LTEXT		"zlib (v1.3.2)\nCopyright (C) 1995-2026 Jean-loup Gailly, Mark Adler\nLicensed under the zlib license", IDC_STATIC, 15, 148, 300, 24
+END
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
 //
 // TEXTINCLUDE
 //
-
 1 TEXTINCLUDE 
 BEGIN
 	"resource.h\0"
@@ -77,7 +139,9 @@ END
 
 2 TEXTINCLUDE 
 BEGIN
-	"#include ""winres.h""\r\n"
+	"#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
+	"#include ""windows.h""\r\n"
+	"#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
 	"\0"
 END
 
@@ -87,74 +151,6 @@ BEGIN
 	"\0"
 END
 
-#endif    // APSTUDIO_INVOKED
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Dialog
-//
-
-IDM_STATUS DIALOGEX 0, 0, 380, 300
-STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "Sphere Status"
-FONT 8, "Courier", 0, 0, 0x0
-BEGIN
-	LTEXT		"Statistics:", 0, 5, 2, 50, 8
-	LISTBOX		IDC_STAT_STATS, 5, 12, 370, 90, LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
-	LTEXT		"Clients:", 2, 5, 105, 50, 8
-	LISTBOX		IDC_STAT_CLIENTS, 5, 115, 370, 180, LBS_NOINTEGRALHEIGHT | WS_VSCROLL | WS_TABSTOP
-END
-
-IDR_ABOUT_BOX DIALOGEX 0, 0, 320, 190
-STYLE DS_SETFONT | DS_MODALFRAME | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "About Sphere Server"
-FONT 8, "MS Sans Serif", 0, 0, 0x1
-BEGIN
-	LTEXT		"Version", IDC_ABOUT_VERSION, 10, 8, 200, 8
-	CTEXT		"Website", IDC_ABOUT_WEBSITE, 220, 8, 90, 8
-	LTEXT		"Compiler", IDC_ABOUT_COMPILER, 10, 16, 200, 8
-	LTEXT		"Copyright (C) 1997-2026 SphereServer development team", 3, 10, 24, 200, 8
-	CTEXT		"___________________________________________________________________________", 4, 0, 32, 320, 8
-	LTEXT		"This software makes use of:", 5, 10, 46, 100, 8
-	LTEXT		"libev library (v4.33)\nCopyright (C) 2007-2020 Marc Alexander Lehmann", 6, 15, 62, 290, 16
-	LTEXT		"MySQL C API (v8.0.46)\nCopyright (C) 2000-2026 Oracle and/or its affiliates", 7, 15, 86, 290, 16
-	LTEXT		"SQLite library (v3.53.3)\nGeneral Public License (GPL) 2000-2026", 8, 15, 110, 290, 16
-	LTEXT		"Twofish encryption library (v1.0)\nCopyright (C) 1998 Bruce Schneier, Doug Whiting, John Kelsey, Chris Hall, David Wagner", 9, 15, 134, 290, 16
-	LTEXT		"zlib data compression library (v1.3.2)\nCopyright (C) 1995-2026 Jean-loup Gailly, Mark Adler", 10, 15, 158, 290, 16
-END
-
-/////////////////////////////////////////////////////////////////////////////
-//
-// Menu
-//
-
-IDM_POP_TRAY MENU
-BEGIN
-	POPUP "pop"
-	BEGIN
-		MENUITEM "Resync Pause",	IDM_RESYNC_PAUSE
-		MENUITEM SEPARATOR
-		MENUITEM "Restore",			IDM_RESTORE
-		MENUITEM "Minimize",		IDM_MINIMIZE
-		MENUITEM SEPARATOR
-		MENUITEM "Status...",		IDM_STATUS
-		MENUITEM "About...",		IDR_ABOUT_BOX
-		MENUITEM SEPARATOR
-		MENUITEM "Exit",			IDM_EXIT
-	END
-END
-
-IDM_POP_LOG MENU
-BEGIN
-	POPUP "pop"
-	BEGIN
-		MENUITEM "Copy",			IDM_EDIT_COPY
-		MENUITEM SEPARATOR
-		MENUITEM "Resync Pause",	IDM_RESYNC_PAUSE
-		MENUITEM SEPARATOR
-		MENUITEM "Status...",		IDM_STATUS
-		MENUITEM "About...",		IDR_ABOUT_BOX
-	END
-END
+#endif	// APSTUDIO_INVOKED
 
 #endif

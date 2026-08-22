@@ -2,12 +2,25 @@
 #include "../network/network.h"
 #include "../graysvr/CPingServer.h"
 
-#ifndef _WIN32
+#ifdef _WIN32
+	#include "CNTWindow.h"
+#else
 	#include "CUnixTerminal.h"
 	#ifdef _LIBEV
 		extern LinuxEv g_NetworkEvent;
 	#endif
 #endif
+
+const LPCTSTR CServer::sm_szServModes[SERVMODE_QTY] =
+{
+	"Restocking",
+	"Saving",
+	"Running",
+	"Resync Pause",
+	"Loading",
+	"Resync Load",
+	"Exiting"
+};
 
 CServer::CServer() : CServerDef(SPHERE_TITLE, CSocketAddressIP(INADDR_LOOPBACK_REVERSE))
 {
@@ -32,7 +45,8 @@ void CServer::SetServerMode(SERVMODE_TYPE mode)
 	ADDTOCALLSTACK("CServer::SetServerMode");
 	m_iModeCode = mode;
 #ifdef _WIN32
-	NTWindow_SetWindowTitle();
+	if ( g_NTApp.m_wndMain )
+		g_NTApp.m_wndMain.UpdateTitle();
 #endif
 }
 
@@ -385,7 +399,8 @@ void CServer::SysMessage(LPCTSTR pszMsg) const
 		return;
 
 #ifdef _WIN32
-	NTWindow_PostMsg(pszMsg);
+	if ( g_NTApp.m_wndMain )
+		g_NTApp.m_wndMain.WriteLog(pszMsg);
 #else
 	g_UnixTerminal.print(pszMsg);
 #endif
@@ -410,10 +425,10 @@ void CServer::PrintStr(LPCTSTR pszMsg) const
 		PrintTelnet(pszMsg);
 }
 
-int CServer::PrintPercent(long iCount, long iTotal)
+int CServer::PrintPercent(size_t iCount, size_t iTotal)
 {
 	ADDTOCALLSTACK("CServer::PrintPercent");
-	int iPercent = (iTotal > 0) ? IMULDIV(iCount, 100, iTotal) : 100;
+	int iPercent = (iTotal > 0) ? static_cast<int>(IMULDIV(iCount, 100, iTotal)) : 100;
 	TCHAR szTemp[5];
 	snprintf(szTemp, COUNTOF(szTemp), "%d%%", iPercent);
 
@@ -435,7 +450,8 @@ int CServer::PrintPercent(long iCount, long iTotal)
 	}
 
 #ifdef _WIN32
-	NTWindow_SetWindowTitle(szTemp);
+	if ( g_NTApp.m_wndMain )
+		g_NTApp.m_wndMain.UpdateTitle(szTemp);
 #endif
 	return iPercent;
 }
@@ -644,11 +660,13 @@ bool CServer::OnConsoleCmd(CGString &sText, CTextConsole *pSrc)
 		{
 			size_t iThreadCount = ThreadHolder::getActiveThreads();
 			pSrc->SysMessagef("Current active threads: %zu\n", iThreadCount);
-			for ( size_t iThread = 0; iThread < iThreadCount; ++iThread )
+			for ( size_t i = 0; i < iThreadCount; ++i )
 			{
-				IThread *pThread = ThreadHolder::getThreadAt(iThread);
-				if ( pThread )
-					pSrc->SysMessagef("Thread %zu: %s (ID=%lu, Priority=%d)\n", iThread + 1, pThread->getName(), pThread->getId(), pThread->getPriority());
+				IThread *pThread = ThreadHolder::getThreadAt(i);
+				if ( !pThread )
+					continue;
+
+				pSrc->SysMessagef("Thread %zu: %s (ID=%lu, Priority=%d)\n", i + 1, pThread->getName(), pThread->getId(), pThread->getPriority());
 			}
 			break;
 		}
@@ -1417,9 +1435,9 @@ void CServer::ProfileDump(CTextConsole *pSrc, bool fDump)
 	if ( IsSetEF(EF_Script_Profiler) )
 	{
 		size_t iThreadCount = ThreadHolder::getActiveThreads();
-		for ( size_t iThread = 0; iThread < iThreadCount; ++iThread )
+		for ( size_t i = 0; i < iThreadCount; ++i )
 		{
-			IThread *pThread = ThreadHolder::getThreadAt(iThread);
+			IThread *pThread = ThreadHolder::getThreadAt(i);
 			if ( !pThread )
 				continue;
 
@@ -1428,19 +1446,19 @@ void CServer::ProfileDump(CTextConsole *pSrc, bool fDump)
 				continue;
 
 			if ( ft )
-				ft->Printf("Thread %lu, Name=%s\n", pThread->getId(), pThread->getName());
+				ft->Printf("Thread %zu: %s (ID=%lu, Priority=%d)\n", i + 1, pThread->getName(), pThread->getId(), pThread->getPriority());
 			else
-				pSrc->SysMessagef("Thread %lu, Name=%s\n", pThread->getId(), pThread->getName());
+				pSrc->SysMessagef("Thread %zu: %s (ID=%lu, Priority=%d)\n", i + 1, pThread->getName(), pThread->getId(), pThread->getPriority());
 
-			for ( PROFILE_TYPE i = PROFILE_IDLE; i < PROFILE_QTY; i = static_cast<PROFILE_TYPE>(i + 1) )
+			for ( PROFILE_TYPE j = PROFILE_IDLE; j < PROFILE_QTY; j = static_cast<PROFILE_TYPE>(j + 1) )
 			{
-				if ( !profile.IsEnabled(i) )
+				if ( !profile.IsEnabled(j) )
 					continue;
 
 				if ( ft )
-					ft->Printf("%-10s = %s\n", profile.GetName(i), profile.GetDescription(i));
+					ft->Printf("'%-10s' = %s\n", profile.GetName(j), profile.GetDescription(j));
 				else
-					pSrc->SysMessagef("%-10s = %s\n", profile.GetName(i), profile.GetDescription(i));
+					pSrc->SysMessagef("'%-10s' = %s\n", profile.GetName(j), profile.GetDescription(j));
 			}
 		}
 

@@ -707,6 +707,11 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
+    <Manifest Include="src\graysvr\SphereSvr.manifest">
+      <Filter>graysvr</Filter>
+    </Manifest>
+  </ItemGroup>
+  <ItemGroup>
     <ResourceCompile Include="src\graysvr\SphereSvr.rc">
       <Filter>graysvr</Filter>
     </ResourceCompile>

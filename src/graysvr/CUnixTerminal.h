@@ -16,27 +16,12 @@ private:
 	bool m_fPrepared;
 
 public:
-	enum COLOR_TYPE
-	{
-		COL_DEFAULT,
-		COL_RED,
-		COL_GREEN,
-		COL_YELLOW,
-		COL_BLUE,
-		COL_MAGENTA,
-		COL_CYAN,
-		COL_WHITE,
-		COL_QTY
-	};
-
-public:
 	CUnixTerminal();
 	~CUnixTerminal();
 
 public:
 	bool isReady();
 	TCHAR read();
-	void setColor(COLOR_TYPE color);
 	void print(LPCTSTR pszText);
 	void prepare();
 

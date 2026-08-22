@@ -1,967 +1,146 @@
-// Put up a window for data (other than the console)
 #ifdef _WIN32
-
 #include "graysvr.h"	// predef header
-#include "resource.h"
+#include <dwmapi.h>
 #include "CNTWindow.h"
+#include "resource.h"
 
-#define WM_USER_POST_MSG		(WM_USER+10)
-#define WM_USER_TRAY_NOTIFY		(WM_USER+12)
-#define IDC_M_LOG	10
-#define IDC_M_INPUT 11
-#define IDT_ONTICK	1
+#pragma comment(lib, "comctl32.lib")
+#pragma comment(lib, "dwmapi.lib")
+#pragma comment(lib, "uxtheme.lib")
 
-CNTApp theApp;
+CNTApp g_NTApp;
 
-//************************************
-// -CAboutDlg
-
-bool CNTWindow::CAboutDlg::OnInitDialog()
-{
-	char szBuild[80];
-#if defined(GIT_COMMIT_COUNT) && defined(GIT_COMMIT_HASH)
-	snprintf(szBuild, sizeof(szBuild), "Compiled at %s (Build %d / Git hash %s)", g_szCompiledDate, GIT_COMMIT_COUNT, GIT_COMMIT_HASH);
-#else
-	snprintf(szBuild, sizeof(szBuild), "Compiled at %s", g_szCompiledDate);
-#endif
-
-	SetDlgItemText(IDC_ABOUT_VERSION, SPHERE_TITLE_VER " (" SPHERE_VER_ARCH ")");
-	SetDlgItemText(IDC_ABOUT_WEBSITE, SPHERE_WEBSITE);
-	SetDlgItemText(IDC_ABOUT_COMPILER, szBuild);
-	return false;
-}
-
-bool CNTWindow::CAboutDlg::OnCommand( WORD wNotifyCode, INT_PTR wID, HWND hwndCtl )
-{
-	UNREFERENCED_PARAMETER(wNotifyCode);
-	UNREFERENCED_PARAMETER(hwndCtl);
-
-	// WM_COMMAND
-	switch ( wID )
-	{
-		case IDOK:
-		case IDCANCEL:
-			EndDialog( m_hWnd, wID );
-			break;
-	}
-	return( TRUE );
-}
-
-BOOL CNTWindow::CAboutDlg::DefDialogProc( UINT message, WPARAM wParam, LPARAM lParam )
-{
-	switch ( message )
-	{
-	case WM_INITDIALOG:
-		return( OnInitDialog());
-	case WM_COMMAND:
-		return( OnCommand(  HIWORD(wParam), LOWORD(wParam), (HWND) lParam ));
-	case WM_DESTROY:
-		OnDestroy();
-		return( TRUE );
-	}
-	return( FALSE );
-}
-
-//************************************
-// -CStatusDlg
-
-void CNTWindow::CStatusDlg::FillClients()
-{
-	if ( m_wndListClients.m_hWnd == NULL )
-		return;
-	m_wndListClients.ResetContent();
-	CNTWindow::CListTextConsole capture( m_wndListClients.m_hWnd );
-	g_Serv.ListClients( &capture );
-	int iCount = m_wndListClients.GetCount();
-	++iCount;
-}
-
-void CNTWindow::CStatusDlg::FillStats()
-{
-	if ( m_wndListStats.m_hWnd == NULL )
-		return;
-
-	m_wndListStats.ResetContent();
-
-	CNTWindow::CListTextConsole capture( m_wndListStats.m_hWnd );
-
-	size_t iThreadCount = ThreadHolder::getActiveThreads();
-	for ( size_t iThreads = 0; iThreads < iThreadCount; ++iThreads)
-	{
-		IThread *thrCurrent = ThreadHolder::getThreadAt(iThreads);
-		if (thrCurrent == NULL)
-			continue;
-
-		const ProfileData &profile = static_cast<AbstractSphereThread *>(thrCurrent)->m_profile;
-		if (profile.IsEnabled() == false)
-			continue;
-
-		capture.SysMessagef("Thread %lu - '%s'\n", thrCurrent->getId(), thrCurrent->getName());
-
-		for ( int i = 0; i < PROFILE_QTY; ++i )
-		{
-			if (profile.IsEnabled(static_cast<PROFILE_TYPE>(i)) == false)
-				continue;
-
-			capture.SysMessagef("'%-10s' = %s\n", profile.GetName(static_cast<PROFILE_TYPE>(i)), profile.GetDescription(static_cast<PROFILE_TYPE>(i)));
-		}
-	}
-}
-
-bool CNTWindow::CStatusDlg::OnInitDialog()
-{
-	m_wndListClients.m_hWnd = GetDlgItem(IDC_STAT_CLIENTS);
-	FillClients();
-	m_wndListStats.m_hWnd = GetDlgItem(IDC_STAT_STATS);
-	FillStats();
-	return( false );
-}
-
-bool CNTWindow::CStatusDlg::OnCommand( WORD wNotifyCode, INT_PTR wID, HWND hwndCtl )
-{
-	UNREFERENCED_PARAMETER(wNotifyCode);
-	UNREFERENCED_PARAMETER(hwndCtl);
-
-	// WM_COMMAND
-	switch ( wID )
-	{
-		case IDOK:
-		case IDCANCEL:
-			DestroyWindow();
-			break;
-	}
-	return( FALSE );
-}
-
-BOOL CNTWindow::CStatusDlg::DefDialogProc( UINT message, WPARAM wParam, LPARAM lParam )
-{
-	// IDM_STATUS
-	switch ( message )
-	{
-	case WM_INITDIALOG:
-		return( OnInitDialog());
-	case WM_COMMAND:
-		return( OnCommand( HIWORD(wParam), LOWORD(wParam), (HWND) lParam ));
-	case WM_DESTROY:
-		m_wndListClients.OnDestroy();
-		m_wndListStats.OnDestroy();
-		OnDestroy();
-		return( TRUE );
-	}
-	return( FALSE );
-}
+////////////////////////////////////////////////////////////
+// CNTWindow
 
 CNTWindow::CNTWindow()
 {
-	m_iLogTextLen		= 0;
-	m_fLogScrollLock	= false;
-	m_dwColorNew		= RGB( 0xaf,0xaf,0xaf );
-	m_dwColorPrv		= RGB( 0xaf,0xaf,0xaf );
-	m_iHeightInput		= 0;
-   	m_hLogFont			= NULL;
-	m_wndLog.SetSel(0, 0);
-	memset(m_szCmdHistory, 0, sizeof(m_szCmdHistory));
+	SetLogColor(CLog::Color::Default);
+	m_iLogTextLen = 0;
+	m_iInputHistory = -1;
+	memset(m_szInputHistory, 0, sizeof(m_szInputHistory));
+	m_hIconBig = NULL;
+	m_hIconSmall = NULL;
+	m_hFont = NULL;
+	m_lFontCharWidth = 0;
+	m_lFontCharHeight = 0;
+	m_fDarkMode = true;
+	m_hBrushDialogDarkBackground = CreateSolidBrush(GetDialogBackgroundColor());
+	m_hBrushListBoxDarkBackground = CreateSolidBrush(GetWindowBackgroundColor());
+	m_uMsgTaskbarCreated = RegisterWindowMessage("TaskbarCreated");
 }
 
 CNTWindow::~CNTWindow()
 {
-	NTWindow_DeleteIcon();
 	DestroyWindow();
 }
 
-void CNTWindow::List_Clear()
+void CNTWindow::MainWindowInit(HINSTANCE hInstance, int iShowCmd)
 {
-	m_wndLog.SetWindowText( "");
-	m_wndLog.SetSel( 0, 0 );
-	m_iLogTextLen = 0;
-}
+	const char *pszClassName = SPHERE_TITLE "Svr";
+	g_NTApp.InitInstance(SPHERE_TITLE "Server V" SPHERE_VER_STR_FULL, hInstance);
 
-void CNTWindow::List_Add( COLORREF color, LPCTSTR pszText )
-{
-	int iTextLen = strlen( pszText );
-	int iNewLen = m_iLogTextLen + iTextLen;
+	LoadLibraryEx("msftedit.dll", NULL, LOAD_LIBRARY_SEARCH_SYSTEM32);
 
-	if ( iNewLen > (32*1024) )
-	{
-		int iCut = iNewLen - (32*1024);
-		m_wndLog.SetSel( 0, iCut );
-		m_wndLog.ReplaceSel( "" );
-		m_iLogTextLen = (32*1024);
-	}
-
-	m_wndLog.SetSel( m_iLogTextLen, m_iLogTextLen );
-
-	// set the blocks color.
-	CHARFORMAT cf;
-	memset( &cf, 0, sizeof(cf));
-	cf.cbSize = sizeof(cf);
-	cf.dwMask = CFM_COLOR;
-	cf.crTextColor = color;
-	m_wndLog.SetSelectionCharFormat( cf );
-
-	m_wndLog.ReplaceSel( pszText );
-
-	m_iLogTextLen += iTextLen;
-	m_wndLog.SetSel( m_iLogTextLen, m_iLogTextLen );
-
-	int iSelBegin;
-	int iSelEnd;
-	m_wndLog.GetSel( iSelBegin, iSelEnd );
-	m_iLogTextLen = iSelBegin;	// make sure it's correct.
-
-	// If the select is on screen then keep scrolling.
-	if ( ! m_fLogScrollLock && ! GetCapture())
-		m_wndLog.Scroll();
-}
-
-bool CNTWindow::RegisterClass(char *className)	// static
-{
-	WNDCLASS wc;
-	memset( &wc, 0, sizeof(wc));
-
-	wc.style = CS_DBLCLKS | CS_VREDRAW | CS_HREDRAW;
+	WNDCLASSEX wc;
+	memset(&wc, 0, sizeof(wc));
+	wc.cbSize = sizeof(wc);
+	wc.style = CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS;
 	wc.lpfnWndProc = WindowProc;
-	wc.hInstance = theApp.m_hInstance;
-	wc.hIcon = theApp.LoadIcon( IDR_MAINFRAME );
-	wc.hCursor = LoadCursor( NULL, IDC_ARROW );
-	wc.hbrBackground = NULL;
-	wc.lpszMenuName = NULL;
-	wc.lpszClassName = className;
+	wc.hInstance = hInstance;
+	wc.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_SPHERESVR));
+	wc.hIconSm = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_SPHERESVR));
+	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+	wc.lpszClassName = pszClassName;
+	RegisterClassEx(&wc);
 
-	ATOM frc = ::RegisterClass( &wc );
-	if ( !frc )
-	{
-		return( false );
-	}
+	DWORD dwStyle = WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN;
+	DWORD dwExStyle = 0;
 
-	TCHAR szLibPath[MAX_PATH];
-	GetSystemDirectory(szLibPath, sizeof(szLibPath));
-	strncat(szLibPath, "\\riched20.dll", sizeof(szLibPath) - strlen(szLibPath) - 1);
+	m_hWnd = CreateWindow(pszClassName, SPHERE_TITLE_VER,
+		dwStyle,
+		CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+		HWND_DESKTOP, NULL, hInstance, NULL);
 
-	LoadLibrary(szLibPath);
-	return true;
+	UINT uDpi = GetDpiForWindow(m_hWnd);
+	RECT rc = {
+		0, 0,
+		(m_lFontCharWidth * 131) + GetSystemMetricsForDpi(SM_CXBORDER, uDpi) + GetSystemMetricsForDpi(SM_CXVSCROLL, uDpi),	// (130 chars + left margin) + caret + scroll bar
+		m_lFontCharHeight * 31 };	// 30 chars + input line
+
+	AdjustWindowRectExForDpi(&rc, dwStyle, FALSE, dwExStyle, uDpi);
+	SetWindowPos(m_hWnd, NULL,
+		0, 0,
+		rc.right - rc.left,
+		rc.bottom - rc.top,
+		SWP_NOMOVE | SWP_NOZORDER | SWP_NOREDRAW | SWP_NOACTIVATE | SWP_HIDEWINDOW);
+
+	ShowWindow(iShowCmd);
+	UpdateWindow(m_hWnd);
 }
 
-int CNTWindow::OnCreate( HWND hWnd, LPCREATESTRUCT lParam )
+void CNTWindow::MainWindowExit()
 {
-	UNREFERENCED_PARAMETER(lParam);
-	CWindow::OnCreate(hWnd);
-
-	m_wndLog.m_hWnd = ::CreateWindow( RICHEDIT_CLASS, NULL,
-		ES_LEFT | ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_READONLY | /* ES_OEMCONVERT | */
-		WS_CHILD|WS_VISIBLE|WS_VSCROLL,
-		0, 0, 10, 10,
-		m_hWnd,
-		(HMENU)(UINT) IDC_M_LOG, theApp.m_hInstance, NULL );
-	ASSERT( m_wndLog.m_hWnd );
-
-
-	SetLogFont( "Courier" );
-
-	// TEXTMODE
-	m_wndLog.SetBackgroundColor( false, RGB(0,0,0));
-	CHARFORMAT cf;
-	memset( &cf, 0, sizeof(cf));
-	cf.cbSize = sizeof(cf);
-	cf.dwMask = CFM_COLOR;
-	cf.crTextColor = m_dwColorPrv;
-	cf.bCharSet = ANSI_CHARSET;
-	cf.bPitchAndFamily = FF_MODERN | FIXED_PITCH;
-	m_wndLog.SetDefaultCharFormat( cf );
-	m_wndLog.SetEventMask( ENM_LINK | ENM_MOUSEEVENTS | ENM_KEYEVENTS );
-
-	m_wndInput.m_hWnd = ::CreateWindow("EDIT", NULL,
-		ES_LEFT | ES_AUTOHSCROLL | WS_CHILD|WS_VISIBLE|WS_BORDER|WS_TABSTOP,
-		0, 0, 10, 10,
-		m_hWnd,
-		(HMENU)(UINT) IDC_M_INPUT, theApp.m_hInstance, NULL );
-	ASSERT( m_wndInput.m_hWnd );
-
-	memset(&pnid,0,sizeof(pnid));
-	pnid.cbSize = sizeof(NOTIFYICONDATA);
-	pnid.hWnd = m_hWnd;
-	pnid.uFlags = NIF_TIP | NIF_ICON | NIF_MESSAGE;
-	pnid.uCallbackMessage = WM_USER_TRAY_NOTIFY;
-	pnid.hIcon = theApp.LoadIcon(IDR_MAINFRAME);
-	strncpy(pnid.szTip, theApp.m_pszAppName, sizeof(pnid.szTip));
-	pnid.szTip[sizeof(pnid.szTip) - 1] = '\0';
-	Shell_NotifyIcon(NIM_ADD, &pnid);
-
-	NTWindow_SetWindowTitle();
-
-	return( 0 );
-}
-
-void CNTWindow::OnDestroy()
-{
-	m_wndLog.OnDestroy();	// these are automatic.
-	m_wndInput.OnDestroy();
-	CWindow::OnDestroy();
-}
-
-void CNTWindow::OnSetFocus( HWND hWndLoss )
-{
-	UNREFERENCED_PARAMETER(hWndLoss);
-	m_wndInput.SetFocus();
-}
-
-LRESULT CNTWindow::OnUserTrayNotify( WPARAM wID, LPARAM lEvent )
-{
-	UNREFERENCED_PARAMETER(wID);
-
-	// WM_USER_TRAY_NOTIFY
-	switch ( lEvent )
-	{
-	case WM_RBUTTONDOWN:
-		// Context menu ?
-		{
-			HMENU hMenu = theApp.LoadMenu( IDM_POP_TRAY );
-			if ( hMenu == NULL )
-				break;
-			HMENU hMenuPop = GetSubMenu(hMenu,0);
-			if ( hMenuPop )
-			{
-				POINT point;
-				if ( GetCursorPos( &point ))
-				{
-					TrackPopupMenu( hMenuPop, TPM_RIGHTBUTTON, point.x, point.y, 0, m_hWnd, NULL );
-				}
-			}
-			DestroyMenu( hMenu );
-		}
-		return 1;
-	case WM_LBUTTONDBLCLK:
-		{
-			if ( IsWindowVisible(m_hWnd) )
-				ShowWindow(SW_HIDE);
-			else
-			{
-				ShowWindow(SW_NORMAL);
-				SetForegroundWindow();
-			}
-			return 1;
-		}
-	}
-	return 0;	// not handled.
-}
-
-void CNTWindow::OnUserPostMessage( COLORREF color, CGString * psMsg )
-{
-	// WM_USER_POST_MSG
-	if ( psMsg )
-	{
-		List_Add(color, *psMsg);
-		delete psMsg;
-	}
-}
-
-void CNTWindow::OnSize( WPARAM nType, int cx, int cy )
-{
-	if ( nType != SIZE_MINIMIZED && nType != SIZE_MAXHIDE && m_wndLog.m_hWnd )
-	{
-		if ( ! m_iHeightInput )
-		{
-			HFONT hFont = (HFONT)SendMessage(WM_GETFONT);
-			if ( !hFont )
-				hFont = (HFONT)GetStockObject(SYSTEM_FONT);
-			ASSERT(hFont);
-
-			LOGFONT logfont;
-			int iRet = ::GetObject(hFont, sizeof(logfont),&logfont );
-			ASSERT(iRet==sizeof(logfont));
-			UNREFERENCED_PARAMETER(iRet);
-
-			m_iHeightInput = abs( logfont.lfHeight );
-			ASSERT(m_iHeightInput);
-		}
-
-		m_wndLog.MoveWindow( 0, 0, cx, cy-m_iHeightInput, TRUE );
-		m_wndInput.MoveWindow( 0, cy-m_iHeightInput, cx, m_iHeightInput, TRUE );
-	}
-}
-
-bool CNTWindow::OnClose()
-{
-	// WM_CLOSE
-	if ( g_Serv.m_iExitFlag == 0 )
-	{
-		int iRet = theApp.m_wndMain.MessageBox("Are you sure you want to close the server?",
-			theApp.m_pszAppName, MB_YESNO|MB_ICONQUESTION );
-		if ( iRet == IDNO )
-			return( false );
-	}
-
-	PostQuitMessage(0);
-	g_Serv.SetExitFlag( 5 );
-	return( true );	// ok to close.
-}
-
-bool CNTWindow::OnCommand( WORD wNotifyCode, INT_PTR wID, HWND hwndCtl )
-{
-	// WM_COMMAND
-	UNREFERENCED_PARAMETER(wNotifyCode);
-	UNREFERENCED_PARAMETER(hwndCtl);
-
-	switch ( wID )
-	{
-	case IDC_M_LOG:
-		break;
-	case IDM_STATUS:
-		if ( theApp.m_wndStatus.m_hWnd == NULL )
-		{
-			theApp.m_wndStatus.m_hWnd = ::CreateDialogParam(
-				theApp.m_hInstance,
-				MAKEINTRESOURCE(IDM_STATUS),
-				HWND_DESKTOP,
-				CDialogBase::DialogProc,
-				reinterpret_cast<LPARAM>(static_cast <CDialogBase*>(&theApp.m_wndStatus)) );
-		}
-		theApp.m_wndStatus.SetIcon(theApp.LoadIcon(IDR_MAINFRAME));
-		theApp.m_wndStatus.ShowWindow(SW_NORMAL);
-		theApp.m_wndStatus.SetForegroundWindow();
-		break;
-	case IDR_ABOUT_BOX:
-		if ( theApp.m_wndAbout.m_hWnd == NULL )
-		{
-			theApp.m_wndAbout.m_hWnd = ::CreateDialogParam(
-				theApp.m_hInstance,
-				MAKEINTRESOURCE(IDR_ABOUT_BOX),
-				HWND_DESKTOP,
-				CDialogBase::DialogProc,
-				reinterpret_cast<LPARAM>(static_cast <CDialogBase*>(&theApp.m_wndAbout)) );
-		}
-		theApp.m_wndAbout.SetIcon(theApp.LoadIcon(IDR_MAINFRAME));
-		theApp.m_wndAbout.ShowWindow(SW_NORMAL);
-		theApp.m_wndAbout.SetForegroundWindow();
-		break;
-
-	case IDM_MINIMIZE:
-		// SC_MINIMIZE
-	    ShowWindow(SW_HIDE);
-		break;
-	case IDM_RESTORE:
-		// SC_RESTORE
-	    ShowWindow(SW_NORMAL);
-		SetForegroundWindow();
-		break;
-	case IDM_EXIT:
-		PostMessage( WM_CLOSE );
-		break;
-
-	case IDM_RESYNC_PAUSE:
-		if ( ! g_Serv.m_fConsoleTextReadyFlag )	// busy ?
-		{
-			g_Serv.m_sConsoleText = "R";
-			g_Serv.m_fConsoleTextReadyFlag = true;
-			return( true );
-		}
-		return( false );
-
-	case IDM_EDIT_COPY:
-		m_wndLog.SendMessage( WM_COPY );
-		break;
-
-	case IDOK:
-		// We just entered the text.
-
-		if ( ! g_Serv.m_fConsoleTextReadyFlag )	// busy ?
-		{
-			TCHAR szTmp[ MAX_TALK_BUFFER ];
-			m_wndInput.GetWindowText( szTmp, sizeof(szTmp));
-
-			for ( int i = COUNTOF(theApp.m_wndMain.m_szCmdHistory) - 1; i > 0; --i )
-			{
-				strncpy(theApp.m_wndMain.m_szCmdHistory[i], theApp.m_wndMain.m_szCmdHistory[i - 1], sizeof(theApp.m_wndMain.m_szCmdHistory[i]));
-				theApp.m_wndMain.m_szCmdHistory[i][sizeof(theApp.m_wndMain.m_szCmdHistory[i]) - 1] = '\0';
-			}
-
-			strncpy(m_szCmdHistory[0], szTmp, sizeof(m_szCmdHistory[0]));
-			m_szCmdHistory[0][sizeof(m_szCmdHistory[0]) - 1] = '\0';
-			m_wndInput.SetWindowText("");
-			g_Serv.m_sConsoleText = szTmp;
-			g_Serv.m_fConsoleTextReadyFlag = true;
-			return( true );
-		}
-		return( false );
-	}
-	return( true );
-}
-
-bool CNTWindow::OnSysCommand( WPARAM uCmdType, int xPos, int yPos )
-{
-	// WM_SYSCOMMAND
-	// return : 1 = i processed this.
-	UNREFERENCED_PARAMETER(xPos);
-	UNREFERENCED_PARAMETER(yPos);
-
-	switch ( uCmdType )
-	{
-		case SC_MINIMIZE:
-			ShowWindow(SW_HIDE);
-			return true;
-			break;
-	}
-	return( false );
-}
-
-void	CNTWindow::SetLogFont( const char * pszFont )
-{
-	// use an even spaced font
-	if ( pszFont == NULL )
-	{
-		m_hLogFont	= (HFONT) GetStockObject(SYSTEM_FONT);
-	}
-	else
-	{
-		LOGFONT logfont;
-   		memset( &logfont, 0, sizeof(logfont) );
-		strncpy(logfont.lfFaceName, pszFont, sizeof(logfont.lfFaceName));
-		logfont.lfFaceName[sizeof(logfont.lfFaceName) - 1] = '\0';
-
-		// calculate height for a 10pt font, some systems can produce an unreadable
-		// font size if we let CreateFontIndirect pick a system default size
-		HDC hdc = GetDC(NULL);
-		if (hdc != NULL)
-		{
-			//logfont.lfHeight = MulDiv(10, GetDeviceCaps(hdc, LOGPIXELSY), 72);
-			logfont.lfHeight = IMULDIV(10, GetDeviceCaps(hdc, LOGPIXELSY), 72);
-			ReleaseDC(NULL, hdc);
-		}
-
-		logfont.lfPitchAndFamily = FF_MODERN;
-   		m_hLogFont = CreateFontIndirect( &logfont );
-	}
-   	m_wndLog.SetFont( m_hLogFont, true );
-}
-
-
-LRESULT CNTWindow::OnNotify( int idCtrl, NMHDR * pnmh )
-{
-	ASSERT(pnmh);
-	if ( idCtrl != IDC_M_LOG )
-		return 0;
-
-	switch ( pnmh->code )
-	{
-	case EN_LINK:
-		{
-			ENLINK * pLink = (ENLINK *)(pnmh);
-			if ( pLink->msg == WM_LBUTTONDOWN )
-				return 1;
-			break;
-		}
-	case EN_MSGFILTER:
-		{
-			MSGFILTER	*pMsg = (MSGFILTER *)pnmh;
-			ASSERT(pMsg);
-
-			switch ( pMsg->msg )
-			{
-			case WM_MOUSEMOVE:
-				return 0;
-			case WM_RBUTTONDOWN:
-				{
-					HMENU hMenu = theApp.LoadMenu( IDM_POP_LOG );
-					if ( !hMenu )
-						return 0;
-					HMENU hMenuPop = GetSubMenu(hMenu,0);
-					if ( hMenuPop )
-					{
-						POINT point;
-						if ( GetCursorPos( &point ))
-							TrackPopupMenu( hMenuPop, TPM_RIGHTBUTTON, point.x, point.y, 0, m_hWnd, NULL );
-					}
-					DestroyMenu(hMenu);
-					return 1;
-				}
-			case WM_LBUTTONDBLCLK:
-				{
-					TCHAR * zTemp = Str_GetTemp();
-					POINT pt;
-					pt.x = LOWORD(pMsg->lParam);
-					pt.y = HIWORD(pMsg->lParam);
-
-					// get selected line
-					LRESULT line = m_wndLog.SendMessage(EM_LINEFROMCHAR, m_wndLog.SendMessage(EM_CHARFROMPOS, 0, reinterpret_cast<LPARAM>(&pt)), 0);
-
-					// get the line text
-					reinterpret_cast<WORD*>(zTemp)[0] = SCRIPT_MAX_LINE_LEN - 1; // first WORD is used to indicate the max buffer length
-					zTemp[m_wndLog.SendMessage(EM_GETLINE, line, reinterpret_cast<LPARAM>(zTemp))] = '\0';
-					if ( *zTemp == '\0' )
-						break;
-
-					//	use dclick to open the corresponding script file
-					TCHAR *pos = strstr(zTemp, SPHERE_FILE_EXT_SCP);
-					if ( pos != NULL )
-					{
-						//	use two formats of file names:
-						//		Loading filepath/filename/name.scp
-						//		ERROR:(filename.scp,line)
-						LPCTSTR start = pos;
-						TCHAR *end = pos + (sizeof(SPHERE_FILE_EXT_SCP) - 1);
-
-						while ( start > zTemp )
-						{
-							if (( *start == ' ' ) || ( *start == '(' ))
-								break;
-							--start;
-						}
-						++start;
-						*end = '\0';
-
-						if ( *start != '\0' )
-						{
-							LPCTSTR filePath = NULL;
-
-							// search script files for a matching name
-							size_t i = 0;
-							for (const CResourceScript * s = g_Cfg.GetResourceFile(i++); s != NULL; s = g_Cfg.GetResourceFile(i++))
-							{
-								if ( strstr(s->GetFilePath(), start) == NULL )
-									continue;
-
-								filePath = s->GetFilePath();
-								break;
-							}
-
-							// since certain files aren't listed, handle these separately
-							if (filePath == NULL)
-							{
-								if ( strstr(SPHERE_FILE "tables" SPHERE_FILE_EXT_SCP, start) )
-								{
-									TCHAR szBaseDir[MAX_PATH];
-									snprintf(szBaseDir, sizeof(szBaseDir), "%s%s", static_cast<LPCTSTR>(g_Cfg.m_sSCPBaseDir), start);
-									filePath = szBaseDir;
-								}
-							}
-
-							if (filePath != NULL)
-							{
-								TCHAR szApplicationName[MAX_PATH];
-								GetSystemDirectory(szApplicationName, sizeof(szApplicationName));
-								strncat(szApplicationName, "\\notepad.exe", sizeof(szApplicationName) - strlen(szApplicationName) - 1);
-
-								TCHAR szCommandLine[MAX_PATH];
-								snprintf(szCommandLine, sizeof(szCommandLine), " \"%s\"", filePath);
-
-								STARTUPINFO si;
-								ZeroMemory(&si, sizeof(si));
-								si.cb = sizeof(si);
-
-								PROCESS_INFORMATION pi;
-								ZeroMemory(&pi, sizeof(pi));
-
-								if ( CreateProcess(szApplicationName, szCommandLine, NULL, NULL, true, 0, NULL, NULL, &si, &pi) )
-								{
-									CloseHandle(pi.hProcess);
-									CloseHandle(pi.hThread);
-									return 1;
-								}
-
-								DWORD dwErrorCode = CGFile::GetLastError();
-								LPTSTR pszErrorMsg = Str_GetTemp();
-								if (CGrayError::GetSystemErrorMessage(dwErrorCode, pszErrorMsg, THREAD_STRING_LENGTH) > 0)
-									g_Log.Event(LOGL_WARN, "Failed to open '%s' code=%hu (%s)\n", filePath, dwErrorCode, pszErrorMsg);
-								else
-									g_Log.Event(LOGL_WARN, "Failed to open '%s' code=%hu\n", filePath, dwErrorCode);
-							}
-						}
-					}
-					break;
-				}
-			case WM_CHAR:
-				{
-					// We normally have no business typing into this window.
-					// Should we allow CTL C etc ?
-					if ( pMsg->lParam & (1<<29))	// ALT
-						return 0;
-					SHORT sState = GetKeyState( VK_CONTROL );
-					if ( sState & 0xff00 )
-						return 0;
-					m_wndInput.SetFocus();
-					m_wndInput.PostMessage( WM_CHAR, pMsg->wParam, pMsg->lParam );
-					return 1;	// mostly ignored.
-				}
-			} // pMsg
-		} // MSGFILTER
-	} // code
-	return 0;
-}
-
-LRESULT WINAPI CNTWindow::WindowProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )	// static
-{
-	try
-	{
-		switch( message )
-		{
-		case WM_CREATE:
-			return( theApp.m_wndMain.OnCreate( hWnd, (LPCREATESTRUCT) lParam ));
-		case WM_SYSCOMMAND:
-			if ( theApp.m_wndMain.OnSysCommand( wParam &~ 0x0f, LOWORD(lParam), HIWORD(lParam)))
-				return( 0 );
-			break;
-		case WM_COMMAND:
-			if ( theApp.m_wndMain.OnCommand( HIWORD(wParam), LOWORD(wParam), (HWND) lParam ))
-				return( 0 );
-			break;
-		case WM_CLOSE:
-			if ( ! theApp.m_wndMain.OnClose())
-				return( false );
-			break;
-		case WM_ERASEBKGND:	// don't bother with this.
-			return 1;
-		case WM_SIZE:	// get the client rectangle
-			theApp.m_wndMain.OnSize( wParam, LOWORD(lParam), HIWORD(lParam));
-			return 0;
-		case WM_DESTROY:
-			theApp.m_wndMain.OnDestroy();
-			return 0;
-		case WM_SETFOCUS:
-			theApp.m_wndMain.OnSetFocus( (HWND) wParam );
-			return 0;
-		case WM_NOTIFY:
-			theApp.m_wndMain.OnNotify( (int) wParam, (NMHDR *) lParam );
-			return 0;
-		case WM_USER_POST_MSG:
-			theApp.m_wndMain.OnUserPostMessage( (COLORREF) wParam, reinterpret_cast<CGString*>(lParam) );
-			return 1;
-		case WM_USER_TRAY_NOTIFY:
-			return theApp.m_wndMain.OnUserTrayNotify( wParam, lParam );
-		}
-	}
-	catch (const CGrayError& e)
-	{
-		g_Log.CatchEvent(&e, "Window");
-		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
-	}
-	catch (...)	// catch all
-	{
-		g_Log.CatchEvent(NULL, "Window");
-		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
-	}
-	return ::DefWindowProc(hWnd, message, wParam, lParam);
-}
-
-//************************************
-
-bool NTWindow_Init(HINSTANCE hInstance, int nCmdShow)
-{
-	theApp.InitInstance(SPHERE_TITLE "Server V" SPHERE_VER_STR_FULL, hInstance);
-
-	char *pszClassName = SPHERE_TITLE "Svr";
-	CNTWindow::RegisterClass(pszClassName);
-
-	theApp.m_wndMain.m_hWnd = ::CreateWindow(
-		pszClassName,
-		SPHERE_TITLE_VER, // window name
-		WS_OVERLAPPEDWINDOW,   // window style
-		CW_USEDEFAULT,  // horizontal position of window
-		CW_USEDEFAULT,  // vertical position of window
-		CW_USEDEFAULT,  // window width
-		CW_USEDEFAULT,	// window height
-		HWND_DESKTOP,      // handle to parent or owner window
-		NULL,          // menu handle or child identifier
-		theApp.m_hInstance,  // handle to application instance
-		NULL        // window-creation data
-		);
-
-	theApp.m_wndMain.ShowWindow(nCmdShow);
-	return true;
-}
-
-void NTWindow_DeleteIcon()
-{
-	theApp.m_wndMain.pnid.uFlags = 0;
-	Shell_NotifyIcon(NIM_DELETE, &theApp.m_wndMain.pnid);
-}
-
-void NTWindow_Exit()
-{
-	// Unattach the window.
 	if ( g_Serv.m_iExitFlag < 0 )
 	{
-		TCHAR pszMsg[40];
-		snprintf(pszMsg, sizeof(pszMsg), "Server terminated by error %d!", g_Serv.m_iExitFlag);
-		theApp.m_wndMain.MessageBox(pszMsg, theApp.m_pszAppName, MB_OK|MB_ICONEXCLAMATION );
-		// just sit here for a bit til the user wants to close the window.
-		while ( NTWindow_OnTick(500) )
+		WCHAR szTitle[50];
+		MultiByteToWideChar(CP_UTF8, 0, g_NTApp.m_pszAppName, -1, szTitle, COUNTOF(szTitle) - 1);	// TaskDialog is unicode, so convert ANSI to unicode
+		szTitle[COUNTOF(szTitle) - 1] = '\0';
+
+		WCHAR szContent[50];
+		swprintf(szContent, COUNTOF(szContent), L"Server terminated by error %d", g_Serv.m_iExitFlag);
+
+		TaskDialog(m_hWnd, NULL, szTitle, NULL, szContent, TDCBF_OK_BUTTON, TD_ERROR_ICON, NULL);
+
+		// Keep the window open until the user close it
+		while ( MainWindowTick(500) )
 		{
 		}
 	}
 }
 
-void NTWindow_SetWindowTitle( LPCTSTR pszText )
+bool CNTWindow::MainWindowTick(UINT uWaitMsec)
 {
-	if ( theApp.m_wndMain.m_hWnd == NULL )
-		return;
-	// set the title to reflect mode.
+	// RETURN: false = exit the app
 
-	LPCTSTR pszMode;
-	switch ( g_Serv.m_iModeCode )
+	if ( uWaitMsec > 0 )
 	{
-	case SERVMODE_RestockAll:	// Major event.
-		pszMode = "Restocking";
-		break;
-	case SERVMODE_Saving:		// Forced save freezes the system.
-		pszMode = "Saving";
-		break;
-	case SERVMODE_Run:			// Game is up and running
-		pszMode = "Running";
-		break;
-	case SERVMODE_Loading:		// Initial load.
-		pszMode = "Loading";
-		break;
-	case SERVMODE_ResyncPause:
-		pszMode = "Resync Pause";
-		break;
-	case SERVMODE_ResyncLoad:	// Loading after resync
-		pszMode = "Resync Load";
-		break;
-	case SERVMODE_Exiting:		// Closing down
-		pszMode = "Exiting";
-		break;
-	default:
-		pszMode = "Unknown";
-		break;
+		if ( !m_hWnd || !SetTimer(IDT_MAIN_TICK, uWaitMsec) )
+			uWaitMsec = 0;
 	}
 
-	char szTitle[MAX_PATH];
-	snprintf(szTitle, sizeof(szTitle), "%s - %s (%s) %s", theApp.m_pszAppName, g_Serv.GetName(), pszMode, pszText ? pszText : "");
-	theApp.m_wndMain.SetWindowText(szTitle);
-
-	theApp.m_wndMain.pnid.uFlags = NIF_TIP;
-	strncpy(theApp.m_wndMain.pnid.szTip, szTitle, sizeof(theApp.m_wndMain.pnid.szTip));
-	theApp.m_wndMain.pnid.szTip[sizeof(theApp.m_wndMain.pnid.szTip) - 1] = '\0';
-	Shell_NotifyIcon(NIM_MODIFY, &theApp.m_wndMain.pnid);
-}
-
-bool NTWindow_PostMsgColor( COLORREF color )
-{
-	// Set the color for the next text.
-	if ( theApp.m_wndMain.m_hWnd == NULL )
-		return( false );
-
-	if ( ! color )
-	{
-		// set to default color.
-		color = theApp.m_wndMain.m_dwColorPrv;
-	}
-
-	theApp.m_wndMain.m_dwColorNew = color;
-	return( true );
-}
-
-bool NTWindow_PostMsg( LPCTSTR pszMsg )
-{
-	// Post a message to print out on the main display.
-	// If we use AttachThreadInput we don't need to post ?
-	// RETURN:
-	//  false = post did not work.
-
-	if ( theApp.m_wndMain.m_hWnd == NULL )
-		return( false );
-
-	COLORREF color = theApp.m_wndMain.m_dwColorNew;
-
-//	if ( g_Serv.m_dwParentThread != CThread::GetCurrentThreadId())
-//	{
-//		// A thread safe way to do text.
-//		CGString * psMsg = new CGString( pszMsg );
-//		ASSERT(psMsg);
-//		if ( ! theApp.m_wndMain.PostMessage( WM_USER_POST_MSG, (WPARAM) color, (LPARAM)psMsg ))
-//		{
-//			delete psMsg;
-//			return( false );
-//		}
-//	}
-//	else
-//	{
-		// just add it now.
-		theApp.m_wndMain.List_Add( color, pszMsg );
-//	}
-
-	return( true );
-}
-
-bool NTWindow_OnTick( int iWaitmSec )
-{
-	// RETURN: false = exit the app.
-
-#ifdef EXCEPTIONS_DEBUG
-	const char *m_sClassName = "NTWindow";
-#endif
-	if ( iWaitmSec )
-	{
-		if ( !theApp.m_wndMain.m_hWnd || !theApp.m_wndMain.SetTimer(IDT_ONTICK, iWaitmSec) )
-		{
-			iWaitmSec = 0;
-		}
-	}
-
-	// Give the windows message loops a tick.
+	// Give the windows message loops a tick
 	for (;;)
 	{
 		EXC_TRY("Tick");
 
+		// Any windows messages? (blocks until a message arrives)
 		MSG msg;
-
-		// any windows messages ? (blocks until a message arrives)
-		if ( iWaitmSec )
+		if ( uWaitMsec > 0 )
 		{
-			if ( ! GetMessage( &msg, NULL, 0, 0 ))
+			if ( GetMessage(&msg, NULL, 0, 0) <= 0 )
 			{
-				g_Serv.SetExitFlag( 5 );
-				return( false );
+				g_Serv.SetExitFlag(5);	// console window closed
+				return false;
 			}
 
-			if ( (msg.hwnd == theApp.m_wndMain.m_hWnd) && (msg.message == WM_TIMER) && (msg.wParam == IDT_ONTICK) )
+			if ( (msg.hwnd == m_hWnd) && (msg.message == WM_TIMER) && (msg.wParam == IDT_MAIN_TICK) )
 			{
-				theApp.m_wndMain.KillTimer( IDT_ONTICK );
-				iWaitmSec = 0;	// empty the queue and bail out.
+				// Empty the queue and bail out
+				KillTimer(IDT_MAIN_TICK);
+				uWaitMsec = 0;
 				continue;
 			}
 		}
 		else
 		{
-			if (! PeekMessage( &msg, NULL, 0, 0, PM_REMOVE ))
-			{
+			if ( !PeekMessage(&msg, NULL, 0, 0, PM_REMOVE) )
 				return true;
-			}
 
 			if ( msg.message == WM_QUIT )
 			{
-				g_Serv.SetExitFlag( 5 );
-				return( false );
-			}
-		}
-
-		//	Got char in edit box
-		if ( theApp.m_wndMain.m_wndInput.m_hWnd && (msg.hwnd == theApp.m_wndMain.m_wndInput.m_hWnd) )
-		{
-			if ( msg.message == WM_CHAR )	//	char to edit box
-			{
-				if ( msg.wParam == VK_RETURN )	//	ENTER
-				{
-					if ( theApp.m_wndMain.OnCommand( 0, IDOK, msg.hwnd ))
-					{
-						return(true);
-					}
-				}
-			}
-			else if ( msg.message == WM_KEYUP )	//	key released
-			{
-				if ( msg.wParam == VK_UP )			//	UP (commands history)
-				{
-					theApp.m_wndMain.m_wndInput.SetWindowText(theApp.m_wndMain.m_szCmdHistory[0]);
-
-					for ( int i = 0; i < COUNTOF(theApp.m_wndMain.m_szCmdHistory) - 1; ++i )
-					{
-						strncpy(theApp.m_wndMain.m_szCmdHistory[i], theApp.m_wndMain.m_szCmdHistory[i + 1], sizeof(theApp.m_wndMain.m_szCmdHistory[i]));
-						theApp.m_wndMain.m_szCmdHistory[i][sizeof(theApp.m_wndMain.m_szCmdHistory[i]) - 1] = '\0';
-					}
-
-					theApp.m_wndMain.m_wndInput.GetWindowText(theApp.m_wndMain.m_szCmdHistory[COUNTOF(theApp.m_wndMain.m_szCmdHistory) - 1], sizeof(theApp.m_wndMain.m_szCmdHistory[COUNTOF(theApp.m_wndMain.m_szCmdHistory) - 1]));
-				}
+				g_Serv.SetExitFlag(5);	// console window closed
+				return false;
 			}
 		}
 
@@ -970,6 +149,900 @@ bool NTWindow_OnTick( int iWaitmSec )
 
 		EXC_CATCH;
 	}
+}
+
+LRESULT CALLBACK CNTWindow::WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)	// static
+{
+	try
+	{
+		switch ( uMsg )
+		{
+			case WM_CREATE:
+				return g_NTApp.m_wndMain.OnCreate(hWnd, reinterpret_cast<LPCREATESTRUCT>(lParam));
+			case WM_DESTROY:
+				return g_NTApp.m_wndMain.OnDestroy();
+			case WM_SIZE:
+				return g_NTApp.m_wndMain.OnSize(wParam, LOWORD(lParam), HIWORD(lParam));
+			case WM_SETFOCUS:
+				g_NTApp.m_wndMain.m_wndInput.SetFocus();
+				return 0;
+			case WM_CLOSE:
+				return g_NTApp.m_wndMain.OnClose();
+			case WM_ERASEBKGND:		// ignore this
+				return 1;
+			case WM_NOTIFY:
+				return g_NTApp.m_wndMain.OnNotify(wParam, reinterpret_cast<LPNMHDR>(lParam));
+			case WM_USER_TRAY_NOTIFY:
+				return g_NTApp.m_wndMain.OnUserTrayNotify(lParam);
+			case WM_COMMAND:
+				return g_NTApp.m_wndMain.OnCommand(LOWORD(wParam));
+			case WM_SYSCOMMAND:
+				if ( !g_NTApp.m_wndMain.OnSysCommand(GET_SC_WPARAM(wParam)) )
+					return 0;
+				break;
+			case WM_SETTINGCHANGE:
+				return g_NTApp.m_wndMain.OnSettingChange(reinterpret_cast<LPCTSTR>(lParam));
+			case WM_DPICHANGED:
+				return g_NTApp.m_wndMain.OnDpiChanged(HIWORD(wParam), reinterpret_cast<LPRECT>(lParam));
+		}
+
+		if ( uMsg == g_NTApp.m_wndMain.m_uMsgTaskbarCreated )
+		{
+			// Windows taskbar clears all tray icons when it restarts, so add the tray icon again
+			g_NTApp.m_wndMain.m_nid.uFlags = NIF_MESSAGE | NIF_ICON | NIF_TIP;
+			g_NTApp.m_wndMain.m_nid.uCallbackMessage = WM_USER_TRAY_NOTIFY;
+			g_NTApp.m_wndMain.m_nid.hIcon = g_NTApp.m_wndMain.m_hIconSmall;
+			Shell_NotifyIcon(NIM_ADD, &g_NTApp.m_wndMain.m_nid);
+			return 0;
+		}
+	}
+	catch ( const CGrayError &e )
+	{
+		g_Log.CatchEvent(&e, "Window");
+		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
+	}
+	catch ( ... )
+	{
+		g_Log.CatchEvent(NULL, "Window");
+		CurrentProfileData.Count(PROFILE_STAT_FAULTS, 1);
+	}
+	return DefWindowProc(hWnd, uMsg, wParam, lParam);
+}
+
+LRESULT CALLBACK CNTWindow::InputSubclassProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, UINT_PTR uSubclassID, DWORD_PTR dwRefData)	// static
+{
+	switch ( uMsg )
+	{
+		case WM_KEYDOWN:
+		{
+			CNTWindow *pMainWindow = reinterpret_cast<CNTWindow *>(dwRefData);
+			if ( !pMainWindow )
+				break;
+
+			switch ( wParam )
+			{
+				case VK_RETURN:
+				{
+					// User entered a console command
+					if ( g_Serv.m_fConsoleTextReadyFlag )
+						break;
+
+					TCHAR szTemp[SCRIPT_MAX_LINE_LEN] = { 0 };
+					pMainWindow->m_wndInput.SendMessage(WM_GETTEXT, static_cast<WPARAM>(COUNTOF(szTemp)), reinterpret_cast<LPARAM>(szTemp));
+					if ( szTemp[0] == '\0' )
+						break;
+
+					for ( int i = COUNTOF(pMainWindow->m_szInputHistory) - 1; i > 0; --i )
+					{
+						memcpy(pMainWindow->m_szInputHistory[i], pMainWindow->m_szInputHistory[i - 1], sizeof(pMainWindow->m_szInputHistory[i]));
+					}
+					strncpy(pMainWindow->m_szInputHistory[0], szTemp, COUNTOF(pMainWindow->m_szInputHistory[0]) - 1);
+					pMainWindow->m_szInputHistory[0][COUNTOF(pMainWindow->m_szInputHistory[0]) - 1] = '\0';
+
+					g_Serv.m_sConsoleText = szTemp;
+					g_Serv.m_fConsoleTextReadyFlag = true;
+					pMainWindow->m_iInputHistory = -1;
+					pMainWindow->m_wndInput.SendMessage(WM_SETTEXT, NULL, reinterpret_cast<LPARAM>(""));
+					return 0;
+				}
+				case VK_ESCAPE:
+					pMainWindow->m_wndInput.SendMessage(WM_SETTEXT, NULL, reinterpret_cast<LPARAM>(""));
+					return 0;
+				case VK_UP:
+					// Move up command history
+					if ( pMainWindow->m_iInputHistory < static_cast<int>(COUNTOF(pMainWindow->m_szInputHistory)) - 1 )
+					{
+						if ( pMainWindow->m_szInputHistory[pMainWindow->m_iInputHistory + 1][0] != '\0' )
+						{
+							++pMainWindow->m_iInputHistory;
+							pMainWindow->m_wndInput.SendMessage(WM_SETTEXT, NULL, reinterpret_cast<LPARAM>(pMainWindow->m_szInputHistory[pMainWindow->m_iInputHistory]));
+							pMainWindow->m_wndInput.SendMessage(EM_SETSEL, static_cast<WPARAM>(-1), static_cast<LPARAM>(-1));
+						}
+					}
+					return 0;
+				case VK_DOWN:
+					// Move down command history
+					if ( pMainWindow->m_iInputHistory >= 0 )
+					{
+						--pMainWindow->m_iInputHistory;
+						LPCTSTR pszTemp = (pMainWindow->m_iInputHistory >= 0) ? pMainWindow->m_szInputHistory[pMainWindow->m_iInputHistory] : "";
+						pMainWindow->m_wndInput.SendMessage(WM_SETTEXT, NULL, reinterpret_cast<LPARAM>(pszTemp));
+						pMainWindow->m_wndInput.SendMessage(EM_SETSEL, static_cast<WPARAM>(-1), static_cast<LPARAM>(-1));
+					}
+					return 0;
+				case VK_LEFT:
+				case VK_BACK:
+				{
+					// Prevent system beep sound when moving the cursor past the beginning of text
+					CHARRANGE cr = { 0, 0 };
+					pMainWindow->m_wndInput.SendMessage(EM_EXGETSEL, NULL, reinterpret_cast<LPARAM>(&cr));
+					if ( (cr.cpMin == cr.cpMax) && (cr.cpMin == 0) )
+						return 0;
+					break;
+				}
+				case VK_RIGHT:
+				case VK_DELETE:
+				{
+					// Prevent system beep sound when moving the cursor past the end of text
+					CHARRANGE cr = { 0, 0 };
+					pMainWindow->m_wndInput.SendMessage(EM_EXGETSEL, NULL, reinterpret_cast<LPARAM>(&cr));
+					if ( (cr.cpMin == cr.cpMax) && (cr.cpMin == pMainWindow->m_wndInput.SendMessage(WM_GETTEXTLENGTH)) )
+						return 0;
+					break;
+				}
+			}
+			break;
+		}
+		case WM_NCDESTROY:
+		{
+			RemoveWindowSubclass(hWnd, InputSubclassProc, uSubclassID);
+			break;
+		}
+	}
+	return DefSubclassProc(hWnd, uMsg, wParam, lParam);
+}
+
+LRESULT CNTWindow::OnCreate(HWND hWnd, LPCREATESTRUCT lpCreateStruct)
+{
+	// WM_CREATE
+	UNREFERENCED_PARAMETER(lpCreateStruct);
+	CWindow::OnCreate(hWnd);
+
+	// Set window theme
+	m_fDarkMode = IsSystemDarkMode();
+	BOOL fDarkMode = static_cast<BOOL>(m_fDarkMode);
+	DwmSetWindowAttribute(hWnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &fDarkMode, sizeof(fDarkMode));
+
+	// Create font
+	UINT uDpi = GetDpiForWindow(hWnd);
+	m_hFont = CreateFont(-MulDiv(sm_iFontSize, uDpi, 72),
+		0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+		ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
+		DEFAULT_QUALITY, FIXED_PITCH | FF_MODERN, sm_pszFontFaceName);
+
+	HDC hdc = GetDC(hWnd);
+	if ( hdc )
+	{
+		if ( m_hFont )
+		{
+			HGDIOBJ hFontPrev = SelectObject(hdc, m_hFont);
+			TEXTMETRIC tm;
+			if ( GetTextMetrics(hdc, &tm) )
+			{
+				m_lFontCharWidth = tm.tmAveCharWidth;
+				m_lFontCharHeight = tm.tmHeight + tm.tmExternalLeading;
+			}
+			SelectObject(hdc, hFontPrev);
+		}
+		ReleaseDC(hWnd, hdc);
+	}
+
+	CHARFORMAT cf;
+	memset(&cf, 0, sizeof(cf));
+	cf.cbSize = sizeof(cf);
+	cf.dwMask = CFM_COLOR | CFM_SIZE;
+	cf.yHeight = MulDiv(sm_iFontSize, 1440, 72);
+	cf.crTextColor = GetWindowTextColor();
+
+	// Create log window
+	m_wndLog.m_hWnd = CreateWindowW(MSFTEDIT_CLASS, NULL,
+		ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_NOHIDESEL | WS_CLIPSIBLINGS | ES_READONLY | WS_VSCROLL | WS_CHILD,
+		CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+		hWnd, reinterpret_cast<HMENU>(static_cast<UINT_PTR>(IDC_MAIN_LOG)), g_NTApp.m_hInstance, NULL);
+	ASSERT(m_wndLog.m_hWnd);
+
+	m_wndLog.SendMessage(WM_SETFONT, reinterpret_cast<WPARAM>(m_hFont), TRUE);
+	m_wndLog.SendMessage(EM_SETCHARFORMAT, SCF_DEFAULT, reinterpret_cast<LPARAM>(&cf));
+	m_wndLog.SendMessage(EM_SETBKGNDCOLOR, FALSE, CLog::Color::Black);
+	m_wndLog.SendMessage(EM_SETMARGINS, EC_LEFTMARGIN, MAKELONG(m_lFontCharWidth, 0));
+	m_wndLog.SendMessage(EM_SETEVENTMASK, NULL, ENM_KEYEVENTS | ENM_MOUSEEVENTS);
+	SetWindowTheme(m_wndLog.m_hWnd, m_fDarkMode ? L"DarkMode_Explorer" : L"Explorer", NULL);
+	m_wndLog.ShowWindow(SW_SHOW);
+
+	// Create input window
+	m_wndInput.m_hWnd = CreateWindowW(MSFTEDIT_CLASS, NULL,
+		ES_AUTOHSCROLL | WS_CHILD,
+		CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
+		hWnd, reinterpret_cast<HMENU>(static_cast<UINT_PTR>(IDC_MAIN_INPUT)), g_NTApp.m_hInstance, NULL);
+	ASSERT(m_wndInput.m_hWnd);
+
+	m_wndInput.SendMessage(WM_SETFONT, reinterpret_cast<WPARAM>(m_hFont), TRUE);
+	m_wndInput.SendMessage(EM_SETCHARFORMAT, SCF_DEFAULT, reinterpret_cast<LPARAM>(&cf));
+	m_wndInput.SendMessage(EM_SETBKGNDCOLOR, FALSE, GetWindowBackgroundColor());
+	m_wndInput.SendMessage(EM_SETMARGINS, EC_LEFTMARGIN, MAKELONG(m_lFontCharWidth, 0));
+	m_wndInput.SendMessage(EM_SETTEXTMODE, TM_PLAINTEXT);
+	m_wndInput.SendMessage(EM_EXLIMITTEXT, NULL, COUNTOF(m_szInputHistory[0]) - 1);
+	m_wndInput.ShowWindow(SW_SHOW);
+	SetWindowSubclass(m_wndInput.m_hWnd, InputSubclassProc, IDC_MAIN_INPUT, reinterpret_cast<DWORD_PTR>(this));
+
+	// Update icon scale
+	m_hIconBig = static_cast<HICON>(LoadImage(g_NTApp.m_hInstance, MAKEINTRESOURCE(IDI_SPHERESVR), IMAGE_ICON, GetSystemMetricsForDpi(SM_CXICON, uDpi), GetSystemMetricsForDpi(SM_CYICON, uDpi), LR_DEFAULTCOLOR));
+	m_hIconSmall = static_cast<HICON>(LoadImage(g_NTApp.m_hInstance, MAKEINTRESOURCE(IDI_SPHERESVR), IMAGE_ICON, GetSystemMetricsForDpi(SM_CXSMICON, uDpi), GetSystemMetricsForDpi(SM_CYSMICON, uDpi), LR_DEFAULTCOLOR));
+	SendMessage(WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(m_hIconBig));
+	SendMessage(WM_SETICON, ICON_SMALL, reinterpret_cast<LPARAM>(m_hIconSmall));
+
+	// Add tray icon
+	m_nid.hWnd = hWnd;
+	m_nid.uID = 1;
+	m_nid.uFlags = NIF_MESSAGE | NIF_ICON;
+	m_nid.uCallbackMessage = WM_USER_TRAY_NOTIFY;
+	m_nid.hIcon = m_hIconSmall;
+	Shell_NotifyIcon(NIM_ADD, &m_nid);
+
+	UpdateTitle();
+	return 0;
+}
+
+LRESULT CNTWindow::OnDestroy()
+{
+	// WM_DESTROY
+	Shell_NotifyIcon(NIM_DELETE, &m_nid);
+	if ( m_hIconBig )
+	{
+		DestroyIcon(m_hIconBig);
+		m_hIconBig = NULL;
+	}
+	if ( m_hIconSmall )
+	{
+		DestroyIcon(m_hIconSmall);
+		m_hIconSmall = NULL;
+	}
+	if ( m_hFont )
+	{
+		DeleteObject(m_hFont);
+		m_hFont = NULL;
+	}
+	if ( m_hBrushDialogDarkBackground )
+	{
+		DeleteObject(m_hBrushDialogDarkBackground);
+		m_hBrushDialogDarkBackground = NULL;
+	}
+	if ( m_hBrushListBoxDarkBackground )
+	{
+		DeleteObject(m_hBrushListBoxDarkBackground);
+		m_hBrushListBoxDarkBackground = NULL;
+	}
+	CWindow::OnDestroy();
+	return 0;
+}
+
+LRESULT CNTWindow::OnSize(WPARAM uType, int iWidth, int iHeight)
+{
+	// WM_SIZE
+	if ( (uType == SIZE_MINIMIZED) || (uType == SIZE_MAXHIDE) )
+		return 0;
+
+	HDWP hdwp = BeginDeferWindowPos(2);
+	if ( hdwp )
+		hdwp = DeferWindowPos(hdwp, m_wndLog.m_hWnd, NULL, 0, 0, iWidth, iHeight - m_lFontCharHeight, SWP_NOZORDER | SWP_NOACTIVATE);
+	if ( hdwp )
+		hdwp = DeferWindowPos(hdwp, m_wndInput.m_hWnd, NULL, 0, iHeight - m_lFontCharHeight, iWidth, m_lFontCharHeight, SWP_NOZORDER | SWP_NOACTIVATE);
+	if ( hdwp )
+		EndDeferWindowPos(hdwp);
+	return 0;
+}
+
+LRESULT CNTWindow::OnClose()
+{
+	// WM_CLOSE
+	if ( g_Serv.m_iExitFlag == 0 )
+	{
+		WCHAR szTitle[50];
+		MultiByteToWideChar(CP_UTF8, 0, g_NTApp.m_pszAppName, -1, szTitle, COUNTOF(szTitle) - 1);	// TaskDialog is unicode, so convert ANSI to unicode
+		szTitle[COUNTOF(szTitle) - 1] = '\0';
+
+		int iButtonPressed = 0;
+		TaskDialog(m_hWnd, NULL, szTitle, NULL, L"Are you sure you want to close the server?", TDCBF_YES_BUTTON | TDCBF_NO_BUTTON, TD_WARNING_ICON, &iButtonPressed);
+		if ( iButtonPressed != IDYES )
+			return 0;
+	}
+
+	if ( g_NTApp.m_wndStats.m_hWnd )
+		g_NTApp.m_wndStats.DestroyWindow();
+	if ( g_NTApp.m_wndAbout.m_hWnd )
+		g_NTApp.m_wndAbout.DestroyWindow();
+
+	m_wndLog.DestroyWindow();	// destroy log window to make sure the console will close properly even if stuck
+	g_Serv.SetExitFlag(5);		// console window closed
+	PostQuitMessage(0);
+	return 0;
+}
+
+LRESULT CNTWindow::OnNotify(WPARAM uControlID, LPNMHDR pnmh)
+{
+	// WM_NOTIFY
+	ASSERT(pnmh);
+	if ( uControlID != IDC_MAIN_LOG )
+		return 0;
+
+	switch ( pnmh->code )
+	{
+		case EN_MSGFILTER:
+		{
+			MSGFILTER *pMsgFilter = reinterpret_cast<MSGFILTER *>(pnmh);
+			ASSERT(pMsgFilter);
+
+			switch ( pMsgFilter->msg )
+			{
+				case WM_RBUTTONUP:
+				{
+					HMENU hMenu = g_NTApp.LoadMenu(IDR_POPUP_CONSOLE);
+					if ( hMenu )
+					{
+						HMENU hMenuPop = GetSubMenu(hMenu, 0);
+						if ( hMenuPop )
+						{
+							POINT pt;
+							if ( GetCursorPos(&pt) )
+							{
+								SetForegroundWindow();
+								TrackPopupMenu(hMenuPop, TPM_RIGHTBUTTON, pt.x, pt.y, 0, m_hWnd, NULL);
+								PostMessage(WM_NULL);
+							}
+						}
+						DestroyMenu(hMenu);
+					}
+					return 1;
+				}
+				case WM_LBUTTONDBLCLK:
+				{
+					// Double click on script files should open them
+					POINT pt = { 0,0 };
+					pt.x = LOWORD(pMsgFilter->lParam);
+					pt.y = HIWORD(pMsgFilter->lParam);
+
+					LRESULT lrLine = m_wndLog.SendMessage(EM_LINEFROMCHAR, m_wndLog.SendMessage(EM_CHARFROMPOS, NULL, reinterpret_cast<LPARAM>(&pt)));
+
+					TCHAR *pszTemp = Str_GetTemp();
+					*reinterpret_cast<WORD *>(pszTemp) = SCRIPT_MAX_LINE_LEN - 1;		// first WORD is used to indicate the max buffer length
+
+					LRESULT lrLen = m_wndLog.SendMessage(EM_GETLINE, lrLine, reinterpret_cast<LPARAM>(pszTemp));
+					if ( lrLen <= 0 )
+						break;
+					pszTemp[lrLen] = '\0';
+
+					// Search for 2 formats of filename:
+					//  Loading path/filename.scp
+					//  ERROR:(filename.scp,line)Message
+					TCHAR *pszEnd = strstr(pszTemp, SPHERE_FILE_EXT_SCP);
+					if ( !pszEnd )
+						break;
+					pszEnd += COUNTOF(SPHERE_FILE_EXT_SCP) - 1;
+					*pszEnd = '\0';
+
+					TCHAR *pszStart = pszEnd;
+					while ( pszStart > pszTemp )
+					{
+						if ( (*(pszStart - 1) == ' ') || (*(pszStart - 1) == '(') )
+							break;
+						--pszStart;
+					}
+					if ( *pszStart == '\0' )
+						break;
+
+					// Check if this is a valid script file
+					LPCTSTR pszFilePath = NULL;
+					size_t i = 0;
+					for ( const CResourceScript *pScript = g_Cfg.GetResourceFile(i++); pScript != NULL; pScript = g_Cfg.GetResourceFile(i++) )
+					{
+						if ( !strstr(pScript->GetFilePath(), pszStart) )
+							continue;
+
+						pszFilePath = pScript->GetFilePath();
+						break;
+					}
+
+					TCHAR szBaseDir[_MAX_PATH] = { 0 };
+					if ( !pszFilePath && strstr(SPHERE_FILE "tables" SPHERE_FILE_EXT_SCP, pszStart) )
+					{
+						snprintf(szBaseDir, COUNTOF(szBaseDir), "%s%s", static_cast<LPCTSTR>(g_Cfg.m_sSCPBaseDir), pszStart);
+						pszFilePath = szBaseDir;
+					}
+
+					// Open the file
+					if ( pszFilePath )
+					{
+						TCHAR szFullPath[_MAX_PATH] = { 0 };
+						if ( !_fullpath(szFullPath, pszFilePath, COUNTOF(szFullPath)) )
+							break;
+
+						SHELLEXECUTEINFO sei;
+						memset(&sei, 0, sizeof(sei));
+						sei.cbSize = sizeof(sei);
+						sei.fMask = SEE_MASK_FLAG_NO_UI;
+						sei.hwnd = m_hWnd;
+						sei.lpVerb = "open";
+						sei.lpFile = szFullPath;
+						sei.nShow = SW_SHOWNORMAL;
+
+						if ( ShellExecuteEx(&sei) )
+							return 1;
+
+						DWORD dwErrorCode = GetLastError();
+						LPTSTR pszErrorMsg = Str_GetTemp();
+						if ( CGrayError::GetSystemErrorMessage(dwErrorCode, pszErrorMsg, THREAD_STRING_LENGTH) > 0 )
+							g_Log.Event(LOGL_WARN, "Failed to open '%s' code=%" FMTDWORD " (%s)\n", szFullPath, dwErrorCode, pszErrorMsg);
+						else
+							g_Log.Event(LOGL_WARN, "Failed to open '%s' code=%" FMTDWORD "\n", szFullPath, dwErrorCode);
+					}
+					break;
+				}
+				case WM_CHAR:
+				{
+					// When try to write on log window, redirect to input window
+					if ( (pMsgFilter->lParam & (KF_ALTDOWN << 16)) || (GetKeyState(VK_CONTROL) < 0) )	// allow ALT and CTRL
+						break;
+
+					m_wndInput.SetFocus();
+					m_wndInput.SendMessage(WM_CHAR, pMsgFilter->wParam, pMsgFilter->lParam);
+					return 1;
+				}
+			}
+		}
+	}
+	return 0;
+}
+
+LRESULT CNTWindow::OnUserTrayNotify(LPARAM lEvent)
+{
+	// WM_USER_TRAY_NOTIFY
+	switch ( lEvent )
+	{
+		case WM_RBUTTONUP:
+		{
+			HMENU hMenu = g_NTApp.LoadMenu(IDR_POPUP_TRAY);
+			if ( hMenu )
+			{
+				HMENU hMenuPop = GetSubMenu(hMenu, 0);
+				if ( hMenuPop )
+				{
+					POINT pt;
+					if ( GetCursorPos(&pt) )
+					{
+						SetForegroundWindow();
+						TrackPopupMenu(hMenuPop, TPM_RIGHTBUTTON, pt.x, pt.y, 0, m_hWnd, NULL);
+						PostMessage(WM_NULL);
+					}
+				}
+				DestroyMenu(hMenu);
+			}
+			return 0;
+		}
+		case WM_LBUTTONDBLCLK:
+			PostMessage(WM_SYSCOMMAND, IsWindowVisible(m_hWnd) ? SC_MINIMIZE : SC_RESTORE);
+			return 0;
+	}
+	return 1;
+}
+
+LRESULT CNTWindow::OnCommand(WORD wCommandID)
+{
+	// WM_COMMAND
+	switch ( wCommandID )
+	{
+		case IDM_COPY:
+			m_wndLog.SendMessage(WM_COPY);
+			break;
+		case IDM_RESYNC_PAUSE:
+			if ( g_Serv.m_fConsoleTextReadyFlag )
+				break;
+
+			g_Serv.m_sConsoleText = "R";
+			g_Serv.m_fConsoleTextReadyFlag = true;
+			m_wndInput.SetFocus();
+			break;
+		case IDM_SHOW_STATS:
+			if ( !g_NTApp.m_wndStats.m_hWnd )
+			{
+				g_NTApp.m_wndStats.m_hWnd = CreateDialogParam(
+					g_NTApp.m_hInstance,
+					MAKEINTRESOURCE(IDD_STATS),
+					m_hWnd,
+					CDialogBase::DialogProc,
+					reinterpret_cast<LPARAM>(static_cast<CDialogBase *>(&g_NTApp.m_wndStats)));
+
+				g_NTApp.m_wndStats.SendMessage(WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(m_hIconBig));
+				g_NTApp.m_wndStats.SendMessage(WM_SETICON, ICON_SMALL, reinterpret_cast<LPARAM>(m_hIconSmall));
+			}
+			CenterWindow(g_NTApp.m_wndStats.m_hWnd);
+			g_NTApp.m_wndStats.ShowWindow(SW_SHOW);
+			g_NTApp.m_wndStats.SetForegroundWindow();
+			break;
+		case IDM_SHOW_ABOUT:
+			if ( !g_NTApp.m_wndAbout.m_hWnd )
+			{
+				g_NTApp.m_wndAbout.m_hWnd = CreateDialogParam(
+					g_NTApp.m_hInstance,
+					MAKEINTRESOURCE(IDD_ABOUT),
+					m_hWnd,
+					CDialogBase::DialogProc,
+					reinterpret_cast<LPARAM>(static_cast<CDialogBase *>(&g_NTApp.m_wndAbout)));
+
+				g_NTApp.m_wndAbout.SendMessage(WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(m_hIconBig));
+				g_NTApp.m_wndAbout.SendMessage(WM_SETICON, ICON_SMALL, reinterpret_cast<LPARAM>(m_hIconSmall));
+			}
+			CenterWindow(g_NTApp.m_wndAbout.m_hWnd);
+			g_NTApp.m_wndAbout.ShowWindow(SW_SHOW);
+			g_NTApp.m_wndAbout.SetForegroundWindow();
+			break;
+		case IDM_EXIT:
+			PostMessage(WM_CLOSE);
+			break;
+	}
+	return 0;
+}
+
+LRESULT CNTWindow::OnSysCommand(int iCommandID)
+{
+	// WM_SYSCOMMAND
+	switch ( iCommandID )
+	{
+		case SC_MINIMIZE:
+			ShowWindow(SW_HIDE);
+			return 0;
+		case SC_RESTORE:
+			ShowWindow(SW_RESTORE);
+			SetForegroundWindow();
+			return 0;
+	}
+	return 1;
+}
+
+LRESULT CNTWindow::OnSettingChange(LPCTSTR pszSetting)
+{
+	// WM_SETTINGCHANGE
+	if ( pszSetting && (strcmpi(pszSetting, "ImmersiveColorSet") == 0) )
+	{
+		m_fDarkMode = IsSystemDarkMode();
+		BOOL fDarkMode = static_cast<BOOL>(m_fDarkMode);
+		LPCWSTR pszThemeName = m_fDarkMode ? L"DarkMode_Explorer" : L"Explorer";
+
+		if ( g_NTApp.m_wndMain.m_hWnd )
+		{
+			CHARFORMAT cf;
+			memset(&cf, 0, sizeof(cf));
+			cf.cbSize = sizeof(cf);
+			cf.dwMask = CFM_COLOR;
+			cf.crTextColor = GetWindowTextColor();
+
+			g_NTApp.m_wndMain.m_wndInput.SendMessage(EM_SETCHARFORMAT, SCF_DEFAULT, reinterpret_cast<LPARAM>(&cf));
+			g_NTApp.m_wndMain.m_wndInput.SendMessage(EM_SETBKGNDCOLOR, FALSE, GetWindowBackgroundColor());
+
+			DwmSetWindowAttribute(g_NTApp.m_wndMain.m_hWnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &fDarkMode, sizeof(fDarkMode));
+			SetWindowTheme(g_NTApp.m_wndMain.m_wndLog.m_hWnd, pszThemeName, NULL);
+			InvalidateRect(g_NTApp.m_wndMain.m_hWnd, NULL, TRUE);
+		}
+		if ( g_NTApp.m_wndStats.m_hWnd )
+		{
+			DwmSetWindowAttribute(g_NTApp.m_wndStats.m_hWnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &fDarkMode, sizeof(fDarkMode));
+			SetWindowTheme(g_NTApp.m_wndStats.m_wndListStats.m_hWnd, pszThemeName, NULL);
+			SetWindowTheme(g_NTApp.m_wndStats.m_wndListClients.m_hWnd, pszThemeName, NULL);
+			InvalidateRect(g_NTApp.m_wndStats.m_hWnd, NULL, TRUE);
+		}
+		if ( g_NTApp.m_wndAbout.m_hWnd )
+		{
+			DwmSetWindowAttribute(g_NTApp.m_wndAbout.m_hWnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &fDarkMode, sizeof(fDarkMode));
+			InvalidateRect(g_NTApp.m_wndAbout.m_hWnd, NULL, TRUE);
+		}
+		return 0;
+	}
+	return 1;
+}
+
+LRESULT CNTWindow::OnDpiChanged(UINT uDpi, LPRECT lpRect)
+{
+	// WM_DPICHANGED
+	// Update font metrics
+	HDC hdc = GetDC(m_hWnd);
+	if ( hdc )
+	{
+		HFONT hFontTemp = CreateFont(-MulDiv(sm_iFontSize, uDpi, 72),
+			0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+			ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS,
+			DEFAULT_QUALITY, FIXED_PITCH | FF_MODERN, sm_pszFontFaceName);
+
+		if ( hFontTemp )
+		{
+			HGDIOBJ hFontPrev = SelectObject(hdc, hFontTemp);
+			TEXTMETRIC tm;
+			if ( GetTextMetrics(hdc, &tm) )
+			{
+				m_lFontCharWidth = tm.tmAveCharWidth;
+				m_lFontCharHeight = tm.tmHeight + tm.tmExternalLeading;
+			}
+			SelectObject(hdc, hFontPrev);
+			DeleteObject(hFontTemp);
+		}
+		ReleaseDC(m_hWnd, hdc);
+	}
+
+	// Update window size and position
+	SetWindowPos(m_hWnd, NULL,
+		lpRect->left,
+		lpRect->top,
+		lpRect->right - lpRect->left,
+		lpRect->bottom - lpRect->top,
+		SWP_NOZORDER | SWP_NOACTIVATE);
+
+	// Update icon scale
+	HICON hIconBigPrev = m_hIconBig;
+	HICON hIconSmallPrev = m_hIconSmall;
+	m_hIconBig = static_cast<HICON>(LoadImage(g_NTApp.m_hInstance, MAKEINTRESOURCE(IDI_SPHERESVR), IMAGE_ICON, GetSystemMetricsForDpi(SM_CXICON, uDpi), GetSystemMetricsForDpi(SM_CYICON, uDpi), LR_DEFAULTCOLOR));
+	m_hIconSmall = static_cast<HICON>(LoadImage(g_NTApp.m_hInstance, MAKEINTRESOURCE(IDI_SPHERESVR), IMAGE_ICON, GetSystemMetricsForDpi(SM_CXSMICON, uDpi), GetSystemMetricsForDpi(SM_CYSMICON, uDpi), LR_DEFAULTCOLOR));
+	SendMessage(WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(m_hIconBig));
+	SendMessage(WM_SETICON, ICON_SMALL, reinterpret_cast<LPARAM>(m_hIconSmall));
+
+	m_nid.uFlags = NIF_ICON;
+	m_nid.hIcon = m_hIconSmall;
+	Shell_NotifyIcon(NIM_MODIFY, &m_nid);
+
+	if ( hIconBigPrev )
+		DestroyIcon(hIconBigPrev);
+	if ( hIconSmallPrev )
+		DestroyIcon(hIconSmallPrev);
+
+	return 0;
+}
+
+BOOL CNTWindow::CenterWindow(HWND hWnd)
+{
+	RECT rcParent;
+	GetWindowRect(m_hWnd, &rcParent);
+
+	RECT rcChild;
+	GetWindowRect(hWnd, &rcChild);
+
+	int iPosX = rcParent.left + (((rcParent.right - rcParent.left) - (rcChild.right - rcChild.left)) / 2);
+	int iPosY = rcParent.top + (((rcParent.bottom - rcParent.top) - (rcChild.bottom - rcChild.top)) / 2);
+	return SetWindowPos(hWnd, NULL, iPosX, iPosY, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+}
+
+bool CNTWindow::IsSystemDarkMode()
+{
+	DWORD dwValue = 1;
+	DWORD dwValueSize = sizeof(dwValue);
+	RegGetValue(HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize", "AppsUseLightTheme", RRF_RT_REG_DWORD, NULL, &dwValue, &dwValueSize);
+	return (dwValue == 0);
+}
+
+void CNTWindow::UpdateTitle(LPCTSTR pszLoadPercent)
+{
+	TCHAR szTemp[160];
+	snprintf(szTemp, COUNTOF(szTemp), "%s - %s (%s) %s", g_NTApp.m_pszAppName, g_Serv.GetName(), ((g_Serv.m_iModeCode < 0) || (static_cast<size_t>(g_Serv.m_iModeCode) >= COUNTOF(g_Serv.sm_szServModes))) ? "" : g_Serv.sm_szServModes[g_Serv.m_iModeCode], pszLoadPercent ? pszLoadPercent : "");
+
+	// Update window title
+	SendMessage(WM_SETTEXT, NULL, reinterpret_cast<LPARAM>(szTemp));
+
+	// Update tray title
+	m_nid.uFlags = NIF_TIP;
+	strncpy(m_nid.szTip, szTemp, COUNTOF(m_nid.szTip) - 1);
+	m_nid.szTip[COUNTOF(m_nid.szTip) - 1] = '\0';
+	Shell_NotifyIcon(NIM_MODIFY, &m_nid);
+}
+
+void CNTWindow::WriteLog(LPCTSTR pszText)
+{
+	if ( !pszText )
+		return;
+
+	// Crop old text
+	size_t iTextLen = strlen(pszText);
+	static constexpr size_t iLogMaxTextLen = 64 * 1024;	// 64KB
+	if ( m_iLogTextLen + iTextLen >= iLogMaxTextLen )
+	{
+		LRESULT lrCropLine = m_wndLog.SendMessage(EM_LINEINDEX, m_wndLog.SendMessage(EM_LINEFROMCHAR, iLogMaxTextLen / 20));
+		m_wndLog.SendMessage(EM_SETSEL, 0, (lrCropLine >= 0) ? lrCropLine : static_cast<LPARAM>(iLogMaxTextLen / 20));
+		m_wndLog.SendMessage(EM_REPLACESEL, FALSE, reinterpret_cast<LPARAM>(""));
+		m_iLogTextLen = static_cast<size_t>(m_wndLog.SendMessage(WM_GETTEXTLENGTH));
+	}
+	m_iLogTextLen += iTextLen;
+
+	// Insert new text
+	CHARFORMAT cf;
+	memset(&cf, 0, sizeof(cf));
+	cf.cbSize = sizeof(cf);
+	cf.dwMask = CFM_COLOR;
+	cf.crTextColor = m_crLogColor;
+
+	m_wndLog.SendMessage(EM_SETSEL, static_cast<WPARAM>(-1), static_cast<LPARAM>(-1));
+	m_wndLog.SendMessage(EM_SETCHARFORMAT, SCF_SELECTION, reinterpret_cast<LPARAM>(&cf));
+	m_wndLog.SendMessage(EM_REPLACESEL, FALSE, reinterpret_cast<LPARAM>(pszText));
+}
+
+////////////////////////////////////////////////////////////
+// CStatsDialog
+
+INT_PTR CNTWindow::CStatsDialog::DefDialogProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	UNREFERENCED_PARAMETER(lParam);
+
+	switch ( uMsg )
+	{
+		case WM_INITDIALOG:
+			return OnInitDialog();
+		case WM_DESTROY:
+			m_wndListStats.OnDestroy();
+			m_wndListClients.OnDestroy();
+			OnDestroy();
+			return TRUE;
+		case WM_COMMAND:
+			return OnCommand(LOWORD(wParam));
+		case WM_CTLCOLORLISTBOX:
+		{
+			HDC hdc = reinterpret_cast<HDC>(wParam);
+			SetTextColor(hdc, g_NTApp.m_wndMain.GetDialogTextColor());
+			SetBkMode(hdc, TRANSPARENT);
+			return reinterpret_cast<INT_PTR>(g_NTApp.m_wndMain.GetListBoxBackgroundBrush());
+		}
+		case WM_CTLCOLORSTATIC:
+		{
+			HDC hdc = reinterpret_cast<HDC>(wParam);
+			SetTextColor(hdc, g_NTApp.m_wndMain.GetDialogTextColor());
+			SetBkMode(hdc, TRANSPARENT);
+			// fall through
+		}
+		case WM_CTLCOLORDLG:
+			return reinterpret_cast<INT_PTR>(g_NTApp.m_wndMain.GetDialogBackgroundBrush());
+	}
+	return FALSE;
+}
+
+INT_PTR CNTWindow::CStatsDialog::OnInitDialog()
+{
+	// WM_INITDIALOG
+	BOOL fDarkMode = static_cast<BOOL>(g_NTApp.m_wndMain.m_fDarkMode);
+	DwmSetWindowAttribute(m_hWnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &fDarkMode, sizeof(fDarkMode));
+
+	LPCWSTR pszThemeName = fDarkMode ? L"DarkMode_Explorer" : L"Explorer";
+
+	// Fill statistics list
+	m_wndListStats.m_hWnd = GetDlgItem(IDC_STATS_STATISTICS);
+	SetWindowTheme(m_wndListStats.m_hWnd, pszThemeName, NULL);
+
+	CNTWindow::CListTextConsole listStats(m_wndListStats.m_hWnd);
+	size_t iThreadCount = ThreadHolder::getActiveThreads();
+	for ( size_t i = 0; i < iThreadCount; ++i )
+	{
+		IThread *pThread = ThreadHolder::getThreadAt(i);
+		if ( !pThread )
+			continue;
+
+		const ProfileData &profile = static_cast<AbstractSphereThread *>(pThread)->m_profile;
+		if ( !profile.IsEnabled() )
+			continue;
+
+		listStats.SysMessagef("Thread %zu: %s (ID=%lu, Priority=%d)\n", i + 1, pThread->getName(), pThread->getId(), pThread->getPriority());
+		for ( PROFILE_TYPE j = PROFILE_IDLE; j < PROFILE_QTY; j = static_cast<PROFILE_TYPE>(j + 1) )
+		{
+			if ( !profile.IsEnabled(j) )
+				continue;
+
+			listStats.SysMessagef("'%-10s' = %s\n", profile.GetName(j), profile.GetDescription(j));
+		}
+	}
+
+	// Fill clients list
+	m_wndListClients.m_hWnd = GetDlgItem(IDC_STATS_CLIENTS);
+	SetWindowTheme(m_wndListClients.m_hWnd, pszThemeName, NULL);
+
+	CNTWindow::CListTextConsole listClients(m_wndListClients.m_hWnd);
+	g_Serv.ListClients(&listClients);
+	return TRUE;
+}
+
+INT_PTR CNTWindow::CStatsDialog::OnCommand(WORD wCommandID)
+{
+	// WM_COMMAND
+	switch ( wCommandID )
+	{
+		case IDCANCEL:
+			DestroyWindow();
+			return TRUE;
+	}
+	return FALSE;
+}
+
+////////////////////////////////////////////////////////////
+// CAboutDialog
+
+INT_PTR CNTWindow::CAboutDialog::DefDialogProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	switch ( uMsg )
+	{
+		case WM_INITDIALOG:
+			return OnInitDialog();
+		case WM_DESTROY:
+			OnDestroy();
+			return TRUE;
+		case WM_COMMAND:
+			return OnCommand(LOWORD(wParam));
+		case WM_NOTIFY:
+			return OnNotify(reinterpret_cast<LPNMHDR>(lParam));
+		case WM_CTLCOLORSTATIC:
+		{
+			HDC hdc = reinterpret_cast<HDC>(wParam);
+			SetTextColor(hdc, g_NTApp.m_wndMain.GetDialogTextColor());
+			SetBkMode(hdc, TRANSPARENT);
+			// fall through
+		}
+		case WM_CTLCOLORDLG:
+			return reinterpret_cast<INT_PTR>(g_NTApp.m_wndMain.GetDialogBackgroundBrush());
+	}
+	return FALSE;
+}
+
+INT_PTR CNTWindow::CAboutDialog::OnInitDialog()
+{
+	// WM_INITDIALOG
+	BOOL fDarkMode = static_cast<BOOL>(g_NTApp.m_wndMain.m_fDarkMode);
+	DwmSetWindowAttribute(m_hWnd, DWMWA_USE_IMMERSIVE_DARK_MODE, &fDarkMode, sizeof(fDarkMode));
+
+	TCHAR szBuild[80];
+#if defined(GIT_COMMIT_COUNT) && defined(GIT_COMMIT_HASH)
+	snprintf(szBuild, COUNTOF(szBuild), "Compiled on %s (build %d / Git hash %s)", g_szCompiledDate, GIT_COMMIT_COUNT, GIT_COMMIT_HASH);
+#else
+	snprintf(szBuild, COUNTOF(szBuild), "Compiled on %s", g_szCompiledDate);
+#endif
+
+	SetDlgItemText(IDC_ABOUT_VERSION, SPHERE_TITLE_VER " (" SPHERE_VER_ARCH ")");
+	SetDlgItemText(IDC_ABOUT_COMPILER, szBuild);
+	SetDlgItemText(IDC_ABOUT_UPDATE, "<a href=\"https://github.com/Sphereserver/Source/releases\">Check for updates on GitHub</a>");
+	SetDlgItemText(IDC_ABOUT_WEBSITE, "<a href=\"" SPHERE_WEBSITE "\">" SPHERE_WEBSITE "</a>");
+	return TRUE;
+}
+
+INT_PTR CNTWindow::CAboutDialog::OnCommand(WORD wCommandID)
+{
+	// WM_COMMAND
+	switch ( wCommandID )
+	{
+		case IDCANCEL:
+			DestroyWindow();
+			return TRUE;
+	}
+	return FALSE;
+}
+
+INT_PTR CNTWindow::CAboutDialog::OnNotify(LPNMHDR pnmh)
+{
+	// WM_NOTIFY
+	switch ( pnmh->code )
+	{
+		case NM_CLICK:
+		{
+			switch ( pnmh->idFrom )
+			{
+				case IDC_ABOUT_UPDATE:
+				case IDC_ABOUT_WEBSITE:
+				{
+					PNMLINK pnmLink = reinterpret_cast<PNMLINK>(pnmh);
+					ShellExecuteW(NULL, L"open", pnmLink->item.szUrl, NULL, NULL, SW_SHOWNORMAL);
+					return TRUE;
+				}
+			}
+		}
+	}
+	return FALSE;
 }
 
 #endif // _WIN32

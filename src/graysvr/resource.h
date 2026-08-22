@@ -1,32 +1,44 @@
 //{{NO_DEPENDENCIES}}
-// Microsoft Developer Studio generated include file.
+// Microsoft Visual C++ generated include file.
 // Used by SphereSvr.rc
-//
-#define IDC_STATIC					0
-#define IDR_MAINFRAME				100
-#define IDR_ABOUT_BOX				101
-#define IDM_POP_TRAY				102
-#define IDM_POP_LOG					103
-#define IDC_STAT_STATS				201
-#define IDC_STAT_CLIENTS			202
-#define IDM_STATUS					528
-#define IDM_RESTORE					544
-#define IDM_MINIMIZE				560
-#define IDM_EDIT_COPY				580
-#define IDM_EXIT					582
-#define IDC_ABOUT_VERSION			1117
-#define IDC_ABOUT_COMPILER			1118
-#define IDC_ABOUT_WEBSITE			1119
-#define IDM_RESYNC_PAUSE			32784
+
+#define IDR_POPUP_CONSOLE		100
+#define IDR_POPUP_TRAY			101
+
+#define IDD_STATS				200
+#define IDD_ABOUT				201
+
+#define IDM_COPY				300
+#define IDM_RESYNC_PAUSE		301
+#define IDM_SHOW_STATS			302
+#define IDM_SHOW_ABOUT			303
+#define IDM_EXIT				304
+
+#define IDI_SPHERESVR			400
+
+#define IDC_MAIN_LOG			1000
+#define IDC_MAIN_INPUT			1001
+#define IDC_STATS_STATISTICS	1002
+#define IDC_STATS_CLIENTS		1003
+#define IDC_ABOUT_VERSION		1004
+#define IDC_ABOUT_COMPILER		1005
+#define IDC_ABOUT_UPDATE		1006
+#define IDC_ABOUT_WEBSITE		1007
+#ifndef IDC_STATIC
+#define IDC_STATIC				-1
+#endif
+
+#define IDT_MAIN_TICK			2000
+
+#define WM_USER_TRAY_NOTIFY		(WM_USER + 10)
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
- #ifndef APSTUDIO_READONLY_SYMBOLS
-  #define _APS_3D_CONTROLS			1
-  #define _APS_NEXT_RESOURCE_VALUE	160
-  #define _APS_NEXT_COMMAND_VALUE	32785
-  #define _APS_NEXT_CONTROL_VALUE	4026
-  #define _APS_NEXT_SYMED_VALUE		210
- #endif
+#ifndef APSTUDIO_READONLY_SYMBOLS
+#define _APS_NEXT_RESOURCE_VALUE	202
+#define _APS_NEXT_COMMAND_VALUE		305
+#define _APS_NEXT_CONTROL_VALUE		1008
+#define _APS_NEXT_SYMED_VALUE		100
+#endif
 #endif

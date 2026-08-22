@@ -10,7 +10,8 @@ enum SERVMODE_TYPE
 	SERVMODE_ResyncPause,	// Paused during resync
 	SERVMODE_Loading,		// Initial load
 	SERVMODE_ResyncLoad,	// Loading after resync
-	SERVMODE_Exiting		// Closing down
+	SERVMODE_Exiting,		// Closing down
+	SERVMODE_QTY
 };
 
 class CItemShip;
@@ -20,6 +21,7 @@ extern class CServer : public CServerDef, public CTextConsole
 public:
 	static const char *m_sClassName;
 	static const LPCTSTR sm_szVerbKeys[];
+	static const LPCTSTR sm_szServModes[SERVMODE_QTY];
 
 	CServer();
 
@@ -67,7 +69,7 @@ public:
 	void SysMessage(LPCTSTR pszMsg) const;
 	void PrintTelnet(LPCTSTR pszMsg) const;
 	void PrintStr(LPCTSTR pszMsg) const;
-	int PrintPercent(long iCount, long iTotal);
+	int PrintPercent(size_t iCount, size_t iTotal);
 
 	bool OnConsoleCmd(CGString &sText, CTextConsole *pSrc);
 	void ListClients(CTextConsole *pConsole) const;

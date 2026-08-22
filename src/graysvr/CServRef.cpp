@@ -2,6 +2,7 @@
 
 // Memory profiling
 #ifdef _WIN32
+	#include "CNTWindow.h"
 	#include <psapi.h>
 
 	typedef	BOOL(WINAPI *pGetProcessMemoryInfo)(HANDLE, PPROCESS_MEMORY_COUNTERS, DWORD);
@@ -125,8 +126,8 @@ void CServerDef::SetName(LPCTSTR pszName)
 
 	m_sName = szName;
 #ifdef _WIN32
-	// Update console window title
-	NTWindow_SetWindowTitle();
+	if ( g_NTApp.m_wndMain )
+		g_NTApp.m_wndMain.UpdateTitle();
 #endif
 }
 

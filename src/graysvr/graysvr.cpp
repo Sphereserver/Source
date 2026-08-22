@@ -2,7 +2,9 @@
 #include "CPingServer.h"
 #include "../network/network.h"
 #include "../sphere/asyncdb.h"
-#ifndef _WIN32
+#ifdef _WIN32
+	#include "CNTWindow.h"
+#else
 	#include "CUnixTerminal.h"
 	#include <thread>
 #endif
@@ -739,7 +741,7 @@ static void Sphere_MainMonitorLoop()
 				break;
 
 #ifdef _WIN32
-			NTWindow_OnTick(1000);
+			g_NTApp.m_wndMain.MainWindowTick(1000);
 #else
 			std::this_thread::sleep_for(std::chrono::seconds(1));
 #endif
@@ -766,10 +768,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
-	NTWindow_Init(hInstance, nShowCmd);
+	g_NTApp.m_wndMain.MainWindowInit(hInstance, nShowCmd);
 	int iRet = Sphere_MainEntryPoint();
-	NTWindow_Exit();
-	TerminateProcess(GetCurrentProcess(), iRet);
+	g_NTApp.m_wndMain.MainWindowExit();
 	return iRet;
 }
 
@@ -817,9 +818,6 @@ int _cdecl main( int argc, char * argv[] )
 		}
 	}
 
-#ifdef _WIN32
-	NTWindow_DeleteIcon();
-#endif
 	Sphere_ExitServer();
 	WritePidFile(1);
 

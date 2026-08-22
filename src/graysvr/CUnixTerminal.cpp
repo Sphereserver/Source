@@ -60,17 +60,6 @@ TCHAR CUnixTerminal::read()
 	return ch;
 }
 
-void CUnixTerminal::setColor(COLOR_TYPE color)
-{
-	if ( (color < COL_DEFAULT) || (color >= COL_QTY) )
-		color = COL_DEFAULT;
-
-	if ( color == COL_DEFAULT )
-		fprintf(stdout, "\033[0m");
-	else
-		fprintf(stdout, "\033[0;%dm", 30 + static_cast<int>(color));
-}
-
 void CUnixTerminal::print(LPCTSTR pszText)
 {
 	ADDTOCALLSTACK("CUnixTerminal::print");

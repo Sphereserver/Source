@@ -1891,3 +1891,12 @@ Changed: Updated internal MySQL libs v6.1.10 (MySQL client 5.7.16) to v8.0.46.
 
 22-08-2026, Coruja
 Changed: Improved log file writing speed
+Changed: Revamped Windows console
+	-Improved console writing speed
+	-Improved memory management (replaced legacy Windows NT heap with modern segment heap)
+	-Improved command history navigation using up/down arrows
+	-Added support for light/dark theme (matching system theme)
+	-Added support for display scaling in multi-monitor setups
+	-Fixed tray context menu not closing correctly
+	-Fixed tray icon disappearing on some specific cases
+	-Double click on script filenames now should open the file using system default application for file extension instead of always use Notepad

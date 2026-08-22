@@ -1,6 +1,9 @@
 ﻿#include "graysvr.h"	// predef header
 #include "../network/network.h"
 #include <cmath>
+#ifdef _WIN32
+	#include "CNTWindow.h"
+#endif
 
 CResource::CResource()
 {
@@ -3512,7 +3515,7 @@ bool CResource::Load(bool fResync)
 			LoadResources(pResFile);
 
 #ifdef _WIN32
-		NTWindow_OnTick(0);
+		g_NTApp.m_wndMain.MainWindowTick(0);
 #endif
 		g_Serv.PrintPercent(j + 1, iCount);
 	}
@@ -3754,7 +3757,8 @@ bool CResource::DumpUnscriptedItems(CTextConsole *pSrc, LPCTSTR pszFilename)
 
 #ifdef _WIN32
 	// This is needed to clear g_Serv.PrintPercent()
-	NTWindow_SetWindowTitle();
+	if ( g_NTApp.m_wndMain )
+		g_NTApp.m_wndMain.UpdateTitle();
 #endif
 	return true;
 }

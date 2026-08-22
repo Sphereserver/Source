@@ -1,6 +1,8 @@
 #include "graysvr.h"	// predef header.
 #include "CLog.h"
-#ifndef _WIN32
+#ifdef _WIN32
+	#include "CNTWindow.h"
+#else
 	#include "CUnixTerminal.h"
 #endif
 
@@ -42,44 +44,14 @@ bool CLog::OpenLog( LPCTSTR pszBaseDirName )	// name set previously.
 	return false;
 }
 
-void CLog::SetColor( Color color )
+void CLog::SetColor(Color::value_type color)
 {
-	// Change current console color to the specified one
-	// NOTE: Value should be reseted after used
-	switch ( color )
-	{
 #ifdef _WIN32
-		case WHITE:
-			NTWindow_PostMsgColor(RGB(255, 255, 255));
-			break;
-		case YELLOW:
-			NTWindow_PostMsgColor(RGB(127, 127, 0));
-			break;
-		case RED:
-			NTWindow_PostMsgColor(RGB(255, 0, 0));
-			break;
-		case CYAN:
-			NTWindow_PostMsgColor(RGB(0, 127, 255));
-			break;
-		default:
-			NTWindow_PostMsgColor(0);
+	if ( g_NTApp.m_wndMain )
+		g_NTApp.m_wndMain.SetLogColor(color);
 #else
-		case WHITE:
-			g_UnixTerminal.setColor(CUnixTerminal::COL_WHITE);
-			break;
-		case YELLOW:
-			g_UnixTerminal.setColor(CUnixTerminal::COL_YELLOW);
-			break;
-		case RED:
-			g_UnixTerminal.setColor(CUnixTerminal::COL_RED);
-			break;
-		case CYAN:
-			g_UnixTerminal.setColor(CUnixTerminal::COL_CYAN);
-			break;
-		default:
-			g_UnixTerminal.setColor(CUnixTerminal::COL_DEFAULT);
+	g_UnixTerminal.print(color);
 #endif
-	}
 }
 
 int CLog::EventStr( DWORD dwMask, LPCTSTR pszMsg )
@@ -145,24 +117,24 @@ int CLog::EventStr( DWORD dwMask, LPCTSTR pszMsg )
 		// Print to console
 		if ( !g_Serv.IsLoading() )
 		{
-			SetColor(YELLOW);
+			SetColor(Color::Yellow);
 			g_Serv.PrintStr(szTime);
-			SetColor(DEFAULT);
+			SetColor(Color::Default);
 		}
 		if ( pszLabel )
 		{
-			SetColor(RED);
+			SetColor(Color::Red);
 			g_Serv.PrintStr(pszLabel);
-			SetColor(WHITE);
+			SetColor(Color::White);
 		}
 		if ( szScriptContext[0] )
 		{
-			SetColor(CYAN);
+			SetColor(Color::Cyan);
 			g_Serv.PrintStr(szScriptContext);
-			SetColor(DEFAULT);
+			SetColor(Color::Default);
 		}
 		g_Serv.PrintStr(pszMsg);
-		SetColor(DEFAULT);
+		SetColor(Color::Default);
 
 		// Print to log file
 		TCHAR szTemp[SCRIPT_MAX_LINE_LEN];
