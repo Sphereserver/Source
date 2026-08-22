@@ -1888,3 +1888,6 @@ Changed: Updated internal MySQL libs v6.1.10 (MySQL client 5.7.16) to v8.0.46.
 		-Linux:
 			-Debian-based: update MySQL package using 'sudo apt-get install libmysqlclient21'
 			-RHEL-based: switch MySQL module stream to v8.0 using 'sudo dnf module switch-to mysql:8.0'
+
+22-08-2026, Coruja
+Changed: Improved log file writing speed

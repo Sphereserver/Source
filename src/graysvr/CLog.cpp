@@ -30,7 +30,7 @@ bool CLog::OpenLog( LPCTSTR pszBaseDirName )	// name set previously.
 
 	// Get the new name based on date.
 	m_dateStamp = CGTime::GetCurrentTime();
-	TCHAR szFileName[FILENAME_MAX];
+	TCHAR szFileName[_MAX_PATH];
 	snprintf(szFileName, sizeof(szFileName), SPHERE_FILE "%d-%02d-%02d.log", m_dateStamp.GetYear(), m_dateStamp.GetMonth(), m_dateStamp.GetDay());
 
 	// Use the OF_READWRITE to append to an existing file.
@@ -85,9 +85,7 @@ void CLog::SetColor( Color color )
 int CLog::EventStr( DWORD dwMask, LPCTSTR pszMsg )
 {
 	// NOTE: This could be called in odd interrupt context so don't use dynamic stuff
-	if ( !IsLogged(dwMask) )	// I don't care about these.
-		return 0;
-	else if ( !pszMsg )
+	if ( !IsLogged(dwMask) || !pszMsg )
 		return 0;
 
 	int iRet = 0;
@@ -144,21 +142,19 @@ int CLog::EventStr( DWORD dwMask, LPCTSTR pszMsg )
 			szScriptContext[0] = '\0';
 		}
 
-		// Print to screen.
+		// Print to console
 		if ( !g_Serv.IsLoading() )
 		{
 			SetColor(YELLOW);
 			g_Serv.PrintStr(szTime);
 			SetColor(DEFAULT);
 		}
-
-		if ( pszLabel )	// some sort of error
+		if ( pszLabel )
 		{
 			SetColor(RED);
 			g_Serv.PrintStr(pszLabel);
 			SetColor(WHITE);
 		}
-
 		if ( szScriptContext[0] )
 		{
 			SetColor(CYAN);
@@ -166,17 +162,12 @@ int CLog::EventStr( DWORD dwMask, LPCTSTR pszMsg )
 			SetColor(DEFAULT);
 		}
 		g_Serv.PrintStr(pszMsg);
-
-		// Back to normal color.
 		SetColor(DEFAULT);
 
-		// Print to log file.
-		WriteString(szTime);
-		if ( pszLabel )
-			WriteString(pszLabel);
-		if ( szScriptContext[0] )
-			WriteString(szScriptContext);
-		WriteString(pszMsg);
+		// Print to log file
+		TCHAR szTemp[SCRIPT_MAX_LINE_LEN];
+		snprintf(szTemp, sizeof(szTemp), "%s%s%s%s", szTime, pszLabel ? pszLabel : "", szScriptContext, pszMsg);
+		WriteString(szTemp);
 
 		iRet = 1;
 
