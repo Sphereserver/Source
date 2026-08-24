@@ -74,6 +74,10 @@
 #pragma GCC diagnostic ignored "-Wunused-value"
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #endif
+#ifdef _MSC_VER
+// Disable "warning C4101: 'rc': unreferenced local variable" caused by SQLITE_OMIT_AUTHORIZATION setting
+#pragma warning(disable : 4101)
+#endif
 
 /************** End of Sphere custom settings ********************************/
 /************** Begin file sqliteInt.h ***************************************/

@@ -2,12 +2,6 @@
 #define _INC_CARRAY_H
 #pragma once
 
-#if defined(__MINGW32__) || defined(__linux) || defined(__FreeBSD__)
-	#define STANDARD_CPLUSPLUS_THIS(_x_) this->_x_
-#else
-	#define STANDARD_CPLUSPLUS_THIS(_x_) _x_
-#endif
-
 ///////////////////////////////////////////////////////////
 // CGObListRec
 
@@ -306,7 +300,7 @@ size_t CGTypedArray<TYPE, ARG_TYPE>::GetRealCount() const
 template<class TYPE, class ARG_TYPE>
 void CGTypedArray<TYPE, ARG_TYPE>::SetCount(size_t iNewCount)
 {
-	ASSERT(iNewCount != STANDARD_CPLUSPLUS_THIS(BadIndex()));
+	ASSERT(iNewCount != this->BadIndex());
 
 	if ( iNewCount == 0 )
 	{
@@ -358,7 +352,7 @@ template<class TYPE, class ARG_TYPE>
 void CGTypedArray<TYPE, ARG_TYPE>::InsertAt(size_t i, ARG_TYPE newElement)
 {
 	// Bump the existing entry here forward
-	ASSERT(i != STANDARD_CPLUSPLUS_THIS(BadIndex()));
+	ASSERT(i != this->BadIndex());
 
 	SetCount((i >= m_iCount) ? i + 1 : m_iCount + 1);
 	memmove(static_cast<void *>(&m_pData[i + 1]), &m_pData[i], sizeof(TYPE) * (m_iCount - i - 1));
@@ -389,7 +383,7 @@ void CGTypedArray<TYPE, ARG_TYPE>::SetAt(size_t i, ARG_TYPE newElement)
 template<class TYPE, class ARG_TYPE>
 void CGTypedArray<TYPE, ARG_TYPE>::SetAtGrow(size_t i, ARG_TYPE newElement)
 {
-	ASSERT(i != STANDARD_CPLUSPLUS_THIS(BadIndex()));
+	ASSERT(i != this->BadIndex());
 
 	if ( i >= m_iCount )
 		SetCount(i + 1);
@@ -455,39 +449,39 @@ size_t CGPtrTypeArray<TYPE>::FindPtr(TYPE pData) const
 {
 	if ( pData )
 	{
-		for ( size_t i = 0; i < STANDARD_CPLUSPLUS_THIS(GetCount()); ++i )
+		for ( size_t i = 0; i < this->GetCount(); ++i )
 		{
-			if ( STANDARD_CPLUSPLUS_THIS(GetAt(i)) == pData )
+			if ( this->GetAt(i) == pData )
 				return i;
 		}
 	}
-	return STANDARD_CPLUSPLUS_THIS(BadIndex());
+	return this->BadIndex();
 }
 
 template<class TYPE>
 bool CGPtrTypeArray<TYPE>::ContainsPtr(TYPE pData) const
 {
-	return (FindPtr(pData) != STANDARD_CPLUSPLUS_THIS(BadIndex()));
+	return (FindPtr(pData) != this->BadIndex());
 }
 
 template<class TYPE>
 bool CGPtrTypeArray<TYPE>::RemovePtr(TYPE pData)
 {
 	size_t i = FindPtr(pData);
-	if ( i == STANDARD_CPLUSPLUS_THIS(BadIndex()) )
+	if ( i == this->BadIndex() )
 		return false;
 
-	STANDARD_CPLUSPLUS_THIS(RemoveAt(i));
+	this->RemoveAt(i);
 	return true;
 }
 
 template<class TYPE>
 bool CGPtrTypeArray<TYPE>::IsValidIndex(size_t i) const
 {
-	if ( i >= STANDARD_CPLUSPLUS_THIS(GetCount()) )
+	if ( i >= this->GetCount() )
 		return false;
 
-	return (STANDARD_CPLUSPLUS_THIS(GetAt(i)) != NULL);
+	return (this->GetAt(i) != NULL);
 }
 
 template<class TYPE>
@@ -503,28 +497,28 @@ template<class TYPE>
 CGObArray<TYPE>::~CGObArray()
 {
 	// Make sure the virtuals get called
-	STANDARD_CPLUSPLUS_THIS(SetCount(0));
+	this->SetCount(0);
 }
 
 template<class TYPE>
 void CGObArray<TYPE>::DeleteAt(size_t i)
 {
-	STANDARD_CPLUSPLUS_THIS(RemoveAt(i));
+	this->RemoveAt(i);
 }
 
 template<class TYPE>
 bool CGObArray<TYPE>::DeleteOb(TYPE pData)
 {
-	return STANDARD_CPLUSPLUS_THIS(RemovePtr(pData));
+	return this->RemovePtr(pData);
 }
 
 template<class TYPE>
 void CGObArray<TYPE>::Clean(bool fElements)
 {
-	if ( fElements && (STANDARD_CPLUSPLUS_THIS(GetRealCount()) > 0) )
-		DestructElements(STANDARD_CPLUSPLUS_THIS(GetData()), STANDARD_CPLUSPLUS_THIS(GetRealCount()));
+	if ( fElements && (this->GetRealCount() > 0) )
+		DestructElements(this->GetData(), this->GetRealCount());
 
-	STANDARD_CPLUSPLUS_THIS(RemoveAll());
+	this->RemoveAll();
 }
 
 template<class TYPE>
@@ -547,7 +541,7 @@ size_t CGObSortArray<TYPE, KEY_TYPE>::FindKey(KEY_TYPE key) const
 	// Find exact key
 	int iCompareRes;
 	size_t i = FindKeyNear(key, iCompareRes, false);
-	return (iCompareRes == 0) ? i : STANDARD_CPLUSPLUS_THIS(BadIndex());
+	return (iCompareRes == 0) ? i : this->BadIndex();
 }
 
 template<class TYPE, class KEY_TYPE>
@@ -561,7 +555,7 @@ size_t CGObSortArray<TYPE, KEY_TYPE>::FindKeyNear(KEY_TYPE key, int &iCompareRes
 	//	  +1 = key should be greater than index
 	// RETURN: index
 
-	if ( STANDARD_CPLUSPLUS_THIS(GetCount()) <= 0 )
+	if ( this->GetCount() <= 0 )
 	{
 		iCompareRes = -1;
 		return 0;
@@ -569,12 +563,12 @@ size_t CGObSortArray<TYPE, KEY_TYPE>::FindKeyNear(KEY_TYPE key, int &iCompareRes
 
 	size_t i = 0;
 	size_t iLow = 0;
-	size_t iHigh = STANDARD_CPLUSPLUS_THIS(GetCount()) - 1;
+	size_t iHigh = this->GetCount() - 1;
 
 	while ( iLow <= iHigh )
 	{
 		i = (iHigh + iLow) / 2;
-		iCompareRes = CompareKey(key, STANDARD_CPLUSPLUS_THIS(GetAt(i)), fNoSpaces);
+		iCompareRes = CompareKey(key, this->GetAt(i), fNoSpaces);
 		if ( iCompareRes == 0 )
 			break;
 
@@ -591,7 +585,7 @@ size_t CGObSortArray<TYPE, KEY_TYPE>::FindKeyNear(KEY_TYPE key, int &iCompareRes
 template<class TYPE, class KEY_TYPE>
 bool CGObSortArray<TYPE, KEY_TYPE>::ContainsKey(KEY_TYPE key) const
 {
-	return (FindKey(key) != STANDARD_CPLUSPLUS_THIS(BadIndex()));
+	return (FindKey(key) != this->BadIndex());
 }
 
 template<class TYPE, class KEY_TYPE>
@@ -600,12 +594,12 @@ size_t CGObSortArray<TYPE, KEY_TYPE>::AddSortKey(TYPE pNew, KEY_TYPE key)
 	int iCompareRes;
 	size_t i = FindKeyNear(key, iCompareRes);
 	if ( iCompareRes == 0 )
-		STANDARD_CPLUSPLUS_THIS(SetAt(i, pNew));
+		this->SetAt(i, pNew);
 	else
 	{
 		if ( iCompareRes > 0 )
 			++i;
-		STANDARD_CPLUSPLUS_THIS(InsertAt(i, pNew));
+		this->InsertAt(i, pNew);
 	}
 	return i;
 }
@@ -615,7 +609,5 @@ void CGObSortArray<TYPE, KEY_TYPE>::DeleteKey(KEY_TYPE key)
 {
 	DeleteAt(FindKey(key));
 }
-
-#undef STANDARD_CPLUSPLUS_THIS
 
 #endif	// _INC_CARRAY_H

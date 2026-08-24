@@ -24,13 +24,13 @@
     <ClCompile>
       <ExceptionHandling>Async</ExceptionHandling>
       <FloatingPointModel>Precise</FloatingPointModel>
+      <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <WarningLevel>Level2</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
     </ClCompile>
     <Link>
       <AdditionalDependencies>libmysql.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)src\common\mysql\lib</AdditionalLibraryDirectories>
-      <LanguageStandard>stdcpp20</LanguageStandard>
       <SubSystem>Windows</SubSystem>
     </Link>
     <Manifest>

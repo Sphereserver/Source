@@ -26,6 +26,10 @@ Notes:
 // So use less optimization here
 #pragma GCC optimize ("O1")
 #endif
+#ifdef _MSC_VER
+// Disable "warning C5033: 'register' is no longer a supported storage class"
+#pragma warning(disable : 5033)
+#endif
 
 #include	"aes.h"
 #include	"table.h"

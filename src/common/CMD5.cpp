@@ -50,7 +50,7 @@ inline void byteReverse( unsigned char *buffer, unsigned int longs )
 
 void CMD5::update()
 {
-    register unsigned int a, b, c, d;
+	unsigned int a, b, c, d;
 	unsigned int *ptrInput = reinterpret_cast<unsigned int *>( m_input );
 
     a = m_buffer[0];
