@@ -1426,7 +1426,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			if ( r_WriteVal(pszArg, sVal, pSrc) )
 			{
 				if ( *sVal != '-' )
-					sVal.FormatLLVal(ahextoi64(sVal));
+					sVal.FormatLLVal(ahextoi(sVal));
 				return true;
 			}
 		}
@@ -1845,7 +1845,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 
 			const char *p = pszKey + strlen(chSeparators) + 1;
 			sVal = "";
-			if ( (p > pszKey) && *p )		// list of accessible separators 
+			if ( (p > pszKey) && *p )		// list of accessible separators
 			{
 				TCHAR *ppCmd[255];
 				TCHAR *z = Str_GetTemp();

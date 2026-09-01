@@ -1,4 +1,5 @@
 #include "../graysvr/graysvr.h"
+#include <numbers>
 #include <random>
 
 TCHAR CExpression::sm_szMessages[DEFMSG_QTY][EXPRESSION_MAX_KEY_LEN] =
@@ -15,81 +16,30 @@ const LPCTSTR CExpression::sm_szMsgNames[DEFMSG_QTY] =
 	#undef MSG
 };
 
-int ahextoi(LPCTSTR pszArgs)	// convert hex string to int
-{
-	// Unfortunately the library func can't handle UINT_MAX
-	//TCHAR *pszEnd; return strtol(s, &pszEnd, 16);
-
-	if ( !pszArgs || !*pszArgs )
-		return 0;
-
-	GETNONWHITESPACE(pszArgs);
-
-	bool fHex = false;
-	if ( *pszArgs == '0' )
-	{
-		if ( *++pszArgs != '.' )
-			fHex = true;
-		--pszArgs;
-	}
-
-	int iVal = 0;
-	for (;;)
-	{
-		TCHAR ch = static_cast<TCHAR>(toupper(*pszArgs));
-		if ( IsDigit(ch) )
-			ch -= '0';
-		else if ( fHex && (ch >= 'A') && (ch <= 'F') )
-			ch -= 'A' - 10;
-		else if ( !fHex && (ch == '.') )
-		{
-			++pszArgs;
-			continue;
-		}
-		else
-			break;
-
-		iVal *= (fHex ? 0x10 : 10);
-		iVal += ch;
-		++pszArgs;
-	}
-	return iVal;
-}
-
-INT64 ahextoi64(LPCTSTR pszArgs)	// convert hex string to int64
+INT64 ahextoi(LPCTSTR pszArgs)	// convert hex string to INT64
 {
 	if ( !pszArgs || !*pszArgs )
 		return 0;
 
-	GETNONWHITESPACE(pszArgs);
+	SkipWhitespace(pszArgs);
 
-	bool fHex = false;
-	if ( *pszArgs == '0' )
-	{
-		if ( *++pszArgs != '.' )
-			fHex = true;
-		--pszArgs;
-	}
-
+	bool fHex = ((pszArgs[0] == '0') && (pszArgs[1] != '.'));
 	INT64 iVal = 0;
-	for (;;)
+
+	for ( ; *pszArgs != '\0'; ++pszArgs )
 	{
-		TCHAR ch = static_cast<TCHAR>(toupper(*pszArgs));
+		TCHAR ch = static_cast<TCHAR>(toupper(static_cast<unsigned char>(*pszArgs)));
 		if ( IsDigit(ch) )
 			ch -= '0';
 		else if ( fHex && (ch >= 'A') && (ch <= 'F') )
 			ch -= 'A' - 10;
 		else if ( !fHex && (ch == '.') )
-		{
-			++pszArgs;
 			continue;
-		}
 		else
 			break;
 
 		iVal *= (fHex ? 0x10 : 10);
 		iVal += ch;
-		++pszArgs;
 	}
 	return iVal;
 }
@@ -99,12 +49,11 @@ bool IsStrEmpty(LPCTSTR pszArgs)
 	if ( !pszArgs || !*pszArgs )
 		return true;
 
-	do
+	for ( ; *pszArgs != '\0'; ++pszArgs )
 	{
 		if ( !IsSpace(*pszArgs) )
 			return false;
-	} while ( *(++pszArgs) );
-
+	}
 	return true;
 }
 
@@ -113,34 +62,30 @@ bool IsStrNumericDec(LPCTSTR pszArgs)
 	if ( !pszArgs || !*pszArgs )
 		return false;
 
-	do
+	for ( ; *pszArgs != '\0'; ++pszArgs )
 	{
 		if ( !IsDigit(*pszArgs) )
 			return false;
-	} while ( *(++pszArgs) );
-
+	}
 	return true;
 }
-
 
 bool IsStrNumeric(LPCTSTR pszArgs)
 {
 	if ( !pszArgs || !*pszArgs )
 		return false;
 
-	bool fHex = false;
-	if ( pszArgs[0] == '0' )
-		fHex = true;
+	bool fHex = (pszArgs[0] == '0');
 
-	do
+	for ( ; *pszArgs != '\0'; ++pszArgs )
 	{
-		if ( IsDigit(*pszArgs) )
-			continue;
-		if ( fHex && (tolower(*pszArgs) >= 'a') && (tolower(*pszArgs) <= 'f') )
-			continue;
-		return false;
-	} while ( *(++pszArgs) );
-
+		TCHAR ch = *pszArgs;
+		if ( !IsDigit(ch) )
+		{
+			if ( !fHex || !(((ch >= 'A') && (ch <= 'F')) || ((ch >= 'a') && (ch <= 'f'))) )
+				return false;
+		}
+	}
 	return true;
 }
 
@@ -148,79 +93,80 @@ bool IsSimpleNumberString(LPCTSTR pszArgs)
 {
 	// Is this a string or a simple numeric expression?
 	// String = '1 2 3', 'sdf', 'sdf sdf sdf', '123d', '123 d'
-	// Number = '1.0+-\*~|&!%^()2', '0aed', '123'
+	// Number = '1.0+-\*~|&%^()2', '0aed', '123'
 
+	bool fHex = false;
 	bool fMathSep = true;	// last non whitespace was a math sep
-	bool fHextDigitStart = false;
-	bool fWhiteSpace = false;
+	bool fWhitespace = false;
 
-	for ( ; ; ++pszArgs )
+	for ( ; *pszArgs != '\0'; ++pszArgs )
 	{
 		TCHAR ch = *pszArgs;
-		if ( !ch )
-			return true;
-
-		if ( ((ch >= 'A') && (ch <= 'F')) || ((ch >= 'a') && (ch <= 'f')) )	// isxdigit
+		if ( ((ch >= 'A') && (ch <= 'F')) || ((ch >= 'a') && (ch <= 'f')) )		// isxdigit(ch)
 		{
-			if ( !fHextDigitStart )
+			if ( !fHex )
 				return false;
-			fWhiteSpace = false;
+
 			fMathSep = false;
+			fWhitespace = false;
 			continue;
 		}
 		if ( IsSpace(ch) )
 		{
-			fHextDigitStart = false;
-			fWhiteSpace = true;
+			fHex = false;
+			fWhitespace = true;
 			continue;
 		}
 		if ( IsDigit(ch) )
 		{
-			if ( fWhiteSpace && !fMathSep )
+			if ( fWhitespace && !fMathSep )
 				return false;
 			if ( ch == '0' )
-				fHextDigitStart = true;
-			fWhiteSpace = false;
+				fHex = true;
+
 			fMathSep = false;
+			fWhitespace = false;
 			continue;
 		}
 		if ( (ch == '/') && (pszArgs[1] != '/') )
 			fMathSep = true;
 		else
-			fMathSep = strchr("+-\\*~|&!%^()", ch) ? true : false;
+			fMathSep = (strchr("+-\\*~|&%^()", ch) != NULL);
 
 		if ( !fMathSep )
 			return false;
 
-		fHextDigitStart = false;
-		fWhiteSpace = false;
+		fHex = false;
+		fWhitespace = false;
 	}
+	return true;
 }
 
-static size_t GetIdentifierString(TCHAR *szTag, LPCTSTR pszArgs)
+static size_t GetIdentifierString(TCHAR *pszDest, LPCTSTR pszArgs)
 {
 	// Copy the identifier (valid char set) out to this buffer
 	size_t i = 0;
 	for ( ; pszArgs[i]; ++i )
 	{
-		if ( !_ISCSYM(pszArgs[i]) )
+		if ( !IsCSym(pszArgs[i]) )
 			break;
 		if ( i >= EXPRESSION_MAX_KEY_LEN )
 			return 0;
-		szTag[i] = pszArgs[i];
+		pszDest[i] = pszArgs[i];
 	}
-	szTag[i] = '\0';
+	pszDest[i] = '\0';
 	return i;
 }
 
 bool IsValidDef(LPCTSTR pszArgs)
 {
-	CVarDefCont *pVarBase = g_Exp.m_VarDefs.CheckParseKey(pszArgs);
-	if ( !pVarBase )
+	// Check DEF.X
+	CVarDefCont *pVar = g_Exp.m_VarDefs.CheckParseKey(pszArgs);
+	if ( !pVar )
 	{
-		// Check VAR.X also
-		pVarBase = g_Exp.m_VarGlobals.CheckParseKey(pszArgs);
-		if ( !pVarBase )
+		// Check VAR.X
+		pVar = g_Exp.m_VarGlobals.CheckParseKey(pszArgs);
+		if ( !pVar )
 			return false;
 	}
 	return true;
@@ -251,14 +197,11 @@ bool IsValidGameObjDef(LPCTSTR pszArgs)
 int Calc_GetRandVal(int iMin, int iMax)
 {
 	if ( iMin > iMax )
-	{
-		int iTemp = iMin;
-		iMin = iMax;
-		iMax = iTemp;
-	}
+		std::swap(iMin, iMax);
 
-	std::random_device rd;
-	std::mt19937 gen(rd());
+	thread_local std::random_device rd;
+	thread_local std::mt19937 gen(rd());
+
 	std::uniform_int_distribution<int> dist(iMin, iMax);
 	return dist(gen);
 }
@@ -266,14 +209,11 @@ int Calc_GetRandVal(int iMin, int iMax)
 INT64 Calc_GetRandLLVal(INT64 iMin, INT64 iMax)
 {
 	if ( iMin > iMax )
-	{
-		INT64 iTemp = iMin;
-		iMin = iMax;
-		iMax = iTemp;
-	}
+		std::swap(iMin, iMax);
 
-	std::random_device rd;
-	std::mt19937_64 gen(rd());
+	thread_local std::random_device rd;
+	thread_local std::mt19937_64 gen(rd());
+
 	std::uniform_int_distribution<INT64> dist(iMin, iMax);
 	return dist(gen);
 }
@@ -338,6 +278,7 @@ int Calc_GetSCurve(int iMean, int iVariance)
 	int iChance = Calc_GetBellCurve(iMean, iVariance);
 	if ( iMean > 0 )
 		return 1000 - iChance;
+
 	return iChance;
 }
 
@@ -356,9 +297,10 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 {
 	ADDTOCALLSTACK("CExpression::GetSingle");
 	// Parse just a single expression without any operators or ranges.
-	GETNONWHITESPACE(pszArgs);
 
-	LPCTSTR orig = pszArgs;
+	SkipWhitespace(pszArgs);
+
+	LPCTSTR pszOrig = pszArgs;
 	if ( pszArgs[0] == '.' )
 		++pszArgs;
 
@@ -371,9 +313,9 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 			goto try_dec;
 		}
 
-		LPCTSTR pStart = pszArgs;
+		LPCTSTR pszStart = pszArgs;
 		INT64 iVal = 0;
-		for (;;)
+		for ( ; *pszArgs != '\0'; ++pszArgs )
 		{
 			TCHAR ch = *pszArgs;
 			if ( IsDigit(ch) )
@@ -381,11 +323,11 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 			else
 			{
 				ch = static_cast<TCHAR>(tolower(ch));
-				if ( (ch > 'f') || (ch < 'a') )
+				if ( (ch < 'a') || (ch > 'f') )
 				{
-					if ( (ch == '.') && (pStart[0] != '0') )	// ok I'm confused, it must be decimal
+					if ( (ch == '.') && (pszStart[0] != '0') )	// ok I'm confused, it must be decimal
 					{
-						pszArgs = pStart;
+						pszArgs = pszStart;
 						goto try_dec;
 					}
 					break;
@@ -394,7 +336,6 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 			}
 			iVal *= 0x10;
 			iVal += ch;
-			++pszArgs;
 		}
 		return iVal;
 	}
@@ -403,18 +344,20 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 		// Decimal value
 	try_dec:
 		INT64 iVal = 0;
-		for ( ; ; ++pszArgs )
+		for ( ; *pszArgs != '\0'; ++pszArgs )
 		{
-			if ( *pszArgs == '.' )
+			TCHAR ch = *pszArgs;
+			if ( ch == '.' )
 				continue;	// just skip this
-			if ( !IsDigit(*pszArgs) )
+			if ( !IsDigit(ch) )
 				break;
+
 			iVal *= 10;
-			iVal += static_cast<INT64>(*pszArgs) - '0';
+			iVal += static_cast<INT64>(ch - '0');
 		}
 		return iVal;
 	}
-	else if ( !_ISCSYMF(pszArgs[0]) )
+	else if ( !IsCSymF(pszArgs[0]) )
 	{
 		// Some sort of math operator?
 		switch ( pszArgs[0] )
@@ -435,14 +378,6 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 			case '~':	// bitwise 'not'
 				++pszArgs;
 				return ~GetSingle(pszArgs);
-			case '!':	// boolean 'not'
-				++pszArgs;
-				if ( pszArgs[0] == '=' )	// odd condition such as (!=x) which is always true of course
-				{
-					++pszArgs;		// so just skip and compare it to 0
-					return GetSingle(pszArgs);
-				}
-				return !GetSingle(pszArgs);
 			case ';':	// seperator field
 			case ',':	// seperator field
 			case '\0':
@@ -462,8 +397,8 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 				TCHAR *pszArgsNext;
 				Str_Parse(const_cast<TCHAR *>(pszArgs), &pszArgsNext, ")");
 
-				size_t iCount;
-				INT64 iResult;
+				size_t iCount = 0;
+				INT64 iResult = 0;
 
 				switch ( static_cast<INTRINSIC_TYPE>(index) )
 				{
@@ -478,12 +413,7 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 						if ( *pszArgs != '\0' )
 						{
 							iCount = 1;
-							iResult = static_cast<INT64>(acos(static_cast<double>(GetVal(pszArgs))));
-						}
-						else
-						{
-							iCount = 0;
-							iResult = 0;
+							iResult = static_cast<INT64>((acos(static_cast<double>(GetVal(pszArgs))) * 180.0) / std::numbers::pi);
 						}
 						break;
 					}
@@ -492,12 +422,7 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 						if ( *pszArgs != '\0' )
 						{
 							iCount = 1;
-							iResult = static_cast<INT64>(asin(static_cast<double>(GetVal(pszArgs))));
-						}
-						else
-						{
-							iCount = 0;
-							iResult = 0;
+							iResult = static_cast<INT64>((asin(static_cast<double>(GetVal(pszArgs))) * 180.0) / std::numbers::pi);
 						}
 						break;
 					}
@@ -506,12 +431,7 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 						if ( *pszArgs != '\0' )
 						{
 							iCount = 1;
-							iResult = static_cast<INT64>(atan(static_cast<double>(GetVal(pszArgs))));
-						}
-						else
-						{
-							iCount = 0;
-							iResult = 0;
+							iResult = static_cast<INT64>((atan(static_cast<double>(GetVal(pszArgs))) * 180.0) / std::numbers::pi);
 						}
 						break;
 					}
@@ -520,12 +440,7 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 						if ( *pszArgs != '\0' )
 						{
 							iCount = 1;
-							iResult = static_cast<INT64>(cos(static_cast<double>(GetVal(pszArgs))));
-						}
-						else
-						{
-							iCount = 0;
-							iResult = 0;
+							iResult = static_cast<INT64>(cos((static_cast<double>(GetVal(pszArgs)) * std::numbers::pi) / 180.0));
 						}
 						break;
 					}
@@ -536,65 +451,61 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 							iCount = 1;
 							iResult = RES_GET_INDEX(GetVal(pszArgs));
 						}
-						else
-						{
-							iCount = 0;
-							iResult = 0;
-						}
 						break;
 					}
 					case INTRINSIC_ISNUMBER:
 					{
-						char *pchEnd;
+						TCHAR *pchEnd;
 						static_cast<void>(strtol(pszArgs, &pchEnd, 10));
 
 						iCount = 1;
-						iResult = *pchEnd ? 0 : 1;
+						iResult = (*pchEnd == '\0') ? 1 : 0;
 						break;
 					}
 					case INTRINSIC_ISOBSCENE:
 					{
 						iCount = 1;
-						iResult = g_Cfg.IsObscene(pszArgs);
+						iResult = g_Cfg.IsObscene(pszArgs) ? 1 : 0;
 						break;
 					}
 					case INTRINSIC_LOGARITHM:
 					{
-						iCount = 0;
-						iResult = 0;
+						TCHAR *ppArgs[2];
+						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppArgs, COUNTOF(ppArgs), ",");
+						if ( iCount < 1 )
+							break;
 
-						if ( *pszArgs != '\0' )
+						LPCTSTR pszVal = ppArgs[0];
+						INT64 iVal = GetVal(pszVal);
+						if ( iVal <= 0 )
 						{
-							INT64 iArgs = GetVal(pszArgs);
-							if ( iArgs <= 0 )
-								DEBUG_ERR(("%s: Log(%lld) is %s\n", sm_IntrinsicFunctions[index], iArgs, !iArgs ? "infinite" : "undefined"));
+							DEBUG_ERR(("%s(%lld): result is %s\n", sm_IntrinsicFunctions[index], iVal, (iVal == 0) ? "infinite" : "undefined"));
+							break;
+						}
+
+						if ( iCount == 2 )
+						{
+							if ( !strcmpi(ppArgs[1], "e") )
+								iResult = static_cast<INT64>(log(static_cast<double>(iVal)));
+							else if ( !strcmpi(ppArgs[1], "pi") )
+							{
+								static const double dLogPi = log(std::numbers::pi);
+								iResult = static_cast<INT64>(log(static_cast<double>(iVal)) / dLogPi);
+							}
 							else
 							{
-								iCount = 1;
-								if ( strchr(pszArgs, ',') )
+								pszVal = ppArgs[1];
+								INT64 iBase = GetVal(pszVal);
+								if ( iBase <= 0 )
 								{
-									++iCount;
-									SKIP_ARGSEP(pszArgs);
-									if ( !strcmpi(pszArgs, "e") )
-										iResult = static_cast<INT64>(log(static_cast<double>(iArgs)));
-									else if ( !strcmpi(pszArgs, "pi") )
-										iResult = static_cast<INT64>(log(static_cast<double>(iArgs)) / log(M_PI));
-									else
-									{
-										INT64 iBase = GetVal(pszArgs);
-										if ( iBase <= 0 )
-										{
-											DEBUG_ERR(("%s: (%lld)Log(%lld) is %s\n", sm_IntrinsicFunctions[index], iBase, iArgs, !iBase ? "infinite" : "undefined"));
-											iCount = 0;
-										}
-										else
-											iResult = static_cast<INT64>(log(static_cast<double>(iArgs)) / log(static_cast<double>(iBase)));
-									}
+									DEBUG_ERR(("%s(%lld, %lld): result is %s\n", sm_IntrinsicFunctions[index], iVal, iBase, (iBase == 0) ? "infinite" : "undefined"));
+									break;
 								}
-								else
-									iResult = static_cast<INT64>(log10(static_cast<double>(iArgs)));
+								iResult = static_cast<INT64>(log(static_cast<double>(iVal)) / log(static_cast<double>(iBase)));
 							}
 						}
+						else
+							iResult = static_cast<INT64>(log10(static_cast<double>(iVal)));
 						break;
 					}
 					case INTRINSIC_NAPIERPOW:
@@ -604,11 +515,6 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 							iCount = 1;
 							iResult = static_cast<INT64>(exp(static_cast<double>(GetVal(pszArgs))));
 						}
-						else
-						{
-							iCount = 0;
-							iResult = 0;
-						}
 						break;
 					}
 					case INTRINSIC_QVAL:
@@ -616,17 +522,34 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 						TCHAR *ppArgs[5];
 						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppArgs, COUNTOF(ppArgs), ",");
 						if ( iCount < 3 )
-							iResult = 0;
+							break;
+
+						LPCTSTR pszVal = ppArgs[0];
+						INT64 iVal1 = GetSingle(pszVal);
+
+						pszVal = ppArgs[1];
+						INT64 iVal2 = GetSingle(pszVal);
+
+						if ( iVal1 < iVal2 )
+						{
+							pszVal = ppArgs[2];
+							iResult = GetSingle(pszVal);
+						}
+						else if ( iVal1 == iVal2 )
+						{
+							if ( iCount >= 4 )
+							{
+								pszVal = ppArgs[3];
+								iResult = GetSingle(pszVal);
+							}
+						}
 						else
 						{
-							INT64 iVal1 = GetSingle(ppArgs[0]);
-							INT64 iVal2 = GetSingle(ppArgs[1]);
-							if ( iVal1 < iVal2 )
-								iResult = GetSingle(ppArgs[2]);
-							else if ( iVal1 == iVal2 )
-								iResult = (iCount >= 4) ? GetSingle(ppArgs[3]) : 0;
-							else
-								iResult = (iCount >= 5) ? GetSingle(ppArgs[4]) : 0;
+							if ( iCount >= 5 )
+							{
+								pszVal = ppArgs[4];
+								iResult = GetSingle(pszVal);
+							}
 						}
 						break;
 					}
@@ -634,22 +557,29 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 					{
 						TCHAR *ppArgs[2];
 						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppArgs, COUNTOF(ppArgs), ",");
-						if ( iCount <= 0 )
-							iResult = 0;
-						else if ( iCount < 2 )
-							iResult = Calc_GetRandLLVal(GetVal(ppArgs[0]));
-						else
-							iResult = Calc_GetRandLLVal(GetVal(ppArgs[0]), GetVal(ppArgs[1]));
+						if ( iCount == 2 )
+						{
+							LPCTSTR pszMin = ppArgs[0];
+							LPCTSTR pszMax = ppArgs[1];
+							iResult = Calc_GetRandLLVal(GetVal(pszMin), GetVal(pszMax));
+						}
+						else if ( iCount == 1 )
+						{
+							LPCTSTR pszMax = ppArgs[0];
+							iResult = Calc_GetRandLLVal(GetVal(pszMax));
+						}
 						break;
 					}
 					case INTRINSIC_RANDBELL:
 					{
 						TCHAR *ppArgs[2];
 						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppArgs, COUNTOF(ppArgs), ",");
-						if ( iCount < 2 )
-							iResult = 0;
-						else
-							iResult = Calc_GetBellCurve(static_cast<int>(GetVal(ppArgs[0])), static_cast<int>(GetVal(ppArgs[1])));
+						if ( iCount == 2 )
+						{
+							LPCTSTR pszMean = ppArgs[0];
+							LPCTSTR pszVariance = ppArgs[1];
+							iResult = Calc_GetBellCurve(static_cast<int>(GetVal(pszMean)), static_cast<int>(GetVal(pszVariance)));
+						}
 						break;
 					}
 					case INTRINSIC_SIN:
@@ -657,30 +587,22 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 						if ( *pszArgs != '\0' )
 						{
 							iCount = 1;
-							iResult = static_cast<INT64>(sin(static_cast<double>(GetVal(pszArgs))));
-						}
-						else
-						{
-							iCount = 0;
-							iResult = 0;
+							iResult = static_cast<INT64>(sin((static_cast<double>(GetVal(pszArgs)) * std::numbers::pi) / 180.0));
 						}
 						break;
 					}
 					case INTRINSIC_SQRT:
 					{
-						iCount = 0;
-						iResult = 0;
-
 						if ( *pszArgs != '\0' )
 						{
-							INT64 iArgs = GetVal(pszArgs);
-							if ( iArgs >= 0 )
+							iCount = 1;
+							INT64 iVal = GetVal(pszArgs);
+							if ( iVal < 0 )
 							{
-								++iCount;
-								iResult = static_cast<INT64>(sqrt(static_cast<double>(iArgs)));
+								DEBUG_ERR(("%s(%lld): can't get square root of negative number\n", sm_IntrinsicFunctions[index], iVal));
+								break;
 							}
-							else
-								DEBUG_ERR(("%s(%lld): can't get square root of negative number\n", sm_IntrinsicFunctions[index], iArgs));
+							iResult = static_cast<INT64>(sqrt(static_cast<double>(iVal)));
 						}
 						break;
 					}
@@ -691,56 +613,57 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 							iCount = 1;
 							iResult = pszArgs[0];
 						}
-						else
-						{
-							iCount = 0;
-							iResult = 0;
-						}
 						break;
 					}
 					case INTRINSIC_STRCMP:
 					{
 						TCHAR *ppArgs[2];
 						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppArgs, COUNTOF(ppArgs), ",");
-						if ( iCount < 2 )
-							iResult = 1;
-						else
+						if ( iCount == 2 )
 							iResult = strcmp(ppArgs[0], ppArgs[1]);
+						else
+							iResult = 1;
 						break;
 					}
 					case INTRINSIC_STRCMPI:
 					{
 						TCHAR *ppArgs[2];
 						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppArgs, COUNTOF(ppArgs), ",");
-						if ( iCount < 2 )
-							iResult = 1;
-						else
+						if ( iCount == 2 )
 							iResult = strcmpi(ppArgs[0], ppArgs[1]);
+						else
+							iResult = 1;
 						break;
 					}
 					case INTRINSIC_STRINDEXOF:
 					{
 						TCHAR *ppArgs[3];
 						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppArgs, COUNTOF(ppArgs), ",");
-						if ( iCount < 2 )
-							iResult = -1;
+						if ( iCount >= 2 )
+						{
+							size_t iOffset = 0;
+							if ( iCount == 3 )
+							{
+								LPCTSTR pszOffset = ppArgs[2];
+								iOffset = static_cast<size_t>(GetVal(pszOffset));
+							}
+							iResult = Str_IndexOf(ppArgs[0], ppArgs[1], iOffset);
+						}
 						else
-							iResult = Str_IndexOf(ppArgs[0], ppArgs[1], (iCount >= 3) ? static_cast<int>(GetVal(ppArgs[2])) : 0);
+							iResult = -1;
 						break;
 					}
 					case INTRINSIC_STRLEN:
 					{
 						iCount = 1;
-						iResult = strlen(pszArgs);
+						iResult = static_cast<INT64>(strlen(pszArgs));
 						break;
 					}
 					case INTRINSIC_STRMATCH:
 					{
 						TCHAR *ppArgs[2];
 						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppArgs, COUNTOF(ppArgs), ",");
-						if ( iCount < 2 )
-							iResult = 0;
-						else
+						if ( iCount == 2 )
 							iResult = (Str_Match(ppArgs[0], ppArgs[1]) == MATCH_VALID) ? 1 : 0;
 						break;
 					}
@@ -748,9 +671,7 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 					{
 						TCHAR *ppArgs[2];
 						iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppArgs, COUNTOF(ppArgs), ",");
-						if ( iCount < 2 )
-							iResult = 0;
-						else
+						if ( iCount == 2 )
 							iResult = (Str_RegExMatch(ppArgs[0], ppArgs[1]) == MATCH_VALID) ? 1 : 0;
 						break;
 					}
@@ -761,26 +682,17 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 							iCount = 1;
 							iResult = static_cast<INT64>(tan(static_cast<double>(GetVal(pszArgs))));
 						}
-						else
-						{
-							iCount = 0;
-							iResult = 0;
-						}
 						break;
 					}
 					default:
-					{
-						iCount = 0;
-						iResult = 0;
 						break;
-					}
 				}
 
 				pszArgs = pszArgsNext;
 
-				if ( !iCount )
+				if ( iCount == 0 )
 				{
-					DEBUG_ERR(("Bad intrinsic function usage: Missing arguments\n"));
+					DEBUG_ERR(("Bad intrinsic function usage: missing arguments\n"));
 					return 0;
 				}
 				return iResult;
@@ -798,8 +710,8 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 	// Error of some sort
 	TCHAR szTag[EXPRESSION_MAX_KEY_LEN];
 	pszArgs += GetIdentifierString(szTag, pszArgs);		// skip it
-	if ( strlen(orig) > 1 )
-		DEBUG_ERR(("Undefined symbol '%s' ['%s']\n", szTag, orig));
+	if ( strlen(pszOrig) > 1 )
+		DEBUG_ERR(("Undefined symbol '%s' ['%s']\n", szTag, pszOrig));
 	else
 		DEBUG_ERR(("Undefined symbol '%s'\n", szTag));
 	return 0;
@@ -808,9 +720,9 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 INT64 CExpression::GetValMath(INT64 iVal, LPCTSTR &pszArgs)
 {
 	ADDTOCALLSTACK("CExpression::GetValMath");
-	GETNONWHITESPACE(pszArgs);
+	// Look for math operators
 
-	// Look for math type operator
+	SkipWhitespace(pszArgs);
 	switch ( pszArgs[0] )
 	{
 		case '\0':
@@ -843,25 +755,13 @@ INT64 CExpression::GetValMath(INT64 iVal, LPCTSTR &pszArgs)
 		case '|':
 		{
 			++pszArgs;
-			if ( pszArgs[0] == '|' )	// boolean
-			{
-				++pszArgs;
-				iVal = (GetVal(pszArgs) || iVal);
-			}
-			else	// bitwise
-				iVal |= GetVal(pszArgs);
+			iVal |= GetVal(pszArgs);
 			break;
 		}
 		case '&':
 		{
 			++pszArgs;
-			if ( pszArgs[0] == '&' )	// boolean
-			{
-				++pszArgs;
-				iVal = (GetVal(pszArgs) && iVal);	// tricky stuff here, logical operators must come first or possibly not get processed
-			}
-			else	// bitwise
-				iVal &= GetVal(pszArgs);
+			iVal &= GetVal(pszArgs);
 			break;
 		}
 		case '/':
@@ -882,7 +782,7 @@ INT64 CExpression::GetValMath(INT64 iVal, LPCTSTR &pszArgs)
 			INT64 iArgs = GetVal(pszArgs);
 			if ( iArgs == 0 )
 			{
-				DEBUG_ERR(("Can't divide by 0\n"));
+				DEBUG_ERR(("Can't modulo by 0\n"));
 				break;
 			}
 			iVal %= iArgs;
@@ -897,70 +797,40 @@ INT64 CExpression::GetValMath(INT64 iVal, LPCTSTR &pszArgs)
 		case '>':
 		{
 			++pszArgs;
-			if ( pszArgs[0] == '=' )	// boolean
-			{
-				++pszArgs;
-				iVal = (iVal >= GetVal(pszArgs));
-			}
-			else if ( pszArgs[0] == '>' )	// shift
+			if ( pszArgs[0] == '>' )
 			{
 				++pszArgs;
 				iVal >>= GetVal(pszArgs);
 			}
-			else
-				iVal = (iVal > GetVal(pszArgs));
 			break;
 		}
 		case '<':
 		{
 			++pszArgs;
-			if ( pszArgs[0] == '=' )	// boolean
-			{
-				++pszArgs;
-				iVal = (iVal <= GetVal(pszArgs));
-			}
-			else if ( pszArgs[0] == '<' )	// shift
+			if ( pszArgs[0] == '<' )
 			{
 				++pszArgs;
 				iVal <<= GetVal(pszArgs);
 			}
-			else
-				iVal = (iVal < GetVal(pszArgs));
-			break;
-		}
-		case '!':
-		{
-			++pszArgs;
-			if ( pszArgs[0] != '=' )	// boolean (handled as single expression)
-				break;
-			++pszArgs;
-			iVal = (iVal != GetVal(pszArgs));
-			break;
-		}
-		case '=':
-		{
-			while ( pszArgs[0] == '=' )	// boolean
-				++pszArgs;
-			iVal = (iVal == GetVal(pszArgs));
 			break;
 		}
 		case '@':
 		{
 			++pszArgs;
-			if ( iVal <= 0 )
+			INT64 iArgs = GetVal(pszArgs);
+			if ( (iVal == 0) && (iArgs < 0) )
 			{
-				DEBUG_ERR(("Power of zero with negative base is undefined\n"));
+				DEBUG_ERR(("Can't raise zero to a negative power\n"));
 				break;
 			}
-			iVal = static_cast<INT64>(pow(static_cast<double>(iVal), static_cast<int>(GetVal(pszArgs))));
+			iVal = static_cast<INT64>(pow(static_cast<double>(iVal), static_cast<int>(iArgs)));
 			break;
 		}
 	}
-
 	return iVal;
 }
 
-int g_GetVal_LoopCount = 0;
+thread_local int g_GetVal_LoopCount = 0;
 
 INT64 CExpression::GetVal(LPCTSTR &pszArgs)
 {
@@ -986,7 +856,7 @@ INT64 CExpression::GetVal(LPCTSTR &pszArgs)
 	if ( !pszArgs || !*pszArgs )
 		return 0;
 
-	GETNONWHITESPACE(pszArgs);
+	SkipWhitespace(pszArgs);
 
 	++g_GetVal_LoopCount;
 	if ( g_GetVal_LoopCount > 128 )
@@ -995,9 +865,9 @@ INT64 CExpression::GetVal(LPCTSTR &pszArgs)
 		--g_GetVal_LoopCount;
 		return 0;
 	}
+
 	INT64 iVal = GetValMath(GetSingle(pszArgs), pszArgs);
 	--g_GetVal_LoopCount;
-
 	return iVal;
 }
 
@@ -1029,7 +899,7 @@ int CExpression::GetRangeVals(LPCTSTR &pszArgs, INT64 *piVals, int iMaxQty)
 			continue;
 		}
 
-		GETNONWHITESPACE(pszArgs);
+		SkipWhitespace(pszArgs);
 
 		// Look for math type operator
 		switch ( pszArgs[0] )
@@ -1059,31 +929,37 @@ int CExpression::GetRangeVals(LPCTSTR &pszArgs, INT64 *piVals, int iMaxQty)
 INT64 CExpression::GetRange(LPCTSTR &pszArgs)
 {
 	ADDTOCALLSTACK("CExpression::GetRange");
-	INT64 iVals[256];		// maximum elements in a list
 
+	INT64 iVals[256];		// maximum elements in a list
 	int iQty = GetRangeVals(pszArgs, iVals, COUNTOF(iVals));
 	if ( iQty == 0 )
 		return 0;
-	else if ( iQty == 1 )	// simple value
-		return iVals[0];
-	else if ( iQty == 2 )	// simple range
-		return Calc_GetRandLLVal(minimum(iVals[0], iVals[1]), maximum(iVals[0], iVals[1]));
-	else	// weighted value
+
+	if ( iQty == 1 )
 	{
-		// Get total weight
+		// Simple value
+		return iVals[0];
+	}
+	else if ( iQty == 2 )
+	{
+		// Simple range
+		return Calc_GetRandLLVal(iVals[0], iVals[1]);
+	}
+	else
+	{
+		// Weighted range
 		INT64 iTotalWeight = 0;
 		int i = 1;
 		for ( ; i < iQty; i += 2 )
 		{
-			if ( !iVals[i] )	// having a weight of 0 is very strange
-				DEBUG_ERR(("Weight of 0 in random set?\n"));	// the whole table should really just be invalid here
+			if ( iVals[i] <= 0 )
+				DEBUG_ERR(("Invalid weight %lld in weighted range\n", iVals[i]));
+
 			iTotalWeight += iVals[i];
 		}
 
-		// Roll the dice to see what value to pick
 		iTotalWeight = Calc_GetRandLLVal(iTotalWeight) + 1;
 
-		// Loop to that value
 		i = 1;
 		for ( ; i < iQty; i += 2 )
 		{

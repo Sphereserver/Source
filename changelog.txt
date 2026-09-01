@@ -1900,3 +1900,6 @@ Changed: Revamped Windows console
 	-Fixed tray context menu not closing correctly
 	-Fixed tray icon disappearing on some specific cases
 	-Double click on script filenames now should open the file using system default application for file extension instead of always use Notepad
+
+01-09-2026, Coruja
+Changed: Improved script expression parsing

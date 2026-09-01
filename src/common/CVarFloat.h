@@ -49,12 +49,12 @@ public:
 	bool Insert(LPCTSTR pszName, LPCTSTR pszValue, bool fForceSet = false);
 	CGString Get(LPCTSTR pszName);
 
-	static RealType MakeFloatMath(LPCTSTR &pszExpr);
+	static RealType MakeFloatMath(LPCTSTR &pszArgs);
 
 private:
 	RealType GetVal(LPCTSTR pszName);
-	static RealType GetValMath(RealType dVal, LPCTSTR &pszExpr);
-	static RealType GetSingle(LPCTSTR & pszArgs);
+	static RealType GetValMath(RealType dVal, LPCTSTR &pszArgs);
+	static RealType GetSingle(LPCTSTR &pszArgs);
 	static RealType GetRandVal(RealType dMin, RealType dMax);
 
 private:

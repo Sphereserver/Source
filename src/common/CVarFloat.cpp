@@ -1,4 +1,5 @@
 #include "../graysvr/graysvr.h"
+#include <numbers>
 #include <random>
 
 typedef double RealType;
@@ -22,8 +23,9 @@ bool CVarFloat::Insert(LPCTSTR pszName, LPCTSTR pszValue, bool fForceSet)
 	if ( (i != m_VarMap.end()) && !fForceSet )
 		return false;
 
-	SKIP_ARGSEP(pszValue);
-	SKIP_ARGSEP(pszName);
+	SkipArgSeparator(pszName);
+	SkipArgSeparator(pszValue);
+
 	char *pchEnd;
 	m_VarMap[CGString(pszName)] = static_cast<RealType>(strtod(pszValue, &pchEnd));
 	return true;
@@ -35,7 +37,8 @@ RealType CVarFloat::GetVal(LPCTSTR pszName)
 	if ( !pszName )
 		return 0.0;
 
-	SKIP_ARGSEP(pszName);
+	SkipArgSeparator(pszName);
+
 	MapType::iterator i = m_VarMap.find(pszName);
 	if ( i == m_VarMap.end() )
 		return 0.0;
@@ -49,160 +52,142 @@ CGString CVarFloat::Get(LPCTSTR pszName)
 	if ( !pszName )
 		return CGString();
 
-	SKIP_ARGSEP(pszName);
+	SkipArgSeparator(pszName);
+
 	if ( strlen(pszName) > EXPRESSION_MAX_KEY_LEN )
 		return CGString();
 
 	TCHAR szReal[EXPRESSION_MAX_KEY_LEN];
-	snprintf(szReal, sizeof(szReal), "%f", static_cast<RealType>(GetVal(pszName)));
+	snprintf(szReal, sizeof(szReal), "%f", GetVal(pszName));
 	return CGString(szReal);
 }
 
-short int Reentrant_Count = 0;
+thread_local int g_MakeFloatMath_LoopCount = 0;
 
-RealType CVarFloat::MakeFloatMath(LPCTSTR &pszExpr)
+RealType CVarFloat::MakeFloatMath(LPCTSTR &pszArgs)
 {
 	ADDTOCALLSTACK("CVarFloat::MakeFloatMath");
-	if ( !pszExpr )
-		return 0;
+	if ( !pszArgs )
+		return 0.0;
 
-	GETNONWHITESPACE(pszExpr);
+	SkipWhitespace(pszArgs);
 
-	++Reentrant_Count;
-	if ( Reentrant_Count > 128 )
+	++g_MakeFloatMath_LoopCount;
+	if ( g_MakeFloatMath_LoopCount > 128 )
 	{
-		DEBUG_WARN(("Deadlock detected while parsing '%s'. Fix the error in your scripts\n", pszExpr));
-		--Reentrant_Count;
-		return 0;
+		DEBUG_WARN(("Deadlock detected while parsing '%s'. Fix the error in your scripts\n", pszArgs));
+		--g_MakeFloatMath_LoopCount;
+		return 0.0;
 	}
 
-	RealType dVal = GetValMath(GetSingle(pszExpr), pszExpr);
-	--Reentrant_Count;
+	RealType dVal = GetValMath(GetSingle(pszArgs), pszArgs);
+	--g_MakeFloatMath_LoopCount;
 	return dVal;
 }
 
-RealType CVarFloat::GetValMath(RealType dVal, LPCTSTR &pszExpr)
+RealType CVarFloat::GetValMath(RealType dVal, LPCTSTR &pszArgs)
 {
 	ADDTOCALLSTACK("CVarFloat::GetValMath");
-	GETNONWHITESPACE(pszExpr);
+	// Look for math operators
 
-	// Look for math type operator
-	switch ( pszExpr[0] )
+	SkipWhitespace(pszArgs);
+	switch ( pszArgs[0] )
 	{
 		case '\0':
 			break;
 		case ')':	// expression end markers
 		case '}':
 		case ']':
-			++pszExpr;
+		{
+			++pszArgs;
 			break;
+		}
 		case '+':
-			++pszExpr;
-			dVal += MakeFloatMath(pszExpr);
+		{
+			++pszArgs;
+			dVal += MakeFloatMath(pszArgs);
 			break;
+		}
 		case '-':
-			++pszExpr;
-			dVal -= MakeFloatMath(pszExpr);
+		{
+			++pszArgs;
+			dVal -= MakeFloatMath(pszArgs);
 			break;
+		}
 		case '*':
-			++pszExpr;
-			dVal *= MakeFloatMath(pszExpr);
+		{
+			++pszArgs;
+			dVal *= MakeFloatMath(pszArgs);
 			break;
+		}
+		case '|':
+		{
+			++pszArgs;
+			DEBUG_ERR(("FloatVal: operator '|' is not allowed\n"));
+			break;
+		}
+		case '&':
+		{
+			++pszArgs;
+			DEBUG_ERR(("FloatVal: operator '&' is not allowed\n"));
+			break;
+		}
 		case '/':
 		{
-			++pszExpr;
-			RealType dTempVal = MakeFloatMath(pszExpr);
-			if ( dTempVal == 0 )
+			++pszArgs;
+			RealType dArgs = MakeFloatMath(pszArgs);
+			if ( dArgs == 0.0 )
 			{
 				DEBUG_ERR(("FloatVal: can't divide by 0\n"));
 				break;
 			}
-			dVal /= dTempVal;
+			dVal /= dArgs;
 			break;
 		}
-		case '!':
-			++pszExpr;
-			if ( pszExpr[0] != '=' )
-				break;	// boolean ! is handled as a single expresion
-			++pszExpr;
-			dVal = static_cast<RealType>(dVal != MakeFloatMath(pszExpr));
-			break;
-		case '=':	// boolean
-			while ( pszExpr[0] == '=' )
-				++pszExpr;
-			dVal = static_cast<RealType>(dVal == MakeFloatMath(pszExpr));
-			break;
-		case '@':
-		{
-			++pszExpr;
-			RealType dTempVal = MakeFloatMath(pszExpr);
-			if ( (dVal == 0) && (dTempVal < 0) )
-			{
-				DEBUG_ERR(("FloatVal: power of zero with negative exponent is undefined\n"));
-				break;
-			}
-			dVal = pow(dVal, dTempVal);
-			break;
-		}
-		// Following operations are not allowed with double
-		case '|':
-			++pszExpr;
-			if ( pszExpr[0] == '|' )	// boolean ?
-			{
-				++pszExpr;
-				dVal = static_cast<RealType>(MakeFloatMath(pszExpr) || dVal);
-			}
-			else	// bitwise
-				DEBUG_ERR(("FloatVal: operator '|' is not allowed\n"));
-			break;
-		case '&':
-			++pszExpr;
-			if ( pszExpr[0] == '&' )	// boolean ?
-			{
-				++pszExpr;
-				dVal = static_cast<RealType>(MakeFloatMath(pszExpr) && dVal);	// tricky stuff here, logical ops must come first or possibly not get processed
-			}
-			else	// bitwise
-				DEBUG_ERR(("FloatVal: operator '&' is not allowed\n"));
-			break;
 		case '%':
-			++pszExpr;
+		{
+			++pszArgs;
 			DEBUG_ERR(("FloatVal: operator '%%' is not allowed\n"));
 			break;
+		}
 		case '^':
-			++pszExpr;
+		{
+			++pszArgs;
 			DEBUG_ERR(("FloatVal: operator '^' is not allowed\n"));
 			break;
-		case '>':	// boolean
-			++pszExpr;
-			if ( pszExpr[0] == '=' )	// boolean ?
+		}
+		case '>':
+		{
+			++pszArgs;
+			if ( pszArgs[0] == '>' )
 			{
-				++pszExpr;
-				dVal = static_cast<RealType>(dVal >= MakeFloatMath(pszExpr));
-			}
-			else if ( pszExpr[0] == '>' )	// shift
-			{
-				++pszExpr;
+				++pszArgs;
 				DEBUG_ERR(("FloatVal: operator '>>' is not allowed\n"));
 			}
-			else
-				dVal = static_cast<RealType>(dVal > MakeFloatMath(pszExpr));
 			break;
-		case '<':	// boolean
-			++pszExpr;
-			if ( pszExpr[0] == '=' )	// boolean ?
+		}
+		case '<':
+		{
+			++pszArgs;
+			if ( pszArgs[0] == '<' )
 			{
-				++pszExpr;
-				dVal = static_cast<RealType>(dVal <= MakeFloatMath(pszExpr));
-			}
-			else if ( pszExpr[0] == '<' )	// shift
-			{
-				++pszExpr;
+				++pszArgs;
 				DEBUG_ERR(("FloatVal: operator '<<' is not allowed\n"));
 			}
-			else
-				dVal = static_cast<RealType>(dVal < MakeFloatMath(pszExpr));
 			break;
+		}
+		case '@':
+		{
+			++pszArgs;
+			RealType dArgs = MakeFloatMath(pszArgs);
+			if ( (dVal == 0.0) && (dArgs < 0.0) )
+			{
+				DEBUG_ERR(("FloatVal: can't raise zero to a negative power\n"));
+				break;
+			}
+			dVal = static_cast<RealType>(pow(static_cast<double>(dVal), static_cast<double>(dArgs)));
+			break;
+		}
 	}
 	return dVal;
 }
@@ -211,22 +196,22 @@ RealType CVarFloat::GetSingle(LPCTSTR &pszArgs)
 {
 	ADDTOCALLSTACK("CVarFloat::GetSingle");
 	if ( !pszArgs || !*pszArgs )
-		return 0;
+		return 0.0;
 
-	GETNONWHITESPACE(pszArgs);
-	char *pchArgsCopy = new char[strlen(pszArgs) + 1];
-	strcpy(pchArgsCopy, pszArgs);
+	SkipWhitespace(pszArgs);
 
+	LPCTSTR pszCheck = pszArgs;
 	bool fIsNum = false;
-	for ( TCHAR ch = static_cast<TCHAR>(tolower(*pszArgs)); ch; ch = static_cast<TCHAR>(tolower(*(++pszArgs))) )
+	for ( TCHAR ch = *pszCheck; ch; ch = *++pszCheck )
 	{
-		if ( (IsDigit(ch)) || (ch == '.') || (ch == ',') )
+		bool fIsDigit = IsDigit(ch);
+		if ( fIsDigit || (ch == '.') || (ch == ',') )
 		{
 			if ( !fIsNum )
-				fIsNum = (IsDigit(ch) != 0);
+				fIsNum = fIsDigit;
 			continue;
 		}
-		if ( ((ch >= '*') && (ch <= '/')) || ((ch == ')') || (ch == ']')) || (ch == '@') )
+		if ( (ch == '&') || ((ch >= ')') && (ch <= '/')) || (ch == '<') || (ch == '>') || (ch == '@') || (ch == ']') || (ch == '|') )
 			break;
 
 		fIsNum = false;
@@ -235,12 +220,14 @@ RealType CVarFloat::GetSingle(LPCTSTR &pszArgs)
 
 	if ( fIsNum )
 	{
-		char *pchEnd;
-		RealType ret = strtod(pchArgsCopy, &pchEnd);
-		delete[] pchArgsCopy;
-		return ret;
+		TCHAR *pchEnd;
+		RealType dRet = static_cast<RealType>(strtod(pszArgs, &pchEnd));
+
+		if ( pchEnd && (pchEnd != pszArgs) )
+			pszArgs = pchEnd;
+
+		return dRet;
 	}
-	delete[] pchArgsCopy;
 
 	switch ( pszArgs[0] )
 	{
@@ -258,19 +245,11 @@ RealType CVarFloat::GetSingle(LPCTSTR &pszArgs)
 		case '~':	// bitwise not
 			++pszArgs;
 			DEBUG_ERR(("FloatVal: operator '~' is not allowed\n"));
-			return 0;
-		case '!':	// boolean not
-			++pszArgs;
-			if ( pszArgs[0] == '=' )	// odd condition such as (!=x) which is always true of course
-			{
-				++pszArgs;	// so just skip it, and compare it to 0
-				return GetSingle(pszArgs);
-			}
-			return !GetSingle(pszArgs);
+			return 0.0;
 		case ';':	// seperate field
 		case ',':	// seperate field
 		case '\0':
-			return 0;
+			return 0.0;
 	}
 
 	int index = FindTableHeadSorted(pszArgs, sm_IntrinsicFunctions, COUNTOF(sm_IntrinsicFunctions) - 1);
@@ -283,8 +262,8 @@ RealType CVarFloat::GetSingle(LPCTSTR &pszArgs)
 			TCHAR *pszArgsNext;
 			Str_Parse(const_cast<TCHAR *>(pszArgs), &pszArgsNext, ")");
 
-			size_t iCount;
-			RealType dResult;
+			size_t iCount = 0;
+			RealType dResult = 0.0;
 
 			switch ( static_cast<INTRINSIC_TYPE>(index) )
 			{
@@ -293,12 +272,7 @@ RealType CVarFloat::GetSingle(LPCTSTR &pszArgs)
 					if ( *pszArgs != '\0' )
 					{
 						iCount = 1;
-						dResult = acos(MakeFloatMath(pszArgs)) * 180 / M_PI;
-					}
-					else
-					{
-						iCount = 0;
-						dResult = 0;
+						dResult = static_cast<RealType>((acos(MakeFloatMath(pszArgs)) * 180.0) / std::numbers::pi);
 					}
 					break;
 				}
@@ -307,12 +281,7 @@ RealType CVarFloat::GetSingle(LPCTSTR &pszArgs)
 					if ( *pszArgs != '\0' )
 					{
 						iCount = 1;
-						dResult = asin(MakeFloatMath(pszArgs)) * 180 / M_PI;
-					}
-					else
-					{
-						iCount = 0;
-						dResult = 0;
+						dResult = static_cast<RealType>((asin(MakeFloatMath(pszArgs)) * 180.0) / std::numbers::pi);
 					}
 					break;
 				}
@@ -321,12 +290,7 @@ RealType CVarFloat::GetSingle(LPCTSTR &pszArgs)
 					if ( *pszArgs != '\0' )
 					{
 						iCount = 1;
-						dResult = atan(MakeFloatMath(pszArgs)) * 180 / M_PI;
-					}
-					else
-					{
-						iCount = 0;
-						dResult = 0;
+						dResult = static_cast<RealType>((atan(MakeFloatMath(pszArgs)) * 180.0) / std::numbers::pi);
 					}
 					break;
 				}
@@ -335,12 +299,7 @@ RealType CVarFloat::GetSingle(LPCTSTR &pszArgs)
 					if ( *pszArgs != '\0' )
 					{
 						iCount = 1;
-						dResult = cos(MakeFloatMath(pszArgs) * M_PI / 180);
-					}
-					else
-					{
-						iCount = 0;
-						dResult = 0;
+						dResult = static_cast<RealType>(cos((MakeFloatMath(pszArgs) * std::numbers::pi) / 180.0));
 					}
 					break;
 				}
@@ -349,66 +308,63 @@ RealType CVarFloat::GetSingle(LPCTSTR &pszArgs)
 					if ( *pszArgs != '\0' )
 					{
 						iCount = 1;
-						dResult = RES_GET_INDEX(static_cast<int>(MakeFloatMath(pszArgs)));
-					}
-					else
-					{
-						iCount = 0;
-						dResult = 0;
+						dResult = static_cast<RealType>(RES_GET_INDEX(static_cast<int>(MakeFloatMath(pszArgs))));
 					}
 					break;
 				}
 				case INTRINSIC_ISNUMBER:
 				{
+					TCHAR *pchEnd;
+					static_cast<void>(strtol(pszArgs, &pchEnd, 10));
+
 					iCount = 1;
-					{
-						char *pchEnd;
-						static_cast<void>(strtol(pszArgs, &pchEnd, 10));
-						dResult = *pchEnd ? 0 : 1;
-					}
+					dResult = (*pchEnd == '\0') ? 1.0 : 0.0;
 					break;
 				}
 				case INTRINSIC_ISOBSCENE:
 				{
 					iCount = 1;
-					dResult = g_Cfg.IsObscene(pszArgs);
+					dResult = g_Cfg.IsObscene(pszArgs) ? 1.0 : 0.0;
 					break;
 				}
 				case INTRINSIC_LOGARITHM:
 				{
-					TCHAR *ppCmd[3];
-					iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppCmd, COUNTOF(ppCmd), ",");
+					TCHAR *ppArgs[2];
+					iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppArgs, COUNTOF(ppArgs), ",");
 					if ( iCount < 1 )
+						break;
+
+					LPCTSTR pszVal = ppArgs[0];
+					RealType dVal = MakeFloatMath(pszVal);
+					if ( dVal <= 0.0 )
 					{
-						dResult = 0;
+						DEBUG_ERR(("%s(%f): result is %s\n", sm_IntrinsicFunctions[index], dVal, (dVal == 0.0) ? "infinite" : "undefined"));
 						break;
 					}
 
-					LPCTSTR pszCmd = ppCmd[0];
-					RealType dArgument = MakeFloatMath(pszCmd);
-
-					if ( iCount < 2 )
-						dResult = log10(dArgument);
-					else
+					if ( iCount == 2 )
 					{
-						if ( !strcmpi(ppCmd[1], "e") )
-							dResult = log(dArgument);
-						else if ( !strcmpi(ppCmd[1], "pi") )
-							dResult = log(dArgument) / log(M_PI);
+						if ( !strcmpi(ppArgs[1], "e") )
+							dResult = static_cast<RealType>(log(static_cast<double>(dVal)));
+						else if ( !strcmpi(ppArgs[1], "pi") )
+						{
+							static const double dLogPi = log(std::numbers::pi);
+							dResult = static_cast<RealType>(log(static_cast<double>(dVal)) / dLogPi);
+						}
 						else
 						{
-							pszCmd = ppCmd[1];
-							RealType dBase = MakeFloatMath(pszCmd);
-							if ( dBase <= 0 )
+							pszVal = ppArgs[1];
+							RealType dBase = MakeFloatMath(pszVal);
+							if ( dBase <= 0.0 )
 							{
-								DEBUG_ERR(("%s: (%f)Log(%f) is %s\n", sm_IntrinsicFunctions[index], dBase, dArgument, !dBase ? "infinite" : "undefined"));
-								iCount = 0;
-								dResult = 0;
+								DEBUG_ERR(("%s(%f, %f): result is %s\n", sm_IntrinsicFunctions[index], dVal, dBase, (dBase == 0.0) ? "infinite" : "undefined"));
+								break;
 							}
-							else
-								dResult = log(dArgument) / log(dBase);
+							dResult = static_cast<RealType>(log(static_cast<double>(dVal)) / log(static_cast<double>(dBase)));
 						}
 					}
+					else
+						dResult = static_cast<RealType>(log10(static_cast<double>(dVal)));
 					break;
 				}
 				case INTRINSIC_NAPIERPOW:
@@ -416,77 +372,72 @@ RealType CVarFloat::GetSingle(LPCTSTR &pszArgs)
 					if ( *pszArgs != '\0' )
 					{
 						iCount = 1;
-						dResult = exp(MakeFloatMath(pszArgs));
-					}
-					else
-					{
-						iCount = 0;
-						dResult = 0;
+						dResult = static_cast<RealType>(exp(static_cast<double>(MakeFloatMath(pszArgs))));
 					}
 					break;
 				}
 				case INTRINSIC_QVAL:
 				{
-					TCHAR *ppCmd[5];
-					iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppCmd, COUNTOF(ppCmd), ",");
+					TCHAR *ppArgs[5];
+					iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppArgs, COUNTOF(ppArgs), ",");
 					if ( iCount < 3 )
-						dResult = 0;
+						break;
+
+					LPCTSTR pszVal = ppArgs[0];
+					RealType dVal1 = GetSingle(pszVal);
+
+					pszVal = ppArgs[1];
+					RealType dVal2 = GetSingle(pszVal);
+
+					if ( dVal1 < dVal2 )
+					{
+						pszVal = ppArgs[2];
+						dResult = GetSingle(pszVal);
+					}
+					else if ( dVal1 == dVal2 )
+					{
+						if ( iCount >= 4 )
+						{
+							pszVal = ppArgs[3];
+							dResult = GetSingle(pszVal);
+						}
+					}
 					else
 					{
-						LPCTSTR pszArg1 = ppCmd[0];
-						LPCTSTR pszArg2 = ppCmd[1];
-						RealType dVal1 = GetSingle(pszArg1);
-						RealType dVal2 = GetSingle(pszArg2);
-						if ( dVal1 < dVal2 )
+						if ( iCount >= 5 )
 						{
-							pszArg1 = ppCmd[2];
-							dResult = GetSingle(pszArg1);
-						}
-						else if ( dVal1 == dVal2 )
-						{
-							pszArg1 = ppCmd[3];
-							dResult = (iCount >= 4) ? GetSingle(pszArg1) : 0;
-						}
-						else
-						{
-							pszArg1 = ppCmd[4];
-							dResult = (iCount >= 5) ? GetSingle(pszArg1) : 0;
+							pszVal = ppArgs[4];
+							dResult = GetSingle(pszVal);
 						}
 					}
 					break;
 				}
 				case INTRINSIC_RAND:
 				{
-					TCHAR *ppCmd[2];
-					iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppCmd, COUNTOF(ppCmd), ",");
-					if ( iCount <= 0 )
-						dResult = 0;
-					else
+					TCHAR *ppArgs[2];
+					iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppArgs, COUNTOF(ppArgs), ",");
+					if ( iCount == 2 )
 					{
-						LPCTSTR pszArg1 = ppCmd[0];
-						RealType dVal1 = MakeFloatMath(pszArg1);
-						if ( iCount < 2 )
-							dResult = GetRandVal(0, dVal1);
-						else
-						{
-							LPCTSTR pszArg2 = ppCmd[1];
-							RealType dVal2 = MakeFloatMath(pszArg2);
-							dResult = GetRandVal(dVal1, dVal2);
-						}
+						LPCTSTR pszMin = ppArgs[0];
+						LPCTSTR pszMax = ppArgs[1];
+						dResult = GetRandVal(MakeFloatMath(pszMin), MakeFloatMath(pszMax));
+					}
+					else if ( iCount == 1 )
+					{
+						LPCTSTR pszMax = ppArgs[0];
+						dResult = GetRandVal(0, MakeFloatMath(pszMax));
 					}
 					break;
 				}
 				case INTRINSIC_RANDBELL:
 				{
-					TCHAR *ppCmd[2];
-					iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppCmd, COUNTOF(ppCmd), ",");
-					if ( iCount < 2 )
-						dResult = 0;
-					else
+					TCHAR *ppArgs[2];
+					iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppArgs, COUNTOF(ppArgs), ",");
+					if ( iCount == 2 )
 					{
-						LPCTSTR pszArg1 = ppCmd[0];
-						LPCTSTR pszArg2 = ppCmd[1];
-						dResult = Calc_GetBellCurve(static_cast<int>(MakeFloatMath(pszArg1)), static_cast<int>(MakeFloatMath(pszArg2)));
+						LPCTSTR pszMean = ppArgs[0];
+						LPCTSTR pszVariance = ppArgs[1];
+						dResult = static_cast<RealType>(Calc_GetBellCurve(static_cast<int>(MakeFloatMath(pszMean)), static_cast<int>(MakeFloatMath(pszVariance))));
 					}
 					break;
 				}
@@ -495,34 +446,23 @@ RealType CVarFloat::GetSingle(LPCTSTR &pszArgs)
 					if ( *pszArgs != '\0' )
 					{
 						iCount = 1;
-						dResult = sin(MakeFloatMath(pszArgs) * M_PI / 180);
-					}
-					else
-					{
-						iCount = 0;
-						dResult = 0;
+						dResult = static_cast<RealType>(sin((MakeFloatMath(pszArgs) * std::numbers::pi) / 180.0));
 					}
 					break;
 				}
 				case INTRINSIC_SQRT:
 				{
-					iCount = 0;
 					if ( *pszArgs != '\0' )
 					{
-						RealType dTosquare = MakeFloatMath(pszArgs);
-						if ( dTosquare >= 0 )
+						iCount = 1;
+						RealType dVal = MakeFloatMath(pszArgs);
+						if ( dVal < 0.0 )
 						{
-							++iCount;
-							dResult = sqrt(dTosquare);
+							DEBUG_ERR(("%s(%f): can't get square root of negative number\n", sm_IntrinsicFunctions[index], dVal));
+							break;
 						}
-						else
-						{
-							DEBUG_ERR(("%s(%f): can't get square root of negative number\n", sm_IntrinsicFunctions[index], dTosquare));
-							dResult = 0;
-						}
+						dResult = static_cast<RealType>(sqrt(static_cast<double>(dVal)));
 					}
-					else
-						dResult = 0;
 					break;
 				}
 				case INTRINSIC_STRASCII:
@@ -532,44 +472,44 @@ RealType CVarFloat::GetSingle(LPCTSTR &pszArgs)
 						iCount = 1;
 						dResult = pszArgs[0];
 					}
-					else
-					{
-						iCount = 0;
-						dResult = 0;
-					}
 					break;
 				}
 				case INTRINSIC_STRCMP:
 				{
-					TCHAR *ppCmd[2];
-					iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppCmd, COUNTOF(ppCmd), ",");
-					if ( iCount < 2 )
-						dResult = 1;
+					TCHAR *ppArgs[2];
+					iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppArgs, COUNTOF(ppArgs), ",");
+					if ( iCount == 2 )
+						dResult = static_cast<RealType>(strcmp(ppArgs[0], ppArgs[1]));
 					else
-						dResult = strcmp(ppCmd[0], ppCmd[1]);
+						dResult = 1.0;
 					break;
 				}
 				case INTRINSIC_STRCMPI:
 				{
-					TCHAR *ppCmd[2];
-					iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppCmd, COUNTOF(ppCmd), ",");
-					if ( iCount < 2 )
-						dResult = 1;
+					TCHAR *ppArgs[2];
+					iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppArgs, COUNTOF(ppArgs), ",");
+					if ( iCount == 2 )
+						dResult = static_cast<RealType>(strcmpi(ppArgs[0], ppArgs[1]));
 					else
-						dResult = strcmpi(ppCmd[0], ppCmd[1]);
+						dResult = 1.0;
 					break;
 				}
 				case INTRINSIC_STRINDEXOF:
 				{
-					TCHAR *ppCmd[3];
-					iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppCmd, COUNTOF(ppCmd), ",");
-					if ( iCount < 2 )
-						dResult = -1;
-					else
+					TCHAR *ppArgs[3];
+					iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppArgs, COUNTOF(ppArgs), ",");
+					if ( iCount >= 2 )
 					{
-						LPCTSTR pszArg = ppCmd[2];
-						dResult = Str_IndexOf(ppCmd[0], ppCmd[1], (iCount == 3) ? static_cast<int>(MakeFloatMath(pszArg)) : 0);
+						size_t iOffset = 0;
+						if ( iCount == 3 )
+						{
+							LPCTSTR pszOffset = ppArgs[2];
+							iOffset = static_cast<size_t>(MakeFloatMath(pszOffset));
+						}
+						dResult = static_cast<RealType>(Str_IndexOf(ppArgs[0], ppArgs[1], iOffset));
 					}
+					else
+						dResult = -1.0;
 					break;
 				}
 				case INTRINSIC_STRLEN:
@@ -580,22 +520,18 @@ RealType CVarFloat::GetSingle(LPCTSTR &pszArgs)
 				}
 				case INTRINSIC_STRMATCH:
 				{
-					TCHAR *ppCmd[2];
-					iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppCmd, COUNTOF(ppCmd), ",");
-					if ( iCount < 2 )
-						dResult = 0;
-					else
-						dResult = (Str_Match(ppCmd[0], ppCmd[1]) == MATCH_VALID) ? 1 : 0;
+					TCHAR *ppArgs[2];
+					iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppArgs, COUNTOF(ppArgs), ",");
+					if ( iCount == 2 )
+						dResult = (Str_Match(ppArgs[0], ppArgs[1]) == MATCH_VALID) ? 1.0 : 0.0;
 					break;
 				}
 				case INTRINSIC_STRREGEX:
 				{
-					TCHAR *ppCmd[2];
-					iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppCmd, COUNTOF(ppCmd), ",");
-					if ( iCount < 2 )
-						dResult = 0;
-					else
-						dResult = (Str_RegExMatch(ppCmd[0], ppCmd[1]) == MATCH_VALID) ? 1 : 0;
+					TCHAR *ppArgs[2];
+					iCount = Str_ParseCmds(const_cast<TCHAR *>(pszArgs), ppArgs, COUNTOF(ppArgs), ",");
+					if ( iCount == 2 )
+						dResult = (Str_RegExMatch(ppArgs[0], ppArgs[1]) == MATCH_VALID) ? 1.0 : 0.0;
 					break;
 				}
 				case INTRINSIC_TAN:
@@ -603,29 +539,20 @@ RealType CVarFloat::GetSingle(LPCTSTR &pszArgs)
 					if ( *pszArgs != '\0' )
 					{
 						iCount = 1;
-						dResult = tan(MakeFloatMath(pszArgs) * M_PI / 180);
-					}
-					else
-					{
-						iCount = 0;
-						dResult = 0;
+						dResult = static_cast<RealType>(tan((MakeFloatMath(pszArgs) * std::numbers::pi) / 180.0));
 					}
 					break;
 				}
 				default:
-				{
-					iCount = 0;
-					dResult = 0;
 					break;
-				}
 			}
 
 			pszArgs = pszArgsNext;
 
-			if ( iCount <= 0 )
+			if ( iCount == 0 )
 			{
-				DEBUG_ERR(("Bad intrinsic function usage: Missing ')'\n"));
-				return 0;
+				DEBUG_ERR(("Bad intrinsic function usage: missing arguments\n"));
+				return 0.0;
 			}
 			return dResult;
 		}
@@ -636,20 +563,17 @@ RealType CVarFloat::GetSingle(LPCTSTR &pszArgs)
 		return static_cast<RealType>(lVal);
 	if ( g_Exp.m_VarDefs.GetParseVal(pszArgs, &lVal) )
 		return static_cast<RealType>(lVal);
-	return 0;
+	return 0.0;
 }
 
 RealType CVarFloat::GetRandVal(RealType dMin, RealType dMax)
 {
 	if ( dMin > dMax )
-	{
-		RealType tmp = dMin;
-		dMin = dMax;
-		dMax = tmp;
-	}
+		std::swap(dMin, dMax);
 
-	std::random_device rd;
-	std::mt19937 gen(rd());
+	thread_local std::random_device rd;
+	thread_local std::mt19937 gen(rd());
+
 	std::uniform_real_distribution<RealType> dist(dMin, dMax);
 	return dist(gen);
 }
@@ -669,7 +593,7 @@ CLocalObjMap::~CLocalObjMap()
 CObjBase *CLocalObjMap::Get(WORD wNumber)
 {
 	ADDTOCALLSTACK("CLocalObjMap::Get");
-	if ( !wNumber )
+	if ( wNumber == 0 )
 		return NULL;
 
 	ObjMap::iterator i = m_ObjMap.find(wNumber);
@@ -682,7 +606,7 @@ CObjBase *CLocalObjMap::Get(WORD wNumber)
 bool CLocalObjMap::Insert(WORD wNumber, CObjBase *pObj, bool fForceSet)
 {
 	ADDTOCALLSTACK("CLocalObjMap::Insert");
-	if ( !wNumber )
+	if ( wNumber == 0 )
 		return false;
 
 	ObjMap::iterator i = m_ObjMap.find(wNumber);

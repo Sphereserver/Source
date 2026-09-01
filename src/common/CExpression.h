@@ -2,31 +2,6 @@
 #define _INC_CEXPRESSION_H
 #pragma once
 
-#define ISWHITESPACE(ch)				(IsSpace(ch) || ((ch) == 0xA0))
-#define _IS_SWITCH(ch)					(((ch) == '-') || ((ch) == '/'))	// command line switch
-#define _ISCSYMF(ch)					(IsAlpha(ch) || (ch == '_'))		// __iscsymf
-#define _ISCSYM(ch)						(isalnum(ch) || (ch == '_'))		// __iscsym
-
-#define SKIP_SEPARATORS(pszStr)			while (*(pszStr) == '.') { ++(pszStr); }	// || ISWHITESPACE(*(pszStr))
-#define SKIP_ARGSEP(pszStr)				while ((*(pszStr) == ',') || IsSpace(*(pszStr))) { ++(pszStr); }
-#define SKIP_IDENTIFIERSTRING(pszStr)	while (_ISCSYM(*(pszStr))) { ++(pszStr); }
-
-#define GETNONWHITESPACE(pszStr)		while (ISWHITESPACE(*(pszStr))) { ++(pszStr); }
-
-#define REMOVE_QUOTES(x)	\
-{							\
-	GETNONWHITESPACE(x);	\
-	if (*x == '"')			\
-		++x;				\
-	TCHAR *pszX = const_cast<TCHAR *>(strchr(x, '"'));	\
-	if (pszX)				\
-		*pszX = '\0';		\
-}
-
-#ifndef M_PI
-	#define M_PI 3.14159265358979323846
-#endif
-
 #define EXPRESSION_MAX_KEY_LEN 128
 
 enum DEFMSG_TYPE
@@ -93,7 +68,7 @@ static const LPCTSTR sm_IntrinsicFunctions[INTRINSIC_QTY + 1] =
 	NULL
 };
 
-extern class CExpression
+class CExpression
 {
 public:
 	static const char *m_sClassName;
@@ -101,7 +76,6 @@ public:
 	CVarDefMap m_VarGlobals;		// Global variables
 	CListDefMap m_ListGlobals;		// Global lists
 	CListDefMap m_ListInternals;	// Internal lists
-	CGString m_sTmp;
 
 	// Defined default messages
 	static TCHAR sm_szMessages[DEFMSG_QTY][EXPRESSION_MAX_KEY_LEN];		// like: "You put %s to %s"
@@ -143,7 +117,9 @@ public:
 private:
 	CExpression(const CExpression &copy);
 	CExpression &operator=(const CExpression &other);
-} g_Exp;
+};
+
+extern CExpression g_Exp;
 
 extern bool IsStrEmpty(LPCTSTR pszArgs);
 extern bool IsStrNumericDec(LPCTSTR pszArgs);
@@ -152,15 +128,95 @@ extern bool IsSimpleNumberString(LPCTSTR pszArgs);
 extern bool IsValidDef(LPCTSTR pszArgs);
 extern bool IsValidGameObjDef(LPCTSTR pszArgs);
 
+inline bool IsAlpha(TCHAR ch) noexcept
+{
+	return (isalpha(static_cast<unsigned char>(ch)) != 0);
+}
+
+inline bool IsDigit(TCHAR ch) noexcept
+{
+	return (isdigit(static_cast<unsigned char>(ch)) != 0);
+}
+
+inline bool IsSpace(TCHAR ch) noexcept
+{
+	return (isspace(static_cast<unsigned char>(ch)) != 0);
+}
+
+inline bool IsCSym(TCHAR ch) noexcept
+{
+	// Ported from Windows __iscsym() macro defined in ctype.h
+	return (isalnum(static_cast<unsigned char>(ch)) || (ch == '_'));
+}
+
+inline bool IsCSymF(TCHAR ch) noexcept
+{
+	// Ported from Windows __iscsymf() macro defined in ctype.h
+	return (isalpha(static_cast<unsigned char>(ch)) || (ch == '_'));
+}
+
+inline bool IsWhitespace(TCHAR ch) noexcept
+{
+	return (isspace(static_cast<unsigned char>(ch)) || (ch == 0xA0));
+}
+
+template <typename T>
+inline void SkipArgSeparator(T &pszArgs)
+{
+	while ( (*pszArgs == ',') || IsSpace(*pszArgs) )
+	{
+		++pszArgs;
+	}
+}
+
+template <typename T>
+inline void SkipDotSeparator(T &pszArgs)
+{
+	while ( *pszArgs == '.' )
+	{
+		++pszArgs;
+	}
+}
+
+template <typename T>
+inline void SkipIdentifier(T &pszArgs)
+{
+	while ( IsCSym(*pszArgs) )
+	{
+		++pszArgs;
+	}
+}
+
+template <typename T>
+inline void SkipWhitespace(T &pszArgs)
+{
+	while ( IsWhitespace(*pszArgs) )
+	{
+		++pszArgs;
+	}
+}
+
+template <typename T>
+inline void RemoveQuotes(T &pszArgs)
+{
+	SkipWhitespace(pszArgs);
+	if ( *pszArgs == '"' )
+		++pszArgs;
+
+	TCHAR *pszQuote = const_cast<TCHAR *>(strchr(pszArgs, '"'));
+	if ( pszQuote )
+		*pszQuote = '\0';
+}
+
 // Numeric formulas
 extern int Calc_GetRandVal(int iMin, int iMax);
-extern inline int Calc_GetRandVal(int iVal)
+inline int Calc_GetRandVal(int iVal)
 {
 	return (iVal > 1) ? Calc_GetRandVal(0, iVal - 1) : 0;
 }
 
 extern INT64 Calc_GetRandLLVal(INT64 iMin, INT64 iMax);
-extern inline INT64 Calc_GetRandLLVal(INT64 iVal)
+inline INT64 Calc_GetRandLLVal(INT64 iVal)
 {
 	return (iVal > 1) ? Calc_GetRandLLVal(0, iVal - 1) : 0;
 }
@@ -168,13 +224,21 @@ extern inline INT64 Calc_GetRandLLVal(INT64 iVal)
 extern int Calc_GetBellCurve(int iMean, int iVariance);
 extern int Calc_GetSCurve(int iMean, int iVariance);
 
-extern int ahextoi(LPCTSTR pszArgs);		// convert hex string to int
-extern INT64 ahextoi64(LPCTSTR pszArgs);	// convert hex string to int64
+extern INT64 ahextoi(LPCTSTR pszArgs);
 
-#define Exp_GetSingle(pa)	static_cast<int>(g_Exp.GetSingle(pa))
-#define Exp_GetLLSingle(pa)	g_Exp.GetSingle(pa)
-#define Exp_GetVal(pa)		static_cast<int>(g_Exp.GetVal(pa))
-#define Exp_GetLLVal(pa)	g_Exp.GetVal(pa)
-#define Exp_GetRange(pa)	g_Exp.GetRange(pa)
+// Backward compatibility macros
+#define Exp_GetSingle(pszArgs)			static_cast<int>(g_Exp.GetSingle(pszArgs))
+#define Exp_GetVal(pszArgs)				static_cast<int>(g_Exp.GetVal(pszArgs))
+#define Exp_GetLLSingle(pszArgs)		g_Exp.GetSingle(pszArgs)
+#define Exp_GetLLVal(pszArgs)			g_Exp.GetVal(pszArgs)
+#define Exp_GetRange(pszArgs)			g_Exp.GetRange(pszArgs)
+#define _ISCSYM(ch)						IsCSym(ch)
+#define _ISCSYMF(ch)					IsCSymF(ch)
+#define ISWHITESPACE(ch)				IsWhitespace(ch)
+#define SKIP_ARGSEP(pszArgs)			SkipArgSeparator(pszArgs)
+#define SKIP_SEPARATORS(pszArgs)		SkipDotSeparator(pszArgs)
+#define SKIP_IDENTIFIERSTRING(pszArgs)	SkipIdentifier(pszArgs)
+#define GETNONWHITESPACE(pszArgs)		SkipWhitespace(pszArgs)
+#define REMOVE_QUOTES(pszArgs)			RemoveQuotes(pszArgs)
 
 #endif	// _INC_CEXPRESSION_H
