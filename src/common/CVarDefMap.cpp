@@ -1,19 +1,18 @@
 #include "../graysvr/graysvr.h"
 
-static size_t GetIdentifierString( TCHAR * szTag, LPCTSTR pszArgs )
+static size_t GetIdentifierString(TCHAR *pszDest, LPCTSTR pszArgs)
 {
-	// Copy the identifier (valid char set) out to this buffer.
+	// Copy the identifier (valid char set) out to this buffer
 	size_t i = 0;
-	for ( ;pszArgs[i]; i++ )
+	for ( ; pszArgs[i]; ++i )
 	{
-		if ( ! _ISCSYM(pszArgs[i]))
+		if ( !IsCSym(pszArgs[i]) )
 			break;
 		if ( i >= EXPRESSION_MAX_KEY_LEN )
 			return 0;
-		szTag[i] = pszArgs[i];
+		pszDest[i] = pszArgs[i];
 	}
-
-	szTag[i] = '\0';
+	pszDest[i] = '\0';
 	return i;
 }
 
@@ -128,7 +127,7 @@ LPCTSTR CVarDefContStr::GetValStr() const
 inline INT64 CVarDefContStr::GetValNum() const
 {
 	LPCTSTR pszStr = m_sVal;
-	return Exp_GetLLVal(pszStr);
+	return g_Exp.GetVal(pszStr);
 }
 
 void CVarDefContStr::SetValStr( LPCTSTR pszVal ) 
@@ -136,7 +135,7 @@ void CVarDefContStr::SetValStr( LPCTSTR pszVal )
 	if (strlen(pszVal) <= SCRIPT_MAX_LINE_LEN/2)
 		m_sVal.Copy( pszVal );
 	else
-		g_Log.EventWarn("VarStr '%s' exceeded max length allowed (%" FMTSIZE_T "/%d)\n", GetKey(), strlen(pszVal), SCRIPT_MAX_LINE_LEN / 2);
+		g_Log.EventWarn("VarStr '%s' exceeded max length allowed (%zu/%d)\n", GetKey(), strlen(pszVal), SCRIPT_MAX_LINE_LEN / 2);
 }
 
 
@@ -198,9 +197,9 @@ CVarDefCont * CVarDefMap::CVarDefContTest::CopySelf() const
 *
 ***************************************************************************/
 
-bool CVarDefMap::ltstr::operator()(CVarDefCont * s1, CVarDefCont * s2) const
+bool CVarDefMap::ltstr::operator()(CVarDefCont *pVar1, CVarDefCont *pVar2) const
 {
-	return( strcmpi(s1->GetKey(), s2->GetKey()) < 0 );
+	return (strcmpi(pVar1->GetKey(), pVar2->GetKey()) < 0);
 }
 
 /***************************************************************************
@@ -560,7 +559,7 @@ CVarDefCont *CVarDefMap::SetStr(LPCTSTR pszName, bool fQuoted, LPCTSTR pszVal, b
 	if ( !fQuoted && IsSimpleNumberString(pszVal))
 	{
 		// Just store the number and not the string.
-		return SetNum( pszName, Exp_GetLLVal( pszVal ), fZero);
+		return SetNum(pszName, g_Exp.GetVal(pszVal), fZero);
 	}
 
 	CVarDefContTest * pVarSearch = new CVarDefContTest(pszName);

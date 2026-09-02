@@ -3,29 +3,14 @@
 #pragma once
 
 #ifdef _WIN32
-#undef FD_SETSIZE
-#define FD_SETSIZE 1024	// for max of n users ! default = 64
-
 #include <intsafe.h>
 #include <io.h>
 #include <process.h>
 #include <time.h>
-#include <WinSock2.h>
 
-#ifdef __MINGW32__
-	// On MinGW the 'operator=' is private on many classes and UNREFERENCED_PARAMETER macro on MinGW is (P)=(P), so we have a compilation error here
-	#ifdef UNREFERENCED_PARAMETER
-		#undef UNREFERENCED_PARAMETER
-	#endif
-	#define UNREFERENCED_PARAMETER(P)	(void)(P)
-
-	// Not defined on MinGW
-	typedef int		LSTATUS;
-	typedef void(__cdecl *_invalid_parameter_handler)(const wchar_t *, const wchar_t *, const wchar_t *, unsigned int, uintptr_t);
-
-	// Stuctured exception handling Windows API not implemented on MinGW
-	#define __except(P)		catch(int)
-#endif
-
+#undef FD_SETSIZE
+#define FD_SETSIZE 1024		// override system default limit of 64 socket slots
+#include <winsock2.h>
 #endif	// _WIN32
+
 #endif	// _INC_OS_WINDOWS_H

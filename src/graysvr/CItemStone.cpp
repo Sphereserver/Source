@@ -807,8 +807,8 @@ bool CItemStone::r_GetRef(LPCTSTR &pszKey, CScriptObj *&pRef)
 			return false;
 
 		int i = 0;
-		int iNumber = Exp_GetVal(pszKey);
-		SKIP_SEPARATORS(pszKey);
+		int iNumber = static_cast<int>(g_Exp.GetVal(pszKey));
+		SkipDotSeparator(pszKey);
 
 		for ( CStoneMember *pMember = static_cast<CStoneMember *>(GetHead()); pMember != NULL; pMember = pMember->GetNext() )
 		{
@@ -829,8 +829,8 @@ bool CItemStone::r_GetRef(LPCTSTR &pszKey, CScriptObj *&pRef)
 		if ( !*pszKey )
 			return false;
 
-		CStoneMember *pMember = GetMember(static_cast<CGrayUID>(Exp_GetVal(pszKey)).CharFind());
-		SKIP_SEPARATORS(pszKey);
+		CStoneMember *pMember = GetMember(static_cast<CGrayUID>(static_cast<DWORD>(g_Exp.GetVal(pszKey))).CharFind());
+		SkipDotSeparator(pszKey);
 		if ( pMember )
 		{
 			pRef = pMember;
@@ -844,8 +844,8 @@ bool CItemStone::r_GetRef(LPCTSTR &pszKey, CScriptObj *&pRef)
 			return false;
 
 		int i = 0;
-		int iNumber = Exp_GetVal(pszKey);
-		SKIP_SEPARATORS(pszKey);
+		int iNumber = static_cast<int>(g_Exp.GetVal(pszKey));
+		SkipDotSeparator(pszKey);
 
 		for ( CStoneMember *pMember = static_cast<CStoneMember *>(GetHead()); pMember != NULL; pMember = pMember->GetNext() )
 		{
@@ -866,8 +866,8 @@ bool CItemStone::r_GetRef(LPCTSTR &pszKey, CScriptObj *&pRef)
 		if ( !*pszKey )
 			return false;
 
-		CStoneMember *pMember = GetMember(static_cast<CGrayUID>(Exp_GetVal(pszKey)).ItemFind());
-		SKIP_SEPARATORS(pszKey);
+		CStoneMember *pMember = GetMember(static_cast<CGrayUID>(static_cast<DWORD>(g_Exp.GetVal(pszKey))).ItemFind());
+		SkipDotSeparator(pszKey);
 		if ( pMember )
 		{
 			pRef = pMember;
@@ -913,8 +913,8 @@ bool CItemStone::r_Verb(CScript &s, CTextConsole *pSrc)		// execute command from
 			if ( s.HasArgs() )
 			{
 				TCHAR *pszArgs = s.GetArgRaw();
-				int iFlags = Exp_GetVal(pszArgs);
-				SKIP_ARGSEP(pszArgs);
+				int iFlags = static_cast<int>(g_Exp.GetVal(pszArgs));
+				SkipArgSeparator(pszArgs);
 				CScript script(pszArgs);
 				for ( CStoneMember *pMember = static_cast<CStoneMember *>(GetHead()); pMember != NULL; pMember = pMember->GetNext() )
 				{
@@ -938,8 +938,8 @@ bool CItemStone::r_Verb(CScript &s, CTextConsole *pSrc)		// execute command from
 			if ( s.HasArgs() )
 			{
 				TCHAR *pszArgs = s.GetArgRaw();
-				STONEPRIV_TYPE priv = static_cast<STONEPRIV_TYPE>(Exp_GetVal(pszArgs));
-				SKIP_ARGSEP(pszArgs);
+				STONEPRIV_TYPE priv = static_cast<STONEPRIV_TYPE>(g_Exp.GetVal(pszArgs));
+				SkipArgSeparator(pszArgs);
 				CScript script(pszArgs);
 				for ( CStoneMember *pMember = static_cast<CStoneMember *>(GetHead()); pMember != NULL; pMember = pMember->GetNext() )
 				{
@@ -1122,8 +1122,8 @@ bool CItemStone::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			int i = 0;
 			if ( *pszCmd )
 			{
-				SKIP_ARGSEP(pszCmd);
-				STONEPRIV_TYPE priv = static_cast<STONEPRIV_TYPE>(Exp_GetVal(pszCmd));
+				SkipArgSeparator(pszCmd);
+				STONEPRIV_TYPE priv = static_cast<STONEPRIV_TYPE>(g_Exp.GetVal(pszCmd));
 				for ( CStoneMember *pMember = static_cast<CStoneMember *>(GetHead()); pMember != NULL; pMember = pMember->GetNext() )
 				{
 					if ( !pMember->m_uidLinkTo.IsChar() )
@@ -1147,8 +1147,8 @@ bool CItemStone::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		}
 
 		int i = 0;
-		int iNumber = Exp_GetVal(pszCmd);
-		SKIP_SEPARATORS(pszCmd);
+		int iNumber = static_cast<int>(g_Exp.GetVal(pszCmd));
+		SkipDotSeparator(pszCmd);
 		sVal = "0";
 
 		for ( CStoneMember *pMember = static_cast<CStoneMember *>(GetHead()); pMember != NULL; pMember = pMember->GetNext() )
@@ -1170,8 +1170,8 @@ bool CItemStone::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 	else if ( !strnicmp("MEMBERFROMUID.", pszKey, 14) )
 	{
 		LPCTSTR pszCmd = pszKey + 14;
-		CStoneMember *pMember = GetMember(static_cast<CGrayUID>(Exp_GetVal(pszCmd)).CharFind());
-		SKIP_SEPARATORS(pszCmd);
+		CStoneMember *pMember = GetMember(static_cast<CGrayUID>(static_cast<DWORD>(g_Exp.GetVal(pszCmd))).CharFind());
+		SkipDotSeparator(pszCmd);
 		if ( pMember )
 			return pMember->r_WriteVal(pszCmd, sVal, pSrc);
 
@@ -1187,8 +1187,8 @@ bool CItemStone::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			int i = 0;
 			if ( *pszCmd )
 			{
-				SKIP_ARGSEP(pszCmd);
-				int iFlags = Exp_GetVal(pszCmd);
+				SkipArgSeparator(pszCmd);
+				int iFlags = static_cast<int>(g_Exp.GetVal(pszCmd));
 				for ( CStoneMember *pMember = static_cast<CStoneMember *>(GetHead()); pMember != NULL; pMember = pMember->GetNext() )
 				{
 					if ( pMember->m_uidLinkTo.IsChar() )
@@ -1216,8 +1216,8 @@ bool CItemStone::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		}
 
 		int i = 0;
-		int iNumber = Exp_GetVal(pszCmd);
-		SKIP_SEPARATORS(pszCmd);
+		int iNumber = static_cast<int>(g_Exp.GetVal(pszCmd));
+		SkipDotSeparator(pszCmd);
 		sVal = "0";
 
 		for ( CStoneMember *pMember = static_cast<CStoneMember *>(GetHead()); pMember != NULL; pMember = pMember->GetNext() )
@@ -1239,8 +1239,8 @@ bool CItemStone::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 	else if ( !strnicmp("GUILDFROMUID.", pszKey, 13) )
 	{
 		LPCTSTR pszCmd = pszKey + 13;
-		CStoneMember *pMember = GetMember(static_cast<CGrayUID>(Exp_GetVal(pszCmd)).ItemFind());
-		SKIP_SEPARATORS(pszCmd);
+		CStoneMember *pMember = GetMember(static_cast<CGrayUID>(static_cast<DWORD>(g_Exp.GetVal(pszCmd))).ItemFind());
+		SkipDotSeparator(pszCmd);
 		if ( pMember )
 			return pMember->r_WriteVal(pszCmd, sVal, pSrc);
 
@@ -1392,10 +1392,10 @@ bool CItemStone::r_LoadVal(CScript &s)
 
 			new CStoneMember(
 				this,
-				ahextoi(ppArgs[0]),
+				static_cast<DWORD>(ahextoi(ppArgs[0])),
 				(iArgQty > 2) ? static_cast<STONEPRIV_TYPE>(ATOI(ppArgs[2])) : STONEPRIV_CANDIDATE,
 				(iArgQty > 1) ? ppArgs[1] : "",
-				(iArgQty > 3) ? ahextoi(ppArgs[3]) : UID_CLEAR,
+				(iArgQty > 3) ? static_cast<DWORD>(ahextoi(ppArgs[3])) : UID_CLEAR,
 				(iArgQty > 4) ? (ATOI(ppArgs[4]) != 0) : false,
 				(iArgQty > 5) ? (ATOI(ppArgs[5]) != 0) : false,
 				(iArgQty > 6) ? ATOI(ppArgs[6]) : 0);

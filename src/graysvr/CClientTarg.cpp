@@ -53,7 +53,7 @@ void CClient::OnTarg_Obj_Function(CObjBase *pObj, const CPointMap &pt, ITEMID_TY
 	if ( !pSpace )
 		pSpace = strchr(m_Targ_Text, '\t');
 	if ( pSpace )
-		GETNONWHITESPACE(pSpace);
+		SkipWhitespace(pSpace);
 
 	CScriptTriggerArgs Args(pSpace ? pSpace : "");
 	Args.m_VarsLocal.SetNum("ID", id, true);
@@ -194,6 +194,7 @@ bool CClient::Cmd_Control(CChar *pChar2)
 			case CREID_GARGGHOSTMAN:
 			case CREID_GARGGHOSTWOMAN:
 				pChar1->Delete();	// delete my ghost
+				break;
 			default:
 				pChar1->SetTimeout(1);	// must kick start the NPC
 		}

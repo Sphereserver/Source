@@ -337,7 +337,7 @@ void AbstractThread::awaken()
 bool AbstractThread::isCurrentThread() const
 {
 #ifdef _WIN32
-	return (getId() == ::GetCurrentThreadId());
+	return (getId() == GetCurrentThreadId());
 #else
 	return pthread_equal(m_handle,pthread_self());
 #endif
@@ -376,59 +376,33 @@ bool AbstractThread::checkStuck()
 	return false;
 }
 
-#ifdef _WIN32
-#pragma pack(push, 8)
-typedef struct tagTHREADNAME_INFO
-{
-	DWORD dwType;
-	LPCTSTR szName;
-	DWORD dwThreadID;
-	DWORD dwFlags;
-} THREADNAME_INFO;
-#pragma pack(pop)
-
-#define MS_VC_EXCEPTION		0x406D1388
-#endif
-
 void AbstractThread::onStart()
 {
-	// start-up actions for each thread
-	// when implemented in derived classes this method must always be called too, preferably before
-	// the custom implementation
+	// Startup actions for each thread
+	// When implemented in derived classes this method must always be called too (preferably before the custom implementation)
 
-	// we set the id here to ensure it is available before the first tick, otherwise there's
-	// a small delay when setting it from AbstractThread::start and it's possible for the id
-	// to not be set fast enough (particular when using pthreads)
-#ifdef _WIN32
-	m_id = ::GetCurrentThreadId();
-#else
-	m_id = pthread_self();
-#endif
+	// Set the id here to ensure it is available before the first tick, otherwise there's a small delay when setting it from
+	// AbstractThread::start and it's possible for the id to not be set fast enough (particularly when using pthreads)
 	ThreadHolder::m_currentThread = this;
 
-	// register the thread name
 #ifdef _WIN32
-	// Windows uses THREADNAME_INFO structure to set thread name
-	THREADNAME_INFO info;
-	info.dwType = 0x1000;
-	info.szName = getName();
-	info.dwThreadID = static_cast<DWORD>(-1);
-	info.dwFlags = 0;
+	m_id = GetCurrentThreadId();
 
-	__try
-	{
-		RaiseException(MS_VC_EXCEPTION, 0, sizeof(info) / sizeof(ULONG_PTR), reinterpret_cast<ULONG_PTR*>(&info));
-	}
-	__except(EXCEPTION_EXECUTE_HANDLER)
-	{
-	}
+	#if defined(_MSC_VER) && (_MSC_VER >= 1913)		// VS 2017 (v15.6)
+	WCHAR szName[16];
+	MultiByteToWideChar(CP_UTF8, 0, getName(), -1, szName, COUNTOF(szName) - 1);	// SetThreadDescription() is unicode, so convert ANSI to unicode
+	szName[COUNTOF(szName) - 1] = '\0';
+
+	SetThreadDescription(GetCurrentThread(), szName);
+	#endif
 #else
-	// Unix uses pthread_setname_np() to set thread name
-	// thread name must be 16 bytes, zero-padded if shorter
-	char name[16];
-	strncpy(name, m_name, sizeof(name));
-	name[sizeof(name) - 1] = '\0';
-	pthread_setname_np(m_id, name);
+	m_id = pthread_self();
+
+	char szName[16];
+	strncpy(szName, m_name, COUNTOF(szName));
+	szName[COUNTOF(szName) - 1] = '\0';
+
+	pthread_setname_np(m_id, szName);
 #endif
 }
 
@@ -584,7 +558,7 @@ void AbstractSphereThread::printStackTrace()
 			break;
 
 		timedelta = m_stackInfo[i].startTime - startTime;
-		g_Log.EventDebug(">>         %lu     | %2" FMTSIZE_T " | %36s | +%llu %s\n", threadId, i, m_stackInfo[i].functionName, timedelta, (i == (m_stackPos - 1)) ? "<-- exception catch point (below is guessed and could be incorrect!)" : "");
+		g_Log.EventDebug(">>         %lu     | %2zu | %36s | +%llu %s\n", threadId, i, m_stackInfo[i].functionName, timedelta, (i == (m_stackPos - 1)) ? "<-- exception catch point (below is guessed and could be incorrect!)" : "");
 		startTime = m_stackInfo[i].startTime;
 	}
 

@@ -233,7 +233,6 @@ extern INT64 ahextoi(LPCTSTR pszArgs);
 #define Exp_GetLLVal(pszArgs)			g_Exp.GetVal(pszArgs)
 #define Exp_GetRange(pszArgs)			g_Exp.GetRange(pszArgs)
 #define _ISCSYM(ch)						IsCSym(ch)
-#define _ISCSYMF(ch)					IsCSymF(ch)
 #define ISWHITESPACE(ch)				IsWhitespace(ch)
 #define SKIP_ARGSEP(pszArgs)			SkipArgSeparator(pszArgs)
 #define SKIP_SEPARATORS(pszArgs)		SkipDotSeparator(pszArgs)

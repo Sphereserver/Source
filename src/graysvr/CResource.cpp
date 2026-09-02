@@ -9,7 +9,7 @@ CResource::CResource()
 {
 	m_timePeriodic.Init();
 
-	m_fUseHTTP = 2;
+	m_fUseHTTP = 1;
 	m_fUseAuthID = true;
 	m_iMapCacheTime = 2 * 60 * TICK_PER_SEC;
 	m_dwSectorSleepMask = (1 << 10) - 1;
@@ -324,14 +324,14 @@ bool CResource::r_GetRef(LPCTSTR &pszKey, CScriptObj *&pRef)
 	else if ( iResType == RES_ITEMDEF )
 	{
 		if ( fNewStyleDef && IsDigit(pszKey[0]) )
-			pRef = CItemBase::FindItemBase(static_cast<ITEMID_TYPE>(Exp_GetVal(pszKey) + ITEMID_MULTI));
+			pRef = CItemBase::FindItemBase(static_cast<ITEMID_TYPE>(g_Exp.GetVal(pszKey) + ITEMID_MULTI));
 		else
 			pRef = CItemBase::FindItemBase(static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetIndexType(RES_ITEMDEF, pszKey)));
 	}
 	else if ( (iResType == RES_SPELL) && (*pszKey == '-') )
 	{
 		++pszKey;
-		int i = Exp_GetVal(pszKey);
+		int i = static_cast<int>(g_Exp.GetVal(pszKey));
 		pRef = ((i >= 0) && m_SpellDefs_Sorted.IsValidIndex(i)) ? m_SpellDefs_Sorted[i] : NULL;
 	}
 	else
@@ -825,11 +825,11 @@ bool CResource::r_LoadVal(CScript &s)
 			if ( (sArgs.size() >= 2) /*at least .X*/ && (sArgs[0] == '.') && isdigit(sArgs[1]) )
 			{
 				LPCTSTR pszArgs = &sArgs[1];
-				int iMap = Exp_GetVal(pszArgs);
+				int iMap = static_cast<int>(g_Exp.GetVal(pszArgs));
 
 				if ( g_MapList.IsMapSupported(iMap) )
 				{
-					SKIP_SEPARATORS(pszArgs);
+					SkipDotSeparator(pszArgs);
 					if ( strcmpi(pszArgs, "ALLSECTORS") == 0 )
 					{
 						pszArgs = s.GetArgRaw();
@@ -845,8 +845,8 @@ bool CResource::r_LoadVal(CScript &s)
 					else if ( !strnicmp(pszArgs, "SECTOR.", 7) )
 					{
 						pszArgs = pszArgs + 7;
-						int iSector = Exp_GetVal(pszArgs);
-						SKIP_SEPARATORS(pszArgs);
+						int iSector = static_cast<int>(g_Exp.GetVal(pszArgs));
+						SkipDotSeparator(pszArgs);
 
 						if ( (iSector < 0) || (iSector >= g_MapList.GetSectorQty(iMap)) )
 						{
@@ -1200,8 +1200,8 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		else if ( !strnicmp(pszKey, "LOOKUPSKILL", 11) )
 		{
 			pszKey += 11;
-			SKIP_SEPARATORS(pszKey);
-			GETNONWHITESPACE(pszKey);
+			SkipDotSeparator(pszKey);
+			SkipWhitespace(pszKey);
 
 			const CSkillDef *pSkillDef = SkillLookup(pszKey);
 			sVal.FormatVal(pSkillDef ? pSkillDef->GetResourceID().GetResIndex() : -1);
@@ -1241,7 +1241,7 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			}
 
 			pszKey = pszArgsNext;
-			SKIP_SEPARATORS(pszKey);
+			SkipDotSeparator(pszKey);
 
 			sVal = "0";
 			return pt.r_WriteVal(pszKey, sVal);
@@ -1249,8 +1249,8 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		else if ( !strnicmp(pszKey, "MAPLIST.", 8) )
 		{
 			LPCTSTR pszCmd = pszKey + 8;
-			int iMap = Exp_GetVal(pszCmd);
-			SKIP_SEPARATORS(pszCmd);
+			int iMap = static_cast<int>(g_Exp.GetVal(pszCmd));
+			SkipDotSeparator(pszCmd);
 
 			if ( !*pszCmd )
 			{
@@ -1285,8 +1285,8 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		else if ( !strnicmp(pszKey, "MAP", 3) )
 		{
 			pszKey = pszKey + 3;
-			int iMap = Exp_GetVal(pszKey);
-			SKIP_SEPARATORS(pszKey);
+			int iMap = static_cast<int>(g_Exp.GetVal(pszKey));
+			SkipDotSeparator(pszKey);
 
 			sVal = "0";
 			if ( !g_MapList.IsMapSupported(iMap) )
@@ -1297,8 +1297,8 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			else if ( !strnicmp(pszKey, "SECTOR", 6) )
 			{
 				pszKey = pszKey + 6;
-				int iSector = Exp_GetVal(pszKey);
-				SKIP_SEPARATORS(pszKey);
+				int iSector = static_cast<int>(g_Exp.GetVal(pszKey));
+				SkipDotSeparator(pszKey);
 
 				if ( (iSector < 0) || (iSector >= g_MapList.GetSectorQty(iMap)) )
 				{
@@ -1322,8 +1322,8 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				return true;
 			}
 
-			size_t iNumber = Exp_GetVal(pszCmd);
-			SKIP_SEPARATORS(pszCmd);
+			size_t iNumber = static_cast<size_t>(g_Exp.GetVal(pszCmd));
+			SkipDotSeparator(pszCmd);
 
 			sVal = "0";
 			if ( iNumber >= m_Functions.GetCount() )
@@ -1366,8 +1366,8 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				return true;
 			}
 
-			size_t iNumber = static_cast<size_t>(Exp_GetLLVal(pszCmd));
-			SKIP_SEPARATORS(pszCmd);
+			size_t iNumber = static_cast<size_t>(g_Exp.GetVal(pszCmd));
+			SkipDotSeparator(pszCmd);
 
 			sVal = "0";
 			if ( iNumber >= g_World.m_Stones.GetCount() )
@@ -1387,8 +1387,8 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		else if ( !strnicmp(pszKey, "CLIENT.", 7) )
 		{
 			pszKey += 7;
-			size_t iNumber = static_cast<size_t>(Exp_GetLLVal(pszKey));
-			SKIP_SEPARATORS(pszKey);
+			size_t iNumber = static_cast<size_t>(g_Exp.GetVal(pszKey));
+			SkipDotSeparator(pszKey);
 
 			sVal = "0";
 			if ( iNumber >= g_Serv.StatGet(SERV_STAT_CLIENTS) )
@@ -1528,12 +1528,12 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			}
 
 			pszKey += 6;
-			SKIP_SEPARATORS(pszKey);
+			SkipDotSeparator(pszKey);
 
 			if ( !strnicmp("FROMTIME", pszKey, 8) )
 			{
 				pszKey += 8;
-				GETNONWHITESPACE(pszKey);
+				SkipWhitespace(pszKey);
 
 				// Syntax: year, month, day, hour, minute, second
 				INT64 piVal[6];
@@ -1548,7 +1548,7 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			else if ( !strnicmp("FORMAT", pszKey, 6) )
 			{
 				pszKey += 6;
-				GETNONWHITESPACE(pszKey);
+				SkipWhitespace(pszKey);
 
 				// Syntax: timestamp, formatstr
 				TCHAR *ppVal[2];
@@ -1556,7 +1556,7 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				if ( iArgQty < 1 )
 					return false;
 
-				CGTime datetime(static_cast<time_t>(Exp_GetLLVal(ppVal[0])));
+				CGTime datetime(static_cast<time_t>(g_Exp.GetVal(ppVal[0])));
 				sVal = datetime.Format((iArgQty > 1) ? ppVal[1] : NULL);
 				break;
 			}
@@ -1571,19 +1571,19 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			}
 
 			pszKey += 5;
-			SKIP_SEPARATORS(pszKey);
+			SkipDotSeparator(pszKey);
 
 			if ( !strnicmp("FORMAT", pszKey, 6) )
 			{
 				pszKey += 6;
-				GETNONWHITESPACE(pszKey);
+				SkipWhitespace(pszKey);
 				sVal = CGTime::GetCurrentTime().Format(pszKey);
 				break;
 			}
 			else if ( !strnicmp("GMTFORMAT", pszKey, 9) )
 			{
 				pszKey += 9;
-				GETNONWHITESPACE(pszKey);
+				SkipWhitespace(pszKey);
 				sVal = CGTime::GetCurrentTime().FormatGmt(pszKey);
 				break;
 			}
@@ -1672,7 +1672,7 @@ SKILL_TYPE CResource::FindSkillKey(LPCTSTR pszKey) const
 
 	if ( IsDigit(pszKey[0]) )
 	{
-		SKILL_TYPE skill = static_cast<SKILL_TYPE>(Exp_GetLLVal(pszKey));
+		SKILL_TYPE skill = static_cast<SKILL_TYPE>(g_Exp.GetVal(pszKey));
 		if ( CChar::IsSkillBase(skill) || CChar::IsSkillNPC(skill) )
 			return skill;
 	}
@@ -1947,7 +1947,7 @@ CPointMap CResource::GetRegionPoint(LPCTSTR pszCmd) const
 	// Get a point from a name (probably the name of a region)
 	// Might just be a point coord number?
 
-	GETNONWHITESPACE(pszCmd);
+	SkipWhitespace(pszCmd);
 	if ( (pszCmd[0] == '-') && !strchr(pszCmd, ',') )	// Get location from start list.
 	{
 		size_t i = static_cast<size_t>(abs(ATOI(pszCmd))) - 1;
@@ -1987,7 +1987,7 @@ CRegionBase *CResource::GetRegion(LPCTSTR pszKey) const
 	ADDTOCALLSTACK("CResource::GetRegion");
 	// Get a region from a name or areadef
 
-	GETNONWHITESPACE(pszKey);
+	SkipWhitespace(pszKey);
 	size_t iMax;
 	for ( size_t i = 0; i < COUNTOF(m_ResHash.m_Array); ++i )
 	{
@@ -2955,7 +2955,7 @@ RESOURCE_ID CResource::ResourceGetNewID(RES_TYPE restype, LPCTSTR pszName, CVarD
 				iPage = RES_DIALOG_BUTTON;
 			else
 			{
-				iPage = RES_GET_INDEX(Exp_GetVal(pszArg2));
+				iPage = RES_GET_INDEX(static_cast<int>(g_Exp.GetVal(pszArg2)));
 				if ( iPage > 255 )
 					DEBUG_ERR(("Bad resource index page %d\n", iPage));
 			}
@@ -3031,7 +3031,7 @@ RESOURCE_ID CResource::ResourceGetNewID(RES_TYPE restype, LPCTSTR pszName, CVarD
 
 		if ( IsDigit(pszName[0]) )
 		{
-			index = Exp_GetVal(pszName);
+			index = static_cast<int>(g_Exp.GetVal(pszName));
 			rid = RESOURCE_ID(restype, index);
 			switch ( restype )
 			{
@@ -3645,12 +3645,12 @@ bool CResource::GenerateDefname(TCHAR *pszObjectName, size_t iInputLength, LPCTS
 		if ( pszObjectName[i] == '\0' )
 			break;
 
-		if ( ISWHITESPACE(pszObjectName[i]) )
+		if ( IsWhitespace(pszObjectName[i]) )
 		{
 			if ( (iOut > 0) && (pszOutput[iOut - 1] != '_') )	// avoid double '_'
 				pszOutput[iOut++] = '_';
 		}
-		else if ( _ISCSYMF(pszObjectName[i]) )
+		else if ( IsCSymF(pszObjectName[i]) )
 		{
 			if ( (pszObjectName[i] != '_') || ((iOut > 0) && (pszOutput[iOut - 1] != '_')) )	// avoid double '_'
 				pszOutput[iOut++] = static_cast<TCHAR>(tolower(pszObjectName[i]));
@@ -3778,30 +3778,26 @@ bool CItemTypeDef::r_LoadVal(CScript &s)
 	if ( !strnicmp(pszKey, "TERRAIN", 7) )
 	{
 		LPCTSTR pszArgs = s.GetArgStr();
-		int iVal = Exp_GetVal(pszArgs);
+		int iVal = static_cast<int>(g_Exp.GetVal(pszArgs));
 		if ( iVal < 0 )
 			return false;
 		int iLo = iVal;
 
-		GETNONWHITESPACE(pszArgs);
+		SkipWhitespace(pszArgs);
 		if ( *pszArgs == ',' )
 		{
 			++pszArgs;
-			GETNONWHITESPACE(pszArgs);
+			SkipWhitespace(pszArgs);
 		}
 
 		if ( pszArgs )
 		{
-			iVal = Exp_GetVal(pszArgs);
+			iVal = static_cast<int>(g_Exp.GetVal(pszArgs));
 			if ( iVal < 0 )
 				return false;
 
-			if ( (iVal > 0) && (iVal < iLo) )	// swap
-			{
-				int iTemp = iLo;
-				iLo = iVal;
-				iVal = iTemp;
-			}
+			if ( (iVal > 0) && (iVal < iLo) )
+				std::swap(iLo, iVal);
 		}
 
 		int iHi = iVal;

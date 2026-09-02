@@ -1624,7 +1624,7 @@ bool PacketMenuChoice::onReceive(NetState* net)
 	WORD context = readInt16();
 	WORD select = readInt16();
 
-	if ((context != client->GetTargMode()) || (uid != client->m_tmMenu.m_UID))
+	if ((context != client->GetTargMode()) || (uid != static_cast<CGrayUID>(client->m_tmMenu.m_UID)))
 	{
 		client->SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_MENU_UNEXPECTED));
 		return true;
@@ -2378,7 +2378,7 @@ bool PacketGumpDialogRet::onReceive(NetState* net)
 	}
 
 	// sanity check
-	CClient::OpenedGumpsMap_t::iterator itGumpFound = client->m_mapOpenedGumps.find(static_cast<int>(context));
+	CClient::OpenedGumpsMap_t::iterator itGumpFound = client->m_mapOpenedGumps.find(context);
 	if ((itGumpFound == client->m_mapOpenedGumps.end()) || ((*itGumpFound).second <= 0))
 		return true;
 	
@@ -2404,10 +2404,12 @@ bool PacketGumpDialogRet::onReceive(NetState* net)
 	{
 		WORD id = readInt16();
 		WORD length = readInt16();
-		if ( length > MAX_TALK_BUFFER )
+
+		WORD wTextMaxLen = 1024;	// classic client is limited to 240 chars and enhanced client to 1024 chars
+		if ( length > wTextMaxLen )
 			return false;
 
-		readStringNUNICODE(text, THREAD_STRING_LENGTH, length, false);
+		readStringNUNICODE(text, wTextMaxLen, length, false);
 
 		for ( TCHAR *ch = text; *ch != '\0'; ++ch )
 		{
@@ -2563,12 +2565,12 @@ bool PacketProfileReq::onReceive(NetState* net)
 		skip(2);
 		WORD wTextLen = readInt16();
 
-		WORD wMaxLen = SCRIPT_MAX_LINE_LEN - 16;
-		if ( wTextLen >= wMaxLen )
-			wTextLen = wMaxLen - 1;
+		WORD wTextMaxLen = 1024;	// classic client is limited to 512 chars and enhanced client to 1024 chars
+		if ( wTextLen > wTextMaxLen )
+			return false;
 
 		pszText = Str_GetTemp();
-		readStringNUNICODE(pszText, wMaxLen, static_cast<size_t>(wTextLen) + 1, false);
+		readStringNUNICODE(pszText, wTextMaxLen, wTextLen, false);
 	}
 
 	pClient->Event_Profile(fWrite, pChar, pszText);
@@ -3511,7 +3513,7 @@ bool PacketWheelBoatMove::onReceive(NetState *net)
 		return false;
 
 	CItemShip *pShip = dynamic_cast<CItemShip *>(pRegion->GetResourceID().ItemFind());
-	if ( !pShip || (pShip->m_itShip.m_Pilot != character->GetUID()) )
+	if ( !pShip || (static_cast<CGrayUID>(pShip->m_itShip.m_Pilot) != character->GetUID()) )
 	{
 		CItem *pMemory = character->ContentFind(RESOURCE_ID(RES_ITEMDEF, ITEMID_MEMORY_SHIP_PILOT));
 		if ( pMemory )

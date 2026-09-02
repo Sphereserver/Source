@@ -110,7 +110,7 @@ LPCTSTR CListDefContStr::GetValStr() const
 inline INT64 CListDefContStr::GetValNum() const
 {
 	LPCTSTR pszStr = m_sVal;
-	return( Exp_GetVal(pszStr) );
+	return g_Exp.GetVal(pszStr);
 }
 
 void CListDefContStr::SetValStr( LPCTSTR pszVal ) 
@@ -332,7 +332,7 @@ bool CListDefCont::AddElementStr(LPCTSTR pszKey)
 	if ( m_listElements.size() + 1 >= SIZE_MAX )
 		return false;
 
-	REMOVE_QUOTES(pszKey);
+	RemoveQuotes(pszKey);
 	m_listElements.push_back(new CListDefContStr(m_Key.GetPtr(), pszKey));
 	return true;
 }
@@ -611,7 +611,7 @@ bool CListDefCont::r_LoadVal( CScript& s )
 	if ( fQuoted || !IsSimpleNumberString(pszArg) )
 		return AddElementStr(pszArg);
 
-	return AddElementNum(Exp_GetVal(pszArg));
+	return AddElementNum(g_Exp.GetVal(pszArg));
 }
 
 bool CListDefCont::r_LoadVal( LPCTSTR pszArg )
@@ -621,7 +621,7 @@ bool CListDefCont::r_LoadVal( LPCTSTR pszArg )
 	if (!IsSimpleNumberString(pszArg) )
 		return AddElementStr(pszArg);
 
-	return AddElementNum(Exp_GetVal(pszArg));
+	return AddElementNum(g_Exp.GetVal(pszArg));
 }
 
 /***************************************************************************
@@ -873,7 +873,7 @@ bool CListDefMap::r_LoadVal( LPCTSTR pszKey, CScript & s )
 	CListDefCont* pListBase = GetKey(ppCmds[0]);
 	LPCTSTR pszArg = s.GetArgRaw();
 
-	if ( ppCmds[1] && (*(ppCmds[1])) ) // LIST.<list_name>.<something...>
+	if ( ppCmds[1] && *ppCmds[1] )	// LIST.<list_name>.<something...>
 	{
 		Str_Parse(ppCmds[1], &(ppCmds[2]), "." );
 
@@ -898,7 +898,7 @@ bool CListDefMap::r_LoadVal( LPCTSTR pszKey, CScript & s )
 				}
 
 				if ( IsSimpleNumberString(pszArg) )
-					return pListBase->AddElementNum(Exp_GetVal(pszArg));
+					return pListBase->AddElementNum(g_Exp.GetVal(pszArg));
 				else
 					return pListBase->AddElementStr(pszArg);
 			}
@@ -924,14 +924,14 @@ bool CListDefMap::r_LoadVal( LPCTSTR pszKey, CScript & s )
 				while ( Str_Parse( ppCmd[0], &(ppCmd[1]), "," ))
 				{
 					if ( IsSimpleNumberString(ppCmd[0]) )
-						pListBase->AddElementNum(Exp_GetVal(ppCmd[0]));
+						pListBase->AddElementNum(g_Exp.GetVal(ppCmd[0]));
 					else
 						pListBase->AddElementStr(ppCmd[0]);
 					ppCmd[0] = ppCmd[1];
 				}
 				//insert last element
 				if ( IsSimpleNumberString(ppCmd[0]) )
-					return pListBase->AddElementNum(Exp_GetVal(ppCmd[0]));
+					return pListBase->AddElementNum(g_Exp.GetVal(ppCmd[0]));
 				else
 					return pListBase->AddElementStr(ppCmd[0]);
 			}
@@ -961,9 +961,9 @@ bool CListDefMap::r_LoadVal( LPCTSTR pszKey, CScript & s )
 		}
 		else if ( pListBase )
 		{
-			size_t nIndex = Exp_GetVal(ppCmds[1]);
+			size_t nIndex = g_Exp.GetVal(ppCmds[1]);
 
-			if ( ppCmds[2] && *(ppCmds[2]) )
+			if ( ppCmds[2] && *ppCmds[2] )
 			{
 				if ( strcmpi(ppCmds[2], "remove") == 0 )
 					return pListBase->RemoveElement(nIndex);
@@ -974,7 +974,7 @@ bool CListDefMap::r_LoadVal( LPCTSTR pszKey, CScript & s )
 					if ( nIndex >= pListBase->GetCount() )
 					{
 						if ( bIsNum )
-							return pListBase->AddElementNum(Exp_GetVal(pszArg));
+							return pListBase->AddElementNum(g_Exp.GetVal(pszArg));
 						else
 							return pListBase->AddElementStr(pszArg);
 					}
@@ -985,7 +985,7 @@ bool CListDefMap::r_LoadVal( LPCTSTR pszKey, CScript & s )
 						return false;
 
 					if ( bIsNum )
-						return pListBase->InsertElementNum(nIndex, Exp_GetVal(pszArg));
+						return pListBase->InsertElementNum(nIndex, g_Exp.GetVal(pszArg));
 					else
 						return pListBase->InsertElementStr(nIndex, pszArg);
 				}
@@ -998,14 +998,14 @@ bool CListDefMap::r_LoadVal( LPCTSTR pszKey, CScript & s )
 					return false;
 
 				if ( IsSimpleNumberString(pszArg) )
-					return pListBase->SetNumAt(nIndex, Exp_GetVal(pszArg));
+					return pListBase->SetNumAt(nIndex, g_Exp.GetVal(pszArg));
 				else
 					return pListBase->SetStrAt(nIndex, pszArg);
 			}
 		}
 		else
 		{
-			if ( ppCmds[2] && *(ppCmds[2]) )
+			if ( ppCmds[2] && *ppCmds[2] )
 			{
 				if ( strcmpi(ppCmds[2], "insert") == 0 && pszArg && *pszArg )
 				{
@@ -1013,7 +1013,7 @@ bool CListDefMap::r_LoadVal( LPCTSTR pszKey, CScript & s )
 					m_Container.insert(pListBase);
 
 					if ( IsSimpleNumberString(pszArg) )
-						return pListBase->AddElementNum(Exp_GetVal(pszArg));
+						return pListBase->AddElementNum(g_Exp.GetVal(pszArg));
 					else
 						return pListBase->AddElementStr(pszArg);
 				}
@@ -1031,7 +1031,7 @@ bool CListDefMap::r_LoadVal( LPCTSTR pszKey, CScript & s )
 		}
 
 		if ( IsSimpleNumberString(pszArg) )
-			return pListBase->AddElementNum(Exp_GetVal(pszArg));
+			return pListBase->AddElementNum(g_Exp.GetVal(pszArg));
 		else
 			return pListBase->AddElementStr(pszArg);
 	}
@@ -1058,7 +1058,7 @@ bool CListDefMap::r_Write( CTextConsole *pSrc, LPCTSTR pszString, CGString& strV
 	if ( !pListBase )
 		return false;
 
-	if ( !ppCmds[1] || !(*(ppCmds[1])) ) // LIST.<list_name>
+	if ( !ppCmds[1] || !*ppCmds[1] )	// LIST.<list_name>
 	{
 		pListBase->PrintElements(strVal);
 
@@ -1072,11 +1072,11 @@ bool CListDefMap::r_Write( CTextConsole *pSrc, LPCTSTR pszString, CGString& strV
 
 	if ( IsSimpleNumberString(ppCmds[1]) )
 	{
-		nStartIndex = Exp_GetVal(ppCmds[1]);
+		nStartIndex = static_cast<int>(g_Exp.GetVal(ppCmds[1]));
 		CListDefContElem *pListElem = pListBase->GetAt(nStartIndex);
 		if ( pListElem )
 		{
-			if ( !(*(ppCmds[2])) )
+			if ( !*ppCmds[2] )
 			{
 				CListDefContStr *pListElemStr = dynamic_cast<CListDefContStr*>(pListElem);
 				if ( pListElemStr )
@@ -1092,8 +1092,7 @@ bool CListDefMap::r_Write( CTextConsole *pSrc, LPCTSTR pszString, CGString& strV
 	}
 	else if ( strcmpi(ppCmds[1], "count") == 0 )
 	{
-		strVal.Format("%" FMTSIZE_T, pListBase->GetCount());
-
+		strVal.Format("%zu", pListBase->GetCount());
 		return true;
 	}
 
@@ -1108,7 +1107,7 @@ bool CListDefMap::r_Write( CTextConsole *pSrc, LPCTSTR pszString, CGString& strV
 		if (( fQuoted ) || (! IsSimpleNumberString(pszArg) ))
 			strVal.Format("%d", pListBase->FindValStr(pszArg, nStartIndex));
 		else
-			strVal.Format("%d", pListBase->FindValNum(Exp_GetVal(pszArg), nStartIndex));
+			strVal.Format("%d", pListBase->FindValNum(g_Exp.GetVal(pszArg), nStartIndex));
 
 		return true;
 	}

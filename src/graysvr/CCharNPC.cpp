@@ -439,8 +439,8 @@ void CCharPlayer::r_WriteChar(CChar *pChar, CScript &s)
 		if ( !m_StatLock[i] )
 			continue;
 
-		TCHAR szTemp[15];
-		snprintf(szTemp, sizeof(szTemp), "STATLOCK[%" FMTSIZE_T "]", i);
+		TCHAR szTemp[16];
+		snprintf(szTemp, sizeof(szTemp), "STATLOCK[%zu]", i);
 		s.WriteKeyVal(szTemp, m_StatLock[i]);
 	}
 
@@ -451,8 +451,8 @@ void CCharPlayer::r_WriteChar(CChar *pChar, CScript &s)
 		if ( !m_SkillLock[i] )
 			continue;
 
-		TCHAR szTemp[15];
-		snprintf(szTemp, sizeof(szTemp), "SKILLLOCK[%" FMTSIZE_T "]", i);
+		TCHAR szTemp[16];
+		snprintf(szTemp, sizeof(szTemp), "SKILLLOCK[%zu]", i);
 		s.WriteKeyVal(szTemp, m_SkillLock[i]);
 	}
 	EXC_CATCH;

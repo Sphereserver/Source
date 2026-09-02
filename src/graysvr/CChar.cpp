@@ -478,7 +478,7 @@ int CChar::IsWeird() const
 				CItem *pItem = Horse_GetMountItem();
 				if ( !pItem )
 					return 0x1104;
-				if ( pItem->m_itFigurine.m_UID != GetUID() )
+				if ( static_cast<CGrayUID>(pItem->m_itFigurine.m_UID) != GetUID() )
 					return 0x1105;
 			}
 			else if ( !IsStatFlag(STATF_DEAD) )
@@ -996,7 +996,7 @@ bool CChar::ReadScript(CResourceLock &s, bool fVendor)
 				case ITC_FULLINTERP:
 				{
 					LPCTSTR pszArgs = s.GetArgStr();
-					GETNONWHITESPACE(pszArgs);
+					SkipWhitespace(pszArgs);
 					fFullInterp = (*pszArgs == '\0') ? true : (s.GetArgVal() != 0);
 					continue;
 				}
@@ -1275,7 +1275,7 @@ bool CChar::r_GetRef(LPCTSTR &pszKey, CScriptObj *&pRef)
 	if ( index >= 0 )
 	{
 		pszKey += strlen(sm_szRefKeys[index]);
-		SKIP_SEPARATORS(pszKey);
+		SkipDotSeparator(pszKey);
 		switch ( index )
 		{
 			case CHR_ACCOUNT:
@@ -1289,16 +1289,16 @@ bool CChar::r_GetRef(LPCTSTR &pszKey, CScriptObj *&pRef)
 				pRef = m_Act_Targ.ObjFind();
 				return true;
 			case CHR_FINDLAYER:				// find equipped layers
-				pRef = LayerFind(static_cast<LAYER_TYPE>(Exp_GetLLSingle(pszKey)));
-				SKIP_SEPARATORS(pszKey);
+				pRef = LayerFind(static_cast<LAYER_TYPE>(g_Exp.GetSingle(pszKey)));
+				SkipDotSeparator(pszKey);
 				return true;
 			case CHR_MEMORYFINDTYPE:		// find a type of memory
-				pRef = Memory_FindTypes(static_cast<WORD>(Exp_GetLLSingle(pszKey)));
-				SKIP_SEPARATORS(pszKey);
+				pRef = Memory_FindTypes(static_cast<WORD>(g_Exp.GetSingle(pszKey)));
+				SkipDotSeparator(pszKey);
 				return true;
 			case CHR_MEMORYFIND:			// find memory related to a given UID
-				pRef = Memory_FindObj(static_cast<CGrayUID>(static_cast<DWORD>(Exp_GetLLSingle(pszKey))));
-				SKIP_SEPARATORS(pszKey);
+				pRef = Memory_FindObj(static_cast<CGrayUID>(static_cast<DWORD>(g_Exp.GetSingle(pszKey))));
+				SkipDotSeparator(pszKey);
 				return true;
 			case CHR_OWNER:
 				pRef = NPC_PetGetOwner();
@@ -1421,7 +1421,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				if ( !strnicmp(pszKey, "ID", 2) )
 				{
 					pszKey += 2;
-					sVal.FormatVal(Attacker_GetID(static_cast<CGrayUID>(static_cast<DWORD>(Exp_GetLLSingle(pszKey))).CharFind()));
+					sVal.FormatVal(Attacker_GetID(static_cast<CGrayUID>(static_cast<DWORD>(g_Exp.GetSingle(pszKey))).CharFind()));
 					return true;
 				}
 				else if ( !strnicmp(pszKey, "TARGET", 6) )
@@ -1447,10 +1447,10 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 					}
 					else
 					{
-						id = Exp_GetVal(pszKey);
+						id = static_cast<size_t>(g_Exp.GetVal(pszKey));
 					}
 
-					SKIP_SEPARATORS(pszKey);
+					SkipDotSeparator(pszKey);
 					if ( id < m_lastAttackers.size() )
 					{
 						LastAttackers &refAttacker = m_lastAttackers.at(id);
@@ -1511,13 +1511,13 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				if ( !strnicmp(pszKey, "ID", 2) )
 				{
 					pszKey += 2;
-					sVal.FormatVal(NotoSave_GetID(static_cast<CGrayUID>(static_cast<DWORD>(Exp_GetLLSingle(pszKey))).CharFind()));
+					sVal.FormatVal(NotoSave_GetID(static_cast<CGrayUID>(static_cast<DWORD>(g_Exp.GetSingle(pszKey))).CharFind()));
 					return true;
 				}
 				if ( m_notoSaves.size() )
 				{
-					size_t id = Exp_GetVal(pszKey);
-					SKIP_SEPARATORS(pszKey);
+					size_t id = static_cast<size_t>(g_Exp.GetVal(pszKey));
+					SkipDotSeparator(pszKey);
 					if ( id < m_notoSaves.size() )
 					{
 						NotoSaves refNoto = m_notoSaves.at(id);
@@ -1611,7 +1611,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case CHC_SKILLCHECK:	// odd way to get skills checking into the triggers
 		{
 			pszKey += 10;
-			SKIP_SEPARATORS(pszKey);
+			SkipDotSeparator(pszKey);
 
 			TCHAR *ppArgs[2];
 			Str_ParseCmds(const_cast<TCHAR *>(pszKey), ppArgs, COUNTOF(ppArgs));
@@ -1619,7 +1619,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			SKILL_TYPE skill = g_Cfg.FindSkillKey(ppArgs[0]);
 			if ( skill == SKILL_NONE )
 				return false;
-			sVal.FormatVal(Skill_CheckSuccess(skill, Exp_GetVal(ppArgs[1])));
+			sVal.FormatVal(Skill_CheckSuccess(skill, static_cast<int>(g_Exp.GetVal(ppArgs[1]))));
 			return true;
 		}
 		case CHC_SKILLBEST:
@@ -1628,8 +1628,8 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			size_t uRank = 0;
 			if ( *pszKey == '.' )
 			{
-				SKIP_SEPARATORS(pszKey);
-				uRank = static_cast<size_t>(Exp_GetLLSingle(pszKey));
+				SkipDotSeparator(pszKey);
+				uRank = static_cast<size_t>(g_Exp.GetSingle(pszKey));
 			}
 			sVal.FormatVal(Skill_GetBest(uRank));
 			return true;
@@ -1637,7 +1637,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case CHC_SEX:
 		{
 			pszKey += 3;
-			SKIP_SEPARATORS(pszKey);
+			SkipDotSeparator(pszKey);
 
 			TCHAR *ppArgs[2];
 			Str_ParseCmds(const_cast<TCHAR *>(pszKey), ppArgs, COUNTOF(ppArgs), ":,/");
@@ -1700,7 +1700,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case CHC_CANCAST:
 		{
 			pszKey += 7;
-			GETNONWHITESPACE(pszKey);
+			SkipWhitespace(pszKey);
 
 			TCHAR *ppArgs[2];
 			size_t iArgQty = Str_ParseCmds(const_cast<TCHAR *>(pszKey), ppArgs, COUNTOF(ppArgs));
@@ -1711,7 +1711,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 
 			bool fCheckAntiMagic = true;
 			if ( iArgQty == 2 )
-				fCheckAntiMagic = (Exp_GetVal(ppArgs[1]) >= 1);
+				fCheckAntiMagic = (g_Exp.GetVal(ppArgs[1]) >= 1);
 
 			sVal.FormatVal(Spell_CanCast(spell, true, this, false, fCheckAntiMagic));
 			return true;
@@ -1775,7 +1775,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case CHC_SKILLUSEQUICK:
 		{
 			pszKey += 13;
-			GETNONWHITESPACE(pszKey);
+			SkipWhitespace(pszKey);
 
 			if ( *pszKey )
 			{
@@ -1787,7 +1787,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 					if ( skill == SKILL_NONE )
 						return false;
 
-					sVal.FormatVal(Skill_UseQuick(skill, Exp_GetVal(ppArgs[1])));
+					sVal.FormatVal(Skill_UseQuick(skill, static_cast<int>(g_Exp.GetVal(ppArgs[1]))));
 					return true;
 				}
 			}
@@ -1811,7 +1811,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case CHC_CANMOVE:
 		{
 			pszKey += 7;
-			GETNONWHITESPACE(pszKey);
+			SkipWhitespace(pszKey);
 
 			DIR_TYPE dir = GetDirStr(pszKey);
 			CPointBase pt = GetTopPoint();
@@ -1836,7 +1836,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case CHC_MOVE:
 		{
 			pszKey += 4;
-			GETNONWHITESPACE(pszKey);
+			SkipWhitespace(pszKey);
 
 			CPointBase pt = GetTopPoint();
 			pt.Move(GetDirStr(pszKey));
@@ -1924,7 +1924,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			if ( *pszKey == '.' )
 			{
 				++pszKey;
-				pMemory = Memory_FindObj(static_cast<CGrayUID>(static_cast<DWORD>(Exp_GetLLVal(pszKey))));
+				pMemory = Memory_FindObj(static_cast<CGrayUID>(static_cast<DWORD>(g_Exp.GetVal(pszKey))));
 			}
 			else
 				pMemory = Memory_FindObj(pSrc->GetChar());
@@ -1941,20 +1941,20 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case CHC_SKILLTOTAL:
 		{
 			pszKey += 10;
-			SKIP_SEPARATORS(pszKey);
-			GETNONWHITESPACE(pszKey);
+			SkipDotSeparator(pszKey);
+			SkipWhitespace(pszKey);
 
 			int iVal = 0;
 			bool fComp = true;
 			if ( *pszKey != '\0' )
 			{
 				if ( *pszKey == '+' )
-					iVal = Exp_GetVal(++pszKey);
+					iVal = static_cast<int>(g_Exp.GetVal(++pszKey));
 				else if ( *pszKey == '-' )
-					iVal = -Exp_GetVal(++pszKey);
+					iVal = -static_cast<int>(g_Exp.GetVal(++pszKey));
 				else
 				{
-					iVal = Exp_GetVal(pszKey);
+					iVal = static_cast<int>(g_Exp.GetVal(pszKey));
 					fComp = false;
 				}
 			}
@@ -1978,7 +1978,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				if ( *pszKey == '.' )		// used as a ref
 				{
 					++pszKey;
-					SKIP_SEPARATORS(pszKey);
+					SkipDotSeparator(pszKey);
 
 					CScriptObj *pRef = m_pPlayer->m_pAccount;
 					if ( pRef )
@@ -2036,7 +2036,7 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case CHC_DIR:
 		{
 			pszKey += 3;
-			CChar *pChar = static_cast<CGrayUID>(static_cast<DWORD>(Exp_GetLLSingle(pszKey))).CharFind();
+			CChar *pChar = static_cast<CGrayUID>(static_cast<DWORD>(g_Exp.GetSingle(pszKey))).CharFind();
 			if ( pChar )
 				sVal.FormatVal(GetDir(pChar));
 			else
@@ -2102,14 +2102,14 @@ bool CChar::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case CHC_NOTOGETFLAG:
 		{
 			pszKey += 11;
-			GETNONWHITESPACE(pszKey);
+			SkipWhitespace(pszKey);
 
-			CChar *pChar = static_cast<CGrayUID>(static_cast<DWORD>(Exp_GetLLVal(pszKey))).CharFind();
+			CChar *pChar = static_cast<CGrayUID>(static_cast<DWORD>(g_Exp.GetVal(pszKey))).CharFind();
 			if ( !pChar )
 				pChar = pSrc->GetChar();
 
-			SKIP_ARGSEP(pszKey);
-			sVal.FormatVal(Noto_GetFlag(pChar, (Exp_GetVal(pszKey) >= 1)));
+			SkipArgSeparator(pszKey);
+			sVal.FormatVal(Noto_GetFlag(pChar, (g_Exp.GetVal(pszKey) >= 1)));
 			break;
 		}
 		case CHC_NPC:
@@ -2307,11 +2307,11 @@ bool CChar::r_LoadVal(CScript &s)
 						return true;
 					}
 
-					id = Exp_GetVal(pszKey);
+					id = static_cast<int>(g_Exp.GetVal(pszKey));
 					if ( id < 0 )
 						return false;
 
-					SKIP_SEPARATORS(pszKey);
+					SkipDotSeparator(pszKey);
 					if ( id < static_cast<int>(m_lastAttackers.size()) )
 					{
 						if ( !strnicmp(pszKey, "ELAPSED", 7) )
@@ -2555,7 +2555,7 @@ bool CChar::r_LoadVal(CScript &s)
 					if ( skill == SKILL_NONE )
 						return false;
 
-					Skill_UseQuick(skill, Exp_GetVal(ppArgs[1]));
+					Skill_UseQuick(skill, static_cast<int>(g_Exp.GetVal(ppArgs[1])));
 					return true;
 				}
 			}
@@ -3127,7 +3127,7 @@ bool CChar::r_Verb(CScript &s, CTextConsole *pSrc)	// execute command from scrip
 			TCHAR *pszTemp = Str_GetTemp();
 			strncpy(pszTemp, s.GetArgRaw(), MAX_ITEM_NAME_SIZE);
 			pszTemp[MAX_ITEM_NAME_SIZE - 1] = '\0';
-			GETNONWHITESPACE(pszTemp);
+			SkipWhitespace(pszTemp);
 
 			WORD wReplicationQty = 1;
 
@@ -3280,7 +3280,7 @@ bool CChar::r_Verb(CScript &s, CTextConsole *pSrc)	// execute command from scrip
 					SKILL_TYPE skill = g_Cfg.FindSkillKey(ppArgs[0]);
 					if ( skill == SKILL_NONE )
 						return false;
-					Skill_Experience(skill, Exp_GetVal(ppArgs[1]));
+					Skill_Experience(skill, static_cast<int>(g_Exp.GetVal(ppArgs[1])));
 				}
 			}
 			return true;

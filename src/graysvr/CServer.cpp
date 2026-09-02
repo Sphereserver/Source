@@ -249,7 +249,8 @@ bool CServer::GetPublicIP()
 	// Send HTTP request
 	TCHAR szHeader[256];
 	snprintf(szHeader, COUNTOF(szHeader), "GET %s HTTP/1.1\r\nHost: %s\r\nUser-Agent: " SPHERE_TITLE_VER "\r\nConnection: Close\r\n\r\n", pszPath ? pszPath : "/", pszDomain);
-	if ( sock.Send(szHeader, strlen(szHeader)) == SOCKET_ERROR )
+
+	if ( sock.Send(szHeader, static_cast<int>(strlen(szHeader))) == SOCKET_ERROR )
 	{
 		sock.Close();
 		return false;
@@ -257,37 +258,39 @@ bool CServer::GetPublicIP()
 
 	// Receive HTTP response
 	TCHAR *pszBuffer = Str_GetTemp();
-	if ( sock.Receive(pszBuffer, NETWORK_BUFFERSIZE) == SOCKET_ERROR )
-	{
-		sock.Close();
-		return false;
-	}
-
+	int iBytesReceived = sock.Receive(pszBuffer, NETWORK_BUFFERSIZE - 1);
 	sock.Close();
 
+	if ( (iBytesReceived == SOCKET_ERROR) || (iBytesReceived <= 0) )
+		return false;
+
+	pszBuffer[iBytesReceived] = '\0';
+
 	// Skip HTTP header
-	pszBuffer = strstr(pszBuffer, "\r\n\r\n");
-
-	// Remove '\r' and '\n' chars
-	if ( pszBuffer )
+	TCHAR *pszIP = strstr(pszBuffer, "\r\n\r\n");
+	if ( pszIP )
 	{
-		for ( size_t i = 0; i < strlen(pszBuffer); ++i )
-		{
-			if ( (pszBuffer[i] == '\r') || (pszBuffer[i] == '\n') )
-			{
-				for ( size_t j = i; j < strlen(pszBuffer); ++j )
-					pszBuffer[j] = pszBuffer[j + 1];
-				--i;
-			}
-		}
+		// Skip initial \r\n\r\n
+		pszIP += 4;
 
-		// Check if it's a valid IP address
-		if ( Str_RegExMatch("^([0-9]{1,3}).([0-9]{1,3}).([0-9]{1,3}).([0-9]{1,3})$", pszBuffer) == MATCH_VALID )
+		// Skip trailing \r and \n
+		iLen = 0;
+		for ( size_t i = 0; pszIP[i] != '\0'; ++i )
 		{
-			m_ip.SetAddrStr(pszBuffer);
+			if ( (pszIP[i] != '\r') && (pszIP[i] != '\n') )
+				pszIP[iLen++] = pszIP[i];
+		}
+		pszIP[iLen] = '\0';
+
+		// Validate IP address
+		in_addr addr;
+		if ( inet_pton(AF_INET, pszIP, &addr) == 1 )
+		{
+			m_ip.SetAddrStr(pszIP);
 			return true;
 		}
 	}
+
 	DEBUG_ERR(("Failed to get server public IP: REST API 'http://%s' returned a non-IP value. Please check RestAPIPublicIP setting on " SPHERE_FILE SPHERE_FILE_EXT_INI "\n", szURL));
 	return false;
 }
@@ -530,13 +533,13 @@ bool CServer::OnConsoleCmd(CGString &sText, CTextConsole *pSrc)
 		case 'd':
 		{
 			LPCTSTR pszKey = sText + 1;
-			GETNONWHITESPACE(pszKey);
+			SkipWhitespace(pszKey);
 			switch ( tolower(*pszKey) )
 			{
 				case 'a':	// areas
 				{
 					++pszKey;
-					GETNONWHITESPACE(pszKey);
+					SkipWhitespace(pszKey);
 					if ( g_World.DumpAreas(pSrc, pszKey) )
 						pSrc->SysMessage("Areas dump successful\n");
 					else
@@ -554,7 +557,7 @@ bool CServer::OnConsoleCmd(CGString &sText, CTextConsole *pSrc)
 						case 'i':	// items
 						{
 							++pszKey;
-							GETNONWHITESPACE(pszKey);
+							SkipWhitespace(pszKey);
 							if ( g_Cfg.DumpUnscriptedItems(pSrc, pszKey) )
 								pSrc->SysMessage("Unscripted items dump successful\n");
 							else
@@ -747,7 +750,7 @@ longcommand:
 				while ( fgets(y, COUNTOF(y), pFileScript) )
 				{
 					x = y;
-					GETNONWHITESPACE(x);
+					SkipWhitespace(x);
 					if ( *x == '\0' )
 						continue;
 
@@ -957,7 +960,7 @@ bool CServer::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		// Try to fetch using indexes
 		if ( (*pszTemp >= '0') && (*pszTemp <= '9') )
 		{
-			size_t iNum = Exp_GetVal(pszTemp);
+			size_t iNum = static_cast<size_t>(g_Exp.GetVal(pszTemp));
 			if ( (*pszTemp == '\0') && (iNum < g_Accounts.Account_GetCount()) )
 				pAccount = g_Accounts.Account_Get(iNum);
 		}
@@ -973,7 +976,7 @@ bool CServer::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		}
 		else if ( pAccount )	// get an account property
 		{
-			SKIP_SEPARATORS(pszKey);
+			SkipDotSeparator(pszKey);
 			return pAccount->r_WriteVal(pszKey, sVal, pSrc);
 		}
 		return false;
@@ -981,7 +984,7 @@ bool CServer::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 	else if ( !strnicmp(pszKey, "GMPAGE.", 7) )
 	{
 		pszKey += 7;
-		size_t iNum = Exp_GetVal(pszKey);
+		size_t iNum = static_cast<size_t>(g_Exp.GetVal(pszKey));
 		if ( iNum >= g_World.m_GMPages.GetCount() )
 			return false;
 
@@ -989,7 +992,7 @@ bool CServer::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		if ( !pGMPage )
 			return false;
 
-		SKIP_SEPARATORS(pszKey);
+		SkipDotSeparator(pszKey);
 		return pGMPage->r_WriteVal(pszKey, sVal, pSrc);
 	}
 
@@ -1116,7 +1119,7 @@ bool CServer::r_Verb(CScript &s, CTextConsole *pSrc)
 			// Try to fetch using indexes
 			if ( (*pszTemp >= '0') && (*pszTemp <= '9') )
 			{
-				size_t iNum = Exp_GetVal(pszTemp);
+				size_t iNum = static_cast<size_t>(g_Exp.GetVal(pszTemp));
 				if ( (*pszTemp == '\0') && (iNum < g_Accounts.Account_GetCount()) )
 					pAccount = g_Accounts.Account_Get(iNum);
 			}
@@ -1127,7 +1130,7 @@ bool CServer::r_Verb(CScript &s, CTextConsole *pSrc)
 
 			if ( pAccount && *pszKey )	// execute function
 			{
-				SKIP_SEPARATORS(pszKey);
+				SkipDotSeparator(pszKey);
 				CScript script(pszKey, s.GetArgStr());
 				return pAccount->r_LoadVal(script);
 			}
@@ -1136,7 +1139,7 @@ bool CServer::r_Verb(CScript &s, CTextConsole *pSrc)
 		else if ( !strnicmp(pszKey, "GMPAGE.", 7) )
 		{
 			pszKey += 7;
-			size_t iNum = Exp_GetVal(pszKey);
+			size_t iNum = static_cast<size_t>(g_Exp.GetVal(pszKey));
 			if ( iNum >= g_World.m_GMPages.GetCount() )
 				return false;
 
@@ -1144,14 +1147,14 @@ bool CServer::r_Verb(CScript &s, CTextConsole *pSrc)
 			if ( !pGMPage )
 				return false;
 
-			SKIP_SEPARATORS(pszKey);
+			SkipDotSeparator(pszKey);
 			CScript script(pszKey, s.GetArgStr());
 			return pGMPage->r_LoadVal(script);
 		}
 		else if ( !strnicmp(pszKey, "CLEARVARS", 9) )
 		{
 			pszKey = s.GetArgStr();
-			SKIP_SEPARATORS(pszKey);
+			SkipDotSeparator(pszKey);
 			g_Exp.m_VarGlobals.ClearKeys(pszKey);
 			return true;
 		}
@@ -1196,7 +1199,7 @@ bool CServer::r_Verb(CScript &s, CTextConsole *pSrc)
 			}
 
 			HistoryIP &history = g_NetworkManager.getIPHistoryManager().getHistoryForIP(ppArgs[0]);
-			INT64 iTimeout = (iQty >= 2) ? Exp_GetLLVal(ppArgs[1]) : -1;
+			INT64 iTimeout = (iQty >= 2) ? g_Exp.GetVal(ppArgs[1]) : -1;
 
 			if ( iTimeout >= 0 )
 				pSrc->SysMessagef("IP blocked for %lld seconds\n", iTimeout);

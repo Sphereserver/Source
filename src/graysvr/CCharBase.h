@@ -85,33 +85,24 @@ public:
 		return ((id > CREID_INVALID) && (id < CREID_QTY));
 	}
 
-	static bool IsPlayableID(CREID_TYPE id, bool bCheckGhost = false)
+	static bool IsPlayableID(CREID_TYPE id)
 	{
-		return (IsHumanID(id, bCheckGhost) || IsElfID(id, bCheckGhost) || IsGargoyleID(id, bCheckGhost));
+		return (IsHumanID(id) || IsElfID(id) || IsGargoyleID(id));
 	}
 
-	static bool IsHumanID(CREID_TYPE id, bool bCheckGhost = false)
+	static bool IsHumanID(CREID_TYPE id)
 	{
-		if ( bCheckGhost )
-			return ((id == CREID_MAN) || (id == CREID_WOMAN) || (id == CREID_EQUIP_GM_ROBE) || (id == CREID_GHOSTMAN) || (id == CREID_GHOSTWOMAN));
-		else
-			return ((id == CREID_MAN) || (id == CREID_WOMAN) || (id == CREID_EQUIP_GM_ROBE));
+		return ((id == CREID_MAN) || (id == CREID_WOMAN) || (id == CREID_EQUIP_GM_ROBE));
 	}
 
-	static bool IsElfID(CREID_TYPE id, bool bCheckGhost = false)
+	static bool IsElfID(CREID_TYPE id)
 	{
-		if ( bCheckGhost )
-			return ((id == CREID_ELFMAN) || (id == CREID_ELFWOMAN) || (id == CREID_ELFGHOSTMAN) || (id == CREID_ELFGHOSTWOMAN));
-		else
-			return ((id == CREID_ELFMAN) || (id == CREID_ELFWOMAN));
+		return ((id == CREID_ELFMAN) || (id == CREID_ELFWOMAN));
 	}
 
-	static bool IsGargoyleID(CREID_TYPE id, bool bCheckGhost = false)
+	static bool IsGargoyleID(CREID_TYPE id)
 	{
-		if ( bCheckGhost )
-			return ((id == CREID_GARGMAN) || (id == CREID_GARGWOMAN) || (id == CREID_GARGGHOSTMAN) || (id == CREID_GARGGHOSTWOMAN));
-		else
-			return ((id == CREID_GARGMAN) || (id == CREID_GARGWOMAN));
+		return ((id == CREID_GARGMAN) || (id == CREID_GARGWOMAN));
 	}
 
 	bool IsFemale() const
