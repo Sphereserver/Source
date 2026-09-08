@@ -121,28 +121,35 @@ enum TOOLTIPMODE_TYPE
 	TOOLTIPMODE_SENDVERSION		= 0x1		// Send only tooltip version and wait for client to request full tooltip
 };
 
-#define DAMAGE_GOD			0x00001	// Nothing can block this.
-#define DAMAGE_HIT_BLUNT	0x00002	// Physical hit of some sort.
-#define DAMAGE_MAGIC		0x00004	// Magic blast of some sort. (we can be immune to magic to some extent)
-#define DAMAGE_POISON		0x00008	// Or biological of some sort ? (HARM spell)
-#define DAMAGE_FIRE			0x00010	// Fire damage of course (some creatures are immune to fire)
-#define DAMAGE_ENERGY		0x00020	// lightning.
-#define DAMAGE_GENERAL		0x00080	// All over damage. As apposed to hitting just one point.
-#define DAMAGE_ACIDIC		0x00100	// damages armor
-#define DAMAGE_COLD			0x00200	// cold or water based damage
-#define DAMAGE_HIT_SLASH	0x00400	// sword
-#define DAMAGE_HIT_PIERCE	0x00800	// spear.
-#define DAMAGE_NODISTURB	0x02000	// victim won't be disturbed
-#define DAMAGE_NOREVEAL		0x04000	// Attacker is not revealed for this
-#define DAMAGE_NOUNPARALYZE	0x08000	// victim won't be unparalyzed
-#define DAMAGE_FIXED		0x10000	// already fixed damage, don't do calcs ... only create blood, anim, sounds... and update memories and attacker
+enum DAMAGE_TYPE : DWORD
+{
+	DAMAGE_GOD					= 0x00001,	// Unblockable damage
+	DAMAGE_PHYSICAL				= 0x00002,	// Physical damage
+	DAMAGE_MAGIC				= 0x00004,	// Done by spells
+	DAMAGE_POISON				= 0x00008,	// Poison damage
+	DAMAGE_FIRE					= 0x00010,	// Fire damage
+	DAMAGE_ENERGY				= 0x00020,	// Energy damage
+	DAMAGE_GENERAL				= 0x00080,	// Hits the entire body, rather than just one part
+	DAMAGE_ACIDIC				= 0x00100,	// Degrades armor
+	DAMAGE_COLD					= 0x00200,	// Cold damage
+	DAMAGE_HIT_SLASH			= 0x00400,	// Done by slash attack (swords, axes, etc.)
+	DAMAGE_HIT_PIERCE			= 0x00800,	// Done by pierce attack (spears, arrows, etc.)
+	DAMAGE_NODISTURB			= 0x02000,	// Won't disturb the victim
+	DAMAGE_NOREVEAL				= 0x04000,	// Won't reveal the attacker
+	DAMAGE_NOUNPARALYZE			= 0x08000,	// Won't unparalyze the victim
+	DAMAGE_FIXED				= 0x10000	// Direct damage (skips armor calculation)
+};
 
-typedef DWORD DAMAGE_TYPE;
+inline DAMAGE_TYPE operator|(DAMAGE_TYPE a, DAMAGE_TYPE b)
+{
+	return static_cast<DAMAGE_TYPE>(static_cast<DWORD>(a) | static_cast<DWORD>(b));
+}
 
-#define IsSetOF(flags)				(g_Cfg.m_iOptionFlags & flags)
-#define IsSetEF(flags)				(g_Cfg.m_iExperimental & flags)
-#define IsSetMagicFlags(flags)		(g_Cfg.m_iMagicFlags & flags)
-#define IsSetCombatFlags(flags)		(g_Cfg.m_iCombatFlags & flags)
+inline DAMAGE_TYPE &operator|=(DAMAGE_TYPE &a, DAMAGE_TYPE b)
+{
+	a = a | b;
+	return a;
+}
 
 ///////////////////////////////////////////////////////////
 // CValueRangeDef
@@ -1155,6 +1162,26 @@ private:
 	CResource(const CResource &copy);
 	CResource &operator=(const CResource &other);
 } g_Cfg;
+
+inline bool IsSetOF(OF_TYPE iFlags)
+{
+	return (g_Cfg.m_iOptionFlags & iFlags);
+}
+
+inline bool IsSetEF(EF_TYPE iFlags)
+{
+	return (g_Cfg.m_iExperimental & iFlags);
+}
+
+inline bool IsSetMagicFlags(MAGICFLAGS_TYPE iFlags)
+{
+	return (g_Cfg.m_iMagicFlags & iFlags);
+}
+
+inline bool IsSetCombatFlags(COMBATFLAGS_TYPE iFlags)
+{
+	return (g_Cfg.m_iCombatFlags & iFlags);
+}
 
 ///////////////////////////////////////////////////////////
 // CDialogDef

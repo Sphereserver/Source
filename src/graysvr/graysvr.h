@@ -161,7 +161,6 @@ extern void TriglistPrint();
 // Text mashers.
 
 extern DIR_TYPE GetDirStr( LPCTSTR pszDir );
-extern LPCTSTR GetTimeMinDesc( int dwMinutes );
 extern size_t FindStrWord( LPCTSTR pTextSearch, LPCTSTR pszKeyWord );
 
 //////////////////

@@ -1384,7 +1384,7 @@ int CChar::Do_Use_Item(CItem *pItem, bool fLink)
 			// Activate the trap (plus any linked traps)
 			int iDmg = pItem->Use_Trap();
 			if ( CanTouch(pItem->GetTopLevelObj()->GetTopPoint()) )
-				OnTakeDamage(iDmg, NULL, DAMAGE_HIT_BLUNT|DAMAGE_GENERAL);
+				OnTakeDamage(iDmg, NULL, DAMAGE_PHYSICAL|DAMAGE_GENERAL);
 			break;
 		}
 

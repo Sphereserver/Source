@@ -60,7 +60,7 @@ bool CSector::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatULLVal(m_Chars_Active.HasClients());
 			return true;
 		case SECC_COLDCHANCE:
-			sVal.FormatVal(GetColdChance());
+			sVal.FormatUVal(GetColdChance());
 			return true;
 		case SECC_COMPLEXITY:
 		{
@@ -408,7 +408,64 @@ int CSector::GetLocalTime() const
 LPCTSTR CSector::GetLocalGameTime() const
 {
 	ADDTOCALLSTACK("CSector::GetLocalGameTime");
-	return GetTimeMinDesc(GetLocalTime());
+	// Get local time of the day
+
+	int iLocalTime = GetLocalTime();
+	int iMinute = iLocalTime % 60;
+	int iHour = (iLocalTime / 60) % 24;
+
+	LPCTSTR pszPrefix;
+	if ( iMinute < 15 )
+		pszPrefix = g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_QUARTER_FIRST);
+	else if ( (iMinute >= 15) && (iMinute < 30) )
+		pszPrefix = g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_QUARTER_SECOND);
+	else if ( (iMinute >= 30) && (iMinute < 45) )
+		pszPrefix = g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_QUARTER_THIRD);
+	else
+	{
+		pszPrefix = g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_QUARTER_FOURTH);
+		iHour = (iHour + 1) % 24;
+	}
+
+	static const LPCTSTR sm_szClockHour[] =
+	{
+		g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_HOUR_ZERO),
+		g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_HOUR_ONE),
+		g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_HOUR_TWO),
+		g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_HOUR_THREE),
+		g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_HOUR_FOUR),
+		g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_HOUR_FIVE),
+		g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_HOUR_SIX),
+		g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_HOUR_SEVEN),
+		g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_HOUR_EIGHT),
+		g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_HOUR_NINE),
+		g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_HOUR_TEN),
+		g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_HOUR_ELEVEN),
+		g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_HOUR_TWELVE)
+	};
+
+	LPCTSTR pszSuffix = "";
+	if ( iHour < 12 )
+		pszSuffix = g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_24_TO_12);
+	else if ( iHour > 12 )
+	{
+		if ( (iHour >= 13) && (iHour < 18) )
+			pszSuffix = g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_13_TO_18);
+		else if ( (iHour >= 18) && (iHour < 21) )
+			pszSuffix = g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_18_TO_21);
+		else
+			pszSuffix = g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_21_TO_24);
+		iHour -= 12;
+	}
+
+	if ( iHour < 0 )
+		iHour = 0;
+	else if ( iHour >= static_cast<int>(COUNTOF(sm_szClockHour)) )
+		iHour = COUNTOF(sm_szClockHour) - 1;
+
+	TCHAR *pszTemp = Str_GetTemp();
+	snprintf(pszTemp, MAX_TALK_BUFFER, "%s %s %s", pszPrefix, sm_szClockHour[iHour], pszSuffix);
+	return pszTemp;
 }
 
 bool CSector::IsMoonVisible(unsigned int uPhase, int iLocalTime) const

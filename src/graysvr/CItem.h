@@ -1,7 +1,3 @@
-//
-// CItem.h
-//
-
 #ifndef _INC_CITEM_H
 #define _INC_CITEM_H
 #pragma once
@@ -678,17 +674,17 @@ public:
 	virtual void OnMoveFrom()	// moving from current location
 	{
 	}
-	virtual bool MoveTo(CPointMap pt, bool bForceFix = false);	// put item on the ground here
-	bool MoveToUpdate(CPointMap pt, bool bForceFix = false)
+	virtual bool MoveTo(CPointMap pt, bool fForceFix = false);
+	bool MoveToUpdate(CPointMap pt, bool fForceFix = false)
 	{
-		bool bReturn = MoveTo(pt, bForceFix);
+		bool fReturn = MoveTo(pt, fForceFix);
 		Update();
-		return bReturn;
+		return fReturn;
 	}
-	bool MoveToDecay(const CPointMap &pt, INT64 iDecayTime, bool bForceFix = false)
+	bool MoveToDecay(const CPointMap &pt, INT64 iDecayTime, bool fForceFix = false)
 	{
 		SetDecayTime(iDecayTime);
-		return MoveToUpdate(pt, bForceFix);
+		return MoveToUpdate(pt, fForceFix);
 	}
 	bool MoveToCheck(const CPointMap &pt, CChar *pCharMover = NULL, bool fForceDecay = false);
 	virtual bool MoveNearObj(const CObjBaseTemplate *pObj, WORD wSteps = 0);
@@ -889,15 +885,15 @@ public:
 	}
 
 	void OnExplosion();
-	bool OnSpellEffect(SPELL_TYPE spell, CChar *pCharSrc, int iSkillLevel, CItem *pSourceItem, bool bReflecting = false);
-	int OnTakeDamage(int iDmg, CChar *pSrc, DAMAGE_TYPE uType = DAMAGE_HIT_BLUNT);
+	bool OnSpellEffect(SPELL_TYPE spell, CChar *pCharSrc, int iSkillLevel, CItem *pSourceItem, bool fReflecting = false);
+	int OnTakeDamage(int iDmg, CChar *pSrc, DAMAGE_TYPE uType = DAMAGE_PHYSICAL);
 
 	WORD Armor_GetRepairPercent() const;
 	LPCTSTR Armor_GetRepairDesc() const;
 	bool Armor_IsRepairable() const;
 	int Armor_GetDefense() const;
 
-	int Weapon_GetAttack(bool bGetRange = true) const;
+	int Weapon_GetAttack(bool fGetRange = true) const;
 	SKILL_TYPE Weapon_GetSkill() const;
 	SOUND_TYPE Weapon_GetSoundHit() const;
 	SOUND_TYPE Weapon_GetSoundMiss() const;
@@ -930,7 +926,7 @@ public:
 
 	static CItem *ReadTemplate(CResourceLock &s, CObjBase *pCont);
 
-	virtual void Delete(bool bForce = false);
+	virtual void Delete(bool fForce = false);
 	virtual bool NotifyDelete();
 };
 
@@ -1377,7 +1373,7 @@ protected:
 
 public:
 	virtual void OnMoveFrom();
-	virtual bool MoveTo(CPointMap pt, bool bForceFix = false);
+	virtual bool MoveTo(CPointMap pt, bool fForceFix = false);
 	virtual void OnHear(LPCTSTR pszCmd, CChar *pSrc);
 
 	virtual void r_Write(CScript &s);

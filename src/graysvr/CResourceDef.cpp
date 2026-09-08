@@ -628,10 +628,10 @@ bool CSpellDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			sVal.FormatVal( m_idEffect );
 			break;
 		case SPC_FLAGS:
-			sVal.FormatVal( m_dwFlags );
+			sVal.FormatUVal(m_dwFlags);
 			break;
 		case SPC_GROUP:
-			sVal.FormatVal( m_dwGroup );
+			sVal.FormatUVal(m_dwGroup);
 			break;
 		case SPC_INTERRUPT:
 			sVal = m_Interrupt.Write();
@@ -640,7 +640,7 @@ bool CSpellDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			sVal.FormatVal(m_idLayer);
 			break;
 		case SPC_MANAUSE:
-			sVal.FormatVal( m_wManaUse );
+			sVal.FormatUVal(m_wManaUse);
 			break;
 		case SPC_NAME:
 			sVal = m_sName;
@@ -655,9 +655,9 @@ bool CSpellDef::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc
 			{
 				bool fKeyOnly = false;
 				bool fQtyOnly = false;
-				SKIP_SEPARATORS(pszKey);
-				index = Exp_GetVal(pszKey);
-				SKIP_SEPARATORS(pszKey);
+				SkipDotSeparator(pszKey);
+				index = static_cast<int>(g_Exp.GetVal(pszKey));
+				SkipDotSeparator(pszKey);
 
 				if ( !strnicmp(pszKey, "KEY", 3) )
 					fKeyOnly = true;
@@ -880,7 +880,7 @@ bool CRandGroupDef::r_LoadVal( CScript &s )
 
 				rec.SetResourceID(
 					g_Cfg.ResourceGetID(RES_CHARDEF, const_cast<LPCTSTR &>(reinterpret_cast<LPTSTR &>(ppCmd[0]))),
-					( iArgs > 1 && ppCmd[1][0] ) ? Exp_GetVal(ppCmd[1]) : 1 );
+					((iArgs > 1) && (ppCmd[1][0])) ? static_cast<int>(g_Exp.GetVal(ppCmd[1])) : 1);
 				m_iTotalWeight += rec.GetResQty();
 				m_Members.Add(rec);
 			}
@@ -940,13 +940,13 @@ bool CRandGroupDef::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * p
 		case RGC_CALCMEMBERINDEX:
 		{
 			pszKey += 15;
-			GETNONWHITESPACE(pszKey);
+			SkipWhitespace(pszKey);
 
 			if ( pszKey[0] == '\0' )
 				sVal.FormatULLVal(GetRandMemberIndex(NULL, false));
 			else
 			{
-				CChar *pChar = static_cast<CGrayUID>(static_cast<DWORD>(Exp_GetLLVal(pszKey))).CharFind();
+				CChar *pChar = static_cast<CGrayUID>(static_cast<DWORD>(g_Exp.GetVal(pszKey))).CharFind();
 				if ( !pChar )
 					return false;
 				sVal.FormatULLVal(GetRandMemberIndex(pChar, false));
@@ -962,15 +962,15 @@ bool CRandGroupDef::r_WriteVal( LPCTSTR pszKey, CGString &sVal, CTextConsole * p
 			pszKey += 9;
 			if ( *pszKey == '.' )
 			{
-				SKIP_SEPARATORS(pszKey);
+				SkipDotSeparator(pszKey);
 				if ( !strnicmp(pszKey, "COUNT", 5) )
 					sVal.FormatULLVal(m_Members.GetCount());
 				else
 				{
 					bool fKeyOnly = false;
 					bool fQtyOnly = false;
-					int index = Exp_GetVal(pszKey);
-					SKIP_SEPARATORS(pszKey);
+					int index = static_cast<int>(g_Exp.GetVal(pszKey));
+					SkipDotSeparator(pszKey);
 
 					if ( !strnicmp(pszKey, "KEY", 3) )
 						fKeyOnly = true;

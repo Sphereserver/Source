@@ -131,7 +131,7 @@ bool IsSimpleNumberString(LPCTSTR pszArgs)
 		if ( (ch == '/') && (pszArgs[1] != '/') )
 			fMathSep = true;
 		else
-			fMathSep = (strchr("+-\\*~|&%^()", ch) != NULL);
+			fMathSep = (strchr("+-\\*~|&!%^()", ch) != NULL);
 
 		if ( !fMathSep )
 			return false;
@@ -378,6 +378,9 @@ INT64 CExpression::GetSingle(LPCTSTR &pszArgs)
 			case '~':	// bitwise 'not'
 				++pszArgs;
 				return ~GetSingle(pszArgs);
+			case '!':	// boolean 'not'
+				++pszArgs;
+				return static_cast<INT64>(!GetSingle(pszArgs));
 			case ';':	// seperator field
 			case ',':	// seperator field
 			case '\0':
@@ -755,13 +758,25 @@ INT64 CExpression::GetValMath(INT64 iVal, LPCTSTR &pszArgs)
 		case '|':
 		{
 			++pszArgs;
-			iVal |= GetVal(pszArgs);
+			if ( pszArgs[0] == '|' )	// boolean
+			{
+				++pszArgs;
+				iVal = static_cast<INT64>(GetVal(pszArgs) || iVal);
+			}
+			else	// bitwise
+				iVal |= GetVal(pszArgs);
 			break;
 		}
 		case '&':
 		{
 			++pszArgs;
-			iVal &= GetVal(pszArgs);
+			if ( pszArgs[0] == '&' )	// boolean
+			{
+				++pszArgs;
+				iVal = static_cast<INT64>(GetVal(pszArgs) && iVal);
+			}
+			else	// bitwise
+				iVal &= GetVal(pszArgs);
 			break;
 		}
 		case '/':
@@ -797,20 +812,54 @@ INT64 CExpression::GetValMath(INT64 iVal, LPCTSTR &pszArgs)
 		case '>':
 		{
 			++pszArgs;
-			if ( pszArgs[0] == '>' )
+			if ( pszArgs[0] == '=' )	// boolean
+			{
+				++pszArgs;
+				iVal = (iVal >= GetVal(pszArgs));
+			}
+			else if ( pszArgs[0] == '>' )	// shift
 			{
 				++pszArgs;
 				iVal >>= GetVal(pszArgs);
 			}
+			else	// comparison
+				iVal = (iVal > GetVal(pszArgs));
 			break;
 		}
 		case '<':
 		{
 			++pszArgs;
-			if ( pszArgs[0] == '<' )
+			if ( pszArgs[0] == '=' )	// boolean
+			{
+				++pszArgs;
+				iVal = (iVal <= GetVal(pszArgs));
+			}
+			else if ( pszArgs[0] == '<' )	// shift
 			{
 				++pszArgs;
 				iVal <<= GetVal(pszArgs);
+			}
+			else	// comparison
+				iVal = (iVal < GetVal(pszArgs));
+			break;
+		}
+		case '!':
+		{
+			++pszArgs;
+			if ( pszArgs[0] == '=' )	// boolean
+			{
+				++pszArgs;
+				iVal = (iVal != GetVal(pszArgs));
+			}
+			break;
+		}
+		case '=':
+		{
+			++pszArgs;
+			if ( pszArgs[0] == '=' )	// boolean
+			{
+				++pszArgs;
+				iVal = (iVal == GetVal(pszArgs));
 			}
 			break;
 		}

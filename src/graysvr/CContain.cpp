@@ -1,7 +1,4 @@
-//
-// CContain.cpp
-//
-#include "graysvr.h"	// predef header.
+#include "graysvr.h"	// predef header
 #include "../network/send.h"
 
 ///////////////////////////////////////////////////////////
@@ -463,26 +460,26 @@ bool CContainer::r_GetRefContainer(LPCTSTR &pszKey, CScriptObj *&pRef)
 		if ( !strnicmp(pszKey, "ID", 2) )			// FINDID
 		{
 			pszKey += 2;
-			SKIP_SEPARATORS(pszKey);
+			SkipDotSeparator(pszKey);
 			pRef = ContentFind(g_Cfg.ResourceGetID(RES_ITEMDEF, pszKey));
-			SKIP_SEPARATORS(pszKey);
+			SkipDotSeparator(pszKey);
 			return true;
 		}
 		else if ( !strnicmp(pszKey, "CONT", 4) )	// FINDCONT
 		{
 			pszKey += 4;
-			SKIP_SEPARATORS(pszKey);
-			INT64 iKey = Exp_GetLLSingle(pszKey);
+			SkipDotSeparator(pszKey);
+			INT64 iKey = g_Exp.GetSingle(pszKey);
 			pRef = (iKey >= 0) ? GetAt(static_cast<size_t>(iKey)) : NULL;
-			SKIP_SEPARATORS(pszKey);
+			SkipDotSeparator(pszKey);
 			return true;
 		}
 		else if ( !strnicmp(pszKey, "TYPE", 4) )	// FINDTYPE
 		{
 			pszKey += 4;
-			SKIP_SEPARATORS(pszKey);
+			SkipDotSeparator(pszKey);
 			pRef = ContentFind(g_Cfg.ResourceGetID(RES_TYPEDEF, pszKey));
-			SKIP_SEPARATORS(pszKey);
+			SkipDotSeparator(pszKey);
 			return true;
 		}
 	}
@@ -507,7 +504,7 @@ bool CContainer::r_WriteValContainer(LPCTSTR pszKey, CGString &sVal, CTextConsol
 		return false;
 
 	LPCTSTR	pszTemp = pszKey + strlen(sm_szParams[i]);
-	SKIP_SEPARATORS(pszTemp);
+	SkipDotSeparator(pszTemp);
 	switch ( i )
 	{
 		case 0:		// COUNT
@@ -526,7 +523,7 @@ bool CContainer::r_WriteValContainer(LPCTSTR pszKey, CGString &sVal, CTextConsol
 		}
 		case 2:		// RESCOUNT
 		{
-			sVal.FormatUVal(*pszTemp ? ContentCount(g_Cfg.ResourceGetID(RES_ITEMDEF, pszTemp)) : GetCount());
+			sVal.FormatULLVal(*pszTemp ? ContentCount(g_Cfg.ResourceGetID(RES_ITEMDEF, pszTemp)) : GetCount());
 			break;
 		}
 		case 3:		// RESTEST
@@ -870,44 +867,44 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 		{ GUMP_TALL_CABINET, 10, 10, 170, 115 },
 		{ GUMP_CHEST_WOOD_FINISH, 10, 10, 170, 115 },
 		{ GUMP_CHEST_WOOD_FINISH2, 10, 10, 170, 115 },
-		//{ GUMP_BLESSED_STATUE, 0, 0, 0, 0 },		// TO-DO: confirm gump size
-		//{ GUMP_MAILBOX, 0, 0, 0, 0 },				// TO-DO: confirm gump size
+		//{ GUMP_BLESSED_STATUE, 0, 0, 0, 0 },			// TO-DO
+		//{ GUMP_MAILBOX, 0, 0, 0, 0 },					// TO-DO
 		{ GUMP_GIFT_BOX_CUBE, 23, 51, 163, 151 },
 		{ GUMP_GIFT_BOX_CYLINDER, 16, 51, 156, 166 },
 		{ GUMP_GIFT_BOX_OCTOGON, 25, 51, 165, 166 },
 		{ GUMP_GIFT_BOX_RECTANGLE, 16, 51, 156, 151 },
 		{ GUMP_GIFT_BOX_ANGEL, 21, 51, 161, 151 },
 		{ GUMP_GIFT_BOX_HEART_SHAPED, 56, 30, 158, 104 },
-		//{ GUMP_GIFT_BOX_TALL, 0, 0, 0, 0 },		// TO-DO: confirm gump size
+		//{ GUMP_GIFT_BOX_TALL, 0, 0, 0, 0 },			// TO-DO
 		{ GUMP_GIFT_BOX_CHRISTMAS, 16, 51, 156, 166 },
-		//{ GUMP_WALL_SAFE, 0, 0, 0, 0 },			// TO-DO: confirm gump size
-		//{ GUMP_CHEST_PIRATE, 0, 0, 0, 0 },		// TO-DO: confirm gump size
-		//{ GUMP_FOUNTAIN_LIFE, 0, 0, 0, 0 },		// TO-DO: confirm gump size
-		//{ GUMP_SECRET_CHEST, 0, 0, 0, 0 },		// TO-DO: confirm gump size
-		//{ GUMP_MAILBOX_DOLPHIN, 0, 0, 0, 0 },		// TO-DO: confirm gump size
-		//{ GUMP_MAILBOX_SQUIRREL, 0, 0, 0, 0 },	// TO-DO: confirm gump size
-		//{ GUMP_MAILBOX_BARREL, 0, 0, 0, 0 },		// TO-DO: confirm gump size
-		//{ GUMP_MAILBOX_LANTERN, 0, 0, 0, 0 },		// TO-DO: confirm gump size
-		//{ GUMP_CABINET_LIGHT_LARGE, 0, 0, 0, 0 },	// TO-DO: confirm gump size
-		//{ GUMP_CABINET_DARK_LARGE, 0, 0, 0, 0 },	// TO-DO: confirm gump size
-		//{ GUMP_DRAWER_LIGHT_LARGE, 0, 0, 0, 0 },	// TO-DO: confirm gump size
-		//{ GUMP_DRAWER_DARK_LARGE, 0, 0, 0, 0 },	// TO-DO: confirm gump size
-		//{ GUMP_BARREL_LARGE, 0, 0, 0, 0 },		// TO-DO: confirm gump size
-		//{ GUMP_BOOK_SHELF_LARGE, 0, 0, 0, 0 },	// TO-DO: confirm gump size
+		//{ GUMP_WALL_SAFE, 0, 0, 0, 0 },				// TO-DO
+		//{ GUMP_CHEST_PIRATE, 0, 0, 0, 0 },			// TO-DO
+		//{ GUMP_FOUNTAIN_LIFE, 0, 0, 0, 0 },			// TO-DO
+		//{ GUMP_SECRET_CHEST, 0, 0, 0, 0 },			// TO-DO
+		//{ GUMP_MAILBOX_DOLPHIN, 0, 0, 0, 0 },			// TO-DO
+		//{ GUMP_MAILBOX_SQUIRREL, 0, 0, 0, 0 },		// TO-DO
+		//{ GUMP_MAILBOX_BARREL, 0, 0, 0, 0 },			// TO-DO
+		//{ GUMP_MAILBOX_LANTERN, 0, 0, 0, 0 },			// TO-DO
+		//{ GUMP_CABINET_LIGHT_LARGE, 0, 0, 0, 0 },		// TO-DO
+		//{ GUMP_CABINET_DARK_LARGE, 0, 0, 0, 0 },		// TO-DO
+		//{ GUMP_DRAWER_LIGHT_LARGE, 0, 0, 0, 0 },		// TO-DO
+		//{ GUMP_DRAWER_DARK_LARGE, 0, 0, 0, 0 },		// TO-DO
+		//{ GUMP_BARREL_LARGE, 0, 0, 0, 0 },			// TO-DO
+		//{ GUMP_BOOK_SHELF_LARGE, 0, 0, 0, 0 },		// TO-DO
 		{ GUMP_SECURE_TRADE, 20, 30, 380, 180 },
 		{ GUMP_BOARD_CHECKER, 0, 0, 282, 230 },
 		{ GUMP_BOARD_BACKGAMMON, 0, 0, 282, 210 },
 		{ GUMP_CHEST_WEDDING, 16, 51, 184, 124 },
 		{ GUMP_STONE_BASE, 16, 51, 184, 124 },
 		{ GUMP_PLAGUE_BEAST, 60, 33, 460, 348 },
-		//{ GUMP_KING_COLLECTION_BOX, 0, 0, 0, 0 },	// TO-DO: confirm gump size
+		//{ GUMP_KING_COLLECTION_BOX, 0, 0, 0, 0 },		// TO-DO
 		{ GUMP_BACKPACK_SUEDE, 44, 65, 186, 159 },
 		{ GUMP_BACKPACK_POLAR_BEAR, 44, 65, 186, 159 },
 		{ GUMP_BACKPACK_GHOUL_SKIN, 44, 65, 186, 159 },
-		//{ GUMP_GIFT_BOX_SQUARE, 0, 0, 0, 0 },		// TO-DO: confirm gump size
+		//{ GUMP_GIFT_BOX_SQUARE, 0, 0, 0, 0 },			// TO-DO
 		{ GUMP_CRATE_FLETCHING, 24, 96, 196, 152 },
 		{ GUMP_CHEST_WOODEN, 10, 10, 170, 115 },
-		//{ GUMP_PILLOW_HEART, 0, 0, 0, 0 },		// TO-DO: confirm gump size
+		//{ GUMP_PILLOW_HEART, 0, 0, 0, 0 },			// TO-DO
 		{ GUMP_CHEST_METAL_LARGE, 50, 60, 500, 300 },
 		{ GUMP_CHEST_METAL_GOLD_LARGE, 50, 60, 500, 300 },
 		{ GUMP_CHEST_WOOD_LARGE, 50, 60, 500, 300 },
@@ -915,6 +912,13 @@ CPointMap CItemContainer::GetRandContainerLoc() const
 		{ GUMP_MINERS_SATCHEL, 44, 65, 186, 159 },
 		{ GUMP_LUMBERJACKS_SATCHEL, 44, 65, 186, 159 },
 		{ GUMP_SHIP_CANNON, 35, 38, 145, 116 },
+		//{ GUMP_MAILBOX_KITTEN_SIT, 0, 0, 0, 0 },		// TO-DO
+		//{ GUMP_MAILBOX_KITTEN_STAND, 0, 0, 0, 0 },	// TO-DO
+		//{ GUMP_MAILBOX_SCARECROW, 0, 0, 0, 0 },		// TO-DO
+		//{ GUMP_MAILBOX_LION, 0, 0, 0, 0 },			// TO-DO
+		//{ GUMP_FOUNTAIN_LIFE2, 0, 0, 0, 0 },			// TO-DO
+		//{ GUMP_FOUNTAIN_LIFE2_LARGE, 0, 0, 0, 0 },	// TO-DO
+		//{ GUMP_GIFT_BOX_HOLIDAY, 0, 0, 0, 0 },		// TO-DO
 		{ GUMP_CHEST_METAL2, 18, 105, 162, 178 }
 	};
 

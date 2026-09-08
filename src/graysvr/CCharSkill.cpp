@@ -1,5 +1,4 @@
-// CChar is either an NPC or a Player
-#include "graysvr.h"	// predef header.
+#include "graysvr.h"	// predef header
 #include <cmath>
 
 ///////////////////////////////////////////////////////////
@@ -1893,9 +1892,9 @@ int CChar::Skill_DetectHidden(SKTRIG_TYPE stage)
 			continue;
 
 		// Check chance to reveal the target
-		WORD wSkillSrc = wSkillLevel + static_cast<WORD>(Calc_GetRandVal(210)) - 100;
-		WORD wSkillTarg = pChar->Skill_GetAdjusted(SKILL_HIDING) + static_cast<WORD>(Calc_GetRandVal(210) - 100);
-		if ( wSkillSrc < wSkillTarg )
+		int iSkillSrc = wSkillLevel + Calc_GetRandVal(210) - 100;
+		int iSkillTarg = pChar->Skill_GetAdjusted(SKILL_HIDING) + Calc_GetRandVal(210) - 100;
+		if ( iSkillSrc < iSkillTarg )
 			continue;
 
 		pChar->Reveal();
@@ -2207,7 +2206,7 @@ int CChar::Skill_Cooking(SKTRIG_TYPE stage)
 	ADDTOCALLSTACK("CChar::Skill_Cooking");
 	// m_atCreate.m_ItemID = create this item
 	// m_Act_p = the heat source
-	// m_Act_Targ = the skill tool
+	// m_Act_Targ = tool item (frypan / flour sifter / rolling pin)
 
 	int iMaxDist = 3;
 	if ( stage == SKTRIG_START )
@@ -2397,7 +2396,7 @@ int CChar::Skill_Lockpicking(SKTRIG_TYPE stage)
 
 	if ( stage == SKTRIG_FAIL )
 	{
-		pPick->OnTakeDamage(1, this, DAMAGE_HIT_BLUNT);	// damage my pick
+		pPick->OnTakeDamage(1, this, DAMAGE_PHYSICAL);
 		return 0;
 	}
 
@@ -2470,6 +2469,7 @@ int CChar::Skill_Hiding(SKTRIG_TYPE stage)
 int CChar::Skill_Herding(SKTRIG_TYPE stage)
 {
 	ADDTOCALLSTACK("CChar::Skill_Herding");
+	// m_Act_TargPrv = tool item (shepherd's crook)
 	// m_Act_Targ = move this creature.
 	// m_Act_p = move to here.
 	// How do I make them move fast ? or with proper speed ???
@@ -2484,8 +2484,7 @@ int CChar::Skill_Herding(SKTRIG_TYPE stage)
 		return -SKTRIG_QTY;
 	}
 
-	CItem *pCrook = m_Act_TargPrv.ItemFind();
-	if ( !pCrook )
+	if ( !m_Act_TargPrv.ItemFind() )
 	{
 		SysMessageDefault(DEFMSG_HERDING_NOCROOK);
 		return -SKTRIG_QTY;
@@ -3199,7 +3198,7 @@ int CChar::Skill_Act_Throwing(SKTRIG_TYPE stage)
 			pItemRock->Effect(EFFECT_BOLT, id, this);
 		}
 		if ( !Calc_GetRandVal(pChar->GetTopPoint().GetDist(m_Act_p)) )
-			pChar->OnTakeDamage(iDamage, this, DAMAGE_HIT_BLUNT);
+			pChar->OnTakeDamage(iDamage, this, DAMAGE_PHYSICAL);
 	}
 	return 0;
 }

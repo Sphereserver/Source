@@ -351,113 +351,34 @@ CAccounts	g_Accounts;	// All the player accounts. name sorted CAccount
 TScriptProfiler g_profiler;		// script profiler
 CMapList	g_MapList;			// global maps information
 
-DIR_TYPE GetDirStr( LPCTSTR pszDir )
+DIR_TYPE GetDirStr(LPCTSTR pszDir)
 {
-	char iDir2, iDir = static_cast<char>(toupper(pszDir[0]));
-
-	switch ( iDir )
+	char ch = static_cast<char>(toupper(pszDir[0]));
+	switch ( ch )
 	{
-		case 'E': return DIR_E;
-		case 'W': return DIR_W;
 		case 'N':
-			iDir2 = static_cast<char>(toupper(pszDir[1]));
-			if ( iDir2 == 'E' ) return DIR_NE;
-			if ( iDir2 == 'W' ) return DIR_NW;
+			ch = static_cast<char>(toupper(pszDir[1]));
+			if ( ch == 'E' )
+				return DIR_NE;
+			if ( ch == 'W' )
+				return DIR_NW;
 			return DIR_N;
 		case 'S':
-			iDir2 = static_cast<char>(toupper(pszDir[1]));
-			if ( iDir2 == 'E' ) return DIR_SE;
-			if ( iDir2 == 'W' ) return DIR_SW;
+			ch = static_cast<char>(toupper(pszDir[1]));
+			if ( ch == 'E' )
+				return DIR_SE;
+			if ( ch == 'W' )
+				return DIR_SW;
 			return DIR_S;
+		case 'E':
+			return DIR_E;
+		case 'W':
+			return DIR_W;
 		default:
-			if (( iDir >= '0' ) && ( iDir <= '7' ))
-				return static_cast<DIR_TYPE>(iDir - '0');
+			if ( (ch >= '0') && (ch <= '7') )
+				return static_cast<DIR_TYPE>(ch - '0');
 	}
 	return DIR_QTY;
-}
-
-LPCTSTR GetTimeMinDesc( int minutes )
-{
-	TCHAR	*pTime = Str_GetTemp();
-
-	int minute = minutes % 60;
-	int hour = ( minutes / 60 ) % 24;
-
-	LPCTSTR pMinDif;
-	if ( minute <= 14 )
-//		pMinDif = "";
-		pMinDif = g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_QUARTER_FIRST);
-	else if ( ( minute >= 15 ) && ( minute <= 30 ) )
-//		pMinDif = "a quarter past";
-		pMinDif = g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_QUARTER_SECOND);
-	else if ( ( minute >= 30 ) && ( minute <= 45 ) )
-		//pMinDif = "half past";
-		pMinDif = g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_QUARTER_THIRD);
-	else
-	{
-//		pMinDif = "a quarter till";
-		pMinDif = g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_QUARTER_FOURTH);
-		hour = ( hour + 1 ) % 24;
-	}
-/*
-	static const LPCTSTR sm_ClockHour[] =
-	{
-		"midnight",
-		"one",
-		"two",
-		"three",
-		"four",
-		"five",
-		"six",
-		"seven",
-		"eight",
-		"nine",
-		"ten",
-		"eleven",
-		"noon"
-	};
-*/
-	static const LPCTSTR sm_ClockHour[] =
-	{
- 		g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_HOUR_ZERO),
- 		g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_HOUR_ONE),
- 		g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_HOUR_TWO),
- 		g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_HOUR_THREE),
- 		g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_HOUR_FOUR),
- 		g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_HOUR_FIVE),
- 		g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_HOUR_SIX),
- 		g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_HOUR_SEVEN),
- 		g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_HOUR_EIGHT),
- 		g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_HOUR_NINE),
- 		g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_HOUR_TEN),
- 		g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_HOUR_ELEVEN),
- 		g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_HOUR_TWELVE)
-	};
-
-	LPCTSTR pTail;
-	if ( hour == 0 || hour==12 )
-		pTail = "";
-	else if ( hour > 12 )
-	{
-		hour -= 12;
-		if ((hour>=1)&&(hour<6))
-			pTail = g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_13_TO_18);
-//			pTail = " o'clock in the afternoon";
-		else if ((hour>=6)&&(hour<9))
-			pTail = g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_18_TO_21);
-//			pTail = " o'clock in the evening.";
-		else
-			pTail = g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_21_TO_24);
-//			pTail = " o'clock at night";
-	}
-	else
-	{
-		pTail = g_Cfg.GetDefaultMsg(DEFMSG_CLOCK_24_TO_12);
-//		pTail = " o'clock in the morning";
-	}
-
-	snprintf(pTime, EXPRESSION_MAX_KEY_LEN, "%s %s %s", pMinDif, sm_ClockHour[hour], pTail);
-	return pTime;
 }
 
 size_t FindStrWord( LPCTSTR pTextSearch, LPCTSTR pszKeyWord )
@@ -470,7 +391,7 @@ size_t FindStrWord( LPCTSTR pTextSearch, LPCTSTR pszKeyWord )
 	{
 		if ( pszKeyWord[j] == '\0' || pszKeyWord[j] == ',')
 		{
-			if ( pTextSearch[i]== '\0' || ISWHITESPACE(pTextSearch[i]))
+			if ( (pTextSearch[i] == '\0') || IsWhitespace(pTextSearch[i]) )
 				return( i );
 			j = 0;
 		}
@@ -771,6 +692,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	g_NTApp.m_wndMain.MainWindowInit(hInstance, nShowCmd);
 	int iRet = Sphere_MainEntryPoint();
 	g_NTApp.m_wndMain.MainWindowExit();
+	ExitProcess((iRet > 0) ? 0 : iRet);
 	return iRet;
 }
 

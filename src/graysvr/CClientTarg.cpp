@@ -1,5 +1,4 @@
-// An item is targetted.
-#include "graysvr.h"	// predef header.
+#include "graysvr.h"	// predef header
 #include "../network/send.h"
 
 ////////////////////////////////////////////////////////
@@ -1714,11 +1713,11 @@ bool CClient::OnTarg_Use_Item(CObjBase *pObjTarg, CPointMap &pt, ITEMID_TYPE id)
 
 				CChar *pChar = dynamic_cast<CChar *>(this);
 				if ( pChar )
-					pChar->OnTakeDamage(80 + Calc_GetRandVal(150), m_pChar, DAMAGE_HIT_BLUNT|DAMAGE_FIRE);
+					pChar->OnTakeDamage(80 + Calc_GetRandVal(150), m_pChar, DAMAGE_PHYSICAL|DAMAGE_FIRE);
 
 				CItem *pItem = dynamic_cast<CItem *>(this);
 				if ( pItem )
-					pItem->OnTakeDamage(80 + Calc_GetRandVal(150), m_pChar, DAMAGE_HIT_BLUNT|DAMAGE_FIRE);
+					pItem->OnTakeDamage(80 + Calc_GetRandVal(150), m_pChar, DAMAGE_PHYSICAL|DAMAGE_FIRE);
 			}
 			return true;
 		}
@@ -1902,7 +1901,7 @@ bool CClient::OnTarg_Use_Item(CObjBase *pObjTarg, CPointMap &pt, ITEMID_TYPE id)
 							SysMessageDefault(DEFMSG_ITEMUSE_STEAL);
 							return false;
 						}
-						pItemTarg->OnTakeDamage(1, m_pChar, DAMAGE_HIT_BLUNT);
+						pItemTarg->OnTakeDamage(1, m_pChar, DAMAGE_PHYSICAL);
 						return true;
 					}
 				}

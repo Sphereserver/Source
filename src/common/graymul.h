@@ -1268,6 +1268,13 @@ enum GUMP_TYPE	// The gumps. (most of these are not useful to the server.)
 	GUMP_MINERS_SATCHEL			= 0x9ce4,
 	GUMP_LUMBERJACKS_SATCHEL	= 0x9ce5,
 	GUMP_SHIP_CANNON			= 0x9ce7,
+	GUMP_MAILBOX_KITTEN_SIT		= 0x9d37,
+	GUMP_MAILBOX_KITTEN_STAND	= 0x9d38,
+	GUMP_MAILBOX_SCARECROW		= 0x9d39,
+	GUMP_MAILBOX_LION			= 0x9d3a,
+	GUMP_FOUNTAIN_LIFE2			= 0x9d54,
+	GUMP_FOUNTAIN_LIFE2_LARGE	= 0x9d5d,
+	GUMP_GIFT_BOX_HOLIDAY		= 0x9d88,
 	GUMP_CHEST_METAL2			= 0xefe7
 };
 
@@ -1433,7 +1440,7 @@ typedef unsigned char height_t;
 
 class CMapDiffCollection;
 
-extern class CMapList
+class CMapList
 {
 public:
 	int m_sizex[MAP_QTY];
@@ -1510,7 +1517,9 @@ public:
 	{
 		return m_mapsinitalized[map];
 	}
-} g_MapList;
+};
+
+extern CMapList g_MapList;
 
 #define UO_SIZE_X_REAL		0x1400	// 640*UO_BLOCK_SIZE = 5120 = The actual world is only this big
 

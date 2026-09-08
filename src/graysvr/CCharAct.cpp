@@ -1,8 +1,4 @@
-//
-// CCharAct.cpp
-//
-
-#include "graysvr.h"	// predef header.
+#include "graysvr.h"	// predef header
 #include "../network/send.h"
 
 bool CChar::TeleportToObj(int iType, TCHAR *pszArgs)
@@ -13,12 +9,12 @@ bool CChar::TeleportToObj(int iType, TCHAR *pszArgs)
 	DWORD dwTotal = g_World.GetUIDCount();
 	DWORD dwCount = dwTotal - 1;
 
-	int iArg = 0;
-	if ( iType )
+	int iArgs = 0;
+	if ( iType != 0 )
 	{
 		if ( pszArgs[0] && (iType == 1) )
 			dwUID = 0;
-		iArg = RES_GET_INDEX(Exp_GetVal(pszArgs));
+		iArgs = RES_GET_INDEX(static_cast<int>(g_Exp.GetVal(pszArgs)));
 	}
 
 	while ( dwCount-- )
@@ -43,7 +39,7 @@ bool CChar::TeleportToObj(int iType, TCHAR *pszArgs)
 			{
 				if ( !pObj->IsChar() )
 					continue;
-				if ( iArg-- > 0 )
+				if ( iArgs-- > 0 )
 					continue;
 				break;
 			}
@@ -52,7 +48,7 @@ bool CChar::TeleportToObj(int iType, TCHAR *pszArgs)
 				if ( !pObj->IsItem() )
 					continue;
 				CItem *pItem = static_cast<CItem *>(pObj);
-				if ( !pItem->IsType(static_cast<IT_TYPE>(iArg)) )
+				if ( !pItem->IsType(static_cast<IT_TYPE>(iArgs)) )
 					continue;
 				break;
 			}
@@ -61,7 +57,7 @@ bool CChar::TeleportToObj(int iType, TCHAR *pszArgs)
 				if ( !pObj->IsChar() )
 					continue;
 				CChar *pChar = static_cast<CChar *>(pObj);
-				if ( pChar->GetID() != static_cast<CREID_TYPE>(iArg) )
+				if ( pChar->GetID() != static_cast<CREID_TYPE>(iArgs) )
 					continue;
 				break;
 			}
@@ -70,7 +66,7 @@ bool CChar::TeleportToObj(int iType, TCHAR *pszArgs)
 				if ( !pObj->IsItem() )
 					continue;
 				CItem *pItem = static_cast<CItem *>(pObj);
-				if ( pItem->GetID() != static_cast<ITEMID_TYPE>(iArg) )
+				if ( pItem->GetID() != static_cast<ITEMID_TYPE>(iArgs) )
 					continue;
 				break;
 			}
@@ -99,7 +95,7 @@ bool CChar::TeleportToCli(int iType, int iArgs)
 	ClientIterator it;
 	for ( CClient *pClient = it.next(); pClient != NULL; pClient = it.next() )
 	{
-		if ( !iType )
+		if ( iType == 0 )
 		{
 			if ( pClient->GetSocketID() != iArgs )
 				continue;
@@ -109,7 +105,7 @@ bool CChar::TeleportToCli(int iType, int iArgs)
 			continue;
 		if ( !CanDisturb(pChar) )
 			continue;
-		if ( iType )
+		if ( iType != 0 )
 		{
 			if ( iArgs-- )
 				continue;
@@ -715,7 +711,7 @@ void CChar::UpdateStatVal(STAT_TYPE stat, int iChange, int iLimit)
 	ADDTOCALLSTACK("CChar::UpdateStatVal");
 	int iValPrev = Stat_GetVal(stat);
 	int iVal = iValPrev + iChange;
-	if ( !iLimit )
+	if ( iLimit == 0 )
 		iLimit = Stat_GetMax(stat);
 
 	if ( iVal < 0 )
@@ -1257,8 +1253,9 @@ void CChar::SoundChar(CRESND_TYPE type)
 						return Sound(static_cast<SOUND_TYPE>(0x232));		//axe01
 					case IT_WEAPON_SWORD:
 					case IT_WEAPON_AXE:
-						if ( pWeapon->Item_GetDef()->GetEquipLayer() == LAYER_HAND2 )	//if not two handed, don't break, just fall through and use same sound as fencing weapons
+						if ( pWeapon->Item_GetDef()->GetEquipLayer() == LAYER_HAND2 )	// if not two-handed, fall through to the same sound as fencing weapons
 							return Sound(Calc_GetRandVal(2) ? static_cast<SOUND_TYPE>(0x236) : static_cast<SOUND_TYPE>(0x237));		//hvyswrd1 : hvyswrd4
+						// fall through
 					case IT_WEAPON_FENCE:
 						return Sound(Calc_GetRandVal(2) ? static_cast<SOUND_TYPE>(0x23B) : static_cast<SOUND_TYPE>(0x23C));			//sword1 : sword7
 					case IT_WEAPON_BOW:
@@ -1837,6 +1834,7 @@ void CChar::EatAnim(LPCTSTR pszName, int iQty)
 	int iStam = Calc_GetRandVal(3, 6) + (iQty / 5);
 	int iFood = iQty;
 	int iStatsLimit = 0;
+
 	if ( IsTrigUsed(TRIGGER_EAT) )
 	{
 		CScriptTriggerArgs Args;
@@ -1855,13 +1853,13 @@ void CChar::EatAnim(LPCTSTR pszName, int iQty)
 		iStatsLimit = static_cast<int>(Args.m_iN1);
 	}
 
-	if ( iHits )
+	if ( iHits != 0 )
 		UpdateStatVal(STAT_STR, iHits, iStatsLimit);
-	if ( iMana )
+	if ( iMana != 0 )
 		UpdateStatVal(STAT_INT, iMana, iStatsLimit);
-	if ( iStam )
+	if ( iStam != 0 )
 		UpdateStatVal(STAT_DEX, iStam, iStatsLimit);
-	if ( iFood )
+	if ( iFood != 0 )
 		UpdateStatVal(STAT_FOOD, iFood, iStatsLimit);
 }
 
@@ -2503,7 +2501,7 @@ bool CChar::Death()
 	}
 
 	// Record the kill event for posterity
-	if ( !iKillers )
+	if ( iKillers == 0 )
 		strncat(szMsg, "accident", sizeof(szMsg) - strlen(szMsg) - 1);
 	if ( m_pPlayer )
 		g_Log.Event(LOGM_KILLS, "%s\n", szMsg);
@@ -2960,7 +2958,7 @@ TRIGRET_TYPE CChar::CheckLocation(bool fStanding)
 			case IT_TRAP:
 			case IT_TRAP_ACTIVE:
 			{
-				if ( OnTakeDamage(pItem->Use_Trap(), NULL, DAMAGE_HIT_BLUNT|DAMAGE_GENERAL) )
+				if ( OnTakeDamage(pItem->Use_Trap(), NULL, DAMAGE_PHYSICAL|DAMAGE_GENERAL) )
 				{
 					if ( m_pNPC && fStanding )
 					{
@@ -3238,7 +3236,7 @@ bool CChar::MoveToChar(CPointMap pt, bool fForceFix)
 	{
 		if ( IsTrigUsed(TRIGGER_ENVIRONCHANGE) )
 		{
-			CScriptTriggerArgs Args(ptOld.m_x, ptOld.m_y, ptOld.m_z << 16 | ptOld.m_map);
+			CScriptTriggerArgs Args(ptOld.m_x, ptOld.m_y, (ptOld.m_z << 16) | ptOld.m_map);
 			OnTrigger(CTRIG_EnvironChange, this, &Args);
 		}
 	}
@@ -3566,7 +3564,7 @@ bool CChar::OnTick()
 
 	EXC_TRY("Tick");
 	INT64 iTimeDiff = -g_World.GetTimeDiff(m_timeLastTick);
-	if ( !iTimeDiff )
+	if ( iTimeDiff == 0 )
 		return true;
 
 	EXC_SET("equipped items");

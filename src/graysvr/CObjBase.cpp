@@ -21,26 +21,29 @@ bool GetDeltaStr(CPointMap &pt, TCHAR *pszDir)
 {
 	TCHAR *ppCmd[3];
 	size_t iArgQty = Str_ParseCmds(pszDir, ppCmd, COUNTOF(ppCmd));
-	if ( iArgQty <= 0 )
+	if ( iArgQty < 1 )
 		return false;
 
 	TCHAR chDir = static_cast<TCHAR>(toupper(ppCmd[0][0]));
-	int iTmp = Exp_GetVal(ppCmd[1]);
+	int iSteps = static_cast<int>(g_Exp.GetVal(ppCmd[1]));
 
 	if ( IsDigit(chDir) || (chDir == '-') )
 	{
-		pt.m_x += static_cast<signed short>(Exp_GetVal(ppCmd[0]));
-		pt.m_y += static_cast<signed short>(iTmp);
-		pt.m_z += static_cast<signed char>(Exp_GetVal(ppCmd[2]));
+		pt.m_x += static_cast<signed short>(g_Exp.GetVal(ppCmd[0]));
+		pt.m_y += static_cast<signed short>(iSteps);
+		pt.m_z += static_cast<signed char>(g_Exp.GetVal(ppCmd[2]));
 	}
-	else	// a direction by name
+	else
 	{
-		if ( iTmp == 0 )
-			iTmp = 1;
+		// A direction by name
+		if ( iSteps == 0 )
+			iSteps = 1;
+
 		DIR_TYPE eDir = GetDirStr(ppCmd[0]);
 		if ( eDir >= DIR_QTY )
 			return false;
-		pt.MoveN(eDir, iTmp);
+
+		pt.MoveN(eDir, iSteps);
 	}
 	return true;
 }
@@ -430,7 +433,7 @@ void CObjBase::Emote(LPCTSTR pszTextYou, LPCTSTR pszTextThem, CClient *pClientEx
 			for ( int i = 0; (s < pszTextYou) && (i < 3); ++i, ++s )
 			{
 				if ( *s != ',' )
-					wArgs[i] = static_cast<WORD>(Exp_GetLLVal(s));
+					wArgs[i] = static_cast<WORD>(g_Exp.GetVal(s));
 			}
 			++pszTextYou;
 
@@ -626,7 +629,7 @@ bool CObjBase::r_GetRef(LPCTSTR &pszKey, CScriptObj *&pRef)
 	if ( index >= 0 )
 	{
 		pszKey += strlen(sm_szRefKeys[index]);
-		SKIP_SEPARATORS(pszKey);
+		SkipDotSeparator(pszKey);
 		switch ( index )
 		{
 			case OBR_ROOM:
@@ -685,7 +688,7 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		if ( pszArgs != NULL )
 		{
 			++pszArgs;
-			SKIP_SEPARATORS(pszArgs);
+			SkipDotSeparator(pszArgs);
 		}
 
 		CScriptTriggerArgs Args(pszArgs ? pszArgs : "");
@@ -741,7 +744,7 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			pszKey += 5;
 			if ( *pszKey == '.' )
 			{
-				SKIP_SEPARATORS(pszKey);
+				SkipDotSeparator(pszKey);
 				if ( !strnicmp(pszKey, "LO", 2) )
 					sVal.Format("%hu", m_defenseBase);
 				else if ( !strnicmp(pszKey, "HI", 2) )
@@ -756,7 +759,7 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			pszKey += 3;
 			if ( *pszKey == '.' )
 			{
-				SKIP_SEPARATORS(pszKey);
+				SkipDotSeparator(pszKey);
 				if ( !strnicmp(pszKey, "LO", 2) )
 					sVal.Format("%hu", m_attackBase);
 				else if ( !strnicmp(pszKey, "HI", 2) )
@@ -863,13 +866,13 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			WORD wFlags = 0;
 
 			pszKey += fCanSee ? 6 : (fUseFlags ? 13 : 9);
-			SKIP_SEPARATORS(pszKey);
-			GETNONWHITESPACE(pszKey);
+			SkipDotSeparator(pszKey);
+			SkipWhitespace(pszKey);
 
 			if ( fUseFlags && *pszKey )
 			{
-				wFlags = static_cast<WORD>(Exp_GetVal(pszKey));
-				SKIP_ARGSEP(pszKey);
+				wFlags = static_cast<WORD>(g_Exp.GetVal(pszKey));
+				SkipArgSeparator(pszKey);
 			}
 
 			if ( *pszKey )		// has an argument - UID to see(los) or POS to los only
@@ -882,7 +885,7 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 
 				if ( fCanSee || !pt.IsValidPoint() )
 				{
-					pObj = static_cast<CGrayUID>(Exp_GetVal(pszKey)).ObjFind();
+					pObj = static_cast<CGrayUID>(static_cast<DWORD>(g_Exp.GetVal(pszKey))).ObjFind();
 					if ( !fCanSee && pObj )
 						pt = pObj->GetTopPoint();
 				}
@@ -928,7 +931,7 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				return false;
 			}
 
-			REMOVE_QUOTES(ppArgs[0]);
+			RemoveQuotes(ppArgs[0]);
 			const TCHAR *pszFormat = ppArgs[0];
 
 			// To avoid format string vulnerabilities, parse the string manually instead of using printf functions
@@ -967,8 +970,8 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			pszKey += 10;
 			if ( *pszKey == '.' )
 			{
-				SKIP_SEPARATORS(pszKey);
-				GETNONWHITESPACE(pszKey);
+				SkipDotSeparator(pszKey);
+				SkipWhitespace(pszKey);
 
 				CClient *pClient = (pSrc->GetChar() && pSrc->GetChar()->m_pClient) ? pSrc->GetChar()->m_pClient : NULL;
 				sVal = "0";
@@ -980,8 +983,8 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 					else
 					{
 						CClient::OpenedGumpsMap_t *pDialogList = &pClient->m_mapOpenedGumps;
-						size_t iDialogIndex = static_cast<size_t>(Exp_GetVal(pszKey));
-						SKIP_SEPARATORS(pszKey);
+						size_t iDialogIndex = static_cast<size_t>(g_Exp.GetVal(pszKey));
+						SkipDotSeparator(pszKey);
 
 						if ( iDialogIndex <= pDialogList->size() )
 						{
@@ -1005,8 +1008,8 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case OC_DISTANCE:
 		{
 			pszKey += 8;
-			SKIP_SEPARATORS(pszKey);
-			GETNONWHITESPACE(pszKey);
+			SkipDotSeparator(pszKey);
+			SkipWhitespace(pszKey);
 
 			CObjBase *pThis = IsTopLevel() ? this : static_cast<CObjBase *>(GetTopLevelObj());
 			CObjBase *pObj = pSrc->GetChar();
@@ -1022,7 +1025,7 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 					sVal.FormatVal(pThis->GetTopDist(pt));
 					return true;
 				}
-				pObj = static_cast<CGrayUID>(Exp_GetVal(pszKey)).ObjFind();
+				pObj = static_cast<CGrayUID>(static_cast<DWORD>(g_Exp.GetVal(pszKey))).ObjFind();
 			}
 
 			if ( pObj && !pObj->IsTopLevel() )
@@ -1039,8 +1042,8 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case OC_FACING:
 		{
 			pszKey += 6;
-			SKIP_SEPARATORS(pszKey);
-			GETNONWHITESPACE(pszKey);
+			SkipDotSeparator(pszKey);
+			SkipWhitespace(pszKey);
 
 			CObjBase *pThis = IsTopLevel() ? this : static_cast<CObjBase *>(GetTopLevelObj());
 			CObjBase *pObj = pSrc->GetChar();
@@ -1055,7 +1058,7 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 					sVal.FormatVal(pThis->GetTopPoint().GetDir(pt));
 					return true;
 				}
-				pObj = static_cast<CGrayUID>(Exp_GetVal(pszKey)).ObjFind();
+				pObj = static_cast<CGrayUID>(static_cast<DWORD>(g_Exp.GetVal(pszKey))).ObjFind();
 			}
 
 			if ( !pObj )
@@ -1101,20 +1104,20 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				fReturnP = true;
 				pszKey += 2;
 			}
-			SKIP_SEPARATORS(pszKey);
-			SKIP_ARGSEP(pszKey);
+			SkipDotSeparator(pszKey);
+			SkipArgSeparator(pszKey);
 
 			if ( GetTopPoint().IsValidPoint() )
 			{
 				IT_TYPE iType = static_cast<IT_TYPE>(g_Cfg.ResourceGetIndexType(RES_TYPEDEF, pszKey));
 
-				SKIP_IDENTIFIERSTRING(pszKey);
-				SKIP_SEPARATORS(pszKey);
-				SKIP_ARGSEP(pszKey);
+				SkipIdentifier(pszKey);
+				SkipDotSeparator(pszKey);
+				SkipArgSeparator(pszKey);
 
-				int iDistance = *pszKey ? Exp_GetVal(pszKey) : 0;
-				bool fCheckMulti = *pszKey ? (Exp_GetVal(pszKey) != 0) : false;
-				bool fLimitZ = *pszKey ? (Exp_GetVal(pszKey) != 0) : false;
+				int iDistance = *pszKey ? static_cast<int>(g_Exp.GetVal(pszKey)) : 0;
+				bool fCheckMulti = *pszKey ? (g_Exp.GetVal(pszKey) != 0) : false;
+				bool fLimitZ = *pszKey ? (g_Exp.GetVal(pszKey) != 0) : false;
 
 				if ( fReturnP )
 				{
@@ -1140,8 +1143,8 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case OC_ISDIALOGOPEN:
 		{
 			pszKey += 12;
-			SKIP_SEPARATORS(pszKey);
-			GETNONWHITESPACE(pszKey);
+			SkipDotSeparator(pszKey);
+			SkipWhitespace(pszKey);
 			CChar *pChar = dynamic_cast<CChar *>(this);
 			CClient *pClient = (pChar && pChar->m_pClient) ? pChar->m_pClient : NULL;
 
@@ -1162,12 +1165,12 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case OC_ISARMOR:
 		{
 			pszKey += 7;
-			SKIP_SEPARATORS(pszKey);
-			GETNONWHITESPACE(pszKey);
+			SkipDotSeparator(pszKey);
+			SkipWhitespace(pszKey);
 			CItem *pItem = NULL;
 			if ( *pszKey )
 			{
-				pItem = dynamic_cast<CItem *>(static_cast<CGrayUID>(Exp_GetVal(pszKey)).ObjFind());
+				pItem = dynamic_cast<CItem *>(static_cast<CGrayUID>(static_cast<DWORD>(g_Exp.GetVal(pszKey))).ObjFind());
 				if ( !pItem )
 				{
 					TCHAR *pszArg = Str_GetTemp();
@@ -1200,12 +1203,12 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case OC_ISWEAPON:
 		{
 			pszKey += 8;
-			SKIP_SEPARATORS(pszKey);
-			GETNONWHITESPACE(pszKey);
+			SkipDotSeparator(pszKey);
+			SkipWhitespace(pszKey);
 			CItem *pItem = NULL;
 			if ( *pszKey )
 			{
-				pItem = dynamic_cast<CItem *>(static_cast<CGrayUID>(Exp_GetVal(pszKey)).ObjFind());
+				pItem = dynamic_cast<CItem *>(static_cast<CGrayUID>(static_cast<DWORD>(g_Exp.GetVal(pszKey))).ObjFind());
 				if ( !pItem )
 				{
 					TCHAR *pszArg = Str_GetTemp();
@@ -1303,7 +1306,7 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case OC_TRIGGER:
 		{
 			pszKey += 7;
-			GETNONWHITESPACE(pszKey);
+			SkipWhitespace(pszKey);
 
 			if ( *pszKey )
 			{
@@ -1340,8 +1343,8 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case OC_SEXTANTP:
 		{
 			pszKey += 8;
-			SKIP_SEPARATORS(pszKey);
-			GETNONWHITESPACE(pszKey);
+			SkipDotSeparator(pszKey);
+			SkipWhitespace(pszKey);
 
 			CPointMap pt = *pszKey ? g_Cfg.GetRegionPoint(pszKey) : GetTopPoint();
 			if ( !pt.IsValidPoint() )
@@ -1364,8 +1367,8 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			pszKey += 5;
 			if ( *pszKey == '.' )	// do we have an argument?
 			{
-				SKIP_SEPARATORS(pszKey);
-				size_t iQty = static_cast<size_t>(Exp_GetVal(pszKey));
+				SkipDotSeparator(pszKey);
+				size_t iQty = static_cast<size_t>(g_Exp.GetVal(pszKey));
 				if ( iQty >= m_TagDefs.GetCount() )
 					return false;	// trying to get non-existant tag
 
@@ -1373,7 +1376,7 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				if ( !pTagAt )
 					return false;	// trying to get non-existant tag
 
-				SKIP_SEPARATORS(pszKey);
+				SkipDotSeparator(pszKey);
 				if ( !*pszKey )
 				{
 					sVal.Format("%s=%s", pTagAt->GetKey(), pTagAt->GetValStr());
@@ -1400,8 +1403,8 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			pszKey += 7;	// eat the 'TAGAT'
 			if ( *pszKey == '.' )	// do we have an argument?
 			{
-				SKIP_SEPARATORS(pszKey);
-				size_t iQty = static_cast<size_t>(Exp_GetVal(pszKey));
+				SkipDotSeparator(pszKey);
+				size_t iQty = static_cast<size_t>(g_Exp.GetVal(pszKey));
 				if ( iQty >= m_BaseDefs.GetCount() )
 					return false;	// trying to get non-existant tag
 
@@ -1409,7 +1412,7 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				if ( !pTagAt )
 					return false;	// trying to get non-existant tag
 
-				SKIP_SEPARATORS(pszKey);
+				SkipDotSeparator(pszKey);
 				if ( !*pszKey )
 				{
 					sVal.Format("%s=%s", pTagAt->GetKey(), pTagAt->GetValStr());
@@ -1890,7 +1893,7 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 	if ( !strnicmp(pszKey, "CLEARTAGS", 9) )
 	{
 		pszKey = s.GetArgStr();
-		SKIP_SEPARATORS(pszKey);
+		SkipDotSeparator(pszKey);
 		m_TagDefs.ClearKeys(pszKey);
 		return true;
 	}
@@ -1935,7 +1938,7 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 			if ( pChar )
 				pChar->OnTakeDamage(static_cast<int>(piCmd[0]),
 					pCharSrc,
-					(iArgQty >= 2) ? static_cast<DAMAGE_TYPE>(piCmd[1]) : DAMAGE_HIT_BLUNT|DAMAGE_GENERAL,
+					(iArgQty >= 2) ? static_cast<DAMAGE_TYPE>(piCmd[1]) : DAMAGE_PHYSICAL|DAMAGE_GENERAL,
 					(iArgQty >= 4) ? static_cast<int>(piCmd[3]) : 0,		// physical damage %
 					(iArgQty >= 5) ? static_cast<int>(piCmd[4]) : 0,		// fire damage %
 					(iArgQty >= 6) ? static_cast<int>(piCmd[5]) : 0,		// cold damage %
@@ -1945,7 +1948,7 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 			else if ( pItem )
 				pItem->OnTakeDamage(static_cast<int>(piCmd[0]),
 					pCharSrc,
-					(iArgQty >= 2) ? static_cast<DAMAGE_TYPE>(piCmd[1]) : DAMAGE_HIT_BLUNT|DAMAGE_GENERAL
+					(iArgQty >= 2) ? static_cast<DAMAGE_TYPE>(piCmd[1]) : DAMAGE_PHYSICAL|DAMAGE_GENERAL
 				);
 			break;
 		}
@@ -2080,7 +2083,7 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 				break;
 
 			CvtSystemToNUNICODE(ncBuffer, COUNTOF(ncBuffer), ppArgs[4], -1);
-			pClientSrc->addBarkUNICODE(ncBuffer, this, static_cast<HUE_TYPE>(ppArgs[0][0] ? Exp_GetVal(ppArgs[0]) : HUE_TEXT_DEF), static_cast<TALKMODE_TYPE>(ppArgs[1][0] ? Exp_GetVal(ppArgs[1]) : TALKMODE_SAY), static_cast<FONT_TYPE>(ppArgs[2][0] ? Exp_GetVal(ppArgs[2]) : FONT_NORMAL), CLanguageID(ppArgs[3]));
+			pClientSrc->addBarkUNICODE(ncBuffer, this, static_cast<HUE_TYPE>(ppArgs[0][0] ? g_Exp.GetVal(ppArgs[0]) : HUE_TEXT_DEF), static_cast<TALKMODE_TYPE>(ppArgs[1][0] ? g_Exp.GetVal(ppArgs[1]) : TALKMODE_SAY), static_cast<FONT_TYPE>(ppArgs[2][0] ? g_Exp.GetVal(ppArgs[2]) : FONT_NORMAL), CLanguageID(ppArgs[3]));
 			break;
 		}
 		case OV_MOVE:
@@ -2115,20 +2118,19 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 		case OV_MOVENEAR:
 		{
 			EXC_SET("MOVENEAR");
-			CObjBase *pObjNear;
 			INT64 piCmd[2];
-
 			size_t iArgQty = Str_ParseCmds(s.GetArgStr(), piCmd, COUNTOF(piCmd));
-			if ( iArgQty <= 0 )
+			if ( iArgQty < 1 )
 				return false;
-			if ( iArgQty < 2 )
+
+			CObjBase *pObj = static_cast<CGrayUID>(static_cast<DWORD>(piCmd[0])).ObjFind();
+			if ( !pObj )
+				return false;
+
+			if ( iArgQty == 1 )
 				piCmd[1] = 1;
 
-			pObjNear = static_cast<CGrayUID>(static_cast<DWORD>(piCmd[0])).ObjFind();
-			if ( !pObjNear )
-				return false;
-
-			MoveNearObj(pObjNear, static_cast<WORD>(piCmd[1]));
+			MoveNearObj(pObj, static_cast<WORD>(piCmd[1]));
 			break;
 		}
 		case OV_NUDGEDOWN:
@@ -2244,7 +2246,7 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 			if ( iArgQty < 5 )
 				break;
 
-			SpeakUTF8(ppArgs[4], static_cast<HUE_TYPE>(ppArgs[0][0] ? Exp_GetVal(ppArgs[0]) : HUE_TEXT_DEF), static_cast<TALKMODE_TYPE>(ppArgs[1][0] ? Exp_GetVal(ppArgs[1]) : TALKMODE_SAY), static_cast<FONT_TYPE>(ppArgs[2][0] ? Exp_GetVal(ppArgs[2]) : FONT_NORMAL), CLanguageID(ppArgs[3]));
+			SpeakUTF8(ppArgs[4], static_cast<HUE_TYPE>(ppArgs[0][0] ? g_Exp.GetVal(ppArgs[0]) : HUE_TEXT_DEF), static_cast<TALKMODE_TYPE>(ppArgs[1][0] ? g_Exp.GetVal(ppArgs[1]) : TALKMODE_SAY), static_cast<FONT_TYPE>(ppArgs[2][0] ? g_Exp.GetVal(ppArgs[2]) : FONT_NORMAL), CLanguageID(ppArgs[3]));
 			break;
 		}
 		case OV_SOUND:
@@ -2330,7 +2332,7 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 						break;
 
 					ITEMID_TYPE itemid = static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetIndexType(RES_ITEMDEF, ppArgs[1]));
-					HUE_TYPE color = static_cast<HUE_TYPE>(Exp_GetVal(ppArgs[2]));
+					HUE_TYPE color = static_cast<HUE_TYPE>(g_Exp.GetVal(ppArgs[2]));
 					pClientSrc->addTargetFunctionMulti(ppArgs[0], itemid, color, fAllowGround);
 				}
 				else
@@ -2346,7 +2348,7 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 						break;
 
 					ITEMID_TYPE itemid = static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetIndexType(RES_ITEMDEF, ppArgs[0]));
-					HUE_TYPE color = static_cast<HUE_TYPE>(Exp_GetVal(ppArgs[1]));
+					HUE_TYPE color = static_cast<HUE_TYPE>(g_Exp.GetVal(ppArgs[1]));
 					pClientSrc->addTargetItems(CLIMODE_TARG_USE_ITEM, itemid, color, fAllowGround);
 				}
 				else
@@ -2374,13 +2376,13 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 				g_Log.EventError("%s: args can't be empty\n", sm_szVerbKeys[index]);
 				return true;
 			}
-			int iTimer = Exp_GetVal(pszFuncName);
+			int iTimer = static_cast<int>(g_Exp.GetVal(pszFuncName));
 			if ( iTimer < 0 )
 			{
 				g_Log.EventError("%s: invalid timer '%d'\n", sm_szVerbKeys[index], iTimer);
 				return true;
 			}
-			SKIP_ARGSEP(pszFuncName);
+			SkipArgSeparator(pszFuncName);
 			if ( strlen(pszFuncName) > 1024 )
 			{
 				g_Log.EventError("%s: args exceeded max length allowed (%zu/%d)\n", sm_szVerbKeys[index], strlen(pszFuncName), 1024);
@@ -2421,7 +2423,7 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 				if ( pCharSrc && (itGumpFound != pClientSrc->m_mapOpenedGumps.end()) && ((*itGumpFound).second > 0) )
 					break;
 			}
-			pClientSrc->Dialog_Setup(CLIMODE_DIALOG, g_Cfg.ResourceGetIDType(RES_DIALOG, ppArgs[0]), (iArgQty > 1) ? Exp_GetVal(ppArgs[1]) : 0, this, ppArgs[2]);
+			pClientSrc->Dialog_Setup(CLIMODE_DIALOG, g_Cfg.ResourceGetIDType(RES_DIALOG, ppArgs[0]), (iArgQty > 1) ? static_cast<int>(g_Exp.GetVal(ppArgs[1])) : 0, this, ppArgs[2]);
 			break;
 		}
 		case OV_DIALOGCLOSE:
@@ -2439,7 +2441,7 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 			if ( pClientSrc->m_NetState->isClientKR() )
 				rid = g_Cfg.GetKRDialog(rid);
 
-			pClientSrc->Dialog_Close(this, rid, (iArgQty > 1) ? Exp_GetVal(ppArgs[1]) : 0);
+			pClientSrc->Dialog_Close(this, rid, (iArgQty > 1) ? static_cast<DWORD>(g_Exp.GetVal(ppArgs[1])) : 0);
 			break;
 		}
 		case OV_TRYP:
@@ -2882,7 +2884,7 @@ inline bool CObjBase::CallPersonalTrigger(TCHAR *pszArgs, CTextConsole *pSrc, TR
 			}
 			else if ( iTriggerArgType == 3 )	// ARGO
 			{
-				CObjBase *pTriggerArgObj = static_cast<CGrayUID>(Exp_GetVal(ppCmdTrigger[2])).ObjFind();
+				CObjBase *pTriggerArgObj = static_cast<CGrayUID>(static_cast<DWORD>(g_Exp.GetVal(ppCmdTrigger[2]))).ObjFind();
 				if ( pTriggerArgObj )
 					csTriggerArgs.m_pO1 = pTriggerArgObj;
 			}
@@ -2899,15 +2901,15 @@ inline bool CObjBase::CallPersonalTrigger(TCHAR *pszArgs, CTextConsole *pSrc, TR
 				}
 				// ARGNs
 				if ( iArgQty >= 4 )
-					csTriggerArgs.m_iN3 = Exp_GetVal(ppArgs[3]);
+					csTriggerArgs.m_iN3 = g_Exp.GetVal(ppArgs[3]);
 				if ( iArgQty >= 3 )
-					csTriggerArgs.m_iN2 = Exp_GetVal(ppArgs[2]);
+					csTriggerArgs.m_iN2 = g_Exp.GetVal(ppArgs[2]);
 				if ( iArgQty >= 2 )
-					csTriggerArgs.m_iN1 = Exp_GetVal(ppArgs[1]);
+					csTriggerArgs.m_iN1 = g_Exp.GetVal(ppArgs[1]);
 				// ARGO
 				if ( iArgQty >= 1 )
 				{
-					CObjBase *pTriggerArgObj = static_cast<CGrayUID>(Exp_GetVal(ppArgs[0])).ObjFind();
+					CObjBase *pTriggerArgObj = static_cast<CGrayUID>(static_cast<DWORD>(g_Exp.GetVal(ppArgs[0]))).ObjFind();
 					if ( pTriggerArgObj )
 						csTriggerArgs.m_pO1 = pTriggerArgObj;
 				}

@@ -416,16 +416,13 @@ void CChar::Noto_Criminal(CChar *pChar)
 		Spell_Effect_Create(SPELL_NONE, LAYER_FLAG_Criminal, 0, iDecay);
 }
 
-#define NOTO_DEGREES	8
-#define NOTO_FACTOR		(300 / NOTO_DEGREES)
-
 void CChar::Noto_ChangeDeltaMsg(int iDelta, LPCTSTR pszType)
 {
 	ADDTOCALLSTACK("CChar::Noto_ChangeDeltaMsg");
-	if ( !iDelta )
+	if ( iDelta == 0 )
 		return;
 
-	static const LPCTSTR sm_szNotoDelta[8] =
+	static const LPCTSTR sm_szNotoDelta[] =
 	{
 		g_Cfg.GetDefaultMsg(DEFMSG_MSG_NOTO_CHANGE_1),
 		g_Cfg.GetDefaultMsg(DEFMSG_MSG_NOTO_CHANGE_2),
@@ -436,7 +433,9 @@ void CChar::Noto_ChangeDeltaMsg(int iDelta, LPCTSTR pszType)
 		g_Cfg.GetDefaultMsg(DEFMSG_MSG_NOTO_CHANGE_7),
 		g_Cfg.GetDefaultMsg(DEFMSG_MSG_NOTO_CHANGE_8)
 	};
-	SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_NOTO_CHANGE_0), g_Cfg.GetDefaultMsg((iDelta > 0) ? DEFMSG_MSG_NOTO_CHANGE_GAIN : DEFMSG_MSG_NOTO_CHANGE_LOST), sm_szNotoDelta[minimum(abs(iDelta) / NOTO_FACTOR, 7)], pszType);
+	static const int sm_iNotoFactor = (300 / COUNTOF(sm_szNotoDelta));
+
+	SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_MSG_NOTO_CHANGE_0), g_Cfg.GetDefaultMsg((iDelta > 0) ? DEFMSG_MSG_NOTO_CHANGE_GAIN : DEFMSG_MSG_NOTO_CHANGE_LOST), sm_szNotoDelta[minimum(abs(iDelta) / sm_iNotoFactor, COUNTOF(sm_szNotoDelta) - 1)], pszType);
 }
 
 void CChar::Noto_ChangeNewMsg(int iPrvLevel)
@@ -449,7 +448,7 @@ void CChar::Noto_ChangeNewMsg(int iPrvLevel)
 void CChar::Noto_Fame(int iFameChange)
 {
 	ADDTOCALLSTACK("CChar::Noto_Fame");
-	if ( !iFameChange )
+	if ( iFameChange == 0 )
 		return;
 
 	int iFame = Stat_GetAdjusted(STAT_FAME);
@@ -475,7 +474,7 @@ void CChar::Noto_Fame(int iFameChange)
 		iFameChange = static_cast<int>(Args.m_iN1);
 	}
 
-	if ( !iFameChange )
+	if ( iFameChange == 0 )
 		return;
 
 	iFame += iFameChange;
@@ -511,7 +510,7 @@ void CChar::Noto_Karma(int iKarmaChange, int iBottom, bool fMessage)
 		iKarmaChange = static_cast<int>(Args.m_iN1);
 	}
 
-	if ( !iKarmaChange )
+	if ( iKarmaChange == 0 )
 		return;
 
 	iKarma += iKarmaChange;
@@ -1498,9 +1497,7 @@ WORD CChar::CalcArmorDefense() const
 	WORD wArmorCount = 0;
 	WORD wDefense = 0;
 	WORD wDefenseTotal = 0;
-	WORD wArmorRegionMax[ARMOR_QTY];
-	for ( int i = 0; i < ARMOR_QTY; ++i )
-		wArmorRegionMax[i] = 0;
+	WORD wArmorRegionMax[ARMOR_QTY] = { 0 };
 
 	for ( CItem *pItem = GetContentHead(); pItem != NULL; pItem = pItem->GetNext() )
 	{
@@ -1808,7 +1805,7 @@ int CChar::OnTakeDamage(int iDmg, CChar *pSrc, DAMAGE_TYPE uType, int iDmgPhysic
 			}
 
 			// A physical blow of some sort
-			if ( uType & (DAMAGE_HIT_BLUNT|DAMAGE_HIT_PIERCE|DAMAGE_HIT_SLASH) )
+			if ( uType & (DAMAGE_PHYSICAL|DAMAGE_HIT_PIERCE|DAMAGE_HIT_SLASH) )
 			{
 				// Check if Reactive Armor will reflect some damage back
 				if ( IsStatFlag(STATF_Reactive) && !(uType & DAMAGE_GOD) )
@@ -1820,7 +1817,7 @@ int CChar::OnTakeDamage(int iDmg, CChar *pSrc, DAMAGE_TYPE uType, int iDmgPhysic
 							iReactiveDamage = 1;
 
 						iDmg -= iReactiveDamage;
-						pSrc->OnTakeDamage(iReactiveDamage, this, static_cast<DAMAGE_TYPE>(DAMAGE_FIXED), iDmgPhysical, iDmgFire, iDmgCold, iDmgPoison, iDmgEnergy);
+						pSrc->OnTakeDamage(iReactiveDamage, this, DAMAGE_FIXED, iDmgPhysical, iDmgFire, iDmgCold, iDmgPoison, iDmgEnergy);
 						pSrc->Sound(0x1F1);
 						pSrc->Effect(EFFECT_OBJ, ITEMID_FX_CURSE_EFFECT, this, 10, 16);
 					}
@@ -2091,9 +2088,9 @@ int CChar::Fight_CalcDamage(const CItem *pWeapon, bool fNoRandom, bool fGetMax) 
 			case 0:
 			{
 				// Sphere custom formula
-				if ( !iStatBonus )
+				if ( iStatBonus == 0 )
 					iStatBonus = STAT_STR;
-				if ( !iStatBonusPercent )
+				if ( iStatBonusPercent == 0 )
 					iStatBonusPercent = 10;
 				iDmgBonus += Stat_GetAdjusted(iStatBonus) * iStatBonusPercent / 100;
 				break;
@@ -2115,9 +2112,9 @@ int CChar::Fight_CalcDamage(const CItem *pWeapon, bool fNoRandom, bool fGetMax) 
 						iDmgBonus += 10;
 				}
 
-				if ( !iStatBonus )
+				if ( iStatBonus == 0 )
 					iStatBonus = STAT_STR;
-				if ( !iStatBonusPercent )
+				if ( iStatBonusPercent == 0 )
 					iStatBonusPercent = 20;
 				iDmgBonus += Stat_GetAdjusted(iStatBonus) * iStatBonusPercent / 100;
 				break;
@@ -2144,9 +2141,9 @@ int CChar::Fight_CalcDamage(const CItem *pWeapon, bool fNoRandom, bool fGetMax) 
 				if ( Stat_GetAdjusted(STAT_STR) >= 100 )
 					iDmgBonus += 5;
 
-				if ( !iStatBonus )
+				if ( iStatBonus == 0 )
 					iStatBonus = STAT_STR;
-				if ( !iStatBonusPercent )
+				if ( iStatBonusPercent == 0 )
 					iStatBonusPercent = 30;
 				iDmgBonus += Stat_GetAdjusted(iStatBonus) * iStatBonusPercent / 100;
 				break;
@@ -2539,13 +2536,13 @@ WAR_SWING_TYPE CChar::Fight_Hit(CChar *pCharTarg)
 	if ( !pCharTarg || (pCharTarg == this) )
 		return WAR_SWING_INVALID;
 
-	DAMAGE_TYPE iTyp = DAMAGE_HIT_BLUNT;
+	DAMAGE_TYPE uDmgType = DAMAGE_PHYSICAL;
 
 	if ( IsTrigUsed(TRIGGER_HITCHECK) )
 	{
 		CScriptTriggerArgs pArgs;
 		pArgs.m_iN1 = m_atFight.m_Swing_State;
-		pArgs.m_iN2 = iTyp;
+		pArgs.m_iN2 = uDmgType;
 		TRIGRET_TYPE iRet = OnTrigger(CTRIG_HitCheck, pCharTarg, &pArgs);
 		if ( iRet == TRIGRET_RET_TRUE )
 			return static_cast<WAR_SWING_TYPE>(pArgs.m_iN1);
@@ -2553,21 +2550,21 @@ WAR_SWING_TYPE CChar::Fight_Hit(CChar *pCharTarg)
 			return WAR_SWING_INVALID;
 
 		m_atFight.m_Swing_State = static_cast<WAR_SWING_TYPE>(pArgs.m_iN1);
-		iTyp = static_cast<DAMAGE_TYPE>(pArgs.m_iN2);
+		uDmgType = static_cast<DAMAGE_TYPE>(pArgs.m_iN2);
 
-		if ( (m_atFight.m_Swing_State == WAR_SWING_SWINGING) && (iTyp & DAMAGE_FIXED) )
+		if ( (m_atFight.m_Swing_State == WAR_SWING_SWINGING) && (uDmgType & DAMAGE_FIXED) )
 		{
 			if ( iRet == TRIGRET_RET_DEFAULT )
 				return WAR_SWING_EQUIPPING;
 
 			CItem *pWeapon = m_uidWeapon.ItemFind();
-			if ( iTyp == DAMAGE_HIT_BLUNT )		// if type did not change in the trigger, default iTyp is set
+			if ( uDmgType & DAMAGE_PHYSICAL )
 			{
 				if ( pWeapon )
 				{
 					CVarDefCont *pDamTypeOverride = pWeapon->GetKey("OVERRIDE.DAMAGETYPE", true);
 					if ( pDamTypeOverride )
-						iTyp = static_cast<DAMAGE_TYPE>(pDamTypeOverride->GetValNum());
+						uDmgType = static_cast<DAMAGE_TYPE>(pDamTypeOverride->GetValNum());
 					else
 					{
 						CItemBase *pWeaponDef = pWeapon->Item_GetDef();
@@ -2576,12 +2573,12 @@ WAR_SWING_TYPE CChar::Fight_Hit(CChar *pCharTarg)
 							case IT_WEAPON_SWORD:
 							case IT_WEAPON_AXE:
 							case IT_WEAPON_THROWING:
-								iTyp |= DAMAGE_HIT_SLASH;
+								uDmgType |= DAMAGE_HIT_SLASH;
 								break;
 							case IT_WEAPON_FENCE:
 							case IT_WEAPON_BOW:
 							case IT_WEAPON_XBOW:
-								iTyp |= DAMAGE_HIT_PIERCE;
+								uDmgType |= DAMAGE_HIT_PIERCE;
 								break;
 							default:
 								break;
@@ -2590,7 +2587,7 @@ WAR_SWING_TYPE CChar::Fight_Hit(CChar *pCharTarg)
 				}
 			}
 
-			pCharTarg->OnTakeDamage(Fight_CalcDamage(pWeapon), this, iTyp, m_DamPhysical, m_DamFire, m_DamCold, m_DamPoison, m_DamEnergy);
+			pCharTarg->OnTakeDamage(Fight_CalcDamage(pWeapon), this, uDmgType, m_DamPhysical, m_DamFire, m_DamCold, m_DamPoison, m_DamEnergy);
 			return WAR_SWING_EQUIPPING;
 		}
 	}
@@ -2644,7 +2641,7 @@ WAR_SWING_TYPE CChar::Fight_Hit(CChar *pCharTarg)
 	{
 		CVarDefCont *pDamTypeOverride = pWeapon->GetKey("OVERRIDE.DAMAGETYPE", true);
 		if ( pDamTypeOverride )
-			iTyp = static_cast<DAMAGE_TYPE>(pDamTypeOverride->GetValNum());
+			uDmgType = static_cast<DAMAGE_TYPE>(pDamTypeOverride->GetValNum());
 		else
 		{
 			CItemBase *pWeaponDef = pWeapon->Item_GetDef();
@@ -2653,12 +2650,12 @@ WAR_SWING_TYPE CChar::Fight_Hit(CChar *pCharTarg)
 				case IT_WEAPON_SWORD:
 				case IT_WEAPON_AXE:
 				case IT_WEAPON_THROWING:
-					iTyp |= DAMAGE_HIT_SLASH;
+					uDmgType |= DAMAGE_HIT_SLASH;
 					break;
 				case IT_WEAPON_FENCE:
 				case IT_WEAPON_BOW:
 				case IT_WEAPON_XBOW:
-					iTyp |= DAMAGE_HIT_PIERCE;
+					uDmgType |= DAMAGE_HIT_PIERCE;
 					break;
 				default:
 					break;
@@ -2790,7 +2787,7 @@ WAR_SWING_TYPE CChar::Fight_Hit(CChar *pCharTarg)
 
 	if ( m_pNPC && (m_pNPC->m_Brain == NPCBRAIN_GUARD) && g_Cfg.m_fGuardsInstantKill )
 	{
-		iTyp |= DAMAGE_GOD;
+		uDmgType |= DAMAGE_GOD;
 		m_Act_Difficulty = 100;		// never miss
 		pCharTarg->Stat_SetVal(STAT_STR, 1);
 		pCharTarg->Effect(EFFECT_LIGHTNING, ITEMID_NOTHING, this);
@@ -2833,7 +2830,7 @@ WAR_SWING_TYPE CChar::Fight_Hit(CChar *pCharTarg)
 	}
 
 	// We hit
-	if ( !(iTyp & DAMAGE_GOD) )
+	if ( !(uDmgType & DAMAGE_GOD) )
 	{
 		// Check if target will block the hit
 		// Legacy pre-SE formula
@@ -2871,7 +2868,7 @@ WAR_SWING_TYPE CChar::Fight_Hit(CChar *pCharTarg)
 			if ( IsPriv(PRIV_DETAIL) )
 				SysMessageDefault(DEFMSG_COMBAT_PARRY);
 			if ( pItemHit )
-				pItemHit->OnTakeDamage(1, this, iTyp);
+				pItemHit->OnTakeDamage(1, this, uDmgType);
 
 			//Effect(EFFECT_OBJ, ITEMID_FX_GLOW, this, 10, 16);		// moved to scripts (@UseQuick on Parrying skill)
 			return WAR_SWING_EQUIPPING;
@@ -2881,7 +2878,7 @@ WAR_SWING_TYPE CChar::Fight_Hit(CChar *pCharTarg)
 	// Calculate base damage
 	int iDmg = Fight_CalcDamage(pWeapon);
 
-	CScriptTriggerArgs Args(iDmg, iTyp, pWeapon);
+	CScriptTriggerArgs Args(iDmg, uDmgType, pWeapon);
 	Args.m_VarsLocal.SetNum("ItemDamageChance", 25);
 	if ( pAmmo )
 		Args.m_VarsLocal.SetNum("Arrow", pAmmo->GetUID());
@@ -2912,7 +2909,7 @@ WAR_SWING_TYPE CChar::Fight_Hit(CChar *pCharTarg)
 			pAmmo = NULL;
 
 		iDmg = static_cast<int>(Args.m_iN1);
-		iTyp = static_cast<DAMAGE_TYPE>(Args.m_iN2);
+		uDmgType = static_cast<DAMAGE_TYPE>(Args.m_iN2);
 	}
 
 	// BAD BAD Healing fix.. Cant think of something else -- Radiant
@@ -2963,7 +2960,7 @@ WAR_SWING_TYPE CChar::Fight_Hit(CChar *pCharTarg)
 	}
 
 	// Took my swing. Do Damage!
-	iDmg = pCharTarg->OnTakeDamage(iDmg, this, iTyp, m_DamPhysical, m_DamFire, m_DamCold, m_DamPoison, m_DamEnergy);
+	iDmg = pCharTarg->OnTakeDamage(iDmg, this, uDmgType, m_DamPhysical, m_DamFire, m_DamCold, m_DamPoison, m_DamEnergy);
 
 	// Post-damage behavior
 	if ( iDmg > 0 )
@@ -3016,7 +3013,7 @@ WAR_SWING_TYPE CChar::Fight_Hit(CChar *pCharTarg)
 		}
 
 		if ( pCharTarg->m_ReflectPhysicalDamage )
-			OnTakeDamage(iDmg * pCharTarg->m_ReflectPhysicalDamage / 100, this, iTyp, m_DamPhysical, m_DamFire, m_DamCold, m_DamPoison, m_DamEnergy);
+			OnTakeDamage(iDmg * pCharTarg->m_ReflectPhysicalDamage / 100, this, uDmgType, m_DamPhysical, m_DamFire, m_DamCold, m_DamPoison, m_DamEnergy);
 
 		if ( pWeapon )
 		{

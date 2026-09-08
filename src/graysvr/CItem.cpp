@@ -83,10 +83,10 @@ bool CItem::NotifyDelete()
 	return true;
 }
 
-void CItem::Delete(bool bForce)
+void CItem::Delete(bool fForce)
 {
 
-	if ( !NotifyDelete() && !bForce )
+	if ( !NotifyDelete() && !fForce )
 		return;
 
 	// Remove corpse map waypoint on enhanced clients
@@ -283,7 +283,7 @@ CItem * CItem::CreateHeader( TCHAR * pszArg, CObjBase * pCont, bool fDupeCheck, 
 	{
 		if ( pszArg[0] != 'R' )
 		{
-			wAmount = static_cast<WORD>(Exp_GetVal(pszArg));
+			wAmount = static_cast<WORD>(g_Exp.GetVal(pszArg));
 			Str_Parse( pszArg, &pszArg );
 		}
 		if ( pszArg[0] == 'R' )
@@ -1071,7 +1071,7 @@ SOUND_TYPE CItem::GetDropSound(const CObjBase *pObjOn) const
 	return SOUND_HAMMER;
 }
 
-bool CItem::MoveTo(CPointMap pt, bool bForceFix) // Put item on the ground here.
+bool CItem::MoveTo(CPointMap pt, bool fForceFix)
 {
 	ADDTOCALLSTACK("CItem::MoveTo");
 	// Move this item to it's point in the world. (ground/top level)
@@ -1093,7 +1093,7 @@ bool CItem::MoveTo(CPointMap pt, bool bForceFix) // Put item on the ground here.
 	}
 
 	SetTopPoint( pt );
-	if ( bForceFix )
+	if ( fForceFix )
 		SetTopZ(GetFixZ(GetTopPoint()));
 
 	return( true );
@@ -1926,7 +1926,7 @@ bool CItem::r_GetRef( LPCTSTR & pszKey, CScriptObj * & pRef )
 	if ( i >= 0 )
 	{
 		pszKey += strlen( sm_szRefKeys[i] );
-		SKIP_SEPARATORS(pszKey);
+		SkipDotSeparator(pszKey);
 		switch (i)
 		{
 			case ICR_CONT:
@@ -2029,10 +2029,8 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 			}	
 			break;
 		case IC_MAXAMOUNT:
-			{
-				sVal.FormatVal(GetMaxAmount() );
-
-			}break;
+			sVal.FormatUVal(GetMaxAmount());
+			break;
 		case IC_SPELLCOUNT:
 			{
 				if ( !IsTypeSpellbook() )
@@ -2041,15 +2039,15 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 			}
 			break;
 		case IC_ADDSPELL:
-			pszKey	+= 8;
-			SKIP_SEPARATORS( pszKey );
-			sVal.FormatVal( IsSpellInBook(static_cast<SPELL_TYPE>(g_Cfg.ResourceGetIndexType( RES_SPELL, pszKey ))));
+			pszKey += 8;
+			SkipDotSeparator(pszKey);
+			sVal.FormatVal(IsSpellInBook(static_cast<SPELL_TYPE>(g_Cfg.ResourceGetIndexType(RES_SPELL, pszKey))));
 			break;
 		case IC_AMOUNT:
-			sVal.FormatVal( GetAmount());
+			sVal.FormatUVal(GetAmount());
 			break;
 		case IC_BASEWEIGHT:
-			sVal.FormatVal(m_weight);
+			sVal.FormatUVal(m_weight);
 			break;
 		case IC_BONUSSTR:
 			sVal.FormatVal(m_StrengthBonus);
@@ -2141,7 +2139,7 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 		case IC_CONTGRID:
 			if ( !IsItemInContainer() )
 				return false;
-			sVal.FormatVal(GetContainedGridIndex());
+			sVal.FormatUVal(GetContainedGridIndex());
 			break;
 		case IC_CONTP:
 			{
@@ -2184,13 +2182,13 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 			}
 			break;
 		case IC_HEIGHT:
-			sVal.FormatVal( GetHeight() );
+			sVal.FormatUVal(GetHeight());
 			break;
 		case IC_HITS:
-			sVal.FormatVal(LOWORD(m_itNormal.m_more1));
+			sVal.FormatUVal(LOWORD(m_itNormal.m_more1));
 			break;
 		case IC_HITPOINTS:
-			sVal.FormatVal( IsTypeArmorWeapon() ? m_itArmor.m_Hits_Cur : 0 );
+			sVal.FormatUVal(IsTypeArmorWeapon() ? m_itArmor.m_Hits_Cur : 0);
 			break;
 		case IC_ID:
 			fDoDefault = true;
@@ -2211,32 +2209,32 @@ bool CItem::r_WriteVal( LPCTSTR pszKey, CGString & sVal, CTextConsole * pSrc )
 			sVal.FormatHex( m_uidLink );
 			break;
 		case IC_MAXHITS:
-			sVal.FormatVal(HIWORD(m_itNormal.m_more1));
+			sVal.FormatUVal(HIWORD(m_itNormal.m_more1));
 			break;
 		case IC_MORE:
-			sVal.FormatVal( m_itNormal.m_more1 );
+			sVal.FormatUVal(m_itNormal.m_more1);
 			break;
 		case IC_MORE1:
 			r_WriteMore1(sVal);
 			break;
 		case IC_MORE1h:
-			sVal.FormatVal( HIWORD( m_itNormal.m_more1 ));
+			sVal.FormatUVal(HIWORD(m_itNormal.m_more1));
 			break;
 		case IC_MORE1l:
-			sVal.FormatVal( LOWORD( m_itNormal.m_more1 ));
+			sVal.FormatUVal(LOWORD(m_itNormal.m_more1));
 			break;
 		case IC_MORE2:
 		case IC_FRUIT:
 			r_WriteMore2(sVal);
 			break;
 		case IC_MORE2h:
-			sVal.FormatVal( HIWORD( m_itNormal.m_more2 ));
+			sVal.FormatUVal(HIWORD(m_itNormal.m_more2));
 			break;
 		case IC_MORE2l:
-			sVal.FormatVal( LOWORD( m_itNormal.m_more2 ));
+			sVal.FormatUVal(LOWORD(m_itNormal.m_more2));
 			break;
 		case IC_MOREM:
-			sVal.FormatVal( m_itNormal.m_morep.m_map );
+			sVal.FormatUVal(m_itNormal.m_morep.m_map);
 			break;
 		case IC_MOREP:
 			sVal = m_itNormal.m_morep.WriteUsed();
@@ -2463,7 +2461,7 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 				TCHAR *pszTemp = Str_GetTemp();
 				strncpy(pszTemp, s.GetArgStr(), 16);
 				pszTemp[15] = '\0';
-				GETNONWHITESPACE( pszTemp );
+				SkipWhitespace(pszTemp);
 
 				if ( IsDigit( pszTemp[0] ) || pszTemp[0] == '-' )
 				{
@@ -2580,7 +2578,8 @@ bool CItem::r_LoadVal( CScript & s ) // Load an item Script
 				TCHAR *pszTemp = Str_GetTemp();
 				strncpy(pszTemp, s.GetArgStr(), 30);
 				pszTemp[29] = '\0';
-				GETNONWHITESPACE( pszTemp );
+				SkipWhitespace(pszTemp);
+
 				size_t iArgs = 0;
 				if ( IsDigit( pszTemp[0] ) || (pszTemp[0] == '-') )
 				{
@@ -3741,7 +3740,7 @@ int CItem::Armor_GetDefense() const
 	return iVal;
 }
 
-int CItem::Weapon_GetAttack(bool bGetRange) const
+int CItem::Weapon_GetAttack(bool fGetRange) const
 {
 	ADDTOCALLSTACK("CItem::Weapon_GetAttack");
 	// Get the base attack for the weapon plus magic modifiers.
@@ -3750,7 +3749,7 @@ int CItem::Weapon_GetAttack(bool bGetRange) const
 		return 1;
 
 	int iVal = m_attackBase + m_ModAr;
-	if ( bGetRange )
+	if ( fGetRange )
 		iVal += m_attackRange;
 
 	if ( IsSetOF(OF_ScaleDamageByDurability) && m_itArmor.m_Hits_Max > 0 && m_itArmor.m_Hits_Cur < m_itArmor.m_Hits_Max )
@@ -4170,10 +4169,10 @@ bool CItem::SetMagicLock( CChar * pCharSrc, int iSkillLevel )
 	return( true );
 }
 
-bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, CItem * pSourceItem, bool bReflecting )
+bool CItem::OnSpellEffect(SPELL_TYPE spell, CChar *pCharSrc, int iSkillLevel, CItem *pSourceItem, bool fReflecting)
 {
 	ADDTOCALLSTACK("CItem::OnSpellEffect");
-	UNREFERENCED_PARAMETER(bReflecting);	// items are not affected by Magic Reflection
+	UNREFERENCED_PARAMETER(fReflecting);	// items are not affected by Magic Reflection
 	// A spell is cast on this item.
 	// ARGS:
 	//  iSkillLevel = 0-1000 = difficulty. may be slightly larger . how advanced is this spell (might be from a wand)
@@ -4235,7 +4234,7 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	}
 
 	ITEMID_TYPE iEffectID = pSpellDef->m_idEffect;
-	WORD uDamage = 0;
+	DAMAGE_TYPE uDmgType = DAMAGE_MAGIC;
 
 	switch ( spell )
 	{
@@ -4274,7 +4273,7 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 		case SPELL_Fire_Field:
 		case SPELL_Flame_Strike:
 		case SPELL_Meteor_Swarm:
-			uDamage = DAMAGE_FIRE;
+			uDmgType |= DAMAGE_FIRE;
 			break;
 
 		case SPELL_Magic_Lock:
@@ -4336,8 +4335,8 @@ bool CItem::OnSpellEffect( SPELL_TYPE spell, CChar * pCharSrc, int iSkillLevel, 
 	}
 
 	// ??? Potions should explode when hit (etc..)
-	if ( pSpellDef->IsSpellType( SPELLFLAG_HARM ))
-		OnTakeDamage( 1, pCharSrc, DAMAGE_MAGIC|uDamage );
+	if ( pSpellDef->IsSpellType(SPELLFLAG_HARM) )
+		OnTakeDamage(1, pCharSrc, uDmgType);
 
 	return true;
 }
@@ -4450,7 +4449,7 @@ int CItem::OnTakeDamage( int iDmg, CChar * pSrc, DAMAGE_TYPE uType )
 		return( 1 );
 
 	case IT_WEB:
-		if ( ! ( uType & (DAMAGE_FIRE|DAMAGE_HIT_BLUNT|DAMAGE_HIT_SLASH|DAMAGE_GOD)))
+		if ( !(uType & (DAMAGE_FIRE|DAMAGE_PHYSICAL|DAMAGE_HIT_SLASH|DAMAGE_GOD)) )
 		{
 			if ( pSrc )
 				pSrc->SysMessage( g_Cfg.GetDefaultMsg( DEFMSG_WEB_NOEFFECT ) );
@@ -4562,7 +4561,7 @@ void CItem::OnExplosion()
 		if ( pChar == NULL )
 			break;
 		if ( pChar->CanSeeLOS(this) )
-			pChar->OnTakeDamage( m_itExplode.m_iDamage, pSrc, m_itExplode.m_wFlags, iDmgPhysical, iDmgFire, iDmgCold, iDmgPoison, iDmgEnergy );
+			pChar->OnTakeDamage(m_itExplode.m_iDamage, pSrc, static_cast<DAMAGE_TYPE>(m_itExplode.m_wFlags), iDmgPhysical, iDmgFire, iDmgCold, iDmgPoison, iDmgEnergy);
 	}
 
 	Effect(EFFECT_XYZ, ITEMID_FX_EXPLODE, this, 9, 10);
