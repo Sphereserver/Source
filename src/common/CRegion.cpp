@@ -263,7 +263,7 @@ bool CRegionBase::MakeRegionName()
 		return true;
 
 	LPCTSTR pszName = GetName();
-	GETNONWHITESPACE(pszName);
+	SkipWhitespace(pszName);
 	if ( !strnicmp("the ", pszName, 4) )
 		pszName += 4;
 	else if ( !strnicmp("a ", pszName, 2) )
@@ -357,7 +357,7 @@ bool CRegionBase::AddRegionRect(const CRectMap &rect)
 void CRegionBase::SetName(LPCTSTR pszName)
 {
 	ADDTOCALLSTACK("CRegionBase::SetName");
-	m_sName = ((pszName == NULL) || (pszName[0] == '%')) ? g_Serv.GetName() : pszName;
+	m_sName = ((pszName == NULL) || (*pszName == '%')) ? g_Serv.GetName() : pszName;
 }
 
 void CRegionBase::SetModified(int iModFlag)
@@ -641,11 +641,14 @@ bool CRegionBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatVal(IsFlag(REGION_FLAG_GUARDED));
 			break;
 		case RGNC_ISEVENT:
-			if ( pszKey[7] != '.' )
-				return false;
-			pszKey += 8;
-			sVal.FormatVal(m_Events.ContainsResourceName(RES_EVENTS, pszKey));
-			return true;
+			pszKey += 7;
+			if ( *pszKey == '.' )
+			{
+				++pszKey;
+				sVal.FormatVal(m_Events.ContainsResourceName(RES_EVENTS, pszKey));
+				return true;
+			}
+			return false;
 		case RGNC_MAGIC:
 			sVal.FormatVal(!IsFlag(REGION_ANTIMAGIC_ALL));
 			break;
@@ -685,8 +688,8 @@ bool CRegionBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				return true;
 			}
 
-			SKIP_SEPARATORS(pszKey);
-			size_t iRect = Exp_GetVal(pszKey);
+			SkipDotSeparator(pszKey);
+			size_t iRect = static_cast<int>(g_Exp.GetVal(pszKey));
 			if ( iRect == 0 )
 			{
 				sVal = m_rectUnion.Write();
@@ -701,24 +704,25 @@ bool CRegionBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatVal(IsFlag(REGION_FLAG_SAFE));
 			break;
 		case RGNC_TAG:
-			if ( pszKey[3] != '.' )
-				return false;
-			pszKey += 4;
-			sVal = m_TagDefs.GetKeyStr(pszKey, false);
-			return true;
 		case RGNC_TAG0:
-			if ( pszKey[4] != '.' )
-				return false;
-			pszKey += 5;
-			sVal = m_TagDefs.GetKeyStr(pszKey, true);
-			return true;
+		{
+			pszKey += (index == RGNC_TAG0) ? 4 : 3;
+			if ( *pszKey == '.' )
+			{
+				++pszKey;
+				bool fZero = (index == RGNC_TAG0);
+				sVal = m_TagDefs.GetKeyStr(pszKey, fZero);
+				return true;
+			}
+			return false;
+		}
 		case RGNC_TAGAT:
 		{
 			pszKey += 5;
 			if ( *pszKey == '.' )
 			{
-				SKIP_SEPARATORS(pszKey);
-				size_t iCount = static_cast<size_t>(Exp_GetVal(pszKey));
+				++pszKey;
+				size_t iCount = static_cast<size_t>(g_Exp.GetVal(pszKey));
 				if ( iCount >= m_TagDefs.GetCount() )
 					return false;
 
@@ -726,7 +730,7 @@ bool CRegionBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				if ( !pTagAt )
 					return false;
 
-				SKIP_SEPARATORS(pszKey);
+				SkipDotSeparator(pszKey);
 				if ( !*pszKey )
 				{
 					sVal.Format("%s=%s", pTagAt->GetKey(), pTagAt->GetValStr());
@@ -925,7 +929,7 @@ bool CRegionBase::r_Verb(CScript &s, CTextConsole *pSrc)	// execute command from
 	if ( !strnicmp(pszKey, "CLEARTAGS", 9) )
 	{
 		pszKey = s.GetArgStr();
-		SKIP_SEPARATORS(pszKey);
+		SkipDotSeparator(pszKey);
 		m_TagDefs.ClearKeys(pszKey);
 		return true;
 	}
@@ -1076,21 +1080,22 @@ bool CRegionWorld::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc
 			break;
 		case RGNWC_REGION:
 		{
-			if ( pszKey[6] && (pszKey[6] != '.') )
-				return false;
-
+			pszKey += 6;
 			CRegionWorld *pRegion = dynamic_cast<CRegionWorld *>(m_pt.GetRegion(REGION_TYPE_AREA));
-			if ( !pszKey[6] )
+			if ( *pszKey == '.' )
+			{
+				++pszKey;
+				if ( pRegion && m_pt.GetRegion(REGION_TYPE_MULTI) )
+					return pRegion->r_WriteVal(pszKey, sVal, pSrc);
+
+				return r_WriteVal(pszKey, sVal, pSrc);
+			}
+			else if ( *pszKey == '\0' )
 			{
 				sVal.FormatVal(pRegion ? 1 : 0);
 				return true;
 			}
-
-			pszKey += 7;
-			if ( pRegion && m_pt.GetRegion(REGION_TYPE_MULTI) )
-				return pRegion->r_WriteVal(pszKey, sVal, pSrc);
-
-			return r_WriteVal(pszKey, sVal, pSrc);
+			return false;
 		}
 		default:
 			return CRegionBase::r_WriteVal(pszKey, sVal, pSrc);
@@ -1153,17 +1158,17 @@ CTeleport::CTeleport(TCHAR *pszArgs)
 	if ( iArgQty < 2 )
 		g_Log.EventError("Bad teleport def\n");
 
-	if ( iArgQty >= 1 )
+	if ( iArgQty > 0 )
 		Read(ppArgs[0]);
 	else
 		InitPoint();
 
-	if ( iArgQty >= 2 )
+	if ( iArgQty > 1 )
 		m_ptDst.Read(ppArgs[1]);
 	else
 		m_ptDst.InitPoint();
 
-	m_fNPC = (iArgQty >= 4) ? (ATOI(ppArgs[3]) != 0) : false;
+	m_fNPC = (iArgQty > 3) ? (ATOI(ppArgs[3]) != 0) : false;
 }
 
 bool CTeleport::RealizeTeleport()

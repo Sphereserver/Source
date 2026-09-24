@@ -2,8 +2,8 @@
 // So they may have full unicode chars inside.
 #include "../graysvr/graysvr.h"
 
-///////////////////////////////////////////////////////////////
-// -CScriptKey
+///////////////////////////////////////////////////////////
+// CScriptKey
 
 void CScriptKey::InitKey()
 {
@@ -58,7 +58,7 @@ long long CScriptKey::GetArgLLVal()
 	ADDTOCALLSTACK("CScriptKey::GetArgLLVal");
 	ASSERT(m_pszKey);
 	ASSERT(m_pszArg);
-	return Exp_GetLLVal(m_pszArg);
+	return static_cast<long long>(g_Exp.GetVal(m_pszArg));
 }
 
 long CScriptKey::GetArgVal()
@@ -66,7 +66,7 @@ long CScriptKey::GetArgVal()
 	ADDTOCALLSTACK("CScriptKey::GetArgVal");
 	ASSERT(m_pszKey);
 	ASSERT(m_pszArg);
-	return Exp_GetVal(m_pszArg);
+	return static_cast<long>(g_Exp.GetVal(m_pszArg));
 }
 
 long CScriptKey::GetArgRange()
@@ -74,11 +74,11 @@ long CScriptKey::GetArgRange()
 	ADDTOCALLSTACK("CScriptKey::GetArgRange");
 	ASSERT(m_pszKey);
 	ASSERT(m_pszArg);
-	return static_cast<long>(Exp_GetRange(m_pszArg));
+	return static_cast<long>(g_Exp.GetRange(m_pszArg));
 }
 
-///////////////////////////////////////////////////////////////
-// -CScriptKeyAlloc
+///////////////////////////////////////////////////////////
+// CScriptKeyAlloc
 
 TCHAR *CScriptKeyAlloc::GetKeyBufferRaw(size_t iLen)
 {
@@ -106,7 +106,7 @@ bool CScriptKeyAlloc::ParseKey(LPCTSTR pszKey)
 		return false;
 	}
 
-	GETNONWHITESPACE(pszKey);
+	SkipWhitespace(pszKey);
 
 	TCHAR *pszBuffer = GetKeyBufferRaw(strlen(pszKey));
 	ASSERT(pszBuffer);
@@ -169,7 +169,7 @@ size_t CScriptKeyAlloc::ParseKeyEnd()
 
 	// Remove CR and LF from the end of the line
 	iLen = Str_TrimEndWhitespace(m_pszKey, iLen);
-	if ( iLen <= 0 )
+	if ( iLen == 0 )
 		return 0;
 
 	m_pszKey[iLen] = '\0';
@@ -181,12 +181,12 @@ void CScriptKeyAlloc::ParseKeyLate()
 	ADDTOCALLSTACK("CScriptKeyAlloc::ParseKeyLate");
 	ASSERT(m_pszKey);
 	ParseKeyEnd();
-	GETNONWHITESPACE(m_pszKey);
+	SkipWhitespace(m_pszKey);
 	Str_Parse(m_pszKey, &m_pszArg);
 }
 
-///////////////////////////////////////////////////////////////
-// -CScript
+///////////////////////////////////////////////////////////
+// CScript
 
 CScript::CScript()
 {
@@ -229,7 +229,7 @@ bool CScript::Open(LPCTSTR pszFilename, UINT uFlags)
 		SetFilePath(pszFilename);
 
 	LPCTSTR pszTitle = GetFileTitle();
-	if ( !pszTitle || (pszTitle[0] == '\0') )
+	if ( !pszTitle || (*pszTitle == '\0') )
 		return false;
 
 	LPCTSTR pszExt = GetFilesExt(GetFilePath());
@@ -259,7 +259,7 @@ bool CScript::ReadTextLine(bool fRemoveBlanks)
 	while ( CCacheableScriptFile::ReadString(GetKeyBufferRaw(SCRIPT_MAX_LINE_LEN), SCRIPT_MAX_LINE_LEN) )
 	{
 		++m_iLineNum;
-		if ( fRemoveBlanks && (ParseKeyEnd() <= 0) )
+		if ( fRemoveBlanks && (ParseKeyEnd() == 0) )
 			continue;
 		return true;
 	}
@@ -381,7 +381,7 @@ bool CScript::ReadKeyParse()
 	}
 
 	ASSERT(m_pszKey);
-	GETNONWHITESPACE(m_pszKey);
+	SkipWhitespace(m_pszKey);
 	EXC_SET("parse");
 	Str_Parse(m_pszKey, &m_pszArg);
 
@@ -391,7 +391,7 @@ bool CScript::ReadKeyParse()
 	EXC_SET("parse");
 	LPCTSTR	pszArgs = m_pszArg;
 	pszArgs += 2;
-	GETNONWHITESPACE(pszArgs);
+	SkipWhitespace(pszArgs);
 	TemporaryString pszTemp;
 
 	if ( m_pszArg[0] == '.' )
@@ -453,12 +453,12 @@ bool _cdecl CScript::WriteSection(LPCTSTR pszSection, ...)
 bool CScript::WriteKey(LPCTSTR pszKey, LPCTSTR pszVal)
 {
 	ADDTOCALLSTACK_INTENSIVE("CScript::WriteKey");
-	if ( !pszKey || (pszKey[0] == '\0') )
+	if ( !pszKey || (*pszKey == '\0') )
 		return false;
 
 	TCHAR ch = '\0';
 	TCHAR *pszSep;
-	if ( !pszVal || (pszVal[0] == '\0') )
+	if ( !pszVal || (*pszVal == '\0') )
 	{
 		pszSep = const_cast<TCHAR *>(strchr(pszKey, '\n'));
 		if ( !pszSep )

@@ -93,14 +93,14 @@ CResourceScript *CResourceBase::AddResourceFile(LPCTSTR pszName)
 	ASSERT(pszName != NULL);
 
 	TCHAR szName[_MAX_PATH];
-	strncpy(szName, pszName, sizeof(szName));
-	szName[sizeof(szName) - 1] = '\0';
+	strncpy(szName, pszName, COUNTOF(szName));
+	szName[COUNTOF(szName) - 1] = '\0';
 
 	TCHAR szTitle[_MAX_PATH];
-	strncpy(szTitle, CScript::GetFilesTitle(szName), sizeof(szTitle));
-	szTitle[sizeof(szTitle) - 1] = '\0';
+	strncpy(szTitle, CScript::GetFilesTitle(szName), COUNTOF(szTitle));
+	szTitle[COUNTOF(szTitle) - 1] = '\0';
 
-	if ( szTitle[0] == '\0' )
+	if ( *szTitle == '\0' )
 	{
 		AddResourceDir(pszName);
 		return NULL;
@@ -109,8 +109,8 @@ CResourceScript *CResourceBase::AddResourceFile(LPCTSTR pszName)
 	if ( !CScript::GetFilesExt(szTitle) )
 	{
 		// No file extension provided, so append .scp to the filename
-		strncat(szName, SPHERE_FILE_EXT_SCP, sizeof(szName) - strlen(szName) - 1);
-		strncat(szTitle, SPHERE_FILE_EXT_SCP, sizeof(szTitle) - strlen(szTitle) - 1);
+		strncat(szName, SPHERE_FILE_EXT_SCP, COUNTOF(szName) - strlen(szName) - 1);
+		strncat(szTitle, SPHERE_FILE_EXT_SCP, COUNTOF(szTitle) - strlen(szTitle) - 1);
 	}
 
 	if ( !strnicmp(szTitle, SPHERE_FILE "tables", strlen(SPHERE_FILE "tables")) )
@@ -134,7 +134,7 @@ CResourceScript *CResourceBase::AddResourceFile(LPCTSTR pszName)
 void CResourceBase::AddResourceDir(LPCTSTR pszDirName)
 {
 	ADDTOCALLSTACK("CResourceBase::AddResourceDir");
-	if ( pszDirName[0] == '\0' )
+	if ( *pszDirName == '\0' )
 		return;
 
 	CGString sFilePath = CGFile::GetMergedFileName(pszDirName, "*" SPHERE_FILE_EXT_SCP);
@@ -269,7 +269,7 @@ RESOURCE_ID CResourceBase::ResourceGetID(RES_TYPE restype, LPCTSTR &pszName)
 	//  pszName is now set to be after the expression
 
 	RESOURCE_ID rid;
-	rid.SetPrivateUID(Exp_GetVal(pszName));		// may be some complex expression {}
+	rid.SetPrivateUID(static_cast<DWORD>(g_Exp.GetVal(pszName)));		// may be some complex expression {}
 
 	if ( (restype != RES_UNKNOWN) && (rid.GetResType() == RES_UNKNOWN) )
 		return RESOURCE_ID(restype, rid.GetResIndex());		// label it with the type we want
@@ -334,7 +334,7 @@ bool CResourceDef::SetResourceName(LPCTSTR pszName)
 			DEBUG_ERR(("Too long DEFNAME=%s\n", pszName));
 			return false;
 		}
-		if ( !_ISCSYM(pszName[i]) )
+		if ( !IsCSym(pszName[i]) )
 		{
 			DEBUG_ERR(("Bad chars in DEFNAME=%s\n", pszName));
 			return false;
@@ -521,7 +521,7 @@ bool CResourceLock::ReadTextLine(bool fRemoveBlanks)
 		m_pLock->m_iLineNum = ++m_iLineNum;		// share this with original open
 		if ( fRemoveBlanks )
 		{
-			if ( ParseKeyEnd() <= 0 )
+			if ( ParseKeyEnd() == 0 )
 				continue;
 		}
 		return true;
@@ -789,11 +789,11 @@ bool CResourceRefArray::r_LoadVal(CScript &s, RES_TYPE restype)
 	for ( size_t i = 0; i < iArgCount; ++i )
 	{
 		pszCmd = pszBlocks[i];
-		if ( pszCmd[0] == '-' )
+		if ( *pszCmd == '-' )
 		{
 			// Remove a frag or all frags
 			++pszCmd;
-			if ( (pszCmd[0] == '0') || (pszCmd[0] == '*') )
+			if ( (*pszCmd == '0') || (*pszCmd == '*') )
 			{
 				RemoveAll();
 				fRet = true;
@@ -813,7 +813,7 @@ bool CResourceRefArray::r_LoadVal(CScript &s, RES_TYPE restype)
 		else
 		{
 			// Add a single knowledge fragment or appropriate group item
-			if ( pszCmd[0] == '+' )
+			if ( *pszCmd == '+' )
 				++pszCmd;
 
 			CResourceLink *pResourceLink = dynamic_cast<CResourceLink *>(g_Cfg.ResourceGetDefByName(restype, pszCmd));
@@ -829,22 +829,7 @@ bool CResourceRefArray::r_LoadVal(CScript &s, RES_TYPE restype)
 			if ( ContainsPtr(pResourceLink) )
 				continue;
 
-			if ( g_Cfg.m_pEventsPetLink.ContainsPtr(pResourceLink) )
-			{
-				DEBUG_ERR(("'%s' already defined in " SPHERE_FILE SPHERE_FILE_EXT_INI " - skipping\n", pResourceLink->GetName()));
-				continue;
-			}
-			else if ( g_Cfg.m_pEventsPlayerLink.ContainsPtr(pResourceLink) )
-			{
-				DEBUG_ERR(("'%s' already defined in " SPHERE_FILE SPHERE_FILE_EXT_INI " - skipping\n", pResourceLink->GetName()));
-				continue;
-			}
-			else if ( (restype == RES_REGIONTYPE) && g_Cfg.m_pEventsRegionLink.ContainsPtr(pResourceLink) )
-			{
-				DEBUG_ERR(("'%s' already defined in " SPHERE_FILE SPHERE_FILE_EXT_INI " - skipping\n", pResourceLink->GetName()));
-				continue;
-			}
-			else if ( g_Cfg.m_iEventsItemLink.ContainsPtr(pResourceLink) )
+			if ( g_Cfg.m_pEventsPetLink.ContainsPtr(pResourceLink) || g_Cfg.m_pEventsPlayerLink.ContainsPtr(pResourceLink) || ((restype == RES_REGIONTYPE) && g_Cfg.m_pEventsRegionLink.ContainsPtr(pResourceLink)) || g_Cfg.m_iEventsItemLink.ContainsPtr(pResourceLink) )
 			{
 				DEBUG_ERR(("'%s' already defined in " SPHERE_FILE SPHERE_FILE_EXT_INI " - skipping\n", pResourceLink->GetName()));
 				continue;
@@ -960,13 +945,13 @@ bool CResourceQty::Load(LPCTSTR &pszCmds)
 	// Can be either order: "Name Qty" or "Qty Name"
 
 	const char *orig = pszCmds;
-	GETNONWHITESPACE(pszCmds);
+	SkipWhitespace(pszCmds);
 
 	m_iQty = INT_MIN;
 	if ( !IsAlpha(*pszCmds) )	// might be { or .
 	{
-		m_iQty = Exp_GetVal(pszCmds);
-		GETNONWHITESPACE(pszCmds);
+		m_iQty = static_cast<int>(g_Exp.GetVal(pszCmds));
+		SkipWhitespace(pszCmds);
 	}
 
 	if ( *pszCmds == '\0' )
@@ -982,15 +967,15 @@ bool CResourceQty::Load(LPCTSTR &pszCmds)
 		return false;
 	}
 
-	GETNONWHITESPACE(pszCmds);
+	SkipWhitespace(pszCmds);
 	if ( m_iQty == INT_MIN )	// trailing qty?
 	{
 		if ( (*pszCmds == '\0') || (*pszCmds == ',') )
 			m_iQty = 1;
 		else
 		{
-			m_iQty = Exp_GetVal(pszCmds);
-			GETNONWHITESPACE(pszCmds);
+			m_iQty = static_cast<int>(g_Exp.GetVal(pszCmds));
+			SkipWhitespace(pszCmds);
 		}
 	}
 	return true;

@@ -7,7 +7,7 @@ extern "C"
 	const int globalstartdata = 0xFFFFFFFF;
 }
 
-//*********************************************************
+///////////////////////////////////////////////////////////
 // CAccounts
 
 void CAccounts::Account_Add(CAccount *pAccount)
@@ -201,21 +201,21 @@ bool CAccounts::Account_OnCmd(TCHAR *pszArgs, CTextConsole *pSrc)
 	if ( pSrc->GetPrivLevel() < PLEVEL_Admin )
 		return false;
 
-	TCHAR *ppCmd[5];
-	size_t iQty = Str_ParseCmds(pszArgs, ppCmd, COUNTOF(ppCmd));
+	TCHAR *ppArgs[5];
+	size_t iArgQty = Str_ParseCmds(pszArgs, ppArgs, COUNTOF(ppArgs));
 
 	int index = VACS_HELP;
-	if ( iQty >= 1 )
-		index = FindTableSorted(ppCmd[0], sm_szVerbKeys, COUNTOF(sm_szVerbKeys) - 1);
+	if ( iArgQty > 0 )
+		index = FindTableSorted(ppArgs[0], sm_szVerbKeys, COUNTOF(sm_szVerbKeys) - 1);
 
 	switch ( static_cast<VACS_TYPE>(index) )
 	{
 		case VACS_ADD:
-			return (Account_Create(pSrc, ppCmd[1], ppCmd[2]) != NULL);
+			return (Account_Create(pSrc, ppArgs[1], ppArgs[2]) != NULL);
 		case VACS_ADDMD5:
-			return (Account_Create(pSrc, ppCmd[1], ppCmd[2], true) != NULL);
+			return (Account_Create(pSrc, ppArgs[1], ppArgs[2], true) != NULL);
 		case VACS_BLOCKED:
-			return Account_ListUnused(pSrc, ppCmd[1], ppCmd[2], ppCmd[3], PRIV_BLOCKED);
+			return Account_ListUnused(pSrc, ppArgs[1], ppArgs[2], ppArgs[3], PRIV_BLOCKED);
 		case VACS_HELP:
 			pSrc->SysMessagef(
 				"Available commands:\n"
@@ -234,9 +234,9 @@ bool CAccounts::Account_OnCmd(TCHAR *pszArgs, CTextConsole *pSrc)
 			);
 			return true;
 		case VACS_JAILED:
-			return Account_ListUnused(pSrc, ppCmd[1], ppCmd[2], ppCmd[3], PRIV_JAILED);
+			return Account_ListUnused(pSrc, ppArgs[1], ppArgs[2], ppArgs[3], PRIV_JAILED);
 		case VACS_UNUSED:
-			return Account_ListUnused(pSrc, ppCmd[1], ppCmd[2], ppCmd[3]);
+			return Account_ListUnused(pSrc, ppArgs[1], ppArgs[2], ppArgs[3]);
 		case VACS_UPDATE:
 			Account_SaveAll();
 			return true;
@@ -244,14 +244,14 @@ bool CAccounts::Account_OnCmd(TCHAR *pszArgs, CTextConsole *pSrc)
 			break;
 	}
 
-	CAccount *pAccount = Account_Find(ppCmd[0]);
+	CAccount *pAccount = Account_Find(ppArgs[0]);
 	if ( !pAccount )
 	{
-		pSrc->SysMessagef("Account '%s' does not exist\n", ppCmd[0]);
+		pSrc->SysMessagef("Account '%s' does not exist\n", ppArgs[0]);
 		return false;
 	}
 
-	if ( !ppCmd[1] || !ppCmd[1][0] )
+	if ( !ppArgs[1] || !*ppArgs[1] )
 	{
 		pSrc->SysMessagef("Account '%s': PLEVEL:%d, BLOCK:%d, IP:%s, CONNECTED:%s, ONLINE:%s\n", pAccount->GetName(), pAccount->GetPrivLevel(), static_cast<int>(pAccount->IsPriv(PRIV_BLOCKED)), pAccount->m_Last_IP.GetAddrStr(), pAccount->m_dateLastConnect.Format(NULL), pAccount->m_pClient ? (pAccount->m_pClient->GetChar() ? pAccount->m_pClient->GetChar()->GetName() : "<not logged>") : "no");
 		return true;
@@ -259,14 +259,14 @@ bool CAccounts::Account_OnCmd(TCHAR *pszArgs, CTextConsole *pSrc)
 	else
 	{
 		CGString sVal;
-		if ( ppCmd[4] && ppCmd[4][0] )
-			sVal.Format("%s %s %s", ppCmd[2], ppCmd[3], ppCmd[4]);
-		else if ( ppCmd[3] && ppCmd[3][0] )
-			sVal.Format("%s %s", ppCmd[2], ppCmd[3]);
-		else if ( ppCmd[2] && ppCmd[2][0] )
-			sVal.Format("%s", ppCmd[2]);
+		if ( ppArgs[4] && *ppArgs[4] )
+			sVal.Format("%s %s %s", ppArgs[2], ppArgs[3], ppArgs[4]);
+		else if ( ppArgs[3] && *ppArgs[3] )
+			sVal.Format("%s %s", ppArgs[2], ppArgs[3]);
+		else if ( ppArgs[2] && *ppArgs[2] )
+			sVal.Format("%s", ppArgs[2]);
 
-		CScript script(ppCmd[1], sVal.GetPtr());
+		CScript script(ppArgs[1], sVal.GetPtr());
 		return pAccount->r_Verb(script, pSrc);
 	}
 }
@@ -345,7 +345,7 @@ bool CAccounts::Account_ListUnused(CTextConsole *pSrc, LPCTSTR pszDays, LPCTSTR 
 		pszArgs = "LASTCONNECTDATE";
 	}
 
-	int iDaysTest = Exp_GetVal(pszDays);
+	int iDaysTest = static_cast<int>(g_Exp.GetVal(pszDays));
 	bool fDelete = !strcmpi(pszVerb, "DELETE");
 
 	CGTime datetime = CGTime::GetCurrentTime();
@@ -404,7 +404,7 @@ bool CAccounts::Account_ListUnused(CTextConsole *pSrc, LPCTSTR pszDays, LPCTSTR 
 	return true;
 }
 
-//*********************************************************
+///////////////////////////////////////////////////////////
 // CAccount
 
 CAccount::CAccount(LPCTSTR pszName)
@@ -613,7 +613,7 @@ PLEVEL_TYPE CAccount::GetPrivLevelText(LPCTSTR pszFlags)	// static
 	if ( iPlevel > 0 )
 		return static_cast<PLEVEL_TYPE>(iPlevel);
 
-	iPlevel = Exp_GetVal(pszFlags);
+	iPlevel = static_cast<int>(g_Exp.GetVal(pszFlags));
 	if ( iPlevel < PLEVEL_Player )
 		return PLEVEL_Player;
 	if ( iPlevel > PLEVEL_Owner )
@@ -936,16 +936,12 @@ bool CAccount::r_LoadVal(CScript &s)
 			SetResDisp(static_cast<BYTE>(minimum(maximum(RDS_NONE, lVal), RDS_QTY - 1)));
 			break;
 		}
+		case AC_TAG:
 		case AC_TAG0:
 		{
 			bool fQuoted = false;
-			m_TagDefs.SetStr(s.GetKey() + 5, fQuoted, s.GetArgStr(&fQuoted), true);
-			return true;
-		}
-		case AC_TAG:
-		{
-			bool fQuoted = false;
-			m_TagDefs.SetStr(s.GetKey() + 4, fQuoted, s.GetArgStr(&fQuoted));
+			bool fZero = (index == AC_TAG0);
+			m_TagDefs.SetStr(s.GetKey() + ((index == AC_TAG0) ? 5 : 4), fQuoted, s.GetArgStr(&fQuoted), fZero);
 			return true;
 		}
 		case AC_TOTALCONNECTTIME:
@@ -974,7 +970,8 @@ bool CAccount::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 	if ( !pSrc )
 		return false;
 
-	switch ( static_cast<AC_TYPE>(FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1)) )
+	int index = FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1);
+	switch ( index )
 	{
 		case AC_ACCOUNT:
 		case AC_NAME:
@@ -1032,17 +1029,16 @@ bool CAccount::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatVal(m_ResDisp);
 			break;
 		case AC_TAG:
-			if ( pszKey[3] != '.' )
-				return false;
-			pszKey += 4;
-			sVal = m_TagDefs.GetKeyStr(pszKey, false);
-			return true;
 		case AC_TAG0:
-			if ( pszKey[4] != '.' )
-				return false;
-			pszKey += 5;
-			sVal = m_TagDefs.GetKeyStr(pszKey, true);
-			return true;
+			pszKey += (index == AC_TAG0) ? 4 : 3;
+			if ( *pszKey == '.' )
+			{
+				++pszKey;
+				bool fZero = (index == AC_TAG0);
+				sVal = m_TagDefs.GetKeyStr(pszKey, fZero);
+				return true;
+			}
+			return false;
 		case AC_TAGCOUNT:
 			sVal.FormatULLVal(m_TagDefs.GetCount());
 			break;
@@ -1091,7 +1087,7 @@ bool CAccount::r_Verb(CScript &s, CTextConsole *pSrc)
 	if ( !strnicmp(pszKey, "CLEARTAGS", 9) )
 	{
 		pszKey = s.GetArgStr();
-		SKIP_SEPARATORS(pszKey);
+		SkipDotSeparator(pszKey);
 		m_TagDefs.ClearKeys(pszKey);
 		return true;
 	}
@@ -1161,11 +1157,11 @@ bool CAccount::r_GetRef(LPCTSTR &pszKey, CScriptObj *&pRef)
 	if ( !strnicmp(pszKey, "CHAR.", 5) )
 	{
 		pszKey += 5;
-		int i = Exp_GetVal(pszKey);
+		int i = static_cast<int>(g_Exp.GetVal(pszKey));
 		if ( (i >= 0) && m_Chars.IsValidIndex(i) )
 			pRef = m_Chars.GetChar(i).CharFind();
 
-		SKIP_SEPARATORS(pszKey);
+		SkipDotSeparator(pszKey);
 		return true;
 	}
 	return CScriptObj::r_GetRef(pszKey, pRef);

@@ -344,28 +344,26 @@ bool CPointBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal) const
 
 		const CUOStaticItemRec *pStatic = NULL;
 		int iStatic = 0;
-		int type = 0;
+		int iResType = 0;
 
-		SKIP_SEPARATORS(pszKey);
+		SkipDotSeparator(pszKey);
 		if ( !strnicmp(pszKey, "FINDID", 6) )
 		{
 			pszKey += 6;
-			SKIP_SEPARATORS(pszKey);
+			SkipDotSeparator(pszKey);
 
-			iStatic = Exp_GetVal(pszKey);
-			type = RES_GET_TYPE(iStatic);
-			if ( type == 0 )
-				type = RES_ITEMDEF;
-
-			SKIP_SEPARATORS(pszKey);
+			iStatic = static_cast<int>(g_Exp.GetVal(pszKey));
+			iResType = RES_GET_TYPE(iStatic);
+			if ( iResType == 0 )
+				iResType = RES_ITEMDEF;
 		}
 		else
 		{
-			iStatic = Exp_GetVal(pszKey);
-			type = RES_GET_TYPE(iStatic);
+			iStatic = static_cast<int>(g_Exp.GetVal(pszKey));
+			iResType = RES_GET_TYPE(iStatic);
 		}
 
-		if ( type == RES_ITEMDEF )
+		if ( iResType == RES_ITEMDEF )
 		{
 			const CItemBase *pItemDef = CItemBase::FindItemBase(static_cast<ITEMID_TYPE>(RES_GET_INDEX(iStatic)));
 			if ( !pItemDef )
@@ -409,7 +407,7 @@ bool CPointBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal) const
 
 		ITEMID_TYPE idTile = pStatic->GetDispID();
 
-		SKIP_SEPARATORS(pszKey);
+		SkipDotSeparator(pszKey);
 		if ( !strnicmp(pszKey, "ID", 2) || (*pszKey == '\0') )
 		{
 			sVal.FormatHex(idTile);
@@ -486,22 +484,20 @@ bool CPointBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal) const
 		int iComponent = 0;
 		int iResType = 0;
 
-		SKIP_SEPARATORS(pszKey);
+		SkipDotSeparator(pszKey);
 		if ( !strnicmp(pszKey, "FINDID", 6) )
 		{
 			pszKey += 6;
-			SKIP_SEPARATORS(pszKey);
+			SkipDotSeparator(pszKey);
 
-			iComponent = Exp_GetVal(pszKey);
+			iComponent = static_cast<int>(g_Exp.GetVal(pszKey));
 			iResType = RES_GET_TYPE(iComponent);
-			if ( iResType == RES_UNKNOWN )
+			if ( iResType == 0 )
 				iResType = RES_ITEMDEF;
-
-			SKIP_SEPARATORS(pszKey);
 		}
 		else
 		{
-			iComponent = Exp_GetVal(pszKey);
+			iComponent = static_cast<int>(g_Exp.GetVal(pszKey));
 			iResType = RES_GET_TYPE(iComponent);
 		}
 
@@ -600,7 +596,7 @@ bool CPointBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal) const
 
 		ITEMID_TYPE idTile = pMultiItem->GetDispID();
 
-		SKIP_SEPARATORS(pszKey);
+		SkipDotSeparator(pszKey);
 		if ( !strnicmp(pszKey, "ID", 2) || (*pszKey == '\0') )
 		{
 			sVal.FormatHex(idTile);
@@ -611,7 +607,7 @@ bool CPointBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal) const
 			pszKey += 5;
 			if ( *pszKey != '\0' )
 			{
-				SKIP_SEPARATORS(pszKey);
+				SkipDotSeparator(pszKey);
 				return pItem->r_WriteVal(pszKey, sVal, &g_Serv);
 			}
 			sVal.FormatHex(pItem->GetUID());
@@ -654,61 +650,60 @@ bool CPointBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal) const
 		case PT_ISNEARTYPE:
 		{
 			pszKey += 10;
-			SKIP_SEPARATORS(pszKey);
-			SKIP_ARGSEP(pszKey);
-			IT_TYPE iType = static_cast<IT_TYPE>(g_Cfg.ResourceGetIndexType(RES_TYPEDEF, pszKey));
+			SkipDotSeparator(pszKey);
+			SkipArgSeparator(pszKey);
+			IT_TYPE type = static_cast<IT_TYPE>(g_Cfg.ResourceGetIndexType(RES_TYPEDEF, pszKey));
 
-			SKIP_IDENTIFIERSTRING(pszKey);
-			SKIP_SEPARATORS(pszKey);
-			SKIP_ARGSEP(pszKey);
+			SkipIdentifier(pszKey);
+			SkipDotSeparator(pszKey);
+			SkipArgSeparator(pszKey);
 
-			int iDist = *pszKey ? Exp_GetVal(pszKey) : 0;
-			bool fCheckMulti = *pszKey ? (Exp_GetVal(pszKey) != 0) : false;
-			bool fLimitZ = *pszKey ? (Exp_GetVal(pszKey) != 0) : false;
-			sVal.FormatVal(g_World.IsItemTypeNear(*this, iType, iDist, fCheckMulti, fLimitZ));
+			int iDist = *pszKey ? static_cast<int>(g_Exp.GetVal(pszKey)) : 0;
+			bool fCheckMulti = *pszKey ? (g_Exp.GetVal(pszKey) != 0) : false;
+			bool fLimitZ = *pszKey ? (g_Exp.GetVal(pszKey) != 0) : false;
+			sVal.FormatVal(g_World.IsItemTypeNear(*this, type, iDist, fCheckMulti, fLimitZ));
 			break;
 		}
 		case PT_REGION:
 		{
-			if ( pszKey[6] && (pszKey[6] != '.') )
-				return false;
-
-			CRegionWorld *pRegionTemp = dynamic_cast<CRegionWorld *>(GetRegion(REGION_TYPE_AREA|REGION_TYPE_MULTI));
-			if ( !pszKey[6] )
+			pszKey += 6;
+			CRegionWorld *pRegion = dynamic_cast<CRegionWorld *>(GetRegion(REGION_TYPE_AREA|REGION_TYPE_MULTI));
+			if ( *pszKey == '.' )
 			{
-				sVal.FormatVal(pRegionTemp ? 1 : 0);
+				++pszKey;
+				if ( pRegion )
+					return pRegion->r_WriteVal(pszKey, sVal, &g_Serv);
+			}
+			else if ( *pszKey == '\0' )
+			{
+				sVal.FormatVal(pRegion ? 1 : 0);
 				return true;
 			}
-
-			pszKey += 7;
-			if ( pRegionTemp )
-				return pRegionTemp->r_WriteVal(pszKey, sVal, &g_Serv);
-
 			return false;
 		}
 		case PT_ROOM:
 		{
-			if ( pszKey[4] && (pszKey[4] != '.') )
-				return false;
-
-			CRegionBase *pRegionTemp = GetRegion(REGION_TYPE_ROOM);
-			if ( !pszKey[4] )
+			pszKey += 4;
+			CRegionBase *pRoom = GetRegion(REGION_TYPE_ROOM);
+			if ( *pszKey == '.' )
 			{
-				sVal.FormatVal(pRegionTemp ? 1 : 0);
+				++pszKey;
+				if ( pRoom )
+					return pRoom->r_WriteVal(pszKey, sVal, &g_Serv);
+			}
+			else if ( *pszKey == '\0' )
+			{
+				sVal.FormatVal(pRoom ? 1 : 0);
 				return true;
 			}
-
-			pszKey += 5;
-			if ( pRegionTemp )
-				return pRegionTemp->r_WriteVal(pszKey, sVal, &g_Serv);
-
 			return false;
 		}
 		case PT_SECTOR:
 		{
-			if ( pszKey[6] == '.' )
+			pszKey += 6;
+			if ( *pszKey == '.' )
 			{
-				pszKey += 7;
+				++pszKey;
 				CSector *pSector = GetSector();
 				if ( pSector )
 					return pSector->r_WriteVal(pszKey, sVal, &g_Serv);
@@ -727,7 +722,7 @@ bool CPointBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal) const
 						pszKey += 7;
 						if ( *pszKey == '.' )
 						{
-							SKIP_SEPARATORS(pszKey);
+							SkipDotSeparator(pszKey);
 							if ( !strnicmp(pszKey, "Z", 1) )
 							{
 								sVal.FormatVal(pMapMeter->m_z);
@@ -762,13 +757,13 @@ bool CPointBase::r_LoadVal(LPCTSTR pszKey, LPCTSTR pszArgs)
 	switch ( index )
 	{
 		case 1:
-			m_x = static_cast<signed short>(Exp_GetLLVal(pszArgs));
+			m_x = static_cast<signed short>(g_Exp.GetVal(pszArgs));
 			break;
 		case 2:
-			m_y = static_cast<signed short>(Exp_GetLLVal(pszArgs));
+			m_y = static_cast<signed short>(g_Exp.GetVal(pszArgs));
 			break;
 		case 3:
-			m_z = static_cast<signed char>(Exp_GetLLVal(pszArgs));
+			m_z = static_cast<signed char>(g_Exp.GetVal(pszArgs));
 			break;
 	}
 	return true;

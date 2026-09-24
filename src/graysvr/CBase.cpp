@@ -139,7 +139,8 @@ bool CBaseBaseDef::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc
 	ADDTOCALLSTACK("CBaseBaseDef::r_WriteVal");
 	EXC_TRY("WriteVal");
 
-	switch ( FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1) )
+	int index = FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1);
+	switch ( index )
 	{
 		// Return as string or hex number (NULL if not set)
 		case OBC_CATEGORY:
@@ -169,7 +170,7 @@ bool CBaseBaseDef::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc
 			pszKey += 5;
 			if ( *pszKey == '.' )
 			{
-				SKIP_SEPARATORS(pszKey);
+				SkipDotSeparator(pszKey);
 				if ( !strnicmp(pszKey, "LO", 2) )
 					sVal.Format("%hu", m_defenseBase);
 				else if ( !strnicmp(pszKey, "HI", 2) )
@@ -190,7 +191,7 @@ bool CBaseBaseDef::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc
 			pszKey += 3;
 			if ( *pszKey == '.' )
 			{
-				SKIP_SEPARATORS(pszKey);
+				SkipDotSeparator(pszKey);
 				if ( !strnicmp(pszKey, "LO", 2) )
 					sVal.Format("%hu", m_attackBase);
 				else if ( !strnicmp(pszKey, "HI", 2) )
@@ -322,13 +323,13 @@ bool CBaseBaseDef::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc
 			pszKey += 9;
 			if ( *pszKey == '.' )
 			{
-				SKIP_SEPARATORS(pszKey);
+				SkipDotSeparator(pszKey);
 				if ( !strnicmp(pszKey, "COUNT", 5) )
 					sVal.FormatULLVal(m_BaseResources.GetCount());
 				else
 				{
-					size_t index = static_cast<size_t>(Exp_GetLLVal(pszKey));
-					SKIP_SEPARATORS(pszKey);
+					size_t index = static_cast<size_t>(g_Exp.GetVal(pszKey));
+					SkipDotSeparator(pszKey);
 
 					bool fQtyOnly = false;
 					bool fKeyOnly = false;
@@ -339,7 +340,7 @@ bool CBaseBaseDef::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc
 
 					TCHAR *pszTemp = Str_GetTemp();
 					m_BaseResources.WriteKeys(pszTemp, index, fQtyOnly, fKeyOnly);
-					sVal = (fQtyOnly && (pszTemp[0] == '\0')) ? "0" : pszTemp;
+					sVal = (fQtyOnly && (*pszTemp == '\0')) ? "0" : pszTemp;
 				}
 			}
 			else
@@ -363,17 +364,18 @@ bool CBaseBaseDef::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc
 			sVal.FormatVal(m_ResPoisonMax);
 			break;
 		case OBC_TAG:
-			if ( pszKey[3] != '.' )
-				return false;
-			pszKey += 4;
-			sVal = m_TagDefs.GetKeyStr(pszKey, false);
-			break;
 		case OBC_TAG0:
-			if ( pszKey[4] != '.' )
-				return false;
-			pszKey += 5;
-			sVal = m_TagDefs.GetKeyStr(pszKey, true);
-			break;
+		{
+			pszKey += (index == OBC_TAG0) ? 4 : 3;
+			if ( *pszKey == '.' )
+			{
+				++pszKey;
+				bool fZero = (index == OBC_TAG0);
+				sVal = m_TagDefs.GetKeyStr(pszKey, fZero);
+				break;
+			}
+			return false;
+		}
 		case OBC_TEVENTS:
 			m_TEvents.WriteResourceRefList(sVal);
 			break;
@@ -440,12 +442,9 @@ bool CBaseBaseDef::r_LoadVal(CScript &s)
 		case OBC_ARMOR:
 		{
 			INT64 piVal[2];
-			size_t iQty = Str_ParseCmds(s.GetArgStr(), piVal, COUNTOF(piVal));
-			m_defenseBase = static_cast<WORD>(piVal[0]);
-			if ( iQty > 1 )
-				m_defenseRange = static_cast<WORD>(piVal[1]) - m_defenseBase;
-			else
-				m_defenseRange = 0;
+			size_t iArgQty = Str_ParseCmds(s.GetArgStr(), piVal, COUNTOF(piVal));
+			m_defenseBase = static_cast<WORD>((iArgQty > 0) ? piVal[0] : 0);
+			m_defenseRange = static_cast<WORD>((iArgQty > 1) ? piVal[1] - piVal[0] : 0);
 			return true;
 		}
 		case OBC_BASEID:
@@ -456,12 +455,9 @@ bool CBaseBaseDef::r_LoadVal(CScript &s)
 		case OBC_DAM:
 		{
 			INT64 piVal[2];
-			size_t iQty = Str_ParseCmds(s.GetArgStr(), piVal, COUNTOF(piVal));
-			m_attackBase = static_cast<WORD>(piVal[0]);
-			if ( iQty > 1 )
-				m_attackRange = static_cast<WORD>(piVal[1]) - m_attackBase;
-			else
-				m_attackRange = 0;
+			size_t iArgQty = Str_ParseCmds(s.GetArgStr(), piVal, COUNTOF(piVal));
+			m_attackBase = static_cast<WORD>((iArgQty > 0) ? piVal[0] : 0);
+			m_attackRange = static_cast<WORD>((iArgQty > 1) ? piVal[1] - piVal[0] : 0);
 			return true;
 		}
 		case OBC_DAMCOLD:
@@ -547,8 +543,8 @@ bool CBaseBaseDef::r_LoadVal(CScript &s)
 		case OBC_RANGE:
 		{
 			INT64 piVal[2];
-			size_t iQty = Str_ParseCmds(s.GetArgStr(), piVal, COUNTOF(piVal));
-			if ( iQty > 1 )
+			size_t iArgQty = Str_ParseCmds(s.GetArgStr(), piVal, COUNTOF(piVal));
+			if ( iArgQty > 1 )
 			{
 				INT64 iRange = ((piVal[0] & 0xFF) << 8) & 0xFF00;
 				iRange |= (piVal[1] & 0xFF);

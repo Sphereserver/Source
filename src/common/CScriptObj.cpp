@@ -62,7 +62,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop(CScript &s, int iType, CTextConsole *p
 	CScriptLineContext EndContext = StartContext;
 	int iLoopsMade = 0;
 
-	if ( iType & 8 )		// WHILE
+	if ( iType & 0x8 )		// WHILE
 	{
 		TCHAR *pszCond;
 		CGString sOrig;
@@ -81,7 +81,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop(CScript &s, int iType, CTextConsole *p
 			pszTemp[THREAD_STRING_LENGTH - 1] = '\0';
 			pszCond = pszTemp;
 			ParseText(pszCond, pSrc, 0, pArgs);
-			if ( !Exp_GetLLVal(pszCond) )
+			if ( g_Exp.GetVal(pszCond) == 0 )
 				break;
 
 			TRIGRET_TYPE iRet = OnTriggerRun(s, TRIGRUN_SECTION_TRUE, pSrc, pArgs, psResult);
@@ -102,42 +102,42 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop(CScript &s, int iType, CTextConsole *p
 	else
 		ParseText(s.GetArgStr(), pSrc, 0, pArgs);
 
-	if ( iType & 4 )	// FOR
+	if ( iType & 0x4 )	// FOR
 	{
 		int iMin = 0;
 		int iMax = 0;
 		TCHAR *ppArgs[3];
-		size_t iQty = Str_ParseCmds(s.GetArgStr(), ppArgs, COUNTOF(ppArgs), ", ");
+		size_t iArgQty = Str_ParseCmds(s.GetArgStr(), ppArgs, COUNTOF(ppArgs), ", ");
 		CGString sLoopVar = "_FOR";
 
-		switch ( iQty )
+		switch ( iArgQty )
 		{
 			case 1:		// FOR max
 			{
 				iMin = 1;
-				iMax = Exp_GetSingle(ppArgs[0]);
+				iMax = static_cast<int>(g_Exp.GetSingle(ppArgs[0]));
 				break;
 			}
 			case 2:		// FOR min max, FOR name max
 			{
 				if ( IsDigit(*ppArgs[0]) || ((*ppArgs[0] == '-') && IsDigit(*(ppArgs[0] + 1))) )
 				{
-					iMin = Exp_GetSingle(ppArgs[0]);
-					iMax = Exp_GetSingle(ppArgs[1]);
+					iMin = static_cast<int>(g_Exp.GetSingle(ppArgs[0]));
+					iMax = static_cast<int>(g_Exp.GetSingle(ppArgs[1]));
 				}
 				else
 				{
 					sLoopVar = ppArgs[0];
 					iMin = 1;
-					iMax = Exp_GetSingle(ppArgs[1]);
+					iMax = static_cast<int>(g_Exp.GetSingle(ppArgs[1]));
 				}
 				break;
 			}
 			case 3:		// FOR name min max
 			{
 				sLoopVar = ppArgs[0];
-				iMin = Exp_GetSingle(ppArgs[1]);
-				iMax = Exp_GetSingle(ppArgs[2]);
+				iMin = static_cast<int>(g_Exp.GetSingle(ppArgs[1]));
+				iMax = static_cast<int>(g_Exp.GetSingle(ppArgs[2]));
 				break;
 			}
 			default:
@@ -197,7 +197,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop(CScript &s, int iType, CTextConsole *p
 		}
 	}
 
-	if ( (iType & 1) || (iType & 2) )
+	if ( (iType & 0x1) || (iType & 0x2) )
 	{
 		CObjBaseTemplate *pObj = dynamic_cast<CObjBaseTemplate *>(this);
 		if ( !pObj )
@@ -211,7 +211,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop(CScript &s, int iType, CTextConsole *p
 			CPointMap pt = pObjTop->GetTopPoint();
 			int iDist = s.HasArgs() ? s.GetArgVal() : UO_MAP_VIEW_SIZE;
 
-			if ( iType & 1 )		// FORITEM, FOROBJ
+			if ( iType & 0x1 )		// FORITEM, FOROBJ
 			{
 				CWorldSearch AreaItems(pt, iDist);
 				for (;;)
@@ -238,7 +238,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop(CScript &s, int iType, CTextConsole *p
 					s.SeekContext(StartContext);
 				}
 			}
-			if ( iType & 2 )		// FORCHAR, FOROBJ
+			if ( iType & 0x2 )		// FORCHAR, FOROBJ
 			{
 				CWorldSearch AreaChars(pt, iDist);
 				AreaChars.SetAllShow(iType & 0x20);
@@ -338,8 +338,8 @@ TRIGRET_TYPE CScriptObj::OnTriggerForLoop(CScript &s, int iType, CTextConsole *p
 		if ( Str_ParseCmds(s.GetArgStr(), ppArgs, COUNTOF(ppArgs), " \t,") >= 1 )
 		{
 			char chFunctionName[1024];
-			strncpy(chFunctionName, ppArgs[0], sizeof(chFunctionName));
-			chFunctionName[sizeof(chFunctionName) - 1] = '\0';
+			strncpy(chFunctionName, ppArgs[0], COUNTOF(chFunctionName));
+			chFunctionName[COUNTOF(chFunctionName) - 1] = '\0';
 
 			TRIGRET_TYPE iRet = g_World.m_TimedFunctions.Loop(chFunctionName, iLoopsMade, StartContext, s, pSrc, pArgs, psResult);
 			if ( (iRet != TRIGRET_ENDIF) && (iRet != TRIGRET_CONTINUE) )
@@ -383,8 +383,8 @@ TRIGRET_TYPE CScriptObj::OnTriggerScript(CScript &s, LPCTSTR pszTrigName, CTextC
 	{
 		// Lowercase for speed
 		TCHAR *pszName = Str_GetTemp();
-		strncpy(pszName, pszTrigName, sizeof(pTrigger->name));
-		pszName[sizeof(pTrigger->name) - 1] = '\0';
+		strncpy(pszName, pszTrigName, COUNTOF(pTrigger->name));
+		pszName[COUNTOF(pTrigger->name) - 1] = '\0';
 		_strlwr(pszName);
 
 		if ( g_profiler.initstate != 0xF1 )		// profiler is not initialized
@@ -403,8 +403,8 @@ TRIGRET_TYPE CScriptObj::OnTriggerScript(CScript &s, LPCTSTR pszTrigName, CTextC
 			// First time that the trigger is called, so create its record
 			pTrigger = new TScriptProfiler::TScriptProfilerTrigger;
 			memset(pTrigger, 0, sizeof(TScriptProfiler::TScriptProfilerTrigger));
-			strncpy(pTrigger->name, pszName, sizeof(pTrigger->name));
-			pTrigger->name[sizeof(pTrigger->name) - 1] = '\0';
+			strncpy(pTrigger->name, pszName, COUNTOF(pTrigger->name));
+			pTrigger->name[COUNTOF(pTrigger->name) - 1] = '\0';
 			if ( g_profiler.TriggersTail )
 				g_profiler.TriggersTail->next = pTrigger;
 			else
@@ -627,31 +627,31 @@ TRIGRET_TYPE CScriptObj::OnTriggerRun(CScript &s, TRIGRUN_TYPE trigger, CTextCon
 				return TRIGRET_CONTINUE;
 			case SK_FORITEM:
 				EXC_SET("foritem");
-				iRet = OnTriggerForLoop(s, 1, pSrc, pArgs, psResult);
+				iRet = OnTriggerForLoop(s, 0x1, pSrc, pArgs, psResult);
 				break;
 			case SK_FORCHAR:
 				EXC_SET("forchar");
-				iRet = OnTriggerForLoop(s, 2, pSrc, pArgs, psResult);
+				iRet = OnTriggerForLoop(s, 0x2, pSrc, pArgs, psResult);
 				break;
 			case SK_FORCLIENTS:
 				EXC_SET("forclients");
-				iRet = OnTriggerForLoop(s, 0x12, pSrc, pArgs, psResult);
+				iRet = OnTriggerForLoop(s, 0x2|0x10, pSrc, pArgs, psResult);
 				break;
 			case SK_FOROBJ:
 				EXC_SET("forobjs");
-				iRet = OnTriggerForLoop(s, 3, pSrc, pArgs, psResult);
+				iRet = OnTriggerForLoop(s, 0x1|0x2, pSrc, pArgs, psResult);
 				break;
 			case SK_FORPLAYERS:
 				EXC_SET("forplayers");
-				iRet = OnTriggerForLoop(s, 0x22, pSrc, pArgs, psResult);
+				iRet = OnTriggerForLoop(s, 0x2|0x20, pSrc, pArgs, psResult);
 				break;
 			case SK_FOR:
 				EXC_SET("for");
-				iRet = OnTriggerForLoop(s, 4, pSrc, pArgs, psResult);
+				iRet = OnTriggerForLoop(s, 0x4, pSrc, pArgs, psResult);
 				break;
 			case SK_WHILE:
 				EXC_SET("while");
-				iRet = OnTriggerForLoop(s, 8, pSrc, pArgs, psResult);
+				iRet = OnTriggerForLoop(s, 0x8, pSrc, pArgs, psResult);
 				break;
 			case SK_FORINSTANCE:
 				EXC_SET("forinstance");
@@ -698,7 +698,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerRun(CScript &s, TRIGRUN_TYPE trigger, CTextCon
 				}
 
 				TCHAR *ppArgs[2];
-				size_t iArgsQty = Str_ParseCmds(const_cast<TCHAR *>(s.GetArgRaw()), ppArgs, COUNTOF(ppArgs), " \t,");
+				size_t iArgQty = Str_ParseCmds(const_cast<TCHAR *>(s.GetArgRaw()), ppArgs, COUNTOF(ppArgs), " \t,");
 
 				TemporaryString pszTemp;
 				strncpy(pszTemp, ppArgs[0], THREAD_STRING_LENGTH);
@@ -706,7 +706,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerRun(CScript &s, TRIGRUN_TYPE trigger, CTextCon
 				TCHAR *pszTempPoint = pszTemp;
 				ParseText(pszTempPoint, pSrc, 0, pArgs);
 
-				CGrayUID uid = static_cast<CGrayUID>(static_cast<DWORD>(Exp_GetLLVal(pszTempPoint)));
+				CGrayUID uid = static_cast<CGrayUID>(static_cast<DWORD>(g_Exp.GetVal(pszTempPoint)));
 				if ( !uid.IsValidUID() )
 				{
 					DEBUG_ERR(("%s called on invalid uid '0%" FMTDWORDH "'\n", sm_szScriptKeys[index], uid.GetObjUID()));
@@ -724,7 +724,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerRun(CScript &s, TRIGRUN_TYPE trigger, CTextCon
 
 				CScriptLineContext StartContext = s.GetContext();
 				CScriptLineContext EndContext = StartContext;
-				iRet = pCont->OnGenericContTriggerForLoop(s, pSrc, pArgs, psResult, StartContext, EndContext, (iArgsQty >= 2) ? Exp_GetVal(ppArgs[1]) : 255);
+				iRet = pCont->OnGenericContTriggerForLoop(s, pSrc, pArgs, psResult, StartContext, EndContext, (iArgQty > 1) ? static_cast<int>(g_Exp.GetVal(ppArgs[1])) : 255);
 				break;
 			}
 			case SK_FORCONTID:
@@ -747,10 +747,10 @@ TRIGRET_TYPE CScriptObj::OnTriggerRun(CScript &s, TRIGRUN_TYPE trigger, CTextCon
 				}
 
 				LPCTSTR pszKey = s.GetArgRaw();
-				SKIP_SEPARATORS(pszKey);
+				SkipDotSeparator(pszKey);
 
 				TCHAR *ppArgs[2];
-				size_t iArgsQty = Str_ParseCmds(const_cast<TCHAR *>(pszKey), ppArgs, COUNTOF(ppArgs), " \t,");
+				size_t iArgQty = Str_ParseCmds(const_cast<TCHAR *>(pszKey), ppArgs, COUNTOF(ppArgs), " \t,");
 
 				TemporaryString pszTemp;
 				strncpy(pszTemp, ppArgs[0], THREAD_STRING_LENGTH);
@@ -759,7 +759,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerRun(CScript &s, TRIGRUN_TYPE trigger, CTextCon
 
 				CScriptLineContext StartContext = s.GetContext();
 				CScriptLineContext EndContext = StartContext;
-				iRet = pCont->OnContTriggerForLoop(s, pSrc, pArgs, psResult, StartContext, EndContext, g_Cfg.ResourceGetID((index == SK_FORCONTID) ? RES_ITEMDEF : RES_TYPEDEF, static_cast<LPCTSTR &>(pszTemp)), 0, (iArgsQty >= 2) ? Exp_GetVal(ppArgs[1]) : 255);
+				iRet = pCont->OnContTriggerForLoop(s, pSrc, pArgs, psResult, StartContext, EndContext, g_Cfg.ResourceGetID((index == SK_FORCONTID) ? RES_ITEMDEF : RES_TYPEDEF, static_cast<LPCTSTR &>(pszTemp)), 0, (iArgQty > 1) ? static_cast<int>(g_Exp.GetVal(ppArgs[1])) : 255);
 				break;
 			}
 			default:
@@ -888,7 +888,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerRun(CScript &s, TRIGRUN_TYPE trigger, CTextCon
 							{
 								*z = '\0';
 								++z;
-								GETNONWHITESPACE(z);
+								SkipWhitespace(z);
 							}
 
 							CGString sVal;
@@ -925,10 +925,10 @@ TRIGRET_TYPE CScriptObj::OnTriggerRun(CScript &s, TRIGRUN_TYPE trigger, CTextCon
 						TCHAR *pszArgs = s.GetArgRaw();
 						CScriptObj *pRef = this;
 
-						TCHAR *piCmd[7];
-						size_t iQty = Str_ParseCmds(pszArgs, piCmd, COUNTOF(piCmd), " ,\t");
-						if ( iQty == 2 )
-							pRef = static_cast<CGrayUID>(ATOI(piCmd[1])).ObjFind();
+						TCHAR *ppArgs[7];
+						size_t iArgQty = Str_ParseCmds(pszArgs, ppArgs, COUNTOF(ppArgs), " ,\t");
+						if ( iArgQty == 2 )
+							pRef = static_cast<CGrayUID>(ATOI(ppArgs[1])).ObjFind();
 
 						// Parse object references, SRC.* is not parsed by r_GetRef so do it manually
 						if ( !strnicmp("SRC.", pszArgs, 4) )
@@ -944,7 +944,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerRun(CScript &s, TRIGRUN_TYPE trigger, CTextCon
 							{
 								*z = '\0';
 								++z;
-								GETNONWHITESPACE(z);
+								SkipWhitespace(z);
 							}
 
 							if ( z && *z )
@@ -1012,7 +1012,7 @@ TRIGRET_TYPE CScriptObj::OnTriggerRunVal(CScript &s, TRIGRUN_TYPE trigger, CText
 
 	LPCTSTR pszVal = sVal.GetPtr();
 	if ( pszVal && *pszVal )
-		return static_cast<TRIGRET_TYPE>(Exp_GetLLVal(pszVal));
+		return static_cast<TRIGRET_TYPE>(g_Exp.GetVal(pszVal));
 	return TRIGRET_RET_DEFAULT;
 }
 
@@ -1180,13 +1180,13 @@ const LPCTSTR CScriptObj::sm_szVerbKeys[SSV_QTY + 1] =
 
 static void StringFunction(int iFunc, LPCTSTR pszKey, CGString &sVal)
 {
-	GETNONWHITESPACE(pszKey);
+	SkipWhitespace(pszKey);
 	if ( *pszKey == '(' )
 		++pszKey;
 
-	TCHAR *ppCmd[4];
-	size_t iCount = Str_ParseCmds(const_cast<TCHAR *>(pszKey), ppCmd, COUNTOF(ppCmd), ")");
-	if ( iCount <= 0 )
+	TCHAR *ppArgs[4];
+	size_t iArgQty = Str_ParseCmds(const_cast<TCHAR *>(pszKey), ppArgs, COUNTOF(ppArgs), ")");
+	if ( iArgQty == 0 )
 	{
 		DEBUG_ERR(("Bad string function usage. Missing ')'\n"));
 		return;
@@ -1194,19 +1194,19 @@ static void StringFunction(int iFunc, LPCTSTR pszKey, CGString &sVal)
 
 	switch ( iFunc )
 	{
-		case SSC_CHR:
-			sVal.Format("%c", Exp_GetSingle(ppCmd[0]));
+		case SSC_CHR:			// convert ASCII code to char string
+			sVal.Format("%c", static_cast<int>(g_Exp.GetSingle(ppArgs[0])));
 			return;
-		case SSC_StrReverse:
-			sVal = ppCmd[0];	// strreverse(str) = reverse the string
+		case SSC_StrReverse:	// reverse the string
+			sVal = ppArgs[0];
 			sVal.Reverse();
 			return;
-		case SSC_StrToLower:	// strlower(str) = lower case the string
-			sVal = ppCmd[0];
+		case SSC_StrToLower:	// lower case the string
+			sVal = ppArgs[0];
 			sVal.MakeLower();
 			return;
-		case SSC_StrToUpper:	// strupper(str) = upper case the string
-			sVal = ppCmd[0];
+		case SSC_StrToUpper:	// upper case the string
+			sVal = ppArgs[0];
 			sVal.MakeUpper();
 			return;
 	}
@@ -1226,8 +1226,8 @@ bool CScriptObj::r_GetRef(LPCTSTR &pszKey, CScriptObj *&pRef)
 	else if ( !strnicmp(pszKey, "UID.", 4) )
 	{
 		pszKey += 4;
-		pRef = static_cast<CGrayUID>(static_cast<DWORD>(Exp_GetLLVal(pszKey))).ObjFind();
-		SKIP_SEPARATORS(pszKey);
+		pRef = static_cast<CGrayUID>(static_cast<DWORD>(g_Exp.GetVal(pszKey))).ObjFind();
+		SkipDotSeparator(pszKey);
 		return true;
 	}
 	else if ( !strnicmp(pszKey, "OBJ.", 4) )
@@ -1278,7 +1278,7 @@ bool CScriptObj::r_LoadVal(CScript &s)
 	if ( !strnicmp(pszKey, "CLEARVARS", 9) )
 	{
 		pszKey = s.GetArgStr();
-		SKIP_SEPARATORS(pszKey);
+		SkipDotSeparator(pszKey);
 		g_Exp.m_VarGlobals.ClearKeys(pszKey);
 		return true;
 	}
@@ -1293,15 +1293,12 @@ bool CScriptObj::r_LoadVal(CScript &s)
 	switch ( index )
 	{
 		case SSC_VAR:
-		{
-			bool fQuoted = false;
-			g_Exp.m_VarGlobals.SetStr(pszKey + 4, fQuoted, s.GetArgStr(&fQuoted), false);
-			return true;
-		}
 		case SSC_VAR0:
 		{
+			pszKey += (index == SSC_VAR0) ? 5 : 4;
 			bool fQuoted = false;
-			g_Exp.m_VarGlobals.SetStr(pszKey + 5, fQuoted, s.GetArgStr(&fQuoted), true);
+			bool fZero = (index == SSC_VAR0);
+			g_Exp.m_VarGlobals.SetStr(pszKey, fQuoted, s.GetArgStr(&fQuoted), fZero);
 			return true;
 		}
 		case SSC_LIST:
@@ -1317,8 +1314,8 @@ bool CScriptObj::r_LoadVal(CScript &s)
 			{
 				if ( !strcmpi(pszKey, g_Exp.sm_szMsgNames[i]) )
 				{
-					strncpy(g_Exp.sm_szMessages[i], s.GetArgStr(), sizeof(g_Exp.sm_szMessages[i]));
-					g_Exp.sm_szMessages[i][sizeof(g_Exp.sm_szMessages[i]) - 1] = '\0';
+					strncpy(g_Exp.sm_szMessages[i], s.GetArgStr(), COUNTOF(g_Exp.sm_szMessages[i]));
+					g_Exp.sm_szMessages[i][COUNTOF(g_Exp.sm_szMessages[i]) - 1] = '\0';
 					return true;
 				}
 			}
@@ -1407,7 +1404,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal = "0";
 			return true;
 		}
-		if ( pszKey[0] == '\0' )	// just testing the ref
+		if ( *pszKey == '\0' )	// just testing the ref
 		{
 			const CObjBase *pObj = dynamic_cast<const CObjBase *>(pRef);
 			sVal.FormatHex(pObj ? static_cast<DWORD>(pObj->GetUID()) : 1);
@@ -1441,13 +1438,13 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 
 			if ( *pszKey )
 			{
-				iMin = Exp_GetLLVal(pszKey);
-				SKIP_ARGSEP(pszKey);
+				iMin = g_Exp.GetVal(pszKey);
+				SkipArgSeparator(pszKey);
 			}
 			if ( *pszKey )
 			{
-				iMax = Exp_GetLLVal(pszKey);
-				SKIP_ARGSEP(pszKey);
+				iMax = g_Exp.GetVal(pszKey);
+				SkipArgSeparator(pszKey);
 			}
 
 			if ( iMax == LLONG_MIN )
@@ -1467,21 +1464,21 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 	}
 
 	pszKey += strlen(sm_szLoadKeys[index]);
-	SKIP_SEPARATORS(pszKey);
+	SkipDotSeparator(pszKey);
 
 	switch ( index )
 	{
 		case SSC_BETWEEN:
 		case SSC_BETWEEN2:
 		{
-			INT64 iMin = Exp_GetLLVal(pszKey);
-			SKIP_ARGSEP(pszKey);
-			INT64 iMax = Exp_GetLLVal(pszKey);
-			SKIP_ARGSEP(pszKey);
-			INT64 iCurrent = Exp_GetLLVal(pszKey);
-			SKIP_ARGSEP(pszKey);
-			INT64 iAbsMax = Exp_GetLLVal(pszKey);
-			SKIP_ARGSEP(pszKey);
+			INT64 iMin = g_Exp.GetVal(pszKey);
+			SkipArgSeparator(pszKey);
+			INT64 iMax = g_Exp.GetVal(pszKey);
+			SkipArgSeparator(pszKey);
+			INT64 iCurrent = g_Exp.GetVal(pszKey);
+			SkipArgSeparator(pszKey);
+			INT64 iAbsMax = g_Exp.GetVal(pszKey);
+			SkipArgSeparator(pszKey);
 			if ( index == SSC_BETWEEN2 )
 				iCurrent = iAbsMax - iCurrent;
 
@@ -1530,15 +1527,10 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			return pRef->r_WriteVal(pszKey, sVal, pSrc);
 		}
 		case SSC_VAR:
-		{
-			const CVarDefCont *pVar = g_Exp.m_VarGlobals.GetKey(pszKey);
-			sVal = pVar ? pVar->GetValStr() : "";
-			return true;
-		}
 		case SSC_VAR0:
 		{
 			const CVarDefCont *pVar = g_Exp.m_VarGlobals.GetKey(pszKey);
-			sVal = pVar ? pVar->GetValStr() : "0";
+			sVal = pVar ? pVar->GetValStr() : ((index == SSC_VAR0) ? "0" : "");
 			return true;
 		}
 		case SSC_DEFLIST:
@@ -1548,34 +1540,29 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			g_Exp.m_ListGlobals.r_Write(pSrc, pszKey, sVal);
 			return true;
 		case SSC_DEF:
-		{
-			const CVarDefCont *pVar = g_Exp.m_VarDefs.GetKey(pszKey);
-			sVal = pVar ? pVar->GetValStr() : "";
-			return true;
-		}
 		case SSC_DEF0:
 		{
 			const CVarDefCont *pVar = g_Exp.m_VarDefs.GetKey(pszKey);
-			sVal = pVar ? pVar->GetValStr() : "0";
+			sVal = pVar ? pVar->GetValStr() : ((index == SSC_DEF0) ? "0" : "");
 			return true;
 		}
 		case SSC_DEFMSG:
 			sVal = g_Cfg.GetDefaultMsg(pszKey);
 			return true;
 		case SSC_EVAL:
-			sVal.FormatLLVal(Exp_GetLLVal(pszKey));
+			sVal.FormatLLVal(g_Exp.GetVal(pszKey));
 			return true;
 		case SSC_UVAL:
-			sVal.FormatULLVal(static_cast<unsigned long long>(Exp_GetLLVal(pszKey)));
+			sVal.FormatULLVal(static_cast<unsigned long long>(g_Exp.GetVal(pszKey)));
 			return true;
 		case SSC_FVAL:
 		{
-			INT64 iVal = Exp_GetLLVal(pszKey);
+			INT64 iVal = g_Exp.GetVal(pszKey);
 			sVal.Format("%lld.%lld", iVal / 10, llabs(iVal % 10));
 			return true;
 		}
 		case SSC_HVAL:
-			sVal.FormatULLHex(Exp_GetLLVal(pszKey));
+			sVal.FormatULLHex(static_cast<unsigned long long>(g_Exp.GetVal(pszKey)));
 			return true;
 		case SSC_FEVAL:		// Float EVAL
 			sVal.FormatVal(ATOI(pszKey));
@@ -1589,11 +1576,12 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case SSC_QVAL:
 		{
 			// Statement <QVAL (condition) ? option1 : option2>
-			TCHAR *ppCmd[3];
-			ppCmd[0] = const_cast<TCHAR *>(pszKey);
-			Str_Parse(ppCmd[0], &ppCmd[1], "?");
-			Str_Parse(ppCmd[1], &ppCmd[2], ":");
-			sVal = ppCmd[Exp_GetVal(ppCmd[0]) ? 1 : 2];
+			TCHAR *ppArgs[3];
+			ppArgs[0] = const_cast<TCHAR *>(pszKey);
+			Str_Parse(ppArgs[0], &ppArgs[1], "?");
+			Str_Parse(ppArgs[1], &ppArgs[2], ":");
+
+			sVal = ppArgs[g_Exp.GetVal(ppArgs[0]) ? 1 : 2];
 			if ( sVal.IsEmpty() )
 				sVal = "";
 			return true;
@@ -1602,16 +1590,18 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case SSC_SETBIT:
 		case SSC_CLRBIT:
 		{
-			GETNONWHITESPACE(pszKey);
-			if ( !IsDigit(pszKey[0]) )
+			SkipWhitespace(pszKey);
+			if ( !IsDigit(*pszKey) )
 				return false;
 
-			INT64 iVal = Exp_GetLLVal(pszKey);
-			SKIP_ARGSEP(pszKey);
-			INT64 iBit = Exp_GetLLVal(pszKey);
-			if ( (iBit < 0) || (iBit >= 64) )
+			INT64 iVal = g_Exp.GetVal(pszKey);
+			SkipArgSeparator(pszKey);
+			INT64 iBit = g_Exp.GetVal(pszKey);
+
+			INT64 iBitMax = static_cast<INT64>((sizeof(INT64) * CHAR_BIT) - 1);
+			if ( (iBit < 0) || (iBit > iBitMax) )
 			{
-				DEBUG_ERR(("%s(%lld,%lld): can't shift bit by negative or too big value\n", sm_szLoadKeys[index], iVal, iBit));
+				DEBUG_ERR(("%s(%lld,%lld): bit %lld out of range [0~%lld]\n", sm_szLoadKeys[index], iVal, iBit, iBit, iBitMax));
 				return false;
 			}
 
@@ -1628,7 +1618,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			return true;
 		case SSC_ISNUM:
 		{
-			GETNONWHITESPACE(pszKey);
+			SkipWhitespace(pszKey);
 			if ( *pszKey == '-' )
 				++pszKey;
 			sVal.FormatVal(IsStrNumeric(pszKey));
@@ -1637,11 +1627,11 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case SSC_StrPos:
 		{
 			TCHAR *ppArgs[3];
-			size_t iQty = Str_ParseCmds(const_cast<TCHAR *>(pszKey), ppArgs, COUNTOF(ppArgs));
-			if ( iQty < 3 )
+			size_t iArgQty = Str_ParseCmds(const_cast<TCHAR *>(pszKey), ppArgs, COUNTOF(ppArgs));
+			if ( iArgQty < 3 )
 				return false;
 
-			INT64 iPos = Exp_GetLLVal(ppArgs[0]);
+			INT64 iPos = g_Exp.GetVal(ppArgs[0]);
 			INT64 iLen = strlen(ppArgs[2]);
 			if ( iPos < 0 )
 				iPos = maximum(0, iPos + iLen);
@@ -1661,18 +1651,18 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case SSC_StrSub:
 		{
 			TCHAR *ppArgs[3];
-			size_t iQty = Str_ParseCmds(const_cast<TCHAR *>(pszKey), ppArgs, COUNTOF(ppArgs));
-			if ( iQty < 3 )
+			size_t iArgQty = Str_ParseCmds(const_cast<TCHAR *>(pszKey), ppArgs, COUNTOF(ppArgs));
+			if ( iArgQty < 3 )
 				return false;
 
-			INT64 iPos = Exp_GetLLVal(ppArgs[0]);
+			INT64 iPos = g_Exp.GetVal(ppArgs[0]);
 			INT64 iLen = strlen(ppArgs[2]);
 			if ( iPos < 0 )
 				iPos = maximum(0, iPos + iLen);
 			else if ( iPos > iLen )
 				iPos = iLen;
 
-			INT64 iCnt = Exp_GetLLVal(ppArgs[1]);
+			INT64 iCnt = g_Exp.GetVal(ppArgs[1]);
 			if ( (iCnt <= 0) || (iPos + iCnt > iLen) )
 				iCnt = iLen - iPos;
 
@@ -1691,7 +1681,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case SSC_StrArg:
 		{
 			TCHAR *pszBuffer = Str_GetTemp();
-			GETNONWHITESPACE(pszKey);
+			SkipWhitespace(pszKey);
 			if ( *pszKey == '"' )
 				++pszKey;
 
@@ -1708,11 +1698,11 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		}
 		case SSC_StrEat:
 		{
-			GETNONWHITESPACE(pszKey);
+			SkipWhitespace(pszKey);
 			while ( *pszKey && !IsSpace(*pszKey) && (*pszKey != ',') )
 				++pszKey;
 
-			SKIP_ARGSEP(pszKey);
+			SkipArgSeparator(pszKey);
 			sVal = pszKey;
 			return true;
 		}
@@ -1721,7 +1711,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			return true;
 		case SSC_ASC:
 		{
-			REMOVE_QUOTES(pszKey);
+			RemoveQuotes(pszKey);
 			sVal.FormatULLHex(*pszKey);
 
 			TCHAR *pszBuffer = Str_GetTemp();
@@ -1741,15 +1731,15 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case SSC_ASCPAD:
 		{
 			TCHAR *ppArgs[2];
-			size_t iQty = Str_ParseCmds(const_cast<TCHAR *>(pszKey), ppArgs, COUNTOF(ppArgs));
-			if ( iQty < 2 )
+			size_t iArgQty = Str_ParseCmds(const_cast<TCHAR *>(pszKey), ppArgs, COUNTOF(ppArgs));
+			if ( iArgQty < 2 )
 				return false;
 
-			INT64 iPad = Exp_GetLLVal(ppArgs[0]);
+			INT64 iPad = g_Exp.GetVal(ppArgs[0]);
 			if ( iPad < 0 )
 				return false;
 
-			REMOVE_QUOTES(ppArgs[1]);
+			RemoveQuotes(ppArgs[1]);
 			sVal.FormatULLHex(*ppArgs[1]);
 
 			TCHAR *pszBuffer = Str_GetTemp();
@@ -1779,19 +1769,19 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			if ( !IsSetOF(OF_FileCommands) )
 				return false;
 
-			GETNONWHITESPACE(pszKey);
+			SkipWhitespace(pszKey);
 			TCHAR *pszBuffer = Str_GetTemp();
 			strncpy(pszBuffer, pszKey, SCRIPT_MAX_LINE_LEN);
 			pszBuffer[SCRIPT_MAX_LINE_LEN - 1] = '\0';
 
-			TCHAR *ppCmd[10];	// limit to 10 arguments
-			size_t iQty = Str_ParseCmds(pszBuffer, ppCmd, COUNTOF(ppCmd));
-			if ( iQty < 1 )
+			TCHAR *ppArgs[10];	// limit to 10 arguments
+			size_t iArgQty = Str_ParseCmds(pszBuffer, ppArgs, COUNTOF(ppArgs));
+			if ( iArgQty < 1 )
 				return false;
 
 			bool fWait = (index == SSC_SYSCMD);
 #ifdef _WIN32
-			_spawnl(fWait ? _P_WAIT : _P_NOWAIT, ppCmd[0], ppCmd[0], ppCmd[1], ppCmd[2], ppCmd[3], ppCmd[4], ppCmd[5], ppCmd[6], ppCmd[7], ppCmd[8], ppCmd[9], NULL);
+			_spawnl(fWait ? _P_WAIT : _P_NOWAIT, ppArgs[0], ppArgs[0], ppArgs[1], ppArgs[2], ppArgs[3], ppArgs[4], ppArgs[5], ppArgs[6], ppArgs[7], ppArgs[8], ppArgs[9], NULL);
 #else
 
 			// I think fork will cause problems.. we'll see.. if yes new thread + execlp is required.
@@ -1804,7 +1794,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			else if ( child_pid == 0 )
 			{
 				// Don't touch this :P
-				execlp(ppCmd[0], ppCmd[0], ppCmd[1], ppCmd[2], ppCmd[3], ppCmd[4], ppCmd[5], ppCmd[6], ppCmd[7], ppCmd[8], ppCmd[9], NULL);
+				execlp(ppArgs[0], ppArgs[0], ppArgs[1], ppArgs[2], ppArgs[3], ppArgs[4], ppArgs[5], ppArgs[6], ppArgs[7], ppArgs[8], ppArgs[9], NULL);
 
 				g_Log.EventError("%s failed with error %d (\"%s\") when executing '%s'\n", sm_szLoadKeys[index], errno, strerror(errno), pszKey);
 				raise(SIGKILL);
@@ -1832,10 +1822,10 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		}
 		case SSC_EXPLODE:
 		{
-			GETNONWHITESPACE(pszKey);
+			SkipWhitespace(pszKey);
 			char chSeparators[16];
-			strncpy(chSeparators, pszKey, sizeof(chSeparators));
-			chSeparators[sizeof(chSeparators) - 1] = '\0';
+			strncpy(chSeparators, pszKey, COUNTOF(chSeparators));
+			chSeparators[COUNTOF(chSeparators) - 1] = '\0';
 			{
 				char *p = chSeparators;
 				while ( *p && (*p != ',') )
@@ -1847,18 +1837,18 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal = "";
 			if ( (p > pszKey) && *p )		// list of accessible separators
 			{
-				TCHAR *ppCmd[255];
+				TCHAR *ppArgs[255];
 				TCHAR *z = Str_GetTemp();
 				strncpy(z, p, SCRIPT_MAX_LINE_LEN);
 				z[SCRIPT_MAX_LINE_LEN - 1] = '\0';
-				size_t iCount = Str_ParseCmds(z, ppCmd, COUNTOF(ppCmd), chSeparators);
-				if ( iCount > 0 )
+				size_t iArgQty = Str_ParseCmds(z, ppArgs, COUNTOF(ppArgs), chSeparators);
+				if ( iArgQty > 0 )
 				{
-					sVal.Add(ppCmd[0]);
-					for ( size_t i = 1; i < iCount; ++i )
+					sVal.Add(ppArgs[0]);
+					for ( size_t i = 1; i < iArgQty; ++i )
 					{
 						sVal.Add(',');
-						sVal.Add(ppCmd[i]);
+						sVal.Add(ppArgs[i]);
 					}
 				}
 			}
@@ -1866,7 +1856,7 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		}
 		case SSC_MD5HASH:
 		{
-			GETNONWHITESPACE(pszKey);
+			SkipWhitespace(pszKey);
 			char digest[MD5_DIGEST_LENGTH + 1];
 			CMD5::fastDigest(digest, pszKey);
 			sVal = digest;
@@ -1874,11 +1864,11 @@ bool CScriptObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		}
 		case SSC_MULDIV:
 		{
-			INT64 iNum = Exp_GetLLVal(pszKey);
-			SKIP_ARGSEP(pszKey);
-			INT64 iMul = Exp_GetLLVal(pszKey);
-			SKIP_ARGSEP(pszKey);
-			INT64 iDiv = Exp_GetLLVal(pszKey);
+			INT64 iNum = g_Exp.GetVal(pszKey);
+			SkipArgSeparator(pszKey);
+			INT64 iMul = g_Exp.GetVal(pszKey);
+			SkipArgSeparator(pszKey);
+			INT64 iDiv = g_Exp.GetVal(pszKey);
 			INT64 iRes = 0;
 
 			if ( iDiv == 0 )
@@ -1918,7 +1908,7 @@ bool CScriptObj::r_Verb(CScript &s, CTextConsole *pSrc)
 	CScriptObj *pRef = NULL;
 	if ( r_GetRef(pszKey, pRef) )
 	{
-		if ( pszKey[0] )
+		if ( *pszKey )
 		{
 			if ( !pRef )
 				return true;
@@ -1990,25 +1980,25 @@ bool CScriptObj::r_Verb(CScript &s, CTextConsole *pSrc)
 		case SSV_NEWITEM:
 		{
 			// Just create the item but don't put it anyplace yet
-			TCHAR *ppCmd[4];
-			size_t iQty = Str_ParseCmds(s.GetArgRaw(), ppCmd, COUNTOF(ppCmd), ",");
-			if ( iQty < 1 )
+			TCHAR *ppArgs[4];
+			size_t iArgQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), ",");
+			if ( iArgQty < 1 )
 				return false;
 
-			CItem *pItem = CItem::CreateHeader(ppCmd[0], NULL, false, pSrc->GetChar());
+			CItem *pItem = CItem::CreateHeader(ppArgs[0], NULL, false, pSrc->GetChar());
 			if ( !pItem )
 			{
 				g_World.m_uidNew = static_cast<CGrayUID>(UID_CLEAR);
 				return false;
 			}
 
-			if ( ppCmd[1] )
-				pItem->SetAmount(static_cast<WORD>(Exp_GetLLVal(ppCmd[1])));
+			if ( iArgQty > 1 )
+				pItem->SetAmount(static_cast<WORD>(g_Exp.GetVal(ppArgs[1])));
 
-			if ( ppCmd[2] )
+			if ( iArgQty > 2 )
 			{
-				CGrayUID uidEquipper = static_cast<CGrayUID>(static_cast<DWORD>(Exp_GetLLVal(ppCmd[2])));
-				bool fTriggerEquip = ppCmd[3] ? (Exp_GetLLVal(ppCmd[3]) != 0) : false;
+				CGrayUID uidEquipper = static_cast<CGrayUID>(static_cast<DWORD>(g_Exp.GetVal(ppArgs[2])));
+				bool fTriggerEquip = (iArgQty > 3) ? (g_Exp.GetVal(ppArgs[3]) != 0) : false;
 
 				if ( !fTriggerEquip || uidEquipper.IsItem() )
 					pItem->LoadSetContainer(uidEquipper, LAYER_NONE);
@@ -2090,7 +2080,7 @@ bool CScriptObj::r_Verb(CScript &s, CTextConsole *pSrc)
 bool CScriptObj::r_Call(LPCTSTR pszFunction, CTextConsole *pSrc, CScriptTriggerArgs *pArgs, CGString *psVal, TRIGRET_TYPE *piRet)
 {
 	ADDTOCALLSTACK("CScriptObj::r_Call");
-	GETNONWHITESPACE(pszFunction);
+	SkipWhitespace(pszFunction);
 
 	int iCompareRes = -1;
 	size_t index = g_Cfg.m_Functions.FindKeyNear(pszFunction, iCompareRes, true);
@@ -2110,8 +2100,8 @@ bool CScriptObj::r_Call(LPCTSTR pszFunction, CTextConsole *pSrc, CScriptTriggerA
 			// Lowercase for speed, and strip arguments
 			char *pchName = Str_GetTemp();
 			char *pchSpace;
-			strncpy(pchName, pszFunction, sizeof(pFun->name));
-			pchName[sizeof(pFun->name) - 1] = '\0';
+			strncpy(pchName, pszFunction, COUNTOF(pFun->name));
+			pchName[COUNTOF(pFun->name) - 1] = '\0';
 			if ( (pchSpace = strchr(pchName, ' ')) != NULL )
 				*pchSpace = '\0';
 			_strlwr(pchName);
@@ -2132,8 +2122,8 @@ bool CScriptObj::r_Call(LPCTSTR pszFunction, CTextConsole *pSrc, CScriptTriggerA
 				// First time that the function is called, so create its record
 				pFun = new TScriptProfiler::TScriptProfilerFunction;
 				memset(pFun, 0, sizeof(TScriptProfiler::TScriptProfilerFunction));
-				strncpy(pFun->name, pchName, sizeof(pFun->name));
-				pFun->name[sizeof(pFun->name) - 1] = '\0';
+				strncpy(pFun->name, pchName, COUNTOF(pFun->name));
+				pFun->name[COUNTOF(pFun->name) - 1] = '\0';
 				if ( g_profiler.FunctionsTail )
 					g_profiler.FunctionsTail->next = pFun;
 				else
@@ -2208,14 +2198,14 @@ void CScriptTriggerArgs::Init(LPCTSTR pszStr)
 	// Attempt to parse this
 	if ( IsDigit(*pszStr) || ((*pszStr == '-') && IsDigit(*(pszStr + 1))) )
 	{
-		m_iN1 = Exp_GetLLSingle(pszStr);
-		SKIP_ARGSEP(pszStr);
+		m_iN1 = g_Exp.GetSingle(pszStr);
+		SkipArgSeparator(pszStr);
 		if ( IsDigit(*pszStr) || ((*pszStr == '-') && IsDigit(*(pszStr + 1))) )
 		{
-			m_iN2 = Exp_GetLLSingle(pszStr);
-			SKIP_ARGSEP(pszStr);
+			m_iN2 = g_Exp.GetSingle(pszStr);
+			SkipArgSeparator(pszStr);
 			if ( IsDigit(*pszStr) || ((*pszStr == '-') && IsDigit(*(pszStr + 1))) )
-				m_iN3 = Exp_GetLLSingle(pszStr);
+				m_iN3 = g_Exp.GetSingle(pszStr);
 		}
 	}
 
@@ -2332,7 +2322,7 @@ bool CScriptTriggerArgs::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole
 	{
 		EXC_SET("argv");
 		pszKey += 4;
-		SKIP_SEPARATORS(pszKey);
+		SkipDotSeparator(pszKey);
 
 		size_t iQty = m_v.GetCount();
 		if ( iQty < 1 )
@@ -2394,7 +2384,7 @@ bool CScriptTriggerArgs::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole
 			return true;
 		}
 
-		INT64 iKey = Exp_GetLLSingle(pszKey);
+		INT64 iKey = g_Exp.GetSingle(pszKey);
 		if ( (iKey < 0) || !m_v.IsValidIndex(static_cast<size_t>(iKey)) )
 		{
 			sVal = "";
@@ -2493,7 +2483,7 @@ bool CScriptTriggerArgs::r_Verb(CScript &s, CTextConsole *pSrc)
 		else
 		{
 			++pszKey;
-			m_pO1 = static_cast<CGrayUID>(Exp_GetSingle(pszKey)).ObjFind();
+			m_pO1 = static_cast<CGrayUID>(static_cast<DWORD>(g_Exp.GetSingle(pszKey))).ObjFind();
 			return true;
 		}
 	}
@@ -2807,14 +2797,14 @@ bool CFileObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case FO_FILEEXIST:
 		{
 			pszKey += 9;
-			GETNONWHITESPACE(pszKey);
+			SkipWhitespace(pszKey);
 
-			TCHAR *ppCmd = Str_TrimWhitespace(const_cast<TCHAR *>(pszKey));
-			if ( !(ppCmd && strlen(ppCmd)) )
+			TCHAR *pszFilename = Str_TrimWhitespace(const_cast<TCHAR *>(pszKey));
+			if ( !(pszFilename && strlen(pszFilename)) )
 				return false;
 
 			CFile *pFile = new CFile();
-			sVal.FormatVal(pFile->Open(ppCmd));
+			sVal.FormatVal(pFile->Open(pszFilename));
 
 			delete pFile;
 			break;
@@ -2822,14 +2812,14 @@ bool CFileObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case FO_FILELINES:
 		{
 			pszKey += 9;
-			GETNONWHITESPACE(pszKey);
+			SkipWhitespace(pszKey);
 
-			TCHAR *ppCmd = Str_TrimWhitespace(const_cast<TCHAR *>(pszKey));
-			if ( !(ppCmd && strlen(ppCmd)) )
+			TCHAR *pszFilename = Str_TrimWhitespace(const_cast<TCHAR *>(pszKey));
+			if ( !(pszFilename && strlen(pszFilename)) )
 				return false;
 
 			CFileText *pFile = new CFileText();
-			if ( !pFile->Open(ppCmd, OF_READ|OF_TEXT) )
+			if ( !pFile->Open(pszFilename, OF_READ|OF_TEXT) )
 			{
 				delete pFile;
 				return false;
@@ -2862,7 +2852,7 @@ bool CFileObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case FO_OPEN:
 		{
 			pszKey += 4;
-			GETNONWHITESPACE(pszKey);
+			SkipWhitespace(pszKey);
 
 			TCHAR *pszFilename = Str_TrimWhitespace(const_cast<TCHAR *>(pszKey));
 			if ( !(pszFilename && strlen(pszFilename)) )
@@ -2887,10 +2877,10 @@ bool CFileObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			if ( index != FO_READCHAR )
 			{
 				pszKey += 8;
-				GETNONWHITESPACE(pszKey);
+				SkipWhitespace(pszKey);
 
-				iRead = Exp_GetVal(pszKey);
-				if ( (iRead <= 0) || (iRead >= SCRIPT_MAX_LINE_LEN) )
+				iRead = static_cast<size_t>(g_Exp.GetVal(pszKey));
+				if ( (iRead == 0) || (iRead >= SCRIPT_MAX_LINE_LEN) )
 					return false;
 			}
 
@@ -2916,12 +2906,12 @@ bool CFileObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case FO_READLINE:
 		{
 			pszKey += 8;
-			GETNONWHITESPACE(pszKey);
+			SkipWhitespace(pszKey);
 
 			TCHAR *pszBuffer = GetReadBuffer();
 			ASSERT(pszBuffer);
 
-			INT64 iLines = Exp_GetLLVal(pszKey);
+			INT64 iLines = g_Exp.GetVal(pszKey);
 			if ( iLines < 0 )
 				return false;
 
@@ -2965,9 +2955,9 @@ bool CFileObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case FO_SEEK:
 		{
 			pszKey += 4;
-			GETNONWHITESPACE(pszKey);
+			SkipWhitespace(pszKey);
 
-			if ( pszKey[0] == '\0' )
+			if ( *pszKey == '\0' )
 				return false;
 
 			if ( strcmpi("BEGIN", pszKey) == 0 )
@@ -2975,7 +2965,7 @@ bool CFileObj::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			else if ( strcmpi("END", pszKey) == 0 )
 				sVal.FormatVal(m_pFile->Seek(0, SEEK_END));
 			else
-				sVal.FormatVal(m_pFile->Seek(Exp_GetVal(pszKey), SEEK_SET));
+				sVal.FormatVal(m_pFile->Seek(static_cast<LONG>(g_Exp.GetVal(pszKey)), SEEK_SET));
 			break;
 		}
 		default:
@@ -3179,8 +3169,8 @@ bool CFileObjContainer::r_GetRef(LPCTSTR &pszKey, CScriptObj *&pRef)
 		return false;
 	}
 
-	size_t iNumber = static_cast<size_t>(Exp_GetLLVal(pszKey));
-	SKIP_SEPARATORS(pszKey);
+	size_t iNumber = static_cast<size_t>(g_Exp.GetVal(pszKey));
+	SkipDotSeparator(pszKey);
 
 	if ( iNumber >= m_FileList.size() )
 		return false;
@@ -3241,8 +3231,8 @@ bool CFileObjContainer::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole 
 	int index = FindTableHeadSorted(pszKey, sm_szLoadKeys, COUNTOF(sm_szLoadKeys) - 1);
 	if ( index < 0 )
 	{
-		size_t iNumber = static_cast<size_t>(Exp_GetLLVal(pszKey));
-		SKIP_SEPARATORS(pszKey);
+		size_t iNumber = static_cast<size_t>(g_Exp.GetVal(pszKey));
+		SkipDotSeparator(pszKey);
 
 		if ( iNumber >= m_FileList.size() )
 			return false;
@@ -3301,10 +3291,10 @@ bool CFileObjContainer::r_Verb(CScript &s, CTextConsole *pSrc)
 	{
 		if ( strchr(pszKey, '.') )	// 0.blah format
 		{
-			size_t iNumber = static_cast<size_t>(Exp_GetLLVal(pszKey));
+			size_t iNumber = static_cast<size_t>(g_Exp.GetVal(pszKey));
 			if ( iNumber < m_FileList.size() )
 			{
-				SKIP_SEPARATORS(pszKey);
+				SkipDotSeparator(pszKey);
 				CFileObj *pFile = m_FileList.at(iNumber);
 				if ( pFile )
 				{

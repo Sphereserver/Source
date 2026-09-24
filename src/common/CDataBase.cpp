@@ -348,10 +348,10 @@ bool CDataBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case DBO_AQUERY:
 		{
 			pszKey += (index == DBO_AEXECUTE) ? 8 : 6;
-			GETNONWHITESPACE(pszKey);
+			SkipWhitespace(pszKey);
 
 			TCHAR *ppArgs[2];
-			if ( (pszKey[0] != '\0') && (Str_ParseCmds(const_cast<TCHAR *>(pszKey), ppArgs, COUNTOF(ppArgs)) == 2) )
+			if ( (*pszKey != '\0') && (Str_ParseCmds(const_cast<TCHAR *>(pszKey), ppArgs, COUNTOF(ppArgs)) == 2) )
 				sVal.FormatVal(AsyncQueue((index == DBO_AQUERY), ppArgs[0], ppArgs[1]));
 			else
 			{
@@ -368,10 +368,10 @@ bool CDataBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case DBO_ESCAPEDATA:
 		{
 			pszKey += 10;
-			GETNONWHITESPACE(pszKey);
+			SkipWhitespace(pszKey);
 			sVal = "";
 
-			if ( m_socket && (pszKey[0] != '\0') )
+			if ( m_socket && (*pszKey != '\0') )
 			{
 				char szEscapedString[THREAD_STRING_LENGTH];
 				size_t iLen = strlen(pszKey);
@@ -389,7 +389,7 @@ bool CDataBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		case DBO_ROW:
 		{
 			pszKey += 3;
-			SKIP_SEPARATORS(pszKey);
+			SkipDotSeparator(pszKey);
 			sVal = m_QueryResult.GetKeyStr(pszKey);
 			return true;
 		}
