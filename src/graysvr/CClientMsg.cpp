@@ -847,15 +847,15 @@ void CClient::addBarkParse(LPCTSTR pszText, const CObjBaseTemplate *pSrc, HUE_TY
 		if ( *pszText == '@' )	// @@ = just a @ symbol
 			goto bark_default;
 
-		const char *s = pszText;
-		pszText = strchr(s, ' ');
+		const TCHAR *pszTemp = pszText;
+		pszText = strchr(pszTemp, ' ');
 
 		if ( pszText )
 		{
-			for ( int i = 0; (s < pszText) && (i < 3); ++i, ++s )
+			for ( int i = 0; (pszTemp < pszText) && (i < 3); ++i, ++pszTemp )
 			{
-				if ( *s != ',' )
-					wArgs[i] = static_cast<WORD>(Exp_GetLLVal(s));
+				if ( *pszTemp != ',' )
+					wArgs[i] = static_cast<WORD>(g_Exp.GetVal(pszTemp));
 			}
 			++pszText;
 			if ( wArgs[1] > FONT_QTY )
@@ -888,7 +888,7 @@ void CClient::addBarkParse(LPCTSTR pszText, const CObjBaseTemplate *pSrc, HUE_TY
 				sVal += !strcmp(ppArgs[i], "NULL") ? " " : ppArgs[i];
 			}
 
-			addBarkLocalizedEx(static_cast<DWORD>(Exp_GetLLVal(ppArgs[0])), pSrc, static_cast<HUE_TYPE>(wArgs[0]), mode, static_cast<FONT_TYPE>(Exp_GetLLVal(ppArgs[1])), static_cast<AFFIX_TYPE>(Exp_GetLLVal(ppArgs[1])), ppArgs[2], sVal.GetPtr());
+			addBarkLocalizedEx(static_cast<DWORD>(g_Exp.GetVal(ppArgs[0])), pSrc, static_cast<HUE_TYPE>(wArgs[0]), mode, static_cast<FONT_TYPE>(g_Exp.GetVal(ppArgs[1])), static_cast<AFFIX_TYPE>(g_Exp.GetVal(ppArgs[1])), ppArgs[2], sVal.GetPtr());
 			break;
 		}
 
@@ -905,13 +905,13 @@ void CClient::addBarkParse(LPCTSTR pszText, const CObjBaseTemplate *pSrc, HUE_TY
 				sVal += !strcmp(ppArgs[i], "NULL") ? " " : ppArgs[i];
 			}
 
-			addBarkLocalized(static_cast<DWORD>(Exp_GetLLVal(ppArgs[0])), pSrc, static_cast<HUE_TYPE>(wArgs[0]), mode, static_cast<FONT_TYPE>(wArgs[1]), sVal.GetPtr());
+			addBarkLocalized(static_cast<DWORD>(g_Exp.GetVal(ppArgs[0])), pSrc, static_cast<HUE_TYPE>(wArgs[0]), mode, static_cast<FONT_TYPE>(wArgs[1]), sVal.GetPtr());
 			break;
 		}
 
 		case 1:		// unicode
 		{
-			NCHAR szBuffer[MAX_TALK_BUFFER];
+			NCHAR szBuffer[MAX_TALK_BUFFER] = {};
 			CvtSystemToNUNICODE(szBuffer, COUNTOF(szBuffer), m_BarkBuffer.GetPtr(), -1);
 			addBarkUNICODE(szBuffer, pSrc, static_cast<HUE_TYPE>(wArgs[0]), mode, static_cast<FONT_TYPE>(wArgs[1]), 0);
 			break;
@@ -2261,7 +2261,7 @@ void CClient::addBankOpen(CChar *pChar, LAYER_TYPE layer)
 
 	CItemContainer *pBankBox = pChar->GetContainerCreate(layer);
 	ASSERT(pBankBox);
-	addItem(pBankBox);		//client will crash client if it try to open the gump without load the item first
+	addItem(pBankBox);		// client will crash if it tries to open the container gump without load the container item first
 
 	pBankBox->OnOpenEvent(m_pChar, pChar);
 	addContainerSetup(pBankBox);
@@ -2401,19 +2401,19 @@ void CClient::addGumpTextDisp(const CObjBase *pObj, GUMP_TYPE gump, LPCTSTR pszN
 	new PacketSignGump(this, pObj, gump, pszName, pszText);
 }
 
-void CClient::addItemMenu(CLIMODE_TYPE mode, const CMenuItem *pMenuItem, size_t iCount, CObjBase *pObj)
+void CClient::addItemMenu(CLIMODE_TYPE mode, const CMenuItem *pItemList, size_t iItemCount, CObjBase *pObj)
 {
 	ADDTOCALLSTACK("CClient::addItemMenu");
 	// We must set GetTargMode() to show what mode we are in for menu select
 	// Will result in PacketMenuChoice::onReceive()
 	// cmd.ItemMenu
 
-	if ( iCount <= 0 )
+	if ( iItemCount <= 0 )
 		return;
 	if ( !pObj )
 		pObj = m_pChar;
 
-	new PacketDisplayMenu(this, mode, pMenuItem, iCount, pObj);
+	new PacketDisplayMenu(this, mode, pItemList, iItemCount, pObj);
 	m_tmMenu.m_UID = pObj->GetUID();
 	SetTargMode(mode);
 }
@@ -2430,6 +2430,11 @@ void CClient::addCharPaperdoll(const CChar *pChar)
 void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 {
 	ADDTOCALLSTACK("CClient::addAOSTooltip");
+	// Build and send tooltip to client
+	// NOTE: Classic clients use HTML text formatting in tooltips (default client-side formatting sets
+	//       a global "<BODY><CENTER><BASEFONT COLOR=#FFFFFF>...</BASEFONT></CENTER></BODY>" and puts
+	//       all entries inside it). Enhanced clients only support basic <BASEFONT COLOR=#...> tags
+
 	if ( !pObj || !PacketPropertyList::CanSendTo(m_NetState) )
 		return;
 
@@ -2534,10 +2539,6 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 					else
 						t->FormatArgs("%s\t%s\t%s", szPrefix, pObj->GetName(), szSuffix);
 
-					// Need to find a way to get the ushort inside hues.mul for index wHue to get this working
-					//HUE_TYPE wHue = pChar->Noto_GetHue(m_pChar);
-					//t->FormatArgs("<basefont color=\"#%02x%02x%02x\">%s\t%s\t%s</basefont>", (wHue & 0x7C00) >> 7, (wHue & 0x3E0) >> 2, (wHue & 0x1F) << 3, szPrefix, pChar->GetName(), szSuffix); // ~1_PREFIX~~2_NAME~~3_SUFFIX~
-
 					if ( pChar->m_pPlayer )
 					{
 						const CStoneMember *pGuildMember = pChar->Guild_FindMember(MEMORY_GUILD);
@@ -2593,6 +2594,8 @@ void CClient::addAOSTooltip(const CObjBase *pObj, bool fRequested, bool fShop)
 						m_TooltipData.Add(new CClientTooltip(1038021)); // Blessed
 					if ( pItem->IsAttr(ATTR_CURSED) )
 						m_TooltipData.Add(new CClientTooltip(1049643)); // Cursed
+					if ( pItem->IsAttr(ATTR_IMBUED) && m_NetState->isClientVersion(MINCLIVER_EXTRAFEATURES) )
+						m_TooltipData.Add(new CClientTooltip(1080418)); // (Imbued)
 					if ( pItem->IsAttr(ATTR_INSURED) )
 						m_TooltipData.Add(new CClientTooltip(1061682)); // <b>Insured</b>
 					if ( pItem->IsAttr(ATTR_QUESTITEM) )
@@ -3353,41 +3356,41 @@ void CClient::addKRToolbar(bool fEnable)
 void CClient::SendPacket(TCHAR *pszKey)
 {
 	ADDTOCALLSTACK("CClient::SendPacket");
-	PacketSend *packet = new PacketSend(0, 0, PacketSend::PRI_NORMAL);
-	packet->seek();
+	PacketSend *pPacket = new PacketSend(0, 0, PacketSend::PRI_NORMAL);
+	pPacket->seek();
 
 	while ( *pszKey )
 	{
-		if ( packet->getLength() > SCRIPT_MAX_LINE_LEN - 4 )
+		if ( pPacket->getLength() > SCRIPT_MAX_LINE_LEN - 4 )
 		{
 			// We won't get here because this lenght is enforced in all scripts
-			DEBUG_ERR(("SENDPACKET function exceeded max length allowed (%zu/%d)\n", packet->getLength(), SCRIPT_MAX_LINE_LEN - 4));
-			delete packet;
+			DEBUG_ERR(("SENDPACKET function exceeded max length allowed (%zu/%d)\n", pPacket->getLength(), SCRIPT_MAX_LINE_LEN - 4));
+			delete pPacket;
 			return;
 		}
 
-		GETNONWHITESPACE(pszKey);
+		SkipWhitespace(pszKey);
 		switch ( toupper(*pszKey) )
 		{
 			case 'D':
 				++pszKey;
-				packet->writeInt32(static_cast<DWORD>(Exp_GetLLVal(pszKey)));
+				pPacket->writeInt32(static_cast<DWORD>(g_Exp.GetVal(pszKey)));
 				break;
 			case 'W':
 				++pszKey;
-				packet->writeInt16(static_cast<WORD>(Exp_GetLLVal(pszKey)));
+				pPacket->writeInt16(static_cast<WORD>(g_Exp.GetVal(pszKey)));
 				break;
 			case 'B':
 				++pszKey;
 				// fall through
 			default:
-				packet->writeByte(static_cast<BYTE>(Exp_GetLLVal(pszKey)));
+				pPacket->writeByte(static_cast<BYTE>(g_Exp.GetVal(pszKey)));
 				break;
 		}
 	}
 
-	packet->trim();
-	packet->push(this);
+	pPacket->trim();
+	pPacket->push(this);
 }
 
 ///////////////////////////////////////////////////////////

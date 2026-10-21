@@ -1185,7 +1185,7 @@ bool CChar::Skill_MakeItem_Success()
 		return false;
 
 	int iQuality = 0;
-	TCHAR szMsg[EXPRESSION_MAX_KEY_LEN] = { '\0' };
+	TCHAR szMsg[MAX_TALK_BUFFER] = { '\0' };
 	WORD wSkillLevel = Skill_GetBase(Skill_GetActive());					// primary skill value
 	CItemVendable *pItemVend = dynamic_cast<CItemVendable *>(pItem);		// cast CItemVendable for setting quality and exp later
 
@@ -1252,36 +1252,36 @@ bool CChar::Skill_MakeItem_Success()
 		switch ( iQualityBase )
 		{
 			case 0:		// shoddy quality
-				strncpy(szMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_1), sizeof(szMsg));
-				szMsg[sizeof(szMsg) - 1] = '\0';
+				strncpy(szMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_1), COUNTOF(szMsg));
+				szMsg[COUNTOF(szMsg) - 1] = '\0';
 				iQuality = Calc_GetRandVal(25) + 1;
 				break;
 			case 1:		// poor quality
-				strncpy(szMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_2), sizeof(szMsg));
-				szMsg[sizeof(szMsg) - 1] = '\0';
+				strncpy(szMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_2), COUNTOF(szMsg));
+				szMsg[COUNTOF(szMsg) - 1] = '\0';
 				iQuality = Calc_GetRandVal(25) + 26;
 				break;
 			case 2:		// below average quality
-				strncpy(szMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_3), sizeof(szMsg));
-				szMsg[sizeof(szMsg) - 1] = '\0';
+				strncpy(szMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_3), COUNTOF(szMsg));
+				szMsg[COUNTOF(szMsg) - 1] = '\0';
 				iQuality = Calc_GetRandVal(25) + 51;
 				break;
 			case 3:		// average quality
 				iQuality = Calc_GetRandVal(50) + 76;
 				break;
 			case 4:		// above average quality
-				strncpy(szMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_4), sizeof(szMsg));
-				szMsg[sizeof(szMsg) - 1] = '\0';
+				strncpy(szMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_4), COUNTOF(szMsg));
+				szMsg[COUNTOF(szMsg) - 1] = '\0';
 				iQuality = Calc_GetRandVal(25) + 126;
 				break;
 			case 5:		// excellent quality
-				strncpy(szMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_5), sizeof(szMsg));
-				szMsg[sizeof(szMsg) - 1] = '\0';
+				strncpy(szMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_5), COUNTOF(szMsg));
+				szMsg[COUNTOF(szMsg) - 1] = '\0';
 				iQuality = Calc_GetRandVal(25) + 151;
 				break;
 			case 6:		// superior quality
-				strncpy(szMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_6), sizeof(szMsg));
-				szMsg[sizeof(szMsg) - 1] = '\0';
+				strncpy(szMsg, g_Cfg.GetDefaultMsg(DEFMSG_MAKESUCCESS_6), COUNTOF(szMsg));
+				szMsg[COUNTOF(szMsg) - 1] = '\0';
 				iQuality = Calc_GetRandVal(25) + 176;
 				break;
 		}
@@ -1555,9 +1555,6 @@ bool CChar::Skill_Tracking(CGrayUID uidTarg, int iDistMax)
 	if ( pChar->IsStatFlag(STATF_Insubstantial) && (pChar->GetPrivLevel() > GetPrivLevel()) )
 		return false;
 
-	DIR_TYPE dir = GetDir(pObj);
-	ASSERT((dir > DIR_INVALID) && (static_cast<size_t>(dir) < COUNTOF(CPointBase::sm_szDirs)));
-
 	// Select tracking message based on distance
 	LPCTSTR pszDef;
 	if ( iDist <= 0 )
@@ -1571,9 +1568,12 @@ bool CChar::Skill_Tracking(CGrayUID uidTarg, int iDistMax)
 	else
 		pszDef = g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_RESULT_4);
 
-	if ( pszDef[0] )
+	if ( pszDef && *pszDef )
 	{
-		TCHAR szMsg[EXPRESSION_MAX_KEY_LEN];
+		DIR_TYPE dir = GetDir(pObj);
+		ASSERT((dir > DIR_INVALID) && (static_cast<size_t>(dir) < COUNTOF(CPointBase::sm_szDirs)));
+
+		TCHAR szMsg[MAX_TALK_BUFFER];
 		snprintf(szMsg, sizeof(szMsg), pszDef, pChar->GetName(), pChar->IsDisconnected() ? g_Cfg.GetDefaultMsg(DEFMSG_TRACKING_RESULT_DISC) : CPointBase::sm_szDirs[dir]);
 		ObjMessage(szMsg, this);
 	}
@@ -2325,7 +2325,7 @@ int CChar::Skill_Taming(SKTRIG_TYPE stage)
 			g_Cfg.GetDefaultMsg(DEFMSG_TAMING_4)
 		};
 
-		TCHAR szMsg[EXPRESSION_MAX_KEY_LEN];
+		TCHAR szMsg[MAX_TALK_BUFFER];
 		snprintf(szMsg, sizeof(szMsg), sm_szTameSpeak[Calc_GetRandVal(COUNTOF(sm_szTameSpeak))], pChar->GetName());
 		Speak(szMsg);
 
@@ -2342,7 +2342,7 @@ int CChar::Skill_Taming(SKTRIG_TYPE stage)
 	if ( pMemory && (pMemory->m_itEqMemory.m_Action == NPC_MEM_ACT_TAMED) )
 	{
 		// I did, no skill to tame it again
-		TCHAR szMsg[EXPRESSION_MAX_KEY_LEN];
+		TCHAR szMsg[MAX_TALK_BUFFER];
 		snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_TAMING_REMEMBER), pChar->GetName());
 		ObjMessage(szMsg, pChar);
 
@@ -2732,7 +2732,7 @@ int CChar::Skill_Healing(SKTRIG_TYPE stage)
 	{
 		if ( pChar != this )
 		{
-			TCHAR szMsg[EXPRESSION_MAX_KEY_LEN];
+			TCHAR szMsg[MAX_TALK_BUFFER];
 			snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_HEALING_TO), pChar->GetName());
 			Emote(szMsg);
 		}
@@ -3147,55 +3147,55 @@ int CChar::Skill_Act_Throwing(SKTRIG_TYPE stage)
 	SoundChar(CRESND_GETHIT);
 
 	int iDamage = 0;
-	const CVarDefCont *pDam = GetDefKey("THROWDAM", true);
-	if ( pDam )
+	CVarDefCont *pVar = GetDefKey("THROWDAM", true);
+	if ( pVar )
 	{
-		INT64 iVal[2];
-		size_t iQty = Str_ParseCmds(const_cast<TCHAR *>(pDam->GetValStr()), iVal, COUNTOF(iVal));
-		switch ( iQty )
+		INT64 piVal[2];
+		size_t iArgQty = Str_ParseCmds(const_cast<TCHAR *>(pVar->GetValStr()), piVal, COUNTOF(piVal));
+		switch ( iArgQty )
 		{
 			case 1:
-				iDamage = static_cast<int>(iVal[0]);
+				iDamage = static_cast<int>(piVal[0]);
 				break;
 			case 2:
-				iDamage = static_cast<int>(iVal[0] + Calc_GetRandLLVal(iVal[1] - iVal[0]));
+				iDamage = static_cast<int>(Calc_GetRandLLVal(piVal[0], piVal[1]));
 				break;
 		}
 	}
 
 	ITEMID_TYPE id = ITEMID_NOTHING;
-	const CVarDefCont *pRock = GetDefKey("THROWOBJ", true);
-	if ( pRock )
+	pVar = GetDefKey("THROWOBJ", true);
+	if ( pVar )
 	{
-		LPCTSTR pszRock = pRock->GetValStr();
-		RESOURCE_ID_BASE rid = static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID(RES_ITEMDEF, pszRock));
+		LPCTSTR pszThrowObj = pVar->GetValStr();
+		RESOURCE_ID_BASE rid = static_cast<RESOURCE_ID_BASE>(g_Cfg.ResourceGetID(RES_ITEMDEF, pszThrowObj));
 		id = static_cast<ITEMID_TYPE>(rid.GetResIndex());
 		if ( !iDamage )
-			iDamage = Stat_GetVal(STAT_DEX) / 4 + Calc_GetRandVal(Stat_GetVal(STAT_DEX) / 4);
+			iDamage = Calc_GetRandVal(Stat_GetVal(STAT_DEX) / 4, Stat_GetVal(STAT_DEX) / 2);
 	}
 	else
 	{
 		if ( Calc_GetRandVal(3) )
 		{
-			id = static_cast<ITEMID_TYPE>(ITEMID_ROCK_B_LO + Calc_GetRandVal(ITEMID_ROCK_B_HI - ITEMID_ROCK_B_LO));
+			id = static_cast<ITEMID_TYPE>(Calc_GetRandVal(ITEMID_ROCK_B_LO, ITEMID_ROCK_B_HI));
 			if ( !iDamage )
-				iDamage = Stat_GetVal(STAT_DEX) / 4 + Calc_GetRandVal(Stat_GetVal(STAT_DEX) / 4);
+				iDamage = Calc_GetRandVal(Stat_GetVal(STAT_DEX) / 4, Stat_GetVal(STAT_DEX) / 2);
 		}
 		else
 		{
-			id = static_cast<ITEMID_TYPE>(ITEMID_ROCK_2_LO + Calc_GetRandVal(ITEMID_ROCK_2_HI - ITEMID_ROCK_2_LO));
+			id = static_cast<ITEMID_TYPE>(Calc_GetRandVal(ITEMID_ROCK_2_LO, ITEMID_ROCK_2_HI));
 			if ( !iDamage )
-				iDamage = 2 + Calc_GetRandVal(Stat_GetVal(STAT_DEX) / 4);
+				iDamage = Calc_GetRandVal(2, Stat_GetVal(STAT_DEX) / 4);
 		}
 	}
 
 	if ( id != ITEMID_NOTHING )
 	{
-		CItem *pItemRock = CItem::CreateScript(id, this);
-		if ( pItemRock )
+		CItem *pItem = CItem::CreateScript(id, this);
+		if ( pItem )
 		{
-			pItemRock->MoveToCheck(m_Act_p, this, true);
-			pItemRock->Effect(EFFECT_BOLT, id, this);
+			pItem->MoveToCheck(m_Act_p, this, true);
+			pItem->Effect(EFFECT_BOLT, id, this);
 		}
 		if ( !Calc_GetRandVal(pChar->GetTopPoint().GetDist(m_Act_p)) )
 			pChar->OnTakeDamage(iDamage, this, DAMAGE_PHYSICAL);

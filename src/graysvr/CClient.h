@@ -579,9 +579,9 @@ public:
 	void Event_Tips(DWORD dwIndex);
 	void Event_ToolTip(CGrayUID uid);
 	void Event_UseToolbar(BYTE bType, DWORD dwArg);
-	void Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t iItemCount);
+	void Event_VendorBuy(CChar *pVendor, const VendorItem *pItemList, size_t iItemCount);
 	void Event_VendorBuy_Cheater(int iCode = 0);
-	void Event_VendorSell(CChar *pVendor, const VendorItem *items, size_t iItemCount);
+	void Event_VendorSell(CChar *pVendor, const VendorItem *pItemList, size_t iItemCount);
 	void Event_VendorSell_Cheater(int iCode = 0);
 	void Event_VirtueSelect(DWORD dwIndex, CChar *pCharTarg);
 	bool Event_Walk(BYTE rawdir, BYTE sequence = 0);
@@ -599,7 +599,7 @@ public:
 	// Translated commands
 private:
 	int Cmd_Extract(CScript *pScript, CRectMap &rect, signed char &zLowest);
-	size_t Cmd_Skill_Menu_Build(RESOURCE_ID_BASE rid, int iSelect, CMenuItem *item, size_t iMaxSize, bool &fShowMenu, bool &fLimitReached);
+	size_t Cmd_Skill_Menu_Build(RESOURCE_ID_BASE rid, int iSelect, CMenuItem *pItemList, size_t iItemCount, bool &fShowMenu, bool &fLimitReached);
 
 public:
 	bool Cmd_Skill_Menu(RESOURCE_ID_BASE rid, int iSelect = -1);
@@ -764,7 +764,7 @@ public:
 	void addGumpTextDisp(const CObjBase *pObj, GUMP_TYPE gump, LPCTSTR pszName, LPCTSTR pszText);
 	void addGumpInpVal(bool fCancel, INPVAL_TYPE type, DWORD dwMaxLength, LPCTSTR pszText, LPCTSTR pszCaption, CObjBase *pObj);
 
-	void addItemMenu(CLIMODE_TYPE mode, const CMenuItem *item, size_t iCount, CObjBase *pObj = NULL);
+	void addItemMenu(CLIMODE_TYPE mode, const CMenuItem *pItemList, size_t iItemCount, CObjBase *pObj = NULL);
 	void addGumpDialog(CLIMODE_TYPE mode, const CGString *psControls, size_t iControlCount, const CGString *psText, size_t iTextCount, DWORD x, DWORD y, CObjBase *pObj = NULL, DWORD rid = 0);
 
 	void addGumpDialogProps(CObjBase *pObj);
@@ -982,8 +982,8 @@ public:
 		m_clilocid = dwClilocID;
 		if ( pszArgs )
 		{
-			strncpy(m_args, pszArgs, SCRIPT_MAX_LINE_LEN);
-			m_args[SCRIPT_MAX_LINE_LEN - 1] = '\0';
+			strncpy(m_args, pszArgs, COUNTOF(m_args));
+			m_args[COUNTOF(m_args) - 1] = '\0';
 		}
 		else
 			m_args[0] = '\0';
@@ -993,7 +993,7 @@ public:
 
 public:
 	DWORD m_clilocid;
-	TCHAR m_args[SCRIPT_MAX_LINE_LEN];
+	TCHAR m_args[MAX_TALK_BUFFER];		// classic client is limited to 512 chars and enhanced client to 256 chars
 
 public:
 	void __cdecl FormatArgs(LPCTSTR pszFormat, ...) __printfargs(2, 3)
@@ -1001,10 +1001,10 @@ public:
 		va_list vargs;
 		va_start(vargs, pszFormat);
 
-		if ( !vsnprintf(m_args, SCRIPT_MAX_LINE_LEN, pszFormat, vargs) )
+		if ( !vsnprintf(m_args, COUNTOF(m_args), pszFormat, vargs) )
 		{
-			strncpy(m_args, pszFormat, SCRIPT_MAX_LINE_LEN);
-			m_args[SCRIPT_MAX_LINE_LEN - 1] = '\0';
+			strncpy(m_args, pszFormat, COUNTOF(m_args));
+			m_args[COUNTOF(m_args) - 1] = '\0';
 		}
 
 		va_end(vargs);

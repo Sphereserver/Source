@@ -375,7 +375,7 @@ bool PacketHealthBarUpdate::onSend(const CClient* client)
 /***************************************************************************
  *
  *
- *	Packet 0x1A : PacketWorldItem			sends item on ground (NORMAL)
+ *	Packet 0x1A : PacketWorldItem			sends item on ground (pre-SA clients) (NORMAL)
  *
  *
  ***************************************************************************/
@@ -397,8 +397,8 @@ PacketWorldItem::PacketWorldItem(const CClient* target, CItem *item) : PacketSen
 
 	adjustItemData(target, item, id, hue, amount, layer, flags);
 
-	// This packet only supports item IDs up to 0x3FFF, and multis start from 0x4000 (ITEMID_MULTI_LEGACY) multis need
-	// to be adjusted to the lower range, and items between 03FFF and 08000 need to be adjusted to something safer
+	// This packet only supports item IDs up to 0x3FFF, and multis start from 0x4000 (ITEMID_MULTI_LEGACY). So multis need
+	// to be adjusted to the lower range, and items between 0x3FFF and 0x8000 need to be adjusted to something safer
 	if (id >= ITEMID_MULTI)
 		id = static_cast<ITEMID_TYPE>(id - (ITEMID_MULTI - ITEMID_MULTI_LEGACY));
 	else if (id >= ITEMID_MULTI_LEGACY)
@@ -409,9 +409,10 @@ PacketWorldItem::PacketWorldItem(const CClient* target, CItem *item) : PacketSen
 	else
 		uid &= 0x7FFFFFFF;
 
-	pt.m_x &= 0x7FFF;
 	if (layer > 0)
 		pt.m_x |= 0x8000;
+	else
+		pt.m_x &= 0x7FFF;
 
 	pt.m_y &= 0x3FFF;
 	if (hue > 0)
@@ -1552,7 +1553,7 @@ void PacketBookPageContent::addPage(const CItem *book, WORD page)
 				LPCTSTR text = message->GetPageText(page - 1);
 				if (text != NULL)
 				{
-					for (TCHAR ch = *text; ch != '\0'; ch = *(++text))
+					for ( TCHAR ch = *text; ch != '\0'; ch = *++text )
 					{
 						if (ch == '\t')
 						{
@@ -2853,7 +2854,7 @@ PacketOpenScroll::PacketOpenScroll(const CClient* target, CResourceLock &s, SCRO
 	writeByte(static_cast<BYTE>(type));
 	writeInt32(context);
 
-	size_t lengthPosition(getPosition());
+	size_t lengthPosition = getPosition();
 	skip(2);
 
 	if (header)
@@ -2870,7 +2871,7 @@ PacketOpenScroll::PacketOpenScroll(const CClient* target, CResourceLock &s, SCRO
 		writeCharASCII(0x0D);
 	}
 
-	size_t endPosition(getPosition());
+	size_t endPosition = getPosition();
 	size_t length = getPosition() - lengthPosition;
 	seek(lengthPosition);
 	writeInt16(static_cast<WORD>(length));
@@ -2914,7 +2915,7 @@ PacketServerList::PacketServerList(const CClient* target) : PacketSend(PACKET_Se
 		writeServerEntry(server, ++count, reverseIp);
 	}
 
-	size_t endPosition(getPosition());
+	size_t endPosition = getPosition();
 	seek(countPosition);
 	writeInt16(count);
 	seek(endPosition);
@@ -3230,13 +3231,13 @@ void PacketGumpDialog::writeCompressedControls(const CGString* controls, size_t 
 		z_uLong compressLength = z_compressBound(controlLengthActual);
 		z_Bytef *compressBuffer = new z_Bytef[compressLength];
 
-		int error = z_compress2(compressBuffer, &compressLength, reinterpret_cast<const z_Bytef *>(toCompress), controlLengthActual, Z_DEFAULT_COMPRESSION);
+		int result = z_compress2(compressBuffer, &compressLength, reinterpret_cast<const z_Bytef *>(toCompress), controlLengthActual, Z_DEFAULT_COMPRESSION);
 		delete[] toCompress;
 
-		if ((error != Z_OK) || (compressLength == 0))
+		if ( (result != Z_OK) || (compressLength == 0) )
 		{
 			delete[] compressBuffer;
-			g_Log.EventError("Compress failed with error %d when generating gump. Using old packet\n", error);
+			g_Log.EventError("Compress failed with error %d when generating gump. Using old packet\n", result);
 			writeStandardControls(controls, controlCount, texts, textCount);
 			return;
 		}
@@ -3250,7 +3251,7 @@ void PacketGumpDialog::writeCompressedControls(const CGString* controls, size_t 
 
 	{
 		// compress and write texts
-		size_t textsPosition(getPosition());
+		size_t textsPosition = getPosition();
 
 		for (size_t i = 0; i < textCount; ++i)
 		{
@@ -3263,11 +3264,11 @@ void PacketGumpDialog::writeCompressedControls(const CGString* controls, size_t 
 		z_uLong compressLength = z_compressBound(textsLength);
 		z_Bytef *compressBuffer = new z_Bytef[compressLength];
 
-		int error = z_compress2(compressBuffer, &compressLength, &m_buffer[textsPosition], textsLength, Z_DEFAULT_COMPRESSION);
-		if ((error != Z_OK) || (compressLength == 0))
+		int result = z_compress2(compressBuffer, &compressLength, &m_buffer[textsPosition], textsLength, Z_DEFAULT_COMPRESSION);
+		if ( (result != Z_OK) || (compressLength == 0) )
 		{
 			delete[] compressBuffer;
-			g_Log.EventError("Compress failed with error %d when generating gump. Using old packet\n", error);
+			g_Log.EventError("Compress failed with error %d when generating gump. Using old packet\n", result);
 			writeStandardControls(controls, controlCount, texts, textCount);
 			return;
 		}
@@ -3292,7 +3293,7 @@ void PacketGumpDialog::writeStandardControls(const CGString* controls, size_t co
 	seek(19);
 
 	// skip controls length until they're written
-	size_t controlLengthPosition(getPosition());
+	size_t controlLengthPosition = getPosition();
 	skip(2);
 
 	// write controls
@@ -3304,7 +3305,7 @@ void PacketGumpDialog::writeStandardControls(const CGString* controls, size_t co
 	}
 
 	// write controls length
-	size_t endPosition(getPosition());
+	size_t endPosition = getPosition();
 	seek(controlLengthPosition);
 	writeInt16(static_cast<WORD>(endPosition - controlLengthPosition - 2));
 	seek(endPosition);
@@ -3676,7 +3677,7 @@ PacketDisplayPopup::PacketDisplayPopup(const CClient* target, CGrayUID uid) : Pa
 	ADDTOCALLSTACK("PacketDisplayPopup::PacketDisplayPopup");
 
 	m_popupCount = 0;
-	m_newPacketFormat = target->m_NetState->isClientKR() || target->m_NetState->isClientEnhanced() || target->m_NetState->isClientVersion(MINCLIVER_NEWCONTEXTMENU);
+	m_newPacketFormat = (target->m_NetState->isClientVersion(MINCLIVER_NEWCONTEXTMENU) || target->m_NetState->isClientKR() || target->m_NetState->isClientEnhanced());
 
 	if (m_newPacketFormat)
 		writeInt16(2);
@@ -3724,11 +3725,11 @@ void PacketDisplayPopup::addOption(WORD entryTag, DWORD textId, WORD flags, WORD
 	++m_popupCount;
 }
 
-void PacketDisplayPopup::finalise(void)
+void PacketDisplayPopup::finalize()
 {
-	ADDTOCALLSTACK("PacketDisplayPopup::finalise");
+	ADDTOCALLSTACK("PacketDisplayPopup::finalize");
 
-	size_t endPosition(getPosition());
+	size_t endPosition = getPosition();
 
 	seek(11);
 	writeByte(static_cast<BYTE>(m_popupCount));
@@ -4320,7 +4321,7 @@ PacketHouseDesign::PacketHouseDesign(const PacketHouseDesign *pPacket) : PacketS
 	m_pHouse = pPacket->m_pHouse;
 }
 
-PacketHouseDesign::~PacketHouseDesign(void)
+PacketHouseDesign::~PacketHouseDesign()
 {
 	if ( m_pStairBuffer )
 	{
@@ -4329,7 +4330,7 @@ PacketHouseDesign::~PacketHouseDesign(void)
 	}
 }
 
-bool PacketHouseDesign::writeLevelData(BYTE bLevel, WORD wItemCount, BYTE *pbData, DWORD dwDataSize)
+void PacketHouseDesign::writeLevelData(BYTE bLevel, WORD wItemCount, BYTE *pbData, DWORD dwDataSize)
 {
 	ADDTOCALLSTACK("PacketHouseDesign::writeLevelData");
 
@@ -4337,20 +4338,12 @@ bool PacketHouseDesign::writeLevelData(BYTE bLevel, WORD wItemCount, BYTE *pbDat
 	z_uLong compressLength = z_compressBound(static_cast<z_uLong>(dwDataSize));
 	z_Bytef *compressBuffer = new z_Bytef[compressLength];
 
-	int error = z_compress2(compressBuffer, &compressLength, static_cast<const z_Bytef *>(pbData), static_cast<z_uLong>(dwDataSize), Z_DEFAULT_COMPRESSION);
-	if ( error != Z_OK )
+	int result = z_compress2(compressBuffer, &compressLength, static_cast<const z_Bytef *>(pbData), static_cast<z_uLong>(dwDataSize), Z_DEFAULT_COMPRESSION);
+	if ( (result != Z_OK) || (compressLength == 0) || (compressLength >= HOUSEDESIGN_LEVELDATA_BUFFER) )
 	{
-		// An error occured with this floor, but we should be able to continue to the next without problems
 		delete[] compressBuffer;
-		g_Log.EventError("Compress failed with error %d when generating house design for floor %hhu on building UID=0%" FMTDWORDH "\n", error, bLevel, static_cast<DWORD>(m_pHouse->GetUID()));
-		return false;
-	}
-	else if ( (compressLength == 0) || (compressLength >= HOUSEDESIGN_LEVELDATA_BUFFER) )
-	{
-		// Too much data, but we should be able to continue to the next floor without problems
-		delete[] compressBuffer;
-		g_Log.EventWarn("Floor %hhu on building UID=0%" FMTDWORDH " too large with compressed length of %lu\n", bLevel, static_cast<DWORD>(m_pHouse->GetUID()), compressLength);
-		return false;
+		g_Log.EventError("Failed to compress house design packet for multi UID=0%" FMTDWORDH " (floor %hhu)\n", static_cast<DWORD>(m_pHouse->GetUID()), bLevel);
+		return;
 	}
 
 	writeByte(bLevel|0x20);
@@ -4363,25 +4356,23 @@ bool PacketHouseDesign::writeLevelData(BYTE bLevel, WORD wItemCount, BYTE *pbDat
 	m_wItemCount += wItemCount;
 	m_wDataSize += static_cast<WORD>(4 + compressLength);
 	++m_bLevelCount;
-	return true;
 }
 
-bool PacketHouseDesign::writeStairData(ITEMID_TYPE id, BYTE x, BYTE y, BYTE z)
+void PacketHouseDesign::writeStairData(ITEMID_TYPE id, BYTE x, BYTE y, BYTE z)
 {
 	ADDTOCALLSTACK("PacketHouseDesign::writeStairData");
+
+	if ( m_wStairCount >= HOUSEDESIGN_STAIRS_PER_BLOCK )
+		flushStairData();
 
 	m_pStairBuffer[m_wStairCount].m_id = static_cast<WORD>(id);
 	m_pStairBuffer[m_wStairCount].m_x = x;
 	m_pStairBuffer[m_wStairCount].m_y = y;
 	m_pStairBuffer[m_wStairCount].m_z = z;
-
-	if ( m_wStairCount++ >= HOUSEDESIGN_STAIRS_PER_BLOCK )
-		flushStairData();
-
-	return true;
+	++m_wStairCount;
 }
 
-void PacketHouseDesign::flushStairData(void)
+void PacketHouseDesign::flushStairData()
 {
 	ADDTOCALLSTACK("PacketHouseDesign::flushStairData");
 
@@ -4396,19 +4387,11 @@ void PacketHouseDesign::flushStairData(void)
 	z_uLong compressLength = z_compressBound(static_cast<z_uLong>(dwStairSize));
 	z_Bytef *compressBuffer = new z_Bytef[compressLength];
 
-	int error = z_compress2(compressBuffer, &compressLength, reinterpret_cast<const z_Bytef *>(m_pStairBuffer), static_cast<z_uLong>(dwStairSize), Z_DEFAULT_COMPRESSION);
-	if ( error != Z_OK )
+	int result = z_compress2(compressBuffer, &compressLength, reinterpret_cast<const z_Bytef *>(m_pStairBuffer), static_cast<z_uLong>(dwStairSize), Z_DEFAULT_COMPRESSION);
+	if ( (result != Z_OK) || (compressLength == 0) || (compressLength >= HOUSEDESIGN_STAIRDATA_BUFFER) )
 	{
-		// An error occured with this block, but we should be able to continue to the next without problems
 		delete[] compressBuffer;
-		g_Log.EventError("Compress failed with error %d when generating house design on building UID=0%" FMTDWORDH "\n", error, static_cast<DWORD>(m_pHouse->GetUID()));
-		return;
-	}
-	else if ( (compressLength == 0) || (compressLength >= HOUSEDESIGN_STAIRDATA_BUFFER) )
-	{
-		// Too much data, but we should be able to continue to the next block without problems
-		delete[] compressBuffer;
-		g_Log.EventWarn("Building UID=0%" FMTDWORDH " too large with compressed length of %lu\n", static_cast<DWORD>(m_pHouse->GetUID()), compressLength);
+		g_Log.EventError("Failed to compress house design packet for multi UID=0%" FMTDWORDH " (stairs data)\n", static_cast<DWORD>(m_pHouse->GetUID()));
 		return;
 	}
 
@@ -4422,16 +4405,15 @@ void PacketHouseDesign::flushStairData(void)
 	m_wItemCount += wStairCount;
 	m_wDataSize += static_cast<WORD>(4 + compressLength);
 	++m_bStairLevelCount;
-	return;
 }
 
-void PacketHouseDesign::finalize(void)
+void PacketHouseDesign::finalize()
 {
 	ADDTOCALLSTACK("PacketHouseDesign::finalize");
 
 	flushStairData();
 
-	size_t endPosition(getPosition());
+	size_t endPosition = getPosition();
 
 	seek(13);
 	writeInt16(m_wItemCount);
@@ -4675,7 +4657,7 @@ PacketTimeSyncResponse::PacketTimeSyncResponse(const CClient* target) : PacketSe
 /***************************************************************************
  *
  *
- *	Packet 0xF3 : PacketWorldObj			sends object on ground (NORMAL)
+ *	Packet 0xF3 : PacketWorldObj			sends object on ground (SA+ clients) (NORMAL)
  *
  *
  ***************************************************************************/
@@ -4683,35 +4665,49 @@ PacketWorldObj::PacketWorldObj(BYTE id, size_t size, CGrayUID uid) : PacketWorld
 {
 }
 
-PacketWorldObj::PacketWorldObj(const CClient* target, CItem *item) : PacketWorldItem(PACKET_WorldObj, 26, item->GetUID())
+PacketWorldObj::PacketWorldObj(const CClient *target, CItem *item) : PacketWorldItem(PACKET_WorldObj, 26, item->GetUID())
 {
 	ADDTOCALLSTACK("PacketWorldObj::PacketWorldObj");
 
-	DataSource source;
+	writeWorldItem(target, item);
+
+	trim();
+	push(target);
+}
+
+PacketWorldObj::PacketWorldObj(const CClient *target, CChar *mobile) : PacketWorldItem(PACKET_WorldObj, 26, mobile->GetUID())
+{
+	ADDTOCALLSTACK("PacketWorldObj::PacketWorldObj");
+
+	writeWorldChar(target, mobile);
+
+	trim();
+	push(target);
+}
+
+void PacketWorldObj::writeWorldItem(const CClient *target, CItem *item)
+{
+	ADDTOCALLSTACK("PacketWorldObj::writeWorldItem");
+
+	ObjType type = ObjType::Item;
 	ITEMID_TYPE id = item->GetDispID();
-	HUE_TYPE hue = item->GetHue();
-	CPointMap pt = item->GetTopPoint();
 	WORD amount = item->GetAmount();
+	CPointMap pt = item->GetTopPoint();
+	HUE_TYPE hue = item->GetHue();
 	BYTE layer = 0;
 	BYTE flags = 0;
 
 	adjustItemData(target, item, id, hue, amount, layer, flags);
 
 	if ( id >= ITEMID_MULTI )
-	{
-		source = Multi;
-		id = static_cast<ITEMID_TYPE>(id & 0x3FFF);
-	}
-	else
-	{
-		source = (item->Can(CAN_I_DAMAGEABLE) && (target->m_NetState->isClientVersion(MINCLIVER_STATUS_V6))) ? Damageable : TileData;
-		id = static_cast<ITEMID_TYPE>(id & 0xFFFF);		// SA: 0x7FFF, HS: 0xFFFF
-	}
+		type = ObjType::ItemMulti;
+	else if ( item->Can(CAN_I_DAMAGEABLE) && target->m_NetState->isClientVersion(MINCLIVER_STATUS_V6) )
+		type = ObjType::ItemDamageable;
 
 	writeInt16(1);
-	writeByte(static_cast<BYTE>(source));
+	writeByte(static_cast<BYTE>(type));
 	writeInt32(static_cast<DWORD>(item->GetUID()));
-	writeInt16(static_cast<WORD>(id));
+	writeInt16(static_cast<WORD>(id & 0xFFFF));		// SA: 0x7FFF, HS: 0xFFFF
 	writeByte(0);
 	writeInt16(amount);
 	writeInt16(amount);
@@ -4723,22 +4719,22 @@ PacketWorldObj::PacketWorldObj(const CClient* target, CItem *item) : PacketWorld
 	writeByte(flags);
 
 	if ( target->m_NetState->isClientVersion(MINCLIVER_HS) )
-		writeInt16(0);		// 0 = World Item, 1 = Player Item (why should a item on the ground be defined as player item? and what is the difference?)
-
-	trim();
-	push(target);
+		writeInt16(0);
 }
 
-PacketWorldObj::PacketWorldObj(const CClient* target, CChar* mobile) : PacketWorldItem(PACKET_WorldObj, 26, mobile->GetUID())
+void PacketWorldObj::writeWorldChar(const CClient *target, CChar *mobile)
 {
-	DataSource source = Character;
+	ADDTOCALLSTACK("PacketWorldObj::writeWorldChar");
+
+	ObjType type = ObjType::Char;
 	CREID_TYPE id = mobile->GetDispID();
 	DIR_TYPE dir = mobile->m_dirFace;
-	HUE_TYPE hue = mobile->GetHue();
 	CPointMap pt = mobile->GetTopPoint();
+	HUE_TYPE hue = mobile->GetHue();
+	BYTE flags = mobile->GetModeFlag();
 
 	writeInt16(1);
-	writeByte(static_cast<BYTE>(source));
+	writeByte(static_cast<BYTE>(type));
 	writeInt32(static_cast<DWORD>(mobile->GetUID()));
 	writeInt16(static_cast<WORD>(id));
 	writeByte(static_cast<BYTE>(dir));
@@ -4749,13 +4745,10 @@ PacketWorldObj::PacketWorldObj(const CClient* target, CChar* mobile) : PacketWor
 	writeByte(static_cast<BYTE>(pt.m_z));
 	writeByte(0);
 	writeInt16(hue);
-	writeByte(0);
+	writeByte(flags);
 
 	if ( target->m_NetState->isClientVersion(MINCLIVER_HS) )
 		writeInt16(0);
-
-	trim();
-	push(target);
 }
 
 
@@ -4794,7 +4787,7 @@ PacketDisplayMapNew::PacketDisplayMapNew(const CClient* target, const CItemMap* 
  *
  *
  ***************************************************************************/
-PacketMoveShip::PacketMoveShip(const CClient *target, const CItemShip *pShip, CObjBase **ppComponentList, size_t iComponentCount, BYTE bDirMove, BYTE bDirFace, BYTE bSpeed) : PacketSend(PACKET_MoveShip, 18, PRI_NORMAL)
+PacketMoveShip::PacketMoveShip(const CClient *target, const CItemShip *pShip, CObjBase **ppObjectList, size_t iObjectCount, BYTE bDirMove, BYTE bDirFace, BYTE bSpeed) : PacketSend(PACKET_MoveShip, 18, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketMoveShip::PacketMoveShip");
 	ASSERT(iComponentCount > 0);
@@ -4809,11 +4802,11 @@ PacketMoveShip::PacketMoveShip(const CClient *target, const CItemShip *pShip, CO
 	writeInt16(ptShip.m_x);
 	writeInt16(ptShip.m_y);
 	writeInt16(ptShip.m_z);
-	writeInt16(static_cast<WORD>(iComponentCount - 1));		// assume that first component is the ship itself
+	writeInt16(static_cast<WORD>(iObjectCount - 1));		// assume that first object is the ship itself
 
-	for ( size_t i = 1; i < iComponentCount; ++i )
+	for ( size_t i = 1; i < iObjectCount; ++i )
 	{
-		const CObjBase *pObj = ppComponentList[i];
+		const CObjBase *pObj = ppObjectList[i];
 		const CPointMap ptObj = pObj->GetTopPoint();
 
 		writeInt32(pObj->GetUID());
@@ -4833,82 +4826,25 @@ PacketMoveShip::PacketMoveShip(const CClient *target, const CItemShip *pShip, CO
  *
  *
  ***************************************************************************/
-PacketWorldObjCont::PacketWorldObjCont(const CClient* target, CObjBase** objects, size_t objectCount) : PacketWorldObj(PACKET_WorldObjCont, 5, PRI_NORMAL)
+PacketWorldObjCont::PacketWorldObjCont(const CClient *target, CObjBase **ppObjectList, size_t iObjectCount) : PacketWorldObj(PACKET_WorldObjCont, 5, PRI_NORMAL)
 {
 	ADDTOCALLSTACK("PacketWorldObjCont::PacketWorldObjCont");
-	ASSERT(objectCount > 0);
+	// UNUSED
+	// This packet 0xF7 (PacketWorldObjCont) is just a container of multiple 0xF3 packets (PacketWorldObj)
+	// Don't know if it makes any difference, so maybe it's better to leave it disabled
 
 	initLength();
-	writeInt16(static_cast<WORD>(objectCount));
+	writeInt16(static_cast<WORD>(iObjectCount));
 
-	for (size_t i = 0; i < objectCount; ++i)
+	for ( size_t i = 0; i < iObjectCount; ++i )
 	{
-		CObjBase* object = objects[i];
-		if (object->IsItem())
-		{
-			CItem *item = static_cast<CItem *>(object);
-			DataSource source;
-			ITEMID_TYPE id = item->GetDispID();
-			HUE_TYPE hue = item->GetHue();
-			CPointMap pt = item->GetTopPoint();
-			WORD amount = item->GetAmount();
-			BYTE layer = 0;
-			BYTE flags = 0;
+		writeByte(PACKET_WorldObj);
 
-			adjustItemData(target, item, id, hue, amount, layer, flags);
-
-			if ( id >= ITEMID_MULTI )
-			{
-				source = Multi;
-				id = static_cast<ITEMID_TYPE>(id & 0x3FFF);
-			}
-			else
-			{
-				source = (item->Can(CAN_I_DAMAGEABLE) && (target->m_NetState->isClientVersion(MINCLIVER_STATUS_V6))) ? Damageable : TileData;
-				id = static_cast<ITEMID_TYPE>(id & 0xFFFF);		// SA: 0x7FFF, HS: 0xFFFF
-			}
-
-			writeByte(0xF3);
-			writeInt16(1);
-			writeByte(static_cast<BYTE>(source));
-			writeInt32(static_cast<DWORD>(item->GetUID()));
-			writeInt16(static_cast<WORD>(id));
-			writeByte(0);
-			writeInt16(amount);
-			writeInt16(amount);
-			writeInt16(static_cast<WORD>(pt.m_x & 0x7FFF));
-			writeInt16(static_cast<WORD>(pt.m_y & 0x3FFF));
-			writeByte(static_cast<BYTE>(pt.m_z));
-			writeByte(layer);
-			writeInt16(static_cast<WORD>(hue));
-			writeByte(flags);
-			writeInt16(0);
-		}
+		CObjBase *pObj = ppObjectList[i];
+		if ( pObj->IsItem() )
+			PacketWorldObj::writeWorldItem(target, static_cast<CItem *>(pObj));
 		else
-		{
-			CChar *mobile = static_cast<CChar *>(object);
-			DataSource source = Character;
-			CREID_TYPE id = mobile->GetDispID();
-			HUE_TYPE hue = mobile->GetHue();
-			CPointMap pt = mobile->GetTopPoint();
-			DIR_TYPE dir = mobile->m_dirFace;
-
-			writeByte(0xF3);
-			writeInt16(1);
-			writeByte(static_cast<BYTE>(source));
-			writeInt32(static_cast<DWORD>(mobile->GetUID()));
-			writeInt16(static_cast<WORD>(id));
-			writeByte(static_cast<BYTE>(dir));
-			writeInt16(1);
-			writeInt16(1);
-			writeInt16(static_cast<WORD>(pt.m_x));
-			writeInt16(static_cast<WORD>(pt.m_y));
-			writeByte(static_cast<BYTE>(pt.m_z));
-			writeByte(0);
-			writeInt16(static_cast<WORD>(hue));
-			writeByte(0);
-			writeInt16(0);
-		}
+			PacketWorldObj::writeWorldChar(target, static_cast<CChar *>(pObj));
 	}
 
 	push(target);

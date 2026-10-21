@@ -272,7 +272,7 @@ void CClient::addTargetVerb(LPCTSTR pszCmd, LPCTSTR pszArgs)
 	if ( GetPrivLevel() < g_Cfg.GetPrivCommandLevel(pszCmd) )
 		return;
 
-	m_Targ_Text.Format("%s%s%s", pszCmd, (pszArgs[0] && pszCmd[0]) ? " " : "", pszArgs);
+	m_Targ_Text.Format("%s%s%s", pszCmd, (*pszArgs && *pszCmd) ? " " : "", pszArgs);
 	TCHAR szMsg[EXPRESSION_MAX_KEY_LEN];
 	snprintf(szMsg, sizeof(szMsg), g_Cfg.GetDefaultMsg(DEFMSG_TARGET_COMMAND), static_cast<LPCTSTR>(m_Targ_Text));
 	addTarget(CLIMODE_TARG_OBJ_SET, szMsg);
@@ -614,24 +614,24 @@ bool CClient::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 	ADDTOCALLSTACK("CClient::r_WriteVal");
 	EXC_TRY("WriteVal");
 
-	if ( !strnicmp("CTAG.", pszKey, 5) )
+	if ( !strnicmp("CTAG", pszKey, 4) )
 	{
-		if ( pszKey[4] != '.' )
-			return false;
-		pszKey += 5;
-		CVarDefCont *pVar = m_TagDefs.GetKey(pszKey);
-		sVal = pVar ? pVar->GetValStr() : "";
-		return true;
-	}
+		pszKey += 4;
 
-	if ( !strnicmp("CTAG0.", pszKey, 6) )
-	{
-		if ( pszKey[5] != '.' )
-			return false;
-		pszKey += 6;
-		CVarDefCont *pVar = m_TagDefs.GetKey(pszKey);
-		sVal = pVar ? pVar->GetValStr() : "0";
-		return true;
+		bool fZero = false;
+		if ( *pszKey == '0' )	// CTAG0
+		{
+			++pszKey;
+			fZero = true;
+		}
+		if ( *pszKey == '.' )
+		{
+			++pszKey;
+			CVarDefCont *pVar = m_TagDefs.GetKey(pszKey);
+			sVal = pVar ? pVar->GetValStr() : (fZero ? "0" : "");
+			return true;
+		}
+		return false;
 	}
 
 	int index;
@@ -706,11 +706,10 @@ bool CClient::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		}
 		case CC_SCREENSIZE:
 		{
-			if ( pszKey[10] == '.' )
+			pszKey += 10;
+			if ( *pszKey == '.' )
 			{
-				pszKey += 10;
-				SkipDotSeparator(pszKey);
-
+				++pszKey;
 				if ( !strnicmp("X", pszKey, 1) )
 					sVal.Format("%hu", m_ScreenSize.x);
 				else if ( !strnicmp("Y", pszKey, 1) )
@@ -727,8 +726,12 @@ bool CClient::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			break;
 		case CC_TARGP:
 		{
-			if ( pszKey[5] == '.' )
-				return m_Targ_p.r_WriteVal(pszKey + 6, sVal);
+			pszKey += 5;
+			if ( *pszKey == '.' )
+			{
+				++pszKey;
+				return m_Targ_p.r_WriteVal(pszKey, sVal);
+			}
 			sVal = m_Targ_p.WriteUsed();
 			break;
 		}
@@ -894,7 +897,7 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 		return true;
 	}
 
-	if ( (toupper(pszKey[0]) == 'X') && !g_Cfg.m_Functions.ContainsKey(pszKey) )
+	if ( (toupper(*pszKey) == 'X') && !g_Cfg.m_Functions.ContainsKey(pszKey) )
 	{
 		if ( GetPrivLevel() < g_Cfg.GetPrivCommandLevel("SET") )
 			return false;
@@ -910,11 +913,10 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 	{
 		case CV_ADD:
 		{
-			if ( s.HasArgs() )
+			TCHAR *ppArgs[2];
+			size_t iArgQty = Str_ParseCmds(s.GetArgStr(), ppArgs, COUNTOF(ppArgs));
+			if ( iArgQty > 0 )
 			{
-				TCHAR *ppArgs[2];
-				size_t iArgQty = Str_ParseCmds(s.GetArgStr(), ppArgs, COUNTOF(ppArgs));
-
 				if ( !IsValidGameObjDef(static_cast<LPCTSTR>(ppArgs[0])) )
 				{
 					DEBUG_ERR(("%s: invalid argument '%s'\n", sm_szVerbKeys[index], ppArgs[0]));
@@ -930,14 +932,15 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 				m_tmAdd.m_id = rid.GetResIndex();
 				m_tmAdd.m_amount = iAmount;
 
-				if ( (rid.GetResType() == RES_CHARDEF) || (rid.GetResType() == RES_SPAWN) )
+				switch ( rid.GetResType() )
 				{
-					m_Targ_PrvUID.InitUID();
-					return addTargetChars(CLIMODE_TARG_ADDCHAR, static_cast<CREID_TYPE>(m_tmAdd.m_id), false);
+					case RES_CHARDEF:
+					case RES_SPAWN:
+						m_Targ_PrvUID.InitUID();
+						return addTargetChars(CLIMODE_TARG_ADDCHAR, static_cast<CREID_TYPE>(m_tmAdd.m_id), false);
+					default:
+						return addTargetItems(CLIMODE_TARG_ADDITEM, static_cast<ITEMID_TYPE>(m_tmAdd.m_id));
 				}
-				else
-					return addTargetItems(CLIMODE_TARG_ADDITEM, static_cast<ITEMID_TYPE>(m_tmAdd.m_id));
-				break;
 			}
 
 			if ( IsValidDef("d_add") )
@@ -949,34 +952,35 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 		case CV_ADDBUFF:
 		{
 			TCHAR *ppArgs[11];
-			Str_ParseCmds(s.GetArgStr(), ppArgs, COUNTOF(ppArgs));
-
-			int iArgs[4];
-			for ( int i = 0; i < 4; ++i )
+			size_t iArgQty = Str_ParseCmds(s.GetArgStr(), ppArgs, COUNTOF(ppArgs));
+			if ( iArgQty < 3 )
 			{
+				DEBUG_ERR(("%s: missing arguments\n", sm_szVerbKeys[index]));
+				return true;
+			}
+
+			int iArgs[4] = { 0 };
+			for ( size_t i = 0; i < COUNTOF(iArgs); ++i )
+			{
+				if ( (i == 3) && (!ppArgs[i] || !*ppArgs[i]) )		// timer arg is optional
+					continue;
+
 				if ( !IsStrNumeric(ppArgs[i]) )
 				{
 					DEBUG_ERR(("%s: invalid argument '%s'\n", sm_szVerbKeys[index], ppArgs[i]));
 					return true;
 				}
+
 				iArgs[i] = static_cast<int>(g_Exp.GetVal(ppArgs[i]));
 			}
+
 			if ( (iArgs[0] < 0) || (iArgs[0] > WORD_MAX) )
 			{
 				DEBUG_ERR(("%s: invalid icon '%d'\n", sm_szVerbKeys[index], iArgs[0]));
-				break;
+				return true;
 			}
 
-			LPCTSTR pszArgs[7];
-			size_t iArgQty = 0;
-			for ( int i = 0; i < 7; ++i )
-			{
-				pszArgs[i] = ppArgs[i + 4];
-				if ( pszArgs[i] != NULL )
-					++iArgQty;
-			}
-
-			addBuff(static_cast<BUFF_ICONS>(iArgs[0]), static_cast<DWORD>(iArgs[1]), static_cast<DWORD>(iArgs[2]), static_cast<WORD>(iArgs[3]), pszArgs, iArgQty);
+			addBuff(static_cast<BUFF_ICONS>(iArgs[0]), static_cast<DWORD>(iArgs[1]), static_cast<DWORD>(iArgs[2]), static_cast<WORD>(iArgs[3]), const_cast<LPCTSTR *>(ppArgs + COUNTOF(iArgs)), (iArgQty > COUNTOF(iArgs)) ? (iArgQty - COUNTOF(iArgs)) : 0);
 			break;
 		}
 		case CV_REMOVEBUFF:
@@ -995,6 +999,9 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 			// Add cliloc in @ClientTooltip trigger
 			TCHAR *ppArgs[16];
 			size_t iArgQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), ",");
+			if ( iArgQty < 1 )
+				return false;
+
 			DWORD dwClilocID = static_cast<DWORD>(g_Exp.GetVal(ppArgs[0]));
 
 			CGString sVal;
@@ -1016,6 +1023,11 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 
 			TCHAR *ppArgs[4];
 			size_t iArgQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), ",");
+			if ( iArgQty < 2 )
+			{
+				DEBUG_ERR(("%s: missing arguments\n", sm_szVerbKeys[index]));
+				return true;
+			}
 
 			for ( size_t i = 0; i < iArgQty; ++i )
 			{
@@ -1029,19 +1041,26 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 				}
 			}
 
-			int iTextEntry = static_cast<int>(g_Exp.GetVal(ppArgs[0]));
-			if ( iTextEntry < 100 )
+			int iEntry = static_cast<int>(g_Exp.GetVal(ppArgs[0]));
+			if ( iEntry < 100 )
 			{
-				DEBUG_ERR(("%s: can't use entry '%d' (entries < 100 are reserved for internal server usage)\n", sm_szVerbKeys[index], iTextEntry));
+				DEBUG_ERR(("%s: can't use entry '%d' (entries < 100 are reserved for internal server usage)\n", sm_szVerbKeys[index], iEntry));
 				return true;
 			}
-			m_pPopupPacket->addOption(static_cast<WORD>(iTextEntry), static_cast<DWORD>(g_Exp.GetVal(ppArgs[1])), static_cast<WORD>(g_Exp.GetVal(ppArgs[2])), static_cast<WORD>(g_Exp.GetVal(ppArgs[3])));
+
+			m_pPopupPacket->addOption(static_cast<WORD>(iEntry), static_cast<DWORD>(g_Exp.GetVal(ppArgs[1])), static_cast<WORD>((iArgQty >= 3) ? g_Exp.GetVal(ppArgs[2]) : 0), static_cast<WORD>((iArgQty >= 4) ? g_Exp.GetVal(ppArgs[3]) : 0));
 			break;
 		}
 		case CV_ARROWQUEST:
 		{
 			INT64 piVal[3];
-			Str_ParseCmds(s.GetArgRaw(), piVal, COUNTOF(piVal));
+			size_t iArgQty = Str_ParseCmds(s.GetArgRaw(), piVal, COUNTOF(piVal));
+			if ( iArgQty < 3 )
+			{
+				DEBUG_ERR(("%s: missing arguments\n", sm_szVerbKeys[index]));
+				return true;
+			}
+
 			addArrowQuest(static_cast<WORD>(piVal[0]), static_cast<WORD>(piVal[1]), static_cast<DWORD>(piVal[2]));
 			break;
 		}
@@ -1194,7 +1213,7 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 				break;
 			}
 
-			addCodexOfWisdom(static_cast<DWORD>(piArgs[0]), static_cast<bool>(piArgs[1]));
+			addCodexOfWisdom(static_cast<DWORD>(piArgs[0]), (iArgQty >= 2) ? static_cast<bool>(piArgs[1]) : false);
 			break;
 		}
 		case CV_DYE:
@@ -1211,41 +1230,31 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 			break;
 		}
 		case CV_EXTRACT:
-		{
-			// sort of like EXPORT but for statics.
-			// Opposite of the "UNEXTRACT" command
-			TCHAR *ppArgs[2];
-			size_t iArgQty = Str_ParseCmds(s.GetArgStr(), ppArgs, COUNTOF(ppArgs));
-			if ( iArgQty < 2 )
-			{
-				SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_EXTRACT_USAGE));
-				break;
-			}
-
-			m_Targ_Text = ppArgs[0];				// point at the options (if any)
-			m_tmTile.m_ptFirst.InitPoint();			// clear this first
-			m_tmTile.m_Code = CV_EXTRACT;			// set extract code
-			m_tmTile.m_id = static_cast<int>(g_Exp.GetVal(ppArgs[1]));	// extract id
-			addTarget(CLIMODE_TARG_TILE, g_Cfg.GetDefaultMsg(DEFMSG_SELECT_EXTRACT_AREA), true);
-			break;
-		}
 		case CV_UNEXTRACT:
 		{
-			// Create item from script.
-			// Opposite of the "EXTRACT" command
+			// Extract a set of items to script file
 			TCHAR *ppArgs[2];
 			size_t iArgQty = Str_ParseCmds(s.GetArgStr(), ppArgs, COUNTOF(ppArgs));
 			if ( iArgQty < 2 )
 			{
-				SysMessage(g_Cfg.GetDefaultMsg(DEFMSG_UNEXTRACT_USAGE));
+				SysMessage(g_Cfg.GetDefaultMsg((index == CV_EXTRACT) ? DEFMSG_EXTRACT_USAGE : DEFMSG_UNEXTRACT_USAGE));
 				break;
 			}
 
 			m_Targ_Text = ppArgs[0];				// point at the options (if any)
-			m_tmTile.m_ptFirst.InitPoint();			// clear this first
-			m_tmTile.m_Code = CV_UNEXTRACT;			// set extract code
-			m_tmTile.m_id = static_cast<int>(g_Exp.GetVal(ppArgs[1]));	// extract id
-			addTarget(CLIMODE_TARG_UNEXTRACT, g_Cfg.GetDefaultMsg(DEFMSG_SELECT_MULTI_POS), true);
+			m_tmTile.m_ptFirst.InitPoint();
+			m_tmTile.m_id = static_cast<int>(g_Exp.GetVal(ppArgs[1]));
+
+			if ( index == CV_EXTRACT )
+			{
+				m_tmTile.m_Code = CV_EXTRACT;
+				addTarget(CLIMODE_TARG_TILE, g_Cfg.GetDefaultMsg(DEFMSG_SELECT_EXTRACT_AREA), true);
+			}
+			else
+			{
+				m_tmTile.m_Code = CV_UNEXTRACT;
+				addTarget(CLIMODE_TARG_UNEXTRACT, g_Cfg.GetDefaultMsg(DEFMSG_SELECT_MULTI_POS), true);
+			}
 			break;
 		}
 		case CV_GMPAGE:
@@ -1369,9 +1378,14 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 		case CV_OPENTRADEWINDOW:
 		{
 			TCHAR *ppArgs[2];
-			Str_ParseCmds(s.GetArgStr(), ppArgs, COUNTOF(ppArgs));
+			size_t iArgQty = Str_ParseCmds(s.GetArgStr(), ppArgs, COUNTOF(ppArgs));
+			if ( iArgQty < 1 )
+			{
+				DEBUG_ERR(("%s: missing arguments\n", sm_szVerbKeys[index]));
+				return false;
+			}
 
-			CChar *pChar = ppArgs[0] ? static_cast<CGrayUID>(static_cast<DWORD>(g_Exp.GetVal(ppArgs[0]))).CharFind() : NULL;
+			CChar *pChar = static_cast<CGrayUID>(static_cast<DWORD>(g_Exp.GetVal(ppArgs[0]))).CharFind();
 			if ( pChar )
 			{
 				CItem *pItem = ppArgs[1] ? static_cast<CGrayUID>(static_cast<DWORD>(g_Exp.GetVal(ppArgs[1]))).ItemFind() : NULL;
@@ -1470,7 +1484,7 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 			size_t iArgQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), ",");
 			if ( iArgQty < 2 )
 			{
-				g_Log.EventError("%s: function can't have less than 2 args\n", sm_szVerbKeys[index]);
+				DEBUG_ERR(("%s: missing arguments\n", sm_szVerbKeys[index]));
 				return false;
 			}
 
@@ -1516,7 +1530,7 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 			if ( iArgQty > 4 )
 			{
 				// Font and mode are actually ignored here, but they never made a difference anyway.. I'd like to keep the syntax similar to SAYUA
-				NCHAR szBuffer[MAX_TALK_BUFFER];
+				NCHAR szBuffer[MAX_TALK_BUFFER] = {};
 				CvtSystemToNUNICODE(szBuffer, COUNTOF(szBuffer), ppArgs[4], -1);
 
 				addBarkUNICODE(szBuffer, NULL, static_cast<HUE_TYPE>(g_Exp.GetVal(ppArgs[0])), TALKMODE_SYSTEM, FONT_NORMAL, ppArgs[3]);
@@ -1528,21 +1542,24 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 		{
 			TCHAR *ppArgs[16];
 			size_t iArgQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), ",");
-			if ( iArgQty > 1 )
+			if ( iArgQty < 2 )
 			{
-				HUE_TYPE hue = (ATOI(ppArgs[0]) > 0) ? static_cast<HUE_TYPE>(g_Exp.GetVal(ppArgs[0])) : HUE_TEXT_DEF;
-				DWORD dwClilocID = static_cast<DWORD>(g_Exp.GetVal(ppArgs[1]));
-
-				CGString sVal;
-				for ( size_t i = 2; i < iArgQty; ++i )
-				{
-					if ( sVal.GetLength() )
-						sVal += "\t";
-					sVal += !strcmp(ppArgs[i], "NULL") ? " " : ppArgs[i];
-				}
-
-				addBarkLocalized(dwClilocID, NULL, hue, TALKMODE_SYSTEM, FONT_NORMAL, sVal.GetPtr());
+				DEBUG_ERR(("%s: missing arguments\n", sm_szVerbKeys[index]));
+				break;
 			}
+
+			HUE_TYPE hue = (ATOI(ppArgs[0]) > 0) ? static_cast<HUE_TYPE>(g_Exp.GetVal(ppArgs[0])) : HUE_TEXT_DEF;
+			DWORD dwClilocID = static_cast<DWORD>(g_Exp.GetVal(ppArgs[1]));
+
+			CGString sVal;
+			for ( size_t i = 2; i < iArgQty; ++i )
+			{
+				if ( sVal.GetLength() )
+					sVal += "\t";
+				sVal += !strcmp(ppArgs[i], "NULL") ? " " : ppArgs[i];
+			}
+
+			addBarkLocalized(dwClilocID, NULL, hue, TALKMODE_SYSTEM, FONT_NORMAL, sVal.GetPtr());
 			break;
 		}
 		case CV_SMSGLEX:
@@ -1550,22 +1567,25 @@ bool CClient::r_Verb(CScript &s, CTextConsole *pSrc) // Execute command from scr
 		{
 			TCHAR *ppArgs[16];
 			size_t iArgQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs), ",");
-			if ( iArgQty > 2 )
+			if ( iArgQty < 3 )
 			{
-				HUE_TYPE hue = (ATOI(ppArgs[0]) > 0) ? static_cast<HUE_TYPE>(g_Exp.GetVal(ppArgs[0])) : HUE_TEXT_DEF;
-				DWORD dwClilocID = static_cast<DWORD>(g_Exp.GetVal(ppArgs[1]));
-				AFFIX_TYPE affix = ppArgs[2] ? static_cast<AFFIX_TYPE>(g_Exp.GetVal(ppArgs[2])) : AFFIX_APPEND;
-
-				CGString sVal;
-				for ( size_t i = 4; i < iArgQty; ++i )
-				{
-					if ( sVal.GetLength() )
-						sVal += "\t";
-					sVal += !strcmp(ppArgs[i], "NULL") ? " " : ppArgs[i];
-				}
-
-				addBarkLocalizedEx(dwClilocID, NULL, hue, TALKMODE_SYSTEM, FONT_NORMAL, affix, ppArgs[3], sVal.GetPtr());
+				DEBUG_ERR(("%s: missing arguments\n", sm_szVerbKeys[index]));
+				break;
 			}
+
+			HUE_TYPE hue = (ATOI(ppArgs[0]) > 0) ? static_cast<HUE_TYPE>(g_Exp.GetVal(ppArgs[0])) : HUE_TEXT_DEF;
+			DWORD dwClilocID = static_cast<DWORD>(g_Exp.GetVal(ppArgs[1]));
+			AFFIX_TYPE affix = ppArgs[2] ? static_cast<AFFIX_TYPE>(g_Exp.GetVal(ppArgs[2])) : AFFIX_APPEND;
+
+			CGString sVal;
+			for ( size_t i = 4; i < iArgQty; ++i )
+			{
+				if ( sVal.GetLength() )
+					sVal += "\t";
+				sVal += !strcmp(ppArgs[i], "NULL") ? " " : ppArgs[i];
+			}
+
+			addBarkLocalizedEx(dwClilocID, NULL, hue, TALKMODE_SYSTEM, FONT_NORMAL, affix, ppArgs[3], sVal.GetPtr());
 			break;
 		}
 		case CV_TELE:

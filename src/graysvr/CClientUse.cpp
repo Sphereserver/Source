@@ -294,7 +294,7 @@ bool CClient::Cmd_Use_Item(CItem *pItem, bool fTestTouch, bool fScript)
 				if ( pShip )
 				{
 					if ( m_pChar->ContentFindKeyFor(pItem) )
-						pShip->Ship_SetPilot((pShip->m_itShip.m_Pilot != m_pChar->GetUID()) ? m_pChar : NULL);
+						pShip->Ship_SetPilot((static_cast<CGrayUID>(pShip->m_itShip.m_Pilot) != m_pChar->GetUID()) ? m_pChar : NULL);
 					else
 						pItem->Speak(g_Cfg.GetDefaultMsg(DEFMSG_TILLER_NOTYOURSHIP));
 					return true;
@@ -689,7 +689,7 @@ bool CClient::Cmd_Skill_Menu(RESOURCE_ID_BASE rid, int iSelect)
 	return true;
 }
 
-size_t CClient::Cmd_Skill_Menu_Build(RESOURCE_ID_BASE rid, int iSelect, CMenuItem *item, size_t iMaxSize, bool &fShowMenu, bool &fLimitReached)
+size_t CClient::Cmd_Skill_Menu_Build(RESOURCE_ID_BASE rid, int iSelect, CMenuItem *pItemList, size_t iItemCount, bool &fShowMenu, bool &fLimitReached)
 {
 	ADDTOCALLSTACK("CClient::Cmd_Skill_Menu_Build");
 	// Build the skill menu for the curent active skill.
@@ -703,8 +703,8 @@ size_t CClient::Cmd_Skill_Menu_Build(RESOURCE_ID_BASE rid, int iSelect, CMenuIte
 	//	iSelect = 0 = cancel
 	//	iSelect = x = execute the selection.
 	//  fShowMenu = whether or not menus can be shown
-	//  item = pointer to entries list
-	//  iMaxSize = maximum number of entries
+	//  pItemList = pointer to entries list
+	//  iItemCount = maximum number of entries
 	//
 	// RETURN: number of entries in menu
 	//   m_tmMenu.m_Item = the menu entries.
@@ -739,7 +739,7 @@ size_t CClient::Cmd_Skill_Menu_Build(RESOURCE_ID_BASE rid, int iSelect, CMenuIte
 
 	if ( iSelect < 0 )
 	{
-		item[0].m_sText = s.GetKey();
+		pItemList[0].m_sText = s.GetKey();
 		if ( iSelect == -1 )
 			m_tmMenu.m_ResourceID = rid;
 	}
@@ -768,7 +768,7 @@ size_t CClient::Cmd_Skill_Menu_Build(RESOURCE_ID_BASE rid, int iSelect, CMenuIte
 					return 1;
 
 				++iShowCount;
-				if ( !item[iSelect == -2 ? 0 : iShowCount].ParseLine(s.GetArgRaw(), NULL, m_pChar) )
+				if ( !pItemList[(iSelect == -2) ? 0 : iShowCount].ParseLine(s.GetArgRaw(), NULL, m_pChar) )
 				{
 					// remove if the item is invalid.
 					--iShowCount;
@@ -779,7 +779,7 @@ size_t CClient::Cmd_Skill_Menu_Build(RESOURCE_ID_BASE rid, int iSelect, CMenuIte
 				if ( iSelect == -1 )
 					m_tmMenu.m_Item[iShowCount] = iOnCount;
 
-				if ( iShowCount >= (iMaxSize - 1) )
+				if ( iShowCount >= iItemCount - 1 )
 					break;
 			}
 			else
@@ -848,7 +848,7 @@ size_t CClient::Cmd_Skill_Menu_Build(RESOURCE_ID_BASE rid, int iSelect, CMenuIte
 					// Test if there is anything in this skillmenu we can do.
 					++sm_iReentrant;
 					CMenuItem pReentrantMenuItem;
-					if ( !Cmd_Skill_Menu_Build(g_Cfg.ResourceGetIDType(RES_SKILLMENU, s.GetArgStr()), -2, &pReentrantMenuItem, iMaxSize, fShowMenu, fLimitReached) )
+					if ( !Cmd_Skill_Menu_Build(g_Cfg.ResourceGetIDType(RES_SKILLMENU, s.GetArgStr()), -2, &pReentrantMenuItem, iItemCount, fShowMenu, fLimitReached) )
 					{
 						--iShowCount;
 						fSkip = true;
@@ -963,7 +963,7 @@ bool CClient::Cmd_Skill_Magery(SPELL_TYPE iSpell, CObjBase *pSrc)
 		LPCTSTR pszPrompt = !pSpellDef->m_sTargetPrompt.IsEmpty() ? static_cast<LPCTSTR>(pSpellDef->m_sTargetPrompt) : g_Cfg.GetDefaultMsg(DEFMSG_SELECT_MAGIC_TARGET);
 
 		int iTimeout = static_cast<int>(m_pChar->GetDefNum("SPELLTIMEOUT"));
-		if ( !iTimeout )
+		if ( iTimeout <= 0 )
 			iTimeout = g_Cfg.m_iSpellTimeout * TICK_PER_SEC;
 
 		addTarget(CLIMODE_TARG_SKILL_MAGERY, pszPrompt, pSpellDef->IsSpellType(SPELLFLAG_TARG_XYZ), pSpellDef->IsSpellType(SPELLFLAG_HARM), iTimeout);

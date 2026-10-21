@@ -798,7 +798,7 @@ bool CClient::Event_Command(LPCTSTR pszCommand, TALKMODE_TYPE mode)
 		return false;
 
 	++pszCommand;
-	GETNONWHITESPACE(pszCommand);
+	SkipWhitespace(pszCommand);
 	bool fAllowCommand = g_Cfg.CanUsePrivVerb(this, pszCommand, this);
 	bool fAllowSay = true;
 
@@ -880,12 +880,12 @@ void CClient::Event_VendorBuy_Cheater(int iCode)
 }
 
 // Client is buying items from an vendor
-void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t iItemCount)
+void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *pItemList, size_t iItemCount)
 {
 	ADDTOCALLSTACK("CClient::Event_VendorBuy");
 	if ( !m_pChar || !pVendor )
 		return;
-	if ( !items || (iItemCount <= 0) )
+	if ( !pItemList || (iItemCount <= 0) )
 	{
 		addVendorClose(pVendor);
 		return;
@@ -903,14 +903,14 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t iI
 	// Check if there's something that can block the action
 	for ( size_t i = 0; i < iItemCount; ++i )
 	{
-		if ( !items[i].m_serial.IsValidUID() )
+		if ( !pItemList[i].m_serial.IsValidUID() )
 			continue;
 
-		pItem = static_cast<CItemVendable *>(items[i].m_serial.ItemFind());
+		pItem = static_cast<CItemVendable *>(pItemList[i].m_serial.ItemFind());
 		if ( !pItem )
 			continue;
 
-		if ( (items[i].m_amount <= 0) || (items[i].m_amount > pItem->GetAmount()) )
+		if ( (pItemList[i].m_amount <= 0) || (pItemList[i].m_amount > pItem->GetAmount()) )
 		{
 			pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_ORDER_CANTFULFILL));
 			Event_VendorBuy_Cheater(0x3);
@@ -924,7 +924,7 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t iI
 				if ( IsSetOF(OF_PetSlots) )
 				{
 					CCharBase *pPetDef = CCharBase::FindCharBase(pItem->m_itFigurine.m_ID);
-					iFollowerSlots += items[i].m_amount * (pPetDef ? pPetDef->m_FollowerSlots : 1);
+					iFollowerSlots += pItemList[i].m_amount * (pPetDef ? pPetDef->m_FollowerSlots : 1);
 				}
 				break;
 			}
@@ -950,7 +950,7 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t iI
 				break;
 		}
 
-		dwCostTotal += items[i].m_amount * items[i].m_price;
+		dwCostTotal += pItemList[i].m_amount * pItemList[i].m_price;
 	}
 
 	if ( dwCostTotal > DWORD_MAX / 4 )
@@ -994,18 +994,18 @@ void CClient::Event_VendorBuy(CChar *pVendor, const VendorItem *items, size_t iI
 	// Move bought items to backpack
 	for ( size_t i = 0; i < iItemCount; ++i )
 	{
-		if ( !items[i].m_serial.IsValidUID() )
+		if ( !pItemList[i].m_serial.IsValidUID() )
 			continue;
 
-		pItem = static_cast<CItemVendable *>(items[i].m_serial.ItemFind());
+		pItem = static_cast<CItemVendable *>(pItemList[i].m_serial.ItemFind());
 		if ( !pItem )
 			continue;
 
-		wAmount = items[i].m_amount;
+		wAmount = pItemList[i].m_amount;
 
 		if ( IsTrigUsed(TRIGGER_BUY) || IsTrigUsed(TRIGGER_ITEMBUY) )
 		{
-			CScriptTriggerArgs Args(wAmount, static_cast<INT64>(wAmount) * items[i].m_price, pVendor);
+			CScriptTriggerArgs Args(wAmount, static_cast<INT64>(wAmount) * pItemList[i].m_price, pVendor);
 			Args.m_VarsLocal.SetNum("TOTALCOST", dwCostTotal);
 			if ( pItem->OnTrigger(ITRIG_Buy, GetChar(), &Args) == TRIGRET_RET_TRUE )
 				continue;
@@ -1130,10 +1130,10 @@ void CClient::Event_VendorSell_Cheater(int iCode)
 }
 
 // Client is selling items to an vendor
-void CClient::Event_VendorSell(CChar *pVendor, const VendorItem *items, size_t iItemCount)
+void CClient::Event_VendorSell(CChar *pVendor, const VendorItem *pItemList, size_t iItemCount)
 {
 	ADDTOCALLSTACK("CClient::Event_VendorSell");
-	if ( !m_pChar || !pVendor || !items || (iItemCount <= 0) )
+	if ( !m_pChar || !pVendor || !pItemList || (iItemCount <= 0) )
 		return;
 
 	CItemContainer *pBank = pVendor->GetContainerCreate(LAYER_BANKBOX);
@@ -1145,7 +1145,7 @@ void CClient::Event_VendorSell(CChar *pVendor, const VendorItem *items, size_t i
 
 	for ( size_t i = 0; i < iItemCount; ++i )
 	{
-		CItemVendable *pItem = dynamic_cast<CItemVendable *>(items[i].m_serial.ItemFind());
+		CItemVendable *pItem = dynamic_cast<CItemVendable *>(pItemList[i].m_serial.ItemFind());
 		if ( !pItem || !pItem->IsValidSaleItem(true) )
 		{
 			pVendor->Speak(g_Cfg.GetDefaultMsg(DEFMSG_NPC_VENDOR_ORDER_CANTFULFILL));
@@ -1163,8 +1163,8 @@ void CClient::Event_VendorSell(CChar *pVendor, const VendorItem *items, size_t i
 			continue;
 
 		// Now how much did i say i wanted to sell?
-		WORD wAmount = items[i].m_amount;
-		if ( pItem->GetAmount() < wAmount )	// selling more than I have?
+		WORD wAmount = pItemList[i].m_amount;
+		if ( wAmount > pItem->GetAmount() )
 			wAmount = pItem->GetAmount();
 
 		DWORD dwPrice = pItemSell->GetVendorPrice(iConvertFactor) * wAmount;
@@ -1509,7 +1509,7 @@ void CClient::Event_Talk_Common(TCHAR *pszText)
 
 		if ( i > 0 )
 		{
-			while ( ISWHITESPACE(pszText[i]) )
+			while ( IsWhitespace(pszText[i]) )
 				++i;
 
 			if ( pChar->NPC_OnHearPetCmd(pszText + i, m_pChar, !fNamed) )
@@ -1597,7 +1597,7 @@ void CClient::Event_Talk(LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, boo
 		return;
 
 	pszText = szText;
-	GETNONWHITESPACE(pszText);
+	SkipWhitespace(pszText);
 
 	if ( Event_Command(pszText, mode) )
 		return;
@@ -1669,7 +1669,7 @@ void CClient::Event_TalkUNICODE(NWORD *wszText, int iTextLen, HUE_TYPE wHue, TAL
 		return;
 
 	TCHAR *pszText = szText;
-	GETNONWHITESPACE(pszText);
+	SkipWhitespace(pszText);
 
 	if ( Event_Command(pszText, mode) )
 		return;
@@ -1749,10 +1749,10 @@ bool CDialogResponseArgs::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsol
 	if ( !strnicmp(pszKey, "ARGCHK", 6) )
 	{
 		pszKey += 6;
-		SKIP_SEPARATORS(pszKey);
+		SkipDotSeparator(pszKey);
 
 		size_t iQty = m_CheckArray.GetCount();
-		if ( pszKey[0] == '\0' )
+		if ( *pszKey == '\0' )
 		{
 			sVal.FormatULLVal(iQty);
 			return true;
@@ -1766,8 +1766,8 @@ bool CDialogResponseArgs::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsol
 			return true;
 		}
 
-		DWORD dwNum = static_cast<DWORD>(Exp_GetLLSingle(pszKey));
-		SKIP_SEPARATORS(pszKey);
+		DWORD dwNum = static_cast<DWORD>(g_Exp.GetSingle(pszKey));
+		SkipDotSeparator(pszKey);
 		for ( size_t i = 0; i < iQty; ++i )
 		{
 			if ( dwNum == m_CheckArray[i] )
@@ -1782,17 +1782,17 @@ bool CDialogResponseArgs::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsol
 	if ( !strnicmp(pszKey, "ARGTXT", 6) )
 	{
 		pszKey += 6;
-		SKIP_SEPARATORS(pszKey);
+		SkipDotSeparator(pszKey);
 
 		size_t iQty = m_TextArray.GetCount();
-		if ( pszKey[0] == '\0' )
+		if ( *pszKey == '\0' )
 		{
 			sVal.FormatULLVal(iQty);
 			return true;
 		}
 
-		WORD wNum = static_cast<WORD>(Exp_GetSingle(pszKey));
-		SKIP_SEPARATORS(pszKey);
+		WORD wNum = static_cast<WORD>(g_Exp.GetSingle(pszKey));
+		SkipDotSeparator(pszKey);
 		for ( size_t i = 0; i < iQty; ++i )
 		{
 			if ( wNum == m_TextArray[i]->m_ID )
@@ -2221,7 +2221,7 @@ void CClient::Event_AOSPopupMenuRequest(CGrayUID uid) //construct packet after a
 		return;
 	}
 
-	m_pPopupPacket->finalise();
+	m_pPopupPacket->finalize();
 	m_pPopupPacket->push(this);
 	m_pPopupPacket = NULL;
 }

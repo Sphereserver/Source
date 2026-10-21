@@ -19,19 +19,19 @@ int CObjBaseTemplate::IsWeird() const
 
 bool GetDeltaStr(CPointMap &pt, TCHAR *pszDir)
 {
-	TCHAR *ppCmd[3];
-	size_t iArgQty = Str_ParseCmds(pszDir, ppCmd, COUNTOF(ppCmd));
+	TCHAR *ppArgs[3];
+	size_t iArgQty = Str_ParseCmds(pszDir, ppArgs, COUNTOF(ppArgs));
 	if ( iArgQty < 1 )
 		return false;
 
-	TCHAR chDir = static_cast<TCHAR>(toupper(ppCmd[0][0]));
-	int iSteps = static_cast<int>(g_Exp.GetVal(ppCmd[1]));
+	TCHAR chDir = static_cast<TCHAR>(toupper(*ppArgs[0]));
+	int iSteps = static_cast<int>(g_Exp.GetVal(ppArgs[1]));
 
 	if ( IsDigit(chDir) || (chDir == '-') )
 	{
-		pt.m_x += static_cast<signed short>(g_Exp.GetVal(ppCmd[0]));
+		pt.m_x += static_cast<signed short>(g_Exp.GetVal(ppArgs[0]));
 		pt.m_y += static_cast<signed short>(iSteps);
-		pt.m_z += static_cast<signed char>(g_Exp.GetVal(ppCmd[2]));
+		pt.m_z += static_cast<signed char>(g_Exp.GetVal(ppArgs[2]));
 	}
 	else
 	{
@@ -39,11 +39,11 @@ bool GetDeltaStr(CPointMap &pt, TCHAR *pszDir)
 		if ( iSteps == 0 )
 			iSteps = 1;
 
-		DIR_TYPE eDir = GetDirStr(ppCmd[0]);
-		if ( eDir >= DIR_QTY )
+		DIR_TYPE dir = GetDirStr(ppArgs[0]);
+		if ( dir >= DIR_QTY )
 			return false;
 
-		pt.MoveN(eDir, iSteps);
+		pt.MoveN(dir, iSteps);
 	}
 	return true;
 }
@@ -240,7 +240,7 @@ bool CObjBase::SetNamePool(LPCTSTR pszName)
 	ASSERT(pszName);
 	TCHAR szTemp[MAX_ITEM_NAME_SIZE];
 
-	if ( pszName[0] == '#' )
+	if ( *pszName == '#' )
 	{
 		// Pick random name from the given #NAMES list
 		++pszName;
@@ -484,8 +484,8 @@ void CObjBase::Speak(LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TY
 void CObjBase::SpeakUTF8(LPCTSTR pszText, HUE_TYPE wHue, TALKMODE_TYPE mode, FONT_TYPE font, CLanguageID lang)
 {
 	ADDTOCALLSTACK("CObjBase::SpeakUTF8");
-	// convert UTF8 to UNICODE.
-	NCHAR szBuffer[MAX_TALK_BUFFER];
+	// Convert UTF8 to UNICODE
+	NCHAR szBuffer[MAX_TALK_BUFFER] = {};
 	CvtSystemToNUNICODE(szBuffer, COUNTOF(szBuffer), pszText, -1);
 	g_World.SpeakUNICODE(this, szBuffer, wHue, mode, font, lang);
 }
@@ -1074,19 +1074,25 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			break;
 		case OC_ISEVENT:
 		{
-			if ( pszKey[7] != '.' )
-				return false;
-			pszKey += 8;
-			sVal.FormatVal(m_OEvents.ContainsResourceName(RES_EVENTS, pszKey));
-			return true;
+			pszKey += 7;
+			if ( *pszKey == '.' )
+			{
+				++pszKey;
+				sVal.FormatVal(m_OEvents.ContainsResourceName(RES_EVENTS, pszKey));
+				return true;
+			}
+			return false;
 		}
 		case OC_ISTEVENT:
 		{
-			if ( pszKey[8] != '.' )
-				return false;
-			pszKey += 9;
-			sVal.FormatVal(Base_GetDef()->m_TEvents.ContainsResourceName(RES_EVENTS, pszKey));
-			return true;
+			pszKey += 8;
+			if ( *pszKey == '.' )
+			{
+				++pszKey;
+				sVal.FormatVal(Base_GetDef()->m_TEvents.ContainsResourceName(RES_EVENTS, pszKey));
+				return true;
+			}
+			return false;
 		}
 		case OC_ISITEM:
 			sVal.FormatVal(IsItem());
@@ -1194,11 +1200,14 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 		}
 		case OC_ISTIMERF:
 		{
-			if ( pszKey[8] != '.' )
-				return false;
-			pszKey += 9;
-			sVal.FormatVal(g_World.m_TimedFunctions.IsTimer(GetUID(), pszKey));
-			return true;
+			pszKey += 8;
+			if ( *pszKey == '.' )
+			{
+				++pszKey;
+				sVal.FormatVal(g_World.m_TimedFunctions.IsTimer(GetUID(), pszKey));
+				return true;
+			}
+			return false;
 		}
 		case OC_ISWEAPON:
 		{
@@ -1280,22 +1289,17 @@ bool CObjBase::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			sVal.FormatVal(m_ResPoisonMax);
 			break;
 		case OC_TAG:
-		{
-			if ( pszKey[3] != '.' )
-				return false;
-			pszKey += 4;
-			CVarDefCont *pVarKey = m_TagDefs.GetKey(pszKey);
-			sVal = pVarKey ? pVarKey->GetValStr() : Base_GetDef()->m_TagDefs.GetKeyStr(pszKey, false);
-			return true;
-		}
 		case OC_TAG0:
 		{
-			if ( pszKey[4] != '.' )
-				return false;
-			pszKey += 5;
-			CVarDefCont *pVarKey = m_TagDefs.GetKey(pszKey);
-			sVal = pVarKey ? pVarKey->GetValStr() : Base_GetDef()->m_TagDefs.GetKeyStr(pszKey, true);
-			return true;
+			pszKey += (index == OC_TAG0)? 4 : 3;
+			if ( *pszKey == '.' )
+			{
+				++pszKey;
+				CVarDefCont *pVarKey = m_TagDefs.GetKey(pszKey);
+				sVal = pVarKey ? pVarKey->GetValStr() : Base_GetDef()->m_TagDefs.GetKeyStr(pszKey, (index == OC_TAG0));
+				return true;
+			}
+			return false;
 		}
 		case OC_TIMER:
 			sVal.FormatLLVal(GetTimerAdjusted());
@@ -1507,7 +1511,8 @@ bool CObjBase::r_LoadVal(CScript &s)
 
 			INT64 piVal[2];
 			size_t iArgQty = Str_ParseCmds(s.GetArgStr(), piVal, COUNTOF(piVal));
-			m_defenseBase = static_cast<WORD>(piVal[0]);
+
+			m_defenseBase = (iArgQty > 0) ? static_cast<WORD>(piVal[0]) : 0;
 			m_defenseRange = (iArgQty > 1) ? static_cast<WORD>(piVal[1]) - m_defenseBase : 0;
 			fSendUpdate = true;
 			break;
@@ -1516,7 +1521,8 @@ bool CObjBase::r_LoadVal(CScript &s)
 		{
 			INT64 piVal[2];
 			size_t iArgQty = Str_ParseCmds(s.GetArgStr(), piVal, COUNTOF(piVal));
-			m_attackBase = static_cast<WORD>(piVal[0]);
+
+			m_attackBase = (iArgQty > 0) ? static_cast<WORD>(piVal[0]) : 0;
 			m_attackRange = (iArgQty > 1) ? static_cast<WORD>(piVal[1]) - m_attackBase : 0;
 			fSendUpdate = true;
 			break;
@@ -1620,7 +1626,7 @@ bool CObjBase::r_LoadVal(CScript &s)
 				SetDefNum(s.GetKey(), iRange, false);
 			}
 			else
-				SetDefNum(s.GetKey(), piVal[0], false);
+				SetDefNum(s.GetKey(), (iArgQty > 0) ? piVal[0] : 0, false);
 			fSendUpdate = true;
 			break;
 		}
@@ -2037,17 +2043,19 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 
 			TCHAR *ppArgs[2];		// Maximum parameters in one line
 			size_t iArgQty = Str_ParseCmds(s.GetArgStr(), ppArgs, COUNTOF(ppArgs));
+			if ( iArgQty < 1 )
+				return false;
 
-			CGString sOrgValue;
-			if ( !r_WriteVal(ppArgs[0], sOrgValue, pSrc) )
-				sOrgValue = ".";
+			CGString sCaption;
+			if ( !r_WriteVal(ppArgs[0], sCaption, pSrc) )
+				sCaption = ".";
 
 			pClientSrc->m_Targ_Text = ppArgs[0];	// The attribute we want to edit.
 			int iMaxLength = (iArgQty > 1) ? ATOI(ppArgs[1]) : 1;
 
-			CGString sPrompt;
-			sPrompt.Format("%s (# = default)", static_cast<LPCTSTR>(ppArgs[0]));
-			pClientSrc->addGumpInpVal(true, INPVAL_Text, iMaxLength, sPrompt, sOrgValue, this);
+			CGString sText;
+			sText.Format("%s (# = default)", static_cast<LPCTSTR>(ppArgs[0]));
+			pClientSrc->addGumpInpVal(true, INPVAL_Text, iMaxLength, sText, sCaption, this);
 			break;
 		}
 		case OV_MENU:
@@ -2076,14 +2084,14 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 				return false;
 
 			TCHAR *ppArgs[5];
-			NCHAR ncBuffer[MAX_TALK_BUFFER];
-
 			size_t iArgQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs));
 			if ( iArgQty < 5 )
 				break;
 
-			CvtSystemToNUNICODE(ncBuffer, COUNTOF(ncBuffer), ppArgs[4], -1);
-			pClientSrc->addBarkUNICODE(ncBuffer, this, static_cast<HUE_TYPE>(ppArgs[0][0] ? g_Exp.GetVal(ppArgs[0]) : HUE_TEXT_DEF), static_cast<TALKMODE_TYPE>(ppArgs[1][0] ? g_Exp.GetVal(ppArgs[1]) : TALKMODE_SAY), static_cast<FONT_TYPE>(ppArgs[2][0] ? g_Exp.GetVal(ppArgs[2]) : FONT_NORMAL), CLanguageID(ppArgs[3]));
+			NCHAR szBuffer[MAX_TALK_BUFFER] = {};
+			CvtSystemToNUNICODE(szBuffer, COUNTOF(szBuffer), ppArgs[4], -1);
+
+			pClientSrc->addBarkUNICODE(szBuffer, this, static_cast<HUE_TYPE>(*ppArgs[0] ? g_Exp.GetVal(ppArgs[0]) : HUE_TEXT_DEF), static_cast<TALKMODE_TYPE>(*ppArgs[1] ? g_Exp.GetVal(ppArgs[1]) : TALKMODE_SAY), static_cast<FONT_TYPE>(*ppArgs[2] ? g_Exp.GetVal(ppArgs[2]) : FONT_NORMAL), CLanguageID(ppArgs[3]));
 			break;
 		}
 		case OV_MOVE:
@@ -2199,7 +2207,7 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 
 			TCHAR *ppArgs[2];
 			size_t iArgQty = Str_ParseCmds(s.GetArgRaw(), ppArgs, COUNTOF(ppArgs));
-			if ( iArgQty == 0 )
+			if ( iArgQty < 1 )
 				break;
 
 			pClientSrc->addPromptConsoleFunction(ppArgs[0], ppArgs[1], (index == OV_PROMPTCONSOLEU));
@@ -2246,7 +2254,7 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 			if ( iArgQty < 5 )
 				break;
 
-			SpeakUTF8(ppArgs[4], static_cast<HUE_TYPE>(ppArgs[0][0] ? g_Exp.GetVal(ppArgs[0]) : HUE_TEXT_DEF), static_cast<TALKMODE_TYPE>(ppArgs[1][0] ? g_Exp.GetVal(ppArgs[1]) : TALKMODE_SAY), static_cast<FONT_TYPE>(ppArgs[2][0] ? g_Exp.GetVal(ppArgs[2]) : FONT_NORMAL), CLanguageID(ppArgs[3]));
+			SpeakUTF8(ppArgs[4], static_cast<HUE_TYPE>(*ppArgs[0] ? g_Exp.GetVal(ppArgs[0]) : HUE_TEXT_DEF), static_cast<TALKMODE_TYPE>(*ppArgs[1] ? g_Exp.GetVal(ppArgs[1]) : TALKMODE_SAY), static_cast<FONT_TYPE>(*ppArgs[2] ? g_Exp.GetVal(ppArgs[2]) : FONT_NORMAL), CLanguageID(ppArgs[3]));
 			break;
 		}
 		case OV_SOUND:
@@ -2254,6 +2262,9 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 			EXC_SET("SOUND");
 			INT64 piCmd[2];
 			size_t iArgQty = Str_ParseCmds(s.GetArgStr(), piCmd, COUNTOF(piCmd));
+			if ( iArgQty < 1 )
+				break;
+
 			Sound(static_cast<SOUND_TYPE>(piCmd[0]), (iArgQty > 1) ? static_cast<BYTE>(piCmd[1]) : 1);
 			break;
 		}
@@ -2332,7 +2343,7 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 						break;
 
 					ITEMID_TYPE itemid = static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetIndexType(RES_ITEMDEF, ppArgs[1]));
-					HUE_TYPE color = static_cast<HUE_TYPE>(g_Exp.GetVal(ppArgs[2]));
+					HUE_TYPE color = static_cast<HUE_TYPE>((iArgQty > 2) ? g_Exp.GetVal(ppArgs[2]) : 0);
 					pClientSrc->addTargetFunctionMulti(ppArgs[0], itemid, color, fAllowGround);
 				}
 				else
@@ -2348,7 +2359,7 @@ bool CObjBase::r_Verb(CScript &s, CTextConsole *pSrc)
 						break;
 
 					ITEMID_TYPE itemid = static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetIndexType(RES_ITEMDEF, ppArgs[0]));
-					HUE_TYPE color = static_cast<HUE_TYPE>(g_Exp.GetVal(ppArgs[1]));
+					HUE_TYPE color = static_cast<HUE_TYPE>((iArgQty > 1) ? g_Exp.GetVal(ppArgs[1]) : 0);
 					pClientSrc->addTargetItems(CLIMODE_TARG_USE_ITEM, itemid, color, fAllowGround);
 				}
 				else

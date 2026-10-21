@@ -304,7 +304,7 @@ bool CResource::r_GetRef(LPCTSTR &pszKey, CScriptObj *&pRef)
 
 	// Now get the index
 	pszKey = pszSep + 1;
-	if ( pszKey[0] == '\0' )
+	if ( *pszKey == '\0' )
 	{
 		*pszSep = oldChar;
 		return false;
@@ -318,15 +318,13 @@ bool CResource::r_GetRef(LPCTSTR &pszKey, CScriptObj *&pRef)
 		pRef = NULL;
 	else if ( iResType == RES_CHARDEF )
 	{
-		//pRef = CCharBase::FindCharBase(static_cast<CREID_TYPE>(Exp_GetVal(pszKey)));
+		//pRef = CCharBase::FindCharBase(static_cast<CREID_TYPE>(g_Exp.GetVal(pszKey)));
 		pRef = CCharBase::FindCharBase(static_cast<CREID_TYPE>(g_Cfg.ResourceGetIndexType(RES_CHARDEF, pszKey)));
 	}
 	else if ( iResType == RES_ITEMDEF )
 	{
-		if ( fNewStyleDef && IsDigit(pszKey[0]) )
-			pRef = CItemBase::FindItemBase(static_cast<ITEMID_TYPE>(g_Exp.GetVal(pszKey) + ITEMID_MULTI));
-		else
-			pRef = CItemBase::FindItemBase(static_cast<ITEMID_TYPE>(g_Cfg.ResourceGetIndexType(RES_ITEMDEF, pszKey)));
+		ITEMID_TYPE id = static_cast<ITEMID_TYPE>((fNewStyleDef && IsDigit(*pszKey)) ? g_Exp.GetVal(pszKey) + ITEMID_MULTI : g_Cfg.ResourceGetIndexType(RES_ITEMDEF, pszKey));
+		pRef = CItemBase::FindItemBase(id);
 	}
 	else if ( (iResType == RES_SPELL) && (*pszKey == '-') )
 	{
@@ -1214,7 +1212,7 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			Str_Parse(const_cast<TCHAR *>(pszKey), &pszArgsNext, ")");
 
 			CPointMap pt;
-			if ( IsDigit(pszKey[0]) || (pszKey[0] == '-') )
+			if ( IsDigit(*pszKey) || (*pszKey == '-') )
 			{
 				TCHAR *ppVal[4];
 				size_t iArgQty = Str_ParseCmds(const_cast<TCHAR *>(pszKey), ppVal, COUNTOF(ppVal), ",");
@@ -1222,10 +1220,10 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 				{
 					default:
 					case 4:
-						if ( IsDigit(ppVal[3][0]) )
+						if ( IsDigit(*ppVal[3]) )
 							pt.m_map = static_cast<BYTE>(ATOI(ppVal[3]));
 					case 3:
-						if ( IsDigit(ppVal[2][0]) || ((iArgQty == 4) && (ppVal[2][0] == '-')) )
+						if ( IsDigit(*ppVal[2]) || ((iArgQty == 4) && (*ppVal[2] == '-')) )
 						{
 							pt.m_z = static_cast<signed char>((iArgQty == 4) ? ATOI(ppVal[2]) : 0);
 							if ( iArgQty == 3 )
@@ -1521,73 +1519,69 @@ bool CResource::r_WriteVal(LPCTSTR pszKey, CGString &sVal, CTextConsole *pSrc)
 			break;
 		case RC_RTICKS:
 		{
-			if ( pszKey[6] != '.' )
-			{
-				sVal.FormatULLVal(static_cast<UINT64>(CGTime::GetCurrentTime().GetTime()));
-				break;
-			}
-
 			pszKey += 6;
-			SkipDotSeparator(pszKey);
-
-			if ( !strnicmp("FROMTIME", pszKey, 8) )
+			if ( *pszKey == '.' )
 			{
-				pszKey += 8;
-				SkipWhitespace(pszKey);
+				++pszKey;
+				if ( !strnicmp("FROMTIME", pszKey, 8) )
+				{
+					pszKey += 8;
+					SkipWhitespace(pszKey);
 
-				// Syntax: year, month, day, hour, minute, second
-				INT64 piVal[6];
-				size_t iArgQty = Str_ParseCmds(const_cast<TCHAR *>(pszKey), piVal, COUNTOF(piVal));
-				if ( iArgQty != 6 )
-					return false;
+					// Syntax: year, month, day, hour, minute, second
+					INT64 piVal[6];
+					size_t iArgQty = Str_ParseCmds(const_cast<TCHAR *>(pszKey), piVal, COUNTOF(piVal));
+					if ( iArgQty < 6 )
+						return false;
 
-				CGTime datetime(static_cast<int>(piVal[0]), static_cast<int>(piVal[1]), static_cast<int>(piVal[2]), static_cast<int>(piVal[3]), static_cast<int>(piVal[4]), static_cast<int>(piVal[5]));
-				sVal.FormatULLVal(static_cast<UINT64>(datetime.GetTime()));
-				break;
+					CGTime datetime(static_cast<int>(piVal[0]), static_cast<int>(piVal[1]), static_cast<int>(piVal[2]), static_cast<int>(piVal[3]), static_cast<int>(piVal[4]), static_cast<int>(piVal[5]));
+					sVal.FormatULLVal(static_cast<UINT64>(datetime.GetTime()));
+					break;
+				}
+				else if ( !strnicmp("FORMAT", pszKey, 6) )
+				{
+					pszKey += 6;
+					SkipWhitespace(pszKey);
+
+					// Syntax: timestamp, formatstr
+					TCHAR *ppArgs[2];
+					size_t iArgQty = Str_ParseCmds(const_cast<TCHAR *>(pszKey), ppArgs, COUNTOF(ppArgs));
+					if ( iArgQty < 1 )
+						return false;
+
+					CGTime datetime(static_cast<time_t>(g_Exp.GetVal(ppArgs[0])));
+					sVal = datetime.Format((iArgQty > 1) ? ppArgs[1] : NULL);
+					break;
+				}
+				return false;
 			}
-			else if ( !strnicmp("FORMAT", pszKey, 6) )
-			{
-				pszKey += 6;
-				SkipWhitespace(pszKey);
-
-				// Syntax: timestamp, formatstr
-				TCHAR *ppVal[2];
-				size_t iArgQty = Str_ParseCmds(const_cast<TCHAR *>(pszKey), ppVal, COUNTOF(ppVal));
-				if ( iArgQty < 1 )
-					return false;
-
-				CGTime datetime(static_cast<time_t>(g_Exp.GetVal(ppVal[0])));
-				sVal = datetime.Format((iArgQty > 1) ? ppVal[1] : NULL);
-				break;
-			}
-			return false;
+			sVal.FormatULLVal(static_cast<UINT64>(CGTime::GetCurrentTime().GetTime()));
+			break;
 		}
 		case RC_RTIME:
 		{
-			if ( pszKey[5] != '.' )
-			{
-				sVal = CGTime::GetCurrentTime().Format(NULL);
-				break;
-			}
-
 			pszKey += 5;
-			SkipDotSeparator(pszKey);
-
-			if ( !strnicmp("FORMAT", pszKey, 6) )
+			if ( *pszKey == '.' )
 			{
-				pszKey += 6;
-				SkipWhitespace(pszKey);
-				sVal = CGTime::GetCurrentTime().Format(pszKey);
-				break;
+				++pszKey;
+				if ( !strnicmp("FORMAT", pszKey, 6) )
+				{
+					pszKey += 6;
+					SkipWhitespace(pszKey);
+					sVal = CGTime::GetCurrentTime().Format(pszKey);
+					break;
+				}
+				else if ( !strnicmp("GMTFORMAT", pszKey, 9) )
+				{
+					pszKey += 9;
+					SkipWhitespace(pszKey);
+					sVal = CGTime::GetCurrentTime().FormatGmt(pszKey);
+					break;
+				}
+				return false;
 			}
-			else if ( !strnicmp("GMTFORMAT", pszKey, 9) )
-			{
-				pszKey += 9;
-				SkipWhitespace(pszKey);
-				sVal = CGTime::GetCurrentTime().FormatGmt(pszKey);
-				break;
-			}
-			return false;
+			sVal = CGTime::GetCurrentTime().Format(NULL);
+			break;
 		}
 		case RC_SAVEPERIOD:
 			sVal.FormatVal(m_iSavePeriod / (60 * TICK_PER_SEC));
@@ -1670,7 +1664,7 @@ SKILL_TYPE CResource::FindSkillKey(LPCTSTR pszKey) const
 	// RETURN:
 	//  SKILL_NONE = error
 
-	if ( IsDigit(pszKey[0]) )
+	if ( IsDigit(*pszKey) )
 	{
 		SKILL_TYPE skill = static_cast<SKILL_TYPE>(g_Exp.GetVal(pszKey));
 		if ( CChar::IsSkillBase(skill) || CChar::IsSkillNPC(skill) )
@@ -1736,16 +1730,16 @@ CWebPageDef *CResource::FindWebPage(LPCTSTR pszPath) const
 	ADDTOCALLSTACK("CResource::FindWebPage");
 	if ( !pszPath )
 	{
-		if ( m_WebPages.GetCount() <= 0 )
+		if ( m_WebPages.GetCount() == 0 )
 			return NULL;
 
 		return static_cast<CWebPageDef *>(m_WebPages[0]);	// default page
 	}
 
 	LPCTSTR pszTitle = CGFile::GetFilesTitle(pszPath);
-	if ( !pszTitle || (pszTitle[0] == '\0') )
+	if ( !pszTitle || (*pszTitle == '\0') )
 	{
-		if ( m_WebPages.GetCount() <= 0 )
+		if ( m_WebPages.GetCount() == 0 )
 			return NULL;
 
 		return static_cast<CWebPageDef *>(m_WebPages[0]);	// default page
@@ -1948,12 +1942,12 @@ CPointMap CResource::GetRegionPoint(LPCTSTR pszCmd) const
 	// Might just be a point coord number?
 
 	SkipWhitespace(pszCmd);
-	if ( (pszCmd[0] == '-') && !strchr(pszCmd, ',') )	// Get location from start list.
+	if ( (*pszCmd == '-') && !strchr(pszCmd, ',') )	// get location from start list
 	{
 		size_t i = static_cast<size_t>(abs(ATOI(pszCmd))) - 1;
 		if ( !m_StartDefs.IsValidIndex(i) )
 		{
-			if ( m_StartDefs.GetCount() <= 0 )
+			if ( m_StartDefs.GetCount() == 0 )
 				return CPointMap();
 
 			i = 0;
@@ -1962,7 +1956,7 @@ CPointMap CResource::GetRegionPoint(LPCTSTR pszCmd) const
 	}
 
 	CPointMap pt;
-	if ( IsDigit(pszCmd[0]) || (pszCmd[0] == '-') )
+	if ( IsDigit(*pszCmd) || (*pszCmd == '-') )
 	{
 		TCHAR szTemp[32];
 		strncpy(szTemp, pszCmd, sizeof(szTemp));
@@ -2011,7 +2005,7 @@ CRegionBase *CResource::GetRegion(LPCTSTR pszKey) const
 void CResource::LoadSortSpells()
 {
 	size_t iMaxSpells = m_SpellDefs.GetCount();
-	if ( iMaxSpells <= 0 )
+	if ( iMaxSpells == 0 )
 		return;
 
 	m_SpellDefs_Sorted.RemoveAll();
@@ -2929,7 +2923,7 @@ RESOURCE_ID CResource::ResourceGetNewID(RES_TYPE restype, LPCTSTR pszName, CVarD
 		{
 			// Multiple instance stuff, but name is not a RESOURCE_ID
 			// Must have a resource name but do not use true RESOURCE_ID format
-			if ( pszName[0] == '\0' )
+			if ( *pszName == '\0' )
 				return ridInvalid;
 
 			return RESOURCE_ID(restype);
@@ -2938,7 +2932,7 @@ RESOURCE_ID CResource::ResourceGetNewID(RES_TYPE restype, LPCTSTR pszName, CVarD
 		case RES_DIALOG:
 		case RES_REGIONTYPE:
 		{
-			if ( pszName[0] == '\0' )
+			if ( *pszName == '\0' )
 				return ridInvalid;
 
 			TCHAR *pszArg1 = Str_GetTemp();
@@ -2963,7 +2957,7 @@ RESOURCE_ID CResource::ResourceGetNewID(RES_TYPE restype, LPCTSTR pszName, CVarD
 		}
 		case RES_NEWBIE:
 		{
-			if ( pszName[0] == '\0' )
+			if ( *pszName == '\0' )
 				return ridInvalid;
 
 			TCHAR *pszArg1 = Str_GetTemp();
@@ -3026,10 +3020,10 @@ RESOURCE_ID CResource::ResourceGetNewID(RES_TYPE restype, LPCTSTR pszName, CVarD
 	int index;
 	if ( pszName )
 	{
-		if ( pszName[0] == '\0' )
+		if ( *pszName == '\0' )
 			return RESOURCE_ID(restype, 0, iPage);		// this might be ok
 
-		if ( IsDigit(pszName[0]) )
+		if ( IsDigit(*pszName) )
 		{
 			index = static_cast<int>(g_Exp.GetVal(pszName));
 			rid = RESOURCE_ID(restype, index);
@@ -3524,7 +3518,7 @@ bool CResource::Load(bool fResync)
 		g_World.Init();
 
 	// Make sure we have the basics
-	if ( g_Serv.GetName()[0] == '\0' )
+	if ( !*g_Serv.GetName() )
 		g_Serv.SetName(SPHERE_TITLE);
 
 	if ( !g_Cfg.ResourceGetDef(RESOURCE_ID(RES_SKILLCLASS, 0)) )
@@ -3535,7 +3529,7 @@ bool CResource::Load(bool fResync)
 		m_ResHash.AddSortKey(RESOURCE_ID(RES_SKILLCLASS, 0), pSkillClass);
 	}
 
-	if ( m_StartDefs.GetCount() <= 0 )
+	if ( m_StartDefs.GetCount() == 0 )
 		g_Log.Event(LOGL_ERROR, "Map template [STARTS] not found on scripts, clients will not be able to create new characters\n");
 
 	// Make region DEFNAMEs
@@ -3624,7 +3618,7 @@ bool CResource::GenerateDefname(TCHAR *pszObjectName, size_t iInputLength, LPCTS
 	if ( !pszOutput )
 		return false;
 
-	if ( !pszObjectName || !pszObjectName[0] )
+	if ( !pszObjectName || (*pszObjectName == '\0') )
 	{
 		pszOutput[0] = '\0';
 		return false;
@@ -3662,7 +3656,7 @@ bool CResource::GenerateDefname(TCHAR *pszObjectName, size_t iInputLength, LPCTS
 		--iOut;
 
 	pszOutput[iOut] = '\0';
-	if ( iOut <= 0 )
+	if ( iOut == 0 )
 		return false;
 
 	if ( fCheckConflict )
@@ -3699,7 +3693,7 @@ bool CResource::DumpUnscriptedItems(CTextConsole *pSrc, LPCTSTR pszFilename)
 	if ( !pSrc )
 		return false;
 
-	if ( !pszFilename || (pszFilename[0] == '\0') )
+	if ( !pszFilename || (*pszFilename == '\0') )
 		pszFilename = "unscripted_items" SPHERE_FILE_EXT_SCP;
 	else if ( strlen(pszFilename) <= 4 )
 		return false;

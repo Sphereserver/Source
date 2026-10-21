@@ -50,7 +50,8 @@ public:
 	CPointMap m_nextPt;							// Where the array wants to go (if changed, recount the path)
 
 public:
-	struct Spells {
+	struct Spells
+	{
 		SPELL_TYPE id;
 	};
 	std::vector<Spells> m_spells;	// spells stored in this NPC
@@ -377,7 +378,8 @@ private:
 // Player vs NPC Stuff
 
 public:
-	struct LastAttackers {
+	struct LastAttackers
+	{
 		CGrayUID charUID;
 		INT64 elapsed;
 		INT64 damage;
@@ -385,7 +387,8 @@ public:
 	};
 	std::vector<LastAttackers> m_lastAttackers;
 
-	struct NotoSaves {
+	struct NotoSaves
+	{
 		CGrayUID charUID;
 		INT64 elapsed;
 		NOTO_TYPE value;
@@ -1160,7 +1163,7 @@ private:
 	CItem *Spell_Effect_Create(SPELL_TYPE spell, LAYER_TYPE layer, int iSkillLevel, int iDuration, CObjBase *pSrc = NULL, bool fEquip = true);
 	bool Spell_Equip_OnTick(CItem *pItem);
 
-	void Spell_Field(CPointMap ptTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, int iFieldWidth, int iFieldGauge, int iSkillLevel, CChar *pCharSrc, int iDurationMin, int iDurationMax, HUE_TYPE wColor);
+	void Spell_Field(CPointMap ptTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, int iFieldWidth, int iFieldGauge, int iSkillLevel, int iDurationMin, int iDurationMax, HUE_TYPE wColor);
 	void Spell_Area(CPointMap ptTarg, int iDist, int iSkillLevel);
 	bool Spell_TargCheck_Face();
 	bool Spell_TargCheck();

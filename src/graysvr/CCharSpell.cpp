@@ -2063,7 +2063,7 @@ void CChar::Spell_Area(CPointMap ptTarg, int iDist, int iSkillLevel)
 	}
 }
 
-void CChar::Spell_Field(CPointMap ptTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, int iFieldWidth, int iFieldGauge, int iSkillLevel, CChar *pCharSrc, int iDurationMin, int iDurationMax, HUE_TYPE wColor)
+void CChar::Spell_Field(CPointMap ptTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, int iFieldWidth, int iFieldGauge, int iSkillLevel, int iDurationMin, int iDurationMax, HUE_TYPE wColor)
 {
 	ADDTOCALLSTACK("CChar::Spell_Field");
 	// Cast the field spell to here.
@@ -2071,10 +2071,9 @@ void CChar::Spell_Field(CPointMap ptTarg, ITEMID_TYPE idEW, ITEMID_TYPE idNS, in
 	// ptTarg = target
 	// idEW = ID of EW aligned spell object
 	// idNS = ID of NS aligned spell object
-	// bFieldWidth = width of the field (looking from char's point of view)
-	// bFieldGauge = thickness of the field
+	// iFieldWidth = width of the field (looking from char's point of view)
+	// iFieldGauge = thickness of the field
 	// iSkillLevel = 0-1000
-	// idnewEW and idnewNS are the overriders created in @Success trigger, passed as another arguments because checks are made using default items
 
 	const CSpellDef *pSpellDef = g_Cfg.GetSpellDef(m_atMagery.m_Spell);
 	if ( !pSpellDef )
@@ -2650,7 +2649,7 @@ bool CChar::Spell_CastDone()
 		else if ( pSpellDef->IsSpellType(SPELLFLAG_FIELD) )
 		{
 			if ( iT1 && iT2 )
-				Spell_Field(m_Act_p, iT1, iT2, iFieldWidth, iFieldGauge, iSkillLevel, this, iDurationMin, iDurationMax, wColor);
+				Spell_Field(m_Act_p, iT1, iT2, iFieldWidth, iFieldGauge, iSkillLevel, iDurationMin, iDurationMax, wColor);
 		}
 		else if ( pSpellDef->IsSpellType(SPELLFLAG_AREA) )
 		{
@@ -2666,7 +2665,7 @@ bool CChar::Spell_CastDone()
 	}
 	else if ( pSpellDef->IsSpellType(SPELLFLAG_FIELD) )
 	{
-		Spell_Field(m_Act_p, iT1, iT2, iFieldWidth, iFieldGauge, iSkillLevel, this, iDurationMin, iDurationMax, wColor);
+		Spell_Field(m_Act_p, iT1, iT2, iFieldWidth, iFieldGauge, iSkillLevel, iDurationMin, iDurationMax, wColor);
 	}
 	else if ( pSpellDef->IsSpellType(SPELLFLAG_AREA) )
 	{

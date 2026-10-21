@@ -135,7 +135,7 @@ public:
 /***************************************************************************
  *
  *
- *	Packet 0x1A : PacketWorldItem			sends item on ground (NORMAL)
+ *	Packet 0x1A : PacketWorldItem			sends item on ground (pre-SA clients) (NORMAL)
  *
  *
  ***************************************************************************/
@@ -1409,9 +1409,9 @@ public:
 	PacketDisplayPopup(const CClient* target, CGrayUID uid);
 
 	void addOption(WORD entryTag, DWORD textId, WORD flags = 0, WORD color = 0);
-	void finalise(void);
+	void finalize();
 
-	int getOptionCount(void) const
+	int getOptionCount() const
 	{
 		return m_popupCount;
 	}
@@ -1702,10 +1702,10 @@ public:
 	PacketPropertyList(const CClient* target, const PacketPropertyList* other);
 	virtual bool onSend(const CClient* client);
 
-	CGrayUID getObject(void) const { return m_object; }
-	DWORD getVersion(void) const { return m_version; }
-	size_t getEntryCount(void) const { return m_entryCount; }
-	bool isEmpty(void) const { return (m_entryCount == 0); }
+	CGrayUID getObject() const { return m_object; }
+	DWORD getVersion() const { return m_version; }
+	size_t getEntryCount() const { return m_entryCount; }
+	bool isEmpty() const { return (m_entryCount == 0); }
 
 	bool hasExpired(int timeout) const;
 
@@ -1749,12 +1749,12 @@ private:
 public:
 	PacketHouseDesign(const CItemMultiCustom *pHouse, DWORD dwRevision);
 	PacketHouseDesign(const PacketHouseDesign *pPacket);
-	virtual ~PacketHouseDesign(void);
+	virtual ~PacketHouseDesign();
 
-	bool writeLevelData(BYTE bLevel, WORD wItemCount, BYTE *pbData, DWORD dwDataSize);
-	bool writeStairData(ITEMID_TYPE id, BYTE x, BYTE y, BYTE z);
-	void flushStairData(void);
-	void finalize(void);
+	void writeLevelData(BYTE bLevel, WORD wItemCount, BYTE *pbData, DWORD dwDataSize);
+	void writeStairData(ITEMID_TYPE id, BYTE x, BYTE y, BYTE z);
+	void flushStairData();
+	void finalize();
 
 	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }
 	static bool CanSendTo(const NetState* state)
@@ -1898,7 +1898,7 @@ public:
 /***************************************************************************
  *
  *
- *	Packet 0xF3 : PacketWorldObj			sends object on ground (NORMAL)
+ *	Packet 0xF3 : PacketWorldObj			sends object on ground (SA+ clients) (NORMAL)
  *
  *
  ***************************************************************************/
@@ -1908,17 +1908,22 @@ protected:
 	PacketWorldObj(BYTE id, size_t size, CGrayUID uid);
 
 public:
-	enum DataSource
-	{
-		TileData	= 0x0,
-		Character	= 0x1,
-		Multi		= 0x2,
-		Damageable	= 0x3
-	};
-
 	PacketWorldObj(const CClient* target, CItem* item);
 	PacketWorldObj(const CClient* target, CChar* mobile);
 
+protected:
+	enum ObjType
+	{
+		Item			= 0x0,
+		Char			= 0x1,
+		ItemMulti		= 0x2,
+		ItemDamageable	= 0x3
+	};
+
+	void writeWorldItem(const CClient *target, CItem *item);
+	void writeWorldChar(const CClient *target, CChar *mobile);
+
+public:
 	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }
 	static bool CanSendTo(const NetState* state)
 	{
@@ -1955,7 +1960,7 @@ public:
 class PacketMoveShip : public PacketSend
 {
 public:
-	PacketMoveShip(const CClient *target, const CItemShip *pShip, CObjBase **ppComponentList, size_t iComponentCount, BYTE bDirMove, BYTE bDirFace, BYTE bSpeed);
+	PacketMoveShip(const CClient *target, const CItemShip *pShip, CObjBase **ppObjectList, size_t iObjectCount, BYTE bDirMove, BYTE bDirFace, BYTE bSpeed);
 };
 
 /***************************************************************************
@@ -1968,7 +1973,7 @@ public:
 class PacketWorldObjCont : public PacketWorldObj
 {
 public:
-	PacketWorldObjCont(const CClient* target, CObjBase** objects, size_t objectCount);
+	PacketWorldObjCont(const CClient *target, CObjBase **ppObjectList, size_t iObjectCount);
 
 	virtual bool canSendTo(const NetState* state) const { return CanSendTo(state); }
 	static bool CanSendTo(const NetState* state)
