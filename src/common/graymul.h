@@ -90,7 +90,7 @@ enum SOUND_CODE
 
 typedef WORD MIDI_TYPE;	// Music id
 
-#define MULTI_QTY	0x2000	// total address space for multis.
+#define MULTI_QTY	0x3000	// total address space for multis
 typedef WORD MULTI_TYPE;	// define a multi (also defined by ITEMID_MULTI)
 
 enum ITEMID_TYPE	// InsideUO is great for this stuff.
@@ -365,12 +365,12 @@ enum ITEMID_TYPE	// InsideUO is great for this stuff.
 	ITEMID_QTY					= 0x10000,
 
 	// Multi slots
-	ITEMID_MULTI_LEGACY			= 0x4000,	// ITEMID_MULTI for old clients (< 7.0.0.0)
-	ITEMID_MULTI_SA				= 0x8000,	// ITEMID_MULTI for SA clients (< 7.0.8.44)
-	ITEMID_MULTI				= 0x10000,
+	ITEMID_MULTI_LEGACY			= 0x4000,	// ITEMID_MULTI for pre-SA clients (< 7.0.0.0)
+	ITEMID_MULTI_SA				= 0x8000,	// ITEMID_MULTI for SA clients (7.0.0.0 - 7.0.8.45)
+	ITEMID_MULTI				= 0x10000,	// ITEMID_MULTI for HS+ clients (>= 7.0.9.0)
 
 	ITEMID_SHIP_SMALL_N			= ITEMID_MULTI + 0x0,
-	ITEMID_GALLEON_BRIT2_W		= ITEMID_MULTI + 0x47,
+	ITEMID_SHIP_PUMPKIN_W		= ITEMID_MULTI + 0x53,
 
 	ITEMID_HOUSE_SMALL_ST_PL	= ITEMID_MULTI + 0x64,
 	ITEMID_HOUSE_SMALL_SHOP_MB	= ITEMID_MULTI + 0xA2,
@@ -379,7 +379,7 @@ enum ITEMID_TYPE	// InsideUO is great for this stuff.
 	ITEMID_FOUNDATION_30x30		= ITEMID_MULTI + 0x147D,
 
 	ITEMID_HOUSE_TRINSIC_KEEP	= ITEMID_MULTI + 0x147E,
-	ITEMID_HOUSE_GRIMSWIND_SISTERS_CASTLE	= ITEMID_MULTI + 0x148F,
+	ITEMID_HOUSE_GUILD_KEEP		= ITEMID_MULTI + 0x14A4,
 
 	ITEMID_MULTI_MAX			= ITEMID_MULTI + MULTI_QTY - 1,
 
@@ -1689,22 +1689,31 @@ struct CUOMultiItemRecHS // (Multi.mul, High Seas+)
 
 struct CUOHuesRec // (Hues.mul)
 {
-	short m_color[34];
+	// Unused struct, for documentation purposes only
+	WORD m_color[34];	// 32 colors + table start + table end
 	char m_name[20];
 
-	BYTE GetRGB( int rgb ) const
+	WORD PackRGB555(BYTE r, BYTE g, BYTE b)
 	{
-		short sColor = m_color[31];
-		if ( rgb == 0 ) // R
-			return static_cast<BYTE>(((sColor & 0x7C00) >> 7));
-		else if ( rgb == 1 )
-			return static_cast<BYTE>(((sColor & 0x3E0) >> 2));
-		else if ( rgb == 3 )
-			return static_cast<BYTE>(((sColor & 0x1F) << 3));
+		// Pack split R,G,B values into RGB555 value
+		WORD r5 = r >> 3;
+		WORD g5 = g >> 3;
+		WORD b5 = b >> 3;
 
-		return 0;
+		return (r5 << 10) | (g5 << 5) | b5;
 	}
 
+	void UnpackRGB555(WORD rgb, BYTE &r, BYTE &g, BYTE &b)
+	{
+		// Unpack RGB555 value into split R,G,B values
+		WORD r5 = rgb >> 10;
+		WORD g5 = rgb >> 5;
+		WORD b5 = rgb;
+
+		r = (r5 << 3) | (r5 >> 2);
+		g = (g5 << 3) | (g5 >> 2);
+		b = (b5 << 3) | (b5 >> 2);
+	}
 } PACK_NEEDED;
 
 #define LIGHT_BRIGHT	0

@@ -142,8 +142,12 @@ NOTO_TYPE CChar::Noto_GetFlag(const CChar *pCharViewer, bool fAllowInvul, bool f
 		return NOTO_INVALID;
 
 	CChar *pSrc = const_cast<CChar *>(this);
-	if ( g_Cfg.m_iPetsInheritNotoriety && m_pNPC && NPC_PetGetOwner() )	// If I'm a pet and have owner I redirect noto to him.
-		pSrc = NPC_PetGetOwner();
+	if ( m_pNPC && (g_Cfg.m_iPetsInheritNotoriety != 0) )
+	{
+		CChar *pOwner = NPC_PetGetOwner();
+		if ( pOwner )
+			pSrc = pOwner;
+	}
 
 	CChar *pTarget = const_cast<CChar *>(pCharViewer);
 	int iNotoSaveID = pSrc->NotoSave_GetID(pTarget);

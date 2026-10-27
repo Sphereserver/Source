@@ -1903,3 +1903,8 @@ Changed: Revamped Windows console
 
 01-09-2026, Coruja
 Changed: Improved script expression parsing
+
+27-10-2026, Coruja
+Changed: Increased MULTIDEF max ID from 0x2000 to 0x3000
+Fixed: Animal Taming skill allowing tame vendor NPCs
+Fixed: Herding skill allowing herd tamed NPCs

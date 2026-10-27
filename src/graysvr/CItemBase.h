@@ -559,6 +559,7 @@ public:
 	{
 		// IT_MULTI
 		// IT_MULTI_CUSTOM
+		// IT_SHIP
 		return ((id >= ITEMID_MULTI) && (id < ITEMID_MULTI_MAX));
 	}
 
@@ -566,13 +567,13 @@ public:
 	{
 		// IT_MULTI
 		// IT_MULTI_CUSTOM
-		return (((id >= ITEMID_HOUSE_SMALL_ST_PL) && (id <= ITEMID_HOUSE_SMALL_SHOP_MB)) || ((id >= ITEMID_FOUNDATION_7x7) && (id <= ITEMID_FOUNDATION_30x30)) || ((id >= ITEMID_HOUSE_TRINSIC_KEEP) && (id <= ITEMID_HOUSE_GRIMSWIND_SISTERS_CASTLE)));
+		return (((id >= ITEMID_HOUSE_SMALL_ST_PL) && (id <= ITEMID_HOUSE_SMALL_SHOP_MB)) || ((id >= ITEMID_FOUNDATION_7x7) && (id <= ITEMID_FOUNDATION_30x30)) || ((id >= ITEMID_HOUSE_TRINSIC_KEEP) && (id <= ITEMID_HOUSE_GUILD_KEEP)));
 	}
 
 	static bool IsID_Ship(ITEMID_TYPE id)
 	{
 		// IT_SHIP
-		return ((id >= ITEMID_SHIP_SMALL_N) && (id <= ITEMID_GALLEON_BRIT2_W));
+		return ((id >= ITEMID_SHIP_SMALL_N) && (id <= ITEMID_SHIP_PUMPKIN_W));
 	}
 
 	static bool IsID_GamePiece(ITEMID_TYPE id)

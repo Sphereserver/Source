@@ -1733,10 +1733,27 @@ bool CClient::OnTarg_Use_Item(CObjBase *pObjTarg, CPointMap &pt, ITEMID_TYPE id)
 		{
 			// SKILL_HERDING
 			// Selected a creature to herd
-			// Move the selected item or char to this location
 			if ( !pCharTarg )
 			{
 				SysMessageDefault(DEFMSG_ITEMUSE_CROOK_TRY);
+				return false;
+			}
+			else if ( IsPriv(PRIV_GM) )
+			{
+				if ( pCharTarg->GetPrivLevel() > GetPrivLevel() )
+				{
+					SysMessageDefault(DEFMSG_MSG_ACC_PRIV);
+					return false;
+				}
+			}
+			else if ( !pCharTarg->m_pNPC || pCharTarg->NPC_IsVendor() || (pCharTarg->Skill_GetBase(SKILL_TAMING) == 0) )	// only tameable NPCs can be herded
+			{
+				SysMessagef("%s %s", pCharTarg->GetName(), g_Cfg.GetDefaultMsg(DEFMSG_HERDING_PLAYER));
+				return false;
+			}
+			else if ( pCharTarg->IsStatFlag(STATF_Pet) )
+			{
+				SysMessagef(g_Cfg.GetDefaultMsg(DEFMSG_TAMING_TAME), pCharTarg->GetName());
 				return false;
 			}
 			addTarget(CLIMODE_TARG_SKILL_HERD_DEST, g_Cfg.GetDefaultMsg(DEFMSG_ITEMUSE_CROOK_TARGET), true);

@@ -2252,7 +2252,7 @@ int CChar::Skill_Taming(SKTRIG_TYPE stage)
 		SysMessageDefault(DEFMSG_TAMING_YMASTER);
 		return -SKTRIG_QTY;
 	}
-	if ( pChar->m_pPlayer )
+	if ( !pChar->m_pNPC || pChar->NPC_IsVendor() )
 	{
 		SysMessageDefault(DEFMSG_TAMING_CANT);
 		return -SKTRIG_QTY;
@@ -2273,8 +2273,6 @@ int CChar::Skill_Taming(SKTRIG_TYPE stage)
 		return -SKTRIG_QTY;
 	}
 	UpdateDir(pChar);
-
-	ASSERT(pChar->m_pNPC);
 
 	WORD wTameBase = pChar->Skill_GetBase(SKILL_TAMING);
 	if ( !IsPriv(PRIV_GM) )
@@ -2507,21 +2505,9 @@ int CChar::Skill_Herding(SKTRIG_TYPE stage)
 		case SKTRIG_SUCCESS:
 		{
 			if ( IsPriv(PRIV_GM) )
-			{
-				if ( pChar->GetPrivLevel() > GetPrivLevel() )
-				{
-					SysMessagef("%s %s", pChar->GetName(), g_Cfg.GetDefaultMsg(DEFMSG_HERDING_PLAYER));
-					return -SKTRIG_ABORT;
-				}
 				pChar->Spell_Teleport(m_Act_p, true, false);
-			}
 			else
 			{
-				if ( !pChar->NPC_IsAnimal() )
-				{
-					SysMessagef("%s %s", pChar->GetName(), g_Cfg.GetDefaultMsg(DEFMSG_HERDING_PLAYER));
-					return -SKTRIG_ABORT;
-				}
 				pChar->m_Act_p = m_Act_p;
 				pChar->Skill_Start(NPCACT_GOTO);
 			}
